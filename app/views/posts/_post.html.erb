@@ -1,0 +1,14 @@
+<article class="mb-16 prose dark:prose-invert">
+  <%= link_to user_post_path(@user.username, post.id), class: "no-underline" do %>
+    <h2 class="mb-2">
+      <%= post.title %>
+  </h2>
+  <% end %>
+  <h3 class="text-gray-400 text-sm mb-8"><%= post.updated_at.to_date.to_formatted_s(:long) %></h3>
+
+  <% if html_content?(post.content) %>
+    <%= sanitize post.content, tags: %w(p br i b u ul ol li a), attributes: %w(href) %>
+  <% else %>
+    <%= simple_format post.content %>
+  <% end %>
+</article>

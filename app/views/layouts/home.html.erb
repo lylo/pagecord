@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pagecord</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
+    <header>
+      <nav class="p-4">
+        <div class="font-bold text-slate-950 text-xl dark:text-slate-50 tracking-tight">
+          <%= link_to "📄 Pagecord", root_path %>
+        </div>
+      </nav>
+    </header>
+    <main class="container mx-auto px-5 flex flex-grow">
+      <div class="w-[48rem] mx-auto mt-24 text-slate-950 dark:text-slate-50">
+        <%= yield %>
+      </div>
+    </main>
+
+    <footer class="p-8 flex justify-center text-sm text-slate-400 dark:text-slate-500">
+      <div>
+        <%= link_to "Terms", terms_path %>
+        <%= link_to "Privacy", privacy_path, class: "ms-4" %>
+        <%= mail_to "hello@pagecord.com", "Contact", class: "ms-4" %>
+      </div>
+    </footer>
+  </body>
+</html>
