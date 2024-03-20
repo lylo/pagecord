@@ -19,4 +19,9 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_url
     assert_equal "User not found", flash[:alert]
   end
+
+  test "should redirect to root if user is unverified" do
+    get user_posts_path(username: users(:elliot).username)
+    assert_redirected_to root_url
+  end
 end

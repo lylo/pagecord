@@ -7,3 +7,11 @@
 joel:
   email: joel@meyerowitz.xyz
   username: joel
+  verified: true
+
+elliot:
+  email: elliot@erwitt.photo
+  username: elliot
+
+
+

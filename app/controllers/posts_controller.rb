@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   include Pagy::Backend
 
-  before_action :load_user
+  before_action :load_user, :verification
 
   def index
     @pagy, @posts =  pagy(@user.posts)
@@ -21,5 +21,9 @@ class PostsController < ApplicationController
 
     def user_params
       params.permit(:username, :page)
+    end
+
+    def verification
+      redirect_to root_path if !@user&.verified?
     end
 end

@@ -9,6 +9,9 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
+      # TODO send email
+      sign_in @user
+
       # TODO go to validation page
       redirect_to user_posts_path(@user.username)
     else

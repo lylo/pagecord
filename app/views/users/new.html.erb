@@ -24,7 +24,7 @@
   To create a Pagecord, choose a username and enter your email address.
 </p>
 
-<%= form_with model: @user, class: "mt-4" do |form| %>
+<%= form_with model: @user, data: { turbo: "false" }, class: "mt-4" do |form| %>
   <div class="flex">
     <div class="font-semibold">pagecord.com/</div>
     <%= form.text_field :username, placeholder: "username", autofocus: true, class: "p-0 m-0 border-none outline-none focus:ring-0", maxlength: 20, required: true %>
