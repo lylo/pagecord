@@ -6,9 +6,5 @@
   <% end %>
   <h3 class="text-gray-400 text-sm mb-8"><%= post.updated_at.to_date.to_formatted_s(:long) %></h3>
 
-  <% if html_content?(post.content) %>
-    <%= sanitize post.content, tags: %w(p br i b u ul ol li a), attributes: %w(href) %>
-  <% else %>
-    <%= simple_format post.content %>
-  <% end %>
+  <%= post.content.html_safe %>
 </article>

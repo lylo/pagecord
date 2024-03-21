@@ -1,29 +1,42 @@
 <div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
-  <h1 class="font-bold text-xl px-2">Your Posts</h1>
+  <% if @posts.empty? %>
+    <p class="mt-4">
+      You're all set.
+    </p>
 
-  <div class="mt-8">
-  <% @posts.each do |post| %>
-    <div class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800">
-      <div class="font-semibold">
-        <%= link_to user_post_path(@user.username, post.id), target: "_blank" do %>
-          <%= post.title %>
-        <% end %>
-      </div>
-      <div class="text-xs text-slate-500 dark:text-slate-400 flex justify-between items-center">
-        <div>
-          <%= post.created_at.to_formatted_s(:long) %>
-        </div>
-        <div class="ms-2">
-          <%= button_to app_post_path(post), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this post?"} do %>
-            <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
+    <%= render "how_to" %>
+
+  <% else %>
+    <p class="mt-4">
+      You have published <%= pluralize @posts.count, "post" %>.
+    </p>
+
+    <%= render "how_to" %>
+
+    <div class="mt-8">
+    <% @posts.each do |post| %>
+      <div class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg">
+        <div class="font-semibold">
+          <%= link_to user_post_path(@user.username, post.id), target: "_blank" do %>
+            <%= post.title %>
           <% end %>
         </div>
+        <div class="text-xs text-slate-500 dark:text-slate-400 flex justify-between items-center">
+          <div>
+            <%= post.created_at.to_formatted_s(:long) %>
+          </div>
+          <div class="ms-2">
+            <%= button_to app_post_path(post), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this post?"} do %>
+              <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
+            <% end %>
+          </div>
+        </div>
       </div>
+    <% end %>
     </div>
-  <% end %>
-  </div>
 
-  <% if @pagy.next %>
-    <%== pagy_next_html(@pagy, text: "Older", link_extra: 'id="next_link"') %>
+    <% if @pagy.next %>
+      <%== pagy_next_html(@pagy, text: "Older", link_extra: 'id="next_link"') %>
+    <% end %>
   <% end %>
 </div>

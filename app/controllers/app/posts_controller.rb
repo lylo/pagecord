@@ -4,7 +4,7 @@ class App::PostsController < AppController
   before_action :load_user
 
   def index
-    @pagy, @posts =  pagy(Current.user.posts)
+    @pagy, @posts =  pagy(Current.user.posts.order(created_at: :desc))
   end
 
   def destroy

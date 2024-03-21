@@ -1,0 +1,88 @@
+Date: Thu, 21 Mar 2024 16:57:12 +0000
+From: joel@meyerowitz.xyz
+To: joel_gf35jsue@post.pagecord.com
+Message-ID: <737f157421d1ce86f6646c58cf5e80ac14515271@hey.com>
+Subject: Another test
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="--==_mimepart_65fc67cbee111_d247cfc39248";
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+
+----==_mimepart_65fc67cbee111_d247cfc39248
+Content-Type: text/plain;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+This is a test.
+
+With multiple paragraphs.
+
+Ok?
+
+Does it work?
+
+----==_mimepart_65fc67cbee111_d247cfc39248
+Content-Type: text/html;
+ charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset=3D"utf-8">
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf=
+-8" />
+    <meta name=3D"viewport" id=3D"viewport" content=3D"width=3Ddevice-wid=
+th,minimum-scale=3D1.0,maximum-scale=3D10.0,initial-scale=3D1.0" />
+
+    <style>
+      html{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}h1{fon=
+t-size:1.3em;line-height:1.2;margin:0}ul,ol{margin:0;padding:0}ul li,ol l=
+i,li li{margin:0 0 0 36px}[dir=3Drtl] li{margin:0 18px 0 0}blockquote{bor=
+der-color:#dfdee1;border-style:solid;border-width:0 0 0 1px;margin:0;padd=
+ing:0 0 0 1em}[dir=3Drtl] blockquote,blockquote[dir=3Drtl]{border-width:0=
+ 1px 0 0;padding:0 1em 0 0}pre{font-family:"SFMono-Regular",Consolas,"Lib=
+eration Mono",Menlo,Courier,monospace;font-size:.9em;margin:0;padding:1re=
+m;background-color:#f6f5f3;white-space:pre-wrap;word-wrap:break-word;over=
+flow:visible}.message-content{font-family:-apple-system,BlinkMacSystemFon=
+t,Aptos,Roboto,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji",=
+"Segoe UI Emoji","Segoe UI Symbol";line-height:1.4}.attachment{display:in=
+line-block;margin:0;padding:0}.attachment__caption{padding:0;text-align:c=
+enter}.attachment__caption a[href]{text-decoration:none;color:#333}.attac=
+hment--preview{width:100%;text-align:center;margin:.625em 0}.attachment--=
+preview img{border:1px solid #dfdee1;vertical-align:middle;width:auto;max=
+-width:100%;max-height:640px}.attachment--preview .attachment__caption{co=
+lor:#716d7b;font-size:.85em;margin-top:.625em}.attachment--file{color:#28=
+2138;line-height:1;margin:0 2px 2px 0;padding:.4em 1em;border:1px solid #=
+dfdee1;border-radius:5px}.permalink{color:inherit}.txt--subtle{color:#716=
+d7b}.txt--xx-small{font-size:14px}.flush{margin:0;padding:0}.push--bottom=
+{margin-bottom:8px}.border--top{border-top:1px solid #ece9e6}.btn{padding=
+:.2em .4em;font-weight:500;text-decoration:none;border-radius:3rem;white-=
+space:nowrap;background:#5522fa;border-color:#5522fa;color:#fff}.btn--ema=
+il{display:inline-block;text-align:center;font-weight:500;font-size:1em;t=
+ext-decoration:none;border-radius:2em;white-space:nowrap;background:#5522=
+fa;border-color:#5522fa;color:#fff;border-top:.3em solid #5522fa;border-l=
+eft:1em solid #5522fa;border-bottom:.3em solid #5522fa;border-right:1em s=
+olid #5522fa}.shaded{padding:1em;border-radius:4px;background-color:#f6f5=
+f3;border:1px solid #dfdee1}.shaded--blue{background-color:rgba(80, 162, =
+255, 0.2)}.shaded--red{background-color:rgba(255, 120, 120, 0.2)}.striket=
+hrough{text-decoration:line-through}
+
+    </style>
+  </head>
+
+  <body>
+    <div class=3D"message-content">
+      <div class=3D"trix-content">
+  <div>This is a test.<br><br>With multiple paragraphs.<br><br>Ok?<br><br=
+><strong>Does it work?</strong></div>
+</div>
+
+
+    </div>
+  </body>
+</html>
+
+----==_mimepart_65fc67cbee111_d247cfc39248--

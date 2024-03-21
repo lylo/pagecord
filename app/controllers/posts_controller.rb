@@ -4,11 +4,11 @@ class PostsController < ApplicationController
   before_action :load_user, :verification
 
   def index
-    @pagy, @posts =  pagy(@user.posts)
+    @pagy, @posts =  pagy(@user.posts.order(created_at: :desc))
   end
 
   def show
-    @post = @user.posts.find(params[:id])
+    @post = @user.posts.find(user_params[:id])
   end
 
   private
@@ -20,7 +20,7 @@ class PostsController < ApplicationController
     end
 
     def user_params
-      params.permit(:username, :page)
+      params.permit(:username, :page, :id)
     end
 
     def verification

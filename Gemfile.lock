@@ -140,6 +140,7 @@ GEM
     minitest (5.22.3)
     msgpack (1.7.2)
     mutex_m (0.2.0)
+    nanoid (2.0.0)
     net-imap (0.4.10)
       date
       net-protocol
@@ -301,6 +302,7 @@ DEPENDENCIES
   inline_svg (~> 1.9)
   jbuilder
   letter_opener (~> 1.9)
+  nanoid (~> 2.0)
   pagy (~> 7.0)
   premailer-rails (~> 1.12)
   puma (>= 5.0)

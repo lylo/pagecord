@@ -24,4 +24,10 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(username: "newuser", email: "joel@blah.blahhhhh")
     assert user.valid?
   end
+
+  test "should generate unique delivery email" do
+    user = User.create!(username: "newuser", email: "newuser@newuser.com")
+    assert user.delivery_email.present?
+    assert user.delivery_email =~ /newuser_[a-zA-Z0-9]{8}@post.pagecord.com/
+  end
 end

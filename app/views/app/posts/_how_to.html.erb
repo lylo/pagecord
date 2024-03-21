@@ -1,0 +1,10 @@
+<p class="mt-4">
+  To publish a new post, send an email from <span><%= @user.email %></span>
+  to <%= mail_to @user.delivery_email, class: "font-semibold" %>.
+</p>
+
+<% if @user.posts.any? %>
+<p class="mt-4">
+  To delete a post, click the trash icon.
+</p>
+<% end %>
