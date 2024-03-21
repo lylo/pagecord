@@ -186,6 +186,7 @@ GEM
     nokogiri (1.16.3-x86_64-linux)
       racc (~> 1.4)
     pagy (7.0.11)
+    pg (1.5.6)
     premailer (1.23.0)
       addressable
       css_parser (>= 1.12.0)
@@ -306,6 +307,7 @@ DEPENDENCIES
   letter_opener (~> 1.9)
   nanoid (~> 2.0)
   pagy (~> 7.0)
+  pg
   premailer-rails (~> 1.12)
   puma (>= 5.0)
   rails!
