@@ -6,7 +6,7 @@ class AccessRequestsControllerTest < ActionDispatch::IntegrationTest
 
     get verify_access_request_url(access_requests(:elliot).token_digest)
 
-    assert_redirected_to user_posts_path(user.username)
+    assert_redirected_to app_posts_url
     assert user.reload.verified
   end
 

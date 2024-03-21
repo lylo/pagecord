@@ -8,8 +8,7 @@ class AccessRequestsController < ApplicationController
 
       sign_in @user
 
-      # TODO redirect to new app controller when it's ready
-      redirect_to user_posts_path(@user.username)
+      redirect_to app_posts_url
     else
       redirect_to root_path
     end
