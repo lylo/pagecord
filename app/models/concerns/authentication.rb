@@ -27,6 +27,6 @@ module Authentication
   end
 
   def sign_out
-    session[:user_idd] = nil
+    session[:user_id] = nil
   end
 end
