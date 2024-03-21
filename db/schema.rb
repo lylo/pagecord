@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_20_155522) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_20_163911) do
+  create_table "access_requests", force: :cascade do |t|
+    t.string "token_digest"
+    t.integer "user_id", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "accepted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["expires_at"], name: "index_access_requests_on_expires_at"
+    t.index ["token_digest"], name: "index_access_requests_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_access_requests_on_user_id"
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -30,5 +42,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_155522) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "access_requests", "users"
   add_foreign_key "posts", "users"
 end

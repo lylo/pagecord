@@ -1,0 +1,15 @@
+joel:
+  user: joel
+  token_digest: asdkjSD12dasd
+  expires_at: <%= 1.day.ago %>
+  accepted_at: <%= 2.days.ago %>
+
+elliot:
+  user: elliot
+  token_digest: oj343ajsdoekwek
+  expires_at: <%= 2.days.from_now %>
+
+elliot_expired:
+  user: elliot
+  token_digest: jisaduy239ahye7
+  expires_at: <%= 2.days.ago %>

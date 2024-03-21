@@ -58,6 +58,7 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
+  gem "letter_opener", "~> 1.9"
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler"
 
@@ -72,3 +73,5 @@ group :test do
 end
 
 gem "pagy", "~> 7.0"
+
+gem "premailer-rails", "~> 1.12"

@@ -9,6 +9,8 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
+      AccountVerificationMailer.with(user: @user).verify.deliver_later
+
       # TODO send email
       sign_in @user
 

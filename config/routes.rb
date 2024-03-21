@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   resources :users, only: [:new, :create]
 
+  get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
+
   # Defines the routes for the resources of the model Post
   get "/terms", to: "public#terms", as: :terms
   get "/privacy", to: "public#privacy", as: :privacy
