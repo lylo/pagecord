@@ -13,6 +13,12 @@ Rails.application.routes.draw do
   get "/terms", to: "public#terms", as: :terms
   get "/privacy", to: "public#privacy", as: :privacy
 
+  namespace :app do
+    resources :posts, only: [:index, :destroy]
+
+    root "posts#index"
+  end
+
   scope ":username" do
     get "/", to: "posts#index", as: :user_posts
     get "/:id", to: "posts#show", as: :user_post

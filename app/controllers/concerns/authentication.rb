@@ -10,10 +10,7 @@ module Authentication
 
   def authenticate
     if user = User.find_by(id: session[:user_id])
-      Rails.logger.info "Found authenticated user #{user.id}}"
       Current.user = user
-    else
-      Rails.logger.info "No authenticated user found"
     end
   end
 

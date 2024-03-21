@@ -75,3 +75,5 @@ end
 gem "pagy", "~> 7.0"
 
 gem "premailer-rails", "~> 1.12"
+
+gem "inline_svg", "~> 1.9"

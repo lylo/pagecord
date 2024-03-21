@@ -17,8 +17,11 @@
         <div class="font-bold text-slate-950 dark:text-slate-50 tracking-tight">
           <%= link_to "📄 Pagecord", root_path %>
         </div>
-        <div class="text-end font-bold text-slate-950 dark:text-slate-50">
-          <%= link_to "@#{@user.username}", user_posts_path(@user.username) %>
+        <div class="flex text-end text-slate-950 dark:text-slate-50">
+          <%= link_to "@#{@user.username}", user_posts_path(@user.username), class: "font-bold", target: "_blank" %>
+          <%= button_to logout_path, method: :delete, class: "ms-2 text-sm" do %>
+            Logout
+          <% end %>
         </div>
       </nav>
     </header>
@@ -27,11 +30,6 @@
     </main>
 
     <footer class="p-8 flex justify-center text-sm text-slate-400 dark:text-slate-500">
-      <div>
-        <span>Terms</span>
-        <span class="ms-4">Privacy</span>
-        <span class="ms-4">Contact</span>
-      </div>
     </footer>
   </body>
 </html>
