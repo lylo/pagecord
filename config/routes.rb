@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
   resources :users, only: [:new, :create]
 
+  get "/login", to: "sessions#new"
+  delete "/logout", to: "sessions#destroy"
+  resources :sessions, only: [:create] do
+    get :thanks, on: :collection
+  end
+
   get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
 
   # Defines the routes for the resources of the model Post

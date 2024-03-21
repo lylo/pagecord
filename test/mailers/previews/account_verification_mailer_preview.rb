@@ -3,4 +3,8 @@ class AccountVerificationMailerPreview < ActionMailer::Preview
   def verify
     AccountVerificationMailer.with(user: User.first).verify
   end
+
+  def login
+    AccountVerificationMailer.with(user: User.first).login
+  end
 end

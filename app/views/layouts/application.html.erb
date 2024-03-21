@@ -19,6 +19,9 @@
         </div>
         <div class="text-end font-bold text-slate-950 dark:text-slate-50">
           <%= link_to "@#{@user.username}", user_posts_path(@user.username) %>
+          <% if logged_in? %>
+          Logged In
+          <% end %>
         </div>
       </nav>
     </header>

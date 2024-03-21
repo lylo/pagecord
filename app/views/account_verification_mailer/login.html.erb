@@ -1,0 +1,23 @@
+<p>
+  Click the link below to access your Pagecord account:
+</p>
+
+<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="padding-top:5px; padding-bottom:5px;">
+  <tbody>
+    <tr>
+      <td align="center">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td>
+                <%= link_to verify_access_request_url(@access_request.token_digest) do %>
+                  Login to Pagecord
+                <% end %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,18 @@
+<p>
+  Enter your username and email address to log in.
+</p>
+
+<%= form_with url: sessions_path, model: @user, data: { turbo: "false" }, class: "mt-4" do |form| %>
+  <div class="flex">
+    <div class="font-semibold">pagecord.com/</div>
+    <%= form.text_field :username, placeholder: "username", autofocus: true, class: "p-0 m-0 border-none outline-none focus:ring-0", maxlength: 20, required: true %>
+  </div>
+
+  <div class="mt-4">
+    <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "p-0 m-0 border-none outline-none focus:ring-0" %>
+  </div>
+
+  <div class="mt-8">
+    <%= form.submit "Login", class: "underline cursor-pointer" %>
+  </div>
+<% end %>
