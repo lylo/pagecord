@@ -119,6 +119,7 @@ GEM
     crass (1.0.6)
     css_parser (1.16.0)
       addressable
+    dalli (3.2.8)
     date (3.3.4)
     debug (1.9.1)
       irb (~> 1.10)
@@ -297,6 +298,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   capybara
+  dalli
   debug
   importmap-rails
   inline_svg (~> 1.9)

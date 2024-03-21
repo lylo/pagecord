@@ -16,7 +16,7 @@ gem "puma", ">= 5.0"
 # database
 gem "sqlite3", "~> 1.4"
 gem "redis", ">= 4.0.1"
-
+gem "dalli"
 
 gem "inline_svg", "~> 1.9"
 gem "pagy", "~> 7.0"
