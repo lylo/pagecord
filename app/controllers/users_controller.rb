@@ -1,3 +1,4 @@
+# TODO rename signup controller
 class UsersController < ApplicationController
   layout "home"
 
@@ -11,10 +12,9 @@ class UsersController < ApplicationController
     if @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
-      # TODO send email
       sign_in @user
 
-      # TODO go to validation page
+      # TODO redirect to thanks page
       redirect_to user_posts_path(@user.username)
     else
       render :new, status: :unprocessable_entity
