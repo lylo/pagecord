@@ -17,9 +17,11 @@ gem "puma", ">= 5.0"
 gem "dalli"
 gem "pg"
 gem "redis", ">= 4.0.1"
+gem "sidekiq"
 
 gem "inline_svg", "~> 1.9"
 gem "pagy", "~> 7.0"
+gem "postmark-rails"
 gem "premailer-rails", "~> 1.12"
 gem "nanoid", "~> 2.0"
 

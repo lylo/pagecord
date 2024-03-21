@@ -145,6 +145,7 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    json (2.7.1)
     launchy (2.5.2)
       addressable (~> 2.8)
     letter_opener (1.9.0)
@@ -187,6 +188,11 @@ GEM
       racc (~> 1.4)
     pagy (7.0.11)
     pg (1.5.6)
+    postmark (1.25.0)
+      json
+    postmark-rails (0.22.1)
+      actionmailer (>= 3.0.0)
+      postmark (>= 1.21.3, < 2.0)
     premailer (1.23.0)
       addressable
       css_parser (>= 1.12.0)
@@ -237,6 +243,11 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    sidekiq (7.2.2)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.19.0)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -308,12 +319,14 @@ DEPENDENCIES
   nanoid (~> 2.0)
   pagy (~> 7.0)
   pg
+  postmark-rails
   premailer-rails (~> 1.12)
   puma (>= 5.0)
   rails!
   rails-controller-testing
   redis (>= 4.0.1)
   selenium-webdriver
+  sidekiq
   sprockets-rails
   sqlite3 (~> 1.4)
   stimulus-rails
