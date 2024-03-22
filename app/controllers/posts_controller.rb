@@ -21,7 +21,7 @@ class PostsController < ApplicationController
     end
 
     def user_params
-      params.permit(:username, :page, :id)
+      params.permit(:username, :title, :page, :id)
     end
 
     def verification

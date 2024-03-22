@@ -53,4 +53,46 @@ class PostsMailboxTest < ActionMailbox::TestCase
       body: "Hello?"
     end
   end
+
+  test "blank subject, non-blank message body" do
+    user = users(:joel)
+
+    assert_difference -> { user.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.delivery_email,
+        from: user.email,
+        subject: "",
+        body: "Hello?"
+    end
+
+    assert_nil user.posts.last.title
+    assert_equal "Hello?", user.posts.last.content
+  end
+
+  test "non-blank subject, blank message body" do
+    user = users(:joel)
+
+    assert_difference -> { user.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.delivery_email,
+        from: user.email,
+        subject: "This is like a tweet",
+        body: ""
+    end
+
+    assert_nil user.posts.last.title
+    assert_equal "This is like a tweet", user.posts.last.content
+  end
+
+  test "blank subject, blank message body" do
+    user = users(:joel)
+
+    assert_difference -> { user.posts.count }, 0 do
+      receive_inbound_email_from_mail \
+        to: user.delivery_email,
+        from: user.email,
+        subject: "",
+        body: ""
+    end
+  end
 end

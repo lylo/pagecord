@@ -1,14 +1,24 @@
 <article class="mb-16 prose dark:prose-invert">
-  <%= link_to post_path(post), class: "no-underline" do %>
-    <h2 class="my-2">
-      <%= post.title %>
-    </h2>
+  <% if post.title.present? %>
+    <%= link_to post_path(post), class: "no-underline" do %>
+      <h2 class="my-2">
+        <%= post.title %>
+      </h2>
+    <% end %>
+    <div class="text-gray-400 text-sm mt-2 mb-4"><%= post.updated_at.to_date.to_formatted_s(:long) %></div>
   <% end %>
-  <h3 class="text-gray-400 text-sm mt-2 mb-4"><%= post.updated_at.to_date.to_formatted_s(:long) %></h3>
 
   <% if post.html? %>
     <%= post.content.html_safe %>
   <% else %>
     <%= simple_format post.content %>
+  <% end %>
+
+  <% if post.title.blank? %>
+    <%= link_to post_path(post), class: "no-underline" do %>
+      <div class="text-gray-400 text-sm mt-2 mb-4 font-normal">
+        <%= post.updated_at.to_date.to_formatted_s(:long) %>
+      </div>
+    <% end %>
   <% end %>
 </article>
