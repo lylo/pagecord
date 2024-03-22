@@ -24,4 +24,11 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     get user_posts_path(username: users(:elliot).username)
     assert_redirected_to root_url
   end
+
+  test "should get index as RSS" do
+    get user_posts_path(username: users(:joel).username, format: :rss)
+
+    assert_response :success
+    assert_equal "application/rss+xml; charset=utf-8", @response.content_type
+  end
 end

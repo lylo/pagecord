@@ -5,6 +5,11 @@ class PostsController < ApplicationController
 
   def index
     @pagy, @posts = pagy(@user.posts.order(created_at: :desc))
+
+    respond_to do |format|
+      format.html
+      format.rss { render layout: false }
+    end
   end
 
   def show
