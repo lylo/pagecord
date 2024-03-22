@@ -1,7 +1,7 @@
 module OpaqueId
   extend ActiveSupport::Concern
 
-  OFFSET = 1_000_000.freeze
+  OFFSET = 10_000_000.freeze
 
   included do
     def url_title
