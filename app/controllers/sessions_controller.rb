@@ -2,6 +2,7 @@ class SessionsController < ApplicationController
   layout "home"
 
   def new
+    @user = User.new
   end
 
   def create
