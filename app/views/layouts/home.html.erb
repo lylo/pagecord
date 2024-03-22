@@ -7,22 +7,28 @@
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
     <header>
       <nav class="p-4">
-        <div class="font-bold text-slate-950 text-xl dark:text-slate-50 tracking-tight">
-          <%= link_to "📄 Pagecord", root_path %>
+        <div class="mt-8 sm:mt-24 text-4xl text-center font-bold text-slate-950 dark:text-slate-50 tracking-tight">
+          <%= link_to root_path do %>
+            <%= inline_svg_tag "logo.svg", class: "w-64 mx-auto dark:text-white text-black" %>
+          <% end %>
         </div>
       </nav>
     </header>
     <main class="container mx-auto px-5 flex flex-grow">
-      <div class="w-[48rem] mx-auto mt-24 text-slate-950 dark:text-slate-50">
+      <div class="max-w-2xl w-full mx-auto mt-12 text-slate-950 dark:text-slate-50">
         <%= yield %>
       </div>
     </main>
 
-    <footer class="p-8 flex justify-center text-sm text-slate-400 dark:text-slate-500">
-      <div>
-        <%= link_to "Terms", terms_path %>
+    <footer class="p-8">
+      <div class="flex justify-center text-sm text-slate-400 dark:text-slate-500">
+        <%= link_to "Log In", login_path, class: "hover:underline font-semibold" %>
+        <%= link_to "Terms", terms_path, class: "ms-4" %>
         <%= link_to "Privacy", privacy_path, class: "ms-4" %>
         <%= mail_to "hello@pagecord.com", "Contact", class: "ms-4" %>
+      </div>
+      <div class="flex justify-center mt-8">
+        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="heyolly" data-color="#FF5F5F" data-emoji="☕"  data-font="Cookie" data-text="Donate!" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
       </div>
     </footer>
   </body>

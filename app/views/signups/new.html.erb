@@ -1,5 +1,5 @@
 <% if @user.errors.any? %>
-<div class="rounded-md bg-red-50 p-4 mb-8">
+<div class="rounded-md bg-red-50 dark:bg-red-950 dark:text-red-50 p-4 mb-8">
   <div class="flex">
     <div class="flex-shrink-0">
       <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -7,8 +7,8 @@
       </svg>
     </div>
     <div class="ml-3">
-      <h3 class="font-medium text-red-800">Urgh. Fix the following errors and have another go.</h3>
-      <div class="mt-2 text-red-700">
+      <h3 class="font-medium text-red-800 dark:text-red-200">Urgh. Fix the following errors and have another go.</h3>
+      <div class="mt-2 text-red-700 dark:text-red-300">
         <ul role="list" class="list-disc space-y-1 pl-5">
           <% @user.errors.full_messages.each do |message| %>
             <li><%= message %></li>
@@ -24,7 +24,7 @@
   To create a Pagecord, choose a username and enter your email address.
 </p>
 
-<%= form_with model: @user, data: { turbo: "false" }, class: "mt-4" do |form| %>
+<%= form_with url: signups_path, model: @user, data: { turbo: "false" }, class: "mt-4" do |form| %>
   <div class="flex">
     <div class="font-semibold">pagecord.com/</div>
     <%= form.text_field :username, placeholder: "username", autofocus: true, class: "p-0 m-0 border-none bg-inherit outline-none focus:ring-0", maxlength: 20, required: true %>
@@ -35,6 +35,6 @@
   </div>
 
   <div class="mt-8">
-    <%= form.submit "Create account", class: "underline cursor-pointer" %>
+    <%= form.submit "Create account", class: "underline font-semibold cursor-pointer" %>
   </div>
 <% end %>
