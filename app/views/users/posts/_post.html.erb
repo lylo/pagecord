@@ -10,7 +10,7 @@
   <% if post.html? %>
     <%= post.content.html_safe %>
   <% else %>
-    <%= simple_format post.content %>
+    <%= simple_format(auto_link post.content) %>
   <% end %>
 
   <%= link_to post_path(post), class: "no-underline" do %>
