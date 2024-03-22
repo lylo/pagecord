@@ -21,11 +21,16 @@ Rails.application.routes.draw do
 
   scope ":username" do
     get "/", to: "posts#index", as: :user_posts
-    get "/:title-:id", to: "posts#show", as: :post
+    get "/:id", to: "posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_without_title
+    get "/:title-:id", to: "posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_with_title
   end
 
   direct :post do |post, options|
-    "/#{post.user.username}/#{post.url_title}-#{post.url_id}"
+    if post.url_title.present?
+      post_with_title_path(post.user.username, post.url_title, post.url_id)
+    else
+      post_without_title_path(post.user.username, post.url_id)
+    end
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

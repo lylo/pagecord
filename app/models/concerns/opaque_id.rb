@@ -5,7 +5,7 @@ module OpaqueId
 
   included do
     def url_title
-      title.parameterize.truncate(100)
+      title&.parameterize&.truncate(100) || ""
     end
 
     def url_id
