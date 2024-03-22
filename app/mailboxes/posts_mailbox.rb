@@ -8,8 +8,8 @@ class PostsMailbox < ApplicationMailbox
     if user = User.find_by(email: from, delivery_email: recipient)
       Rails.logger.info "Creating post from user: #{user.id}"
 
-      body = MailParser.new(mail).body
-      user.posts.create!(title: mail.subject, content: body)
+      parser = MailParser.new(mail)
+      user.posts.create!(title: mail.subject, content: parseer.body, html: parser.html?)
     end
   end
 end

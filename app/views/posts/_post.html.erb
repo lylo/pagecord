@@ -6,5 +6,9 @@
   <% end %>
   <h3 class="text-gray-400 text-sm mt-2 mb-4"><%= post.updated_at.to_date.to_formatted_s(:long) %></h3>
 
-  <%= simple_format post.content.html_safe, {}, sanitize: false %>
+  <% if post.html? %>
+    <%= post.content.html_safe %>
+  <% else %>
+    <%= simple_format post.content %>
+  <% end %>
 </article>
