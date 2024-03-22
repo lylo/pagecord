@@ -1,10 +1,19 @@
 class MailParser
+
   def initialize(mail)
     @mail = mail
   end
 
+  def html?
+    @mail.multipart? && @mail.html_part
+  end
+
+  def plain_text?
+    !html?
+  end
+
   def body
-    if @mail.multipart? && @mail.html_part
+    if html?
       document = Nokogiri::HTML(@mail.html_part.body.decoded)
       body = document.at_css("body").inner_html.force_encoding('UTF-8').encode('utf-8')
 
