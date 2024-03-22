@@ -1,13 +1,19 @@
 <div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
+  <div class="pb-2 border-b dark:border-b-slate-400">
+  <%= link_to user_posts_path(@user.username) do %>
+    <span class="text-lg font-bold">@<%= @user.username %></span>
+  <% end %>
+  </div>
+
   <% if @posts.empty? %>
-    <p class="mt-4">
+    <p class="mt-8">
       You're all set.
     </p>
 
     <%= render "how_to" %>
 
   <% else %>
-    <p class="mt-4">
+    <p class="mt-8">
       You have published <%= pluralize @posts.count, "post" %>.
     </p>
 
