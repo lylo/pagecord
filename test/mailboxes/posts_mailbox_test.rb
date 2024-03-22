@@ -84,6 +84,29 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "This is like a tweet", user.posts.last.content
   end
 
+  test "non-blank subject, blank HTML message body" do
+    user = users(:joel)
+
+    mail = Mail.new do
+      to user.delivery_email
+      from user.email
+      subject "This is like a tweet"
+      text_part do
+        body ""
+      end
+      html_part do
+        body "<div><br></div>"
+      end
+    end
+
+    assert_difference -> { user.posts.count }, 1 do
+      receive_inbound_email_from_source mail.to_s
+    end
+
+    assert_nil user.posts.last.title
+    assert_equal "This is like a tweet", user.posts.last.content
+  end
+
   test "blank subject, blank message body" do
     user = users(:joel)
 
