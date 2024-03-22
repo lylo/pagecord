@@ -1,4 +1,6 @@
 class PostsMailbox < ApplicationMailbox
+  include ActionView::Helpers::SanitizeHelper
+
   def process
     recipient = mail.to.first.downcase
     from = mail.from.first.downcase
@@ -9,15 +11,20 @@ class PostsMailbox < ApplicationMailbox
       Rails.logger.info "Creating post from user: #{user.id}"
 
       parser = MailParser.new(mail)
-      title = mail.subject
+      title = mail.subject&.strip
       content = parser.body
 
-      # ignore blank emails
-      return if content.blank? && title.blank?
+      content_blank = if parser.html?
+        strip_tags(content)&.strip.blank?
+      else
+        content&.strip.blank?
+      end
+
+      return if content_blank && title.blank?
 
       # if there is no content, use the title as content and blank out the title.
       # adds twitter like functionality.
-      if content.blank?
+      if content_blank
         content = title
         title = nil
       end
