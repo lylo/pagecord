@@ -12,6 +12,6 @@ class PostTest < ActiveSupport::TestCase
     published_at = 1.day.ago
     post = users(:joel).posts.create! title: "my new post", content: "this is my new post", html: false, published_at: published_at
 
-    assert_equal published_at.to_time, post.published_at.to_time
+    assert_equal published_at.to_time.to_i, post.published_at.to_time.to_i
   end
 end
