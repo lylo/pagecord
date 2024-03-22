@@ -12,8 +12,8 @@ class PostsMailboxTest < ActionMailbox::TestCase
         body: "Hello?"
     end
 
-    assert_equal user.posts.last.title, "Hello world!"
-    assert_equal user.posts.last.content, "Hello?"
+    assert_equal "Hello world!", user.posts.last.title
+    assert_equal "Hello?", user.posts.last.content
   end
 
   test "receive valid HTML mail from HEY" do
@@ -28,6 +28,8 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     mail = Mail.new(raw_mail)
     assert_equal MailParser.new(mail).body, user.posts.last.content
+    assert user.posts.last.html?
+    assert Time.parse("Thu, 21 Mar 2024 16:57:12 +0000"), user.posts.last.published_at
   end
 
   test "receive mail to valid address from invalid recipient" do

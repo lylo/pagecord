@@ -9,7 +9,7 @@ class PostsMailbox < ApplicationMailbox
       Rails.logger.info "Creating post from user: #{user.id}"
 
       parser = MailParser.new(mail)
-      user.posts.create!(title: mail.subject, content: parser.body, html: parser.html?)
+      user.posts.create!(title: mail.subject, content: parser.body, html: parser.html?, published_at: mail.date)
     end
   end
 end
