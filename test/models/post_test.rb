@@ -9,7 +9,7 @@ class PostTest < ActiveSupport::TestCase
   end
 
   test "published at should be set" do
-    published_at = 1.day.ago
+    published_at = 1.day.ago.to_time
     post = users(:joel).posts.create! title: "my new post", content: "this is my new post", html: false, published_at: published_at
 
     assert_equal published_at, post.published_at
