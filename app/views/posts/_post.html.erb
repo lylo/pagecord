@@ -5,7 +5,6 @@
         <%= post.title %>
       </h2>
     <% end %>
-    <div class="text-gray-400 text-sm mt-2 mb-4"><%= post.updated_at.to_date.to_formatted_s(:long) %></div>
   <% end %>
 
   <% if post.html? %>
@@ -14,11 +13,9 @@
     <%= simple_format post.content %>
   <% end %>
 
-  <% if post.title.blank? %>
-    <%= link_to post_path(post), class: "no-underline" do %>
-      <div class="text-gray-400 text-sm mt-2 mb-4 font-normal">
-        <%= post.updated_at.to_date.to_formatted_s(:long) %>
-      </div>
-    <% end %>
+  <%= link_to post_path(post), class: "no-underline" do %>
+    <div class="text-gray-400 text-sm mt-2 mb-4 font-normal">
+      <%= post.updated_at.to_date.to_formatted_s(:long) %>
+    </div>
   <% end %>
 </article>
