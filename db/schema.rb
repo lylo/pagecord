@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_03_22_091546) do
+ActiveRecord::Schema[7.2].define(version: 2024_03_22_092138) do
   create_table "access_requests", force: :cascade do |t|
     t.string "token_digest"
     t.integer "user_id", null: false
