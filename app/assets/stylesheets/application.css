@@ -15,3 +15,7 @@
  *= stub "mailer.css"
  */
 
+/* Hack for the BuyMeACoffee button */
+ .bmc-btn {
+    min-width: auto !important;
+ }

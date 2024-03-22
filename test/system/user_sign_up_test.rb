@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class SignUpTest < ApplicationSystemTestCase
   test "sign up and verify email" do
-    visit new_user_path
+    visit new_signup_path
 
     fill_in "user[username]", with: "testuser"
     fill_in "user[email]", with: "test@example.com"

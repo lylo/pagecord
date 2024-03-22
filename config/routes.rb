@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :users, only: [:new, :create]
+  resources :signups, only: [:index, :new, :create] do
+    get :thanks, on: :collection
+  end
 
   get "/login", to: "sessions#new"
   delete "/logout", to: "sessions#destroy"

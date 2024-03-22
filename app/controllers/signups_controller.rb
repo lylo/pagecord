@@ -1,6 +1,9 @@
-# TODO rename signup controller
-class UsersController < ApplicationController
+class SignupsController < ApplicationController
   layout "home"
+
+  def index
+    redirect_to new_signup_path
+  end
 
   def new
     @user = User.new
@@ -14,8 +17,7 @@ class UsersController < ApplicationController
 
       sign_in @user
 
-      # TODO redirect to thanks page
-      redirect_to user_posts_path(@user.username)
+      redirect_to thanks_signups_path
     else
       render :new, status: :unprocessable_entity
     end

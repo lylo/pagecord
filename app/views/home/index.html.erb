@@ -1,21 +1,33 @@
-<h1 class="text-center text-2xl font-bold">Publish your writing using only your email</h1>
+<div class="prose dark:prose-invert mb-12">
+  <h2>Publish your writing using email</h2>
 
-<div class="dark:text-slate-400">
-  <p class="mt-8">
-    Pagecord allows you to publish your writing, for free, using only your email. It's super-simple to use and looks great.
+  <p>
+    Pagecord is a simple, minimalist app for publishing your writing online.
+    All you need is an email address.
   </p>
 
-  <h1 class="mt-12 text-center text-2xl font-bold dark:text-slate-50">How it works</h1>
+  <div class="mt-8 text-center not-prose">
+    <%= link_to new_signup_path do %>
+      <span class="font-semibold p-4 rounded-lg shadow-sm text-slate-900 bg-slate-100 hover:bg-slate-200 hover:text-black dark:text-slate-200 dark:hover:text-slate-100 dark:bg-slate-700 dark:hover:bg-slate-600">Sign up for free now!</span>
+    <% end %>
+  </div>
 
-  <ol class="list-decimal mt-8 ms-10">
-    <li class="mb-2">Pick a username</li>
-    <li class="mb-2">Verify your email</li>
-    <li class="mb-2">Start writing</li>
-  </ol>
+  <h2>How it works</h2>
 
-  <h1 class="mt-12 text-center text-2xl font-bold dark:text-slate-50">It's free, but you can pay for fancy features</h1>
+  <p>1. <%= link_to "Sign up", new_signup_path %> to choose your username and enter your email address</p>
+  <p>2. Check your inbox and click the link to verify your account</p>
+  <p>3. Start writing by sending emails to your unique email Pagecord address</p>
 
-  <p class="mt-8">
-    Pagecord is free to use. It costs money to run, so if you want to support it you can donate or pay for premium features such as images, analytics and custom domains.
+  <h2>It's free, but you can pay for fancy features</h2>
+
+  <p>
+    Pagecord is <strong>free to use</strong>.
+  </p>
+  <p>
+    It costs money to keep the lights on. You can help out <%= link_to "by donating", "https://buymeacoffee.com/heyolly" %>, or you can pay for premium features
+    such as images, analytics, email subscriptions and custom domains<sup>*</sup>.
+  </p>
+  <p>
+    <small><sup>*</sup> None of these features exist, but I'll build them if there's demand. Please <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AOBhsW_geuGSNjoQaN1luzISJRfaBxhW2tXP31qchPSdNQ/viewform">register your interest</a>!</small>
   </p>
 </div>
