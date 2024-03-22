@@ -5,6 +5,12 @@ class UserTest < ActiveSupport::TestCase
   test "should validate length of username" do
     user = User.new(username: "a" * 21, email: "test@example.com")
     assert_not user.valid?
+
+    user = User.new(username: "a", email: "test@example.com")
+    assert_not user.valid?
+
+    user = User.new(username: "aaaa", email: "test@example.com")
+    assert user.valid?
   end
 
   test "should validate presence of username" do
