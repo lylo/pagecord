@@ -15,7 +15,7 @@
     <header>
       <nav class="flex justify-between p-4">
         <div class="font-bold text-slate-950 dark:text-slate-50 tracking-tight">
-          <%= link_to "📄 Pagecord", root_path %>
+          <%= link_to "📄 Pagecord", app_root_path %>
         </div>
         <div class="flex text-end text-slate-950 dark:text-slate-50">
           <%= link_to "@#{@user.username}", user_posts_path(@user.username), class: "font-bold", target: "_blank" %>
