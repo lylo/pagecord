@@ -21,11 +21,11 @@ Rails.application.routes.draw do
 
   scope ":username" do
     get "/", to: "posts#index", as: :user_posts
-    get "/:title-:id", to: "posts#show", as: :user_post
+    get "/:title-:id", to: "posts#show", as: :post
   end
 
-  direct :user_post do |post, options|
-    "/#{post.user.username}/#{post.url_title}-#{post.id.to_s(36)}"
+  direct :post do |post, options|
+    "/#{post.user.username}/#{post.url_title}-#{post.url_id}"
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

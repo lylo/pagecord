@@ -17,7 +17,7 @@
     <% @posts.each do |post| %>
       <div class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg">
         <div class="font-semibold">
-          <%= link_to user_post_path(post), target: "_blank" do %>
+          <%= link_to post_path(post), target: "_blank" do %>
             <%= post.title %>
           <% end %>
         </div>

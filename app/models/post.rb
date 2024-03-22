@@ -7,6 +7,10 @@ class Post < ApplicationRecord
     title.parameterize.truncate(100)
   end
 
+  def url_id
+    id.to_s(36)
+  end
+
   private
 
     def set_published_at
