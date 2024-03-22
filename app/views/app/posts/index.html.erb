@@ -18,10 +18,10 @@
       <div class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg">
         <div class="font-semibold">
           <%= link_to post_path(post), target: "_blank" do %>
-            <%= post.title || post.content.truncate(200) %>
+            <%= post.title || post.content.truncate(200).html_safe %>
           <% end %>
         </div>
-        <div class="text-xs text-slate-500 dark:text-slate-400 flex justify-between items-center">
+        <div class="text-xs text-slate-400 dark:text-slate-400 flex justify-between items-center">
           <div>
             <%= post.created_at.to_formatted_s(:long) %>
           </div>
