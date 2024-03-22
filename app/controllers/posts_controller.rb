@@ -4,7 +4,7 @@ class PostsController < ApplicationController
   before_action :load_user, :verification
 
   def index
-    @pagy, @posts =  pagy(@user.posts.order(created_at: :desc))
+    @pagy, @posts = pagy(@user.posts.order(created_at: :desc))
   end
 
   def show
