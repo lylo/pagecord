@@ -6,6 +6,6 @@ class Post < ApplicationRecord
   private
 
     def set_published_at
-      self.published_at = created_at if published_at.nil?
+      self.published_at = created_at if self.published_at.nil?
     end
 end
