@@ -1,4 +1,4 @@
-if Rails.environment.production?
+if Rails.env.production?
   Sentry.init do |config|
     config.dsn = 'https://1ec707f4464720240f1c0b02e7ca5693@o4506953782067200.ingest.us.sentry.io/4506953837051904'
     config.breadcrumbs_logger = [:active_support_logger, :http_logger]
