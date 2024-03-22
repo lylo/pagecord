@@ -1,0 +1,41 @@
+name: Rails CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3.0'
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+    - name: Database confirm
+      uses: ankane/setup-postgres@v1
+      with:
+          database: pagecord_test
+          postgres-version: 16
+
+    - name: Database load
+      env:
+        RAILS_ENV: test
+      run: bin/rails db:schema:load
+
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install
+
+    - name: Run tests
+      run: |
+        bundle exec rails test
