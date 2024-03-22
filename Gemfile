@@ -19,6 +19,11 @@ gem "pg"
 gem "redis", ">= 4.0.1"
 gem "sidekiq"
 
+# monitoring and alerting
+gem "sentry-ruby"
+gem "sentry-rails"
+
+
 gem "inline_svg", "~> 1.9"
 gem "pagy", "~> 7.0"
 gem "postmark-rails"
