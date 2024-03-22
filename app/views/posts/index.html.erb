@@ -1,9 +1,0 @@
-<div class="max-w-xl w-full mx-auto mt-12">
-  <% @posts.each do |post| %>
-    <%= render post %>
-  <% end %>
-
-  <% if @pagy.next %>
-    <%== pagy_next_html(@pagy, text: "Older", link_extra: 'id="next_link"') %>
-  <% end %>
-</div>

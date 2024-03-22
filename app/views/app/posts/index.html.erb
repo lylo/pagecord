@@ -14,6 +14,18 @@
     <%= render "how_to" %>
 
     <div class="mt-8">
+      <%= form_with url: app_user_path(Current.user), model: Current.user, data: { controller: "vanish" } do |form| %>
+        <div>
+        <%= form.text_area :bio, placeholder: "Add a bio to your profile if you like...", class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+        </div>
+        <div class="flex justify-between">
+          <div id="bio-response" data-vanish-target="response" class="text-sm me-1"></div>
+          <%= form.submit "Update bio", class: "underline text-sm cursor-pointer", data: { action: "click->vanish#show" } %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-8">
     <% @posts.each do |post| %>
       <div class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg">
         <div class="font-semibold">

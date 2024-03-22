@@ -23,7 +23,7 @@ gem "sidekiq"
 gem "sentry-ruby"
 gem "sentry-rails"
 
-
+gem "rails_autolink"
 gem "inline_svg", "~> 1.9"
 gem "pagy", "~> 7.0"
 gem "postmark-rails"

@@ -1,0 +1,7 @@
+<div class="max-w-xl w-full mx-auto">
+  <div class="mb-12 pb-4 font-bold text-lg text-center text-black dark:text-slate-100 border-b border-b-slate-300-100 dark:border-b-slate-600">
+    <%= link_to "@#{@user.username}", user_posts_path(@user.username) %>
+  </div>
+
+  <%= render @post %>
+</div>

@@ -1,4 +1,4 @@
-class PostsController < ApplicationController
+class Users::PostsController < ApplicationController
   include Pagy::Backend
 
   before_action :load_user, :verification

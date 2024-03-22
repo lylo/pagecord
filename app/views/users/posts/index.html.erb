@@ -1,0 +1,18 @@
+<div class="max-w-xl w-full mx-auto mt-12">
+  <div class="mb-16 pb-4 border-b border-b-slate-300-100 dark:border-b-slate-600">
+    <div class="font-bold text-lg mb-1 text-black dark:text-slate-100">
+      <%= link_to "@#{@user.username}", user_posts_path(@user.username) %>
+    </div>
+    <div class="text-sm prose dark:prose-invert text-slate-500 dark:text-slate-400">
+      <%= simple_format(auto_link @user.bio) %>
+    </div>
+  </div>
+
+  <% @posts.each do |post| %>
+    <%= render post %>
+  <% end %>
+
+  <% if @pagy.next %>
+    <%== pagy_next_html(@pagy, text: "Older", link_extra: 'id="next_link"') %>
+  <% end %>
+</div>

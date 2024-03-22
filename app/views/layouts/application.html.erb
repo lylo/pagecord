@@ -7,12 +7,6 @@
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
     <header>
       <nav class="flex justify-between p-4">
-        <div class="font-bold text-slate-950 dark:text-slate-50 tracking-tight">
-          <%= link_to "📄 Pagecord", root_path %>
-        </div>
-        <div class="text-end font-bold text-slate-950 dark:text-slate-50">
-          <%= link_to "@#{@user.username}", user_posts_path(@user.username) %>
-        </div>
       </nav>
     </header>
     <main class="container mx-auto px-5 flex flex-grow">
@@ -21,9 +15,12 @@
 
     <footer class="p-8 flex justify-center text-sm text-slate-400 dark:text-slate-500">
       <div>
-        <span>Terms</span>
-        <span class="ms-4">Privacy</span>
-        <span class="ms-4">Contact</span>
+        <span class="font-bold text-slate-950 dark:text-slate-50 tracking-tight">
+          <%= link_to "📄 Pagecord", root_path %>
+        </span>
+        <%= link_to "Terms", terms_path, class: "ms-4" %>
+        <%= link_to "Privacy", privacy_path, class: "ms-4" %>
+        <%= mail_to "hello@pagecord.com", "Contact", class: "ms-4" %>
       </div>
     </footer>
   </body>
