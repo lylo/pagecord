@@ -9,7 +9,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get show" do
-    get user_post_path(posts(:one))
+    get post_path(posts(:one))
     assert_response :success
     assert_equal posts(:one), assigns(:post)
   end
