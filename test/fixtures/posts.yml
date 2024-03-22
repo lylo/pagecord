@@ -12,6 +12,7 @@ one:
     In conclusion, street photography is a challenging yet rewarding genre. It pushes you to step out of your comfort zone, to see the world from a different perspective, and to find beauty in the mundane. It's a genre that truly celebrates the art of observation and storytelling.
   user: joel
   html: false
+  published_at: <%= 1.day.ago %>
 
 two:
   title: The Beauty of Landscape Photography
@@ -25,3 +26,4 @@ two:
     <p>In conclusion, landscape photography is a genre that requires patience, planning, and a deep love for nature. It's about being in the right place at the right time, and more importantly, being able to see and capture the beauty that is often overlooked.</p>
   user: joel
   html: true
+  published_at: <%= 2.days.ago %>
