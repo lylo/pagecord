@@ -15,14 +15,16 @@ Rails.application.routes.draw do
 
   namespace :app do
     resources :posts, only: [:index, :destroy]
+    resources :users, only: [:update]
 
     root "posts#index"
   end
 
   scope ":username" do
-    get "/", to: "posts#index", as: :user_posts
-    get "/:id", to: "posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_without_title
-    get "/:title-:id", to: "posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_with_title
+    get "/", to: "users/posts#index", as: :user_posts
+    get "/profile", to: "users/profile#show", as: :user_profile
+    get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_without_title
+    get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_with_title
   end
 
   direct :post do |post, options|

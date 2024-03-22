@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_03_22_093948) do
+ActiveRecord::Schema[7.2].define(version: 2024_03_22_125024) do
   create_table "access_requests", force: :cascade do |t|
     t.string "token_digest"
     t.integer "user_id", null: false
@@ -78,6 +78,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_03_22_093948) do
     t.datetime "updated_at", null: false
     t.boolean "verified", default: false
     t.string "delivery_email"
+    t.text "bio"
     t.index ["delivery_email"], name: "index_users_on_delivery_email", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true

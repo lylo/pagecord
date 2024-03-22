@@ -1,6 +1,6 @@
 require "test_helper"
 
-class PostsControllerTest < ActionDispatch::IntegrationTest
+class Users::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get user_posts_path(username: users(:joel).username)
 
