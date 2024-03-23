@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   include DeliveryEmail
 
-  before_create :downcase_email
+  before_create :downcase_email_and_username
 
   has_many :posts, dependent: :destroy
   has_many :access_requests, dependent: :destroy
@@ -11,7 +11,8 @@ class User < ApplicationRecord
 
   private
 
-    def downcase_email
+    def downcase_email_and_username
       self.email = email.downcase
+      self.username = username.downcase
     end
 end
