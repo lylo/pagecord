@@ -23,7 +23,7 @@ Rails.application.routes.draw do
 
   namespace :app do
     resources :posts, only: [:index, :destroy]
-    resources :users, only: [:update]
+    resources :users, only: [:update, :destroy]
 
     root "posts#index"
   end

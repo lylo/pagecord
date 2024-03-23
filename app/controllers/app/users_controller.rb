@@ -11,6 +11,11 @@ class App::UsersController < AppController
     end
   end
 
+  def destroy
+    DestroyUserJob.perform_later(Current.user.id)
+
+    redirect_to root_path
+  end
 
   private
 
