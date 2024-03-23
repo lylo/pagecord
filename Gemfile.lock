@@ -322,6 +322,7 @@ DEPENDENCIES
   capybara
   dalli
   debug
+  htmlentities (~> 4.3)
   importmap-rails
   inline_svg (~> 1.9)
   jbuilder
