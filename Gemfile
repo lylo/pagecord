@@ -23,13 +23,13 @@ gem "sidekiq"
 gem "sentry-ruby"
 gem "sentry-rails"
 
-gem "rails_autolink"
+gem "discard", "~> 1.2"
 gem "inline_svg", "~> 1.9"
 gem "pagy", "~> 7.0"
 gem "postmark-rails"
 gem "premailer-rails", "~> 1.12"
 gem "nanoid", "~> 2.0"
-
+gem "rails_autolink"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]

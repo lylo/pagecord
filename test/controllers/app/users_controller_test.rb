@@ -8,12 +8,13 @@ class App::UsersControllerTest < ActionDispatch::IntegrationTest
     login_as user
 
     assert_performed_jobs 1 do
-      assert_difference("User.count", -1) do
+      assert_difference("User.kept.count", -1) do
         delete app_user_url(user)
       end
     end
 
     assert_redirected_to root_url
-    refute User.exists?(user.id)
+    refute User.kept.exists?(user.id)
+    assert User.exists?(user.id) # soft delete
   end
 end

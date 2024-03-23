@@ -8,7 +8,7 @@ class SignUpTest < ApplicationSystemTestCase
     fill_in "user[email]", with: "test@example.com"
     click_on "Create account"
 
-    user = User.find_by(email: "test@example.com")
+    user = User.kept.find_by(email: "test@example.com")
     assert user, "User should be created"
 
     visit verify_access_request_url(token: user.access_requests.last.token_digest)

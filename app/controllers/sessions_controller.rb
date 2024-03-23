@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    if @user = User.find_by(username: user_params[:username]&.downcase, email: user_params[:email]&.downcase)
+    if @user = User.kept.find_by(username: user_params[:username]&.downcase, email: user_params[:email]&.downcase)
       AccountVerificationMailer.with(user: @user).login.deliver_later
     end
 

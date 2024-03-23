@@ -17,7 +17,7 @@ class PostsMailbox < ApplicationMailbox
       Rails.logger.warn "SPF failed" and return
     end
 
-    if user = User.find_by(email: from, delivery_email: recipient)
+    if user = User.kept.find_by(email: from, delivery_email: recipient)
       Rails.logger.info "Creating post from user: #{user.id}"
 
       parser = MailParser.new(mail)
