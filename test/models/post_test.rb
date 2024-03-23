@@ -14,4 +14,15 @@ class PostTest < ActiveSupport::TestCase
 
     assert_equal published_at.to_time.to_i, post.published_at.to_time.to_i
   end
+
+  test "content should be set to title if blank" do
+    post = users(:joel).posts.create! title: "my new post", content: "", html: false
+
+    assert_equal "my new post", post.content
+    assert_nil post.title
+  end
+
+  test "post with blank title and content should be invalid" do
+    refute users(:joel).posts.build(title: "", content: "", html: false).valid?
+  end
 end

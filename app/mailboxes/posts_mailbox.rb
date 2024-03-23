@@ -22,13 +22,6 @@ class PostsMailbox < ApplicationMailbox
 
       return if content_blank && title.blank?
 
-      # if there is no content, use the title as content and blank out the title.
-      # adds twitter like functionality.
-      if content_blank
-        content = title
-        title = nil
-      end
-
       user.posts.create!(title: title, content: content, html: parser.html?, published_at: mail.date)
     end
   end
