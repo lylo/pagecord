@@ -27,9 +27,29 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "Another test", user.posts.last.title
 
     mail = Mail.new(raw_mail)
-    assert_equal MailParser.new(mail).body, user.posts.last.content
+    assert_equal "<div><div><div>This is a test.<br><br>With multiple paragraphs.<br><br>Ok?<br><br><strong>Does it work?</strong></div></div></div>", format_html(user.posts.last.content)
     assert user.posts.last.html?
     assert Time.parse("Thu, 21 Mar 2024 16:57:12 +0000"), user.posts.last.published_at
+  end
+
+  test "receive valid HTML mail from Fastmail" do
+    user = users(:joel)
+    raw_mail = File.read(Rails.root.join('test/fixtures/emails/fastmail.eml'))
+
+    assert_difference -> { user.posts.count }, 1 do
+      receive_inbound_email_from_source raw_mail
+    end
+
+    assert_equal "Hello, World 👋", user.posts.last.title
+
+    expected = <<~HTML
+    <div><b>It's alive!&nbsp;</b><br></div><div><br></div><div>Say hello to Pagecord&nbsp;( * ^ *) ãã·<b></b><br></div><div><br></div><div>It's a minimalist blogging / writing app driven entirely by email. To publish, simply send an email to your unique Pagecord email address and it will appear on your blog. That's it!<br></div><div><br></div><div>Pagecord is minimal in how it looks, but also in what it does. You can use basic markup like&nbsp;<b>bold</b>,&nbsp;<i>italic</i>, strikethough, <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">links</a>&nbsp;and whatnot in your writing. And you can use emojis&nbsp;ð¥³&nbsp; But you can't add images. I'm <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AOBhsW_geuGSNjoQaN1luzISJRfaBxhW2tXP31qchPSdNQ/viewform">considering a premium tier</a>&nbsp;which would support this, but since it's free I want to keep everything simple and cheap to operate.<br></div><div><br></div><div>You can use Pagecord like a traditional blogging app, where the email subject is the post title and the body is the content. You can also use it like a micro-blog if you prefer, by sending emails with your thoughts in title and leaving the body blank â this way your page will be a super-minimal stream of consciousness.&nbsp;<br></div><div><br></div><div>It's just a bit a fun really. Give it a go and&nbsp;<a href="mailto:hello@pagecord.com">let me know what you think</a>!<br></div><div><br></div><div>-- Olly<br></div>
+    HTML
+
+    mail = Mail.new(raw_mail)
+    assert_equal expected.strip, format_html(user.posts.last.content)
+    assert user.posts.last.html?
+    assert Time.parse("Sat, 23 Mar 2024 12:49:33 +0000"), user.posts.last.published_at
   end
 
   test "receive mail to valid address from invalid recipient" do
@@ -118,4 +138,10 @@ class PostsMailboxTest < ActionMailbox::TestCase
         body: ""
     end
   end
+
+  private
+
+    def format_html(html)
+      html.strip.gsub(/^ +/, '').gsub(/\n/, '')
+    end
 end
