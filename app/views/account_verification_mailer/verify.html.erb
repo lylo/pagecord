@@ -1,11 +1,14 @@
 <p>
+  <b>@<%= @access_request.user.username %></b>
+</p>
+<p>
   Welcome to Pagecord!
 </p>
 <p>
-  In order to use your account, please verify your email address by clicking the link below:
+  To complete your account set up, please verify your email address by clicking the link below.
 </p>
 
-<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="padding-top:5px; padding-bottom:5px;">
+<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="padding-top:10px; padding-bottom:10px;">
   <tbody>
     <tr>
       <td align="center">
@@ -24,3 +27,12 @@
     </tr>
   </tbody>
 </table>
+
+<p>
+  Once your email is verified, you can post to your blog by sending emails to
+  <%= mail_to @access_request.user.delivery_email %>.
+</p>
+
+<p>
+  Thanks for kicking the tyres! 🙏
+</p>
