@@ -9,7 +9,7 @@ module Authentication
   private
 
   def authenticate
-    if user = User.find_by(id: session[:user_id])
+    if user = User.kept.find_by(id: session[:user_id])
       Current.user = user
     end
   end
