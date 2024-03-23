@@ -16,6 +16,16 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to thanks_sessions_path
   end
 
+  test "should send verification email for valid credentials regardless of case" do
+    user = users(:joel)
+
+    assert_emails 1 do
+      post sessions_url, params: { user: { username: user.username.upcase, email: user.email.upcase } }
+    end
+
+    assert_redirected_to thanks_sessions_path
+  end
+
   test "should not send verification email for invalid credentials" do
     assert_emails 0 do
       post sessions_url, params: { user: { username: "nope", email: "nope@nope.com" } }
