@@ -6,4 +6,7 @@ class PublicController < ApplicationController
 
   def privacy
   end
+
+  def faq
+  end
 end

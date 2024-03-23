@@ -20,7 +20,7 @@ class Users::PostsController < ApplicationController
   private
 
     def load_user
-      @user = User.find_by(username:user_params[:username])
+      @user = User.find_by(username: user_params[:username])
 
       redirect_to root_path, alert: 'User not found' if @user.nil?
     end
