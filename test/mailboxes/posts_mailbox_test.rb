@@ -8,12 +8,43 @@ class PostsMailboxTest < ActionMailbox::TestCase
       receive_inbound_email_from_mail \
         to: user.delivery_email,
         from: user.email,
+        reply_to: user.email,
         subject: "Hello world!",
-        body: "Hello?"
+        body: "Hello?" do |mail|
+        mail.header["Received-SPF"] = "pass"
+      end
     end
 
     assert_equal "Hello world!", user.posts.last.title
     assert_equal "Hello?", user.posts.last.content
+  end
+
+  test "receive plain text mail to valid address from valid recipient with mismatched reply-to" do
+    user = users(:joel)
+
+    assert_difference -> { user.posts.count }, 0 do
+      receive_inbound_email_from_mail \
+        to: user.delivery_email,
+        from: user.email,
+        reply_to: "dodgy@example.com",
+        subject: "Hello world!",
+        body: "Hello?"
+    end
+  end
+
+  test "receive plain text mail to valid address from valid recipient with failed SPF" do
+    user = users(:joel)
+
+    assert_difference -> { user.posts.count }, 0 do
+      receive_inbound_email_from_mail \
+        to: user.delivery_email,
+        from: user.email,
+        reply_to: "dodgy@example.com",
+        subject: "Hello world!",
+        body: "Hello?" do |mail|
+          mail.header["Received-SPF"] = "fail"
+        end
+    end
   end
 
   test "receive valid HTML mail from HEY" do
@@ -35,6 +66,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
   test "receive valid HTML mail from Fastmail" do
     user = users(:joel)
     raw_mail = File.read(Rails.root.join('test/fixtures/emails/fastmail.eml'))
+    mail = Mail.read_from_string(raw_mail)
 
     assert_difference -> { user.posts.count }, 1 do
       receive_inbound_email_from_source raw_mail
@@ -59,6 +91,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
       receive_inbound_email_from_mail \
         to: user.delivery_email,
         from: "who@example.com",
+        reply_to: user.email,
         subject: "Hello world!",
         body: "Hello?"
     end
@@ -81,6 +114,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
       receive_inbound_email_from_mail \
         to: user.delivery_email,
         from: user.email,
+        reply_to: user.email,
         subject: "",
         body: "Hello?"
     end
@@ -96,6 +130,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
       receive_inbound_email_from_mail \
         to: user.delivery_email,
         from: user.email,
+        reply_to: user.email,
         subject: "This is like a tweet",
         body: ""
     end
@@ -110,6 +145,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     mail = Mail.new do
       to user.delivery_email
       from user.email
+      reply_to user.email
       subject "This is like a tweet"
       text_part do
         body ""
@@ -134,6 +170,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
       receive_inbound_email_from_mail \
         to: user.delivery_email,
         from: user.email,
+        reply_to: user.email,
         subject: "",
         body: ""
     end
