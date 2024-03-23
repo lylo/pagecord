@@ -20,6 +20,6 @@ article a {
   @apply text-blue-600 underline;
 }
 
-span.page.next > a {
+span.page.next > a, span.page.prev > a {
   @apply underline;
 }

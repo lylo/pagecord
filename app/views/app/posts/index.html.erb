@@ -33,7 +33,7 @@
 
     <div class="mt-8">
     <% @posts.each do |post| %>
-      <div class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg">
+      <div class="px-2 py-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg">
         <div class="font-semibold">
           <%= link_to post_path(post), target: "_blank" do %>
             <%= post.title || post.content.truncate(200).html_safe %>
@@ -53,8 +53,13 @@
     <% end %>
     </div>
 
-    <% if @pagy.next %>
-      <%== pagy_next_html(@pagy, text: "Older", link_extra: 'id="next_link"') %>
-    <% end %>
+    <div class="mt-8 flex gap-x-4 justify-end">
+      <% if @pagy.prev %>
+        <%== pagy_prev_html(@pagy, text: "Newer") %>
+      <% end %>
+      <% if @pagy.next %>
+        <%== pagy_next_html(@pagy, text: "Older") %>
+      <% end %>
+    </div>
   <% end %>
 </div>
