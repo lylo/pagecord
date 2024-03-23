@@ -14,9 +14,9 @@ class MailParser
 
   def body
     if html?
-      document = Nokogiri::HTML(@mail.html_part.body.decoded)
-      body = document.at_css("body").inner_html
-      body = body.force_encoding("UTF-8").encode("UTF-8")
+      decoded_body = CGI.unescapeHTML(@mail.html_part.body.decoded)
+      document = Nokogiri::HTML(decoded_body)
+      body = document.at_css("body").inner_html.force_encoding("UTF-8").encode("UTF-8")
 
       sanitizer = Rails::HTML5::SafeListSanitizer.new
       sanitizer.sanitize(body, tags: %w(a abbr b blockquote br cite code div em h1 h2 h3 h4 h5 h6 hr i li mark ol p pre strong u ul), attributes: %w(href))
