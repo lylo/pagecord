@@ -1,33 +1,39 @@
 <div class="prose dark:prose-invert mb-12">
-  <h2>Publish your writing using email</h2>
+  <h2 class="text-center sm:text-start">Publish your writing from your inbox</h2>
 
   <p>
-    Pagecord is a simple, minimalist app for publishing your writing online.
-    All you need is an email address.
+    Pagecord is a simple, minimalist blogging app managed entirely by email.
   </p>
 
   <div class="mt-8 text-center not-prose">
     <%= link_to new_signup_path do %>
-      <span class="font-semibold p-4 rounded-lg shadow-sm text-slate-900 bg-slate-100 hover:bg-slate-200 hover:text-black dark:text-slate-200 dark:hover:text-slate-100 dark:bg-slate-700 dark:hover:bg-slate-600">Sign up for free now!</span>
+      <div class="my-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Sign up for free now!</div>
     <% end %>
   </div>
 
-  <h2>How it works</h2>
+  <h2 class="text-center sm:text-start">How it works</h2>
 
-  <p>1. <%= link_to "Sign up", new_signup_path %> to choose your username and enter your email address</p>
-  <p>2. Check your inbox and click the link to verify your account</p>
-  <p>3. Start writing by sending emails to your unique email Pagecord address</p>
+  <p>
+    All you need is an email account. No new tools to wrangle.
+  </p>
+  <p>
+    Write your posts in your email client and send them to your unique
+    Pagecord email address. That's it! Your posts will be published automatically.
+  </p>
 
-  <h2>It's free, but you can pay for fancy features</h2>
+  <h2 class="text-center sm:text-start">It's free, but you can pay for fancy features</h2>
 
   <p>
     Pagecord is <strong>free to use</strong>.
   </p>
   <p>
-    It costs money to keep the lights on. You can help out <%= link_to "by donating", "https://buymeacoffee.com/heyolly" %>, or you can pay for premium features
-    such as images, analytics, email subscriptions and custom domains<sup>*</sup>.
+    It does cost money to keep the lights on. You can help out <%= link_to "by donating", "https://buymeacoffee.com/heyolly" %>, or you can pay for premium features such as images, link unfurling, analytics, email subscriptions and custom domains<sup>*</sup>.
   </p>
   <p>
     <small><sup>*</sup> None of these features exist, but I'll build them if there's demand. Please <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AOBhsW_geuGSNjoQaN1luzISJRfaBxhW2tXP31qchPSdNQ/viewform">register your interest</a>!</small>
   </p>
-</div>
+
+  <div class="mt-12 flex justify-center">
+    <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="heyolly" data-color="#FF5F5F" data-emoji="☕"  data-font="Cookie" data-text="Donate" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+  </div>
+</p>
