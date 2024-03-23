@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   # Defines the routes for the resources of the model Post
   get "/terms", to: "public#terms", as: :terms
   get "/privacy", to: "public#privacy", as: :privacy
+  get "/faq", to: "public#faq", as: :faq
 
   namespace :app do
     resources :posts, only: [:index, :destroy]
