@@ -25,5 +25,7 @@ module Pagecord
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.filter_parameters += [:RawEmail, :Attachments]
+
+    config.exceptions_app = self.routes
   end
 end
