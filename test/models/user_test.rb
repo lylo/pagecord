@@ -36,4 +36,10 @@ class UserTest < ActiveSupport::TestCase
     assert user.delivery_email.present?
     assert user.delivery_email =~ /newuser_[a-zA-Z0-9]{8}@post.pagecord.com/
   end
+
+  test "should store in lowercase" do
+    user = User.create!(username: "NewUser", email: "nEwUser@NewUser.COM")
+    assert_equal "newuser", user.username
+    assert_equal "newuser@newuser.com", user.email
+  end
 end
