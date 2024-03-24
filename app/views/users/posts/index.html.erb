@@ -8,9 +8,7 @@
     </div>
   </div>
 
-  <% @posts.each do |post| %>
-    <%= render post %>
-  <% end %>
+  <%= render partial: "users/posts/post", collection: @posts, cached: true %>
 
   <% if @pagy.next %>
     <div class="text-slate-800 dark:text-slate-200">
