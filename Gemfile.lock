@@ -97,6 +97,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    actionpack-page_caching (1.2.4)
+      actionpack (>= 4.0.0)
     addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     base64 (0.2.0)
@@ -320,6 +322,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  actionpack-page_caching
   bootsnap
   capybara
   dalli

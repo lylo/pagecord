@@ -4,6 +4,7 @@ ruby "3.3.0"
 
 gem "rails", github: "rails/rails", branch: "main"
 
+gem "actionpack-page_caching"
 gem "importmap-rails"
 gem "jbuilder"
 gem "sprockets-rails"
