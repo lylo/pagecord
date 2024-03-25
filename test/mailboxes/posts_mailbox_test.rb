@@ -1,7 +1,7 @@
 require "test_helper"
 
 class PostsMailboxTest < ActionMailbox::TestCase
-  test "receive plain text mail to valid address from valid recipient" do
+  test "should receive plain text mail to valid address from valid recipient" do
     user = users(:joel)
 
     assert_difference -> { user.posts.count }, 1 do
@@ -11,7 +11,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
         reply_to: user.email,
         subject: "Hello world!",
         body: "Hello?" do |mail|
-        mail.header["Received-SPF"] = "pass"
+          mail.header["Received-SPF"] = "pass"
       end
     end
 
@@ -19,35 +19,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "Hello?", user.posts.last.content
   end
 
-  test "receive plain text mail to valid address from valid recipient with mismatched reply-to" do
-    user = users(:joel)
-
-    assert_difference -> { user.posts.count }, 0 do
-      receive_inbound_email_from_mail \
-        to: user.delivery_email,
-        from: user.email,
-        reply_to: "dodgy@example.com",
-        subject: "Hello world!",
-        body: "Hello?"
-    end
-  end
-
-  test "receive plain text mail to valid address from valid recipient with failed SPF" do
-    user = users(:joel)
-
-    assert_difference -> { user.posts.count }, 0 do
-      receive_inbound_email_from_mail \
-        to: user.delivery_email,
-        from: user.email,
-        reply_to: "dodgy@example.com",
-        subject: "Hello world!",
-        body: "Hello?" do |mail|
-          mail.header["Received-SPF"] = "fail"
-        end
-    end
-  end
-
-  test "receive valid HTML mail from HEY" do
+  test "should receive valid HTML mail from HEY" do
     user = users(:joel)
     raw_mail = File.read(Rails.root.join('test/fixtures/emails/hey.eml'))
 
@@ -63,7 +35,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert Time.parse("Thu, 21 Mar 2024 16:57:12 +0000"), user.posts.last.published_at
   end
 
-  test "receive valid HTML mail from Fastmail" do
+  test "should receive valid HTML mail from Fastmail" do
     user = users(:joel)
     raw_mail = File.read(Rails.root.join('test/fixtures/emails/fastmail.eml'))
     mail = Mail.read_from_string(raw_mail)
@@ -84,7 +56,35 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert Time.parse("Sat, 23 Mar 2024 12:49:33 +0000"), user.posts.last.published_at
   end
 
-  test "receive mail to valid address from invalid recipient" do
+  test "should not receive plain text mail to valid address from valid recipient with mismatched reply-to" do
+    user = users(:joel)
+
+    assert_difference -> { user.posts.count }, 0 do
+      receive_inbound_email_from_mail \
+        to: user.delivery_email,
+        from: user.email,
+        reply_to: "dodgy@example.com",
+        subject: "Hello world!",
+        body: "Hello?"
+    end
+  end
+
+  test "should not receive plain text mail to valid address from valid recipient with failed SPF" do
+    user = users(:joel)
+
+    assert_difference -> { user.posts.count }, 0 do
+      receive_inbound_email_from_mail \
+        to: user.delivery_email,
+        from: user.email,
+        reply_to: "dodgy@example.com",
+        subject: "Hello world!",
+        body: "Hello?" do |mail|
+          mail.header["Received-SPF"] = "fail"
+        end
+    end
+  end
+
+  test "should not receive mail to valid address from invalid recipient" do
     user = users(:joel)
 
     assert_difference -> { user.posts.count }, 0 do
@@ -97,7 +97,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
   end
 
-  test "receive mail to invalid address" do
+  test "mail to invalid address should raise routing error" do
     assert_raises ActionMailbox::Router::RoutingError do
       receive_inbound_email_from_mail \
       to: '"someone" <someone@unknown.com>',
@@ -107,7 +107,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
   end
 
-  test "blank subject, non-blank message body" do
+  test "should correctly store email with blank subject, non-blank plain text body" do
     user = users(:joel)
 
     assert_difference -> { user.posts.count }, 1 do
@@ -123,7 +123,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "Hello?", user.posts.last.content
   end
 
-  test "non-blank subject, blank message body" do
+  test "should correctly store non-blank subject, blank plain text body" do
     user = users(:joel)
 
     assert_difference -> { user.posts.count }, 1 do
@@ -139,7 +139,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "This is like a tweet", user.posts.last.content
   end
 
-  test "non-blank subject, blank HTML message body" do
+  test "should correctly store non-blank subject, blank HTML message body" do
     user = users(:joel)
 
     mail = Mail.new do
@@ -163,7 +163,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "This is like a tweet", user.posts.last.content
   end
 
-  test "blank subject, blank message body" do
+  test "should not store blank subject, blank message body" do
     user = users(:joel)
 
     assert_difference -> { user.posts.count }, 0 do
@@ -176,7 +176,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
   end
 
-  test "should detect monospace" do
+  test "should convert monospace styling to <code> blocks" do
     user = users(:joel)
 
     mail = Mail.new do
