@@ -8,7 +8,7 @@
     </title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <meta name="description" content="Pagecord is a super-simple, minimialist blogging app. All you need is an email address to publish your writing online.">
+    <meta name="description" content="Pagecord is a super-simple, minimialist blogging app. All you need is an email address.">
     <meta name="keywords" content="blogging, writing, publishing">
 
     <!-- Open Graph / Facebook -->
@@ -18,9 +18,9 @@
     <% if @post %>
     <meta property="og:description" content="<%= strip_tags(@post.content).gsub(/\n/, ' ').squeeze(' ').truncate(280) %>">
     <% else %>
-    <meta property="og:description" content="Publish your writing online using only your email">
+    <meta property="og:description" content="Pagecord is a super-simple, minimialist blogging app. All you need is an email address.">
     <% end %>
-    <meta property="og:description" content="Publish your writing online using only your email">
+    <meta property="og:description" content="Pagecord is a super-simple, minimialist blogging app. All you need is an email address.">
     <meta property="og:image" content="<%= image_url "social/open-graph.png" %>">
 
     <!-- Twitter -->
@@ -30,7 +30,7 @@
     <% if @post %>
     <meta property="twitter:description" content="<%= strip_tags(@post.content).gsub(/\n/, ' ').squeeze(' ').truncate(280) %>">
     <% else %>
-    <meta property="twitter:description" content="Publish your writing online using only your email">
+    <meta property="twitter:description" content="Pagecord is a super-simple, minimialist blogging app. All you need is an email address.">
     <% end %>
     <meta property="twitter:image" content="<%= image_url "social/twitter-card.png" %>">
 
