@@ -54,7 +54,7 @@ class MailParser
       document.css("div[style], span[style]").each do |element|
         if element['style'].downcase.include?('font-family: monospace')
           code = Nokogiri::XML::Node.new "code", document
-          code.children = element.children
+          code.content = element.content
           element.replace code
         end
       end
@@ -65,7 +65,7 @@ class MailParser
       document.css("font[face]").each do |element|
         if element["face"].downcase == "monospace"
           tag = Nokogiri::XML::Node.new "code", document
-          tag.inner_html = element.inner_html
+          tag.content = element.content
           element.replace tag    # replace <font> tag with <code>
         end
       end
