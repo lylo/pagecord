@@ -50,9 +50,7 @@ class MailParser
         styles = element['style'].downcase.split(';')
         font_family = styles.find { |style| style.strip.start_with?('font-family') }
         if font_family && font_family.include?('monospace')
-          code = Nokogiri::XML::Node.new "code", document
-          code.content = element.content
-          element.replace code
+          insert_code_tag(element)
         end
       end
     end
@@ -61,11 +59,15 @@ class MailParser
     def replace_font_tags_with_code_tags(document)
       document.css("font[face]").each do |element|
         if element["face"].downcase == "monospace"
-          tag = Nokogiri::XML::Node.new "code", document
-          tag.content = element.content
-          element.replace tag    # replace <font> tag with <code>
+          insert_code_tag(element)
         end
       end
+    end
+
+    def insert_code_tag(element)
+      code = Nokogiri::XML::Node.new "code", element.document
+      code.content = element.content
+      element.replace code
     end
 
     ALLOWED_TAGS =  %w(a abbr b blockquote br cite code del div em h1 h2 h3 h4 h5 h6 hr i li mark ol p pre s span strike strong u ul)
