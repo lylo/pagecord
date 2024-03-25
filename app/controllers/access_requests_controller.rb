@@ -3,7 +3,7 @@ class AccessRequestsController < ApplicationController
   def verify
     if access_request = AccessRequest.active.pending.find_by(token_digest: params[:token])
       @user = access_request.user
-      @user.update!(verified: true)
+      @user.verify!
       access_request.accept!
 
       sign_in @user
