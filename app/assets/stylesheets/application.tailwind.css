@@ -20,6 +20,12 @@ article a {
   @apply text-blue-600 underline;
 }
 
+/* Override Tailwind prose which wraps code in backticks */
+.prose code:before, .prose code:after {
+  content: "";
+}
+
+/* Pagy pagination */
 span.page.next > a, span.page.prev > a {
   @apply underline;
 }
