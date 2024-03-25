@@ -23,6 +23,12 @@ class UserTest < ActiveSupport::TestCase
     assert_not user.valid?
   end
 
+  test "should validate format of username" do
+    refute User.new(username: "abcdef-", email: "test@example.com").valid?
+    refute User.new(username: "%12312", email: "test@example.com").valid?
+    assert User.new(username: "abcdef_1234", email: "test@example.com").valid?
+  end
+
   test "should validate format of email" do
     user = User.new(username: "newuser", email: "joel")
     assert_not user.valid?
