@@ -37,7 +37,7 @@ class MailParser
     end
 
     ALLOWED_TAGS =  %w(a abbr b blockquote br cite code del div em h1 h2 h3 h4 h5 h6 hr i li mark ol p pre s strike strong u ul)
-    ALLOWED_ATTRIBUTES = %w(href)
+    ALLOWED_ATTRIBUTES = %w(href class)
 
     def sanitize(html)
       sanitizer = Rails::HTML5::SafeListSanitizer.new
