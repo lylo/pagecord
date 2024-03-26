@@ -163,6 +163,30 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "This is like a tweet", user.posts.last.content
   end
 
+  test "should correctly store blank subject, non-blank HTML message body" do
+    user = users(:joel)
+
+    mail = Mail.new do
+      to user.delivery_email
+      from user.email
+      reply_to user.email
+      subject ""
+      text_part do
+        body ""
+      end
+      html_part do
+        body "<!DOCTYPE html><html><head><title></title><style type=\"text/css\">p.MsoNormal,p.MsoNoSpacing{margin:0}</style></head><body><div style=\"font-family:Arial;\">Ok, I caved. Pagecord now tentatively supports images. All you need to do is include a link to an image and it <s>will</s> should be automatically unfurled. Here's hoping...<br></div><div style=\"font-family:Arial;\"><br></div><div style=\"font-family:Arial;\"><a href=\"https://gifdb.com/images/high/snoop-dogg-party-time-qb0t29sqslut7ugb.gif\" rel=\"noopener noreferrer\" target=\"_blank\">https://gifdb.com/images/high/snoop-dogg-party-time-qb0t29sqslut7ugb.gif</a><br></div></body></html>"
+      end
+    end
+
+    assert_difference -> { user.posts.count }, 1 do
+      receive_inbound_email_from_source mail.to_s
+    end
+
+    assert_nil user.posts.last.title
+    assert_equal "<div>Ok, I caved. Pagecord now tentatively supports images. All you need to do is include a link to an image and it <s>will</s> should be automatically unfurled. Here's hoping...<br></div><div><br></div><div><img src=\"https://gifdb.com/images/high/snoop-dogg-party-time-qb0t29sqslut7ugb.gif\"><br></div>", format_html(user.posts.last.content)
+  end
+
   test "should not store blank subject, blank message body" do
     user = users(:joel)
 
