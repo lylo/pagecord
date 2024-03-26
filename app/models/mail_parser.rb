@@ -25,7 +25,8 @@ class MailParser
   end
 
   def is_blank?
-    subject.blank? && strip_tags(body)&.strip.blank?
+    sanitized_content = sanitize(body, tags: %w(img), attributes: %w(src alt))
+    subject.blank? && sanitized_content&.strip.blank?
   end
 
   private
@@ -33,11 +34,7 @@ class MailParser
     def parse_body
       if @mail.multipart?
         if @mail.html_part
-          html = @mail.html_part.decoded
-          @pipeline.each do |transformation|
-            html = transformation.transform(html)
-          end
-          html
+          transform @mail.html_part.decoded
         elsif @mail.text_part
           @mail.text_part.body.decoded
         end
@@ -46,5 +43,12 @@ class MailParser
       else
         raise "Unknown content type #{mail.content_type}"
       end
+    end
+
+    def transform(html)
+      @pipeline.each do |transformation|
+        html = transformation.transform(html)
+      end
+      html
     end
 end

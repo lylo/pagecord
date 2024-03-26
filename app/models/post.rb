@@ -20,7 +20,8 @@ class Post < ApplicationRecord
     end
 
     def format_content
-      if strip_tags(content).blank?
+      sanitized_content = sanitize(content, tags: %w(img), attributes: %w(src alt))
+      if sanitized_content.blank?
         self.content = title
         self.title = nil
       end
