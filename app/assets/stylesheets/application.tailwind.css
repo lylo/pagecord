@@ -25,6 +25,10 @@ article a {
   content: "";
 }
 
+.prose img {
+  @apply my-2;
+}
+
 /* Pagy pagination */
 span.page.next > a, span.page.prev > a {
   @apply underline;

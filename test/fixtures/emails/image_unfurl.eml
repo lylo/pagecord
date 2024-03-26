@@ -1,0 +1,28 @@
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-332-gdeb4194079-fm-20240319.002-gdeb41940
+MIME-Version: 1.0
+X-PersonalityId: 147159968
+Message-Id: <ba7e556d-bd5f-4de0-b53d-65f6450cd5be@app.fastmail.com>
+Date: Sat, 23 Mar 2024 12:49:33 +0000
+From: joel@meyerowitz.xyz
+To: joel_gf35jsue@post.pagecord.com
+Subject: =?UTF-8?Q?Hello,_World_=F0=9F=91=8B?=
+Content-Type: multipart/alternative;
+ boundary=a063dad29b1f447f94fd7ea6f01c65ee
+
+--a063dad29b1f447f94fd7ea6f01c65ee
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+--ef64c587eec840bb8818796aa45cd167
+Content-Type: text/plain
+
+this should render an image:
+
+https://images.freeimages.com/images/large-previews/83f/paris-1213603.jpg
+
+--a063dad29b1f447f94fd7ea6f01c65ee
+Content-Type: text/html
+
+<!DOCTYPE html><html><head><title></title><style type="text/css">p.MsoNormal,p.MsoNoSpacing{margin:0}
+p.MsoNormal,p.MsoNoSpacing{margin:0}</style></head><body><div style="font-family:Arial;">this should render an image:<br></div><div style="font-family:Arial;"><br></div><div style="font-family:Arial;"><a href="https://images.freeimages.com/images/large-previews/83f/paris-1213603.jpg">https://images.freeimages.com/images/large-previews/83f/paris-1213603.jpg</a><br></div><div style="font-family:Arial;"><br></div></body></html>
+--a063dad29b1f447f94fd7ea6f01c65ee--

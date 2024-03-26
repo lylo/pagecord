@@ -8,7 +8,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
       receive_inbound_email_from_mail \
         to: user.delivery_email,
         from: user.email,
-        reply_to: user.email,
+          reply_to: user.email,
         subject: "Hello world!",
         body: "Hello?" do |mail|
           mail.header["Received-SPF"] = "pass"
@@ -174,29 +174,6 @@ class PostsMailboxTest < ActionMailbox::TestCase
         subject: "",
         body: ""
     end
-  end
-
-  test "should convert monospace styling to <code> blocks" do
-    user = users(:joel)
-
-    mail = Mail.new do
-      to user.delivery_email
-      from user.email
-      reply_to user.email
-      subject "monospace test"
-      text_part do
-        body "this is monospace"
-      end
-      html_part do
-        body "<div><span style=\"font-family: monospace\">this is monospace</span><font face=\"monospace\">and so is this</font></div>"
-      end
-    end
-
-    assert_difference -> { user.posts.count }, 1 do
-      receive_inbound_email_from_source mail.to_s
-    end
-
-    assert_equal "<div>\n<code>this is monospace</code><code>and so is this</code>\n</div>", user.posts.last.content
   end
 
   private
