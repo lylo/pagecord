@@ -82,3 +82,5 @@ Rails.application.configure do
 
   config.hosts << "mantis-refined-heavily.ngrok-free.app"
 end
+
+Rails.application.routes.default_url_options[:host] = "localhost:3000"
