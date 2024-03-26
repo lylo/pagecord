@@ -28,7 +28,7 @@ class Users::PostsController < ApplicationController
     end
 
     def user_params
-      params.permit(:username, :title, :page, :id)
+      params.except(:format).permit(:username, :title, :page, :id)
     end
 
     def verification
