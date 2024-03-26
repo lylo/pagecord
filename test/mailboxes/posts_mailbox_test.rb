@@ -1,4 +1,5 @@
 require "test_helper"
+require "mocha/minitest"
 
 class PostsMailboxTest < ActionMailbox::TestCase
   test "should receive plain text mail to valid address from valid recipient" do
@@ -185,6 +186,33 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_nil user.posts.last.title
     assert_equal "<div>Ok, I caved. Pagecord now tentatively supports images. All you need to do is include a link to an image and it <s>will</s> should be automatically unfurled. Here's hoping...<br></div><div><br></div><div><img src=\"https://gifdb.com/images/high/snoop-dogg-party-time-qb0t29sqslut7ugb.gif\"><br></div>", format_html(user.posts.last.content)
+  end
+
+  test "should correctly store blank subject, image in HTML body" do
+    FastImage.stubs(:size).returns([800, 600])
+    FastImage.stubs(:type).returns(:jpeg)
+
+    user = users(:joel)
+
+    mail = Mail.new do
+      to user.delivery_email
+      from user.email
+      reply_to user.email
+      subject ""
+      text_part do
+        body ""
+      end
+      html_part do
+        body "<div><a href=\"http://example.com/image.jpg\">http://example.com/image.jpg</a></div>"
+      end
+    end
+
+    assert_difference -> { user.posts.count }, 1 do
+      receive_inbound_email_from_source mail.to_s
+    end
+
+    assert_nil user.posts.last.title
+    assert_equal "<div><img src=\"http://example.com/image.jpg\"></div>", format_html(user.posts.last.content)
   end
 
   test "should not store blank subject, blank message body" do
