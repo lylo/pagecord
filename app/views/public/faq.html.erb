@@ -18,10 +18,11 @@
     Yep! <%= link_to "Log in", login_path %> and you'll see a field to add a bio to your profile.
   </p>
 
-  <h3>Why can't I post images?</h3>
+  <h3>Can I include images in my posts?</h3>
   <p>
-    Sorry, but image storage functionality hasn't been implemented. You can only post HTML or plain text. I'm
-    thinking about supporting unfurling of image links though, which would (sort of) solve the problem.
+    Sort of. Any attached/embedded images in the email you send will be ignored,
+    but if the text includes a URL to an existing image (e.g. https://example.com/image.gif)
+    Pagecord will do its best to display it in the post. This is rather experimental so <abbr title="Your Mileage May Vary">YMMV</abbr>.
   </p>
 
   <h3>How do I delete a post?</h3>
