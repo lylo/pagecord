@@ -1,6 +1,6 @@
 module Html
   class Sanitize < Transformation
-    ALLOWED_TAGS =  %w(a abbr b blockquote br cite code del div em h1 h2 h3 h4 h5 h6 hr i li mark ol p pre s span strike strong u ul)
+    ALLOWED_TAGS =  %w(a abbr b blockquote br cite code del div em h1 h2 h3 h4 h5 h6 hr i img li mark ol p pre s span strike strong u ul)
     ALLOWED_ATTRIBUTES = %w(href)
 
     def transform(html)
