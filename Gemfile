@@ -25,6 +25,7 @@ gem "sentry-ruby"
 gem "sentry-rails"
 
 gem "discard", "~> 1.2"
+gem "fastimage"
 gem "inline_svg", "~> 1.9"
 gem "pagy", "~> 7.0"
 gem "postmark-rails"
@@ -63,6 +64,7 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
+  gem "mocha"
   gem "rails-controller-testing"
   gem "selenium-webdriver"
 end
