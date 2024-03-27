@@ -36,7 +36,7 @@
       <div class="px-2 py-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg">
         <div class="font-semibold">
           <%= link_to post_path(post), target: "_blank" do %>
-            <%= strip_tags post.content.truncate(140) %>
+            <%= post_title(post) %>
           <% end %>
         </div>
         <div class="text-xs text-slate-400 dark:text-slate-400 flex justify-between items-center">
