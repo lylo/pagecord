@@ -20,13 +20,15 @@ article a {
   @apply text-blue-600 underline;
 }
 
-/* Override Tailwind prose which wraps code in backticks */
-.prose code:before, .prose code:after {
-  content: "";
-}
+.prose {
+  /* Override Tailwind prose which wraps code in backticks */
+  code:before, code:after {
+    content: "";
+  }
 
-.prose img {
-  @apply my-2;
+  img, blockquote {
+    @apply my-2;
+  }
 }
 
 /* Pagy pagination */
