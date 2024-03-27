@@ -1,11 +1,9 @@
 class Post < ApplicationRecord
-  include ActionView::Helpers::SanitizeHelper
   include OpaqueId
 
   belongs_to :user
 
   before_create :set_published_at
-  before_save :format_content
 
   validate :content_or_title
 
@@ -17,13 +15,5 @@ class Post < ApplicationRecord
 
     def set_published_at
       self.published_at ||= created_at
-    end
-
-    def format_content
-      sanitized_content = sanitize(content, tags: %w(img), attributes: %w(src alt))
-      if sanitized_content.blank?
-        self.content = title
-        self.title = nil
-      end
     end
 end

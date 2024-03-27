@@ -27,8 +27,16 @@ class PostsMailbox < ApplicationMailbox
         parser = MailParser.new(mail)
 
         unless parser.is_blank?
+          content = parser.body
+          title = parser.subject
+
+          if parser.body_blank?
+            content = parser.transform(title)
+            title = nil
+          end
+
           Rails.logger.info "Creating post from user: #{user.id}"
-          user.posts.create!(title: parser.subject, content: parser.body, html: parser.html?, published_at: mail.date)
+          user.posts.create!(title: title, content: content, html: parser.html?, published_at: mail.date)
         end
       rescue => e
         Rails.logger.warn "Unable to parse email: #{e.message}"
