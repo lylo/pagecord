@@ -14,6 +14,11 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal posts(:one), assigns(:post)
   end
 
+  test "should allow @ prefix and redirect to user" do
+    get "/@#{users(:joel).username}"
+    assert_redirected_to user_posts_path(username: users(:joel).username)
+  end
+
   test "should redirect to root if user not found" do
     get user_posts_path(username: "nope")
     assert_redirected_to root_url
