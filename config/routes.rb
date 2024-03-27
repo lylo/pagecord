@@ -28,6 +28,8 @@ Rails.application.routes.draw do
     root "posts#index"
   end
 
+  get '/@:username', to: redirect('/%{username}')
+
   scope ":username" do
     get "/", to: "users/posts#index", as: :user_posts
     get "/profile", to: "users/profile#show", as: :user_profile
