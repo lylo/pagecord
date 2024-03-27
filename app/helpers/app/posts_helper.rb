@@ -1,14 +1,12 @@
 module App::PostsHelper
-  def post_title(post)
-    if post.title.present?
-      post.title.truncate(100)
+
+  def meta_description
+    if @post
+      post_title(@post)
+    elsif @user.present?
+      user_bio(@user)
     else
-      sanitized_content = strip_tags(post.content.truncate(140))
-      if sanitized_content.blank?
-        "Untitled"
-      else
-        sanitized_content
-      end
+      "Pagecord is a super-simple, minimialist blogging app. All you need is an email address."
     end
   end
 end
