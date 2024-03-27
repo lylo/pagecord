@@ -14,7 +14,7 @@
   <% end %>
 
   <%= link_to post_path(post), class: "no-underline" do %>
-    <div class="text-gray-400 text-sm mt-4 mb-4 font-normal">
+    <div class="text-gray-400 text-sm mt-4 mb-4 font-normal" title="<%= post.updated_at.to_formatted_s(:long) %>">
       <%= post.updated_at.to_date.to_formatted_s(:long) %>
     </div>
   <% end %>
