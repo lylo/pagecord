@@ -137,7 +137,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
 
     assert_nil user.posts.last.title
-    assert_equal "This is like a tweet", user.posts.last.content
+    assert_equal "<p>This is like a tweet</p>", user.posts.last.content
   end
 
   test "should correctly store non-blank subject, blank HTML message body" do
@@ -161,7 +161,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
 
     assert_nil user.posts.last.title
-    assert_equal "This is like a tweet", user.posts.last.content
+    assert_equal "<p>This is like a tweet</p>", user.posts.last.content
   end
 
   test "should correctly store blank subject, non-blank HTML message body" do

@@ -25,8 +25,22 @@ class MailParser
   end
 
   def is_blank?
-    sanitized_content = sanitize(body, tags: %w(img), attributes: %w(src alt))
-    subject.blank? && sanitized_content&.strip.blank?
+    subject_blank? && body_blank?
+  end
+
+  def subject_blank?
+    subject.blank?
+  end
+
+  def body_blank?
+    sanitized_body.strip.blank?
+  end
+
+  def transform(html)
+    @pipeline.each do |transformation|
+      html = transformation.transform(html)
+    end
+    html
   end
 
   private
@@ -45,10 +59,7 @@ class MailParser
       end
     end
 
-    def transform(html)
-      @pipeline.each do |transformation|
-        html = transformation.transform(html)
-      end
-      html
+    def sanitized_body
+      @sanitized_body ||= sanitize(body, tags: %w(img), attributes: %w(src alt))
     end
 end
