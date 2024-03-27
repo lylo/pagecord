@@ -1,6 +1,8 @@
 require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
+  include AuthenticatedTest
+
   test "should show log in page" do
     get login_url
     assert_response :success
@@ -37,5 +39,12 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "should destroy session" do
     delete logout_url
     assert_redirected_to root_path
+  end
+
+  test "should redirect to app root if already logged in" do
+    login_as users(:joel)
+
+    get login_url
+    assert_redirected_to app_root_path
   end
 end
