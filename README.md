@@ -41,18 +41,13 @@ bin/rails test:system
 
 ## Processing an email locally
 
-Sometimes you'll need to debug an email. Get the raw email source and save it to a .eml file.
+Sometimes you'll need to debug emails. To do this, save the .eml file(s) to a folder
+such as `tmp/emails`.
 
-Edit the .eml file so that the `To:` and `From:` fields match a user in the database, e.g.
-
-```
-From: joel@meyerowitz.xyz
-To: joel_gf35jsue@post.pagecord.com
-```
-
-You can then run the following command:
+You can then run the following command which will parse all the .eml files in that
+folder and create posts for the first user account in the seed data (`joel@meyerowitz.xyz`).
 
 ```bash
-  FILE=/path/to/your/file.eml rake email:load
+DIR=tmp/emails rake email:load
 ```
 
