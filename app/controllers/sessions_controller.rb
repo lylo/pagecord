@@ -2,7 +2,11 @@ class SessionsController < ApplicationController
   layout "home"
 
   def new
-    @user = User.new
+    if Current.user.present?
+      redirect_to app_root_path
+    else
+      @user = User.new
+    end
   end
 
   def create
