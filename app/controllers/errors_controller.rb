@@ -1,6 +1,8 @@
 class ErrorsController < ApplicationController
   layout "home"
 
+  caches_page :not_found, :unacceptable, :internal_error
+
   def not_found
     respond_to do |format|
       format.all { render :not_found, status: 404, formats: :html }
