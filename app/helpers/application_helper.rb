@@ -10,14 +10,21 @@ module ApplicationHelper
   end
 
   def page_title
-    base_title = "Pagecord"
+    title = "Pagecord"
+
     if @user&.username
-      "#{base_title} | @#{@user.username}"
-    elsif content_for?(:title)
-      "#{base_title} | #{content_for(:title)}"
-    else
-      base_title
+      title = "#{title} | @#{@user.username}"
     end
+
+    if content_for?(:title)
+      title = "#{title} | #{content_for(:title)}"
+    end
+
+    if @post
+      title ="#{title} | #{post_title(@post)}"
+    end
+
+    title
   end
 
   def post_title(post)
