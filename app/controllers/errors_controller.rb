@@ -2,14 +2,20 @@ class ErrorsController < ApplicationController
   layout "home"
 
   def not_found
-    render status: 404
+    respond_to do |format|
+      format.all { render :not_found, status: 404, formats: :html }
+    end
   end
 
   def unacceptable
-    render status: 422
+    respond_to do |format|
+      format.all { render :unacceptable, status: 422, formats: :html }
+    end
   end
 
   def internal_error
-    render status: 500
+    respond_to do |format|
+      format.all { render :internal_error, status: 500, formats: :html }
+    end
   end
 end
