@@ -5,7 +5,7 @@ module ApplicationHelper
     elsif @user.present?
       user_bio(@user)
     else
-      "Pagecord is a super-simple, minimialist blogging app. All you need is an email address."
+      "Effortless blogging from your inbox. All you need is an email address."
     end
   end
 
