@@ -2,9 +2,15 @@ class PostsMailbox < ApplicationMailbox
   def process
     return unless mail.to.present? && mail.from.present?
 
-    recipient = mail.to.first.downcase
-    from = mail.from.first.downcase
-    reply_to = mail.reply_to.first.downcase if mail.reply_to.present?
+    recipient = ENV["PAGECORD_RECIPIENT"] || mail.to.first.downcase
+    from = ENV["PAGECORD_FROM"] || mail.from.first.downcase
+
+    reply_to = if ENV["PAGECORD_REPLYTO"]
+      ENV["PAGECORD_REPLYTO"]
+    else
+      mail.reply_to&.first&.downcase
+    end
+
     Rails.logger.info "Received mail from: #{from} to: #{recipient} (reply-to: #{reply_to})"
     Rails.logger.info "Message ID: #{mail.message_id}"
 
