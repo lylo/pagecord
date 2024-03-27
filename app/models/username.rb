@@ -1,6 +1,7 @@
 class Username
-  RESERVED = %w{ pricing about contact faq terms privacy careers blog
-                 login signup feed rss pagecord admin support help}
+  RESERVED = %w{ about admin blog careers contact faq feed
+                 help login pagecord privacy pricing rss
+                 signup support terms }
 
   def self.reserved?(username)
     RESERVED.include?(username)
