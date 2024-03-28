@@ -7,7 +7,11 @@ class User < ApplicationRecord
   has_many :posts, dependent: :destroy
   has_many :access_requests, dependent: :destroy
 
-  validates :username, presence: true, uniqueness: true, length: { minimum: 4, maximum: 20 }, format: { with: /\A[a-zA-Z0-9_]+\z/ }
+  validates :username, presence: true,
+                       uniqueness: true,
+                       length: { minimum: Username::MIN_LENGTH, maximum: Username::MAX_LENGTH },
+                       format: { with: Username::FORMAT }
+
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   def verify!

@@ -3,6 +3,10 @@ class Username
                  help login pagecord privacy pricing rss
                  signup support terms }
 
+  FORMAT = /\A[a-zA-Z0-9_]+\z/
+  MIN_LENGTH = 4
+  MAX_LENGTH = 20
+
   def self.reserved?(username)
     RESERVED.include?(username)
   end
