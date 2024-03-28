@@ -2,7 +2,7 @@ class User < ApplicationRecord
   include Discard::Model
   include DeliveryEmail
 
-  before_create :downcase_email_and_username
+  before_save :downcase_email_and_username
 
   has_many :posts, dependent: :destroy
   has_many :access_requests, dependent: :destroy
