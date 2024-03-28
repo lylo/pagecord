@@ -5,30 +5,32 @@
     <%= pluralize @pagy.count, "user" %> in total.
   </p>
 
-  <table class="my-8 min-w-full divide-y divide-gray-300">
-    <thead>
-      <tr>
-        <th class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Username</th>
-        <th class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Post</th>
-        <th class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Verified</th>
-        <th class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Discarded</th>
-        <th class="py-4 pl-4 pr-3 text-end text-sm font-semibold text-gray-900">Created</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-gray-200">
-    <% @users.each do |user| %>
-      <tr>
-        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-          <%= link_to user.username, user_posts_path(username: user.username) %>
-        </td>
-        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500"><%= user.posts_count %></td>
-        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500"><%= user.verified %></td>
-        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500"><%= user.discarded_at&.to_formatted_s :short %></td>
-        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500 text-end"><%= user.created_at.to_formatted_s :long %></td>
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
+  <div class="overflow-auto">
+    <table class="my-8 min-w-full divide-y divide-gray-300">
+      <thead>
+        <tr>
+          <th class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Username</th>
+          <th class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Post</th>
+          <th class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Verified</th>
+          <th class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Discarded</th>
+          <th class="py-4 pl-4 pr-3 text-end text-sm font-semibold text-gray-900">Created</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+      <% @users.each do |user| %>
+        <tr>
+          <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+            <%= link_to user.username, user_posts_path(username: user.username) %>
+          </td>
+          <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500"><%= user.posts_count %></td>
+          <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500"><%= user.verified %></td>
+          <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500"><%= user.discarded_at&.to_formatted_s :short %></td>
+          <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500 text-end"><%= user.created_at.to_formatted_s :long %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
 
   <div class="flex justify-end">
     <%== pagy_nav(@pagy) %>
