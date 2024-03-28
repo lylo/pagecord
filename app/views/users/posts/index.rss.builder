@@ -18,7 +18,9 @@ xml.rss version: "2.0" do
         else
           xml.title post.title
         end
-        xml.description "<![CDATA[#{post.content}]]>"
+        xml.description do
+          xml.cdata! post.content
+        end
         xml.pubDate post.published_at.to_formatted_s(:rfc822)
         xml.link link
         xml.guid link
