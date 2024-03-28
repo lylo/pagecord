@@ -14,7 +14,7 @@ xml.rss version: "2.0" do
 
       xml.item do
         if post.title.blank?
-          xml.title "Post – #{post.updated_at.to_formatted_s(:long)}"
+          xml.title "Post - #{post.updated_at.to_formatted_s(:long)}"
         else
           xml.title post.title
         end
