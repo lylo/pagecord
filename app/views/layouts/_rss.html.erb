@@ -1,0 +1,3 @@
+<% if @user&.persisted? %>
+  <%= tag :link, rel: 'alternate', type: 'application/rss+xml', title: 'RSS Feed for posts', href: user_posts_path(username: @user.username, format: 'rss') %>
+<% end %>
