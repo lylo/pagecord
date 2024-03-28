@@ -24,7 +24,7 @@ class Users::PostsController < ApplicationController
     def load_user
       @user = User.kept.find_by(username: user_params[:username])
 
-      redirect_to root_path, alert: 'User not found' if @user.nil?
+      redirect_to root_path, alert: "User not found" if @user.nil?
     end
 
     def user_params
