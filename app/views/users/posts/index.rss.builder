@@ -13,8 +13,12 @@ xml.rss version: "2.0" do
       end
 
       xml.item do
-        xml.title post.title
-        xml.description post.content
+        if post.title.blank?
+          xml.title "Post – #{post.updated_at.to_formatted_s(:long)}"
+        else
+          xml.title post.title
+        end
+        xml.description "<![CDATA[#{post.content}]]>"
         xml.pubDate post.published_at.to_formatted_s(:rfc822)
         xml.link link
         xml.guid link
