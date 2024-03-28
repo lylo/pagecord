@@ -51,6 +51,11 @@ Rails.application.routes.draw do
     root "posts#index"
   end
 
+  get "/admin", to: "admin#index", as: :admin
+  namespace :admin do
+    resources :stats, only: [:index]
+  end
+
   get '/@:username', to: redirect('/%{username}')
 
   scope ":username" do
