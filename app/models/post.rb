@@ -3,7 +3,7 @@ class Post < ApplicationRecord
 
   belongs_to :user
 
-  before_create :set_published_at
+  before_create :set_published_at, :limit_content_size
 
   validate :content_or_title
 
@@ -15,5 +15,9 @@ class Post < ApplicationRecord
 
     def set_published_at
       self.published_at ||= created_at
+    end
+
+    def limit_content_size
+      self.content = content.slice(0, 64.kilobytes)
     end
 end
