@@ -8,7 +8,7 @@
   <% end %>
 
   <% if post.html? %>
-    <%= post.content.html_safe %>
+    <%= auto_link post.content.html_safe %>
   <% else %>
     <%= simple_format(auto_link post.content) %>
   <% end %>
