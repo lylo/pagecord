@@ -39,7 +39,7 @@ module Html
         size = FastImage.size(sanitized_url)
         type = FastImage.type(sanitized_url)
 
-        valid_type = %i[jpeg jpg webp png gif].include?(type)
+        valid_type = %i[jpeg jpg webp png gif svg].include?(type)
         valid_size = size.present? && size[0] <= MAX_WIDTH && size[1] <= MAX_HEIGHT
 
         valid_type && valid_size
