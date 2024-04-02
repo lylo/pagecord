@@ -9,63 +9,58 @@
     <p class="mt-4">
       You're all set 🥳
     </p>
+  <% end %>
 
-    <%= render "how_to" %>
+  <%= render "how_to" %>
 
-  <% else %>
+  <div class="mt-8">
+    <%= form_with url: app_user_path(Current.user), model: Current.user, data: { controller: "vanish" } do |form| %>
+      <div>
+      <%= form.text_area :bio, placeholder: "Add a bio to your profile if you like...", class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg", data: { controller: "autogrow" } %>
+      </div>
+      <div class="mt-2 flex justify-between">
+        <div id="bio-response" data-vanish-target="response" class="text-sm me-1"></div>
+        <%= form.submit "Update bio", class: "underline text-sm font-semibold cursor-pointer", data: { action: "click->vanish#show" } %>
+      </div>
+    <% end %>
+  </div>
 
-    <%= render "how_to" %>
+  <div class="mt-8 py-8 border-t dark:border-t-slate-500">
+    <p class="text-lg font-bold">
+      You've published <%= pluralize @pagy.count, "post" %>
+    </p>
+    <p class="mt-2 mb-8">
+      Your posts are listed below. Click the trash icon next to a post to delete it.
+    </p>
 
-    <div class="mt-8">
-      <%= form_with url: app_user_path(Current.user), model: Current.user, data: { controller: "vanish" } do |form| %>
-        <div>
-        <%= form.text_area :bio, placeholder: "Add a bio to your profile if you like...", class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg", data: { controller: "autogrow" } %>
+
+    <% @posts.each do |post| %>
+      <div class="px-2 py-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+        <div class="font-semibold">
+          <%= link_to post_path(post), target: "_blank", title: "Click to view this post" do %>
+            <%= post_title(post) %>
+          <% end %>
         </div>
-        <div class="mt-2 flex justify-between">
-          <div id="bio-response" data-vanish-target="response" class="text-sm me-1"></div>
-          <%= form.submit "Update bio", class: "underline text-sm font-semibold cursor-pointer", data: { action: "click->vanish#show" } %>
-        </div>
-      <% end %>
-    </div>
-
-    <div class="mt-8 py-8 border-t dark:border-t-slate-500">
-      <p class="text-lg font-bold">
-        You've published <%= pluralize @pagy.count, "post" %>
-      </p>
-      <p class="mt-2 mb-8">
-        Your posts are listed below. Click the trash icon next to a post to delete it.
-      </p>
-
-
-      <% @posts.each do |post| %>
-        <div class="px-2 py-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
-          <div class="font-semibold">
-            <%= link_to post_path(post), target: "_blank", title: "Click to view this post" do %>
-              <%= post_title(post) %>
+        <div class="text-xs text-slate-400 dark:text-slate-400 flex justify-between items-center">
+          <div>
+            <%= post.created_at.to_formatted_s(:long) %>
+          </div>
+          <div class="ms-2">
+            <%= button_to app_post_path(post), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this post?"}, title: "Trash this post" do %>
+              <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
             <% end %>
           </div>
-          <div class="text-xs text-slate-400 dark:text-slate-400 flex justify-between items-center">
-            <div>
-              <%= post.created_at.to_formatted_s(:long) %>
-            </div>
-            <div class="ms-2">
-              <%= button_to app_post_path(post), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this post?"}, title: "Trash this post" do %>
-                <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
-              <% end %>
-            </div>
-          </div>
         </div>
-      <% end %>
-
-      <div class="mt-4 flex gap-x-4 justify-end text-slate-800 dark:text-slate-200">
-        <% if @pagy.prev %>
-          <%== pagy_prev_html(@pagy, text: "Newer") %>
-        <% end %>
-        <% if @pagy.next %>
-          <%== pagy_next_html(@pagy, text: "Older") %>
-        <% end %>
       </div>
-    </div>
+    <% end %>
 
-  <% end %>
+    <div class="mt-4 flex gap-x-4 justify-end text-slate-800 dark:text-slate-200">
+      <% if @pagy.prev %>
+        <%== pagy_prev_html(@pagy, text: "Newer") %>
+      <% end %>
+      <% if @pagy.next %>
+        <%== pagy_next_html(@pagy, text: "Older") %>
+      <% end %>
+    </div>
+  </div>
 </div>
