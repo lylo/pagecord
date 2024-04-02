@@ -10,7 +10,7 @@ module ApplicationHelper
   end
 
   def page_title
-    title = "Pagecord"
+    title = "Pagecord - Effortless blogging from your inbox"
 
     if @user&.username
       title = "#{title} | @#{@user.username}"
