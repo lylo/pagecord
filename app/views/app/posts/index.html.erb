@@ -9,7 +9,9 @@
           You'll see your posts here once you start posting ✨
         </div>
       <% else %>
-        Your <%= pluralize @pagy.count, "post" %> are listed below. Click the trash icon next to a post to delete it.
+        <%= render "app/shared/callout" do %>
+          You have written <%= pluralize @pagy.count, "post" %>, listed below. Click the trash icon next to a post to delete it.
+        <% end %>
       <% end %>
     </p>
 

@@ -8,11 +8,11 @@
     You'll see posts here once you follow people who are posting ✨
     </p>
   <% else %>
-    <div class="mb-12 bg-slate-100 dark:bg-slate-700 p-4 rounded-xl sm:max-w-xl sm:mx-auto">
-    This is your feed of all the posts from the people you follow, in chronological order.
-    <%= link_to "Subscribe to your private RSS feed", app_private_rss_feed_path(rss_token_for(@user), format: :rss), class: "font-semibold underline" %>
-    to get these posts in your feed reader.
-    </div>
+    <%= render "app/shared/callout" do %>
+      This is your feed of all the posts from the people you follow, in chronological order.
+      <%= link_to "Subscribe to your private RSS feed", app_private_rss_feed_path(rss_token_for(@user), format: :rss), class: "font-semibold underline" %>
+      to get these posts in your feed reader.
+    <% end %>
   <% end %>
 
   <%= render partial: "post", collection: @posts, cached: true %>
