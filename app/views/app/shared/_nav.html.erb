@@ -2,7 +2,7 @@
     <div class="sm:hidden">
       <label for="tabs" class="sr-only">Select a tab</label>
 
-      <select id="tabs" name="tabs" class="block w-full rounded-md border-none bg-white/5 py-2 pl-3 pr-10 text-base text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm" data-controller="select" data-action="change->select#handleChange">
+      <select id="tabs" name="tabs" class="block w-full rounded-md border-none bg-white/5 mb-4 py-2 pl-3 pr-10 shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm" data-controller="select" data-action="change->select#handleChange">
         <option data-path="<%= app_posts_path %>" <% if is_current_path?("posts") %> selected <% end %>>Posts</option>
 
         <% if Current.user&.username == "olly" %>
