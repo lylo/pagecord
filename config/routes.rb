@@ -50,6 +50,7 @@ Rails.application.routes.draw do
       post :follow, to: 'followings#create'
       delete :unfollow, to: 'followings#destroy'
     end
+    resources :followings, only: [:index]
 
     root "posts#index"
   end

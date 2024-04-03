@@ -1,4 +1,10 @@
-class App::FollowingsController < ApplicationController
+class App::FollowingsController < AppController
+  include Pagy::Backend
+
+  def index
+    @pagy, @followees =  pagy(Current.user.followees, items: 15)
+  end
+
   def create
     @user = User.find(params[:user_id])
 
