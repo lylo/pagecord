@@ -8,7 +8,8 @@
         Once you follow other Pagecords, you'll see them listed here ✨
       </div>
     <% else %>
-      You are following <%= pluralize @user.followees.count, "Pagecord" %>
+      You are following <%= pluralize @user.followees.count, "Pagecord" %>. You can see all their posts
+      <%= link_to "in your feed", app_feed_path, class: "font-semibold underline" %>.
     <% end %>
 
     <div class="mt-4 flex flex-col divide-y divide-gray-100 dark:divide-gray-700">
@@ -27,14 +28,6 @@
     <% end %>
     </div>
 
-    <div class="mt-4 flex gap-x-4 justify-end text-slate-800 dark:text-slate-200">
-      <% if @pagy.prev %>
-        <%== pagy_prev_html(@pagy, text: "Newer") %>
-      <% end %>
-      <% if @pagy.next %>
-        <%== pagy_next_html(@pagy, text: "Older") %>
-      <% end %>
-    </div>
-
+    <%= render "app/shared/pagy_nav" %>
   </div>
 </div>

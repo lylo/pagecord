@@ -1,0 +1,30 @@
+<article class="prose dark:prose-invert overflow-auto break-words">
+  <div class="flex flex-col gap-x-2">
+    <div class="font-semibold">
+      @<%= post.user.username %>
+    </div>
+    <%= link_to post_path(post), class: "no-underline" do %>
+      <span class="text-gray-400 text-sm font-normal" title="<%= post.updated_at.to_formatted_s(:long) %>">
+        <%= post.updated_at.to_date.to_formatted_s(:long) %>
+      </span>
+    <% end %>
+  </div>
+
+  <% if post.title.present? %>
+    <%= link_to post_path(post), class: "no-underline" do %>
+      <h2 class="mt-4">
+        <%= post.title %>
+      </h2>
+    <% end %>
+  <% end %>
+
+  <% if post.html? %>
+    <%= auto_link post.content.html_safe %>
+  <% else %>
+    <%= simple_format(auto_link post.content) %>
+  <% end %>
+</article>
+
+<div class="w-64 mx-auto py-8">
+  <div class="border-b border-b-slate-100 dark:border-b-slate-700"></div>
+</div>

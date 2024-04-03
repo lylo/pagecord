@@ -27,3 +27,11 @@ two:
   user: joel
   html: true
   published_at: <%= 2.days.ago %>
+
+three:
+  title: My first post
+  content: |
+    This is my first post
+  user: vivian
+  html: false
+  published_at: <%= 1.week.ago %>

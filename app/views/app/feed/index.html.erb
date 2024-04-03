@@ -1,0 +1,21 @@
+<div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
+  <%= render "app/shared/heading" %>
+  <%= render "app/shared/nav" %>
+
+
+  <% if @posts.empty? %>
+    <p class="text-center">
+    You'll see posts here once you follow people who are posting ✨
+    </p>
+  <% else %>
+    <div class="mb-12 bg-slate-100 p-4 rounded-xl sm:max-w-xl sm:mx-auto">
+    This is your feed of all the posts from the people you follow, in chronological order.
+    <%= link_to "Subscribe to your private RSS feed", app_private_rss_feed_path(rss_token_for(@user), format: :rss), class: "font-semibold underline" %>
+    to get these posts in your feed reader.
+    </div>
+  <% end %>
+
+  <%= render partial: "post", collection: @posts, cached: true %>
+
+  <%= render "app/shared/pagy_nav" %>
+</div>

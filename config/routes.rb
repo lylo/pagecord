@@ -53,6 +53,8 @@ Rails.application.routes.draw do
     resources :followings, only: [:index]
 
     get "/account", to: "account#index"
+    get "/feed", to: "feed#index"
+    get "/feed/rss/:token", to: "feed#private_rss", as: :private_rss_feed, format: :rss
 
     root "account#index"
   end
