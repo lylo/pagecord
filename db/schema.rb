@@ -10,10 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_03_23_223013) do
+ActiveRecord::Schema[7.2].define(version: 2024_04_03_112903) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "access_requests", force: :cascade do |t|
     t.string "token_digest"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "expires_at", null: false
     t.datetime "accepted_at"
     t.datetime "created_at", null: false
@@ -60,10 +63,18 @@ ActiveRecord::Schema[7.2].define(version: 2024_03_23_223013) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "followings", force: :cascade do |t|
+    t.bigint "follower_id"
+    t.bigint "followed_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["follower_id", "followed_id"], name: "index_followings_on_follower_id_and_followed_id", unique: true
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "title"
     t.text "content"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "html", null: false

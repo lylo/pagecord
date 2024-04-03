@@ -1,7 +1,6 @@
 class HomeController < ApplicationController
 
-  caches_page :index
-
   def index
+    redirect_to app_root_path if logged_in?
   end
 end
