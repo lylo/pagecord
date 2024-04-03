@@ -7,16 +7,16 @@ xml.rss version: "2.0" do
 
     @posts.each do |post|
       link = if post.url_title.present?
-        post_with_title_url(@post.user.username, post.url_title, post.url_id)
+        post_with_title_url(post.user.username, post.url_title, post.url_id)
       else
-        post_without_title_url(@post.user.username, post.url_id)
+        post_without_title_url(post.user.username, post.url_id)
       end
 
       xml.item do
         if post.title.blank?
-          xml.title "@#{@post.user.username} - #{post.updated_at.to_formatted_s(:long)}"
+          xml.title "@#{post.user.username} - #{post.updated_at.to_formatted_s(:long)}"
         else
-          xml.title "@#{@post.user.username} - #{post.title}"
+          xml.title "@#{post.user.username} - #{post.title}"
         end
         xml.description do
           xml.cdata! post.content
