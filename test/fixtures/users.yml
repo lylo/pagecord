@@ -19,3 +19,9 @@ elliot:
   email: elliot@erwitt.photo
   username: elliot
   delivery_email: elliot_jfur73yd@post.pagecord.com
+
+vivian:
+  email: vivian@maierweb.com
+  username: vivian
+  delivery_email: vivian_jfur73yd@post.pagecord.com
+  verified: true
