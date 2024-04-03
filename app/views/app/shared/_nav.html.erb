@@ -1,4 +1,4 @@
-<div class="mt-8 pb-2 border-b dark:border-b-slate-500">
+<div class="mt-2 mb-8 pb-2 border-b dark:border-b-slate-500">
     <div class="sm:hidden">
       <label for="tabs" class="sr-only">Select a tab</label>
 
@@ -8,6 +8,8 @@
         <% if Current.user&.username == "olly" %>
         <option data-path="<%= app_followings_path%>"  <% if is_current_path?("followings") %> selected <% end %>>Followers</option>
         <% end %>
+
+        <option data-path="<%= app_account_path %>"  <% if is_current_path?("account") %> selected <% end %>>Account</option>
       </select>
     </div>
 
@@ -22,6 +24,9 @@
             <%= link_to "Follows", app_followings_path, class: nav_class_for("followings") %>
           </li>
           <% end %>
+          <li>
+            <%= link_to "Account", app_account_path, class: nav_class_for("account") %>
+          </li>
         </ul>
       </nav>
     </div>

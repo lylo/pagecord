@@ -24,18 +24,15 @@
 
     <footer class="p-8 flex flex-col w-full text-center">
       <div class="flex gap-x-12 justify-center">
-      <%= button_to logout_path, method: :delete, class: "ms-2 text-sm font-semibold hover:underline dark:text-slate-200" do %>
-        Logout
-      <% end %>
-
-      <%= button_to app_user_path(Current.user), method: :delete, data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated immediately!" }, class: "ms-2 text-sm font-semibold hover:underline dark:text-slate-200 hover:text-red-600" do %>
-        Delete account
-      <% end %>
+        <%= button_to logout_path, method: :delete, class: "ms-2 text-sm font-semibold hover:underline dark:text-slate-200" do %>
+          Logout
+        <% end %>
       </div>
+
       <div>
-      <%= link_to app_root_path do %>
-        <%= inline_svg_tag "logo.svg", class: "w-[100px] mt-8 inline-flex dark:text-white text-black" %>
-      <% end %>
+        <%= link_to app_root_path do %>
+          <%= inline_svg_tag "logo.svg", class: "w-[100px] mt-8 inline-flex dark:text-white text-black" %>
+        <% end %>
       </div>
     </footer>
   </body>

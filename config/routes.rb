@@ -52,7 +52,9 @@ Rails.application.routes.draw do
     end
     resources :followings, only: [:index]
 
-    root "posts#index"
+    get "/account", to: "account#index"
+
+    root "account#index"
   end
 
   get "/admin", to: "admin#index", as: :admin
