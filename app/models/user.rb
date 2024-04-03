@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail
+  include DeliveryEmail, Followable
 
   before_save :downcase_email_and_username
 

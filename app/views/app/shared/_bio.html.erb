@@ -1,0 +1,14 @@
+<div class="mt-8">
+  <%= form_with url: app_user_path(Current.user), model: Current.user, data: { controller: "vanish" } do |form| %>
+    <div>
+      <h3 class="font-bold text-lg mb-2">Bio</h3>
+
+      <%= form.text_area :bio, placeholder: "Add a bio to your profile if you like...", class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg", data: { controller: "autogrow" } %>
+    </div>
+
+    <div class="mt-2 flex justify-between">
+      <div id="bio-response" data-vanish-target="response" class="text-sm me-1"></div>
+      <%= form.submit "Update", class: "underline text-sm font-semibold cursor-pointer", data: { action: "click->vanish#show" } %>
+    </div>
+  <% end %>
+</div>

@@ -46,9 +46,15 @@ Rails.application.routes.draw do
 
   namespace :app do
     resources :posts, only: [:index, :destroy]
-    resources :users, only: [:update, :destroy]
+    resources :users, only: [:update, :destroy] do
+      post :follow, to: 'followings#create'
+      delete :unfollow, to: 'followings#destroy'
+    end
+    resources :followings, only: [:index]
 
-    root "posts#index"
+    get "/account", to: "account#index"
+
+    root "account#index"
   end
 
   get "/admin", to: "admin#index", as: :admin

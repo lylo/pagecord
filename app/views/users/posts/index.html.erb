@@ -1,14 +1,35 @@
-<div class="max-w-xl w-full mx-auto mt-12">
+<div class="max-w-xl w-full mx-auto mt-12 text-black dark:text-slate-100">
   <div class="mb-12 pb-4 border-b border-b-slate-300-100 dark:border-b-slate-600">
-    <div class="font-bold text-lg text-black dark:text-slate-100">
-      <%= link_to "@#{@user.username}", user_posts_path(@user.username) %>
+    <div class="flex justify-between items-center">
+      <%= link_to "@#{@user.username}", user_posts_path(@user.username), class: "font-bold text-lg" %>
+
+      <% if Current.user&.username == "olly" %>
+        <% if logged_in? && @user != Current.user %>
+          <div class="text-xs border text-slate-500 dark:text-slate-400 hover:text-slate-800 hover:dark:text-slate-300 dark:border-slate-500 rounded-xl px-2 py-1 hover:bg-slate-100 hover:dark:bg-slate-700">
+            <%= turbo_frame_tag "#{dom_id(@user)}-follow-button" do %>
+              <%= render partial: "users/follow_button", locals: { user: @user } %>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
     </div>
     <div class="mt-2 text-sm prose dark:prose-invert text-slate-500 dark:text-slate-400">
       <%= simple_format(auto_link @user.bio) %>
     </div>
   </div>
 
-  <%= render partial: "users/posts/post", collection: @posts, cached: true %>
+  <% if @posts.empty? %>
+    <p class="text-center">
+      Nothing to read on this Pagecord yet ✨
+    </p>
+    <p class="mt-4 text-center">
+      To be notified of new posts, subscribe to <span class="font-semibold">@<%= @user.username %></span>'s
+      <%= link_to "RSS feed", user_posts_path(username: @user.username, format: :rss),
+         class: "font-semibold underline" %>
+    </p>
+  <% else %>
+    <%= render partial: "users/posts/post", collection: @posts, cached: true %>
+  <% end %>
 
   <% if @pagy.next %>
     <div class="text-slate-800 dark:text-slate-200">
