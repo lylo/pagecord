@@ -34,8 +34,10 @@ module Html
       MAX_HEIGHT = 5000
 
       def valid_image?(url)
-        size = FastImage.size(url)
-        type = FastImage.type(url)
+        sanitized_url = sanitize_url(url)
+
+        size = FastImage.size(sanitized_url)
+        type = FastImage.type(sanitized_url)
 
         valid_type = %i[jpeg jpg webp png gif svg].include?(type)
         valid_size = size.present? && size[0] <= MAX_WIDTH && size[1] <= MAX_HEIGHT
@@ -43,6 +45,13 @@ module Html
         valid_type && valid_size
       rescue FastImage::UnknownImageType, FastImage::ImageFetchFailure
         false
+      end
+
+      def sanitize_url(url)
+        uri = URI.parse(url)
+        CGI.escapeHTML(uri.to_s)
+      rescue URI::InvalidURIError
+        ''
       end
     end
 end
