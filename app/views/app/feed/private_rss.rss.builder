@@ -16,7 +16,7 @@ xml.rss version: "2.0" do
         if post.title.blank?
           xml.title "@#{@user.username} - #{post.updated_at.to_formatted_s(:long)}"
         else
-          xml.title post.title
+          xml.title "@#{@user.username} - #{post.title}"
         end
         xml.description do
           xml.cdata! post.content
