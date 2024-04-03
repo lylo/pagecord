@@ -8,8 +8,10 @@
         Once you follow other Pagecords, you'll see them listed here ✨
       </div>
     <% else %>
-      You are following <%= pluralize @user.followees.count, "Pagecord" %>. You can see all their posts
-      <%= link_to "in your feed", app_feed_path, class: "font-semibold underline" %>.
+      <%= render "app/shared/callout" do %>
+        You are following <%= pluralize @user.followees.count, "Pagecord" %>. You can see all their posts
+        <%= link_to "in your feed", app_feed_path, class: "font-semibold underline" %>.
+      <% end %>
     <% end %>
 
     <div class="mt-4 flex flex-col divide-y divide-gray-100 dark:divide-gray-700">
