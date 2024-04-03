@@ -1,5 +1,6 @@
 class App::FollowingsController < AppController
   include Pagy::Backend
+  include ActionView::RecordIdentifier
 
   def index
     @pagy, @followees =  pagy(Current.user.followees, items: 15)
@@ -16,7 +17,7 @@ class App::FollowingsController < AppController
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.update("follow-button", partial: "users/follow_button", locals: { user: @user })
+        render turbo_stream: turbo_stream.update("#{dom_id(@user)}-follow-button", partial: "users/follow_button", locals: { user: @user })
       end
     end
   end
@@ -32,7 +33,7 @@ class App::FollowingsController < AppController
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.update("follow-button", partial: "users/follow_button", locals: { user: @user })
+        render turbo_stream: turbo_stream.update("#{dom_id(@user)}-follow-button", partial: "users/follow_button", locals: { user: @user })
       end
     end
   end
