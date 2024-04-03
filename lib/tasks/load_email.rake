@@ -3,7 +3,7 @@ namespace :email do
   task load: :environment do
     ENV["PAGECORD_RECIPIENT"]="joel_gf35jsue@post.pagecord.com"
     ENV["PAGECORD_FROM"] ="joel@meyerowitz.xyz"
-    ENV["PAGECORD_REPLYTO"] = ENV["PAGECOR_FROM"]
+    ENV["PAGECORD_REPLYTO"] = ENV["PAGECORD_FROM"]
 
     dir_path = ENV["DIR"]
 
