@@ -25,9 +25,7 @@ module Html
       # Gmail wraps monospace in <font face="monospace"> tags
       def replace_font_tags_with_code_tags(document)
         document.css("font[face]").each do |element|
-          if element["face"].downcase.include?("monospace")
-            insert_code_tag(element)
-          end
+          insert_code_tag(element) if is_monospace_font?(element["face"])
         end
       end
 
@@ -35,6 +33,15 @@ module Html
         code = Nokogiri::XML::Node.new "code", element.document
         code.content = element.content
         element.replace code
+      end
+
+      MONOSPACE_FONTS = ["consolas", "courier", "inconsolata", "lucida console",
+                         "menlo", "monaco", "monospace", "sf mono", "source code pro"].freeze
+
+      def is_monospace_font?(font)
+        MONOSPACE_FONTS.each do |monospace_font|
+          return true if font.downcase.include?(monospace_font.to_s)
+        end
       end
   end
 end
