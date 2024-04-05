@@ -11,10 +11,15 @@ class AdminController < ApplicationController
 
   private
 
+    ADMIN_USERS = %w[olly pagecord]
+
     def require_admin
-      admin = Rails.env.production? ? "pagecord" : "joel"
-      unless Current.user.username == admin
-        redirect_to root_path
+      admin = if Rails.env.production?
+        ADMIN_USERS.include? Current.user.username
+      else
+        Current.user.username == "joel"
       end
+
+      redirect_to root_path unless admin
     end
 end
