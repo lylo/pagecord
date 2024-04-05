@@ -22,5 +22,7 @@ namespace :email do
         puts "Error processing email from file #{file_path}: #{e.message}"
       end
     end
+
+    ActiveJob::Base.queue_adapter.shutdown
   end
 end

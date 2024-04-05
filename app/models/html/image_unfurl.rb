@@ -10,18 +10,11 @@ module Html
         if node.text? && node.parent.name != "a"
           URI.extract(node.content, ['http', 'https']).each do |url|
             if valid_image?(url)
-              img_node = Nokogiri::XML::Node.new "img", document
-              img_node["src"] = url
-              img_node["pagecord"] = "true"
-              node.add_next_sibling(img_node)
-              node.content = node.content.gsub(url, "")
+              replace_url_with_image(document, node, url)
             end
           end
         elsif node.name == "a" && node.content.include?(node["href"]) && valid_image?(node["href"])
-          img_node = Nokogiri::XML::Node.new "img", document
-          img_node["src"] = node["href"]
-          img_node["pagecord"] = "true"
-          node.replace(img_node)
+          replace_anchor_with_image(document, node)
         end
       end
 
@@ -52,6 +45,21 @@ module Html
         CGI.escapeHTML(uri.to_s)
       rescue URI::InvalidURIError
         ''
+      end
+
+      def replace_url_with_image(document, node, url)
+        img_node = Nokogiri::XML::Node.new "img", document
+        img_node["src"] = url
+        img_node["pagecord"] = "true"
+        node.add_next_sibling(img_node)
+        node.content = node.content.gsub(url, "")
+      end
+
+      def replace_anchor_with_image(document, node)
+        img_node = Nokogiri::XML::Node.new "img", document
+        img_node["src"] = node["href"]
+        img_node["pagecord"] = "true"
+        node.replace(img_node)
       end
     end
 end
