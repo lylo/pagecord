@@ -40,4 +40,12 @@ module ApplicationHelper
       "Posts from @#{user.username}. #{bio}"
     end
   end
+
+  def open_graph_image
+    if @post && @post.open_graph_image.present?
+      @post.open_graph_image.url
+    else
+      image_url "social/open-graph.png"
+    end
+  end
 end
