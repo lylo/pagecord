@@ -13,6 +13,18 @@ class SidekiqAdminConstraint
   end
 end
 
+class DomainConstraint
+  def self.matches?(request)
+    return false if Rails.env.development? || Rails.env.test?
+
+    request.host != "pagecord.com" && request.env["user"].present?
+  end
+
+  def self.username_from_request(request)
+    matches?(request) ? request.env['user'].username : request.params[:username]
+  end
+end
+
 Rails.application.routes.draw do
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -66,9 +78,8 @@ Rails.application.routes.draw do
 
   get '/@:username', to: redirect('/%{username}')
 
-  scope ":username" do
+  scope ":username" do # , defaults: { username: lambda { |req| DomainConstraint.username_from_request(req) } } do
     get "/", to: "users/posts#index", as: :user_posts
-    get "/profile", to: "users/profile#show", as: :user_profile
     get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_without_title
     get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_with_title
   end
