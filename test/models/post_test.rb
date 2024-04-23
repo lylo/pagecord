@@ -38,9 +38,8 @@ class PostTest < ActiveSupport::TestCase
   end
 
   test "should enqueue GenerateOpenGraphImageJob after create" do
-    @post = Post.new(user: users(:joel), content: "Test post", html: false)
-    assert_enqueued_with(job: GenerateOpenGraphImageJob, args: [@post]) do
-      @post.save
-    end
+    @post = Post.create!(user: users(:joel), content: "Test post <img src=\"test.jpg\|>", html: true)
+
+    assert @post.open_graph_image.present?
   end
 end

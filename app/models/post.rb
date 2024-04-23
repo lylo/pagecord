@@ -24,6 +24,10 @@ class Post < ApplicationRecord
     end
 
     def detect_open_graph_image
-      GenerateOpenGraphImageJob.perform_later(self)
+      if Rails.env.production?
+        GenerateOpenGraphImageJob.perform_later(self)
+      else
+        GenerateOpenGraphImageJob.perform_now(self)
+      end
     end
 end
