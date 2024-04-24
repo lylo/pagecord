@@ -23,20 +23,20 @@ module ApplicationHelper
 
   def post_title(post)
     if post.title.present?
-      post.title.truncate(100)
+      post.title.truncate(100).strip
     else
       sanitized_content = strip_tags(post.content.truncate(140))
       if sanitized_content.blank?
         "Untitled"
       else
-        sanitized_content
+        sanitized_content.strip
       end
     end
   end
 
   def user_bio(user)
     @user_bio ||= begin
-      bio = user.bio.present? ? strip_tags(user.bio.truncate(140)) : ""
+      bio = user.bio.present? ? strip_tags(user.bio.truncate(140)).strip : ""
       "Posts from @#{user.username}. #{bio}"
     end
   end
