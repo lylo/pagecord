@@ -41,8 +41,12 @@ module ApplicationHelper
     end
   end
 
+  def has_open_graph_image?
+    @post && @post.open_graph_image.present?
+  end
+
   def open_graph_image
-    if @post && @post.open_graph_image.present?
+    if has_open_graph_image?
       @post.open_graph_image.url
     else
       image_url "social/open-graph.png"

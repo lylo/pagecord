@@ -15,7 +15,11 @@
 <meta property="og:image" content="<%= open_graph_image %>">
 
 <!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
+<% if has_open_graph_image? %>
+  <meta property="twitter:card" content="summary_large_image">
+<% else %>
+  <meta property="twitter:card" content="summary">
+<% end %>
 <meta property="twitter:url" content="https://pagecord.com/">
 <meta property="twitter:title" content="Pagecord">
 <meta property="twitter:description" content="<%= meta_description %>">
