@@ -24,10 +24,10 @@ class Users::PostsController < ApplicationController
   private
 
     def load_user
-      @user ||= if user_params[:username]
-        User.kept.find_by(username: user_params[:username])
-      else
+      @user ||= if custom_domain_request?
         user_from_custom_domain
+      else
+        User.kept.find_by(username: user_params[:username]) if user_params[:username].present?
       end
 
       redirect_home_with_forbidden if @user.nil?
