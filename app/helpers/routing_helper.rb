@@ -25,7 +25,7 @@ module RoutingHelper
   end
 
   def user_home(user, type)
-    if custom_domain_request?
+    if user.custom_domain.present?
       send("custom_user_posts_#{type}", host: user.custom_domain)
     else
       send("user_posts_#{type}", username: user.username)
