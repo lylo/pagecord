@@ -6,16 +6,19 @@
     <%= render "app/shared/how_to" %>
   <% end %>
 
-  <%= render "app/shared/bio" %>
+  <%= turbo_frame_tag "user_form", data: { controller: "vanish" } do %>
+    <%= render "form"%>
+  <% end %>
 
-  <div>
-    <h3 class="font-bold text-lg mt-4 mb-2">Danger Zone</h3>
+  <hr class="mt-12">
 
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Danger Zone</h3>
     <p>
       You can delete your account by clicking the button below. Sorry to see you go!
     </p>
 
-    <%= button_to app_user_path(Current.user),
+    <%= button_to app_user_path(@user),
           method: :delete,
           data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
           class: "mt-4 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:text-white hover:bg-red-600 hover:dark:bg-red-700 rounded-lg border hover:border-red-700 hover:dark:border-red-800 dark:border-slate-700 p-2" do %>
