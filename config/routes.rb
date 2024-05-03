@@ -82,6 +82,24 @@ Rails.application.routes.draw do
     end
   end
 
+  direct :rails_public_blob do |blob|
+    # Preserve the behaviour of `rails_blob_url` inside these environments
+    # where S3 or the CDN might not be configured
+    if ENV.fetch("ACTIVE_STORAGE_ASSET_HOST", false) && blob&.key
+     File.join(ENV.fetch("ACTIVE_STORAGE_ASSET_HOST"), blob.key)
+    else
+     route =
+        # ActiveStorage::VariantWithRecord was introduced in Rails 6.1
+       # Remove the second check if you're using an older version
+       if blob.is_a?(ActiveStorage::Variant) || blob.is_a?(ActiveStorage::VariantWithRecord)
+          :rails_representation
+       else
+          :rails_blob
+       end
+     route_for(route, blob)
+    end
+  end
+
   # Defines the root path route ("/")
   root "home#index"
 end
