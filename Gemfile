@@ -24,8 +24,10 @@ gem "sidekiq"
 gem "sentry-ruby"
 gem "sentry-rails"
 
+gem "aws-sdk-s3", "~> 1.149"
 gem "discard", "~> 1.2"
 gem "fastimage"
+gem "htmlentities", "~> 4.3"
 gem "inline_svg", "~> 1.9"
 gem "pagy", "~> 7.0"
 gem "postmark-rails"
@@ -68,5 +70,3 @@ group :test do
   gem "rails-controller-testing"
   gem "selenium-webdriver"
 end
-
-gem "htmlentities", "~> 4.3"
