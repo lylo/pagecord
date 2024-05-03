@@ -28,6 +28,10 @@ class User < ApplicationRecord
     end
   end
 
+  def is_premium?
+    %w[olly pagecord teamlight].include?(username) || !Rails.env.production?
+  end
+
   private
 
     def downcase_email_and_username
