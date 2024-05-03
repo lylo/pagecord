@@ -25,7 +25,7 @@ module ApplicationHelper
     if post.title.present?
       post.title.truncate(100).strip
     else
-      sanitized_content = strip_tags(post.content.truncate(140))
+      sanitized_content = strip_tags(post.body.truncate(140))
       if sanitized_content.blank?
         "Untitled"
       else
