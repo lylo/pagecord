@@ -10,12 +10,12 @@ module ApplicationHelper
   end
 
   def page_title
-    if @user&.username
-      "Pagecord  | @#{@user.username}"
-    elsif @post
-      "Pagecord | #{post_title(@post)}"
+    if @post
+      "#{post_title(@post)} | @#{@user.username}"
     elsif content_for?(:title)
       "Pagecord | #{content_for(:title)}"
+    elsif @user&.username
+      "Pagecord | @#{@user.username}"
     else
       "Pagecord - Effortless blogging from your inbox"
     end
