@@ -1,0 +1,35 @@
+<%= form_with url: app_user_path(@user), model: @user do |form| %>
+  <div>
+    <h3 class="font-bold text-lg mb-2">Bio</h3>
+
+    <%= form.text_area :bio, placeholder: "Add a bio to your profile if you like...", class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg", data: { controller: "autogrow" } %>
+  </div>
+
+  <% if @user.is_premium? %>
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
+    <% if @user.custom_domain.present? %>
+      <p>
+        To remove your custom domain, clear the box below and click Update.
+        Don't forget to update your DNS!
+      </p>
+    <% else %>
+      <p>
+        Set up a custom domain.
+      </p>
+      <p class="mt-4">
+        For this to work you'll first need to create an A record in your DNS that points to
+        <code><mark class="bg-gray-100 dark:bg-gray-700 dark:text-gray-100 px-1">13.40.47.194</mark></code>.
+      </p>
+    <% end %>
+
+    <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+  </div>
+  <% end %>
+
+  <div class="mt-8 flex items-center">
+    <%= form.submit "Update", class: "dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 hover:dark:bg-slate-700 rounded-lg border dark:border-slate-700 p-2 cursor-pointer", data: { action: "click->vanish#show" } %>
+
+    <div id="form-response" data-vanish-target="response" class="ms-4"></div>
+  </div>
+<% end %>

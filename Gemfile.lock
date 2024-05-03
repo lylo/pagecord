@@ -138,6 +138,7 @@ GEM
     crass (1.0.6)
     css_parser (1.17.1)
       addressable
+    csv (3.3.0)
     dalli (3.2.8)
     date (3.3.4)
     debug (1.9.2)
@@ -152,6 +153,10 @@ GEM
     globalid (1.2.1)
       activesupport (>= 6.1)
     htmlentities (4.3.4)
+    httparty (0.22.0)
+      csv
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     image_processing (1.12.2)
@@ -194,6 +199,8 @@ GEM
     mocha (2.2.0)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.7.2)
+    multi_xml (0.7.1)
+      bigdecimal (~> 3.1)
     nanoid (2.0.0)
     net-imap (0.4.10)
       date
@@ -361,6 +368,7 @@ DEPENDENCIES
   discard (~> 1.2)
   fastimage
   htmlentities (~> 4.3)
+  httparty
   image_processing (~> 1.2)
   importmap-rails
   inline_svg (~> 1.9)
