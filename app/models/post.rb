@@ -1,16 +1,23 @@
 class Post < ApplicationRecord
   include OpaqueId
 
-  belongs_to :user
-  has_one :open_graph_image, dependent: :destroy
+  belongs_to :user, inverse_of: nil
 
-  before_create :set_published_at, :limit_content_size
-  after_create  :detect_open_graph_image
+  has_rich_text :body
+  has_many_attached :attachments
 
-  validate :content_or_title
+  before_create :set_published_at, :limit_body_size
 
-  def content_or_title
-    errors.add(:base, "Either content or title must be present") unless content.present? || title.present?
+  validate :body_or_title
+
+  def body_or_title
+    errors.add(:base, "Either body or title must be present") unless body.body.present? || title.present?
+  end
+
+  def open_graph_image
+    if attachments.any?
+      attachments.first
+    end
   end
 
   private
@@ -19,15 +26,7 @@ class Post < ApplicationRecord
       self.published_at ||= created_at
     end
 
-    def limit_content_size
-      self.content = content.slice(0, 64.kilobytes)
-    end
-
-    def detect_open_graph_image
-      if Rails.env.production?
-        GenerateOpenGraphImageJob.perform_later(self)
-      else
-        GenerateOpenGraphImageJob.perform_now(self)
-      end
+    def limit_body_size
+      self.body = body.to_s.slice(0, 64.kilobytes)
     end
 end

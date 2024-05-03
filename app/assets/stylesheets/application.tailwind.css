@@ -12,12 +12,8 @@
 
 */
 
-article p {
+article .trix-content p {
   @apply mb-4;
-}
-
-article a {
-  @apply text-blue-600 underline;
 }
 
 .prose {
@@ -68,3 +64,4 @@ span.page.next > a, span.page.prev > a {
     }
   }
 }
+@import 'actiontext.css';

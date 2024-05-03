@@ -47,7 +47,7 @@ module ApplicationHelper
 
   def open_graph_image
     if has_open_graph_image?
-      @post.open_graph_image.url
+      rails_blob_url @post.open_graph_image
     else
       image_url "social/open-graph.png"
     end

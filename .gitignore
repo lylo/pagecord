@@ -40,3 +40,4 @@
 /config/credentials/production.key
 .DS_Store
 *.rdb
+*.eml

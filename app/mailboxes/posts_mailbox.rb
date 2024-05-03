@@ -24,22 +24,24 @@ class PostsMailbox < ApplicationMailbox
 
     if user = User.kept.find_by(email: from, delivery_email: recipient)
       begin
-        parser = MailParser.new(mail)
+        parser = MailParser.new(mail, process_attachments: is_premium?(user))
 
         unless parser.is_blank?
-          content = parser.body
+          body = parser.body
           title = parser.subject
 
           if parser.body_blank?
-            content = parser.transform(title)
+            body = parser.transform(title)
             title = nil
           end
 
           Rails.logger.info "Creating post from user: #{user.id}"
-          user.posts.create!(title: title, content: content, html: parser.html?, published_at: mail.date)
+          user.posts.create!(title: title, content: body, body: body, attachments: parser.attachments, html: parser.html?, published_at: mail.date)
         end
       rescue => e
         Rails.logger.warn "Unable to parse email: #{e.message}"
+        puts e.message
+        puts e.backtrace
       end
     else
       Rails.logger.warn "User not found. From: #{from}, To: #{recipient}"
@@ -56,5 +58,9 @@ class PostsMailbox < ApplicationMailbox
 
   def dkim_passed?(mail)
     mail.header_fields.any? { |field| field.name == "DKIM-Signature" }
+  end
+
+  def is_premium?(user)
+    user.username == "olly" || !Rails.env.production?
   end
 end

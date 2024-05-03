@@ -26,6 +26,8 @@ module Pagecord
 
     config.filter_parameters += [:RawEmail, :Attachments]
 
+    Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_tags << "s"
+
     config.exceptions_app = self.routes
   end
 end
