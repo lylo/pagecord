@@ -76,5 +76,6 @@ class App::UsersController < AppController
           Rails.logger.info "SSL certificate revoked for custom domain"
         end
       end
+      @user.posts.touch_all
     end
 end
