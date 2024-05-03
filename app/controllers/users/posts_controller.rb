@@ -3,7 +3,7 @@ class Users::PostsController < ApplicationController
 
   skip_before_action :domain_check      # PostsController can operate with a custom domain
 
-  before_action :load_user, :verification
+  before_action :load_user, :verification, :enforce_custom_domain
 
   def index
     @pagy, @posts = pagy(@user.posts.order(created_at: :desc))
@@ -44,6 +44,16 @@ class Users::PostsController < ApplicationController
     def user_from_custom_domain
       if custom_domain_request?
         User.kept.find_by(custom_domain: request.host)
+      end
+    end
+
+    def enforce_custom_domain
+      if @user.custom_domain && request.host != @user.custom_domain
+        request_path = request.path.gsub(/^\/@?#{@user.username}\/?/, '')
+        full_url = root_url(host: @user.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
+        new_url = "#{full_url}#{request_path}"
+
+        redirect_to new_url, status: :moved_permanently, allow_other_host: true
       end
     end
 end
