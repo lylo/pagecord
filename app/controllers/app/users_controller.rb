@@ -43,7 +43,7 @@ class App::UsersController < AppController
     # Move this to the model perhaps?
     def handle_custom_domain_ssl
       if @user.custom_domain.present?
-        if @Rails.env.production?
+        if Rails.env.production?
           # FIXME create an API class for this and background it
           response = HTTParty.post(
             "https://app.hatchbox.io/api/v1/accounts/2928/apps/6347/domains",
@@ -61,7 +61,7 @@ class App::UsersController < AppController
           Rails.logger.info "SSL certificate issued for custom domain"
         end
       else
-        if @Rails.env.production?
+        if Rails.env.production?
           # FIXME create an API class for this and background it
           response = HTTParty.delete(
             "https://app.hatchbox.io/api/v1/accounts/2928/apps/6347/domains/#{@user.custom_domain}",
