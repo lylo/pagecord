@@ -10,8 +10,7 @@
     <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
     <% if @user.custom_domain.present? %>
       <p>
-        To remove your custom domain, clear the box below and click Update.
-        Don't forget to update your DNS!
+        Your Pagecord is now available at <code><mark class="bg-gray-100 dark:bg-gray-700 dark:text-gray-100 px-1"><%= @user.custom_domain %></mark></code>
       </p>
     <% else %>
       <p>
@@ -24,6 +23,14 @@
     <% end %>
 
     <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+
+    <% if @user.custom_domain.present? %>
+      <p class="mt-2 text-gray-500 dark:text-gray-400 text-sm">
+        To remove your custom domain, clear the box above and click Update.
+        Don't forget to remove the A record from your DNS!
+      </p>
+    <% end %>
+
   </div>
   <% end %>
 
