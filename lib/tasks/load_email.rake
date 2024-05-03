@@ -12,12 +12,14 @@ namespace :email do
       exit
     end
 
+    # remove all inbound emails
+    ActionMailbox::InboundEmail.destroy_all
+
     Dir.glob("#{dir_path}/*.eml").each do |file_path|
       begin
         puts "Processing email from file: #{file_path}"
         raw_email = File.read(file_path)
-        inbound_email = ActionMailbox::InboundEmail.create_and_extract_message_id!(raw_email)
-        PostsMailbox.new(inbound_email).process
+        ActionMailbox::InboundEmail.create_and_extract_message_id!(raw_email)
       rescue => e
         puts "Error processing email from file #{file_path}: #{e.message}"
       end
