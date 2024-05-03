@@ -63,8 +63,9 @@ class App::UsersController < AppController
       else
         if Rails.env.production?
           # FIXME create an API class for this and background it
+          # There's also a danger that existing domains can be removed here!
           response = HTTParty.delete(
-            "https://app.hatchbox.io/api/v1/accounts/2928/apps/6347/domains/#{@user.custom_domain}",
+            "https://app.hatchbox.io/api/v1/accounts/2928/apps/6347/domains/#{@user.custom_domain_previously_was}",
             headers: {
               "Accept" => "application/json",
               "Authorization" => "Bearer #{ENV['HATCHBOX_API_KEY']}"
