@@ -4,7 +4,7 @@ class Post < ApplicationRecord
   belongs_to :user, inverse_of: nil
 
   has_rich_text :body
-  has_many_attached :attachments
+  has_many_attached :attachments, dependent: :destroy
 
   before_create :set_published_at, :limit_body_size
 
