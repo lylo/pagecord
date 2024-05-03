@@ -18,6 +18,20 @@ class User < ApplicationRecord
     self.update! verified: true
   end
 
+  ADMIN_USERS = %w[olly pagecord]
+
+  def is_admin?
+    if Rails.env.production?
+      ADMIN_USERS.include? Current.user.username
+    else
+      Current.user.username == "joel"
+    end
+  end
+
+  def is_premium?
+    %w[olly pagecord teamlight].include?(username) || !Rails.env.production?
+  end
+
   private
 
     def downcase_email_and_username

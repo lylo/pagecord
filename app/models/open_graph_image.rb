@@ -2,7 +2,9 @@ class OpenGraphImage < ApplicationRecord
   belongs_to :post
 
   def self.from_post(post)
-    doc = Nokogiri::HTML(post.content)
+    return if post.attachments.any?
+
+    doc = Nokogiri::HTML(post.body.to_s)
     img_tags = doc.css("img")
 
     if img_tags.any?

@@ -68,12 +68,13 @@ Rails.application.routes.draw do
     get "/feed", to: "feed#index"
     get "/feed/rss/:token", to: "feed#private_rss", as: :private_rss_feed, format: :rss
 
-    root "account#index"
+    root "feed#index"
   end
 
   get "/admin", to: "admin#index", as: :admin
   namespace :admin do
     resources :stats, only: [:index]
+    resources :posts, only: [:index]
   end
 
   get '/@:username', to: redirect('/%{username}')
@@ -89,6 +90,24 @@ Rails.application.routes.draw do
       post_with_title_path(post.user.username, post.url_title, post.url_id)
     else
       post_without_title_path(post.user.username, post.url_id)
+    end
+  end
+
+  direct :rails_public_blob do |blob|
+    # Preserve the behaviour of `rails_blob_url` inside these environments
+    # where S3 or the CDN might not be configured
+    if ENV.fetch("ACTIVE_STORAGE_ASSET_HOST", false) && blob&.key
+     File.join(ENV.fetch("ACTIVE_STORAGE_ASSET_HOST"), blob.key)
+    else
+     route =
+        # ActiveStorage::VariantWithRecord was introduced in Rails 6.1
+       # Remove the second check if you're using an older version
+       if blob.is_a?(ActiveStorage::Variant) || blob.is_a?(ActiveStorage::VariantWithRecord)
+          :rails_representation
+       else
+          :rails_blob
+       end
+     route_for(route, blob)
     end
   end
 

@@ -1,37 +1,17 @@
 one:
   title: The Art of Street Photography
-  content: |
-    Street photography is a fascinating genre that offers a raw, unscripted, and candid look into everyday life. It captures the beauty of ordinary moments, turning them into extraordinary images. It's about documenting society and people in their natural environment, without any pretense or setup.
-
-    The beauty of street photography lies in its spontaneity. It's about capturing that fleeting moment that might never occur again. It could be a glance, a gesture, a play of light and shadow, or a unique juxtaposition. The streets are full of such moments, waiting to be captured.
-
-    One of the key aspects of street photography is the ability to anticipate moments. This requires a keen eye for details and a deep understanding of human behavior. It's about being in the right place at the right time, and more importantly, being ready to capture the moment when it happens.
-
-    Street photography is also about telling stories. Each image is a snapshot of a larger narrative. It's about capturing the essence of life in a single frame. The viewer is left to fill in the details and complete the story in their mind.
-
-    In conclusion, street photography is a challenging yet rewarding genre. It pushes you to step out of your comfort zone, to see the world from a different perspective, and to find beauty in the mundane. It's a genre that truly celebrates the art of observation and storytelling.
   user: joel
   html: false
   published_at: <%= 1.day.ago %>
 
 two:
   title: The Beauty of Landscape Photography
-  content: |
-    <p>Landscape photography is a genre that captures <i>the beauty of nature in all its grandeur</i>. It's about capturing the essence of a place, the mood, the light, and the emotions it evokes.</p>
-
-    <p>One of the key aspects of landscape photography is the use of natural light. The golden hours of sunrise and sunset offer the most dramatic light, casting long shadows and bathing the landscape in a warm, golden glow. But other times of day, like the blue hour or the harsh midday sun, can also offer interesting opportunities for creative photography.</p>
-
-    <p>Composition is another crucial element in landscape photography. The <a href="https://en.wikipedia.org/wiki/Rule_of_thirds">rule of thirds</a>, leading lines, and the use of foreground elements are some of the techniques that can be used to create compelling compositions. But rules are meant to be broken, and sometimes the most stunning images come from thinking outside the box and experimenting with different perspectives.</p>
-
-    <p>In conclusion, landscape photography is a genre that requires patience, planning, and a deep love for nature. It's about being in the right place at the right time, and more importantly, being able to see and capture the beauty that is often overlooked.</p>
   user: joel
   html: true
   published_at: <%= 2.days.ago %>
 
 three:
   title: My first post
-  content: |
-    This is my first post
   user: vivian
   html: false
   published_at: <%= 1.week.ago %>

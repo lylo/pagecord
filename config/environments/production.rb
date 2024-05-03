@@ -17,7 +17,9 @@ Rails.application.configure do
 
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local = false
+
   config.action_controller.perform_caching = true
+  config.action_controller.default_url_options = { host: "pagecord.com" }
 
   # Ensures that a master key has been made available in ENV["RAILS_MASTER_KEY"], config/master.key, or an environment
   # key such as config/credentials/production.key. This key is used to decrypt credentials (and other encrypted files).
@@ -40,7 +42,8 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  config.active_storage.service = :s3
+  config.active_storage.delivery_method = :proxy
 
   # Mount Action Cable outside main process or domain.
   # config.action_cable.mount_path = nil

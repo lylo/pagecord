@@ -19,9 +19,9 @@
   <% end %>
 
   <% if post.html? %>
-    <%= auto_link post.content.html_safe %>
+    <%= auto_link post.body %>
   <% else %>
-    <%= simple_format(auto_link post.content) %>
+    <%= simple_format(auto_link post.body) %>
   <% end %>
 </article>
 
