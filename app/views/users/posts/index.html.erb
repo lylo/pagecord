@@ -1,7 +1,7 @@
 <div class="max-w-xl w-full mx-auto mt-12 text-black dark:text-slate-100">
   <div class="mb-12 pb-4 border-b border-b-slate-300-100 dark:border-b-slate-600">
     <div class="flex justify-between items-center">
-      <%= link_to "@#{@user.username}", user_posts_path(@user.username), class: "font-bold text-lg" %>
+      <%= link_to "@#{@user.username}", user_home_path(@user), class: "font-bold text-lg" %>
 
       <% if ENV["FOLLOWS_ENABLED"] %>
         <% if logged_in? && @user != Current.user %>

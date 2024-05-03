@@ -9,7 +9,10 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get show" do
-    get post_path(posts(:one))
+    post = posts(:one)
+
+    get post_without_title_path(post.user.username, post.url_id)
+
     assert_response :success
     assert_equal posts(:one), assigns(:post)
   end
@@ -21,8 +24,7 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should redirect to root if user not found" do
     get user_posts_path(username: "nope")
-    assert_redirected_to root_url
-    assert_equal "User not found", flash[:alert]
+    assert_response :forbidden
   end
 
   test "should redirect to root if user is unverified" do
@@ -35,5 +37,31 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
+  end
+
+  # Custom domains
+
+  test "should get index on custom domain" do
+    post = posts(:four)
+
+    get "/", headers: { 'HOST' => post.user.custom_domain }
+
+    assert_response :success
+  end
+
+  test "should get show on custom domain" do
+    post = posts(:four)
+
+    get "/#{post.url_id}", headers: { 'HOST' => post.user.custom_domain }
+
+    assert_response :success
+  end
+
+  test "should redirect on index with unrecognised custom domain" do
+    post = posts(:four)
+
+    get "/#{post.url_id}", headers: { 'HOST' => "gadzooks.com" }
+
+    assert_response :forbidden
   end
 end

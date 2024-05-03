@@ -13,20 +13,7 @@ class SidekiqAdminConstraint
   end
 end
 
-class DomainConstraint
-  def self.matches?(request)
-    return false if Rails.env.development? || Rails.env.test?
-
-    request.host != "pagecord.com" && request.env["user"].present?
-  end
-
-  def self.username_from_request(request)
-    matches?(request) ? request.env['user'].username : request.params[:username]
-  end
-end
-
 Rails.application.routes.draw do
-
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
@@ -38,6 +25,13 @@ Rails.application.routes.draw do
   get "/404", to: "errors#not_found"
   get "/422", to: "errors#unacceptable"
   get "/500", to: "errors#internal_error"
+
+  # Custom domain routes
+  constraints(lambda { |req| !["pagecord.com", "localhost"].include?(req.host) }) do
+    get "/", to: "users/posts#index", as: :custom_user_posts
+    get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_without_title
+    get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_with_title
+  end
 
   resources :signups, only: [:index, :new, :create] do
     get :thanks, on: :collection
@@ -79,19 +73,19 @@ Rails.application.routes.draw do
 
   get '/@:username', to: redirect('/%{username}')
 
-  scope ":username" do # , defaults: { username: lambda { |req| DomainConstraint.username_from_request(req) } } do
+  scope ":username" do
     get "/", to: "users/posts#index", as: :user_posts
     get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_without_title
     get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_with_title
   end
 
-  direct :post do |post, options|
-    if post.url_title.present?
-      post_with_title_path(post.user.username, post.url_title, post.url_id)
-    else
-      post_without_title_path(post.user.username, post.url_id)
-    end
-  end
+  # direct :post do |post, options|
+  #   if post.url_title.present?
+  #     post_with_title_path(post.user.username, post.url_title, post.url_id)
+  #   else
+  #     post_without_title_path(post.user.username, post.url_id)
+  #   end
+  # end
 
   direct :rails_public_blob do |blob|
     # Preserve the behaviour of `rails_blob_url` inside these environments

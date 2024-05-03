@@ -10,6 +10,7 @@ module Authentication
 
   def authenticate
     if user = User.kept.find_by(id: session[:user_id])
+      Rails.logger.info "Authenticated #{user.id}"
       Current.user = user
     end
   end

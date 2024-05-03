@@ -3,14 +3,10 @@ xml.rss version: "2.0" do
   xml.channel do
     xml.title "Posts by @#{@user.username}"
     xml.description "Latest posts by @#{@user.username}"
-    xml.link user_posts_url(@user.username)
+    xml.link user_home_url(@user)
 
     @posts.each do |post|
-      link = if post.url_title.present?
-        post_with_title_url(@user.username, post.url_title, post.url_id)
-      else
-        post_without_title_url(@user.username, post.url_id)
-      end
+      link = post_url(post)
 
       xml.item do
         if post.title.blank?

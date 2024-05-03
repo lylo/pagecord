@@ -24,4 +24,13 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to app_posts_url
   end
+
+  test "should be forbidden on custom domain" do
+    post = posts(:four)
+    login_as post.user
+
+    get app_posts_url, headers: { 'HOST' => post.user.custom_domain }
+
+    assert_response :forbidden
+  end
 end

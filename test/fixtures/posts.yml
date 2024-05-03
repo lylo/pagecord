@@ -15,3 +15,9 @@ three:
   user: vivian
   html: false
   published_at: <%= 1.week.ago %>
+
+four:
+  title: What I've learned about photography
+  user: annie
+  html: true
+  published_at: <%= 1.day.ago %>
