@@ -30,7 +30,7 @@ class User < ApplicationRecord
   end
 
   def is_premium?
-    %w[olly pagecord teamlight].include?(username) || !Rails.env.production?
+    %w[olly pagecord lylo teamlight].include?(username) || !Rails.env.production?
   end
 
   private
