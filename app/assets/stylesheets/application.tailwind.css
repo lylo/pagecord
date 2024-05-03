@@ -22,7 +22,11 @@ article .trix-content p {
     content: "";
   }
 
-  img, blockquote {
+  img {
+    @apply my-2 mx-auto;
+  }
+
+  blockquote {
     @apply my-2;
   }
 }
