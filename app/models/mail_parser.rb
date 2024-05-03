@@ -1,15 +1,26 @@
 class MailParser
   include ActionView::Helpers::SanitizeHelper
 
-  def initialize(mail)
+  def initialize(mail, process_attachments: false)
     @mail = mail
-    @pipeline = [
-      Html::BodyExtraction.new,
-      Html::MonospaceDetection.new,
-      Html::ImageUnfurl.new,
-      Html::Utf8Encoding.new,
-      Html::Sanitize.new,
-    ]
+    @pipeline = if process_attachments
+      [
+        Html::BodyExtraction.new,
+        Html::MonospaceDetection.new,
+        Html::ImageUnfurl.new,
+        @attachment_transformer = Html::MailAttachments.new(mail),
+        Html::Utf8Encoding.new,
+        Html::Sanitize.new,
+      ]
+    else
+      [
+        Html::BodyExtraction.new,
+        Html::MonospaceDetection.new,
+        Html::ImageUnfurl.new,
+        Html::Utf8Encoding.new,
+        Html::Sanitize.new,
+      ]
+    end
   end
 
   def subject
@@ -24,6 +35,14 @@ class MailParser
     @mail.multipart? && @mail.html_part
   end
 
+  def attachments
+    @attachment_transformer&.attachments || []
+  end
+
+  def has_attachments?
+    !attachments.empty?
+  end
+
   def is_blank?
     subject_blank? && body_blank?
   end
@@ -33,7 +52,7 @@ class MailParser
   end
 
   def body_blank?
-    sanitized_body.strip.blank?
+    sanitized_body.strip.blank? && !has_attachments?
   end
 
   def transform(html)

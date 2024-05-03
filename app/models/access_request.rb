@@ -1,5 +1,5 @@
 class AccessRequest < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, inverse_of: nil
 
   before_create :generate_token, :set_exiration
 

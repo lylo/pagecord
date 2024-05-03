@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.3.0"
+ruby "3.3.1"
 
 gem "rails", github: "rails/rails", branch: "main"
 
@@ -24,8 +24,10 @@ gem "sidekiq"
 gem "sentry-ruby"
 gem "sentry-rails"
 
+gem "aws-sdk-s3", "~> 1.149"
 gem "discard", "~> 1.2"
 gem "fastimage"
+gem "htmlentities", "~> 4.3"
 gem "inline_svg", "~> 1.9"
 gem "pagy", "~> 7.0"
 gem "postmark-rails"
@@ -40,7 +42,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.2"
 
 group :development, :test do
   gem "sqlite3", "~> 1.4"
@@ -68,5 +70,3 @@ group :test do
   gem "rails-controller-testing"
   gem "selenium-webdriver"
 end
-
-gem "htmlentities", "~> 4.3"
