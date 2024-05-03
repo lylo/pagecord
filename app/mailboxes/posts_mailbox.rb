@@ -24,7 +24,7 @@ class PostsMailbox < ApplicationMailbox
 
     if user = User.kept.find_by(email: from, delivery_email: recipient)
       begin
-        parser = MailParser.new(mail, process_attachments: is_premium?(user))
+        parser = MailParser.new(mail, process_attachments: user.is_premium?)
 
         unless parser.is_blank?
           body = parser.body
@@ -58,9 +58,5 @@ class PostsMailbox < ApplicationMailbox
 
   def dkim_passed?(mail)
     mail.header_fields.any? { |field| field.name == "DKIM-Signature" }
-  end
-
-  def is_premium?(user)
-    user.username == "olly" || !Rails.env.production?
   end
 end
