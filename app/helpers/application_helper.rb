@@ -42,12 +42,14 @@ module ApplicationHelper
   end
 
   def has_open_graph_image?
-    @post && @post.open_graph_image.present?
+    @post && (@post.attachments.any? || @post.open_graph_image.present?)
   end
 
   def open_graph_image
-    if has_open_graph_image?
-      rails_blob_url @post.open_graph_image
+    if @post && @post.attachments.any?
+      rails_blob_url @post.attachments.first
+    elsif @post && @post.open_graph_image.present?
+      @post.open_graph_image.url
     else
       image_url "social/open-graph.png"
     end
