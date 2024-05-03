@@ -40,7 +40,14 @@ module RoutingHelper
     user_home(user, 'url')
   end
 
+  # FIXME this is duped in ApplicationController
   def custom_domain_request?
-    !%w[pagecord.com localhost].include?(request.host)
+    if Rails.env.production?
+      request.host != "pagecord.com"
+    elsif Rails.env.test?
+      request.host !~ /\.example\.com/
+    else
+      request.host != "localhost"
+    end
   end
 end

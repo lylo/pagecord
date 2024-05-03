@@ -13,6 +13,23 @@ class SidekiqAdminConstraint
   end
 end
 
+module DomainConstraints
+  def self.custom_domain?(request)
+    !default_domain?(request)
+  end
+
+  # FIX ME: This is duplicated in RoutingHelper - needs to go in a class
+  def self.default_domain?(request)
+    if Rails.env.production?
+      request.host == "pagecord.com"
+    elsif Rails.env.test?
+      request.host =~ /\.example\.com/
+    else
+      request.host == "localhost"
+    end
+  end
+end
+
 Rails.application.routes.draw do
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
@@ -25,13 +42,6 @@ Rails.application.routes.draw do
   get "/404", to: "errors#not_found"
   get "/422", to: "errors#unacceptable"
   get "/500", to: "errors#internal_error"
-
-  # Custom domain routes
-  constraints(lambda { |req| !["pagecord.com", "localhost"].include?(req.host) }) do
-    get "/", to: "users/posts#index", as: :custom_user_posts
-    get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_without_title
-    get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_with_title
-  end
 
   resources :signups, only: [:index, :new, :create] do
     get :thanks, on: :collection
@@ -71,21 +81,21 @@ Rails.application.routes.draw do
     resources :posts, only: [:index]
   end
 
-  get '/@:username', to: redirect('/%{username}')
-
-  scope ":username" do
-    get "/", to: "users/posts#index", as: :user_posts
-    get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_without_title
-    get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_with_title
+  constraints(DomainConstraints.method(:custom_domain?)) do
+    get "/", to: "users/posts#index", as: :custom_user_posts
+    get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_without_title
+    get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_with_title
   end
 
-  # direct :post do |post, options|
-  #   if post.url_title.present?
-  #     post_with_title_path(post.user.username, post.url_title, post.url_id)
-  #   else
-  #     post_without_title_path(post.user.username, post.url_id)
-  #   end
-  # end
+  constraints(DomainConstraints.method(:default_domain?)) do
+    get '/@:username', to: redirect('/%{username}')
+
+    scope ":username" do
+      get "/", to: "users/posts#index", as: :user_posts
+      get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_without_title
+      get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_with_title
+    end
+  end
 
   direct :rails_public_blob do |blob|
     # Preserve the behaviour of `rails_blob_url` inside these environments

@@ -30,7 +30,7 @@ class Users::PostsController < ApplicationController
         User.kept.find_by(username: user_params[:username]) if user_params[:username].present?
       end
 
-      redirect_home_with_forbidden if @user.nil?
+      redirect_home if @user.nil?
     end
 
     def user_params
