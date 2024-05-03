@@ -24,7 +24,7 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should redirect to root if user not found" do
     get user_posts_path(username: "nope")
-    assert_response :forbidden
+    assert_redirected_to root_url
   end
 
   test "should redirect to root if user is unverified" do
@@ -62,6 +62,6 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
 
     get "/#{post.url_id}", headers: { 'HOST' => "gadzooks.com" }
 
-    assert_response :forbidden
+    assert_redirected_to "http://gadzooks.com/"
   end
 end
