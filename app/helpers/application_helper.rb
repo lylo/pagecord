@@ -47,7 +47,7 @@ module ApplicationHelper
 
   def open_graph_image
     if @post && @post.attachments.any?
-      rails_blob_url @post.attachments.first
+      rails_public_blob_url @post.attachments.first
     elsif @post && @post.open_graph_image.present?
       @post.open_graph_image.url
     else
