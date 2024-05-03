@@ -48,7 +48,7 @@ class Users::PostsController < ApplicationController
     end
 
     def enforce_custom_domain
-      if @user.custom_domain && request.host != @user.custom_domain
+      if @user.custom_domain.present? && request.host != @user.custom_domain
         request_path = request.path.gsub(/^\/@?#{@user.username}\/?/, '')
         full_url = root_url(host: @user.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
         new_url = "#{full_url}#{request_path}"
