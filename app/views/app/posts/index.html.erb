@@ -24,7 +24,7 @@
         </div>
         <div class="text-xs text-slate-400 dark:text-slate-400 flex justify-between items-center">
           <div>
-            <%= post.created_at.to_formatted_s(:long) %>
+            <%= post.published_at.to_formatted_s(:long) %>
           </div>
           <div class="ms-2">
             <%= button_to app_post_path(post), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this post?"}, title: "Trash this post" do %>

@@ -6,7 +6,7 @@ class Users::PostsController < ApplicationController
   before_action :load_user, :verification, :enforce_custom_domain
 
   def index
-    @pagy, @posts = pagy(@user.posts.order(created_at: :desc))
+    @pagy, @posts = pagy(@user.posts.order(published_at: :desc))
 
     respond_to do |format|
       format.html

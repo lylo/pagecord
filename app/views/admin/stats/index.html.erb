@@ -27,7 +27,7 @@
           <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.email %></td>
           <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.verified %></td>
           <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.discarded_at&.to_formatted_s :short %></td>
-          <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400 text-end"><%= user.created_at.to_formatted_s :long %></td>
+          <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400 text-end"><%= user.published_at.to_formatted_s :long %></td>
         </tr>
       <% end %>
       </tbody>

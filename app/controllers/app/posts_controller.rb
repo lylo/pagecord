@@ -2,7 +2,7 @@ class App::PostsController < AppController
   include Pagy::Backend
 
   def index
-    @pagy, @posts =  pagy(Current.user.posts.order(created_at: :desc), items: 15)
+    @pagy, @posts =  pagy(Current.user.posts.order(published_at: :desc), items: 15)
   end
 
   def destroy
