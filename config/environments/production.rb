@@ -20,7 +20,7 @@ Rails.application.configure do
 
   config.action_controller.perform_caching = true
   config.action_controller.default_url_options = { host: "pagecord.com" }
-
+  config.action_controller.asset_host = "pagecord.com"
   # Ensures that a master key has been made available in ENV["RAILS_MASTER_KEY"], config/master.key, or an environment
   # key such as config/credentials/production.key. This key is used to decrypt credentials (and other encrypted files).
   # config.require_master_key = true
@@ -56,6 +56,10 @@ Rails.application.configure do
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
+  # see https://github.com/ankane/secure_rails?tab=readme-ov-file
+  config.ssl_options = {hsts: {subdomains: true, preload: true, expires: 1.year}}
+
+  config.filter_parameters += [:email]
 
   # Log to STDOUT by default
   stdout_logger = ActiveSupport::Logger.new(STDOUT)
