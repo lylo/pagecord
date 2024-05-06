@@ -15,7 +15,7 @@ class Users::PostsController < ApplicationController
   end
 
   def show
-    id = Post.from_url_id user_params[:id]
+    id = Post.id_from_url_id(user_params[:id])
     @post = @user.posts.find(id)
 
     fresh_when @post

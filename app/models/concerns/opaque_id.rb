@@ -14,7 +14,7 @@ module OpaqueId
   end
 
   class_methods do
-    def from_url_id(url_id)
+    def id_from_url_id(url_id)
       url_id.to_i(16) - OFFSET
     end
   end
