@@ -4,8 +4,8 @@
       @<%= post.user.username %>
     </div>
     <%= link_to post_path(post), class: "no-underline" do %>
-      <span class="text-gray-400 text-sm font-normal" title="<%= post.updated_at.to_formatted_s(:long) %>">
-        <%= post.updated_at.to_date.to_formatted_s(:long) %>
+      <span class="text-gray-400 text-sm font-normal" title="<%= post.published_at.to_formatted_s(:long) %>">
+        <%= post.published_at.to_date.to_formatted_s(:long) %>
       </span>
     <% end %>
   </div>
