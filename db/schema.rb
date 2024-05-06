@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_05_03_075541) do
+ActiveRecord::Schema[7.2].define(version: 2024_05_06_155052) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -73,6 +73,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_05_03_075541) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "custom_domain_changes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "custom_domain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_custom_domain_changes_on_user_id"
+  end
+
   create_table "followings", force: :cascade do |t|
     t.bigint "follower_id"
     t.bigint "followed_id"
@@ -120,6 +128,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_05_03_075541) do
   add_foreign_key "access_requests", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "custom_domain_changes", "users"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "posts", "users"
 end

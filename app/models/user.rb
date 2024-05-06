@@ -3,9 +3,11 @@ class User < ApplicationRecord
   include DeliveryEmail, Followable
 
   before_save :downcase_email_and_username
+  after_update :record_custom_domain_change
 
   has_many :posts, dependent: :destroy
   has_many :access_requests, dependent: :destroy
+  has_many :custom_domain_changes, dependent: :destroy
 
   validates :username, presence: true,
                        uniqueness: true,
@@ -34,6 +36,15 @@ class User < ApplicationRecord
     %w[olly pagecord lylo teamlight].include?(username) || !Rails.env.production?
   end
 
+  def domain_changed?
+    # we don't want a nil to "" to be considered a domain change
+    nil_to_blank_change = (custom_domain_previously_was.nil? && custom_domain.blank?) ||
+      (custom_domain_previously_was.blank? && custom_domain.nil?)
+
+    custom_domain_previously_changed? && !nil_to_blank_change
+  end
+
+
   private
 
     def downcase_email_and_username
@@ -46,6 +57,12 @@ class User < ApplicationRecord
 
       if restricted_domains.include?(custom_domain)
         errors.add(:custom_domain, "is restricted")
+      end
+    end
+
+    def record_custom_domain_change
+      if domain_changed?
+        self.custom_domain_changes.create!(custom_domain: custom_domain)
       end
     end
 end

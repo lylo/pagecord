@@ -5,7 +5,7 @@ class App::UsersController < AppController
 
   def update
     if @user.update(user_params)
-      if domain_change?
+      if @user.domain_changed?
         if @user.custom_domain.present?
           AddCustomDomainJob.perform_later(@user.id, @user.custom_domain)
         else
@@ -43,13 +43,5 @@ class App::UsersController < AppController
       else
         params.require(:user).permit(:bio)
       end
-    end
-
-    def domain_change?
-      # we don't want a nil to "" to be considered a domain change
-      nil_to_blank_change = (@user.custom_domain_previously_was.nil? && @user.custom_domain.blank?) ||
-        (@user.custom_domain_previously_was.blank? && @user.custom_domain.nil?)
-
-      @user.custom_domain_previously_changed? && !nil_to_blank_change
     end
 end
