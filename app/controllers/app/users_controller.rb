@@ -5,11 +5,16 @@ class App::UsersController < AppController
 
   def update
     if @user.update(user_params)
-      handle_custom_domain_ssl if @user.custom_domain_previously_changed?
+      if domain_change?
+        if @user.custom_domain.present?
+          AddCustomDomainJob.perform_later(@user.id, @user.custom_domain)
+        else
+          RemoveCustomDomainJob.perform_later(@user.id, @user.custom_domain_previously_was)
+        end
+      end
 
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to @user }
       end
     else
       respond_to do |format|
@@ -40,42 +45,11 @@ class App::UsersController < AppController
       end
     end
 
-    # Move this to the model perhaps?
-    def handle_custom_domain_ssl
-      if @user.custom_domain.present?
-        if Rails.env.production?
-          # FIXME create an API class for this and background it
-          response = HTTParty.post(
-            "https://app.hatchbox.io/api/v1/accounts/2928/apps/6347/domains",
-            headers: {
-              "Accept" => "application/json",
-              "Authorization" => "Bearer #{ENV['HATCHBOX_API_KEY']}"
-            },
-            body: {
-              domain: {
-                name: @user.custom_domain
-              }
-            }
-          )
-          Rails.logger.info response
-          Rails.logger.info "SSL certificate issued for custom domain"
-        end
-      else
-        if Rails.env.production?
-          # FIXME create an API class for this and background it
-          # There's also a danger that existing domains can be removed here!
-          response = HTTParty.delete(
-            "https://app.hatchbox.io/api/v1/accounts/2928/apps/6347/domains/#{@user.custom_domain_previously_was}",
-            headers: {
-              "Accept" => "application/json",
-              "Authorization" => "Bearer #{ENV['HATCHBOX_API_KEY']}"
-            }
-          )
+    def domain_change?
+      # we don't want a nil to "" to be considered a domain change
+      nil_to_blank_change = (@user.custom_domain_previously_was.nil? && @user.custom_domain.blank?) ||
+        (@user.custom_domain_previously_was.blank? && @user.custom_domain.nil?)
 
-          Rails.logger.info response
-          Rails.logger.info "SSL certificate revoked for custom domain"
-        end
-      end
-      @user.posts.touch_all
+      @user.custom_domain_previously_changed? && !nil_to_blank_change
     end
 end
