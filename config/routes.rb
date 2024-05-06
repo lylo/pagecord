@@ -14,14 +14,19 @@ class SidekiqAdminConstraint
 end
 
 module DomainConstraints
-  def self.custom_domain?
-    ->(request) { CustomDomainHelper.custom_domain_request? }
+  def self.custom_domain?(request)
+    if Rails.env.production?
+      request.host != "pagecord.com"
+    elsif Rails.env.test?
+      request.host !~ /\.example\.com/
+    else
+      request.host != "localhost"
+    end
   end
 
-  def self.default_domain?
-    ->(request) { CustomDomainHelper.default_domain_request? }
+  def self.default_domain?(request)
+    !custom_domain?(request)
   end
-
 end
 
 Rails.application.routes.draw do
