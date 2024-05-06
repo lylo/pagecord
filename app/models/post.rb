@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-  include OpaqueId
+  include OpaqueId, Trimmable
 
   belongs_to :user, inverse_of: nil
 
@@ -9,7 +9,6 @@ class Post < ApplicationRecord
 
   before_create :set_published_at, :limit_content_size
   after_create  :detect_open_graph_image
-  before_save   :trim_content
 
   validate :body_or_title
 
@@ -32,21 +31,6 @@ class Post < ApplicationRecord
         GenerateOpenGraphImageJob.perform_later(self)
       else
         GenerateOpenGraphImageJob.perform_now(self)
-      end
-    end
-
-    # Removes empty tags from the end of HTML content
-    def trim_content
-      if html? && body.present?
-        doc = Nokogiri::HTML::DocumentFragment.parse(body.body.to_s)
-
-        doc.children.reverse_each do |node|
-          node.remove if node.text? && node.text.strip.empty?
-          node.remove if node.element? && node.children.empty?
-          break unless node.text.strip.empty? && node.children.empty?
-        end
-
-        body.body = doc.to_html
       end
     end
 end
