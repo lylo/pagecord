@@ -1,5 +1,4 @@
 module RoutingHelper
-
   def post_link(post, type)
     if custom_domain_request?
       if post.url_title.present?
@@ -38,16 +37,5 @@ module RoutingHelper
 
   def user_home_url(user)
     user_home(user, 'url')
-  end
-
-  # FIXME this is duped in ApplicationController
-  def custom_domain_request?
-    if Rails.env.production?
-      request.host != "pagecord.com"
-    elsif Rails.env.test?
-      request.host !~ /\.example\.com/
-    else
-      request.host != "localhost"
-    end
   end
 end

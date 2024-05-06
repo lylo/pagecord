@@ -1,6 +1,8 @@
 require "test_helper"
 
 class Users::PostsControllerTest < ActionDispatch::IntegrationTest
+  include RoutingHelper
+
   test "should get index" do
     get user_posts_path(username: users(:joel).username)
 
@@ -63,5 +65,21 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
     get "/#{post.url_id}", headers: { 'HOST' => "gadzooks.com" }
 
     assert_redirected_to "http://gadzooks.com/"
+  end
+
+  test "should redirect from default domain username index to custom domain" do
+    post = posts(:four)
+
+    get post_without_title_path(username: post.user.username, id: post.url_id)
+
+    assert_redirected_to "http://#{post.user.custom_domain}/#{post.url_id}"
+  end
+
+  test "should redirect from default domain username post to custom domain post" do
+    post = posts(:four)
+
+    get "/#{post.user.username}/#{post.url_id}"
+
+    assert_redirected_to "http://#{post.user.custom_domain}/#{post.url_id}"
   end
 end
