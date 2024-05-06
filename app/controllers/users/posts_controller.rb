@@ -1,7 +1,7 @@
 class Users::PostsController < ApplicationController
   include Pagy::Backend
 
-  skip_before_action :domain_check      # PostsController can operate with a custom domain
+  skip_before_action :domain_check      # PostsController is available for custom domains
 
   before_action :load_user, :verification, :enforce_custom_domain
 
@@ -48,7 +48,7 @@ class Users::PostsController < ApplicationController
     end
 
     def enforce_custom_domain
-      if @user.custom_domain.present? && request.host != @user.custom_domain
+      if default_domain_request? && @user.custom_domain.present?
         request_path = request.path.gsub(/^\/@?#{@user.username}\/?/, '')
         full_url = root_url(host: @user.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
         new_url = "#{full_url}#{request_path}"
@@ -56,4 +56,4 @@ class Users::PostsController < ApplicationController
         redirect_to new_url, status: :moved_permanently, allow_other_host: true
       end
     end
-end
+  end
