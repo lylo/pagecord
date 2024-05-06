@@ -1,5 +1,6 @@
 module CustomDomainHelper
   def custom_domain_request?
+    Rails.logger.info "request.host: #{request.host}"
     if Rails.env.production?
       request.host != "pagecord.com"
     elsif Rails.env.test?
