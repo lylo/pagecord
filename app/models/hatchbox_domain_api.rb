@@ -6,7 +6,7 @@ class HatchboxDomainApi
   end
 
   def add_domain(domain)
-    return unless user.custom_domain == domain
+    return unless @user.custom_domain == domain
 
     response = HTTParty.post(HATCHBOX_ENDPOINT, headers: headers,
       body: {
