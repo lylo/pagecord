@@ -8,7 +8,7 @@ class HatchboxDomainApi
   def add_domain(domain)
     return unless user.custom_domain == domain
 
-    response = HTTParty.post(HATCHBOX_ENDPOINT, headers,
+    response = HTTParty.post(HATCHBOX_ENDPOINT, headers: headers,
       body: {
         domain: {
           name: domain
@@ -16,7 +16,12 @@ class HatchboxDomainApi
       }
     )
     Rails.logger.info "Response: #{response&.inspect}"
-    Rails.logger.info "SSL certificate issued for #{domain} for user #{@user.username}"
+
+    if response.code == 200
+      Rails.logger.info "SSL certificate issued for #{domain} for user #{@user.username}"
+    else
+      raise "Failed to add domain #{domain} for user #{@user.username}"
+    end
 
     touch_all
   end
@@ -24,10 +29,15 @@ class HatchboxDomainApi
   def remove_domain(domain)
     return if restricted_domain(domain) || domain_exists?(domain)
 
-    response = HTTParty.delete("#{HATCHBOX_ENDPOINT}/#{domain}", headers)
+    response = HTTParty.delete("#{HATCHBOX_ENDPOINT}/#{domain}", headers: headers)
 
     Rails.logger.info "Response: #{response&.inspect}"
-    Rails.logger.info "SSL certificate revoked for #{domain} for user #{@user.username}"
+
+    if response.code == 200
+      Rails.logger.info "SSL certificate revoked for #{domain} for user #{@user.username}"
+    else
+      raise "Failed to remove domain #{domain} for user #{@user.username}"
+    end
 
     touch_all
   end
