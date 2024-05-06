@@ -48,4 +48,10 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "newuser", user.username
     assert_equal "newuser@newuser.com", user.email
   end
+
+  test "should validate restricted custom domain" do
+    user = User.new(username: "newuser", email: "newuser@newuser.com", custom_domain: "pagecord.com")
+    assert_not user.valid?
+    assert_includes user.errors.full_messages, "Custom domain is restricted"
+  end
 end
