@@ -14,6 +14,7 @@ class User < ApplicationRecord
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :custom_domain, uniqueness: true, allow_blank: true, format: { with: /\A(?!:\/\/)([a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}\z/ }
+  validate :restricted_domain
 
   def verify!
     self.update! verified: true
@@ -38,5 +39,13 @@ class User < ApplicationRecord
     def downcase_email_and_username
       self.email = email.downcase
       self.username = username.downcase
+    end
+
+    def restricted_domain
+      restricted_domains = %w[pagecord.com]
+
+      if restricted_domains.include?(custom_domain)
+        errors.add(:custom_domain, "is restricted")
+      end
     end
 end
