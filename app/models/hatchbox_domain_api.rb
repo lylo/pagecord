@@ -15,18 +15,18 @@ class HatchboxDomainApi
         }
       }
     )
-    Rails.logger.info response
+    Rails.logger.info "Response: #{response&.inspect}"
     Rails.logger.info "SSL certificate issued for #{domain} for user #{@user.username}"
 
     touch_all
   end
 
   def remove_domain(domain)
-    return if restricted_domain(domain) && domain_exists?(domain)
+    return if restricted_domain(domain) || domain_exists?(domain)
 
     response = HTTParty.delete("#{HATCHBOX_ENDPOINT}/#{domain}", headers)
 
-    Rails.logger.info response
+    Rails.logger.info "Response: #{response&.inspect}"
     Rails.logger.info "SSL certificate revoked for #{domain} for user #{@user.username}"
 
     touch_all
