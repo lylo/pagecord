@@ -60,4 +60,16 @@ class App::UsersControllerTest < ActionDispatch::IntegrationTest
       patch app_user_url(users(:annie)), params: { user: { custom_domain: users(:annie).custom_domain } }, as: :turbo_stream
     end
   end
+
+  test "should raise an error after 5 custom domain changes" do
+    user = users(:annie)
+
+    (1..5).each do |i|
+      user.custom_domain_changes.create!(custom_domain: "newdomain#{i}.com")
+    end
+
+    assert_raises do
+      AddCustomDomainJob.perform_now(user.id, "newdomain6.com")
+    end
+  end
 end

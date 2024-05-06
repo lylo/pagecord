@@ -54,4 +54,11 @@ class UserTest < ActiveSupport::TestCase
     assert_not user.valid?
     assert_includes user.errors.full_messages, "Custom domain is restricted"
   end
+
+  test "should record custom domain change" do
+    user = users(:joel)
+    user.update!(custom_domain: "newdomain.com")
+    assert user.valid?
+    assert_equal 1, user.custom_domain_changes.count
+  end
 end
