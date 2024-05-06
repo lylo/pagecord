@@ -36,6 +36,10 @@ class User < ApplicationRecord
     %w[olly pagecord lylo teamlight].include?(username) || !Rails.env.production?
   end
 
+  def custom_title?
+    is_premium? && title.present?
+  end
+
   def domain_changed?
     # we don't want a nil to "" to be considered a domain change
     nil_to_blank_change = (custom_domain_previously_was.nil? && custom_domain.blank?) ||

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_05_06_155052) do
+ActiveRecord::Schema[7.2].define(version: 2024_05_06_162434) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -118,6 +118,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_05_06_155052) do
     t.text "bio"
     t.datetime "discarded_at"
     t.string "custom_domain"
+    t.string "title"
     t.index ["custom_domain"], name: "index_users_on_custom_domain", unique: true
     t.index ["delivery_email"], name: "index_users_on_delivery_email", unique: true
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
