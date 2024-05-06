@@ -1,6 +1,6 @@
 <div class="max-w-xl mt-12 w-full mx-auto">
   <div class="mb-12 pb-4 font-bold text-lg text-black dark:text-slate-100 border-b border-b-slate-200 dark:border-b-slate-600">
-    <%= link_to "@#{@user.username}", user_home_path(@user) %>
+    <%= render "shared/title" %>
   </div>
 
   <%= render @post %>

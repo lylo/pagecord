@@ -13,14 +13,6 @@ class PostTest < ActiveSupport::TestCase
     assert_not @post.valid?
   end
 
-  # FIXME not sure how to test this with actiontext
-  # test "should limit body size" do
-  #   @post = Post.new(user: users(:joel), html: false)
-  #   @post.body = "a" * 65.kilobytes
-  #   @post.save
-  #   assert_equal "a" * 64.kilobytes, @post.reload.body
-  # end
-
   test "published at should be set on create if not provided" do
     post = users(:joel).posts.create! title: "my new post", body: "this is my new post", html: false
 
