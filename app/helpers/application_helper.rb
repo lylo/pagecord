@@ -34,6 +34,14 @@ module ApplicationHelper
     end
   end
 
+  def page_type
+    if @post
+      "article"
+    else
+      "website"
+    end
+  end
+
   def user_bio(user)
     @user_bio ||= begin
       bio = user.bio.present? ? strip_tags(user.bio.truncate(140)).strip : ""

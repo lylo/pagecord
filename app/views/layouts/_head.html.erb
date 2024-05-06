@@ -8,9 +8,9 @@
 <meta name="keywords" content="blogging, writing, publishing">
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://pagecord.com/">
-<meta property="og:title" content="Pagecord">
+<meta property="og:type" content="<%= page_type %>">
+<meta property="og:url" content="<%= request.original_url %>">
+<meta property="og:title" content="<%= page_title %>">
 <meta property="og:description" content="<%= meta_description %>">
 <meta property="og:image" content="<%= open_graph_image %>">
 
@@ -20,8 +20,8 @@
 <% else %>
   <meta property="twitter:card" content="summary">
 <% end %>
-<meta property="twitter:url" content="https://pagecord.com/">
-<meta property="twitter:title" content="Pagecord">
+<meta property="twitter:url" content="<%= request.original_url %>">
+<meta property="twitter:title" content="<%= page_title %>">
 <meta property="twitter:description" content="<%= meta_description %>">
 <meta property="twitter:image" content="<%= open_graph_image %>">
 
