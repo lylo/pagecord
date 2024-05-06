@@ -29,4 +29,12 @@ class PostTest < ActiveSupport::TestCase
   test "post with blank title and body should be invalid" do
     refute users(:joel).posts.build(title: "", body: "", html: false).valid?
   end
+
+  test "should strip empty tags before save" do
+    post = posts(:two)
+    post.body = "<p>Test</p><p></p><div></div>"
+    post.save!
+
+    assert_equal "<p>Test</p>", post.body.body.to_s.strip
+  end
 end
