@@ -10,7 +10,7 @@ xml.rss version: "2.0" do
 
       xml.item do
         if post.title.blank?
-          xml.title "@#{post.user.username} - #{post.updated_at.to_formatted_s(:long)}"
+          xml.title "@#{post.user.username} - #{post.published_at.to_formatted_s(:long)}"
         else
           xml.title "@#{post.user.username} - #{post.title}"
         end
