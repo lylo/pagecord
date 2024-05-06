@@ -2,7 +2,7 @@ module Trimmable
   extend ActiveSupport::Concern
 
   included do
-    before_save :trim_content
+    before_save :trim_rich_text
   end
 
   class_methods do
@@ -14,7 +14,7 @@ module Trimmable
     end
   end
 
-  def trim_content
+  def trim_rich_text
     rich_text_attribute = self.class.rich_text_attribute_name
     if rich_text_attribute.present?
       if send(rich_text_attribute).body.present?

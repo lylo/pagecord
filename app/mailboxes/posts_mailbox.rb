@@ -27,24 +27,27 @@ class PostsMailbox < ApplicationMailbox
         parser = MailParser.new(mail, process_attachments: user.is_premium?)
 
         unless parser.is_blank?
-          body = parser.body
+          content = parser.body
           title = parser.subject
 
           if parser.body_blank?
-            body = parser.transform(title)
+            content = title
             title = nil
           end
 
           Rails.logger.info "Creating post from user: #{user.id}"
-          user.posts.create!(title: title, content: body, body: body, attachments: parser.attachments, html: parser.html?, published_at: mail.date)
+          user.posts.create!(
+            title: title,
+            content: content,
+            attachments: parser.attachments,
+            html: parser.html?,
+            published_at: mail.date)
         end
       rescue => e
-        Rails.logger.warn "Unable to parse email: #{e.message}"
-        puts e.message
-        puts e.backtrace
+        raise "Unable to parse email: #{e}"
       end
     else
-      Rails.logger.warn "User not found. From: #{from}, To: #{recipient}"
+      raise "User not found. From: #{from}, To: #{recipient}"
     end
   end
 

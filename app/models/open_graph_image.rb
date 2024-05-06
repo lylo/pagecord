@@ -4,7 +4,7 @@ class OpenGraphImage < ApplicationRecord
   def self.from_post(post)
     return if post.attachments.any?
 
-    doc = Nokogiri::HTML(post.body.to_s)
+    doc = Nokogiri::HTML(post.content.to_s)
     img_tags = doc.css("img")
 
     if img_tags.any?
