@@ -4,7 +4,7 @@ class Post < ApplicationRecord
   belongs_to :user, inverse_of: nil
 
   has_one :open_graph_image, dependent: :destroy
-  has_rich_text :body
+  has_rich_text :content
   has_many_attached :attachments, dependent: :destroy
 
   before_create :set_published_at, :limit_content_size
@@ -13,7 +13,7 @@ class Post < ApplicationRecord
   validate :body_or_title
 
   def body_or_title
-    errors.add(:base, "Either body or title must be present") unless body.body.present? || title.present?
+    errors.add(:base, "Either body or title must be present") unless content.body.present? || title.present?
   end
 
   private
@@ -23,7 +23,7 @@ class Post < ApplicationRecord
     end
 
     def limit_content_size
-      self.body = body.to_s.slice(0, 64.kilobytes)
+      self.content = content.to_s.slice(0, 64.kilobytes)
     end
 
     def detect_open_graph_image
