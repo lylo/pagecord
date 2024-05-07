@@ -12,6 +12,8 @@ s3:
   secret_access_key: <%= ENV["AWS_SECRET_ACCESS_KEY"] %>
   region: eu-west-2
   bucket: pagecord-activestorage-prod
+  upload:
+    cache_control: "max-age=31536000"
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
