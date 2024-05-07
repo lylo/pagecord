@@ -1,7 +1,7 @@
 one:
   record: one (Post)
-  name: body
-  content: |
+  name: content
+  body: |
     Street photography is a fascinating genre that offers a raw, unscripted, and candid look into everyday life. It captures the beauty of ordinary moments, turning them into extraordinary images. It's about documenting society and people in their natural environment, without any pretense or setup.
 
     The beauty of street photography lies in its spontaneity. It's about capturing that fleeting moment that might never occur again. It could be a glance, a gesture, a play of light and shadow, or a unique juxtaposition. The streets are full of such moments, waiting to be captured.
@@ -14,8 +14,8 @@ one:
 
 two:
   record: two (Post)
-  name: body
-  content: |
+  name: content
+  body: |
     <p>Landscape photography is a genre that captures <i>the beauty of nature in all its grandeur</i>. It's about capturing the essence of a place, the mood, the light, and the emotions it evokes.</p>
 
     <p>One of the key aspects of landscape photography is the use of natural light. The golden hours of sunrise and sunset offer the most dramatic light, casting long shadows and bathing the landscape in a warm, golden glow. But other times of day, like the blue hour or the harsh midday sun, can also offer interesting opportunities for creative photography.</p>
@@ -26,13 +26,13 @@ two:
 
 three:
   record: three (Post)
-  name: body
-  content: |
+  name: content
+  body: |
     This is my first post
 
 four:
   record: four (Post)
-  name: body
-  content: |
+  name: content
+  body: |
     <p><b>Photography was my first love</b>.</p>
     <p>I've taken photos every day since I got my first camera</p>
