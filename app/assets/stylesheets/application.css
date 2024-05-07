@@ -18,6 +18,7 @@
 /* Hack for the BuyMeACoffee button */
 .bmc-btn {
   min-width: auto !important;
+  height: 54px !important;
 }
 
 .bg-bmc-pink {
