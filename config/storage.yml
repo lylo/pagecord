@@ -13,7 +13,7 @@ s3:
   region: eu-west-2
   bucket: pagecord-activestorage-prod
   upload:
-    cache_control: "max-age=31536000"
+    cache_control: "public, max-age=31536000"
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
