@@ -1,0 +1,61 @@
+{
+  "data": {
+    "id": "sub_01hvrk1481njzb874tn7wyrksv",
+    "items": [
+      {
+        "price": {
+          "id": "pri_01hvp39rnddapkfaqqd3tvje8n",
+          "name": "Unlimited Plan",
+          "type": "standard",
+          "status": "active",
+          "quantity": { "maximum": 999999, "minimum": 1 },
+          "tax_mode": "account_setting",
+          "seller_id": "19023",
+          "created_at": "2024-04-17T13:17:52.685854Z",
+          "product_id": "pro_01hvnxr1b68jzv8cc969b09zvf",
+          "unit_price": { "amount": "12900", "currency_code": "USD" },
+          "updated_at": "2024-04-18T11:20:55.503101Z",
+          "custom_data": null,
+          "description": "Unlimited Monthly",
+          "import_meta": null,
+          "trial_period": null,
+          "billing_cycle": { "interval": "month", "frequency": 1 },
+          "unit_price_overrides": []
+        },
+        "status": "active",
+        "quantity": 1,
+        "recurring": true,
+        "created_at": "2024-04-18T12:31:47.619Z",
+        "updated_at": "2024-04-18T12:31:47.619Z",
+        "trial_dates": null,
+        "next_billed_at": null,
+        "previously_billed_at": null
+      }
+    ],
+    "status": "active",
+    "discount": null,
+    "paused_at": null,
+    "address_id": "add_01hvrk0nwyzkrkc5dwew3p72j7",
+    "created_at": "2024-04-18T12:31:15.713Z",
+    "started_at": "2024-04-18T12:31:15.024685Z",
+    "updated_at": "2024-04-18T12:32:45.853Z",
+    "business_id": null,
+    "canceled_at": null,
+    "custom_data": { "account_id": 980190963 },
+    "customer_id": "ctm_01hvp3m53528fz6scv2esx0s9g",
+    "import_meta": null,
+    "billing_cycle": { "interval": "month", "frequency": 1 },
+    "currency_code": "USD",
+    "next_billed_at": null,
+    "billing_details": null,
+    "collection_mode": "automatic",
+    "first_billed_at": "2024-04-18T12:31:15.024685Z",
+    "scheduled_change": { "action": "cancel", "resume_at": null, "effective_at": "2024-05-18T12:31:15.024685Z" },
+    "current_billing_period": { "ends_at": "2024-05-18T12:31:15.024685Z", "starts_at": "2024-04-18T12:31:15.024685Z" }
+  },
+  "event_id": "evt_01hvrk3ws77t3z4694hgr33fx9",
+  "event_type": "subscription.updated",
+  "occurred_at": "2024-04-18T12:32:46.375453Z",
+  "notification_id": "ntf_01hvrk3wvm5925h32jmx5dk284",
+  "paddle_event": {}
+}

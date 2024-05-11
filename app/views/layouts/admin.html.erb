@@ -8,9 +8,10 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <%= yield :billing %>
   </head>
 
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
@@ -19,7 +20,12 @@
       </nav>
     </header>
     <main class="container mx-auto px-5 flex flex-grow">
-      <%= yield %>
+      <div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
+        <%= render "app/shared/heading" %>
+        <%= render "app/shared/nav" %>
+
+        <%= yield %>
+      </div>
     </main>
 
     <footer class="p-8 flex flex-col w-full text-center">

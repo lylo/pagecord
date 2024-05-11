@@ -1,6 +1,22 @@
-<div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
-  <%= render "app/shared/heading" %>
-  <%= render "app/shared/nav" %>
+<% content_for :billing do %>
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <script type="text/javascript">
+    document.addEventListener('turbo:load', function() {
+      <% if Rails.env.development? %>
+        console.log("Paddle initialized in sandbox mode")
+        Paddle.Environment.set("sandbox")
+        Paddle.Initialize({
+          token: "test_54956efa5e18fb694f1249c1a68"
+        })
+      <% else %>
+        Paddle.Environment.set("production")
+        Paddle.Initialize({
+          token: "live_73a1f75b43cd23190a3e3842314"
+        })
+      <% end %>
+    })
+  </script>
+<% end %>
 
   <%= render "app/shared/callout" do %>
     <%= render "app/shared/how_to" %>
@@ -10,9 +26,11 @@
     <%= render "form"%>
   <% end %>
 
-  <hr class="mt-12">
+  <%= render "billing" %>
 
-  <div class="mt-8">
+  <hr class="my-8">
+
+  <div>
     <h3 class="font-bold text-lg mb-2">Danger Zone</h3>
     <p>
       You can delete your account by clicking the button below. Sorry to see you go!
@@ -21,9 +39,8 @@
     <%= button_to app_user_path(@user),
           method: :delete,
           data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
-          class: "mt-4 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:text-white hover:bg-red-600 hover:dark:bg-red-700 rounded-lg border hover:border-red-700 hover:dark:border-red-800 dark:border-slate-700 p-2" do %>
+          class: "btn-danger mt-4" do %>
 
       Delete account
     <% end %>
   </div>
-</div>
