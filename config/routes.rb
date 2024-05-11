@@ -46,6 +46,13 @@ Rails.application.routes.draw do
     get :thanks, on: :collection
   end
 
+  namespace :billing do
+    resources :paddle_events, only: [:create]
+
+    post "/paddle/create_update_payment_method_transaction", to: "paddle#create_update_payment_method_transaction"
+  end
+
+
   get "/login", to: "sessions#new"
   delete "/logout", to: "sessions#destroy"
   resources :sessions, only: [:create] do
@@ -68,6 +75,12 @@ Rails.application.routes.draw do
     resources :followings, only: [:index]
 
     get "/account", to: "account#index"
+
+    resources :subscriptions, only: [:destroy] do
+      get :thanks, on: :collection
+      get :cancel_confirm, on: :collection
+    end
+
     get "/feed", to: "feed#index"
     get "/feed/rss/:token", to: "feed#private_rss", as: :private_rss_feed, format: :rss
 
