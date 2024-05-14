@@ -10,6 +10,9 @@
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+
+    <%= yield :billing %>
   </head>
 
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
@@ -20,6 +23,9 @@
     </header>
     <main class="container mx-auto px-5 flex flex-grow">
       <div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
+        <%= render "app/shared/heading" %>
+        <%= render "app/shared/nav" %>
+
         <%= yield %>
       </div>
     </main>
