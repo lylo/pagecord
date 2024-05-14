@@ -39,7 +39,7 @@ module ApplicationHelper
       rails_public_blob_url @post.attachments.first
     elsif @post && @post.open_graph_image.present?
       @post.open_graph_image.url
-    elsif @user.custom_domain&.blank?
+    elsif !custom_domain_request?
       image_url "social/open-graph.png"
     end
   end
