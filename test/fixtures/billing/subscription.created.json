@@ -1,0 +1,62 @@
+{
+  "data": {
+    "id": "sub_01hvrk1481njzb874tn7wyrksv",
+    "items": [
+      {
+        "price": {
+          "id": "pri_01hvnxrgvfsx46m83z6asdbb94",
+          "name": "Pagecord Premium",
+          "type": "standard",
+          "status": "active",
+          "quantity": { "maximum": 999999, "minimum": 1 },
+          "tax_mode": "external",
+          "seller_id": "19023",
+          "created_at": "2024-04-17T11:41:04.751847Z",
+          "product_id": "pro_01hvnxr1b68jzv8cc969b09zvf",
+          "unit_price": { "amount": "3000", "currency_code": "USD" },
+          "updated_at": "2024-04-18T11:20:41.106024Z",
+          "custom_data": null,
+          "description": "Annual",
+          "import_meta": null,
+          "trial_period": null,
+          "billing_cycle": { "interval": "month", "frequency": 1 },
+          "unit_price_overrides": []
+        },
+        "status": "active",
+        "quantity": 1,
+        "recurring": true,
+        "created_at": "2024-04-18T12:31:15.713Z",
+        "updated_at": "2024-04-18T12:31:15.713Z",
+        "trial_dates": null,
+        "next_billed_at": "2024-05-18T12:31:15.024685Z",
+        "previously_billed_at": "2024-04-18T12:31:15.024685Z"
+      }
+    ],
+    "status": "active",
+    "discount": null,
+    "paused_at": null,
+    "address_id": "add_01hvrk0nwyzkrkc5dwew3p72j7",
+    "created_at": "2024-04-18T12:31:15.713Z",
+    "started_at": "2024-04-18T12:31:15.024685Z",
+    "updated_at": "2024-04-18T12:31:15.713Z",
+    "business_id": null,
+    "canceled_at": null,
+    "custom_data": { "account_id": 980190963 },
+    "customer_id": "ctm_01hvp3m53528fz6scv2esx0s9g",
+    "import_meta": null,
+    "billing_cycle": { "interval": "month", "frequency": 1 },
+    "currency_code": "USD",
+    "next_billed_at": "2024-05-18T12:31:15.024685Z",
+    "transaction_id": "txn_01hvrk0g29ed4wf4p8ra89wxpr",
+    "billing_details": null,
+    "collection_mode": "automatic",
+    "first_billed_at": "2024-04-18T12:31:15.024685Z",
+    "scheduled_change": null,
+    "current_billing_period": { "ends_at": "2024-05-18T12:31:15.024685Z", "starts_at": "2024-04-18T12:31:15.024685Z" }
+  },
+  "event_id": "evt_01hvrk14v29ybc23qeq57cv0vs",
+  "event_type": "subscription.created",
+  "occurred_at": "2024-04-18T12:31:16.322688Z",
+  "notification_id": "ntf_01hvrk14znhjsxcbpdaf6xw079",
+  "paddle_event": {}
+}

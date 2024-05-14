@@ -1,0 +1,58 @@
+<% content_for :billing do %>
+  <script type="text/javascript">
+    document.addEventListener('turbo:load', function() {
+      <% if Rails.env.development? %>
+        Paddle.Environment.set("sandbox")
+        Paddle.Initialize({
+          token: "test_54956efa5e18fb694f1249c1a68"
+        })
+      <% else %>
+        Paddle.Environment.set("production")
+        Paddle.Initialize({
+          token: "live_8d79ebbaac5c745a173f00967fb"
+        })
+      <% end %>
+    })
+  </script>
+<% end %>
+
+<div class="mt-4 flex flex-col gap-y-4">
+<% if Current.user.subscribed? %>
+  <% if @subscription.cancelled? %>
+    <p>
+      Your Pagecord Premium subscription has been scheduled for cancellation on
+      <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
+    </p>
+    <div class="mt-4">
+    <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_data %>
+    </div>
+  <% else %>
+    <p>
+      💳 You are currently subscribed to Pagecord Premium. Thank you! 💖
+    </p>
+    <p>
+      Your next payment of
+      <strong>$<%= @subscription.unit_price / 100 %></strong> will be taken on
+      <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
+    </p>
+
+    <div class="mt-2 flex justify-between" data-controller="paddle">
+      <%= link_to "Update Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "paddle_button btn-primary" %>
+      <%= link_to "Cancel Subscription", cancel_confirm_app_subscriptions_path, class: "btn-danger" %>
+    </div>
+  <% end %>
+<% else %>
+  <p>
+    You are currently on the Pagecord free tier. Have you thought about
+    subscribing?
+  </p>
+  <p class="mt-4">
+    Premium subscribers get access to <b>image attachments</b>, <b>custom
+    domains</b>, <b>custom titles</b> and <b>human customer support</b>! 💖 It's only
+    $<%= Subscription.price %>/year!
+  </p>
+
+  <div class="mt-4">
+  <%= link_to "Subscribe Now", "#", class: "paddle_button btn-primary", data: paddle_data %>
+  </div>
+<% end %>

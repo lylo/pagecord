@@ -1,0 +1,8 @@
+<div class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2 bg-slate-800 dark:bg-slate-700 text-sm text-white font-medium">
+  <div>
+    <%= link_to "Pagecord Premium", app_subscriptions_path, class: "underline", data: { turbo: false } %> is here! 🚀
+  </div>
+  <div>
+    <%= link_to "Subscribe now", app_subscriptions_path, class: "underline", data: { turbo: false } %> for only $<%= Subscription.price%>/year!
+  </div>
+</div>
