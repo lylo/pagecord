@@ -76,7 +76,7 @@ Rails.application.routes.draw do
 
     get "/account", to: "account#index"
 
-    resources :subscriptions, only: [:destroy] do
+    resources :subscriptions, only: [:index, :destroy] do
       get :thanks, on: :collection
       get :cancel_confirm, on: :collection
     end
