@@ -18,7 +18,7 @@ module SubscriptionsHelper
 
   def annual_price_id
     if Rails.env.production?
-      "FIXME"
+      "pri_01hx8zr3jgp8et0reybmvmhhwb"
     else
       "pri_01hx904w9f1j7vxzacdfr7fsky"
     end
