@@ -1,7 +1,5 @@
-class AdminController < ApplicationController
+class AdminController < AppController
   layout "admin"
-
-  include Authorization
 
   before_action :require_admin
 

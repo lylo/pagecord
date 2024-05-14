@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_05_06_193859) do
+ActiveRecord::Schema[7.2].define(version: 2024_05_06_200553) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -97,6 +97,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_05_06_193859) do
     t.index ["post_id"], name: "index_open_graph_images_on_post_id"
   end
 
+  create_table "paddle_events", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.jsonb "payload"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_paddle_events_on_user_id"
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "title"
     t.bigint "user_id", null: false
@@ -105,6 +113,20 @@ ActiveRecord::Schema[7.2].define(version: 2024_05_06_193859) do
     t.boolean "html", null: false
     t.datetime "published_at"
     t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "paddle_subscription_id"
+    t.string "paddle_customer_id"
+    t.string "paddle_price_id"
+    t.integer "unit_price"
+    t.datetime "next_billed_at"
+    t.datetime "cancelled_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["paddle_customer_id"], name: "index_subscriptions_on_paddle_customer_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -130,5 +152,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_05_06_193859) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "custom_domain_changes", "users"
   add_foreign_key "open_graph_images", "posts"
+  add_foreign_key "paddle_events", "users"
   add_foreign_key "posts", "users"
+  add_foreign_key "subscriptions", "users"
 end

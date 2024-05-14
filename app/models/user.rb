@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail, Followable
+  include DeliveryEmail, Followable, Subscribable
 
   before_save :downcase_email_and_username
   after_update :record_custom_domain_change
@@ -33,7 +33,7 @@ class User < ApplicationRecord
   end
 
   def is_premium?
-    %w[olly pagecord lylo teamlight].include?(username) || !Rails.env.production?
+    subscription&.present? || %w[olly pagecord lylo teamlight].include?(username) || !Rails.env.production?
   end
 
   def custom_title?

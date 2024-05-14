@@ -1,5 +1,5 @@
 class AppController < ApplicationController
-  layout "admin"
+  layout "app"
 
   include Authorization
 

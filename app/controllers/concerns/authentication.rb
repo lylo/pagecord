@@ -10,7 +10,7 @@ module Authentication
 
   def authenticate
     if user = User.kept.find_by(id: session[:user_id])
-      Rails.logger.info "Authenticated #{user.id}"
+      Rails.logger.info "Authenticated #{user.username}"
       Current.user = user
     end
   end
@@ -20,7 +20,7 @@ module Authentication
   end
 
   def sign_in(user)
-    Rails.logger.info "Signing in #{user.id}"
+    Rails.logger.info "Signing in #{user.username}"
     session[:user_id] = user.id
   end
 

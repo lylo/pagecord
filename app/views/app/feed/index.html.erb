@@ -1,8 +1,4 @@
 <div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
-  <%= render "app/shared/heading" %>
-  <%= render "app/shared/nav" %>
-
-
   <% if @posts.empty? %>
     <p class="text-center">
     You'll see posts here once you follow people who are posting ✨
@@ -15,7 +11,7 @@
     <% end %>
   <% end %>
 
-  <%= render partial: "post", collection: @posts, cached: true %>
+  <%= render partial: "/users/posts/post", collection: @posts, cached: true %>
 
   <%= render "app/shared/pagy_nav" %>
 </div>

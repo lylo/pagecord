@@ -2,7 +2,7 @@ module ApplicationHelper
   # <meta name="description" content="<%= meta_description %>">
   def meta_description
     if @post
-      post_title(@post)
+      post_summary(@post)
     elsif @user.present?
       blog_description(@user)
     else
@@ -58,14 +58,18 @@ module ApplicationHelper
       if post.title.present?
         post.title.truncate(100).strip
       else
-        sanitized_content = strip_tags(post.content.to_s.truncate(140))
-        if sanitized_content.blank?
-          "Untitled"
-        else
-          sanitized_content.strip
-        end
+        post_summary(post)
       end
     end
+
+    def post_summary(post)
+      sanitized_content = strip_tags(post.content.to_s.truncate(140))
+      if sanitized_content.blank?
+        "Untitled"
+      else
+        sanitized_content.strip
+      end
+  end
 
     def blog_description(user)
       if user.bio.present?
