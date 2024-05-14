@@ -33,7 +33,7 @@ class User < ApplicationRecord
   end
 
   def is_premium?
-    subscription&.present? || %w[olly pagecord lylo teamlight].include?(username)
+    subscription&.present? || %w[olly pagecord lylo teamlight].include?(username) || !Rails.env.production?
   end
 
   def custom_title?
