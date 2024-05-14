@@ -12,8 +12,10 @@
     </main>
 
     <footer class="w-full flex flex-col text-center p-8 text-sm text-slate-400 dark:text-slate-500">
-      <%= link_to root_path do %>
-        <%= inline_svg_tag "logo.svg", class: "w-[100px] mt-8 inline-flex dark:text-white text-black" %>
+      <% unless @user.custom_domain&.present? %>
+        <%= link_to root_path do %>
+          <%= inline_svg_tag "logo.svg", class: "w-[100px] mt-8 inline-flex dark:text-white text-black" %>
+        <% end %>
       <% end %>
     </footer>
   </body>
