@@ -1,5 +1,5 @@
 class AppController < ApplicationController
-  layout "admin"
+  layout "app"
 
   include Authorization
 
@@ -8,6 +8,7 @@ class AppController < ApplicationController
   private
 
     def load_user
+      puts "loading user: #{Current.user.username}"
       @user = Current.user
     end
 end
