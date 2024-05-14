@@ -1,6 +1,20 @@
-<hr class="my-8">
-
-<h2 class="font-bold text-lg">Subscriptions</h2>
+<% content_for :billing do %>
+  <script type="text/javascript">
+    document.addEventListener('turbo:load', function() {
+      <% if Rails.env.development? %>
+        Paddle.Environment.set("sandbox")
+        Paddle.Initialize({
+          token: "test_54956efa5e18fb694f1249c1a68"
+        })
+      <% else %>
+        Paddle.Environment.set("production")
+        Paddle.Initialize({
+          token: "live_73a1f75b43cd23190a3e3842314"
+        })
+      <% end %>
+    })
+  </script>
+<% end %>
 
 <div class="mt-4 flex flex-col gap-y-4">
 <% if Current.user.subscribed? %>
@@ -10,7 +24,7 @@
       <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
     </p>
     <div class="mt-4">
-    <%= link_to "Restart your subsription", "#", class: "paddle_button btn-primary", data: paddle_data %>
+    <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_data %>
     </div>
   <% else %>
     <p>
@@ -23,7 +37,7 @@
     </p>
 
     <div class="mt-2 flex justify-between" data-controller="paddle">
-      <%= link_to "Update Billing Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "paddle_button btn-primary" %>
+      <%= link_to "Update Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "paddle_button btn-primary" %>
       <%= link_to "Cancel Subscription", cancel_confirm_app_subscriptions_path, class: "btn-danger" %>
     </div>
   <% end %>
@@ -35,7 +49,7 @@
   <p class="mt-4">
     Premium subscribers get access to <b>image attachments</b>, <b>custom
     domains</b>, <b>custom titles</b> and <b>human customer support</b>! 💖 It's only
-    $35/year!
+    $<%= Subscription.price %>/year!
   </p>
 
   <div class="mt-4">

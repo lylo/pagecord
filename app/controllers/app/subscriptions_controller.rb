@@ -1,5 +1,8 @@
 class App::SubscriptionsController < AppController
-  before_action :load_subscription, only: [:destroy, :cancel_confirm]
+  before_action :load_subscription, only: [:index, :destroy, :cancel_confirm]
+
+  def index
+  end
 
   def thanks
   end
@@ -17,6 +20,7 @@ class App::SubscriptionsController < AppController
   end
 
   def cancel_confirm
+    redirect_to app_account_path if @subscription.blank? || @subscription.cancelled?
   end
 
   private

@@ -1,46 +1,24 @@
-<% content_for :billing do %>
-  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-  <script type="text/javascript">
-    document.addEventListener('turbo:load', function() {
-      <% if Rails.env.development? %>
-        console.log("Paddle initialized in sandbox mode")
-        Paddle.Environment.set("sandbox")
-        Paddle.Initialize({
-          token: "test_54956efa5e18fb694f1249c1a68"
-        })
-      <% else %>
-        Paddle.Environment.set("production")
-        Paddle.Initialize({
-          token: "live_73a1f75b43cd23190a3e3842314"
-        })
-      <% end %>
-    })
-  </script>
+<%= render "app/shared/callout" do %>
+  <%= render "app/shared/how_to" %>
 <% end %>
 
-  <%= render "app/shared/callout" do %>
-    <%= render "app/shared/how_to" %>
+<%= turbo_frame_tag "user_form", data: { controller: "vanish" } do %>
+  <%= render "form"%>
+<% end %>
+
+<hr class="my-8">
+
+<div>
+  <h3 class="font-bold text-lg mb-2">Danger Zone</h3>
+  <p>
+    You can delete your account by clicking the button below. Sorry to see you go!
+  </p>
+
+  <%= button_to app_user_path(@user),
+        method: :delete,
+        data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
+        class: "btn-danger mt-4" do %>
+
+    Delete account
   <% end %>
-
-  <%= turbo_frame_tag "user_form", data: { controller: "vanish" } do %>
-    <%= render "form"%>
-  <% end %>
-
-  <%= render "billing" %>
-
-  <hr class="my-8">
-
-  <div>
-    <h3 class="font-bold text-lg mb-2">Danger Zone</h3>
-    <p>
-      You can delete your account by clicking the button below. Sorry to see you go!
-    </p>
-
-    <%= button_to app_user_path(@user),
-          method: :delete,
-          data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
-          class: "btn-danger mt-4" do %>
-
-      Delete account
-    <% end %>
-  </div>
+</div>
