@@ -63,7 +63,7 @@ module ApplicationHelper
     end
 
     def post_summary(post)
-      sanitized_content = strip_tags(post.content.to_s.truncate(140))
+      sanitized_content = strip_tags(post.content.to_s).truncate(140)
       if sanitized_content.blank?
         "Untitled"
       else
@@ -73,7 +73,7 @@ module ApplicationHelper
 
     def blog_description(user)
       if user.bio.present?
-        strip_tags(user.bio.truncate(140)).strip
+        strip_tags(user.bio).truncate(140).strip
       else
         user_title(user)
       end
