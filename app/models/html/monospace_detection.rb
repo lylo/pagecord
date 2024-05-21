@@ -42,6 +42,7 @@ module Html
         MONOSPACE_FONTS.each do |monospace_font|
           return true if font.downcase.include?(monospace_font.to_s)
         end
+        false
       end
   end
 end
