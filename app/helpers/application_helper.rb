@@ -40,7 +40,11 @@ module ApplicationHelper
     elsif @post && @post.open_graph_image.present?
       @post.open_graph_image.url
     elsif !custom_domain_request?
-      image_url "social/open-graph.png"
+      if @user.present?
+        image_url "logo-mark.png"
+      else
+        image_url "social/open-graph.png"
+      end
     end
   end
 
