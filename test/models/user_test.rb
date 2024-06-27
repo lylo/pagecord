@@ -49,6 +49,12 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "newuser@newuser.com", user.email
   end
 
+  test "should strip whitespace" do
+    user = User.create!(username: "newuser ", email: "newuser@newuser.com")
+    assert_equal "newuser", user.username
+    assert_equal "newuser@newuser.com", user.email
+  end
+
   test "should validate restricted custom domain" do
     user = User.new(username: "newuser", email: "newuser@newuser.com", custom_domain: "pagecord.com")
     assert_not user.valid?

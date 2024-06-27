@@ -2,7 +2,7 @@ class User < ApplicationRecord
   include Discard::Model
   include DeliveryEmail, Followable, Subscribable
 
-  before_save :downcase_email_and_username
+  before_validation :downcase_email_and_username
   after_update :record_custom_domain_change
 
   has_many :posts, dependent: :destroy
@@ -52,8 +52,8 @@ class User < ApplicationRecord
   private
 
     def downcase_email_and_username
-      self.email = email.downcase
-      self.username = username.downcase
+      self.email = email.downcase.strip
+      self.username = username.downcase.strip
     end
 
     def restricted_domain

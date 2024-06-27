@@ -11,7 +11,6 @@ class SignupsController < ApplicationController
 
   def create
     @user = User.new(user_params)
-
     if @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 

@@ -18,6 +18,16 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to thanks_sessions_path
   end
 
+  test "should send verification email for valid credentials with whitespace" do
+    user = users(:joel)
+
+    assert_emails 1 do
+      post sessions_url, params: { user: { username: "#{user.username} ", email: "#{user.email} " } }
+    end
+
+    assert_redirected_to thanks_sessions_path
+  end
+
   test "should send verification email for valid credentials regardless of case" do
     user = users(:joel)
 
