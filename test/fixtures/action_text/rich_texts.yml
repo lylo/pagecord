@@ -28,7 +28,11 @@ three:
   record: three (Post)
   name: content
   body: |
-    This is my first post
+    This is my first post.
+
+    It is in plain text.
+
+    That's it.
 
 four:
   record: four (Post)

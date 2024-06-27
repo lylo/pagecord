@@ -41,6 +41,17 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
   end
 
+  test "should render plain text posts as html in RSS feed" do
+    get user_posts_path(username: users(:vivian).username, format: :rss)
+
+    assert_response :success
+
+    xml = Nokogiri::XML(@response.body)
+    cdata_content = xml.xpath('//item/description').first.children.find { |n| n.cdata? }.content
+
+    assert_includes cdata_content, "<p>This is my first post.</p>"
+  end
+
   # Custom domains
 
   test "should get index on custom domain" do
