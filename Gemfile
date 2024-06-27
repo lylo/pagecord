@@ -5,6 +5,7 @@ ruby "3.3.1"
 gem "rails", github: "rails/rails", branch: "main"
 
 gem "actionpack-page_caching"
+gem "image_processing", "~> 1.2"
 gem "importmap-rails"
 gem "jbuilder"
 gem "sprockets-rails"
@@ -24,13 +25,13 @@ gem "sidekiq"
 gem "sentry-ruby"
 gem "sentry-rails"
 
-gem "aws-sdk-s3", "~> 1.149"
+gem "aws-sdk-s3"
 gem "discard", "~> 1.2"
 gem "fastimage"
-gem "htmlentities", "~> 4.3"
+gem "htmlentities"
 gem "httparty"
-gem "inline_svg", "~> 1.9"
-gem "pagy", "~> 7.0"
+gem "inline_svg"
+gem "pagy"
 gem "postmark-rails"
 gem "premailer-rails", "~> 1.12"
 gem "nanoid", "~> 2.0"
@@ -41,9 +42,6 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
-
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 1.2"
 
 group :development, :test do
   gem "sqlite3", "~> 1.4"
