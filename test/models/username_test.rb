@@ -13,17 +13,12 @@ class UsernameTest < ActiveSupport::TestCase
     assert_not Username.reserved?("joel")
   end
 
-  test "should allow a single full stop, but not at the start or end" do
-    assert Username.valid_format?("joel.murphy")
+  test "should not allow full stops" do
+    assert_not Username.valid_format?("joel.murphy")
+  end
 
-    assert_not Username.valid_format?("joel..murphy")
-    assert_not Username.valid_format?(".joelmurphy")
-    assert_not Username.valid_format?(".joelmurphy.")
-    assert_not Username.valid_format?("joelmurphy.")
-
-    assert Username.valid_format?("joelmurphy_")
-    assert Username.valid_format?("_joelmurphy")
+  test "should allow one underscore" do
     assert Username.valid_format?("joel_murphy")
-    assert_not Username.valid_format?("joelmurphy__")
+    assert_not Username.valid_format?("joel_murphy_")
   end
 end
