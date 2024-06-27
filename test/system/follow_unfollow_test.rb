@@ -40,6 +40,6 @@ class FollowsTest < ApplicationSystemTestCase
       assert_text "Follow"
     end
 
-    refute @user1.following?(@user2)
+    assert_not @user1.following?(@user2)
   end
 end

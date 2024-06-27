@@ -29,7 +29,7 @@ class App::FollowingsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_match "Follow", @response.body
-    refute @user1.following?(@user2)
+    assert_not @user1.following?(@user2)
   end
 
   test "should not follow oneself" do
@@ -38,7 +38,7 @@ class App::FollowingsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :bad_request
-    refute @user1.following?(@user1)
+    assert_not @user1.following?(@user1)
   end
 
   test "should not follow twice" do
@@ -58,6 +58,6 @@ class App::FollowingsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :bad_request
-    refute @user1.following?(@user2)
+    assert_not @user1.following?(@user2)
   end
 end

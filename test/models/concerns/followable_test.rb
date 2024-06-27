@@ -29,7 +29,7 @@ class FollowableTest < ActiveSupport::TestCase
     @user1.follow @user2
     @user1.unfollow @user2
 
-    refute @user1.followees.include?(@user2)
+    assert_not @user1.followees.include?(@user2)
   end
 
   test "should not allow a user to unfollow a user they are not following" do
@@ -44,7 +44,7 @@ class FollowableTest < ActiveSupport::TestCase
   end
 
   test "should return false if the user is not following the other user" do
-    refute @user1.following?(@user2)
+    assert_not @user1.following?(@user2)
   end
 
   test "should return true if the user is followed by the other user" do
@@ -53,6 +53,6 @@ class FollowableTest < ActiveSupport::TestCase
   end
 
   test "should return false if the user is not followed by the other user" do
-    refute @user2.is_followed_by?(@user1)
+    assert_not @user2.is_followed_by?(@user1)
   end
 end

@@ -16,7 +16,7 @@ class App::UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to root_url
-    refute User.kept.exists?(@user.id)
+    assert_not User.kept.exists?(@user.id)
     assert User.exists?(@user.id) # soft delete
   end
 

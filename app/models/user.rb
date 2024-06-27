@@ -9,14 +9,12 @@ class User < ApplicationRecord
   has_many :access_requests, dependent: :destroy
   has_many :custom_domain_changes, dependent: :destroy
 
-  validates :username, presence: true,
-                       uniqueness: true,
-                       length: { minimum: Username::MIN_LENGTH, maximum: Username::MAX_LENGTH },
-                       format: { with: Username::FORMAT }
+  validates :username, presence: true, uniqueness: true, length: { minimum: Username::MIN_LENGTH, maximum: Username::MAX_LENGTH }
+  validate  :username_valid
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :custom_domain, uniqueness: true, allow_blank: true, format: { with: /\A(?!:\/\/)([a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}\z/ }
-  validate :restricted_domain
+  validate  :restricted_domain
 
   def verify!
     self.update! verified: true
@@ -67,6 +65,12 @@ class User < ApplicationRecord
     def record_custom_domain_change
       if domain_changed?
         self.custom_domain_changes.create!(custom_domain: custom_domain)
+      end
+    end
+
+    def username_valid
+      unless Username.valid_format?(username)
+        errors.add(:username, "must only use alphanumeric characters, full stops (periods) or underscores")
       end
     end
 end

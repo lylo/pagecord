@@ -7,6 +7,6 @@ class SubscriptionTest < ActiveSupport::TestCase
   end
 
   test "should not be subscribed" do
-    refute users(:vivian).subscribed?
+    assert_not users(:vivian).subscribed?
   end
 end
