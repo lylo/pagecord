@@ -27,6 +27,6 @@ class PostTest < ActiveSupport::TestCase
   end
 
   test "post with blank title and body should be invalid" do
-    refute users(:joel).posts.build(title: "", content: "", html: false).valid?
+    assert_not users(:joel).posts.build(title: "", content: "", html: false).valid?
   end
 end

@@ -16,7 +16,7 @@ class AccessRequestsControllerTest < ActionDispatch::IntegrationTest
     get verify_access_request_url(access_requests(:elliot_expired).token_digest)
 
     assert_redirected_to root_path
-    refute user.reload.verified
+    assert_not user.reload.verified
   end
 
   test "should not verify access request with invalid token" do

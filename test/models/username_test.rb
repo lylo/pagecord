@@ -8,8 +8,22 @@ class UsernameTest < ActiveSupport::TestCase
   end
 
   test "should not be reserved" do
-    refute Username.reserved?("olly")
-    refute Username.reserved?("fred")
-    refute Username.reserved?("joel")
+    assert_not Username.reserved?("olly")
+    assert_not Username.reserved?("fred")
+    assert_not Username.reserved?("joel")
+  end
+
+  test "should allow a single full stop, but not at the start or end" do
+    assert Username.valid_format?("joel.murphy")
+
+    assert_not Username.valid_format?("joel..murphy")
+    assert_not Username.valid_format?(".joelmurphy")
+    assert_not Username.valid_format?(".joelmurphy.")
+    assert_not Username.valid_format?("joelmurphy.")
+
+    assert Username.valid_format?("joelmurphy_")
+    assert Username.valid_format?("_joelmurphy")
+    assert Username.valid_format?("joel_murphy")
+    assert_not Username.valid_format?("joelmurphy__")
   end
 end
