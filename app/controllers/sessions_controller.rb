@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    if @user = User.kept.find_by(username: user_params[:username]&.downcase, email: user_params[:email]&.downcase)
+    if @user = User.kept.find_by(username: from_params(:username), email: from_params(:email))
       AccountVerificationMailer.with(user: @user).login.deliver_later
     end
 
@@ -24,6 +24,12 @@ class SessionsController < ApplicationController
   end
 
   private
+
+    def from_params(key)
+      if value = user_params[key]
+        value.downcase.strip
+      end
+    end
 
     def user_params
       params.require(:user).permit(:username, :email)
