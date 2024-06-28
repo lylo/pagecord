@@ -15,6 +15,7 @@ module Trimmable
   end
 
   def trim_rich_text
+    puts "trimming rich text"
     rich_text_attribute = self.class.rich_text_attribute_name
     if rich_text_attribute.present?
       if send(rich_text_attribute).body.present?
@@ -22,6 +23,8 @@ module Trimmable
         send(rich_text_attribute).body = doc.to_html
       end
     end
+
+    puts "content.body = #{send(rich_text_attribute).body}"
   end
 
   private
