@@ -1,3 +1,56 @@
+@import "actiontext.css";
+
+/* Trix styles */
+
+trix-toolbar {
+  margin-top: 2em;
+  position: sticky;
+}
+
+trix-toolbar .trix-button.trix-button--icon {
+  border: 0;
+}
+
+trix-toolbar .trix-button-group {
+  border: 0;
+}
+
+trix-toolbar .trix-button-group:not(:first-child) {
+  margin-left: 0;
+}
+
+.trix-button-row {
+  margin-left: -0.5em;
+}
+
+.attachment {
+  display: inline-block;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  margin: 0;
+  text-align: center;
+  line-height: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  trix-toolbar .trix-button.trix-button--icon {
+    color: #ffffff;
+  }
+
+  /* Targeting SVG icons within the Trix toolbar buttons */
+  trix-toolbar .trix-button--icon::before {
+    color: #ffffff;
+    fill: white;
+  }
+  trix-toolbar .trix-button.trix-button--icon svg {
+    fill: #ffffff; /* Change icon color */
+    color: white;
+  }
+}
+
+
+/* Tailwind */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,69 +60,127 @@
     @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-800 dark:text-gray-100 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 cursor-pointer;
   }
 
+  .btn-secondary {
+    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-800 dark:text-gray-100;
+  }
+
   .btn-danger {
     @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-800 hover:text-white dark:text-gray-100 bg-gray-200 rounded-lg hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-gray-800 cursor-pointer;
   }
 }
 
-article .trix-content p {
-  @apply mb-4;
-}
-
-.prose {
-  /* Override Tailwind prose which wraps code in backticks */
-  code:before, code:after {
-    content: "";
+@layer base {
+  article .trix-content p {
+    @apply mb-4;
   }
 
-  img {
-    @apply my-2 mx-auto;
+  .prose {
+    /* Override Tailwind prose which wraps code in backticks */
+    code:before, code:after {
+      content: "";
+    }
+
+    img {
+      @apply my-2 mx-auto;
+    }
+
+    blockquote {
+      @apply my-2;
+    }
+
+    h1 {
+      @apply mt-0 mb-6 text-3xl;
+    }
   }
 
-  blockquote {
-    @apply my-2;
-  }
-
-  h1 {
-    @apply mt-0 mb-6 text-3xl;
-  }
-}
-
-/* Pagy pagination */
-span.page.next > a, span.page.prev > a {
-  @apply underline;
-}
-
-.admin {
+  /* Pagy pagination */
   span.page.next > a, span.page.prev > a {
-    @apply no-underline;
+    @apply underline;
   }
-}
 
-.admin .pagy {
-  @apply flex space-x-1 font-semibold text-sm text-slate-500 dark:text-slate-600;
-  .page {
-    a {
-      @apply block rounded-lg px-3 py-1 dark:text-slate-400 bg-slate-200 dark:bg-slate-700;
-      &:hover {
-        @apply bg-gray-300 dark:bg-slate-500 dark:text-slate-200;
+  .admin {
+    span.page.next > a, span.page.prev > a {
+      @apply no-underline;
+    }
+  }
+
+  .admin .pagy {
+    @apply flex space-x-1 font-semibold text-sm text-slate-500 dark:text-slate-600;
+    .page {
+      a {
+        @apply block rounded-lg px-3 py-1 dark:text-slate-400 bg-slate-200 dark:bg-slate-700;
+        &:hover {
+          @apply bg-gray-300 dark:bg-slate-500 dark:text-slate-200;
+        }
+      }
+      &.active a {
+        @apply text-white bg-slate-400 dark:text-slate-200 dark:bg-slate-600 cursor-default;
+      }
+      &.disabled a {
+        @apply text-gray-300 bg-gray-100 dark:bg-slate-800 dark:text-slate-600 cursor-default;
+      }
+      &.gap { }  /* if you need to customize it */
+
+    }
+
+    .pagy-combo-input, &.pagy-items-selector-js {
+      @apply inline-block whitespace-nowrap bg-gray-200 dark:bg-slate-700 rounded-lg px-3 py-0.5;
+      input {
+        @apply bg-gray-100 dark:bg-slate-700 border-none rounded-md;
       }
     }
-    &.active a {
-      @apply text-white bg-slate-400 dark:text-slate-200 dark:bg-slate-600 cursor-default;
-    }
-    &.disabled a {
-      @apply text-gray-300 bg-gray-100 dark:bg-slate-800 dark:text-slate-600 cursor-default;
-    }
-    &.gap { }  /* if you need to customize it */
-
   }
 
-  .pagy-combo-input, &.pagy-items-selector-js {
-    @apply inline-block whitespace-nowrap bg-gray-200 dark:bg-slate-700 rounded-lg px-3 py-0.5;
-    input {
-      @apply bg-gray-100 dark:bg-slate-700 border-none rounded-md;
-    }
+  /* Trix placeholder colour */
+  trix-editor:empty:not(:focus)::before {
+    @apply text-slate-300 dark:text-slate-700;
+  }
+
+  trix-editor {
+    @apply w-full border-slate-300 dark:border-slate-700 rounded-lg dark:bg-slate-800 min-h-[400px] !important;
+  }
+
+  trix-editor h1 {
+    font-size: 1.25rem !important;
+    line-height: 1.25rem !important;
+    @apply leading-5 font-semibold mb-4;
+  }
+
+  trix-editor a:not(.no-underline) {
+    @apply underline;
+  }
+
+  trix-editor a:visited {
+    color: green;
+  }
+
+  trix-editor ul {
+    list-style-type: disc;
+    padding-left: 1rem;
+  }
+
+  trix-editor ol {
+    list-style-type: decimal;
+    padding-left: 1rem;
+  }
+
+  trix-editor pre {
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    font-family: monospace;
+    font-size: 1.5em;
+    padding: 0.5em;
+    white-space: pre;
+    background-color: #eee;
+    overflow-x: auto;
+  }
+
+  trix-editor blockquote {
+    border: 0 solid #ccc;
+    border-left-width: 0px;
+    border-left-width: 0.3em;
+    margin-left: 0.3em;
+    padding-left: 0.6em;
   }
 }
-@import 'actiontext.css';

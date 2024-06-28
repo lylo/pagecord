@@ -67,7 +67,7 @@ Rails.application.routes.draw do
   get "/faq", to: "public#faq", as: :faq
 
   namespace :app do
-    resources :posts, only: [:index, :destroy]
+    resources :posts
     resources :users, only: [:update, :destroy] do
       post :follow, to: 'followings#create'
       delete :unfollow, to: 'followings#destroy'
