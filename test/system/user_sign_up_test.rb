@@ -10,9 +10,14 @@ class SignUpTest < ApplicationSystemTestCase
 
     user = User.kept.find_by(email: "test@example.com")
     assert user, "User should be created"
+  end
+
+  test "verifying signup email" do
+    user = User.create!(username: "testuser", email: "test@example.com")
+    user.access_requests.create!
 
     visit verify_access_request_url(token: user.access_requests.last.token_digest)
 
-    assert_current_path user_posts_path(username: user.username)
+    assert_current_path app_posts_url
   end
 end

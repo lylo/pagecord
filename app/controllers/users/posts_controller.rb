@@ -49,7 +49,8 @@ class Users::PostsController < ApplicationController
 
     def enforce_custom_domain
       if default_domain_request? && @user.custom_domain.present?
-        request_path = request.path.gsub(/^\/@?#{@user.username}\/?/, '')
+        escaped_username = Regexp.escape(@user.username)
+        request_path = request.path.gsub(/^\/@?#{escaped_username}\/?/, '')
         full_url = root_url(host: @user.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
         new_url = "#{full_url}#{request_path}"
 
