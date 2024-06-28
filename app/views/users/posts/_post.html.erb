@@ -1,9 +1,9 @@
 <article class="mb-16 prose dark:prose-invert overflow-auto break-words">
   <% if post.title.present? %>
     <%= link_to post_path(post), class: "no-underline" do %>
-      <h2 class="mt-0 mb-4">
+      <h1>
         <%= post.title %>
-      </h2>
+      </h1>
     <% end %>
   <% end %>
 

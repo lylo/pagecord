@@ -29,6 +29,10 @@ article .trix-content p {
   blockquote {
     @apply my-2;
   }
+
+  h1 {
+    @apply mt-0 mb-6 text-3xl;
+  }
 }
 
 /* Pagy pagination */
