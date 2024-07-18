@@ -97,7 +97,7 @@ Rails.application.routes.draw do
     get "/", to: "users/posts#index", as: :custom_user_posts
     get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_without_title
     get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_with_title
-    get "/:username.rss", to: "users/posts#index", format: :rss, as: :custom_user_posts_rss
+    get "/:username", to: "users/posts#index", format: :rss, as: :custom_user_posts_rss
   end
 
   constraints(DomainConstraints.method(:default_domain?)) do
