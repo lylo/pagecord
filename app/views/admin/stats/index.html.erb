@@ -14,6 +14,7 @@
           <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Email</th>
           <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Verified</th>
           <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Discarded</th>
+          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Status</th>
           <th class="py-4 sm:ps-4 text-end text-sm font-semibold text-gray-900 dark:text-slate-50">Created</th>
         </tr>
       </thead>
@@ -27,6 +28,17 @@
           <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.email %></td>
           <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.verified %></td>
           <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.discarded_at&.to_formatted_s :short %></td>
+          <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400">
+            <% if user.discarded_at %>
+              Cancelled
+            <% elsif user.is_premium? %>
+              Premium
+            <% elsif user.free_trial_expired? %>
+              Trial Expired
+            <% else %>
+              Trialling
+            <% end %>
+          </td>
           <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400 text-end"><%= user.created_at.to_formatted_s :long %></td>
         </tr>
       <% end %>
