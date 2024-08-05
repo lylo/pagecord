@@ -1,7 +1,7 @@
 class AppController < ApplicationController
   layout "app"
 
-  include Authorization
+  include Authorization, FreeTrial
 
   before_action :load_user
 

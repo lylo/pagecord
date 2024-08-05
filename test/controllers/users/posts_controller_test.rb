@@ -34,6 +34,13 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_url
   end
 
+  test "should redirect to root if user free trial expired" do
+    user = users(:vivian)
+    user.update!(created_at: 8.days.ago)
+    get user_posts_path(username: users(:vivian).username)
+    assert_redirected_to root_url
+  end
+
   test "should get index as RSS" do
     get user_posts_path(username: users(:joel).username, format: :rss)
 
