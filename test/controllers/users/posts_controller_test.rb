@@ -100,4 +100,10 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to "http://#{post.user.custom_domain}/#{post.url_id}"
   end
+
+  test "should redirect to last page on pagy overflow" do
+    get user_posts_path(username: users(:joel).username, page: 999)
+
+    assert_redirected_to user_posts_path(username: users(:joel).username, page: 1)
+  end
 end
