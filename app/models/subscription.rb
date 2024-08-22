@@ -2,7 +2,7 @@ class Subscription < ApplicationRecord
   belongs_to :user
 
   def self.price
-    "35"
+    "20"
   end
 
   def cancelled?
