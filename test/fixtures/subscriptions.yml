@@ -2,12 +2,12 @@ one:
   user: joel
   paddle_subscription_id: sub_01hvrk1481njzb874tn7wyrksv
   paddle_price_id: pri_01hvp39rnddapkfaqqd3tvje8n
-  unit_price: 3500
+  unit_price: 2000
   next_billed_at: <%= 1.year.from_now %>
 
 two:
   user: annie
   paddle_subscription_id: sub_01hvrk1481njzb874tn7wasda
   paddle_price_id: pri_01hvp39rnddapkfaqqd3tvasdasd
-  unit_price: 3500
+  unit_price: 2000
   next_billed_at: <%= 1.year.from_now %>
