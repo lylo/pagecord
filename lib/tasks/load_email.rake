@@ -1,7 +1,7 @@
 namespace :email do
   desc "Loads all .eml files from a directory into PostsMailbox"
   task load: :environment do
-    ENV["PAGECORD_RECIPIENT"]="joel_gf35jsue@post.pagecord.com"
+    ENV["PAGECORD_RECIPIENT"] ="joel_gf35jsue@post.pagecord.com"
     ENV["PAGECORD_FROM"] ="joel@meyerowitz.xyz"
     ENV["PAGECORD_REPLYTO"] = ENV["PAGECORD_FROM"]
 
