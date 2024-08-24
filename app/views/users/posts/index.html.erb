@@ -36,7 +36,7 @@
 
   <% if @pagy.next %>
     <div class="text-slate-800 dark:text-slate-200">
-      <%== pagy_next_html(@pagy, text: "Older", link_extra: 'id="next_link"') %>
+      <%== pagy_next_a(@pagy, text: "Older", link_extra: 'id="next_link"') %>
     </div>
   <% end %>
 </div>

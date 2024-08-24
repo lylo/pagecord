@@ -17,7 +17,7 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.3.1'
+        ruby-version: '3.3.4'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
     - name: Database confirm
@@ -39,3 +39,4 @@ jobs:
     - name: Run tests
       run: |
         bundle exec rails test
+

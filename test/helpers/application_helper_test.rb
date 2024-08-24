@@ -28,12 +28,15 @@ class PostsHelperTest < ActionView::TestCase
   end
 
   test "user_title with title" do
-    user = User.build title: "My blog"
+    user = users(:joel)
+    user.title = "My blog"
     assert_equal "My blog", user_title(user)
   end
 
   test "blog_description with no bio" do
-    user = User.build title: "My blog"
+    user = users(:joel)
+    user.title = "My blog"
+    user.bio = nil
     assert_equal "My blog", blog_description(user)
   end
 

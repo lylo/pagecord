@@ -34,6 +34,13 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_url
   end
 
+  test "should redirect to root if user free trial expired" do
+    user = users(:vivian)
+    user.update!(created_at: 8.days.ago)
+    get user_posts_path(username: users(:vivian).username)
+    assert_redirected_to root_url
+  end
+
   test "should get index as RSS" do
     get user_posts_path(username: users(:joel).username, format: :rss)
 
@@ -92,5 +99,11 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
     get "/#{post.user.username}/#{post.url_id}"
 
     assert_redirected_to "http://#{post.user.custom_domain}/#{post.url_id}"
+  end
+
+  test "should redirect to last page on pagy overflow" do
+    get user_posts_path(username: users(:joel).username, page: 999)
+
+    assert_redirected_to user_posts_path(username: users(:joel).username, page: 1)
   end
 end

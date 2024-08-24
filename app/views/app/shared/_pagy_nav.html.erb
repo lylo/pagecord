@@ -1,8 +1,8 @@
 <div class="mt-4 flex gap-x-4 justify-end text-slate-800 dark:text-slate-200">
   <% if @pagy.prev %>
-    <%== pagy_prev_html(@pagy, text: "Newer") %>
+    <%== pagy_prev_a(@pagy, text: "Newer") %>
   <% end %>
   <% if @pagy.next %>
-    <%== pagy_next_html(@pagy, text: "Older") %>
+    <%== pagy_next_a(@pagy, text: "Older") %>
   <% end %>
 </div>
