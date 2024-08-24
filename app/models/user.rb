@@ -31,7 +31,15 @@ class User < ApplicationRecord
   end
 
   def is_premium?
-    subscription&.present? || %w[olly pagecord lylo teamlight].include?(username) || !Rails.env.production?
+    subscription&.present? || %w[olly pagecord lylo teamlight].include?(username)
+  end
+
+  def free_trial_expired?
+    created_at < 7.days.ago && !is_premium?
+  end
+
+  def free_trial_ends_at
+    created_at + 7.days
   end
 
   def custom_title?

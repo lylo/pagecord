@@ -2,6 +2,7 @@ class Users::PostsController < ApplicationController
   include Pagy::Backend
 
   skip_before_action :domain_check      # PostsController is available for custom domains
+  rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   before_action :load_user, :verification, :enforce_custom_domain
 
@@ -30,7 +31,7 @@ class Users::PostsController < ApplicationController
         User.kept.find_by(username: user_params[:username]) if user_params[:username].present?
       end
 
-      redirect_home if @user.nil?
+      redirect_home if @user.nil? || @user&.free_trial_expired?
     end
 
     def user_params
@@ -56,5 +57,9 @@ class Users::PostsController < ApplicationController
 
         redirect_to new_url, status: :moved_permanently, allow_other_host: true
       end
+    end
+
+    def redirect_to_last_page(exception)
+      redirect_to url_for(page: exception.pagy.last)
     end
   end

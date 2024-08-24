@@ -32,10 +32,10 @@ end
 Rails.application.routes.draw do
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
+  get "up", to: "rails/health#show", as: :rails_health_check
 
   constraints SidekiqAdminConstraint.new do
-    mount Sidekiq::Web => '/admin/sidekiq'
+    mount Sidekiq::Web, at: "/admin/sidekiq"
   end
 
   get "/404", to: "errors#not_found"
@@ -97,7 +97,7 @@ Rails.application.routes.draw do
     get "/", to: "users/posts#index", as: :custom_user_posts
     get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_without_title
     get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_with_title
-    get "/:username.rss", to: "users/posts#index", format: :rss, as: :custom_user_posts_rss
+    get "/:username", to: "users/posts#index", format: :rss, as: :custom_user_posts_rss
   end
 
   constraints(DomainConstraints.method(:default_domain?)) do

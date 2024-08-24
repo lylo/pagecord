@@ -86,41 +86,44 @@ trix-toolbar .trix-button-group:not(:first-child) {
     }
   }
 
-  /* Pagy pagination */
-  span.page.next > a, span.page.prev > a {
-    @apply underline;
+
+  blockquote {
+    @apply my-2;
   }
 
-  .admin {
-    span.page.next > a, span.page.prev > a {
-      @apply no-underline;
-    }
-  }
-
-  .admin .pagy {
-    @apply flex space-x-1 font-semibold text-sm text-slate-500 dark:text-slate-600;
-    .page {
-      a {
-        @apply block rounded-lg px-3 py-1 dark:text-slate-400 bg-slate-200 dark:bg-slate-700;
-        &:hover {
-          @apply bg-gray-300 dark:bg-slate-500 dark:text-slate-200;
-        }
-      }
-      &.active a {
-        @apply text-white bg-slate-400 dark:text-slate-200 dark:bg-slate-600 cursor-default;
-      }
-      &.disabled a {
-        @apply text-gray-300 bg-gray-100 dark:bg-slate-800 dark:text-slate-600 cursor-default;
-      }
-      &.gap { }  /* if you need to customize it */
-
-    }
-
-    .pagy-combo-input, &.pagy-items-selector-js {
-      @apply inline-block whitespace-nowrap bg-gray-200 dark:bg-slate-700 rounded-lg px-3 py-0.5;
-      input {
-        @apply bg-gray-100 dark:bg-slate-700 border-none rounded-md;
-      }
-    }
+  h1 {
+    @apply mt-0 mb-6 text-3xl;
   }
 }
+
+/* Pagy pagination */
+.pagy {
+  @apply flex space-x-1 font-semibold text-sm text-gray-500;
+}
+
+.pagy a {
+  @apply block rounded-lg px-3 py-1 bg-gray-200;
+}
+
+.pagy a:hover {
+  @apply bg-gray-300;
+}
+
+a:not([href]) { /* disabled links */
+  @apply text-gray-300 bg-gray-100 cursor-default;
+}
+
+.pagy a.current {
+  @apply text-white bg-gray-400;
+}
+
+.pagy label {
+  @apply inline-block whitespace-nowrap bg-gray-200 rounded-lg px-3 py-0.5;
+}
+
+.pagy label input {
+  @apply bg-gray-100 border-none rounded-md;
+}
+
+
+@import 'actiontext.css';
