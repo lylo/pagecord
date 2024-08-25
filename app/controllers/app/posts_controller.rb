@@ -6,22 +6,28 @@ class App::PostsController < AppController
   end
 
   def new
-    @post = Current.user.posts.build
+    if Rails.env.production?
+      redirect_to app_posts_path
+    else
+      @post = Current.user.posts.build
+    end
   end
 
   def edit
     @post = Current.user.posts.find(params[:id])
+
+    # FIXME remove once all posts are stored as HTML
+    if @post.html?
+      @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
+    else
+      @post.content = Html::PlainTextToHtml.new.transform(@post.content.to_s)
+    end
   end
 
   def create
     post = Current.user.posts.build(post_params.merge(html: true))
-    puts "post title = #{post.title}"
-    puts "post content = #{post.content.body}"
     if post.save
-      puts "after save"
-      puts "post title = #{post.title}"
-      puts "post content = #{post.content.body}"
-        redirect_to app_posts_path, notice: "Post was successfully created"
+      redirect_to app_posts_path, notice: "Post was successfully created"
     else
       @post = post
       flash.now.alert = @post.errors.full_messages.to_sentence
