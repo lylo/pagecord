@@ -45,7 +45,7 @@ module Trimmable
         end
       end
 
-      doc.to_html
+      doc
     end
 
     # Function to remove trailing empty nodes
