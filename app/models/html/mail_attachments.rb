@@ -29,12 +29,12 @@ module Html
           element.replace node_html
         else
           new_node = Nokogiri::XML::Node.new "action-text-attachment", document
-          new_node['sgid'] = blob.attachable_sgid
-          new_node['content-type'] = original.content_type
-          new_node['filename'] = original.filename
-          new_node['url'] = url
-          new_node['filesize'] = blob.byte_size
-          new_node['previewable'] = "true"
+          new_node["sgid"] = blob.attachable_sgid
+          new_node["content-type"] = original.content_type
+          new_node["filename"] = original.filename
+          new_node["url"] = url
+          new_node["filesize"] = blob.byte_size
+          new_node["previewable"] = "true"
 
           # append the new node to the existing body
           document << new_node
@@ -61,8 +61,6 @@ module Html
           )
 
           { original: attachment, blob: blob, url: Rails.application.routes.url_helpers.rails_blob_url(blob, only_path: true) }
-
-#          { original: attachment, blob: blob }
         end
       end
   end
