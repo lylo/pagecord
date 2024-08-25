@@ -25,22 +25,6 @@ trix-toolbar .trix-button-group:not(:first-child) {
   display: inline;
 }
 
-@media (prefers-color-scheme: dark) {
-  trix-toolbar .trix-button.trix-button--icon {
-    color: #ffffff;
-  }
-
-  /* Targeting SVG icons within the Trix toolbar buttons */
-  trix-toolbar .trix-button--icon::before {
-    color: #ffffff;
-    fill: white;
-  }
-  trix-toolbar .trix-button.trix-button--icon svg {
-    fill: #ffffff; /* Change icon color */
-    color: white;
-  }
-}
-
 
 /* Tailwind */
 
@@ -77,6 +61,10 @@ trix-toolbar .trix-button-group:not(:first-child) {
       @apply my-2 mx-auto;
     }
 
+    ul, ol {
+      @apply my-0 !important;
+    }
+
     blockquote {
       @apply my-2;
     }
@@ -93,6 +81,13 @@ trix-toolbar .trix-button-group:not(:first-child) {
 
   h1 {
     @apply mt-0 mb-6 text-3xl;
+  }
+
+  trix-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    @apply bg-white dark:bg-slate-900;
   }
 }
 
