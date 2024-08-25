@@ -35,15 +35,9 @@ class Post < ApplicationRecord
     end
 
     def check_title_and_content
-      puts "check_title_and_content"
-      puts "title = #{title}"
-      puts "content.body = #{content.body}"
       if title.present? && content.body.blank?
         self.content.body = title
         self.title = nil
-
-        puts "title = #{title}"
-        puts self.content.body
       end
     end
 end
