@@ -28,26 +28,28 @@ module Trimmable
 
     def remove_trailing_empty_nodes(html)
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
+      clean_trailing_nodes(doc)
 
-      nodes = []
-      doc.traverse do |node|
-        if node.text? || node.element?
-          nodes << node
-        end
+      # Recursively clean up nested elements
+      doc.css('div, p').each do |element|
+        clean_trailing_nodes(element)
       end
-      nodes.reverse!
 
-      nodes.each_with_index do |node, index|
-        empty_nodes_to_remove = %w[p br div]
+      doc
+    end
+
+    def clean_trailing_nodes(element)
+      nodes = element.children.reverse
+      nodes.each do |node|
         if node.text? && node.content.strip.empty?
           node.remove
-        elsif empty_nodes_to_remove.include?(node.name) && node.element? && node.children.empty?
+        elsif node.name == 'br' && node.element?
+          node.remove
+        elsif node.element? && node.children.empty? && %w[p div].include?(node.name)
           node.remove
         else
           break
         end
       end
-
-      doc
     end
 end
