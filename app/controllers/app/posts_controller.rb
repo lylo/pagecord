@@ -14,6 +14,8 @@ class App::PostsController < AppController
   end
 
   def edit
+    redirect to app_posts_path unless Current.user.is_premium?
+
     @post = Current.user.posts.find(params[:id])
 
     # FIXME remove once all posts are stored as HTML
@@ -37,7 +39,9 @@ class App::PostsController < AppController
 
   def update
     post = Current.user.posts.find(params[:id])
-    if post.update(post_params)
+
+    # FIXME remove html:true once all posts are stored as HTML
+    if post.update(post_params.merge(html: true))
       redirect_to app_posts_path, notice: "Post was successfully updated"
     else
       @post = post
