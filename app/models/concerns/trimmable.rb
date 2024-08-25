@@ -18,7 +18,7 @@ module Trimmable
     rich_text_attribute = self.class.rich_text_attribute_name
     if rich_text_attribute.present?
       if send(rich_text_attribute).body.present?
-        doc = remove_trailing_empty_nodes(send(rich_text_attribute).body.to_s)
+        doc = trim(send(rich_text_attribute).body.to_s)
         send(rich_text_attribute).body = doc
       end
     end
@@ -26,20 +26,32 @@ module Trimmable
 
   private
 
-    def remove_trailing_empty_nodes(html)
+    def trim(html)
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
-      clean_trailing_nodes(doc)
 
-      # Recursively clean up nested elements
-      doc.css('div, p').each do |element|
-        clean_trailing_nodes(element)
+      # Process top-level nodes
+      remove_trailing_empty_nodes(doc)
+
+      # Process the last top-level element
+      last_element = doc.children.last
+      remove_trailing_empty_nodes(last_element) if last_element
+
+      # Remove trailing empty top-level elements
+      doc.children.reverse.each do |node|
+        if node.element? && node.children.empty? && %w[p div].include?(node.name)
+          node.remove
+        else
+          break
+        end
       end
 
-      doc
+      doc.to_html
     end
 
-    def clean_trailing_nodes(element)
+    # Function to remove trailing empty nodes
+    def remove_trailing_empty_nodes(element)
       nodes = element.children.reverse
+
       nodes.each do |node|
         if node.text? && node.content.strip.empty?
           node.remove
