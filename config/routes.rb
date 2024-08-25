@@ -84,7 +84,7 @@ Rails.application.routes.draw do
     get "/feed", to: "feed#index"
     get "/feed/rss/:token", to: "feed#private_rss", as: :private_rss_feed, format: :rss
 
-    root "feed#index"
+    root "posts#index"
   end
 
   get "/admin", to: "admin#index", as: :admin
