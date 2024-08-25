@@ -30,6 +30,11 @@
   max-width: 100% !important;
 }
 
+trix-editor {
+  min-height: 300px;
+  max-width: 100% !important;
+}
+
 trix-editor figure {
   margin-bottom: 1.5rem !important;
 }
@@ -48,7 +53,7 @@ trix-editor .attachment__caption {
     }
 
     pre, code {
-      background-color: rgb(30 41 59);
+      background-color: rgb(2 6 23); /* bg-slate-950 */
     }
     blockquote {
       color: #fff;
