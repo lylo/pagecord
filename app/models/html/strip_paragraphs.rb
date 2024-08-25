@@ -3,11 +3,15 @@ module Html
     def transform(html)
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
 
-      doc.css('p').each do |p|
-        p.replace(Nokogiri::HTML::DocumentFragment.parse(p.inner_html + '<br><br>'))
-      end
+      if doc.css("p").any?
+        doc.css("p").each do |p|
+          p.replace(Nokogiri::HTML::DocumentFragment.parse(inner_html + "<br><br>"))
+        end
 
-      doc.to_html
+        doc.to_html
+      else
+        html
+      end
     end
   end
 end
