@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-  include OpaqueId
+  include OpaqueId, Trimmable
 
   belongs_to :user, inverse_of: nil
 
