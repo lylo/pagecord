@@ -72,6 +72,10 @@ trix-toolbar .trix-button-group:not(:first-child) {
     h1 {
       @apply mt-0 mb-6 text-3xl;
     }
+
+    pre {
+      @apply my-2;
+    }
   }
 
 
