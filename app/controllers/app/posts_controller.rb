@@ -14,7 +14,7 @@ class App::PostsController < AppController
   end
 
   def edit
-    redirect to app_posts_path unless Current.user.is_premium?
+    redirect to app_posts_path unless Current.user.is_admin?
 
     @post = Current.user.posts.find(params[:id])
 
