@@ -19,7 +19,7 @@ module Trimmable
     if rich_text_attribute.present?
       if send(rich_text_attribute).body.present?
         doc = remove_trailing_empty_nodes(send(rich_text_attribute).body.to_s)
-        send(rich_text_attribute).body = doc.to_html
+        send(rich_text_attribute).body = doc
       end
     end
   end

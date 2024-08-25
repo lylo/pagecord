@@ -12,7 +12,7 @@ class Html::SanitizeTest < ActiveSupport::TestCase
     expected_html = <<~HTML
       <div>
       <p>hello, world!</p>
-      <br><action-text-attachment content-type="image/jpeg" filename="IMG_4475.JPG"></action-text-attachment><br>
+      <br><action-text-attachment content-type="image/jpeg" filename="IMG_4475.JPG"><figure></figure></action-text-attachment><br>
       </div>
     HTML
     assert_equal expected_html.strip, transformed_html

@@ -5,7 +5,7 @@ module Html
 
       if doc.css("p").any?
         doc.css("p").each do |p|
-          p.replace(Nokogiri::HTML::DocumentFragment.parse(inner_html + "<br><br>"))
+          p.replace(Nokogiri::HTML::DocumentFragment.parse(p.inner_html + "<br><br>"))
         end
 
         doc.to_html
