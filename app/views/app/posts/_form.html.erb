@@ -1,4 +1,4 @@
-<%= form_with(model: [:app, @post], class: "mt-8") do |form| %>
+<%= form_with(model: [:app, @post]) do |form| %>
   <%= form.text_field :title, placeholder: "Optional post title", class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
 
   <%= form.rich_text_area :content, placeholder: "Write your post...", class: "trix-content prose border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg", data: { controller: "autogrow" }%>
