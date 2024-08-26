@@ -6,10 +6,10 @@ import YouTube from "youtube"
 export default class extends Controller {
   connect() {
     this.mediaSites = [new Spotify(), new YouTube()]
-    this.replaceMediaLinksAndText()
+    this.replaceMediaLinks()
   }
 
-  replaceMediaLinksAndText() {
+  replaceMediaLinks() {
     const articles = document.querySelectorAll('article')
 
     articles.forEach(article => {
@@ -21,6 +21,7 @@ export default class extends Controller {
 
   embedMediaLinks(article, site) {
     const links = Array.from(article.querySelectorAll('a')).filter(link => site.regex.test(link.href))
+
     links.forEach(link => {
       const url = link.getAttribute("href")
       const linkText = link.textContent.trim()
