@@ -31,7 +31,9 @@
          class: "font-semibold underline" %>
     </p>
   <% else %>
+    <div data-controller="media-embeds">
     <%= render partial: "users/posts/post", collection: @posts, cached: true %>
+    </div>
   <% end %>
 
   <% if @pagy.next %>
