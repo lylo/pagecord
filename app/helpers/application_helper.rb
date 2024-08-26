@@ -1,3 +1,5 @@
+require "htmlentities"
+
 module ApplicationHelper
   # <meta name="description" content="<%= meta_description %>">
   def meta_description
@@ -67,13 +69,20 @@ module ApplicationHelper
     end
 
     def post_summary(post)
-      sanitized_content = strip_tags(post.content.to_s).truncate(140)
-      if sanitized_content.blank?
+      summary = sanitized_content(post)
+      if summary.blank?
         "Untitled"
       else
-        sanitized_content.strip
+        summary.strip
       end
-  end
+    end
+
+    def sanitized_content(post)
+      coder = HTMLEntities.new
+      stripped_content = strip_tags(post.content.to_s)
+      coder.decode(stripped_content).truncate(140)
+    end
+
 
     def blog_description(user)
       if user.bio.present?

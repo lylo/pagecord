@@ -39,6 +39,7 @@ class PostsMailbox < ApplicationMailbox
           user.posts.create!(
             title: title,
             content: content,
+            raw_content: mail.raw_source,
             attachments: parser.attachments,
             html: parser.html?,
             published_at: mail.date)
