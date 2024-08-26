@@ -2,15 +2,21 @@ one:
   record: one (Post)
   name: content
   body: |
+    <p>
     Street photography is a fascinating genre that offers a raw, unscripted, and candid look into everyday life. It captures the beauty of ordinary moments, turning them into extraordinary images. It's about documenting society and people in their natural environment, without any pretense or setup.
-
+    </p>
+    <p>
     The beauty of street photography lies in its spontaneity. It's about capturing that fleeting moment that might never occur again. It could be a glance, a gesture, a play of light and shadow, or a unique juxtaposition. The streets are full of such moments, waiting to be captured.
-
+    </p>
+    <p>
     One of the key aspects of street photography is the ability to anticipate moments. This requires a keen eye for details and a deep understanding of human behavior. It's about being in the right place at the right time, and more importantly, being ready to capture the moment when it happens.
-
+    </p>
+    <p>
     Street photography is also about telling stories. Each image is a snapshot of a larger narrative. It's about capturing the essence of life in a single frame. The viewer is left to fill in the details and complete the story in their mind.
-
+    </p>
+    <p>
     In conclusion, street photography is a challenging yet rewarding genre. It pushes you to step out of your comfort zone, to see the world from a different perspective, and to find beauty in the mundane. It's a genre that truly celebrates the art of observation and storytelling.
+    </p>
 
 two:
   record: two (Post)
@@ -28,11 +34,11 @@ three:
   record: three (Post)
   name: content
   body: |
-    This is my first post.
+    <p>This is my first post.</p>
 
-    It is in plain text.
+    <p>It is in plain text.</p>
 
-    That's it.
+    <p>That's it.</p>
 
 four:
   record: four (Post)

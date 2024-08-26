@@ -15,11 +15,7 @@ xml.rss version: "2.0" do
           xml.title post.title
         end
         xml.description do
-          if post.html?
-            xml.cdata! without_action_text_image_wrapper(post.content.to_s)
-          else
-            xml.cdata! simple_format(auto_link post.content)
-          end
+          xml.cdata! without_action_text_image_wrapper(post.content.to_s)
         end
         xml.pubDate post.published_at.to_formatted_s(:rfc822)
         xml.link link

@@ -31,10 +31,6 @@ class MailParser
     @body ||= parse_body
   end
 
-  def html?
-    @mail.multipart? && @mail.html_part
-  end
-
   def attachments
     @attachment_transformer&.attachments || []
   end
@@ -69,10 +65,10 @@ class MailParser
         if @mail.html_part
           transform @mail.html_part.decoded
         elsif @mail.text_part
-          @mail.text_part.body.decoded
+          Html::PlainTextToHtml.new.transform(@mail.text_part.decoded)
         end
       elsif @mail.content_type =~ /text\/plain/
-        @mail.decoded
+        Html::PlainTextToHtml.new.transform(@mail.decoded)
       else
         raise "Unknown content type #{mail.content_type}"
       end

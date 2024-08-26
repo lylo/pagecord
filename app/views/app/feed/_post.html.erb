@@ -18,11 +18,7 @@
     <% end %>
   <% end %>
 
-  <% if post.html? %>
-    <%= auto_link post.content %>
-  <% else %>
-    <%= simple_format(auto_link post.content) %>
-  <% end %>
+  <%= auto_link post.content %>
 </article>
 
 <div class="w-64 mx-auto py-8">

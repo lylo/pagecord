@@ -12,7 +12,10 @@ class Html::PlainTextToHtmlTest < ActiveSupport::TestCase
     html = Html::PlainTextToHtml.new.transform(plain_text)
 
     expected_html = <<~HTML
-      hello, world!<br><br>this is a test<br>
+      <p>hello, world!</p>
+
+      <p>this is a test
+      </p>
     HTML
     assert_equal expected_html.strip, html
   end

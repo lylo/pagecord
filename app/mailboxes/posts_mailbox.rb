@@ -41,7 +41,6 @@ class PostsMailbox < ApplicationMailbox
             content: content,
             raw_content: mail.raw_source,
             attachments: parser.attachments,
-            html: parser.html?,
             published_at: mail.date)
         end
       rescue => e
