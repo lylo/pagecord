@@ -60,6 +60,10 @@ trix-editor .attachment__caption {
     }
   }
 
+  .trix-input--dialog {
+    color: black;
+  }
+
   .trix-button-row {
     .trix-button-group {
       background-color: rgb(15 23 42) !important; /* bg-slate-900 */
