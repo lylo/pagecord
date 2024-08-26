@@ -1,23 +1,19 @@
 one:
   title: The Art of Street Photography
   user: joel
-  html: false
   published_at: <%= 1.day.ago %>
 
 two:
   title: The Beauty of Landscape Photography
   user: joel
-  html: true
   published_at: <%= 2.days.ago %>
 
 three:
   title: My first post
   user: vivian
-  html: false
   published_at: <%= 1.week.ago %>
 
 four:
   title: What I've learned about photography
   user: annie
-  html: true
   published_at: <%= 1.day.ago %>

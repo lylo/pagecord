@@ -7,11 +7,7 @@
     <% end %>
   <% end %>
 
-  <% if post.html? %>
-    <%= auto_link post.content %>
-  <% else %>
-    <%= simple_format(auto_link post.content) %>
-  <% end %>
+  <%= auto_link post.content %>
 
   <%= link_to post_path(post), class: "no-underline" do %>
     <div class="text-gray-400 text-sm mt-4 mb-4 font-normal" title="<%= post.published_at.to_formatted_s(:long) %>">

@@ -17,7 +17,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
 
     assert_equal "Hello world!", user.posts.last.title
-    assert_equal "Hello?", user.posts.last.content.to_s.strip
+    assert_equal "<p>Hello?</p>", user.posts.last.content.to_s.strip
     assert_not_nil user.posts.last.raw_content
   end
 
@@ -32,7 +32,6 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "Another test", user.posts.last.title
 
     assert_equal "<div><div><div>This is a test.<br><br>With multiple paragraphs.<br><br>Ok?<br><br><strong>Does it work?</strong></div></div></div>", format_html(user.posts.last.content.to_s.strip)
-    assert user.posts.last.html?
     assert Time.parse("Thu, 21 Mar 2024 16:57:12 +0000"), user.posts.last.published_at
   end
 
@@ -51,7 +50,6 @@ class PostsMailboxTest < ActionMailbox::TestCase
     HTML
 
     assert_equal expected.strip, format_html(user.posts.last.content.to_s.strip)
-    assert user.posts.last.html?
     assert Time.parse("Sat, 23 Mar 2024 12:49:33 +0000"), user.posts.last.published_at
   end
 
@@ -119,7 +117,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
 
     assert_nil user.posts.last.title
-    assert_equal "Hello?", user.posts.last.content.to_s.strip
+    assert_equal "<p>Hello?</p>", user.posts.last.content.to_s.strip
   end
 
   test "should correctly store non-blank subject, blank plain text body" do

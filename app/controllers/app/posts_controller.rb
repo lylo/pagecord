@@ -18,17 +18,13 @@ class App::PostsController < AppController
 
     @post = Current.user.posts.find(params[:id])
 
-    # FIXME remove the condition once all posts are stored as HTML
-    if @post.html?
-      @post.content = @post.content.to_s.gsub(/\n/, "")
-      @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
-    else
-      @post.content = Html::PlainTextToHtml.new.transform(@post.content.to_s)
-    end
+    # To pacify Trix, remove new line characters and substitue <p> tags with <br> tags
+    @post.content = @post.content.to_s.gsub(/\n/, "")
+    @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
   end
 
   def create
-    post = Current.user.posts.build(post_params.merge(html: true))
+    post = Current.user.posts.build(post_params)
     if post.save
       redirect_to app_posts_path, notice: "Post was successfully created"
     else
@@ -41,8 +37,7 @@ class App::PostsController < AppController
   def update
     post = Current.user.posts.find(params[:id])
 
-    # FIXME remove html:true once all posts are stored as HTML
-    if post.update(post_params.merge(html: true))
+    if post.update(post_params)
       redirect_to app_posts_path, notice: "Post was successfully updated"
     else
       @post = post
