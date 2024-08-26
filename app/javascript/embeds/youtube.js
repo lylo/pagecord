@@ -13,13 +13,18 @@ class YouTube extends MediaSite {
         return null;
       },
       (embedUrl) => {
+        const div = document.createElement('div');
+        div.className = "aspect-w-16 aspect-h-9";
+
         const iframe = document.createElement('iframe');
+        iframe.className = "mx-auto w-full h-full";
         iframe.src = embedUrl;
-        iframe.width = "100%";
-        iframe.height = "315";
         iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
         iframe.loading = "lazy";
-        return iframe;
+
+        div.appendChild(iframe);
+
+        return div;
       }
     );
   }
