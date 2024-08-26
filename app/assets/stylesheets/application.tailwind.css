@@ -47,8 +47,14 @@ trix-toolbar .trix-button-group:not(:first-child) {
 }
 
 @layer base {
-  article .trix-content p {
-    @apply mb-4;
+  article {
+    .trix-content p {
+      @apply mb-4;
+    }
+
+    img {
+      @apply rounded-lg;
+    }
   }
 
   .prose {
