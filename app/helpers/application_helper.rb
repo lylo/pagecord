@@ -49,7 +49,7 @@ module ApplicationHelper
       if @user.present?
         image_url "social/open-graph-post.jpg"
       else
-        image_url "social/open-graph.png"
+        image_url "social/open-graph.jpg"
       end
     end
   end
