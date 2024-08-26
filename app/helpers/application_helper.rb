@@ -8,7 +8,7 @@ module ApplicationHelper
     elsif @user.present?
       blog_description(@user)
     else
-      "Effortless blogging from your inbox. All you need is an email address."
+      "Pagecord is a super-simple microblogging / blogging platform. You publish posts by sending an email. Share your thoughts effortlessly without the need for complex tools."
     end
   end
 
