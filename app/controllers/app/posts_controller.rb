@@ -18,9 +18,9 @@ class App::PostsController < AppController
 
     @post = Current.user.posts.find(params[:id])
 
-    @post.content = @post.content.to_s.gsub(/\\n/, "")
     # FIXME remove the condition once all posts are stored as HTML
     if @post.html?
+      @post.content = @post.content.to_s.gsub(/\n/, "")
       @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
     else
       @post.content = Html::PlainTextToHtml.new.transform(@post.content.to_s)
