@@ -35,9 +35,9 @@ trix-editor {
   max-width: 100% !important;
 }
 
-trix-editor figure {
+/* trix-editor figure {
   margin-bottom: 1.5rem !important;
-}
+} */
 
 trix-editor .attachment__caption {
   display: none;
