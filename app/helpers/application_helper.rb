@@ -14,7 +14,11 @@ module ApplicationHelper
 
   def page_title
     if @post
-      post_title(@post)
+      if @post.title&.present?
+        @post.title.truncate(100).strip
+      else
+        "@#{@post.user.username} - #{@post.published_at.to_formatted_s(:long)}"
+      end
     elsif content_for?(:title)
       "Pagecord | #{content_for(:title)}"
     elsif @user
@@ -37,13 +41,13 @@ module ApplicationHelper
   end
 
   def open_graph_image
-    if @post && @post.attachments.any?
-      rails_public_blob_url @post.attachments.first
-    elsif @post && @post.open_graph_image.present?
+    if @post && @post.open_graph_image.present?
       @post.open_graph_image.url
+    elsif @post && @post.attachments.any?
+      rails_public_blob_url @post.attachments.first
     elsif !custom_domain_request?
       if @user.present?
-        image_url "logo-mark.png"
+        image_url "social/open-graph-post.jpg"
       else
         image_url "social/open-graph.png"
       end
