@@ -67,7 +67,7 @@ Rails.application.routes.draw do
   get "/faq", to: "public#faq", as: :faq
 
   namespace :app do
-    resources :posts, only: [:index, :destroy]
+    resources :posts
     resources :users, only: [:update, :destroy] do
       post :follow, to: 'followings#create'
       delete :unfollow, to: 'followings#destroy'
@@ -84,7 +84,7 @@ Rails.application.routes.draw do
     get "/feed", to: "feed#index"
     get "/feed/rss/:token", to: "feed#private_rss", as: :private_rss_feed, format: :rss
 
-    root "feed#index"
+    root "posts#index"
   end
 
   get "/admin", to: "admin#index", as: :admin

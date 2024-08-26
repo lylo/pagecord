@@ -29,3 +29,49 @@
   padding: 0 !important;
   max-width: 100% !important;
 }
+
+trix-editor {
+  min-height: 300px;
+  max-width: 100% !important;
+}
+
+trix-editor figure {
+  margin-bottom: 1.5rem !important;
+}
+
+trix-editor .attachment__caption {
+  display: none;
+}
+
+/* Workarounds for issues with Trix and Tailwind in dark mode */
+@media (prefers-color-scheme: dark) {
+  .trix-content {
+    color: rgb(203 213 225); /* text-slate-300 */
+
+    strong, b, i, em, a, h1, h2, h3, h4, h5, h6 {
+      color: #fff !important;
+    }
+
+    pre, code {
+      background-color: rgb(2 6 23); /* bg-slate-950 */
+    }
+    blockquote {
+      color: #fff;
+    }
+  }
+
+  .trix-button-row {
+    .trix-button-group {
+      background-color: rgb(15 23 42) !important; /* bg-slate-900 */
+
+      .trix-button {
+          filter: invert(100%);
+        }
+    }
+  }
+
+  .trix-content {
+      background-color: #0f172a;
+      border-color: #344155;
+  }
+}
