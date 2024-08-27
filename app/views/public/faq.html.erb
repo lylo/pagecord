@@ -1,7 +1,7 @@
 <% content_for :title, "Pagecord FAQ" %>
 
 <div class="prose dark:prose-invert mb-12">
-  <h2>Frequently asked questions</h2>
+  <h1 class="text-center">Frequently asked questions</h1>
 
   <h3>How does Pagecord work?</h3>
   <p>
@@ -15,18 +15,23 @@
 
   <h3>Can I add a bio to my page?</h3>
   <p>
-    Yep! <%= link_to "Log in", login_path %> and you'll see a field to add a bio to your profile.
+    Yep! <%= link_to "Log in", login_path %> and in the <strong>Account</strong> section you'll see a field to add a bio to your profile.
   </p>
 
   <h3>Can I include images in my posts?</h3>
   <p>
-    Yes! Paying customers (only $<%= Subscription.price %>/year!) can attach images to their emails which
-    Pagecord will process and host for you. We don't allow image uploads for free trials.
+    Yes! You can attach images to your emails which Pagecord processes and hosts for you.
   </p>
   <p>
-    Alternatively you can include a URL to an existing image (e.g. https://example.com/image.gif)
-    in the body of your email and Pagecord will display that image in the post. There are plenty of
+    You can also include a URL to an existing image (e.g. https://example.com/image.gif)
+    in the body of your email and Pagecord will render the image in the post. There are plenty of
     free image hosting sites out there such as <a href="https://postimages.org/">PostImage</a>.
+  </p>
+
+  <h3>Can I embed media?</h3>
+  <p>
+    Yes! If you include a link to a YouTube video or Spotify album/playlist/track in your email, Pagecord will
+    embed the media in the post.
   </p>
 
   <h3>How do I delete a post?</h3>
@@ -48,7 +53,13 @@
 
   <h3>Can I export my posts</h3>
   <p>
-    No, but they will all be in the Sent Items folder of your email account 👌
+    Not at the moment. They will all be in the Sent Items folder of your email account though 👌
+  </p>
+
+
+  <h3>Does Pagecord support RSS?</h3>
+  <p>
+    Yes. Just append <span class="font-mono">.rss</span> to the end of a profile page, e.g. <a href="https://pagecord.com/pagecord.rss">https://pagecord.com/pagecord.rss</a>
   </p>
 
   <h3>Can I follow other accounts?</h3>
@@ -58,17 +69,14 @@
     account.
   </p>
   <p>
-    You can also subscribe to someone's Pagecord by RSS (as well as your private feed). RSS is awesome, you should try it! 🤙
+    You can also subscribe to someone's Pagecord by RSS (as well as your private feed). RSS is awesome, you should check out
+    <a href="https://feedgrab.net">Feedgrab</a> - a beautifully simple all-in-one reader I built! 🤙
   </p>
 
-  <h3>Does Pagecord support RSS?</h3>
-  <p>
-    Yes. Just append <span class="font-mono">.rss</span> to the end of a profile page, e.g. <a href="https://pagecord.com/pagecord.rss">https://pagecord.com/pagecord.rss</a>
-  </p>
 
   <h3>What is your refund policy?</h3>
   <p>
-    If you're a Pagecord Premium customer and you decide you're unhappy with it, we'll refund your money if you've
+    If you've paid for an account and you decide you're unhappy with it, we'll refund your money if you've
     been a subscriber for less than a month. No questions asked (although we'd love to know why you didn't like it).
   </p>
 
