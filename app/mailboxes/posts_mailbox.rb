@@ -24,8 +24,7 @@ class PostsMailbox < ApplicationMailbox
 
     if user = User.kept.find_by(email: from, delivery_email: recipient)
       begin
-        parser = MailParser.new(mail, process_attachments: user.is_premium?)
-
+        parser = MailParser.new(mail)
         unless parser.is_blank?
           content = parser.body
           title = parser.subject
