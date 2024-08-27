@@ -6,6 +6,10 @@
 
 <meta name="description" content="<%= meta_description %>">
 
+<% if @user && !@user.is_premium? %>
+<meta name="robots" content="noindex">
+<% end %>
+
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="<%= page_type %>">
 <meta property="og:url" content="<%= request.original_url %>">
