@@ -20,7 +20,7 @@ module ApplicationHelper
         "@#{@post.user.username} - #{@post.published_at.to_formatted_s(:long)}"
       end
     elsif content_for?(:title)
-      "Pagecord | #{content_for(:title)}"
+      content_for(:title)
     elsif @user
       user_title(@user)
     else
