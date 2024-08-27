@@ -1,10 +1,9 @@
 class MailParser
   include ActionView::Helpers::SanitizeHelper
 
-  def initialize(mail, process_attachments: false)
+  def initialize(mail)
     @mail = mail
-    @pipeline = if process_attachments
-      [
+    @pipeline = [
         Html::BodyExtraction.new,
         Html::MonospaceDetection.new,
         Html::ImageUnfurl.new,
@@ -12,15 +11,6 @@ class MailParser
         Html::Utf8Encoding.new,
         Html::Sanitize.new,
       ]
-    else
-      [
-        Html::BodyExtraction.new,
-        Html::MonospaceDetection.new,
-        Html::ImageUnfurl.new,
-        Html::Utf8Encoding.new,
-        Html::Sanitize.new,
-      ]
-    end
   end
 
   def subject
