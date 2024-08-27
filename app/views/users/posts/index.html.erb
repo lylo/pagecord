@@ -28,7 +28,11 @@
     <p class="mt-4 text-center">
       To be notified of new posts, subscribe to <span class="font-semibold">@<%= @user.username %></span>'s
       <%= link_to "RSS feed", user_posts_path(username: @user.username, format: :rss),
-         class: "font-semibold underline" %>
+         class: "font-semibold underline" %>.
+    </p>
+    <p class="mt-12 bg-yellow-50 p-3 rounded-lg text-yellow-900 text-sm text-center">
+      (If you want a delightful, free, all-in-one RSS reader, please check out Pagecord's sister product, <%= link_to "Feedgrab", "https://feedgrab.net",
+         class: "font-semibold underline" %>! 🤙)
     </p>
   <% else %>
     <div data-controller="media-embeds">
