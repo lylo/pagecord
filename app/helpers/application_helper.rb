@@ -46,9 +46,7 @@ module ApplicationHelper
     elsif @post && @post.attachments.any?
       rails_public_blob_url @post.attachments.first
     elsif !custom_domain_request?
-      if @user.present?
-        image_url "social/open-graph-post.jpg"
-      else
+      unless @user.present?
         image_url "social/open-graph.jpg"
       end
     end
