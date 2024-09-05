@@ -33,7 +33,7 @@
   <% else %>
     <%= turbo_frame_tag :posts do %>
       <div data-controller="media-embeds">
-        <%= render partial: "users/posts/post", collection: @posts, cached: true %>
+        <%= render partial: "post", collection: @posts, cached: true %>
       </div>
 
       <% if @pagy.next %>
