@@ -3,7 +3,7 @@
     <div class="font-semibold">
       @<%= post.user.username %>
     </div>
-    <%= link_to post_path(post), class: "no-underline" do %>
+    <%= link_to post_path(post), class: "no-underline", data: { turbo: false } do %>
       <span class="text-gray-400 text-sm font-normal" title="<%= post.published_at.to_formatted_s(:long) %>">
         <%= post.published_at.to_date.to_formatted_s(:long) %>
       </span>
@@ -11,7 +11,7 @@
   </div>
 
   <% if post.title.present? %>
-    <%= link_to post_path(post), class: "no-underline" do %>
+    <%= link_to post_path(post), class: "no-underline", data: { turbo: false } do %>
       <h1>
         <%= post.title %>
       </h1>

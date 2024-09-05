@@ -1,6 +1,6 @@
 <article class="mb-16 prose dark:prose-invert overflow-auto break-words">
   <% if post.title.present? %>
-    <%= link_to post_path(post), class: "no-underline" do %>
+    <%= link_to post_path(post), class: "no-underline", data: { turbo: false } do %>
       <h1>
         <%= post.title %>
       </h1>
@@ -9,7 +9,7 @@
 
   <%= auto_link post.content %>
 
-  <%= link_to post_path(post), class: "no-underline" do %>
+  <%= link_to post_path(post), class: "no-underline", data: { turbo: false } do %>
     <div class="text-gray-400 text-sm mt-4 mb-4 font-normal" title="<%= post.published_at.to_formatted_s(:long) %>">
       <%= post.published_at.to_date.to_formatted_s(:long) %>
     </div>
