@@ -12,7 +12,7 @@
   <% end %>
 
   <%= turbo_frame_tag :feed do %>
-    <%= render partial: "/app/feed/post", collection: @posts, cached: true %>
+    <%= render partial: "post", collection: @posts, cached: true %>
   <% end %>
 
   <% if @pagy.next %>
