@@ -7,8 +7,9 @@ class App::FeedController < AppController
 
   def index
     followed_users_ids = @user.followed_users.pluck(:followed_id)
+    @posts = Post.where(user_id: followed_users_ids).order(published_at: :desc)
 
-    @pagy, @posts = pagy(Post.where(user_id: followed_users_ids).order(published_at: :desc), items: 15)
+    @pagy, @posts = pagy(@posts)
   end
 
   def private_rss

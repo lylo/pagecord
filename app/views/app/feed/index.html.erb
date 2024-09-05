@@ -11,7 +11,12 @@
     <% end %>
   <% end %>
 
-  <%= render partial: "/app/feed/post", collection: @posts, cached: true %>
+  <%= turbo_frame_tag :feed do %>
+    <%= render partial: "/app/feed/post", collection: @posts, cached: true %>
+  <% end %>
 
-  <%= render "app/shared/pagy_nav" %>
+  <% if @pagy.next %>
+    <%= turbo_frame_tag :feed, src: app_feed_url(page: @pagy.next), loading: :lazy %>
+  <% end %>
+
 </div>

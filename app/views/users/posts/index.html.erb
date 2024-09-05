@@ -31,14 +31,14 @@
          class: "font-semibold underline" %>
     </p>
   <% else %>
-    <div data-controller="media-embeds">
-    <%= render partial: "users/posts/post", collection: @posts, cached: true %>
-    </div>
-  <% end %>
+    <%= turbo_frame_tag :posts do %>
+      <div data-controller="media-embeds">
+        <%= render partial: "users/posts/post", collection: @posts, cached: true %>
+      </div>
 
-  <% if @pagy.next %>
-    <div class="text-slate-800 dark:text-slate-200">
-      <%== pagy_next_a(@pagy, text: "Older", link_extra: 'id="next_link"') %>
-    </div>
+      <% if @pagy.next %>
+        <%= turbo_frame_tag :posts, src: user_posts_path(username: @user.username, page: @pagy.next), loading: :lazy %>
+      <% end %>
+    <% end %>
   <% end %>
 </div>
