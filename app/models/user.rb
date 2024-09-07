@@ -40,6 +40,10 @@ class User < ApplicationRecord
     trial_expired && !is_premium?
   end
 
+  def is_on_free_trial?
+    !is_premium? && !free_trial_expired?
+  end
+
   def custom_title?
     is_premium? && title.present?
   end
