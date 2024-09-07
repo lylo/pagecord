@@ -18,12 +18,14 @@ joel:
 elliot:
   email: elliot@erwitt.photo
   username: elliot
+  free_trial_ends_at: <%= 1.week.from_now %>
   delivery_email: elliot_jfur73yd@post.pagecord.com
 
 vivian:
   email: vivian@maierweb.com
   username: vivian
   delivery_email: vivian_jfur73yd@post.pagecord.com
+  free_trial_ends_at: <%= 1.week.from_now %>
   verified: true
 
 annie:

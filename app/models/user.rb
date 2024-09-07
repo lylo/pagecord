@@ -3,6 +3,7 @@ class User < ApplicationRecord
   include DeliveryEmail, Followable, Subscribable
 
   before_validation :downcase_email_and_username
+  before_create :set_free_trial_ends_at
   after_update :record_custom_domain_change
 
   has_many :posts, dependent: :destroy
@@ -35,11 +36,7 @@ class User < ApplicationRecord
   end
 
   def free_trial_expired?
-    created_at < 7.days.ago && !is_premium?
-  end
-
-  def free_trial_ends_at
-    created_at + 7.days
+    free_trial_ends_at && Time.current > free_trial_ends_at
   end
 
   def custom_title?
@@ -60,6 +57,10 @@ class User < ApplicationRecord
     def downcase_email_and_username
       self.email = email.downcase.strip
       self.username = username.downcase.strip
+    end
+
+    def set_free_trial_ends_at
+      self.free_trial_ends_at ||= created_at + 7.days
     end
 
     def restricted_domain
