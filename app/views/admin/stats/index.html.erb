@@ -1,52 +1,57 @@
-<div class="mx-auto max-w-5xl w-full text-slate-950 dark:text-slate-50">
-  <h2 class="text-2xl font-bold py-4">Stats</h2>
+<h2 class="text-2xl font-bold py-4">Stats</h2>
 
-  <p>
-    <%= pluralize @pagy.count, "user" %> in total.
-  </p>
+<p>
+  <%= pluralize @pagy.count, "user" %> in total.
+</p>
 
-  <div class="overflow-auto">
-    <table class="my-8 min-w-full divide-y divide-gray-300 dark:divide-gray-700">
-      <thead>
-        <tr>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Username</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Posts</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Email</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Verified</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Discarded</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Status</th>
-          <th class="py-4 sm:ps-4 text-end text-sm font-semibold text-gray-900 dark:text-slate-50">Created</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-300 dark:divide-gray-700">
-      <% @users.each do |user| %>
-        <tr>
-          <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-gray-900 dark:text-slate-50">
-            <%= link_to user.username, user_posts_path(username: user.username) %>
-          </td>
-          <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.posts_count %></td>
-          <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.email %></td>
-          <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.verified %></td>
-          <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.discarded_at&.to_formatted_s :short %></td>
-          <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400">
-            <% if user.discarded_at %>
-              Cancelled
-            <% elsif user.is_premium? %>
-              Premium
-            <% elsif user.free_trial_expired? %>
-              Trial Expired
-            <% else %>
-              Trialling
-            <% end %>
-          </td>
-          <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400 text-end"><%= user.created_at.to_formatted_s :long %></td>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
-  </div>
+<div class="overflow-auto">
+  <table class="my-8 min-w-full divide-y divide-gray-300 dark:divide-gray-700">
+    <thead>
+      <tr>
+        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Username</th>
+        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Posts</th>
+        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Email</th>
+        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Verified</th>
+        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Discarded</th>
+        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-gray-900 dark:text-slate-50">Status</th>
+        <th class="py-4 sm:ps-4 text-end text-sm font-semibold text-gray-900 dark:text-slate-50">Created</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-300 dark:divide-gray-700">
+    <% @users.each do |user| %>
+      <tr>
+        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-gray-900 dark:text-slate-50">
+          <%= link_to user.username, user_posts_path(username: user.username) %>
+        </td>
+        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.posts_count %></td>
+        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.email %></td>
+        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.verified %></td>
+        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400"><%= user.discarded_at&.to_formatted_s :short %></td>
+        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400">
+          <% if user.discarded_at %>
+            Cancelled
+          <% elsif user.is_premium? %>
+            Premium
+          <% elsif user.free_trial_expired? %>
+            Trial Expired
+          <% else %>
+            Trialling
+          <% end %>
+        </td>
+        <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-gray-500 dark:text-gray-400 text-end"><%= user.created_at.to_formatted_s :long %></td>
 
-  <div class="flex justify-end admin">
-    <%== pagy_nav(@pagy) %>
-  </div>
+        <td class="ps-4 text-gray-500 dark:text-gray-400 text-end">
+          <%= button_to admin_user_path(user), method: :delete, data: { turbo_confirm: "Are you sure you want to delete this user?" }, title: "Trash this user" do %>
+            <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="flex justify-end admin">
+  <%== pagy_nav(@pagy) %>
 </div>
