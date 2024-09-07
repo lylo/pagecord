@@ -1,6 +1,12 @@
 require "test_helper"
 
 class SubscriptionTest < ActiveSupport::TestCase
+  def setup
+    @subscription = Subscription.new(
+      cancelled_at: nil,
+      next_billed_at: 1.month.from_now
+    )
+  end
 
   test "should be subscribed" do
     assert users(:joel).subscribed?
@@ -8,5 +14,55 @@ class SubscriptionTest < ActiveSupport::TestCase
 
   test "should not be subscribed" do
     assert_not users(:vivian).subscribed?
+  end
+
+  test "should ignore free trial if subscribed" do
+    u = users(:joel)
+    u.free_trial_ends_at = 1.day.ago
+
+    assert_not u.free_trial_expired?
+  end
+
+  test "should be priced at $20" do
+    assert_equal "20", Subscription.price
+  end
+
+  test "active? should return true if not cancelled and not lapsed" do
+    assert @subscription.active?
+  end
+
+  test "active? should return false if cancelled" do
+    @subscription.cancelled_at = Time.current
+    refute @subscription.active?
+  end
+
+  test "active? should return false if lapsed" do
+    @subscription.next_billed_at = 1.month.ago
+    refute @subscription.active?
+  end
+
+  test "cancelled? should return true if cancelled_at is present" do
+    @subscription.cancelled_at = Time.current
+    assert @subscription.cancelled?
+  end
+
+  test "cancelled? should return false if cancelled_at is nil" do
+    @subscription.cancelled_at = nil
+    refute @subscription.cancelled?
+  end
+
+  test "lapsed? should return true if next_billed_at is in the past" do
+    @subscription.next_billed_at = 1.month.ago
+    assert @subscription.lapsed?
+  end
+
+  test "lapsed? should return false if next_billed_at is in the future" do
+    @subscription.next_billed_at = 1.month.from_now
+    refute @subscription.lapsed?
+  end
+
+  test "lapsed? should return false if next_billed_at is nil" do
+    @subscription.next_billed_at = nil
+    refute @subscription.lapsed?
   end
 end

@@ -32,11 +32,12 @@ class User < ApplicationRecord
   end
 
   def is_premium?
-    subscription&.present? || %w[olly pagecord lylo teamlight].include?(username)
+    subscription&.present? && subscription.active?
   end
 
   def free_trial_expired?
-    free_trial_ends_at && Time.current > free_trial_ends_at && !is_premium?
+    trial_expired = free_trial_ends_at && Time.current > free_trial_ends_at
+    trial_expired && !is_premium?
   end
 
   def custom_title?
@@ -50,7 +51,6 @@ class User < ApplicationRecord
 
     custom_domain_previously_changed? && !nil_to_blank_change
   end
-
 
   private
 
