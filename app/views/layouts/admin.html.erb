@@ -16,7 +16,11 @@
     <header class="mb-4">
     </header>
     <main class="container mx-auto px-5 flex flex-grow">
-      <%= yield %>
+      <div class="mx-auto max-w-5xl w-full text-slate-950 dark:text-slate-50">
+        <%= render "app/shared/flash" %>
+
+        <%= yield %>
+      </div>
     </main>
 
     <footer class="p-8 flex flex-col w-full text-center">
