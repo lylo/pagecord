@@ -36,7 +36,7 @@ class User < ApplicationRecord
   end
 
   def free_trial_expired?
-    free_trial_ends_at && Time.current > free_trial_ends_at
+    free_trial_ends_at && Time.current > free_trial_ends_at && !is_premium?
   end
 
   def custom_title?
