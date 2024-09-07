@@ -71,7 +71,8 @@ class UserTest < ActiveSupport::TestCase
   test "should be given a free trial on create" do
     user = User.create!(username: "newuser", email: "newuser@example.com")
     assert user.free_trial_ends_at.present?
-    refute user.free_trial_expired?
+    assert_not user.free_trial_expired?
+    assert user.is_on_free_trial?
   end
 
   test "should expire free trial" do
