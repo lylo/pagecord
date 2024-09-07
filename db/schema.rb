@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_08_26_143540) do
+ActiveRecord::Schema[8.0].define(version: 2024_09_07_112636) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "access_requests", force: :cascade do |t|
     t.string "token_digest"
@@ -140,6 +140,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_08_26_143540) do
     t.datetime "discarded_at"
     t.string "custom_domain"
     t.string "title"
+    t.datetime "free_trial_ends_at"
     t.index ["custom_domain"], name: "index_users_on_custom_domain"
     t.index ["delivery_email"], name: "index_users_on_delivery_email", unique: true
     t.index ["discarded_at"], name: "index_users_on_discarded_at"

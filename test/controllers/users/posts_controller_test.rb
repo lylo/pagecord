@@ -36,7 +36,7 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should redirect to root if user free trial expired" do
     user = users(:vivian)
-    user.update!(created_at: 8.days.ago)
+    user.update! free_trial_ends_at: 1.day.ago
     get user_posts_path(username: users(:vivian).username)
     assert_redirected_to root_url
   end
