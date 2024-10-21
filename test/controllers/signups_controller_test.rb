@@ -1,6 +1,14 @@
 require "test_helper"
 
 class SignupsControllerTest < ActionDispatch::IntegrationTest
+  test "should not create user if honeypot field is populated" do
+    assert_no_difference("User.count") do
+      post signups_url, params: { email_confirmation: "test@example.com", user: { username: "testuser", email: "test@example.com" } }
+    end
+
+    assert_response :ok
+  end
+
   test "should create user and redirect to posts path" do
     assert_difference("User.count") do
       assert_emails 1 do
