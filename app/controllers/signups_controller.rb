@@ -10,6 +10,12 @@ class SignupsController < ApplicationController
   end
 
   def create
+    unless params[:email_confirmation].blank?
+      Rails.logger.warn "Honeypot field completed. Bypassing signup"
+      head :ok
+      return
+    end
+
     @user = User.new(user_params)
     if @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
