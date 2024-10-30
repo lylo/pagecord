@@ -4,6 +4,12 @@ class MediaSite {
     this.getEmbedUrl = getEmbedUrl;
     this.createEmbedIframe = createEmbedIframe;
   }
+
+  async transform(url) {
+    const embedUrl = await this.getEmbedUrl(url);
+    if (!embedUrl) return null;
+    return this.createEmbedIframe(embedUrl);
+  }
 }
 
 export default MediaSite;

@@ -5,7 +5,7 @@ class Spotify extends MediaSite {
     super(
       /https:\/\/open\.spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)(\?.*)?/,
 
-      (url) => {
+      async (url) => {
         const match = url.match(this.regex)
         if (match) {
           const type = match[1]
