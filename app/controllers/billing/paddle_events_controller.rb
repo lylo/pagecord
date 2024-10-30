@@ -1,4 +1,5 @@
 require "openssl"
+require "ostruct"
 
 module Billing
   class PaddleEventsController < ApplicationController
