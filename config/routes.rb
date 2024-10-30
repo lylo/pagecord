@@ -112,6 +112,10 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :api do
+    post "embeds/bandcamp", to: "embeds#bandcamp"
+  end
+
   direct :rails_public_blob do |blob|
     # Preserve the behaviour of `rails_blob_url` inside these environments
     # where S3 or the CDN might not be configured

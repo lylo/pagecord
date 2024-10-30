@@ -1,39 +1,38 @@
 import { Controller } from "@hotwired/stimulus"
+import Bandcamp from "bandcamp"
 import Spotify from "spotify"
 import YouTube from "youtube"
 
 // Connects to data-controller="media-embed"
 export default class extends Controller {
   connect() {
-    this.mediaSites = [new Spotify(), new YouTube()]
+    this.mediaSites = [new Spotify(), new YouTube(), new Bandcamp()]
     this.replaceMediaLinks()
   }
 
-  replaceMediaLinks() {
+  async replaceMediaLinks() {
     const articles = document.querySelectorAll('article')
 
-    articles.forEach(article => {
-      this.mediaSites.forEach(site => {
-        this.embedMediaLinks(article, site)
-      })
-    })
+    for (const article of articles) {
+      for (const site of this.mediaSites) {
+        await this.embedMediaLinks(article, site)
+      }
+    }
   }
 
-  embedMediaLinks(article, site) {
+  async embedMediaLinks(article, site) {
     const links = Array.from(article.querySelectorAll('a')).filter(link => site.regex.test(link.href))
 
-    links.forEach(link => {
+    for (const link of links) {
       const url = link.getAttribute("href")
       const linkText = link.textContent.trim()
 
       if (url === linkText) {
-        const embedUrl = site.getEmbedUrl(url)
-        if (embedUrl) {
-          const iframe = site.createEmbedIframe(embedUrl)
+        const iframe = await site.transform(url)
+        if (iframe) {
           link.replaceWith(iframe)
         }
       }
-    })
+    }
   }
-
 }
