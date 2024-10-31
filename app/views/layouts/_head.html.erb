@@ -15,7 +15,10 @@
 <meta property="og:url" content="<%= request.original_url %>">
 <meta property="og:title" content="<%= page_title %>">
 <meta property="og:description" content="<%= meta_description %>">
+
+<% if open_graph_image %>
 <meta property="og:image" content="<%= open_graph_image %>">
+<% end %>
 
 <!-- Twitter -->
 <% if has_open_graph_image? %>
@@ -26,7 +29,9 @@
 <meta property="twitter:url" content="<%= request.original_url %>">
 <meta property="twitter:title" content="<%= page_title %>">
 <meta property="twitter:description" content="<%= meta_description %>">
+<% if open_graph_image %>
 <meta property="twitter:image" content="<%= open_graph_image %>">
+<% end %>
 
 <%= render "layouts/rss" %>
 
