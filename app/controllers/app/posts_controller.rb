@@ -16,7 +16,7 @@ class App::PostsController < AppController
   def edit
     redirect to app_posts_path unless Current.user.is_premium?
 
-    @post = Current.user.posts.find(params[:id])
+    @post = Current.user.posts.find_by!(token: params[:id])
 
     # To pacify Trix, remove new line characters and substitue <p> tags with <br> tags
     @post.content = @post.content.to_s.gsub(/\n/, "")
@@ -35,7 +35,7 @@ class App::PostsController < AppController
   end
 
   def update
-    post = Current.user.posts.find(params[:id])
+    post = Current.user.posts.find_by!(token: params[:id])
 
     if post.update(post_params)
       redirect_to app_posts_path, notice: "Post was successfully updated"
@@ -47,7 +47,7 @@ class App::PostsController < AppController
   end
 
   def destroy
-    post = Current.user.posts.find(params[:id])
+    post = Current.user.posts.find_by!(token: params[:id])
     post.destroy!
 
     redirect_to app_posts_path, notice: "Post was successfully deleted"
