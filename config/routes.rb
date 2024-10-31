@@ -97,8 +97,8 @@ Rails.application.routes.draw do
 
   constraints(DomainConstraints.method(:custom_domain?)) do
     get "/", to: "users/posts#index", as: :custom_user_posts
-    get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_without_title
-    get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :custom_post_with_title
+    get "/:token", to: "users/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_without_title
+    get "/:title-:token", to: "users/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_with_title
     get "/:username", to: "users/posts#index", format: :rss, as: :custom_user_posts_rss
   end
 
@@ -107,8 +107,8 @@ Rails.application.routes.draw do
 
     scope ":username" do
       get "/", to: "users/posts#index", as: :user_posts
-      get "/:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_without_title
-      get "/:title-:id", to: "users/posts#show", constraints: { id: /[0-9a-f]+/ }, as: :post_with_title
+      get "/:token", to: "users/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_without_title
+      get "/:title-:token", to: "users/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_with_title
     end
   end
 

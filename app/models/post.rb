@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-  include OpaqueId, Trimmable
+  include Trimmable
 
   belongs_to :user, inverse_of: nil
 
@@ -7,7 +7,7 @@ class Post < ApplicationRecord
   has_rich_text :content
   has_many_attached :attachments, dependent: :destroy
 
-  before_create :set_published_at, :limit_content_size, :check_title_and_content
+  before_create :set_token, :set_published_at, :limit_content_size, :check_title_and_content
   after_create  :detect_open_graph_image
 
   validate :body_or_title
@@ -16,7 +16,22 @@ class Post < ApplicationRecord
     errors.add(:base, "A body or a title must be present") unless content.body.present? || title.present?
   end
 
+  def to_param
+    token
+  end
+
+  def url_title
+    title&.parameterize&.truncate(100) || ""
+  end
+
   private
+
+    def set_token
+      loop do
+        self.token = SecureRandom.hex(4)
+        break unless Post.exists?(token: token)
+      end
+    end
 
     def set_published_at
       self.published_at ||= created_at
