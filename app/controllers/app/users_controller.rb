@@ -12,16 +12,6 @@ class App::UsersController < AppController
           RemoveCustomDomainJob.perform_later(@user.id, @user.custom_domain_previously_was)
         end
       end
-
-      respond_to do |format|
-        format.turbo_stream
-      end
-    else
-      respond_to do |format|
-        format.turbo_stream {
-          render turbo_stream: turbo_stream.update("form-response", partial: "form_response", locals: { message: '❌ Failed' })
-        }
-      end
     end
   end
 
