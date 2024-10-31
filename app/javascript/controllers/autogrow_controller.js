@@ -9,7 +9,10 @@ export default class extends Controller {
   connect() {
     this.element.style.overflow = "hidden"
 
-    this.autogrow()
+    // Run autogrow after a brief delay to ensure content is loaded
+    requestAnimationFrame(() => {
+      this.autogrow()
+    })
 
     this.element.addEventListener("input", this.queueAutogrow.bind(this))
     this.element.addEventListener("trix-change", this.queueAutogrow.bind(this))

@@ -2,7 +2,10 @@
   <div>
     <h3 class="font-bold text-lg mb-2">Bio</h3>
 
-    <%= form.text_area :bio, placeholder: "Add a bio to your profile if you like...", class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg", data: { controller: "autogrow" } %>
+    <%= form.text_area :bio, placeholder: "add a bio to your profile if you like...", class: "w-full dark:bg-slate-800 border #{@user.errors[:bio].any? ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} text-slate-800 dark:text-slate-200 rounded-lg", data: { controller: "autogrow" } %>
+    <% if @user.errors[:bio].any? %>
+      <span class="text-red-500 text-sm"><%= @user.errors.full_messages_for(:bio).first %>
+    <% end %>
   </div>
 
   <% if @user.is_premium? %>
@@ -13,12 +16,12 @@
       enter it below.
     </p>
 
-    <%= form.text_field :title, class: "mt-4 w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <%= form.text_field :title, class: "mt-4 w-full dark:bg-slate-800 border text-slate-800 dark:text-slate-200 rounded-lg" %>
   </div>
 
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
-    <% if @user.custom_domain.present? %>
+    <% if @user.valid? && @user.custom_domain.present? %>
       <p>
         Your Pagecord is now available at <code><mark class="bg-gray-100 dark:bg-gray-700 dark:text-gray-100 px-1"><%= @user.custom_domain %></mark></code>
       </p>
@@ -32,9 +35,12 @@
       </p>
     <% end %>
 
-    <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-800 border #{@user.errors[:custom_domain].any? ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <% if @user.errors[:custom_domain].any? %>
+      <span class="text-red-500 text-sm"><%= @user.errors.full_messages_for(:custom_domain).first %>
+    <% end %>
 
-    <% if @user.custom_domain.present? %>
+    <% if @user.valid? && @user.custom_domain.present? %>
       <p class="mt-2 text-gray-500 dark:text-gray-400 text-sm">
         To remove your custom domain, clear the box above and click Update.
         Don't forget to remove the A record from your DNS!
