@@ -13,7 +13,7 @@
     </p>
 
     <% @posts.each do |post| %>
-      <div class="px-2 py-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+      <div class="px-2 py-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg break-words">
         <div class="font-semibold">
           <%= link_to post_path(post), title: "Click to view this post" do %>
             <%= post_title(post) %>
