@@ -1,7 +1,6 @@
 require "test_helper"
 
 class Html::PlainTextToHtmlTest < ActiveSupport::TestCase
-
   test "should convert plain text to html" do
     plain_text = <<~TEXT
       hello, world!

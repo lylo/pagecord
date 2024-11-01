@@ -1,7 +1,6 @@
 class App::SubscriptionsController < AppController
-
-  before_action :load_subscription, only: [:index, :destroy, :cancel_confirm]
-  skip_before_action :free_trial_check, only: [:thanks, :index]
+  before_action :load_subscription, only: [ :index, :destroy, :cancel_confirm ]
+  skip_before_action :free_trial_check, only: [ :thanks, :index ]
 
   def index
   end

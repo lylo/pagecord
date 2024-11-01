@@ -14,9 +14,9 @@ module Html
       # Fastmail wraps monospace lines in <span style="font-family: monospace"> tags
       def replace_style_tags_with_code_tags(document)
         document.css("div[style], span[style]").each do |element|
-          styles = element['style'].downcase.split(';')
-          font_family = styles.find { |style| style.strip.start_with?('font-family') }
-          if font_family && font_family.include?('monospace')
+          styles = element["style"].downcase.split(";")
+          font_family = styles.find { |style| style.strip.start_with?("font-family") }
+          if font_family && font_family.include?("monospace")
             insert_code_tag(element)
           end
         end
@@ -35,8 +35,8 @@ module Html
         element.replace code
       end
 
-      MONOSPACE_FONTS = ["consolas", "courier", "inconsolata", "lucida console",
-                         "menlo", "monaco", "monospace", "sf mono", "source code pro"].freeze
+      MONOSPACE_FONTS = [ "consolas", "courier", "inconsolata", "lucida console",
+                         "menlo", "monaco", "monospace", "sf mono", "source code pro" ].freeze
 
       def is_monospace_font?(font)
         MONOSPACE_FONTS.each do |monospace_font|

@@ -1,9 +1,8 @@
 module SubscriptionsHelper
-
   def paddle_data_items
     items = { priceId: annual_price_id, quantity: 1 }
 
-    [items].to_json
+    [ items ].to_json
   end
 
   def paddle_data

@@ -45,7 +45,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     post = posts(:four)
     login_as post.user
 
-    get app_posts_url, headers: { 'HOST' => post.user.custom_domain }
+    get app_posts_url, headers: { "HOST" => post.user.custom_domain }
 
     assert_redirected_to root_url
   end

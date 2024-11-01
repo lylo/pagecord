@@ -16,7 +16,7 @@ class Users::PostsController < ApplicationController
   end
 
   def show
-    @post = @user.posts.find_by!(token: params[:token])
+    @post = @user.posts.find_by!(token: user_params[:token])
 
     fresh_when @post
   end
@@ -34,7 +34,7 @@ class Users::PostsController < ApplicationController
     end
 
     def user_params
-      params.except(:format).permit(:username, :title, :page, :id)
+      params.except(:format).permit(:username, :title, :page, :id, :token)
     end
 
     def verification
@@ -50,7 +50,7 @@ class Users::PostsController < ApplicationController
     def enforce_custom_domain
       if default_domain_request? && @user.custom_domain.present?
         escaped_username = Regexp.escape(@user.username)
-        request_path = request.path.gsub(/^\/@?#{escaped_username}\/?/, '')
+        request_path = request.path.gsub(/^\/@?#{escaped_username}\/?/, "")
         full_url = root_url(host: @user.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
         new_url = "#{full_url}#{request_path}"
 
@@ -61,4 +61,4 @@ class Users::PostsController < ApplicationController
     def redirect_to_last_page(exception)
       redirect_to url_for(page: exception.pagy.last)
     end
-  end
+end

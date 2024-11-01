@@ -23,7 +23,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
   test "should receive valid HTML mail from HEY" do
     user = users(:joel)
-    raw_mail = File.read(Rails.root.join('test/fixtures/emails/hey.eml'))
+    raw_mail = File.read(Rails.root.join("test/fixtures/emails/hey.eml"))
 
     assert_difference -> { user.posts.count }, 1 do
       receive_inbound_email_from_source raw_mail
@@ -37,7 +37,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
   test "should receive valid HTML mail from Fastmail" do
     user = users(:joel)
-    raw_mail = File.read(Rails.root.join('test/fixtures/emails/fastmail.eml'))
+    raw_mail = File.read(Rails.root.join("test/fixtures/emails/fastmail.eml"))
 
     assert_difference -> { user.posts.count }, 1 do
       receive_inbound_email_from_source raw_mail
@@ -184,7 +184,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
   end
 
   test "should correctly store blank subject, image in HTML body" do
-    FastImage.stubs(:size).returns([800, 600])
+    FastImage.stubs(:size).returns([ 800, 600 ])
     FastImage.stubs(:type).returns(:jpeg)
 
     user = users(:joel)
@@ -226,6 +226,6 @@ class PostsMailboxTest < ActionMailbox::TestCase
   private
 
     def format_html(html)
-      html.strip.gsub(/^ +/, '').gsub(/\n/, '')
+      html.strip.gsub(/^ +/, "").gsub(/\n/, "")
     end
 end

@@ -2,13 +2,12 @@ require "fastimage"
 
 module Html
   class ImageUnfurl < Transformation
-
     def transform(html)
       document = Nokogiri::HTML.fragment(html)
 
       document.traverse do |node|
         if node.text? && node.parent.name != "a"
-          URI.extract(node.content, ['http', 'https']).each do |url|
+          URI.extract(node.content, [ "http", "https" ]).each do |url|
             if valid_image?(url)
               replace_url_with_image(document, node, url)
             end
@@ -44,7 +43,7 @@ module Html
         uri = URI.parse(url)
         CGI.escapeHTML(uri.to_s)
       rescue URI::InvalidURIError
-        ''
+        ""
       end
 
       def replace_url_with_image(document, node, url)
@@ -61,5 +60,5 @@ module Html
         img_node["pagecord"] = "true"
         node.replace(img_node)
       end
-    end
+  end
 end

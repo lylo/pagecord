@@ -54,7 +54,7 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     xml = Nokogiri::XML(@response.body)
-    cdata_content = xml.xpath('//item/description').first.children.find { |n| n.cdata? }.content
+    cdata_content = xml.xpath("//item/description").first.children.find { |n| n.cdata? }.content
 
     assert_includes cdata_content, "<p>This is my first post.</p>"
   end
@@ -64,7 +64,7 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should get index on custom domain" do
     post = posts(:four)
 
-    get "/", headers: { 'HOST' => post.user.custom_domain }
+    get "/", headers: { "HOST" => post.user.custom_domain }
 
     assert_response :success
   end
@@ -72,7 +72,7 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should get show on custom domain" do
     post = posts(:four)
 
-    get "/#{post.token}", headers: { 'HOST' => post.user.custom_domain }
+    get "/#{post.token}", headers: { "HOST" => post.user.custom_domain }
 
     assert_response :success
   end
@@ -80,7 +80,7 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should redirect on index with unrecognised custom domain" do
     post = posts(:four)
 
-    get "/#{post.token}", headers: { 'HOST' => "gadzooks.com" }
+    get "/#{post.token}", headers: { "HOST" => "gadzooks.com" }
 
     assert_redirected_to "http://gadzooks.com/"
   end

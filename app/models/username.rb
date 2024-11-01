@@ -1,7 +1,7 @@
 class Username
-  RESERVED = %w{ about admin app blog careers contact faq feed
+  RESERVED = %w[ about admin app blog careers contact faq feed
                  help jobs login pagecord privacy pricing rss
-                 sidekiq signup support terms  }
+                 sidekiq signup support terms ]
 
   FORMAT_REGEX = /\A[a-zA-Z0-9_]+\z/
   MIN_LENGTH = 3
@@ -16,7 +16,7 @@ class Username
     return false unless username =~ FORMAT_REGEX
 
     # Only one underscore allowed
-    return false if username.count('_') > 1
+    return false if username.count("_") > 1
 
     true
   end

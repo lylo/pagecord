@@ -16,11 +16,11 @@ module RoutingHelper
   end
 
   def post_path(post)
-    post_link(post, 'path')
+    post_link(post, "path")
   end
 
   def post_url(post)
-    post_link(post, 'url')
+    post_link(post, "url")
   end
 
   def user_home(user, type)
@@ -32,10 +32,10 @@ module RoutingHelper
   end
 
   def user_home_path(user)
-    user_home(user, 'path')
+    user_home(user, "path")
   end
 
   def user_home_url(user)
-    user_home(user, 'url')
+    user_home(user, "url")
   end
 end

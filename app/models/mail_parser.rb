@@ -9,7 +9,7 @@ class MailParser
         Html::ImageUnfurl.new,
         @attachment_transformer = Html::MailAttachments.new(mail),
         Html::Utf8Encoding.new,
-        Html::Sanitize.new,
+        Html::Sanitize.new
       ]
   end
 
@@ -65,6 +65,6 @@ class MailParser
     end
 
     def sanitized_body
-      @sanitized_body ||= sanitize(body, tags: %w(img), attributes: %w(src alt))
+      @sanitized_body ||= sanitize(body, tags: %w[img], attributes: %w[src alt])
     end
 end

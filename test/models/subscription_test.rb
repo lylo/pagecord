@@ -33,12 +33,12 @@ class SubscriptionTest < ActiveSupport::TestCase
 
   test "active? should return false if cancelled" do
     @subscription.cancelled_at = Time.current
-    refute @subscription.active?
+    assert_not @subscription.active?
   end
 
   test "active? should return false if lapsed" do
     @subscription.next_billed_at = 1.month.ago
-    refute @subscription.active?
+    assert_not @subscription.active?
   end
 
   test "cancelled? should return true if cancelled_at is present" do
@@ -48,7 +48,7 @@ class SubscriptionTest < ActiveSupport::TestCase
 
   test "cancelled? should return false if cancelled_at is nil" do
     @subscription.cancelled_at = nil
-    refute @subscription.cancelled?
+    assert_not @subscription.cancelled?
   end
 
   test "lapsed? should return true if next_billed_at is in the past" do
@@ -58,11 +58,11 @@ class SubscriptionTest < ActiveSupport::TestCase
 
   test "lapsed? should return false if next_billed_at is in the future" do
     @subscription.next_billed_at = 1.month.from_now
-    refute @subscription.lapsed?
+    assert_not @subscription.lapsed?
   end
 
   test "lapsed? should return false if next_billed_at is nil" do
     @subscription.next_billed_at = nil
-    refute @subscription.lapsed?
+    assert_not @subscription.lapsed?
   end
 end

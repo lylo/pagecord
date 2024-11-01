@@ -1,5 +1,4 @@
 class AccountVerificationMailer < ApplicationMailer
-
   def verify
     @user = params[:user]
     @access_request = @user.access_requests.create!

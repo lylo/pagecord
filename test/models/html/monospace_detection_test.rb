@@ -1,7 +1,6 @@
 require "test_helper"
 
 class Html::MonospaceDetectionTest < ActiveSupport::TestCase
-
   test "should convert monospace style tag to code block" do
     html = "<div><span style=\"font-family: menlo, consolas, monospace\">this is monospace</span></div>"
     transformed_html = Html::MonospaceDetection.new.transform(html)
