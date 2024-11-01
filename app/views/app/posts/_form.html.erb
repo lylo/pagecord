@@ -3,6 +3,14 @@
 
   <%= form.rich_text_area :content, placeholder: "Write your post...", class: "trix-content prose border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg", data: { controller: "autogrow" }%>
 
-  <%= form.submit class: "mt-4 btn-primary" %>
+  <div class="mt-4 font-bold">
+  <%= form.label :published_at %>
+  </div>
+
+  <div class="mt-2">
+  <%= form.datetime_field :published_at, class: "dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+  </div>
+
+  <%= form.submit class: "mt-8 btn-primary" %>
   <%= link_to "Cancel", app_posts_path, class: "btn-secondary" %>
 <% end %>

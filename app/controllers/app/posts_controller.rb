@@ -1,6 +1,8 @@
 class App::PostsController < AppController
   include Pagy::Backend
 
+  before_action :requires_premium, only: [ :edit, :create, :update ]
+
   def index
     @pagy, @posts =  pagy(Current.user.posts.order(published_at: :desc), items: 15)
   end
@@ -14,8 +16,6 @@ class App::PostsController < AppController
   end
 
   def edit
-    redirect to app_posts_path unless Current.user.is_premium?
-
     @post = Current.user.posts.find_by!(token: params[:id])
 
     # To pacify Trix, remove new line characters and substitue <p> tags with <br> tags
@@ -56,6 +56,10 @@ class App::PostsController < AppController
   private
 
     def post_params
-      params.require(:post).permit(:title, :content)
+      params.require(:post).permit(:title, :content, :published_at)
+    end
+
+    def requires_premium
+      redirect to app_posts_path unless Current.user.is_premium?
     end
 end
