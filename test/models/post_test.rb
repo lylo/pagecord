@@ -3,6 +3,11 @@ require "test_helper"
 class PostTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
+  test "should generate a token on create" do
+    post = Post.create(user: users(:joel), title: "a new post")
+    assert post.token.present?
+  end
+
   test "should be valid with body" do
     @post = Post.new(user: users(:joel), content: "Test post")
     assert @post.valid?
