@@ -1,5 +1,4 @@
 class FreeTrialMailer < ApplicationMailer
-
   def premium_only
     @user = params[:user]
 

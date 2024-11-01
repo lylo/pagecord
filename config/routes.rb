@@ -42,12 +42,12 @@ Rails.application.routes.draw do
   get "/422", to: "errors#unacceptable"
   get "/500", to: "errors#internal_error"
 
-  resources :signups, only: [:index, :new, :create] do
+  resources :signups, only: [ :index, :new, :create ] do
     get :thanks, on: :collection
   end
 
   namespace :billing do
-    resources :paddle_events, only: [:create]
+    resources :paddle_events, only: [ :create ]
 
     post "/paddle/create_update_payment_method_transaction", to: "paddle#create_update_payment_method_transaction"
   end
@@ -55,7 +55,7 @@ Rails.application.routes.draw do
 
   get "/login", to: "sessions#new"
   delete "/logout", to: "sessions#destroy"
-  resources :sessions, only: [:create] do
+  resources :sessions, only: [ :create ] do
     get :thanks, on: :collection
   end
 
@@ -69,15 +69,15 @@ Rails.application.routes.draw do
 
   namespace :app do
     resources :posts
-    resources :users, only: [:update, :destroy] do
-      post :follow, to: 'followings#create'
-      delete :unfollow, to: 'followings#destroy'
+    resources :users, only: [ :update, :destroy ] do
+      post :follow, to: "followings#create"
+      delete :unfollow, to: "followings#destroy"
     end
-    resources :followings, only: [:index]
+    resources :followings, only: [ :index ]
 
     get "/account", to: "account#index"
 
-    resources :subscriptions, only: [:index, :destroy] do
+    resources :subscriptions, only: [ :index, :destroy ] do
       get :thanks, on: :collection
       get :cancel_confirm, on: :collection
     end
@@ -90,9 +90,9 @@ Rails.application.routes.draw do
 
   get "/admin", to: "admin#index", as: :admin
   namespace :admin do
-    resources :stats, only: [:index]
-    resources :posts, only: [:index]
-    resources :users, only: [:destroy]
+    resources :stats, only: [ :index ]
+    resources :posts, only: [ :index ]
+    resources :users, only: [ :destroy ]
   end
 
   constraints(DomainConstraints.method(:custom_domain?)) do
@@ -103,7 +103,7 @@ Rails.application.routes.draw do
   end
 
   constraints(DomainConstraints.method(:default_domain?)) do
-    get '/@:username', to: redirect('/%{username}')
+    get "/@:username", to: redirect("/%{username}")
 
     scope ":username" do
       get "/", to: "users/posts#index", as: :user_posts
@@ -122,15 +122,16 @@ Rails.application.routes.draw do
     if ENV.fetch("ACTIVE_STORAGE_ASSET_HOST", false) && blob&.key
      File.join(ENV.fetch("ACTIVE_STORAGE_ASSET_HOST"), blob.key)
     else
-     route =
+      route =
         # ActiveStorage::VariantWithRecord was introduced in Rails 6.1
-       # Remove the second check if you're using an older version
-       if blob.is_a?(ActiveStorage::Variant) || blob.is_a?(ActiveStorage::VariantWithRecord)
+        # Remove the second check if you"re using an older version
+        if blob.is_a?(ActiveStorage::Variant) || blob.is_a?(ActiveStorage::VariantWithRecord)
           :rails_representation
-       else
+        else
           :rails_blob
-       end
-     route_for(route, blob)
+        end
+
+      route_for(route, blob)
     end
   end
 

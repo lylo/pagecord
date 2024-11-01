@@ -11,7 +11,7 @@ class Api::EmbedsController < ApplicationController
     if embed_url
       render json: { embed_url: embed_url }
     else
-      render json: { error: 'No og:video found' }, status: :unprocessable_entity
+      render json: { error: "No og:video found" }, status: :unprocessable_entity
     end
   rescue => e
     render json: { error: e.message }, status: :unprocessable_entity

@@ -1,7 +1,6 @@
 require "test_helper"
 
 class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
-
   test "should handle subscription.created event" do
     user = users(:vivian)
     payload = payload_for("subscription.created", user)

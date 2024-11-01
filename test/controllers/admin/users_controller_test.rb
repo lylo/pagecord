@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
@@ -21,7 +21,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     user = users(:annie)
     assert user.is_premium?
 
-    delete  admin_user_url(user)
+    delete admin_user_url(user)
 
     assert_redirected_to admin_stats_path
     assert_equal "You can't discard a premium user", flash[:notice]
@@ -30,7 +30,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "should discard regular user" do
     user = users(:vivian)
-    assert_difference('User.kept.count', -1) do
+    assert_difference("User.kept.count", -1) do
       delete admin_user_url(user)
     end
 

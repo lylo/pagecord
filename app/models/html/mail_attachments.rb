@@ -1,6 +1,5 @@
 module Html
   class MailAttachments < Transformation
-
     def initialize(mail)
       @mail = mail
     end
@@ -18,13 +17,13 @@ module Html
           content_id = original.content_id[1...-1]
           element = document.at_css "img[src='cid:#{content_id}']"
 
-          node_html = %Q{
+          node_html = %Q(
             <action-text-attachment sgid="#{blob.attachable_sgid}" content-type="#{original.content_type}" filename="#{original.filename}" filesize="#{blob.byte_size}" previewable="true" url="#{url}">
               <figure class="attachment attachment--preview attachment--#{blob.filename.extension}">
                 <img alt="" src="#{url}">
               </figure>
             </action-text-attachment>
-          }
+          )
 
           element.replace node_html
         else
@@ -45,7 +44,7 @@ module Html
     end
 
     def attachments
-      @attachments&.map{ |attachment| attachment[:blob] }
+      @attachments&.map { |attachment| attachment[:blob] }
     end
 
     private

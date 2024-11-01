@@ -55,7 +55,7 @@ module Billing
 
         Rails.logger.info "Paddle #{event} for @#{@user.username}"
 
-        method_name = event.gsub('.', '_')
+        method_name = event.gsub(".", "_")
         send(method_name) if respond_to?(method_name, true)
       end
 
@@ -129,5 +129,5 @@ module Billing
       def data
         @data ||= JSON.parse(params[:data].to_json, object_class: OpenStruct)
       end
-    end
+  end
 end

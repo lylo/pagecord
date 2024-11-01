@@ -14,7 +14,7 @@ module Pagecord
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w(assets tasks))
+    config.autoload_lib(ignore: %w[ assets tasks ])
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -28,9 +28,9 @@ module Pagecord
 
     config.active_record.automatically_invert_plural_associations = true
 
-    config.filter_parameters += [:RawEmail, :Attachments]
+    config.filter_parameters += [ :RawEmail, :Attachments ]
 
-    Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_tags += ["s", "u"]
+    Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_tags += [ "s", "u" ]
 
     config.exceptions_app = self.routes
   end

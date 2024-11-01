@@ -1,9 +1,9 @@
 class App::FeedController < AppController
   include Pagy::Backend
 
-  skip_before_action :require_login, :load_user, only: [:private_rss]
+  skip_before_action :require_login, :load_user, only: [ :private_rss ]
 
-  before_action :require_token, only: [:private_rss]
+  before_action :require_token, only: [ :private_rss ]
 
   def index
     followed_users_ids = @user.followed_users.pluck(:followed_id)

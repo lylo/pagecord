@@ -21,7 +21,7 @@ class SubscriptionsControllerTest < ActionDispatch::IntegrationTest
 
   test "should cancel subscription" do
     paddle_api_mock = Minitest::Mock.new
-    paddle_api_mock.expect :cancel_subscription, true, [@user.subscription.paddle_subscription_id]
+    paddle_api_mock.expect :cancel_subscription, true, [ @user.subscription.paddle_subscription_id ]
 
     PaddleApi.stub :new, paddle_api_mock do
       delete app_subscription_url(@user.subscription)

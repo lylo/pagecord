@@ -11,7 +11,7 @@ class App::FollowingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should follow a user" do
-    assert_difference('@user1.followees.count', 1) do
+    assert_difference("@user1.followees.count", 1) do
       post app_user_follow_path(@user2), xhr: true
     end
 
@@ -23,7 +23,7 @@ class App::FollowingsControllerTest < ActionDispatch::IntegrationTest
   test "should unfollow a user" do
     @user1.follow(@user2)
 
-    assert_difference('@user1.followees.count', -1) do
+    assert_difference("@user1.followees.count", -1) do
       delete app_user_unfollow_path(@user2), xhr: true
     end
 
@@ -33,7 +33,7 @@ class App::FollowingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not follow oneself" do
-    assert_no_difference('@user1.followees.count') do
+    assert_no_difference("@user1.followees.count") do
       post app_user_follow_path(@user1), xhr: true
     end
 
@@ -44,7 +44,7 @@ class App::FollowingsControllerTest < ActionDispatch::IntegrationTest
   test "should not follow twice" do
     @user1.follow(@user2)
 
-    assert_no_difference('@user1.followees.count') do
+    assert_no_difference("@user1.followees.count") do
       post app_user_follow_path(@user2), xhr: true
     end
 
@@ -53,7 +53,7 @@ class App::FollowingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should bad unfollow" do
-    assert_no_difference('@user1.followees.count') do
+    assert_no_difference("@user1.followees.count") do
       delete app_user_unfollow_path(@user2), xhr: true
     end
 

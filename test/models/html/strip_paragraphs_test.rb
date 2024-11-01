@@ -1,7 +1,6 @@
 require "test_helper"
 
 class Html::StripParagraphsTest < ActiveSupport::TestCase
-
   test "should strip paragraphs and replace with breaks" do
     html = <<~HTML
       <p>hello, world!</p>

@@ -1,5 +1,4 @@
 class Admin::UsersController < AdminController
-
   def destroy
     @user = User.find(params[:id])
 

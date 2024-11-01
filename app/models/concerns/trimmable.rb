@@ -10,7 +10,7 @@ module Trimmable
       rich_text_association = reflect_on_all_associations.find do |association|
         association.name.to_s.start_with?("rich_text_")
       end
-      rich_text_association.name.to_s.gsub(/^rich_text_/, '') if rich_text_association
+      rich_text_association.name.to_s.gsub(/^rich_text_/, "") if rich_text_association
     end
   end
 
@@ -55,7 +55,7 @@ module Trimmable
       nodes.each do |node|
         if node.text? && node.content.strip.empty?
           node.remove
-        elsif node.name == 'br' && node.element?
+        elsif node.name == "br" && node.element?
           node.remove
         elsif node.element? && node.children.empty? && %w[p div].include?(node.name)
           node.remove
