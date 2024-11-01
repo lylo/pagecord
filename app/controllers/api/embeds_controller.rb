@@ -2,6 +2,8 @@ require "open-uri"
 require "nokogiri"
 
 class Api::EmbedsController < ApplicationController
+  skip_before_action :domain_check
+
   def bandcamp
     url = params[:url]
     embed_url = og_video_attribute(url)
