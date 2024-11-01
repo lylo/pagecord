@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_31_205951) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_01_090528) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -113,6 +113,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_31_205951) do
     t.datetime "published_at"
     t.text "raw_content"
     t.string "token", null: false
+    t.index ["token"], name: "index_posts_on_token", unique: true
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
