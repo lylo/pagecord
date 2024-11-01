@@ -1,26 +1,23 @@
-DEFAULTS: &DEFAULTS
-  token: <%= SecureRandom.hex(4) %>
-
 one:
   title: The Art of Street Photography
   user: joel
   published_at: <%= 1.day.ago %>
-  <<: *DEFAULTS
+  token: <%= SecureRandom.hex(4) %>
 
 two:
   title: The Beauty of Landscape Photography
   user: joel
   published_at: <%= 2.days.ago %>
-  <<: *DEFAULTS
+  token: <%= SecureRandom.hex(4) %>
 
 three:
   title: My first post
   user: vivian
   published_at: <%= 1.week.ago %>
-  <<: *DEFAULTS
+  token: <%= SecureRandom.hex(4) %>
 
 four:
   title: What I've learned about photography
   user: annie
   published_at: <%= 1.day.ago %>
-  <<: *DEFAULTS
+  token: <%= SecureRandom.hex(4) %>
