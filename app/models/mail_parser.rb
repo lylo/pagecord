@@ -3,13 +3,19 @@ class MailParser
 
   def initialize(mail)
     @mail = mail
-    @pipeline = [
+    @attachment_transformer = Html::MailAttachments.new(mail)
+
+    @html_pipeline = [
         Html::BodyExtraction.new,
         Html::MonospaceDetection.new,
         Html::ImageUnfurl.new,
-        @attachment_transformer = Html::MailAttachments.new(mail),
+        @attachment_transformer,
         Html::Utf8Encoding.new,
         Html::Sanitize.new
+      ]
+    @plain_text_pipeline = [
+        Html::PlainTextToHtml.new,
+        @attachment_transformer
       ]
   end
 
@@ -41,24 +47,32 @@ class MailParser
     sanitized_body.strip.blank? && !has_attachments?
   end
 
-  def transform(html)
-    @pipeline.each do |transformation|
-      html = transformation.transform(html)
-    end
-    html
-  end
-
   private
+
+    def html_transform(html)
+      transform(@html_pipeline, html)
+    end
+
+    def plain_text_transform(html)
+      transform(@plain_text_pipeline, html)
+    end
+
+    def transform(pipeline, html)
+      pipeline.each do |transformation|
+        html = transformation.transform(html)
+      end
+      html
+    end
 
     def parse_body
       if @mail.multipart?
         if @mail.html_part
-          transform @mail.html_part.decoded
+          html_transform @mail.html_part.decoded
         elsif @mail.text_part
-          Html::PlainTextToHtml.new.transform(@mail.text_part.decoded)
+          plain_text_transform @mail.text_part.decoded
         end
       elsif @mail.content_type =~ /text\/plain/
-        Html::PlainTextToHtml.new.transform(@mail.decoded)
+        plain_text_transform @mail.decoded
       else
         raise "Unknown content type #{mail.content_type}"
       end
