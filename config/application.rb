@@ -28,7 +28,7 @@ module Pagecord
 
     config.active_record.automatically_invert_plural_associations = true
 
-    config.filter_parameters += [ :RawEmail, :Attachments ]
+    config.filter_parameters += [ :RawEmail, :Attachments, :HtmlBody, :TextBody, :Headers ]
 
     Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_tags += [ "s", "u" ]
 
