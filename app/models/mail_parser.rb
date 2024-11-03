@@ -10,7 +10,6 @@ class MailParser
         Html::MonospaceDetection.new,
         Html::ImageUnfurl.new,
         @attachment_transformer,
-        Html::Utf8Encoding.new,
         Html::Sanitize.new
       ]
     @plain_text_pipeline = [
@@ -58,6 +57,13 @@ class MailParser
     end
 
     def transform(pipeline, html)
+      charset = @mail.charset || "UTF-8"
+      if charset != "UTF-8"
+        Rails.logger.info "Converting mail from #{charset} to UTF-8"
+        decoded = html.encode(charset, "UTF-8", invalid: :replace, undef: :replace, replace: "")
+        html = decoded.force_encoding("UTF-8")
+      end
+
       pipeline.each do |transformation|
         html = transformation.transform(html)
       end
