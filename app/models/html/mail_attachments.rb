@@ -59,7 +59,7 @@ module Html
             content_type: attachment.content_type,
           )
 
-          { original: attachment, blob: blob, url: Rails.application.routes.url_helpers.rails_public_blob_url(blob, only_path: true) }
+          { original: attachment, blob: blob, url: Rails.application.routes.url_helpers.rails_blob_url(blob, only_path: true) }
         end
       end
   end
