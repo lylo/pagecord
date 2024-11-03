@@ -60,14 +60,21 @@ Rails.application.configure do
 
   config.filter_parameters += [ :email ]
 
-  # Log to STDOUT by default
   stdout_logger = ActiveSupport::Logger.new(STDOUT)
-  file_logger   = ActiveSupport::Logger.new("log/#{Rails.env}.log")
-  broadcast = ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger)
+  file_logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
 
-  # Prepend all log lines with the following tags.
+  # Broadcast to both loggers
+  broadcast_logger = ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger)
+  broadcast_logger.formatter = proc do |severity, datetime, progname, msg|
+    "#{datetime.strftime('%Y-%m-%d %H:%M:%S')} [#{severity}] #{msg}\n"
+  end
+
+  tagged_logger = ActiveSupport::TaggedLogging.new(broadcast_logger)
+
   config.log_tags = [ :request_id ]
-  config.logger = ActiveSupport::TaggedLogging.new(broadcast)
+  config.log_level = :info
+  config.logger = tagged_logger
+
 
   # config.logger = ActiveSupport::Logger.new(STDOUT)
   #   .tap  { |logger| logger.formatter = ::Logger::Formatter.new }
