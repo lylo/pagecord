@@ -29,6 +29,14 @@ module DomainConstraints
   end
 end
 
+module Constraints
+  class RssFormat
+    def matches?(request)
+      request.format.rss?
+    end
+  end
+end
+
 Rails.application.routes.draw do
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
@@ -99,7 +107,7 @@ Rails.application.routes.draw do
     get "/", to: "users/posts#index", as: :custom_user_posts
     get "/:token", to: "users/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_without_title
     get "/:title-:token", to: "users/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_with_title
-    get "/:username", to: "users/posts#index", format: :rss, as: :custom_user_posts_rss
+    get "/:username", to: "users/posts#index", constraints: Constraints::RssFormat.new, as: :custom_user_posts_rss
   end
 
   constraints(DomainConstraints.method(:default_domain?)) do
