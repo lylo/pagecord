@@ -1,7 +1,9 @@
 class Users::PostsController < ApplicationController
   include Pagy::Backend
 
-  skip_before_action :domain_check      # PostsController is available for custom domains
+  # TODO consider separate base controller for public pages
+  skip_before_action :domain_check, :authenticate
+
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   before_action :load_user, :verification, :enforce_custom_domain
