@@ -1,6 +1,6 @@
 default: &default
-  webhook_secret_key: pdl_ntfset_01hxm69xq1ewjcda88vf9pvbg5_REpembg9+HpKcVDUNQOkN6ydiO0jsfFE
-  api_key: 766e215c49e0863f08c985e3abc4f6947789ac229a7ee419cb
+  webhook_secret_key: <%= ENV["PADDLE_SANDBOX_WEBHOOK_SECRET_KEY"] %>
+  api_key: <%= ENV["PADDLE_SANDBOX_API_KEY"] %>
   base_url: https://sandbox-api.paddle.com
 
 development:
