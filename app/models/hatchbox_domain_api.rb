@@ -1,6 +1,4 @@
 class HatchboxDomainApi
-  HATCHBOX_ENDPOINT = "https://app.hatchbox.io/api/v1/accounts/2928/apps/6347/domains"
-
   def initialize(user)
     @user = user
   end
@@ -8,7 +6,7 @@ class HatchboxDomainApi
   def add_domain(domain)
     return unless @user.custom_domain == domain
 
-    response = HTTParty.post(HATCHBOX_ENDPOINT, headers: headers,
+    response = HTTParty.post(hatchbox_api_endpoint, headers: headers,
       body: {
         domain: {
           name: domain
@@ -29,7 +27,7 @@ class HatchboxDomainApi
   def remove_domain(domain)
     return if restricted_domain(domain) || domain_exists?(domain)
 
-    response = HTTParty.delete("#{HATCHBOX_ENDPOINT}/#{domain}", headers: headers)
+    response = HTTParty.delete("#{hatchbox_api_endpoint}/#{domain}", headers: headers)
 
     Rails.logger.info "Response: #{response&.inspect}"
 
@@ -49,6 +47,10 @@ class HatchboxDomainApi
         "Accept" => "application/json",
         "Authorization" => "Bearer #{ENV['HATCHBOX_API_KEY']}"
       }
+    end
+
+    def hatchbox_api_endpoint
+      ENV["HATCHBOX_API_ENDPOINT"]
     end
 
     def touch_all
