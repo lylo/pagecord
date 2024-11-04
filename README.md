@@ -24,6 +24,14 @@ Before you run the app in development, first set up the database:
 rails db:setup
 ```
 
+### Install Redis
+
+Pagecord uses Sidekiq, which uses Redis.
+
+```
+brew install redis
+```
+
 ### Running the app
 
 ```bash
@@ -50,4 +58,3 @@ folder and create posts for the first user account in the seed data (`joel@meyer
 ```bash
 DIR=tmp/emails rake email:load
 ```
-
