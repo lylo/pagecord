@@ -28,11 +28,11 @@ Premium accounts can apply a custom domain to their blog. Pagecord does this by 
 
 Ideally I would run a separate server and create a reverse proxy using Caddy, detaching custom domains from the underlying app hosting. I'm avoiding the overhead of hosting costs and sysadmin work, but it'll bite me at some point I know.
 
-### DNS
+### DNS
 
 DNS for Pagecord is managed by [Cloudflare](https://cloudflare.com).
 
-### Email
+### Email
 
 Inbound emails are managed by [Postmark](https://postmarkapp.com). The Pagecord app uses ActionMailbox to receive and process the emails.
 
