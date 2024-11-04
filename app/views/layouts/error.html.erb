@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%= render "layouts/head" %>
+  </head>
+
+  <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
+    <header>
+    </header>
+    <main class="container mx-auto px-5 flex flex-grow">
+
+      <div class="max-w-xl w-full mx-auto mt-12 text-black dark:text-slate-100">
+        <%= yield %>
+      </div>
+    </main>
+  </body>
+</html>
