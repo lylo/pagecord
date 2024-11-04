@@ -2,7 +2,7 @@
 
 A minimalist blogging app powered by email.
 
-![](https://github.com/lylo/pagecord/actions/workflows/rails_tests.yml/badge.svg)
+![](https://github.com/lylo/pagecord/actions/workflows/ci.yml/badge.svg)
 
 ## Development
 
