@@ -43,10 +43,9 @@ class PostsHelperTest < ActionView::TestCase
   test "blog_description with bio" do
     user = users(:joel)
     bio = <<~BIO
-    American street, portrait and landscape photographer. Photographing in color since 1962.
+    Photographer
 
-    https://joelmeyerowitz.com
-    joel@joelmeyerowitz....
+    https://pagecord.com/joel
     BIO
 
     assert_equal bio.strip, blog_description(user)

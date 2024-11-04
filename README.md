@@ -53,7 +53,7 @@ Sometimes you'll need to debug emails. To do this, save the .eml file(s) to a fo
 such as `tmp/emails`.
 
 You can then run the following command which will parse all the .eml files in that
-folder and create posts for the first user account in the seed data (`joel@meyerowitz.xyz`).
+folder and create posts for the first user account in the seed data (`joel@pagecord.com`).
 
 ```bash
 DIR=tmp/emails rake email:load

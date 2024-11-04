@@ -1,30 +1,29 @@
 joel:
-  email: joel@meyerowitz.xyz
+  email: joel@pagecord.com
   username: joel
   delivery_email: joel_gf35jsue@post.pagecord.com
   bio: |
-    American street, portrait and landscape photographer. Photographing in color since 1962.
+    Photographer
 
-    https://joelmeyerowitz.com
-    joel@joelmeyerowitz.com
+    https://pagecord.com/joel
   verified: true
 
 elliot:
-  email: elliot@erwitt.photo
+  email: elliot@pagecord.com
   username: elliot
   free_trial_ends_at: <%= 1.week.from_now %>
   delivery_email: elliot_jfur73yd@post.pagecord.com
 
 vivian:
-  email: vivian@maierweb.com
+  email: vivian@pagecord.com
   username: vivian
   delivery_email: vivian_jfur73yd@post.pagecord.com
   free_trial_ends_at: <%= 1.week.from_now %>
   verified: true
 
 annie:
-  email: annie@leibovitz.com
+  email: annie@pagecord.com
   username: annie
   delivery_email: annie_asj232j@post.pagecord.com
-  custom_domain: blog.leibovitz.com
+  custom_domain: welcometoanniesblog.com
   verified: true
