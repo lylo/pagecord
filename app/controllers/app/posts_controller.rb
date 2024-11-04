@@ -18,9 +18,7 @@ class App::PostsController < AppController
   def edit
     @post = Current.user.posts.find_by!(token: params[:id])
 
-    # To pacify Trix, remove new line characters and substitue <p> tags with <br> tags
-    @post.content = @post.content.to_s.gsub(/\n/, "")
-    @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
+    prepare_content_for_trix
   end
 
   def create
@@ -61,5 +59,11 @@ class App::PostsController < AppController
 
     def requires_premium
       redirect to app_posts_path unless Current.user.is_premium?
+    end
+
+    def prepare_content_for_trix
+      # To pacify Trix, remove new line characters and substitue <p> tags with <br> tags
+      @post.content = @post.content.to_s.gsub(/\n/, "")
+      @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
     end
 end
