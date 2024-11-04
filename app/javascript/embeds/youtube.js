@@ -3,7 +3,7 @@ import MediaSite from "media_site"
 class YouTube extends MediaSite {
   constructor() {
     super(
-      /(?:https:\/\/www\.youtube\.com\/watch\?v=|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]+)/,
+      /(?:https:\/\/www\.youtube\.com\/(?:watch\?v=|live\/)|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]+)/,
 
       async (url) => {
         const match = url.match(this.regex)
