@@ -8,6 +8,8 @@ development:
 
 test:
   <<: *default
+  webhook_secret_key: 6235edeebedc947dd778ea1a73c3079fb7b975118d63c3d8303f36ab8a1d3595
+  api_key: 3fbcb365e41b34d9dcf61f7d504bd3bb
 
 production:
   <<: *default
