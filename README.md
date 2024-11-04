@@ -58,3 +58,9 @@ folder and create posts for the first user account in the seed data (`joel@pagec
 ```bash
 DIR=tmp/emails rake email:load
 ```
+
+## More info
+
+Read about [the Pagecord architecture](architecture.md) or [making contributions](CONTRIBUTIONS.md).
+
+Follow the [Pagecord blog](https://pagecord.com/pagecord).
