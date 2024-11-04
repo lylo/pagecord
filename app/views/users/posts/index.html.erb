@@ -16,7 +16,11 @@
     </div>
 
     <% if @pagy.next %>
-      <%= turbo_frame_tag :posts, src: user_posts_path(username: @user.username, page: @pagy.next), loading: :lazy %>
+      <% if custom_domain_request? %>
+        <%= turbo_frame_tag :posts, src: custom_user_posts_path(page: @pagy.next), loading: :lazy %>
+      <% else %>
+        <%= turbo_frame_tag :posts, src: user_posts_path(username: @user.username, page: @pagy.next), loading: :lazy %>
+      <% end%>
     <% end %>
   <% end %>
 <% end %>
