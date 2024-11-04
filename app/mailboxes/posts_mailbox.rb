@@ -11,9 +11,6 @@ class PostsMailbox < ApplicationMailbox
       mail.reply_to&.first&.downcase
     end
 
-    Rails.logger.info "Received mail from: #{from} to: #{recipient} (reply-to: #{reply_to})"
-    Rails.logger.info "Message ID: #{mail.message_id}"
-
     if reply_to.present? && reply_to != from
       Rails.logger.warn "Reply-To and From are inconsistent" and return
     end
