@@ -2,7 +2,7 @@ class Users::PostsController < ApplicationController
   include Pagy::Backend
 
   # TODO consider separate base controller for public pages
-  skip_before_action :domain_check, :authenticate
+  skip_before_action :domain_check
 
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
