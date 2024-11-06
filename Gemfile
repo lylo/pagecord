@@ -26,7 +26,7 @@ gem "sentry-ruby"
 gem "sentry-rails"
 
 gem "aws-sdk-s3"
-gem "discard", "~> 1.2"
+gem "discard", "~> 1.4"
 gem "fastimage"
 gem "htmlentities"
 gem "httparty"
