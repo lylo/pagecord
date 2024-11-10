@@ -35,7 +35,7 @@
 
   <h3>Can I embed media?</h3>
   <p>
-    Yes! If you include a link to a YouTube video or Spotify album/playlist/track in your email, Pagecord will
+    Yes! If you include a link to a YouTube video, a Spotify album/playlist/track, or a Bandcamp album/track in your email, Pagecord will
     embed the media in the post.
   </p>
 
@@ -78,6 +78,62 @@
     <a href="https://feedgrab.net">Feedgrab</a> - a beautifully simple all-in-one reader I built! 🤙
   </p>
 
+  <h3 id="dns">How do I set up DNS for a custom domain?</h3>
+  <p>
+    If you're a paying customer, you can use your own domain name for your Pagecord. To host your Pagecord on a root domain
+    (e.g. mydomain.com) you'll need to create the following DNS records:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Record Type</th>
+        <th>Name</th>
+        <th>Content</th>
+        <th>TTL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>CNAME</td>
+        <td><strong>@</strong></td>
+        <td>proxy.pagecord.com</td>
+        <td>3600</td>
+      </tr>
+      <tr>
+        <td>CNAME</td>
+        <td><strong>www</strong></td>
+        <td>proxy.pagecord.com</td>
+        <td>3600</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    If you want your Pagecord on subdomain (eg: https://blog.mydomain.com), you'll need to create the following DNS records instead:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Record Type</th>
+        <th>Name</th>
+        <th>Content</th>
+        <th>TTL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>CNAME</td>
+        <td><strong>blog</strong></td>
+        <td>proxy.pagecord.com</td>
+        <td>3600</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <em>Note: If you're using Cloudflare to manage DNS, you need to set SSL/TLS mode to <strong>Full (Strict)</strong> or disable the proxy (the orange cloud).</em>
+  </p>
 
   <h3>What is your refund policy?</h3>
   <p>

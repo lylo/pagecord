@@ -27,11 +27,7 @@
       </p>
     <% else %>
       <p>
-        Set up a custom domain.
-      </p>
-      <p class="mt-4">
-        For this to work you'll first need to create an A record in your DNS that points to
-        <code><mark class="bg-gray-100 dark:bg-gray-700 dark:text-gray-100 px-1">35.176.4.182</mark></code>.
+        To set up a custom domain, enter it below and click Update. You'll need to configure your DNS first. See <a href="https://pagecord.com/faq#dns" class="font-medium underline">the FAQ</a> for details on how to do that.
       </p>
     <% end %>
 
@@ -42,8 +38,7 @@
 
     <% if @user.valid? && @user.custom_domain.present? %>
       <p class="mt-2 text-gray-500 dark:text-gray-400 text-sm">
-        To remove your custom domain, clear the box above and click Update.
-        Don't forget to remove the A record from your DNS!
+        To remove your custom domain, clear the box above and click Update. Don't forget to remove the records from your DNS!
       </p>
     <% end %>
 
