@@ -36,6 +36,8 @@ DNS for Pagecord is managed by [Cloudflare](https://cloudflare.com).
 
 Inbound emails are managed by [Postmark](https://postmarkapp.com). The Pagecord app uses ActionMailbox to receive and process the emails.
 
+Marketing emails are managed by [Loops](https://loops.so). The sign up page asks for marketing consent which is passed onto Loops after the account is verified. If you're running Pagecord for yourself, you'll want to remove all references to `AddToMarketingAutomationJob`.
+
 ### Observability
 
 Pagecord uses Sentry for logging errors. There's no other monitoring right now because budgets 😱
