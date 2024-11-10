@@ -2,7 +2,12 @@ class AccessRequestsController < ApplicationController
   def verify
     if access_request = AccessRequest.active.pending.find_by(token_digest: params[:token])
       @user = access_request.user
-      @user.verify!
+
+      unless @user.verified?
+        @user.verify!
+        AccountCreatedJob.perform_later(@user.id)
+      end
+
       access_request.accept!
 
       sign_in @user

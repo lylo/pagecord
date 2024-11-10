@@ -156,6 +156,12 @@ GEM
       activerecord (>= 4.2, < 9.0)
     drb (2.2.1)
     erubi (1.13.0)
+    faraday (2.12.0)
+      faraday-net_http (>= 2.0, < 3.4)
+      json
+      logger
+    faraday-net_http (3.3.0)
+      net-http
     fastimage (2.3.1)
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-arm-linux-gnu)
@@ -201,6 +207,8 @@ GEM
     loofah (2.23.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
+    loops_sdk (0.2.0)
+      faraday
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -217,6 +225,8 @@ GEM
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
     nanoid (2.0.0)
+    net-http (0.5.0)
+      uri
     net-imap (0.5.1)
       date
       net-protocol
@@ -423,6 +433,7 @@ DEPENDENCIES
   inline_svg
   jbuilder
   letter_opener
+  loops_sdk
   mocha
   nanoid (~> 2.0)
   pagy
