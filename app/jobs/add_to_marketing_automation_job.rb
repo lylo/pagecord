@@ -4,7 +4,7 @@ class AddToMarketingAutomationJob < ApplicationJob
   queue_as :default
 
   def perform(user_id)
-    # return unless Rails.env.production?
+    return unless Rails.env.production?
 
     user = User.find(user_id)
 
