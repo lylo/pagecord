@@ -10,6 +10,11 @@ class User < ApplicationRecord
   has_many :access_requests, dependent: :destroy
   has_many :custom_domain_changes, dependent: :destroy
 
+  scope :free_trial_expired, -> {
+    left_joins(:subscription)
+      .where("free_trial_ends_at < ? AND subscriptions.id IS NULL", Time.current)
+  }
+
   validates :username, presence: true, uniqueness: true, length: { minimum: Username::MIN_LENGTH, maximum: Username::MAX_LENGTH }
   validate  :username_valid
 

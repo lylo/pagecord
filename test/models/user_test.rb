@@ -95,4 +95,16 @@ class UserTest < ActiveSupport::TestCase
     user.update!(free_trial_ends_at: 1.day.ago)
     assert user.free_trial_expired?
   end
+
+  test "free trial expired scope" do
+    assert_equal 0, User.free_trial_expired.count
+
+    user = users(:vivian)
+    assert user.is_on_free_trial?
+
+    user.update free_trial_ends_at: 1.day.ago
+
+    assert_equal 1, User.free_trial_expired.count
+    assert_equal user, User.free_trial_expired.first
+  end
 end
