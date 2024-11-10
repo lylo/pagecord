@@ -10,6 +10,12 @@
   </div>
 
   <div class="mt-8">
-    <%= form.submit "Create account", class: "underline font-semibold cursor-pointer" %>
+    <%= form.submit "Create account", class: "btn-primary cursor-pointer" %>
+  </div>
+
+  <div class="mt-4 flex items-center gap-x-2 text-xs">
+    <%= form.checkbox :marketing_consent, class: "h-4 w-4 rounded dark:border-slate-700 dark:bg-slate-800 border-slate-300 text-slate-500 dark:text-slate-500 focus:outline-none focus:ring-0" %>
+
+    <%= form.label :marketing_consent, "Subscribe to the Pagecord mailing list. You can unsubscribe any time!", class: "text-slate-500" %>
   </div>
 <% end %>

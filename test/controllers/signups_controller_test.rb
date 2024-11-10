@@ -20,6 +20,18 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal "testuser", User.last.username
     assert_equal "test@example.com", User.last.email
+    assert_not User.last.marketing_consent
+  end
+
+  test "should create user with marketing consent" do
+    assert_difference("User.count") do
+      assert_emails 1 do
+        post signups_url, params: { user: { username: "testuser", email: "test@example.com", marketing_consent: true } }
+      end
+    end
+
+    assert_redirected_to thanks_signups_path
+    assert User.last.marketing_consent
   end
 
   test "should not create user with invalid params" do

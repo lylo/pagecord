@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2024_11_01_090528) do
+ActiveRecord::Schema[8.1].define(version: 2024_11_10_145930) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -143,6 +143,7 @@ ActiveRecord::Schema[8.1].define(version: 2024_11_01_090528) do
     t.string "custom_domain"
     t.string "title"
     t.datetime "free_trial_ends_at"
+    t.boolean "marketing_consent", default: false, null: false
     t.index ["custom_domain"], name: "index_users_on_custom_domain"
     t.index ["delivery_email"], name: "index_users_on_delivery_email", unique: true
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
