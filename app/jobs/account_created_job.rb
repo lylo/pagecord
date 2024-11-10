@@ -4,16 +4,30 @@ class AccountCreatedJob < ApplicationJob
   queue_as :default
 
   def perform(user_id)
-    # FIXME only in prod!
+    return unless Rails.env.production?
+
     user = User.find(user_id)
 
-    response = LoopsSdk::Contacts.create(
+    add_to_loops(user) if user
+  end
+
+  private
+
+    # https://loops.so
+    def add_to_loops(user)
+      response = LoopsSdk::Contacts.create(
         email: user.email,
         properties: {
           username: user.username,
           deliveryEmail: user.delivery_email
+        },
+        mailing_lists: {
+          cm3bk30v201in0ml49wza278w: user.marketing_consent
         })
 
-    Rails.logger.info "LoopsSdk::Contacts.create response: #{response.inspect}"
-  end
+      Rails.logger.info "LoopsSdk::Contacts.create response: #{response.inspect}"
+      unless response["success"]
+        raise "LoopsSdk::Contacts.create failed: #{response.inspect}"
+      end
+    end
 end
