@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby "3.3.4"
 
-gem "rails", github: "rails/rails", branch: "8-0-stable"
+gem "rails", github: "rails/rails", branch: "main"
 
 gem "actionpack-page_caching"
 gem "image_processing", "~> 1.2"
