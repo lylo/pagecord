@@ -34,7 +34,6 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert User.last.marketing_consent
   end
 
-
   test "should not create user with invalid params" do
     assert_no_difference("User.count") do
       assert_emails 0 do
