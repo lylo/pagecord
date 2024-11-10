@@ -5,7 +5,7 @@ class AccessRequestsController < ApplicationController
 
       unless @user.verified?
         @user.verify!
-        AccountCreatedJob.perform_later(@user.id)
+        AddToMarketingAutomationJob.perform_later(@user.id)
       end
 
       access_request.accept!

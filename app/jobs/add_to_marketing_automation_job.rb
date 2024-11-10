@@ -1,10 +1,10 @@
 require "loops_sdk"
 
-class AccountCreatedJob < ApplicationJob
+class AddToMarketingAutomationJob < ApplicationJob
   queue_as :default
 
   def perform(user_id)
-    return unless Rails.env.production?
+    # return unless Rails.env.production?
 
     user = User.find(user_id)
 
@@ -26,8 +26,6 @@ class AccountCreatedJob < ApplicationJob
         })
 
       Rails.logger.info "LoopsSdk::Contacts.create response: #{response.inspect}"
-      unless response["success"]
-        raise "LoopsSdk::Contacts.create failed: #{response.inspect}"
-      end
+      raise "LoopsSdk::Contacts.create failed: #{response.inspect}" unless response["success"]
     end
 end
