@@ -48,14 +48,14 @@ class SignupsController < ApplicationController
       response = HTTParty.post(
         "https://challenges.cloudflare.com/turnstile/v0/siteverify",
         body: {
-          secret: Rails.application.credentials.cloudflare[:turnstile_secret_key],
+          secret: ENV["TURNSTILE_SECRET_KEY"],
           response: token,
           remoteip: request.remote_ip
         }
       )
 
       response.parsed_response["success"] == true
-        rescue HTTParty::Error => e
+    rescue HTTParty::Error => e
       Rails.logger.error "Turnstile verification failed: #{e.message}"
       false
     end

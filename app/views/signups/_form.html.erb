@@ -13,7 +13,7 @@
   <div class="turnstile-widget mt-8">
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <div class="cf-turnstile"
-      data-sitekey="<%= Rails.application.credentials.cloudflare[:turnstile_site_key] %>"
+      data-sitekey="<%= ENV["TURNSTILE_SITE_KEY"] %>"
       <% if Rails.env.test? %>
       data-action="test"
       <% end %>
