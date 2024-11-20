@@ -12,7 +12,6 @@ test:
   api_key: 3fbcb365e41b34d9dcf61f7d504bd3bb
 
 production:
-  <<: *default
   webhook_secret_key: <%= ENV["PADDLE_WEBHOOK_SECRET_KEY"] %>
   api_key: <%= ENV["PADDLE_API_KEY"] %>
   base_url: https://api.paddle.com

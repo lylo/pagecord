@@ -8,7 +8,6 @@ module SubscriptionsHelper
   def paddle_data
     {
       items: paddle_data_items,
-      customer_email: Current.user.email,
       allow_logout: false,
       success_url: thanks_app_subscriptions_url,
       custom_data: { user_id: Current.user.id }.to_json

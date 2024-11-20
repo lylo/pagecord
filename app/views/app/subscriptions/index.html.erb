@@ -4,7 +4,7 @@
       <% if Rails.env.development? %>
         Paddle.Environment.set("sandbox")
         Paddle.Initialize({
-          token: "test_54956efa5e18fb694f1249c1a68"
+          token: "test_945b246ef8df8bfe446632bf70b"
         })
       <% else %>
         Paddle.Environment.set("production")
@@ -37,7 +37,7 @@
     </p>
 
     <div class="mt-2 flex justify-between" data-controller="paddle">
-      <%= link_to "Update Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "paddle_button btn-primary" %>
+      <%= link_to "Update Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "btn-primary" %>
       <%= link_to "Cancel Subscription", cancel_confirm_app_subscriptions_path, class: "btn-danger" %>
     </div>
   <% end %>
