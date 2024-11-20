@@ -1,21 +1,26 @@
 class MailParser
   include ActionView::Helpers::SanitizeHelper
 
-  def initialize(mail)
+  def initialize(mail, process_attachments: true)
     @mail = mail
-    @attachment_transformer = Html::MailAttachments.new(mail)
 
     @html_pipeline = [
-        Html::BodyExtraction.new,
-        Html::MonospaceDetection.new,
-        Html::ImageUnfurl.new,
-        @attachment_transformer,
-        Html::Sanitize.new
-      ]
+      Html::BodyExtraction.new,
+      Html::MonospaceDetection.new,
+      Html::ImageUnfurl.new,
+      Html::Sanitize.new
+    ]
+
     @plain_text_pipeline = [
-        Html::PlainTextToHtml.new,
-        @attachment_transformer
-      ]
+      Html::PlainTextToHtml.new
+    ]
+
+    if process_attachments
+      @attachment_transformer = Html::MailAttachments.new(mail)
+
+      @html_pipeline.insert(-2, @attachment_transformer)  # append before Html::Sanitize
+      @plain_text_pipeline << @attachment_transformer
+    end
   end
 
   def subject

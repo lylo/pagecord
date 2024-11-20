@@ -21,7 +21,7 @@ class PostsMailbox < ApplicationMailbox
 
     if user = User.kept.find_by(email: from, delivery_email: recipient)
       begin
-        parser = MailParser.new(mail)
+        parser = MailParser.new(mail, process_attachments: user.subscribed?)
         unless parser.is_blank?
           content = parser.body
           title = parser.subject
@@ -31,18 +31,12 @@ class PostsMailbox < ApplicationMailbox
             title = nil
           end
 
-          attachments = if user.subscribed?
-            parser.attachments
-          else
-            []
-          end
-
           Rails.logger.info "Creating post from user: #{user.id}"
           user.posts.create!(
             title: title,
             content: content,
             raw_content: mail.raw_source,
-            attachments: attachments,
+            attachments: parser.attachments,
             published_at: mail.date)
         end
       rescue => e
