@@ -19,6 +19,7 @@ class SignupsController < ApplicationController
     if ENV["TURNSTILE_ENABLED"]
       unless valid_turnstile_token?(params["cf-turnstile-response"])
         flash.now[:error] = "Please complete the security check"
+        @user = User.new
         render :new and return
       end
     end
