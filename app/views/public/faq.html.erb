@@ -25,10 +25,10 @@
 
   <h3>Can I include images in my posts?</h3>
   <p>
-    Yes! You can attach images to your emails which Pagecord processes and hosts for you.
+    Premium subscribers can attach images to emails which Pagecord processes and hosts for you.
   </p>
   <p>
-    You can also include a URL to an existing image (e.g. https://example.com/image.gif)
+    Free customers can include a URL to an existing image (e.g. https://example.com/image.gif)
     in the body of your email and Pagecord will render the image in the post. There are plenty of
     free image hosting sites out there such as <a href="https://postimages.org/">PostImage</a>.
   </p>
@@ -47,8 +47,10 @@
 
   <h3>How can I edit a post?</h3>
   <p>
-    <%= link_to "Log in", login_path  %> to your account and you'll see a list of posts. Click the edit icon next
-    to a post to edit it.
+    Premium customers can <%= link_to "log in", login_path  %> and click the edit icon next to a post to edit it.
+  </p>
+  <p>
+    Free customers can <%= link_to "log in", login_path %>, delete the post and send another email with the correct copy.
   </p>
 
   <h3>Can I make a post without a title?</h3>
@@ -60,7 +62,6 @@
   <p>
     Not at the moment. They will all be in the Sent Items folder of your email account though 👌
   </p>
-
 
   <h3>Does Pagecord support RSS?</h3>
   <p>
@@ -143,8 +144,7 @@
 
   <h3>Can I downgrade my account?</h3>
   <p>
-    Nope, there is no free account. We're considering allowing sites to go into read-only mode if paying customers cancel,
-    but as of today if you stop paying the annual fee, your account will be deleted.
+    Yes. Cancel your subscription and once it lapses you'll be downgraded to a free account.
   </p>
 
   <h3>How do I delete my account?</h3>

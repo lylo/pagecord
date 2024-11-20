@@ -28,7 +28,7 @@ class App::UsersController < AppController
     end
 
     def user_params
-      if @user.is_premium?
+      if @user.subscribed?
         params.require(:user).permit(:bio, :custom_domain, :title)
       else
         params.require(:user).permit(:bio)

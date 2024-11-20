@@ -24,7 +24,7 @@
             <%= post.published_at.to_formatted_s(:long) %>
           </div>
           <div class="flex ms-2 gap-x-2">
-            <% if Current.user.is_premium? %>
+            <% if Current.user.subscribed? %>
               <%= link_to edit_app_post_path(post), title: "Edit this post" do %>
                 <%= inline_svg_tag "icons/edit.svg", class: "w-4 h-4" %>
               <% end %>

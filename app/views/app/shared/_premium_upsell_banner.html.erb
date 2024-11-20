@@ -1,10 +1,7 @@
 <div class="flex flex-col sm:flex-row items-center justify-center gap-2 p-2 bg-slate-800 dark:bg-slate-700 text-sm text-white font-medium">
-  <% if Current.user.free_trial_expired? %>
-    <div>Your free trial has expired.</div>
-    <div><%= link_to "Subscribe now to keep using Pagecord", app_subscriptions_path, class: "underline", data: { turbo: false } %>.</div>
-  <% else %>
-    <div><%= link_to "Subscribe to Pagecord before your trial expires", app_subscriptions_path, class: "underline", data: { turbo: false } %>.</div>
-  <% end %>
+  <div>
+    <%= link_to "Upgrade to Pagecord Premium to access all the features", app_subscriptions_path, class: "underline", data: { turbo: false } %>.
+  </div>
   <div>
     It's only $<%= Subscription.price%>/year! ✨
   </div>

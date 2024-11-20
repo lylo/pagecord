@@ -6,7 +6,7 @@
 
 <meta name="description" content="<%= meta_description %>">
 
-<% if @user && !@user.is_premium? %>
+<% if @user && !@user.subscribed? %>
 <meta name="robots" content="noindex">
 <% end %>
 

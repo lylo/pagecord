@@ -1,7 +1,7 @@
 class App::PostsController < AppController
   include Pagy::Backend
 
-  before_action :requires_premium, only: [ :edit, :create, :update ]
+  before_action :requires_active_subscription, only: [ :edit, :create, :update ]
 
   def index
     @pagy, @posts =  pagy(Current.user.posts.order(published_at: :desc), items: 15)
@@ -57,8 +57,8 @@ class App::PostsController < AppController
       params.require(:post).permit(:title, :content, :published_at)
     end
 
-    def requires_premium
-      redirect to app_posts_path unless Current.user.is_premium?
+    def requires_active_subscription
+      redirect to app_posts_path unless Current.user.subscribed?
     end
 
     def prepare_content_for_trix

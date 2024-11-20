@@ -3,17 +3,11 @@ class User < ApplicationRecord
   include DeliveryEmail, Followable, Subscribable
 
   before_validation :downcase_email_and_username
-  before_create :set_free_trial_ends_at
   after_update :record_custom_domain_change
 
   has_many :posts, dependent: :destroy
   has_many :access_requests, dependent: :destroy
   has_many :custom_domain_changes, dependent: :destroy
-
-  scope :free_trial_expired, -> {
-    left_joins(:subscription)
-      .where("free_trial_ends_at < ? AND subscriptions.id IS NULL", Time.current)
-  }
 
   validates :username, presence: true, uniqueness: true, length: { minimum: Username::MIN_LENGTH, maximum: Username::MAX_LENGTH }
   validate  :username_valid
@@ -38,21 +32,8 @@ class User < ApplicationRecord
     end
   end
 
-  def is_premium?
-    subscription&.present? && subscription.active?
-  end
-
-  def free_trial_expired?
-    trial_expired = free_trial_ends_at && Time.current > free_trial_ends_at
-    trial_expired && !is_premium?
-  end
-
-  def is_on_free_trial?
-    !is_premium? && !free_trial_expired?
-  end
-
   def custom_title?
-    is_premium? && title.present?
+    subscribed? && title.present?
   end
 
   def domain_changed?
@@ -68,10 +49,6 @@ class User < ApplicationRecord
     def downcase_email_and_username
       self.email = email.downcase.strip
       self.username = username.downcase.strip
-    end
-
-    def set_free_trial_ends_at
-      self.free_trial_ends_at ||= created_at + 7.days
     end
 
     def restricted_domain

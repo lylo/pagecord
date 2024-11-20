@@ -42,22 +42,19 @@
     </div>
   <% end %>
 <% else %>
-  <% if Current.user.free_trial_expired? %>
   <p>
-    Your Pagecord free trial has expired 🥺 Upgrade to Premium to continue!
+    You're currently on the Pagecord free plan. Please consider upgrading!
   </p>
-  <% else %>
-  <p>
-    Your free trial of Pagecord will expire in <%= distance_of_time_in_words_to_now(Current.user.free_trial_ends_at) %>.
-  </p>
-  <% end %>
   <p class="mt-4">
     Premium subscribers get access to <b>image attachments</b>, <b>custom
-    domains</b>, <b>edit posts</b>, <b>custom titles</b> and <b>human customer support</b>! 💖 It's only
-    $<%= Subscription.price %>/year!
+    domains</b>, <b>post editing</b>, <b>custom titles</b> and <b>human customer support</b>! 💖
+  </p>
+
+  <p class="mt-4">
+    It's only <strong>$<%= Subscription.price %>/year!</strong> What are you waiting for? 😊
   </p>
 
   <div class="mt-4">
-  <%= link_to "Subscribe Now", "#", class: "paddle_button btn-primary", data: paddle_data %>
+  <%= link_to "Upgrade Today!", "#", class: "paddle_button btn-primary", data: paddle_data %>
   </div>
 <% end %>

@@ -16,13 +16,6 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_not users(:vivian).subscribed?
   end
 
-  test "should ignore free trial if subscribed" do
-    u = users(:joel)
-    u.free_trial_ends_at = 1.day.ago
-
-    assert_not u.free_trial_expired?
-  end
-
   test "should be priced at $20" do
     assert_equal "20", Subscription.price
   end

@@ -19,7 +19,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "should not discard premium user" do
     user = users(:annie)
-    assert user.is_premium?
+    assert user.subscribed?
 
     delete admin_user_url(user)
 

@@ -223,6 +223,65 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
   end
 
+  test "should parse image attachments for a subscribed user" do
+    user = users(:joel)
+
+    assert_difference -> { user.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.delivery_email,
+        from: user.email,
+        reply_to: user.email,
+        subject: "Hello, world" do |mail|
+          mail.text_part = Mail::Part.new do
+            content_type "text/plain; charset=UTF-8"
+            body "Hello"
+          end
+
+          mail.html_part = Mail::Part.new do
+            content_type "text/html; charset=UTF-8"
+            body "<p>Hello</p>"
+          end
+
+          file_path = Rails.root.join("test/fixtures/files/baby-yoda.webp")
+          mail.attachments["baby-yoda.webp"] = File.read(file_path)
+        end
+    end
+
+    post = user.posts.last
+
+    assert_equal 1, post.attachments.count, "Post should have one attachment"
+    assert_equal "baby-yoda.webp", post.attachments.first.filename.to_s
+  end
+
+  test "should not parse image attachments for a freemium user" do
+    user = users(:vivian)
+
+    assert_difference -> { user.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.delivery_email,
+        from: user.email,
+        reply_to: user.email,
+        subject: "Hello, world" do |mail|
+          mail.text_part = Mail::Part.new do
+            content_type "text/plain; charset=UTF-8"
+            body "Hello"
+          end
+
+          mail.html_part = Mail::Part.new do
+            content_type "text/html; charset=UTF-8"
+            body "<p>Hello</p>"
+          end
+
+          file_path = Rails.root.join("test/fixtures/files/baby-yoda.webp")
+          mail.attachments["baby-yoda.webp"] = File.read(file_path)
+        end
+    end
+
+    post = user.posts.last
+
+    assert_equal 0, post.attachments.count, "Post should have no attachments"
+  end
+
   private
 
     def format_html(html)

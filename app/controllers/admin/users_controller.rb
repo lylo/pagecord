@@ -4,7 +4,7 @@ class Admin::UsersController < AdminController
 
     if @user == Current.user
       flash[:notice] = "You can't discard yourself"
-    elsif @user.is_premium?
+    elsif @user.subscribed?
       flash[:notice] = "You can't discard a premium user"
     else
       flash[:notice] = "User was successfully discarded"

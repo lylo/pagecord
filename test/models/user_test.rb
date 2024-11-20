@@ -82,29 +82,4 @@ class UserTest < ActiveSupport::TestCase
     assert user.valid?
     assert_equal 1, user.custom_domain_changes.count
   end
-
-  test "should be given a free trial on create" do
-    user = User.create!(username: "newuser", email: "newuser@example.com")
-    assert user.free_trial_ends_at.present?
-    assert_not user.free_trial_expired?
-    assert user.is_on_free_trial?
-  end
-
-  test "should expire free trial" do
-    user = users(:vivian)
-    user.update!(free_trial_ends_at: 1.day.ago)
-    assert user.free_trial_expired?
-  end
-
-  test "free trial expired scope" do
-    assert_equal 0, User.free_trial_expired.count
-
-    user = users(:vivian)
-    assert user.is_on_free_trial?
-
-    user.update free_trial_ends_at: 1.day.ago
-
-    assert_equal 1, User.free_trial_expired.count
-    assert_equal user, User.free_trial_expired.first
-  end
 end
