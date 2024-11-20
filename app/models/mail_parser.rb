@@ -23,9 +23,7 @@ class MailParser
   end
 
   def body
-    body = parse_body
-    Rails.logger.debug "Body: #{body} (#{body.nil?})"
-    @body ||= body
+    @body ||= parse_body
   end
 
   def attachments
@@ -73,22 +71,15 @@ class MailParser
     end
 
     def parse_body
-      Rails.logger.debug("Mail object: #{@mail.inspect}")
-
       if @mail.multipart?
-        Rails.logger.debug("Mail is multipart with content types: #{[ @mail.html_part&.content_type, @mail.text_part&.content_type ]}")
         if @mail.html_part
-          Rails.logger.debug("HTML part found")
           html_transform(@mail.html_part.decoded)
         elsif @mail.text_part
-          Rails.logger.debug("Text part found")
           plain_text_transform(@mail.text_part.decoded)
         end
       elsif @mail.content_type =~ /text\/plain/
-        Rails.logger.debug("Mail is plain text")
         plain_text_transform(@mail.decoded)
       else
-        Rails.logger.debug("Unknown content type: #{@mail.content_type}")
         raise "Unknown content type #{@mail.content_type}"
       end
     end

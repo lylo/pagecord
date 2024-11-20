@@ -21,26 +21,19 @@ class PostsMailbox < ApplicationMailbox
 
     if user = User.kept.find_by(email: from, delivery_email: recipient)
       begin
-        Rails.logger.debug "parsing email from #{from} to #{recipient}"
         parser = MailParser.new(mail)
-        Rails.logger.debug "parsed email from #{from} to #{recipient}"
         unless parser.is_blank?
           content = parser.body
           title = parser.subject
 
-          Rails.logger.debug "content: #{content}"
-          Rails.logger.debug "title: #{title}"
           if parser.body_blank?
-            Rails.logger.debug "Body is blank, using title as content"
             content = title
             title = nil
           end
 
           attachments = if user.subscribed?
-            Rails.logger.debug "User is subscribed, attaching attachments"
             parser.attachments
           else
-            Rails.logger.debug "User is not subscribed, not attaching attachments"
             []
           end
 
