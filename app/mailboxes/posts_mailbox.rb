@@ -40,7 +40,8 @@ class PostsMailbox < ApplicationMailbox
         raise "Unable to parse email: #{e}"
       end
     else
-      raise "User not found. From: #{from}, To: #{recipient}"
+      # Raise an error in Sentry for information. No need to retry the email
+      Sentry.capture_message("User not found. From: #{from}, To: #{recipient}")
     end
   end
 end

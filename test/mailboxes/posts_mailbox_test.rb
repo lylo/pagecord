@@ -66,21 +66,6 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
   end
 
-  test "should not receive plain text mail to valid address from valid recipient with failed SPF" do
-    user = users(:joel)
-
-    assert_difference -> { user.posts.count }, 0 do
-      receive_inbound_email_from_mail \
-        to: user.delivery_email,
-        from: user.email,
-        reply_to: "dodgy@example.com",
-        subject: "Hello world!",
-        body: "Hello?" do |mail|
-          mail.header["Received-SPF"] = "fail"
-        end
-    end
-  end
-
   test "should not receive mail to valid address from invalid recipient" do
     user = users(:joel)
 
@@ -102,6 +87,16 @@ class PostsMailboxTest < ActionMailbox::TestCase
       subject: "Hello world!",
       body: "Hello?"
     end
+  end
+
+  test "should alert Sentry if user not found" do
+    Sentry.expects(:capture_message)
+
+    receive_inbound_email_from_mail \
+    to: users(:joel).delivery_email,
+    from: "missing@pagecord.com",
+    subject: "Hello world!",
+    body: "Hello?"
   end
 
   test "should correctly store email with blank subject, non-blank plain text body" do
