@@ -8,7 +8,7 @@ module ApplicationHelper
     elsif @user.present?
       blog_description(@user)
     else
-      "Pagecord is a super-simple microblogging / blogging platform. You publish posts by sending an email. Share your thoughts effortlessly without the need for complex tools."
+      "Pagecord is the most effortless way to publish your writing online for free. Compose your writing in your favourite email editor and click send. That's it! Pagecord will publish it to your own minimalist website."
     end
   end
 
@@ -24,7 +24,7 @@ module ApplicationHelper
     elsif @user
       user_title(@user)
     else
-      "Pagecord - Effortless blogging from your inbox"
+      "Pagecord - Publish your writing effortlessly from your inbox"
     end
   end
 
