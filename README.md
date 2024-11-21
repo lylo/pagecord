@@ -64,3 +64,5 @@ DIR=tmp/emails rake email:load
 Read about [the Pagecord architecture](architecture.md) or [making contributions](CONTRIBUTIONS.md).
 
 Follow the [Pagecord blog](https://pagecord.com/pagecord).
+
+<a href="https://www.buymeacoffee.com/heyolly" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 178px !important;" ></a>
