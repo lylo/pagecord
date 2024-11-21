@@ -1,6 +1,6 @@
 # Pagecord
 
-A minimalist blogging app powered by email.
+Publish your writing effortlessly by sending an email.
 
 ![](https://github.com/lylo/pagecord/actions/workflows/ci.yml/badge.svg)
 
