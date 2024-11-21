@@ -15,10 +15,6 @@ class PostsMailbox < ApplicationMailbox
       Rails.logger.warn "Reply-To and From are inconsistent" and return
     end
 
-    if spf_present?(mail) && !spf_passed?(mail)
-      Rails.logger.warn "SPF failed" and return
-    end
-
     if user = User.kept.find_by(email: from, delivery_email: recipient)
       begin
         parser = MailParser.new(mail, process_attachments: user.subscribed?)
@@ -46,17 +42,5 @@ class PostsMailbox < ApplicationMailbox
     else
       raise "User not found. From: #{from}, To: #{recipient}"
     end
-  end
-
-  def spf_present?(mail)
-    mail.header_fields.any? { |field| field.name == "Received-SPF" }
-  end
-
-  def spf_passed?(mail)
-    mail.header_fields.any? { |field| field.name == "Received-SPF" && field.value.include?("pass") }
-  end
-
-  def dkim_passed?(mail)
-    mail.header_fields.any? { |field| field.name == "DKIM-Signature" }
   end
 end
