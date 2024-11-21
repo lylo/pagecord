@@ -11,4 +11,6 @@ At some I'd like to find one or two contributors to help out, especially with th
 
 Using Pagecord and buying a premium subscription is the obvious way to help out, and would be very much appreciated.
 
-Also, if there are any generous souls out there wishing to help fund the hosting please do get in touch!
+Or you can [buy me a coffee](https://buymeacoffee.com/heyolly) if you like! ☕️😊
+
+Also, if there are any generous souls out there wishing to help out with hosting please do get in touch!
