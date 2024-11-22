@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  rate_limit to: 5, within: 5.minutes, only: :create
+
   layout "home"
 
   def new

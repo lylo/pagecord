@@ -1,4 +1,6 @@
 class SignupsController < ApplicationController
+  rate_limit to: 1, within: 5.minutes, only: [ :create ]
+
   layout "home"
 
   def index
