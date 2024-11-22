@@ -18,6 +18,6 @@ class SignUpTest < ApplicationSystemTestCase
 
     visit verify_access_request_url(token: user.access_requests.last.token_digest)
 
-    assert_current_path app_posts_url
+    assert_current_path app_posts_path
   end
 end

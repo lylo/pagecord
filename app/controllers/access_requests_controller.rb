@@ -12,7 +12,7 @@ class AccessRequestsController < ApplicationController
 
       sign_in @user
 
-      redirect_to app_posts_url
+      redirect_to app_posts_path
     else
       redirect_to root_path
     end
