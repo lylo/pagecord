@@ -33,5 +33,8 @@ module Pagecord
     Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_tags += [ "s", "u" ]
 
     config.exceptions_app = self.routes
+
+    # ignore mismatches between HTTP_CLIENT_IP and HTTP_X_FORWARDED_FOR
+    # config.action_dispatch.ip_spoofing_check = false
   end
 end
