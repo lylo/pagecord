@@ -40,6 +40,7 @@ gem "postmark-rails"
 gem "premailer-rails", "~> 1.12"
 gem "nanoid", "~> 2.0"
 gem "rails_autolink"
+gem "whenever"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
