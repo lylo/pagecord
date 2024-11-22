@@ -47,6 +47,6 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     get app_posts_url, headers: { "HOST" => post.user.custom_domain }
 
-    assert_redirected_to root_url
+    assert_redirected_to root_url(host: post.user.custom_domain)
   end
 end

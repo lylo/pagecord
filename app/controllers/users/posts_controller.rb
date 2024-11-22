@@ -29,7 +29,9 @@ class Users::PostsController < ApplicationController
         User.kept.find_by(username: user_params[:username]) if user_params[:username].present?
       end
 
-      redirect_home if @user.nil?
+      if @user.nil?
+        redirect_to_app_home
+      end
     end
 
     def user_params
@@ -37,7 +39,7 @@ class Users::PostsController < ApplicationController
     end
 
     def verification
-      redirect_to root_path if !@user&.verified?
+      redirect_to root_path unless @user&.verified?
     end
 
     def user_from_custom_domain

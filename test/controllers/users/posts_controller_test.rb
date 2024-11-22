@@ -70,12 +70,12 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should redirect on index with unrecognised custom domain" do
+  test "should redirect to pagecord home page for unrecognised custom domain" do
     post = posts(:four)
 
     get "/#{post.token}", headers: { "HOST" => "gadzooks.com" }
 
-    assert_redirected_to "http://gadzooks.com/"
+    assert_redirected_to "http://www.example.com/"
   end
 
   test "should redirect from default domain username index to custom domain" do
