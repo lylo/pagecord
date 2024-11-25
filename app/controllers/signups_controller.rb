@@ -62,22 +62,19 @@ class SignupsController < ApplicationController
     def honeypot_check
       unless params[:email_confirmation].blank?
         Rails.logger.warn "Honeypot field completed. Bypassing signup"
-        head :ok
-        nil
+        head :unprocessable_entity
       end
     end
 
     def form_complete_time_check
-      if params[:rendered_at].present?
-        timestamp = params[:rendered_at].to_i
-        form_complete_time = Time.now.to_i - timestamp
-        Rails.logger.info "Form completed in #{form_complete_time} seconds"
+      head :unprocessable_entity if params[:rendered_at].blank?
 
-        if form_complete_time < 5.seconds
-          Rails.logger.warn "Form completed too quickly. Bypassing signup"
-          head :ok
-          nil
-        end
+      timestamp = params[:rendered_at].to_i
+      form_complete_time = Time.now.to_i - timestamp
+
+      if form_complete_time < 5.seconds
+        Rails.logger.warn "Form completed too quickly. Bypassing signup"
+        head :unprocessable_entity
       end
     end
 end
