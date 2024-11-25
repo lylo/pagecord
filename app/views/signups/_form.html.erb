@@ -7,6 +7,7 @@
   <div class="mt-4">
     <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "p-0 m-0 border-none bg-inherit outline-none focus:ring-0" %>
     <%= text_field_tag :email_confirmation, nil, class: "hidden" %>
+    <%= hidden_field_tag :rendered_at, Time.now.to_i %>
   </div>
 
   <% if ENV["TURNSTILE_ENABLED"] && !Rails.env.development? %>

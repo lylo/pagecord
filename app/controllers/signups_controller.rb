@@ -1,5 +1,7 @@
 class SignupsController < ApplicationController
-  # rate_limit to: 1, within: 5.minutes, only: [ :create ]
+  rate_limit to: 1, within: 5.minutes, only: [ :create ]
+
+  before_action :honeypot_check, :form_complete_time_check, only: [ :create ]
 
   layout "home"
 
@@ -12,12 +14,6 @@ class SignupsController < ApplicationController
   end
 
   def create
-    unless params[:email_confirmation].blank?
-      Rails.logger.warn "Honeypot field completed. Bypassing signup"
-      head :ok
-      return
-    end
-
     if ENV["TURNSTILE_ENABLED"]
       unless valid_turnstile_token?(params["cf-turnstile-response"])
         flash.now[:error] = "Please complete the security check"
@@ -61,5 +57,24 @@ class SignupsController < ApplicationController
     rescue HTTParty::Error => e
       Rails.logger.error "Turnstile verification failed: #{e.message}"
       false
+    end
+
+    def honeypot_check
+      unless params[:email_confirmation].blank?
+        Rails.logger.warn "Honeypot field completed. Bypassing signup"
+        head :unprocessable_entity
+      end
+    end
+
+    def form_complete_time_check
+      head :unprocessable_entity if params[:rendered_at].blank?
+
+      timestamp = params[:rendered_at].to_i
+      form_complete_time = Time.now.to_i - timestamp
+
+      if form_complete_time < 5.seconds
+        Rails.logger.warn "Form completed too quickly. Bypassing signup"
+        head :unprocessable_entity
+      end
     end
 end

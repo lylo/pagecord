@@ -6,6 +6,7 @@ class SignUpTest < ApplicationSystemTestCase
 
     fill_in "user[username]", with: "testuser"
     fill_in "user[email]", with: "test@example.com"
+    sleep 5 # anti-bot protection
     click_on "Create account"
 
     user = User.kept.find_by(email: "test@example.com")
