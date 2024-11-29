@@ -5,7 +5,7 @@ Pagecord isn't currently accepting contributions. The code is shared for curious
 
 Issues can be raised of course, thank you.
 
-At some I'd like to find one or two contributors to help out, especially with the hosting side of things. They would need to be active users and supporters of the product.
+At some point I'd like to find one or two contributors to help out, especially with the design/UX as well as the app hosting side of things. Would be great if they were active users of the product.
 
 ## Support the project
 
