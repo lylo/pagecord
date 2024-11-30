@@ -3,7 +3,7 @@ class SignupsController < ApplicationController
 
   before_action :honeypot_check, :form_complete_time_check, only: [ :create ]
 
-  layout "home"
+  layout "sessions"
 
   def index
     redirect_to new_signup_path

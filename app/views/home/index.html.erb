@@ -1,39 +1,50 @@
-<div class="prose dark:prose-invert mb-4 sm:mb-8 mx-auto">
-  <h1 class="text-center"><span class="text-4xl tracking-tight">Publish your writing effortlessly from your inbox</span></h1>
-  <p>
-    Publish your writing to a beautiful, minimalist website using your existing email account.
+<div class="prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-2xl">
+  <h1 class="text-center"><span class="text-4xl tracking-tight">The most effortless way to publish your writing online</span></h1>
+  <p class="mt-8 sm:mt-12">
+    Create your own beautiful, minimalist blog in seconds. For free.
   </p>
   <p>
-    Pagecord is great for long-form writing, but also for micro-blogging your thoughts.
-    Compose your writing in your email editor and click send. Pagecord does the rest.
+    Publish your writing effortlessly by sending an email, or using our delightfully simple editor.
   </p>
   <p>
-    Take a sneaky peek at <a href="https://pagecord.com/pagecord">the Pagecord blog</a> to see an example,
-    or watch the video below to see it in action.
+    Check out the <a href="https://pagecord.com/pagecord">Pagecord blog</a> to see it in action.
   </p>
 
   <div class="my-8 text-center not-prose">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Create your free Pagecord today!</div>
+      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing with Pagecord today!</div>
     <% end %>
   </div>
+</div>
 
-  <video class="w-full max-h-[500px] dark:border dark:border-slate-800 bg-black" controls poster="https://d1q3gzkzfltpo9.cloudfront.net/pagecord-intro-cover.jpg">
-    <source src="https://d1q3gzkzfltpo9.cloudfront.net/pagecord-intro-2.mp4"
-            type="video/mp4">
-    Sorry, your browser does not support the video tag 😭
-  </video>
+<div class="grid grid-cols-1 sm:grid-cols-2 py-4">
+  <figure class="dark:hidden">
+    <%= image_tag "home/screenshot-02.webp", alt: "Pagecord screenshot", class: "dark:hidden" %>
+  <%= image_tag "home/screenshot-02-dark.webp", alt: "Pagecord screenshot", class: "hidden dark:block" %>
+    <figcaption class="text-center text-slate-500 text-sm">
+      A beautiful, minimalist blog that looks great on any device
+    </figcaption>
+  </figure>
 
+  <figure class="dark:hidden mt-4 sm:mt-0">
+    <%= image_tag "home/screenshot-03.webp", alt: "Pagecord screenshot", class: "dark:hidden" %>
+    <%= image_tag "home/screenshot-03-dark.webp", alt: "Pagecord screenshot", class: "hidden dark:block" %>
+    <figcaption class="text-center text-slate-500 text-sm">
+      Publish new posts by sending an email, or using our delightfully simple editor
+    </figcaption>
+  </figure>
+</div>
 
+<div class="mt-12 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-2xl">
   <h2 class="text-center">Fun features. Unbeatable Value 😇</h2>
   <p>
     Pagecord is super-simple to use, but it's chock-a-block with great features.
   </p>
   <ul>
-    <li><strong>Bold, underline, lists or code</strong>. All your favourite email formatting is supported 🖋️</li>
-    <li><strong>Long-form writing or microblog</strong>. Write long-form articles with rich text, or microblog your thoughts. Both look fantastic 🎨</li>
+    <li><strong>Bold, underline, lists or code</strong>. Rich text formatting is fully supported 🖋️</li>
+    <li><strong>Long-form writing or microblog</strong>. Write long-form articles or microblog your thoughts. Both look fantastic 🎨</li>
     <li><strong>Media Embeds</strong>. Links to YouTube, Spotify and Bandcamp are automatically embedded. Great for sharing your favourite tunes and videos 🎧 📺</li>
-    <li><strong>Follow your friends</strong>. Follow other Pagecord sites and see the latest articles in your personal feed 🤝</li>
+    <li><strong>Follow your friends</strong>. Pagecord is social! Follow other Pagecord blogs and see the latest articles in your personal feed 🤝</li>
     <li><strong>RSS feeds</strong>. Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</li>
   </ul>
 
@@ -53,13 +64,12 @@
 
   <div class="mt-8 text-center not-prose">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Create your free Pagecord today!</div>
+      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing with Pagecord today!</div>
     <% end %>
   </div>
 
   <hr>
 
-  <h3 class="text-center tracking-tight">Subscribe to Pagecord updates</h3>
+  <h3 class="text-center tracking-tight">Subscribe to the newsletter for updates</h3>
   <%= render "newsletter_form" %>
-
 </div>
