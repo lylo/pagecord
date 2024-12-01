@@ -4,15 +4,11 @@ class App::PostsController < AppController
   before_action :requires_active_subscription, only: [ :edit, :create, :update ]
 
   def index
-    @pagy, @posts =  pagy(Current.user.posts.order(published_at: :desc), items: 15)
+    @pagy, @posts =  pagy(Current.user.posts.order(published_at: :desc), limit: 10)
   end
 
   def new
-    if Rails.env.production?
-      redirect_to app_posts_path
-    else
-      @post = Current.user.posts.build
-    end
+    @post = Current.user.posts.build
   end
 
   def edit

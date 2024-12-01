@@ -3,7 +3,7 @@ class App::FollowingsController < AppController
   include ActionView::RecordIdentifier
 
   def index
-    @pagy, @followees = pagy(Current.user.followees, items: 15)
+    @pagy, @followees = pagy(Current.user.followees, limit: 15)
   end
 
   def create

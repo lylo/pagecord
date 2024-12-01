@@ -8,6 +8,11 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
+  test "should get new post page" do
+    get new_app_post_url
+    assert_response :success
+  end
+
   test "should get root" do
     get app_root_url
     assert_response :success

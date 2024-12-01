@@ -8,7 +8,7 @@ module ApplicationHelper
     elsif @user.present?
       blog_description(@user)
     else
-      "Pagecord is the most effortless way to publish your writing online for free. Compose your writing in your favourite email editor and click send. That's it! Pagecord will publish it to your own minimalist website."
+      "Pagecord is the most effortless way to publish your writing online for free. Publish your writing by sending an email, or using our delightfully simple editor."
     end
   end
 

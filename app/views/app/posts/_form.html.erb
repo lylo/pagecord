@@ -1,17 +1,19 @@
 <%= form_with(model: [:app, @post]) do |form| %>
   <%= form.text_field :title, placeholder: "Optional post title", class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
 
-  <%= form.rich_text_area :content, placeholder: "Write your post...", class: "trix-content prose border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg", data: { controller: "autogrow" }%>
+  <%= form.rich_text_area :content, placeholder: "Write your post...", class: "trix-content prose border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg", data: { controller: "autogrow trix", subscribed: Current.user.subscribed? } %>
 
-  <div class="mt-4 font-bold">
-  <%= form.label :published_at %>
-  </div>
+  <% if @post.persisted? %>
+    <div class="mt-4 font-bold">
+    <%= form.label :published_at %>
+    </div>
 
-  <div class="mt-2">
-  <%= form.datetime_field :published_at,
-      value: @post.published_at&.strftime('%Y-%m-%dT%H:%M'),
-      class: "dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
-  </div>
+    <div class="mt-2">
+    <%= form.datetime_field :published_at,
+        value: @post.published_at&.strftime('%Y-%m-%dT%H:%M'),
+        class: "dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+    </div>
+  <% end %>
 
   <%= form.submit class: "mt-8 btn-primary" %>
   <%= link_to "Cancel", app_posts_path, class: "btn-secondary" %>
