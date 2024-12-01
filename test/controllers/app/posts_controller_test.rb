@@ -4,7 +4,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
   setup do
-    @user = users(:joel)
+    @user = users(:vivian)
     login_as @user
   end
 
@@ -21,6 +21,18 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should get posts index" do
     get app_posts_url
     assert_response :success
+  end
+
+  test "should create post" do
+    assert_difference("@user.posts.count") do
+      post app_posts_url, params: {
+        post: { title: "New Post", content: "New content" }
+      }
+    end
+
+    assert_redirected_to app_posts_url
+    assert_equal "New Post", @user.posts.last.title
+    assert_equal "New content", @user.posts.last.content.to_s.strip
   end
 
   test "should destroy post" do
