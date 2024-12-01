@@ -1,10 +1,10 @@
 <div class="prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-2xl">
   <h1 class="text-center"><span class="text-4xl tracking-tight">The most effortless way to publish your writing online</span></h1>
   <p class="mt-8 sm:mt-12">
-    Create your own beautiful, minimalist blog in seconds. For free.
+    Create your own beautifully minimalist blog in seconds. For free!
   </p>
   <p>
-    Publish your writing effortlessly by sending an email, or using our delightfully simple editor.
+    Publish your writing effortlessly by sending an email, or use our delightfully simple editor.
   </p>
   <p>
     Check out the <a href="https://pagecord.com/pagecord">Pagecord blog</a> to see it in action.
@@ -18,19 +18,19 @@
 </div>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 py-4">
-  <figure class="dark:hidden">
+  <figure>
     <%= image_tag "home/screenshot-02.webp", alt: "Pagecord screenshot", class: "dark:hidden" %>
-  <%= image_tag "home/screenshot-02-dark.webp", alt: "Pagecord screenshot", class: "hidden dark:block" %>
-    <figcaption class="text-center text-slate-500 text-sm">
-      A beautiful, minimalist blog that looks great on any device
+    <%= image_tag "home/screenshot-02-dark.webp", alt: "Pagecord screenshot", class: "hidden dark:block" %>
+    <figcaption class="text-center text-slate-500 text-sm px-8">
+      A beautiful, minimalist blog that looks great on any device. Light or dark mode.
     </figcaption>
   </figure>
 
-  <figure class="dark:hidden mt-4 sm:mt-0">
+  <figure class="mt-4 sm:mt-0">
     <%= image_tag "home/screenshot-03.webp", alt: "Pagecord screenshot", class: "dark:hidden" %>
     <%= image_tag "home/screenshot-03-dark.webp", alt: "Pagecord screenshot", class: "hidden dark:block" %>
-    <figcaption class="text-center text-slate-500 text-sm">
-      Publish new posts by sending an email, or using our delightfully simple editor
+    <figcaption class="text-center text-slate-500 text-sm px-8">
+      Publish new posts by sending an email, or use our delightfully simple editor
     </figcaption>
   </figure>
 </div>
@@ -41,15 +41,15 @@
     Pagecord is super-simple to use, but it's chock-a-block with great features.
   </p>
   <ul>
-    <li><strong>Bold, underline, lists or code</strong>. Rich text formatting is fully supported 🖋️</li>
     <li><strong>Long-form writing or microblog</strong>. Write long-form articles or microblog your thoughts. Both look fantastic 🎨</li>
+    <li><strong>Bold, underline, lists or code</strong>. Rich text formatting is fully supported 🖋️</li>
     <li><strong>Media Embeds</strong>. Links to YouTube, Spotify and Bandcamp are automatically embedded. Great for sharing your favourite tunes and videos 🎧 📺</li>
     <li><strong>Follow your friends</strong>. Pagecord is social! Follow other Pagecord blogs and see the latest articles in your personal feed 🤝</li>
     <li><strong>RSS feeds</strong>. Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</li>
   </ul>
 
-  <p>
-    Premium customers get additional features and a warm fuzzy feeling for an unbeatable price of only <strong>$<%= Subscription.price %> per year</strong>!
+  <p class="mt-8">
+    Premium customers get additional features and a warm fuzzy feeling for an unbeatable price of only <span class="px-1 font-bold bg-[#fcc7c7] dark:bg-[#ff5f5f] dark:text-white rounded">$<%= Subscription.price %> per year!</span>
   </p>
   <ul>
     <li><strong>Image Attachments</strong>. Attach images to your email and they'll auto-magically appear in your posts 🪄</li>

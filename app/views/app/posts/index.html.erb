@@ -7,33 +7,34 @@
         </div>
       <% else %>
         <%= render "app/shared/callout" do %>
-          You have written <%= pluralize @pagy.count, "post" %>, listed below. Click the trash icon next to a post to delete it.
+          You have written <%= pluralize @pagy.count, "post" %>. Click on the title to edit an existing post,
+          or <%= link_to "create a new post", new_app_post_path, class: "font-medium underline" %>
         <% end %>
       <% end %>
     </p>
 
+    <div class="text-end mb-4">
+      <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
+    </div>
+
     <% @posts.each do |post| %>
-      <div class="px-2 py-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg break-words">
-        <div class="font-semibold">
-          <%= link_to post_path(post), title: "Click to view this post" do %>
-            <%= post_title(post) %>
-          <% end %>
-        </div>
-        <div class="text-xs text-slate-400 dark:text-slate-400 flex justify-between items-center">
-          <div>
+      <div class="flex gap-x-4 justify-between px-4 py-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg break-words">
+        <div class="flex flex-col">
+          <div class="font-semibold">
+            <%= link_to edit_app_post_path(post), title: "Click to edit this post" do %>
+              <%= post_title(post) %>
+            <% end %>
+          </div>
+
+          <div class="text-xs text-slate-400 dark:text-slate-400 flex justify-between items-center">
             <%= post.published_at.to_formatted_s(:long) %>
           </div>
-          <div class="flex ms-2 gap-x-2">
-            <% if Current.user.subscribed? %>
-              <%= link_to edit_app_post_path(post), title: "Edit this post" do %>
-                <%= inline_svg_tag "icons/edit.svg", class: "w-4 h-4" %>
-              <% end %>
-            <% end %>
+        </div>
 
-            <%= button_to app_post_path(post), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this post?"}, title: "Trash this post" do %>
-              <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
-            <% end %>
-          </div>
+        <div class="text-slate-400 dark:text-slate-400 ">
+          <%= link_to post_path(post), title: "View this post" do %>
+            <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
+          <% end %>
         </div>
       </div>
     <% end %>

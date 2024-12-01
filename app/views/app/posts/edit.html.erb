@@ -1,3 +1,9 @@
-<div class="font-bold text-xl mb-8">Edit post</div>
+<div class="flex justify-between items-center mb-8">
+  <h2 class="font-bold text-xl">Edit post</h2>
+
+  <%= button_to app_post_path(@post), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this post?"}, title: "Trash this post" do %>
+    <%= inline_svg_tag "icons/trash.svg", class: "w-5 h-5" %>
+  <% end %>
+</div>
 
 <%= render "form" %>

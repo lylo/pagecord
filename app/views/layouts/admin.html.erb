@@ -23,7 +23,7 @@
       </div>
     </main>
 
-    <footer class="p-8 flex flex-col w-full text-center">
+    <footer class="mt-4 p-8 flex flex-col w-full text-center">
       <div class="flex gap-x-4 justify-center items-center">
         <% if Current.user.is_admin? %>
          <%= link_to "Stats", admin_stats_path, class: "text-sm font-semibold hover:underline dark:text-slate-200" %>

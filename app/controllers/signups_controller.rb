@@ -10,7 +10,7 @@ class SignupsController < ApplicationController
   end
 
   def new
-    @user = User.new
+    @user = User.new(marketing_consent: true)
   end
 
   def create

@@ -5,6 +5,6 @@ class Admin::StatsController < AdminController
     @pagy, @users = pagy(User.select("users.*, COUNT(posts.id) AS posts_count")
                           .left_outer_joins(:posts)
                           .group("users.id")
-                          .order(created_at: :desc), items: 15)
+                          .order(created_at: :desc), limit: 15)
   end
 end
