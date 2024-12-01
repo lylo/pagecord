@@ -25,6 +25,9 @@ trix-toolbar .trix-button-group:not(:first-child) {
   display: inline;
 }
 
+.trix-content h1 strong {
+  font-weight: bold;
+}
 
 /* Tailwind */
 
@@ -52,6 +55,18 @@ trix-toolbar .trix-button-group:not(:first-child) {
       @apply mb-4;
     }
 
+    h1:not(.title) {
+      @apply text-xl mb-0;
+
+      strong {
+        @apply font-bold;
+      }
+    }
+
+    h1.title {
+      @apply text-3xl;
+    }
+
     img {
       @apply rounded-lg;
     }
@@ -75,10 +90,6 @@ trix-toolbar .trix-button-group:not(:first-child) {
       @apply my-2;
     }
 
-    h1 {
-      @apply mt-0 mb-6 text-3xl;
-    }
-
     pre {
       @apply my-2;
     }
@@ -86,10 +97,6 @@ trix-toolbar .trix-button-group:not(:first-child) {
 
   blockquote {
     @apply my-2;
-  }
-
-  h1 {
-    @apply mt-0 mb-6 text-3xl;
   }
 
   trix-toolbar {
