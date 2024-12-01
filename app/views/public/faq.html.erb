@@ -7,10 +7,15 @@
   <p>
     <%= link_to "Create an account", new_signup_path %> by choosing a username and supplying your email address. Once you verify
     your email, you'll receive a secret email address. Emails sent to this secret address from the email address you give us will
-    appear as posts on your Pagecord page.
+    appear as posts on your Pagecord page. If you prefer, you can log in to your account and create posts directly in the app.
   </p>
   <p>
     Your Pagecord page is a public profile that anyone can view. It looks like <a href="https://pagecord.com/pagecord">https://pagecord.com/pagecord</a>.
+  </p>
+
+  <h3>Is there a way of creating posts without sending an email?</h3>
+  <p>
+    Yes! Log into your account and click the <strong>New Post</strong> button to use our delightful in-app editor! ✍️
   </p>
 
   <h3>Do I own the content that I post?</h3>
@@ -39,18 +44,14 @@
     embed the media in the post.
   </p>
 
-  <h3>How do I delete a post?</h3>
-  <p>
-    <%= link_to "Log in", login_path  %> to your account and you'll see a list of posts. Click the trash icon next
-    to a post to delete it.
-  </p>
-
   <h3>How can I edit a post?</h3>
   <p>
-    Premium customers can <%= link_to "log in", login_path  %> and click the edit icon next to a post to edit it.
+    <%= link_to "Log in", login_path  %> and click the post title to edit the post.
   </p>
+
+  <h3>How do I delete a post?</h3>
   <p>
-    Free customers can <%= link_to "log in", login_path %>, delete the post and send another email with the correct copy.
+    <%= link_to "Log in", login_path  %> to your account and you'll see a list of posts. Click the title to edit the post, then click the trash icon to delete it.
   </p>
 
   <h3>Can I make a post without a title?</h3>
@@ -60,7 +61,7 @@
 
   <h3>Can I export my posts</h3>
   <p>
-    Not at the moment. They will all be in the Sent Items folder of your email account though 👌
+    Not at the moment. If you blog by email (our preferred way), they will all be in the Sent Items folder of your email account 👌
   </p>
 
   <h3>Does Pagecord support RSS?</h3>
