@@ -1,7 +1,7 @@
 require "test_helper"
 require "minitest/autorun"
 
-class SubscriptionsControllerTest < ActionDispatch::IntegrationTest
+class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
   setup do
@@ -10,12 +10,12 @@ class SubscriptionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    get app_subscriptions_path
+    get app_settings_subscriptions_path
     assert_response :success
   end
 
   test "should get thanks" do
-    get thanks_app_subscriptions_path
+    get thanks_app_settings_subscriptions_path
     assert_response :success
   end
 
@@ -24,15 +24,15 @@ class SubscriptionsControllerTest < ActionDispatch::IntegrationTest
     paddle_api_mock.expect :cancel_subscription, true, [ @user.subscription.paddle_subscription_id ]
 
     PaddleApi.stub :new, paddle_api_mock do
-      delete app_subscription_url(@user.subscription)
+      delete app_settings_subscription_url(@user.subscription)
     end
 
-    assert_redirected_to app_account_path
+    assert_redirected_to app_settings_path
     assert @user.subscription.reload.cancelled?
   end
 
   test "should get cancel_confirm" do
-    get cancel_confirm_app_subscriptions_path
+    get cancel_confirm_app_settings_subscriptions_path
     assert_response :success
   end
 end

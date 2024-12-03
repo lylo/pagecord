@@ -1,6 +1,6 @@
 require "test_helper"
 
-class App::UsersControllerTest < ActionDispatch::IntegrationTest
+class App::Settings::UsersControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
   setup do
@@ -11,7 +11,7 @@ class App::UsersControllerTest < ActionDispatch::IntegrationTest
   test "delete account" do
     assert_performed_jobs 1 do
       assert_difference("User.kept.count", -1) do
-        delete app_user_url(@user)
+        delete app_settings_user_url(@user)
       end
     end
 
@@ -21,22 +21,22 @@ class App::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update user bio" do
-    patch app_user_url(@user), params: { user: { bio: "New bio" } }, as: :turbo_stream
+    patch app_settings_user_url(@user), params: { user: { bio: "New bio" } }, as: :turbo_stream
 
-    assert_response :success
+    assert_redirected_to app_settings_url
     assert_equal "New bio", @user.reload.bio.to_plain_text
   end
 
   test "should update user custom domain" do
-    patch app_user_url(@user), params: { user: { custom_domain: "newdomain.com" } }, as: :turbo_stream
+    patch app_settings_user_url(@user), params: { user: { custom_domain: "newdomain.com" } }, as: :turbo_stream
 
-    assert_response :success
+    assert_redirected_to app_settings_url
     assert_equal "newdomain.com", @user.reload.custom_domain
   end
 
   test "should call hatchbox when adding custom domain" do
     assert_performed_jobs 1 do
-      patch app_user_url(@user), params: { user: { custom_domain: "newdomain.com" } }, as: :turbo_stream
+      patch app_settings_user_url(@user), params: { user: { custom_domain: "newdomain.com" } }, as: :turbo_stream
     end
   end
 
@@ -45,19 +45,19 @@ class App::UsersControllerTest < ActionDispatch::IntegrationTest
     login_as user
 
     assert_performed_jobs 1 do
-      patch app_user_url(user), params: { user: { custom_domain: "" } }, as: :turbo_stream
+      patch app_settings_user_url(user), params: { user: { custom_domain: "" } }, as: :turbo_stream
     end
   end
 
   test "should not call hatchbox if nil custom domain is changed to empty string" do
     assert_performed_jobs 0 do
-      patch app_user_url(@user), params: { user: { custom_domain: "" } }, as: :turbo_stream
+      patch app_settings_user_url(@user), params: { user: { custom_domain: "" } }, as: :turbo_stream
     end
   end
 
   test "should not call hatchbox if custom domain is changed to same value" do
     assert_performed_jobs 0 do
-      patch app_user_url(users(:annie)), params: { user: { custom_domain: users(:annie).custom_domain } }, as: :turbo_stream
+      patch app_settings_user_url(users(:annie)), params: { user: { custom_domain: users(:annie).custom_domain } }, as: :turbo_stream
     end
   end
 

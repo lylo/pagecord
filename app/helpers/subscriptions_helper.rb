@@ -9,7 +9,7 @@ module SubscriptionsHelper
     {
       items: paddle_data_items,
       allow_logout: false,
-      success_url: thanks_app_subscriptions_url,
+      success_url: thanks_app_setings_subscriptions_url,
       custom_data: { user_id: Current.user.id }.to_json
     }
   end

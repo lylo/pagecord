@@ -1,0 +1,14 @@
+<h3 class="mb-4 font-bold text-xl">Danger Zone</h3>
+<p>
+  You can delete your account by clicking the button below. Sorry to see you go!
+</p>
+
+<div class="mt-4 flex items-center">
+  <%= button_to app_settings_user_path(@user),
+        method: :delete,
+        data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
+        class: "btn-danger" do %>
+    Delete account
+  <% end %>
+  <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+</div>

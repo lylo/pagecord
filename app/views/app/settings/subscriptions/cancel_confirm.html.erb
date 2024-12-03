@@ -10,9 +10,9 @@
     </p>
 
     <div class="flex items-center mt-8">
-      <%= button_to "I understand. Cancel my subscription", app_subscription_path(@subscription), method: :delete, class: "btn btn-danger", data: { turbo_confirm: "Are you absolutely sure?" } %>
+      <%= button_to "I understand. Cancel my subscription", app_settings_subscription_path(@subscription), method: :delete, class: "btn btn-danger", data: { turbo_confirm: "Are you absolutely sure?" } %>
 
-      <%= link_to "I don't want to cancel", app_account_path, class: "ms-4 text-sm font-medium underline" %>
+      <%= link_to "I don't want to cancel", app_settings_path, class: "ms-4 text-sm font-medium underline" %>
     </div>
   </div>
 </div>

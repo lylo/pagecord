@@ -9,9 +9,7 @@
 
         <option data-path="<%= app_followings_path%>"  <% if is_current_path?("followings") %> selected <% end %>>Followers</option>
 
-        <option data-path="<%= app_account_path %>"  <% if is_current_path?("account") %> selected <% end %>>Account</option>
-
-        <option data-path="<%= app_subscriptions_path %>"  <% if is_current_path?("subscriptions") %> selected <% end %>>Billing</option>
+        <option data-path="<%= app_settings_path %>"  <% if is_current_path?("account") %> selected <% end %>>Settings</option>
       </select>
     </div>
 
@@ -28,10 +26,7 @@
             <%= link_to "Follows", app_followings_path, class: nav_class_for("followings") %>
           </li>
           <li>
-            <%= link_to "Account", app_account_path, class: nav_class_for("account") %>
-          </li>
-          <li>
-            <%= link_to "Billing", app_subscriptions_path, class: nav_class_for("subscriptions"), data: { turbo: false } %>
+            <%= link_to "Settings", app_settings_path, class: nav_class_for("settings") %>
           </li>
         </ul>
       </nav>

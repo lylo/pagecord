@@ -1,6 +1,6 @@
 <div class="flex flex-col sm:flex-row items-center text-center justify-center gap-2 p-2 bg-slate-800 dark:bg-slate-700 text-sm text-white font-medium">
   <div>
-    <%= link_to "Upgrade to premium", app_subscriptions_path, class: "underline", data: { turbo: false } %> and access all the features for only $<%= Subscription.price%>/year! ✨
+    <%= link_to "Upgrade to premium", app_settings_subscriptions_path, class: "underline", data: { turbo: false } %> and access all the features for only $<%= Subscription.price%>/year! ✨
   </div>
   <div>
     Or <%= link_to "buy me a coffee", "https://buymeacoffee.com/heyolly", class: "underline" %> ☕️

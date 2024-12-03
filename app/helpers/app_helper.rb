@@ -1,6 +1,6 @@
 module AppHelper
   def is_current_path?(path)
-    controller_name =~ /#{path}/
+    request.path.include?(path)
   end
 
   def nav_class_for(path)

@@ -1,4 +1,4 @@
-class App::SubscriptionsController < AppController
+class App::Settings::SubscriptionsController < AppController
   before_action :load_subscription, only: [ :index, :destroy, :cancel_confirm ]
 
   def index
@@ -16,11 +16,11 @@ class App::SubscriptionsController < AppController
       @subscription.update!(cancelled_at: Time.current)
     end
 
-    redirect_to app_account_path
+    redirect_to app_settings_path
   end
 
   def cancel_confirm
-    redirect_to app_account_path if @subscription.blank? || @subscription.cancelled?
+    redirect_to app_settings_path if @subscription.blank? || @subscription.cancelled?
   end
 
   private

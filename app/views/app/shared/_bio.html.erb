@@ -1,5 +1,5 @@
 <div class="mt-8">
-  <%= form_with url: app_user_path(Current.user), model: Current.user, data: { controller: "vanish" } do |form| %>
+  <%= form_with url: app_user_path(Current.user), model: Current.user do |form| %>
     <div>
       <h3 class="font-bold text-lg mb-2">Bio</h3>
 
@@ -7,8 +7,7 @@
     </div>
 
     <div class="mt-2 flex justify-between">
-      <div id="form-response" data-vanish-target="response" class="text-sm me-1"></div>
-      <%= form.submit "Update", class: "underline text-sm font-semibold cursor-pointer", data: { action: "click->vanish#show" } %>
+      <%= form.submit "Update", class: "underline text-sm font-semibold cursor-pointer" %>
     </div>
   <% end %>
 </div>

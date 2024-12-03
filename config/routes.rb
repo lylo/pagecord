@@ -77,18 +77,28 @@ Rails.application.routes.draw do
 
   namespace :app do
     resources :posts
-    resources :users, only: [ :update, :destroy ] do
+
+    resources :settings, only: [ :index ]
+
+    namespace :settings do
+      resources :users, only: [ :edit, :update, :destroy ]
+
+      get "/account/edit", to: "account#edit"
+
+      resources :subscriptions, only: [ :index, :destroy ] do
+        get :thanks, on: :collection
+        get :cancel_confirm, on: :collection
+      end
+    end
+
+    resources :users do
       post :follow, to: "followings#create"
       delete :unfollow, to: "followings#destroy"
     end
+
     resources :followings, only: [ :index ]
 
     get "/account", to: "account#index"
-
-    resources :subscriptions, only: [ :index, :destroy ] do
-      get :thanks, on: :collection
-      get :cancel_confirm, on: :collection
-    end
 
     get "/feed", to: "feed#index"
     get "/feed/rss/:token", to: "feed#private_rss", as: :private_rss_feed, format: :rss

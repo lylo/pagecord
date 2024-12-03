@@ -37,9 +37,11 @@
     </p>
 
     <div class="mt-2 flex justify-between" data-controller="paddle">
-      <%= link_to "Update Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "btn-primary" %>
-      <%= link_to "Cancel Subscription", cancel_confirm_app_subscriptions_path, class: "btn-danger" %>
+      <%= link_to "Update Card Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "btn-primary" %>
+      <%= link_to "Cancel Subscription", cancel_confirm_app_settings_subscriptions_path, class: "btn-danger" %>
     </div>
+
+    <%= link_to "← Back", app_settings_path, class: "btn-secondary" %>
   <% end %>
 <% else %>
   <p>

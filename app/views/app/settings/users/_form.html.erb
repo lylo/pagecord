@@ -1,4 +1,4 @@
-<%= form_with url: app_user_path(@user), model: @user do |form| %>
+<%= form_with url: app_settings_user_path(@user), model: @user, data: { turbo: false } do |form| %>
   <div>
     <h3 class="font-bold text-lg mb-2">Bio</h3>
 
@@ -43,13 +43,11 @@
         To remove your custom domain, clear the box above and click Update. Don't forget to remove the records from your DNS!
       </p>
     <% end %>
-
-  </div>
   <% end %>
 
-  <div class="mt-8 flex items-center">
-    <%= form.submit "Update", class: "btn-primary", data: { action: "click->vanish#show" } %>
 
-    <div id="form-response" data-vanish-target="response" class="ms-4"></div>
+  <div class="mt-8 flex items-center">
+    <%= form.submit "Update", class: "btn-primary" %>
+    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
   </div>
 <% end %>

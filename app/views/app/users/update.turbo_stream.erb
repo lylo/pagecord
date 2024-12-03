@@ -1,9 +1,0 @@
-<%= turbo_stream.update "user_form" do %>
-  <%= render partial: "/app/account/form" %>
-<% end %>
-
-<% if @user.valid? %>
-  <%= turbo_stream.update "form-response" do %>
-    <%= render partial: "form_response", locals: { message: "✅ Saved!" } %>
-  <% end %>
-<% end %>

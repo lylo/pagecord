@@ -1,7 +1,6 @@
-require "httparty"
-
-class App::UsersController < AppController
-  before_action :load_user
+class App::Settings::UsersController < AppController
+  def edit
+  end
 
   def update
     if @user.update(user_params)
@@ -12,6 +11,10 @@ class App::UsersController < AppController
           RemoveCustomDomainJob.perform_later(@user.id, @user.custom_domain_previously_was)
         end
       end
+
+      redirect_to app_settings_path, notice: "Appearance settings updated"
+    else
+      render :edit
     end
   end
 
@@ -22,10 +25,6 @@ class App::UsersController < AppController
   end
 
   private
-
-    def load_user
-      @user = Current.user
-    end
 
     def user_params
       if @user.subscribed?
