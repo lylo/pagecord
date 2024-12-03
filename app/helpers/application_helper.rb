@@ -71,20 +71,13 @@ module ApplicationHelper
     end
 
     def post_summary(post)
-      summary = sanitized_content(post)
+      summary = post.content.to_plain_text
       if summary.blank?
         "Untitled"
       else
-        summary.strip
+        strip_links summary
       end
     end
-
-    def sanitized_content(post)
-      coder = HTMLEntities.new
-      stripped_content = strip_tags(post.content.to_s)
-      coder.decode(stripped_content).truncate(140)
-    end
-
 
     def blog_description(user)
       if user.bio.present?
@@ -92,5 +85,11 @@ module ApplicationHelper
       else
         user_title(user)
       end
+    end
+
+  private
+
+    def strip_links(string)
+      string.gsub(/https?:\/\/\S+/, "")
     end
 end
