@@ -2,11 +2,11 @@ joel:
   email: joel@pagecord.com
   username: joel
   delivery_email: joel_gf35jsue@post.pagecord.com
-  bio: |
+  verified: true
+  bio_text: |
     Photographer
 
     https://pagecord.com/joel
-  verified: true
 
 elliot:
   email: elliot@pagecord.com

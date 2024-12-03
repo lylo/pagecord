@@ -12,7 +12,8 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true, length: { minimum: Username::MIN_LENGTH, maximum: Username::MAX_LENGTH }
   validate  :username_valid
 
-  validates :bio, length: { maximum: 512 }
+  has_rich_text :bio
+  validate :bio_length
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :custom_domain, uniqueness: true, allow_blank: true, format: { with: /\A(?!:\/\/)([a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}\z/ }
@@ -68,6 +69,12 @@ class User < ApplicationRecord
     def username_valid
       unless Username.valid_format?(username)
         errors.add(:username, "must only use alphanumeric characters, full stops (periods) or underscores")
+      end
+    end
+
+    def bio_length
+      if bio.to_plain_text.length > 500
+        errors.add(:bio, "is too long (maximum 500 characters)")
       end
     end
 end
