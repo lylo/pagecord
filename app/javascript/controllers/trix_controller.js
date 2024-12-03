@@ -11,6 +11,12 @@ export default class extends Controller {
           e.preventDefault()
           alert("Attachments are only available for paying customers")
         })
+
+        // Prevent pasting attachments
+        editor.addEventListener("trix-attachment-add", (e) => {
+          e.attachment.remove()
+          alert("Attachments are only available for paying customers")
+        })
       }
    })
   }

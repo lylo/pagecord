@@ -35,6 +35,20 @@ trix-editor {
   max-width: 100% !important;
 }
 
+.trix-minimal {
+  .trix-button-group:not(.trix-button-group--text-tools),
+  .trix-button--icon-strike,
+  .trix-button--icon-color {
+    display: none;
+  }
+}
+
+.trix-no-attachments {
+  .trix-button--icon-attach {
+    display: none;
+  }
+}
+
 /* trix-editor figure {
   margin-bottom: 1.5rem !important;
 } */
