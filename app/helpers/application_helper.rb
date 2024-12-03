@@ -75,7 +75,7 @@ module ApplicationHelper
       if summary.blank?
         "Untitled"
       else
-        strip_links summary
+        strip_links(summary).truncate(140)
       end
     end
 
