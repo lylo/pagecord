@@ -24,7 +24,7 @@ class App::UsersControllerTest < ActionDispatch::IntegrationTest
     patch app_user_url(@user), params: { user: { bio: "New bio" } }, as: :turbo_stream
 
     assert_response :success
-    assert_equal "New bio", @user.reload.bio
+    assert_equal "New bio", @user.reload.bio.to_plain_text
   end
 
   test "should update user custom domain" do
