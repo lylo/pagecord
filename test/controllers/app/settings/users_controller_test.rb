@@ -8,6 +8,25 @@ class App::Settings::UsersControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
+  test "should get index" do
+    get app_settings_users_url
+
+    assert_select "h3", { count: 1, text: "Bio" }
+    assert_select "h3", { count: 1, text: "Title" }
+    assert_select "h3", { count: 1, text: "Custom Domain" }
+    assert_response :success
+  end
+
+  test "should not show title or custom doamin if not subscribed" do
+    login_as users(:vivian)
+
+    get app_settings_users_url
+
+    assert_select "h3", { count: 0, text: "Title" }
+    assert_select "h3", { count: 0, text: "Custom Domain" }
+    assert_response :success
+  end
+
   test "delete account" do
     assert_performed_jobs 1 do
       assert_difference("User.kept.count", -1) do

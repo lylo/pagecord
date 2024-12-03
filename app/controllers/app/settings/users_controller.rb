@@ -14,7 +14,7 @@ class App::Settings::UsersController < AppController
 
       redirect_to app_settings_path, notice: "Appearance settings updated"
     else
-      render :edit
+      render :index
     end
   end
 

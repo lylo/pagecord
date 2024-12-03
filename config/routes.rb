@@ -81,7 +81,7 @@ Rails.application.routes.draw do
     resources :settings, only: [ :index ]
 
     namespace :settings do
-      resources :users, only: [ :edit, :update, :destroy ]
+      resources :users, only: [ :index, :update, :destroy ]
 
       get "/account/edit", to: "account#edit"
 
