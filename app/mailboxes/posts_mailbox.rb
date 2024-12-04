@@ -16,7 +16,6 @@ class PostsMailbox < ApplicationMailbox
     end
 
     if blog = Blog.joins(:user).find_by(user: { email: from }, delivery_email: recipient)
-      # if user = User.kept.find_by(email: from, delivery_email: recipient)
       begin
         parser = MailParser.new(mail, process_attachments: blog.user.subscribed?)
         unless parser.is_blank?
@@ -29,8 +28,7 @@ class PostsMailbox < ApplicationMailbox
           end
 
           Rails.logger.info "Creating post from user: #{blog.user.id}"
-          blog.user.blog.posts.create!(
-            blog: blog,
+          blog.posts.create!(
             title: title,
             content: content,
             raw_content: mail.raw_source,
