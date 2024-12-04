@@ -3,7 +3,9 @@ class AddBlogIdToCustomDomainChanges < ActiveRecord::Migration[8.1]
     add_reference :custom_domain_changes, :blog, foreign_key: true
 
     CustomDomainChange.find_each do |change|
-      change.update!(blog: change.user.blog)
+      user = User.find(change.user_id)
+      change.blog_id = user.blog.id
+      change.save!
     end
 
     change_column_null :custom_domain_changes, :blog_id, false
