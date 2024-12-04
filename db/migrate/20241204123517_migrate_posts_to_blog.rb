@@ -3,7 +3,8 @@ class MigratePostsToBlog < ActiveRecord::Migration[8.1]
     add_reference :posts, :blog, foreign_key: true
 
     Post.find_each do |post|
-      post.blog = post.user.blog
+      user = User.find(post.user_id)
+      post.blog = user.blog
       post.save!
     end
 

@@ -7,6 +7,7 @@ class User < ApplicationRecord
 
   has_one :blog, dependent: :destroy
   has_many :access_requests, dependent: :destroy
+  has_rich_text :bio
 
   validates :username, presence: true, uniqueness: true, length: { minimum: Username::MIN_LENGTH, maximum: Username::MAX_LENGTH }
   validate  :username_valid
