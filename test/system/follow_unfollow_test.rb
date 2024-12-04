@@ -2,8 +2,8 @@ require "application_system_test_case"
 
 class FollowsTest < ApplicationSystemTestCase
   setup do
-    @user1 = users(:joel)
-    @user2 = users(:vivian)
+    @joel = users(:joel)
+    @vivian = users(:vivian)
     @perform_jobs = ActiveJob::Base.queue_adapter.perform_enqueued_jobs
   end
 
@@ -16,38 +16,38 @@ class FollowsTest < ApplicationSystemTestCase
 
     visit login_path
 
-    fill_in "user[username]", with: @user1.username
-    fill_in "user[email]", with: @user1.email
+    fill_in "user[username]", with: @vivian.username
+    fill_in "user[email]", with: @vivian.email
 
     click_on "Login"
 
-    visit verify_access_request_url(token: @user1.access_requests.last.token_digest)
+    visit verify_access_request_url(token: @vivian.access_requests.last.token_digest)
 
     # Go to user2's page
-    visit user_posts_path(username: @user2.username)
+    visit user_posts_path(username: @joel.username)
 
     # Follow user2
-    within("turbo-frame##{dom_id(@user2)}-follow-button") do
+    within("turbo-frame##{dom_id(@joel)}-follow-button") do
       click_on "Follow"
     end
 
     # Check that the button now says "Unfollow"
-    within("turbo-frame##{dom_id(@user2)}-follow-button") do
+    within("turbo-frame##{dom_id(@joel)}-follow-button") do
       assert_text "Unfollow"
     end
 
-    assert @user1.following?(@user2)
+    assert @vivian.following?(@joel)
 
     # Unfollow user2
-    within("turbo-frame##{dom_id(@user2)}-follow-button") do
+    within("turbo-frame##{dom_id(@joel)}-follow-button") do
       click_on "Unfollow"
     end
 
     # Check that the button now says "Follow"
-    within("turbo-frame##{dom_id(@user2)}-follow-button") do
+    within("turbo-frame##{dom_id(@joel)}-follow-button") do
       assert_text "Follow"
     end
 
-    assert_not @user1.following?(@user2)
+    assert_not @vivian.following?(@joel)
   end
 end
