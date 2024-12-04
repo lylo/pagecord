@@ -6,7 +6,7 @@ class Users::PostsController < ApplicationController
   before_action :load_user, :verification, :enforce_custom_domain
 
   def index
-    @pagy, @posts = pagy(@user.posts.order(published_at: :desc))
+    @pagy, @posts = pagy(@user.blog.posts.order(published_at: :desc))
 
     respond_to do |format|
       format.html
@@ -15,7 +15,7 @@ class Users::PostsController < ApplicationController
   end
 
   def show
-    @post = @user.posts.find_by!(token: user_params[:token])
+    @post = @user.blog.posts.find_by!(token: user_params[:token])
 
     fresh_when @post
   end

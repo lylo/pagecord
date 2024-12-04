@@ -2,22 +2,22 @@ class App::PostsController < AppController
   include Pagy::Backend
 
   def index
-    @pagy, @posts =  pagy(Current.user.posts.order(published_at: :desc), limit: 10)
+    @pagy, @posts =  pagy(Current.user.blog.posts.order(published_at: :desc), limit: 10)
   end
 
   def new
-    @post = Current.user.posts.build
+    @post = Current.user.blog.posts.build
   end
 
   def edit
-    @post = Current.user.posts.find_by!(token: params[:id])
+    @post = Current.user.blog.posts.find_by!(token: params[:id])
 
     prepare_content_for_trix
   end
 
   def create
     # FIXME remove merge
-    post = Current.user.posts.build(post_params.merge(blog: Current.user.blog))
+    post = Current.user.blog.posts.build(post_params)
     if post.save
       redirect_to app_posts_path, notice: "Post was successfully created"
     else
@@ -28,7 +28,7 @@ class App::PostsController < AppController
   end
 
   def update
-    post = Current.user.posts.find_by!(token: params[:id])
+    post = Current.user.blog.posts.find_by!(token: params[:id])
 
     if post.update(post_params)
       redirect_to app_posts_path, notice: "Post was successfully updated"
@@ -40,7 +40,7 @@ class App::PostsController < AppController
   end
 
   def destroy
-    post = Current.user.posts.find_by!(token: params[:id])
+    post = Current.user.blog.posts.find_by!(token: params[:id])
     post.destroy!
 
     redirect_to app_posts_path, notice: "Post was successfully deleted"

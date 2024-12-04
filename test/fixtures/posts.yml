@@ -1,27 +1,23 @@
 one:
   title: The Art of Street Photography
-  user: joel
   blog: joel
   published_at: <%= 1.day.ago %>
   token: <%= SecureRandom.hex(4) %>
 
 two:
   title: The Beauty of Landscape Photography
-  user: joel
   blog: joel
   published_at: <%= 2.days.ago %>
   token: <%= SecureRandom.hex(4) %>
 
 three:
   title: My first post
-  user: vivian
   blog: vivian
   published_at: <%= 1.week.ago %>
   token: <%= SecureRandom.hex(4) %>
 
 four:
   title: What I've learned about photography
-  user: annie
   blog: annie
   published_at: <%= 1.day.ago %>
   token: <%= SecureRandom.hex(4) %>

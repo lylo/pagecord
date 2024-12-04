@@ -12,13 +12,13 @@ class PostsHelperTest < ActionView::TestCase
   end
 
   test "post_title without title present" do
-    post = User.first.posts.build content: "Test post"
+    post = Blog.first.posts.build content: "Test post"
     assert_equal "Test post", post_title(post)
 
-    post = User.first.posts.build content: "<p></p>"
+    post = Blog.first.posts.build content: "<p></p>"
     assert_equal "Untitled", post_title(post)
 
-    post = User.first.posts.build content: "<div><p>Hello, World</p><img src='example.com'></div>"
+    post = Blog.first.posts.build content: "<div><p>Hello, World</p><img src='example.com'></div>"
     assert_equal "Hello, World", post_title(post)
   end
 

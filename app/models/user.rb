@@ -6,7 +6,6 @@ class User < ApplicationRecord
   before_create :build_blog
 
   has_one :blog, dependent: :destroy
-  has_many :posts, dependent: :destroy
   has_many :access_requests, dependent: :destroy
 
   validates :username, presence: true, uniqueness: true, length: { minimum: Username::MIN_LENGTH, maximum: Username::MAX_LENGTH }

@@ -7,14 +7,16 @@ class App::FeedController < AppController
 
   def index
     followed_users_ids = @user.followed_users.pluck(:followed_id)
-    @posts = Post.where(user_id: followed_users_ids).order(published_at: :desc)
+    blog_ids = Blog.where(user_id: followed_users_ids).pluck(:id)
+    @posts = Post.where(blog_id: blog_ids).order(published_at: :desc)
 
     @pagy, @posts = pagy(@posts)
   end
 
   def private_rss
     followed_users_ids = @user.followed_users.pluck(:followed_id)
-    @posts = Post.where(user_id: followed_users_ids).order(published_at: :desc).limit(30)
+    blog_ids = Blog.where(user_id: followed_users_ids).pluck(:id)
+    @posts = Post.where(blog_id: blog_ids).order(published_at: :desc).limit(30)
 
     respond_to do |format|
       format.rss { render layout: false }

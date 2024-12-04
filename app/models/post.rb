@@ -1,7 +1,6 @@
 class Post < ApplicationRecord
   include Trimmable
 
-  belongs_to :user, inverse_of: nil
   belongs_to :blog, inverse_of: nil
 
   has_one :open_graph_image, dependent: :destroy

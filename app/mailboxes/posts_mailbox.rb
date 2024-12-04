@@ -29,7 +29,7 @@ class PostsMailbox < ApplicationMailbox
           end
 
           Rails.logger.info "Creating post from user: #{blog.user.id}"
-          blog.user.posts.create!(
+          blog.user.blog.posts.create!(
             blog: blog,
             title: title,
             content: content,

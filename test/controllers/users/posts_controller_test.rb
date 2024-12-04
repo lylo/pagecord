@@ -13,7 +13,7 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should get show" do
     post = posts(:one)
 
-    get post_without_title_path(post.user.username, post.token)
+    get post_without_title_path(post.blog.user.username, post.token)
 
     assert_response :success
     assert_equal posts(:one), assigns(:post)
@@ -57,7 +57,7 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should get index on custom domain" do
     post = posts(:four)
 
-    get "/", headers: { "HOST" => post.user.blog.custom_domain }
+    get "/", headers: { "HOST" => post.blog.custom_domain }
 
     assert_response :success
   end
@@ -65,7 +65,7 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should get show on custom domain" do
     post = posts(:four)
 
-    get "/#{post.token}", headers: { "HOST" => post.user.blog.custom_domain }
+    get "/#{post.token}", headers: { "HOST" => post.blog.custom_domain }
 
     assert_response :success
   end
@@ -81,17 +81,17 @@ class Users::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should redirect from default domain username index to custom domain" do
     post = posts(:four)
 
-    get post_without_title_path(username: post.user.username, token: post.token)
+    get post_without_title_path(username: post.blog.user.username, token: post.token)
 
-    assert_redirected_to "http://#{post.user.blog.custom_domain}/#{post.token}"
+    assert_redirected_to "http://#{post.blog.custom_domain}/#{post.token}"
   end
 
   test "should redirect from default domain username post to custom domain post" do
     post = posts(:four)
 
-    get "/#{post.user.username}/#{post.token}"
+    get "/#{post.blog.user.username}/#{post.token}"
 
-    assert_redirected_to "http://#{post.user.blog.custom_domain}/#{post.token}"
+    assert_redirected_to "http://#{post.blog.custom_domain}/#{post.token}"
   end
 
   test "should redirect to last page on pagy overflow" do
