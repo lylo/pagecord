@@ -13,7 +13,7 @@
     <% @posts.each do |post| %>
       <tr>
         <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">
-          <%= link_to "@#{post.user.username}", user_posts_path(username: post.user.username), class: "hover:underline" %>
+          <%= link_to "@#{post.user.username}", blog_posts_path(username: post.user.username), class: "hover:underline" %>
         </td>
         <td class="whitespace-wrap py-4 pe-4 sm:ps-4 text-sm text-slate-900 dark:text-slate-50">
           <%= link_to post_title(post), post_path(post), class: "hover:underline" %>
