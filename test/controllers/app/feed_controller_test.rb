@@ -18,7 +18,7 @@ class App::FeedControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should render posts from followees" do
-    @vivian.follow(@joel.blog)
+    @vivian.follow(@joel)
 
     get app_feed_path
     assert_response :success
@@ -26,7 +26,7 @@ class App::FeedControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get private_rss" do
-    @vivian.follow(@joel.blog)
+    @vivian.follow(@joel)
 
     get app_private_rss_feed_path(token: "joel_gf35jsue", format: :rss)
     assert_response :success

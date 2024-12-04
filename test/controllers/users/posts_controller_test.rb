@@ -1,10 +1,10 @@
 require "test_helper"
 
-class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
+class Users::PostsControllerTest < ActionDispatch::IntegrationTest
   include RoutingHelper
 
   test "should get index" do
-    get blog_posts_path(username: users(:joel).username)
+    get user_posts_path(username: users(:joel).username)
 
     assert_response :success
     assert_not_nil assigns(:posts)
@@ -21,28 +21,28 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should allow @ prefix and redirect to user" do
     get "/@#{users(:joel).username}"
-    assert_redirected_to blog_posts_path(username: users(:joel).username)
+    assert_redirected_to user_posts_path(username: users(:joel).username)
   end
 
   test "should redirect to root if user not found" do
-    get blog_posts_path(username: "nope")
+    get user_posts_path(username: "nope")
     assert_redirected_to root_url
   end
 
   test "should redirect to root if user is unverified" do
-    get blog_posts_path(username: users(:elliot).username)
+    get user_posts_path(username: users(:elliot).username)
     assert_redirected_to root_url
   end
 
   test "should get index as RSS" do
-    get blog_posts_path(username: users(:joel).username, format: :rss)
+    get user_posts_path(username: users(:joel).username, format: :rss)
 
     assert_response :success
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
   end
 
   test "should render plain text posts as html in RSS feed" do
-    get blog_posts_path(username: users(:vivian).username, format: :rss)
+    get user_posts_path(username: users(:vivian).username, format: :rss)
 
     assert_response :success
 
@@ -95,8 +95,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should redirect to last page on pagy overflow" do
-    get blog_posts_path(username: users(:joel).username, page: 999)
+    get user_posts_path(username: users(:joel).username, page: 999)
 
-    assert_redirected_to blog_posts_path(username: users(:joel).username, page: 1)
+    assert_redirected_to user_posts_path(username: users(:joel).username, page: 1)
   end
 end

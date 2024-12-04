@@ -1,5 +1,0 @@
-<% if Current.user.following? blog %>
-  <%= button_to "Unfollow", app_blog_unfollow_path(blog), method: :delete %>
-<% else %>
-  <%= button_to "Follow", app_blog_follow_path(blog), method: :post %>
-<% end %>

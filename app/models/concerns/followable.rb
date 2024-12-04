@@ -5,29 +5,33 @@ module Followable
     has_many :followed_users, foreign_key: :follower_id, class_name: "Following", dependent: :destroy
     has_many :followees, through: :followed_users, source: :followed
 
-    has_many :following_blogs, foreign_key: :followed_id, class_name: "Following", dependent: :destroy
-    has_many :followers, through: :following_blogs, source: :follower
+    has_many :following_users, foreign_key: :followed_id, class_name: "Following", dependent: :destroy
+    has_many :followers, through: :following_users, source: :follower
   end
 
-  def follow(blog)
-    if self.blog == blog
+  def follow(user)
+    if self == user
       raise ArgumentError, "You can't follow yourself"
-    elsif following?(blog)
-      raise ArgumentError, "#{self.username} is already following #{blog.id}"
+    elsif following?(user)
+      raise ArgumentError, "#{self.username} is already following #{user.username}"
     else
-      followees << blog
+      followees << user
     end
   end
 
-  def unfollow(blog)
-    if !following?(blog)
-      raise ArgumentError, "#{username} is not following #{blog.id}"
+  def unfollow(user)
+    if !following?(user)
+      raise ArgumentError, "#{self.username} is not following #{user.username}"
     else
-      followees.delete(blog)
+      followees.delete(user)
     end
   end
 
-  def following?(blog)
-    followees.include?(blog)
+  def following?(user)
+    followees.include?(user)
+  end
+
+  def is_followed_by?(user)
+    followers.include?(user)
   end
 end

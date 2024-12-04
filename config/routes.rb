@@ -93,7 +93,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :blogs do
+    resources :users do
       post :follow, to: "followings#create"
       delete :unfollow, to: "followings#destroy"
     end
@@ -116,19 +116,19 @@ Rails.application.routes.draw do
   end
 
   constraints(DomainConstraints.method(:custom_domain?)) do
-    get "/", to: "blogs/posts#index", as: :custom_blog_posts
-    get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_without_title
-    get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_with_title
-    get "/:username", to: "blogs/posts#index", constraints: Constraints::RssFormat.new, as: :custom_blog_posts_rss
+    get "/", to: "users/posts#index", as: :custom_user_posts
+    get "/:token", to: "users/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_without_title
+    get "/:title-:token", to: "users/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_with_title
+    get "/:username", to: "users/posts#index", constraints: Constraints::RssFormat.new, as: :custom_user_posts_rss
   end
 
   constraints(DomainConstraints.method(:default_domain?)) do
     get "/@:username", to: redirect("/%{username}")
 
     scope ":username" do
-      get "/", to: "blogs/posts#index", as: :blog_posts
-      get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_without_title
-      get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_with_title
+      get "/", to: "users/posts#index", as: :user_posts
+      get "/:token", to: "users/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_without_title
+      get "/:title-:token", to: "users/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_with_title
     end
   end
 

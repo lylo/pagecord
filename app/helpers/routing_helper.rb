@@ -23,19 +23,19 @@ module RoutingHelper
     post_link(post, "url")
   end
 
-  def blog_home(blog, type)
-    if blog.custom_domain.present?
-      send("custom_blog_posts_#{type}", host: blog.custom_domain)
+  def user_home(user, type)
+    if user.blog.custom_domain.present?
+      send("custom_user_posts_#{type}", host: user.blog.custom_domain)
     else
-      send("blog_posts_#{type}", username: blog.user.username)
+      send("user_posts_#{type}", username: user.username)
     end
   end
 
-  def blog_home_path(blog)
-    blog_home(blog, "path")
+  def user_home_path(user)
+    user_home(user, "path")
   end
 
-  def blog_home_url(blog)
-    blog_home(blog, "url")
+  def user_home_url(user)
+    user_home(user, "url")
   end
 end
