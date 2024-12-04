@@ -5,7 +5,7 @@ class User < ApplicationRecord
   before_validation :downcase_email_and_username
   before_create :build_blog
 
-  has_one :blog, dependent: :destroy
+  has_one :blog, dependent: :destroy, inverse_of: :user
   has_many :access_requests, dependent: :destroy
   has_rich_text :bio
 

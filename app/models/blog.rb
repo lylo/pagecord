@@ -1,7 +1,7 @@
 class Blog < ApplicationRecord
   include DeliveryEmail, CustomDomain
 
-  belongs_to :user
+  belongs_to :user, inverse_of: :blog
   has_many :posts, dependent: :destroy
 
   has_rich_text :bio
