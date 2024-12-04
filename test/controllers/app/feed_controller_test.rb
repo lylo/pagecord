@@ -4,10 +4,11 @@ class App::FeedControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
   setup do
-    @user1 = users(:joel)
-    @user2 = users(:vivian)
+    @joel = users(:joel)
+    @vivian = users(:vivian)
+    @annie = users(:annie)
 
-    login_as @user1
+    login_as @vivian
   end
 
   test "should get index with no followees" do
@@ -17,15 +18,15 @@ class App::FeedControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should render posts from followees" do
-    @user1.follow(@user2)
+    @vivian.follow(@joel)
 
     get app_feed_path
     assert_response :success
-    assert_select "article", 1
+    assert_select "article", 2
   end
 
   test "should get private_rss" do
-    @user1.follow(@user2)
+    @vivian.follow(@joel)
 
     get app_private_rss_feed_path(token: "joel_gf35jsue", format: :rss)
     assert_response :success
