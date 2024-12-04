@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail, Followable, Subscribable
+  include Followable, Subscribable
 
   before_validation :downcase_email_and_username
   before_create :build_blog
