@@ -4,60 +4,60 @@ class App::FollowingsControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
   setup do
-    @user1 = users(:joel)
-    @user2 = users(:vivian)
+    @joel = users(:joel)
+    @vivian = users(:vivian)
 
-    login_as @user1
+    login_as @vivian
   end
 
   test "should follow a user" do
-    assert_difference("@user1.followees.count", 1) do
-      post app_user_follow_path(@user2), xhr: true
+    assert_difference("@vivian.followees.count", 1) do
+      post app_user_follow_path(@joel), xhr: true
     end
 
     assert_response :success
     assert_match "Unfollow", @response.body
-    assert @user1.following?(@user2)
+    assert @vivian.following?(@joel)
   end
 
   test "should unfollow a user" do
-    @user1.follow(@user2)
+    @vivian.follow(@joel)
 
-    assert_difference("@user1.followees.count", -1) do
-      delete app_user_unfollow_path(@user2), xhr: true
+    assert_difference("@vivian.followees.count", -1) do
+      delete app_user_unfollow_path(@joel), xhr: true
     end
 
     assert_response :success
     assert_match "Follow", @response.body
-    assert_not @user1.following?(@user2)
+    assert_not @vivian.following?(@joel)
   end
 
   test "should not follow oneself" do
-    assert_no_difference("@user1.followees.count") do
-      post app_user_follow_path(@user1), xhr: true
+    assert_no_difference("@joel.followees.count") do
+      post app_user_follow_path(@vivian), xhr: true
     end
 
     assert_response :bad_request
-    assert_not @user1.following?(@user1)
+    assert_not @vivian.following?(@vivian)
   end
 
   test "should not follow twice" do
-    @user1.follow(@user2)
+    @vivian.follow(@joel)
 
-    assert_no_difference("@user1.followees.count") do
-      post app_user_follow_path(@user2), xhr: true
+    assert_no_difference("@joel.followees.count") do
+      post app_user_follow_path(@joel), xhr: true
     end
 
     assert_response :bad_request
-    assert @user1.following?(@user2)
+    assert @vivian.following?(@joel)
   end
 
-  test "should bad unfollow" do
-    assert_no_difference("@user1.followees.count") do
-      delete app_user_unfollow_path(@user2), xhr: true
+  test "should return bad request when unfollowing not followed" do
+    assert_no_difference("@joel.followees.count") do
+      delete app_user_unfollow_path(@joel), xhr: true
     end
 
     assert_response :bad_request
-    assert_not @user1.following?(@user2)
+    assert_not @vivian.following?(@joel)
   end
 end
