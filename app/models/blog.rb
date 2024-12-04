@@ -2,6 +2,7 @@ class Blog < ApplicationRecord
   include DeliveryEmail, CustomDomain
 
   belongs_to :user
+  has_many :posts, dependent: :destroy
 
   has_rich_text :bio
   validate :bio_length

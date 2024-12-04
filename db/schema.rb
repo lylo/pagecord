@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2024_12_04_112217) do
+ActiveRecord::Schema[8.1].define(version: 2024_12_04_123517) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -124,6 +124,8 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_04_112217) do
     t.datetime "published_at"
     t.text "raw_content"
     t.string "token", null: false
+    t.bigint "blog_id", null: false
+    t.index ["blog_id"], name: "index_posts_on_blog_id"
     t.index ["token"], name: "index_posts_on_token", unique: true
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
@@ -169,6 +171,7 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_04_112217) do
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
+  add_foreign_key "posts", "blogs"
   add_foreign_key "posts", "users"
   add_foreign_key "subscriptions", "users"
 end

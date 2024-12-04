@@ -16,7 +16,8 @@ class App::PostsController < AppController
   end
 
   def create
-    post = Current.user.posts.build(post_params)
+    # FIXME remove merge
+    post = Current.user.posts.build(post_params.merge(blog: Current.user.blog))
     if post.save
       redirect_to app_posts_path, notice: "Post was successfully created"
     else
