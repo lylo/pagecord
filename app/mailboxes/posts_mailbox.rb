@@ -15,9 +15,10 @@ class PostsMailbox < ApplicationMailbox
       Rails.logger.warn "Reply-To and From are inconsistent" and return
     end
 
-    if user = User.kept.find_by(email: from, delivery_email: recipient)
+    if blog = Blog.joins(:user).find_by(user: { email: from }, delivery_email: recipient)
+      # if user = User.kept.find_by(email: from, delivery_email: recipient)
       begin
-        parser = MailParser.new(mail, process_attachments: user.subscribed?)
+        parser = MailParser.new(mail, process_attachments: blog.user.subscribed?)
         unless parser.is_blank?
           content = parser.body
           title = parser.subject
@@ -27,8 +28,8 @@ class PostsMailbox < ApplicationMailbox
             title = nil
           end
 
-          Rails.logger.info "Creating post from user: #{user.id}"
-          user.posts.create!(
+          Rails.logger.info "Creating post from user: #{blog.user.id}"
+          blog.user.posts.create!(
             title: title,
             content: content,
             raw_content: mail.raw_source,

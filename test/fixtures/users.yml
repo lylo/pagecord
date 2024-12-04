@@ -1,27 +1,18 @@
 joel:
   email: joel@pagecord.com
   username: joel
-  delivery_email: joel_gf35jsue@post.pagecord.com
   verified: true
-  bio_text: |
-    Photographer
-
-    https://pagecord.com/joel
 
 elliot:
   email: elliot@pagecord.com
   username: elliot
-  delivery_email: elliot_jfur73yd@post.pagecord.com
 
 vivian:
   email: vivian@pagecord.com
   username: vivian
-  delivery_email: vivian_jfur73yd@post.pagecord.com
   verified: true
 
 annie:
   email: annie@pagecord.com
   username: annie
-  delivery_email: annie_asj232j@post.pagecord.com
-  custom_domain: welcometoanniesblog.com
   verified: true

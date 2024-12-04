@@ -1,10 +1,10 @@
 class HatchboxDomainApi
-  def initialize(user)
-    @user = user
+  def initialize(blog)
+    @blog = blog
   end
 
   def add_domain(domain)
-    return unless @user.custom_domain == domain
+    return unless @blog.custom_domain == domain
 
     response = HTTParty.post(hatchbox_api_endpoint, headers: headers,
       body: {
@@ -16,9 +16,9 @@ class HatchboxDomainApi
     Rails.logger.info "Response: #{response&.inspect}"
 
     if response.code == 200
-      Rails.logger.info "SSL certificate issued for #{domain} for user #{@user.username}"
+      Rails.logger.info "SSL certificate issued for #{domain} for user #{@blog.user.username}"
     else
-      raise "Failed to add domain #{domain} for user #{@user.username}"
+      raise "Failed to add domain #{domain} for user #{@blog.user.username}"
     end
 
     touch_all
@@ -32,9 +32,9 @@ class HatchboxDomainApi
     Rails.logger.info "Response: #{response&.inspect}"
 
     if response.code == 200
-      Rails.logger.info "SSL certificate revoked for #{domain} for user #{@user.username}"
+      Rails.logger.info "SSL certificate revoked for #{domain} for user #{@blog.user.username}"
     else
-      raise "Failed to remove domain #{domain} for user #{@user.username}"
+      raise "Failed to remove domain #{domain} for user #{@blog.user.username}"
     end
 
     touch_all
@@ -64,6 +64,6 @@ class HatchboxDomainApi
     end
 
     def domain_exists?(domain)
-      User.where(custom_domain: domain).count > 0
+      Blog.where(custom_domain: domain).count > 0
     end
 end

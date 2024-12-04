@@ -3,5 +3,5 @@
 </p>
 <p class="mt-4">
   To publish a new post, send an email from <span><%= @user.email %></span>
-  to <%= mail_to @user.delivery_email, class: "underline font-semibold" %>.
+  to <%= mail_to @user.blog.delivery_email, class: "underline font-semibold" %>.
 </p>

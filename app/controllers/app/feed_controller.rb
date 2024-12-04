@@ -25,7 +25,7 @@ class App::FeedController < AppController
 
     def require_token
       full_token = "#{params[:token]}@post.pagecord.com"
-      @user = User.find_by(delivery_email: full_token)
+      @user = User.joins(:blog).find_by(blog: { delivery_email: full_token })
       head :unauthorized unless @user
     end
 end

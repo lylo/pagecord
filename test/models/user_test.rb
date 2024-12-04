@@ -12,12 +12,6 @@ class UserTest < ActiveSupport::TestCase
     assert user.valid?
   end
 
-  test "should validate length of bio" do
-    user = users(:joel)
-    user.bio = "a" * 513
-    assert_not user.valid?
-  end
-
   test "should validate presence of username" do
     user = User.new(username: "", email: "test@example.com")
     assert_not user.valid?
@@ -42,12 +36,6 @@ class UserTest < ActiveSupport::TestCase
     assert user.valid?
   end
 
-  test "should generate unique delivery email" do
-    user = User.create!(username: "newuser", email: "newuser@newuser.com")
-    assert user.delivery_email.present?
-    assert user.delivery_email =~ /newuser_[a-zA-Z0-9]{8}@post.pagecord.com/
-  end
-
   test "should store in lowercase" do
     user = User.create!(username: "NewUser", email: "nEwUser@NewUser.COM")
     assert_equal "newuser", user.username
@@ -58,28 +46,5 @@ class UserTest < ActiveSupport::TestCase
     user = User.create!(username: "newuser ", email: "newuser@newuser.com")
     assert_equal "newuser", user.username
     assert_equal "newuser@newuser.com", user.email
-  end
-
-  test "should allow valid custom domain" do
-    user = User.new(username: "newuser", email: "newuser@newuser.com", custom_domain: "newuser.com")
-    assert user.valid?
-  end
-
-  test "should not allow invalid custom domain format" do
-    user = User.new(username: "newuser", email: "newuser@newuser.com", custom_domain: "blah blah")
-    assert_not user.valid?
-  end
-
-  test "should validate restricted custom domain" do
-    user = User.new(username: "newuser", email: "newuser@newuser.com", custom_domain: "pagecord.com")
-    assert_not user.valid?
-    assert_includes user.errors.full_messages, "Custom domain is restricted"
-  end
-
-  test "should record custom domain change" do
-    user = users(:joel)
-    user.update!(custom_domain: "newdomain.com")
-    assert user.valid?
-    assert_equal 1, user.custom_domain_changes.count
   end
 end

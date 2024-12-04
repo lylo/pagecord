@@ -9,5 +9,6 @@ class AppController < ApplicationController
 
     def load_user
       @user = Current.user
+      @blog = @user.blog
     end
 end

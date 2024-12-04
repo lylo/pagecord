@@ -13,9 +13,9 @@
     <% end %>
   </div>
 
-  <% if @user.bio.present? %>
+  <% if @blog.bio.present? %>
   <div class="mt-4 text-sm prose dark:prose-invert text-slate-500 dark:text-slate-400 break-words">
-    <%= auto_link @user.bio %>
+    <%= auto_link @blog.bio %>
   </div>
   <% end %>
 </div>

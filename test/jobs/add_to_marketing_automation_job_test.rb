@@ -18,7 +18,7 @@ class AddToMarketingAutomationJobTest < ActiveJob::TestCase
       email: @user.email,
       properties: {
         username: @user.username,
-        deliveryEmail: @user.delivery_email
+        deliveryEmail: @user.blog.delivery_email
       },
       mailing_lists: {
         cm3bk30v201in0ml49wza278w: @user.marketing_consent

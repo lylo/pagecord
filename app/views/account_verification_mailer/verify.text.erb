@@ -6,6 +6,6 @@ To complete your account set up, please verify your email address by clicking th
 
 <%= verify_access_request_url(@access_request.token_digest) %>
 
-Once your email is verified, you can post to your blog by sending emails to <%= @access_request.user.delivery_email %>.
+Once your email is verified, you can post to your blog by sending emails to <%= @access_request.user.blog.delivery_email %>.
 
 Thanks for kicking the tyres! 🙏

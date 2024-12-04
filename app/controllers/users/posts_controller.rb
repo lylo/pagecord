@@ -31,6 +31,8 @@ class Users::PostsController < ApplicationController
 
       if @user.nil?
         redirect_to_app_home
+      else
+        @blog = @user.blog
       end
     end
 
@@ -44,15 +46,15 @@ class Users::PostsController < ApplicationController
 
     def user_from_custom_domain
       if custom_domain_request?
-        User.kept.find_by(custom_domain: request.host)
+        User.kept.joins(:blog).find_by(blog: { custom_domain: request.host })
       end
     end
 
     def enforce_custom_domain
-      if default_domain_request? && @user.custom_domain.present?
+      if default_domain_request? && @user.blog.custom_domain.present?
         escaped_username = Regexp.escape(@user.username)
         request_path = request.path.gsub(/^\/@?#{escaped_username}\/?/, "")
-        full_url = root_url(host: @user.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
+        full_url = root_url(host: @user.blog.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
         new_url = "#{full_url}#{request_path}"
 
         redirect_to new_url, status: :moved_permanently, allow_other_host: true

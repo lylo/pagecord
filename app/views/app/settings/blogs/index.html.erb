@@ -1,4 +1,4 @@
-<%= form_with url: app_settings_user_path(@user), model: @user, data: { turbo: false } do |form| %>
+<%= form_with url: app_settings_blog_path(@blog), model: @blog, data: { turbo: false } do |form| %>
   <div>
     <h3 class="font-bold text-lg mb-2">Bio</h3>
 
@@ -10,11 +10,11 @@
     </div>
   </div>
 
-  <% if @user.subscribed? %>
+  <% if @blog.user.subscribed? %>
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Title</h3>
     <p>
-      If you'd prefer a different title than <strong>@<%= @user.username %></strong> on your Pagecord,
+      If you'd prefer a different title than <strong>@<%= @blog.user.username %></strong> on your Pagecord,
       enter it below.
     </p>
 
@@ -23,9 +23,9 @@
 
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
-    <% if @user.valid? && @user.custom_domain.present? %>
+    <% if @blog.valid? && @blog.custom_domain.present? %>
       <p>
-        Your Pagecord is now available at <code><mark class="bg-slate-100 dark:bg-slate-700 dark:text-slate-100 px-1"><%= @user.custom_domain %></mark></code>
+        Your Pagecord is now available at <code><mark class="bg-slate-100 dark:bg-slate-700 dark:text-slate-100 px-1"><%= @blog.custom_domain %></mark></code>
       </p>
     <% else %>
       <p>
@@ -33,12 +33,12 @@
       </p>
     <% end %>
 
-    <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-800 border #{@user.errors[:custom_domain].any? ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} text-slate-800 dark:text-slate-200 rounded-lg" %>
-    <% if @user.errors[:custom_domain].any? %>
-      <span class="text-red-500 text-sm"><%= @user.errors.full_messages_for(:custom_domain).first %>
+    <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-800 border #{@blog.errors[:custom_domain].any? ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <% if @blog.errors[:custom_domain].any? %>
+      <span class="text-red-500 text-sm"><%= @blog.errors.full_messages_for(:custom_domain).first %>
     <% end %>
 
-    <% if @user.valid? && @user.custom_domain.present? %>
+    <% if @blog.valid? && @blog.custom_domain.present? %>
       <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm">
         To remove your custom domain, clear the box above and click Update. Don't forget to remove the records from your DNS!
       </p>

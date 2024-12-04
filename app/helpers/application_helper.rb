@@ -55,8 +55,8 @@ module ApplicationHelper
   private
 
     def user_title(user)
-      if user.custom_title?
-        user.title
+      if user.blog && user.blog.custom_title?
+        user.blog.title
       else
         "Posts from @#{user.username}"
       end
@@ -80,8 +80,8 @@ module ApplicationHelper
     end
 
     def blog_description(user)
-      if user.bio.present?
-        strip_tags(user.bio).truncate(140).strip
+      if user.blog && user.blog.bio.present?
+        strip_tags(user.blog.bio).truncate(140).strip
       else
         user_title(user)
       end

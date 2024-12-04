@@ -4,7 +4,8 @@ class SidekiqAdminConstraint
   def matches?(request)
     if current_user = User.kept.find(request.session[:user_id])
       ENV["ADMIN_USERNAME"] == current_user.username &&
-      ENV["ADMIN_DELIVERY_EMAIL"] == current_user.delivery_email
+      # FIXME this should be a password
+      ENV["ADMIN_DELIVERY_EMAIL"] == current_user.blog.delivery_email
     else
       false
     end
@@ -82,6 +83,7 @@ Rails.application.routes.draw do
 
     namespace :settings do
       resources :users, only: [ :index, :update, :destroy ]
+      resources :blogs, only: [ :index, :update ]
 
       get "/account/edit", to: "account#edit"
 

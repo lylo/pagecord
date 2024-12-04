@@ -7,7 +7,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_difference -> { user.posts.count }, 1 do
       receive_inbound_email_from_mail \
-        to: user.delivery_email,
+        to: user.blog.delivery_email,
         from: user.email,
           reply_to: user.email,
         subject: "Hello world!",
@@ -58,7 +58,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_difference -> { user.posts.count }, 0 do
       receive_inbound_email_from_mail \
-        to: user.delivery_email,
+        to: user.blog.delivery_email,
         from: user.email,
         reply_to: "dodgy@example.com",
         subject: "Hello world!",
@@ -71,7 +71,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_difference -> { user.posts.count }, 0 do
       receive_inbound_email_from_mail \
-        to: user.delivery_email,
+        to: user.blog.delivery_email,
         from: "who@example.com",
         reply_to: user.email,
         subject: "Hello world!",
@@ -93,7 +93,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     Sentry.expects(:capture_message)
 
     receive_inbound_email_from_mail \
-    to: users(:joel).delivery_email,
+    to: users(:joel).blog.delivery_email,
     from: "missing@pagecord.com",
     subject: "Hello world!",
     body: "Hello?"
@@ -104,7 +104,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_difference -> { user.posts.count }, 1 do
       receive_inbound_email_from_mail \
-        to: user.delivery_email,
+        to: user.blog.delivery_email,
         from: user.email,
         reply_to: user.email,
         subject: "",
@@ -120,7 +120,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_difference -> { user.posts.count }, 1 do
       receive_inbound_email_from_mail \
-        to: user.delivery_email,
+        to: user.blog.delivery_email,
         from: user.email,
         reply_to: user.email,
         subject: "This is like a tweet",
@@ -135,7 +135,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     user = users(:joel)
 
     mail = Mail.new do
-      to user.delivery_email
+      to user.blog.delivery_email
       from user.email
       reply_to user.email
       subject "This is like a tweet"
@@ -159,7 +159,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     user = users(:joel)
 
     mail = Mail.new do
-      to user.delivery_email
+      to user.blog.delivery_email
       from user.email
       reply_to user.email
       subject ""
@@ -185,7 +185,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     user = users(:joel)
 
     mail = Mail.new do
-      to user.delivery_email
+      to user.blog.delivery_email
       from user.email
       reply_to user.email
       subject ""
@@ -210,7 +210,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_difference -> { user.posts.count }, 0 do
       receive_inbound_email_from_mail \
-        to: user.delivery_email,
+        to: user.blog.delivery_email,
         from: user.email,
         reply_to: user.email,
         subject: "",
@@ -223,7 +223,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_difference -> { user.posts.count }, 1 do
       receive_inbound_email_from_mail \
-        to: user.delivery_email,
+        to: user.blog.delivery_email,
         from: user.email,
         reply_to: user.email,
         subject: "Hello, world" do |mail|
@@ -253,7 +253,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_difference -> { user.posts.count }, 1 do
       receive_inbound_email_from_mail \
-        to: user.delivery_email,
+        to: user.blog.delivery_email,
         from: user.email,
         reply_to: user.email,
         subject: "Hello, world" do |mail|

@@ -2,9 +2,9 @@ module RoutingHelper
   def post_link(post, type)
     if custom_domain_request?
       if post.url_title.present?
-        send("custom_post_with_title_#{type}", post.url_title, post.token, host: post.user.custom_domain)
+        send("custom_post_with_title_#{type}", post.url_title, post.token, host: post.user.blog.custom_domain)
       else
-        send("custom_post_without_title_#{type}", post.token, host: post.user.custom_domain)
+        send("custom_post_without_title_#{type}", post.token, host: post.user.blog.custom_domain)
       end
     else
       if post.url_title.present?
@@ -25,7 +25,7 @@ module RoutingHelper
 
   def user_home(user, type)
     if user.custom_domain.present?
-      send("custom_user_posts_#{type}", host: user.custom_domain)
+      send("custom_user_posts_#{type}", host: user.blog.custom_domain)
     else
       send("user_posts_#{type}", username: user.username)
     end
