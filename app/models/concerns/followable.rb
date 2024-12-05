@@ -10,7 +10,7 @@ module Followable
     if self.blog == blog
       raise ArgumentError, "You can't follow yourself"
     elsif following?(blog)
-      raise ArgumentError, "#{self.username} is already following #{blog.id}"
+      raise ArgumentError, "User #{id} is already following blog #{blog.id}"
     else
       followed_blogs << blog
     end
@@ -18,7 +18,7 @@ module Followable
 
   def unfollow(blog)
     if !following?(blog)
-      raise ArgumentError, "#{username} is not following #{blog.id}"
+      raise ArgumentError, "User #{id} is not following blog #{blog.id}"
     else
       followed_blogs.delete(blog)
     end

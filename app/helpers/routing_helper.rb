@@ -8,9 +8,9 @@ module RoutingHelper
       end
     else
       if post.url_title.present?
-        send("post_with_title_#{type}", post.blog.user.username, post.url_title, post.token)
+        send("post_with_title_#{type}", post.blog.name, post.url_title, post.token)
       else
-        send("post_without_title_#{type}", post.blog.user.username, post.token)
+        send("post_without_title_#{type}", post.blog.name, post.token)
       end
     end
   end
@@ -27,7 +27,7 @@ module RoutingHelper
     if blog.custom_domain.present?
       send("custom_blog_posts_#{type}", host: blog.custom_domain)
     else
-      send("blog_posts_#{type}", username: blog.user.username)
+      send("blog_posts_#{type}", name: blog.name)
     end
   end
 

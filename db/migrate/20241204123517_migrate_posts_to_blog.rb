@@ -9,5 +9,6 @@ class MigratePostsToBlog < ActiveRecord::Migration[8.1]
     end
 
     change_column_null :posts, :blog_id, false
+    remove_reference :posts, :user, foreign_key: true
   end
 end

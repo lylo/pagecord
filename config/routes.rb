@@ -3,7 +3,7 @@ require "sidekiq/web"
 class SidekiqAdminConstraint
   def matches?(request)
     if current_user = User.kept.find(request.session[:user_id])
-      ENV["ADMIN_USERNAME"] == current_user.username &&
+      ENV["ADMIN_USERNAME"] == current_user.blog.name &&
       # FIXME this should be a password
       ENV["ADMIN_DELIVERY_EMAIL"] == current_user.blog.delivery_email
     else
@@ -119,13 +119,13 @@ Rails.application.routes.draw do
     get "/", to: "blogs/posts#index", as: :custom_blog_posts
     get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_without_title
     get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_with_title
-    get "/:username", to: "blogs/posts#index", constraints: Constraints::RssFormat.new, as: :custom_blog_posts_rss
+    get "/:name", to: "blogs/posts#index", constraints: Constraints::RssFormat.new, as: :custom_blog_posts_rss
   end
 
   constraints(DomainConstraints.method(:default_domain?)) do
-    get "/@:username", to: redirect("/%{username}")
+    get "/@:name", to: redirect("/%{name}")
 
-    scope ":username" do
+    scope ":name" do
       get "/", to: "blogs/posts#index", as: :blog_posts
       get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_without_title
       get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_with_title

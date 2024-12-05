@@ -2,6 +2,6 @@
   <% if @blog.custom_title? %>
     <%= @blog.title %>
   <% else %>
-    @<%= @blog.user.username %>
+    @<%= @blog.name %>
   <% end %>
 <% end %>

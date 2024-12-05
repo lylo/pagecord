@@ -3,7 +3,7 @@ class Blogs::PostsController < ApplicationController
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   skip_before_action :domain_check
-  before_action :load_blog, :verification, :enforce_custom_domain
+  before_action :load_blog, :validate_user, :enforce_custom_domain
 
   def index
     @pagy, @posts = pagy(@blog.posts.order(published_at: :desc))
@@ -15,7 +15,7 @@ class Blogs::PostsController < ApplicationController
   end
 
   def show
-    @post = @blog.posts.find_by!(token: user_params[:token])
+    @post = @blog.posts.find_by!(token: blog_params[:token])
 
     fresh_when @post
   end
@@ -26,8 +26,8 @@ class Blogs::PostsController < ApplicationController
       @blog ||= if custom_domain_request?
         blog_from_custom_domain
       else
-        if user_params[:username].present?
-          User.kept.joins(:blog).find_by(username: user_params[:username]).try(:blog)
+        if blog_params[:name].present?
+          Blog.find_by(name: blog_params[:name])
         end
       end
 
@@ -36,22 +36,22 @@ class Blogs::PostsController < ApplicationController
       end
     end
 
-    def user_params
-      params.permit(:username, :page, :title, :token)
+    def blog_params
+      params.permit(:name, :page, :title, :token)
     end
 
-    def verification
-      redirect_to root_path unless @blog.user&.verified?
+    def validate_user
+      redirect_to root_path unless @blog.user&.verified? && @blog.user&.kept?
     end
 
     def blog_from_custom_domain
-      User.kept.joins(:blog).find_by(blog: { custom_domain: request.host }).try(:blog)
+      Blog.find_by(custom_domain: request.host)
     end
 
     def enforce_custom_domain
       if default_domain_request? && @blog.custom_domain.present?
-        escaped_username = Regexp.escape(@blog.user.username)
-        request_path = request.path.gsub(/^\/@?#{escaped_username}\/?/, "")
+        escaped_name = Regexp.escape(@blog.name)
+        request_path = request.path.gsub(/^\/@?#{escaped_name}\/?/, "")
         full_url = root_url(host: @blog.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
         new_url = "#{full_url}#{request_path}"
 

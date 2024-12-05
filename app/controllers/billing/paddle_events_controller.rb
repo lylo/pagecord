@@ -53,7 +53,7 @@ module Billing
 
         @subscription = @user.subscription || Subscription.create!(user: @user)
 
-        Rails.logger.info "Paddle #{event} for @#{@user.username}"
+        Rails.logger.info "Paddle #{event} for @#{@user.id}"
 
         method_name = event.gsub(".", "_")
         send(method_name) if respond_to?(method_name, true)
@@ -67,7 +67,7 @@ module Billing
           # this is a re-activation of an existing subscription. delete and recreate
           @subscription.destroy!
           @subscription = Subscription.create!(user: @user)
-          Rails.logger.info "New subscription #{@subscription.id} created for @#{@user.username}"
+          Rails.logger.info "New subscription #{@subscription.id} created for @#{@user.id}"
         end
 
         @subscription.update!(

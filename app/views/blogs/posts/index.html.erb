@@ -5,8 +5,8 @@
     Nothing to read on this Pagecord yet ✨
   </p>
   <p class="mt-4 text-center">
-    To be notified of new posts, subscribe to <span class="font-semibold">@<%= @user.username %></span>'s
-    <%= link_to "RSS feed", blog_posts_path(username: @user.username, format: :rss),
+    To be notified of new posts, subscribe to <span class="font-semibold">@<%= @blog.name %></span>'s
+    <%= link_to "RSS feed", blog_posts_path(name: @blog.name, format: :rss),
         class: "font-semibold underline" %>
   </p>
 <% else %>
@@ -19,7 +19,7 @@
       <% if custom_domain_request? %>
         <%= turbo_frame_tag :posts, src: custom_blog_posts_path(page: @pagy.next), loading: :lazy %>
       <% else %>
-        <%= turbo_frame_tag :posts, src: blog_posts_path(username: @blog.user.username, page: @pagy.next), loading: :lazy %>
+        <%= turbo_frame_tag :posts, src: blog_posts_path(name: @blog.name, page: @pagy.next), loading: :lazy %>
       <% end%>
     <% end %>
   <% end %>

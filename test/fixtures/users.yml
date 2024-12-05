@@ -1,18 +1,14 @@
 joel:
   email: joel@pagecord.com
-  username: joel
   verified: true
 
 elliot:
   email: elliot@pagecord.com
-  username: elliot
 
 vivian:
   email: vivian@pagecord.com
-  username: vivian
   verified: true
 
 annie:
   email: annie@pagecord.com
-  username: annie
   verified: true

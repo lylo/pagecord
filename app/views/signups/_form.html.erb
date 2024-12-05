@@ -1,7 +1,9 @@
 <%= form_with url: signups_path, model: @user, data: { turbo: "false" }, class: "mt-4" do |form| %>
   <div class="flex">
     <div class="font-semibold">pagecord.com/</div>
-    <%= form.text_field :username, placeholder: "username", autofocus: true, class: "p-0 m-0 border-none bg-inherit outline-none focus:ring-0", maxlength: 20, required: true %>
+     <%= form.fields_for :blog do |blog_form| %>
+      <%= blog_form.text_field :name, placeholder: "username", autofocus: true, class: "p-0 m-0 border-none bg-inherit outline-none focus:ring-0", maxlength: 20, required: true %>
+    <% end %>
   </div>
 
   <div class="mt-4">

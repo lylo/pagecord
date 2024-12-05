@@ -15,7 +15,7 @@
     <% @followed_blogs.each do |blog| %>
       <div class="p-4 flex justify-between items-center hover:bg-slate-50 hover:dark:bg-slate-800">
         <div class="font-semibold">
-          <%= link_to "@#{blog.user.username}", blog_posts_path(username: blog.user.username) %>
+          <%= link_to "@#{blog.name}", blog_posts_path(name: blog.name) %>
         </div>
 
         <div class="text-xs border text-slate-500 dark:text-slate-400 hover:text-slate-800 hover:dark:text-slate-300 dark:border-slate-500 rounded-xl px-2 py-1 hover:bg-slate-100 hover:dark:bg-slate-700">

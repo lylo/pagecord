@@ -17,7 +17,7 @@ class AddToMarketingAutomationJobTest < ActiveJob::TestCase
     LoopsSdk::Contacts.expects(:create).with(
       email: @user.email,
       properties: {
-        username: @user.username,
+        username: @user.blog.name,
         deliveryEmail: @user.blog.delivery_email
       },
       mailing_lists: {

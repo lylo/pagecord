@@ -1,12 +1,12 @@
 class RemoveCustomDomainJob < ApplicationJob
   queue_as :default
 
-  def perform(user_id, domain)
-    if user = User.find(user_id)
-      Rails.logger.info "Removing custom domain #{domain} for user #{user.username}"
+  def perform(blog_id, domain)
+    if blog = Blog.find(blog_id)
+      Rails.logger.info "Removing custom domain #{domain} for blog #{blog.id}"
 
       if Rails.env.production?
-        HatchboxDomainApi.new(user).remove_domain(domain)
+        HatchboxDomainApi.new(blog).remove_domain(domain)
       end
     end
   end

@@ -1,16 +1,20 @@
 joel:
   user: joel
+  name: joel
   delivery_email: joel_gf35jsue@post.pagecord.com
 
 elliot:
   user: elliot
+  name: elliot
   delivery_email: elliot_jfur73yd@post.pagecord.com
 
 vivian:
   user: vivian
+  name: vivian
   delivery_email: vivian_jfur73yd@post.pagecord.com
 
 annie:
   user: annie
+  name: annie
   delivery_email: annie_asj232j@post.pagecord.com
   custom_domain: welcometoanniesblog.com

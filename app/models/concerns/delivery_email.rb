@@ -12,6 +12,6 @@ module DeliveryEmail
     def generate_delivery_email
       code = Nanoid.generate(size: 8, alphabet: "0123456789abcdefghijklmnopqrstuvwxyz")
 
-      self.delivery_email = "#{username}_#{code}#{MAIL_DOMAIN}"
+      self.delivery_email = "#{name}_#{code}#{MAIL_DOMAIN}"
     end
 end

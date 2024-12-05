@@ -5,10 +5,18 @@ module ApplicationHelper
   def meta_description
     if @post
       post_summary(@post)
-    elsif @user.present?
-      blog_description(@user)
+    elsif @blog.present?
+      blog_description(@blog)
     else
       "Pagecord is the most effortless way to publish your writing online for free. Publish your writing by sending an email, or using our delightfully simple editor."
+    end
+  end
+
+  def blog_title(blog)
+    if blog.custom_title?
+      blog.title
+    else
+      "Posts from @#{blog.name}"
     end
   end
 
@@ -17,12 +25,12 @@ module ApplicationHelper
       if @post.title&.present?
         @post.title.truncate(100).strip
       else
-        "@#{@post.user.username} - #{@post.published_at.to_formatted_s(:long)}"
+        "#{blog_title(@post.blog)} - #{@post.published_at.to_formatted_s(:long)}"
       end
     elsif content_for?(:title)
       content_for(:title)
-    elsif @user
-      user_title(@user)
+    elsif @blog
+      blog_title(@blog)
     else
       "Pagecord - Publish your writing effortlessly from your inbox"
     end
@@ -46,21 +54,13 @@ module ApplicationHelper
     elsif @post && @post.attachments.any?
       rails_public_blob_url @post.attachments.first
     elsif !custom_domain_request?
-      unless @user.present?
+      unless @blog.present?
         image_url "social/open-graph.jpg"
       end
     end
   end
 
   private
-
-    def user_title(user)
-      if user.blog && user.blog.custom_title?
-        user.blog.title
-      else
-        "Posts from @#{user.username}"
-      end
-    end
 
     def post_title(post)
       if post.title.present?
@@ -79,11 +79,11 @@ module ApplicationHelper
       end
     end
 
-    def blog_description(user)
-      if user.blog && user.blog.bio.present?
-        strip_tags(user.blog.bio).truncate(140).strip
+    def blog_description(blog)
+      if blog.bio.present?
+        strip_tags(blog.bio).truncate(140).strip
       else
-        user_title(user)
+        blog_title(blog)
       end
     end
 

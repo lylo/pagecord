@@ -11,6 +11,7 @@ class SignupsController < ApplicationController
 
   def new
     @user = User.new(marketing_consent: true)
+    @user.build_blog
   end
 
   def create
@@ -37,7 +38,7 @@ class SignupsController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:username, :email, :marketing_consent)
+      params.require(:user).permit(:email, :marketing_consent, blog_attributes: [ :name ])
     end
 
     def valid_turnstile_token?(token)

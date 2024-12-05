@@ -4,13 +4,52 @@ class BlogTest < ActiveSupport::TestCase
   def setup
     @blog = blogs(:joel)
   end
+
+  test "should validate length of name" do
+    @blog.name = "a" * 21
+    assert_not @blog.valid?
+
+    @blog.name = "a"
+    assert_not @blog.valid?
+
+    @blog.name = "aaaa"
+    assert @blog.valid?
+  end
+
+  test "should validate presence of name" do
+    @blog.name = ""
+    assert_not @blog.valid?
+  end
+
+  test "should validate uniqueness of name" do
+    @blog.name = "vivian"
+    assert_not @blog.valid?
+  end
+
+  test "should validate format of name" do
+    @blog.name = "abcdef-"
+    assert_not @blog.valid?
+
+    @blog.name = "%12312"
+    assert_not @blog.valid?
+
+    @blog.name = "abcdef_1234"
+    assert @blog.valid?
+  end
+
   test "should validate length of bio" do
     @blog.bio = "a" * 513
     assert_not @blog.valid?
   end
 
+  test "should store name in lowercase" do
+    @blog.name = "JOEL"
+    @blog.save
+    assert_equal "joel", @blog.name
+  end
+
   test "should generate unique delivery email" do
-    user = User.create!(username: "newuser", email: "newuser@newuser.com")
+    user = User.create!(email: "newuser@newuser.com", blog: Blog.new(name: "newuser"))
     assert user.blog.delivery_email.present?
     assert user.blog.delivery_email =~ /newuser_[a-zA-Z0-9]{8}@post.pagecord.com/
   end

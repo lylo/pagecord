@@ -12,7 +12,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
 
     assert_emails 1 do
-      post sessions_url, params: { user: { username: user.username, email: user.email } }
+      post sessions_url, params: { user: { username: user.blog.name, email: user.email } }
     end
 
     assert_redirected_to thanks_sessions_path
@@ -22,7 +22,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
 
     assert_emails 1 do
-      post sessions_url, params: { user: { username: "#{user.username} ", email: "#{user.email} " } }
+      post sessions_url, params: { user: { username: "#{user.blog.name} ", email: "#{user.email} " } }
     end
 
     assert_redirected_to thanks_sessions_path
@@ -32,7 +32,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
 
     assert_emails 1 do
-      post sessions_url, params: { user: { username: user.username.upcase, email: user.email.upcase } }
+      post sessions_url, params: { user: { username: user.blog.name.upcase, email: user.email.upcase } }
     end
 
     assert_redirected_to thanks_sessions_path

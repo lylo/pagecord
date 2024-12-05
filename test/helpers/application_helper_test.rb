@@ -22,22 +22,19 @@ class PostsHelperTest < ActionView::TestCase
     assert_equal "Hello, World", post_title(post)
   end
 
-  test "user_title with no title" do
-    user = User.first
-    assert_equal "Posts from @#{user.username}", user_title(user)
-  end
+  test "blog title" do
+    blog = blogs(:joel)
+    assert_equal "Posts from @#{blog.name}", blog_title(blog)
 
-  test "user_title with title" do
-    user = users(:joel)
-    user.blog.title = "My blog"
-    assert_equal "My blog", user_title(user)
+    blog.title = "My blog"
+    assert_equal "My blog", blog_title(blog)
   end
 
   test "blog_description with no bio" do
     blog = blogs(:joel)
     blog.title = "My blog"
     blog.bio = nil
-    assert_equal "My blog", blog_description(blog.user)
+    assert_equal "My blog", blog_description(blog)
   end
 
   test "blog_description with bio" do
@@ -48,6 +45,6 @@ class PostsHelperTest < ActionView::TestCase
     https://pagecord.com/joel
     BIO
 
-    assert_equal bio.strip, blog_description(blog.user)
+    assert_equal bio.strip, blog_description(blog)
   end
 end

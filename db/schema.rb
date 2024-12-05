@@ -76,11 +76,13 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_04_140445) do
   create_table "blogs", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "delivery_email"
-    t.datetime "discarded_at"
-    t.string "custom_domain"
+    t.string "name", null: false
     t.string "title"
+    t.string "custom_domain"
+    t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_blogs_on_name", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
 
@@ -144,7 +146,6 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_04_140445) do
 
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
-    t.string "username", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "verified", default: false
@@ -153,7 +154,6 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_04_140445) do
     t.boolean "marketing_consent", default: false, null: false
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "access_requests", "users"

@@ -4,13 +4,13 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should create user and redirect to posts path" do
     assert_difference("User.count") do
       assert_emails 1 do
-        post signups_url, params: { user: { username: "testuser", email: "test@example.com" }, rendered_at: 6.seconds.ago.to_i }
+        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { name: "testuser" } }, rendered_at: 6.seconds.ago.to_i }
       end
     end
 
     assert_redirected_to thanks_signups_path
 
-    assert_equal "testuser", User.last.username
+    assert_equal "testuser", User.last.blog.name
     assert_equal "test@example.com", User.last.email
     assert_not User.last.marketing_consent
   end
@@ -18,7 +18,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should create user with marketing consent" do
     assert_difference("User.count") do
       assert_emails 1 do
-        post signups_url, params: { user: { username: "testuser", email: "test@example.com", marketing_consent: true }, rendered_at: 6.seconds.ago.to_i }
+        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { name: "testuser" }, marketing_consent: true }, rendered_at: 6.seconds.ago.to_i }
       end
     end
 
@@ -29,7 +29,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should not create user with invalid params" do
     assert_no_difference("User.count") do
       assert_emails 0 do
-        post signups_url, params: { user: { username: "", email: "" }, rendered_at: 6.seconds.ago.to_i }
+        post signups_url, params: { user: { email: "", blog_attributes: { name: "" } }, rendered_at: 6.seconds.ago.to_i }
       end
     end
 
@@ -38,7 +38,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create user if honeypot field is populated" do
     assert_no_difference("User.count") do
-      post signups_url, params: { email_confirmation: "test@example.com", user: { username: "testuser", email: "test@example.com" } }
+      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blog_attributes: { name: "testuser" } } }
     end
 
     assert_response :unprocessable_entity
@@ -46,7 +46,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create user if form rendered and submitted within 5 seconds" do
     assert_no_difference("User.count") do
-      post signups_url, params: { email_confirmation: "test@example.com", user: { username: "testuser", email: "test@example.com" }, rendered_at: 3.seconds.ago.to_i }
+      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blog_attributes: { name: "testuser" } }, rendered_at: 3.seconds.ago.to_i }
     end
 
     assert_response :unprocessable_entity

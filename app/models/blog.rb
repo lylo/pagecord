@@ -10,12 +10,13 @@ class Blog < ApplicationRecord
   has_rich_text :bio
   validate :bio_length
 
+  before_validation :downcase_name
+
+  validates :name, presence: true, uniqueness: true, length: { minimum: Username::MIN_LENGTH, maximum: Username::MAX_LENGTH }
+  validate  :name_valid
+
   def custom_title?
     title.present?
-  end
-
-  def username
-    user.username
   end
 
   private
@@ -23,6 +24,16 @@ class Blog < ApplicationRecord
     def bio_length
       if bio.to_plain_text.length > 500
         errors.add(:bio, "is too long (maximum 500 characters)")
+      end
+    end
+
+    def downcase_name
+      self.name = self.name.downcase.strip if self.name.present?
+    end
+
+    def name_valid
+      unless Username.valid_format?(name)
+        errors.add(:name, "must only use alphanumeric characters, full stops (periods) or underscores")
       end
     end
 end

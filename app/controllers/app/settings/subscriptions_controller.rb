@@ -8,7 +8,7 @@ class App::Settings::SubscriptionsController < AppController
   end
 
   def destroy
-    Rails.logger.info "Cancelling subscription for #{Current.user.username}"
+    Rails.logger.info "Cancelling subscription for #{Current.user.id}"
 
     if @subscription.present?
       response = PaddleApi.new.cancel_subscription(@subscription.paddle_subscription_id)

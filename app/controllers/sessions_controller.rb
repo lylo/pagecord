@@ -7,12 +7,19 @@ class SessionsController < ApplicationController
     if Current.user.present?
       redirect_to app_root_path
     else
-      @user = User.new
+      @user = User.new(blog: Blog.new(name: ""))
     end
   end
 
   def create
-    if @user = User.kept.find_by(username: from_params(:username), email: from_params(:email))
+    @user = User.kept.joins(:blog).find_by(
+        blogs: {
+          name: user_params[:username]
+        },
+        email: user_params[:email]
+      )
+
+    if @user.present?
       AccountVerificationMailer.with(user: @user).login.deliver_later
     end
 
@@ -27,13 +34,8 @@ class SessionsController < ApplicationController
 
   private
 
-    def from_params(key)
-      if value = user_params[key]
-        value.downcase.strip
-      end
-    end
-
     def user_params
       params.require(:user).permit(:username, :email)
+        .transform_values { |v| v.strip.downcase }
     end
 end
