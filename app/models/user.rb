@@ -15,17 +15,6 @@ class User < ApplicationRecord
     self.update! verified: true
   end
 
-  ADMIN_USERS = %w[olly pagecord]
-
-  # FIXME add an admin field on user
-  def is_admin?
-    if Rails.env.production?
-      ADMIN_USERS.include? Current.user.blog.name
-    else
-      Current.user.blog.name == "joel"
-    end
-  end
-
   private
 
     def downcase_email

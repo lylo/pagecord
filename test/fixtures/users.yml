@@ -1,5 +1,6 @@
 joel:
   email: joel@pagecord.com
+  admin: true
   verified: true
 
 elliot:
