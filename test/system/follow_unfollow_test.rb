@@ -16,7 +16,7 @@ class FollowsTest < ApplicationSystemTestCase
 
     visit login_path
 
-    fill_in "user[username]", with: @vivian.username
+    fill_in "user[username]", with: @vivian.blog.name
     fill_in "user[email]", with: @vivian.email
 
     click_on "Login"
@@ -24,7 +24,7 @@ class FollowsTest < ApplicationSystemTestCase
     visit verify_access_request_url(token: @vivian.access_requests.last.token_digest)
 
     # Go to joel's blog
-    visit blog_posts_path(username: @joel.username)
+    visit blog_posts_path(name: @joel.blog.name)
 
     # Follow joel
     within("turbo-frame##{dom_id(@joel.blog)}-follow-button") do
