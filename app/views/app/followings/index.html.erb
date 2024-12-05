@@ -2,11 +2,11 @@
   <div class="my-8">
     <% if @followees.empty? %>
       <div class="text-center">
-        Once you follow other Pagecords, you'll see them listed here ✨
+        Once you follow other Pagecord blogs, you'll see them listed here ✨
       </div>
     <% else %>
       <%= render "app/shared/callout" do %>
-        You are following <%= pluralize @user.followees.count, "Pagecord" %>. You can see all their posts
+        You are following <%= pluralize @user.followees.count, "Pagecord blog" %>. You can see all their posts
         <%= link_to "in your feed", app_feed_path, class: "font-semibold underline" %>.
       <% end %>
     <% end %>
@@ -15,12 +15,12 @@
     <% @followees.each do |followee| %>
       <div class="p-4 flex justify-between items-center hover:bg-slate-50 hover:dark:bg-slate-800">
         <div class="font-semibold">
-          <%= link_to "@#{followee.username}", user_posts_path(username: followee.username) %>
+          <%= link_to "@#{followee.username}", blog_posts_path(username: followee.user.username) %>
         </div>
 
         <div class="text-xs border text-slate-500 dark:text-slate-400 hover:text-slate-800 hover:dark:text-slate-300 dark:border-slate-500 rounded-xl px-2 py-1 hover:bg-slate-100 hover:dark:bg-slate-700">
           <%= turbo_frame_tag "#{dom_id(followee)}-follow-button" do %>
-            <%= render partial: "users/follow_button", locals: { user: followee } %>
+            <%= render partial: "blogs/follow_button", locals: { blog: followee } %>
           <% end %>
         </div>
       </div>

@@ -11,7 +11,7 @@ class FollowsTest < ApplicationSystemTestCase
     ActiveJob::Base.queue_adapter.perform_enqueued_jobs = @perform_jobs
   end
 
-  test "user can follow and unfollow another user" do
+  test "user can follow and unfollow a blog" do
     ActiveJob::Base.queue_adapter.perform_enqueued_jobs = true
 
     visit login_path
@@ -23,31 +23,31 @@ class FollowsTest < ApplicationSystemTestCase
 
     visit verify_access_request_url(token: @vivian.access_requests.last.token_digest)
 
-    # Go to user2's page
-    visit user_posts_path(username: @joel.username)
+    # Go to joel's blog
+    visit blog_posts_path(username: @joel.username)
 
-    # Follow user2
-    within("turbo-frame##{dom_id(@joel)}-follow-button") do
+    # Follow joel
+    within("turbo-frame##{dom_id(@joel.blog)}-follow-button") do
       click_on "Follow"
     end
 
     # Check that the button now says "Unfollow"
-    within("turbo-frame##{dom_id(@joel)}-follow-button") do
+    within("turbo-frame##{dom_id(@joel.blog)}-follow-button") do
       assert_text "Unfollow"
     end
 
-    assert @vivian.following?(@joel)
+    assert @vivian.following?(@joel.blog)
 
-    # Unfollow user2
-    within("turbo-frame##{dom_id(@joel)}-follow-button") do
+    # Unfollow joel
+    within("turbo-frame##{dom_id(@joel.blog)}-follow-button") do
       click_on "Unfollow"
     end
 
     # Check that the button now says "Follow"
-    within("turbo-frame##{dom_id(@joel)}-follow-button") do
+    within("turbo-frame##{dom_id(@joel.blog)}-follow-button") do
       assert_text "Follow"
     end
 
-    assert_not @vivian.following?(@joel)
+    assert_not @vivian.following?(@joel.blog)
   end
 end

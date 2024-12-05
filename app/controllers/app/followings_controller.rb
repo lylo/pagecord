@@ -7,33 +7,33 @@ class App::FollowingsController < AppController
   end
 
   def create
-    @user = User.find(params[:user_id])
+    @blog = Blog.find(params[:blog_id])
 
     begin
-      Current.user.follow(@user)
+      Current.user.follow(@blog)
     rescue => e
       head :bad_request and return
     end
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.update("#{dom_id(@user)}-follow-button", partial: "users/follow_button", locals: { user: @user })
+        render turbo_stream: turbo_stream.update("#{dom_id(@blog)}-follow-button", partial: "blogs/follow_button", locals: { blog: @blog })
       end
     end
   end
 
   def destroy
-    @user = User.find(params[:user_id])
+    @blog = Blog.find(params[:blog_id])
 
     begin
-      Current.user.unfollow(@user)
+      Current.user.unfollow(@blog)
     rescue => e
       head :bad_request and return
     end
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.update("#{dom_id(@user)}-follow-button", partial: "users/follow_button", locals: { user: @user })
+        render turbo_stream: turbo_stream.update("#{dom_id(@blog)}-follow-button", partial: "blogs/follow_button", locals: { blog: @blog })
       end
     end
   end

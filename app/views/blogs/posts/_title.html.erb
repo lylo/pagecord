@@ -1,0 +1,7 @@
+<%= link_to blog_home_url(@blog) do %>
+  <% if @blog.custom_title? %>
+    <%= @blog.title %>
+  <% else %>
+    @<%= @blog.user.username %>
+  <% end %>
+<% end %>

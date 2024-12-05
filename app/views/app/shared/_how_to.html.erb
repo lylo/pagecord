@@ -1,7 +1,7 @@
 <p>
-  Your Pagecord is live at <%= link_to user_home_url(@user), user_home_url(@user), class: "font-semibold underline" %>
+  Your Pagecord is live at <%= link_to blog_home_url(@blog), blog_home_url(@blog), class: "font-semibold underline" %>
 </p>
 <p class="mt-4">
-  To publish a new post, send an email from <span><%= @user.email %></span>
-  to <%= mail_to @user.blog.delivery_email, class: "underline font-semibold" %>.
+  To publish a new post, send an email from <span><%= @blog.user.email %></span>
+  to <%= mail_to @blog.delivery_email, class: "underline font-semibold" %>.
 </p>
