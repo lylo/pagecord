@@ -18,7 +18,6 @@ class AddToMarketingAutomationJob < ApplicationJob
       response = LoopsSdk::Contacts.create(
         email: user.email,
         properties: {
-          # FIXME change to id?
           username: user.blog.name,
           deliveryEmail: user.blog.delivery_email
         },
