@@ -82,10 +82,15 @@ class MailParser
         elsif @mail.text_part
           plain_text_transform(@mail.text_part.decoded)
         end
-      elsif @mail.content_type =~ /text\/plain/
-        plain_text_transform(@mail.decoded)
       else
-        raise "Unknown content type #{@mail.content_type}"
+        case @mail.content_type
+        when /text\/plain/
+          plain_text_transform(@mail.decoded)
+        when /text\/html/
+          html_transform(@mail.decoded)
+        else
+          raise "Unknown content type #{@mail.content_type}"
+        end
       end
     end
 

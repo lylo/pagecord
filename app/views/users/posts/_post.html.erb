@@ -7,7 +7,7 @@
     <% end %>
   <% end %>
 
-  <%= auto_link post.content %>
+  <%= auto_link post.content.to_s %>
 
   <%= link_to post_path(post), class: "no-underline", data: { turbo_frame: "_top" } do %>
     <div class="text-slate-400 text-sm mt-4 mb-4 font-normal" title="<%= post.published_at.to_formatted_s(:long) %>">
