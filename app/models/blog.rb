@@ -4,6 +4,9 @@ class Blog < ApplicationRecord
   belongs_to :user, inverse_of: :blog
   has_many :posts, dependent: :destroy
 
+  has_many :followings, foreign_key: :followed_id, dependent: :destroy
+  has_many :followers, through: :followings, source: :follower
+
   has_rich_text :bio
   validate :bio_length
 

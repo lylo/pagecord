@@ -37,7 +37,7 @@ class Blogs::PostsController < ApplicationController
     end
 
     def user_params
-      params.permit(:username, :page, :token)
+      params.permit(:username, :page, :title, :token)
     end
 
     def verification

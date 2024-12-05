@@ -4,4 +4,5 @@ class Following < ApplicationRecord
 
   validates :follower_id, presence: true
   validates :followed_id, presence: true
+  validates :follower_id, uniqueness: { scope: :followed_id, message: "can only follow a blog once" }
 end

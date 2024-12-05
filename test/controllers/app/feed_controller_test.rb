@@ -11,13 +11,13 @@ class App::FeedControllerTest < ActionDispatch::IntegrationTest
     login_as @vivian
   end
 
-  test "should get index with no followees" do
+  test "should get index with no followed blogs" do
     get app_feed_path
     assert_response :success
     assert_match "You'll see posts here once you follow people who are posting", @response.body
   end
 
-  test "should render posts from followees" do
+  test "should render posts from followed blogs" do
     @vivian.follow(@joel.blog)
 
     get app_feed_path

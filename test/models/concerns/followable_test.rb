@@ -8,7 +8,7 @@ class FollowableTest < ActiveSupport::TestCase
 
   test "should allow a user to follow another user" do
     @user1.follow @user2.blog
-    assert @user1.followees.include?(@user2.blog)
+    assert @user1.followed_blogs.include?(@user2.blog)
   end
 
   test "should not allow a user to follow themselves" do
@@ -29,7 +29,7 @@ class FollowableTest < ActiveSupport::TestCase
     @user1.follow @user2.blog
     @user1.unfollow @user2.blog
 
-    assert_not @user1.followees.include?(@user2.blog)
+    assert_not @user1.followed_blogs.include?(@user2.blog)
   end
 
   test "should not allow a user to unfollow a user they are not following" do
