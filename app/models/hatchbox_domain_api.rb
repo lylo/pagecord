@@ -54,7 +54,7 @@ class HatchboxDomainApi
     end
 
     def touch_all
-      @user.blog.posts.touch_all
+      @blog.posts.touch_all
     end
 
     # In theory a malicious actor could remove domains that are not theirs, including
