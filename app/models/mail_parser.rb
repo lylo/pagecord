@@ -12,7 +12,8 @@ class MailParser
     ]
 
     @plain_text_pipeline = [
-      Html::PlainTextToHtml.new
+      Html::PlainTextToHtml.new,
+      Html::ImageUnfurl.new
     ]
 
     if process_attachments
