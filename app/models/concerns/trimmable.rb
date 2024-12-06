@@ -27,38 +27,31 @@ module Trimmable
   private
 
     def trim(html)
-      doc = Nokogiri::HTML::DocumentFragment.parse(html)
+      document = Nokogiri::HTML.fragment(html)
 
-      # Process top-level nodes
-      remove_trailing_empty_nodes(doc)
+      remove_trailing_empty_nodes(document)
 
-      # Process the last top-level element
-      last_element = doc.children.last
-      remove_trailing_empty_nodes(last_element) if last_element
-
-      # Remove trailing empty top-level elements
-      doc.children.reverse.each do |node|
-        if node.element? && node.children.empty? && %w[p div].include?(node.name)
-          node.remove
-        else
-          break
-        end
-      end
-
-      doc
+      document.to_html
     end
 
-    # Function to remove trailing empty nodes
-    def remove_trailing_empty_nodes(element)
-      nodes = element.children.reverse
+    def remove_trailing_empty_nodes(node)
+      # Traverse the node's children in reverse
+      while node.children.any?
+        last_child = node.children.last
 
-      nodes.each do |node|
-        if node.text? && node.content.strip.empty?
-          node.remove
-        elsif node.name == "br" && node.element?
-          node.remove
-        elsif node.element? && node.children.empty? && %w[p div].include?(node.name)
-          node.remove
+        if last_child.text? && last_child.text.strip.empty?
+          last_child.remove # Remove empty text nodes
+        elsif last_child.element?
+          if last_child.name == "br" ||
+             ([ "div", "p" ].include?(last_child.name) && last_child.children.empty? && last_child.text.strip.empty?)
+
+            last_child.remove  # Remove <br> tags or empty <div>/<p> elements
+          else
+            remove_trailing_empty_nodes(last_child)
+
+            # Stop if the child was not completely removed
+            break if node.children.last == last_child
+          end
         else
           break
         end

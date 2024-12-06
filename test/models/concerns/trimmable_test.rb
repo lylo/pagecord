@@ -24,4 +24,12 @@ class TrimmableTest < ActiveSupport::TestCase
 
     assert_equal "<div>this is some text</div><br><br><div>this is more text</div>", post.content.to_s.strip
   end
+
+  test "should remove trailing <br> tags within div and p" do
+    post = posts(:two)
+    post.content = "<div><p>this is some text<br><br>this is more text<br><br><br></p></div>"
+    post.save!
+
+    assert_equal "<div><p>this is some text<br><br>this is more text</p></div>", post.content.to_s.strip
+  end
 end
