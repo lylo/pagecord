@@ -20,15 +20,15 @@
     <% @posts.each do |post| %>
       <div class="flex gap-x-4 justify-between px-4 py-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg break-words">
         <div class="flex flex-col">
-          <div class="font-semibold">
-            <%= link_to edit_app_post_path(post), title: "Click to edit this post" do %>
+          <%= link_to edit_app_post_path(post), title: "Click to edit this post" do %>
+            <div class="font-semibold">
               <%= post_title(post) %>
-            <% end %>
-          </div>
+            </div>
 
-          <div class="text-xs text-slate-400 dark:text-slate-400 flex justify-between items-center">
-            <%= post.published_at.to_formatted_s(:long) %>
-          </div>
+            <div class="text-xs text-slate-400 dark:text-slate-400 flex justify-between items-center">
+              <%= post.published_at.to_formatted_s(:long) %>
+            </div>
+            <% end %>
         </div>
 
         <div class="text-slate-400 dark:text-slate-400 ">

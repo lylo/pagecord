@@ -20,6 +20,9 @@ class PostsHelperTest < ActionView::TestCase
 
     post = Blog.first.posts.build content: "<div><p>Hello, World</p><img src='example.com'></div>"
     assert_equal "Hello, World", post_title(post)
+
+    post = Blog.first.posts.build content: "<div><p><img src='https://example.com/image.png'></div>"
+    assert_equal "Untitled", post_title(post)
   end
 
   test "blog title" do

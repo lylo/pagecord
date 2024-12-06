@@ -71,11 +71,12 @@ module ApplicationHelper
     end
 
     def post_summary(post)
-      summary = post.content.to_plain_text
+      summary = strip_links(post.content.to_plain_text).truncate(140)
+
       if summary.blank?
         "Untitled"
       else
-        strip_links(summary).truncate(140)
+        summary
       end
     end
 
