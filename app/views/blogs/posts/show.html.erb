@@ -1,5 +1,9 @@
 <div class="mb-12 pb-4 font-bold text-lg text-black dark:text-slate-100 border-b border-b-slate-200 dark:border-b-slate-600">
-  <%= render "title" %>
+  <% if @blog.avatar&.attached? %>
+    <%= render "avatar_header" %>
+  <% else %>
+    <%= render "no_avatar_header" %>
+  <% end %>
 </div>
 
 <div data-controller="media-embeds">
