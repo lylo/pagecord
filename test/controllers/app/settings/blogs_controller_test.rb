@@ -69,10 +69,10 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "should raise an error after 5 custom domain changes" do
+  test "should raise an error after 20 custom domain changes" do
     user = users(:annie)
 
-    (1..5).each do |i|
+    (1..20).each do |i|
       user.blog.custom_domain_changes.create!(custom_domain: "newdomain#{i}.com")
     end
 
