@@ -35,7 +35,10 @@ trix-editor {
 }
 
 .trix-minimal {
-  .trix-button-group:not(.trix-button-group--text-tools),
+  .trix-button-group--block-tools,
+  .trix-button-group--file-tools,
+  .trix-button-group--history-tools,
+  .trix-button-group-spacer,
   .trix-button--icon-strike,
   .trix-button--icon-color {
     display: none;

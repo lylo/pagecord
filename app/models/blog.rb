@@ -7,6 +7,10 @@ class Blog < ApplicationRecord
   has_many :followings, foreign_key: :followed_id, dependent: :destroy
   has_many :followers, through: :followings, source: :follower
 
+  has_one_attached :avatar do |attachable|
+    attachable.variant :thumb, resize_to_limit: [ 300, 300 ]
+  end
+
   has_rich_text :bio
   validate :bio_length
 
