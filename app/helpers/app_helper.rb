@@ -5,7 +5,7 @@ module AppHelper
 
   def nav_class_for(path)
     if is_current_path?(path)
-      "text-black dark:text-slate-200 font-semibold"
+      "text-slate-900 dark:text-slate-100 font-semibold"
     else
       ""
     end

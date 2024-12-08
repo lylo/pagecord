@@ -8,7 +8,7 @@
     <header>
     </header>
     <main class="container mx-auto px-5 flex flex-grow">
-      <div class="max-w-xl w-full mx-auto mt-12 text-black dark:text-slate-100">
+      <div class="max-w-xl w-full mx-auto mt-12 dark:text-slate-100 text-slate-900">
         <%= yield %>
       </div>
     </main>
@@ -16,7 +16,7 @@
     <footer class="w-full flex flex-col text-center p-8 text-sm text-slate-400 dark:text-slate-500">
       <% unless custom_domain_request? %>
         <%= link_to root_path do %>
-          <%= inline_svg_tag "logo.svg", class: "w-[100px] mt-8 inline-flex dark:text-white text-black" %>
+          <%= inline_svg_tag "logo.svg", class: "w-[100px] mt-8 inline-flex dark:text-slate-100 text-slate-900" %>
         <% end %>
       <% end %>
     </footer>
