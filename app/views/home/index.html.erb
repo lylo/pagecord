@@ -1,7 +1,7 @@
 <div class="prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-2xl">
   <h1 class="text-center"><span class="text-4xl tracking-tight">The most effortless way to publish your writing online</span></h1>
   <p class="mt-8 sm:mt-12">
-    Create your own beautifully minimalist blog in seconds. Free and open source!
+    Create your own beautifully minimalist blog in seconds. For free!
   </p>
   <p>
     Publish your writing effortlessly by sending an email, or use our delightfully simple editor.
@@ -12,7 +12,7 @@
 
   <div class="my-8 text-center not-prose">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing with Pagecord today!</div>
+      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing for free!</div>
     <% end %>
   </div>
 </div>
@@ -41,15 +41,17 @@
     Pagecord is super-simple to use, but it's chock-a-block with great features.
   </p>
   <ul>
-    <li><strong>Long-form writing or microblog</strong>. Write long-form articles or microblog your thoughts. Both look fantastic 🎨</li>
+    <li><strong>Write by email</strong>. Publishing is as simple as sending an email 💌</li>
+    <li><strong>Online editor</strong>. Use a rich text editor you prefer a traditional blogging experience 👩‍💻</li>
     <li><strong>Bold, underline, lists or code</strong>. Rich text formatting is fully supported 🖋️</li>
+    <li><strong>Long-form writing or microblog</strong>. Write long-form articles or microblog your thoughts. Both look fantastic 🎨</li>
     <li><strong>Media Embeds</strong>. Links to YouTube, Spotify and Bandcamp are automatically embedded. Great for sharing your favourite tunes and videos 🎧 📺</li>
     <li><strong>Follow your friends</strong>. Pagecord is social! Follow other Pagecord blogs and see the latest articles in your personal feed 🤝</li>
     <li><strong>RSS feeds</strong>. Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</li>
   </ul>
 
   <p class="mt-8">
-    Premium customers get additional features and a warm fuzzy feeling for an unbeatable price of only <span class="px-1 font-bold bg-[#fcc7c7] dark:bg-[#ff5f5f] dark:text-white rounded">$<%= Subscription.price %> per year!</span>
+    Premium customers get additional features and a warm fuzzy feeling for an unbeatable price of only <span class="px-1 font-bold bg-yellow-100 dark:bg-[#ff5f5f] dark:text-white rounded">$<%= Subscription.price %> per year!</span>
   </p>
   <ul>
     <li><strong>Image Attachments</strong>. Attach images to your email and they'll auto-magically appear in your posts 🪄</li>
@@ -64,12 +66,12 @@
 
   <div class="mt-8 text-center not-prose">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing with Pagecord today!</div>
+      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing for free today!</div>
     <% end %>
   </div>
 
   <hr>
 
-  <h3 class="text-center tracking-tight">Subscribe to the newsletter for updates</h3>
+  <h3 class="text-center tracking-tight">Subscribe to the Pagecord email newsletter for updates</h3>
   <%= render "newsletter_form" %>
 </div>
