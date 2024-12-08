@@ -1,3 +1,3 @@
-<% if @user&.persisted? %>
-  <%= tag :link, rel: "alternate", type: "application/rss+xml", title: "Posts from @#{@user.blog.name}", href: blog_posts_path(name: @user.blog.name, format: "rss") %>
+<% if @blog %>
+  <%= tag :link, rel: "alternate", type: "application/rss+xml", title: "Posts from @#{@blog.name}", href: blog_posts_path(name: @blog.name, format: "rss") %>
 <% end %>
