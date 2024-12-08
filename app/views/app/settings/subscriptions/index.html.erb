@@ -18,7 +18,13 @@
 
 <div class="mt-4 flex flex-col gap-y-4">
 <% if Current.user.subscribed? %>
-  <% if @subscription.cancelled? %>
+  <% if @subscription.complimentary? %>
+    <p>You have a free Pagecord Premium subscription! 🎉</p>
+
+    <div>
+      <%= link_to "← Back", app_settings_path, class: "btn-primary" %>
+    </div>
+  <% elsif @subscription.cancelled? %>
     <p>
       Your Pagecord Premium subscription has been scheduled for cancellation on
       <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.

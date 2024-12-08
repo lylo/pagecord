@@ -1,14 +1,17 @@
 class Subscription < ApplicationRecord
   belongs_to :user
 
-  scope :active, -> { where(cancelled_at: nil).where("next_billed_at > ?", Time.current) }
+  scope :comped, -> { where(complimentary: true) }
+  scope :active_paid, -> { where(cancelled_at: nil).where(complimentary: false).where("next_billed_at > ?", Time.current) }
 
   def self.price
     "20"
   end
 
   def active?
-    !cancelled? && !lapsed?
+    active_paid = !cancelled? && !lapsed?
+
+    complimentary? || active_paid
   end
 
   def cancelled?
@@ -16,6 +19,8 @@ class Subscription < ApplicationRecord
   end
 
   def lapsed?
+    return false if complimentary?
+
     next_billed_at && next_billed_at < Time.current
   end
 end
