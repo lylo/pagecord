@@ -4,7 +4,7 @@
   <%= pluralize @pagy.count, "user" %> in total.
 </p>
 <p>
-  <%= pluralize Subscription.active_paid.count, "active subscription" %>, <%= pluralize Subscription.comped.count, "comped" %>.
+  <%= pluralize Subscription.active_paid.count, "active subscription" %>, <%= Subscription.comped.count %> comped.
 </p>
 
 <div class="overflow-auto">
