@@ -39,7 +39,11 @@
           <% if blog.user.discarded_at %>
             Cancelled
           <% elsif blog.user.subscribed? %>
-            Premium
+            <% if blog.complimentary? %>
+              Comped
+            <% else %>
+              Premium
+            <% end %>
           <% else %>
             Free
           <% end %>
