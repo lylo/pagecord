@@ -1,6 +1,8 @@
 <div class="flex justify-between">
   <div class="w-16 h-16 me-2">
-    <%= image_tag rails_public_blob_url(@blog.avatar), class: "border dark:border-slate-800 shadow-sm object-cover rounded-full w-16 h-16" %>
+    <%= link_to blog_home_url(@blog) do %>
+      <%= image_tag rails_public_blob_url(@blog.avatar), class: "border dark:border-slate-800 shadow-sm object-cover rounded-full w-16 h-16" %>
+    <% end %>
   </div>
 
   <div class="text-end w-auto">
