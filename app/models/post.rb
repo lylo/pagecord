@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-  include Trimmable
+  include Trimmable, Upvotable
 
   belongs_to :blog, inverse_of: nil
 

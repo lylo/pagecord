@@ -25,10 +25,16 @@
               <%= post_title(post) %>
             </div>
 
-            <div class="text-xs text-slate-400 dark:text-slate-400 flex justify-between items-center">
+            <div class="mt-2 text-xs text-slate-400 dark:text-slate-400">
               <%= post.published_at.to_formatted_s(:long) %>
+
+              <% if current_features.enabled?(:upvotes) %>
+                <div class="mt-1 flex items-center gap-x-0.5">
+                  <%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %><%= post.upvotes_count %>
+                </div>
+              <% end %>
             </div>
-            <% end %>
+          <% end %>
         </div>
 
         <div class="text-slate-400 dark:text-slate-400 ">

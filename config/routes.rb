@@ -134,6 +134,10 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :posts, only: [] do
+    resources :upvotes, only: [ :create, :destroy ], module: :posts
+  end
+
   namespace :api do
     post "embeds/bandcamp", to: "embeds#bandcamp"
   end

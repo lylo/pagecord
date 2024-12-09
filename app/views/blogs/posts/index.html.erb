@@ -12,7 +12,7 @@
 <% else %>
   <%= turbo_frame_tag :posts do %>
     <div data-controller="media-embeds">
-      <%= render partial: "post", collection: @posts, cached: true %>
+      <%= render partial: "post_without_upvotes", collection: @posts, as: :post %>
     </div>
 
     <% if @pagy.next %>

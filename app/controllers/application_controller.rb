@@ -3,6 +3,12 @@ class ApplicationController < ActionController::Base
 
   before_action :domain_check
 
+  helper_method :current_features
+
+  def current_features
+    Rails.features.for(blog: @blog)
+  end
+
   protected
 
     def redirect_to_app_home

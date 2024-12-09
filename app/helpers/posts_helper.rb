@@ -8,4 +8,8 @@ module PostsHelper
     # Replace the ActionText attachment wrapper with just the image tag
     html.gsub(attachment_regex) { |match| $1.gsub(/<figure[^>]*>/, "").gsub(/<\/figure>/, "") }
   end
+
+  def upvoted_by_current_viewer?(post)
+    @upvote = post.upvotes.find_by(hash_id: @hash_id)
+  end
 end
