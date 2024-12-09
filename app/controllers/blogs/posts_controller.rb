@@ -34,6 +34,8 @@ class Blogs::PostsController < ApplicationController
 
       if @blog.nil?
         redirect_to_app_home
+      else
+        @user = @blog.user
       end
     end
 
