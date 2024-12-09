@@ -2,7 +2,11 @@ require "application_system_test_case"
 
 class UpvotePostTest < ApplicationSystemTestCase
   test "user can upvote a post" do
-    post = blogs(:joel).posts.first
+    blog = blogs(:joel)
+    blog.features << "upvotes"
+    blog.save!
+
+    post = blog.posts.first
     initial_upvotes = post.upvotes.count
 
     visit post_without_title_path(post.blog.name, post.token)
