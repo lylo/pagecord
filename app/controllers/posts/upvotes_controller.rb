@@ -1,7 +1,7 @@
 class Posts::UpvotesController < ApplicationController
   include RequestHash
 
-  rate_limit to: 5, within: 1.minute
+  rate_limit to: 10, within: 1.minute
 
   before_action :load_post
 
