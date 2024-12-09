@@ -3,6 +3,7 @@ class Posts::UpvotesController < ApplicationController
 
   rate_limit to: 10, within: 1.minute
 
+  skip_before_action :domain_check
   before_action :load_post
 
   def create
