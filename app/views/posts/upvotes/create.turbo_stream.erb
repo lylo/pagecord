@@ -1,0 +1,3 @@
+<%= turbo_stream.update dom_id(@post, :upvotes) do %>
+  <%= render partial: "blogs/posts/upvotes", locals: { post: @post } %>
+<% end %>

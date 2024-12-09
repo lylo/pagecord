@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2024_12_08_150958) do
+ActiveRecord::Schema[8.1].define(version: 2024_12_09_141215) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -82,6 +82,7 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_08_150958) do
     t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "features", default: [], array: true
     t.index ["name"], name: "index_blogs_on_name", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
@@ -126,6 +127,7 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_08_150958) do
     t.text "raw_content"
     t.string "token", null: false
     t.bigint "blog_id", null: false
+    t.integer "upvotes_count", default: 0, null: false
     t.index ["blog_id"], name: "index_posts_on_blog_id"
     t.index ["token"], name: "index_posts_on_token", unique: true
   end
@@ -143,6 +145,15 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_08_150958) do
     t.boolean "complimentary", default: false, null: false
     t.index ["paddle_customer_id"], name: "index_subscriptions_on_paddle_customer_id"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
+  create_table "upvotes", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.string "hash_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id", "hash_id"], name: "index_upvotes_on_post_id_and_hash_id", unique: true
+    t.index ["post_id"], name: "index_upvotes_on_post_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -167,4 +178,5 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_08_150958) do
   add_foreign_key "paddle_events", "users"
   add_foreign_key "posts", "blogs"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "upvotes", "posts"
 end

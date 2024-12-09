@@ -1,12 +1,13 @@
 class Blogs::PostsController < ApplicationController
-  include Pagy::Backend
+  include Pagy::Backend, RequestHash
+
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   skip_before_action :domain_check
   before_action :load_blog, :validate_user, :enforce_custom_domain
 
   def index
-    @pagy, @posts = pagy(@blog.posts.order(published_at: :desc))
+    @pagy, @posts = pagy(@blog.posts.includes(:rich_text_content).order(published_at: :desc))
 
     respond_to do |format|
       format.html
@@ -17,7 +18,7 @@ class Blogs::PostsController < ApplicationController
   def show
     @post = @blog.posts.find_by!(token: blog_params[:token])
 
-    fresh_when @post
+    fresh_when @post, public: true, etag: [ @post, @post.upvotes_count ], last_modified: @post.updated_at
   end
 
   private

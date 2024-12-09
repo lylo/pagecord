@@ -169,6 +169,7 @@ GEM
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
     fastimage (2.3.1)
+    feature_toggles (1.2.1)
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-arm-linux-gnu)
     ffi (1.17.0-arm64-darwin)
@@ -442,6 +443,7 @@ DEPENDENCIES
   debug
   discard (~> 1.2)
   fastimage
+  feature_toggles
   htmlentities
   httparty
   image_processing (~> 1.2)
