@@ -1,13 +1,13 @@
 <div class="flex flex-col items-center">
   <% if upvoted_by_current_viewer?(post) %>
     <%= form_with url: post_upvote_path(post, @upvote), method: :delete, data: { controller: "form-submit" } do |form| %>
-      <%= button_tag type: "submit", data: { action: "form-submit#submit" } do %>
+      <%= button_tag type: "submit", data: { action: "form-submit#submit" }, title: "You liked this post 😊" do %>
         <%= inline_svg_tag "icons/heart.svg", class: "cursor-pointer text-red-500 w-5 h-5" %>
       <% end %>
     <% end %>
   <% else %>
     <%= form_with url: post_upvotes_path(post), method: :post, data: { controller: "form-submit" } do |form| %>
-      <%= button_tag type: "submit", data: { action: "form-submit#submit" } do %>
+      <%= button_tag type: "submit", data: { action: "form-submit#submit" }, title: "Click to like this post" do %>
         <%= inline_svg_tag "icons/heart.svg", class: "cursor-pointer dark:text-slate-500 text-slate-300 w-5 h-5" %>
       <% end %>
     <% end %>
