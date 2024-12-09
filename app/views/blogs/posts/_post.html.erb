@@ -1,19 +1,17 @@
-<% cache [post, post.upvotes_count] do %>
-  <article class="mb-16 prose dark:prose-invert overflow-auto break-words">
-    <%= render "post_title", post: post %>
+<article class="mb-16 prose dark:prose-invert overflow-auto break-words">
+  <%= render "post_title", post: post %>
 
-    <%= render "post_content", post: post %>
+  <%= render "post_content", post: post %>
 
-    <div class="flex justify-between items-center my-4 text-slate-400 text-sm" title="<%= post.published_at.to_formatted_s(:long) %>">
-      <%= link_to post_path(post), class: "no-underline my-4 text-slate-400 font-normal", data: { turbo_frame: "_top" } do %>
-        <%= post.published_at.to_date.to_formatted_s(:long) %>
+  <div class="flex justify-between items-center my-4 text-slate-400 text-sm" title="<%= post.published_at.to_formatted_s(:long) %>">
+    <%= link_to post_path(post), class: "no-underline my-4 text-slate-400 font-normal", data: { turbo_frame: "_top" } do %>
+      <%= post.published_at.to_date.to_formatted_s(:long) %>
+    <% end %>
+
+    <% if current_features.enabled?(:upvotes) %>
+      <%= turbo_frame_tag dom_id(post, :upvotes) do %>
+        <%= render "upvotes", post: post %>
       <% end %>
-
-      <% if current_features.enabled?(:upvotes) %>
-        <%= turbo_frame_tag dom_id(post, :upvotes) do %>
-          <%= render "upvotes", post: post %>
-        <% end %>
-      <% end %>
-    </div>
-  </article>
-<% end %>
+    <% end %>
+  </div>
+</article>

@@ -18,7 +18,7 @@ class Blogs::PostsController < ApplicationController
   def show
     @post = @blog.posts.find_by!(token: blog_params[:token])
 
-    fresh_when(etag: [ @post, @post.upvotes_count, upvoted_by_current_viewer?(@post) ], last_modified: @post.updated_at)
+    fresh_when @post
   end
 
   private
