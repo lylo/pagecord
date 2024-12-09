@@ -35,40 +35,121 @@
   </figure>
 </div>
 
-<div class="mt-12 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-2xl">
+<div class="mt-12 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-3xl">
   <h2 class="text-center">Fun features. Unbeatable Value 😇</h2>
-  <p>
-    Pagecord is super-simple to use, but it's chock-a-block with great features.
-  </p>
-  <ul>
-    <li><strong>Write by email</strong>. Publishing is as simple as sending an email. Rich text is fully supported 💌</li>
-    <li><strong>Online editor</strong>. Use a rich text editor you prefer a traditional blogging experience 👩‍💻</li>
-    <li><strong>Long-form writing or microblog</strong>. Write long-form articles or microblog your thoughts. Both look fantastic 🎨</li>
-    <li><strong>Media Embeds</strong>. Links to YouTube, Spotify and Bandcamp are automatically embedded. Great for sharing your favourite tunes and videos 🎧 📺</li>
-    <li><strong>Follow your friends</strong>. Pagecord is social! Follow other Pagecord blogs and see the latest articles in your personal feed 🤝</li>
-    <li><strong>RSS feeds</strong>. Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</li>
-  </ul>
 
-  <p class="mt-8">
-    Premium customers get additional features and a warm fuzzy feeling for an unbeatable price of only <span class="px-1 font-bold bg-yellow-100 dark:bg-[#ff5f5f] dark:text-white rounded">$<%= Subscription.price %> per year!</span>
-  </p>
-  <ul>
-    <li><strong>Image Attachments</strong>. Attach images to your email and they'll auto-magically appear in your posts 🪄</li>
-    <li><strong>Post Likes</strong>. Visitors can 'like' your posts. You track the stats in the app ✅</li>
-    <li><strong>Custom Domains</strong>. If you'd prefer to use you own domain name for your site, set it up in one click 🌐</li>
-  </ul>
-
-  <h2 class="text-center">Open source 🤓</h2>
   <p>
-    The Pagecord code is <a href="https://github.com/lylo/pagecord">open source under the MIT license</a>. Take a look under the hood,
-    suggest improvements, or (if you're feeling brave) host it yourself!
+    Pagecord is super-simple to use, but it's chock-a-block with great features. Premium customers get even more features and a special warm fuzzy feeling for only $<%= Subscription.price %> per year! 🤗
   </p>
+
+  <table class="w-full mt-4 text-base">
+    <thead>
+      <tr>
+        <th class="text-left p-2"></th>
+        <th class="md:w-32 text-xl text-center p-2">
+          Pagecord Classic
+        </th>
+        <th class="md:w-48 text-xl text-center p-2">
+          Pagecord Premium
+        </th>
+      </tr>
+
+      <tr>
+        <th class="text-left"></th>
+        <th class="text-center font-normal">
+          Free
+        </th>
+        <th class="text-center">
+          <span class="font-normal text-base py-1 px-2 text-slate-900 bg-yellow-100 dark:bg-[#ff5f5f] dark:text-white rounded">$<%= Subscription.price %> per year!</span>
+        </th>
+      </tr>
+
+      <tr>
+        <th class="text-left"></th>
+        <th class="text-center">
+          <%= link_to new_signup_path do %>
+            <div class="mt-2 inline-flex text-sm font-base p-2 rounded-xl shadow-sm text-white bg-bmc-pink">
+              Try now
+            </div>
+          <% end %>
+        </th>
+        <th class="text-center">
+          <%= link_to new_signup_path do %>
+            <div class="mt-2 inline-flex text-sm font-base p-2 rounded-xl shadow-sm text-white bg-bmc-pink">
+              Try now
+            </div>
+          <% end %>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="text-slate-500 dark:text-slate-500">
+      <tr>
+        <td><strong>Write by email</strong><br>Publishing is as simple as sending an email. Rich text is fully supported 💌</td>
+        <td class="text-center align-middle text-xl">✅</td>
+        <td class="text-center align-middle text-xl">✅</td>
+      </tr>
+      <tr>
+        <td><strong>Online editor</strong><br> Use a rich text editor you prefer a traditional blogging experience 👩‍💻</td>
+        <td class="text-center align-middle text-xl">✅</td>
+        <td class="text-center align-middle text-xl">✅</td>
+      </tr>
+      <tr>
+        <td><strong>Long-form writing or microblog</strong><br> Write long-form articles or microblog your thoughts. Both look fantastic 🎨</td>
+        <td class="text-center align-middle text-xl">✅</td>
+        <td class="text-center align-middle text-xl">✅</td>
+      </tr>
+      <tr>
+        <td><strong>Media Embeds</strong><br> Links to YouTube, Spotify and Bandcamp are automatically embedded. Great for sharing your favourite tunes and videos 🎧 📺</td>
+        <td class="text-center align-middle text-xl">✅</td>
+        <td class="text-center align-middle text-xl">✅</td>
+      </tr>
+      <tr>
+        <td><strong>Follow your friends</strong><br> Pagecord is social! Follow other Pagecord blogs and see the latest articles in your personal feed 🤝</td>
+        <td class="text-center align-middle text-xl">✅</td>
+        <td class="text-center align-middle text-xl">✅</td>
+      </tr>
+      <tr>
+        <td><strong>RSS feeds</strong><br> Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</td>
+        <td class="text-center align-middle text-xl">✅</td>
+        <td class="text-center align-middle text-xl">✅</td>
+      </tr>
+      <tr>
+        <td><strong>Image Attachments</strong><br> Attach images to your email and they'll auto-magically appear in your posts 🪄</td>
+        <td></td>
+        <td class="text-center align-middle text-xl">✅</td>
+      </tr>
+      <tr>
+        <td><strong>Post Likes</strong><br> Visitors can 'like' your posts. You track the stats in the app ❤️</td>
+        <td></td>
+        <td class="text-center align-middle text-xl">✅</td>
+      </tr>
+
+      <tr>
+        <td><strong>Custom Domains</strong><br> If you'd prefer to use you own domain name for your site, set it up in one click 🌐</td>
+        <td></td>
+        <td class="text-center align-middle text-xl">✅</td>
+      </tr>
+
+      <tr>
+        <td><strong>Warm fuzzy feels</strong><br> Feel great about supporting an independent open source business 😊</td>
+        <td></td>
+        <td class="text-center align-middle text-xl">✅</td>
+      </tr>
+
+    </tbody>
+  </table>
 
   <div class="mt-8 text-center not-prose">
     <%= link_to new_signup_path do %>
       <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing for free today!</div>
     <% end %>
   </div>
+
+  <h2 class="text-center">Open source 🤓</h2>
+  <p>
+    The Pagecord code is <a href="https://github.com/lylo/pagecord">open source under the MIT license</a>. Take a look under the hood,
+    suggest improvements, or (if you're feeling brave) host it yourself!
+  </p>
 
   <hr>
 
