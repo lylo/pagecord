@@ -1,7 +1,11 @@
 class PublicController < ApplicationController
-  layout "home"
+  layout "public"
 
-  caches_page :terms, :privacy, :faq
+  caches_page :index, :terms, :privacy, :faq, :pagecord_vs_hey_world
+
+  def index
+    redirect_to app_root_path if logged_in?
+  end
 
   def terms
   end

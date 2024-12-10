@@ -74,7 +74,7 @@ Rails.application.routes.draw do
   get "/terms", to: "public#terms", as: :terms
   get "/privacy", to: "public#privacy", as: :privacy
   get "/faq", to: "public#faq", as: :faq
-  get "/pagecord-vs-hey-world", to: "home#pagecord_vs_hey_world"
+  get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"
 
   namespace :app do
     resources :posts
@@ -162,5 +162,5 @@ Rails.application.routes.draw do
   end
 
   # Defines the root path route ("/")
-  root "home#index"
+  root "public#index"
 end
