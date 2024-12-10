@@ -1,5 +1,5 @@
 class ErrorsController < ApplicationController
-  layout "public"
+  layout "home"
 
   skip_before_action :domain_check
 
