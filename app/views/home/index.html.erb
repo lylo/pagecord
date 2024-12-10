@@ -35,109 +35,160 @@
   </figure>
 </div>
 
-<div class="mt-12 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-3xl">
+<div id="pricing" class="mt-12 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-3xl">
   <h2 class="text-center">Fun features. Unbeatable Value 😇</h2>
 
   <p>
-    Pagecord is super-simple to use, but it's chock-a-block with great features. Premium customers get even more features and a special warm fuzzy feeling for only $<%= Subscription.price %> per year! 🤗
+    Pagecord is super-simple to use, but it's chock-a-block with great features. Pagecord Classic is free, forever. Premium customers get even more features and a special warm fuzzy feeling for only <strong>$<%= Subscription.price %> per year</strong>! 🤗
   </p>
 
-  <table class="w-full mt-4 text-base">
-    <thead>
-      <tr>
-        <th class="text-left p-2"></th>
-        <th class="md:w-32 text-xl text-center p-2">
-          Pagecord Classic
-        </th>
-        <th class="md:w-48 text-xl text-center p-2">
-          Pagecord Premium
-        </th>
-      </tr>
+  <div class="mt-8 bg-slate-100 dark:bg-slate-800 px-6 py-4 rounded-xl">
+    <table class="w-full text-base p-0 m-0">
+      <thead>
+        <tr>
+          <th class="text-left"></th>
+          <th class="md:w-32 text-xl text-center">
+            Classic
+          </th>
+          <th class="md:w-40 text-xl text-center">
+            Premium
+          </th>
+        </tr>
 
-      <tr>
-        <th class="text-left"></th>
-        <th class="text-center font-normal">
-          Free
-        </th>
-        <th class="text-center">
-          <span class="font-normal text-base py-1 px-2 text-slate-900 bg-yellow-100 dark:bg-[#ff5f5f] dark:text-white rounded">$<%= Subscription.price %> per year!</span>
-        </th>
-      </tr>
+        <tr>
+          <th class="text-left"></th>
+          <th class="text-center font-normal text-slate-500 dark:text-slate-400">
+            Free
+          </th>
+          <th class="text-center">
+            <span class="font-normal text-base py-1 px-2 text-slate-600 dark:bg-slate-600 dark:text-slate-300 bg-yellow-100 rounded">$<%= Subscription.price %> per year!</span>
+          </th>
+        </tr>
 
-      <tr>
-        <th class="text-left"></th>
-        <th class="text-center">
-          <%= link_to new_signup_path do %>
-            <div class="mt-2 inline-flex text-sm font-base p-2 rounded-xl shadow-sm text-white bg-bmc-pink">
-              Try now
-            </div>
-          <% end %>
-        </th>
-        <th class="text-center">
-          <%= link_to new_signup_path do %>
-            <div class="mt-2 inline-flex text-sm font-base p-2 rounded-xl shadow-sm text-white bg-bmc-pink">
-              Try now
-            </div>
-          <% end %>
-        </th>
-      </tr>
-    </thead>
-    <tbody class="text-slate-500 dark:text-slate-500">
-      <tr>
-        <td><strong>Write by email</strong><br>Publishing is as simple as sending an email. Rich text is fully supported 💌</td>
-        <td class="text-center align-middle text-xl">✅</td>
-        <td class="text-center align-middle text-xl">✅</td>
-      </tr>
-      <tr>
-        <td><strong>Online editor</strong><br> Use a rich text editor you prefer a traditional blogging experience 👩‍💻</td>
-        <td class="text-center align-middle text-xl">✅</td>
-        <td class="text-center align-middle text-xl">✅</td>
-      </tr>
-      <tr>
-        <td><strong>Long-form writing or microblog</strong><br> Write long-form articles or microblog your thoughts. Both look fantastic 🎨</td>
-        <td class="text-center align-middle text-xl">✅</td>
-        <td class="text-center align-middle text-xl">✅</td>
-      </tr>
-      <tr>
-        <td><strong>Media Embeds</strong><br> Links to YouTube, Spotify and Bandcamp are automatically embedded. Great for sharing your favourite tunes and videos 🎧 📺</td>
-        <td class="text-center align-middle text-xl">✅</td>
-        <td class="text-center align-middle text-xl">✅</td>
-      </tr>
-      <tr>
-        <td><strong>Follow your friends</strong><br> Pagecord is social! Follow other Pagecord blogs and see the latest articles in your personal feed 🤝</td>
-        <td class="text-center align-middle text-xl">✅</td>
-        <td class="text-center align-middle text-xl">✅</td>
-      </tr>
-      <tr>
-        <td><strong>RSS feeds</strong><br> Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</td>
-        <td class="text-center align-middle text-xl">✅</td>
-        <td class="text-center align-middle text-xl">✅</td>
-      </tr>
-      <tr>
-        <td><strong>Image Attachments</strong><br> Attach images to your email and they'll auto-magically appear in your posts 🪄</td>
-        <td></td>
-        <td class="text-center align-middle text-xl">✅</td>
-      </tr>
-      <tr>
-        <td><strong>Post Likes</strong><br> Visitors can 'like' your posts. You track the stats in the app ❤️</td>
-        <td></td>
-        <td class="text-center align-middle text-xl">✅</td>
-      </tr>
+        <tr>
+          <th class="text-left"></th>
+          <th class="text-center">
+            <%= link_to new_signup_path do %>
+              <div class="mt-2 mb-4 inline-flex text-sm font-base px-3 py-2 rounded-xl shadow-sm text-white bg-bmc-pink">
+                Try now
+              </div>
+            <% end %>
+          </th>
+          <th class="text-center">
+            <%= link_to new_signup_path do %>
+              <div class="mt-2 mb-4 inline-flex text-sm font-base px-3 py-2 rounded-xl shadow-sm text-white bg-bmc-pink">
+                Try now
+              </div>
+            <% end %>
+          </th>
+        </tr>
+      </thead>
 
-      <tr>
-        <td><strong>Custom Domains</strong><br> If you'd prefer to use you own domain name for your site, set it up in one click 🌐</td>
-        <td></td>
-        <td class="text-center align-middle text-xl">✅</td>
-      </tr>
+      <tbody class="text-sm text-slate-500 dark:text-slate-500">
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Number of posts</div>
+            <div class="hidden sm:block">Write as many posts as you like. Your blog app should never hold you back 🚀</div>
+          </td>
+          <td class="text-center align-middle text-base">Unlimited</td>
+          <td class="text-center align-middle text-base">Unlimited</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Write by email</div>
+            <div class="hidden sm:block">Publishing is as simple as sending an email. Rich text is fully supported 💌</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Online editor</div>
+            <div class="hidden sm:block">Use a rich text editor you prefer a traditional blogging experience 👩‍💻</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Long-form writing</div>
+            <div class="hidden sm:block">Write long-form articles or microblog your thoughts. Both look fantastic 🎨</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Media Embeds</div>
+            <div class="hidden sm:block">Links to YouTube, Spotify and Bandcamp are automatically embedded. Great for sharing your favourite tunes and videos 🎧 📺</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Follow your friends</div>
+            <div class="hidden sm:block">Pagecord is social! Follow other Pagecord blogs and see the latest articles in your personal feed 🤝</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">RSS feeds</div>
+            <div class="hidden sm:block">Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Image Attachments</div>
+            <div class="hidden sm:block">Attach images to your email and they'll auto-magically appear in your posts 🪄</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
 
-      <tr>
-        <td><strong>Warm fuzzy feels</strong><br> Feel great about supporting an independent open source business 😊</td>
-        <td></td>
-        <td class="text-center align-middle text-xl">✅</td>
-      </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Post Likes</div>
+            <div class="hidden sm:block">Visitors can 'like' your posts. You track the stats in the app ❤️</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
 
-    </tbody>
-  </table>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Avatar</div>
+            <div class="hidden sm:block">Add a touch of your own personality while retaining that classic Pagecord minimal look 🧑‍🎨</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Custom Domains</div>
+            <div class="hidden sm:block">If you'd prefer to use you own domain name for your site, set it up in one click 🌐</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Warm fuzzy feels</div>
+            <div class="hidden sm:block">Feel great about supporting an independent open source business 😊</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
 
   <div class="mt-8 text-center not-prose">
     <%= link_to new_signup_path do %>
