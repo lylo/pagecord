@@ -7,32 +7,23 @@
     Publish your writing effortlessly by sending an email, or use our delightfully simple editor.
   </p>
   <p>
-    Check out the <a href="https://pagecord.com/pagecord">Pagecord blog</a> to see it in action.
+    Take a sneaky peek at <a href="https://pagecord.com/pagecord">the Pagecord blog</a> and
+    watch the video below to see it in action.
   </p>
-
-  <div class="my-8 text-center not-prose">
-    <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing for free!</div>
-    <% end %>
-  </div>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 py-4">
-  <figure>
-    <%= image_tag "home/screenshot-02.webp", alt: "Pagecord screenshot", class: "dark:hidden" %>
-    <%= image_tag "home/screenshot-02-dark.webp", alt: "Pagecord screenshot", class: "hidden dark:block" %>
-    <figcaption class="text-center text-slate-500 text-sm px-8">
-      A beautiful, minimalist blog that looks great on any device. Light or dark mode.
-    </figcaption>
-  </figure>
+<div class="my-8 text-center not-prose">
+  <%= link_to new_signup_path do %>
+    <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing for free!</div>
+  <% end %>
+</div>
 
-  <figure class="mt-4 sm:mt-0">
-    <%= image_tag "home/screenshot-03.webp", alt: "Pagecord screenshot", class: "dark:hidden" %>
-    <%= image_tag "home/screenshot-03-dark.webp", alt: "Pagecord screenshot", class: "hidden dark:block" %>
-    <figcaption class="text-center text-slate-500 text-sm px-8">
-      Publish new posts by sending an email, or use our delightfully simple editor
-    </figcaption>
-  </figure>
+<div class="max-w-3xl mx-auto w-full flex justify-center">
+  <video class="w-full dark:border-slate-800 bg-black" controls poster="https://pagecord-media.s3.eu-west-2.amazonaws.com/pagecord-dec-2024-cover.webp">
+    <source src="https://d1q3gzkzfltpo9.cloudfront.net/pagecord-dec-2024.mp4"
+            type="video/mp4">
+    Sorry, your browser does not support the video tag 😭
+  </video>
 </div>
 
 <div id="pricing" class="mt-12 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-3xl">
