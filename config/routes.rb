@@ -118,6 +118,7 @@ Rails.application.routes.draw do
   end
 
   constraints(DomainConstraints.method(:custom_domain?)) do
+    get "/sitemap.xml", to: "blogs/sitemaps#show", as: :custom_blog_sitemap, format: :xml
     get "/", to: "blogs/posts#index", as: :custom_blog_posts
     get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_without_title
     get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_with_title
@@ -128,6 +129,7 @@ Rails.application.routes.draw do
     get "/@:name", to: redirect("/%{name}")
 
     scope ":name" do
+      get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
       get "/", to: "blogs/posts#index", as: :blog_posts
       get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_without_title
       get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_with_title

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc><%= blog_home_url(@blog) %></loc>
+    <lastmod><%= @blog.updated_at.strftime("%Y-%m-%d") %></lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <% @blog.posts.each do |post| %>
+    <url>
+      <loc><%= post_url(post) %></loc>
+      <lastmod><%= post.updated_at.strftime("%Y-%m-%d") %></lastmod>
+      <changefreq>rarely</changefreq>
+      <priority>0.8</priority>
+    </url>
+  <% end %>
+</urlset>
