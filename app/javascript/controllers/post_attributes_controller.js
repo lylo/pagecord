@@ -11,6 +11,10 @@ export default class extends Controller {
 
     if (section) {
       section.classList.remove("hidden")
+      const input = section.querySelector("input, textarea, select")
+      if (input) {
+        input.focus()
+      }
     }
- }
+  }
 }
