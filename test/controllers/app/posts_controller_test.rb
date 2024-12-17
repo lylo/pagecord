@@ -49,13 +49,19 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should update post" do
     patch app_post_url(@user.blog.posts.first), params: {
-      post: { title: "New Title", content: "New content", published_at: 1.month.ago.to_date }
+      post: {
+        title: "New Title",
+        content: "New content",
+        published_at: 1.month.ago.to_date,
+        canonical_url: "https://example.com"
+      }
     }
 
     assert_redirected_to app_posts_url
     assert_equal "New Title", @user.blog.posts.first.title
     assert_equal "New content", @user.blog.posts.first.content.to_s.strip
     assert_equal 1.month.ago.to_date, @user.blog.posts.first.published_at
+    assert_equal "https://example.com", @user.blog.posts.first.canonical_url
   end
 
   test "app area should be inaccessible on custom domain" do

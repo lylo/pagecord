@@ -48,7 +48,7 @@ class App::PostsController < AppController
   private
 
     def post_params
-      params.require(:post).permit(:title, :content, :published_at)
+      params.require(:post).permit(:title, :content, :published_at, :canonical_url)
     end
 
     def prepare_content_for_trix

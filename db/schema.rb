@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2024_12_09_141215) do
+ActiveRecord::Schema[8.1].define(version: 2024_12_17_110758) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -128,6 +128,7 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_09_141215) do
     t.string "token", null: false
     t.bigint "blog_id", null: false
     t.integer "upvotes_count", default: 0, null: false
+    t.string "canonical_url"
     t.index ["blog_id"], name: "index_posts_on_blog_id"
     t.index ["token"], name: "index_posts_on_token", unique: true
   end

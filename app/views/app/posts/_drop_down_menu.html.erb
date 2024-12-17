@@ -9,6 +9,13 @@
         <% end %>
       </div>
 
+      <div class="p-1">
+        <%= link_to "#", class: "flex justify-end rounded-lg px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+          data: { action: "click->post-attributes#showSection", toggle_target: "canonical-url" } do %>
+          <span class="ms-1">Set a canonical URL</span>
+        <% end %>
+      </div>
+
       <% if @post.persisted? %>
         <hr class="mx-2 my-0 dark:border-gray-600">
 

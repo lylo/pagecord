@@ -6,10 +6,11 @@
         </div>
       <% end %>
 
-      <%= render "edit_drop_down" %>
+      <%= render "drop_down_menu" %>
   </div>
 
   <%= form_with(model: [:app, @post]) do |form| %>
+
     <div class="hidden mb-8" data-post-attributes-target="section" data-section="published-at">
       <div class="mt-4 font-bold">
       <%= form.label :published_at, "Publication Time" %>
@@ -19,6 +20,16 @@
       <%= form.datetime_field :published_at,
           value: @post.published_at&.strftime('%Y-%m-%dT%H:%M'),
           class: "dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+      </div>
+    </div>
+
+    <div class="hidden mb-8" data-post-attributes-target="section" data-section="canonical-url">
+      <div class="mt-4 font-bold">
+      <%= form.label :canonical_url, "Canonical URL" %>
+      </div>
+
+      <div class="mt-2">
+      <%= form.text_field :canonical_url, class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg", placeholder: "https://example-canonical-url.com" %>
       </div>
     </div>
 

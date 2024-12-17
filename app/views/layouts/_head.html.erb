@@ -7,10 +7,6 @@
 <meta name="description" content="<%= meta_description %>">
 <meta name="keywords" content="writing, publishing, blog, blogging platform, microblogging, journalling, publish by email, journal by email, simple blogging, minimalist blogging, writing by email, blogging by email, email to blog post">
 
-<% if @user && !@user.subscribed? %>
-<meta name="robots" content="noindex">
-<% end %>
-
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="<%= page_type %>">
 <meta property="og:url" content="<%= request.original_url %>">
@@ -33,6 +29,8 @@
 <% if open_graph_image %>
 <meta property="twitter:image" content="<%= open_graph_image %>">
 <% end %>
+
+<link rel="canonical" href="<%= canonical_url %>" />
 
 <%= render "layouts/rss" %>
 

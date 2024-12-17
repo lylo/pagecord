@@ -107,4 +107,22 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to blog_posts_path(name: blogs(:joel).name, page: 1)
   end
+
+  test "should set the canonical_url to the page URL by default" do
+    post = posts(:one)
+    get post_without_title_path(post.blog.name, post.token)
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", post_without_title_url(post.blog.name, post.token)
+  end
+
+  test "should set the canonical_url to the custom URL if present" do
+    post = posts(:one)
+    post.update!(canonical_url: "https://myblog.net")
+
+    get post_without_title_path(post.blog.name, post.token)
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "https://myblog.net"
+  end
 end

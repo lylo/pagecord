@@ -62,6 +62,14 @@ module ApplicationHelper
     end
   end
 
+  def canonical_url
+    if @post.present? && @post.canonical_url.present?
+      @post.canonical_url
+    else
+      request&.original_url
+    end
+  end
+
   private
 
     def post_title(post)
