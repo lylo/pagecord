@@ -6,7 +6,7 @@ class App::PostsController < AppController
   end
 
   def new
-    @post = Current.user.blog.posts.build
+    @post = Current.user.blog.posts.build(published_at: Time.current)
   end
 
   def edit

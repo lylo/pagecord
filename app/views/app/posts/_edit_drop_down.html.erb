@@ -1,0 +1,24 @@
+<div class="relative hidden" data-toggle-target="element">
+  <div class="absolute top-7 end-0 z-10 w-56 rounded-md border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-lg" role="menu">
+
+    <div class="py-2 px-1">
+      <div class="p-1">
+        <%= link_to "#", class: "flex justify-end rounded-lg px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+          data: { action: "click->post-attributes#showSection", toggle_target: "published-at" } do %>
+          <span class="ms-1">Change publication time</span>
+        <% end %>
+      </div>
+
+      <% if @post.persisted? %>
+        <hr class="mx-2 my-0 dark:border-gray-600">
+
+        <div class="flex justify-end p-1">
+          <%= button_to app_post_path(@post), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this post?"}, title: "Trash this post", class: "flex justify-end w-full rounded-lg px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50", form_class: "w-full" do %>
+            <%= inline_svg_tag "icons/trash.svg", class: "w-5 h-5" %>
+            <span class="ms-1">Delete post</span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

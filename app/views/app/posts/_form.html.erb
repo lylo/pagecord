@@ -1,25 +1,37 @@
-<%= form_with(model: [:app, @post]) do |form| %>
-  <%= form.text_field :title, placeholder: "Optional post title", class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg" %>
+<div data-controller="post-attributes">
+  <div class="flex justify-end mb-4" data-controller="toggle">
+    <%= link_to "#", class: "ms-3 font-medium text-slate-500 hover:text-black dark:text-slate-300 dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
+        <div class="">
+          <%= inline_svg_tag "icons/ellipsis-horizontal-circle.svg", class: "w-7 h-7" %>
+        </div>
+      <% end %>
 
-  <div class="trix-container <%= "trix-no-attachments" unless Current.user.subscribed? %>">
-  <%= form.rich_text_area :content,
-      placeholder: "Write your post...",
-      class: "trix-content min-h-[300px] prose border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
-      data: { controller: "autogrow trix", subscribed: Current.user.subscribed? } %>
+      <%= render "edit_drop_down" %>
   </div>
 
-  <% if @post.persisted? %>
-    <div class="mt-4 font-bold">
-    <%= form.label :published_at %>
+  <%= form_with(model: [:app, @post]) do |form| %>
+    <div class="hidden mb-8" data-post-attributes-target="section" data-section="published-at">
+      <div class="mt-4 font-bold">
+      <%= form.label :published_at, "Publication Time" %>
+      </div>
+
+      <div class="mt-2">
+      <%= form.datetime_field :published_at,
+          value: @post.published_at&.strftime('%Y-%m-%dT%H:%M'),
+          class: "dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+      </div>
     </div>
 
-    <div class="mt-2">
-    <%= form.datetime_field :published_at,
-        value: @post.published_at&.strftime('%Y-%m-%dT%H:%M'),
-        class: "dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <%= form.text_field :title, placeholder: "Optional post title", class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg" %>
+
+    <div class="trix-container <%= "trix-no-attachments" unless Current.user.subscribed? %>">
+    <%= form.rich_text_area :content,
+        placeholder: "Write your post...",
+        class: "trix-content min-h-[300px] prose border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
+        data: { controller: "autogrow trix", subscribed: Current.user.subscribed? } %>
     </div>
+
+    <%= form.submit class: "mt-8 btn-primary" %>
+    <%= link_to "Cancel", app_posts_path, class: "btn-secondary" %>
   <% end %>
-
-  <%= form.submit class: "mt-8 btn-primary" %>
-  <%= link_to "Cancel", app_posts_path, class: "btn-secondary" %>
-<% end %>
+</div>
