@@ -45,7 +45,7 @@ module ApplicationHelper
   end
 
   def has_open_graph_image?
-    @post && (@post.attachments.any? || @post.open_graph_image.present?)
+    open_graph_image.present?
   end
 
   def open_graph_image
@@ -53,13 +53,17 @@ module ApplicationHelper
       @post.open_graph_image.url
     elsif @post && @post.attachments.any?               # email attachments
       rails_public_blob_url @post.attachments.first
-    elsif @post && @post.content.body.attachments.any?  # rich text attachments
-      rails_public_blob_url @post.content.body.attachments.first
+    elsif @post && content_image_attachments(@post).any?  # rich text attachments
+      rails_public_blob_url content_image_attachments(@post).first
     elsif !custom_domain_request?
       unless @blog.present?
         image_url "social/open-graph.jpg"
       end
     end
+  end
+
+  def content_image_attachments(post)
+    post.content.body.attachments.select { |attachment| attachment.image? }
   end
 
   def canonical_url
