@@ -1,0 +1,9 @@
+<%= fields_for "project[tasks_attributes][#{turbo_id_for(task)}]", task do |ff| %>
+  <fieldset class="mb-4" id="<%= turbo_id_for(task) %>">
+    <legend>Task Info</legend>
+    <%= ff.label :name %><br>
+    <%= ff.text_field :name, class: "px-2 py-1 border w-full rounded-md" %>
+    <%= ff.hidden_field :id %>
+    <%= button_tag "Delete Task", formaction: task_path(turbo_id_for(task)), formmethod: :delete, class: "mt-4 float-right p-2 rounded-md bg-red-300 hover:bg-red-400" %>
+  </fieldset>
+<% end %>

@@ -1,5 +1,5 @@
 env "FEATURE"
 
-feature :upvotes do |blog: nil|
-  blog&.features.include?("upvotes")
+feature :social_links do |blog: nil|
+  blog&.features.include?("social_links")
 end

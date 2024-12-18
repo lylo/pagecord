@@ -96,6 +96,8 @@ Rails.application.routes.draw do
     resources :blogs do
       resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
 
+      resources :social_links, only: [ :new ], controller: "blogs/social_links"
+
       post :follow, to: "followings#create"
       delete :unfollow, to: "followings#destroy"
     end

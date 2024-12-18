@@ -3,6 +3,8 @@ class Blog < ApplicationRecord
 
   belongs_to :user, inverse_of: :blog
   has_many :posts, dependent: :destroy
+  has_many :social_links, dependent: :destroy
+  accepts_nested_attributes_for :social_links, allow_destroy: true
 
   has_many :followings, foreign_key: :followed_id, dependent: :destroy
   has_many :followers, through: :followings, source: :follower
