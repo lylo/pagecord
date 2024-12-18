@@ -63,7 +63,7 @@ module ApplicationHelper
   end
 
   def content_image_attachments(post)
-    post.content.body.attachments.select { |attachment| attachment.image? }
+    post.content.body.attachments.select { |attachment| attachment&.image? }
   end
 
   def canonical_url
