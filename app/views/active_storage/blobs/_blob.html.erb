@@ -1,5 +1,7 @@
 <figure class="attachment attachment--<%= blob.representable? ? "preview" : "file" %> attachment--<%= blob.filename.extension %>">
-  <% if blob.representable? %>
+  <% if blob.video? %>
+    <%= video_tag rails_public_blob_url(blob), preload: "auto", controls: "controls", class: "attachment__video max-h-[600px] mx-auto" %>
+  <% elsif blob.representable? %>
     <% if blob.content_type == "image/gif" %>
       <%= image_tag rails_public_blob_url(blob), alt: "" %>
     <% else %>

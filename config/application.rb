@@ -30,7 +30,8 @@ module Pagecord
 
     config.filter_parameters += [ :RawEmail, :Attachments, :HtmlBody, :TextBody, :Headers ]
 
-    Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_tags += [ "s", "u" ]
+    Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_tags += [ "s", "u", "video", "source" ]
+    Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_attributes += [ "style", "controls", "poster", "playsinline" ]
 
     config.exceptions_app = self.routes
 
