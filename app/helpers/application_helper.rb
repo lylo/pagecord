@@ -85,7 +85,8 @@ module ApplicationHelper
     end
 
     def post_summary(post)
-      summary = strip_links(post.content.to_plain_text).truncate(140)
+      content = post.content.to_plain_text.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
+      summary = strip_links(content).truncate(140)
 
       if summary.blank?
         "Untitled"
