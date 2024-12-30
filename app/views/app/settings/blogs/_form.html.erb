@@ -36,8 +36,8 @@
       <%= render "avatar", blog: @blog %>
     </a>
     <% if @blog.avatar&.attached? %>
-      <%= link_to app_blog_avatar_path(@blog), data: { turbo_method: :delete }, class: "flex items-center text-sm text-gray-500 dark:text-gray-300 p-0 mt-1" do %>
-        <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 me-1" %>
+      <%= link_to app_blog_avatar_path(@blog), data: { turbo_method: :delete }, class: "flex items-center text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 hover:dark:text-slate-200 p-0 mt-1" do %>
+        <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 me-1 " %>
         Remove
       <% end %>
     <% end %>
