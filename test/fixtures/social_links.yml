@@ -1,0 +1,9 @@
+joel_instagram:
+  blog: joel
+  platform: Instagram
+  url: https://www.instagram.com/joels_instagram
+
+joel_bluesky:
+  blog: joel
+  platform: Bluesky
+  url: https://bsky.app/profile/joel.xyz

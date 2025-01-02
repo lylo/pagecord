@@ -16,7 +16,7 @@ class App::Settings::BlogsController < AppController
 
       redirect_to app_settings_path, notice: "Appearance settings updated"
     else
-      render :index
+      render :index, status: :unprocessable_entity
     end
   end
 
@@ -24,9 +24,9 @@ class App::Settings::BlogsController < AppController
 
     def blog_params
       if @blog.user.subscribed?
-        params.require(:blog).permit(:bio, :custom_domain, :title, :avatar)
+        params.require(:blog).permit(:bio, :custom_domain, :title, :avatar, social_links_attributes: [ :id, :platform, :url, :_destroy ])
       else
-        params.require(:blog).permit(:bio)
+        params.require(:blog).permit(:bio, :title, social_links_attributes: [ :id, :platform, :url, :_destroy ])
       end
     end
 end

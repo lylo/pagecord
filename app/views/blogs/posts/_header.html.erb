@@ -1,9 +1,18 @@
-<div class="mb-12 pb-4 border-b border-b-slate-300-100 dark:border-b-slate-600">
+<div class="mb-12 pb-4 border-b border-b-slate-200 dark:border-b-slate-600">
+  <%= render "blogs/posts/social_links" %>
+
+  <% if @blog.social_links.present? %>
+    <div class="mt-4">
+  <% else %>
+    <div class="mt-12">
+  <% end %>
+
   <% if @blog.avatar&.attached? %>
     <%= render "avatar_header" %>
   <% else %>
     <%= render "no_avatar_header" %>
   <% end %>
+  </div>
 
   <% if @blog.bio.present? %>
   <div class="mt-4 text-sm prose dark:prose-invert text-slate-500 dark:text-slate-400 break-words">
