@@ -10,7 +10,6 @@
     </div>
   </div>
 
-  <% if @blog.user.subscribed? %>
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Title</h3>
     <p>
@@ -21,6 +20,7 @@
     <%= form.text_field :title, class: "mt-4 w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
   </div>
 
+  <% if @blog.user.subscribed? %>
   <h3 class="mt-8 font-bold text-lg mb-2">Avatar</h3>
   <p>
     <% if @blog.avatar&.attached? %>
@@ -69,7 +69,6 @@
     <% end %>
   <% end %>
 
-  <% if current_features.enabled?(:social_links) %>
   <div class="mt-8" data-controller="social-links">
     <h3 class="font-bold text-lg mb-2">Social Links</h3>
     <p>
@@ -95,5 +94,4 @@
     <%= form.submit "Update", class: "btn-primary" %>
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
   </div>
-  <% end %>
 <% end %>

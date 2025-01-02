@@ -18,12 +18,12 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should not show title or custom domain if not subscribed" do
+  test "should not show avatar or custom domain if not subscribed" do
     login_as users(:vivian)
 
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 0, text: "Title" }
+    assert_select "h3", { count: 0, text: "Avatar" }
     assert_select "h3", { count: 0, text: "Custom Domain" }
     assert_response :success
   end

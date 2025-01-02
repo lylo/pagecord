@@ -26,7 +26,7 @@ class App::Settings::BlogsController < AppController
       if @blog.user.subscribed?
         params.require(:blog).permit(:bio, :custom_domain, :title, :avatar, social_links_attributes: [ :id, :platform, :url, :_destroy ])
       else
-        params.require(:blog).permit(:bio, social_links_attributes: [ :id, :platform, :url, :_destroy ])
+        params.require(:blog).permit(:bio, :title, social_links_attributes: [ :id, :platform, :url, :_destroy ])
       end
     end
 end
