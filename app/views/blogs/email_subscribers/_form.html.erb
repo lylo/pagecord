@@ -1,0 +1,11 @@
+<%= form_with url: email_subscribers_link, model: [EmailSubscriber.new], local: true,
+      class: "flex flex-col items-center justify-center gap-y-2 text-slate-600 dark:text-slate-400" do |form| %>
+  <div>Receive a digest of new posts in your inbox</div>
+
+  <fieldset class="flex">
+    <%= hidden_field_tag :blog_name, @blog.name %>
+    <%= form.email_field :email, required: true, placeholder: "Enter your email...", class: "px-2 py-1 w-64 text-sm text-slate-900  dark:text-slate-100 bg-white dark:bg-slate-900 border border-r-0 border-slate-200 dark:border-slate-600 rounded-l-lg focus:outline-none focus:ring-0 focus:ring-slate-500 dark:focus:ring-slate-400 focus:border-slate-500 dark:focus:border-slate-400" %>
+
+    <%= form.submit "Subscribe", class: "px-4 py-1 text-sm text-white bg-slate-500 dark:bg-slate-400 rounded-r-lg cursor-pointer hover:bg-slate-600 dark:hover:bg-slate-300" %>
+  </fieldset>
+<% end %>

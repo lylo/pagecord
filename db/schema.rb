@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2024_12_18_114849) do
+ActiveRecord::Schema[8.1].define(version: 2025_01_02_172613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -93,6 +93,15 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_18_114849) do
     t.datetime "updated_at", null: false
     t.bigint "blog_id", null: false
     t.index ["blog_id"], name: "index_custom_domain_changes_on_blog_id"
+  end
+
+  create_table "email_subscribers", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id", "email"], name: "index_email_subscribers_on_blog_id_and_email", unique: true
+    t.index ["blog_id"], name: "index_email_subscribers_on_blog_id"
   end
 
   create_table "followings", force: :cascade do |t|
@@ -184,6 +193,7 @@ ActiveRecord::Schema[8.1].define(version: 2024_12_18_114849) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "blogs", "users"
   add_foreign_key "custom_domain_changes", "blogs"
+  add_foreign_key "email_subscribers", "blogs"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
   add_foreign_key "posts", "blogs"

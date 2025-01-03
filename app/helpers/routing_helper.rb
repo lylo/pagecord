@@ -38,4 +38,12 @@ module RoutingHelper
   def blog_home_url(blog)
     blog_home(blog, "url")
   end
+
+  def email_subscribers_link
+    if custom_domain_request?
+      custom_email_subscribers_path
+    else
+      email_subscribers_path
+    end
+  end
 end

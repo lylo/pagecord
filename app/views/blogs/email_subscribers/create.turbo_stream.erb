@@ -1,0 +1,11 @@
+<% if @message.nil? %>
+  <%= turbo_stream.replace "email_subscriber_form" do %>
+    <%= render "blogs/email_subscribers/form" %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.update "email_subscriber_form" do %>
+    <div class="text-sm prose text-center">
+      <%= auto_link @message %>
+    </div>
+  <% end %>
+<% end %>

@@ -61,7 +61,6 @@ Rails.application.routes.draw do
     post "/paddle/create_update_payment_method_transaction", to: "paddle#create_update_payment_method_transaction"
   end
 
-
   get "/login", to: "sessions#new"
   delete "/logout", to: "sessions#destroy"
   resources :sessions, only: [ :create ] do
@@ -125,6 +124,8 @@ Rails.application.routes.draw do
     get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_without_title
     get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_with_title
     get "/:name", to: "blogs/posts#index", constraints: Constraints::RssFormat.new, as: :custom_blog_posts_rss
+
+    resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ], as: :custom_email_subscribers
   end
 
   constraints(DomainConstraints.method(:default_domain?)) do
@@ -135,6 +136,8 @@ Rails.application.routes.draw do
       get "/", to: "blogs/posts#index", as: :blog_posts
       get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_without_title
       get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_with_title
+
+      resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
     end
   end
 

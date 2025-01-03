@@ -1,4 +1,4 @@
-<div class="mb-12 pb-4 border-b border-b-slate-200 dark:border-b-slate-600">
+<div class="pb-4 mb-12 border-b border-b-slate-200 dark:border-b-slate-600">
   <%= render "blogs/posts/social_links" %>
 
   <% if @blog.social_links.present? %>
@@ -19,4 +19,7 @@
     <%= auto_link @blog.bio %>
   </div>
   <% end %>
+
+  <%= render "email_subscriber_form" if @blog.user.subscribed? %>
 </div>
+
