@@ -80,4 +80,40 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
       AddCustomDomainJob.perform_now(user.blog.id, "newdomain6.com")
     end
   end
+
+  test "should add a new social link for valid platform" do
+    assert_difference -> { @blog.social_links.count }, 1 do
+      patch app_settings_blog_url(@blog), params: {
+          blog: {
+            social_links_attributes: {
+              "#{Time.now.to_i}": { platform: "X", url: "https://x.com/whatever" }
+            }
+          }
+        }, as: :turbo_stream
+    end
+  end
+
+  test "should now add a new social link for invalid platform" do
+    assert_no_difference -> { @blog.social_links.count } do
+      patch app_settings_blog_url(@blog), params: {
+          blog: {
+            social_links_attributes: {
+              "#{Time.now.to_i}": { platform: "pagecord", url: "https://pagecord.com/whatever" }
+            }
+          }
+        }, as: :turbo_stream
+    end
+  end
+
+  test "should delete an existing new social link" do
+    assert_difference -> { @blog.social_links.count }, -1 do
+      patch app_settings_blog_url(@blog), params: {
+          blog: {
+            social_links_attributes: {
+              "0": { "_destroy": true, id: @blog.social_links.first.id }
+            }
+          }
+        }, as: :turbo_stream
+    end
+  end
 end
