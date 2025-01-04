@@ -1,4 +1,6 @@
 class Blogs::EmailSubscribersController < ApplicationController
+  rate_limit to: 5, within: 1.minute
+
   before_action :load_blog, :requires_user_subscription
   skip_before_action :domain_check
 
