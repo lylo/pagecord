@@ -14,7 +14,7 @@ class App::Settings::BlogsController < AppController
 
       @blog.posts.touch_all # cache busting
 
-      redirect_to app_settings_path, notice: "Appearance settings updated"
+      redirect_to app_settings_path, notice: "Blog settings updated"
     else
       render :index, status: :unprocessable_entity
     end
