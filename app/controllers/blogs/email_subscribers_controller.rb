@@ -4,13 +4,14 @@ class Blogs::EmailSubscribersController < ApplicationController
 
   def create
     @subscriber = @blog.email_subscribers.new(email_subscriber_params)
+    default_message = "Thanks for subscribing. Unless you're already subscribed, a confirmation email is on its way to #{@subscriber.email}"
 
     if @blog.email_subscribers.find_by(email: @subscriber.email)
-      @message = "#{@subscriber.email} is already subscribed"
+      @message = default_message
     elsif @subscriber.save
       EmailSubscriptionConfirmationMailer.with(subscriber: @subscriber).confirm.deliver_later
 
-      @message = "Thanks for subscribing. A confirmation email is on its way to #{@subscriber.email}"
+      @message = default_message
     end
   end
 

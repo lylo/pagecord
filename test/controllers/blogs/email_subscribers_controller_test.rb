@@ -20,7 +20,6 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :success
-    assert_includes @response.body, "is already subscribed"
   end
 
   test "should not add email subscriber if user is not subscribed" do
