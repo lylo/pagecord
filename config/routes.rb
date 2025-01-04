@@ -128,7 +128,6 @@ Rails.application.routes.draw do
     resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
 
     get "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#show", as: :email_subscriber_confirmation
-    post "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#create"
     get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
     post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
   end

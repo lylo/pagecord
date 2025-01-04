@@ -18,4 +18,27 @@ class SocialLinkTest < ActiveSupport::TestCase
     assert_not @link.valid?
     assert_includes @link.errors.full_messages, "Platform is not included in the list"
   end
+
+  test "url must be present" do
+    @link.url = nil
+    assert_not @link.valid?
+    assert_includes @link.errors.full_messages, "Url can't be blank"
+  end
+
+  test "url must be http or https" do
+    @link.url = "javascript:alert(1)"
+    assert_not @link.valid?
+    assert_includes @link.errors.full_messages, "Url must be HTTP or HTTPS"
+  end
+
+  test "url must be valid" do
+    @link.url = "not a url"
+    assert_not @link.valid?
+    assert_includes @link.errors.full_messages, "Url is not a valid URL"
+  end
+
+  test "accepts valid urls" do
+    @link.url = "https://instagram.com/username"
+    assert @link.valid?
+  end
 end

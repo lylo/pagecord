@@ -6,7 +6,7 @@ class Blogs::EmailSubscribers::ConfirmationsControllerTest < ActionDispatch::Int
     subscriber = blog.email_subscribers.create!(email: "new@test.com")
     assert subscriber.unconfirmed?
 
-    post email_subscriber_confirmation_path(name: blog.name, token: subscriber.token)
+    get email_subscriber_confirmation_path(name: blog.name, token: subscriber.token)
 
     assert_response :success
     assert subscriber.reload.confirmed?

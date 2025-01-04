@@ -3,11 +3,7 @@ class Blogs::EmailSubscribers::ConfirmationsController < ApplicationController
   skip_before_action :domain_check
 
   def show
-  end
-
-  def create
-    @subscriber.confirm!
-    render :show
+    @subscriber.confirm! unless @subscriber.confirmed?
   end
 
   private

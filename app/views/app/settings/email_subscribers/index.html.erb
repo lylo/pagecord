@@ -1,6 +1,6 @@
 <h3 class="mb-4 font-bold text-xl">Email Subscribers</h3>
 <p>
-  Your Pagecord has <%= pluralize @blog.email_subscribers.count, "email subscriber" %>.
+  Your Pagecord has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
 </p>
 <p class="mt-4">
   Once a week your email subscribers will receive a digest of your latest posts (if you've published any).
