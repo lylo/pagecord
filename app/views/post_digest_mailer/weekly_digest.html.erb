@@ -1,0 +1,31 @@
+<p>
+  New posts from <strong><%= @subscriber.blog.display_name %><strong>.
+</p>
+
+<hr>
+
+<% @digest.posts.each do |post| %>
+  <div style="padding-bottom: 24px;">
+    <% if post.title %>
+      <h3>
+        <%= link_to post.title, post_url_for(post) %>
+      </h3>
+    <% end %>
+
+    <%= post.content %>
+
+    <p style="padding-top: 12px;">
+      <small style="color: #888;">
+        <%= post.published_at.to_date.to_formatted_s(:long) %>
+      </small>
+    </p>
+  </div>
+<% end %>
+
+<hr>
+
+<p>
+  <small>
+  <%= link_to "Unsubscribe", unsubscribe_path_for(@subscriber) %>
+  </small>
+</p>

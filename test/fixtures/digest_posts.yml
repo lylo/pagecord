@@ -1,0 +1,7 @@
+one:
+  post_digest: one
+  post: one
+
+two:
+  post_digest: one
+  post: two
