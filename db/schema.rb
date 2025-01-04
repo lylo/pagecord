@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_01_02_172613) do
+ActiveRecord::Schema[8.1].define(version: 2025_01_04_165442) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,6 +83,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_01_02_172613) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "features", default: [], array: true
+    t.boolean "email_subscriptions_enabled", default: true, null: false
     t.index ["name"], name: "index_blogs_on_name", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
@@ -98,6 +99,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_01_02_172613) do
   create_table "email_subscribers", force: :cascade do |t|
     t.bigint "blog_id", null: false
     t.string "email", null: false
+    t.string "token", null: false
+    t.datetime "confirmed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id", "email"], name: "index_email_subscribers_on_blog_id_and_email", unique: true

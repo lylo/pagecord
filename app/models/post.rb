@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-  include Trimmable, Upvotable
+  include Trimmable, Upvotable, Tokenable
 
   belongs_to :blog, inverse_of: nil
 
@@ -7,7 +7,7 @@ class Post < ApplicationRecord
   has_rich_text :content
   has_many_attached :attachments, dependent: :destroy
 
-  before_create :set_token, :set_published_at, :limit_content_size, :check_title_and_content
+  before_create :set_published_at, :limit_content_size, :check_title_and_content
   after_create  :detect_open_graph_image
 
   validate :body_or_title
@@ -25,13 +25,6 @@ class Post < ApplicationRecord
   end
 
   private
-
-    def set_token
-      loop do
-        self.token = SecureRandom.hex(4)
-        break unless Post.exists?(token: token)
-      end
-    end
 
     def set_published_at
       self.published_at ||= created_at

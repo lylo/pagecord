@@ -25,6 +25,10 @@ class Blog < ApplicationRecord
     title.present?
   end
 
+  def display_name
+    title.blank? ? "@#{name}" : title
+  end
+
   private
 
     def bio_length

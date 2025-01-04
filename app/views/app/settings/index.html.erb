@@ -10,8 +10,20 @@
           <span class="text-4xl">🎨</span>
         </div>
         <h3 class="mb-2 text-xl font-bold dark:text-white">Appearance</h3>
-        <p class="text-slate-500 dark:text-slate-400">Edit your bio and site title</p>
+        <p class="text-slate-500 dark:text-slate-400">Edit your bio, blog title, avatar, custom domain and social links</p>
       </div>
+    <% end %>
+
+    <% if @user.subscribed? && current_features.enabled?(:email_subscribers) %>
+      <%= link_to app_settings_email_subscribers_path do %>
+        <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border dark:border-slate-600 p-5 rounded-lg">
+          <div class="mb-4">
+            <span class="text-4xl">📥</span>
+          </div>
+          <h3 class="mb-2 text-xl font-bold dark:text-white">Subscribers</h3>
+          <p class="text-slate-500 dark:text-slate-400">Manage your email subscribers</p>
+        </div>
+      <% end %>
     <% end %>
 
     <%= link_to app_settings_account_edit_path do %>

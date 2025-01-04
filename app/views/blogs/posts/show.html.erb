@@ -1,13 +1,7 @@
-<div class="mb-12 pb-4 border-b border-b-slate-300-100 dark:border-b-slate-600">
-  <div class="mt-8">
-  <% if @blog.avatar&.attached? %>
-    <%= render "avatar_header" %>
-  <% else %>
-    <%= render "no_avatar_header" %>
-  <% end %>
-  </div>
-</div>
+<%= render "blogs/header", hide_email_form: true, hide_bio: true %>
 
 <div data-controller="media-embeds">
 <%= render @post %>
 </div>
+
+<%= render "blogs/email_subscriber_form" %>

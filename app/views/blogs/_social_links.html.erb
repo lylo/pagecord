@@ -1,6 +1,6 @@
 <% if @blog.social_links.present? %>
   <div class="text-center mt-4">
-    <div class="flex justify-end items-center gap-x-2 border-b-slate-200 dark:border-b-slate-800 text-slate-900 dark:text-slate-100">
+    <div class="flex justify-end items-center gap-x-3 sm:gap-x-2 border-b-slate-200 dark:border-b-slate-800 text-slate-900 dark:text-slate-100">
     <% @blog.social_links.each do |social_link| %>
         <%= link_to social_link.url do %>
           <%= inline_svg_tag "icons/social/#{social_link.platform.downcase}.svg", class: "hover:text-slate-800 dark:hover:text-slate-200 text-slate-500 w-4 h-4" %>

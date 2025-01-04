@@ -1,0 +1,7 @@
+<% if @blog.email_subscriptions_enabled? && @blog.user.subscribed? && current_features.enabled?(:email_subscribers) %>
+  <div class="email mt-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 p-4 rounded-lg sm:mx-12 text-sm">
+    <%= turbo_frame_tag "email_subscriber_form" do %>
+      <%= render "blogs/email_subscribers/form" %>
+    <% end %>
+  </div>
+<% end %>

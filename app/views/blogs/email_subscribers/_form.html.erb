@@ -1,5 +1,5 @@
-<%= form_with url: email_subscribers_link, model: [EmailSubscriber.new], local: true,
-      class: "flex flex-col items-center justify-center gap-y-2 text-slate-600 dark:text-slate-400" do |form| %>
+<%= form_with url: email_subscribers_path_for_domain, model: [EmailSubscriber.new], local: true,
+      class: "flex flex-col items-center justify-center gap-y-2" do |form| %>
   <div>Receive a digest of new posts in your inbox</div>
 
   <fieldset class="flex">

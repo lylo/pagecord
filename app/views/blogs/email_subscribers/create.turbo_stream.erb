@@ -4,7 +4,7 @@
   <% end %>
 <% else %>
   <%= turbo_stream.update "email_subscriber_form" do %>
-    <div class="text-sm prose text-center">
+    <div class="text-sm prose dark:prose-invert text-center">
       <%= auto_link @message %>
     </div>
   <% end %>

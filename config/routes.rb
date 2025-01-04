@@ -83,6 +83,7 @@ Rails.application.routes.draw do
     namespace :settings do
       resources :users, only: [ :index, :update, :destroy ]
       resources :blogs, only: [ :index, :update ]
+      resources :email_subscribers, only: [ :index ]
 
       get "/account/edit", to: "account#edit"
 
@@ -118,27 +119,28 @@ Rails.application.routes.draw do
     resources :users, only: [ :destroy ]
   end
 
-  constraints(DomainConstraints.method(:custom_domain?)) do
-    get "/sitemap.xml", to: "blogs/sitemaps#show", as: :custom_blog_sitemap, format: :xml
-    get "/", to: "blogs/posts#index", as: :custom_blog_posts
-    get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_without_title
-    get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :custom_post_with_title
-    get "/:name", to: "blogs/posts#index", constraints: Constraints::RssFormat.new, as: :custom_blog_posts_rss
+  shared_blog_routes = lambda do
+    get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
+    get "/", to: "blogs/posts#index", as: :blog_posts
+    get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_without_title
+    get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_with_title
 
-    resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ], as: :custom_email_subscribers
+    resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
+
+    get "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#show", as: :email_subscriber_confirmation
+    post "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#create"
+    get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
+    post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
+  end
+
+  constraints(DomainConstraints.method(:custom_domain?)) do
+    scope as: :custom, &shared_blog_routes
+    get "/:name", to: "blogs/posts#index", constraints: Constraints::RssFormat.new, as: :custom_posts_rss
   end
 
   constraints(DomainConstraints.method(:default_domain?)) do
     get "/@:name", to: redirect("/%{name}")
-
-    scope ":name" do
-      get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
-      get "/", to: "blogs/posts#index", as: :blog_posts
-      get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_without_title
-      get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_with_title
-
-      resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
-    end
+    scope ":name", &shared_blog_routes
   end
 
   resources :posts, only: [] do

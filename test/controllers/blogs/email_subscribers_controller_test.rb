@@ -22,4 +22,13 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes @response.body, "is already subscribed"
   end
+
+  test "should not add email subscriber if user is not subscribed" do
+    blog = blogs(:vivian)
+    assert_not blog.user.subscribed?
+
+    assert_no_difference("EmailSubscriber.count") do
+      post email_subscribers_url(name: blog.name), params: { blog_name: blog.name, email_subscriber: { email: "test@example.com" } }, as: :turbo_stream
+    end
+  end
 end

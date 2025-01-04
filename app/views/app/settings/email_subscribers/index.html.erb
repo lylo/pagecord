@@ -1,0 +1,19 @@
+<h3 class="mb-4 font-bold text-xl">Email Subscribers</h3>
+<p>
+  Your Pagecord has <%= pluralize @blog.email_subscribers.count, "email subscriber" %>.
+</p>
+<p class="mt-4">
+  Once a week your email subscribers will receive a digest of your latest posts (if you've published any).
+</p>
+
+<div class="mt-4">
+  <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
+    <div class="flex items-center">
+      <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+      <%= form.label :email_subscriptions_enabled, "Email Subscriptions Enabled", class: "ml-2" %>
+    </div>
+    <div class="mt-4">
+      <%= form.submit "Update", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

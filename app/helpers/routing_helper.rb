@@ -39,11 +39,19 @@ module RoutingHelper
     blog_home(blog, "url")
   end
 
-  def email_subscribers_link
+  def email_subscribers_path_for_domain
     if custom_domain_request?
       custom_email_subscribers_path
     else
       email_subscribers_path
+    end
+  end
+
+  def email_subscriber_unsubscribe_path_for(subscriber)
+    if custom_domain_request?
+      custom_email_subscriber_unsubscribe_path(subscriber.token)
+    else
+      email_subscriber_unsubscribe_path(subscriber.token)
     end
   end
 end

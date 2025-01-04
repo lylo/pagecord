@@ -1,6 +1,11 @@
 require "test_helper"
 
 class EmailSubscriberTest < ActiveSupport::TestCase
+  test "should generate a token on create" do
+    subscriber = blogs(:joel).email_subscribers.create(email: "new@example.com")
+    assert subscriber.token.present?
+  end
+
   test "should be unique for a given blog" do
     blog = blogs(:joel)
 

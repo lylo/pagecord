@@ -10,6 +10,16 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil assigns(:posts)
   end
 
+  test "should show email subscription form on index if enabled" do
+    blog = blogs(:joel)
+    blog.update!(email_subscriptions_enabled: true, features: [ "email_subscribers" ])
+
+    get blog_posts_path(name: blogs(:joel).name)
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form"
+  end
+
   test "should get show" do
     post = posts(:one)
 

@@ -1,8 +1,10 @@
 one:
   blog: joel
   email: fred@example.com
+  confirmed_at: <%= Date.yesterday.to_time %>
+  token: <%= SecureRandom.hex(4) %>
 
 two:
   blog: joel
   email: geoff@gmail.com
-
+  token: <%= SecureRandom.hex(4) %>
