@@ -1,0 +1,21 @@
+<% @digest.posts.each do |post| %>
+<% if post.title %>
+## <%= post.title %>
+<% end %>
+
+<%= post.content.to_plain_text %>
+
+
+-- <%= post.published_at.to_date.to_formatted_s(:long) %>
+<%= post_url_for(post) %>
+
+
+<% end %>
+
+----------
+
+You're subscribed to receive new posts from <%= @subscriber.blog.display_name %>.
+
+Unsubscribe by clicking the link below:
+
+<%= unsubscribe_path_for(@subscriber) %>
