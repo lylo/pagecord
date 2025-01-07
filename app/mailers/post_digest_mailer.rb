@@ -9,16 +9,11 @@ class PostDigestMailer < ApplicationMailer
     @digest = params[:digest]
     @subscriber = params[:subscriber]
 
-    allowed_email_addresses = ENV["ALLOWED_EMAIL_ADDRESS"]&.split(",") || []
-    send_email = !Rails.env.production? || allowed_email_addresses.include?(@subscriber.email)
-
-    if send_email
-      mail(
-        to: @subscriber.email,
-        from: sender_address_for(@subscriber.blog),
-        subject: "New posts from #{@subscriber.blog.display_name} - #{Date.current.to_formatted_s(:long)}"
-      )
-    end
+    mail(
+      to: @subscriber.email,
+      from: sender_address_for(@subscriber.blog),
+      subject: "New posts from #{@subscriber.blog.display_name} - #{Date.current.to_formatted_s(:long)}"
+    )
   end
 
   private
