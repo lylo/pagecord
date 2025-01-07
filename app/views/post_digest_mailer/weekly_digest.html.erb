@@ -1,0 +1,30 @@
+<div class="digest">
+  <% @digest.posts.each do |post| %>
+    <div class="post">
+      <% if post.title %>
+        <h2>
+          <%= link_to post.title, post_url_for(post) %>
+        </h2>
+      <% end %>
+
+      <div class="post-content">
+        <%= without_action_text_image_wrapper(post.content.to_s).html_safe %>
+      </div>
+      <p style="padding-top: 12px;">
+        <small style="color: #888;">
+          <%= post.published_at.to_date.to_formatted_s(:long) %>
+        </small>
+      </p>
+    </div>
+  <% end %>
+
+  <hr>
+
+  <p class="digest-footer">
+    <small>
+    You're subscribed to receive new posts from <strong><%= @subscriber.blog.display_name %></strong>.
+    <br>
+    <%= link_to "Unsubscribe", unsubscribe_path_for(@subscriber) %>
+    </small>
+  </p>
+</div>

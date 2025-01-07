@@ -1,0 +1,7 @@
+Please confirm your subscription to <%= @subscriber.blog.display_name %>. If you didn't intend to subscribe, you can ignore this email.
+
+<%- if @subscriber.blog.custom_domain.present? %>
+<%= custom_email_subscriber_confirmation_url(token: @subscriber.token, host: @subscriber.blog.custom_domain) %>
+<%- else %>
+<%= email_subscriber_confirmation_url(name: @subscriber.blog.name, token: @subscriber.token) %>
+<%- end %>

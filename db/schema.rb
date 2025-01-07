@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_01_04_165442) do
+ActiveRecord::Schema[8.1].define(version: 2025_01_04_221442) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -96,6 +96,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_01_04_165442) do
     t.index ["blog_id"], name: "index_custom_domain_changes_on_blog_id"
   end
 
+  create_table "digest_posts", force: :cascade do |t|
+    t.bigint "post_digest_id", null: false
+    t.bigint "post_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_digest_id"], name: "index_digest_posts_on_post_digest_id"
+    t.index ["post_id"], name: "index_digest_posts_on_post_id"
+  end
+
   create_table "email_subscribers", force: :cascade do |t|
     t.bigint "blog_id", null: false
     t.string "email", null: false
@@ -129,6 +138,24 @@ ActiveRecord::Schema[8.1].define(version: 2025_01_04_165442) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_paddle_events_on_user_id"
+  end
+
+  create_table "post_digest_deliveries", force: :cascade do |t|
+    t.bigint "post_digest_id", null: false
+    t.bigint "email_subscriber_id", null: false
+    t.datetime "delivered_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email_subscriber_id"], name: "index_post_digest_deliveries_on_email_subscriber_id"
+    t.index ["post_digest_id"], name: "index_post_digest_deliveries_on_post_digest_id"
+  end
+
+  create_table "post_digests", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "delivered_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_post_digests_on_blog_id"
   end
 
   create_table "posts", force: :cascade do |t|
@@ -196,9 +223,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_01_04_165442) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "blogs", "users"
   add_foreign_key "custom_domain_changes", "blogs"
+  add_foreign_key "digest_posts", "post_digests"
+  add_foreign_key "digest_posts", "posts"
   add_foreign_key "email_subscribers", "blogs"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
+  add_foreign_key "post_digest_deliveries", "email_subscribers"
+  add_foreign_key "post_digest_deliveries", "post_digests"
+  add_foreign_key "post_digests", "blogs"
   add_foreign_key "posts", "blogs"
   add_foreign_key "social_links", "blogs"
   add_foreign_key "subscriptions", "users"

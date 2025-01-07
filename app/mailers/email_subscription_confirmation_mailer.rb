@@ -1,4 +1,6 @@
 class EmailSubscriptionConfirmationMailer < ApplicationMailer
+  layout "mailer_digest"
+
   def confirm
     @subscriber = params[:subscriber]
 

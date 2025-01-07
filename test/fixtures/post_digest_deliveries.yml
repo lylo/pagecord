@@ -1,0 +1,4 @@
+one:
+  post_digest: one
+  email_subscriber: one
+  delivered_at: <%= 1.day.ago %>
