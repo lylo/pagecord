@@ -10,12 +10,15 @@ class PostDigest < ApplicationRecord
   scope :undelivered, -> { where(delivered_at: nil) }
 
   def self.generate_for(blog)
+    Rails.logger.info "Generating digest for #{blog.name}"
     last_digest = blog.post_digests.delivered.order(created_at: :desc).first
     since_date = last_digest&.created_at || 1.week.ago
 
     new_posts = blog.posts
       .where.not(id: DigestPost.select(:post_id))
       .where("created_at > ?", since_date)
+
+    Rails.logger.info "Found #{new_posts.count} new posts since last digest"
 
     return nil if new_posts.empty?
 
