@@ -11,11 +11,19 @@ class PostDigestMailer < ApplicationMailer
     send_email = !Rails.env.production? || allowed_email_addresses.include?(@subscriber.email)
 
     if send_email
-      mail(to: @subscriber.email, subject: "New posts from #{@subscriber.blog.display_name}. #{Date.current.to_formatted_s(:long)}")
+      mail(
+        to: @subscriber.email,
+        from: sender_address_for(@subscriber.blog),
+        subject: "New posts from #{@subscriber.blog.display_name}. #{Date.current.to_formatted_s(:long)}"
+      )
     end
   end
 
   private
+
+    def sender_address_for(blog)
+      "#{blog.display_name} <#{blog.name}@mailer.pagecord.com>"
+    end
 
     def blog_url_for(blog)
       if blog.custom_domain?
