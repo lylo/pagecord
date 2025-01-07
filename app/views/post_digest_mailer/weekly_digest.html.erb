@@ -1,31 +1,30 @@
-<p>
-  New posts from <strong><%= @subscriber.blog.display_name %><strong>.
-</p>
+<div class="digest">
+  <% @digest.posts.each do |post| %>
+    <div class="post">
+      <% if post.title %>
+        <h2>
+          <%= link_to post.title, post_url_for(post) %>
+        </h2>
+      <% end %>
 
-<hr>
+      <div class="post-content">
+        <%= post.content %>
+      </div>
+      <p style="padding-top: 12px;">
+        <small style="color: #888;">
+          <%= post.published_at.to_date.to_formatted_s(:long) %>
+        </small>
+      </p>
+    </div>
+  <% end %>
 
-<% @digest.posts.each do |post| %>
-  <div style="padding-bottom: 24px;">
-    <% if post.title %>
-      <h3>
-        <%= link_to post.title, post_url_for(post) %>
-      </h3>
-    <% end %>
+  <hr>
 
-    <%= post.content %>
-
-    <p style="padding-top: 12px;">
-      <small style="color: #888;">
-        <%= post.published_at.to_date.to_formatted_s(:long) %>
-      </small>
-    </p>
-  </div>
-<% end %>
-
-<hr>
-
-<p>
-  <small>
-  <%= link_to "Unsubscribe", unsubscribe_path_for(@subscriber) %>
-  </small>
-</p>
+  <p class="digest-footer">
+    <small>
+    You're subscribed to receive new posts from <strong><%= @subscriber.blog.display_name %></strong>.
+    <br>
+    <%= link_to "Unsubscribe", unsubscribe_path_for(@subscriber) %>
+    </small>
+  </p>
+</div>

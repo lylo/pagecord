@@ -124,6 +124,32 @@ a {
   color: #3498db;
   text-decoration: underline; }
 
+
+/* -------------------------------------
+    DIGEST
+------------------------------------- */
+.digest h2 {
+  font-weight: 700;
+}
+
+.digest a {
+  color: #000000;
+  text-decoration: none;
+}
+
+.digest .post-content a {
+  color: #000000;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.digest .digest-footer a {
+  text-decoration: underline;
+}
+
+.digest .post {
+  padding-bottom: 32px;
+}
 /* -------------------------------------
     BUTTONS
 ------------------------------------- */
