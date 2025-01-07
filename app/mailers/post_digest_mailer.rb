@@ -1,7 +1,9 @@
 class PostDigestMailer < ApplicationMailer
+  include PostsHelper
+
   layout "mailer_digest"
 
-  helper_method :blog_url_for, :post_url_for, :unsubscribe_path_for
+  helper_method :blog_url_for, :post_url_for, :unsubscribe_path_for, :without_action_text_image_wrapper
 
   def weekly_digest
     @digest = params[:digest]
@@ -14,7 +16,7 @@ class PostDigestMailer < ApplicationMailer
       mail(
         to: @subscriber.email,
         from: sender_address_for(@subscriber.blog),
-        subject: "New posts from #{@subscriber.blog.display_name}. #{Date.current.to_formatted_s(:long)}"
+        subject: "New posts from #{@subscriber.blog.display_name} - #{Date.current.to_formatted_s(:long)}"
       )
     end
   end
