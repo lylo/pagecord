@@ -19,6 +19,18 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_includes digest.posts, new_post
   end
 
+  test "should not create digest if email_subscriptions_enabled is false" do
+    @blog.update!(email_subscriptions_enabled: false)
+
+    assert_nil PostDigest.generate_for(@blog)
+  end
+
+  test "should not create digest if user is not subscribed" do
+    user = users(:vivian)
+
+    assert_nil PostDigest.generate_for(user.blog)
+  end
+
   test "should create deliveries for each email subscriber" do
     create_new_post
 

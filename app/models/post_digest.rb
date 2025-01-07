@@ -10,6 +10,8 @@ class PostDigest < ApplicationRecord
   scope :undelivered, -> { where(delivered_at: nil) }
 
   def self.generate_for(blog)
+    return nil unless blog.user.subscribed? && blog.email_subscriptions_enabled?
+
     Rails.logger.info "Generating digest for #{blog.name}"
     last_digest = blog.post_digests.delivered.order(created_at: :desc).first
     since_date = last_digest&.created_at || 1.week.ago
