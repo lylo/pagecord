@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.3.4"
+ruby file: ".ruby-version"
 
 gem "rails", github: "rails/rails", branch: "main"
 
@@ -36,6 +36,7 @@ gem "feature_toggles"
 gem "htmlentities"
 gem "httparty"
 gem "inline_svg"
+gem "ostruct"
 gem "pagy"
 gem "postmark-rails"
 gem "premailer-rails", "~> 1.12"

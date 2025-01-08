@@ -262,6 +262,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.1-x86_64-linux-gnu)
       racc (~> 1.4)
+    ostruct (0.6.1)
     pagy (9.3.3)
     parallel (1.26.3)
     parser (3.3.6.0)
@@ -430,6 +431,7 @@ PLATFORMS
   aarch64-linux
   arm-linux
   arm64-darwin-23
+  arm64-darwin-24
   x86-linux
   x86_64-darwin
   x86_64-linux
@@ -457,6 +459,7 @@ DEPENDENCIES
   loops_sdk
   mocha
   nanoid (~> 2.0)
+  ostruct
   pagy
   pg
   postmark-rails
@@ -481,7 +484,7 @@ DEPENDENCIES
   whenever
 
 RUBY VERSION
-   ruby 3.3.4p94
+   ruby 3.4.1p0
 
 BUNDLED WITH
-   2.5.23
+   2.6.2
