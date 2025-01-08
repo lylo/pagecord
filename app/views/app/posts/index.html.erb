@@ -38,8 +38,10 @@
         </div>
 
         <div class="text-slate-400 dark:text-slate-400 ">
-          <%= link_to post_path(post), title: "View this post" do %>
-            <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
+          <% if post.published? %>
+            <%= link_to post_path(post), title: "View this post" do %>
+              <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
+            <% end %>
           <% end %>
         </div>
       </div>

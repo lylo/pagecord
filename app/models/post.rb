@@ -12,6 +12,8 @@ class Post < ApplicationRecord
 
   validate :body_or_title
 
+  scope :published, -> { where("published_at <= ?", Time.current) }
+
   def body_or_title
     errors.add(:base, "A body or a title must be present") unless content.body.present? || title.present?
   end
@@ -22,6 +24,10 @@ class Post < ApplicationRecord
 
   def url_title
     title&.parameterize&.truncate(100) || ""
+  end
+
+  def published?
+    published_at <= Time.current
   end
 
   private
