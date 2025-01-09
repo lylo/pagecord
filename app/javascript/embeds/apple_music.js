@@ -6,9 +6,7 @@ class AppleMusic extends MediaSite {
       /https:\/\/music\.apple\.com\/(..)\/(album|playlist)\/[^\/]+\/([0-9]+)(\?.*)?/,
 
       async (url) => {
-        console.log(url)
         const match = url.match(this.regex)
-        console.log(match)
         if (match) {
           const country = match[1]
           const type = match[2]
