@@ -1,6 +1,6 @@
 require "loops_sdk"
 
-class AddToMarketingAutomationJob < ApplicationJob
+class MarketingAutomation::AddContactJob < ApplicationJob
   queue_as :default
 
   def perform(user_id)

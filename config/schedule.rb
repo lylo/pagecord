@@ -22,6 +22,10 @@ every 1.day, at: "4:30 am" do
   rake "accounts:purge_cancellations"
 end
 
+every 1.day, at: "8 am" do
+  rake "marketing_automation:getting_started"
+end
+
 every :tuesday, at: "9 am" do
   rake "post_digests:deliver"
 end
