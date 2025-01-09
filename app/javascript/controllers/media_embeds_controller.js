@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import AppleMusic from "apple_music"
 import Bandcamp from "bandcamp"
 import Spotify from "spotify"
 import Strava from "strava"
@@ -7,7 +8,7 @@ import YouTube from "youtube"
 // Connects to data-controller="media-embed"
 export default class extends Controller {
   connect() {
-    this.mediaSites = [new Spotify(), new YouTube(), new Bandcamp(), new Strava()]
+    this.mediaSites = [new AppleMusic(), new Spotify(), new YouTube(), new Bandcamp(), new Strava()]
     this.replaceMediaLinks()
   }
 
