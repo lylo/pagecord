@@ -8,7 +8,7 @@ Pagecord is a basic web app that uses [Rails](https://rubyonrails.org) 8 and ass
 
 ## Database
 
-Currently the database is Postgres which runs on the EC2 server, thanks to Hatchbox. It's not a managed service, but it is backed up to S3 every 30 mins. Could be better, obvs.
+Currently the database is Postgres which runs on the EC2 server, thanks to Hatchbox. It's not a managed service, but it is backed up to Cloudflare R2 every 30 mins. Could be better, obvs.
 
 ## Background Jobs
 
