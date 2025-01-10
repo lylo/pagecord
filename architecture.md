@@ -14,9 +14,9 @@ Currently the database is Postgres which runs on the EC2 server, thanks to Hatch
 
 Pagecord uses ActiveJob for background jobs, which are configured to use Sidekiq, which requires Redis. I'll probably move this to SolidQueue at some point.
 
-### S3
+### Cloudflare R2
 
-Premium accounts can attach images to their emails. These are processed by ActiveStorage and stored on S3. There's a Cloudfront CDN in front of them.
+Premium accounts can attach images to their emails. These are processed by ActiveStorage and stored on [Cloudflare R2](https://developers.cloudflare.com/r2/).
 
 ### Hatchbox
 
