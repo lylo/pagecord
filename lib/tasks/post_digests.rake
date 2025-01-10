@@ -3,7 +3,7 @@ namespace :post_digests do
   task deliver: :environment do
     blogs = Blog.where(email_subscriptions_enabled: true)
     blogs.find_each do |blog|
-      if blog.user.subscribed?
+      if blog.user.kept? && blog.user.subscribed?
         GeneratePostDigestJob.perform_later(blog.id)
       end
     end
