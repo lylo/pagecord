@@ -1,0 +1,44 @@
+<%= content_for :title do %>
+  Blogging By Email
+<% end %>
+
+<div class="prose dark:prose-invert mb-4 sm:mb-8">
+  <h1 class="text-center">Blogging by email – the best way to blog</h1>
+
+  <p>
+    Pagecord is uniquely optimised for blogging by email. It really is the most effortless way to blog!
+  </p>
+
+  <p>
+     Compose posts in your favourite email client and click send. Pagecord does the rest.
+  </p>
+
+  <%= image_tag "public/blogging-by-email.jpg", class: "rounded-lg py-8", alt: "Screenshot of blogging via Gmail" %>
+
+  <h2 class="text-center mb-8">
+    Any email provider. Any device.
+  </h2>
+
+  <div class="flex gap-x-4 w-full grayscale opacity-50 justify-center">
+    <%= image_tag "public/yahoo.jpg", class: "h-10 sm:h-16", alt: "Yahoo logo" %>
+    <%= image_tag "public/gmail.jpg", class: "h-10 sm:h-16", alt: "Gmail logo" %>
+    <%= image_tag "public/fastmail.jpg", class: "h-10 sm:h-16", alt: "Fastmail logo" %>
+    <%= image_tag "public/outlook.jpg", class: "h-10 sm:h-16", alt: "Outlook logo" %>
+    <%= image_tag "public/protonmail.jpg", class: "h-10 sm:h-16", alt: "Proton Mail logo" %>
+  </div>
+
+  <p>
+    Pagecord works with ANY email provider. On any device. Whether you use Gmail, Yahoo, Outlook, HEY or
+    run your own mail server, Pagecord has you covered.
+  </p>
+
+  <p>
+    If this sounds like your kind of thing, sign up for FREE and get your own Pagecord blog today!
+  </p>
+
+  <div class="my-8 text-center not-prose">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Sign up for FREE!</div>
+    <% end %>
+  </div>
+</div>
