@@ -8,7 +8,7 @@ class Admin::UsersController < AdminController
       flash[:notice] = "You can't discard a premium user"
     else
       flash[:notice] = "User was successfully discarded"
-      @user.discard!
+      DestroyUserJob.perform_now(@user.id)
     end
 
     redirect_to admin_stats_path
