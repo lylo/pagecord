@@ -14,6 +14,8 @@ class MarketingAutomation::DeleteContactJob < ApplicationJob
   private
 
     def delete_from_loops(user)
+      return unless user.verified?
+
       response = LoopsSdk::Contacts.delete(email: user.email)
 
       Rails.logger.info "LoopsSdk::Contacts.delete response: #{response.inspect}"
