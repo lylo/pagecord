@@ -132,6 +132,7 @@ a {
 .digest h2 {
   font-weight: 700;
   font-size: 24px !important;
+  margin-bottom: 1.4rem !important;
 }
 
 .digest h2 a {
@@ -142,6 +143,10 @@ a {
 .digest a {
   color: #000000;
   text-decoration: none;
+}
+
+.digest .post-content {
+  padding-bottom: 1rem;
 }
 
 .digest .post-content a {
@@ -160,11 +165,10 @@ a {
 }
 
 .digest .post {
-  padding-bottom: 32px;
+  padding-bottom: 3rem !important;
 }
 
 .post-timestamp {
-  padding-top: 1rem;
   font-size: 14px !important;
 }
 
@@ -266,7 +270,7 @@ hr {
     margin-bottom: 10px !important; }
   table[class=body] h2 {
     font-size: 24px !important;
-    margin-bottom: 10px !important; }
+  }
   table[class=body] p,
   table[class=body] ul,
   table[class=body] ol,
