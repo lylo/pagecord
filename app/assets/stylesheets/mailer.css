@@ -42,7 +42,8 @@ table {
   /* makes it centered */
   max-width: 580px;
   padding: 10px;
-  width: 580px; }
+  width: 580px;
+}
 
 /* This should also be a block element, so that it will fill 100% of the .container */
 .content {
@@ -130,6 +131,7 @@ a {
 ------------------------------------- */
 .digest h2 {
   font-weight: 700;
+  font-size: 24px;
 }
 
 .digest a {
@@ -143,13 +145,29 @@ a {
   text-decoration: underline;
 }
 
+.digest .digest-footer {
+  font-size: 14px;
+}
+
 .digest .digest-footer a {
   text-decoration: underline;
+  font-size: 14px;
 }
 
 .digest .post {
   padding-bottom: 32px;
 }
+
+.post-timestamp {
+  padding-top: 0.5rem;
+  font-size: 14px;
+}
+
+.post-timestamp a {
+  color: #888;
+  font-size: 14px;
+}
+
 /* -------------------------------------
     BUTTONS
 ------------------------------------- */
