@@ -264,6 +264,9 @@ hr {
   table[class=body] h1 {
     font-size: 28px !important;
     margin-bottom: 10px !important; }
+  table[class=body] h2 {
+    font-size: 24px !important;
+    margin-bottom: 10px !important; }
   table[class=body] p,
   table[class=body] ul,
   table[class=body] ol,
