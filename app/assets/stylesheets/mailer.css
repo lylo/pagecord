@@ -146,7 +146,7 @@ a {
 }
 
 .digest .post-content {
-  padding-bottom: 1rem;
+  padding-bottom: 2rem;
 }
 
 .digest .post-content a {
@@ -165,7 +165,7 @@ a {
 }
 
 .digest .post {
-  padding-bottom: 3rem !important;
+  padding-bottom: 3.5rem !important;
 }
 
 .post-timestamp {
