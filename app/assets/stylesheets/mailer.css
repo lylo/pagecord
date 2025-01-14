@@ -134,6 +134,11 @@ a {
   font-size: 24px;
 }
 
+.digest h2 a {
+  font-weight: 700;
+  font-size: 24px;
+}
+
 .digest a {
   color: #000000;
   text-decoration: none;
@@ -159,7 +164,7 @@ a {
 }
 
 .post-timestamp {
-  padding-top: 0.5rem;
+  padding-top: 1rem;
   font-size: 14px;
 }
 
