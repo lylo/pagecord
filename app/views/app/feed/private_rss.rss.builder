@@ -10,9 +10,9 @@ xml.rss version: "2.0" do
 
       xml.item do
         if post.title.blank?
-          xml.title "@#{post.blog.name} - #{post.published_at.to_formatted_s(:long)}"
+          xml.title "#{post.blog.display_name} - #{post.published_at.to_formatted_s(:long)}"
         else
-          xml.title "@#{post.blog.name} - #{post.title}"
+          xml.title "#{post.blog.display_name} - #{post.title}"
         end
         xml.description do
           xml.cdata! without_action_text_image_wrapper(post.content.to_s)

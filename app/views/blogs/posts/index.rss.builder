@@ -1,8 +1,8 @@
 xml.instruct! :xml, version: "1.0"
 xml.rss version: "2.0" do
   xml.channel do
-    xml.title "Posts by @#{@blog.name}"
-    xml.description "Latest posts by @#{@blog.name}"
+    xml.title "#{@blog.display_name}"
+    xml.description "Latest posts from #{@blog.display_name}"
     xml.link blog_home_url(@blog)
 
     @posts.each do |post|
@@ -10,7 +10,7 @@ xml.rss version: "2.0" do
 
       xml.item do
         if post.title.blank?
-          xml.title "@#{@blog.name} - #{post.published_at.to_formatted_s(:long)}"
+          xml.title "#{@blog.display_name} - #{post.published_at.to_formatted_s(:long)}"
         else
           xml.title post.title
         end
