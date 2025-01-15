@@ -22,7 +22,7 @@ class IpReputation
 
     return true unless json["success"]
 
-    valid_ip?(json) && !valid_country?(json)
+    valid_ip?(json) && valid_country?(json)
   rescue HTTParty::Error, JSON::ParserError => e
     Rails.logger.error "IP Reputation check failed: #{e.message}"
     true
@@ -43,6 +43,6 @@ class IpReputation
       country_code = json.dig("data", "report", "information", "country_code")
       return false unless country_code
 
-      BLOCKED_COUNTRIES.include?(country_code)
+      !BLOCKED_COUNTRIES.include?(country_code)
     end
 end
