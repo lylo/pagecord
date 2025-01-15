@@ -41,7 +41,8 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blog_attributes: { name: "testuser" } } }
     end
 
-    assert_response :unprocessable_entity
+    assert_redirected_to new_signup_path
+    assert_equal "Sorry, that didn't work. Contact support if the problem persists", flash[:error]
   end
 
   test "should not create user if form rendered and submitted within 5 seconds" do
@@ -49,6 +50,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blog_attributes: { name: "testuser" } }, rendered_at: 3.seconds.ago.to_i }
     end
 
-    assert_response :unprocessable_entity
+    assert_redirected_to new_signup_path
+    assert_equal "Sorry, that didn't work. Contact support if the problem persists", flash[:error]
   end
 end

@@ -1,7 +1,7 @@
 class SignupsController < ApplicationController
   rate_limit to: 1, within: 5.minutes, only: [ :create ]
 
-  before_action :honeypot_check, :form_complete_time_check, only: [ :create ]
+  before_action :honeypot_check, :form_complete_time_check, :ip_reputation_check, only: [ :create ]
 
   layout "sessions"
 
@@ -63,7 +63,7 @@ class SignupsController < ApplicationController
     def honeypot_check
       unless params[:email_confirmation].blank?
         Rails.logger.warn "Honeypot field completed. Bypassing signup"
-        head :unprocessable_entity
+        fail
       end
     end
 
@@ -75,7 +75,21 @@ class SignupsController < ApplicationController
 
       if form_complete_time < 5.seconds
         Rails.logger.warn "Form completed too quickly. Bypassing signup"
-        head :unprocessable_entity
+        fail
       end
+    end
+
+    def ip_reputation_check
+      return true unless Rails.env.production?
+
+      unless IpReputation.valid?(request.remote_ip)
+        Rails.logger.warn "IP reputation check failed. Bypassing signup"
+        fail
+      end
+    end
+
+    def fail
+      flash[:error] = "Sorry, that didn't work. Contact support if the problem persists"
+      redirect_to new_signup_path
     end
 end

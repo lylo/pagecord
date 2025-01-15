@@ -1,0 +1,48 @@
+require "httparty"
+
+class IpReputation
+  include HTTParty
+
+  base_uri ENV["IP_REPUTATION_ENDPOINT"]
+  default_timeout 5
+
+  def self.valid?(ip)
+    return true if Rails.env.production? && !ENV["IP_REPUTATION_API_KEY"] && !ENV["IP_REPUTATION_ENDPOINT"]
+
+    response = get("/", query: {
+      key: ENV["IP_REPUTATION_API_KEY"],
+      ip: ip
+    })
+
+    json = JSON.parse(response.body)
+    if json["error"]
+      Rails.logger.error "IP Reputation API error: #{json['error']}"
+      return true
+    end
+
+    return true unless json["success"]
+
+    valid_ip?(json) && !valid_country?(json)
+  rescue HTTParty::Error, JSON::ParserError => e
+    Rails.logger.error "IP Reputation check failed: #{e.message}"
+    true
+  end
+
+  private
+
+    BLOCKED_COUNTRIES = %w[CN RU].freeze
+
+    def self.valid_ip?(json)
+      engines = json.dig("data", "report", "blacklists", "engines")
+      return true unless engines
+
+      !engines.values.any? { |engine| engine["detected"] }
+    end
+
+    def self.valid_country?(json)
+      country_code = json.dig("data", "report", "information", "country_code")
+      return false unless country_code
+
+      BLOCKED_COUNTRIES.include?(country_code)
+    end
+end

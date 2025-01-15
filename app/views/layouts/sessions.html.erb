@@ -5,11 +5,14 @@
   </head>
 
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
-    <%= render "layouts/header" %>
+    <main class="container mx-auto px-4 flex flex-grow flex-col text-slate-950 dark:text-slate-50">
+      <div class="max-w-2xl w-full mx-auto mt-4">
+        <%= render "app/shared/flash" %>
+        <%= render "layouts/header" %>
 
-    <main class="container mx-auto px-4 flex flex-grow text-slate-950 dark:text-slate-50">
-      <div class="max-w-2xl w-full mx-auto mt-12">
+        <div class="mt-12">
         <%= yield %>
+        </div>
       </div>
     </main>
 
