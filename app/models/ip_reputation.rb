@@ -43,6 +43,8 @@ class IpReputation
       country_code = json.dig("data", "report", "information", "country_code")
       return false unless country_code
 
+      Rails.logger.info "IP reputation country code: #{country_code}"
+
       !BLOCKED_COUNTRIES.include?(country_code)
     end
 end
