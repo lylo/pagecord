@@ -6,7 +6,9 @@ class PostDigestMailer < ApplicationMailer
   helper_method :blog_url_for, :post_url_for, :unsubscribe_path_for, :without_action_text_image_wrapper
 
   def weekly_digest
-    @digest = params[:digest]
+    digest = params[:digest]
+
+    @posts = digest.posts.order(published_at: :desc)
     @subscriber = params[:subscriber]
 
     mail(
