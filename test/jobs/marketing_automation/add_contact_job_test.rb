@@ -28,10 +28,10 @@ class MarketingAutomation::AddContactJobTest < ActiveJob::TestCase
     MarketingAutomation::AddContactJob.perform_now(@user.id)
   end
 
-  test "raises an error if LoopsSdk::Contacts.create fails in production" do
+  test "should not raise an error if LoopsSdk::Contacts.create returns a 409" do
     Rails.env.stubs(:production?).returns(true)
-    LoopsSdk::Contacts.expects(:create).returns({ "success" => false })
-    assert_raises(RuntimeError, "LoopsSdk::Contacts.create failed: {\"success\"=>false}") do
+    LoopsSdk::Contacts.expects(:create).raises(LoopsSdk::APIError.new(409, "Email already exists"))
+    assert_nothing_raised do
       MarketingAutomation::AddContactJob.perform_now(@user.id)
     end
   end
