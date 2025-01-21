@@ -15,7 +15,7 @@ class MarketingAutomation::AddContactJob < ApplicationJob
 
     # https://loops.so
     def add_to_loops(user)
-      response = LoopsSdk::Contacts.create(
+      LoopsSdk::Contacts.create(
         email: user.email,
         properties: {
           username: user.blog.name,
@@ -24,8 +24,9 @@ class MarketingAutomation::AddContactJob < ApplicationJob
         mailing_lists: {
           cm3bk30v201in0ml49wza278w: user.marketing_consent
         })
-
-      Rails.logger.info "LoopsSdk::Contacts.create response: #{response.inspect}"
-      raise "LoopsSdk::Contacts.create failed: #{response.inspect}" unless response["success"]
+    rescue LoopsSdk::APIError => e
+      # 409: Contact already exists. This can happen if someone had previously signed up to the
+      #      mailing list via the website, so ignore this error.
+      raise e unless e.status == 409
     end
 end
