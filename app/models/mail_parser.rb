@@ -79,7 +79,7 @@ class MailParser
         html_parts = flatten_parts(@mail).select { |part| part.content_type.start_with?("text/html") }
 
         if html_parts.any?
-          # Tf there are any HTML parts in the mail message, use these exclusively. Typically
+          # If there are any HTML parts in the mail message, use these exclusively. Typically
           # there will only be one
           html_content = html_parts.map(&:decoded).join("\n")
 
