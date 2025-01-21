@@ -82,7 +82,24 @@ class MailParser
           # Tf there are any HTML parts in the mail message, use these exclusively. Typically
           # there will only be one
           html_content = html_parts.map(&:decoded).join("\n")
-          html_transform(html_content)
+
+          transformed_html = html_transform(html_content)
+
+          # Process any image attachments that are not referenced inline
+          @attachments.each do |attachment|
+            content_id = attachment[:original].content_id&.gsub(/\A<|>\Z/, "")
+            next unless content_id
+
+            unless html_content.include?(content_id)
+              transformed_html << attachment_preview_node(
+                  attachment[:blob],
+                  attachment[:url],
+                  attachment[:original]
+                )
+            end
+          end
+
+          transformed_html
         else
           nodes = []
 
@@ -91,7 +108,7 @@ class MailParser
           @mail.parts.each do |part|
             if part.text?
               nodes << plain_text_transform(part.decoded)
-            elsif part.attachment?
+            elsif image_part?(part)
               attachment = find_attachment_from_part(part)
               next unless attachment
 
@@ -125,7 +142,7 @@ class MailParser
     end
 
     def store_attachments
-      @attachments = @mail.attachments.map do |attachment|
+      @attachments = image_attachments.map do |attachment|
         blob = ActiveStorage::Blob.create_and_upload!(
           io: StringIO.new(attachment.body.to_s),
           filename: attachment.filename,
@@ -136,7 +153,15 @@ class MailParser
       end
     end
 
+    def image_attachments
+      @mail.attachments.select { |attachment| image_part?(attachment) }
+    end
+
     def find_attachment_from_part(part)
       @attachments.find { |a| a[:original].object_id == part.object_id }
+    end
+
+    def image_part?(part)
+      part.content_type.start_with?("image/")
     end
 end
