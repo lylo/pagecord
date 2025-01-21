@@ -78,8 +78,9 @@ class MailParser
 
     def parse_body
       if @mail.multipart?
-        html_parts = @mail.parts.select { |part| part.content_type.start_with?("text/html") }
-        text_parts = @mail.parts.select { |part| part.content_type.start_with?("text/plain") }
+        flattened_parts = flatten_parts(@mail)
+        html_parts = flattened_parts.select { |part| part.content_type.start_with?("text/html") }
+        text_parts = flattened_parts.select { |part| part.content_type.start_with?("text/plain") }
 
         if html_parts.any?
           html_content = html_parts.map(&:decoded).join("\n")
@@ -98,6 +99,20 @@ class MailParser
           raise "Unknown content type #{@mail.content_type}"
         end
       end
+    end
+
+    def flatten_parts(mail_part)
+      parts = []
+
+      mail_part.parts.each do |part|
+        if part.multipart?
+          parts.concat(flatten_parts(part))
+        else
+          parts << part
+        end
+      end
+
+      parts
     end
 
     def sanitized_body
