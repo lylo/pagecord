@@ -2,10 +2,10 @@
 
 <% if @posts.empty? %>
   <p class="text-center">
-    Nothing to read on this Pagecord yet ✨
+    Nothing to read on this blog yet ✨
   </p>
   <p class="mt-4 text-center">
-    To be notified of new posts, subscribe to <span class="font-semibold">@<%= @blog.name %></span>'s
+    To be notified of new posts, subscribe to the
     <%= link_to "RSS feed", blog_posts_path(name: @blog.name, format: :rss),
         class: "font-semibold underline" %>
   </p>
