@@ -14,9 +14,7 @@ module Html
         blob = attachment_pair[:blob]
         url = attachment_pair[:url]
 
-        if original.content_disposition&.start_with?("inline")
-          handle_inline_attachment(document, original, blob, url)
-        end
+        handle_inline_attachment(document, original, blob, url)
       end
 
       document.to_html
@@ -31,8 +29,6 @@ module Html
         if element
           node_html = attachment_preview_node(blob, url, original)
           element.replace node_html
-        else
-          append_attachment_node(document, blob, url, original)
         end
       end
   end
