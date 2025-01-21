@@ -12,31 +12,14 @@ module Html
         blob = attachment_pair[:blob]
         url = attachment_pair[:url]
 
-        if original.content_id.present?
-          # Remove the beginning and end < >
-          content_id = original.content_id[1...-1]
-          element = document.at_css "img[src='cid:#{content_id}']"
-
-          node_html = %Q(
-            <action-text-attachment sgid="#{blob.attachable_sgid}" content-type="#{original.content_type}" filename="#{original.filename}" filesize="#{blob.byte_size}" previewable="true" url="#{url}">
-              <figure class="attachment attachment--preview attachment--#{blob.filename.extension}">
-                <img alt="" src="#{url}">
-              </figure>
-            </action-text-attachment>
-          )
-
-          element.replace node_html
+        if original.content_disposition&.start_with?("inline")
+          if original.content_id.present?
+            handle_inline_attachment(document, original, blob, url)
+          else
+            handle_multipart_inline(document, original, blob, url)
+          end
         else
-          new_node = Nokogiri::XML::Node.new "action-text-attachment", document
-          new_node["sgid"] = blob.attachable_sgid
-          new_node["content-type"] = original.content_type
-          new_node["filename"] = original.filename
-          new_node["url"] = url
-          new_node["filesize"] = blob.byte_size
-          new_node["previewable"] = "true"
-
-          # append the new node to the existing body
-          document << new_node
+          append_attachment_node(document, original, blob, url)
         end
       end
 
@@ -48,6 +31,46 @@ module Html
     end
 
     private
+
+      def handle_inline_attachment(document, original, blob, url)
+        content_id = original.content_id.gsub(/\A<|>\Z/, "")
+        element = document.at_css "img[src='cid:#{content_id}']"
+
+        if element
+          node_html = build_preview_node(blob, url, original)
+          element.replace node_html
+        else
+          append_attachment_node(document, blob, url, original)
+        end
+      end
+
+      def handle_multipart_inline(document, original, blob, url)
+        node = build_preview_node(blob, url, original)
+        document.children.first ? document.children.first.before(node) : document.add_child(node)
+      end
+
+      def build_preview_node(blob, url, original)
+        %Q(
+          <action-text-attachment sgid="#{blob.attachable_sgid}" content-type="#{original.content_type}"
+            filename="#{original.filename}" filesize="#{blob.byte_size}" previewable="true" url="#{url}">
+            <figure class="attachment attachment--preview attachment--#{blob.filename.extension}">
+              <img alt="" src="#{url}">
+            </figure>
+          </action-text-attachment>
+        )
+      end
+
+      def append_attachment_node(document, original, blob, url)
+        new_node = Nokogiri::XML::Node.new "action-text-attachment", document
+        new_node["sgid"] = blob.attachable_sgid
+        new_node["content-type"] = original.content_type
+        new_node["filename"] = original.filename
+        new_node["url"] = url
+        new_node["filesize"] = blob.byte_size
+        new_node["previewable"] = "true"
+
+        document << new_node
+      end
 
       # For each attachment, if any, generates an ActiveStorage::Blob
       # and returns a hash of all the attachment/blob pairs
