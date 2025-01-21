@@ -7,6 +7,9 @@ class Post < ApplicationRecord
   has_rich_text :content
   has_many_attached :attachments, dependent: :destroy
 
+  has_many :digest_posts, dependent: :destroy
+  has_many :post_digests, through: :digest_posts
+
   before_create :set_published_at, :limit_content_size, :check_title_and_content
   after_create  :detect_open_graph_image
 

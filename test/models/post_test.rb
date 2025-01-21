@@ -39,4 +39,10 @@ class PostTest < ActiveSupport::TestCase
   test "post with blank title and body should be invalid" do
     assert_not blogs(:joel).posts.build(title: "", content: "").valid?
   end
+
+  test "destroying a post should destroy digest posts" do
+    assert_difference "DigestPost.count", -1 do
+      posts(:one).destroy
+    end
+  end
 end

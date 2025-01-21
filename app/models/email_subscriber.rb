@@ -3,6 +3,8 @@ class EmailSubscriber < ApplicationRecord
 
   belongs_to :blog
 
+  has_many :post_digest_deliveries, dependent: :destroy
+
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :unconfirmed, -> { where(confirmed_at: nil) }
 

@@ -79,4 +79,10 @@ class BlogTest < ActiveSupport::TestCase
     assert @blog.valid?
     assert_equal 1, @blog.custom_domain_changes.count
   end
+
+  test "should destroy post digests on destroy" do
+    assert_difference "PostDigest.count", -1 do
+      @blog.destroy
+    end
+  end
 end
