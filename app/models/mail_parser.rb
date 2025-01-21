@@ -86,7 +86,8 @@ class MailParser
         else
           nodes = []
 
-          # Some mail clients have
+          # Multipart mail with no HTML parts, just plain text and images. Apple Mail defaults
+          # to this, and the order matters.
           @mail.parts.each do |part|
             if part.text?
               nodes << plain_text_transform(part.decoded)
