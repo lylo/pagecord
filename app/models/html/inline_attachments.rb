@@ -23,6 +23,8 @@ module Html
     private
 
       def handle_inline_attachment(document, original, blob, url)
+        return unless original.content_id
+
         content_id = original.content_id.gsub(/\A<|>\Z/, "")
         element = document.at_css "img[src='cid:#{content_id}']"
 
