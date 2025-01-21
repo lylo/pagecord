@@ -1,13 +1,18 @@
 class MailParser
+  include Html::AttachmentPreview
   include ActionView::Helpers::SanitizeHelper
 
   def initialize(mail, process_attachments: true)
     @mail = mail
 
+    @attachments = []
+    store_attachments if process_attachments
+
     @html_pipeline = [
       Html::BodyExtraction.new,
       Html::MonospaceDetection.new,
       Html::ImageUnfurl.new,
+      Html::InlineAttachments.new(@attachments),
       Html::Sanitize.new
     ]
 
@@ -15,13 +20,6 @@ class MailParser
       Html::PlainTextToHtml.new,
       Html::ImageUnfurl.new
     ]
-
-    if process_attachments
-      @attachment_transformer = Html::MailAttachments.new(mail)
-
-      @html_pipeline.insert(-2, @attachment_transformer)  # append before Html::Sanitize
-      @plain_text_pipeline << @attachment_transformer
-    end
   end
 
   def subject
@@ -33,7 +31,7 @@ class MailParser
   end
 
   def attachments
-    @attachment_transformer&.attachments || []
+    @attachments&.map { |attachment| attachment[:blob] } || []
   end
 
   def has_attachments?
@@ -78,16 +76,32 @@ class MailParser
 
     def parse_body
       if @mail.multipart?
-        flattened_parts = flatten_parts(@mail)
-        html_parts = flattened_parts.select { |part| part.content_type.start_with?("text/html") }
-        text_parts = flattened_parts.select { |part| part.content_type.start_with?("text/plain") }
+        html_parts = flatten_parts(@mail).select { |part| part.content_type.start_with?("text/html") }
 
         if html_parts.any?
+          # Tf there are any HTML parts in the mail message, use these exclusively. Typically
+          # there will only be one
           html_content = html_parts.map(&:decoded).join("\n")
           html_transform(html_content)
-        elsif text_parts.any?
-          text_content = text_parts.map(&:decoded).join("\n")
-          plain_text_transform(text_content)
+        else
+          nodes = []
+
+          # Some mail clients have
+          @mail.parts.each do |part|
+            if part.text?
+              nodes << plain_text_transform(part.decoded)
+            elsif part.attachment?
+              attachment = find_attachment_from_part(part)
+              next unless attachment
+
+              nodes << attachment_preview_node(
+                attachment[:blob],
+                attachment[:url],
+                attachment[:original])
+            end
+          end
+
+          nodes.join("\n")
         end
       else
         case @mail.content_type
@@ -102,20 +116,26 @@ class MailParser
     end
 
     def flatten_parts(mail_part)
-      parts = []
-
-      mail_part.parts.each do |part|
-        if part.multipart?
-          parts.concat(flatten_parts(part))
-        else
-          parts << part
-        end
-      end
-
-      parts
+      mail_part.parts.flat_map { |part| part.multipart? ? flatten_parts(part) : part }
     end
 
     def sanitized_body
       @sanitized_body ||= sanitize(body, tags: %w[img], attributes: %w[src alt])
+    end
+
+    def store_attachments
+      @attachments = @mail.attachments.map do |attachment|
+        blob = ActiveStorage::Blob.create_and_upload!(
+          io: StringIO.new(attachment.body.to_s),
+          filename: attachment.filename,
+          content_type: attachment.content_type,
+        )
+
+        { original: attachment, blob: blob, url: Rails.application.routes.url_helpers.rails_blob_url(blob, only_path: true) }
+      end
+    end
+
+    def find_attachment_from_part(part)
+      @attachments.find { |a| a[:original].object_id == part.object_id }
     end
 end
