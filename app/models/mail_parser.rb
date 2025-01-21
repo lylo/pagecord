@@ -78,10 +78,15 @@ class MailParser
 
     def parse_body
       if @mail.multipart?
-        if @mail.html_part
-          html_transform(@mail.html_part.decoded)
-        elsif @mail.text_part
-          plain_text_transform(@mail.text_part.decoded)
+        html_parts = @mail.parts.select { |part| part.content_type.start_with?("text/html") }
+        text_parts = @mail.parts.select { |part| part.content_type.start_with?("text/plain") }
+
+        if html_parts.any?
+          html_content = html_parts.map(&:decoded).join("\n")
+          html_transform(html_content)
+        elsif text_parts.any?
+          text_content = text_parts.map(&:decoded).join("\n")
+          plain_text_transform(text_content)
         end
       else
         case @mail.content_type
@@ -94,7 +99,6 @@ class MailParser
         end
       end
     end
-
 
     def sanitized_body
       @sanitized_body ||= sanitize(body, tags: %w[img], attributes: %w[src alt])
