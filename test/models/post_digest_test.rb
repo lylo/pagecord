@@ -31,12 +31,12 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_nil PostDigest.generate_for(user.blog)
   end
 
-  test "should create deliveries for each email subscriber" do
+  test "should create deliveries for confirmed email subscribers" do
     create_new_post
 
     digest = PostDigest.generate_for(@blog)
 
-    assert_difference "PostDigestDelivery.count", @blog.email_subscribers.count do
+    assert_difference "PostDigestDelivery.count", @blog.email_subscribers.confirmed.count do
       digest.deliver
     end
 

@@ -34,7 +34,7 @@ class PostDigest < ApplicationRecord
   def deliver
     return if delivered_at?
 
-    blog.email_subscribers.each do |subscriber|
+    blog.email_subscribers.confirmed.each do |subscriber|
       PostDigestMailer.with(digest: self, subscriber: subscriber).weekly_digest.deliver_later
       deliveries.create!(email_subscriber: subscriber, delivered_at: Time.current)
     end
