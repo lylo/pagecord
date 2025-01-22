@@ -1,7 +1,7 @@
 class Blogs::EmailSubscribersController < ApplicationController
   rate_limit to: 1, within: 5.minutes, only: [ :create ]
 
-  before_action :load_blog, :requires_user_subscription, :honeypot_check, :ip_reputation_check
+  before_action :load_blog, :requires_user_subscription, :form_complete_time_check, :honeypot_check, :ip_reputation_check, only: [ :create ]
   skip_before_action :domain_check
 
   def create
@@ -39,6 +39,18 @@ class Blogs::EmailSubscribersController < ApplicationController
 
       unless IpReputation.valid?(request.remote_ip)
         Rails.logger.warn "IP reputation check failed. Bypassing signup"
+        head :forbidden
+      end
+    end
+
+    def form_complete_time_check
+      head :forbidden if params[:rendered_at].blank?
+
+      timestamp = params[:rendered_at].to_i
+      form_complete_time = Time.now.to_i - timestamp
+
+      if form_complete_time < 5.seconds
+        Rails.logger.warn "Form completed too quickly. Bypassing signup"
         head :forbidden
       end
     end

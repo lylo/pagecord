@@ -6,6 +6,7 @@
 
   <fieldset class="flex">
     <%= hidden_field_tag :blog_name, @blog.name %>
+    <%= hidden_field_tag :rendered_at, Time.now.to_i %>
     <%= form.email_field :email, required: true, placeholder: "Enter your email...", class: "px-2 py-1 w-48 sm:w-64 text-sm text-slate-900  dark:text-slate-100 bg-white dark:bg-slate-900 border border-r-0 border-slate-200 dark:border-slate-600 rounded-l-lg focus:outline-none focus:ring-0 focus:ring-slate-500 dark:focus:ring-slate-400 focus:border-slate-500 dark:focus:border-slate-400" %>
     <%= text_field_tag :email_confirmation, nil, class: "hidden" %>
 
