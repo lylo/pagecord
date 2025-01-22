@@ -30,4 +30,16 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
       post email_subscribers_url(name: blog.name), params: { blog_name: blog.name, email_subscriber: { email: "test@example.com" } }, as: :turbo_stream
     end
   end
+
+  test "should not add email subscriber if honeypot field is completed" do
+    assert_no_difference("EmailSubscriber.count") do
+      post email_subscribers_url(name: @blog.name), params: {
+          blog_name: @blog.name,
+          email_subscriber: {
+            email: "test@example.com"
+          },
+          email_confirmation: "test@example.com" },
+        as: :turbo_stream
+    end
+  end
 end
