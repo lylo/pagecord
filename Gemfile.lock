@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 47f9165c019041409d9a5bb0458ad47c8dcedd76
+  revision: f1e610ec20532a1fdce6d3ce94d8d610bca48d89
   branch: main
   specs:
     actioncable (8.1.0.alpha)
@@ -107,7 +107,7 @@ GEM
     ast (2.4.2)
     aws-eventstream (1.3.0)
     aws-partitions (1.1042.0)
-    aws-sdk-core (3.216.1)
+    aws-sdk-core (3.217.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -346,7 +346,7 @@ GEM
     rubocop-performance (1.23.1)
       rubocop (>= 1.48.1, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
-    rubocop-rails (2.29.0)
+    rubocop-rails (2.29.1)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.52.0, < 2.0)
@@ -494,4 +494,4 @@ RUBY VERSION
    ruby 3.4.1p0
 
 BUNDLED WITH
-   2.6.2
+   2.6.3
