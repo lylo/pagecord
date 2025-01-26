@@ -8,7 +8,7 @@ local:
 
 cloudflare:
   service: s3
-  endpoint: https://3544f3901a937426c96e1ae0e745f213.r2.cloudflarestorage.com
+  endpoint: https://ca20efb27ecb788b8895f62dd205dbaf.r2.cloudflarestorage.com
   access_key_id: <%= ENV["CLOUDFLARE_R2_ACCESS_KEY_ID"] %>
   secret_access_key: <%= ENV["CLOUDFLARE_R2_SECRET_ACCESS_KEY"] %>
   region: auto
