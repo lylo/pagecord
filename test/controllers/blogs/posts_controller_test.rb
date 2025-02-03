@@ -3,11 +3,22 @@ require "test_helper"
 class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   include RoutingHelper
 
-  test "should get index" do
+  test "should get index as stream of posts" do
     get blog_posts_path(name: blogs(:joel).name)
 
     assert_response :success
     assert_not_nil assigns(:posts)
+    assert_select ".list-of-titles", count: 0
+  end
+
+  test "should render a list of post titles" do
+    blog = blogs(:joel)
+    blog.title_layout!
+
+    get blog_posts_path(name: blog.name)
+
+    assert_response :success
+    assert_select ".list-of-titles", count: 1
   end
 
   test "should show email subscription form on index if enabled" do

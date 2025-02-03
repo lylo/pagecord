@@ -1,6 +1,8 @@
 class Blog < ApplicationRecord
   include DeliveryEmail, CustomDomain, EmailSubscribable
 
+  enum :layout, [ :stream_layout, :title_layout ]
+
   belongs_to :user, inverse_of: :blog
   has_many :posts, dependent: :destroy
   has_many :social_links, dependent: :destroy
