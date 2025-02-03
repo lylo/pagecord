@@ -8,7 +8,7 @@ class Blogs::PostsController < Blogs::BaseController
       .includes(:rich_text_content)
       .order(published_at: :desc)
 
-    @pagy, @posts = pagy(@posts)
+    @pagy, @posts = pagy(@posts, limit: page_size)
 
     respond_to do |format|
       format.html
@@ -26,5 +26,9 @@ class Blogs::PostsController < Blogs::BaseController
 
     def redirect_to_last_page(exception)
       redirect_to url_for(page: exception.pagy.last)
+    end
+
+    def page_size
+      @blog.stream_layout? ? 15 : 100
     end
 end
