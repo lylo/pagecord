@@ -21,7 +21,7 @@ class PostDigestMailer < ApplicationMailer
   private
 
     def sender_address_for(blog)
-      "#{blog.display_name} <#{blog.name}@notifications.pagecord.com>"
+      "#{blog.display_name} <no-reply@notifications.pagecord.com>"
     end
 
     def blog_url_for(blog)
