@@ -3,24 +3,24 @@
 
     <div class="py-2 px-1">
       <div class="p-1">
-        <%= link_to "#", class: "flex justify-end rounded-lg px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+        <%= link_to "#", class: "flex rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
           data: { action: "click->post-attributes#showSection", toggle_target: "published-at" } do %>
           <span class="ms-1">Change publication time</span>
         <% end %>
       </div>
 
       <div class="p-1">
-        <%= link_to "#", class: "flex justify-end rounded-lg px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+        <%= link_to "#", class: "flex rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
           data: { action: "click->post-attributes#showSection", toggle_target: "canonical-url" } do %>
           <span class="ms-1">Set a canonical URL</span>
         <% end %>
       </div>
 
       <% if @post.persisted? %>
-        <hr class="mx-2 my-0 dark:border-gray-600">
+        <hr class="mx-2 mt-2 dark:border-gray-600">
 
-        <div class="flex justify-end p-1">
-          <%= button_to app_post_path(@post), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this post?"}, title: "Trash this post", class: "flex justify-end w-full rounded-lg px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50", form_class: "w-full" do %>
+        <div class="flex p-1">
+          <%= button_to app_post_path(@post), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this post?"}, title: "Trash this post", class: "flex w-full rounded-lg px-2 py-2 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50", form_class: "w-full" do %>
             <%= inline_svg_tag "icons/trash.svg", class: "w-5 h-5" %>
             <span class="ms-1">Delete post</span>
           <% end %>
