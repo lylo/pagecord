@@ -37,4 +37,8 @@
 <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 <%= javascript_importmap_tags %>
 
+<% if prevent_indexing? %>
+<meta name="robots" content="noindex, nofollow">
+<% end %>
+
 <script defer data-domain="pagecord.com" src="https://plausible.io/js/script.js"></script>

@@ -146,4 +146,20 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "link[rel=canonical][href=?]", "https://myblog.net"
   end
+
+  test "should initially prevent free blogs from being indexed" do
+    blog = blogs(:vivian)
+    get "/#{blog.name}"
+
+    assert blog.created_at.after?(1.week.ago)
+    assert_select 'meta[name="robots"][content="noindex, nofollow"]'
+  end
+
+  test "should not prevent new subscribed blogs from being indexed" do
+    blog = blogs(:joel)
+    get "/#{blog.name}"
+
+    assert blog.created_at.after?(1.week.ago)
+    assert_select 'meta[name="robots"][content="noindex, nofollow"]', count: 0
+  end
 end
