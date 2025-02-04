@@ -6,13 +6,15 @@ module Html
       document = Nokogiri::HTML.fragment(html)
 
       document.traverse do |node|
-        if node.text? && node.parent.name != "a"
+        href = node["href"]
+
+        if node.text? && node.parent&.name != "a"
           URI.extract(node.content, [ "http", "https" ]).each do |url|
             if valid_image?(url)
               replace_url_with_image(document, node, url)
             end
           end
-        elsif node.name == "a" && node.content.include?(node["href"]) && valid_image?(node["href"])
+        elsif node.name == "a" && href.present? && node.content.include?(href) && valid_image?(href)
           replace_anchor_with_image(document, node)
         end
       end
