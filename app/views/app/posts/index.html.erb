@@ -2,20 +2,30 @@
   <div class="my-8">
     <p class="mb-8">
       <% if @posts.empty? %>
-        <div class="text-center">
-          You'll see your posts here once you start posting ✨
+        <div class="sm:flex gap-4">
+          <div class="sm:flex-1 sm:min-w-0">
+            <p>
+              You'll see your posts here once you start posting ✨
+            </p>
+            <p class="mt-4 break-words">
+              To publish a new post, send an email from <span class="bg-yellow-100 rounded dark:bg-slate-700 px-1"><%= @blog.user.email %></span> to <%= mail_to @blog.delivery_email, class: "underline font-semibold" %> or click the New Post button.
+            </p>
+          </div>
+          <div class="mt-4 sm:mt-0 sm:flex-shrink-0 text-end sm:w-30">
+            <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
+          </div>
         </div>
       <% else %>
         <%= render "app/shared/callout" do %>
           You have written <%= pluralize @pagy.count, "post" %>. Click on the title to edit an existing post,
           or <%= link_to "create a new post", new_app_post_path, class: "font-medium underline" %>
         <% end %>
+
+        <div class="text-end mb-4">
+          <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
+        </div>
       <% end %>
     </p>
-
-    <div class="text-end mb-4">
-      <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
-    </div>
 
     <% @posts.each do |post| %>
       <div class="flex gap-x-4 justify-between px-4 py-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg break-words">

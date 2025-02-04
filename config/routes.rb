@@ -78,8 +78,13 @@ Rails.application.routes.draw do
 
   namespace :app do
     resources :posts
-
     resources :settings, only: [ :index ]
+
+    resource :onboarding, only: [ :show, :update ], path: "onboarding" do
+      member do
+        post :complete
+      end
+    end
 
     namespace :settings do
       resources :users, only: [ :index, :update, :destroy ]

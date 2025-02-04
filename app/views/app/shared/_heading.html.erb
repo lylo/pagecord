@@ -1,3 +1,5 @@
 <div class="flex justify-end mb-4 font-bold text-lg">
-  <%= render "blogs/blog_title" %>
+  <%= turbo_frame_tag "heading_blog_title" do %>
+    <%= render "blogs/blog_title" %>
+  <% end %>
 </div>

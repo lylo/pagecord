@@ -2,14 +2,23 @@ joel:
   email: joel@pagecord.com
   admin: true
   verified: true
+  onboarding_state: completed
 
 elliot:
   email: elliot@pagecord.com
+  onboarding_state: account_created
 
 vivian:
   email: vivian@pagecord.com
   verified: true
+  onboarding_state: completed
 
 annie:
   email: annie@pagecord.com
   verified: true
+  onboarding_state: completed
+
+saul:
+  email: saul@pagecord.com
+  verified: true
+  onboarding_state: account_created
