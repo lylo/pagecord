@@ -43,16 +43,18 @@
       content: "";
     }
 
+    br {
+      display: block;
+      content: "";
+      margin-bottom: 1.25em; /* Reduce the spacing */
+    }
+
     ul, ol {
       @apply my-0 !important;
     }
 
     li {
       &:first-child {
-        @apply my-0;
-      }
-
-      &:last-child {
         @apply my-0;
       }
     }
