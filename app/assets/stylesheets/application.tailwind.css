@@ -43,24 +43,12 @@
       content: "";
     }
 
-    br {
-      display: block;
-      content: "";
-      margin-bottom: 1.25em; /* Reduce the spacing */
-    }
-
     ul, ol {
       @apply my-0 !important;
     }
 
     img {
       @apply my-2 mx-auto;
-    }
-
-    li {
-      &:first-child {
-        @apply my-0;
-      }
     }
 
     blockquote {
