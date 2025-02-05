@@ -5,6 +5,30 @@
  *
  *= require trix
 */
+trix-toolbar {
+  margin-top: 2em;
+  position: sticky;
+}
+
+trix-toolbar .trix-button.trix-button--icon {
+  border: 0;
+}
+
+trix-toolbar .trix-button-group {
+  border: 0;
+}
+
+trix-toolbar .trix-button-group:not(:first-child) {
+  margin-left: 0;
+}
+
+.trix-button-row {
+  margin-left: -0.5em;
+}
+
+.trix-content h1 strong {
+  font-weight: bold;
+}
 
 /*
  * We need to override trix.css’s image gallery styles to accommodate the
@@ -33,18 +57,59 @@
 trix-editor {
   max-width: 100% !important;
 
-  .attachment.attachment--content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  .attachment img {
+    max-height: 600px !important;
+    width: auto;
+    display: inline-block;
+  }
+
+  .attachment.attachment--preview {
     text-align: center;
     margin: 0 auto;
     width: 100%;
   }
 
-  .attachment--preview img {
-    max-width: 400px;
+  li {
+    margin: 0.5rem 0 0.5rem 1rem !important;
+    &:first-child {
+      margin: 0 0 0 1rem !important;
+    }
+  }
+
+  ol {
+    list-style: decimal;
+    margin-left: 1rem !important;
+  }
+
+  ul {
+    list-style: disc;
+    margin-left: 1rem !important;
+  }
+
+  li::marker {
+    color: #5d646f;
+  }
+
+  h1 {
+    font-weight: 700;
+  }
+
+  a {
+    font-weight: 500;
+    text-decoration: underline;
+  }
+
+  blockquote {
+    margin-bottom: .5rem !important;
+    margin-top: .5rem !important;
+  }
+
+  pre {
+    margin-bottom: .5rem !important;
+    margin-top: .5rem !important;
+    background-color: rgb(2 6 23) !important; /* bg-slate-950 */
+    color: rgb(203 213 225); /* text-slate-300 */
+    font-size: 0.9rem !important;
   }
 }
 
@@ -65,10 +130,6 @@ trix-editor {
   }
 }
 
-/* trix-editor figure {
-  margin-bottom: 1.5rem !important;
-} */
-
 trix-editor .attachment__caption {
   display: none;
 }
@@ -82,12 +143,13 @@ trix-editor .attachment__caption {
       color: #fff !important;
     }
 
-    pre, code {
-      background-color: rgb(2 6 23); /* bg-slate-950 */
-    }
     blockquote {
       color: #fff;
     }
+  }
+
+  li::marker {
+    color: #9ba1aa;
   }
 
   .trix-input--dialog {

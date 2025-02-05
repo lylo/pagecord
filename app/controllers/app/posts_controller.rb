@@ -52,8 +52,8 @@ class App::PostsController < AppController
     end
 
     def prepare_content_for_trix
-      # To pacify Trix, remove new line characters and substitue <p> tags with <br> tags
-      @post.content = @post.content.to_s.gsub(/\n/, "")
+      # To pacify Trix, remove new line characters (except for within <pre> tags) and substitue <p> tags with <br> tags
+      @post.content = @post.content.to_s.gsub(/(?!<pre[^>]*?>.*?)\n(?![^<]*?<\/pre>)/m, "")
       @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
     end
 end

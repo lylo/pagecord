@@ -1,36 +1,3 @@
-/* Trix styles */
-
-trix-toolbar {
-  margin-top: 2em;
-  position: sticky;
-}
-
-trix-toolbar .trix-button.trix-button--icon {
-  border: 0;
-}
-
-trix-toolbar .trix-button-group {
-  border: 0;
-}
-
-trix-toolbar .trix-button-group:not(:first-child) {
-  margin-left: 0;
-}
-
-.trix-button-row {
-  margin-left: -0.5em;
-}
-
-.trix-content .attachment--preview img {
-  display: inline;
-}
-
-.trix-content h1 strong {
-  font-weight: bold;
-}
-
-/* Tailwind */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -53,10 +20,6 @@ trix-toolbar .trix-button-group:not(:first-child) {
 
 @layer base {
   article {
-    .trix-content p {
-      @apply mb-4;
-    }
-
     h1:not(.title) {
       @apply text-xl mb-0;
 
@@ -70,7 +33,7 @@ trix-toolbar .trix-button-group:not(:first-child) {
     }
 
     img {
-      @apply rounded-lg;
+      @apply rounded-lg max-h-[640px] inline-block;
     }
   }
 
@@ -80,12 +43,24 @@ trix-toolbar .trix-button-group:not(:first-child) {
       content: "";
     }
 
-    img {
-      @apply my-2 mx-auto;
+    br {
+      display: block;
+      content: "";
+      margin-bottom: 1.25em; /* Reduce the spacing */
+    }
+
+    img, figure {
+      @apply my-0 mx-auto;
     }
 
     ul, ol {
       @apply my-0 !important;
+    }
+
+    li {
+      &:first-child {
+        @apply my-0;
+      }
     }
 
     blockquote {
