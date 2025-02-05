@@ -56,6 +56,7 @@ trix-toolbar .trix-button-group:not(:first-child) {
 
 trix-editor {
   max-width: 100% !important;
+  padding-bottom: 1.5em;
 
   .attachment img {
     max-height: 600px !important;
