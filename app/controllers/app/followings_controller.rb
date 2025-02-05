@@ -2,6 +2,8 @@ class App::FollowingsController < AppController
   include Pagy::Backend
   include ActionView::RecordIdentifier
 
+  rescue_from Pagy::OverflowError, with: -> { redirect_to app_followings_path }
+
   def index
     @pagy, @followed_blogs = pagy(Current.user.followed_blogs, limit: 15)
   end
