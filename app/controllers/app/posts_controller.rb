@@ -51,9 +51,16 @@ class App::PostsController < AppController
       params.require(:post).permit(:title, :content, :published_at, :canonical_url)
     end
 
+    # HTML from inbound email doesn't often play nicely with Trix
+    # This method performs some tweaks to try and help.
     def prepare_content_for_trix
-      # To pacify Trix, remove new line characters (except for within <pre> tags) and substitue <p> tags with <br> tags
+      # remove new line characters (except for within <pre> tags)
       @post.content = @post.content.to_s.gsub(/(?!<pre[^>]*?>.*?)\n(?![^<]*?<\/pre>)/m, "")
+
+      # remove whitespace between tags (Trix seems to add a <br> tag in some cases)
+      @post.content = @post.content.to_s.gsub(/>\s+</, "><")
+
+      # remove paragraph tags
       @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
     end
 end
