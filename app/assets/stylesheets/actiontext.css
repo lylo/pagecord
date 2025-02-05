@@ -58,10 +58,17 @@ trix-editor {
   max-width: 100% !important;
   padding-bottom: 1.5em;
 
-  .attachment img {
-    max-height: 600px !important;
-    width: auto;
-    display: inline-block;
+  .attachment {
+    img {
+      max-height: 600px !important;
+      width: auto;
+      display: inline-block;
+    }
+  }
+
+  span[data-trix-cursor-target="right"] {
+    display: block !important;
+    height: 0.25em;
   }
 
   .attachment.attachment--preview {
@@ -77,14 +84,16 @@ trix-editor {
     }
   }
 
+  ol, ul {
+    margin-left: 1rem !important;
+  }
+
   ol {
     list-style: decimal;
-    margin-left: 1rem !important;
   }
 
   ul {
     list-style: disc;
-    margin-left: 1rem !important;
   }
 
   li::marker {
