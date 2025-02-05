@@ -46,7 +46,7 @@
     br {
       display: block;
       content: "";
-      margin-bottom: 1.25em; /* Reduce the spacing */
+      margin-bottom: 1.5em; /* Reduce the spacing */
     }
 
     ul, ol {
