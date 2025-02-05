@@ -33,7 +33,7 @@
     }
 
     img {
-      @apply rounded-lg max-h-[640px] inline-block;
+      @apply rounded-lg max-h-[640px];
     }
   }
 
@@ -49,12 +49,12 @@
       margin-bottom: 1.25em; /* Reduce the spacing */
     }
 
-    img, figure {
-      @apply my-0 mx-auto;
-    }
-
     ul, ol {
       @apply my-0 !important;
+    }
+
+    img {
+      @apply my-2 mx-auto;
     }
 
     li {
