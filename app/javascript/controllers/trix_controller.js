@@ -5,7 +5,7 @@ export default class extends Controller {
     // Initialize and enhance the Trix editor
     this.element.addEventListener("trix-initialize", (event) => {
       const editor = event.target
-      const subscribed = editor.dataset.subscribed
+      const subscribed = editor.dataset.subscribed === "true"
 
       if (!subscribed) {
         editor.addEventListener("trix-file-accept", (e) => {
