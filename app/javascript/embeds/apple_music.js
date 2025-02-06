@@ -3,7 +3,7 @@ import MediaSite from "media_site"
 class AppleMusic extends MediaSite {
   constructor() {
     super(
-      /https:\/\/music\.apple\.com\/(..)\/(album|playlist)\/[^\/]+\/([0-9]+)(\?.*)?/,
+      /(https:\/\/(music|podcasts)\.apple\.com\/(..)\/(album|playlist|podcast)\/[^\/]+\/(id)?([0-9]+))(\?.*)?/,
 
       async (url) => {
         const match = url.match(this.regex)
