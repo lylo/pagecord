@@ -372,7 +372,7 @@ GEM
     sentry-rails (5.22.3)
       railties (>= 5.0)
       sentry-ruby (~> 5.22.3)
-    sentry-ruby (5.22.3)
+    sentry-ruby (5.22.4)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
     sidekiq (7.3.7)
