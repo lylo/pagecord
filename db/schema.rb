@@ -80,11 +80,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_04_123935) do
     t.datetime "discarded_at"
     t.boolean "email_subscriptions_enabled", default: true, null: false
     t.string "features", default: [], array: true
+    t.integer "layout", default: 0
     t.string "name", null: false
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.integer "layout", default: 0
     t.index ["name"], name: "index_blogs_on_name", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
@@ -126,11 +126,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_04_123935) do
   end
 
   create_table "onboardings", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
     t.string "state", default: "account_created", null: false
     t.string "string", default: "account_created", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_onboardings_on_user_id"
   end
 
@@ -222,9 +222,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_04_123935) do
     t.datetime "discarded_at"
     t.string "email", null: false
     t.boolean "marketing_consent", default: false, null: false
+    t.string "onboarding_state", default: "account_created"
     t.datetime "updated_at", null: false
     t.boolean "verified", default: false
-    t.string "onboarding_state", default: "account_created"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
   end

@@ -41,16 +41,6 @@
       content: "";
     }
 
-    ul, ol {
-      @apply my-0 !important;
-    }
-
-    li {
-      &:first-child {
-        @apply my-0;
-      }
-    }
-
     img {
       @apply my-2 mx-auto;
     }

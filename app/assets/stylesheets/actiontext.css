@@ -85,7 +85,7 @@ trix-editor {
   }
 
   ol, ul {
-    margin-left: 1rem !important;
+    margin: 1.25em 0 1.25em 1.25em !important;
   }
 
   ol {
