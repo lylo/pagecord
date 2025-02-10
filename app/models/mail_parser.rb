@@ -88,15 +88,14 @@ class MailParser
           # Process any image attachments that are not referenced inline
           @attachments.each do |attachment|
             content_id = attachment[:original].content_id&.gsub(/\A<|>\Z/, "")
-            next unless content_id
 
-            unless html_content.include?(content_id)
-              transformed_html << attachment_preview_node(
-                  attachment[:blob],
-                  attachment[:url],
-                  attachment[:original]
-                )
-            end
+            next if content_id.present? && html_content.include?(content_id)
+
+            transformed_html << attachment_preview_node(
+                attachment[:blob],
+                attachment[:url],
+                attachment[:original]
+              )
           end
 
           transformed_html
