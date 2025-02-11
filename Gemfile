@@ -5,7 +5,7 @@ ruby file: ".ruby-version"
 gem "rails", github: "rails/rails", branch: "main"
 
 gem "actionpack-page_caching"
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.14"
 gem "importmap-rails"
 gem "jbuilder"
 gem "sprockets-rails"
