@@ -26,7 +26,7 @@ class Post < ApplicationRecord
   end
 
   def url_title
-    title&.parameterize&.truncate(100) || ""
+    title&.parameterize&.truncate(72, omission: "") || ""
   end
 
   def published?
