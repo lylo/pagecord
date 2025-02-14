@@ -3,6 +3,27 @@ if Rails.env.production?
     config.dsn = ENV["SENTRY_DSN"]
     config.breadcrumbs_logger = [ :active_support_logger, :http_logger ]
 
+    config.before_send = lambda do |event, hint|
+      if hint[:scope]&.current_hub&.current_scope
+        if Current.user
+          event.user = {
+            id: Current.user.id,
+            email: Current.user.email
+          }
+        end
+
+        # Add current blog data if available
+        if Current.blog
+          event.extra[:blog] = {
+            id: Current.blog.id,
+            name: Current.blog.name
+          }
+        end
+      end
+
+      event
+    end
+
     # Set traces_sample_rate to 1.0 to capture 100%
     # of transactions for performance monitoring.
     # We recommend adjusting this value in production.

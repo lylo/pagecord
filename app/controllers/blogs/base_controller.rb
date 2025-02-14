@@ -23,6 +23,7 @@ class Blogs::BaseController < ApplicationController
       if @blog.nil?
         redirect_to_app_home
       else
+        Current.blog = @blog
         @user = @blog.user
       end
     end
