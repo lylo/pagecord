@@ -5,7 +5,7 @@ class Blogs::PostsController < Blogs::BaseController
 
   def index
     @posts = @blog.posts.published
-      .with_all_rich_text
+      .with_rich_text_content_and_embeds
       .order(published_at: :desc)
 
     @pagy, @posts = pagy(@posts, limit: page_size)
@@ -17,7 +17,9 @@ class Blogs::PostsController < Blogs::BaseController
   end
 
   def show
-    @post = @blog.posts.published.find_by!(token: blog_params[:token])
+    @post = @blog.posts.published
+      .with_rich_text_content_and_embeds
+      .find_by!(token: blog_params[:token])
 
     fresh_when @post, public: true, template: "blogs/posts/post"
   end
