@@ -65,8 +65,8 @@
   </div>
 </div>
 
-<div id="pricing" class="mt-12 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-3xl px-4">
-  <h2 class="text-center text-3xl sm:text-3xl tracking-tight">Full of features. Unbeatable Value 😇</h2>
+<div id="pricing" class="mt-16 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-3xl px-4">
+  <h2 class="text-center sm:text-start text-3xl sm:text-4xl tracking-tight">Full of features. Unbeatable Value 😇</h2>
 
   <p class="sm:text-xl">
     Pagecord is super-simple to use, but it's chock-a-block with great features.
@@ -231,13 +231,27 @@
     </table>
   </div>
 
-  <div class="mt-8 text-center sm:text-xl not-prose">
+  <div class="mt-12 mb-20 text-center sm:text-xl not-prose">
     <%= link_to new_signup_path do %>
       <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-bmc-pink">Create your free account today</div>
     <% end %>
   </div>
 
-  <h2 class="text-center text-3xl">Open source 🤓</h2>
+  <h2 class="text-center sm:text-start mt-8 text-3xl sm:text-4xl">Blogging by email? 📬</h2>
+  <p class="mb-0 sm:text-xl">
+    Watch the video to see how blogging by emails works! If this isn't for you, no worries – use
+    Pagecord's excellent text editor in the app!
+  </p>
+
+  <div class="max-w-3xl mx-auto w-full flex justify-center">
+    <video class="w-full dark:border-slate-800 bg-black" controls poster="https://pagecord-media.s3.eu-west-2.amazonaws.com/pagecord-dec-2024-cover.webp">
+      <source src="https://d1q3gzkzfltpo9.cloudfront.net/pagecord-dec-2024.mp4"
+              type="video/mp4">
+      Sorry, your browser does not support the video tag 😭
+    </video>
+  </div>
+
+  <h2 class="text-center sm:text-start mt-8 text-3xl sm:text-4xl">Open source 🤓</h2>
   <p class="sm:text-xl">
     The Pagecord code is <a href="https://github.com/lylo/pagecord">open source under the MIT license</a>. Take a look under the hood,
     suggest improvements, or (if you're feeling brave) host it yourself!
