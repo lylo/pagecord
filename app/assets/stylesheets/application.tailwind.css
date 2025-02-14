@@ -48,10 +48,6 @@
     h1.title {
       @apply text-3xl;
     }
-
-    img {
-      @apply rounded-lg max-h-[640px];
-    }
   }
 
   .prose {
@@ -61,7 +57,7 @@
     }
 
     img {
-      @apply my-2 mx-auto;
+      @apply my-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
     }
 
     blockquote {
