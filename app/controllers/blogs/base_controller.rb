@@ -16,7 +16,7 @@ class Blogs::BaseController < ApplicationController
         blog_from_custom_domain
       else
         if blog_params[:name].present?
-          Blog.find_by(name: blog_params[:name])
+          Blog.includes(:social_links, :avatar_attachment).find_by(name: blog_params[:name])
         end
       end
 
