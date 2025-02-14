@@ -26,55 +26,44 @@ trix-toolbar .trix-button-group:not(:first-child) {
   margin-left: -0.5em;
 }
 
-.trix-content h1 strong {
-  font-weight: bold;
-}
+.trix-content {
+  h1 strong {
+    font-weight: bold;
+  }
 
-/*
- * We need to override trix.css’s image gallery styles to accommodate the
- * <action-text-attachment> element we wrap around attachments. Otherwise,
- * images in galleries will be squished by the max-width: 33%; rule.
-*/
-.trix-content .attachment-gallery > action-text-attachment,
-.trix-content .attachment-gallery > .attachment {
-  flex: 1 0 33%;
-  padding: 0 0.5em;
-  max-width: 33%;
-}
+  /*
+  * We need to override trix.css’s image gallery styles to accommodate the
+  * <action-text-attachment> element we wrap around attachments. Otherwise,
+  * images in galleries will be squished by the max-width: 33%; rule.
+  */
+  .attachment-gallery > action-text-attachment,
+  .attachment-gallery > .attachment {
+    flex: 1 0 33%;
+    padding: 0 0.5em;
+    max-width: 33%;
+  }
 
-.trix-content .attachment-gallery.attachment-gallery--2 > action-text-attachment,
-.trix-content .attachment-gallery.attachment-gallery--2 > .attachment, .trix-content .attachment-gallery.attachment-gallery--4 > action-text-attachment,
-.trix-content .attachment-gallery.attachment-gallery--4 > .attachment {
-  flex-basis: 50%;
-  max-width: 50%;
-}
+  .attachment-gallery.attachment-gallery--2 > action-text-attachment,
+  .attachment-gallery.attachment-gallery--2 > .attachment,
+  .attachment-gallery.attachment-gallery--4 > action-text-attachment,
+  .attachment-gallery.attachment-gallery--4 > .attachment {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
 
-.trix-content action-text-attachment .attachment {
-  padding: 0 !important;
-  max-width: 100% !important;
+  img {
+    width: auto;
+    margin: 0 auto;
+    max-height: 36rem;
+  }
 }
 
 trix-editor {
   max-width: 100% !important;
   padding-bottom: 1.5em;
 
-  .attachment {
-    img {
-      max-height: 600px !important;
-      width: auto;
-      display: inline-block;
-    }
-  }
-
-  span[data-trix-cursor-target="right"] {
-    display: block !important;
-    height: 0.25em;
-  }
-
-  .attachment.attachment--preview {
-    text-align: center;
-    margin: 0 auto;
-    width: 100%;
+  .attachment__caption {
+    display: none;
   }
 
   li {
@@ -138,10 +127,6 @@ trix-editor {
   .trix-button--icon-attach {
     display: none;
   }
-}
-
-trix-editor .attachment__caption {
-  display: none;
 }
 
 /* Workarounds for issues with Trix and Tailwind in dark mode */
