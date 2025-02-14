@@ -5,7 +5,7 @@ class Blogs::PostsController < Blogs::BaseController
 
   def index
     @posts = @blog.posts.published
-      .includes(rich_text_content: { embeds_attachments: :blob })
+      .with_all_rich_text
       .order(published_at: :desc)
 
     @pagy, @posts = pagy(@posts, limit: page_size)
