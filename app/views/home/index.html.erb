@@ -1,39 +1,78 @@
-<div class="prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-2xl">
-  <h1 class="text-center"><span class="text-4xl tracking-tight">The most effortless way to publish your writing online. All you need is email.</span></h1>
-  <p class="mt-8 sm:mt-12">
-    Create your own beautifully minimalist blog in seconds. For free!
-  </p>
-  <p>
-    Publish your writing effortlessly by sending an email, or use our delightfully simple editor.
-  </p>
-  <p>
-    Send an email newsletter to your readers, automatically.
-  </p>
-  <p>
-    Take a sneaky peek at <a href="https://pagecord.com/pagecord">the Pagecord blog</a> and
-    watch the video below to see it in action.
-  </p>
+<div class="mt-4 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-3xl px-4">
+  <h1 class="text-center sm:text-start text-4xl sm:text-5xl tracking-tight">Write Without Distraction</h1>
+
+  <div class="sm:text-xl">
+    <p class="mt-8 sm:mt-12">
+      Escape the world of algorithms, AI and ads. Blog for free, on your terms.
+    </p>
+
+     <p>
+      Publish effortlessly from your inbox or the Pagecord app. Your readers can follow by RSS or email.
+    </p>
+
+    <p>
+      Pagecord is <span class="font-bold">privacy-focused</span>,
+      <span class="font-bold">independent</span> and <span class="font-bold">open-source</span>.
+
+    </p>
+
+    <p>
+      No snooping. No algorithm. No Ads. <span class="font-bold">Just your writing</span>.
+    </p>
+
+    <div class="sm:my-12 my-8 sm:text-xl not-prose">
+      <%= link_to new_signup_path do %>
+        <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-bmc-pink">Create a free account today</div>
+      <% end %>
+      <div class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        (No credit card required)
+      </div>
+    </div>
+
+    <p>
+      Check out <a href="https://pagecord.com/pagecord">the Pagecord blog</a> to see it in action.
+    </p>
+  </div>
 </div>
 
-<div class="my-8 text-center not-prose">
-  <%= link_to new_signup_path do %>
-    <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing for free!</div>
-  <% end %>
+<div class="relative w-full px-4 sm:px-6 lg:px-8 my-12 py-8 bg-slate-100 dark:bg-slate-700">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
+    <% (1..3).each do |i| %>
+      <div class="transform hover:-translate-y-2 transition-transform duration-300 <%= 'md:mt-8' if i % 2 == 1 %>">
+        <button onclick="document.getElementById('modal-<%= i %>').showModal()" class="w-full">
+          <%= image_tag "home/screenshot-0#{i}.webp",
+              class: "rounded-xl shadow-lg border border-slate-200/50 shadow-[0_4px_12px_0px_rgba(255,255,255,0.05)] dark:shadow-slate-300/75 w-full cursor-pointer",
+              alt: "Pagecord screenshot #{i}" %>
+        </button>
+
+        <dialog id="modal-<%= i %>"
+                class="backdrop:bg-gray-950/90 p-0 rounded-xl max-w-4xl w-full"
+                onclick="if (event.target === this) this.close()">
+          <form method="dialog" class="m-0">
+            <%= image_tag "home/screenshot-0#{i}.webp",
+                class: "w-full rounded-xl",
+                alt: "Pagecord screenshot #{i}" %>
+            <button onclick="document.getElementById('modal-<%= i %>').close()"
+                    class="absolute top-4 right-4 text-white bg-gray-900/50 hover:bg-gray-900/75 rounded-full p-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </form>
+        </dialog>
+      </div>
+    <% end %>
+  </div>
 </div>
 
-<div class="max-w-3xl mx-auto w-full flex justify-center">
-  <video class="w-full dark:border-slate-800 bg-black" controls poster="https://pagecord-media.s3.eu-west-2.amazonaws.com/pagecord-dec-2024-cover.webp">
-    <source src="https://d1q3gzkzfltpo9.cloudfront.net/pagecord-dec-2024.mp4"
-            type="video/mp4">
-    Sorry, your browser does not support the video tag 😭
-  </video>
-</div>
+<div id="pricing" class="mt-12 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-3xl px-4">
+  <h2 class="text-center text-3xl sm:text-3xl tracking-tight">Full of features. Unbeatable Value 😇</h2>
 
-<div id="pricing" class="mt-12 prose dark:prose-invert mb-4 sm:mb-8 mx-auto max-w-3xl">
-  <h2 class="text-center">Fun features. Unbeatable Value 😇</h2>
-
-  <p>
-    Pagecord is super-simple to use, but it's chock-a-block with great features. Pagecord Classic is free, forever. Premium customers get even more features and a special warm fuzzy feeling for only <strong>$<%= Subscription.price %> per year</strong>! 🤗
+  <p class="sm:text-xl">
+    Pagecord is super-simple to use, but it's chock-a-block with great features.
+  </p>
+  <p class="sm:text-xl">
+    Pagecord Classic is <strong>free, forever</strong>. Premium customers get even more features and a special warm fuzzy feeling for only <strong>$<%= Subscription.price %> per year</strong>! 🤗
   </p>
 
   <div class="mt-8 bg-slate-100 dark:bg-slate-800 px-6 py-4 rounded-xl">
@@ -97,14 +136,6 @@
         </tr>
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Email newsletter (beta!)</div>
-            <div class="hidden sm:block">Readers can sign up to a weekly email digest of your posts 📬</div>
-          </td>
-          <td class="text-center align-middle text-xl">✅</td>
-          <td class="text-center align-middle text-xl">✅</td>
-        </tr>
-        <tr>
-          <td class="py-3 align-middle">
             <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Online editor</div>
             <div class="hidden sm:block">Use a rich text editor if you prefer a traditional blogging experience 👩‍💻</div>
           </td>
@@ -141,6 +172,14 @@
             <div class="hidden sm:block">Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base sm:font-bold text-slate-900 dark:text-slate-100">Email newsletter</div>
+            <div class="hidden sm:block">Readers can sign up to receive a weekly email digest of your posts 📬</div>
+          </td>
+          <td class="text-center align-middle text-xl"></td>
           <td class="text-center align-middle text-xl">✅</td>
         </tr>
         <tr>
@@ -192,14 +231,14 @@
     </table>
   </div>
 
-  <div class="mt-8 text-center not-prose">
+  <div class="mt-8 text-center sm:text-xl not-prose">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-bmc-pink">Start writing for free today!</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-bmc-pink">Create your free account today</div>
     <% end %>
   </div>
 
-  <h2 class="text-center">Open source 🤓</h2>
-  <p>
+  <h2 class="text-center text-3xl">Open source 🤓</h2>
+  <p class="sm:text-xl">
     The Pagecord code is <a href="https://github.com/lylo/pagecord">open source under the MIT license</a>. Take a look under the hood,
     suggest improvements, or (if you're feeling brave) host it yourself!
   </p>

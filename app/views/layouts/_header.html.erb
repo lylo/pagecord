@@ -1,12 +1,14 @@
 <header>
-  <nav class="py-4 px-4 flex justify-between items-center">
+  <nav class="py-4 flex justify-between items-center">
     <div class="text-4xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
       <%= link_to root_path do %>
         <%= inline_svg_tag "logo.svg", class: "w-24 sm:w-40 dark:text-slate-100 text-slate-900" %>
       <% end %>
     </div>
     <div>
-      <%= link_to "Log In", login_path, class: "hover:underline font-medium" %>
+      <div class="text-sm inline-block border text-slate-500 dark:text-slate-400 hover:text-slate-800 hover:dark:text-slate-300 dark:border-slate-500 rounded-full px-2 py-1 hover:bg-slate-100 hover:dark:bg-slate-700 text-center">
+          <%= link_to "Log In", login_path %>
+      </div>
     </div>
   </nav>
 </header>

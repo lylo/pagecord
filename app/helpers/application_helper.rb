@@ -8,7 +8,7 @@ module ApplicationHelper
     elsif @blog.present?
       blog_description(@blog)
     else
-      "Pagecord is the most effortless way to blog, for free. Publish your writing by sending an email, or using our delightfully simple editor."
+      "Write Without Distraction. Escape the world of algorithms, AI and ads. Pagecord lets you blog for free, on your terms."
     end
   end
 
