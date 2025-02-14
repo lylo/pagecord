@@ -21,7 +21,7 @@ class Blogs::PostsController < Blogs::BaseController
       .with_rich_text_content_and_embeds
       .find_by!(token: blog_params[:token])
 
-    fresh_when @post, public: true, template: "blogs/posts/post"
+    fresh_when @post, public: true, template: "blogs/posts/show"
   end
 
   private
