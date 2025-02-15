@@ -69,6 +69,21 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "should call hatchbox when changing custom domain" do
+    @blog.update!(custom_domain: "olddomain.com")
+
+    assert_enqueued_jobs 2 do
+      patch app_settings_blog_url(@blog),
+        params: { blog: { custom_domain: "newdomain.com" } },
+        as: :turbo_stream
+
+      assert_enqueued_with(job: RemoveCustomDomainJob, args: [ @blog.id, "olddomain.com" ])
+      assert_enqueued_with(job: AddCustomDomainJob, args: [ @blog.id, "newdomain.com" ])
+    end
+
+    assert_equal "newdomain.com", @blog.reload.custom_domain
+  end
+
   test "should raise an error after 20 custom domain changes" do
     user = users(:annie)
 
