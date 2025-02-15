@@ -10,7 +10,7 @@ gem "importmap-rails"
 gem "jbuilder"
 gem "sprockets-rails"
 gem "stimulus-rails"
-gem "tailwindcss-rails"
+gem "tailwindcss-rails", "~> 3.3.1"
 gem "turbo-rails"
 
 gem "puma", ">= 5.0"
