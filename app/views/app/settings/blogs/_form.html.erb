@@ -68,7 +68,7 @@
 
     <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-800 border #{@blog.errors[:custom_domain].any? ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} text-slate-800 dark:text-slate-200 rounded-lg" %>
     <% if @blog.errors[:custom_domain].any? %>
-      <span class="text-red-500 text-sm"><%= @blog.errors.full_messages_for(:custom_domain).first %>
+      <span class="text-red-500 text-sm"><%= @blog.errors.full_messages_for(:custom_domain).first %></span>
     <% end %>
 
     <% if @blog.valid? && @blog.custom_domain.present? %>
