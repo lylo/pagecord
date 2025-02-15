@@ -1,6 +1,8 @@
 class Subscription < ApplicationRecord
   belongs_to :user
 
+  has_many :renewal_reminders, class_name: "Subscription::RenewalReminder", dependent: :destroy
+
   scope :comped, -> { where(complimentary: true) }
   scope :active_paid, -> { where(cancelled_at: nil).where(complimentary: false).where("next_billed_at > ?", Time.current) }
 

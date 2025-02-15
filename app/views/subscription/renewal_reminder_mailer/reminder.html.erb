@@ -1,0 +1,29 @@
+<p>
+  Hi 👋
+</p>
+
+<p>
+  Just to let you know that your Pagecord subscription will renew automatically on <strong><%= @renewal_date.strftime("%B %-d, %Y") %></strong>.
+</p>
+
+<p>
+  The annual fee of <strong>$<%= Subscription.price %></strong> will be charged to your card on this date, and you'll get another year of Pagecord Premium.
+</p>
+
+<p>
+  If you'd like to update your payment method or cancel your subscription, log into Pagecord and visit the Billing page:
+</p>
+
+<p>
+  <%= link_to app_settings_subscriptions_url, app_settings_subscriptions_url %>
+</p>
+
+<p>
+  Thanks so much for being a Pagecord customer!
+</p>
+
+<p>
+Olly<br>
+--<br>
+<small>Founder, Pagecord</small>
+</p>

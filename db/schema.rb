@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_02_04_123935) do
+ActiveRecord::Schema[8.1].define(version: 2025_02_14_195823) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -192,6 +192,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_04_123935) do
     t.index ["blog_id"], name: "index_social_links_on_blog_id"
   end
 
+  create_table "subscription_renewal_reminders", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "period", null: false
+    t.datetime "sent_at", null: false
+    t.bigint "subscription_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id", "period"], name: "idx_on_subscription_id_period_ee77f6799e", unique: true
+    t.index ["subscription_id"], name: "index_subscription_renewal_reminders_on_subscription_id"
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.datetime "cancelled_at"
     t.boolean "complimentary", default: false, null: false
@@ -245,6 +255,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_04_123935) do
   add_foreign_key "post_digests", "blogs"
   add_foreign_key "posts", "blogs"
   add_foreign_key "social_links", "blogs"
+  add_foreign_key "subscription_renewal_reminders", "subscriptions"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "upvotes", "posts"
 end
