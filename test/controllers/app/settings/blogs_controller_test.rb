@@ -100,7 +100,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
         as: :turbo_stream
     end
 
-    assert_equal "", @blog.reload.custom_domain
+    assert_nil @blog.reload.custom_domain
     assert_equal "welcometoanniesblog.com", blog_with_domain.reload.custom_domain
   end
 

@@ -80,6 +80,13 @@ class BlogTest < ActiveSupport::TestCase
     assert_equal 1, @blog.custom_domain_changes.count
   end
 
+  test "should normalize custom domain" do
+    @blog.custom_domain = ""
+    @blog.save!
+
+    assert_nil @blog.reload.custom_domain
+  end
+
   test "should destroy post digests on destroy" do
     assert_difference "PostDigest.count", -1 do
       @blog.destroy
