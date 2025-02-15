@@ -60,7 +60,7 @@ class HatchboxDomainApi
     # In theory a malicious actor could remove domains that are not theirs, including
     # pagecord.com itself
     def restricted_domain(domain)
-      %w[pagecord.com].include? domain
+      %w[pagecord.com proxy.pagecord.com].include? domain
     end
 
     def domain_exists?(domain)
