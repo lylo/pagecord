@@ -1,0 +1,29 @@
+<table class="my-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
+  <thead>
+    <tr>
+      <th class="py-2 text-start font-bold">Date</th>
+      <th class="py-2 text-start font-bold">Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @exports.each do |export| %>
+      <tr class="hover:bg-slate-50">
+        <td class="p-2 text-slate-600 dark:text-slate-500">
+          <%= export.created_at.to_formatted_s(:long) %>
+        </td>
+
+        <td class="text-slate-600 dark:text-slate-500">
+          <%= export.status.titleize %>
+        </td>
+
+        <td class="p-2 flex justify-end">
+          <% if export.file.present? %>
+            <%= link_to "Download", rails_blob_path(export.file, disposition: "attachment"), class: "btn-primary mr-2" %>
+          <% end %>
+          <%= button_to "Delete", app_settings_export_path(export), method: :delete, class: "btn-danger", data: { turbo_confirm: "Are you sure?" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

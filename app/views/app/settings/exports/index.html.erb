@@ -1,0 +1,23 @@
+<h3 class="mb-4 font-bold text-xl">Exports</h3>
+
+<div class="flex flex-col sm:flex-row justify-between w-full">
+  <% if @exports.empty? %>
+    <div>You have no exports</div>
+  <% else %>
+    <div>
+      <p>
+        You have <%= pluralize @exports.size, "export" %>. Click to download the ZIP file.
+      </p>
+
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        (Exports are automatically deleted after 7 days)
+      </p>
+    </div>
+  <% end %>
+
+  <div class="mt-8 sm:mt-0 w-56 text-end">
+    <%= button_to "💾 Generate New Export", app_settings_exports_path, class: "btn-primary" %>
+  </div>
+</div>
+
+<%= render "exports" unless @exports.empty? %>
