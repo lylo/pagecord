@@ -20,7 +20,7 @@
     <% end -%>
     <li>
       <%= post.published_at.strftime("%d %b") %> &mdash;
-      <a href="<%= post.to_title_param %>.html"><%= post.title.presence || "Untitled" %></a>
+      <a href="<%= post.to_title_param %>.html"><%= post.title.presence || post.summary %></a>
     </li>
   <% end -%>
   <% if blog.posts.any? -%>
