@@ -29,3 +29,7 @@ end
 every :tuesday, at: "9 am" do
   rake "post_digests:deliver"
 end
+
+every :day, at: "4:00 am" do
+  rake "exports:cleanup"
+end
