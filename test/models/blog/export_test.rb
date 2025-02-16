@@ -30,7 +30,7 @@ class Blog::ExportTest < ActiveSupport::TestCase
 
     assert export.file.attached?
     assert_equal "application/zip", export.file.content_type
-    assert_match(/\d+_export_\d+\.zip/, export.file.filename.to_s)
+    assert_match(/joel_export_\d+\.zip/, export.file.filename.to_s)
   end
 
   test "handles posts with images" do
