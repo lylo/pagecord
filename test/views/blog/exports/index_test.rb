@@ -45,7 +45,7 @@ class IndexTest < ActionView::TestCase
     )
 
     render_template
-    assert_select "a", text: "Untitled"
+    assert_select "a", text: "The Art of Street Photography"
   end
 
   private
