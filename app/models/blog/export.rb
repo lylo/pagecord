@@ -12,12 +12,19 @@ class Blog::Export < ApplicationRecord
   def perform
     in_progress!
 
-    Dir.mktmpdir do |dir|
-      export_posts(dir)
-      attach_zip_file(dir)
-    end
+    begin
+      Dir.mktmpdir do |dir|
+        export_posts(dir)
+        attach_zip_file(dir)
+      end
+    rescue => e
+      Rails.logger.error("Export failed: #{e.message}")
+      failed!
 
-    completed!
+      raise e
+    else
+      completed!
+    end
   end
 
   private
@@ -32,8 +39,8 @@ class Blog::Export < ApplicationRecord
       images_dir = File.join(dir, "images")
       FileUtils.mkdir_p(images_dir)
 
-      html = strip_action_text_attachments(post.content.to_s)
-      post_content = download_and_replace_images(html, post, images_dir)
+      stripped_html = Html::StripActionTextAttachments.new.transform(post.content.to_s)
+      post_content = Blog::Export::ImageHandler.new(post, images_dir).process_images(stripped_html)
 
       File.open(File.join(dir, "#{post.title_param}.html"), "w") do |file|
         file.write(<<~HTML)
@@ -52,46 +59,6 @@ class Blog::Export < ApplicationRecord
       end
     end
 
-    def strip_action_text_attachments(html)
-      doc = Nokogiri::HTML::DocumentFragment.parse(html)
-
-      doc.css("action-text-attachment").each do |attachment|
-        if img = attachment.at_css("img")
-          figure = img.parent
-          figure.replace(img) if figure.name == "figure"
-          attachment.replace(img)
-        end
-      end
-
-      doc.to_html
-    end
-
-    def download_and_replace_images(html, post, images_dir)
-      post_images_dir = File.join(images_dir, post.token)
-      FileUtils.mkdir_p(post_images_dir)
-
-      doc = Nokogiri::HTML::DocumentFragment.parse(html)
-      doc.css("img").each do |img|
-        src = img["src"]
-        next unless src
-
-        safe_filename = sanitized_filename(src)
-        local_path = File.join(post_images_dir, safe_filename)
-
-        File.open(local_path, "wb") { |file| file.write(URI.open(src).read) }
-
-        # Rewrite the image src
-        img["src"] = "images/#{post.token}/#{safe_filename}"
-      end
-
-      doc.to_html
-    end
-
-    def sanitized_filename(url)
-      decoded_filename = URI.decode_www_form_component(File.basename(url))
-      decoded_filename.gsub(/[^0-9A-Za-z.\-]/, "_")
-    end
-
     def attach_zip_file(dir)
       zip_path = File.join(dir, "#{blog.id}_export_#{Time.current.to_i}.zip")
 
@@ -102,7 +69,6 @@ class Blog::Export < ApplicationRecord
         end
       end
 
-      # Attach the zip file to Active Storage
       file.attach(
         io: File.open(zip_path),
         filename: File.basename(zip_path),

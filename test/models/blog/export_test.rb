@@ -5,7 +5,6 @@ require "mocha/minitest"
 class Blog::ExportTest < ActiveSupport::TestCase
   setup do
     @blog = blogs(:joel)
-    @image_data = "fake image data"
 
     @post = @blog.posts.new(title: "Test Post")
     @post.content = ActionText::Content.new(<<~HTML)
@@ -17,9 +16,10 @@ class Blog::ExportTest < ActiveSupport::TestCase
           </figure>
         </action-text-attachment>
       </div>
-    HTML
+      HTML
     @post.save!
 
+    @image_data = "fake image data"
     fake_image = StringIO.new(@image_data)
     URI.expects(:open).with("http://example.com/test%20image.jpg").returns(fake_image)
   end
