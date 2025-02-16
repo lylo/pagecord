@@ -39,16 +39,13 @@ class Blog::ExportTest < ActiveSupport::TestCase
     Dir.mktmpdir do |dir|
       export.send(:export_posts, dir)
 
-      # Check HTML file exists
       html_file = File.join(dir, "#{@post.title_param}.html")
       assert File.exist?(html_file)
 
-      # Check content
       content = File.read(html_file)
       assert_includes content, "<title>Test Post</title>"
       assert_includes content, "<h1>Test Post</h1>"
 
-      # Check image was downloaded and referenced correctly
       image_path = File.join(dir, "images", @post.token, "test_image.jpg")
       assert File.exist?(image_path)
       assert_equal @image_data, File.read(image_path)
