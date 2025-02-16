@@ -2,7 +2,6 @@ class Blog::Export::ImageHandler
   def initialize(post, root_dir)
     @post = post
     @post_images_dir = File.join(root_dir, @post.token)
-    FileUtils.mkdir_p(@post_images_dir)
   end
 
   def process_images(html)
@@ -19,6 +18,7 @@ class Blog::Export::ImageHandler
       src = img["src"]
       return unless src
 
+      FileUtils.mkdir_p(@post_images_dir)
       safe_filename = sanitized_filename(src)
       local_path = File.join(@post_images_dir, safe_filename)
 
