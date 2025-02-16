@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_02_15_125642) do
+ActiveRecord::Schema[8.1].define(version: 2025_02_15_141950) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -71,6 +71,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_15_125642) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "blog_exports", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "status", default: 0
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_blog_exports_on_blog_id"
   end
 
   create_table "blogs", force: :cascade do |t|
@@ -233,6 +241,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_15_125642) do
   add_foreign_key "access_requests", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "blog_exports", "blogs"
   add_foreign_key "blogs", "users"
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"

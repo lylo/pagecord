@@ -12,25 +12,13 @@ module ApplicationHelper
     end
   end
 
-  def blog_title(blog)
-    if blog.custom_title?
-      blog.title
-    else
-      "Posts from @#{blog.name}"
-    end
-  end
-
   def page_title
     if @post
-      if @post.title&.present?
-        @post.title.truncate(100).strip
-      else
-        "#{blog_title(@post.blog)} - #{@post.published_at.to_formatted_s(:long)}"
-      end
+      @post.display_title
     elsif content_for?(:title)
       content_for(:title)
     elsif @blog
-      blog_title(@blog)
+      @blog.display_title
     else
       "Pagecord - Publish your writing effortlessly. All you need is email"
     end
@@ -104,7 +92,7 @@ module ApplicationHelper
       if blog.bio.present?
         strip_tags(blog.bio).truncate(140).strip
       else
-        blog_title(blog)
+        blog.display_title
       end
     end
 

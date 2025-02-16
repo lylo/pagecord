@@ -42,6 +42,7 @@ gem "postmark-rails"
 gem "premailer-rails", "~> 1.12"
 gem "nanoid", "~> 2.0"
 gem "rails_autolink"
+gem "rubyzip"
 gem "whenever"
 
 

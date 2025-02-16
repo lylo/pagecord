@@ -29,8 +29,24 @@ class Post < ApplicationRecord
     title&.parameterize&.truncate(72, omission: "") || ""
   end
 
+  def title_param
+    if url_title.blank?
+      token
+    else
+      "#{url_title}-#{token}"
+    end
+  end
+
   def published?
     published_at <= Time.current
+  end
+
+  def display_title
+    if title&.present?
+      title.truncate(72).strip
+    else
+      "#{blog.display_title} - #{published_at.to_formatted_s(:long)}"
+    end
   end
 
   private
