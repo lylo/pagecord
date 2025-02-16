@@ -39,7 +39,7 @@ class Blog::ExportTest < ActiveSupport::TestCase
     Dir.mktmpdir do |dir|
       export.send(:export_posts, dir)
 
-      html_file = File.join(dir, "#{@post.title_param}.html")
+      html_file = File.join(dir, "#{@post.to_title_param}.html")
       assert File.exist?(html_file)
 
       content = File.read(html_file)

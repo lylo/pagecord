@@ -25,6 +25,14 @@ class PostsHelperTest < ActionView::TestCase
     assert_equal "Untitled", post_title(post)
   end
 
+  test "blog title" do
+    blog = blogs(:joel)
+    assert_equal "Posts from @#{blog.name}", blog_title(blog)
+
+    blog.title = "My blog"
+    assert_equal "My blog", blog_title(blog)
+  end
+
   test "blog_description with no bio" do
     blog = blogs(:joel)
     blog.title = "My blog"

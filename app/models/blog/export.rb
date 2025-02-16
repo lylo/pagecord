@@ -30,8 +30,19 @@ class Blog::Export < ApplicationRecord
   private
 
     def export_posts(dir)
+      create_index_html(dir)
+
       blog.posts.find_each do |post|
         export_post_to_html(post, dir)
+      end
+    end
+
+    def create_index_html(dir)
+      template_path = Rails.root.join("app/views/blog/exports/index.html.erb")
+      template = ERB.new(File.read(template_path), trim_mode: "-")
+
+      File.open(File.join(dir, "index.html"), "w") do |file|
+        file.write(template.result(binding))
       end
     end
 
@@ -40,22 +51,13 @@ class Blog::Export < ApplicationRecord
       FileUtils.mkdir_p(images_dir)
 
       stripped_html = Html::StripActionTextAttachments.new.transform(post.content.to_s)
-      post_content = Blog::Export::ImageHandler.new(post, images_dir).process_images(stripped_html)
+      @post_content = Blog::Export::ImageHandler.new(post, images_dir).process_images(stripped_html)
 
-      File.open(File.join(dir, "#{post.title_param}.html"), "w") do |file|
-        file.write(<<~HTML)
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <title>#{post.display_title}</title>
-          </head>
-          <body>
-        HTML
+      template_path = Rails.root.join("app/views/blog/exports/post.html.erb")
+      template = ERB.new(File.read(template_path), trim_mode: "-")
 
-        file.write("<h1>#{post.title}</h1>") if post.title.present?
-        file.write(post_content)
-        file.write("</body></html>")
+      File.open(File.join(dir, "#{post.to_title_param}.html"), "w") do |file|
+        file.write(template.result(binding))
       end
     end
 

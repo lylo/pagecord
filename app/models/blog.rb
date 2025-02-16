@@ -33,10 +33,6 @@ class Blog < ApplicationRecord
     title.blank? ? "@#{name}" : title
   end
 
-  def display_title
-    custom_title? ? title : "Posts from @#{name}"
-  end
-
   private
 
     def bio_length

@@ -25,11 +25,7 @@ class Post < ApplicationRecord
     token
   end
 
-  def url_title
-    title&.parameterize&.truncate(72, omission: "") || ""
-  end
-
-  def title_param
+  def to_title_param
     if url_title.blank?
       token
     else
@@ -37,16 +33,22 @@ class Post < ApplicationRecord
     end
   end
 
+  def url_title
+    title&.parameterize&.truncate(72, omission: "") || ""
+  end
+
   def published?
     published_at <= Time.current
   end
 
-  def display_title
-    if title&.present?
-      title.truncate(72).strip
-    else
-      "#{blog.display_title} - #{published_at.to_formatted_s(:long)}"
-    end
+  def summary(limit: 64)
+    summary = self.content.to_plain_text
+      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
+      .gsub(/\[Image\]/i, "").strip
+      .gsub(/https?:\/\/\S+/, "").strip
+      .truncate(limit, separator: /\s/)
+
+    summary.presence || "Untitled"
   end
 
   private

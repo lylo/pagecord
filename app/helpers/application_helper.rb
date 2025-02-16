@@ -4,7 +4,7 @@ module ApplicationHelper
   # <meta name="description" content="<%= meta_description %>">
   def meta_description
     if @post
-      post_summary(@post)
+      @post.summary
     elsif @blog.present?
       blog_description(@blog)
     else
@@ -12,13 +12,25 @@ module ApplicationHelper
     end
   end
 
+  def blog_title(blog)
+    if blog.custom_title?
+      blog.title
+    else
+      "Posts from @#{blog.name}"
+    end
+  end
+
   def page_title
     if @post
-      @post.display_title
+      if @post.title&.present?
+        @post.title
+      else
+        "#{blog_title(@post.blog)} - #{@post.published_at.to_formatted_s(:long)}"
+      end
     elsif content_for?(:title)
       content_for(:title)
     elsif @blog
-      @blog.display_title
+      blog_title(@blog)
     else
       "Pagecord - Publish your writing effortlessly. All you need is email"
     end
@@ -73,18 +85,7 @@ module ApplicationHelper
       if post.title.present?
         post.title.truncate(100).strip
       else
-        post_summary(post)
-      end
-    end
-
-    def post_summary(post)
-      content = post.content.to_plain_text.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
-      summary = strip_links(content).truncate(64, separator: /\s/)
-
-      if summary.blank?
-        "Untitled"
-      else
-        summary
+        post.summary
       end
     end
 
@@ -92,7 +93,7 @@ module ApplicationHelper
       if blog.bio.present?
         strip_tags(blog.bio).truncate(140).strip
       else
-        blog.display_title
+        blog_title(blog)
       end
     end
 

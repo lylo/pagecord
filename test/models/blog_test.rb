@@ -92,12 +92,4 @@ class BlogTest < ActiveSupport::TestCase
       @blog.destroy
     end
   end
-
-  test "blog title" do
-    blog = blogs(:joel)
-    assert_equal "Posts from @joel", blog.display_title
-
-    blog.title = "My blog"
-    assert_equal "My blog", blog.display_title
-  end
 end
