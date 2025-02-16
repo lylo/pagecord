@@ -6,6 +6,9 @@
 </head>
 <body>
   <h1><%= blog.display_name %></h1>
+  <% if blog.bio -%>
+  <div><%= blog.bio %></div>
+  <% end -%>
   <% current_year = nil -%>
   <% blog.posts.order(published_at: :desc).each do |post| -%>
     <% year = post.published_at.year -%>
