@@ -1,8 +1,8 @@
-<table class="my-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
+<table class="my-8 min-w-full text-sm divide-y divide-slate-300 dark:divide-slate-700">
   <thead>
     <tr>
-      <th class="py-2 text-start font-bold">Date</th>
-      <th class="py-2 text-start font-bold">Status</th>
+      <th class="p-2 text-start font-bold">Date</th>
+      <th class="p-2 text-start font-bold">Status</th>
       <th></th>
     </tr>
   </thead>
@@ -13,7 +13,7 @@
           <%= export.created_at.to_formatted_s(:long) %>
         </td>
 
-        <td class="text-slate-600 dark:text-slate-500">
+        <td class="p-2 text-slate-600 dark:text-slate-500">
           <%= export.status.titleize %>
         </td>
 
