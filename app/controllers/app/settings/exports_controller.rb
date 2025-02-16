@@ -1,4 +1,6 @@
 class App::Settings::ExportsController < AppController
+  rate_limit to: 5, within: 1.day, only: :create
+
   before_action :check_feature_toggle
 
   def index
