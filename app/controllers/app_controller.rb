@@ -10,6 +10,7 @@ class AppController < ApplicationController
     def load_user
       @user = Current.user
       @blog = @user.blog
+      Current.blog = @blog
     end
 
     def onboarding_check
