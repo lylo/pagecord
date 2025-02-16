@@ -8,7 +8,7 @@ module ApplicationHelper
     elsif @blog.present?
       blog_description(@blog)
     else
-      "Write Without Distraction. Escape the world of algorithms, AI and ads. Pagecord lets you blog for free, on your terms."
+      "Rediscover The Joy Of Writing. Pagecord makes blogging so effortless, you'll want to write more. Share long-form posts or short stream-of-consciousness thoughts. Both look great! Publish by email or the Pagecord app. Your readers can follow by RSS or subscribe by email - no algorithms, no AI."
     end
   end
 
@@ -32,7 +32,7 @@ module ApplicationHelper
     elsif @blog
       blog_title(@blog)
     else
-      "Pagecord - Publish your writing effortlessly. All you need is email"
+      "Pagecord - Rediscover the joy of writing. All you need is email"
     end
   end
 
