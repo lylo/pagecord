@@ -11,7 +11,7 @@ class Blog < ApplicationRecord
   has_many :followings, foreign_key: :followed_id, dependent: :destroy
   has_many :followers, through: :followings, source: :follower
 
-  has_many :blog_exports, class_name: "Blog::Export", dependent: :destroy
+  has_many :exports, class_name: "Blog::Export", dependent: :destroy
 
   has_one_attached :avatar do |attachable|
     attachable.variant :thumb, resize_to_limit: [ 300, 300 ]
