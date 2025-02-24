@@ -134,15 +134,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_15_141950) do
     t.index ["follower_id", "followed_id"], name: "index_followings_on_follower_id_and_followed_id", unique: true
   end
 
-  create_table "onboardings", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "state", default: "account_created", null: false
-    t.string "string", default: "account_created", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_onboardings_on_user_id"
-  end
-
   create_table "open_graph_images", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "post_id", null: false
@@ -201,6 +192,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_15_141950) do
     t.index ["blog_id"], name: "index_social_links_on_blog_id"
   end
 
+  create_table "subscription_renewal_reminders", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "period", null: false
+    t.datetime "sent_at", null: false
+    t.bigint "subscription_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id", "period"], name: "idx_on_subscription_id_period_ee77f6799e", unique: true
+    t.index ["subscription_id"], name: "index_subscription_renewal_reminders_on_subscription_id"
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.datetime "cancelled_at"
     t.boolean "complimentary", default: false, null: false
@@ -247,7 +248,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_15_141950) do
   add_foreign_key "digest_posts", "post_digests"
   add_foreign_key "digest_posts", "posts"
   add_foreign_key "email_subscribers", "blogs"
-  add_foreign_key "onboardings", "users"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
   add_foreign_key "post_digest_deliveries", "email_subscribers"
@@ -255,6 +255,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_15_141950) do
   add_foreign_key "post_digests", "blogs"
   add_foreign_key "posts", "blogs"
   add_foreign_key "social_links", "blogs"
+  add_foreign_key "subscription_renewal_reminders", "subscriptions"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "upvotes", "posts"
 end

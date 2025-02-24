@@ -18,8 +18,16 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+every :day, at: "4:00 am" do
+  rake "exports:cleanup"
+end
+
 every 1.day, at: "4:30 am" do
   rake "accounts:purge_cancellations"
+end
+
+every :day, at: "5:00 am" do
+  rake "subscriptions:send_renewal_reminders"
 end
 
 every 1.day, at: "8 am" do
@@ -28,8 +36,4 @@ end
 
 every :tuesday, at: "9 am" do
   rake "post_digests:deliver"
-end
-
-every :day, at: "4:00 am" do
-  rake "exports:cleanup"
 end
