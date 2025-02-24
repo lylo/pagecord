@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title><%= post.title.presence || post.summary %></title>
+</head>
+<body>
+  <% if post.title.present? -%>
+    <h1><%= post.title %></h1>
+  <% end %>
+  <%= @post_content %>
+</body>
+</html>

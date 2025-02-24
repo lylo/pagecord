@@ -4,11 +4,11 @@ module ApplicationHelper
   # <meta name="description" content="<%= meta_description %>">
   def meta_description
     if @post
-      post_summary(@post)
+      @post.summary
     elsif @blog.present?
       blog_description(@blog)
     else
-      "Write Without Distraction. Escape the world of algorithms, AI and ads. Pagecord lets you blog for free, on your terms."
+      "Rediscover The Joy Of Writing. Pagecord makes blogging so effortless, you'll want to write more. Share long-form posts or short stream-of-consciousness thoughts. Both look great! Publish by email or the Pagecord app. Your readers can follow by RSS or subscribe by email - no algorithms, no AI."
     end
   end
 
@@ -23,7 +23,7 @@ module ApplicationHelper
   def page_title
     if @post
       if @post.title&.present?
-        @post.title.truncate(100).strip
+        @post.title
       else
         "#{blog_title(@post.blog)} - #{@post.published_at.to_formatted_s(:long)}"
       end
@@ -32,7 +32,7 @@ module ApplicationHelper
     elsif @blog
       blog_title(@blog)
     else
-      "Pagecord - Publish your writing effortlessly. All you need is email"
+      "Pagecord - Rediscover the joy of writing. All you need is email"
     end
   end
 
@@ -85,18 +85,7 @@ module ApplicationHelper
       if post.title.present?
         post.title.truncate(100).strip
       else
-        post_summary(post)
-      end
-    end
-
-    def post_summary(post)
-      content = post.content.to_plain_text.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
-      summary = strip_links(content).truncate(64, separator: /\s/)
-
-      if summary.blank?
-        "Untitled"
-      else
-        summary
+        post.summary
       end
     end
 

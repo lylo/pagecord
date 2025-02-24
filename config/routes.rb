@@ -90,6 +90,7 @@ Rails.application.routes.draw do
       resources :users, only: [ :index, :update, :destroy ]
       resources :blogs, only: [ :index, :update ]
       resources :email_subscribers, only: [ :index ]
+      resources :exports
 
       get "/account/edit", to: "account#edit"
 

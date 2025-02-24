@@ -5,10 +5,12 @@ class App::Settings::BlogsController < AppController
   def update
     if @blog.update(blog_params)
       if @blog.domain_changed?
+        if @blog.custom_domain_previously_was.present?
+          RemoveCustomDomainJob.perform_later(@blog.id, @blog.custom_domain_previously_was)
+        end
+
         if @blog.custom_domain.present?
           AddCustomDomainJob.perform_later(@blog.id, @blog.custom_domain)
-        else
-          RemoveCustomDomainJob.perform_later(@blog.id, @blog.custom_domain_previously_was)
         end
       end
 

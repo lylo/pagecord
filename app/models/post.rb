@@ -25,12 +25,30 @@ class Post < ApplicationRecord
     token
   end
 
+  def to_title_param
+    if url_title.blank?
+      token
+    else
+      "#{url_title}-#{token}"
+    end
+  end
+
   def url_title
     title&.parameterize&.truncate(72, omission: "") || ""
   end
 
   def published?
     published_at <= Time.current
+  end
+
+  def summary(limit: 64)
+    summary = self.content.to_plain_text
+      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
+      .gsub(/\[Image\]/i, "").strip
+      .gsub(/https?:\/\/\S+/, "").strip
+      .truncate(limit, separator: /\s/)
+
+    summary.presence || "Untitled"
   end
 
   private

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title><%= blog.display_name %></title>
+</head>
+<body>
+  <h1><%= blog.display_name %></h1>
+  <% if blog.bio -%>
+  <div><%= blog.bio %></div>
+  <% end -%>
+  <% current_year = nil -%>
+  <% blog.posts.order(published_at: :desc).each do |post| -%>
+    <% year = post.published_at.year -%>
+    <% if year != current_year -%>
+      <%= "</ul>".html_safe if current_year -%>
+      <h2><%= year %></h2>
+      <ul>
+      <% current_year = year -%>
+    <% end -%>
+    <li>
+      <%= post.published_at.strftime("%d %b") %> &mdash;
+      <a href="<%= post.to_title_param %>.html"><%= post.title.presence || post.summary %></a>
+    </li>
+  <% end -%>
+  <% if blog.posts.any? -%>
+    </ul>
+  <% end -%>
+</body>
+</html>

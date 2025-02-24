@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_02_14_195823) do
+ActiveRecord::Schema[8.1].define(version: 2025_02_15_141950) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -73,6 +73,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_14_195823) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "blog_exports", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "status", default: 0
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_blog_exports_on_blog_id"
+  end
+
   create_table "blogs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "custom_domain"
@@ -85,6 +93,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_14_195823) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["name"], name: "index_blogs_on_name", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
@@ -123,15 +132,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_14_195823) do
     t.bigint "follower_id"
     t.datetime "updated_at", null: false
     t.index ["follower_id", "followed_id"], name: "index_followings_on_follower_id_and_followed_id", unique: true
-  end
-
-  create_table "onboardings", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "state", default: "account_created", null: false
-    t.string "string", default: "account_created", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_onboardings_on_user_id"
   end
 
   create_table "open_graph_images", force: :cascade do |t|
@@ -242,12 +242,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_14_195823) do
   add_foreign_key "access_requests", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "blog_exports", "blogs"
   add_foreign_key "blogs", "users"
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"
   add_foreign_key "digest_posts", "posts"
   add_foreign_key "email_subscribers", "blogs"
-  add_foreign_key "onboardings", "users"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
   add_foreign_key "post_digest_deliveries", "email_subscribers"

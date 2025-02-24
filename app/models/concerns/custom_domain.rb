@@ -3,6 +3,8 @@ module CustomDomain
 
   included do
     has_many :custom_domain_changes, dependent: :destroy
+
+    before_save :normalize_custom_domain
     after_update :record_custom_domain_change
 
     validates :custom_domain, uniqueness: true, allow_blank: true, format: { with: /\A(?!:\/\/)([a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}\z/ }
@@ -21,7 +23,7 @@ module CustomDomain
   private
 
     def restricted_domain
-      restricted_domains = %w[pagecord.com]
+      restricted_domains = %w[pagecord.com proxy.pagecord.com]
 
       if restricted_domains.include?(custom_domain)
         errors.add(:custom_domain, "is restricted")
@@ -32,5 +34,9 @@ module CustomDomain
       if domain_changed?
         self.custom_domain_changes.create!(custom_domain: custom_domain)
       end
+    end
+
+    def normalize_custom_domain
+      self.custom_domain = nil if custom_domain.blank?
     end
 end

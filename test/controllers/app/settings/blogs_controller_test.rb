@@ -69,6 +69,41 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "should call hatchbox when changing custom domain" do
+    @blog.update!(custom_domain: "olddomain.com")
+
+    assert_enqueued_jobs 2 do
+      patch app_settings_blog_url(@blog),
+        params: { blog: { custom_domain: "newdomain.com" } },
+        as: :turbo_stream
+
+      assert_enqueued_with(job: RemoveCustomDomainJob, args: [ @blog.id, "olddomain.com" ])
+      assert_enqueued_with(job: AddCustomDomainJob, args: [ @blog.id, "newdomain.com" ])
+    end
+
+    assert_equal "newdomain.com", @blog.reload.custom_domain
+  end
+
+  test "should not remove domain that doesn't belong to blog" do
+    blog_with_domain = blogs(:annie)  # Already has a custom domain
+    @blog.update!(custom_domain: "mydomain.com")
+
+    # Attempt to remove annie's domain from joel's blog by spoofing params
+    assert_enqueued_jobs 1 do  # Should only remove mydomain.com, not annie's domain
+      patch app_settings_blog_url(@blog),
+        params: {
+          blog: {
+            custom_domain: "",
+            _custom_domain_was: blog_with_domain.custom_domain  # Attempting to spoof
+          }
+        },
+        as: :turbo_stream
+    end
+
+    assert_nil @blog.reload.custom_domain
+    assert_equal "welcometoanniesblog.com", blog_with_domain.reload.custom_domain
+  end
+
   test "should raise an error after 20 custom domain changes" do
     user = users(:annie)
 
