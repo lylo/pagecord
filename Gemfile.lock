@@ -490,7 +490,7 @@ DEPENDENCIES
   sprockets-rails
   sqlite3 (~> 2.2)
   stimulus-rails
-  tailwindcss-rails (~> 4.0)
+  tailwindcss-rails (~> 4.1.0)
   turbo-rails
   tzinfo-data
   web-console
