@@ -80,7 +80,7 @@
     }
 
     img {
-      @apply my-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
+      @apply !mt-2 !mb-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
     }
 
     blockquote {

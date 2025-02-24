@@ -69,6 +69,8 @@ trix-editor {
   max-width: 100% !important;
   min-height: 300px;
   padding-bottom: 1.5em;
+  color: var(--color-slate-800);
+  line-height: 1.75em !important;
 
   .attachment__caption {
     display: none;
@@ -140,7 +142,9 @@ trix-editor {
 /* Workarounds for issues with Trix and Tailwind in dark mode */
 @media (prefers-color-scheme: dark) {
   .trix-content {
-    color: rgb(203 213 225); /* text-slate-300 */
+    color: var(--color-slate-300);
+    background-color: var(--color-slate-900);
+    border-color: var(--color-slate-600);
 
     strong, b, i, em, a, h1, h2, h3, h4, h5, h6 {
       color: #fff !important;
@@ -161,16 +165,11 @@ trix-editor {
 
   .trix-button-row {
     .trix-button-group {
-      background-color: rgb(15 23 42) !important; /* bg-slate-900 */
+      background-color: var(--color-slate-900) !important;
 
       .trix-button {
           filter: invert(100%);
         }
     }
-  }
-
-  .trix-content {
-    background-color: var(--color-slate-900);
-    border-color: var(--color-slate-600);
   }
 }
