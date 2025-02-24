@@ -38,7 +38,7 @@
     <div class="trix-container <%= "trix-no-attachments" unless Current.user.subscribed? %>">
     <%= form.rich_text_area :content,
         placeholder: "Write your post...",
-        class: "trix-content min-h-[300px] border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
+        class: "trix-content",
         data: { controller: "autogrow trix", subscribed: Current.user.subscribed? } %>
     </div>
 

@@ -87,6 +87,10 @@
   }
 }
 
+hr {
+  @apply border-gray-300 dark:border-gray-600;
+}
+
 /* Pagy pagination */
 .pagy {
   @apply flex space-x-1 font-semibold text-sm text-slate-500 dark:text-slate-300;
@@ -122,7 +126,7 @@ a:not([href]), a:not([href]):hover { /* disabled links */
   @apply w-full;
 
   input {
-    @apply border-red-500;
+    @apply !border-red-500;
   }
 }
 

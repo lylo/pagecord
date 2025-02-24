@@ -28,6 +28,7 @@ trix-toolbar .trix-button-group:not(:first-child) {
 
 .trix-content {
   border-color: var(--color-slate-300);
+  border-radius: var(--radius-lg);
 
   h1 strong {
     font-weight: bold;
@@ -60,8 +61,13 @@ trix-toolbar .trix-button-group:not(:first-child) {
   }
 }
 
+trix-editor[placeholder]::before {
+  color: var(--color-slate-300);
+}
+
 trix-editor {
   max-width: 100% !important;
+  min-height: 300px;
   padding-bottom: 1.5em;
 
   .attachment__caption {
