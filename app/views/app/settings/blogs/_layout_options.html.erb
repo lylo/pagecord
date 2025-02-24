@@ -1,5 +1,5 @@
 <div class="mt-6 gap-x-2 sm:gap-x-4 flex">
-  <fieldset class="w-1/2 sm:w-48 flex border dark:border-slate-700 rounded-lg tems-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+  <fieldset class="w-1/2 sm:w-48 flex border border-slate-200 dark:border-slate-700 rounded-lg tems-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
     <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
       <%= form.radio_button :layout, "stream_layout",
         checked: @blog.stream_layout?,
@@ -9,7 +9,7 @@
     </label>
   </fieldset>
 
-  <fieldset class="w-1/2 sm:w-48 flex border dark:border-slate-700 rounded-lg items-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+  <fieldset class="w-1/2 sm:w-48 flex border border-slate-200 dark:border-slate-700 rounded-lg items-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
     <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
       <%= form.radio_button :layout, "title_layout",
         checked: @blog.title_layout?,

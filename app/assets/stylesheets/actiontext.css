@@ -27,6 +27,8 @@ trix-toolbar .trix-button-group:not(:first-child) {
 }
 
 .trix-content {
+  border-color: var(--color-slate-300);
+
   h1 strong {
     font-weight: bold;
   }
@@ -162,7 +164,7 @@ trix-editor {
   }
 
   .trix-content {
-      background-color: #0f172a;
-      border-color: #344155;
+    background-color: var(--color-slate-900);
+    border-color: var(--color-slate-600);
   }
 }

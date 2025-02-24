@@ -1,6 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/aspect-ratio";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: InterVariable, sans-serif;
+}
 
 @layer components {
   .btn-primary {
@@ -38,15 +44,11 @@
 @layer base {
   article {
     h1:not(.title) {
-      @apply text-xl mb-0;
+      @apply !text-2xl mb-0;
 
       strong {
         @apply font-bold;
       }
-    }
-
-    h1.title {
-      @apply text-3xl;
     }
   }
 
@@ -66,6 +68,10 @@
 
     pre {
       @apply my-2;
+    }
+
+    h1.title {
+      @apply !text-3xl;
     }
   }
 
@@ -116,9 +122,9 @@ a:not([href]), a:not([href]):hover { /* disabled links */
   @apply w-full;
 
   input {
-    @apply border-red-500 !important;
+    @apply border-red-500;
   }
 }
 
 
-@import 'actiontext.css';
+@import "../stylesheets/actiontext.css";
