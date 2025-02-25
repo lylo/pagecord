@@ -39,6 +39,7 @@
     <%= form.rich_text_area :content,
         placeholder: "Write your post...",
         class: "trix-content",
+        spellcheck: true,
         data: { controller: "autogrow trix", subscribed: Current.user.subscribed? } %>
     </div>
 
