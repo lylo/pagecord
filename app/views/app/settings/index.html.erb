@@ -26,16 +26,14 @@
       <% end %>
     <% end %>
 
-    <% if current_features.enabled?(:exports) %>
-      <%= link_to app_settings_exports_path do %>
-        <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
-          <div class="mb-4">
-            <span class="text-4xl">💾</span>
-          </div>
-          <h3 class="mb-2 text-xl font-bold dark:text-white">Exports</h3>
-          <p class="text-slate-500 dark:text-slate-400">Export your blog data</p>
+    <%= link_to app_settings_exports_path do %>
+      <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
+        <div class="mb-4">
+          <span class="text-4xl">💾</span>
         </div>
-      <% end %>
+        <h3 class="mb-2 text-xl font-bold dark:text-white">Exports</h3>
+        <p class="text-slate-500 dark:text-slate-400">Export your blog data</p>
+      </div>
     <% end %>
 
     <%= link_to app_settings_account_edit_path do %>

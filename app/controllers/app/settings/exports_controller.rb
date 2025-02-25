@@ -1,8 +1,6 @@
 class App::Settings::ExportsController < AppController
   rate_limit to: 5, within: 1.day, only: :create
 
-  before_action :check_feature_toggle
-
   def index
     @exports = @blog.exports
       .with_attached_file
@@ -22,10 +20,4 @@ class App::Settings::ExportsController < AppController
 
     redirect_to app_settings_exports_path, notice: "Export deleted"
   end
-
-  private
-
-    def check_feature_toggle
-      redirect_to app_settings_path unless !Rails.env.production? || current_features.enabled?(:exports)
-    end
 end
