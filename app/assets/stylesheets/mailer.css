@@ -285,11 +285,18 @@ hr {
     padding: 0 !important; }
   table[class=body] .container {
     padding: 0 !important;
-    width: 100% !important; }
+    width: 100% !important;
+    min-width: 100% !important;
+  }
   table[class=body] .main {
     border-left-width: 0 !important;
     border-radius: 0 !important;
-    border-right-width: 0 !important; }
+    border-right-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    margin: 0 !important;
+  }
   table[class=body] .btn table {
     width: 100% !important; }
   table[class=body] .btn a {
@@ -297,7 +304,14 @@ hr {
   table[class=body] .img-responsive {
     height: auto !important;
     max-width: 100% !important;
-    width: auto !important; }}
+    width: auto !important; }
+
+  .content {
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
 
 /* -------------------------------------
     PRESERVE THESE STYLES IN THE HEAD
