@@ -84,11 +84,11 @@
     }
 
     blockquote {
-      @apply my-2;
+      @apply !my-2;
     }
 
     pre {
-      @apply my-2;
+      @apply !my-2;
     }
 
     h1.title {
@@ -97,7 +97,7 @@
   }
 
   blockquote {
-    @apply my-2;
+    @apply !my-2;
   }
 
   trix-toolbar {
