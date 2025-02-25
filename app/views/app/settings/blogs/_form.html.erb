@@ -17,7 +17,7 @@
       enter it below.
     </p>
 
-    <%= form.text_field :title, class: "mt-4 w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <%= form.text_field :title, class: "mt-4 w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
   </div>
 
   <div class="mt-8">
@@ -66,7 +66,7 @@
       </p>
     <% end %>
 
-    <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-800 border #{@blog.errors[:custom_domain].any? ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-900 border #{@blog.errors[:custom_domain].any? ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} text-slate-800 dark:text-slate-200 rounded-lg" %>
     <% if @blog.errors[:custom_domain].any? %>
       <span class="text-red-500 text-sm"><%= @blog.errors.full_messages_for(:custom_domain).first %></span>
     <% end %>
@@ -99,7 +99,7 @@
     <% end %>
   </div>
 
-  <div class="mt-8 flex items-center border-t dark:border-slate-600 pt-4">
+  <div class="mt-8 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4">
     <%= form.submit "Update", class: "btn-primary" %>
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
   </div>

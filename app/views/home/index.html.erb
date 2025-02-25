@@ -47,11 +47,11 @@
         </button>
 
         <dialog id="modal-<%= i %>"
-                class="backdrop:bg-gray-950/90 p-0 rounded-xl max-w-4xl w-full"
+                class="backdrop:bg-gray-950/90 p-0 rounded-xl max-w-4xl w-full mx-auto my-auto inset-0 fixed"
                 onclick="if (event.target === this) this.close()">
           <form method="dialog" class="m-0">
             <%= image_tag "home/screenshot-0#{i}.webp",
-                class: "w-full rounded-xl",
+                class: "w-full h-auto max-h-[90vh] object-contain rounded-xl",
                 alt: "Pagecord screenshot #{i}" %>
             <button onclick="document.getElementById('modal-<%= i %>').close()"
                     class="absolute top-4 right-4 text-white bg-gray-900/50 hover:bg-gray-900/75 rounded-full p-2">

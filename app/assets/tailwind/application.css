@@ -1,6 +1,33 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/aspect-ratio";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: InterVariable, sans-serif;
+}
+
+@layer utilities {
+  @keyframes fadeIn {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 1s ease-out;
+  }
+
+  .animate-fadeOut {
+    animation: fadeOut 1s ease-out forwards;
+  }
+}
+
 
 @layer components {
   .btn-primary {
@@ -38,15 +65,11 @@
 @layer base {
   article {
     h1:not(.title) {
-      @apply text-xl mb-0;
+      @apply !text-2xl mb-0;
 
       strong {
         @apply font-bold;
       }
-    }
-
-    h1.title {
-      @apply text-3xl;
     }
   }
 
@@ -57,20 +80,24 @@
     }
 
     img {
-      @apply my-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
+      @apply !mt-2 !mb-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
     }
 
     blockquote {
-      @apply my-2;
+      @apply !my-2;
     }
 
     pre {
-      @apply my-2;
+      @apply !my-2;
+    }
+
+    h1.title {
+      @apply !text-3xl;
     }
   }
 
   blockquote {
-    @apply my-2;
+    @apply !my-2;
   }
 
   trix-toolbar {
@@ -79,6 +106,10 @@
     z-index: 1;
     @apply bg-white dark:bg-slate-900;
   }
+}
+
+hr {
+  @apply border-gray-300 dark:border-gray-600;
 }
 
 /* Pagy pagination */
@@ -116,9 +147,9 @@ a:not([href]), a:not([href]):hover { /* disabled links */
   @apply w-full;
 
   input {
-    @apply border-red-500 !important;
+    @apply !border-red-500;
   }
 }
 
 
-@import 'actiontext.css';
+@import "../stylesheets/actiontext.css";
