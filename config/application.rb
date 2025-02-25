@@ -37,7 +37,5 @@ module Pagecord
 
     # ignore mismatches between HTTP_CLIENT_IP and HTTP_X_FORWARDED_FOR
     # config.action_dispatch.ip_spoofing_check = false
-
-    config.x.domain = ENV.fetch("APP_DOMAIN", "pagecord.com")
   end
 end

@@ -30,6 +30,6 @@ class ApplicationController < ActionController::Base
     end
 
     def app_host
-      Rails.application.config.x.domain
+      Rails.application.config.action_controller.default_url_options[:host]
     end
 end
