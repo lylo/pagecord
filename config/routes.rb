@@ -17,7 +17,7 @@ end
 module DomainConstraints
   def self.custom_domain?(request)
     if Rails.env.production?
-      request.host != "pagecord.com"
+      request.host != Rails.application.config.x.domain
     elsif Rails.env.test?
       request.host !~ /\.example\.com/ && request.host != "127.0.0.1"  # 127.0.0.1 used by Capybara
     else
