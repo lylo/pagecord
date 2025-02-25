@@ -10,18 +10,24 @@
     <% @exports.each do |export| %>
       <tr class="hover:bg-slate-50">
         <td class="p-2 text-slate-600 dark:text-slate-500">
-          <%= export.created_at.to_formatted_s(:long) %>
+          <%= export.created_at.to_formatted_s(:short) %>
         </td>
 
         <td class="p-2 text-slate-600 dark:text-slate-500">
           <%= export.status.titleize %>
         </td>
 
-        <td class="p-2 flex justify-end">
+        <td class="p-2 flex items-center justify-end">
           <% if export.file.present? %>
-            <%= link_to "Download", rails_blob_path(export.file, disposition: "attachment"), class: "btn-primary mr-2" %>
+            <%= link_to rails_blob_path(export.file, disposition: "attachment"), class: "btn-primary mr-2" do %>
+              <%= inline_svg_tag "icons/download.svg", class: "w-4 h-4" %>
+              <span class="hidden sm:inline ml-2">Download</span>
+            <% end %>
           <% end %>
-          <%= button_to "Delete", app_settings_export_path(export), method: :delete, class: "btn-danger", data: { turbo_confirm: "Are you sure?" } %>
+          <%= button_to app_settings_export_path(export), method: :delete, class: "btn-danger", data: { turbo_confirm: "Are you sure?" } do %>
+            <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
+            <span class="hidden sm:inline ml-2">Delete</span>
+          <% end %>
         </td>
       </tr>
     <% end %>
