@@ -1,6 +1,6 @@
 # Pagecord Architecture
 
-Pagecord is a minimal blogging app where you create posts simply by sending emails. It's a Rails app and hosted on a single EC2 instance via [Hatchbox](https://hatchbox.io). This is not super-scalable, but it's currently a side project so 🤷‍♂️
+Pagecord is a minimal blogging app where you create posts simply by sending emails. It's a Rails app hosted on a single Hetzner instance via [Hatchbox](https://hatchbox.io). This is not super-scalable, but it's currently a side project so 🤷‍♂️
 
 ## Web app
 
