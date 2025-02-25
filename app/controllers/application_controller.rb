@@ -30,8 +30,6 @@ class ApplicationController < ActionController::Base
     end
 
     def app_host
-      ENV.fetch("APP_HOST") {
-        Rails.application.config.action_controller.default_url_options[:host]
-      }
+      Rails.application.config.x.domain
     end
 end

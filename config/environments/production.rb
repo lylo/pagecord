@@ -19,7 +19,7 @@ Rails.application.configure do
   config.consider_all_requests_local = false
 
   config.action_controller.perform_caching = true
-  config.action_controller.default_url_options = { host: "pagecord.com" }
+  config.action_controller.default_url_options = { host: ENV.fetch("APP_DOMAIN", "pagecord.com") }
   # Ensures that a master key has been made available in ENV["RAILS_MASTER_KEY"], config/master.key, or an environment
   # key such as config/credentials/production.key. This key is used to decrypt credentials (and other encrypted files).
   # config.require_master_key = true
@@ -93,9 +93,9 @@ Rails.application.configure do
   config.active_job.queue_adapter = :sidekiq
   # config.active_job.queue_name_prefix = "pagecord_production"
 
-  config.action_mailer.asset_host = "https://pagecord.com"
+  config.action_mailer.asset_host = "https://#{ENV.fetch('APP_DOMAIN', 'pagecord.com')}"
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = { host: "pagecord.com" }
+  config.action_mailer.default_url_options = { host: ENV.fetch("APP_DOMAIN", "pagecord.com") }
   config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = {
     api_token: ENV["POSTMARK_API_TOKEN"]
@@ -126,4 +126,7 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end
 
-Rails.application.routes.default_url_options = { host: "pagecord.com", protocol: "https" }
+Rails.application.routes.default_url_options = {
+  host: ENV.fetch("APP_DOMAIN", "pagecord.com"),
+  protocol: "https"
+}
