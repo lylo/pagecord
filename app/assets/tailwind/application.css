@@ -94,6 +94,11 @@
     h1.title {
       @apply !text-3xl;
     }
+
+    ol, ul {
+      @apply ml-5;
+      list-style-position: outside !important;
+    }
   }
 
   blockquote {
