@@ -22,10 +22,16 @@ class ApplicationController < ActionController::Base
     end
 
     def redirect_to_custom_domain_root
-      redirect_to root_url(host: request.host, protocol: request.protocol, port: request.port), allow_other_host: true
+      redirect_to root_url(
+        host: request.host,
+        protocol: request.protocol,
+        port: request.port
+      ), allow_other_host: true
     end
 
     def app_host
-      Rails.application.config.action_controller.default_url_options[:host]
+      ENV.fetch("APP_HOST") {
+        Rails.application.config.action_controller.default_url_options[:host]
+      }
     end
 end
