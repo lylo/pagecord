@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 8e504b017a68981076746c2d19fd23c788e4293e
+  revision: cff159f8584fbe7c062dd2743abe6f8ec66bfd13
   branch: main
   specs:
     actioncable (8.1.0.alpha)
@@ -421,7 +421,7 @@ GEM
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
-    uri (1.0.2)
+    uri (1.0.3)
     useragent (0.16.11)
     web-console (4.2.1)
       actionview (>= 6.0.0)
