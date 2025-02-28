@@ -42,16 +42,17 @@ module Billing
       def load_user
         if data.custom_data.present?
           @user = User.find_by(id: data.custom_data.user_id.to_i)
+          @subscription = @user&.subscription
         elsif data.customer_id
           @subscription = Subscription.find_by(paddle_customer_id: data.customer_id)
           @user = @subscription&.user
         end
+
+        @user
       end
 
       def process_event(event)
         PaddleEvent.create!(user: @user, payload: params)
-
-        @subscription = @user.subscription || Subscription.create!(user: @user)
 
         Rails.logger.info "Paddle #{event} for @#{@user.id}"
 
@@ -60,7 +61,9 @@ module Billing
       end
 
       def subscription_created
-        Rails.logger.info "Subscription #{@subscription.id} created"
+        @subscription = @user.subscription || Subscription.create!(user: @user)
+
+        Rails.logger.info "New subscription #{@user.id} (subscription id: #{@subscription.id})"
         if @subscription.cancelled?
           Rails.logger.info "Subscription #{@subscription.id} was previously cancelled. Creating new subscription"
 

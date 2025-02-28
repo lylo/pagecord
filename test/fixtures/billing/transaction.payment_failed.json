@@ -1,0 +1,23 @@
+{
+  "event_type": "transaction.payment_failed",
+  "data": {
+    "id": "txn_01hvs3005qn6gvjaxdwcmbjvrg",
+    "items": [
+      {
+        "price": {
+          "id": "pri_01hvnxrgvfsx46m83z6asdbb94",
+          "unit_price": {
+            "amount": "3000"
+          }
+        }
+      }
+    ],
+    "customer_id": "ctm_01hvnxx8katrjdh3xjph09mef7",
+    "status": "failed",
+    "error_code": "card_declined",
+    "error_message": "Your card was declined. Please try a different payment method.",
+    "custom_data": {
+      "user_id": 1
+    }
+  }
+}

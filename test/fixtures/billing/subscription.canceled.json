@@ -1,0 +1,11 @@
+{
+  "event_type": "subscription.canceled",
+  "data": {
+    "id": "sub_01hvrk1481njzb874tn7wyrksv",
+    "customer_id": "ctm_01hvnxx8katrjdh3xjph09mef7",
+    "canceled_at": "2023-04-15T12:00:00Z",
+    "custom_data": {
+      "user_id": 1
+    }
+  }
+}

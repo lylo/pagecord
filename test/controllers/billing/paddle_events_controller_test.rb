@@ -21,12 +21,15 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should handle subscription.updated event for cancellation" do
-    user = users(:vivian)
-    payload = payload_for("subscription.updated.cancellation", user)
+    subscription = subscriptions(:one)
 
+    payload = payload_for("subscription.updated.cancellation", subscription.user)
     cancellation_effective_date = 1.month.from_now
-    payload["data"]["custom_data"]["user_id"] = user.id
-    payload["data"]["scheduled_change"]["effective_at"] = cancellation_effective_date
+
+    # Make sure customer_id matches what we set above
+    payload["data"]["customer_id"] = "ctm_01hvnxx8katrjdh3xjph09mef7"
+    payload["data"]["id"] = "sub_01hvrk1481njzb874tn7wyrksv"
+    payload["data"]["scheduled_change"]["effective_at"] = cancellation_effective_date.iso8601
 
     post billing_paddle_events_url,
       params: payload.to_json,
@@ -36,9 +39,46 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
       }
 
     assert_response :success
-    assert user.subscribed?
-    assert user.subscription.cancelled?
-    assert_equal cancellation_effective_date.round, user.subscription.cancelled_at.round
+    assert subscription.reload.cancelled?
+    assert_equal cancellation_effective_date.to_i, subscription.cancelled_at.to_i
+  end
+
+  test "should handle subscription.canceled event" do
+    subscription = subscriptions(:one)
+
+    payload = payload_for("subscription.canceled", subscription.user)
+    cancellation_date = Time.current
+    payload["data"]["canceled_at"] = cancellation_date.iso8601
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert subscription.reload.cancelled?
+    assert_equal cancellation_date.to_i, subscription.cancelled_at.to_i
+  end
+
+  test "should not create subscription on transaction.payment_failed event" do
+    user = users(:vivian)
+
+    payload = payload_for("transaction.payment_failed", user)
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert_not user.reload.subscribed?
+    assert_nil user.subscription
   end
 
   private
@@ -46,6 +86,7 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     def payload_for(event_type, user)
       json_payload = File.read(Rails.root.join("test", "fixtures", "billing", "#{event_type}.json"))
       data = JSON.parse(json_payload)
+      data["data"]["custom_data"] ||= {}
       data["data"]["custom_data"]["user_id"] = user.id
       data
     end
