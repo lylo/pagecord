@@ -8,7 +8,7 @@ module ApplicationHelper
     elsif @blog.present?
       blog_description(@blog)
     else
-      "Rediscover The Joy Of Writing. Pagecord makes blogging so effortless, you'll want to write more. Share long-form posts or short stream-of-consciousness thoughts. Both look great! Publish by email or the Pagecord app. Your readers can follow by RSS or subscribe by email - no algorithms, no AI."
+      "Blogging by email is the best way to blog. Using Pagecord is so effortless, you'll want to write more. Share long-form posts or short stream-of-consciousness thoughts. Both look great! Publish by email or the Pagecord app. Your readers can follow by RSS or subscribe by email. Sign up for FREE today!"
     end
   end
 
@@ -32,7 +32,7 @@ module ApplicationHelper
     elsif @blog
       blog_title(@blog)
     else
-      "Pagecord - Rediscover the joy of writing. All you need is email"
+      "Pagecord - The most effortless way to blog. All you need is email"
     end
   end
 
