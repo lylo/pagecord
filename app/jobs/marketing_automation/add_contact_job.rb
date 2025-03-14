@@ -27,6 +27,6 @@ class MarketingAutomation::AddContactJob < ApplicationJob
     rescue LoopsSdk::APIError => e
       # 409: Contact already exists. This can happen if someone had previously signed up to the
       #      mailing list via the website, so ignore this error.
-      raise e unless e.status == 409
+      raise e unless e.statusCode == 409
     end
 end
