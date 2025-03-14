@@ -119,6 +119,11 @@ trix-editor {
     background-color: rgb(2 6 23) !important; /* bg-slate-950 */
     color: rgb(203 213 225); /* text-slate-300 */
     font-size: 0.9rem !important;
+    text-wrap: wrap !important;
+
+    a {
+      color: white;
+    }
   }
 }
 

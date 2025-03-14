@@ -88,7 +88,11 @@
     }
 
     pre {
-      @apply !my-2;
+      @apply !my-2 text-wrap;
+
+      a {
+        @apply !text-white;
+      }
     }
 
     h1.title {
