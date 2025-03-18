@@ -100,7 +100,17 @@
     <% end %>
   </div>
 
-  <div class="mt-8 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4">
+<div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Fediverse Author Attribution</h3>
+    <p>
+      To allow your Pagecord posts to be attributed to you when shared on Mastodon (or any other Fediverse platform), enter your
+      Fediverse username below.
+    </p>
+
+    <%= form.text_field :fediverse_author_attribution, class: "mt-4 w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+  </div>
+
+  <div class="mt-12 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4">
     <%= form.submit "Update", class: "btn-primary" %>
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
   </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_02_15_141950) do
+ActiveRecord::Schema[8.1].define(version: 2025_03_18_132638) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -88,6 +88,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_15_141950) do
     t.datetime "discarded_at"
     t.boolean "email_subscriptions_enabled", default: true, null: false
     t.string "features", default: [], array: true
+    t.string "fediverse_author_attribution"
     t.integer "layout", default: 0
     t.string "name", null: false
     t.string "title"

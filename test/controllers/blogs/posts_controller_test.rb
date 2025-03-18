@@ -162,4 +162,16 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert blog.created_at.after?(1.week.ago)
     assert_select 'meta[name="robots"][content="noindex, nofollow"]', count: 0
   end
+
+  test "should insert author attribution into the head" do
+    blog = blogs(:joel)
+
+    get post_without_title_path(blog.name, blog.posts.first.token)
+    assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]', count: 0
+
+    blog.update!(fediverse_author_attribution: "@joel@pagecord.com")
+    get post_without_title_path(blog.name, blog.posts.first.token)
+
+    assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
+  end
 end

@@ -29,12 +29,14 @@ class App::Settings::BlogsController < AppController
         params.require(:blog).permit(
           :bio, :custom_domain, :title, :layout, :avatar,
           :email_subscriptions_enabled,
+          :fediverse_author_attribution,
           social_links_attributes: [ :id, :platform, :url, :_destroy ]
         )
       else
         params.require(:blog).permit(
           :bio, :title, :layout,
-          social_links_attributes: [ :id, :platform, :url, :_destroy ]
+          :fediverse_author_attribution,
+          social_links_attributes: [ :id, :platform, :url, :_destroy ],
         )
       end
     end
