@@ -93,6 +93,10 @@
       a {
         @apply !text-white;
       }
+
+      strong {
+        @apply !text-white;
+      }
     }
 
     h1 {
