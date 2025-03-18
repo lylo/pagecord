@@ -95,6 +95,10 @@
       }
     }
 
+    h1 {
+      @apply !mb-0;
+    }
+
     h1.title {
       @apply !text-3xl;
     }
