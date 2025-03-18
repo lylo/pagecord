@@ -8,6 +8,8 @@ class EmailSubscriber < ApplicationRecord
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :unconfirmed, -> { where(confirmed_at: nil) }
 
+  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+
   def confirmed?
     confirmed_at.present?
   end
