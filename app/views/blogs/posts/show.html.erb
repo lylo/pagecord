@@ -1,7 +1,7 @@
 <% unless @blog.fediverse_author_attribution.blank? %>
   <%= content_for :fediverse do %>
     <meta name="fediverse:creator" content="<%= @blog.fediverse_author_attribution %>" />
-  <% end %>t
+  <% end %>
 <% end %>
 
 <%= render "blogs/header", hide_email_form: true, hide_bio: true %>
