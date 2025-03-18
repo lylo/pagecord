@@ -7,3 +7,8 @@ joel_bluesky:
   blog: joel
   platform: Bluesky
   url: https://bsky.app/profile/joel.xyz
+
+joel_mastodon:
+  blog: joel
+  platform: Mastodon
+  url: https://mas.to/joel_on_pagecord

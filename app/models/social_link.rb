@@ -7,6 +7,8 @@ class SocialLink < ApplicationRecord
   validates :url, presence: true
   validate :validate_url_format
 
+  scope :mastodon, -> { where(platform: "Mastodon") }
+
   private
 
     def validate_url_format

@@ -41,4 +41,8 @@ class SocialLinkTest < ActiveSupport::TestCase
     @link.url = "https://instagram.com/username"
     assert @link.valid?
   end
+
+  test "mastodon scope" do
+    assert_equal 1, blogs(:joel).social_links.mastodon.count
+  end
 end

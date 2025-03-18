@@ -1,3 +1,9 @@
+<% if @blog.social_links.mastodon.any? %>
+  <%= content_for :fediverse do %>
+    <link href="<%= @blog.social_links.mastodon.first.url %>" rel="me">
+  <% end %>
+<% end %>
+
 <%= render "blogs/header" %>
 
 <% if @posts.empty? %>

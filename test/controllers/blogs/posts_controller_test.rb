@@ -174,4 +174,12 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end
+
+  test "should include rel='me' link if Maston social link is present" do
+    blog = blogs(:joel)
+
+    get "/#{blog.name}"
+
+    assert_select "link[rel=\"me\"][href=\"#{blog.social_links.mastodon.first.url}\"]"
+  end
 end
