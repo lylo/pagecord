@@ -8,7 +8,12 @@ class MarketingAutomation
 
   def self.sync_subscription_statuses
     User.kept.find_each do |user|
-      MarketingAutomation::SyncSubscriptionStatusJob.perform_later(user.id)
+      # spread out the requests to avoid Loops rate limits
+      random_delay = rand(10.minutes)
+
+      MarketingAutomation::SyncSubscriptionStatusJob
+        .set(wait: random_delay)
+        .perform_later(user.id)
     end
   end
 end
