@@ -5,4 +5,10 @@ class MarketingAutomation
       MarketingAutomation::GettingStartedEmailJob.perform_later(user.id)
     end
   end
+
+  def self.sync_subscription_statuses
+    User.kept.find_each do |user|
+      MarketingAutomation::SyncSubscriptionStatusJob.perform_later(user.id)
+    end
+  end
 end
