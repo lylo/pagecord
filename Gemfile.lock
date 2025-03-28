@@ -153,7 +153,7 @@ GEM
     crass (1.0.6)
     css_parser (1.21.1)
       addressable
-    csv (3.3.2)
+    csv (3.3.3)
     dalli (3.2.8)
     date (3.4.1)
     debug (1.10.0)
@@ -180,7 +180,7 @@ GEM
     globalid (1.2.1)
       activesupport (>= 6.1)
     htmlentities (4.3.4)
-    httparty (0.22.0)
+    httparty (0.23.0)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
