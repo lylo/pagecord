@@ -57,8 +57,6 @@ group :production do
 end
 
 group :development, :test do
-  gem "sqlite3", "~> 2.2"
-
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
 end
