@@ -182,4 +182,30 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "link[rel=\"me\"][href=\"#{blog.social_links.mastodon.first.url}\"]"
   end
+
+  test "should render avatar favicon when blog has an avatar" do
+    blog = blogs(:joel)
+
+    blog.avatar.attach(
+      io: File.open(Rails.root.join("test/fixtures/files/avatar.png")),
+      filename: "avatar.png",
+      content_type: "image/png"
+    )
+
+    get "/#{blog.name}"
+
+    assert_select "link[rel='apple-touch-icon'][href*='avatar']"
+    assert_select "link[rel='icon'][type='image/png'][href*='avatar']"
+  end
+
+  test "should render default favicon when blog has no avatar" do
+    blog = blogs(:joel)
+
+    blog.avatar.purge if blog.avatar.attached?
+
+    get "/#{blog.name}"
+
+    assert_select "link[rel='apple-touch-icon'][href*='/assets/apple-touch-icon']"
+    assert_select "link[rel='icon'][type='image/svg+xml'][href*='/assets/favicon']"
+  end
 end
