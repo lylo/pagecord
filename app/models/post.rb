@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-  include Trimmable, Upvotable, Tokenable
+  include Draftable, Tokenable, Trimmable, Upvotable
 
   belongs_to :blog, inverse_of: nil
 
@@ -15,7 +15,7 @@ class Post < ApplicationRecord
 
   validate :body_or_title
 
-  scope :published, -> { where("published_at <= ?", Time.current) }
+  scope :visible, -> { published.where("published_at <= ?", Time.current) }
 
   def body_or_title
     errors.add(:base, "A body or a title must be present") unless content.body.present? || title.present?
@@ -37,8 +37,8 @@ class Post < ApplicationRecord
     title&.parameterize&.truncate(72, omission: "") || ""
   end
 
-  def published?
-    published_at <= Time.current
+  def pending?
+    published_at > Time.current
   end
 
   def summary(limit: 64)

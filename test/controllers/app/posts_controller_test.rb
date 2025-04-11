@@ -10,7 +10,14 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should get new post page" do
     get new_app_post_url
+
     assert_response :success
+    assert_select "form#post-form" do
+      assert_select "input[type=submit][value='Publish Post']"
+      assert_select "button[type=submit]" do |elements|
+        assert_equal "Save Draft", elements.first.text.strip
+      end
+    end
   end
 
   test "should get root" do
@@ -20,10 +27,12 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should get posts index" do
     get app_posts_url
+
     assert_response :success
+    assert_select "div#draft_posts"
   end
 
-  test "should create post" do
+  test "should publish post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
         post: { title: "New Post", content: "New content" }
@@ -31,8 +40,21 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to app_posts_url
+    assert @user.blog.posts.last.published?
     assert_equal "New Post", @user.blog.posts.last.title
     assert_equal "New content", @user.blog.posts.last.content.to_s.strip
+  end
+
+  test "should save draft post" do
+    assert_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        post: { title: "New Post", content: "New content" },
+        button: "save_draft"
+      }
+    end
+
+    assert_redirected_to app_posts_url
+    assert @user.blog.posts.last.draft?
   end
 
   test "should destroy post" do
@@ -42,9 +64,28 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_posts_url
   end
 
-  test "should show edit post page" do
-    get edit_app_post_url(@user.blog.posts.first)
+  test "should show edit post page for published post" do
+    get edit_app_post_url(@user.blog.posts.published.first)
+
     assert_response :success
+    assert_select "form#post-form" do
+      assert_select "input[type=submit][value='Update Post']"
+      assert_select "button[type=submit]" do |elements|
+        assert_equal "Unpublish", elements.first.text.strip
+      end
+    end
+  end
+
+  test "should show edit post page for draft post" do
+    get edit_app_post_url(@user.blog.posts.draft.first)
+
+    assert_response :success
+    assert_select "form#post-form" do
+      assert_select "input[type=submit][value='Publish Post']"
+      assert_select "button[type=submit]" do |elements|
+        assert_equal "Save Draft", elements.first.text.strip
+      end
+    end
   end
 
   test "should update post" do

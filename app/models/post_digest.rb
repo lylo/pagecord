@@ -16,7 +16,7 @@ class PostDigest < ApplicationRecord
     last_digest = blog.post_digests.delivered.order(created_at: :desc).first
     since_date = last_digest&.created_at || 1.week.ago
 
-    new_posts = blog.posts
+    new_posts = blog.posts.visible
       .where.not(id: DigestPost.select(:post_id))
       .where("created_at > ?", since_date)
 

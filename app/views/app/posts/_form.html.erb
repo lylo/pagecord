@@ -9,7 +9,7 @@
       <%= render "drop_down_menu" %>
   </div>
 
-  <%= form_with(model: [:app, @post]) do |form| %>
+  <%= form_with(model: [:app, @post], html: { id: "post-form" }) do |form| %>
 
     <div class="hidden mb-8" data-post-attributes-target="section" data-section="published-at">
       <div class="mt-4 font-bold">
@@ -43,7 +43,14 @@
         data: { controller: "autogrow trix", subscribed: Current.user.subscribed? } %>
     </div>
 
-    <%= form.submit class: "mt-8 btn-primary" %>
-    <%= link_to "Cancel", app_posts_path, class: "btn-secondary" %>
+    <div class="flex items-center justify-between mt-8">
+      <div>
+        <%= form.submit publish_button_text(@post), class: "btn-primary" %>
+        <%= link_to "Cancel", app_posts_path, class: "btn-secondary" %>
+      </div>
+      <div>
+        <%= form.button draft_button_text(@post), value: "save_draft", class: "btn-optional" %>
+      </div>
+    </div>
   <% end %>
 </div>

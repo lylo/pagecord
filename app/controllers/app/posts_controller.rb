@@ -2,7 +2,9 @@ class App::PostsController < AppController
   include Pagy::Backend
 
   def index
-    @pagy, @posts =  pagy(Current.user.blog.posts.order(published_at: :desc), limit: 10)
+    @pagy, @posts =  pagy(Current.user.blog.posts.published.order(published_at: :desc), limit: 25)
+
+    @drafts = Current.user.blog.posts.draft.order(updated_at: :desc)
   end
 
   def new
@@ -48,7 +50,9 @@ class App::PostsController < AppController
   private
 
     def post_params
-      params.require(:post).permit(:title, :content, :published_at, :canonical_url)
+      status = params[:button] == "save_draft" ? :draft : :published
+
+      params.require(:post).permit(:title, :content, :published_at, :canonical_url).merge(status: status)
     end
 
     # HTML from inbound email doesn't often play nicely with Trix

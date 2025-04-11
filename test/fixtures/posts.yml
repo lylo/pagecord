@@ -1,23 +1,44 @@
+DEFAULTS: &default
+  status: published
+
 one:
   title: The Art of Street Photography
   blog: joel
   published_at: <%= 1.day.ago %>
   token: <%= SecureRandom.hex(4) %>
+  <<: *default
 
 two:
   title: The Beauty of Landscape Photography
   blog: joel
   published_at: <%= 2.days.ago %>
   token: <%= SecureRandom.hex(4) %>
+  <<: *default
 
 three:
   title: My first post
   blog: vivian
   published_at: <%= 1.week.ago %>
   token: <%= SecureRandom.hex(4) %>
+  <<: *default
 
 four:
   title: What I've learned about photography
   blog: annie
   published_at: <%= 1.day.ago %>
   token: <%= SecureRandom.hex(4) %>
+  <<: *default
+
+joel_draft:
+  title: Draft post
+  blog: joel
+  token: <%= SecureRandom.hex(4) %>
+  published_at: <%= 1.day.ago %>
+  status: draft
+
+vivian_draft:
+  title: Draft post
+  blog: vivian
+  token: <%= SecureRandom.hex(4) %>
+  published_at: <%= 1.day.ago %>
+  status: draft
