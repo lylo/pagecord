@@ -75,8 +75,8 @@
           <div class="flex items-top gap-x-4 text-slate-400 dark:text-slate-400">
             <% if @user.subscribed? && post.upvotes_count > 0 %>
               <div class="flex items-top gap-x-0.5">
-                <span class="mt-1"><%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %></span>
                 <%= post.upvotes_count %>
+                <span class="mt-1"><%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %></span>
                </div>
             <% end %>
 
