@@ -4,7 +4,7 @@ class Blogs::PostsController < Blogs::BaseController
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   def index
-    @posts = @blog.posts.published
+    @posts = @blog.posts.visible
       .with_rich_text_content_and_embeds
       .order(published_at: :desc)
 
@@ -17,7 +17,7 @@ class Blogs::PostsController < Blogs::BaseController
   end
 
   def show
-    @post = @blog.posts.published
+    @post = @blog.posts.visible
       .with_rich_text_content_and_embeds
       .find_by!(token: blog_params[:token])
 

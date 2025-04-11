@@ -27,32 +27,67 @@
       <% end %>
     </p>
 
-    <% @posts.each do |post| %>
-      <div class="flex gap-x-4 justify-between px-4 py-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg break-words">
-        <div class="flex flex-col">
-          <%= link_to edit_app_post_path(post), title: "Click to edit this post" do %>
-            <div class="font-semibold">
-              <%= post_title(post) %>
+    <% if @drafts.any? %>
+      <div class="mb-8" id="draft_posts">
+        <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100">
+          🖋️ Drafts
+        </div>
+
+        <% @drafts.each do |post| %>
+          <div class="flex gap-x-2 mb-2 items-top">
+            <div class="text-slate-500 dark:text-slate-400 w-16 flex-shrink-0">
+              <%= post.published_at.to_date.to_formatted_s(:short) %>
             </div>
-
-            <div class="mt-2 text-xs text-slate-400 dark:text-slate-400">
-              <%= post.published_at.to_formatted_s(:long) %>
-
-              <% if @user.subscribed? %>
-                <div class="mt-1 flex items-center gap-x-0.5">
-                  <%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %><%= post.upvotes_count %>
+            <div class="flex w-full justify-between items-top">
+              <%= link_to edit_app_post_path(post), title: "Click to edit this post" do %>
+                <div class="font-medium pe-2">
+                  <%= post_title(post) %>
                 </div>
               <% end %>
             </div>
-          <% end %>
-        </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
 
-        <div class="text-slate-400 dark:text-slate-400 ">
-          <% if post.published? %>
-            <%= link_to post_path(post), title: "View this post" do %>
-              <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
+    <% previous_year = nil %>
+    <% @posts.each do |post| %>
+      <% if post.published_at.year != previous_year %>
+        <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100 <%= 'mt-8' unless previous_year.nil? %>">
+          <%= post.published_at.year %>
+
+          <% previous_year = post.published_at.year %>
+        </div>
+      <% end %>
+
+      <div class="flex gap-x-2 mb-2 items-top">
+        <div class="text-slate-500 dark:text-slate-400 w-16 flex-shrink-0">
+          <%= post.published_at.to_date.to_formatted_s(:short) %>
+        </div>
+        <div class="flex w-full justify-between items-top">
+          <div>
+            <%= link_to edit_app_post_path(post), title: "Click to edit this post" do %>
+              <div class="font-medium pe-2">
+                <%= post_title(post) %>
+              </div>
             <% end %>
-          <% end %>
+          </div>
+          <div class="flex items-top gap-x-4 text-slate-400 dark:text-slate-400">
+            <% if @user.subscribed? && post.upvotes_count > 0 %>
+              <div class="flex items-top gap-x-0.5">
+                <%= post.upvotes_count %>
+                <span class="mt-1"><%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %></span>
+               </div>
+            <% end %>
+
+            <div>
+              <% unless post.pending? %>
+                <%= link_to post_path(post), title: "View this post" do %>
+                  <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
         </div>
       </div>
     <% end %>

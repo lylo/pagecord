@@ -6,7 +6,7 @@ class UpvotePostTest < ApplicationSystemTestCase
     blog.features << "upvotes"
     blog.save!
 
-    post = blog.posts.first
+    post = blog.posts.published.first
     initial_upvotes = post.upvotes.count
 
     visit post_without_title_path(post.blog.name, post.token)

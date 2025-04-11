@@ -166,11 +166,15 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should insert author attribution into the head" do
     blog = blogs(:joel)
 
-    get post_without_title_path(blog.name, blog.posts.first.token)
+    get post_without_title_path(blog.name, blog.posts.visible.first.token)
+
+    assert_response :success
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]', count: 0
 
     blog.update!(fediverse_author_attribution: "@joel@pagecord.com")
-    get post_without_title_path(blog.name, blog.posts.first.token)
+
+    assert_response :success
+    get post_without_title_path(blog.name, blog.posts.visible.first.token)
 
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end
