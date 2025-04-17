@@ -2,7 +2,7 @@ module Draftable
   extend ActiveSupport::Concern
 
   included do
-    enum :status, [ :draft, :published ]
+    enum :status, [ :draft, :published ] if table_exists? && column_names.include?("status")
 
     scope :draft, -> { where(status: :draft) }
     scope :published, -> { where(status: :published) }
