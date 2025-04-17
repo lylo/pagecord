@@ -73,7 +73,7 @@ jobs:
         uses: ankane/setup-postgres@v1
         with:
           database: pagecord_test
-          postgres-version: 16
+          postgres-version: 17
 
       - name: Database load
         env:
