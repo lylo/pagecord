@@ -207,7 +207,7 @@ GEM
       activesupport (>= 5.0.0)
     jmespath (1.6.2)
     json (2.10.2)
-    kredis (1.7.0)
+    kredis (1.8.0)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
       redis (>= 4.2, < 6)
@@ -461,7 +461,7 @@ DEPENDENCIES
   importmap-rails
   inline_svg
   jbuilder
-  kredis (~> 1.7)
+  kredis (~> 1.8)
   letter_opener
   loops_sdk
   mocha

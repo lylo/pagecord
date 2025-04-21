@@ -17,7 +17,7 @@ gem "puma", ">= 5.0"
 
 # database / caching
 gem "dalli"
-gem "kredis", "~> 1.7"
+gem "kredis", "~> 1.8"
 gem "pg"
 gem "redis", ">= 4.0.1"
 gem "sidekiq"
