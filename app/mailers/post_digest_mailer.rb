@@ -42,7 +42,7 @@ class PostDigestMailer < ApplicationMailer
 
     def unsubscribe_path_for(subscriber)
       if subscriber.blog.custom_domain?
-        custom_email_subscriber_unsubscribe_url(subscriber.token)
+        custom_email_subscriber_unsubscribe_url(subscriber.token, host: subscriber.blog.custom_domain)
       else
         email_subscriber_unsubscribe_url(name: subscriber.blog.name, token: subscriber.token)
       end
