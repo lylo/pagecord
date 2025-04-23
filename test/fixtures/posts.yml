@@ -42,3 +42,9 @@ vivian_draft:
   token: <%= SecureRandom.hex(4) %>
   published_at: <%= 1.day.ago %>
   status: draft
+
+joel_titleless:
+  blog: joel
+  published_at: <%= 2.weeks.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  <<: *default

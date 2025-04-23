@@ -22,7 +22,7 @@ class App::FeedControllerTest < ActionDispatch::IntegrationTest
 
     get app_feed_path
     assert_response :success
-    assert_select "article", 2
+    assert_select "article", 3
   end
 
   test "should get private_rss" do

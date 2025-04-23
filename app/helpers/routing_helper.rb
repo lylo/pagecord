@@ -1,6 +1,6 @@
 module RoutingHelper
   def post_link(post, type)
-    if custom_domain_request?
+    if post.blog.custom_domain?
       if post.url_title.present?
         send("custom_post_with_title_#{type}", post.url_title, post.token, host: post.blog.custom_domain)
       else

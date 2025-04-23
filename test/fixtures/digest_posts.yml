@@ -5,3 +5,7 @@ one:
 two:
   post_digest: one
   post: two
+
+three:
+  post_digest: one
+  post: joel_titleless

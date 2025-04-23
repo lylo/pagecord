@@ -62,3 +62,8 @@ six:
     Photographer
 
     https://pagecord.com/joel
+
+seven:
+  record: joel_titleless (Post)
+  name: content
+  body: This is a titleless post
