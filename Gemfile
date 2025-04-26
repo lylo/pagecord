@@ -23,6 +23,7 @@ gem "redis", ">= 4.0.1"
 gem "sidekiq"
 
 # monitoring and alerting
+gem "appsignal"
 gem "sentry-ruby"
 gem "sentry-rails"
 
