@@ -42,9 +42,13 @@ class PostsMailbox < ApplicationMailbox
     else
       # Raise an error in Sentry for information. No need to retry the email
       Sentry.capture_message("User not found. From: #{from}, To: #{recipient}")
-      Appsignal.set_error(StandardError.new("User not found"))
-      Appsignal.set_custom_data("from", from)
-      Appsignal.set_custom_data("recipient", recipient)
+      Appsignal.report_error(StandardError.new("User not found")) do |transaction|
+        Appsignal.set_action("PostsMailbox#process")
+        Appsignal.add_tags(
+          from: from,
+          recipient: recipient
+        )
+      end
     end
   end
 end
