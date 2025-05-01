@@ -8,7 +8,9 @@ module ApplicationHelper
     elsif @blog.present?
       blog_description(@blog)
     else
-      "Blogging by email is the best way to blog. Using Pagecord is so effortless, you'll want to write more. Share long-form posts or short stream-of-consciousness thoughts. Both look great! Publish by email or the Pagecord app. Your readers can follow by RSS or subscribe by email. Sign up for FREE today!"
+      "Pagecord is a digital scrapbook for your thoughts and ideas. It's a microblog, a journal
+      and an email newsletter all in one. Effortlessly publish posts using email or the Pagecord app. People can
+      can follow along using RSS or subscribe to get your posts in a weekly email. Sign up for FREE today!"
     end
   end
 
@@ -32,7 +34,7 @@ module ApplicationHelper
     elsif @blog
       blog_title(@blog)
     else
-      "Pagecord - The most effortless way to blog. All you need is email"
+      "Pagecord - a digital scrapbook for your thoughts and ideas"
     end
   end
 
