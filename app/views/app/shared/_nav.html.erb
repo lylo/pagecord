@@ -1,34 +1,18 @@
 <div class="mt-2 mb-8 pb-2 border-b border-b-slate-200 dark:border-b-slate-500">
-    <div class="sm:hidden">
-      <label for="tabs" class="sr-only">Select a tab</label>
-
-      <select id="tabs" name="tabs" class="block w-full rounded-md border-none bg-white/5 mb-4 py-2 pl-3 pr-10 shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm" data-controller="select" data-action="change->select#handleChange">
-        <option data-path="<%= app_posts_path %>" <% if is_current_path?("posts") %> selected <% end %>>Posts</option>
-
-        <option data-path="<%= app_feed_path %>" <% if is_current_path?("feed") %> selected <% end %>>Feed</option>
-
-        <option data-path="<%= app_followings_path %>"  <% if is_current_path?("followings") %> selected <% end %>>Followers</option>
-
-        <option data-path="<%= app_settings_path %>"  <% if is_current_path?("settings") %> selected <% end %>>Settings</option>
-      </select>
-    </div>
-
-    <div class="hidden sm:block">
-      <nav class="flex">
-        <ul role="list" class="flex min-w-full flex-none gap-x-6 leading-6 text-slate-400">
-          <li>
-            <%= link_to "Posts", app_posts_path, class: nav_class_for("posts") %>
-          </li>
-          <li>
-            <%= link_to "Feed", app_feed_path, class: nav_class_for("feed") %>
-          </li>
-          <li>
-            <%= link_to "Follows", app_followings_path, class: nav_class_for("followings") %>
-          </li>
-          <li>
-            <%= link_to "Settings", app_settings_path, class: nav_class_for("settings") %>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <nav class="flex">
+      <ul role="list" class="flex min-w-full flex-none gap-x-6 leading-6 text-slate-400">
+        <li>
+          <%= link_to "Posts", app_posts_path, class: nav_class_for("posts") %>
+        </li>
+        <li>
+          <%= link_to "Feed", app_feed_path, class: nav_class_for("feed") %>
+        </li>
+        <li>
+          <%= link_to "Follows", app_followings_path, class: nav_class_for("followings") %>
+        </li>
+        <li>
+          <%= link_to "Settings", app_settings_path, class: nav_class_for("settings") %>
+        </li>
+      </ul>
+    </nav>
 </div>
