@@ -1,4 +1,5 @@
 require "active_support/core_ext/integer/time"
+require "appsignal"
 
 Rails.application.configure do
   # Prepare the ingress controller used to receive mail
@@ -63,31 +64,26 @@ Rails.application.configure do
 
   config.filter_parameters += [ :email ]
 
+  # LOGGING
+  # ---------------------------------
+
   stdout_logger = ActiveSupport::Logger.new(STDOUT)
   file_logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
+  appsignal_logger = Appsignal::Logger.new("application")
 
-  # Broadcast to both loggers
-  broadcast_logger = ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger)
-  broadcast_logger.formatter = proc do |severity, datetime, progname, msg|
-    "#{datetime.strftime('%Y-%m-%d %H:%M:%S')} [#{severity}] #{msg}\n"
+  # Broadcast to all three loggers
+  broadcast_logger = ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger, appsignal_logger)
+  broadcast_logger.formatter = proc do |severity, time, progname, msg|
+    "#{time.iso8601} #{severity} #{msg.strip}\n"
   end
 
   tagged_logger = ActiveSupport::TaggedLogging.new(broadcast_logger)
 
   config.log_tags = [ :request_id ]
-  config.log_level = :info
   config.logger = tagged_logger
-
-
-  # config.logger = ActiveSupport::Logger.new(STDOUT)
-  #   .tap  { |logger| logger.formatter = ::Logger::Formatter.new }
-  #   .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
-
-
-  # "info" includes generic and useful information about system operation, but avoids logging too much
-  # information to avoid inadvertent exposure of personally identifiable information (PII). If you
-  # want to log everything, set the level to "debug".
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
+
+  # ---------------------------------
 
   # Use a different cache store in production.
   config.cache_store = :mem_cache_store
