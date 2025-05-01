@@ -3,7 +3,7 @@ class Admin::PostsController < AdminController
 
   def index
     @pagy, @posts = pagy(
-      Post.joins(blog: :user)
+      Post.visible.joins(blog: :user)
           .where(users: { discarded_at: nil })
           .includes(blog: :user)
           .order(published_at: :desc),
