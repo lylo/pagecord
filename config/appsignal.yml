@@ -6,3 +6,8 @@ production:
 
   send_logs: true
   log_level: "info"
+
+  # Ignore specific exceptions
+  ignore_errors:
+    - ActiveRecord::RecordNotFound
+    - ActionController::RoutingError
