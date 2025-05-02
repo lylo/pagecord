@@ -4,10 +4,15 @@
 @plugin "@tailwindcss/aspect-ratio";
 @plugin "@tailwindcss/typography";
 
-@theme {
-  --font-sans: InterVariable, sans-serif;
-}
+/* Theme tokens and variables */
+@import "./tokens.css";
+@import "./themes/mint-theme.css";
+/* Add more theme files here as needed */
 
+/* Shared component styles */
+@import "./components.css";
+
+/* Rest of your CSS for layout, utilities, etc. */
 @layer utilities {
   @keyframes fadeIn {
     0%   { opacity: 0; }
@@ -26,47 +31,40 @@
   .animate-fadeOut {
     animation: fadeOut 1s ease-out forwards;
   }
+
+  /* Theme width utility classes */
+  .max-w-content-narrow {
+    max-width: var(--content-width-narrow);
+  }
+
+  .max-w-content-standard {
+    max-width: var(--content-width-standard);
+  }
+
+  .max-w-content-wide {
+    max-width: var(--content-width-wide);
+  }
+
+  /* Font size utility classes */
+  .text-size-standard {
+    font-size: var(--font-size-standard);
+  }
+
+  .text-size-large {
+    font-size: var(--font-size-large);
+  }
 }
 
-
 @layer components {
+  /* Other component styles not related to themes */
   .btn-primary {
     @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-slate-300 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800 cursor-pointer;
   }
-
-  .btn-optional {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:hover:bg-slate-800 dark:focus:ring-slate-800 cursor-pointer;
-  }
-
-  .btn-secondary {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100;
-  }
-
-  .btn-danger {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 hover:text-white dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-red-700 dark:focus:ring-slate-800 cursor-pointer;
-  }
-
-  dialog::backdrop {
-    backdrop-filter: blur(2px);
-  }
-
-  dialog[open] {
-    animation: modal-open 150ms ease-out;
-  }
-
-  @keyframes modal-open {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
 }
 
+/* Rest of your CSS... */
 @layer base {
+  /* Your existing base styles */
   article {
     h1:not(.title) {
       @apply !text-2xl mb-0;
@@ -78,10 +76,13 @@
   }
 
   .prose {
+    /* Your existing prose styles */
     /* Override Tailwind prose which wraps code in backticks */
     code:before, code:after {
       content: "";
     }
+
+    @apply !max-w-none;
 
     img {
       @apply !mt-2 !mb-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
