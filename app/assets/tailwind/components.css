@@ -1,0 +1,128 @@
+@layer components {
+  /* Apply base theme styles to html and body */
+  html, body {
+    @apply bg-[var(--color-bg-base)] text-[var(--color-text-primary)];
+  }
+
+  /* ---- TYPOGRAPHY ---- */
+  .text-body {
+    @apply text-[var(--color-text-primary)];
+  }
+
+  .text-subtle {
+    @apply text-[var(--color-text-secondary)];
+  }
+
+  .text-meta {
+    @apply !text-[var(--color-text-tertiary)] text-sm;
+  }
+
+  /* ---- CONTAINERS ---- */
+  .section {
+    @apply mb-8 pb-6 border-b border-[var(--color-ui-border)];
+  }
+
+  /* ---- PROSE ---- */
+  .prose {
+    @apply !text-[var(--color-text-primary)];
+  }
+
+  .blog-title {
+    @apply !text-[var(--color-text-heading)];
+  }
+
+  .prose a {
+    @apply !text-[var(--color-accent-primary)] underline;
+  }
+
+  .prose .text-subtle,
+  .prose.text-subtle {
+    @apply !text-[var(--color-text-secondary)];
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    @apply !text-[var(--color-text-heading)];
+  }
+
+  .prose blockquote {
+    @apply !text-[var(--color-text-secondary)] border-l-[var(--color-ui-border)];
+  }
+
+  .prose code {
+    @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text-primary)] px-1 py-0.5 rounded-sm;
+  }
+
+  .prose pre {
+    @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text-primary)];
+  }
+
+  /* ---- ARTICLE-SPECIFIC COMPONENTS ---- */
+  .article-content {
+    @apply text-[var(--color-text-primary)];
+  }
+
+  .article-meta {
+    @apply text-sm;
+  }
+
+  /* Email subscription form component */
+  .email-subscription-form {
+    @apply bg-[var(--color-bg-subtle)] rounded-lg text-[var(--color-text-primary)];
+  }
+
+  /* Form elements */
+  .email-subscription-form input[type="email"] {
+    @apply bg-[var(--color-form-bg)] border border-[var(--color-ui-border)] border-r-0 text-[var(--color-text-primary)] rounded-l-md ring-0 focus:border-[var(--color-text-secondary)] focus:outline-none;
+  }
+
+  .email-subscription-form input[type="email"]::placeholder {
+    @apply text-[var(--color-text-tertiary)];
+  }
+
+  .email-subscription-form input[type="submit"] {
+    @apply bg-[var(--color-text-secondary)] text-[var(--color-text-inverted)] rounded-r-md py-1 px-3 cursor-pointer;
+  }
+
+  .email-subscription-form input[type="submit"]:hover {
+    @apply bg-[var(--color-text-primary)] text-[var(--color-text-inverted)];
+  }
+
+  .subscription-description {
+    @apply text-[var(--color-text-secondary)] text-sm;
+  }
+
+  /* Social links */
+  .social-link {
+    @apply text-[var(--color-text-primary)];
+  }
+
+  .social-icon {
+    @apply text-[var(--color-text-secondary)] transition-colors duration-200;
+  }
+
+  .social-link:hover .social-icon {
+    @apply text-[var(--color-text-primary)];
+  }
+
+  /* Upvote component */
+  .upvote-icon {
+    @apply text-[var(--color-text-secondary)] transition-colors duration-200;
+  }
+
+  .upvote-icon:hover {
+    @apply text-[var(--color-text-primary)];
+  }
+
+  .upvote-icon-active,
+  .upvote-icon-active:hover {
+    @apply !text-red-500;
+  }
+
+  /* Confirmation card component */
+  .confirmation-card {
+    @apply bg-[var(--color-bg-subtle)] rounded-lg shadow-md border border-[var(--color-ui-border)] text-[var(--color-text-primary)];
+  }
+}

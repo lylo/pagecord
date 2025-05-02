@@ -1,11 +1,11 @@
-<article class="mb-16 prose dark:prose-invert overflow-auto break-words">
+<article class="article-content mb-16 prose overflow-auto break-words">
   <%= render "post_title", post: post %>
 
   <%= render "post_content", post: post %>
 
-  <div class="flex justify-between items-center my-4 text-slate-400 text-sm" title="<%= post.published_at.to_formatted_s(:long) %>">
-    <%= link_to post_path(post), class: "no-underline my-4 text-slate-400 font-normal", data: { turbo_frame: "_top" } do %>
-      <%= post.published_at.to_date.to_formatted_s(:long) %>
+  <div class="article-meta flex justify-between items-center my-4" title="<%= post.published_at.to_formatted_s(:long) %>">
+    <%= link_to post_path(post), class: "no-underline my-4 font-normal", data: { turbo_frame: "_top" } do %>
+      <span class="text-meta"><%= post.published_at.to_date.to_formatted_s(:long) %></span>
     <% end %>
   </div>
 </article>

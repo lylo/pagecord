@@ -1,0 +1,47 @@
+/* Mint theme */
+[data-theme="mint"] {
+  /* Base mint theme variables */
+  --mint-hue: 130;
+  --mint-lightness: 0.98;
+  --mint-chroma: 0.03;
+
+  /* Light mode */
+  --color-bg-base: oklch(var(--mint-lightness) var(--mint-chroma) var(--mint-hue));
+  --color-bg-subtle: oklch(calc(var(--mint-lightness) - 0.05) var(--mint-chroma) var(--mint-hue));
+  --color-bg-sunken: oklch(0.93 0.03 var(--mint-hue));
+
+  --color-text-heading: oklch(0.25 0.04 calc(var(--mint-hue) + 20));
+  --color-text-primary: oklch(0.25 0.04 calc(var(--mint-hue) + 20));
+  --color-text-secondary: oklch(0.50 0.04 calc(var(--mint-hue) + 20));
+  --color-text-tertiary: oklch(0.65 0.03 calc(var(--mint-hue) + 20));
+  --color-text-inverted: white;
+
+  --color-ui-border: oklch(0.85 0.03 var(--mint-hue));
+  --color-ui-focus: oklch(0.80 0.10 var(--mint-hue) / 0.5);
+
+  --color-accent-primary: oklch(0.55 0.12 calc(var(--mint-hue) + 120));
+
+  --color-form-bg: white;
+}
+
+/* Dark mode for mint theme */
+@media (prefers-color-scheme: dark) {
+  [data-theme="mint"] {
+    --color-bg-base: oklch(0.18 0.03 130);
+    --color-bg-subtle: oklch(0.22 0.03 130);
+    --color-bg-sunken: oklch(0.25 0.03 130);
+
+    --color-text-heading: oklch(0.90 0.03 150);
+    --color-text-primary: oklch(0.90 0.03 150);
+    --color-text-secondary: oklch(0.75 0.03 150);
+    --color-text-tertiary: oklch(0.60 0.03 150);
+    --color-text-inverted: oklch(0.15 0.03 130);
+
+    --color-ui-border: oklch(0.35 0.03 130);
+    --color-ui-focus: oklch(0.50 0.10 130 / 0.5);
+
+    --color-accent-primary: oklch(0.70 0.15 250);
+
+    --color-form-bg: oklch(0.18 0.03 130);
+  }
+}

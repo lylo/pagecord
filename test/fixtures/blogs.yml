@@ -1,25 +1,35 @@
+DEFAULTS: &default
+  theme: base
+  width: standard
+  font: sans
+
 joel:
   user: joel
   name: joel
   delivery_email: joel_gf35jsue@post.pagecord.com
+  <<: *default
 
 elliot:
   user: elliot
   name: elliot
   delivery_email: elliot_jfur73yd@post.pagecord.com
+  <<: *default
 
 vivian:
   user: vivian
   name: vivian
   delivery_email: vivian_jfur73yd@post.pagecord.com
+  <<: *default
 
 annie:
   user: annie
   name: annie
   delivery_email: annie_asj232j@post.pagecord.com
   custom_domain: welcometoanniesblog.com
+  <<: *default
 
 saul:
   user: saul
   name: saul
   delivery_email: saul_asj232j@post.pagecord.com
+  <<: *default

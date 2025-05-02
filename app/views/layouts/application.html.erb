@@ -4,17 +4,17 @@
     <%= render "layouts/head" %>
   </head>
 
-  <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
+  <body class="flex flex-col min-h-screen <%= font_class %>" <%= theme_data_attribute %>>
     <main class="container mx-auto px-5 flex flex-grow">
-      <div class="max-w-xl w-full mx-auto dark:text-slate-100 text-slate-900">
+      <div class="<%= content_width_class %> w-full mx-auto">
         <%= yield %>
       </div>
     </main>
 
-    <footer class="w-full flex flex-col text-center p-8 text-sm text-slate-400 dark:text-slate-500">
+    <footer class="w-full flex flex-col text-center p-8 text-sm">
       <% unless custom_domain_request? %>
         <%= link_to root_path do %>
-          <%= inline_svg_tag "logo.svg", class: "w-[100px] mt-8 inline-flex dark:text-slate-100 text-slate-900" %>
+          <%= inline_svg_tag "logo.svg", class: "w-[100px] mt-8 inline-flex" %>
         <% end %>
       <% end %>
     </footer>
