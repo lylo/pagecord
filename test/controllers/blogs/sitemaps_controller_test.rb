@@ -18,4 +18,12 @@ class Blogs::SitemapsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal blog.posts.count + 1, Nokogiri::XML(@response.body).xpath("//xmlns:url").count
   end
+
+  test "should return 406 for unsupported format" do
+    blog = blogs(:joel)
+    get blog_sitemap_path(name: blog.name, format: :gzip)
+
+    assert_response :not_acceptable
+    assert_equal "", @response.body # Ensure no body is returned for unsupported formats
+  end
 end
