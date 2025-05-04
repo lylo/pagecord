@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
 
       redirect_to thanks_sessions_path
     rescue ActionController::ParameterMissing
-      redirect_to new_sessions_path, alert: "Invalid request. Please try again."
+      redirect_to login_path, alert: "Invalid request. Please try again."
     end
   end
 
