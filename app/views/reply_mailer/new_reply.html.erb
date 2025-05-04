@@ -1,0 +1,27 @@
+<p>
+  Yay! Somebody replied to your post: <b><%= @post.display_title %></b>
+</p>
+
+<div style="background-color: #F3F4F6; padding: 15px; border-radius: 5px; margin: 20px 0;">
+  <p>
+    <strong>From:</strong>
+    <%= @reply.name %> &lt;<%= @reply.email %>&gt;
+  </p>
+
+  <p>
+    <strong>Subject:</strong>
+    <%= @reply.subject %>
+  </p>
+
+  <p>
+    <strong>Message:</strong>
+  </p>
+
+  <p style="white-space: pre-wrap;">
+    <%= @reply.message %>
+  </p>
+</div>
+
+<p>
+  To respond to <%= @reply.name %> simply reply to this email.
+</p>

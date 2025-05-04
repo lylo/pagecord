@@ -83,12 +83,9 @@ module ApplicationHelper
 
   private
 
+    # FIXME This is no longer needed.
     def post_title(post)
-      if post.title.present?
-        post.title.truncate(100).strip
-      else
-        post.summary
-      end
+      post.display_title
     end
 
     def blog_description(blog)

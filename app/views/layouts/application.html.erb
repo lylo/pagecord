@@ -7,6 +7,8 @@
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
     <main class="container mx-auto px-5 flex flex-grow">
       <div class="max-w-xl w-full mx-auto dark:text-slate-100 text-slate-900">
+        <%= render "app/shared/flash" %>
+
         <%= yield %>
       </div>
     </main>

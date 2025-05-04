@@ -151,8 +151,9 @@ Rails.application.routes.draw do
     scope ":name", &shared_blog_routes
   end
 
-  resources :posts, only: [] do
+  resources :posts do
     resources :upvotes, only: [ :create, :destroy ], module: :posts
+    resources :replies, only: [ :new, :create ], module: :posts
   end
 
   namespace :api do
