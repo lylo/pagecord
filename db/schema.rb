@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_04_11_072658) do
+ActiveRecord::Schema[8.1].define(version: 2025_05_05_132710) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -89,11 +89,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_04_11_072658) do
     t.boolean "email_subscriptions_enabled", default: true, null: false
     t.string "features", default: [], array: true
     t.string "fediverse_author_attribution"
+    t.string "font", default: "sans", null: false
     t.integer "layout", default: 0
     t.string "name", null: false
+    t.boolean "reply_by_email", default: false, null: false
+    t.string "theme", default: "base", null: false
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.string "width", default: "standard", null: false
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["name"], name: "index_blogs_on_name", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
@@ -167,6 +171,20 @@ ActiveRecord::Schema[8.1].define(version: 2025_04_11_072658) do
     t.datetime "delivered_at"
     t.datetime "updated_at", null: false
     t.index ["blog_id"], name: "index_post_digests_on_blog_id"
+  end
+
+  create_table "post_replies", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.boolean "email_delivered", default: false, null: false
+    t.text "message", null: false
+    t.string "name", null: false
+    t.bigint "post_id", null: false
+    t.string "subject", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_post_replies_on_created_at"
+    t.index ["email"], name: "index_post_replies_on_email"
+    t.index ["post_id"], name: "index_post_replies_on_post_id"
   end
 
   create_table "posts", force: :cascade do |t|
@@ -256,6 +274,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_04_11_072658) do
   add_foreign_key "post_digest_deliveries", "email_subscribers"
   add_foreign_key "post_digest_deliveries", "post_digests"
   add_foreign_key "post_digests", "blogs"
+  add_foreign_key "post_replies", "posts"
   add_foreign_key "posts", "blogs"
   add_foreign_key "social_links", "blogs"
   add_foreign_key "subscription_renewal_reminders", "subscriptions"

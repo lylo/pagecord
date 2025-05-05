@@ -9,6 +9,7 @@ class Post < ApplicationRecord
 
   has_many :digest_posts, dependent: :destroy
   has_many :post_digests, through: :digest_posts
+  has_many :replies, class_name: "Post::Reply", dependent: :destroy
 
   before_create :set_published_at, :limit_content_size, :check_title_and_content
   after_create  :detect_open_graph_image
@@ -49,6 +50,14 @@ class Post < ApplicationRecord
       .truncate(limit, separator: /\s/)
 
     summary.presence || "Untitled"
+  end
+
+  def display_title
+    if title.present?
+      title.truncate(100).strip
+    else
+      summary
+    end
   end
 
   private

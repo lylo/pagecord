@@ -6,6 +6,7 @@ class Blogs::PostsController < Blogs::BaseController
   def index
     @posts = @blog.posts.visible
       .with_rich_text_content_and_embeds
+      .includes(:upvotes)
       .order(published_at: :desc)
 
     @pagy, @posts = pagy(@posts, limit: page_size)

@@ -54,4 +54,40 @@ module RoutingHelper
       email_subscriber_unsubscribe_path(subscriber.token)
     end
   end
+
+  # REPLIES
+
+  def new_post_reply_path_for(post)
+    if post.blog.custom_domain?
+      new_custom_post_reply_path(post.token)
+    else
+      new_post_reply_path(post.blog.name, post.token)
+    end
+  end
+
+  def post_replies_path_for(post)
+    if post.blog.custom_domain?
+      custom_post_replies_path(post.token)
+    else
+      post_replies_path(post.blog.name, post.token)
+    end
+  end
+
+  # UPVOTES
+
+  def post_upvote_path_for(post, upvote)
+    if post.blog.custom_domain?
+      custom_post_upvote_path(post.token, upvote)
+    else
+      post_upvote_path(post.blog.name, post.token, upvote)
+    end
+  end
+
+  def post_upvotes_path_for(post)
+    if post.blog.custom_domain?
+      custom_post_upvotes_path(post.token)
+    else
+      post_upvotes_path(post.blog.name, post.token)
+    end
+  end
 end
