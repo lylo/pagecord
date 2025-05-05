@@ -9,7 +9,7 @@
   <%= hidden_field_tag :form_token, @form_token %>
   <%= render "/shared/spam_prevention" %>
 
-  <div class="md:flex md:space-x-4">
+  <div class="md:flex md:space-x-4 space-y-6 md:space-y-0">
     <div class="md:flex-1">
       <%= form.label :name, "Your Name", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
       <%= form.text_field :name, class: "block w-full rounded-md border-gray-300 dark:border-slate-600 dark:bg-slate-700 ring-0 dark:text-white focus:border-slate-500 focus:ring-slate-500", required: true %>
@@ -35,7 +35,7 @@
     <% end %>
   </div>
 
-  <div>
+  <div class="md:flex-1">
     <%= form.label :message, "Message", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
     <%= form.text_area :message, rows: 6, class: "block w-full rounded-md border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white ring-0 focus:border-slate-500 focus:ring-slate-500", required: true %>
     <% if @reply.errors[:message].any? %>
