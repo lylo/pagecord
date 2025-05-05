@@ -35,4 +35,15 @@ class MarketingAutomation::AddContactJobTest < ActiveJob::TestCase
       MarketingAutomation::AddContactJob.perform_now(@user.id)
     end
   end
+
+  test "should add to Pagecord mailing list" do
+    Rails.env.stubs(:production?).returns(true)
+    MarketingAutomation::AddContactJob.any_instance.stubs(:add_to_loops).returns(true)
+
+    @user.update! marketing_consent: true
+
+    assert_difference("EmailSubscriber.count") do
+      MarketingAutomation::AddContactJob.perform_now(@user.id)
+    end
+  end
 end

@@ -25,3 +25,8 @@ saul:
   user: saul
   name: saul
   delivery_email: saul_asj232j@post.pagecord.com
+
+pagecord:
+  user: pagecord
+  name: pagecord
+  delivery_email: pagecord_asj232j@post.pagecord.com

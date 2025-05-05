@@ -285,7 +285,9 @@
 
   <hr class="mb-8">
 
-  <h3 class="text-center tracking-tight">Subscribe to the Pagecord email newsletter for updates</h3>
-
-  <%= render "newsletter_form" %>
+  <div class="email mt-6 mb-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 p-4 rounded-lg sm:mx-12 text-sm">
+    <%= turbo_frame_tag "email_subscriber_form" do %>
+      <%= render "newsletter_form" %>
+    <% end %>
+  </div>
 </div>
