@@ -13,7 +13,7 @@
         <%= link_to new_post_reply_path_for(post),
                     title: "Reply to this post via email",
                     class: "flex" do %>
-          <%= inline_svg_tag "icons/reply.svg", class: "cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-4 h-4" %>
+          <%= inline_svg_tag "icons/reply.svg", class: "cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-5 h-5" %>
         <% end %>
 
         <%= turbo_frame_tag dom_id(post, :upvotes) do %>
