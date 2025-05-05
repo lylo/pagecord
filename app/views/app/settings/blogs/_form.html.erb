@@ -28,16 +28,27 @@
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Search Engine Visibility</h3>
     <p>
-      Control whether search engines like Google can index your blog.
+      If your blog is on a custom domain, you can opt out of search engine indexing by checking the box below.
     </p>
 
-    <div class="mt-4 flex items-center">
-      <%= form.check_box :allow_search_indexing, class: "h-4 w-4 rounded border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200" %>
-      <span class="ml-2">Allow search engines to index my blog</span>
-    </div>
-    <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm">
-      When disabled, your blog will include instructions in robots.txt to discourage search engines from indexing it. Note that it's up to search engines whether they respect this setting.
+    <p class="mt-4 text-slate-500 dark:text-slate-400">
+      (Note: All blogs are configured to discourage AI crawlers)
     </p>
+
+    <div class="mt-6">
+      <div class="flex gap-3">
+        <div class="flex h-6 shrink-0 items-center">
+          <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+        </div>
+        <div>
+          <%= form.label :allow_search_indexing, "Allow search engines to index my blog", class: "text-slate-800 dark:text-slate-100" %>
+          <p class="text-slate-500 text-sm">
+            When unchecked, a <tt>/robots.txt</tt> endpoint wil discourage search engines from indexing your site. This only works
+      for blogs using a custom domain at the moment, sorry.
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="mt-8">
