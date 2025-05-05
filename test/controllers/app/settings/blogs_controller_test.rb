@@ -12,27 +12,19 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 1, text: "Bio" }
-    assert_select "h3", { count: 1, text: "Title" }
     assert_select "h3", { count: 1, text: "Custom Domain" }
+    assert_select "h3", { count: 1, text: "Search Engine Visibility" }
+    assert_select "h3", { count: 1, text: "Fediverse Author Attribution" }
     assert_response :success
   end
 
-  test "should not show avatar or custom domain if not subscribed" do
+  test "should not show custom domain if not subscribed" do
     login_as users(:vivian)
 
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 0, text: "Avatar" }
     assert_select "h3", { count: 0, text: "Custom Domain" }
     assert_response :success
-  end
-
-  test "should update blog bio" do
-    patch app_settings_blog_url(@blog), params: { blog: { bio: "New bio" } }, as: :turbo_stream
-
-    assert_redirected_to app_settings_url
-    assert_equal "New bio", @blog.reload.bio.to_plain_text
   end
 
   test "should update blog custom domain" do
@@ -116,39 +108,17 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "should add a new social link for valid platform" do
-    assert_difference -> { @blog.social_links.count }, 1 do
-      patch app_settings_blog_url(@blog), params: {
-          blog: {
-            social_links_attributes: {
-              "#{Time.now.to_i}": { platform: "X", url: "https://x.com/whatever" }
-            }
-          }
-        }, as: :turbo_stream
-    end
+  test "should update search engine visibility" do
+    patch app_settings_blog_url(@blog), params: { blog: { allow_search_indexing: false } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal false, @blog.reload.allow_search_indexing
   end
 
-  test "should now add a new social link for invalid platform" do
-    assert_no_difference -> { @blog.social_links.count } do
-      patch app_settings_blog_url(@blog), params: {
-          blog: {
-            social_links_attributes: {
-              "#{Time.now.to_i}": { platform: "pagecord", url: "https://pagecord.com/whatever" }
-            }
-          }
-        }, as: :turbo_stream
-    end
-  end
+  test "should update fediverse author attribution" do
+    patch app_settings_blog_url(@blog), params: { blog: { fediverse_author_attribution: "@example@mastodon.social" } }, as: :turbo_stream
 
-  test "should delete an existing new social link" do
-    assert_difference -> { @blog.social_links.count }, -1 do
-      patch app_settings_blog_url(@blog), params: {
-          blog: {
-            social_links_attributes: {
-              "0": { "_destroy": true, id: @blog.social_links.first.id }
-            }
-          }
-        }, as: :turbo_stream
-    end
+    assert_redirected_to app_settings_url
+    assert_equal "@example@mastodon.social", @blog.reload.fediverse_author_attribution
   end
 end

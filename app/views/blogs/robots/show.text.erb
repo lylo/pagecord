@@ -1,3 +1,4 @@
+<% if @blog.allow_search_indexing %>
 # Blog robots.txt for <%= @blog.name %>
 # Last updated: May 2025
 
@@ -59,3 +60,8 @@ Disallow: /
 
 User-agent: PetalBot
 Disallow: /
+
+<% else %>
+User-agent: *
+Disallow: /
+<% end %>

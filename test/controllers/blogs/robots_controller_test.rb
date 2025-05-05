@@ -28,4 +28,15 @@ class Blogs::RobotsControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, "User-agent: GPTBot"
     assert_includes @response.body, "Disallow: /"
   end
+
+  test "should disallow all indexing" do
+    blog = blogs(:joel)
+    blog.update!(allow_search_indexing: false)
+
+    get blog_robots_path(name: blog.name)
+
+    assert_response :success
+    assert_equal "text/plain; charset=utf-8", @response.content_type
+    assert_equal "User-agent: *\nDisallow: /\n", @response.body
+  end
 end

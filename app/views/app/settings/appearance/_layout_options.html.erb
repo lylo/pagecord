@@ -1,0 +1,21 @@
+<div class="mt-6 gap-x-2 sm:gap-x-4 flex">
+  <fieldset class="w-1/2 sm:w-48 flex border border-slate-200 dark:border-slate-700 rounded-lg tems-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+    <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
+      <%= form.radio_button :layout, "stream_layout",
+        checked: @blog.stream_layout?,
+        class: "peer w-4 h-4 border-slate-300 checked:border-sky-600 dark:checked:border-gray-600 ring-offset-0 ring-0 text-sky-600 dark:focus:ring-gray-800 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 cursor-pointer",
+          id: "layout_stream" %>
+      <span>Stream</span>
+    </label>
+  </fieldset>
+
+  <fieldset class="w-1/2 sm:w-48 flex border border-slate-200 dark:border-slate-700 rounded-lg items-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+    <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
+      <%= form.radio_button :layout, "title_layout",
+        checked: @blog.title_layout?,
+        class: "peer w-4 h-4 border-slate-300 checked:border-sky-600 dark:checked:border-gray-600 ring-offset-0 ring-0 text-sky-600  dark:focus:ring-gray-800 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 cursor-pointer",
+          id: "layout_titles" %>
+      <span>List of Titles</span>
+    </label>
+  </fieldset>
+</div>
