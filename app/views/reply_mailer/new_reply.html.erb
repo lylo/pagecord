@@ -1,5 +1,5 @@
 <p>
-  Yay! Somebody replied to your post: <b><%= @post.display_title %></b>
+  Yay! Somebody replied to <%= link_to "your post", post_url(@post) %>, <b><%= @post.display_title %></b>.
 </p>
 
 <div style="background-color: #F3F4F6; padding: 15px; border-radius: 5px; margin: 20px 0;">
@@ -23,5 +23,5 @@
 </div>
 
 <p>
-  To respond to <%= @reply.name %> simply reply to this email.
+  Reply to this email to respond to <%= @reply.name %>.
 </p>
