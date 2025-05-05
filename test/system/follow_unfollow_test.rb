@@ -21,7 +21,12 @@ class FollowsTest < ApplicationSystemTestCase
 
     click_on "Login"
 
+    assert_text "Thanks. We've sent you an email with your log in link."
+    assert_not_nil @vivian.access_requests.last
+
     visit verify_access_request_url(token: @vivian.access_requests.last.token_digest)
+
+    assert_current_path app_posts_path
 
     # Go to joel's blog
     visit blog_posts_path(name: @joel.blog.name)

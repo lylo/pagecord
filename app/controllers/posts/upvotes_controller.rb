@@ -3,6 +3,7 @@ class Posts::UpvotesController < Blogs::BaseController
 
   rate_limit to: 10, within: 1.minute
 
+  skip_before_action :authenticate
   before_action :load_post
 
   def create

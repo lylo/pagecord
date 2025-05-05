@@ -1,6 +1,5 @@
 class Blogs::BaseController < ApplicationController
-  skip_before_action :domain_check, :authenticate
-
+  skip_before_action :domain_check
   before_action :load_blog, :validate_user, :enforce_custom_domain
 
   protected

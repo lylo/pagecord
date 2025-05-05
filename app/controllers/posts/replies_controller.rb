@@ -1,6 +1,7 @@
 class Posts::RepliesController < Blogs::BaseController
   include SpamPrevention
 
+  skip_before_action :authenticate
   before_action :load_post
   before_action :verify, only: [ :create ]
 
