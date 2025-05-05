@@ -10,7 +10,7 @@ module PostsHelper
   end
 
   def upvoted_by_current_viewer?(post)
-    @upvote = post.upvotes.find_by(hash_id: @hash_id)
+    @upvote = post.upvotes.detect { |upvote| upvote.hash_id == @hash_id }
   end
 
   # Returns the URL of the social link to avoid Brakeman warning
