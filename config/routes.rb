@@ -137,6 +137,11 @@ Rails.application.routes.draw do
     get "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#show", as: :email_subscriber_confirmation
     get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
     post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
+
+    resources :posts, only: [] do
+      resources :upvotes, only: [ :create, :destroy ], module: :posts
+      resources :replies, only: [ :new, :create ], module: :posts
+    end
   end
 
   constraints(DomainConstraints.method(:custom_domain?)) do
@@ -149,11 +154,6 @@ Rails.application.routes.draw do
 
     get "/@:name", to: redirect("/%{name}")
     scope ":name", &shared_blog_routes
-  end
-
-  resources :posts do
-    resources :upvotes, only: [ :create, :destroy ], module: :posts
-    resources :replies, only: [ :new, :create ], module: :posts
   end
 
   namespace :api do

@@ -9,9 +9,17 @@
     <% end %>
 
     <% if @user.subscribed? %>
-      <%= turbo_frame_tag dom_id(post, :upvotes) do %>
-        <%= render "upvotes", post: post %>
-      <% end %>
+      <div class="flex items-center gap-x-1">
+        <%= link_to new_post_reply_path_for(post),
+                    title: "Reply to this post via email",
+                    class: "flex" do %>
+          <%= inline_svg_tag "icons/reply.svg", class: "cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-4 h-4" %>
+        <% end %>
+
+        <%= turbo_frame_tag dom_id(post, :upvotes) do %>
+          <%= render "upvotes", post: post %>
+        <% end %>
+      </div>
     <% end %>
   </div>
 </article>

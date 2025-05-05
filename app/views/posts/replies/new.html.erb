@@ -1,10 +1,13 @@
 <%= render "blogs/header", hide_email_form: true, hide_bio: true %>
 
 <%= form_with model: [@post, @reply],
-          url: post_replies_path(@post),
+          url: post_replies_path_for(@post),
           method: :post,
           scope: :reply,
           class: "mt-8 space-y-6" do |form| %>
+
+  <%= hidden_field_tag :form_token, @form_token %>
+  <%= render "/shared/spam_prevention" %>
 
   <div class="md:flex md:space-x-4">
     <div class="md:flex-1">
@@ -42,7 +45,6 @@
 
   <div class="flex justify-end space-x-3">
     <%= link_to "Cancel", post_path(@post), class: "btn-secondary" %>
-
     <%= form.submit "Send Reply", class: "btn-primary" %>
   </div>
 <% end %>

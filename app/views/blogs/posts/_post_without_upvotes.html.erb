@@ -9,7 +9,10 @@
     <% end %>
 
     <% if @user.subscribed? %>
-      <%= link_to new_post_reply_path(post), title: "Reply to this post via email", data: { turbo: false } do %>
+      <%= link_to new_post_reply_path_for(post),
+                  title: "Reply to this post via email",
+                  data: { turbo_frame: "_top" },
+                  class: "flex" do %>
         <%= inline_svg_tag "icons/reply.svg", class: "cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-4 h-4" %>
       <% end %>
     <% end %>

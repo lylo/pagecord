@@ -1,12 +1,12 @@
 class Blogs::BaseController < ApplicationController
-  skip_before_action :domain_check
+  skip_before_action :domain_check, :authenticate
 
   before_action :load_blog, :validate_user, :enforce_custom_domain
 
   protected
 
   def blog_params
-    params.permit(:name, :page, :title, :token)
+    params.slice(:name, :page, :title, :token)
   end
 
   private

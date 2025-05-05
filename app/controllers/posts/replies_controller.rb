@@ -1,8 +1,15 @@
-class Posts::RepliesController < ApplicationController
+class Posts::RepliesController < Blogs::BaseController
+  include SpamPrevention
+
   before_action :load_post
+  before_action :verify, only: [ :create ]
 
   def new
-    @reply = Post::Reply.new(subject: "Re: #{@post.display_title}")
+    @reply = @post.replies.new(subject: "Re: #{@post.display_title}")
+
+    @form_token = encryptor.encrypt_and_sign({
+      post_id: @post.id
+    })
   end
 
   def create
@@ -26,7 +33,23 @@ class Posts::RepliesController < ApplicationController
     end
 
     def load_post
-      @post = Post.find_by!(token: params[:post_id])
-      @blog = @post.blog
+      @post = @blog.posts.find_by!(token: params[:post_id])
+    end
+
+    def verify
+      begin
+        token_data = encryptor.decrypt_and_verify(params[:form_token])
+        if token_data["post_id"] != @post.id
+          raise "Form token / post_id mismatch"
+        end
+      rescue => e
+        Rails.logger.warn("Reply spam check failed: #{e.message}")
+        head :unprocessable_entity and return
+      end
+    end
+
+    def encryptor
+      key = ActiveSupport::KeyGenerator.new(Rails.application.secret_key_base).generate_key("form-token", 32)
+      ActiveSupport::MessageEncryptor.new(key)
     end
 end
