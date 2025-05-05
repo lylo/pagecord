@@ -2,10 +2,13 @@ class Posts::RepliesController < Blogs::BaseController
   include SpamPrevention
 
   skip_before_action :authenticate
+
   before_action :load_post
   before_action :verify, only: [ :create ]
 
   def new
+    redirect_to view_context.post_path(@post) and return unless @blog.reply_by_email
+
     @reply = @post.replies.new(subject: "Re: #{@post.display_title}")
 
     @form_token = encryptor.encrypt_and_sign({

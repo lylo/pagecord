@@ -2,6 +2,7 @@ joel:
   user: joel
   name: joel
   delivery_email: joel_gf35jsue@post.pagecord.com
+  reply_by_email: true
 
 elliot:
   user: elliot
@@ -18,6 +19,7 @@ annie:
   name: annie
   delivery_email: annie_asj232j@post.pagecord.com
   custom_domain: welcometoanniesblog.com
+  reply_by_email: true
 
 saul:
   user: saul

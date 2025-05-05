@@ -18,6 +18,12 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?]", custom_post_replies_path(post)
   end
 
+  test "should redirect to post if reply by email is disabled" do
+    @post.blog.update(reply_by_email: false)
+    get new_post_reply_path(@post.blog.name, @post)
+    assert_redirected_to post_with_title_path(@post.blog.name, @post.url_title, @post.token)
+  end
+
   test "should create reply and send email" do
     assert_difference("Post::Reply.count", 1) do
       params = reply_params.merge(spam_prevention_params(@post))
