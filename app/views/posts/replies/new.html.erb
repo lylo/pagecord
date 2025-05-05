@@ -43,8 +43,8 @@
     <% end %>
   </div>
 
-  <div class="flex justify-end space-x-3">
-    <%= link_to "Cancel", post_path(@post), class: "btn-secondary" %>
+  <div class="flex">
     <%= form.submit "Send Reply", class: "btn-primary" %>
+    <%= link_to "Cancel", post_path(@post), class: "btn-secondary" %>
   </div>
 <% end %>
