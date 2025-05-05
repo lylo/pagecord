@@ -10,15 +10,19 @@
 
     <% if @user.subscribed? %>
       <div class="flex items-center gap-x-1">
-        <%= link_to new_post_reply_path_for(post),
+        <% if current_features.enabled?(:replies) %>
+          <%= link_to new_post_reply_path_for(post),
                     title: "Reply to this post via email",
                     data: { turbo_frame: "_top" },
                     class: "flex" do %>
-          <%= inline_svg_tag "icons/reply.svg", class: "cursor-pointer dark:text-slate-500 text-slate-300 hover:text-slate-400 w-5 h-5" %>
+            <%= inline_svg_tag "icons/reply.svg", class: "cursor-pointer dark:text-slate-500 text-slate-300   hover:text-slate-400 w-5 h-5" %>
+          <% end %>
         <% end %>
 
-        <%= turbo_frame_tag dom_id(post, :upvotes) do %>
-          <%= render "upvotes", post: post %>
+        <% unless local_assigns[:upvotes] == false %>
+          <%= turbo_frame_tag dom_id(post, :upvotes) do %>
+            <%= render "upvotes", post: post %>
+          <% end %>
         <% end %>
       </div>
     <% end %>
