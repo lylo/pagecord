@@ -81,6 +81,18 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_includes cdata_content, "<p>This is my first post.</p>"
   end
 
+  test "should map RSS feed aliases to index" do
+    get "/#{blogs(:joel).name}/feed.xml"
+
+    assert_response :success
+    assert_equal "application/rss+xml; charset=utf-8", @response.content_type
+
+    get "/#{blogs(:joel).name}/feed/"
+
+    assert_response :success
+    assert_equal "application/rss+xml; charset=utf-8", @response.content_type
+  end
+
   # Custom domains
 
   test "should get index on custom domain" do

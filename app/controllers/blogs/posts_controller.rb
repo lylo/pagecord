@@ -11,15 +11,12 @@ class Blogs::PostsController < Blogs::BaseController
 
     @pagy, @posts = pagy(@posts, limit: page_size)
 
-    fresh_when(
-      etag: [ @posts.map(&:id), @blog.id, @pagy.page ],
-      last_modified: @posts.maximum(:updated_at),
-      public: true
-    )
-
     respond_to do |format|
-      format.html
-      format.rss { render layout: false }
+      format.html { set_conditional_get_headers }
+      format.rss {
+        return unless set_conditional_get_headers
+        render layout: false
+      }
     end
   end
 
@@ -39,5 +36,17 @@ class Blogs::PostsController < Blogs::BaseController
 
     def page_size
       @blog.stream_layout? ? 15 : 100
+    end
+
+    def set_conditional_get_headers
+      if stale?(
+        etag: [ @posts.map(&:id), @blog.id, @pagy.page ],
+        last_modified: @posts.maximum(:updated_at),
+        public: true
+      )
+        true
+      else
+        false
+      end
     end
 end

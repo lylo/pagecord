@@ -39,6 +39,14 @@ module RoutingHelper
     blog_home(blog, "url")
   end
 
+  def rss_feed_path(blog)
+    if blog.custom_domain.present?
+      custom_blog_feed_xml_path(host: blog.custom_domain)
+    else
+      blog_feed_xml_path(name: blog.name)
+    end
+  end
+
   def email_subscribers_path_for_domain
     if custom_domain_request?
       custom_email_subscribers_path

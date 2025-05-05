@@ -130,6 +130,8 @@ Rails.application.routes.draw do
   shared_blog_routes = lambda do
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
     get "/", to: "blogs/posts#index", as: :blog_posts
+    get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
+    get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_without_title
     get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_with_title
 
