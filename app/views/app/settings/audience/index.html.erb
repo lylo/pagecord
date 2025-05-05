@@ -1,0 +1,43 @@
+<%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
+<div class="space-y-8">
+    <div class="p-6 border border-slate-200 dark:border-slate-600 rounded-lg">
+    <h3 class="mb-4 font-bold text-xl text-slate-800 dark:text-slate-100">Email Subscribers</h3>
+
+    <p class="text-slate-600 dark:text-slate-400">
+      Your Pagecord has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
+    </p>
+    <p class="mt-4 text-slate-600 dark:text-slate-400">
+      Once a week your email subscribers will receive a digest of your latest posts (if you've published any).
+    </p>
+
+    <div class="mt-6">
+      <div class="flex items-center">
+        <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+        <%= form.label :email_subscriptions_enabled, "Email Subscriptions Enabled", class: "ml-3 text-slate-800 dark:text-slate-100" %>
+      </div>
+    </div>
+  </div>
+
+  <% if current_features.enabled?(:replies) %>
+    <div class="p-6 border border-slate-200 dark:border-slate-600 rounded-lg">
+      <h3 class="mb-4 font-bold text-xl text-slate-800 dark:text-slate-100">Replies by Email</h3>
+
+      <p class="text-slate-600 dark:text-slate-400">
+        Enabling this feature allow readers to reply to your posts via email via a contact
+        form. Your email address will not be revealed.
+      </p>
+
+      <div class="mt-6">
+        <div class="flex items-center">
+          <%= form.check_box :reply_by_email, { checked: @blog.reply_by_email, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+          <%= form.label :reply_by_email, "Allow replies by email", class: "ml-3 text-slate-800 dark:text-slate-100" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="mt-12 flex items-cente pt-4 border-t border-t-slate-200 dark:border-slate-600">
+    <%= form.submit "Update", class: "btn-primary" %>
+    <%= link_to "Cancel", app_settings_path, class: "btn-secondary ml-4" %>
+  </div>
+</div><% end %>

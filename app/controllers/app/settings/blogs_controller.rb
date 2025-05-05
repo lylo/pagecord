@@ -29,6 +29,7 @@ class App::Settings::BlogsController < AppController
         params.require(:blog).permit(
           :bio, :custom_domain, :title, :layout, :avatar,
           :email_subscriptions_enabled,
+          :reply_by_email,
           :fediverse_author_attribution,
           social_links_attributes: [ :id, :platform, :url, :_destroy ]
         )

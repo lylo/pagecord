@@ -87,6 +87,7 @@ Rails.application.routes.draw do
     end
 
     namespace :settings do
+      resources :audience, only: [ :index ]
       resources :users, only: [ :index, :update, :destroy ]
       resources :blogs, only: [ :index, :update ]
       resources :email_subscribers, only: [ :index ]
