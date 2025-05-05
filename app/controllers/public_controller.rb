@@ -1,7 +1,7 @@
 class PublicController < ApplicationController
   layout "home"
 
-  caches_page :terms, :privacy, :faq, :pagecord_vs_hey_world, :blogging_by_email
+  caches_page :terms, :privacy, :faq, :pagecord_vs_hey_world, :blogging_by_email, :robots
 
   def terms
   end
@@ -19,5 +19,11 @@ class PublicController < ApplicationController
   end
 
   def sitemap
+  end
+
+  def robots
+    respond_to do |format|
+      format.text { render content_type: "text/plain" }
+    end
   end
 end

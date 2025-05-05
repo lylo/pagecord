@@ -101,7 +101,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_nil @blog.reload.custom_domain
-    assert_equal "welcometoanniesblog.com", blog_with_domain.reload.custom_domain
+    assert_equal "annie.blog", blog_with_domain.reload.custom_domain
   end
 
   test "should raise an error after 20 custom domain changes" do

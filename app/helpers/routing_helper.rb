@@ -23,28 +23,31 @@ module RoutingHelper
     post_link(post, "url")
   end
 
-  def blog_home(blog, type)
-    if blog.custom_domain.present?
-      send("custom_blog_posts_#{type}", host: blog.custom_domain)
-    else
-      send("blog_posts_#{type}", name: blog.name)
-    end
-  end
-
   def blog_home_path(blog)
-    blog_home(blog, "path")
+    route_for_blog(blog, "blog_posts", "path")
   end
 
   def blog_home_url(blog)
-    blog_home(blog, "url")
+    route_for_blog(blog, "blog_posts", "url")
   end
 
   def rss_feed_path(blog)
-    if blog.custom_domain.present?
-      custom_blog_feed_xml_path(host: blog.custom_domain)
-    else
-      blog_feed_xml_path(name: blog.name)
-    end
+    route_for_blog(blog, "blog_feed_xml", "path")
+  end
+
+  def sitemap_path_for(blog)
+    route_for_blog(blog, "blog_sitemap", "path")
+  end
+
+  def sitemap_url_for(blog)
+    route_for_blog(blog, "blog_sitemap", "url")
+  end
+
+  def route_for_blog(blog, route_name, type, *args)
+    prefix = blog.custom_domain.present? ? "custom_" : ""
+    options = blog.custom_domain.present? ? { host: blog.custom_domain } : { name: blog.name }
+
+    send("#{prefix}#{route_name}_#{type}", *args, options)
   end
 
   def email_subscribers_path_for_domain

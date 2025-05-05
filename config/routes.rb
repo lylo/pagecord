@@ -69,13 +69,6 @@ Rails.application.routes.draw do
 
   get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
 
-  # Defines the routes for the resources of the model Post
-  get "/terms", to: "public#terms", as: :terms
-  get "/privacy", to: "public#privacy", as: :privacy
-  get "/faq", to: "public#faq", as: :faq
-  get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"
-  get "/blogging-by-email", to: "public#blogging_by_email"
-
   namespace :app do
     resources :posts
     resources :settings, only: [ :index ]
@@ -128,6 +121,7 @@ Rails.application.routes.draw do
   end
 
   shared_blog_routes = lambda do
+    get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
     get "/", to: "blogs/posts#index", as: :blog_posts
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
@@ -154,6 +148,12 @@ Rails.application.routes.draw do
 
   constraints(DomainConstraints.method(:default_domain?)) do
     get "/sitemap.xml", to: "public#sitemap", as: :public_sitemap, format: :xml
+    get "/robots.txt", to: "public#robots", as: :robots, format: :text
+    get "/terms", to: "public#terms", as: :terms
+    get "/privacy", to: "public#privacy", as: :privacy
+    get "/faq", to: "public#faq", as: :faq
+    get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"
+    get "/blogging-by-email", to: "public#blogging_by_email"
 
     get "/@:name", to: redirect("/%{name}")
     scope ":name", &shared_blog_routes

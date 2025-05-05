@@ -18,7 +18,7 @@ annie:
   user: annie
   name: annie
   delivery_email: annie_asj232j@post.pagecord.com
-  custom_domain: welcometoanniesblog.com
+  custom_domain: annie.blog
   reply_by_email: true
 
 saul:
