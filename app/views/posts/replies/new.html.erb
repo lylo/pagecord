@@ -12,7 +12,7 @@
   <div class="md:flex md:space-x-4 space-y-6 md:space-y-0">
     <div class="md:flex-1">
       <%= form.label :name, "Your Name", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
-      <%= form.text_field :name, class: "block w-full rounded-md border-gray-300 dark:border-slate-600 dark:bg-slate-700 ring-0 dark:text-white focus:border-slate-500 focus:ring-slate-500", required: true %>
+      <%= form.text_field :name, class: "block w-full rounded-md border-gray-300 dark:border-slate-600 dark:bg-slate-700 ring-0 dark:text-white focus:border-slate-500 focus:ring-slate-500", required: true, autofocus: true %>
       <% if @reply.errors[:name].any? %>
         <span class="text-red-500 text-sm"><%= @reply.errors.full_messages_for(:name).first %></span>
       <% end %>
