@@ -11,6 +11,12 @@ class Blogs::PostsController < Blogs::BaseController
 
     @pagy, @posts = pagy(@posts, limit: page_size)
 
+    fresh_when(
+      etag: [ @posts.map(&:id), @blog.id, @pagy.page ],
+      last_modified: @posts.maximum(:updated_at),
+      public: true
+    )
+
     respond_to do |format|
       format.html
       format.rss { render layout: false }
