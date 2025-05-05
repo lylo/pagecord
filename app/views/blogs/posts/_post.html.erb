@@ -9,7 +9,7 @@
     <% end %>
 
     <% if @user.subscribed? %>
-      <div class="flex items-center gap-x-1">
+      <div class="flex items-center gap-x-2">
         <% if current_features.enabled?(:replies) && @user.blog.reply_by_email %>
           <%= link_to new_post_reply_path_for(post),
                     title: "Reply to this post via email",
