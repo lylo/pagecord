@@ -85,6 +85,14 @@ Rails.application.routes.draw do
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
       resources :email_subscribers, only: [ :index ]
+      resources :email_change_requests, only: [ :create, :destroy ] do
+        member do
+          post :resend
+        end
+        collection do
+          get "verify/:token", to: "email_change_requests#verify", as: :verify
+        end
+      end
       resources :exports
 
       get "/account/edit", to: "account#edit"

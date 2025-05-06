@@ -1,0 +1,9 @@
+Hello 👋
+
+We received a request to change your email address from <%= @user.email %> to <%= @new_email %>.
+
+Click the following link to verify this change:
+
+<%= verify_app_settings_email_change_requests_url(@email_change_request.token_digest) %>
+
+This link will expire in 24 hours. If you've decided not to change email after all, you can just ignore this email.

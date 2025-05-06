@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_05_05_204703) do
+ActiveRecord::Schema[8.1].define(version: 2025_05_06_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -119,6 +119,19 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_05_204703) do
     t.datetime "updated_at", null: false
     t.index ["post_digest_id"], name: "index_digest_posts_on_post_digest_id"
     t.index ["post_id"], name: "index_digest_posts_on_post_id"
+  end
+
+  create_table "email_change_requests", force: :cascade do |t|
+    t.datetime "accepted_at"
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.string "new_email", null: false
+    t.string "token_digest"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["expires_at"], name: "index_email_change_requests_on_expires_at"
+    t.index ["token_digest"], name: "index_email_change_requests_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_email_change_requests_on_user_id"
   end
 
   create_table "email_subscribers", force: :cascade do |t|
@@ -269,6 +282,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_05_204703) do
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"
   add_foreign_key "digest_posts", "posts"
+  add_foreign_key "email_change_requests", "users"
   add_foreign_key "email_subscribers", "blogs"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"

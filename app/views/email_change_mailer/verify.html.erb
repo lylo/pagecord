@@ -1,0 +1,31 @@
+<p>Hello 👋</p>
+
+<p>
+  We received a request to change your email address from <strong><%= @user.email %></strong> to <strong><%= @new_email %></strong>.
+</p>
+
+<p>
+  Click the button below to verify this change:
+</p>
+
+<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="padding-top:5px; padding-bottom:5px;">
+  <tbody>
+    <tr>
+      <td align="center">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td>
+                <%= link_to "Verify Email Change", verify_app_settings_email_change_requests_url(@email_change_request.token_digest), class: "button" %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  This link will expire in 24 hours. If you've decided not to change email after all, you can just ignore this email.
+</p>

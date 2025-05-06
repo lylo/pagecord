@@ -4,6 +4,7 @@ class User < ApplicationRecord
 
   has_one :blog, dependent: :destroy, inverse_of: :user
   has_many :access_requests, dependent: :destroy
+  has_many :email_change_requests, dependent: :destroy
 
   accepts_nested_attributes_for :blog
 
@@ -12,5 +13,9 @@ class User < ApplicationRecord
 
   def verify!
     self.update! verified: true
+  end
+
+  def pending_email_change_request
+    email_change_requests.active.pending.order(created_at: :desc).first
   end
 end

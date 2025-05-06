@@ -18,6 +18,10 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+every 1.day, at: "2:30 am" do
+  rake "email_change_requests:cleanup"
+end
+
 every :day, at: "4:00 am" do
   rake "exports:cleanup"
 end
