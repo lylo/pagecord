@@ -5,6 +5,9 @@ class AccessRequestsController < ApplicationController
 
       unless @user.verified?
         @user.verify!
+
+        WelcomeMailer.with(user: @user).welcome_email.deliver_later
+
         MarketingAutomation::AddContactJob.perform_later(@user.id)
       end
 

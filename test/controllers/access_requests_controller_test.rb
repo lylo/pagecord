@@ -10,6 +10,17 @@ class AccessRequestsControllerTest < ActionDispatch::IntegrationTest
     assert user.reload.verified
   end
 
+  test "should send welcome email when verifying access request" do
+    user = users(:elliot)
+
+    assert_emails 1 do
+      get verify_access_request_url(access_requests(:elliot).token_digest)
+    end
+
+    assert_redirected_to app_posts_url
+    assert user.reload.verified
+  end
+
   test "should not verify expired access request" do
     user = users(:elliot)
 

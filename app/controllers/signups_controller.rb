@@ -25,8 +25,6 @@ class SignupsController < ApplicationController
     if @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
-      sign_in @user
-
       redirect_to thanks_signups_path
     else
       render :new, status: :unprocessable_entity
