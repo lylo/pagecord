@@ -9,6 +9,7 @@ production:
 
   ignore_errors:
     - ActiveRecord::RecordNotFound
+    - AbstractController::ActionNotFound
     - ActionController::RoutingError
     - ActionController::UnknownFormat
     - ActionController::InvalidAuthenticityToken
