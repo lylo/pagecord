@@ -1,9 +1,11 @@
 class AccessRequestsController < ApplicationController
   def verify
-    if access_request = AccessRequest.active.pending.find_by(token_digest: params[:token])
+    access_request = AccessRequest.active.pending.find_by(token_digest: params[:token]) ||
+                     AccessRequest.active.recently_accepted.find_by(token_digest: params[:token])
+    if access_request
       @user = access_request.user
 
-      unless @user.verified?
+      if !@user.verified? && access_request.pending?
         @user.verify!
 
         WelcomeMailer.with(user: @user).welcome_email.deliver_later

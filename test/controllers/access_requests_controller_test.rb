@@ -36,8 +36,18 @@ class AccessRequestsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
-  test "should not re-verify accepted access request" do
-    get verify_access_request_url(access_requests(:joel).token_digest)
+  test "should re-verify access request with 5 minutes" do
+    user = users(:joel)
+    access_request = user.access_requests.create!(accepted_at: 1.minute.ago)
+    get verify_access_request_url(access_request.token_digest)
+
+    assert_redirected_to app_posts_path
+  end
+
+  test "should not re-verify access request after 5 minutes" do
+    user = users(:joel)
+    access_request = user.access_requests.create!(accepted_at: 6.minutes.ago)
+    get verify_access_request_url(access_request.token_digest)
 
     assert_redirected_to root_path
   end
