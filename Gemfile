@@ -27,9 +27,7 @@ gem "appsignal"
 gem "sentry-ruby"
 gem "sentry-rails"
 
-# marketing
-gem "loops_sdk"
-
+# everything else
 gem "aws-sdk-s3"
 gem "discard", "~> 1.2"
 gem "fastimage"
