@@ -38,6 +38,7 @@ every 1.day, at: "8 am" do
   rake "marketing_automation:getting_started"
 end
 
-every :tuesday, at: "9 am" do
+# every hour on a Tuesday
+every "0 * * * 2" do
   rake "post_digests:deliver"
 end
