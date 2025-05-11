@@ -59,7 +59,7 @@
   <%= form_with url: app_settings_user_path(@user), model: @user, method: :patch, class: "mt-4" do |form| %>
     <div class="mt-6 sm:flex items-center">
       <div>
-        <%= form.label :timezone, "Timezone", class: "sr-only" %>
+        <%= form.label :timezone, "Time Zone", class: "sr-only" %>
         <%= form.time_zone_select :timezone, nil,
               { default: Current.user.timezone },
               { class: "w-full md:w-96 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" } %>
