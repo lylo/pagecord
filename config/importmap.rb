@@ -13,3 +13,4 @@ pin "spotify", to: "embeds/spotify.js"
 pin "strava", to: "embeds/strava.js"
 pin "youtube", to: "embeds/youtube.js"
 pin "media_site", to: "embeds/media_site.js"
+pin "local-time" # @3.0.3

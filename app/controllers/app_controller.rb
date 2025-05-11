@@ -4,6 +4,7 @@ class AppController < ApplicationController
   include Authorization
 
   before_action :load_user, :onboarding_check
+  around_action :set_timezone, if: -> { Current.user.present? }
 
   private
 
@@ -17,5 +18,9 @@ class AppController < ApplicationController
       unless @user&.onboarding_complete?
         redirect_to app_onboarding_path
       end
+    end
+
+    def set_timezone(&block)
+      Time.use_zone(Current.user.timezone, &block)
     end
 end

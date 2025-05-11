@@ -224,4 +224,24 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel='apple-touch-icon'][href*='/assets/apple-touch-icon']"
     assert_select "link[rel='icon'][type='image/svg+xml'][href*='/assets/favicon']"
   end
+
+  test "post published_at is stored and rendered correctly in UTC" do
+    user = users(:joel)
+    user.update!(timezone: "Hawaii")
+
+    Time.use_zone(user.timezone) do
+      midnight_in_hawaii = Time.zone.parse("2025-05-11 00:00:00")
+      post = user.blog.posts.create!(
+        content: "Time Zone Test",
+        published_at: midnight_in_hawaii
+      )
+
+      # middnight_in_hawaii is 10:00 UTC
+      assert_equal Time.utc(2025, 5, 11, 10), post.published_at
+    end
+
+    get post_path(Post.last)
+
+    assert_select "time[datetime='2025-05-11T10:00:00Z']"
+  end
 end

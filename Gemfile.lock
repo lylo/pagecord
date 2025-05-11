@@ -222,6 +222,7 @@ GEM
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
     lint_roller (1.1.0)
+    local_time (3.0.3)
     logger (1.7.0)
     loofah (2.24.0)
       crass (~> 1.0.2)
@@ -468,6 +469,7 @@ DEPENDENCIES
   jbuilder
   kredis (~> 1.7)
   letter_opener
+  local_time
   loops_sdk
   mocha
   nanoid (~> 2.0)

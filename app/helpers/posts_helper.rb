@@ -18,4 +18,8 @@ module PostsHelper
   def social_link_url(social_link)
     social_link.url
   end
+
+  def published_at_date_format
+    "%b %d, %Y"
+  end
 end

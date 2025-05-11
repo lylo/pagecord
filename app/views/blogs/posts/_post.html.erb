@@ -3,9 +3,9 @@
 
   <%= render "post_content", post: post %>
 
-  <div class="flex justify-between items-center my-4 text-slate-400 text-sm" title="<%= post.published_at.to_formatted_s(:long) %>">
+  <div class="flex justify-between items-center my-4 text-slate-400 text-sm">
     <%= link_to post_path(post), class: "no-underline my-4 text-slate-400 font-normal", data: { turbo_frame: "_top" } do %>
-      <%= post.published_at.to_date.to_formatted_s(:long) %>
+      <%= local_time post.published_at, published_at_date_format %>
     <% end %>
 
     <% if @user.subscribed? %>

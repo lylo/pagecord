@@ -92,7 +92,7 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     end
 
     def paddle_signature_for(payload)
-      ts = Time.now.to_i.to_s
+      ts = Time.current.to_i.to_s
       signed_payload = "#{ts}:#{payload}"
 
       paddle_config = Rails.application.config_for(:paddle)

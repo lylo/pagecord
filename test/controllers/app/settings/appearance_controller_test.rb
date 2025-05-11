@@ -80,7 +80,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
       patch app_settings_appearance_url(@blog), params: {
           blog: {
             social_links_attributes: {
-              "#{Time.now.to_i}": { platform: "X", url: "https://x.com/whatever" }
+              "#{Time.current.to_i}": { platform: "X", url: "https://x.com/whatever" }
             }
           }
         }, as: :turbo_stream
@@ -92,7 +92,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
       patch app_settings_appearance_url(@blog), params: {
           blog: {
             social_links_attributes: {
-              "#{Time.now.to_i}": { platform: "pagecord", url: "https://pagecord.com/whatever" }
+              "#{Time.current.to_i}": { platform: "pagecord", url: "https://pagecord.com/whatever" }
             }
           }
         }, as: :turbo_stream

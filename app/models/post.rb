@@ -60,6 +60,14 @@ class Post < ApplicationRecord
     end
   end
 
+  def timezone
+    blog.user.timezone
+  end
+
+  def published_at_in_user_timezone
+    published_at.in_time_zone(timezone)
+  end
+
   private
 
     def set_published_at
