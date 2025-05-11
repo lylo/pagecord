@@ -1,4 +1,4 @@
-<%= form_with url: signups_path, model: @user, data: { turbo: "false" }, class: "mt-4" do |form| %>
+<%= form_with url: signups_path, model: @user, data: { controller: "timezone", turbo: "false" }, class: "mt-4" do |form| %>
   <div class="flex">
     <div class="font-semibold">pagecord.com/</div>
      <%= form.fields_for :blog do |blog_form| %>
@@ -9,6 +9,7 @@
   <div class="mt-4">
     <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "p-0 m-0 border-none bg-inherit outline-none focus:ring-0" %>
     <%= render "/shared/spam_prevention" %>
+    <%= form.hidden_field :timezone, data: { timezone_target: "timeZone" } %>
   </div>
 
   <% if ENV["TURNSTILE_ENABLED"] && !Rails.env.development? %>

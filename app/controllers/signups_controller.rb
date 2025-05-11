@@ -34,7 +34,7 @@ class SignupsController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :marketing_consent, blog_attributes: [ :name ])
+      params.require(:user).permit(:email, :timezone, :marketing_consent, blog_attributes: [ :name ])
     end
 
     def valid_turnstile_token?(token)

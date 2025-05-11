@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_05_06_000001) do
+ActiveRecord::Schema[8.1].define(version: 2025_05_11_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -268,6 +268,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_06_000001) do
     t.string "email", null: false
     t.boolean "marketing_consent", default: false, null: false
     t.string "onboarding_state", default: "account_created"
+    t.string "timezone", default: "UTC", null: false
     t.datetime "updated_at", null: false
     t.boolean "verified", default: false
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
