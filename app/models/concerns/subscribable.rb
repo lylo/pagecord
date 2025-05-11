@@ -7,7 +7,7 @@ module Subscribable
   end
 
   def subscribed?
-    subscription.present?
+    subscription&.active?
   end
 
   def lapsed?

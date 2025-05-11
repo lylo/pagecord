@@ -19,22 +19,20 @@
     </div>
   </div>
 
-  <% if current_features.enabled?(:replies) %>
-    <div class="mt-6">
-      <div class="flex gap-3">
-        <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :reply_by_email, { checked: @blog.reply_by_email, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
-        </div>
-        <div>
-          <%= form.label :reply_by_email, "Allow replies by email", class: "text-slate-800 dark:text-slate-100" %>
-          <p class="text-slate-500 text-sm">
-            Allow readers to reply to your posts via a contact
-      form. You will receive an email with the reply. Your email address is not revealed.
-          </p>
-        </div>
+  <div class="mt-6">
+    <div class="flex gap-3">
+      <div class="flex h-6 shrink-0 items-center">
+        <%= form.check_box :reply_by_email, { checked: @blog.reply_by_email, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+      </div>
+      <div>
+        <%= form.label :reply_by_email, "Allow replies by email", class: "text-slate-800 dark:text-slate-100" %>
+        <p class="text-slate-500 text-sm">
+          Allow readers to reply to your posts via a contact
+    form. You will receive an email with the reply. Your email address is not revealed.
+        </p>
       </div>
     </div>
-  <% end %>
+  </div>
 
   <div class="mt-12 flex items-cente pt-4 border-t border-t-slate-200 dark:border-slate-600">
     <%= form.submit "Update", class: "btn-primary" %>

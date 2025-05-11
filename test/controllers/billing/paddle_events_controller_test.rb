@@ -88,6 +88,12 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
       data = JSON.parse(json_payload)
       data["data"]["custom_data"] ||= {}
       data["data"]["custom_data"]["user_id"] = user.id
+
+      # Set next_billed_at to be 1 month from now
+      if data["data"]["next_billed_at"]
+        data["data"]["next_billed_at"] = 1.month.from_now.iso8601
+      end
+
       data
     end
 
