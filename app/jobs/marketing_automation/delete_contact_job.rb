@@ -3,13 +3,13 @@ class MarketingAutomation::DeleteContactJob < ApplicationJob
 
   def perform(user_id)
     if user = User.find(user_id)
-      unsubscribe_to_pagecord_blog(user)
+      unsubscribe_from_pagecord_blog(user)
     end
   end
 
   private
 
-    def unsubscribe_to_pagecord_blog(user)
+    def unsubscribe_from_pagecord_blog(user)
       if pagecord = Blog.find_by(name: "pagecord")
         pagecord.email_subscribers.find_by(email: user.email)&.destroy
       end
