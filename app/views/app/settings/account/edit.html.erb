@@ -45,15 +45,15 @@
   <% end %>
 </div>
 
-<h3 class="mb-4 font-bold text-xl">Timezone</h3>
+<h3 class="mb-4 font-bold text-xl">Time Zone</h3>
 
 <div class="mb-12">
   <p class="mb-4">
-    Your current timezone is <strong><%= Current.user.timezone || "UTC" %></strong>.
+    Your current time zone is <strong><%= Current.user.timezone || "UTC" %></strong>.
   </p>
 
   <p class="mb-4">
-    Select your timezone to display dates and times in your local time.
+    Select your time zone to display dates and times in your local time.
   </p>
 
   <%= form_with url: app_settings_user_path(@user), model: @user, method: :patch, class: "mt-4" do |form| %>
