@@ -35,6 +35,10 @@ module RoutingHelper
     route_for_blog(blog, "blog_feed_xml", "path")
   end
 
+  def rss_feed_url(blog)
+    route_for_blog(blog, "blog_feed_xml", "url")
+  end
+
   def sitemap_url_for(blog)
     route_for_blog(blog, "blog_sitemap", "url")
   end
