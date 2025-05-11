@@ -8,9 +8,7 @@ module ApplicationHelper
     elsif @blog.present?
       blog_description(@blog)
     else
-      "Pagecord is a digital scrapbook for your thoughts and ideas. It's a microblog, a journal
-      and an email newsletter all in one. Effortlessly publish posts using email or the Pagecord app. People can
-      can follow along using RSS or subscribe to get your posts in a weekly email. Sign up for FREE today!"
+      "A better blog for a better internet. Pagecord is a blog, a microblog and an email newsletter all in one. It's an independent home for your thoughts and ideas. The perfect antidote to social media. Effortlessly publish using email or the Pagecord editor. People can follow along using RSS or subscribe to get your posts in an automated weekly email digest."
     end
   end
 
@@ -34,7 +32,7 @@ module ApplicationHelper
     elsif @blog
       blog_title(@blog)
     else
-      "Pagecord - a digital scrapbook for your thoughts and ideas"
+      "Pagecord - A better blog for a better internet"
     end
   end
 
