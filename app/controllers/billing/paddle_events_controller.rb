@@ -54,7 +54,7 @@ module Billing
       def process_event(event)
         PaddleEvent.create!(user: @user, payload: params)
 
-        Rails.logger.info "Paddle #{event} for @#{@user.id}"
+        Rails.logger.info "Paddle #{event} for user #{@user.id}"
 
         method_name = event.gsub(".", "_")
         send(method_name) if respond_to?(method_name, true)
