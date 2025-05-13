@@ -13,7 +13,10 @@ class Blogs::EmailSubscribers::UnsubscribesController < ApplicationController
   private
 
     def load_subscriber
-      @subscriber = EmailSubscriber.find_by(token: params[:token])
-      @blog = @subscriber.blog
+      if @subscriber = EmailSubscriber.find_by(token: params[:token])
+        @blog = @subscriber.blog
+      else
+        redirect_to root_path, alert: "No email subscription found" and return
+      end
     end
 end
