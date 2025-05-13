@@ -51,6 +51,13 @@ export default class extends Controller {
         } else {
           urlInput.value = ""
         }
+        
+        // Update placeholder text based on platform
+        if (newPlatform === "Email") {
+          urlInput.placeholder = "Enter your email address"
+        } else {
+          urlInput.placeholder = "Enter full URL e.g. https://example.com"
+        }
       }
     }
   }
