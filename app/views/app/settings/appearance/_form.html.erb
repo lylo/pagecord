@@ -56,7 +56,9 @@
     <%= form.file_field :avatar, class: "hidden", accept: "image/jpeg, image/png, image/webp", data: { avatar_target: "input" } %>
   <% end %>
 
-  <div class="mt-8" data-controller="social-links">
+  <div class="mt-8" data-controller="social-links"
+       data-social-links-rss-feed-url-value="<%= rss_feed_url(Current.user.blog) %>"
+       data-social-links-platform-urls-value="<%= @blog.social_links.map { |sl| [sl.platform, sl.url] }.to_h.to_json %>">
     <h3 class="font-bold text-lg mb-2">Social Links</h3>
     <p>
       Add links to your social profiles to display them on your Pagecord.
