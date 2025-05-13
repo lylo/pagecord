@@ -2,7 +2,10 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["addLink", "template", "platform" ]
-  static values = { rssFeedUrl: { type: String } }
+  static values = {
+    rssFeedUrl: { type: String },
+    platformUrls: { type: Object, default: {} }
+  }
 
   addLink(event) {
     event.preventDefault()
@@ -22,14 +25,29 @@ export default class extends Controller {
   handlePlatformChange(event) {
     const platformSelect = event.target
     const platformId = platformSelect.id
+    const newPlatform = platformSelect.value
 
     if (platformId) {
       const urlId = platformId.replace("_platform", "_url")
       const urlInput = document.getElementById(urlId)
 
       if (urlInput) {
-        if (platformSelect.value === "RSS") {
+        // Before changing the URL input value, save the current one with its platform
+        const oldPlatform = event.target.dataset.previousPlatform
+        if (oldPlatform && urlInput.value) {
+          const updatedUrls = { ...this.platformUrlsValue }
+          updatedUrls[oldPlatform] = urlInput.value
+          this.platformUrlsValue = updatedUrls
+        }
+
+        // Store the new platform value for next change
+        event.target.dataset.previousPlatform = newPlatform
+
+        // Set the appropriate URL value
+        if (newPlatform === "RSS") {
           urlInput.value = this.rssFeedUrlValue
+        } else if (this.platformUrlsValue[newPlatform]) {
+          urlInput.value = this.platformUrlsValue[newPlatform]
         } else {
           urlInput.value = ""
         }
