@@ -21,7 +21,7 @@
           <% if @user.discarded? %>
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Cancelled</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.discarde_at %></td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.discarded_at %></td>
           </tr>
           <% end %>
           <tr>
@@ -112,13 +112,13 @@
   </div>
 </div>
 
-  <div class="flex justify-between mt-16 py-4">
+  <div class="flex flex-col sm:flex-row justify-between mt-16 py-4">
   <div>
   <%= link_to "← Back to Stats", admin_stats_path, class: "px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded" %>
   </div>
 
   <% unless @user == Current.user %>
-  <div class="flex justify-end space-x-4 items-center">
+  <div class="flex mt-8 sm:mt-0 justify-end space-x-4 items-center">
     <%= button_to admin_user_path(@user), method: :delete,
         class: "px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer",
         data: { confirm: "Are you sure you want to cancel this account?" } do %>
