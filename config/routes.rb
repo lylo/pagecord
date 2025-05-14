@@ -126,7 +126,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :stats, only: [ :index ]
     resources :posts, only: [ :index ]
-    resources :users, only: [ :destroy ]
+    resources :users, only: [ :show, :destroy ]
   end
 
   shared_blog_routes = lambda do
