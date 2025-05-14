@@ -225,6 +225,34 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel='icon'][type='image/svg+xml'][href*='/assets/favicon']"
   end
 
+  test "should render upvotes for a subscriber" do
+    blog = blogs(:joel)
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "turbo-frame[id^='upvotes_post_']"
+  end
+
+  test "should not render upvotes for a non-subscriber" do
+    blog = blogs(:vivian)
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "turbo-frame[id^='upvotes_post_']", count: 0
+  end
+
+  test "should not render upvotes if show_upvotes is false" do
+    blog = blogs(:joel)
+    blog.update!(show_upvotes: false)
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "turbo-frame[id^='upvotes_post_']", count: 0
+  end
+
   test "post published_at is stored and rendered correctly in UTC" do
     user = users(:joel)
     user.update!(timezone: "Hawaii")

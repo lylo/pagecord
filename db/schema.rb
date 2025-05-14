@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_05_11_000001) do
+ActiveRecord::Schema[8.1].define(version: 2025_05_14_105147) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -94,6 +94,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_11_000001) do
     t.integer "layout", default: 0
     t.string "name", null: false
     t.boolean "reply_by_email", default: false, null: false
+    t.boolean "show_upvotes", default: true, null: false
     t.string "theme", default: "base", null: false
     t.string "title"
     t.datetime "updated_at", null: false

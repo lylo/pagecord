@@ -19,8 +19,10 @@
           <% end %>
         <% end %>
 
-        <%= turbo_frame_tag dom_id(post, :upvotes) do %>
-          <%= render "upvotes", post: post %>
+        <% if @user.blog.show_upvotes? %>
+          <%= turbo_frame_tag dom_id(post, :upvotes) do %>
+            <%= render "upvotes", post: post %>
+          <% end %>
         <% end %>
       </div>
     <% end %>

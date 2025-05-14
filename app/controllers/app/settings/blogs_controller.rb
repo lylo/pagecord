@@ -33,7 +33,8 @@ class App::Settings::BlogsController < AppController
       permitted_params << [
         :custom_domain,
         :email_subscriptions_enabled,
-        :reply_by_email
+        :reply_by_email,
+        :show_upvotes
       ] if @blog.user.subscribed?
 
       params.require(:blog).permit(permitted_params)
