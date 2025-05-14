@@ -8,7 +8,7 @@ module ApplicationHelper
     elsif @blog.present?
       blog_description(@blog)
     else
-      "A better blog for a better internet. Pagecord is a blog, a microblog and an email newsletter all in one. It's an independent home for your thoughts and ideas. The perfect antidote to social media. Effortlessly publish using email or the Pagecord editor. People can follow along using RSS or subscribe to get your posts in an automated weekly email digest."
+      "The best free blogging platform for the small web. Publish your writing effortlessly, via email or editor. RSS, email newsletter, and more. Get started for free!"
     end
   end
 
@@ -32,7 +32,7 @@ module ApplicationHelper
     elsif @blog
       blog_title(@blog)
     else
-      "Pagecord - A better blog for a better internet"
+      "The best free blogging platform for the small web. Publish your writing effortlessly. All you need is email."
     end
   end
 
