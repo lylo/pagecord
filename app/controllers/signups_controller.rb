@@ -1,5 +1,5 @@
 class SignupsController < ApplicationController
-  include SpamPrevention
+  include SpamPrevention, TimezoneTranslation
 
   layout "sessions"
 
@@ -34,7 +34,14 @@ class SignupsController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :timezone, :marketing_consent, blog_attributes: [ :name ])
+      raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, blog_attributes: [ :name ])
+      translate_timezone_param(raw_params)
+    end
+
+    def translate_timezone_param(params)
+      params[:timezone] = active_support_time_zone_from_iana(params[:timezone]) if params[:timezone].present?
+
+      params
     end
 
     def valid_turnstile_token?(token)
