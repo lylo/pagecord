@@ -119,14 +119,35 @@ module Billing
         Rails.logger.info "Subscription past due"
       end
 
+      # Called when a payment is successfully processed (either a new subscription or a renewal)
+      # Use this method to update the next billing date
       def transaction_completed
-        # No-op
-        Rails.logger.info "Transaction completed"
+        Rails.logger.info "Transaction completed. Updating next_billed_at"
+
+        billing_period_ends_at = if data.billing_period.present?
+          data.billing_period.ends_at
+        else
+          nil
+        end
+
+        unless billing_period_ends_at.present?
+          Rails.logger.error "No next_billed_at in transaction_completed event"
+          raise "No next_billed_at in transaction_completed event for #{@user.id} (#{@user.blog.name})"
+        end
+
+        if @subscription.present?
+          next_billed_at = Time.parse(billing_period_ends_at)
+          @subscription.update!(next_billed_at: next_billed_at)
+
+          Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}"
+        else
+          raise "Subscription not found for transaction_completed event for #{@user.id} (#{@user.blog.name})"
+        end
       end
 
       def transaction_payment_failed
-        # No-op
         Rails.logger.info "Transaction payment failed"
+        raise "Payment failed for user #{@user.id} (#{@user.blog.name})"
       end
 
       def data

@@ -83,6 +83,7 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   config.hosts += [ "myblog.net", "annie.blog" ]
+  config.hosts << "ant-evolved-equally.ngrok-free.app"
 end
 
 Rails.application.routes.default_url_options[:host] = "localhost:3000"
