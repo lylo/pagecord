@@ -124,7 +124,7 @@
             class: "px-4 py-2 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer" do %>
           Restore
         <% end %>
-    <% else %>
+    <% elsif !@user.subscribed? %>
       <div class="flex mt-8 sm:mt-0 justify-end space-x-4 items-center">
         <%= button_to admin_user_path(@user), method: :delete,
             class: "px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer",
