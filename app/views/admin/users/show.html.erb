@@ -128,13 +128,13 @@
       <div class="flex mt-8 sm:mt-0 justify-end space-x-4 items-center">
         <%= button_to admin_user_path(@user), method: :delete,
             class: "px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer",
-            data: { confirm: "Are you sure you want to cancel this account?" } do %>
-          Cancel
+            data: { turbo_confirm: "Are you sure you want to cancel this account?" } do %>
+          Cancel Account
         <% end %>
 
         <%= button_to admin_user_path(@user), method: :delete,
             class: "px-4 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded cursor-pointer",
-            data: { confirm: "Are you sure you want to mark this account as spam? This will cancel the account and remove it from all mailing lists." } do %>
+            data: { turbo_confirm: "Are you sure you want to mark this account as spam? This will cancel the account and remove it from all mailing lists." } do %>
           <%= hidden_field_tag :spam, true %>
           Mark as Spam
         <% end %>
