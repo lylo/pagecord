@@ -79,11 +79,11 @@
     <table class="w-full text-base p-0 m-0">
       <thead>
         <tr>
-          <th class="text-left w-1/2 md:w-3/5"></th>
-          <th class="text-xl text-center">
+          <th class="text-left"></th>
+          <th class="text-xl w-24 md:w-40 text-center">
             Classic
           </th>
-          <th class="text-xl text-center">
+          <th class="text-xl w-24 md:w-40 text-center">
             Premium
           </th>
         </tr>
@@ -94,7 +94,7 @@
             FREE!
           </th>
           <th class="text-center align-top ">
-            <span class="font-normal text-base py-1 px-2 text-slate-600 dark:bg-slate-600 dark:text-slate-300 rounded">Only <b>$<%= Subscription.price %> per year!</b></span>
+            <span class="font-normal text-base py-1 sm:px-2 text-slate-600 dark:bg-slate-600 dark:text-slate-300 rounded">Only <b>$<%= Subscription.price %> per year!</b></span>
           </th>
         </tr>
       </thead>
@@ -103,7 +103,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Number of posts</div>
-            <div class="">Write as many posts as you like. Your blog app should never hold you back 🚀</div>
+            <div class="hidden sm:block">Write as many posts as you like. Your blog app should never hold you back 🚀</div>
           </td>
           <td class="text-center align-middle text-base">Unlimited</td>
           <td class="text-center align-middle text-base">Unlimited</td>
@@ -111,7 +111,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Write by email</div>
-            <div class="">Publishing is as simple as sending an email. Rich text is fully supported 💌</div>
+            <div class="hidden sm:block">Publishing is as simple as sending an email. Rich text is fully supported 💌</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -119,7 +119,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Online editor</div>
-            <div class="">Use a rich text editor if you prefer a traditional blogging experience 👩‍💻</div>
+            <div class="hidden sm:block">Use a rich text editor if you prefer a traditional blogging experience 👩‍💻</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -127,7 +127,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Long-form writing</div>
-            <div class="">Write long-form articles or microblog your thoughts. Both look fantastic 🎨</div>
+            <div class="hidden sm:block">Write long-form articles or microblog your thoughts. Both look fantastic 🎨</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -135,7 +135,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Media Embeds</div>
-            <div class="">Links to YouTube, Spotify and Bandcamp are automatically embedded. Great for sharing your favourite tunes and videos 🎧 📺</div>
+            <div class="hidden sm:block">Links to YouTube, Spotify and Bandcamp are automatically embedded. Great for sharing your favourite tunes and videos 🎧 📺</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -143,7 +143,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Follow your friends</div>
-            <div class="">Pagecord is social! Follow other Pagecord blogs and see the latest articles in your personal feed 🤝</div>
+            <div class="hidden sm:block">Pagecord is social! Follow other Pagecord blogs and see the latest articles in your personal feed 🤝</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -151,7 +151,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">RSS feeds</div>
-            <div class="">Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</div>
+            <div class="hidden sm:block">Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -159,7 +159,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Full Site Export</div>
-            <div class="">Export your entire Pagecord blog to a delightfully retro set of HTML files and images 💾</div>
+            <div class="hidden sm:block">Export your entire Pagecord blog to a delightfully retro set of HTML files and images 💾</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -167,9 +167,9 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Email newsletter</div>
-            <div class="">Readers can sign up to receive a weekly email digest of your posts 📬</div>
-            <br>
-            <span class="text-xs">(100 subscriber limit. More for <a href="/faq#subscribers">an additional fee</a>)</span>
+            <div class="hidden sm:block">Readers can sign up to receive a weekly email digest of your posts 📬
+            <br><span class="text-xs">(100 subscriber limit. More for <a href="/faq#subscribers">an additional fee</a>)</br>
+            </div>
           </td>
           <td class="text-center align-middle text-xl"></td>
           <td class="text-center align-middle text-xl">
@@ -180,7 +180,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Reply by email</div>
-            <div class="">Readers reply to your posts by email. Your email address is never revealed!</div>
+            <div class="hidden sm:block">Readers reply to your posts by email. Your email address is never revealed!</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -189,7 +189,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Image Attachments</div>
-            <div class="">Attach images to your posts, as email attachments or using the editor 🖼️</div>
+            <div class="hidden sm:block">Attach images to your posts, as email attachments or using the editor 🖼️</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -198,7 +198,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Post Likes</div>
-            <div class="">Visitors can 'like' your posts. You track the stats in the app ❤️</div>
+            <div class="hidden sm:block">Visitors can 'like' your posts. You track the stats in the app ❤️</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -207,7 +207,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Avatar</div>
-            <div class="">Add a touch of your own personality while retaining that classic Pagecord minimal look 🧑‍🎨</div>
+            <div class="hidden sm:block">Add a touch of your own personality while retaining that classic Pagecord minimal look 🧑‍🎨</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -216,7 +216,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Custom Domains</div>
-            <div class="">If you'd prefer to use you own domain name for your site, set it up in one click 🌐</div>
+            <div class="hidden sm:block">If you'd prefer to use you own domain name for your site, set it up in one click 🌐</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -225,7 +225,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Warm fuzzy feels</div>
-            <div class="">Feel great about supporting an independent open source business 😊</div>
+            <div class="hidden sm:block">Feel great about supporting an independent open source business 😊</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
