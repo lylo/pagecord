@@ -20,4 +20,15 @@ class Admin::UsersController < AdminController
 
     redirect_to admin_stats_path
   end
+
+  def restore
+    @user = User.find(params[:id])
+
+    if @user.discarded?
+      @user.undiscard!
+      flash[:notice] = "User was successfully restored"
+    end
+
+    redirect_to admin_stats_path
+  end
 end
