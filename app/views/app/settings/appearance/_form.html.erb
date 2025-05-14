@@ -79,6 +79,23 @@
     <% end %>
   </div>
 
+  <% if @blog.user.subscribed? %>
+    <h3 class="mt-8 font-bold text-lg mb-4">Branding</h3>
+
+    <div class="flex gap-3">
+      <div class="flex h-6 shrink-0 items-center">
+        <%= form.check_box :show_branding, { checked: @blog.show_branding, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+      </div>
+      <div>
+        <%= form.label :show_branding, "Show Pagecord branding", class: "text-slate-800 dark:text-slate-100" %>
+        <p class="text-slate-500 text-sm">
+          When checked, the Pagecord logo will be displayed at the bottom of each page on your blog. Please consider
+          keeping this on to help spread the word about Pagecord!
+        </p>
+      </div>
+    </div>
+  <% end %>
+
   <div class="mt-12 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4">
     <%= form.submit "Update", class: "btn-primary" %>
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>

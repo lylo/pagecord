@@ -20,8 +20,10 @@ class App::Settings::AppearanceController < AppController
         social_links_attributes: [ :id, :platform, :url, :_destroy ]
       ]
 
-      # Only allow avatar updates for subscribed users
-      permitted_params << :avatar if @blog.user.subscribed?
+      permitted_params << [
+        :avatar,
+        :show_branding
+       ] if @blog.user.subscribed?
 
       params.require(:blog).permit(permitted_params)
     end

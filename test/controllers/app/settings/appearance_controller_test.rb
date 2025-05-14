@@ -56,6 +56,26 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_equal "title_layout", @blog.reload.layout
   end
 
+  test "should update show branding flag for subscriber" do
+    patch app_settings_appearance_url(@blog), params: { blog: { show_branding: false } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_not @blog.reload.show_branding
+    assert_select "input#blog_show_branding[checked]", false
+  end
+
+  test "should not update show branding flag for non-subscriber" do
+    @user = users(:vivian)
+    login_as @user
+    @blog = @user.blog
+
+    patch app_settings_appearance_url(@blog), params: { blog: { show_branding: false } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert @blog.reload.show_branding
+    assert_select "input#blog_show_branding", false
+  end
+
   test "should update avatar if subscribed" do
     file = fixture_file_upload("avatar.png", "image/png")
     patch app_settings_appearance_url(@blog), params: { blog: { avatar: file } }, as: :turbo_stream

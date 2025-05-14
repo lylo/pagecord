@@ -272,4 +272,23 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "time[datetime='2025-05-11T10:00:00Z']"
   end
+
+  test "should pagecord branding" do
+    blog = blogs(:joel)
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "footer a[id=brand]", count: 1
+  end
+
+  test "should hide pagecord branding when show_branding off" do
+    blog = blogs(:joel)
+    blog.update!(show_branding: false)
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "footer a[id=brand]", count: 0
+  end
 end
