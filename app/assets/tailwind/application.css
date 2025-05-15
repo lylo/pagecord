@@ -74,14 +74,18 @@
     }
   }
 
+  .blog {
+    .prose {
+      @apply !max-w-none;
+    }
+  }
+
   .prose {
     /* Your existing prose styles */
     /* Override Tailwind prose which wraps code in backticks */
     code:before, code:after {
       content: "";
     }
-
-    @apply !max-w-none;
 
     img {
       @apply !mt-2 !mb-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
