@@ -21,7 +21,7 @@ module DomainConstraints
     elsif Rails.env.test?
       request.host !~ /\.example\.com/ && request.host != "127.0.0.1"  # 127.0.0.1 used by Capybara
     else
-      request.host != "localhost"
+      ![ "localhost", "ant-evolved-equally.ngrok-free.app" ].include?(request.host)
     end
   end
 
