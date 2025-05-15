@@ -37,7 +37,7 @@
       }
 
       .post-footer {
-        a {
+        time {
           @apply text-sm !text-[var(--color-text-tertiary)];
         }
 
@@ -56,8 +56,7 @@
       }
     }
 
-    /* ---- PROSE ---- */
-    .prose {
+    article.prose {
       @apply !max-w-none !text-[var(--color-text-primary)];
 
       a {
@@ -67,30 +66,27 @@
       strong {
         @apply !text-[var(--color-text-primary)];
       }
-    }
 
-    .prose .text-subtle,
-    .prose.text-subtle {
-      @apply !text-[var(--color-text-secondary)];
-    }
+      ol, ul {
+        @apply ml-5;
+        list-style-position: outside !important;
+      }
 
-    .prose h1,
-    .prose h2,
-    .prose h3,
-    .prose h4 {
-      @apply !text-[var(--color-text-heading)];
-    }
+      blockquote {
+        @apply !my-2 !text-[var(--color-text-secondary)] border-l-[var(--color-ui-border)];
+      }
 
-    .prose blockquote {
-      @apply !text-[var(--color-text-secondary)] border-l-[var(--color-ui-border)];
-    }
+      code {
+        @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text-primary)] px-1 py-0.5 rounded-sm;
+      }
 
-    .prose code {
-      @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text-primary)] px-1 py-0.5 rounded-sm;
-    }
+      pre {
+        @apply !my-2 !bg-[var(--color-bg-sunken)] !text-[var(--color-text-primary)];
+      }
 
-    .prose pre {
-      @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text-primary)];
+      h1, h2, h3, h4 {
+        @apply !text-[var(--color-text-heading)];
+      }
     }
 
 

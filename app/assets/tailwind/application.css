@@ -54,46 +54,7 @@
   }
 }
 
-/* Rest of your CSS... */
 @layer base {
-
-  .prose {
-    /* Your existing prose styles */
-    /* Override Tailwind prose which wraps code in backticks */
-    code:before, code:after {
-      content: "";
-    }
-
-    img {
-      @apply !mt-2 !mb-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
-    }
-
-    blockquote {
-      @apply !my-2;
-    }
-
-    pre {
-      @apply !my-2 text-wrap;
-
-      /* a {
-        @apply !text-white;
-      }
-
-      strong {
-        @apply !text-white;
-      } */
-    }
-
-    ol, ul {
-      @apply ml-5;
-      list-style-position: outside !important;
-    }
-  }
-
-  blockquote {
-    @apply !my-2;
-  }
-
   trix-toolbar {
     position: sticky;
     top: 0;
