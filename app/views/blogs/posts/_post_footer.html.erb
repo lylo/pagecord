@@ -1,0 +1,24 @@
+<div class="post-footer not-prose flex justify-between items-center my-4 text-sm">
+  <%= link_to post_path(post), class: "no-underline my-4 font-normal", data: { turbo_frame: "_top" } do %>
+    <%= local_time post.published_at, published_at_date_format %>
+  <% end %>
+
+  <% if @user.subscribed? %>
+    <div class="flex items-center gap-x-2">
+      <% if @user.blog.reply_by_email %>
+        <%= link_to new_post_reply_path_for(post),
+                  title: "Reply to this post via email",
+                  data: { turbo_frame: "_top" },
+                  class: "flex" do %>
+          <%= inline_svg_tag "icons/reply.svg", class: "reply-by-email cursor-pointer w-5 h-5" %>
+        <% end %>
+      <% end %>
+
+      <% if @user.blog.show_upvotes? %>
+        <%= turbo_frame_tag dom_id(post, :upvotes) do %>
+          <%= render "upvotes", post: post %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

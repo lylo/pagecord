@@ -97,11 +97,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_14_111136) do
     t.boolean "show_branding", default: true, null: false
     t.boolean "show_upvotes", default: true, null: false
     t.string "theme", default: "base", null: false
-    t.string "theme", default: "base", null: false
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.string "width", default: "standard", null: false
     t.string "width", default: "standard", null: false
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["name"], name: "index_blogs_on_name", unique: true

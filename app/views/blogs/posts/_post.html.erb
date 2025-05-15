@@ -1,30 +1,7 @@
-<article class="article-content prose overflow-auto break-words">
+<article class="prose overflow-auto break-words">
   <%= render "post_title", post: post %>
 
   <%= render "post_content", post: post %>
 
-  <div class="flex justify-between items-center my-4 text-slate-400 text-sm">
-    <%= link_to post_path(post), class: "no-underline my-4 text-slate-400 font-normal", data: { turbo_frame: "_top" } do %>
-      <%= local_time post.published_at, published_at_date_format %>
-    <% end %>
-
-    <% if @user.subscribed? %>
-      <div class="flex items-center gap-x-2">
-        <% if @user.blog.reply_by_email %>
-          <%= link_to new_post_reply_path_for(post),
-                    title: "Reply to this post via email",
-                    data: { turbo_frame: "_top" },
-                    class: "flex" do %>
-            <%= inline_svg_tag "icons/reply.svg", class: "cursor-pointer dark:text-slate-500 text-slate-300   hover:text-slate-400 w-5 h-5" %>
-          <% end %>
-        <% end %>
-
-        <% if @user.blog.show_upvotes? %>
-          <%= turbo_frame_tag dom_id(post, :upvotes) do %>
-            <%= render "upvotes", post: post %>
-          <% end %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
+  <%= render "post_footer", post: post %>
 </article>

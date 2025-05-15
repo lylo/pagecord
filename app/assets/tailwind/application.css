@@ -56,22 +56,6 @@
 
 /* Rest of your CSS... */
 @layer base {
-  /* Your existing base styles */
-  article {
-    h1:not(.title) {
-      @apply !text-2xl mb-0;
-
-      strong {
-        @apply font-bold;
-      }
-    }
-  }
-
-  .blog {
-    .prose {
-      @apply !max-w-none;
-    }
-  }
 
   .prose {
     /* Your existing prose styles */
@@ -91,21 +75,13 @@
     pre {
       @apply !my-2 text-wrap;
 
-      a {
+      /* a {
         @apply !text-white;
       }
 
       strong {
         @apply !text-white;
-      }
-    }
-
-    h1 {
-      @apply !mb-0;
-    }
-
-    h1.title {
-      @apply !text-3xl !mb-8;
+      } */
     }
 
     ol, ul {

@@ -6,18 +6,141 @@
 
 
   .blog {
+    /* ---- BLOG HEADER  ---- */
     header {
       @apply mt-4 mb-8 pb-6 border-b border-[var(--color-ui-border)];
     }
-  }
 
-  .bio {
-    @apply mt-4 text-sm prose text-[var(--color-text-secondary)] break-words;
+    .bio {
+      @apply mt-4 text-sm prose text-[var(--color-text-secondary)] break-words;
 
-    a {
-      @apply text-[var(--color-accent-primary)] underline;
+      a {
+        @apply text-[var(--color-accent-primary)] underline;
+      }
+
+      .blog-title {
+        @apply !text-[var(--color-text-heading)];
+      }
+    }
+
+
+    /* ---- BLOG POST  ---- */
+    article {
+      @apply text-[var(--color-text-primary)];
+
+      h1.post-title {
+        @apply !text-3xl !mb-8;
+      }
+
+      h1:not(.post-title) {
+        @apply !text-2xl !mb-0;
+      }
+
+      .post-footer {
+        a {
+          @apply text-sm !text-[var(--color-text-tertiary)];
+        }
+
+        .upvote-icon, .reply-by-email  {
+          @apply !text-[var(--color-text-tertiary-muted)];
+        }
+
+        .upvote-icon:hover, .reply-by-email:hover {
+          @apply !text-[var(--color-text-tertiary)];
+        }
+
+        .upvote-icon-active,
+        .upvote-icon-active:hover {
+          @apply !text-red-500;
+        }
+      }
+    }
+
+    /* ---- PROSE ---- */
+    .prose {
+      @apply !max-w-none !text-[var(--color-text-primary)];
+
+      a {
+        @apply !text-[var(--color-accent-primary)] underline;
+      }
+
+      strong {
+        @apply !text-[var(--color-text-primary)];
+      }
+    }
+
+    .prose .text-subtle,
+    .prose.text-subtle {
+      @apply !text-[var(--color-text-secondary)];
+    }
+
+    .prose h1,
+    .prose h2,
+    .prose h3,
+    .prose h4 {
+      @apply !text-[var(--color-text-heading)];
+    }
+
+    .prose blockquote {
+      @apply !text-[var(--color-text-secondary)] border-l-[var(--color-ui-border)];
+    }
+
+    .prose code {
+      @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text-primary)] px-1 py-0.5 rounded-sm;
+    }
+
+    .prose pre {
+      @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text-primary)];
+    }
+
+
+    /* Email subscription form component */
+    .email-subscription-form {
+      @apply mt-6 mb-2 p-4 rounded-lg w-[450px] mx-auto text-sm bg-[var(--color-bg-subtle)] text-[var(--color-text-primary)];
+    }
+
+    /* Form elements */
+    .email-subscription-form input[type="email"] {
+      @apply bg-[var(--color-form-bg)] border border-[var(--color-ui-border)] border-r-0 text-[var(--color-text-primary)] rounded-l-md ring-0 focus:border-[var(--color-text-secondary)] focus:outline-none;
+    }
+
+    .email-subscription-form input[type="email"]::placeholder {
+      @apply text-[var(--color-text-tertiary)];
+    }
+
+    .email-subscription-form input[type="submit"] {
+      @apply bg-[var(--color-text-secondary)] text-[var(--color-text-inverted)] rounded-r-md py-1 px-3 cursor-pointer;
+    }
+
+    .email-subscription-form input[type="submit"]:hover {
+      @apply bg-[var(--color-text-primary)] text-[var(--color-text-inverted)];
+    }
+
+    .subscription-description {
+      @apply text-[var(--color-text-secondary)] text-sm;
+    }
+
+    /* Social links */
+    .social-link {
+      @apply text-[var(--color-text-primary)];
+    }
+
+    .social-icon {
+      @apply text-[var(--color-text-secondary)] transition-colors duration-200;
+    }
+
+    .social-link:hover .social-icon {
+      @apply text-[var(--color-text-primary)];
+    }
+
+
+    /* Confirmation card component */
+    .confirmation-card {
+      @apply bg-[var(--color-bg-subtle)] rounded-lg shadow-md border border-[var(--color-ui-border)] text-[var(--color-text-primary)];
     }
   }
+
+  /* ---- APP COMPONENTS ---- */
 
   .btn-primary {
     @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-slate-300 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800 cursor-pointer;
@@ -52,109 +175,5 @@
       opacity: 1;
       transform: scale(1);
     }
-  }
-
-  /* ---- PROSE ---- */
-  .prose {
-    @apply !text-[var(--color-text-primary)];
-  }
-
-  .blog-title {
-    @apply !text-[var(--color-text-heading)];
-  }
-
-  .prose a {
-    @apply !text-[var(--color-accent-primary)] underline;
-  }
-
-  .prose .text-subtle,
-  .prose.text-subtle {
-    @apply !text-[var(--color-text-secondary)];
-  }
-
-  .prose h1,
-  .prose h2,
-  .prose h3,
-  .prose h4 {
-    @apply !text-[var(--color-text-heading)];
-  }
-
-  .prose blockquote {
-    @apply !text-[var(--color-text-secondary)] border-l-[var(--color-ui-border)];
-  }
-
-  .prose code {
-    @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text-primary)] px-1 py-0.5 rounded-sm;
-  }
-
-  .prose pre {
-    @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text-primary)];
-  }
-
-  /* ---- ARTICLE-SPECIFIC COMPONENTS ---- */
-  .article-content {
-    @apply text-[var(--color-text-primary)];
-  }
-
-  .article-meta {
-    @apply text-sm;
-  }
-
-  /* Email subscription form component */
-  .email-subscription-form {
-    @apply mt-6 mb-2 p-4 rounded-lg w-[450px] mx-auto text-sm bg-[var(--color-bg-subtle)] text-[var(--color-text-primary)];
-  }
-
-  /* Form elements */
-  .email-subscription-form input[type="email"] {
-    @apply bg-[var(--color-form-bg)] border border-[var(--color-ui-border)] border-r-0 text-[var(--color-text-primary)] rounded-l-md ring-0 focus:border-[var(--color-text-secondary)] focus:outline-none;
-  }
-
-  .email-subscription-form input[type="email"]::placeholder {
-    @apply text-[var(--color-text-tertiary)];
-  }
-
-  .email-subscription-form input[type="submit"] {
-    @apply bg-[var(--color-text-secondary)] text-[var(--color-text-inverted)] rounded-r-md py-1 px-3 cursor-pointer;
-  }
-
-  .email-subscription-form input[type="submit"]:hover {
-    @apply bg-[var(--color-text-primary)] text-[var(--color-text-inverted)];
-  }
-
-  .subscription-description {
-    @apply text-[var(--color-text-secondary)] text-sm;
-  }
-
-  /* Social links */
-  .social-link {
-    @apply text-[var(--color-text-primary)];
-  }
-
-  .social-icon {
-    @apply text-[var(--color-text-secondary)] transition-colors duration-200;
-  }
-
-  .social-link:hover .social-icon {
-    @apply text-[var(--color-text-primary)];
-  }
-
-  /* Upvote component */
-  .upvote-icon {
-    @apply text-[var(--color-text-secondary)] transition-colors duration-200;
-  }
-
-  .upvote-icon:hover {
-    @apply text-[var(--color-text-primary)];
-  }
-
-  .upvote-icon-active,
-  .upvote-icon-active:hover {
-    @apply !text-red-500;
-  }
-
-  /* Confirmation card component */
-  .confirmation-card {
-    @apply bg-[var(--color-bg-subtle)] rounded-lg shadow-md border border-[var(--color-ui-border)] text-[var(--color-text-primary)];
   }
 }
