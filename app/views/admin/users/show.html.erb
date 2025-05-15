@@ -12,7 +12,7 @@
           </tr>
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Created At</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.created_at.strftime('%B %d, %Y') %></td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.created_at.to_formatted_s(:long) %></td>
           </tr>
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Verified</td>
@@ -61,7 +61,7 @@
           </tr>
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Created</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.subscription.created_at.strftime('%B %d, %Y') %></td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.subscription.created_at.to_formatted_s(:long) %></td>
           </tr>
           <% if @user.subscription.next_billed_at %>
             <tr>
