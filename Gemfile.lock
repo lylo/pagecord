@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: c44bde69b64aec2fea784b10c984f404f1fae138
+  revision: 4077fe0ff07601ae3ea20b14815aed1f94d39bd6
   branch: main
   specs:
     actioncable (8.1.0.alpha)
@@ -34,6 +34,7 @@ GIT
       rails-html-sanitizer (~> 1.6)
       useragent (~> 0.16)
     actiontext (8.1.0.alpha)
+      action_text-trix (~> 2.1.15)
       actionpack (= 8.1.0.alpha)
       activerecord (= 8.1.0.alpha)
       activestorage (= 8.1.0.alpha)
@@ -100,6 +101,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    action_text-trix (2.1.15)
+      railties
     actionpack-page_caching (1.2.4)
       actionpack (>= 4.0.0)
     addressable (2.8.7)
@@ -217,7 +220,7 @@ GEM
     lint_roller (1.1.0)
     local_time (3.0.3)
     logger (1.7.0)
-    loofah (2.24.0)
+    loofah (2.24.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     mail (2.8.1)
@@ -282,7 +285,7 @@ GEM
       premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
     prism (1.4.0)
-    psych (5.2.5)
+    psych (5.2.6)
       date
       stringio
     public_suffix (6.0.2)
