@@ -96,7 +96,7 @@
 
     /* Email subscription form component */
     .email-subscription-form {
-      @apply mt-6 mb-2 p-4 rounded-lg w-[450px] mx-auto text-sm bg-[var(--color-bg-subtle)] text-[var(--color-text-primary)];
+      @apply mt-6 mb-2 p-4 rounded-lg max-w-[450px] mx-auto text-sm bg-[var(--color-bg-subtle)] text-[var(--color-text-primary)];
     }
 
     /* Form elements */
