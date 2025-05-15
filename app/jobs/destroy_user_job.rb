@@ -1,9 +1,10 @@
 class DestroyUserJob < ApplicationJob
   queue_as :default
 
-  def perform(user_id)
-    User.find(user_id).discard!
+  def perform(user_id, options = {})
+    user = User.find(user_id)
+    user.discard!
 
-    MarketingAutomation::DeleteContactJob.perform_later(user_id)
+    MarketingAutomation::DeleteContactJob.perform_later(user_id) if options[:spam]
   end
 end

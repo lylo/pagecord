@@ -5,10 +5,15 @@ class AccessRequest < ApplicationRecord
 
   scope :pending, -> { where(accepted_at: nil) }
   scope :active, -> { where("expires_at > ?", Time.current) }
+  scope :recently_accepted, -> { where("accepted_at > ?", 5.minutes.ago) }
 
   def accept!
     self.accepted_at = Time.current
     save!
+  end
+
+  def pending?
+    accepted_at.nil?
   end
 
   private

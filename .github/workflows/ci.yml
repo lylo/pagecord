@@ -80,6 +80,11 @@ jobs:
           RAILS_ENV: test
         run: bin/rails db:schema:load
 
+      - name: Clobber and precompile assets
+        env:
+          RAILS_ENV: test
+        run: bin/rails assets:clobber assets:precompile
+
       - name: Run tests
         env:
           RAILS_ENV: test

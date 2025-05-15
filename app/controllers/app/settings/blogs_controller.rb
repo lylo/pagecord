@@ -25,19 +25,18 @@ class App::Settings::BlogsController < AppController
   private
 
     def blog_params
-      if @blog.user.subscribed?
-        params.require(:blog).permit(
-          :bio, :custom_domain, :title, :layout, :avatar,
-          :email_subscriptions_enabled,
-          :fediverse_author_attribution,
-          social_links_attributes: [ :id, :platform, :url, :_destroy ]
-        )
-      else
-        params.require(:blog).permit(
-          :bio, :title, :layout,
-          :fediverse_author_attribution,
-          social_links_attributes: [ :id, :platform, :url, :_destroy ],
-        )
-      end
+      permitted_params = [
+        :fediverse_author_attribution,
+        :allow_search_indexing
+      ]
+
+      permitted_params << [
+        :custom_domain,
+        :email_subscriptions_enabled,
+        :reply_by_email,
+        :show_upvotes
+      ] if @blog.user.subscribed?
+
+      params.require(:blog).permit(permitted_params)
     end
 end

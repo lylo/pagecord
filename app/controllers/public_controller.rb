@@ -20,4 +20,10 @@ class PublicController < ApplicationController
 
   def sitemap
   end
+
+  def robots
+    respond_to do |format|
+      format.text { render content_type: "text/plain" }
+    end
+  end
 end

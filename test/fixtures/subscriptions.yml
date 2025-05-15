@@ -11,3 +11,10 @@ two:
   paddle_price_id: pri_01hvp39rnddapkfaqqd3tvasdasd
   unit_price: 2000
   next_billed_at: <%= 1.year.from_now %>
+
+three:
+  user: pagecord
+  paddle_subscription_id: sub_01hvrk555874tn7wasda
+  paddle_price_id: pri_01hvp39rnddapkfaq555asdasd
+  unit_price: 2000
+  next_billed_at: <%= 1.year.from_now %>

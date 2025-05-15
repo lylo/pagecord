@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 0367cbf265ff25546230d2f668aa887e09995509
+  revision: c44bde69b64aec2fea784b10c984f404f1fae138
   branch: main
   specs:
     actioncable (8.1.0.alpha)
@@ -104,23 +104,23 @@ GEM
       actionpack (>= 4.0.0)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    appsignal (4.5.9)
+    appsignal (4.5.11)
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
     aws-eventstream (1.3.2)
-    aws-partitions (1.1095.0)
-    aws-sdk-core (3.222.3)
+    aws-partitions (1.1102.0)
+    aws-sdk-core (3.223.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
       base64
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-kms (1.99.0)
+    aws-sdk-kms (1.100.0)
       aws-sdk-core (~> 3, >= 3.216.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.184.0)
+    aws-sdk-s3 (1.185.0)
       aws-sdk-core (~> 3, >= 3.216.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -167,18 +167,11 @@ GEM
       activerecord (>= 4.2, < 9.0)
     drb (2.2.1)
     erubi (1.13.1)
-    faraday (2.13.1)
-      faraday-net_http (>= 2.0, < 3.5)
-      json
-      logger
-    faraday-net_http (3.4.0)
-      net-http (>= 0.5.0)
     fastimage (2.4.0)
     feature_toggles (1.2.1)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-arm-linux-gnu)
     ffi (1.17.2-arm64-darwin)
-    ffi (1.17.2-x86-linux-gnu)
     ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     globalid (1.2.1)
@@ -222,12 +215,11 @@ GEM
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
     lint_roller (1.1.0)
+    local_time (3.0.3)
     logger (1.7.0)
     loofah (2.24.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    loops_sdk (1.1.0)
-      faraday
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -239,7 +231,6 @@ GEM
       benchmark
       logger
     mini_mime (1.1.5)
-    mini_portile2 (2.8.8)
     minitest (5.25.5)
     mocha (2.7.1)
       ruby2_keywords (>= 0.0.5)
@@ -247,8 +238,6 @@ GEM
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
     nanoid (2.0.0)
-    net-http (0.6.0)
-      uri
     net-imap (0.5.8)
       date
       net-protocol
@@ -259,9 +248,6 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.4)
-    nokogiri (1.18.8)
-      mini_portile2 (~> 2.8.2)
-      racc (~> 1.4)
     nokogiri (1.18.8-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.18.8-arm-linux-gnu)
@@ -296,15 +282,15 @@ GEM
       premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
     prism (1.4.0)
-    psych (5.2.3)
+    psych (5.2.5)
       date
       stringio
     public_suffix (6.0.2)
     puma (6.6.0)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.13)
-    rack-session (2.1.0)
+    rack (3.1.14)
+    rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
     rack-test (2.2.0)
@@ -338,7 +324,7 @@ GEM
     reline (0.6.1)
       io-console (~> 0.5)
     rexml (3.4.1)
-    rubocop (1.75.4)
+    rubocop (1.75.5)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -373,7 +359,7 @@ GEM
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
     securerandom (0.4.1)
-    selenium-webdriver (4.31.0)
+    selenium-webdriver (4.32.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -402,14 +388,14 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.1.7)
-    tailwindcss-rails (4.2.2)
+    tailwindcss-rails (4.2.3)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
-    tailwindcss-ruby (4.1.4)
-    tailwindcss-ruby (4.1.4-aarch64-linux-gnu)
-    tailwindcss-ruby (4.1.4-arm64-darwin)
-    tailwindcss-ruby (4.1.4-x86_64-darwin)
-    tailwindcss-ruby (4.1.4-x86_64-linux-gnu)
+    tailwindcss-ruby (4.1.6)
+    tailwindcss-ruby (4.1.6-aarch64-linux-gnu)
+    tailwindcss-ruby (4.1.6-arm64-darwin)
+    tailwindcss-ruby (4.1.6-x86_64-darwin)
+    tailwindcss-ruby (4.1.6-x86_64-linux-gnu)
     thor (1.3.2)
     timeout (0.4.3)
     turbo-rails (2.0.13)
@@ -417,6 +403,8 @@ GEM
       railties (>= 7.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    tzinfo-data (1.2025.2)
+      tzinfo (>= 1.0.0)
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
@@ -443,7 +431,6 @@ PLATFORMS
   arm-linux
   arm64-darwin-23
   arm64-darwin-24
-  x86-linux
   x86_64-darwin
   x86_64-linux
 
@@ -468,7 +455,7 @@ DEPENDENCIES
   jbuilder
   kredis (~> 1.7)
   letter_opener
-  loops_sdk
+  local_time
   mocha
   nanoid (~> 2.0)
   ostruct

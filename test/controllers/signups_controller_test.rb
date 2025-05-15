@@ -26,6 +26,18 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert User.last.marketing_consent
   end
 
+  test "should create user with timezone" do
+    assert_difference("User.count") do
+      assert_emails 1 do
+        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { name: "testuser" }, marketing_consent: true, timezone: "Asia/Calcutta" }, rendered_at: 6.seconds.ago.to_i }
+      end
+    end
+
+    assert_redirected_to thanks_signups_path
+    assert User.last.marketing_consent
+    assert_equal "Chennai", User.last.timezone
+  end
+
   test "should not create user with invalid params" do
     assert_no_difference("User.count") do
       assert_emails 0 do

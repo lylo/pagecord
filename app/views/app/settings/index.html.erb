@@ -4,24 +4,34 @@
   <% end %>
 
   <div class="mt-8 grid sm:grid-cols-2 gap-4">
-    <%= link_to app_settings_blogs_path do %>
+    <%= link_to app_settings_appearance_index_path do %>
       <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
         <div class="mb-4">
           <span class="text-4xl">🎨</span>
         </div>
         <h3 class="mb-2 text-xl font-bold dark:text-white">Appearance</h3>
-        <p class="text-slate-500 dark:text-slate-400">Edit your bio, blog title, avatar, custom domain and social links</p>
+        <p class="text-slate-500 dark:text-slate-400">Edit your bio, blog title, avatar and social links</p>
+      </div>
+    <% end %>
+
+    <%= link_to app_settings_blogs_path do %>
+      <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
+        <div class="mb-4">
+          <span class="text-4xl">📝</span>
+        </div>
+        <h3 class="mb-2 text-xl font-bold dark:text-white">Blog Settings</h3>
+        <p class="text-slate-500 dark:text-slate-400">Configure custom domain and search engine visibility</p>
       </div>
     <% end %>
 
     <% if @user.subscribed? %>
-      <%= link_to app_settings_email_subscribers_path do %>
+      <%= link_to app_settings_audience_index_path do %>
         <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
           <div class="mb-4">
-            <span class="text-4xl">📥</span>
+            <span class="text-4xl">📣</span>
           </div>
-          <h3 class="mb-2 text-xl font-bold dark:text-white">Subscribers</h3>
-          <p class="text-slate-500 dark:text-slate-400">Manage your email subscribers</p>
+          <h3 class="mb-2 text-xl font-bold dark:text-white">Audience</h3>
+          <p class="text-slate-500 dark:text-slate-400">Manage email subscription and reply by email options</p>
         </div>
       <% end %>
     <% end %>
@@ -42,7 +52,7 @@
           <span class="text-4xl">⚙️</span>
         </div>
         <h3 class="mb-2 text-xl font-bold dark:text-white">My Account</h3>
-        <p class="text-slate-500 dark:text-slate-400">Close your account</p>
+        <p class="text-slate-500 dark:text-slate-400">Update your email, timezone or close your account</p>
       </div>
     <% end %>
 

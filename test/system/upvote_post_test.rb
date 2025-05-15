@@ -3,8 +3,6 @@ require "application_system_test_case"
 class UpvotePostTest < ApplicationSystemTestCase
   test "user can upvote a post" do
     blog = blogs(:joel)
-    blog.features << "upvotes"
-    blog.save!
 
     post = blog.posts.published.first
     initial_upvotes = post.upvotes.count

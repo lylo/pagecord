@@ -4,7 +4,7 @@
     <% @posts.each do |post| %>
       <% if post.published_at.year != previous_year %>
         <div class="text-lg font-semibold mb-2 text-slate-900 dark:text-slate-100 <%= 'mt-6' unless previous_year.nil? %>">
-          <%= post.published_at.year %>
+          <%= local_time post.published_at, "%Y" %>
 
           <% previous_year = post.published_at.year %>
         </div>
@@ -12,7 +12,7 @@
 
       <div class="flex gap-x-2 mb-1">
         <div class="text-slate-500 dark:text-slate-400 w-16 flex-shrink-0">
-          <%= post.published_at.to_date.to_formatted_s(:short) %>
+          <%= local_time post.published_at, "%b %d" %>
         </div>
         <div>
           <%= link_to post_title(post), post_path(post), class: "font-medium hover:underline" %>

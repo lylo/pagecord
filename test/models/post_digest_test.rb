@@ -19,6 +19,20 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_includes digest.posts, new_post
   end
 
+  test "should not include back-dated posts" do
+    post = create_new_post(published_at: 2.weeks.ago)
+
+    assert post.published?
+    assert_nil PostDigest.generate_for(@blog)
+  end
+
+  test "should not include draft posts" do
+    post = create_new_post(status: :draft)
+
+    assert post.draft?
+    assert_nil PostDigest.generate_for(@blog)
+  end
+
   test "should not create digest if email_subscriptions_enabled is false" do
     @blog.update!(email_subscriptions_enabled: false)
 
@@ -56,7 +70,7 @@ class PostDigestTest < ActiveSupport::TestCase
 
   private
 
-    def create_new_post
-      @blog.posts.create!(title: "New Post", content: "New post content")
+    def create_new_post(options = {})
+      @blog.posts.create!({ title: "New Post", content: "New post content" }.merge(options))
     end
 end

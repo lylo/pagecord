@@ -12,18 +12,22 @@ class SessionsController < ApplicationController
   end
 
   def create
-    @user = User.kept.joins(:blog).find_by(
+    begin
+      @user = User.kept.joins(:blog).find_by(
         blogs: {
           name: user_params[:username]
         },
         email: user_params[:email]
       )
 
-    if @user.present?
-      AccountVerificationMailer.with(user: @user).login.deliver_later
-    end
+      if @user.present?
+        AccountVerificationMailer.with(user: @user).login.deliver_later
+      end
 
-    redirect_to thanks_sessions_path
+      redirect_to thanks_sessions_path
+    rescue ActionController::ParameterMissing
+      redirect_to login_path, alert: "Invalid request. Please try again."
+    end
   end
 
   def destroy

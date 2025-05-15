@@ -38,11 +38,11 @@ table {
 /* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
 .container {
   display: block;
+  padding:  0 !important;
   margin: 0 auto !important;
   /* makes it centered */
-  max-width: 580px;
-  padding: 10px;
-  width: 580px;
+  max-width: 600px;
+  width: 600px;
 }
 
 /* This should also be a block element, so that it will fill 100% of the .container */
@@ -50,8 +50,8 @@ table {
   box-sizing: border-box;
   display: block;
   margin: 0 auto;
-  max-width: 580px;
-  padding: 10px; }
+  max-width: 600px;
+  padding: 24px 0; }
 
 /* -------------------------------------
     HEADER, FOOTER, MAIN
@@ -63,7 +63,7 @@ table {
 
 .wrapper {
   box-sizing: border-box;
-  padding: 20px; }
+  padding: 1rem; }
 
 .content-block {
   padding-bottom: 10px;
@@ -110,8 +110,7 @@ ol {
   font-size: 16px;
   line-height: 1.5;
   font-weight: normal;
-  margin: 0;
-  margin-bottom: 15px; }
+  margin: 15px 0; }
   p li,
   ul li,
   ol li {
@@ -129,6 +128,14 @@ a {
 /* -------------------------------------
     DIGEST
 ------------------------------------- */
+.digest h1 {
+  font-weight: 700;
+  text-align: left;
+  line-height: 1rem;
+  font-size: 22px !important;
+  margin: 0;
+  margin-bottom: 0; }
+
 .digest h2 {
   font-weight: 700;
   font-size: 24px !important;
@@ -146,7 +153,7 @@ a {
 }
 
 .digest .post-content {
-  padding-bottom: 2rem;
+  padding-bottom: 1.5rem !important;
 }
 
 .digest .post-content a {
@@ -165,7 +172,7 @@ a {
 }
 
 .digest .post {
-  padding-bottom: 3.5rem !important;
+  padding-bottom: 4rem !important;
 }
 
 .post-timestamp {
@@ -265,6 +272,13 @@ hr {
     RESPONSIVE AND MOBILE FRIENDLY STYLES
 ------------------------------------- */
 @media only screen and (max-width: 620px) {
+  body {
+    background-color: #ffffff !important; /* Change background to white on mobile */
+  }
+
+  .body {
+    background-color: #ffffff !important; /* Change background to white on mobile */
+  }
   table[class=body] h1 {
     font-size: 28px !important;
     margin-bottom: 10px !important; }
@@ -278,18 +292,27 @@ hr {
   table[class=body] span,
   table[class=body] a {
     font-size: 16px !important; }
-  table[class=body] .wrapper,
+  table[class=body] h2 a {
+    font-size: 24px !important;
+  }
+  table[class=body] .wrapper {
+  }
   table[class=body] .article {
     padding: 10px !important; }
   table[class=body] .content {
     padding: 0 !important; }
   table[class=body] .container {
     padding: 0 !important;
-    width: 100% !important; }
+    width: 100% !important;
+    max-width: 100% !important; /* Ensure container takes full width */
+  }
   table[class=body] .main {
     border-left-width: 0 !important;
     border-radius: 0 !important;
-    border-right-width: 0 !important; }
+    border-right-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important; /* Ensure main content takes full width */
+  }
   table[class=body] .btn table {
     width: 100% !important; }
   table[class=body] .btn a {

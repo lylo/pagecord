@@ -1,11 +1,7 @@
+# lib/tasks/post_digests.rake
 namespace :post_digests do
-  desc "Deliver post digests to relevant subscribers"
+  desc "Deliver post digests to relevant subscribers at 8am in their local timezone"
   task deliver: :environment do
-    blogs = Blog.where(email_subscriptions_enabled: true)
-    blogs.find_each do |blog|
-      if blog.user.kept? && blog.user.subscribed?
-        GeneratePostDigestJob.perform_later(blog.id)
-      end
-    end
+    PostDigestScheduler.run
   end
 end

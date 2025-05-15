@@ -32,6 +32,17 @@
     <div class="mt-4">
     <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_data %>
     </div>
+  <% elsif @subscription.lapsed? %>
+    <p>
+      Your Pagecord Premium subscription has now lapsed.
+    </p>
+    <p class="mt-2">
+      Renew now to continue enjoying premium features like image attachments, custom domains, and more!
+    </p>
+
+    <div class="mt-4">
+      <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_data %>
+    </div>
   <% else %>
     <p>
       💳 You are currently subscribed to Pagecord Premium. Thank you! 💖

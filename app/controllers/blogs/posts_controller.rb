@@ -6,13 +6,17 @@ class Blogs::PostsController < Blogs::BaseController
   def index
     @posts = @blog.posts.visible
       .with_rich_text_content_and_embeds
+      .includes(:upvotes)
       .order(published_at: :desc)
 
     @pagy, @posts = pagy(@posts, limit: page_size)
 
     respond_to do |format|
-      format.html
-      format.rss { render layout: false }
+      format.html { set_conditional_get_headers }
+      format.rss {
+        return unless set_conditional_get_headers
+        render layout: false
+      }
     end
   end
 
@@ -32,5 +36,17 @@ class Blogs::PostsController < Blogs::BaseController
 
     def page_size
       @blog.stream_layout? ? 15 : 100
+    end
+
+    def set_conditional_get_headers
+      if stale?(
+        etag: [ @posts.map(&:id), @blog.id, @pagy.page ],
+        last_modified: @posts.maximum(:updated_at),
+        public: true
+      )
+        true
+      else
+        false
+      end
     end
 end

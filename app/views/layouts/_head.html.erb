@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <meta name="description" content="<%= meta_description %>">
-<meta name="keywords" content="writing, publishing, blog, blogging, blogging platform, microblogging, journalling, publish by email, journal by email, simple blog, minimalist blog, writing by email, blogging by email, email to blog post">
+<meta name="keywords" content="open-source blog, email-first publishing, no-code blogging, privacy-first platform, exportable blog, minimalist blogging"/>
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="<%= page_type %>">
@@ -25,6 +25,21 @@
   <meta property="twitter:card" content="summary">
 <% end %>
 
+<!-- Structured Data (JSON‑LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "url": "https://pagecord.com/",
+  "name": "Pagecord",
+  "description": "<%= meta_description %>",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Pagecord",
+    "url": "https://pagecord.com/"
+  }
+}
+</script>
 <%= yield :fediverse %>
 
 <link rel="canonical" href="<%= canonical_url %>" />

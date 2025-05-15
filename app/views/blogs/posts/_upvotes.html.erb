@@ -1,15 +1,15 @@
-<div class="flex flex-col items-center">
-  <% if upvoted_by_current_viewer?(post) %>
-    <%= form_with url: post_upvote_path(post, @upvote), method: :delete, data: { controller: "form-submit" } do |form| %>
-      <%= button_tag type: "submit", data: { action: "form-submit#submit" }, title: "You liked this post 😊" do %>
-        <%= inline_svg_tag "icons/heart.svg", class: "upvote-icon upvote-icon-active cursor-pointer w-5 h-5" %>
-      <% end %>
-    <% end %>
-  <% else %>
-    <%= form_with url: post_upvotes_path(post), method: :post, data: { controller: "form-submit" } do |form| %>
-      <%= button_tag type: "submit", data: { action: "form-submit#submit" }, title: "Click to like this post" do %>
-        <%= inline_svg_tag "icons/heart.svg", class: "upvote-icon cursor-pointer w-5 h-5" %>
-      <% end %>
-    <% end %>
+<% if upvoted_by_current_viewer?(post) %>
+  <%= button_to post_upvote_path_for(post, @upvote),
+                method: :delete,
+                class: "flex",
+                title: "You liked this post 😊" do %>
+    <%= inline_svg_tag "icons/heart.svg", class: "upvote-icon upvote-icon-active cursor-pointer w-5 h-5" %>
   <% end %>
-</div>
+<% else %>
+  <%= button_to post_upvotes_path_for(post),
+                method: :post,
+                class: "flex",
+                title: "Click to like this post" do %>
+    <%= inline_svg_tag "icons/heart.svg", class: "upvote-icon cursor-pointer hover:text-slate-400 w-5 h-5" %>
+  <% end %>
+<% end %>

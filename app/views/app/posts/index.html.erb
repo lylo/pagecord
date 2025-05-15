@@ -82,7 +82,7 @@
 
             <div>
               <% unless post.pending? %>
-                <%= link_to post_path(post), title: "View this post" do %>
+                <%= link_to post_url(post), title: "View this post" do %>
                   <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
                 <% end %>
               <% end %>

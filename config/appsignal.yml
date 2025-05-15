@@ -6,3 +6,10 @@ production:
 
   send_logs: true
   log_level: "info"
+
+  ignore_errors:
+    - ActiveRecord::RecordNotFound
+    - AbstractController::ActionNotFound
+    - ActionController::RoutingError
+    - ActionController::UnknownFormat
+    - ActionController::InvalidAuthenticityToken

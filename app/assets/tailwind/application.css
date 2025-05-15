@@ -2,7 +2,6 @@
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/aspect-ratio";
-@plugin "@tailwindcss/typography";
 
 /* Theme tokens and variables */
 @import "./tokens.css";
@@ -168,7 +167,7 @@ a:not([href]), a:not([href]):hover { /* disabled links */
 .field_with_errors  {
   @apply w-full;
 
-  input {
+  input, textarea {
     @apply !border-red-500;
   }
 }

@@ -10,12 +10,20 @@ module PostsHelper
   end
 
   def upvoted_by_current_viewer?(post)
-    @upvote = post.upvotes.find_by(hash_id: @hash_id)
+    @upvote = post.upvotes.detect { |upvote| upvote.hash_id == @hash_id }
   end
 
   # Returns the URL of the social link to avoid Brakeman warning
   # This is fine since the URL is sanitized by the SocialLink model
   def social_link_url(social_link)
-    social_link.url
+    if social_link.email?
+      "mailto:#{social_link.url}"
+    else
+      social_link.url
+    end
+  end
+
+  def published_at_date_format
+    "%b %d, %Y"
   end
 end

@@ -1,9 +1,9 @@
-class Posts::UpvotesController < ApplicationController
+class Posts::UpvotesController < Blogs::BaseController
   include RequestHash
 
   rate_limit to: 10, within: 1.minute
 
-  skip_before_action :domain_check
+  skip_before_action :authenticate
   before_action :load_post
 
   def create
@@ -22,6 +22,6 @@ class Posts::UpvotesController < ApplicationController
   private
 
     def load_post
-      @post = Post.find_by!(token: params[:post_id])
+      @post = @blog.posts.find_by!(token: params[:post_id])
     end
 end

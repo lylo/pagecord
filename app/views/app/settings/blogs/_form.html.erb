@@ -1,60 +1,5 @@
-<%= form_with url: app_settings_blog_path(@blog), model: @blog, data: { controller: "avatar" } do |form| %>
-  <div>
-    <h3 class="font-bold text-lg mb-2">Bio</h3>
-
-    <div class="trix-container trix-minimal">
-    <%= form.rich_text_area :bio,
-        placeholder: "add a bio to your profile if you like...",
-        class: "trix-content min-h-[150px] prose border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
-        spellcheck: true,
-        data: { controller: "autogrow trix", subscribed: false } %>
-    </div>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Title</h3>
-    <p>
-      If you'd prefer a different title than <strong>@<%= @blog.name %></strong> on your Pagecord,
-      enter it below.
-    </p>
-
-    <%= form.text_field :title, class: "mt-4 w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Layout</h3>
-    <p>
-      Would you like your blog home page to be a stream of posts, or a list of titles?
-    </p>
-
-    <%= render "layout_options", form: form %>
-  </div>
-
+<%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
   <% if @blog.user.subscribed? %>
-  <h3 class="mt-8 font-bold text-lg mb-2">Avatar</h3>
-  <p>
-    <% if @blog.avatar&.attached? %>
-      Click the image to select a new avatar, or click 'Remove' to delete the existing one.
-    <% else %>
-      If you'd like to include an avatar image on your home page, click the icon to select then
-      click the Update button below.
-    <% end %>
-  </p>
-
-  <div class="mt-4 text-start flex flex-col" id="blog-avatar">
-    <a href="#" data-action="click->avatar#open" title="Update your avatar">
-      <%= render "avatar", blog: @blog %>
-    </a>
-    <% if @blog.avatar&.attached? %>
-      <%= link_to app_blog_avatar_path(@blog), data: { turbo_method: :delete }, class: "flex items-center text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 hover:dark:text-slate-200 p-0 mt-1" do %>
-        <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 me-1 " %>
-        Remove
-      <% end %>
-    <% end %>
-  </div>
-
-  <%= form.file_field :avatar, class: "hidden", accept: "image/jpeg, image/png, image/webp", data: { avatar_target: "input" } %>
-
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
     <% if @blog.valid? && @blog.custom_domain.present? %>
@@ -77,30 +22,36 @@
         To remove your custom domain, clear the box above and click Update. Don't forget to remove the records from your DNS!
       </p>
     <% end %>
+  </div>
   <% end %>
 
-  <div class="mt-8" data-controller="social-links">
-    <h3 class="font-bold text-lg mb-2">Social Links</h3>
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Search Engine Visibility</h3>
     <p>
-      Add links to your social profiles to display them on your Pagecord.
+      If your blog is on a custom domain, you can opt out of search engine indexing by checking the box below.
     </p>
 
-    <div data-social-links-target="addLink" class="mt-8 ">
-      <%= link_to "Add Link", "#", class: "btn-primary mb-4", data: { action: "click->social-links#addLink" } %>
+    <p class="mt-4 text-slate-500 dark:text-slate-400">
+      (Note: All blogs are configured to discourage AI crawlers)
+    </p>
+
+    <div class="mt-6">
+      <div class="flex gap-3">
+        <div class="flex h-6 shrink-0 items-center">
+          <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+        </div>
+        <div>
+          <%= form.label :allow_search_indexing, "Allow search engines to index my blog", class: "text-slate-800 dark:text-slate-100" %>
+          <p class="text-slate-500 text-sm">
+            When unchecked, a <tt>/robots.txt</tt> endpoint wil discourage search engines from indexing your site. This only works
+      for blogs using a custom domain at the moment, sorry.
+          </p>
+        </div>
+      </div>
     </div>
-
-    <template data-social-links-target="template">
-      <%= form.fields_for :social_links, SocialLink.new, child_index: 'TEMPLATE_RECORD' do |social_link_form| %>
-        <%= render "social_links_form", form: social_link_form %>
-      <% end %>
-    </template>
-
-    <%= form.fields_for :social_links do |social_link_form| %>
-      <%= render "social_links_form", form: social_link_form %>
-    <% end %>
   </div>
 
-<div class="mt-8">
+  <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Fediverse Author Attribution</h3>
     <p>
       To allow your Pagecord posts to be attributed to you when shared on Mastodon (or any other Fediverse platform), enter your

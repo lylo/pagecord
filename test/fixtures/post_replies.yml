@@ -1,0 +1,9 @@
+_fixture:
+  model_class: Post::Reply
+
+test:
+  post: one
+  email: fred@example.com
+  name: Freddie
+  subject: Re - your blog post
+  message: Great post! Keep it up

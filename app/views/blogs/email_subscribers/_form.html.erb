@@ -6,13 +6,13 @@
 
   <fieldset class="flex">
     <%= hidden_field_tag :blog_name, @blog.name %>
-    <%= hidden_field_tag :rendered_at, Time.now.to_i %>
+    <%= render "/shared/spam_prevention" %>
+
     <%= form.email_field :email,
       required: true,
       placeholder: "Enter your email...",
       class: "subscription-email-input px-2 py-1 w-48 sm:w-64 text-sm rounded-l-lg"
     %>
-    <%= text_field_tag :email_confirmation, nil, class: "hidden" %>
 
     <%= form.submit "Subscribe" %>
   </fieldset>

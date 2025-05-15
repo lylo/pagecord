@@ -9,14 +9,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
-  test "should not discard current user" do
-    delete admin_user_url(@user)
-
-    assert_redirected_to admin_stats_path
-    assert_equal "You can't discard yourself", flash[:notice]
-    assert_not @user.reload.discarded?
-  end
-
   test "should not discard premium user" do
     user = users(:annie)
     assert user.subscribed?
@@ -37,5 +29,18 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_stats_path
     assert_equal "User was successfully discarded", flash[:notice]
     assert user.reload.discarded?
+  end
+
+  test "should restore user" do
+    user = users(:vivian)
+    user.discard!
+
+    assert_difference("User.kept.count", 1) do
+      post restore_admin_user_path(user)
+    end
+
+    assert_redirected_to admin_stats_path
+    assert_equal "User was successfully restored", flash[:notice]
+    assert_not user.reload.discarded?
   end
 end

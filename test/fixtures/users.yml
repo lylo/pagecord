@@ -22,3 +22,8 @@ saul:
   email: saul@pagecord.com
   verified: true
   onboarding_state: account_created
+
+pagecord:
+  email: olly@pagecord.com
+  verified: true
+  onboarding_state: completed

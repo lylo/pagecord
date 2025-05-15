@@ -18,9 +18,9 @@ class PostDigest < ApplicationRecord
 
     new_posts = blog.posts.visible
       .where.not(id: DigestPost.select(:post_id))
-      .where("created_at > ?", since_date)
+      .where("published_at > ?", since_date)
 
-    Rails.logger.info "Found #{new_posts.count} new posts since last digest"
+    Rails.logger.info "Found #{new_posts.count} published posts since last digest"
 
     return nil if new_posts.empty?
 

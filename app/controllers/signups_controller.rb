@@ -1,7 +1,5 @@
 class SignupsController < ApplicationController
-  rate_limit to: 1, within: 5.minutes, only: [ :create ]
-
-  before_action :honeypot_check, :form_complete_time_check, :ip_reputation_check, only: [ :create ]
+  include SpamPrevention, TimezoneTranslation
 
   layout "sessions"
 
@@ -27,8 +25,6 @@ class SignupsController < ApplicationController
     if @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
-      sign_in @user
-
       redirect_to thanks_signups_path
     else
       render :new, status: :unprocessable_entity
@@ -38,7 +34,14 @@ class SignupsController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :marketing_consent, blog_attributes: [ :name ])
+      raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, blog_attributes: [ :name ])
+      translate_timezone_param(raw_params)
+    end
+
+    def translate_timezone_param(params)
+      params[:timezone] = active_support_time_zone_from_iana(params[:timezone]) if params[:timezone].present?
+
+      params
     end
 
     def valid_turnstile_token?(token)
@@ -58,34 +61,6 @@ class SignupsController < ApplicationController
     rescue HTTParty::Error => e
       Rails.logger.error "Turnstile verification failed: #{e.message}"
       false
-    end
-
-    def honeypot_check
-      unless params[:email_confirmation].blank?
-        Rails.logger.warn "Honeypot field completed. Bypassing signup"
-        fail
-      end
-    end
-
-    def form_complete_time_check
-      head :unprocessable_entity if params[:rendered_at].blank?
-
-      timestamp = params[:rendered_at].to_i
-      form_complete_time = Time.now.to_i - timestamp
-
-      if form_complete_time < 5.seconds
-        Rails.logger.warn "Form completed too quickly. Bypassing signup"
-        fail
-      end
-    end
-
-    def ip_reputation_check
-      return true unless Rails.env.production?
-
-      unless IpReputation.valid?(request.remote_ip)
-        Rails.logger.warn "IP reputation check failed. Bypassing signup"
-        fail
-      end
     end
 
     def fail

@@ -81,6 +81,18 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_includes cdata_content, "<p>This is my first post.</p>"
   end
 
+  test "should map RSS feed aliases to index" do
+    get "/#{blogs(:joel).name}/feed.xml"
+
+    assert_response :success
+    assert_equal "application/rss+xml; charset=utf-8", @response.content_type
+
+    get "/#{blogs(:joel).name}/feed/"
+
+    assert_response :success
+    assert_equal "application/rss+xml; charset=utf-8", @response.content_type
+  end
+
   # Custom domains
 
   test "should get index on custom domain" do
@@ -211,5 +223,72 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "link[rel='apple-touch-icon'][href*='/assets/apple-touch-icon']"
     assert_select "link[rel='icon'][type='image/svg+xml'][href*='/assets/favicon']"
+  end
+
+  test "should render upvotes for a subscriber" do
+    blog = blogs(:joel)
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "turbo-frame[id^='upvotes_post_']"
+  end
+
+  test "should not render upvotes for a non-subscriber" do
+    blog = blogs(:vivian)
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "turbo-frame[id^='upvotes_post_']", count: 0
+  end
+
+  test "should not render upvotes if show_upvotes is false" do
+    blog = blogs(:joel)
+    blog.update!(show_upvotes: false)
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "turbo-frame[id^='upvotes_post_']", count: 0
+  end
+
+  test "post published_at is stored and rendered correctly in UTC" do
+    user = users(:joel)
+    user.update!(timezone: "Hawaii")
+
+    Time.use_zone(user.timezone) do
+      midnight_in_hawaii = Time.zone.parse("2025-05-11 00:00:00")
+      post = user.blog.posts.create!(
+        content: "Time Zone Test",
+        published_at: midnight_in_hawaii
+      )
+
+      # middnight_in_hawaii is 10:00 UTC
+      assert_equal Time.utc(2025, 5, 11, 10), post.published_at
+    end
+
+    get post_path(Post.last)
+
+    assert_select "time[datetime='2025-05-11T10:00:00Z']"
+  end
+
+  test "should pagecord branding" do
+    blog = blogs(:joel)
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "footer a[id=brand]", count: 1
+  end
+
+  test "should hide pagecord branding when show_branding off" do
+    blog = blogs(:joel)
+    blog.update!(show_branding: false)
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "footer a[id=brand]", count: 0
   end
 end

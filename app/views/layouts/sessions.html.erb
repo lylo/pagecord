@@ -8,7 +8,24 @@
     <main class="container mx-auto px-4 flex flex-grow flex-col text-slate-950 dark:text-slate-50">
       <div class="max-w-2xl w-full mx-auto mt-4">
         <%= render "app/shared/flash" %>
-        <%= render "layouts/header" %>
+
+        <header>
+          <nav class="py-4 flex justify-between items-center text-slate-900 dark:text-slate-100 font-medium">
+            <div>
+              <%= link_to root_path do %>
+                <%= inline_svg_tag "logo.svg", class: "w-24 sm:w-40 dark:text-slate-100 text-slate-900" %>
+              <% end %>
+            </div>
+
+            <div class="text-sm inline-block border border-slate-200 text-slate-500 dark:text-slate-400 hover:text-slate-800 hover:dark:text-slate-300 dark:border-slate-500 rounded-lg px-2 py-1 hover:bg-slate-100 hover:dark:bg-slate-700 text-center">
+              <% if is_current_path? new_signup_path %>
+                <%= link_to "Log In", login_path %>
+              <% else %>
+                <%= link_to "Sign Up", new_signup_path %>
+              <% end %>
+            </div>
+          </nav>
+        </header>
 
         <div class="mt-12">
         <%= yield %>

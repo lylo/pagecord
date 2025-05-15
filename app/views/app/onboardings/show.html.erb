@@ -15,7 +15,7 @@
     Give your blog a custom name
   </h2>
 
-  <p class="text-slate-500">
+  <p>
     If you like, you can give your blog a different name to <span class="font-bold">@<%= @blog.name %></span>. Just enter it below and click Save.
   </p>
 
@@ -41,7 +41,7 @@
     Add a bio
   </h2>
 
-  <p class="text-slate-500">
+  <p>
     Your bio will appear at the top of your blog's home page. This is where you'll tell the world all about your blog!
     Emojis and links are recommended! 😊
   </p>
@@ -72,12 +72,12 @@
     Choose your blog layout
   </h2>
 
-  <p class="text-slate-500">
+  <p>
     The default blog layout for Pagecord is a stream of all your posts. If you prefer a more compact, traditional look, you can choose to display a list of post titles and dates.
   </p>
 
   <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
-    <%= render "/app/settings/blogs/layout_options", form: form %>
+    <%= render "/app/settings/appearance/layout_options", form: form %>
   <% end %>
 
   <h2 class="text-xl sm:text-2xl">
@@ -90,7 +90,7 @@
 
   <ol>
     <li>
-      Send an email from <span class="bg-yellow-100 rounded dark:bg-slate-700 px-1"><%= @blog.user.email %></span> to <%= mail_to @blog.delivery_email, class: "underline font-semibold" %> (add this email address to your contacts!)
+      Send an email from <%= @blog.user.email %> to <%= mail_to @blog.delivery_email, class: "underline font-semibold" %>. Add this email address to your contacts to make it easier to find!
     </li>
     <li>Click on the <span class="no-underline btn-primary px-3">✏️ New Post</span> button. You'll see this on your posts page when you've completed onboarding.</li>
   </ol>
@@ -108,13 +108,15 @@
     plan for <span class="font-bold">only $<%= Subscription.price %>/year</span>.
   </p>
   <p>
-    With a premium account you get LOADS of additional features such as image
-    uploads, email newsletter functionality, custom domains and more! Pagecord is an independent business and premium customers help keep the service running 😊🙏
+    With a premium account you get LOADS of additional features such as custom domains,
+    email newsletters, replies by email and more!
+
+    Pagecord is an independent business and premium customers help keep the service running 😊🙏
   </p>
 
   <div class="flex justify-center">
-    <%= button_to complete_app_onboarding_path, class: "btn-primary bg-emerald-300 hover:bg-emerald-400 dark:text-slate-800 my-8" do %>
-      All good? Go to your Pagecord admin area
+    <%= button_to complete_app_onboarding_path, class: "text-lg btn-primary my-8" do %>
+      All done? Go to your Pagecord admin area
     <% end %>
   </div>
 </div>

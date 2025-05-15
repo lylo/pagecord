@@ -1,0 +1,27 @@
+<p>
+  Yay! Somebody replied to <%= link_to "your post", post_url(@post) %>, <b><%= @post.display_title %></b>.
+</p>
+
+<div style="background-color: #F3F4F6; padding: 15px; border-radius: 5px; margin: 20px 0;">
+  <p>
+    <strong>From:</strong>
+    <%= @reply.name %> &lt;<%= @reply.email %>&gt;
+  </p>
+
+  <p>
+    <strong>Subject:</strong>
+    <%= @reply.subject %>
+  </p>
+
+  <p>
+    <strong>Message:</strong>
+  </p>
+
+  <p>
+    <%= @reply.message %>
+  </p>
+</div>
+
+<p>
+  Reply to this email to respond to <%= @reply.name %>.
+</p>

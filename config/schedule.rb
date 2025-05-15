@@ -18,6 +18,10 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+every 1.day, at: "2:30 am" do
+  rake "email_change_requests:cleanup"
+end
+
 every :day, at: "4:00 am" do
   rake "exports:cleanup"
 end
@@ -30,10 +34,7 @@ every :day, at: "5:00 am" do
   rake "subscriptions:send_renewal_reminders"
 end
 
-every 1.day, at: "8 am" do
-  rake "marketing_automation:getting_started"
-end
-
-every :tuesday, at: "9 am" do
+# every hour on a Tuesday
+every "0 * * * 2" do
   rake "post_digests:deliver"
 end

@@ -4,8 +4,8 @@
       @<%= post.blog.name %>
     </div>
     <%= link_to post_path(post), class: "no-underline", data: { turbo_frame: "_top" } do %>
-      <span class="text-slate-400 text-sm font-normal" title="<%= post.published_at.to_formatted_s(:long) %>">
-        <%= post.published_at.to_date.to_formatted_s(:long) %>
+      <span class="text-slate-400 text-sm font-normal">
+        <%= local_time post.published_at, published_at_date_format %>
       </span>
     <% end %>
   </div>

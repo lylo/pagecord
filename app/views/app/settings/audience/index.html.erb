@@ -1,0 +1,56 @@
+<h2 class="mb-4 font-semibold text-xl text-slate-800 dark:text-slate-100">Audience Settings</h2>
+
+<%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
+  <% if @blog.email_subscriptions_enabled %>
+    <p class="text-slate-600 dark:text-slate-400">
+      Your blog has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
+    </p>
+  <% end %>
+
+  <div class="mt-8 flex gap-3">
+    <div class="flex h-6 shrink-0 items-center">
+      <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+    </div>
+    <div>
+      <%= form.label :email_subscriptions_enabled, "Email subscriptions enabled", class: "text-slate-800 dark:text-slate-100" %>
+      <p class="text-slate-500 text-sm">
+        Allow readers to subscribe to your blog via email. When enabled, subscribers will receive an email digest of your latest posts every Tuesday morning.
+      </p>
+    </div>
+  </div>
+
+  <div class="mt-6">
+    <div class="flex gap-3">
+      <div class="flex h-6 shrink-0 items-center">
+        <%= form.check_box :reply_by_email, { checked: @blog.reply_by_email, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+      </div>
+      <div>
+        <%= form.label :reply_by_email, "Allow replies by email", class: "text-slate-800 dark:text-slate-100" %>
+        <p class="text-slate-500 text-sm">
+          Allow readers to reply to your posts via a contact
+    form. You will receive an email with the reply. Your email address is not revealed.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6">
+    <div class="flex gap-3">
+      <div class="flex h-6 shrink-0 items-center">
+        <%= form.check_box :show_upvotes, { checked: @blog.show_upvotes, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+      </div>
+      <div>
+        <%= form.label :show_upvotes, "Show Post Likes ❤️", class: "text-slate-800 dark:text-slate-100" %>
+        <p class="text-slate-500 text-sm">
+          When checked, a heart-shaped like button will appear next to each post for readers to show
+          their appreciation.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-12 flex items-cente pt-4 border-t border-t-slate-200 dark:border-slate-600">
+    <%= form.submit "Update", class: "btn-primary" %>
+    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+  </div>
+<% end %>

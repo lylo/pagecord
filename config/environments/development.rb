@@ -65,7 +65,7 @@ Rails.application.configure do
 
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
-  # config.active_job.queue_adapter = :sidekiq
+  config.active_job.queue_adapter = :inline
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true
@@ -82,7 +82,8 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
 
-  config.hosts += [ "myblog.net" ]
+  config.hosts += [ "myblog.net", "annie.blog" ]
+  config.hosts << "ant-evolved-equally.ngrok-free.app"
 end
 
 Rails.application.routes.default_url_options[:host] = "localhost:3000"

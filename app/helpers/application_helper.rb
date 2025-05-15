@@ -8,9 +8,7 @@ module ApplicationHelper
     elsif @blog.present?
       blog_description(@blog)
     else
-      "Pagecord is a digital scrapbook for your thoughts and ideas. It's a microblog, a journal
-      and an email newsletter all in one. Effortlessly publish posts using email or the Pagecord app. People can
-      can follow along using RSS or subscribe to get your posts in a weekly email. Sign up for FREE today!"
+      "The best free blogging platform for the small web. Publish your writing effortlessly, via email or editor. RSS, email newsletter, and more. Get started for free!"
     end
   end
 
@@ -34,7 +32,7 @@ module ApplicationHelper
     elsif @blog
       blog_title(@blog)
     else
-      "Pagecord - a digital scrapbook for your thoughts and ideas"
+      "The best free blogging platform for the small web. Publish your writing effortlessly. All you need is email."
     end
   end
 
@@ -83,12 +81,9 @@ module ApplicationHelper
 
   private
 
+    # FIXME This is no longer needed.
     def post_title(post)
-      if post.title.present?
-        post.title.truncate(100).strip
-      else
-        post.summary
-      end
+      post.display_title
     end
 
     def blog_description(blog)

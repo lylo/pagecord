@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_05_02_143456) do
+ActiveRecord::Schema[8.1].define(version: 2025_05_14_111136) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -82,6 +82,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_02_143456) do
   end
 
   create_table "blogs", force: :cascade do |t|
+    t.boolean "allow_search_indexing", default: true, null: false
     t.datetime "created_at", null: false
     t.string "custom_domain"
     t.string "delivery_email"
@@ -92,10 +93,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_02_143456) do
     t.string "font", default: "sans", null: false
     t.integer "layout", default: 0
     t.string "name", null: false
+    t.boolean "reply_by_email", default: false, null: false
+    t.boolean "show_branding", default: true, null: false
+    t.boolean "show_upvotes", default: true, null: false
+    t.string "theme", default: "base", null: false
     t.string "theme", default: "base", null: false
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.string "width", default: "standard", null: false
     t.string "width", default: "standard", null: false
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["name"], name: "index_blogs_on_name", unique: true
@@ -117,6 +123,19 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_02_143456) do
     t.datetime "updated_at", null: false
     t.index ["post_digest_id"], name: "index_digest_posts_on_post_digest_id"
     t.index ["post_id"], name: "index_digest_posts_on_post_id"
+  end
+
+  create_table "email_change_requests", force: :cascade do |t|
+    t.datetime "accepted_at"
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.string "new_email", null: false
+    t.string "token_digest"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["expires_at"], name: "index_email_change_requests_on_expires_at"
+    t.index ["token_digest"], name: "index_email_change_requests_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_email_change_requests_on_user_id"
   end
 
   create_table "email_subscribers", force: :cascade do |t|
@@ -170,6 +189,20 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_02_143456) do
     t.datetime "delivered_at"
     t.datetime "updated_at", null: false
     t.index ["blog_id"], name: "index_post_digests_on_blog_id"
+  end
+
+  create_table "post_replies", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.boolean "email_delivered", default: false, null: false
+    t.text "message", null: false
+    t.string "name", null: false
+    t.bigint "post_id", null: false
+    t.string "subject", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_post_replies_on_created_at"
+    t.index ["email"], name: "index_post_replies_on_email"
+    t.index ["post_id"], name: "index_post_replies_on_post_id"
   end
 
   create_table "posts", force: :cascade do |t|
@@ -239,6 +272,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_02_143456) do
     t.string "email", null: false
     t.boolean "marketing_consent", default: false, null: false
     t.string "onboarding_state", default: "account_created"
+    t.string "timezone", default: "UTC", null: false
     t.datetime "updated_at", null: false
     t.boolean "verified", default: false
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -253,12 +287,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_02_143456) do
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"
   add_foreign_key "digest_posts", "posts"
+  add_foreign_key "email_change_requests", "users"
   add_foreign_key "email_subscribers", "blogs"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
   add_foreign_key "post_digest_deliveries", "email_subscribers"
   add_foreign_key "post_digest_deliveries", "post_digests"
   add_foreign_key "post_digests", "blogs"
+  add_foreign_key "post_replies", "posts"
   add_foreign_key "posts", "blogs"
   add_foreign_key "social_links", "blogs"
   add_foreign_key "subscription_renewal_reminders", "subscriptions"
