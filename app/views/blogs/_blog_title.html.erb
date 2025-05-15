@@ -1,9 +1,9 @@
 <%= link_to blog_home_url(@blog), data: { turbo: false } do %>
-<div class="blog-title">
-  <% if @blog.custom_title? %>
-    <%= @blog.title %>
-  <% else %>
-    @<%= @blog.name %>
-  <% end %>
-</div>
+  <div class="blog-title">
+    <% if @blog.custom_title? %>
+      <%= @blog.title %>
+    <% else %>
+      @<%= @blog.name %>
+    <% end %>
+  </div>
 <% end %>
