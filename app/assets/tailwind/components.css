@@ -65,7 +65,7 @@
       }
 
       pre {
-        @apply !my-2 !bg-[var(--color-bg-sunken)] !text-[var(--color-text)];
+        @apply !my-2 !bg-[var(--color-bg-sunken)] !text-[var(--color-text)] text-wrap;
       }
 
       h1 {
