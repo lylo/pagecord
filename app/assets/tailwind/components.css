@@ -83,14 +83,14 @@
       }
 
       .icon {
-        @apply text-[var(--color-text-disabled)];
+        @apply !text-[var(--color-text-light)];
       }
 
       .icon:hover {
-        @apply text-[var(--color-text-light)];
+        @apply !text-[var(--color-text-muted)];
       }
 
-      .icon-active {
+      .icon-active, .icon-active:hover {
         @apply text-red-500;
       }
     }

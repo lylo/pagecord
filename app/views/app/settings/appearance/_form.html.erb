@@ -22,6 +22,30 @@
   </div>
 
   <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Colour Scheme</h3>
+    <p>
+      Choose a colour scheme for your blog.
+    </p>
+    <%= render "theme_colour", form: form %>
+  </div>
+
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Font</h3>
+    <p>
+      Choose a font for your blog.
+    </p>
+    <%= render "theme_font", form: form %>
+  </div>
+
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Content Width</h3>
+    <p class="mb-4">
+      Choose how wide your blog content should be displayed.
+    </p>
+    <%= render "layout_width", form: form %>
+  </div>
+
+  <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Layout</h3>
     <p>
       Would you like your blog home page to be a stream of posts, or a list of titles?

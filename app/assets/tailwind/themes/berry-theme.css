@@ -1,0 +1,12 @@
+[data-theme="berry"] {
+  --theme-hue: 330;
+  --theme-lightness: 0.95;
+  --theme-chroma: 0.07;
+  --theme-accent-hue-shift: 50;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="berry"] {
+    --theme-lightness: 0.14;
+  }
+}

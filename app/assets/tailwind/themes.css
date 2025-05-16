@@ -6,8 +6,10 @@
 /* Import base theme (dark/light mode) */
 @import './base.css';
 
-/* Import all custom themes */
+/* Import themes */
 @import './themes/mint-theme.css';
 @import './themes/lavender-theme.css';
 @import './themes/coral-theme.css';
-/* Add more theme imports here as needed */
+@import './themes/sand-theme.css';
+@import './themes/sky-theme.css';
+@import './themes/berry-theme.css';

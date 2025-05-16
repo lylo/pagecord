@@ -1,16 +1,12 @@
-/* Coral theme */
 [data-theme="coral"] {
-  /* Coral theme variables */
-  --theme-hue: 16;
-  --theme-lightness: 0.98;
-  --theme-chroma: 0.06;
-  --theme-accent-hue-shift: -160; /* A complementary blue-ish color to coral */
+  --theme-hue: 6;
+  --theme-lightness: 0.92;
+  --theme-chroma: 0.05;
+  --theme-accent-hue-shift: -60;
 }
 
-/* Dark mode for coral theme */
 @media (prefers-color-scheme: dark) {
   [data-theme="coral"] {
-    /* Only need to override variables that change in dark mode */
     --theme-lightness: 0.15;
   }
 }

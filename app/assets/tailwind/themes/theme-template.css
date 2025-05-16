@@ -1,4 +1,4 @@
-/* Theme template - base calculations for all color themes */
+/* Base calculations for all color themes */
 :root {
   /* Default theme variables that will be overridden by specific themes */
   --theme-hue: 0;

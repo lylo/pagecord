@@ -16,7 +16,7 @@ class App::Settings::AppearanceController < AppController
 
     def appearance_params
       permitted_params = [
-        :bio, :title, :layout,
+        :bio, :title, :layout, :theme, :font, :width,
         social_links_attributes: [ :id, :platform, :url, :_destroy ]
       ]
 

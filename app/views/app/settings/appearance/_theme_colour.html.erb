@@ -1,0 +1,30 @@
+<div class="mt-4 mb-8">
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+    <% Themeable::THEMES.each do |theme_name| %>
+      <div class="theme-option relative">
+        <%= form.radio_button :theme, theme_name,
+          checked: @blog.theme == theme_name,
+          class: "sr-only peer",
+          id: "theme_#{theme_name}" %>
+        <label for="theme_<%= theme_name %>"
+          class="flex flex-col rounded-lg border-2 border-transparent p-3 cursor-pointer
+                 peer-checked:border-sky-500 dark:peer-checked:border-sky-600
+                 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          data-theme="<%= theme_name %>">
+          <div class="w-full h-12 rounded-md shadow-sm mb-2" style="background-color: var(--color-bg);">
+            <div class="w-full h-3 rounded-t-md" style="background-color: var(--color-bg-subtle);"></div>
+            <div class="px-2 py-1">
+              <div class="w-3/4 h-1.5 rounded-sm mt-2" style="background-color: var(--color-accent);"></div>
+              <div class="w-full h-1 rounded-sm mt-1.5" style="background-color: var(--color-text-muted);"></div>
+              <div class="w-5/6 h-1 rounded-sm mt-1" style="background-color: var(--color-text-light);"></div>
+            </div>
+          </div>
+          <div class="text-center text-sm capitalize font-medium text-slate-700 dark:text-slate-300">
+            <%= theme_name == "base" ? "Pagecord" : theme_name %>
+          </div>
+        </label>
+      </div>
+    <% end %>
+  </div>
+</div>
+

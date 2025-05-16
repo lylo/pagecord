@@ -1,0 +1,12 @@
+[data-theme="sand"] {
+  --theme-hue: 75;
+  --theme-lightness: 0.98;
+  --theme-chroma: 0.03;
+  --theme-accent-hue-shift: -30;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="sand"] {
+    --theme-lightness: 0.16;
+  }
+}
