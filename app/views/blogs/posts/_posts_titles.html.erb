@@ -14,7 +14,7 @@
         <div class="text-[var(--color-text-tertiary)] w-16 flex-shrink-0">
           <%= local_time post.published_at, "%b %d" %>
         </div>
-        <div>
+        <div class="text-[var(--color-text-heading)]">
           <%= link_to post_title(post), post_path(post), class: "font-medium hover:underline" %>
         </div>
       </div>
