@@ -1,5 +1,5 @@
 <%= turbo_frame_tag :posts do %>
-  <div data-controller="media-embeds" data-turbo="false">
+  <div data-controller="media-embeds turbo-frame-top">
     <%= render partial: "stream_post", collection: @posts, as: :post %>
   </div>
 
