@@ -75,6 +75,10 @@
       h1.post-title {
         @apply !text-3xl !mb-8 !text-[var(--color-text-heading)];
       }
+
+      img {
+        @apply !mt-2 !mb-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
+      }
     }
 
     .post-footer {
