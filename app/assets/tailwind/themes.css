@@ -1,0 +1,13 @@
+/* Import all theme-related files */
+
+/* First, import the theme template with shared calculations */
+@import './themes/theme-template.css';
+
+/* Import base theme (dark/light mode) */
+@import './base.css';
+
+/* Import all custom themes */
+@import './themes/mint-theme.css';
+@import './themes/lavender-theme.css';
+@import './themes/coral-theme.css';
+/* Add more theme imports here as needed */

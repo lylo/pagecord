@@ -1,0 +1,89 @@
+/* Theme template - base calculations for all color themes */
+:root {
+  /* Default theme variables that will be overridden by specific themes */
+  --theme-hue: 0;
+  --theme-lightness: 0.98;
+  --theme-chroma: 0.03;
+  --theme-accent-hue-shift: 120;
+}
+
+/* Shared theme calculations */
+[data-theme]:not([data-theme="base"]) {
+  /* === Backgrounds === */
+  --color-bg: oklch(var(--theme-lightness) var(--theme-chroma) var(--theme-hue));
+  --color-bg-subtle: oklch(calc(var(--theme-lightness) - 0.05) var(--theme-chroma) var(--theme-hue));
+  --color-bg-elevated: oklch(calc(var(--theme-lightness) - 0.1) var(--theme-chroma) var(--theme-hue));
+  --color-bg-sunken: oklch(0.93 0.03 var(--theme-hue));
+  --color-bg-inverted: oklch(0.25 0.04 calc(var(--theme-hue) + 20)); /* A darkish inverted background */
+
+  /* === Text === */
+  --color-text: oklch(0.25 0.04 calc(var(--theme-hue) + 20));
+  --color-text-heading: oklch(0.25 0.04 calc(var(--theme-hue) + 20));
+  --color-text-muted: oklch(0.50 0.04 calc(var(--theme-hue) + 20));
+  --color-text-light: oklch(0.65 0.03 calc(var(--theme-hue) + 20));
+  --color-text-disabled: oklch(0.65 0.02 calc(var(--theme-hue) + 20));
+  --color-text-inverted: white;
+
+  /* === Accent === */
+  --color-accent: oklch(0.55 0.12 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
+  --color-accent-hover: oklch(0.40 0.10 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
+  --color-accent-muted: oklch(0.65 0.05 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
+
+  /* === Borders & UI === */
+  --color-border: oklch(0.85 0.03 var(--theme-hue));
+  --color-border-strong: oklch(0.65 0.05 var(--theme-hue));
+  --color-focus: oklch(0.80 0.10 var(--theme-hue) / 0.5);
+  --color-shadow: oklch(0.30 0.03 var(--theme-hue) / 0.3);
+
+  /* === Forms === */
+  --color-input-bg: white;
+  --color-input-border: oklch(0.85 0.03 var(--theme-hue));
+  --color-input-focus: oklch(0.80 0.10 var(--theme-hue) / 0.5);
+  --color-button-bg: oklch(0.60 0.06 var(--theme-hue));
+  --color-button-hover: oklch(0.70 0.07 var(--theme-hue));
+  --color-button-text: oklch(0.95 0.02 var(--theme-hue));
+  --color-placeholder: oklch(0.65 0.02 calc(var(--theme-hue) + 20));
+}
+
+/* Dark mode shared calculations */
+@media (prefers-color-scheme: dark) {
+  [data-theme]:not([data-theme="base"]) {
+    /* Override the lightness for dark mode */
+    --theme-lightness: 0.15;
+
+    /* === Backgrounds === */
+    --color-bg: oklch(var(--theme-lightness) var(--theme-chroma) var(--theme-hue));
+    --color-bg-subtle: oklch(calc(var(--theme-lightness) + 0.05) var(--theme-chroma) var(--theme-hue));
+    --color-bg-elevated: oklch(calc(var(--theme-lightness) + 0.1) var(--theme-chroma) var(--theme-hue));
+    --color-bg-sunken: oklch(0.25 0.03 var(--theme-hue));
+    --color-bg-inverted: oklch(0.90 0.03 var(--theme-hue)); /* Light background in dark mode */
+
+    /* === Text === */
+    --color-text: oklch(0.90 0.04 calc(var(--theme-hue) + 20));
+    --color-text-heading: oklch(0.95 0.05 calc(var(--theme-hue) + 20));
+    --color-text-muted: oklch(0.70 0.03 calc(var(--theme-hue) + 20));
+    --color-text-light: oklch(0.60 0.02 calc(var(--theme-hue) + 20));
+    --color-text-disabled: oklch(0.50 0.015 calc(var(--theme-hue) + 20));
+    --color-text-inverted: oklch(0.15 0.03 var(--theme-hue)); /* Dark on light */
+
+    /* === Accent === */
+    --color-accent: oklch(0.60 0.12 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
+    --color-accent-hover: oklch(0.65 0.10 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
+    --color-accent-muted: oklch(0.50 0.05 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
+
+    /* === Borders & UI === */
+    --color-border: oklch(0.35 0.03 var(--theme-hue));
+    --color-border-strong: oklch(0.50 0.05 var(--theme-hue));
+    --color-focus: oklch(0.65 0.10 var(--theme-hue) / 0.5);
+    --color-shadow: oklch(0.00 0.00 0 / 0.5); /* Soft black shadow */
+
+    /* === Forms === */
+    --color-input-bg: oklch(0.20 0.02 var(--theme-hue));
+    --color-input-border: oklch(0.35 0.03 var(--theme-hue));
+    --color-input-focus: oklch(0.50 0.07 var(--theme-hue));
+    --color-button-bg: oklch(0.40 0.06 var(--theme-hue));
+    --color-button-hover: oklch(0.50 0.07 var(--theme-hue));
+    --color-button-text: oklch(0.95 0.02 var(--theme-hue));
+    --color-placeholder: oklch(0.55 0.02 calc(var(--theme-hue) + 20));
+  }
+}

@@ -4,8 +4,7 @@
 @plugin "@tailwindcss/aspect-ratio";
 
 /* Themes */
-@import "./base.css";
-@import "./themes/mint-theme.css";
+@import "./themes.css";
 
 /* Components */
 @import "./components.css";

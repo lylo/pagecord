@@ -127,11 +127,11 @@
     }
 
     .social-icon {
-      @apply text-[var(--color-text-muted)] transition-colors duration-200;
+      @apply text-[var(--color-accent)] transition-colors duration-200;
     }
 
     .social-link:hover .social-icon {
-      @apply text-[var(--color-text)];
+      @apply text-[var(--color-accent-hover)];
     }
 
 

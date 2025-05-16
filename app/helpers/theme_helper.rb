@@ -21,8 +21,8 @@ module ThemeHelper
   def theme_data_attribute
     return nil unless @blog
 
-    if @blog.theme == "mint"
-      "data-theme=\"mint\"".html_safe
+    if [ "mint", "lavender", "coral" ].include? @blog.theme
+      "data-theme=\"#{@blog.theme}\"".html_safe
     else
       "data-theme=\"base\"".html_safe
     end
