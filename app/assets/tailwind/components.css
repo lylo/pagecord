@@ -83,15 +83,15 @@
       }
 
       .icon {
-        @apply !text-[var(--color-text-light)];
+        @apply !text-[var(--color-text-disabled)];
       }
 
       .icon:hover {
-        @apply !text-[var(--color-text-muted)];
+        @apply !text-[var(--color-text-light)];
       }
 
       .icon-active, .icon-active:hover {
-        @apply text-red-500;
+        @apply !text-red-500;
       }
     }
 

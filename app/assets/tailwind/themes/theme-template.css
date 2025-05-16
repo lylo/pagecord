@@ -21,7 +21,7 @@
   --color-text-heading: oklch(0.25 0.04 calc(var(--theme-hue) + 20));
   --color-text-muted: oklch(0.50 0.04 calc(var(--theme-hue) + 20));
   --color-text-light: oklch(0.65 0.03 calc(var(--theme-hue) + 20));
-  --color-text-disabled: oklch(0.65 0.02 calc(var(--theme-hue) + 20));
+  --color-text-disabled: oklch(0.8 0.02 calc(var(--theme-hue) + 20));
   --color-text-inverted: white;
 
   /* === Accent === */
