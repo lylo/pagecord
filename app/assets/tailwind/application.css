@@ -3,12 +3,11 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/aspect-ratio";
 
-/* Theme tokens and variables */
-@import "./tokens.css";
+/* Themes */
+@import "./base.css";
 @import "./themes/mint-theme.css";
-/* Add more theme files here as needed */
 
-/* Shared component styles */
+/* Components */
 @import "./components.css";
 
 /* Rest of your CSS for layout, utilities, etc. */

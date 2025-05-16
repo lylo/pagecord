@@ -1,5 +1,5 @@
 <div class="post-footer not-prose flex justify-between items-center my-4 text-sm">
-  <%= link_to post_path(post), class: "no-underline my-4 font-normal", data: { turbo_frame: "_top" } do %>
+  <%= link_to post_path(post), class: "my-4 font-normal", data: { turbo_frame: "_top" } do %>
     <%= local_time post.published_at, published_at_date_format %>
   <% end %>
 
@@ -10,7 +10,7 @@
                   title: "Reply to this post via email",
                   data: { turbo_frame: "_top" },
                   class: "flex" do %>
-          <%= inline_svg_tag "icons/reply.svg", class: "reply-by-email cursor-pointer w-5 h-5" %>
+          <%= inline_svg_tag "icons/reply.svg", class: "icon cursor-pointer w-5 h-5" %>
         <% end %>
       <% end %>
 

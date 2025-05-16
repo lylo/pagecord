@@ -3,13 +3,13 @@
                 method: :delete,
                 class: "flex",
                 title: "You liked this post 😊" do %>
-    <%= inline_svg_tag "icons/heart.svg", class: "upvote-icon upvote-icon-active cursor-pointer w-5 h-5" %>
+    <%= inline_svg_tag "icons/heart.svg", class: "icon icon-active cursor-pointer w-5 h-5" %>
   <% end %>
 <% else %>
   <%= button_to post_upvotes_path_for(post),
                 method: :post,
                 class: "flex",
                 title: "Click to like this post" do %>
-    <%= inline_svg_tag "icons/heart.svg", class: "upvote-icon cursor-pointer w-5 h-5" %>
+    <%= inline_svg_tag "icons/heart.svg", class: "icon cursor-pointer w-5 h-5" %>
   <% end %>
 <% end %>

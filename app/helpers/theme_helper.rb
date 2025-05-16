@@ -24,7 +24,7 @@ module ThemeHelper
     if @blog.theme == "mint"
       "data-theme=\"mint\"".html_safe
     else
-      nil
+      "data-theme=\"base\"".html_safe
     end
   end
 end
