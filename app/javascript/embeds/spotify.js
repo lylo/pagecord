@@ -10,8 +10,6 @@ class Spotify extends MediaSite {
         if (match) {
           const type = match[1]
           const id = match[2]
-          console.log(type)
-          console.log(id)
           return `https://open.spotify.com/embed/${type}/${id}`
         }
         return null
