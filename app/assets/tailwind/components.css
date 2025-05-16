@@ -27,10 +27,6 @@
     article {
       @apply text-[var(--color-text)];
 
-      h1.post-title {
-        @apply !text-3xl !mb-8 !text-[var(--color-text-heading)];
-      }
-
       h1:not(.post-title) {
         @apply !text-2xl !mb-0;
       }
@@ -74,6 +70,10 @@
 
       h1 {
         @apply !text-[var(--color-text)];
+      }
+
+      h1.post-title {
+        @apply !text-3xl !mb-8 !text-[var(--color-text-heading)];
       }
     }
 
