@@ -16,9 +16,15 @@ class App::Settings::AppearanceController < AppController
 
     def appearance_params
       permitted_params = [
-        :bio, :title, :layout, :theme, :font, :width,
+        :bio, :title, :layout,
         social_links_attributes: [ :id, :platform, :url, :_destroy ]
       ]
+
+      if current_features.enabled?(:themes)
+        permitted_params << [
+          :theme, :font, :width
+        ]
+      end
 
       permitted_params << [
         :avatar,
