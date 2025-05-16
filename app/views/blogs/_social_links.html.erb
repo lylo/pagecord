@@ -4,7 +4,7 @@
     <% @blog.social_links.each do |social_link| %>
         <%= link_to social_link_url(social_link), class: "social-link" do %>
           <%= inline_svg_tag "icons/social/#{social_link.platform.downcase}.svg",
-              class: "social-icon w-4 h-4 transition-colors" %>
+              class: "w-4 h-4" %>
         <% end %>
     <% end %>
     </div>

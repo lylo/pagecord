@@ -8,7 +8,7 @@
   .blog {
     /* ---- BLOG HEADER  ---- */
     header {
-      @apply mt-4 mb-8 pb-6 border-b border-[var(--color-border)];
+      @apply mt-4 mb-12 pb-4 border-b border-[var(--color-border)];
 
       .bio {
         @apply mt-4 text-sm prose text-[var(--color-text-muted)] break-words;
@@ -126,15 +126,11 @@
     }
 
     .social-link {
-      @apply text-[var(--color-text)];
+      @apply !text-[var(--color-text-light)];
     }
 
-    .social-icon {
-      @apply text-[var(--color-accent)] transition-colors duration-200;
-    }
-
-    .social-link:hover .social-icon {
-      @apply text-[var(--color-accent-hover)];
+    .social-link:hover {
+      @apply !text-[var(--color-text-muted)];
     }
 
     /* Confirmation card component */
