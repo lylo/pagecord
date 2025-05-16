@@ -8,7 +8,7 @@
   </p>
 
   <p>
-    To help you get started, we're going to set a few things up. You can change any of this in your Settings area at any time!
+    To help you get started, we're going to set a few things up. You don't need to decide now &ndash; you can change any of this in your Settings area at any time!
   </p>
 
   <h2 class="text-xl sm:text-2xl">
@@ -68,16 +68,49 @@
     <% end %>
   </div>
 
-  <h2 class="text-xl sm:text-2xl">
-    Choose your blog layout
+  <% if current_features.enabled?(:themes) %>
+    <h2 class="text-xl sm:text-2xl">
+      Pick a colour scheme 🎨
+    </h2>
+    <p>
+      The default is the classic Pagecord minimal monochrome.
+    </p>
+
+    <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+      <%= render "/app/settings/appearance/theme_colour", form: form %>
+    <% end %>
+
+    <h2 class="text-xl sm:text-2xl">
+      Choose a typeface
+    </h2>
+    <p>
+      Choose whether you'd like a sans-serif font, or serif for that elegant look.
+    </p>
+    <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+      <%= render "/app/settings/appearance/theme_font", form: form %>
+    <% end %>
+  <% end %>
+
+  <h2 class="text-xl sm:text-2xl mt-8">
+    Choose your home page layout
   </h2>
-
   <p>
-    The default blog layout for Pagecord is a stream of all your posts. If you prefer a more compact, traditional look, you can choose to display a list of post titles and dates.
+    The default layout for a Pagecord blog is a stream of all your posts on the home page. If you prefer a more compact, traditional look, you can choose to display a list of post titles and dates.
   </p>
-
   <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
     <%= render "/app/settings/appearance/layout_options", form: form %>
+  <% end %>
+
+  <% if current_features.enabled?(:themes) %>
+    <h2 class="text-xl sm:text-2xl mt-8">
+      Choose a page width
+    </h2>  <p class="mb-4">
+      Choose whether you'd like the standard layout, or one that's wider or narrow.
+    </p>
+
+    <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+      <%= render "/app/settings/appearance/layout_width", form: form %>
+    <% end %>
   <% end %>
 
   <h2 class="text-xl sm:text-2xl">
