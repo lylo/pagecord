@@ -37,7 +37,7 @@
   --color-accent-muted: theme('colors.slate.400');
 
   /* === Borders & UI === */
-  --color-border: theme('colors.slate.300');
+  --color-border: theme('colors.slate.200');
   --color-border-strong: theme('colors.slate.500');
   --color-focus: theme('colors.slate.500 / 0.5');
   --color-shadow: theme('colors.slate.400 / 0.3');
