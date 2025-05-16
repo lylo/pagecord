@@ -7,15 +7,21 @@
         <% end %>
       </div>
 
-      <div class="font-bold text-lg">
-        <%= render "blogs/blog_title" %>
+      <div>
+        <div class="font-bold text-lg">
+          <%= render "blogs/blog_title" %>
+        </div>
+
+        <div class="mt-2">
+          <%= render "blogs/follow" %>
+        </div>
       </div>
     </div>
   <% else %>
     <div class="font-bold text-lg">
       <%= render "blogs/blog_title" %>
     </div>
-  <% end %>
 
-  <%= render "blogs/follow" %>
+    <%= render "blogs/follow" %>
+  <% end %>
 </div>
