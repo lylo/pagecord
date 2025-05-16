@@ -96,32 +96,31 @@
     }
 
     /* Email subscription form component */
-    .email-subscription-form {
-      @apply mt-6 mb-2 p-4 rounded-lg max-w-[450px] mx-auto text-sm bg-[var(--color-bg-subtle)] text-[var(--color-text)];
+    .form {
+      @apply mt-6 mb-2 p-4 rounded-lg mx-auto text-sm bg-[var(--color-bg-subtle)] text-[var(--color-text)];
     }
 
     /* Form elements */
-    .email-subscription-form input[type="email"] {
-      @apply bg-[var(--color-input-bg)] border border-[var(--color-input-border)] border-r-0 text-[var(--color-text)] rounded-l-md ring-0 focus:border-[var(--color-input-focus)] focus:outline-none;
+    .form label {
+      @apply font-medium;
     }
 
-    .email-subscription-form input[type="email"]::placeholder {
+    .form input[type="text"], .form input[type="email"], .form textarea {
+      @apply bg-[var(--color-input-bg)] border border-[var(--color-input-border)] text-[var(--color-text)] rounded-l-md ring-0 focus:border-[var(--color-input-focus)] focus:outline-none;
+    }
+
+    .form input[type="email"]::placeholder {
       @apply text-[var(--color-placeholder)];
     }
 
-    .email-subscription-form input[type="submit"] {
+    .form input[type="submit"] {
       @apply bg-[var(--color-button-bg)] text-[var(--color-button-text)] rounded-r-md py-1 px-3 cursor-pointer;
     }
 
-    .email-subscription-form input[type="submit"]:hover {
+    .form input[type="submit"]:hover {
       @apply bg-[var(--color-button-hover)];
     }
 
-    .subscription-description {
-      @apply text-[var(--color-text-muted)] text-sm;
-    }
-
-    /* Social links */
     .social-link {
       @apply text-[var(--color-text)];
     }
@@ -133,7 +132,6 @@
     .social-link:hover .social-icon {
       @apply text-[var(--color-accent-hover)];
     }
-
 
     /* Confirmation card component */
     .confirmation-card {
