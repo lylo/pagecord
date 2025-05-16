@@ -1,5 +1,5 @@
 <% has_social_links = @blog.social_links.present? %>
-<div class="social-links <%= has_social_links ? "mt-4" : "mt-12" %>">
+<div class="social-links <%= has_social_links ? "mt-4" : "mt-8" %>">
   <% if @blog.social_links.present? %>
     <div class="flex justify-end items-center gap-x-3 sm:gap-x-2">
     <% @blog.social_links.each do |social_link| %>
