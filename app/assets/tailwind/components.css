@@ -56,8 +56,12 @@
         list-style-position: outside !important;
       }
 
+      li::marker {
+        @apply !text-[var(--color-text-light)];
+      }
+
       blockquote {
-        @apply !my-2 !text-[var(--color-text-muted)] border-l-[var(--color-border)];
+        @apply !my-2 !text-[var(--color-text-muted)] !border-l-[var(--color-border)];
       }
 
       code {
