@@ -21,6 +21,7 @@
   --color-bg: theme('colors.white');
   --color-bg-subtle: theme('colors.slate.100');
   --color-bg-elevated: theme('colors.slate.200');
+  --color-bg-sunken: theme('colors.slate.300');
 
   /* === Text === */
   --color-text: theme('colors.slate.700');
@@ -58,6 +59,7 @@
     --color-bg: theme('colors.slate.900');
     --color-bg-subtle: theme('colors.slate.800');
     --color-bg-elevated: theme('colors.slate.700');
+    --color-bg-sunken: theme('colors.slate.600');
 
     /* === Text === */
     --color-text-heading: theme('colors.slate.100');
