@@ -1,11 +1,11 @@
 <%= render "blogs/header", hide_email_form: true %>
 
-<div class="mt-12 text-center rounded-lg shadow-md border-slate-200 dark:border-slate-600 dark:bg-slate-800 bg-slate-50 max-w-[450px] mx-auto p-8">
-  <div>
+<div class="confirmation-card mt-12 text-center max-w-[450px] mx-auto p-8">
+  <div class="text-body">
     Your subscription to <span class="font-bold"><%= @blog.display_name %></span> is confirmed.
     You'll receive a weekly email digest when new posts are published.
   </div>
   <div class="mt-4">
-    <%= link_to "Unsubscribe", email_subscriber_unsubscribe_path_for(@subscriber), class: "text-sm font-medium underline" %>
+    <%= link_to "Unsubscribe", email_subscriber_unsubscribe_path_for(@subscriber), class: "text-meta font-medium underline" %>
   </div>
 </div>

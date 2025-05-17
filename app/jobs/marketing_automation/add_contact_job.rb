@@ -12,9 +12,9 @@ class MarketingAutomation::AddContactJob < ApplicationJob
     def subscribe_to_pagecord_blog(user)
       if user.marketing_consent
         if pagecord = Blog.find_by(name: "pagecord")
-          pagecord.email_subscribers.find_or_create_by(
-            email: user.email
-          )
+          pagecord.email_subscribers.find_or_create_by(email: user.email) do |subscriber|
+            subscriber.confirmed_at = Time.current
+          end
         end
       end
     end

@@ -23,6 +23,6 @@ class App::OnboardingsController < AppController
   private
 
     def blog_params
-      params.require(:blog).permit(:bio, :title, :layout)
+      params.require(:blog).permit(:bio, :title, :layout, :theme, :width, :font)
     end
 end

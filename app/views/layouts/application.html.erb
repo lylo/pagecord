@@ -4,10 +4,10 @@
     <%= render "layouts/head" %>
   </head>
 
-  <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
+  <body class="flex flex-col min-h-screen <%= font_class %>" <%= theme_data_attribute %>>
     <main class="container mx-auto px-5 flex flex-grow">
-      <div class="max-w-xl w-full mx-auto dark:text-slate-100 text-slate-900">
-        <%= render "app/shared/flash" %>
+      <div class="blog <%= content_width_class %> w-full mx-auto">
+        <%= render "blogs/flash" %>
 
         <%= yield %>
       </div>

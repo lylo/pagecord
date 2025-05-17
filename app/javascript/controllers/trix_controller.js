@@ -5,17 +5,17 @@ export default class extends Controller {
     // Initialize and enhance the Trix editor
     this.element.addEventListener("trix-initialize", (event) => {
       const editor = event.target
-      const subscribed = editor.dataset.subscribed === "true"
+      const allowAttachments = editor.dataset.attachments === "true"
 
-      if (!subscribed) {
+      if (!allowAttachments) {
         editor.addEventListener("trix-file-accept", (e) => {
           e.preventDefault()
-          alert("Attachments are only available for paying customers")
+          alert("Attachments are not available")
         })
 
         editor.addEventListener("trix-attachment-add", (e) => {
           e.attachment.remove()
-          alert("Attachments are only available for paying customers")
+          alert("Attachments are not available")
         })
       } else {
         editor.addEventListener("trix-file-accept", (e) => {

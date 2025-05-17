@@ -15,6 +15,10 @@ class MarketingAutomation::AddContactJobTest < ActiveJob::TestCase
       # ensure it's not added twice
       MarketingAutomation::AddContactJob.perform_now(@user.id)
     end
+
+  subscriber = EmailSubscriber.find_by(email: @user.email)
+  assert_not_nil subscriber
+  assert subscriber.confirmed?
   end
 
   test "should not add to Pagecord mailing list if not consented" do

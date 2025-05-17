@@ -127,7 +127,23 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Long-form writing</div>
-            <div class="hidden sm:block">Write long-form articles or microblog your thoughts. Both look fantastic 🎨</div>
+            <div class="hidden sm:block">Write long-form articles or microblog your thoughts. Both look great! 📝</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Themes</div>
+            <div class="hidden sm:block">Style your blog with colour themes and fonts 🎨</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Image Attachments</div>
+            <div class="hidden sm:block">Attach images to your posts, as email attachments or using the editor 🖼️</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -188,15 +204,6 @@
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Image Attachments</div>
-            <div class="hidden sm:block">Attach images to your posts, as email attachments or using the editor 🖼️</div>
-          </td>
-          <td></td>
-          <td class="text-center align-middle text-xl">✅</td>
-        </tr>
-
-        <tr>
-          <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Post Likes</div>
             <div class="hidden sm:block">Visitors can 'like' your posts. You track the stats in the app ❤️</div>
           </td>
@@ -247,7 +254,7 @@
     suggest improvements, or (if you're feeling brave) host it yourself!
   </p>
 
-  <div class="email mt-12 mb-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 p-4 rounded-lg md:mx-12 text-sm">
+  <div class="mt-12 mb-2 max-w-[500px] mx-auto bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 p-4 rounded-lg text-sm">
     <%= turbo_frame_tag "email_subscriber_form" do %>
       <%= render "newsletter_form" %>
     <% end %>

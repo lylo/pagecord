@@ -3,10 +3,13 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/aspect-ratio";
 
-@theme {
-  --font-sans: InterVariable, sans-serif;
-}
+/* Themes */
+@import "./themes.css";
 
+/* Components */
+@import "./components.css";
+
+/* Rest of your CSS for layout, utilities, etc. */
 @layer utilities {
   @keyframes fadeIn {
     0%   { opacity: 0; }
@@ -25,101 +28,31 @@
   .animate-fadeOut {
     animation: fadeOut 1s ease-out forwards;
   }
-}
 
-
-@layer components {
-  .btn-primary {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-slate-300 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800 cursor-pointer;
+  /* Theme width utility classes */
+  .max-w-content-narrow {
+    max-width: var(--content-width-narrow);
   }
 
-  .btn-optional {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:hover:bg-slate-800 dark:focus:ring-slate-800 cursor-pointer;
+  .max-w-content-standard {
+    max-width: var(--content-width-standard);
   }
 
-  .btn-secondary {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100;
+  .max-w-content-wide {
+    max-width: var(--content-width-wide);
   }
 
-  .btn-danger {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 hover:text-white dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-red-700 dark:focus:ring-slate-800 cursor-pointer;
+  /* Font size utility classes */
+  .text-size-standard {
+    font-size: var(--font-size-standard);
   }
 
-  dialog::backdrop {
-    backdrop-filter: blur(2px);
-  }
-
-  dialog[open] {
-    animation: modal-open 150ms ease-out;
-  }
-
-  @keyframes modal-open {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+  .text-size-large {
+    font-size: var(--font-size-large);
   }
 }
 
 @layer base {
-  article {
-    h1:not(.title) {
-      @apply !text-2xl mb-0;
-
-      strong {
-        @apply font-bold;
-      }
-    }
-  }
-
-  .prose {
-    /* Override Tailwind prose which wraps code in backticks */
-    code:before, code:after {
-      content: "";
-    }
-
-    img {
-      @apply !mt-2 !mb-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
-    }
-
-    blockquote {
-      @apply !my-2;
-    }
-
-    pre {
-      @apply !my-2 text-wrap;
-
-      a {
-        @apply !text-white;
-      }
-
-      strong {
-        @apply !text-white;
-      }
-    }
-
-    h1 {
-      @apply !mb-0;
-    }
-
-    h1.title {
-      @apply !text-3xl !mb-8;
-    }
-
-    ol, ul {
-      @apply ml-5;
-      list-style-position: outside !important;
-    }
-  }
-
-  blockquote {
-    @apply !my-2;
-  }
-
   trix-toolbar {
     position: sticky;
     top: 0;

@@ -7,7 +7,7 @@
         placeholder: "add a bio to your profile if you like...",
         class: "trix-content min-h-[150px] prose border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
         spellcheck: true,
-        data: { controller: "autogrow trix", subscribed: false } %>
+        data: { controller: "autogrow trix", attachments: false } %>
     </div>
   </div>
 
@@ -20,6 +20,32 @@
 
     <%= form.text_field :title, class: "mt-4 w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
   </div>
+
+  <% if current_features.enabled?(:themes) %>
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Colour Scheme</h3>
+    <p>
+      Choose a colour scheme for your blog.
+    </p>
+    <%= render "theme_colour", form: form %>
+  </div>
+
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Font</h3>
+    <p>
+      Choose a font for your blog.
+    </p>
+    <%= render "theme_font", form: form %>
+  </div>
+
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Content Width</h3>
+    <p class="mb-4">
+      Choose how wide your blog content should be displayed.
+    </p>
+    <%= render "layout_width", form: form %>
+  </div>
+  <% end %>
 
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Layout</h3>

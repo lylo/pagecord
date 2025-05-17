@@ -58,8 +58,8 @@ class App::PostsController < AppController
     # HTML from inbound email doesn't often play nicely with Trix
     # This method performs some tweaks to try and help.
     def prepare_content_for_trix
-      # remove new line characters (except for within <pre> tags)
-      @post.content = @post.content.to_s.gsub(/(?!<pre[^>]*?>.*?)\n(?![^<]*?<\/pre>)/m, "")
+      # Remove all newlines except for within <pre> blocks
+      @post.content.to_s.gsub(/(<pre[\s\S]*?<\/pre>)|[\r\n]+/, '\1')
 
       # remove whitespace between tags (Trix seems to add a <br> tag in some cases)
       @post.content = @post.content.to_s.gsub(/>\s+</, "><")
