@@ -1,12 +1,12 @@
 [data-theme="lavender"] {
   --theme-hue: 300;
   --theme-lightness: 0.98;
-  --theme-chroma: 0.05;
+  --theme-chroma: 0.04;
   --theme-accent-hue-shift: 60;
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="lavender"] {
-    --theme-lightness: 0.15;
+    --theme-lightness: 0.17;
   }
 }

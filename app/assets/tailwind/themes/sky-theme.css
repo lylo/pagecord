@@ -1,12 +1,13 @@
 [data-theme="sky"] {
   --theme-hue: 210;
-  --theme-lightness: 0.98;
-  --theme-chroma: 0.02;
+  --theme-lightness: 0.97;
+  --theme-chroma: 0.03;
   --theme-accent-hue-shift: 40;
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="sky"] {
-    --theme-lightness: 0.14;
+    --theme-hue: 240;
+    --theme-lightness: 0.17;
   }
 }

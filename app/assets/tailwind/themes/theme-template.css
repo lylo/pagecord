@@ -48,9 +48,6 @@
 /* Dark mode shared calculations */
 @media (prefers-color-scheme: dark) {
   [data-theme]:not([data-theme="base"]) {
-    /* Override the lightness for dark mode */
-    --theme-lightness: 0.15;
-
     /* === Backgrounds === */
     --color-bg: oklch(var(--theme-lightness) var(--theme-chroma) var(--theme-hue));
     --color-bg-subtle: oklch(calc(var(--theme-lightness) + 0.1) var(--theme-chroma) var(--theme-hue));
