@@ -8,7 +8,7 @@
   .blog {
     /* ---- BLOG HEADER  ---- */
     header {
-      @apply mt-4 mb-12 pb-4 border-b border-[var(--color-border)];
+      @apply mt-4 mb-8 pb-4 border-b border-[var(--color-border)];
 
       .bio {
         @apply mt-4 text-sm prose text-[var(--color-text-muted)] break-words;
