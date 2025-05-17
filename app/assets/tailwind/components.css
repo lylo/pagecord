@@ -4,7 +4,6 @@
     @apply bg-[var(--color-bg)] text-[var(--color-text)];
   }
 
-
   .blog {
     /* ---- BLOG HEADER  ---- */
     header {
@@ -140,6 +139,10 @@
     /* Confirmation card component */
     .confirmation-card {
       @apply bg-[var(--color-bg-subtle)] rounded-lg shadow-md border border-[var(--color-border)] text-[var(--color-text)];
+    }
+
+    .follow-button {
+      @apply text-xs inline-block border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] rounded-xl px-2 py-1 hover:bg-[var(--color-bg-subtle)] text-center;
     }
   }
 
