@@ -1,13 +1,15 @@
 <footer class="w-full text-center p-8 text-sm text-slate-400 dark:text-slate-500">
   <div class="flex flex-col md:flex-row md:gap-x-4 gap-y-4 justify-center">
-    <%= link_to "Log In", login_path, class: "hover:underline font-semibold" %>
+    <%= link_to "Log In", login_path, class: "font-semibold hover:text-slate-600 dark:hover:text-slate-300" %>
 
     <div class="flex gap-x-4 justify-center items-center">
-      <%= link_to "FAQ", faq_path %>
-      <%= mail_to "hello@pagecord.com", "Contact" %>
-      <%= link_to "Terms", terms_path %>
-      <%= link_to "Privacy", privacy_path %>
-      <%= link_to "Github", "https://github.com/lylo/pagecord" %>
+      <%= link_to "FAQ", faq_path, class: "hover:text-slate-600 dark:hover:text-slate-300" %>
+      <%= mail_to "hello@pagecord.com", "Contact", class: "hover:text-slate-600 dark:hover:text-slate-300" %>
+      <%= link_to "Terms", terms_path, class: "hover:text-slate-600 dark:hover:text-slate-300" %>
+      <%= link_to "Privacy", privacy_path, class: "hover:text-slate-600 dark:hover:text-slate-300" %>
+      <%= link_to "https://github.com/lylo/pagecord" do %>
+        <%= inline_svg_tag "icons/social/github.svg", class: "w-4 h-4 hover:text-slate-900 dark:hover:text-slate-100", title: "Follow Pagecord on Github" %>
+      <% end %>
       <%= link_to "https://bsky.app/profile/pagecord.com" do %>
         <%= inline_svg_tag "icons/social/bluesky.svg", class: "w-4 h-4 hover:text-[#1185fe]", title: "Follow Pagecord on Bluesky" %>
       <% end %>
