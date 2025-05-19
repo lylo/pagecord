@@ -68,27 +68,25 @@
     <% end %>
   </div>
 
-  <% if current_features.enabled?(:themes) %>
-    <h2 class="text-xl sm:text-2xl">
-      Pick a colour scheme 🎨
-    </h2>
-    <p>
-      The default is the classic Pagecord minimal monochrome.
-    </p>
+  <h2 class="text-xl sm:text-2xl">
+    Pick a colour scheme 🎨
+  </h2>
+  <p>
+    The default is the classic Pagecord minimal monochrome.
+  </p>
 
-    <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
-      <%= render "/app/settings/appearance/theme_colour", form: form %>
-    <% end %>
+  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+    <%= render "/app/settings/appearance/theme_colour", form: form %>
+  <% end %>
 
-    <h2 class="text-xl sm:text-2xl">
-      Choose a typeface
-    </h2>
-    <p>
-      Choose whether you'd like a sans-serif font, or serif for that elegant look.
-    </p>
-    <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
-      <%= render "/app/settings/appearance/theme_font", form: form %>
-    <% end %>
+  <h2 class="text-xl sm:text-2xl">
+    Choose a typeface
+  </h2>
+  <p>
+    Choose whether you'd like a sans-serif font, or serif for that elegant look.
+  </p>
+  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+    <%= render "/app/settings/appearance/theme_font", form: form %>
   <% end %>
 
   <h2 class="text-xl sm:text-2xl mt-8">
@@ -101,16 +99,14 @@
     <%= render "/app/settings/appearance/layout_options", form: form %>
   <% end %>
 
-  <% if current_features.enabled?(:themes) %>
-    <h2 class="text-xl sm:text-2xl mt-8">
-      Choose a page width
-    </h2>  <p class="mb-4">
-      Choose whether you'd like the standard layout, or one that's wider or narrow.
-    </p>
+  <h2 class="text-xl sm:text-2xl mt-8">
+    Choose a page width
+  </h2>  <p class="mb-4">
+    Choose whether you'd like the standard layout, or one that's wider or narrow.
+  </p>
 
-    <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
-      <%= render "/app/settings/appearance/layout_width", form: form %>
-    <% end %>
+  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+    <%= render "/app/settings/appearance/layout_width", form: form %>
   <% end %>
 
   <h2 class="text-xl sm:text-2xl">
