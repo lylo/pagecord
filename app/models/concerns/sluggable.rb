@@ -13,6 +13,8 @@ module Sluggable
       loop do
         self.slug = to_title_param
         break unless self.class.exists?(slug: slug)
+
+        self.slug = "#{slug}-#{SecureRandom.hex(4)}"
       end
     end
 end
