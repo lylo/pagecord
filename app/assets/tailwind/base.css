@@ -3,7 +3,7 @@
   /* Typography */
   --font-sans: InterVariable, sans-serif;
   --font-serif: 'Lora', Georgia, serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: 'IBM Plex Mono', monospace;
 
   /* Content width options */
   --content-width-narrow: var(--container-md);

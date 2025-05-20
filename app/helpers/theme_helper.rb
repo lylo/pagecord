@@ -18,6 +18,19 @@ module ThemeHelper
     @blog.font_class
   end
 
+  def font_stylesheet
+    case font_class
+    when "font-sans"
+      "inter"
+    when "font-serif"
+      "lora"
+    when "font-mono"
+      "ibm-plex-mono"
+    else
+      "inter" # Default to sans font
+    end
+  end
+
   def theme_data_attribute
     return nil unless @blog
 
