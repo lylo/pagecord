@@ -6,6 +6,7 @@ one:
   blog: joel
   published_at: <%= 1.day.ago %>
   token: <%= SecureRandom.hex(4) %>
+  slug: the-art-of-street-photography
   <<: *default
 
 two:
@@ -13,6 +14,7 @@ two:
   blog: joel
   published_at: <%= 2.days.ago %>
   token: <%= SecureRandom.hex(4) %>
+  slug: the-beauty-of-landscape-photography
   <<: *default
 
 three:
@@ -20,6 +22,7 @@ three:
   blog: vivian
   published_at: <%= 1.week.ago %>
   token: <%= SecureRandom.hex(4) %>
+  slug: my-first-post
   <<: *default
 
 four:
@@ -27,6 +30,7 @@ four:
   blog: annie
   published_at: <%= 1.day.ago %>
   token: <%= SecureRandom.hex(4) %>
+  slug: what-ive-learned-about-photography
   <<: *default
 
 joel_draft:
@@ -35,6 +39,7 @@ joel_draft:
   token: <%= SecureRandom.hex(4) %>
   published_at: <%= 1.day.ago %>
   status: draft
+  slug: draft-post
 
 vivian_draft:
   title: Draft post
@@ -42,9 +47,11 @@ vivian_draft:
   token: <%= SecureRandom.hex(4) %>
   published_at: <%= 1.day.ago %>
   status: draft
+  slug: draft-post-as232df4
 
 joel_titleless:
   blog: joel
   published_at: <%= 2.weeks.ago %>
   token: <%= SecureRandom.hex(4) %>
+  slug: d3423ssd4
   <<: *default

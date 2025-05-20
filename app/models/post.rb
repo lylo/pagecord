@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-  include Draftable, Tokenable, Trimmable, Upvotable
+  include Draftable, Sluggable, Tokenable, Trimmable, Upvotable
 
   belongs_to :blog, inverse_of: nil
 
@@ -15,7 +15,7 @@ class Post < ApplicationRecord
   after_create  :detect_open_graph_image
 
   validate :body_or_title
-  # validates :slug, presence: true, length: { maximum: 150 }, uniqueness: { scope: :blog_id }
+  # validates :slug, presence: true, length: { maximum: 100 }, uniqueness: { scope: :blog_id }
 
   scope :visible, -> { published.where("published_at <= ?", Time.current) }
 
