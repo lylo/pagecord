@@ -1,6 +1,8 @@
 # Pagecord
 
-Publish your writing effortlessly by sending an email.
+Publish your writing effortlessly. All you need is email.
+
+[https://pagecord.com](https://pagecord.com)
 
 ![](https://github.com/lylo/pagecord/actions/workflows/ci.yml/badge.svg)
 
