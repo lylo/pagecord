@@ -35,12 +35,17 @@
 
     <%= form.text_field :title, placeholder: "Optional post title", class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg" %>
 
-    <div class="trix-container <%= "trix-no-attachments" unless Current.user.subscribed? %>">
+    <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
     <%= form.rich_text_area :content,
-        placeholder: "Write your post...",
-        class: "trix-content",
-        spellcheck: true,
-        data: { controller: "autogrow trix", attachments: true } %>
+      placeholder: "Write your post...",
+      class: "trix-content #{'!border-red-500' if @post.errors[:content].any?}",
+      spellcheck: true,
+      data: { controller: "autogrow trix", attachments: true } %>
+    <% if @post.errors[:content].any? %>
+      <div class="mt-1 text-xs text-red-500">
+      <%= @post.errors[:content].join(", ") %>
+      </div>
+    <% end %>
     </div>
 
     <div class="flex items-center justify-between mt-8">

@@ -14,14 +14,10 @@ class Post < ApplicationRecord
   before_create :set_published_at, :limit_content_size
   after_create  :detect_open_graph_image
 
-  validate :body_or_title
+  validates :content, presence: true
   # validates :slug, presence: true, length: { maximum: 100 }, uniqueness: { scope: :blog_id }
 
   scope :visible, -> { published.where("published_at <= ?", Time.current) }
-
-  def body_or_title
-    errors.add(:base, "A body or a title must be present") unless content.body.present? || title.present?
-  end
 
   def to_param
     token
