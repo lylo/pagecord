@@ -128,13 +128,14 @@ a {
 /* -------------------------------------
     DIGEST
 ------------------------------------- */
-.digest h1 {
+.digest .post-content h1 {
   font-weight: 700;
   text-align: left;
-  line-height: 1rem;
-  font-size: 22px !important;
-  margin: 0;
-  margin-bottom: 0; }
+  font-size: 18px !important;
+  line-height: 1.6rem;
+  margin-bottom: 0 !important;
+}
+
 
 .digest h2 {
   font-weight: 700;
@@ -279,9 +280,6 @@ hr {
   .body {
     background-color: #ffffff !important; /* Change background to white on mobile */
   }
-  table[class=body] h1 {
-    font-size: 28px !important;
-    margin-bottom: 10px !important; }
   table[class=body] h2 {
     font-size: 24px !important;
   }
