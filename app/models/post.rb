@@ -11,7 +11,7 @@ class Post < ApplicationRecord
   has_many :post_digests, through: :digest_posts
   has_many :replies, class_name: "Post::Reply", dependent: :destroy
 
-  before_create :set_published_at, :limit_content_size, :check_title_and_content
+  before_create :set_published_at, :limit_content_size
   after_create  :detect_open_graph_image
 
   validate :body_or_title
@@ -83,13 +83,6 @@ class Post < ApplicationRecord
         GenerateOpenGraphImageJob.perform_later(id)
       else
         GenerateOpenGraphImageJob.perform_now(id)
-      end
-    end
-
-    def check_title_and_content
-      if title.present? && content.body.blank?
-        self.content.body = title
-        self.title = nil
       end
     end
 end
