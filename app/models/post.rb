@@ -14,10 +14,14 @@ class Post < ApplicationRecord
   before_create :set_published_at, :limit_content_size
   after_create  :detect_open_graph_image
 
-  validates :content, presence: true
+  validate :content_present
   # validates :slug, presence: true, length: { maximum: 100 }, uniqueness: { scope: :blog_id }
 
   scope :visible, -> { published.where("published_at <= ?", Time.current) }
+
+  def content_present
+    errors.add(:content, "can't be blank") unless content.body.present?
+  end
 
   def to_param
     token

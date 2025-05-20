@@ -43,7 +43,7 @@
       data: { controller: "autogrow trix", attachments: true } %>
     <% if @post.errors[:content].any? %>
       <div class="mt-1 text-xs text-red-500">
-      <%= @post.errors[:content].join(", ") %>
+        A body is required
       </div>
     <% end %>
     </div>
