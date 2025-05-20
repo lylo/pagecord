@@ -15,6 +15,7 @@ class Post < ApplicationRecord
   after_create  :detect_open_graph_image
 
   validate :body_or_title
+  # validates :slug, presence: true, length: { maximum: 150 }, uniqueness: { scope: :blog_id }
 
   scope :visible, -> { published.where("published_at <= ?", Time.current) }
 
