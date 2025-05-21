@@ -56,7 +56,7 @@ class Blog::Export < ApplicationRecord
       template_path = Rails.root.join("app/views/blog/exports/post.html.erb")
       template = ERB.new(File.read(template_path), trim_mode: "-")
 
-      File.open(File.join(dir, "#{post.to_title_param}.html"), "w") do |file|
+      File.open(File.join(dir, "#{post.slug}.html"), "w") do |file|
         file.write(template.result(binding))
       end
     end

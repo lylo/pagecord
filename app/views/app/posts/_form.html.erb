@@ -23,6 +23,23 @@
       </div>
     </div>
 
+    <div class="<%= 'hidden' unless @post.errors[:slug].any? %> mb-8" data-post-attributes-target="section" data-section="slug">
+      <div class="mt-4 font-bold">
+      <%= form.label :slug, "Slug" %>
+      </div>
+
+      <div class="mt-2">
+        <%= form.text_field :slug,
+            class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg #{'!border-red-500' if @post.errors[:slug].any?}",
+            placeholder: "custom-url-path" %>
+        <% if @post.errors[:slug].any? %>
+          <div class="mt-1 text-xs text-red-500">
+            <%= @post.errors[:slug].to_sentence %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
     <div class="hidden mb-8" data-post-attributes-target="section" data-section="canonical-url">
       <div class="mt-4 font-bold">
       <%= form.label :canonical_url, "Canonical URL" %>

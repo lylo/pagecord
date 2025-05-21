@@ -5,7 +5,7 @@ class Blogs::BaseController < ApplicationController
   protected
 
   def blog_params
-    params.slice(:name, :page, :title, :token)
+    params.slice(:name, :page, :slug)
   end
 
   private

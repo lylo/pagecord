@@ -15,7 +15,6 @@ class Post < ApplicationRecord
   after_create  :detect_open_graph_image
 
   validate :content_present
-  # validates :slug, presence: true, length: { maximum: 100 }, uniqueness: { scope: :blog_id }
 
   scope :visible, -> { published.where("published_at <= ?", Time.current) }
 
@@ -25,18 +24,6 @@ class Post < ApplicationRecord
 
   def to_param
     token
-  end
-
-  def to_title_param
-    if url_title.blank?
-      token
-    else
-      "#{url_title}-#{token}"
-    end
-  end
-
-  def url_title
-    title&.parameterize&.truncate(72, omission: "") || ""
   end
 
   def pending?
