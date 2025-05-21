@@ -1,12 +1,9 @@
 module RoutingHelper
   def post_link(post, type)
-    # Ensure we have a slug or use ID as fallback
-    slug = post.slug.presence || post.id.to_s
-
     if post.blog.custom_domain?
-      send("custom_blog_post_#{type}", slug, host: post.blog.custom_domain)
+      send("custom_blog_post_#{type}", post.slug, host: post.blog.custom_domain)
     else
-      send("blog_post_#{type}", post.blog.name, slug)
+      send("blog_post_#{type}", post.blog.name, post.slug)
     end
   end
 
