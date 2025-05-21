@@ -23,7 +23,7 @@ class Blogs::PostsController < Blogs::BaseController
   def show
     @post = @blog.posts.visible
       .with_rich_text_content_and_embeds
-      .find_by!(token: blog_params[:token])
+      .find_by!(slug: blog_params[:slug])
 
     fresh_when @post, public: true, template: "blogs/posts/show"
   end

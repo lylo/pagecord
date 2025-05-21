@@ -70,7 +70,7 @@ Rails.application.routes.draw do
   get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
 
   namespace :app do
-    resources :posts
+    resources :posts, param: :token
     resources :settings, only: [ :index ]
 
     resource :onboarding, only: [ :show, :update ], path: "onboarding" do
@@ -139,8 +139,7 @@ Rails.application.routes.draw do
     get "/", to: "blogs/posts#index", as: :blog_posts
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
-    get "/:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_without_title
-    get "/:title-:token", to: "blogs/posts#show", constraints: { token: /[0-9a-f]+/ }, as: :post_with_title
+    get "/:slug", to: "blogs/posts#show", as: :blog_post
 
     resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
 
@@ -148,7 +147,7 @@ Rails.application.routes.draw do
     get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
     post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
 
-    resources :posts, only: [] do
+    resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create, :destroy ], module: :posts
       resources :replies, only: [ :new, :create ], module: :posts
     end

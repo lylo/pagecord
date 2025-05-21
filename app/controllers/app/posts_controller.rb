@@ -12,7 +12,7 @@ class App::PostsController < AppController
   end
 
   def edit
-    @post = Current.user.blog.posts.find_by!(token: params[:id])
+    @post = Current.user.blog.posts.find_by!(token: params[:token])
 
     prepare_content_for_trix
   end
@@ -23,36 +23,33 @@ class App::PostsController < AppController
       redirect_to app_posts_path, notice: "Post was successfully created"
     else
       @post = post
-      flash.now.alert = @post.errors.full_messages.to_sentence
       render :new, status: :unprocessable_entity
     end
   end
 
   def update
-    post = Current.user.blog.posts.find_by!(token: params[:id])
+    @post = Current.user.blog.posts.find_by!(token: params[:token])
 
-    if post.update(post_params)
+    if @post.update(post_params)
       redirect_to app_posts_path, notice: "Post was successfully updated"
     else
-      @post = post
-      flash.now.alert = @post.errors.full_messages.to_sentence
+      prepare_content_for_trix
       render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
-    post = Current.user.blog.posts.find_by!(token: params[:id])
+    post = Current.user.blog.posts.find_by!(token: params[:token])
     post.destroy!
 
     redirect_to app_posts_path, notice: "Post was successfully deleted"
   end
 
   private
-
     def post_params
       status = params[:button] == "save_draft" ? :draft : :published
 
-      params.require(:post).permit(:title, :content, :published_at, :canonical_url).merge(status: status)
+      params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url).merge(status: status)
     end
 
     # HTML from inbound email doesn't often play nicely with Trix

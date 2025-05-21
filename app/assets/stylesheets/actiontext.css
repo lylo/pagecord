@@ -160,6 +160,10 @@ trix-editor {
     }
   }
 
+  trix-editor[placeholder]::before {
+    color: var(--color-slate-600);
+  }
+
   li::marker {
     color: #9ba1aa;
   }

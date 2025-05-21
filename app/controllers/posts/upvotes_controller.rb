@@ -22,6 +22,6 @@ class Posts::UpvotesController < Blogs::BaseController
   private
 
     def load_post
-      @post = @blog.posts.find_by!(token: params[:post_id])
+      @post = @blog.posts.find_by!(token: params[:post_token])
     end
 end

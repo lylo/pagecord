@@ -7,7 +7,7 @@ class UpvotePostTest < ApplicationSystemTestCase
     post = blog.posts.published.first
     initial_upvotes = post.upvotes.count
 
-    visit post_without_title_path(post.blog.name, post.token)
+    visit blog_post_path(post.blog.name, post.slug)
 
     within "turbo-frame##{dom_id(post, :upvotes)}" do
       find("button[type=submit]").click

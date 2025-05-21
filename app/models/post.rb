@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-  include Draftable, Tokenable, Trimmable, Upvotable
+  include Draftable, Sluggable, Tokenable, Trimmable, Upvotable
 
   belongs_to :blog, inverse_of: nil
 
@@ -14,28 +14,16 @@ class Post < ApplicationRecord
   before_create :set_published_at, :limit_content_size
   after_create  :detect_open_graph_image
 
-  validate :body_or_title
+  validate :content_present
 
   scope :visible, -> { published.where("published_at <= ?", Time.current) }
 
-  def body_or_title
-    errors.add(:base, "A body or a title must be present") unless content.body.present? || title.present?
+  def content_present
+    errors.add(:content, "can't be blank") unless content.body.present?
   end
 
   def to_param
     token
-  end
-
-  def to_title_param
-    if url_title.blank?
-      token
-    else
-      "#{url_title}-#{token}"
-    end
-  end
-
-  def url_title
-    title&.parameterize&.truncate(72, omission: "") || ""
   end
 
   def pending?

@@ -34,7 +34,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should get show" do
     post = posts(:one)
 
-    get post_without_title_path(post.blog.name, post.token)
+    get blog_post_path(post.blog.name, post.slug)
 
     assert_response :success
     assert_equal posts(:one), assigns(:post)
@@ -106,7 +106,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should get show on custom domain" do
     post = posts(:four)
 
-    get "/#{post.token}", headers: { "HOST" => post.blog.custom_domain }
+    get "/#{post.slug}", headers: { "HOST" => post.blog.custom_domain }
 
     assert_response :success
   end
@@ -114,7 +114,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should redirect to pagecord home page for unrecognised custom domain" do
     post = posts(:four)
 
-    get "/#{post.token}", headers: { "HOST" => "gadzooks.com" }
+    get "/#{post.slug}", headers: { "HOST" => "gadzooks.com" }
 
     assert_redirected_to "http://www.example.com/"
   end
@@ -122,17 +122,17 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should redirect from default domain index to custom domain" do
     post = posts(:four)
 
-    get post_without_title_path(name: post.blog.name, token: post.token)
+    get blog_post_path(name: post.blog.name, slug: post.slug)
 
-    assert_redirected_to "http://#{post.blog.custom_domain}/#{post.token}"
+    assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
   end
 
   test "should redirect from default domain post to custom domain post" do
     post = posts(:four)
 
-    get "/#{post.blog.name}/#{post.token}"
+    get "/#{post.blog.name}/#{post.slug}"
 
-    assert_redirected_to "http://#{post.blog.custom_domain}/#{post.token}"
+    assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
   end
 
   test "should redirect to last page on pagy overflow" do
@@ -143,17 +143,17 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should set the canonical_url to the page URL by default" do
     post = posts(:one)
-    get post_without_title_path(post.blog.name, post.token)
+    get blog_post_path(post.blog.name, post.slug)
 
     assert_response :success
-    assert_select "link[rel=canonical][href=?]", post_without_title_url(post.blog.name, post.token)
+    assert_select "link[rel=canonical][href=?]", blog_post_url(post.blog.name, post.slug)
   end
 
   test "should set the canonical_url to the custom URL if present" do
     post = posts(:one)
     post.update!(canonical_url: "https://myblog.net")
 
-    get post_without_title_path(post.blog.name, post.token)
+    get blog_post_path(post.blog.name, post.slug)
 
     assert_response :success
     assert_select "link[rel=canonical][href=?]", "https://myblog.net"
@@ -178,7 +178,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should insert author attribution into the head" do
     blog = blogs(:joel)
 
-    get post_without_title_path(blog.name, blog.posts.visible.first.token)
+    get blog_post_path(blog.name, blog.posts.visible.first.slug)
 
     assert_response :success
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]', count: 0
@@ -186,7 +186,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     blog.update!(fediverse_author_attribution: "@joel@pagecord.com")
 
     assert_response :success
-    get post_without_title_path(blog.name, blog.posts.visible.first.token)
+    get blog_post_path(blog.name, blog.posts.visible.first.slug)
 
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end

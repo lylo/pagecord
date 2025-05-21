@@ -1,17 +1,9 @@
 module RoutingHelper
   def post_link(post, type)
     if post.blog.custom_domain?
-      if post.url_title.present?
-        send("custom_post_with_title_#{type}", post.url_title, post.token, host: post.blog.custom_domain)
-      else
-        send("custom_post_without_title_#{type}", post.token, host: post.blog.custom_domain)
-      end
+      send("custom_blog_post_#{type}", post.slug, host: post.blog.custom_domain)
     else
-      if post.url_title.present?
-        send("post_with_title_#{type}", post.blog.name, post.url_title, post.token)
-      else
-        send("post_without_title_#{type}", post.blog.name, post.token)
-      end
+      send("blog_post_#{type}", post.blog.name, post.slug)
     end
   end
 
@@ -70,17 +62,17 @@ module RoutingHelper
 
   def new_post_reply_path_for(post)
     if post.blog.custom_domain?
-      new_custom_post_reply_path(post.token)
+      new_custom_post_reply_path(post)
     else
-      new_post_reply_path(post.blog.name, post.token)
+      new_post_reply_path(post.blog.name, post)
     end
   end
 
   def post_replies_path_for(post)
     if post.blog.custom_domain?
-      custom_post_replies_path(post.token)
+      custom_post_replies_path(post)
     else
-      post_replies_path(post.blog.name, post.token)
+      post_replies_path(post.blog.name, post)
     end
   end
 
@@ -88,17 +80,17 @@ module RoutingHelper
 
   def post_upvote_path_for(post, upvote)
     if post.blog.custom_domain?
-      custom_post_upvote_path(post.token, upvote)
+      custom_post_upvote_path(post, upvote)
     else
-      post_upvote_path(post.blog.name, post.token, upvote)
+      post_upvote_path(post.blog.name, post, upvote)
     end
   end
 
   def post_upvotes_path_for(post)
     if post.blog.custom_domain?
-      custom_post_upvotes_path(post.token)
+      custom_post_upvotes_path(post)
     else
-      post_upvotes_path(post.blog.name, post.token)
+      post_upvotes_path(post.blog.name, post)
     end
   end
 end

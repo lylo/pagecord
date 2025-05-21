@@ -4,7 +4,7 @@ class PostTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
   test "should generate a token on create" do
-    post = Post.create(blog: blogs(:joel), title: "a new post")
+    post = Post.create(blog: blogs(:joel), title: "a new post", content: "content")
     assert post.token.present?
   end
 
@@ -37,17 +37,17 @@ class PostTest < ActiveSupport::TestCase
   end
 
   test "should exclude draft posts from visible scope" do
-    post = Post.create(blog: blogs(:joel), title: "a new post", status: :draft)
+    post = Post.create(blog: blogs(:joel), title: "a new post", content: "content", status: :draft)
     assert_not Post.visible.include?(post)
   end
 
   test "should exclude draft posts from published scope" do
-    post = Post.create(blog: blogs(:joel), title: "a new post", status: :draft)
+    post = Post.create(blog: blogs(:joel), title: "a new post", content: "content", status: :draft)
     assert_not Post.published.include?(post)
   end
 
   test "should include draft posts in draft scope" do
-    post = Post.create(blog: blogs(:joel), title: "a new post", status: :draft)
+    post = Post.create(blog: blogs(:joel), title: "a new post", content: "content", status: :draft)
     assert Post.draft.include?(post)
     assert Post.draft.include?(posts(:joel_draft))
   end

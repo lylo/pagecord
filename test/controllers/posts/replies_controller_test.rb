@@ -13,7 +13,9 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
 
   test "should get new reply form for custom domain" do
     post = posts(:four)
+
     get new_custom_post_reply_url(post, host: post.blog.custom_domain)
+
     assert_response :success
     assert_select "form[action=?]", custom_post_replies_path(post)
   end
@@ -21,7 +23,7 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
   test "should redirect to post if reply by email is disabled" do
     @post.blog.update(reply_by_email: false)
     get new_post_reply_path(@post.blog.name, @post)
-    assert_redirected_to post_with_title_path(@post.blog.name, @post.url_title, @post.token)
+    assert_redirected_to blog_post_path(@post.blog.name, @post.slug)
   end
 
   test "should create reply and send email" do
@@ -32,7 +34,7 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_enqueued_emails 1
-    assert_redirected_to post_with_title_path(@post.blog.name, @post.url_title, @post.token)
+    assert_redirected_to blog_post_path(@post.blog.name, @post.slug)
     follow_redirect!
     assert_equal "Reply sent successfully!", flash[:notice]
   end

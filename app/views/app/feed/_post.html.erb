@@ -10,13 +10,7 @@
     <% end %>
   </div>
 
-  <% if post.title.present? %>
-    <%= link_to post_path(post), class: "no-underline", data: { turbo_frame: "_top" } do %>
-      <h1>
-        <%= post.title %>
-      </h1>
-    <% end %>
-  <% end %>
+  <%= render "/blogs/posts/post_title", post: post %>
 
   <%= auto_link post.content %>
 </article>
