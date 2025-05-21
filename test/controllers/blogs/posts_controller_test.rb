@@ -291,4 +291,23 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "footer a[id=brand]", count: 0
   end
+
+  test "should only import font corresponding to theme" do
+    blog = blogs(:joel)
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "link[href*='ibm-plex-mono']", count: 0
+    assert_select "link[href*='lora']", count: 0
+    assert_select "link[href*='inter']", count: 1
+
+    blog.update!(font: "mono")
+
+    get "/#{blog.name}"
+
+    assert_response :success
+    assert_select "link[href*='ibm-plex-mono']", count: 1
+    assert_select "link[href*='lora']", count: 0
+    assert_select "link[href*='inter']", count: 0
+  end
 end
