@@ -4,11 +4,11 @@ Pagecord is a minimal blogging app where you create posts simply by sending emai
 
 ## Web app
 
-Pagecord is a basic web app that uses [Rails](https://rubyonrails.org) 8 and associated tech like Turbo, Stimulus and Import Maps. It uses [Tailwind CSS](https://tailwindcss.com) for styling. It runs on Ruby 3.3.4.
+Pagecord is a web app that uses [Rails](https://rubyonrails.org) 8 and associated tech like Turbo, Stimulus and Import Maps. It uses [Tailwind CSS](https://tailwindcss.com) for styling. It runs on Ruby 3.3.4.
 
 ## Database
 
-Currently the database is Postgres which runs on the EC2 server, thanks to Hatchbox. It's not a managed service, but it is backed up to Cloudflare R2 every 30 mins. Could be better, obvs.
+Currently the database is Postgres which runs on a Hetzner server, thanks to Hatchbox. It's not a managed service, but it is backed up to Cloudflare R2 every 30 mins. Could be better, obvs.
 
 ## Background Jobs
 
@@ -16,11 +16,11 @@ Pagecord uses ActiveJob for background jobs, which are configured to use Sidekiq
 
 ### Cloudflare R2
 
-Premium accounts can attach images to their emails. These are processed by ActiveStorage and stored on [Cloudflare R2](https://developers.cloudflare.com/r2/).
+Images are processed by ActiveStorage and stored on [Cloudflare R2](https://developers.cloudflare.com/r2/). Exports are stored on R2 as well.
 
 ### Hatchbox
 
-Pagecord uses Hatchbox to manage deployments. Everything runs on a single EC2 server. If Pagecord made a profit, I would still use Hatchbox but I'd move the app to DigitalOcean droplets (maybe even the app platform) and use a managed database.
+Pagecord uses Hatchbox to manage deployments. Everything runs on a single Hetzner server. As Pagecord makes more profit, I might move the app to DigitalOcean droplets and use a managed database.
 
 ### Custom domains / SSL
 
@@ -36,6 +36,8 @@ DNS for Pagecord is managed by [Cloudflare](https://cloudflare.com).
 
 Inbound emails are managed by [Postmark](https://postmarkapp.com). The Pagecord app uses ActionMailbox to receive and process the emails.
 
+Transacitonal emails are send via Postmark and [Mailpace](https://mailpace.com). I'm trialling Mailpace in the hope of better deliverability but it's early days. If it's notiably better, I'll move all emails to Mailpace.
+
 ### Observability
 
-Pagecord uses Sentry for logging errors. There's no other monitoring right now because budgets 😱
+Pagecord uses [Sentry](https://sentry.io) for logging errors and [AppSignal](https://appsignal.com) for observability.
