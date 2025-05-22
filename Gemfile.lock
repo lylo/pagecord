@@ -228,6 +228,11 @@ GEM
       net-imap
       net-pop
       net-smtp
+    mailpace-rails (0.4.1)
+      actionmailbox (>= 6.0.0)
+      actionmailer (>= 6.0.0)
+      activestorage (>= 6.0.0)
+      httparty (>= 0.18.1)
     marcel (1.0.4)
     matrix (0.4.2)
     mini_magick (5.2.0)
@@ -459,6 +464,7 @@ DEPENDENCIES
   kredis (~> 1.7)
   letter_opener
   local_time
+  mailpace-rails
   mocha
   nanoid (~> 2.0)
   ostruct

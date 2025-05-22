@@ -27,6 +27,11 @@ gem "appsignal"
 gem "sentry-ruby"
 gem "sentry-rails"
 
+# email sending and receiving
+gem "mailpace-rails"
+gem "postmark-rails"
+gem "premailer-rails", "~> 1.12"
+
 # everything else
 gem "aws-sdk-s3"
 gem "discard", "~> 1.2"
@@ -38,8 +43,6 @@ gem "inline_svg"
 gem "local_time"
 gem "ostruct"
 gem "pagy"
-gem "postmark-rails"
-gem "premailer-rails", "~> 1.12"
 gem "nanoid", "~> 2.0"
 gem "rails_autolink"
 gem "rubyzip"

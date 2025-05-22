@@ -1,4 +1,4 @@
-class PostDigestMailer < ApplicationMailer
+class PostDigestMailer < PostmarkMailer
   include PostsHelper
 
   layout "mailer_digest"

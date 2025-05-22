@@ -1,4 +1,4 @@
-class EmailChangeMailer < ApplicationMailer
+class EmailChangeMailer < PostmarkMailer
   def verify
     @email_change_request = params[:email_change_request]
     @user = @email_change_request.user

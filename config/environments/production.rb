@@ -101,6 +101,10 @@ Rails.application.configure do
     api_token: ENV["POSTMARK_API_TOKEN"]
   }
 
+  config.action_mailer.mailpace_settings = {
+    api_token: ENV["MAILPACE_API_TOKEN"]
+  }
+
   config.action_mailbox.ingress = :postmark
 
   # Ignore bad email addresses and do not raise email delivery errors.
