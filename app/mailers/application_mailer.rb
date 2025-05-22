@@ -1,5 +1,6 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "no-reply@notifications.pagecord.com",  reply_to: "hello@pagecord.com"
+  default from: "Pagecord <no-reply@notifications.pagecord.com>",
+          reply_to: "Pagecord <hello@pagecord.com>"
 
   layout "mailer"
 end
