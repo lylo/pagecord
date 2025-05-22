@@ -1,4 +1,4 @@
-class ReplyMailer < PostmarkMailer
+class ReplyMailer < MailpaceMailer
   helper :routing
 
   def new_reply
