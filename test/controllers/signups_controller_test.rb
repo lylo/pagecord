@@ -38,14 +38,15 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Chennai", User.last.timezone
   end
 
-  test "should not create user with invalid params" do
+  test "should not create user with invalid name" do
     assert_no_difference("User.count") do
       assert_emails 0 do
-        post signups_url, params: { user: { email: "", blog_attributes: { name: "" } }, rendered_at: 6.seconds.ago.to_i }
+        post signups_url, params: { user: { email: "test@pagecord.com", blog_attributes: { name: " invalid.name" } }, rendered_at: 6.seconds.ago.to_i }
       end
     end
 
     assert_response :unprocessable_entity
+    assert_includes @response.body, "Username can only use letters, numbers or underscores"
   end
 
   test "should not create user if honeypot field is populated" do

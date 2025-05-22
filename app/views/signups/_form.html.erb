@@ -5,9 +5,21 @@
       <%= blog_form.text_field :name, placeholder: "username", autofocus: true, class: "p-0 m-0 border-none bg-inherit outline-none focus:ring-0", maxlength: 20, required: true %>
     <% end %>
   </div>
+  <% if @user.blog&.errors[:name].any? %>
+    <div class="text-red-500 text-xs mt-1">
+      <%= @user.blog.errors[:name].join(", ") %>
+    </div>
+  <% else %>
+    <div class="text-slate-500 text-xs mt-1">
+      Username is part of your web URL. It can only contain letters, numbers and underscores.
+    </div>
+  <% end %>
 
   <div class="mt-4">
     <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "p-0 m-0 border-none bg-inherit outline-none focus:ring-0" %>
+    <% if @user.errors[:email].any? %>
+      <div class="text-red-500 text-sm mt-1"><%= @user.errors[:email].join(", ") %></div>
+    <% end %>
     <%= render "/shared/spam_prevention" %>
     <%= form.hidden_field :timezone, data: { timezone_target: "timeZone" } %>
   </div>

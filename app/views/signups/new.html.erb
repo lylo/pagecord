@@ -5,13 +5,8 @@
     Signups are currently disabled. Please check back later.
   </p>
 <% else %>
-  <% if @user.errors.any? %>
-  <%= render "errors" %>
-  <% end %>
-
   <p>
     To create your account, choose a username and enter your email address.
   </p>
-
   <%= render "form" %>
 <% end %>
