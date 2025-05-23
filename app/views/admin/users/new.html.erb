@@ -32,9 +32,9 @@
       <%= form.email_field :email, class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400", placeholder: "you@example.com", required: true %>
     </div>
 
-    <div class="flex items-center gap-x-4 mt-6">
+    <div class="flex items-center gap-2-4 mt-6">
       <%= form.submit "Create User", class: "btn-primary cursor-pointer" %>
-      <%= link_to "Cancel", admin_stats_path, class: "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300" %>
+      <%= link_to "Cancel", admin_stats_path, class: "btn-secondary" %>
     </div>
   <% end %>
 </div>
