@@ -43,4 +43,62 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "User was successfully restored", flash[:notice]
     assert_not user.reload.discarded?
   end
+
+  test "should get new" do
+    get new_admin_user_url
+    assert_response :success
+  end
+
+  test "should create user" do
+    assert_difference("User.count") do
+      assert_difference("Blog.count") do
+        post admin_users_url, params: {
+          user: {
+            email: "newuser@example.com",
+            blog_attributes: {
+              name: "newuser"
+            }
+          }
+        }
+      end
+    end
+
+    assert_redirected_to admin_users_path
+    assert_equal "User was successfully created.", flash[:notice]
+
+    user = User.find_by(email: "newuser@example.com")
+    assert_not_nil user
+    assert_equal "newuser", user.blog.name
+    assert_not user.verified?
+  end
+
+  test "should not create user with invalid data" do
+    assert_no_difference("User.count") do
+      assert_no_difference("Blog.count") do
+        post admin_users_url, params: {
+          user: {
+            email: "test@example.com",
+            blog_attributes: {
+              name: "test.test"
+            }
+          }
+        }
+      end
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "should deliver verification email when user is created" do
+    assert_enqueued_with(job: ActionMailer::MailDeliveryJob) do
+      post admin_users_url, params: {
+        user: {
+          email: "verification@example.com",
+          blog_attributes: {
+            name: "verification"
+          }
+        }
+      }
+    end
+  end
 end

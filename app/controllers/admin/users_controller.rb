@@ -3,6 +3,21 @@ class Admin::UsersController < AdminController
     @user = User.find(params[:id])
   end
 
+  def new
+    @user = User.new
+    @user.build_blog
+  end
+
+  def create
+    @user = User.new(user_params)
+    if @user.save
+      AccountVerificationMailer.with(user: @user).verify.deliver_later
+      redirect_to admin_users_path, notice: "User was successfully created."
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     @user = User.find(params[:id])
 
@@ -30,5 +45,11 @@ class Admin::UsersController < AdminController
     end
 
     redirect_to admin_stats_path
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:email, blog_attributes: [ :name ])
   end
 end

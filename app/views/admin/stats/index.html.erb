@@ -1,11 +1,17 @@
 <h2 class="text-2xl font-bold py-4">Stats</h2>
 
-<p>
-  <%= pluralize @pagy.count, "user" %> in total.
-</p>
-<p>
-  <%= pluralize Subscription.active_paid.count, "paid subscription" %>, <%= Subscription.comped.count %> comped.
-</p>
+<div class="mb-6 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4">
+  <div>
+    <%= pluralize @pagy.count, "user" %> in total.
+    <%= pluralize Subscription.active_paid.count, "paid subscription" %>, <%= Subscription.comped.count %> comped.
+  </div>
+  <%= link_to new_admin_user_path, class: "btn-primary text-sm whitespace-nowrap" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-1 inline-block">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+    Create New User
+  <% end %>
+</div>
 
 <div class="overflow-auto">
   <table class="my-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
