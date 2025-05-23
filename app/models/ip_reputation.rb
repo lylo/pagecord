@@ -24,7 +24,7 @@ class IpReputation
 
     valid_ip?(json) && valid_country?(json)
   rescue HTTParty::Error, JSON::ParserError => e
-    Rails.logger.error "IP Reputation check failed: #{e.message}"
+    Rails.logger.error "IP Reputation check failed for #{ip}: #{e.message}"
     true
   end
 
