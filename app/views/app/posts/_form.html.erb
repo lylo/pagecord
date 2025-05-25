@@ -60,7 +60,7 @@
       placeholder: "Write your post...",
       class: "trix-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @post.errors[:content].any?}",
       spellcheck: true,
-      data: { controller: "autogrow trix", attachments: true } %>
+      data: { controller: "autogrow trix", subscribed: Current.user.subscribed? } %>
     <% if @post.errors[:content].any? %>
       <div class="mt-1 text-xs text-red-500">
         A body is required

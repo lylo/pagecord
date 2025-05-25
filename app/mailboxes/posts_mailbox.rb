@@ -17,7 +17,7 @@ class PostsMailbox < ApplicationMailbox
 
     if blog = Blog.joins(:user).find_by(user: { email: from }, delivery_email: recipient)
       begin
-        parser = MailParser.new(mail, process_attachments: true)
+        parser = MailParser.new(mail, process_attachments: blog.user.subscribed?)
         unless parser.is_blank?
           content = parser.body
           title = parser.subject
