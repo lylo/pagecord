@@ -1,4 +1,4 @@
-class WelcomeMailer < PostmarkMailer
+class WelcomeMailer < MailpaceMailer
   helper :routing
 
   def welcome_email

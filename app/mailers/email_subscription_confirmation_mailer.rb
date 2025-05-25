@@ -1,4 +1,4 @@
-class EmailSubscriptionConfirmationMailer < PostmarkMailer
+class EmailSubscriptionConfirmationMailer < MailpaceMailer
   layout "mailer_digest"
 
   def confirm
