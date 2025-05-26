@@ -40,16 +40,6 @@ class GitHub extends MediaSite {
               margin: 0 !important;
               padding: 0 !important;
             }
-            /* Mobile optimizations */
-            @media (max-width: 640px) {
-              .gist .blob-code {
-                font-size: 12px !important;
-                line-height: 1.4 !important;
-              }
-              .gist .gist-meta {
-                font-size: 11px !important;
-              }
-            }
           </style>
         </head>
         <body>
