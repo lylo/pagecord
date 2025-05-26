@@ -18,6 +18,8 @@ Rails.application.configure do
 
     # Scripts
     policy.script_src :self, :https,
+                      "https://challenges.cloudflare.com",
+                      "https://static.cloudflareinsights.com",
                       "https://strava-embeds.com",
                       "https://gist.github.com",
                       "https://github.githubassets.com",
@@ -31,10 +33,12 @@ Rails.application.configure do
                      "https://gist.github.com",
                      "https://github.githubassets.com",
                      "https://assets-cdn.github.com",
+                     "https://challenges.cloudflare.com",
                      :unsafe_inline
 
     # Frames and embeds
     policy.frame_src :self,
+                     "https://challenges.cloudflare.com",
                      "https://open.spotify.com",
                      "https://player.vimeo.com",
                      "https://www.youtube.com",
@@ -47,7 +51,9 @@ Rails.application.configure do
 
     # Connect sources
     policy.connect_src :self, :https,
-                       "https://plausible.io"
+                       "https://plausible.io",
+                       "https://cloudflareinsights.com",
+                       "https://static.cloudflareinsights.com"
 
     policy.manifest_src :self, :https,
                         "https://d2rvfk326kpipd.cloudfront.net"
