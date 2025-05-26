@@ -26,6 +26,11 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.valid?
   end
 
+  test "should reserve username" do
+    @blog.name = "blog"
+    assert_not @blog.valid?
+  end
+
   test "should validate format of name" do
     @blog.name = "abcdef-"
     assert_not @blog.valid?

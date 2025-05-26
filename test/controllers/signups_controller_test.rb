@@ -46,7 +46,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_includes @response.body, "Username can only use letters, numbers or underscores"
+    assert_includes @response.body, "can only use letters, numbers or underscores"
   end
 
   test "should not create user if honeypot field is populated" do

@@ -17,16 +17,19 @@ class SignupsController < ApplicationController
       unless valid_turnstile_token?(params["cf-turnstile-response"])
         flash.now[:error] = "Please complete the security check"
         @user = User.new
+        @user.build_blog
         render :new and return
       end
     end
 
     @user = User.new(user_params)
+    Rails.logger.error @user.inspect
     if @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
       redirect_to thanks_signups_path
     else
+      Rails.logger.error @user.errors.inspect
       render :new, status: :unprocessable_entity
     end
   end

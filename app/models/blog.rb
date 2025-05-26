@@ -47,7 +47,11 @@ class Blog < ApplicationRecord
 
     def name_valid
       unless Username.valid_format?(name)
-        errors.add(:name, "Username can only use letters, numbers or underscores")
+        errors.add(:name, "can only use letters, numbers or underscores")
+      end
+
+      if Username.reserved?(name)
+        errors.add(:name, "is reserved")
       end
     end
 end

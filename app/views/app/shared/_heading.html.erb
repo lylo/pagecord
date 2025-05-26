@@ -1,5 +1,13 @@
 <div class="flex justify-end mb-4 font-bold text-lg">
   <%= turbo_frame_tag "heading_blog_title" do %>
-    <%= render "blogs/blog_title" %>
+    <%= link_to blog_home_url(@blog), data: { turbo: false } do %>
+      <div class="blog-title">
+        <% if @blog.custom_title? %>
+          <%= @blog.title %>
+        <% else %>
+          @<%= persisted_value(@blog, :name) %>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 </div>
