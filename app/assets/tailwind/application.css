@@ -94,15 +94,8 @@ a:not([href]), a:not([href]):hover { /* disabled links */
   @apply bg-slate-100 border-none rounded-md;
 }
 
-
-/* Rails form errors */
-.field_with_errors  {
-  @apply w-full;
-
-  input, textarea {
-    @apply !border-red-500;
-  }
+.field_with_errors {
+  display: contents; /* This makes the wrapper "invisible" to flexbox */
 }
-
 
 @import "../stylesheets/actiontext.css";

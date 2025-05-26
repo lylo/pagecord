@@ -164,6 +164,10 @@
     @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 hover:text-white dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-red-700 dark:focus:ring-slate-800 cursor-pointer;
   }
 
+  .form-field {
+    @apply dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 border-slate-300 dark:border-slate-700;
+  }
+
   dialog::backdrop {
     backdrop-filter: blur(2px);
   }

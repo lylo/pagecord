@@ -2,7 +2,7 @@
   <% if @blog.user.subscribed? %>
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
-    <% if @blog.valid? && @blog.custom_domain.present? %>
+    <% if @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? %>
       <p>
         Your Pagecord is now available at <code><mark class="bg-slate-100 dark:bg-slate-700 dark:text-slate-100 px-1"><%= @blog.custom_domain %></mark></code>
       </p>
@@ -12,12 +12,10 @@
       </p>
     <% end %>
 
-    <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-900 border #{@blog.errors[:custom_domain].any? ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} text-slate-800 dark:text-slate-200 rounded-lg" %>
-    <% if @blog.errors[:custom_domain].any? %>
-      <span class="text-red-500 text-sm"><%= @blog.errors.full_messages_for(:custom_domain).first %></span>
-    <% end %>
+    <%= styled_text_field(form, :custom_domain, placeholder: "yourdomain.com", class: "mt-4 md:w-96") %>
+    <%= field_error(@blog, :custom_domain) %>
 
-    <% if @blog.valid? && @blog.custom_domain.present? %>
+    <% if @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? %>
       <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm">
         To remove your custom domain, clear the box above and click Update. Don't forget to remove the records from your DNS!
       </p>
@@ -58,7 +56,37 @@
       Fediverse username below.
     </p>
 
-    <%= form.text_field :fediverse_author_attribution, class: "mt-4 w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <%= styled_text_field(form, :fediverse_author_attribution, class: "mt-4 md:w-full") %>
+  </div>
+
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2 mt-8">Blog Username</h3>
+    <p class="mb-4">
+      Your current blog username is <strong><%= persisted_value(@blog, :name) %></strong> which means your blog is available at <span class="bg-slate-200 dark:bg-slate-700">https://pagecord.com/<%= persisted_value(@blog, :name) %></span>.
+    </p>
+
+    <div class="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-600 dark:text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-800 dark:text-yellow-200">
+            <strong>Warning:</strong> Changing your username will also change the URL of your blog, so any links to your old username will no longer work!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :name, "Username", class: "sr-only" %>
+      <div class="flex items-center">
+        <%= styled_text_field(form, :name, required: true, placeholder: "username", maxlength: 20, class: "md:w-96") %>
+      </div>
+      <%= field_error(@blog, :name) %>
+    </div>
   </div>
 
   <div class="mt-12 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4">
