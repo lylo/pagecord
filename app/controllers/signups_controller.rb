@@ -23,13 +23,11 @@ class SignupsController < ApplicationController
     end
 
     @user = User.new(user_params)
-    Rails.logger.error @user.inspect
     if @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
       redirect_to thanks_signups_path
     else
-      Rails.logger.error @user.errors.inspect
       render :new, status: :unprocessable_entity
     end
   end
