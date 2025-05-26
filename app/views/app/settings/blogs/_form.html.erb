@@ -12,10 +12,8 @@
       </p>
     <% end %>
 
-    <%= form.text_field :custom_domain, class: "mt-4 w-96 dark:bg-slate-900 border #{@blog.errors[:custom_domain].any? ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} text-slate-800 dark:text-slate-200 rounded-lg" %>
-    <% if @blog.errors[:custom_domain].any? %>
-      <span class="text-red-500 text-sm"><%= @blog.errors.full_messages_for(:custom_domain).first %></span>
-    <% end %>
+    <%= styled_text_field(form, :custom_domain, placeholder: "yourdomain.com", class: "mt-4 md:w-96") %>
+    <%= field_error(@blog, :custom_domain) %>
 
     <% if @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? %>
       <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm">
@@ -58,7 +56,7 @@
       Fediverse username below.
     </p>
 
-    <%= form.text_field :fediverse_author_attribution, class: "mt-4 w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <%= styled_text_field(form, :fediverse_author_attribution, class: "mt-4 md:w-full") %>
   </div>
 
   <div class="mt-8">
@@ -85,15 +83,9 @@
     <div>
       <%= form.label :name, "Username", class: "sr-only" %>
       <div class="flex items-center">
-        <%= form.text_field :name, required: true, placeholder: "username",
-              class: "w-full md:w-96 dark:bg-slate-900 border #{@blog.errors[:name].any? ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'} text-slate-800 dark:text-slate-200 rounded-lg",
-              maxlength: 20 %>
+        <%= styled_text_field(form, :name, required: true, placeholder: "username", maxlength: 20, class: "md:w-96") %>
       </div>
-      <% if @blog.errors[:name].any? %>
-        <div class="text-red-500 text-sm mt-1">
-          <%= @blog.errors.full_messages_for(:name).first %>
-        </div>
-      <% end %>
+      <%= field_error(@blog, :name) %>
     </div>
   </div>
 

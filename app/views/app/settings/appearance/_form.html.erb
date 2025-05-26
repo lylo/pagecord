@@ -5,8 +5,9 @@
     <div class="trix-container trix-minimal">
     <%= form.rich_text_area :bio,
         placeholder: "add a bio to your profile if you like...",
-        class: "trix-content min-h-[150px] prose border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
+        class: "trix-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @blog.errors[:bio].any?}",
         spellcheck: true,
+        autofocus: true,
         data: { controller: "autogrow trix", subscribed: false } %>
     </div>
   </div>
@@ -18,7 +19,7 @@
       enter it below.
     </p>
 
-    <%= form.text_field :title, class: "mt-4 w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <%= styled_text_field(form, :title, class: "mt-4 w-full") %>
   </div>
 
   <div class="mt-8">

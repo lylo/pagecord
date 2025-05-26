@@ -1,0 +1,88 @@
+<h3 class="mb-4 font-bold text-xl">Email Address</h3>
+
+<div class="mb-12">
+  <p class="mb-4">
+    Your current email address is <strong><%= Current.user.email %></strong>.
+  </p>
+
+  <% if pending_request = Current.user.pending_email_change_request %>
+      <p>
+        You have a pending email change to <strong><%= pending_request.new_email %></strong>.
+        Please check that email account for a verification link.
+      </p>
+
+      <div class="mt-4 flex items-center">
+        <%= button_to resend_app_settings_email_change_request_path(pending_request),
+              method: :post,
+              class: "btn-primary" do %>
+          Resend verification email
+        <% end %>
+
+        <%= button_to app_settings_email_change_request_path(pending_request),
+              method: :delete,
+              data: { turbo_confirm: "Are you sure? This will cancel the email change request." },
+              class: "btn-secondary cursor-pointer hover:underline" do %>
+          Cancel this change
+        <% end %>
+      </div>
+  <% else %>
+    <p class="mb-4">
+      Enter your new email and click the Change Email button. You'll receive a verification email at the
+      new address to confirm the change.
+    </p>
+
+    <%= form_with model: [:app, :settings, EmailChangeRequest.new], class: "mt-4" do |form| %>
+      <div class="mt-6 sm:flex items-center">
+        <div>
+          <%= form.label :new_email, "New email address", class: "sr-only" %>
+
+          <%= form.email_field :new_email, required: true, autofocus: true, placeholder: "new@email.com", class: "w-full md:w-96 form-field" %>
+        </div>
+        <div class="mt-4 sm:mt-0 sm:ml-2">
+          <%= form.submit "Change Email", class: "btn-primary" %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<h3 class="mb-4 font-bold text-xl">Time Zone</h3>
+
+<div class="mb-12">
+  <p class="mb-4">
+    Your current time zone is <strong><%= Current.user.timezone || "UTC" %></strong>.
+  </p>
+
+  <p class="mb-4">
+    Select your time zone to display dates and times in your local time.
+  </p>
+
+  <%= form_with url: app_settings_user_path(@user), model: @user, method: :patch, class: "mt-4" do |form| %>
+    <div class="mt-6 sm:flex items-center">
+      <div>
+        <%= form.label :timezone, "Time Zone", class: "sr-only" %>
+        <%= form.time_zone_select :timezone, nil,
+              { default: Current.user.timezone },
+              { class: "w-full md:w-96 form-field" } %>
+      </div>
+      <div class="mt-4 sm:mt-0 sm:ml-2">
+        <%= form.submit "Update Timezone", class: "btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<h3 class="mb-4 font-bold text-xl">Danger Zone</h3>
+<p>
+  You can delete your account by clicking the button below. Sorry to see you go!
+</p>
+
+<div class="mt-4 flex items-center">
+  <%= button_to app_settings_user_path(@user),
+        method: :delete,
+        data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
+        class: "btn-danger" do %>
+    Delete account
+  <% end %>
+  <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+</div>
