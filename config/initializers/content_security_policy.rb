@@ -36,7 +36,10 @@ Rails.application.configure do
     # policy.media_src :self, :https
 
     # Connect sources (for APIs, websockets, etc.)
-    # policy.connect_src :self, :https
+    policy.connect_src :self, :https, "https://plausible.io"
+
+    # Manifest sources (for web app manifests)
+    policy.manifest_src :self, :https, "https://d2rvfk326kpipd.cloudfront.net"
 
     # Reporting (optional)
     # policy.report_uri "/csp-violation-report-endpoint"
