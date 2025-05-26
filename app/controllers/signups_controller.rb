@@ -17,6 +17,7 @@ class SignupsController < ApplicationController
       unless valid_turnstile_token?(params["cf-turnstile-response"])
         flash.now[:error] = "Please complete the security check"
         @user = User.new
+        @user.build_blog
         render :new and return
       end
     end
