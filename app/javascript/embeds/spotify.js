@@ -20,7 +20,7 @@ class Spotify extends MediaSite {
         iframe.src = `${embedUrl}?utm_source=generator&theme=0`
         iframe.width = "100%"
         iframe.height = "152"
-        iframe.allow = "autoplay clipboard-write encrypted-media encrypted-media fullscreen picture-in-picture"
+        iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         iframe.loading = "lazy"
         iframe.style.borderRadius = "12px"
         return iframe

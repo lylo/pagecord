@@ -41,6 +41,12 @@ Rails.application.configure do
     # Manifest sources (for web app manifests)
     policy.manifest_src :self, :https, "https://d2rvfk326kpipd.cloudfront.net"
 
+    # Permissions policy
+    policy.permissions_policy do |p|
+      p.encrypted_media = :self
+      p.autoplay = :self
+    end
+
     # Reporting (optional)
     # policy.report_uri "/csp-violation-report-endpoint"
   end
