@@ -6,57 +6,64 @@ Rails.application.configure do
     policy.default_src :self
 
     # Fonts
-    policy.font_src    :self, :https, :data
+    policy.font_src :self, :https, :data
 
     # Images
-    policy.img_src     :self, :https, :data
+    policy.img_src :self, :https, :data,
+                   "https://githubusercontent.com",
+                   "https://github.githubassets.com"
 
-    # Object (plugin) embeds – block entirely
-    policy.object_src  :none
+    # Object embeds – block entirely
+    policy.object_src :none
 
     # Scripts
-    policy.script_src  :self, :https, "https://strava-embeds.com", "https://gist.github.com", :unsafe_inline
-    # unsafe_inline is needed for GitHub gist embeds to work properly
+    policy.script_src :self, :https,
+                      "https://strava-embeds.com",
+                      "https://gist.github.com",
+                      "https://github.githubassets.com",
+                      "https://assets-cdn.github.com",
+                      "https://githubusercontent.com",
+                      "https://plausible.io",
+                      :unsafe_inline
 
     # Styles
-    policy.style_src   :self, :https, "https://gist.github.com", :unsafe_inline
-    # unsafe_inline is needed for GitHub gist embeds to work properly
+    policy.style_src :self, :https,
+                     "https://gist.github.com",
+                     "https://github.githubassets.com",
+                     "https://assets-cdn.github.com",
+                     :unsafe_inline
 
     # Frames and embeds
-    policy.frame_src   :self,
-                       "https://open.spotify.com",
-                       "https://*.bandcamp.com",
-                       "https://player.vimeo.com",
-                       "https://www.youtube.com",
-                       "https://youtube.com",
-                       "https://embed.music.apple.com",
-                       "https://gist.github.com"
+    policy.frame_src :self,
+                     "https://open.spotify.com",
+                     "https://player.vimeo.com",
+                     "https://www.youtube.com",
+                     "https://youtube.com",
+                     "https://embed.music.apple.com",
+                     "https://gist.github.com",
+                     "https://bandcamp.com",
+                     "*.bandcamp.com",
+                     "https://strava-embeds.com"
 
-    # Media sources (optional: if you host media elsewhere)
-    # policy.media_src :self, :https
+    # Connect sources
+    policy.connect_src :self, :https,
+                       "https://plausible.io"
 
-    # Connect sources (for APIs, websockets, etc.)
-    policy.connect_src :self, :https, "https://plausible.io"
+    policy.manifest_src :self, :https,
+                        "https://d2rvfk326kpipd.cloudfront.net"
 
-    # Manifest sources (for web app manifests)
-    policy.manifest_src :self, :https, "https://d2rvfk326kpipd.cloudfront.net"
-
-    # Permissions policy
-    policy.permissions_policy do |p|
-      p.encrypted_media = :self
-      p.autoplay = :self
-    end
-
-    # Reporting (optional)
+    # Optional: CSP violation reports
     # policy.report_uri "/csp-violation-report-endpoint"
   end
 
-  # Nonce generation for inline scripts
-  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
+  # Optional: better nonce generator if needed later
+  # (not used here because unsafe_inline is enabled)
+  config.content_security_policy_nonce_generator = ->(request) { SecureRandom.base64(16) }
 
-  # Don't apply nonce directives - we need unsafe-inline for GitHub embeds
-  config.content_security_policy_nonce_directives = %w[]
+  # Don't apply nonce directives because unsafe_inline is used
+  config.content_security_policy_nonce_directives = []
 
   # Enable CSP enforcement
-  # config.content_security_policy_report_only = false
+  # For debugging: set to true for report-only mode first
+  # config.content_security_policy_report_only = true
 end
