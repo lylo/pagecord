@@ -21,9 +21,8 @@ class YouTube extends MediaSite {
         const iframe = document.createElement('iframe')
         iframe.className = "mx-auto w-full h-full"
         iframe.src = embedUrl
-        iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         iframe.loading = "lazy"
-        iframe.setAttribute("allowfullscreen", "true")
+        iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
 
         div.appendChild(iframe)
 
