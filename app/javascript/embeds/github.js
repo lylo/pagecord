@@ -29,6 +29,7 @@ class GitHub extends MediaSite {
         <head>
           <base target="_parent">
           <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
           <style>
             html, body {
               margin: 0;
@@ -38,6 +39,16 @@ class GitHub extends MediaSite {
             .gist, .gist-file {
               margin: 0 !important;
               padding: 0 !important;
+            }
+            /* Mobile optimizations */
+            @media (max-width: 640px) {
+              .gist .blob-code {
+                font-size: 12px !important;
+                line-height: 1.4 !important;
+              }
+              .gist .gist-meta {
+                font-size: 11px !important;
+              }
             }
           </style>
         </head>
