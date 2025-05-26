@@ -15,12 +15,12 @@ Rails.application.configure do
     policy.object_src  :none
 
     # Scripts
-    policy.script_src  :self, :https, "https://strava-embeds.com", "https://gist.github.com"
+    policy.script_src  :self, :https, "https://strava-embeds.com", "https://gist.github.com", :unsafe_inline
+    # unsafe_inline is needed for GitHub gist embeds to work properly
 
     # Styles
-    policy.style_src   :self, :https, "https://gist.github.com"
-    # Remove :unsafe_inline unless you absolutely need it
-    # If needed, enable nonce support (see below)
+    policy.style_src   :self, :https, "https://gist.github.com", :unsafe_inline
+    # unsafe_inline is needed for GitHub gist embeds to work properly
 
     # Frames and embeds
     policy.frame_src   :self,
@@ -45,9 +45,9 @@ Rails.application.configure do
   # Nonce generation for inline scripts
   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
 
-  # Apply nonce only to script-src
-  config.content_security_policy_nonce_directives = %w[script-src]
+  # Don't apply nonce directives - we need unsafe-inline for GitHub embeds
+  config.content_security_policy_nonce_directives = %w[]
 
-  # Start in report-only mode so you can test without breaking anything
-  config.content_security_policy_report_only = true
+  # Enable CSP enforcement
+  # config.content_security_policy_report_only = false
 end
