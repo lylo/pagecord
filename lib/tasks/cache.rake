@@ -7,5 +7,6 @@ namespace :cache do
     ActionController::Base.new.expire_page("/privacy")
     ActionController::Base.new.expire_page("/pagecord-vs-hey-world")
     ActionController::Base.new.expire_page("/pagecord-vs-wordpress")
+    ActionController::Base.new.expire_page("/pagecord-vs-substack")
   end
 end
