@@ -141,7 +141,9 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should redirect from default domain post to custom domain post" do
     post = posts(:four)
 
-    get "/#{post.blog.name}/#{post.slug}"
+    host! "#{post.blog.name}.#{Rails.application.config.x.domain}"
+
+    get "/#{post.slug}"
 
     assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
   end

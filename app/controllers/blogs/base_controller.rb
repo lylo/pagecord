@@ -43,6 +43,8 @@ class Blogs::BaseController < ApplicationController
         escaped_name = Regexp.escape(@blog.name)
         request_path = request.path.gsub(/^\/@?#{escaped_name}\/?/, "")
         full_url = root_url(host: @blog.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
+
+        request_path = request_path.sub(/^\//, "") if full_url.end_with?("/")
         new_url = "#{full_url}#{request_path}"
 
         redirect_to new_url, status: :moved_permanently, allow_other_host: true

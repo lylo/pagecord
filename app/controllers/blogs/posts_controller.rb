@@ -31,7 +31,7 @@ class Blogs::PostsController < Blogs::BaseController
   private
 
     def redirect_to_last_page(exception)
-      redirect_to url_for(page: exception.pagy.last)
+      redirect_to url_for(page: exception.pagy.last, host: request.host)
     end
 
     def page_size
