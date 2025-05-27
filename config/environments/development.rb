@@ -20,7 +20,7 @@ Rails.application.configure do
   # Set domain configuration for development
   config.x.domain = ENV.fetch("APP_DOMAIN", "localhost")
 
-  config.action_controller.default_url_options = { host: "localhost", port: "3000" }
+  config.action_controller.default_url_options = { host: "localhost", port: "3000", protocol: "http" }
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.

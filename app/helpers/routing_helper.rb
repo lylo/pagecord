@@ -1,10 +1,6 @@
 module RoutingHelper
   def post_link(post, type)
-    if post.blog.custom_domain?
-      send("blog_post_#{type}", post.slug, host: post.blog.custom_domain)
-    else
-      send("blog_post_#{type}", post.slug, host: "#{post.blog.name}.#{Rails.application.config.x.domain}")
-    end
+    send("blog_post_#{type}", post.slug, host: host(post.blog))
   end
 
   def post_path(post)
@@ -35,11 +31,23 @@ module RoutingHelper
     route_for_blog(blog, "blog_sitemap", "url")
   end
 
+  def email_subscriber_confirmation_url_for(email_subscriber)
+    route_for_blog(email_subscriber.blog, "email_subscriber_confirmation", "url", email_subscriber.token)
+  end
+
+  def email_subscriber_unsubscribe_url_for(email_subscriber)
+    route_for_blog(email_subscriber.blog, "email_subscriber_unsubscribe", "url", email_subscriber.token)
+  end
+
   private
 
     def route_for_blog(blog, route_name, type, *args)
-      options = blog.custom_domain.present? ? { host: blog.custom_domain } : { host: "#{blog.name}.#{Rails.application.config.x.domain}" }
+      options = { host: host(blog) }
 
       send("#{route_name}_#{type}", *args, options)
+    end
+
+    def host(blog)
+      blog.custom_domain.present? ? blog.custom_domain : "#{blog.name}.#{Rails.application.config.x.domain}"
     end
 end

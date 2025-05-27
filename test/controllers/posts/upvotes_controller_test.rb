@@ -2,8 +2,8 @@ require "test_helper"
 
 class Posts::UpvotesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    host! "joel.example.com"
     @post = posts(:one)
+    host! "#{@post.blog.name}.#{Rails.application.config.x.domain}"
   end
 
   test "should create upvote" do

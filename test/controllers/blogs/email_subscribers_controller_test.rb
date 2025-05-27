@@ -3,7 +3,7 @@ require "test_helper"
 class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
-    host! "#{@blog.name}.example.com"
+    host! "#{@blog.name}.#{Rails.application.config.x.domain}"
   end
 
   test "should add new email subscriber" do

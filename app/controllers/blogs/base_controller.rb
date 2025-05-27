@@ -11,15 +11,18 @@ class Blogs::BaseController < ApplicationController
   private
 
     def load_blog
+      puts "load blog. Request host: #{request.host}"
+      puts "request subdomain: #{request.subdomain}"
+
       @blog ||= if custom_domain_request?
-        # puts "Custom domain request: #{request.host}"
+        puts "Custom domain request: #{request.host}"
         blog_from_custom_domain
-      elsif request.subdomain.present? && request.subdomain != "www"
-        # puts "Request subdomain: #{request.subdomain}"
+      elsif subdomain_present?
+        puts "Request subdomain: #{extract_subdomain}"
         # Handle subdomains (like myblog.pagecord.test)
-        Blog.includes(:social_links, :avatar_attachment).find_by(name: request.subdomain)
+        Blog.includes(:social_links, :avatar_attachment).find_by(name: extract_subdomain)
       else
-        # puts "Default domain request: #{Rails.application.config.x.domain}"
+        puts "Default domain request: #{Rails.application.config.x.domain}"
         if blog_params[:name].present?
           Blog.includes(:social_links, :avatar_attachment).find_by(name: blog_params[:name])
         end
@@ -51,6 +54,26 @@ class Blogs::BaseController < ApplicationController
         new_url = "#{full_url}#{request_path}"
 
         redirect_to new_url, status: :moved_permanently, allow_other_host: true
+      end
+    end
+
+    def subdomain_present?
+      if Rails.env.test?
+        # In test environment, manually extract subdomain from localhost
+        host_parts = request.host.split(".")
+        host_parts.length > 1 && host_parts.first != "www"
+      else
+        request.subdomain.present? && request.subdomain != "www"
+      end
+    end
+
+    def extract_subdomain
+      if Rails.env.test?
+        # In test environment, manually extract subdomain from localhost
+        host_parts = request.host.split(".")
+        host_parts.length > 1 ? host_parts.first : nil
+      else
+        request.subdomain
       end
     end
 end

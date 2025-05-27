@@ -44,12 +44,21 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal post, assigns(:post)
   end
 
-  # FIXME
-  # test "should allow @ prefix and redirect to blog" do
-  #   get "/@#{blogs(:joel).name}"
+  test "should allow @ prefix and redirect to :name path" do
+    host! Rails.application.config.x.domain
 
-  #   assert_redirected_to blog_posts_path(name: blogs(:joel).name)
-  # end
+    get "/@#{@blog.name}"
+
+    assert_redirected_to "http://example.com/#{@blog.name}"
+  end
+
+  test "should redirect from :name path to subdomain" do
+    host! Rails.application.config.x.domain
+
+    get "/#{@blog.name}/#{posts(:one).slug}"
+
+    assert_redirected_to "http://#{@blog.name}.example.com/#{posts(:one).slug}"
+  end
 
   test "should redirect to root if blog not found" do
     host_subdomain! "nope"

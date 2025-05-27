@@ -1,5 +1,6 @@
 class EmailSubscriptionConfirmationMailer < MailpaceMailer
   layout "mailer_digest"
+  helper RoutingHelper
 
   def confirm
     @subscriber = params[:subscriber]

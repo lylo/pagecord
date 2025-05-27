@@ -18,4 +18,4 @@ You're subscribed to receive new posts from <%= @subscriber.blog.display_name %>
 
 Unsubscribe by clicking the link below:
 
-<%= unsubscribe_path_for(@subscriber) %>
+<%= email_subscriber_unsubscribe_url_for(@subscriber) %>

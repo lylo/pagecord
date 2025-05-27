@@ -29,7 +29,7 @@ Rails.application.configure do
   # Show full error reports and disable caching.
   config.consider_all_requests_local = true
   config.action_controller.perform_caching = false
-  config.action_controller.default_url_options = { host: "www.example.com" }
+  config.action_controller.default_url_options = { host: "www.example.com", protocol: "http" }
   config.cache_store = :null_store
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
@@ -66,4 +66,9 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Allow localhost subdomains and 127.0.0.1 for system tests
+  # config.hosts << /.*\.example.com/
+  # config.hosts << /.*\.localhost/
+  # config.hosts << /127\.0\.0\.1/
 end

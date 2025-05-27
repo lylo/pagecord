@@ -2,8 +2,8 @@ require "test_helper"
 
 class Blogs::EmailSubscribers::UnsubscribesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    host! "joel.example.com"
     @blog = blogs(:joel)
+    host! "#{@blog.name}.#{Rails.application.config.x.domain}"
   end
 
   test "should unsubscribe email subscription" do

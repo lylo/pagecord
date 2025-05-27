@@ -10,11 +10,7 @@
           <tbody>
             <tr>
               <td>
-                <% if @subscriber.blog.custom_domain.present? %>
-                  <%= link_to "Subscribe me", custom_email_subscriber_confirmation_url(token: @subscriber.token, host: @subscriber.blog.custom_domain) %>
-                <% else %>
-                  <%= link_to "Subscribe me", email_subscriber_confirmation_url(name: @subscriber.blog.name, token: @subscriber.token) %>
-                <% end %>
+                <%= link_to "Subscribe me", email_subscriber_confirmation_url_for(@subscriber) %>
               </td>
             </tr>
           </tbody>

@@ -21,6 +21,6 @@
   <p class="digest-footer">
     You're subscribed to receive new posts from <strong><%= @subscriber.blog.display_name %></strong>.
     <br><br>
-    <%= link_to "Unsubscribe", unsubscribe_path_for(@subscriber) %>
+    <%= link_to "Unsubscribe", email_subscriber_unsubscribe_url_for(@subscriber) %>
   </p>
 </div>

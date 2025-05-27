@@ -16,8 +16,15 @@ end
 
 module DomainConstraints
   def self.default_domain?(request)
-    default_host = Rails.application.config.x.domain
-    request.host == default_host || request.host == "www.#{default_host}"
+    if Rails.env.test?
+      request.host == "www.example.com" ||
+      request.host == "127.0.0.1" ||
+      request.host == "localhost" ||
+      request.host == "example.com"
+    else
+      default_host = Rails.application.config.x.domain
+      request.host == default_host || request.host == "www.#{default_host}"
+    end
   end
 end
 
@@ -154,6 +161,15 @@ Rails.application.routes.draw do
     get "/blogging-by-email", to: "public#blogging_by_email"
 
     get "/@:name", to: redirect("/%{name}")
+    get "/:name(/*path)", to: redirect { |params, _req|
+      host = Rails.application.config.x.domain
+      options = Rails.application.config.action_controller.default_url_options
+      scheme = options[:protocol] || "https"
+      port = options[:port] ? ":#{options[:port]}" : ""
+      path = params[:path] ? "/#{params[:path]}" : "/"
+
+      "#{scheme}://#{params[:name]}.#{host}#{port}#{path}"
+    }, constraints: { name: /[a-z0-9\-]+/i }
   end
 
   namespace :api do

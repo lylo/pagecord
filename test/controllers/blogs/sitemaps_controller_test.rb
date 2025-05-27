@@ -3,13 +3,16 @@ require "test_helper"
 class Blogs::SitemapsControllerTest < ActionDispatch::IntegrationTest
   include RoutingHelper
 
+  setup do
+    @blog = blogs(:joel)
+    host! "#{@blog.name}.#{Rails.application.config.x.domain}"
+  end
+
   test "should get sitemap" do
-    host! "joel.example.com"
-    blog = blogs(:joel)
-    get blog_sitemap_path(name: blog.name)
+    get blog_sitemap_path(name: @blog.name)
 
     assert_response :success
-    assert_equal blog.posts.count + 1, Nokogiri::XML(@response.body).xpath("//xmlns:url").count
+    assert_equal @blog.posts.count + 1, Nokogiri::XML(@response.body).xpath("//xmlns:url").count
   end
 
   test "should get sitemap for custom domain" do
@@ -21,9 +24,7 @@ class Blogs::SitemapsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should return 406 for unsupported format" do
-    host! "joel.example.com"
-    blog = blogs(:joel)
-    get blog_sitemap_path(name: blog.name, format: :gzip)
+    get blog_sitemap_path(name: @blog.name, format: :gzip)
 
     assert_response :not_acceptable
     assert_equal "", @response.body # Ensure no body is returned for unsupported formats
