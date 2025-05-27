@@ -15,20 +15,12 @@ class SidekiqAdminConstraint
 end
 
 module DomainConstraints
-  def self.custom_domain?(request)
-    if Rails.env.production?
-      request.host != Rails.application.config.x.domain
-    elsif Rails.env.test?
-      request.host !~ /\.example\.com/ && request.host != "127.0.0.1"  # 127.0.0.1 used by Capybara
-    else
-      ![ "localhost", "ant-evolved-equally.ngrok-free.app" ].include?(request.host)
-    end
-  end
-
   def self.default_domain?(request)
-    !custom_domain?(request)
+    default_host = Rails.application.config.x.domain
+    request.host == default_host
   end
 end
+
 
 module Constraints
   class RssFormat
@@ -39,8 +31,6 @@ module Constraints
 end
 
 Rails.application.routes.draw do
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up", to: "rails/health#show", as: :rails_health_check
 
   constraints SidekiqAdminConstraint.new do
@@ -57,7 +47,6 @@ Rails.application.routes.draw do
 
   namespace :billing do
     resources :paddle_events, only: [ :create ]
-
     post "/paddle/create_update_payment_method_transaction", to: "paddle#create_update_payment_method_transaction"
   end
 
@@ -133,7 +122,7 @@ Rails.application.routes.draw do
     end
   end
 
-  shared_blog_routes = lambda do
+  constraints(->(request) { !DomainConstraints.default_domain?(request) }) do
     get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
     get "/", to: "blogs/posts#index", as: :blog_posts
@@ -153,11 +142,6 @@ Rails.application.routes.draw do
     end
   end
 
-  constraints(DomainConstraints.method(:custom_domain?)) do
-    scope as: :custom, &shared_blog_routes
-    get "/:name", to: "blogs/posts#index", constraints: Constraints::RssFormat.new, as: :custom_posts_rss
-  end
-
   constraints(DomainConstraints.method(:default_domain?)) do
     get "/sitemap.xml", to: "public#sitemap", as: :public_sitemap, format: :xml
     get "/robots.txt", to: "public#robots", as: :robots, format: :text
@@ -170,7 +154,6 @@ Rails.application.routes.draw do
     get "/blogging-by-email", to: "public#blogging_by_email"
 
     get "/@:name", to: redirect("/%{name}")
-    scope ":name", &shared_blog_routes
   end
 
   namespace :api do
@@ -178,14 +161,10 @@ Rails.application.routes.draw do
   end
 
   direct :rails_public_blob do |blob|
-    # Preserve the behaviour of `rails_blob_url` inside these environments
-    # where S3 or the CDN might not be configured
     if ENV.fetch("ACTIVE_STORAGE_ASSET_HOST", false) && blob&.key
-     File.join(ENV.fetch("ACTIVE_STORAGE_ASSET_HOST"), blob.key)
+      File.join(ENV.fetch("ACTIVE_STORAGE_ASSET_HOST"), blob.key)
     else
       route =
-        # ActiveStorage::VariantWithRecord was introduced in Rails 6.1
-        # Remove the second check if you"re using an older version
         if blob.is_a?(ActiveStorage::Variant) || blob.is_a?(ActiveStorage::VariantWithRecord)
           :rails_representation
         else
@@ -196,6 +175,5 @@ Rails.application.routes.draw do
     end
   end
 
-  # Defines the root path route ("/")
   root "home#index"
 end

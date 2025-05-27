@@ -6,7 +6,7 @@
   <% if @user.subscribed? %>
     <div class="flex items-center gap-x-2">
       <% if @user.blog.reply_by_email %>
-        <%= link_to new_post_reply_path_for(post),
+        <%= link_to new_post_reply_path(post),
                   title: "Reply to this post via email",
                   data: { turbo_frame: "_top" },
                   class: "flex" do %>

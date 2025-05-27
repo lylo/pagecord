@@ -10,7 +10,7 @@
       To unsubscribe from <span class="font-bold"><%= @blog.display_name %></span>, click the link below.
     </div>
     <div class="mt-4">
-      <%= button_to "Unsubscribe", email_subscriber_unsubscribe_path_for(@subscriber),
+      <%= button_to "Unsubscribe", email_subscriber_unsubscribe_path(@subscriber),
           class: "text-meta font-medium underline",
           data: { turbo: false } %>
     </div>

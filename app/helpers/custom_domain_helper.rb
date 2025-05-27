@@ -5,7 +5,9 @@ module CustomDomainHelper
     elsif Rails.env.test?
       request.host !~ /\.example\.com/ && request.host != "127.0.0.1"  # 127.0.0.1 used by Capybara
     else
-      ![ "localhost", "ant-evolved-equally.ngrok-free.app" ].include?(request.host)
+      # In development, only consider it a custom domain if it's not our development domains
+      local_domain_pattern = /\A([^.]+\.)*localhost\z/
+      !request.host.match?(local_domain_pattern)
     end
   end
 
