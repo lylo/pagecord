@@ -2,39 +2,40 @@ require "test_helper"
 
 class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
   setup do
+    host! "joel.example.com"
     @post = posts(:one)
   end
 
   test "should get new reply form" do
-    get new_post_reply_path(@post.blog.name, @post)
+    get new_post_reply_path(@post)
     assert_response :success
-    assert_select "form[action=?]", post_replies_path(@post.blog.name, @post)
+    assert_select "form[action=?]", post_replies_path(@post)
   end
 
   test "should get new reply form for custom domain" do
     post = posts(:four)
 
-    get new_custom_post_reply_url(post, host: post.blog.custom_domain)
+    get new_post_reply_url(post, host: post.blog.custom_domain)
 
     assert_response :success
-    assert_select "form[action=?]", custom_post_replies_path(post)
+    assert_select "form[action=?]", post_replies_path(post)
   end
 
   test "should redirect to post if reply by email is disabled" do
     @post.blog.update(reply_by_email: false)
-    get new_post_reply_path(@post.blog.name, @post)
-    assert_redirected_to blog_post_path(@post.blog.name, @post.slug)
+    get new_post_reply_path(@post)
+    assert_redirected_to blog_post_path(@post.slug)
   end
 
   test "should create reply and send email" do
     assert_difference("Post::Reply.count", 1) do
       params = reply_params.merge(spam_prevention_params(@post))
 
-      post post_replies_path(@post.blog.name, @post), params: params
+      post post_replies_path(@post), params: params
     end
 
     assert_enqueued_emails 1
-    assert_redirected_to blog_post_path(@post.blog.name, @post.slug)
+    assert_redirected_to blog_post_path(@post.slug)
     follow_redirect!
     assert_equal "Reply sent successfully!", flash[:notice]
   end
@@ -43,7 +44,7 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
     params = reply_params.merge({ reply: { email: "" } }).merge(spam_prevention_params(@post))
 
     assert_no_difference("Post::Reply.count") do
-      post post_replies_path(@post.blog.name, @post), params: params
+      post post_replies_path(@post), params: params
     end
 
     assert_response :unprocessable_entity
@@ -54,7 +55,7 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
     assert_no_difference("Post::Reply.count") do
       params = reply_params.merge(email_confirmation: "test@test.com")
 
-      post post_replies_path(@post.blog.name, @post), params: params
+      post post_replies_path(@post), params: params
     end
 
     assert_response :forbidden

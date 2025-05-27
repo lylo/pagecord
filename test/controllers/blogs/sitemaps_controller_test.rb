@@ -4,6 +4,7 @@ class Blogs::SitemapsControllerTest < ActionDispatch::IntegrationTest
   include RoutingHelper
 
   test "should get sitemap" do
+    host! "joel.example.com"
     blog = blogs(:joel)
     get blog_sitemap_path(name: blog.name)
 
@@ -20,6 +21,7 @@ class Blogs::SitemapsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should return 406 for unsupported format" do
+    host! "joel.example.com"
     blog = blogs(:joel)
     get blog_sitemap_path(name: blog.name, format: :gzip)
 

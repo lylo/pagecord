@@ -4,6 +4,7 @@ class Blogs::RobotsControllerTest < ActionDispatch::IntegrationTest
   include RoutingHelper
 
   test "should get robots.txt for regular domain" do
+    host! "joel.example.com"
     blog = blogs(:joel)
     get blog_robots_path(name: blog.name)
 
@@ -30,6 +31,7 @@ class Blogs::RobotsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should disallow all indexing" do
+    host! "joel.example.com"
     blog = blogs(:joel)
     blog.update!(allow_search_indexing: false)
 

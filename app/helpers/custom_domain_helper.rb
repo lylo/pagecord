@@ -1,9 +1,10 @@
 module CustomDomainHelper
   def custom_domain_request?
+    default_host = Rails.application.config.x.domain
     if Rails.env.production?
-      request.host != Rails.application.config.x.domain
+      !request.host.include?(default_host)
     elsif Rails.env.test?
-      request.host !~ /\.example\.com/ && request.host != "127.0.0.1"  # 127.0.0.1 used by Capybara
+      !request.host.include?(default_host)
     else
       # In development, only consider it a custom domain if it's not our development domains
       local_domain_pattern = /\A([^.]+\.)*localhost\z/

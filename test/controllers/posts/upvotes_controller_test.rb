@@ -2,31 +2,32 @@ require "test_helper"
 
 class Posts::UpvotesControllerTest < ActionDispatch::IntegrationTest
   setup do
+    host! "joel.example.com"
     @post = posts(:one)
   end
 
   test "should create upvote" do
     assert_difference("Upvote.count", 1) do
-      post post_upvotes_path(@post.blog.name, @post), as: :turbo_stream
+      post post_upvotes_path(@post), as: :turbo_stream
     end
     assert_response :success
   end
 
   test "should not create duplicate upvote" do
-    post post_upvotes_path(@post.blog.name, @post), as: :turbo_stream
+    post post_upvotes_path(@post), as: :turbo_stream
 
     assert_no_difference("Upvote.count") do
-      post post_upvotes_path(@post.blog.name, @post), as: :turbo_stream
+      post post_upvotes_path(@post), as: :turbo_stream
     end
     assert_response :success
   end
 
   test "should destroy upvote" do
-    post post_upvotes_path(@post.blog.name, @post), as: :turbo_stream
+    post post_upvotes_path(@post), as: :turbo_stream
     upvote = Upvote.last
 
     assert_difference("Upvote.count", -1) do
-      delete post_upvote_path(@post.blog.name, @post, upvote), as: :turbo_stream
+      delete post_upvote_path(@post, upvote), as: :turbo_stream
     end
     assert_response :success
   end

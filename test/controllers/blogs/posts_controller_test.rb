@@ -133,7 +133,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should redirect from default domain index to custom domain" do
     post = posts(:four)
 
-    get blog_post_path(name: post.blog.name, slug: post.slug)
+    host! "#{post.blog.name}.example.com"
+    get blog_post_path(slug: post.slug)
 
     assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
   end
@@ -141,7 +142,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should redirect from default domain post to custom domain post" do
     post = posts(:four)
 
-    host! "#{post.blog.name}.#{Rails.application.config.x.domain}"
+    host! "#{post.blog.name}.example.com"
 
     get "/#{post.slug}"
 

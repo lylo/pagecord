@@ -3,6 +3,7 @@ require "test_helper"
 class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
+    host! "#{@blog.name}.example.com"
   end
 
   test "should add new email subscriber" do
@@ -29,6 +30,7 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not add email subscriber if user is not subscribed" do
+    host! "vivian.example.com"
     blog = blogs(:vivian)
     assert_not blog.user.subscribed?
 

@@ -12,11 +12,14 @@ class Blogs::BaseController < ApplicationController
 
     def load_blog
       @blog ||= if custom_domain_request?
+        # puts "Custom domain request: #{request.host}"
         blog_from_custom_domain
       elsif request.subdomain.present? && request.subdomain != "www"
+        # puts "Request subdomain: #{request.subdomain}"
         # Handle subdomains (like myblog.pagecord.test)
         Blog.includes(:social_links, :avatar_attachment).find_by(name: request.subdomain)
       else
+        # puts "Default domain request: #{Rails.application.config.x.domain}"
         if blog_params[:name].present?
           Blog.includes(:social_links, :avatar_attachment).find_by(name: blog_params[:name])
         end

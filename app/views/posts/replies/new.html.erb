@@ -2,7 +2,7 @@
 
 <div class="form">
 <%= form_with model: [@post, @reply],
-          url: post_replies_path_for(@post),
+          url: post_replies_path(@post),
           method: :post,
           scope: :reply,
           class: "p-2 sm:p-4 space-y-6" do |form| %>

@@ -17,7 +17,9 @@ end
 module DomainConstraints
   def self.default_domain?(request)
     default_host = Rails.application.config.x.domain
-    request.host == default_host
+    #   puts "Request host: #{request.host}"
+    #    puts "Default host: #{default_host}"
+    request.host == default_host || request.host == "www.#{default_host}"
   end
 end
 
