@@ -38,7 +38,7 @@ module RoutingHelper
   private
 
     def route_for_blog(blog, route_name, type, *args)
-      options = blog.custom_domain.present? ? { host: blog.custom_domain } : {}
+      options = blog.custom_domain.present? ? { host: blog.custom_domain } : { host: "#{blog.name}.#{Rails.application.config.x.domain}" }
 
       send("#{route_name}_#{type}", *args, options)
     end

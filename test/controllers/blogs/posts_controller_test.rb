@@ -3,9 +3,13 @@ require "test_helper"
 class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   include RoutingHelper
 
-  test "should get index as stream of posts" do
-    load_blog(:joel)
+  setup do
+    @blog = blogs(:joel)
 
+    host_subdomain! @blog.name
+  end
+
+  test "should get index as stream of posts" do
     get blog_posts_path
 
     assert_response :success
@@ -14,8 +18,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should render a list of post titles" do
-    blog = load_blog(:joel)
-    blog.title_layout!
+    @blog.title_layout!
 
     get blog_posts_path
 
@@ -24,8 +27,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show email subscription form on index if enabled" do
-    blog = load_blog(:joel)
-    blog.update!(email_subscriptions_enabled: true, features: [ "email_subscribers" ])
+    @blog.update!(email_subscriptions_enabled: true, features: [ "email_subscribers" ])
 
     get blog_posts_path
 
@@ -34,13 +36,12 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get show" do
-    blog = load_blog(:joel)
-    post = posts(:one)
+    post = @blog.posts.visible.first
 
     get blog_post_path(post.slug)
 
     assert_response :success
-    assert_equal posts(:one), assigns(:post)
+    assert_equal post, assigns(:post)
   end
 
   # FIXME
@@ -51,27 +52,28 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test "should redirect to root if blog not found" do
-    host! "nope.example.com"
+    host_subdomain! "nope"
+
     get blog_posts_path
     assert_redirected_to root_url
   end
 
   test "should redirect to root if user is unverified" do
-    load_blog(:elliot)
+    @blog = blogs(:elliot)
+    host_subdomain! @blog.name
+
     get blog_posts_path
     assert_redirected_to root_path
   end
 
   test "should redirect to root if user is discarded" do
-    blog = load_blog(:joel)
-    blog.user.discard!
+    @blog.user.discard!
 
     get blog_posts_path
     assert_redirected_to root_path
   end
 
   test "should get index as RSS" do
-    load_blog(:joel)
     get blog_posts_path(format: :rss)
 
     assert_response :success
@@ -79,7 +81,9 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should render plain text posts as html in RSS feed" do
-    load_blog(:vivian)
+    @blog = blogs(:vivian)
+    host_subdomain! @blog.name
+
     get blog_posts_path(format: :rss)
 
     assert_response :success
@@ -91,8 +95,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should map RSS feed aliases to index" do
-    blog = load_blog(:joel)
-
     get "/feed.xml"
 
     assert_response :success
@@ -107,17 +109,20 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   # Custom domains
 
   test "should get index on custom domain" do
-    post = posts(:four)
+    @blog = blogs(:annie)
+    host! @blog.custom_domain
 
-    get "/", headers: { "HOST" => post.blog.custom_domain }
+    get "/"
 
     assert_response :success
   end
 
   test "should get show on custom domain" do
-    post = posts(:four)
+    @blog = blogs(:annie)
+    host! @blog.custom_domain
+    post = @blog.posts.visible.first
 
-    get "/#{post.slug}", headers: { "HOST" => post.blog.custom_domain }
+    get "/#{post.slug}"
 
     assert_response :success
   end
@@ -131,18 +136,19 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should redirect from default domain index to custom domain" do
-    post = posts(:four)
+    @blog = blogs(:annie)
+    host_subdomain! @blog.name
+    post = @blog.posts.visible.first
 
-    host! "#{post.blog.name}.example.com"
     get blog_post_path(slug: post.slug)
 
     assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
   end
 
   test "should redirect from default domain post to custom domain post" do
-    post = posts(:four)
-
-    host! "#{post.blog.name}.example.com"
+    @blog = blogs(:annie)
+    host! "#{@blog.name}.example.com"
+    post = @blog.posts.visible.first
 
     get "/#{post.slug}"
 
@@ -150,16 +156,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should redirect to last page on pagy overflow" do
-    load_blog(:joel)
-
     get blog_posts_path(page: 999)
 
     assert_redirected_to blog_posts_path(page: 1)
   end
 
   test "should set the canonical_url to the page URL by default" do
-    load_blog(:joel)
-    post = posts(:one)
+    post = @blog.posts.visible.first
+
     get post_path(post)
 
     assert_response :success
@@ -167,8 +171,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should set the canonical_url to the custom URL if present" do
-    blog = load_blog(:joel)
-    post = posts(:one)
+    post = @blog.posts.visible.first
     post.update!(canonical_url: "https://myblog.net")
 
     get blog_post_path(post.slug)
@@ -178,49 +181,44 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should initially prevent free blogs from being indexed" do
-    blog = load_blog(:vivian)
+    @blog = blogs(:vivian)
+    host_subdomain! @blog.name
+
     get blog_posts_path
 
-    assert blog.created_at.after?(1.week.ago)
+    assert @blog.created_at.after?(1.week.ago)
     assert_select 'meta[name="robots"][content="noindex, nofollow"]'
   end
 
   test "should not prevent new subscribed blogs from being indexed" do
-    blog = load_blog(:joel)
     get blog_posts_path
 
-    assert blog.created_at.after?(1.week.ago)
+    assert @blog.created_at.after?(1.week.ago)
     assert_select 'meta[name="robots"][content="noindex, nofollow"]', count: 0
   end
 
   test "should insert author attribution into the head" do
-    blog = load_blog(:joel)
-
-    get blog_post_path(blog.posts.visible.first.slug)
+    get blog_post_path(@blog.posts.visible.first.slug)
 
     assert_response :success
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]', count: 0
 
-    blog.update!(fediverse_author_attribution: "@joel@pagecord.com")
+    @blog.update!(fediverse_author_attribution: "@joel@pagecord.com")
 
-    get blog_post_path(blog.posts.visible.first.slug)
+    get blog_post_path(@blog.posts.visible.first.slug)
 
     assert_response :success
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end
 
   test "should include rel='me' link if Maston social link is present" do
-    blog = load_blog(:joel)
-
     get blog_posts_path
 
-    assert_select "link[rel=\"me\"][href=\"#{blog.social_links.mastodon.first.url}\"]"
+    assert_select "link[rel=\"me\"][href=\"#{@blog.social_links.mastodon.first.url}\"]"
   end
 
   test "should render avatar favicon when blog has an avatar" do
-    blog = load_blog(:joel)
-
-    blog.avatar.attach(
+    @blog.avatar.attach(
       io: File.open(Rails.root.join("test/fixtures/files/avatar.png")),
       filename: "avatar.png",
       content_type: "image/png"
@@ -233,9 +231,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should render default favicon when blog has no avatar" do
-    blog = load_blog(:joel)
-
-    blog.avatar.purge if blog.avatar.attached?
+    @blog.avatar.purge if @blog.avatar.attached?
 
     get blog_posts_path
 
@@ -244,8 +240,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should render upvotes for a subscriber" do
-    blog = load_blog(:joel)
-
     get blog_posts_path
 
     assert_response :success
@@ -253,7 +247,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not render upvotes for a non-subscriber" do
-    blog = load_blog(:vivian)
+    @blog = blogs(:vivian)
+    host_subdomain! "vivian"
 
     get blog_posts_path
 
@@ -262,8 +257,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not render upvotes if show_upvotes is false" do
-    blog = load_blog(:joel)
-    blog.update!(show_upvotes: false)
+    @blog.update!(show_upvotes: false)
 
     get blog_posts_path
 
@@ -286,15 +280,12 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
       assert_equal Time.utc(2025, 5, 11, 10), post.published_at
     end
 
-    load_blog(:joel)
     get blog_post_path(Post.last.slug)
 
     assert_select "time[datetime='2025-05-11T10:00:00Z']"
   end
 
   test "should pagecord branding" do
-    blog = load_blog(:joel)
-
     get blog_posts_path
 
     assert_response :success
@@ -302,8 +293,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should hide pagecord branding when show_branding off" do
-    blog = load_blog(:joel)
-    blog.update!(show_branding: false)
+    @blog.update!(show_branding: false)
 
     get blog_posts_path
 
@@ -312,7 +302,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should only import font corresponding to theme" do
-    blog = load_blog(:joel)
     get blog_posts_path
 
     assert_response :success
@@ -320,7 +309,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[href*='lora']", count: 0
     assert_select "link[href*='inter']", count: 1
 
-    blog.update!(font: "mono")
+    @blog.update!(font: "mono")
 
     get blog_posts_path
 
@@ -332,9 +321,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   private
 
-    def load_blog(name)
-      blog = blogs(name)
-      host! "#{blog.name}.example.com"
-      blog
+    def host_subdomain!(name)
+      host! "#{name}.#{Rails.application.config.x.domain}"
     end
 end
