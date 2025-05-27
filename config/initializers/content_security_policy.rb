@@ -26,6 +26,8 @@ Rails.application.configure do
                       "https://assets-cdn.github.com",
                       "https://githubusercontent.com",
                       "https://plausible.io",
+                      "https://paddle.com",
+                      "*.paddle.com",
                       :unsafe_inline
 
     # Styles
@@ -47,13 +49,17 @@ Rails.application.configure do
                      "https://gist.github.com",
                      "https://bandcamp.com",
                      "*.bandcamp.com",
-                     "https://strava-embeds.com"
+                     "https://strava-embeds.com",
+                     "https://paddle.com",
+                     "*.paddle.com"
 
     # Connect sources
     policy.connect_src :self, :https,
                        "https://plausible.io",
                        "https://cloudflareinsights.com",
-                       "https://static.cloudflareinsights.com"
+                       "https://static.cloudflareinsights.com",
+                       "https://paddle.com",
+                       "*.paddle.com"
 
     policy.manifest_src :self, :https,
                         "https://d2rvfk326kpipd.cloudfront.net"
@@ -71,5 +77,5 @@ Rails.application.configure do
 
   # Enable CSP enforcement
   # For debugging: set to true for report-only mode first
-  # config.content_security_policy_report_only = true
+  config.content_security_policy_report_only = true
 end
