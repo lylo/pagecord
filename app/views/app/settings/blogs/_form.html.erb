@@ -60,9 +60,9 @@
   </div>
 
   <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2 mt-8">Blog Username</h3>
+    <h3 class="font-bold text-lg mb-2 mt-8">Blog Subdomain</h3>
     <p class="mb-4">
-      Your current blog username is <strong><%= persisted_value(@blog, :name) %></strong> which means your blog is available at <span class="bg-slate-200 dark:bg-slate-700">https://pagecord.com/<%= persisted_value(@blog, :name) %></span>.
+      Your current blog subdomain is <strong><%= persisted_value(@blog, :name) %></strong> which means your blog is available at <span class="bg-slate-200 dark:bg-slate-700">https://<%= persisted_value(@blog, :name) %>.pagecord.com</span>.
     </p>
 
     <div class="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
@@ -74,7 +74,7 @@
         </div>
         <div class="ml-3">
           <p class="text-sm text-yellow-800 dark:text-yellow-200">
-            <strong>Warning:</strong> Changing your username will also change the URL of your blog, so any links to your old username will no longer work!
+            <strong>Warning:</strong> Changing your blog subdomain changes the URL of your blog, so any links to your old blog URL will no longer work!
           </p>
         </div>
       </div>

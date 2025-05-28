@@ -1,17 +1,17 @@
 <% content_for :title, "Pagecord - Log In" %>
 
 <p>
-  Enter your username and email address to log in.
+  Enter your blog subdomain and email address to log in.
 </p>
 
 <%= form_with url: sessions_path, model: @user, data: { turbo: "false" }, class: "mt-4" do |form| %>
-  <div class="flex">
-    <div class="font-semibold">pagecord.com/</div>
-    <%= form.text_field :username, placeholder: "username", autofocus: true, class: "p-0 m-0 border-none bg-inherit outline-none focus:ring-0", maxlength: 20, required: true %>
+  <div class="flex items-center">
+    <%= form.text_field :username, placeholder: "subdomain", autofocus: true, class: "px-1 py-1 m-0 form-field rounded-sm", maxlength: 20, required: true %>
+    <div class="font-semibold">.pagecord.com</div>
   </div>
 
   <div class="mt-4">
-    <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "p-0 m-0 border-none bg-inherit outline-none focus:ring-0" %>
+    <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "mt-1 px-1 py-1 m-0 form-field rounded-sm" %>
   </div>
 
   <div class="mt-8">

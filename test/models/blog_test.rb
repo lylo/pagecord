@@ -39,6 +39,9 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.valid?
 
     @blog.name = "abcdef_1234"
+    assert_not @blog.valid?
+
+    @blog.name = "abcdef1234"
     assert @blog.valid?
   end
 

@@ -3,7 +3,7 @@ class Username
                  help jobs login pagecord privacy pricing rss
                  sidekiq signup support terms ]
 
-  FORMAT_REGEX = /\A[a-zA-Z0-9_]+\z/
+  FORMAT_REGEX = /\A[a-zA-Z0-9]+\z/
   MIN_LENGTH = 3
   MAX_LENGTH = 20
 
@@ -12,12 +12,6 @@ class Username
   end
 
   def self.valid_format?(username)
-    # specifically allowed characters
-    return false unless username =~ FORMAT_REGEX
-
-    # Only one underscore allowed
-    return false if username.count("_") > 1
-
-    true
+    username =~ FORMAT_REGEX
   end
 end

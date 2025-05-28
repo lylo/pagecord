@@ -17,8 +17,8 @@ class UsernameTest < ActiveSupport::TestCase
     assert_not Username.valid_format?("joel.murphy")
   end
 
-  test "should allow one underscore" do
-    assert Username.valid_format?("joel_murphy")
+  test "should not allow underscores" do
+    assert_not Username.valid_format?("joel_murphy")
     assert_not Username.valid_format?("joel_murphy_")
   end
 end
