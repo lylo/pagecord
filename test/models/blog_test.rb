@@ -27,7 +27,7 @@ class BlogTest < ActiveSupport::TestCase
   end
 
   test "should reserve username" do
-    @blog.name = "blog"
+    @blog.name = "pagecord"
     assert_not @blog.valid?
   end
 
