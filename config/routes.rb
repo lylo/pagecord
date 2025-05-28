@@ -166,7 +166,7 @@ Rails.application.routes.draw do
       path = params[:path] ? "/#{params[:path]}" : "/"
 
       "#{scheme}://#{params[:name]}.#{host}#{port}#{path}"
-    }, constraints: { name: /[a-z0-9\-]+/i }
+    }, constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }
   end
 
   namespace :api do

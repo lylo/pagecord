@@ -31,4 +31,4 @@ en:
   activerecord:
     attributes:
       blog:
-        name: "Username"
+        name: "Subdomain"

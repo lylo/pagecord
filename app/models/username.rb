@@ -1,6 +1,6 @@
 class Username
-  RESERVED = %w[ about admin app careers contact faq feed
-                 help jobs login pagecord privacy pricing rss
+  RESERVED = %w[ about admin app api careers contact faq feed
+                 help jobs login pagecord privacy pricing rails rss
                  sidekiq signup support terms ]
 
   FORMAT_REGEX = /\A[a-zA-Z0-9]+\z/
