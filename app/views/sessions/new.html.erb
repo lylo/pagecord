@@ -4,14 +4,14 @@
   Enter your blog subdomain and email address to log in.
 </p>
 
-<%= form_with url: sessions_path, model: @user, data: { turbo: "false" }, class: "mt-4" do |form| %>
+<%= form_with url: sessions_path, model: @user, data: { turbo: "false" }, class: "mt-8" do |form| %>
   <div class="flex items-center">
-    <%= form.text_field :username, placeholder: "subdomain", autofocus: true, class: "px-1 py-1 m-0 form-field rounded-sm", maxlength: 20, required: true %>
+    <%= form.text_field :username, placeholder: "subdomain", autofocus: true, class: "px-2 py-1 m-0 form-field rounded-sm", maxlength: 20, required: true %>
     <div class="font-semibold">.pagecord.com</div>
   </div>
 
   <div class="mt-4">
-    <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "mt-1 px-1 py-1 m-0 form-field rounded-sm" %>
+    <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "mt-1 px-2 py-1 m-0 form-field rounded-sm" %>
   </div>
 
   <div class="mt-8">

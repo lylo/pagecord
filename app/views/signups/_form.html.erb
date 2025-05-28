@@ -1,7 +1,7 @@
-<%= form_with url: signups_path, model: @user, data: { controller: "timezone", turbo: "false" }, class: "mt-4" do |form| %>
+<%= form_with url: signups_path, model: @user, data: { controller: "timezone", turbo: "false" }, class: "mt-8" do |form| %>
   <div class="flex items-center">
     <%= form.fields_for :blog do |blog_form| %>
-      <%= blog_form.text_field :name, placeholder: "subdomain", autofocus: true, class: "px-1 py-1 m-0 form-field rounded-sm #{'!border-red-500' if @user.blog.errors[:name].any?}", maxlength: 20, required: true %>
+      <%= blog_form.text_field :name, placeholder: "subdomain", autofocus: true, class: "px-2 py-1 m-0 form-field rounded-sm #{'!border-red-500' if @user.blog.errors[:name].any?}", maxlength: 20, required: true %>
     <% end %>
     <div class="font-semibold">.pagecord.com</div>
   </div>
@@ -15,7 +15,7 @@
   <% end %>
 
   <div class="mt-4">
-    <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "mt-1 px-1 py-1 m-0 form-field rounded-sm #{'!border-red-500' if @user.errors[:email].any?}" %>
+    <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "mt-1 px-2 py-1 m-0 form-field rounded-sm #{'!border-red-500' if @user.errors[:email].any?}" %>
     <%= field_error(@user, :email) %>
     <%= render "/shared/spam_prevention" %>
     <%= form.hidden_field :timezone, data: { timezone_target: "timeZone" } %>
