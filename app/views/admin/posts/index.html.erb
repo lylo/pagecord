@@ -13,7 +13,7 @@
     <% @posts.each do |post| %>
       <tr>
         <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">
-          <%= link_to "@#{post.blog.name}", blog_posts_path(name: post.blog.name), class: "hover:underline" %>
+          <%= link_to "@#{post.blog.name}", blog_home_url(post.blog), class: "hover:underline" %>
           <% if post.blog.custom_domain.present? %>
             <div class="text-xs font-light text-slate-500 dark:text-slate-400"><%= post.blog.custom_domain %></div>
           <% end %>
