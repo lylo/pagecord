@@ -32,11 +32,11 @@ module RoutingHelper
   end
 
   def email_subscriber_confirmation_url_for(email_subscriber)
-    route_for_blog(email_subscriber.blog, "email_subscriber_confirmation", "url", email_subscriber.token)
+    email_subscriber_confirmation_url(email_subscriber.token, host: host(email_subscriber.blog))
   end
 
   def email_subscriber_unsubscribe_url_for(email_subscriber)
-    route_for_blog(email_subscriber.blog, "email_subscriber_unsubscribe", "url", email_subscriber.token)
+    email_subscriber_unsubscribe_url(email_subscriber.token, host: host(email_subscriber.blog))
   end
 
   private
