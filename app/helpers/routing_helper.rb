@@ -11,12 +11,12 @@ module RoutingHelper
     post_link(post, "url")
   end
 
-  def blog_home_path(blog)
-    route_for_blog(blog, "blog_posts", "path")
+  def blog_home_path(blog, options = {})
+    route_for_blog(blog, "blog_posts", "path", options)
   end
 
-  def blog_home_url(blog)
-    route_for_blog(blog, "blog_posts", "url")
+  def blog_home_url(blog, options = {})
+    route_for_blog(blog, "blog_posts", "url", options)
   end
 
   def rss_feed_path(blog)
@@ -41,10 +41,10 @@ module RoutingHelper
 
   private
 
-    def route_for_blog(blog, route_name, type, *args)
-      options = { host: host(blog) }
+    def route_for_blog(blog, route_name, type, options = {})
+      route_options = options.merge(host: host(blog))
 
-      send("#{route_name}_#{type}", *args, options)
+      send("#{route_name}_#{type}", route_options)
     end
 
     def host(blog)
