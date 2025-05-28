@@ -35,6 +35,18 @@ module Constraints
 end
 
 Rails.application.routes.draw do
+  # Helper method for subdomain redirects
+  def subdomain_redirect(path = "/")
+    ->(params, _req) do
+      host = Rails.application.config.x.domain
+      options = Rails.application.config.action_controller.default_url_options
+      scheme = options[:protocol] || "https"
+      port = options[:port] ? ":#{options[:port]}" : ""
+
+      "#{scheme}://#{params[:name]}.#{host}#{port}#{path}"
+    end
+  end
+
   get "up", to: "rails/health#show", as: :rails_health_check
 
   constraints SidekiqAdminConstraint.new do
@@ -158,14 +170,13 @@ Rails.application.routes.draw do
     get "/blogging-by-email", to: "public#blogging_by_email"
 
     get "/@:name", to: redirect("/%{name}")
-    get "/:name(/*path)", to: redirect { |params, _req|
-      host = Rails.application.config.x.domain
-      options = Rails.application.config.action_controller.default_url_options
-      scheme = options[:protocol] || "https"
-      port = options[:port] ? ":#{options[:port]}" : ""
-      path = params[:path] ? "/#{params[:path]}" : "/"
 
-      "#{scheme}://#{params[:name]}.#{host}#{port}#{path}"
+    get "/:name.rss", to: redirect(subdomain_redirect("/feed.xml")),
+        constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }, defaults: { format: :rss }
+
+    get "/:name(/*path)", to: redirect { |params, _req|
+      path = params[:path] ? "/#{params[:path]}" : "/"
+      subdomain_redirect(path).call(params, _req)
     }, constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }
   end
 

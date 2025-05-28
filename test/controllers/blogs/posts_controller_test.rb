@@ -89,6 +89,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
   end
 
+  test "should redirect from old /name.rss to subdomain RSS feed" do
+    host! Rails.application.config.x.domain
+
+    get "/#{@blog.name}.rss"
+
+    assert_redirected_to "http://#{@blog.name}.example.com/feed.xml"
+  end
+
   test "should render plain text posts as html in RSS feed" do
     @blog = blogs(:vivian)
     host_subdomain! @blog.name
