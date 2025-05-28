@@ -39,7 +39,7 @@ class SocialLinksTest < ApplicationSystemTestCase
 
     # Change to RSS and verify it's set to RSS feed
     select "RSS", from: new_platform_select[:id]
-    assert_match "/#{@user.blog.name}/feed.xml", new_url_field.value
+    assert_match "/feed.xml", new_url_field.value
 
     # Change back to GitHub and verify original GitHub URL is restored
     select "GitHub", from: new_platform_select[:id]

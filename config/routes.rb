@@ -17,10 +17,7 @@ end
 module DomainConstraints
   def self.default_domain?(request)
     if Rails.env.test?
-      request.host == "www.example.com" ||
-      request.host == "127.0.0.1" ||
-      request.host == "localhost" ||
-      request.host == "example.com"
+      [ "www.example.com", "lvh.me", "example.com" ].include?(request.host)
     else
       default_host = Rails.application.config.x.domain
       request.host == default_host || request.host == "www.#{default_host}"

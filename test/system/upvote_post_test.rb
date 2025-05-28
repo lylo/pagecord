@@ -7,6 +7,8 @@ class UpvotePostTest < ApplicationSystemTestCase
     post = blog.posts.published.first
     initial_upvotes = post.upvotes.count
 
+    use_subdomain(blog.name)
+
     visit blog_post_path(post.slug)
 
     within "turbo-frame##{dom_id(post, :upvotes)}" do

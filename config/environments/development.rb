@@ -18,9 +18,9 @@ Rails.application.configure do
   config.server_timing = true
 
   # Set domain configuration for development
-  config.x.domain = ENV.fetch("APP_DOMAIN", "localhost")
+  config.x.domain = ENV.fetch("APP_DOMAIN", "lvh.me")
 
-  config.action_controller.default_url_options = { host: "localhost", port: "3000", protocol: "http" }
+  config.action_controller.default_url_options = { host: "lvh.me", port: "3000", protocol: "http" }
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
@@ -45,7 +45,7 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
 
   # Use different settings based on whether we're using puma-dev or regular Rails server
-  config.action_mailer.default_url_options = { host: "localhost", port: "3000" }
+  config.action_mailer.default_url_options = { host: "lvh.me", port: "3000" }
 
   config.action_mailbox.ingress = :postmark
 
@@ -88,11 +88,6 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
 
-  config.action_dispatch.tld_length = 0
-
-  config.hosts += [ "myblog.net", "annie.blog" ]
-  config.hosts << /.*\.localhost/
+  # allow any host in dev
+  config.hosts.clear
 end
-
-# Set default URL options based on whether we're using puma-dev or regular Rails server
-Rails.application.routes.default_url_options[:host] = "localhost:3000"
