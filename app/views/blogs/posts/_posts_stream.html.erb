@@ -4,10 +4,6 @@
   </div>
 
   <% if @pagy.next %>
-    <% if custom_domain_request? %>
-      <%= turbo_frame_tag :posts, src: custom_blog_posts_path(page: @pagy.next), loading: :lazy %>
-    <% else %>
-      <%= turbo_frame_tag :posts, src: blog_posts_path(name: @blog.name, page: @pagy.next), loading: :lazy %>
-    <% end%>
+    <%= turbo_frame_tag :posts, src: blog_home_path(@blog, page: @pagy.next), loading: :lazy %>
   <% end %>
 <% end %>
