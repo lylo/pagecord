@@ -58,4 +58,9 @@
 <meta name="robots" content="noindex, nofollow">
 <% end %>
 
-<script defer data-domain="pagecord.com" src="https://plausible.io/js/script.js"></script>
+<% if @blog&.name == "olly" %>
+<script defer data-domain="olly.pagecord.com" src="https://plausible.io/js/script.js"></script>
+<% end %>
+<% if @blog&.name == "blog" %>
+<script defer data-domain="blog.pagecord.com" src="https://plausible.io/js/script.js"></script>
+<% end %>
