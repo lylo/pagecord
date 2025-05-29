@@ -1,7 +1,7 @@
 xml.instruct! :xml, version: "1.0"
 xml.rss version: "2.0" do
   xml.channel do
-    xml.title "Pagecord feed for @#{@user.blog.name}"
+    xml.title "Pagecord feed for @#{@user.blog.subdomain}"
     xml.description "All the latest articles from the Pagecords you're following"
     xml.link app_feed_url
 

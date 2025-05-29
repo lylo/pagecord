@@ -48,6 +48,6 @@ module RoutingHelper
     end
 
     def host(blog)
-      blog.custom_domain.present? ? blog.custom_domain : "#{blog.name}.#{Rails.application.config.x.domain}"
+      blog.custom_domain.present? ? blog.custom_domain : "#{blog.subdomain}.#{Rails.application.config.x.domain}"
     end
 end

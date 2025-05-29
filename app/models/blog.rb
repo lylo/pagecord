@@ -20,17 +20,17 @@ class Blog < ApplicationRecord
   has_rich_text :bio
   validate :bio_length
 
-  before_validation :downcase_name
+  before_validation :downcase_subdomain
 
-  validates :name, presence: true, uniqueness: true, length: { minimum: Username::MIN_LENGTH, maximum: Username::MAX_LENGTH }
-  validate  :name_valid
+  validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
+  validate  :subdomain_valid
 
   def custom_title?
     title.present?
   end
 
   def display_name
-    title.blank? ? "@#{name}" : title
+    title.blank? ? "@#{subdomain}" : title
   end
 
   private
@@ -41,17 +41,17 @@ class Blog < ApplicationRecord
       end
     end
 
-    def downcase_name
-      self.name = self.name.downcase.strip if self.name.present?
+    def downcase_subdomain
+      self.subdomain = self.subdomain.downcase.strip if self.subdomain.present?
     end
 
-    def name_valid
-      unless Username.valid_format?(name)
-        errors.add(:name, "can only use letters, numbers or underscores")
+    def subdomain_valid
+      unless Subdomain.valid_format?(subdomain)
+        errors.add(:subdomain, "can only use letters, numbers or underscores")
       end
 
-      if Username.reserved?(name)
-        errors.add(:name, "is reserved")
+      if Subdomain.reserved?(subdomain)
+        errors.add(:subdomain, "is reserved")
       end
     end
 end

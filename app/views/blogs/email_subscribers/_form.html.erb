@@ -5,7 +5,7 @@
   </div>
 
   <fieldset class="flex">
-    <%= hidden_field_tag :blog_name, @blog.name %>
+    <%= hidden_field_tag :blog_name, @blog.subdomain %>
     <%= render "/shared/spam_prevention" %>
 
     <%= form.email_field :email,

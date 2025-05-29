@@ -16,7 +16,7 @@ if Rails.env.production?
         if Current.blog
           event.extra[:blog] = {
             id: Current.blog.id,
-            name: Current.blog.name
+            subdomain: Current.blog.subdomain
           }
         end
       end

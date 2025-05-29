@@ -27,7 +27,7 @@ class PostsHelperTest < ActionView::TestCase
 
   test "blog title" do
     blog = blogs(:joel)
-    assert_equal "Posts from @#{blog.name}", blog_title(blog)
+    assert_equal "Posts from @#{blog.subdomain}", blog_title(blog)
 
     blog.title = "My blog"
     assert_equal "My blog", blog_title(blog)

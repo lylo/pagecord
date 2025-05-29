@@ -20,8 +20,8 @@ module AppHelper
   # @return [Object] The persisted value or current value
   #
   # Example:
-  #   # In a form where @blog.name validation failed
-  #   persisted_value(@blog, :name) # Returns the database value, not the invalid input
+  #   # In a form where @blog.subdomain validation failed
+  #   persisted_value(@blog, :subdomain) # Returns the database value, not the invalid input
   def persisted_value(model, attribute)
     attribute = attribute.to_s
     was_method = "#{attribute}_was"

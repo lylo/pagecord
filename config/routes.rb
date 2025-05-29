@@ -3,7 +3,7 @@ require "sidekiq/web"
 class SidekiqAdminConstraint
   def matches?(request)
     if current_user = User.kept.find(request.session[:user_id])
-      ENV["ADMIN_USERNAME"] == current_user.blog.name &&
+      ENV["ADMIN_USERNAME"] == current_user.blog.subdomain &&
       # FIXME this should be a password
       ENV["ADMIN_DELIVERY_EMAIL"] == current_user.blog.delivery_email
     else

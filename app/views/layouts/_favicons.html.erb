@@ -2,7 +2,7 @@
   <%= favicon_link_tag rails_blob_url(@blog.avatar.variant(:thumb), disposition: "inline"), rel: "apple-touch-icon", sizes: "300x300" %>
   <%= favicon_link_tag rails_blob_url(@blog.avatar.variant(:thumb), disposition: "inline"), type: "image/png", sizes: "300x300", rel: "icon" %>
 
-  <meta name="apple-mobile-web-app-title" content="<%= @blog.name %> | Pagecord">
+  <meta name="apple-mobile-web-app-title" content="<%= @blog.subdomain %> | Pagecord">
 <% else %>
   <%= favicon_link_tag "apple-touch-icon.png", rel: "apple-touch-icon" %>
   <%= favicon_link_tag "favicon.ico", sizes: "32x32", rel: "icon" %>

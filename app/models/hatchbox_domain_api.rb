@@ -16,9 +16,9 @@ class HatchboxDomainApi
     Rails.logger.info "Response: #{response&.inspect}"
 
     if response.code == 200
-      Rails.logger.info "SSL certificate issued for #{domain} for blog #{@blog.name}"
+      Rails.logger.info "SSL certificate issued for #{domain} for blog #{@blog.subdomain}"
     else
-      raise "Failed to add domain #{domain} for blog #{@blog.name}"
+      raise "Failed to add domain #{domain} for blog #{@blog.subdomain}"
     end
 
     touch_all
@@ -32,9 +32,9 @@ class HatchboxDomainApi
     Rails.logger.info "Response: #{response&.inspect}"
 
     if response.code == 200
-      Rails.logger.info "SSL certificate revoked for #{domain} for blog #{@blog.name}"
+      Rails.logger.info "SSL certificate revoked for #{domain} for blog #{@blog.subdomain}"
     else
-      raise "Failed to remove domain #{domain} for blog #{@blog.name}"
+      raise "Failed to remove domain #{domain} for blog #{@blog.subdomain}"
     end
 
     touch_all

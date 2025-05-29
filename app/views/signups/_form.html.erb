@@ -1,13 +1,13 @@
 <%= form_with url: signups_path, model: @user, data: { controller: "timezone", turbo: "false" }, class: "mt-8" do |form| %>
   <div class="flex items-center">
     <%= form.fields_for :blog do |blog_form| %>
-      <%= blog_form.text_field :name, placeholder: "subdomain", autofocus: true, class: "px-2 py-1 m-0 form-field rounded-sm #{'!border-red-500' if @user.blog.errors[:name].any?}", maxlength: 20, required: true %>
+      <%= blog_form.text_field :subdomain, placeholder: "subdomain", autofocus: true, class: "px-2 py-1 m-0 form-field rounded-sm #{'!border-red-500' if @user.blog.errors[:subdomain].any?}", maxlength: 20, required: true %>
     <% end %>
     <div class="font-semibold">.pagecord.com</div>
   </div>
 
-  <% if has_field_error?(@user.blog, :name) %>
-    <%= field_error(@user.blog, :name) %>
+  <% if has_field_error?(@user.blog, :subdomain) %>
+    <%= field_error(@user.blog, :subdomain) %>
   <% else %>
     <div class="text-slate-500 text-xs mt-1">
       The subdomain gives you a unique pagecord URL. It can only contain letters and numbers.

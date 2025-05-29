@@ -12,7 +12,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
 
     assert_emails 1 do
-      post sessions_url, params: { user: { username: user.blog.name, email: user.email } }
+      post sessions_url, params: { user: { subdomain: user.blog.subdomain, email: user.email } }
     end
 
     assert_redirected_to thanks_sessions_path
@@ -22,7 +22,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
 
     assert_emails 1 do
-      post sessions_url, params: { user: { username: "#{user.blog.name} ", email: "#{user.email} " } }
+      post sessions_url, params: { user: { subdomain: "#{user.blog.subdomain} ", email: "#{user.email} " } }
     end
 
     assert_redirected_to thanks_sessions_path
@@ -32,7 +32,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
 
     assert_emails 1 do
-      post sessions_url, params: { user: { username: user.blog.name.upcase, email: user.email.upcase } }
+      post sessions_url, params: { user: { subdomain: user.blog.subdomain.upcase, email: user.email.upcase } }
     end
 
     assert_redirected_to thanks_sessions_path
@@ -40,7 +40,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not send verification email for invalid credentials" do
     assert_emails 0 do
-      post sessions_url, params: { user: { username: "nope", email: "nope@nope.com" } }
+      post sessions_url, params: { user: { subdomain: "nope", email: "nope@nope.com" } }
     end
 
     assert_redirected_to thanks_sessions_path

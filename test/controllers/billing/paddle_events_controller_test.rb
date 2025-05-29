@@ -18,7 +18,7 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert user.subscribed?
     assert_equal user.id, user.paddle_events.last.payload["data"]["custom_data"]["user_id"]
-    assert_equal user.blog.name, user.paddle_events.last.payload["data"]["custom_data"]["blog_name"]
+    assert_equal user.blog.subdomain, user.paddle_events.last.payload["data"]["custom_data"]["blog_subdomain"]
     assert_equal "sub_01hvrk1481njzb874tn7wyrksv", user.subscription.paddle_subscription_id
     assert_equal "pri_01hvnxrgvfsx46m83z6asdbb94", user.subscription.paddle_price_id
     assert_equal 3000, user.subscription.unit_price
@@ -112,7 +112,7 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
       data = JSON.parse(json_payload)
       data["data"]["custom_data"] ||= {}
       data["data"]["custom_data"]["user_id"] = user.id
-      data["data"]["custom_data"]["blog_name"] = user.blog.name
+      data["data"]["custom_data"]["blog_subdomain"] = user.blog.subdomain
 
       # Set next_billed_at to be 1 month from now
       if data["data"]["next_billed_at"]

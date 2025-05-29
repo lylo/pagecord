@@ -50,6 +50,6 @@ class Admin::UsersController < AdminController
   private
 
   def user_params
-    params.require(:user).permit(:email, blog_attributes: [ :name ])
+    params.require(:user).permit(:email, blog_attributes: [ :subdomain ])
   end
 end

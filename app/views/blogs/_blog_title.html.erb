@@ -3,7 +3,7 @@
     <% if @blog.custom_title? %>
       <%= @blog.title %>
     <% else %>
-      @<%= @blog.name %>
+      @<%= @blog.subdomain %>
     <% end %>
   </div>
 <% end %>

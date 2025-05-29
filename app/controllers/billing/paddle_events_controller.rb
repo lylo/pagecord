@@ -132,7 +132,7 @@ module Billing
 
         unless billing_period_ends_at.present?
           Rails.logger.error "No next_billed_at in transaction_completed event"
-          raise "No next_billed_at in transaction_completed event for #{@user.id} (#{@user.blog.name})"
+          raise "No next_billed_at in transaction_completed event for #{@user.id} (#{@user.blog.subdomain})"
         end
 
         if @subscription.present?
@@ -141,13 +141,13 @@ module Billing
 
           Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}"
         else
-          raise "Subscription not found for transaction_completed event for #{@user.id} (#{@user.blog.name})"
+          raise "Subscription not found for transaction_completed event for #{@user.id} (#{@user.blog.subdomain})"
         end
       end
 
       def transaction_payment_failed
         Rails.logger.info "Transaction payment failed"
-        raise "Payment failed for user #{@user.id} (#{@user.blog.name})"
+        raise "Payment failed for user #{@user.id} (#{@user.blog.subdomain})"
       end
 
       def data

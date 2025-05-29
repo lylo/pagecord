@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_05_20_074054) do
+ActiveRecord::Schema[8.1].define(version: 2025_05_29_124914) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,6 +83,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_20_074054) do
 
   create_table "blogs", force: :cascade do |t|
     t.boolean "allow_search_indexing", default: true, null: false
+    t.string "analytics_id"
+    t.string "analytics_service"
     t.datetime "created_at", null: false
     t.string "custom_domain"
     t.string "delivery_email"
@@ -92,17 +94,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_20_074054) do
     t.string "fediverse_author_attribution"
     t.string "font", default: "sans", null: false
     t.integer "layout", default: 0
-    t.string "name", null: false
     t.boolean "reply_by_email", default: false, null: false
     t.boolean "show_branding", default: true, null: false
     t.boolean "show_upvotes", default: true, null: false
+    t.string "subdomain", null: false
     t.string "theme", default: "base", null: false
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
-    t.index ["name"], name: "index_blogs_on_name", unique: true
+    t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
 

@@ -62,7 +62,7 @@
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2 mt-8">Blog Subdomain</h3>
     <p class="mb-4">
-      Your current blog subdomain is <strong><%= persisted_value(@blog, :name) %></strong> which means your blog is available at <span class="bg-slate-200 dark:bg-slate-700">https://<%= persisted_value(@blog, :name) %>.pagecord.com</span>.
+      Your current blog subdomain is <strong><%= persisted_value(@blog, :subdomain) %></strong> which means your blog is available at <span class="bg-slate-200 dark:bg-slate-700">https://<%= persisted_value(@blog, :subdomain) %>.pagecord.com</span>.
     </p>
 
     <div class="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
@@ -81,11 +81,11 @@
     </div>
 
     <div>
-      <%= form.label :name, "Username", class: "sr-only" %>
+      <%= form.label :subdomain, "Subdomain", class: "sr-only" %>
       <div class="flex items-center">
-        <%= styled_text_field(form, :name, required: true, placeholder: "username", maxlength: 20, class: "md:w-96") %>
+        <%= styled_text_field(form, :subdomain, required: true, placeholder: "subdomain", maxlength: 20, class: "md:w-96") %>
       </div>
-      <%= field_error(@blog, :name) %>
+      <%= field_error(@blog, :subdomain) %>
     </div>
   </div>
 

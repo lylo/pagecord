@@ -6,7 +6,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
 
-    host_subdomain! @blog.name
+    host_subdomain! @blog.subdomain
   end
 
   test "should get index as stream of posts" do
@@ -47,17 +47,17 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should allow @ prefix and redirect to :name path" do
     host! Rails.application.config.x.domain
 
-    get "/@#{@blog.name}"
+    get "/@#{@blog.subdomain}"
 
-    assert_redirected_to "http://example.com/#{@blog.name}"
+    assert_redirected_to "http://example.com/#{@blog.subdomain}"
   end
 
   test "should redirect from :name path to subdomain" do
     host! Rails.application.config.x.domain
 
-    get "/#{@blog.name}/#{posts(:one).slug}"
+    get "/#{@blog.subdomain}/#{posts(:one).slug}"
 
-    assert_redirected_to "http://#{@blog.name}.example.com/#{posts(:one).slug}"
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{posts(:one).slug}"
   end
 
   test "should redirect to root if blog not found" do
@@ -69,7 +69,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should redirect to root if user is unverified" do
     @blog = blogs(:elliot)
-    host_subdomain! @blog.name
+    host_subdomain! @blog.subdomain
 
     get blog_posts_path
     assert_redirected_to root_path
@@ -83,7 +83,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index as RSS" do
-    get blog_posts_path(format: :rss)
+    get rss_feed_path(@blog)
 
     assert_response :success
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
@@ -92,16 +92,16 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should redirect from old /name.rss to subdomain RSS feed" do
     host! Rails.application.config.x.domain
 
-    get "/#{@blog.name}.rss"
+    get "/#{@blog.subdomain}.rss"
 
-    assert_redirected_to "http://#{@blog.name}.example.com/feed.xml"
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/feed.xml"
   end
 
   test "should render plain text posts as html in RSS feed" do
     @blog = blogs(:vivian)
-    host_subdomain! @blog.name
+    host_subdomain! @blog.subdomain
 
-    get blog_posts_path(format: :rss)
+    get rss_feed_path(@blog)
 
     assert_response :success
 
@@ -154,7 +154,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should redirect from default domain index to custom domain" do
     @blog = blogs(:annie)
-    host_subdomain! @blog.name
+    host_subdomain! @blog.subdomain
     post = @blog.posts.visible.first
 
     get blog_post_path(slug: post.slug)
@@ -164,7 +164,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should redirect from default domain post to custom domain post" do
     @blog = blogs(:annie)
-    host! "#{@blog.name}.example.com"
+    host! "#{@blog.subdomain}.example.com"
     post = @blog.posts.visible.first
 
     get "/#{post.slug}"
@@ -199,7 +199,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should initially prevent free blogs from being indexed" do
     @blog = blogs(:vivian)
-    host_subdomain! @blog.name
+    host_subdomain! @blog.subdomain
 
     get blog_posts_path
 

@@ -6,7 +6,7 @@
 
 <%= form_with url: sessions_path, model: @user, data: { turbo: "false" }, class: "mt-8" do |form| %>
   <div class="flex items-center">
-    <%= form.text_field :username, placeholder: "subdomain", autofocus: true, class: "px-2 py-1 m-0 form-field rounded-sm", maxlength: 20, required: true %>
+    <%= form.text_field :subdomain, placeholder: "subdomain", autofocus: true, class: "px-2 py-1 m-0 form-field rounded-sm", maxlength: 20, required: true %>
     <div class="font-semibold">.pagecord.com</div>
   </div>
 

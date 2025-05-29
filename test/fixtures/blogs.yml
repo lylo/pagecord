@@ -5,26 +5,26 @@ DEFAULTS: &default
 
 joel:
   user: joel
-  name: joel
+  subdomain: joel
   delivery_email: joel_gf35jsue@post.pagecord.com
   <<: *default
   reply_by_email: true
 
 elliot:
   user: elliot
-  name: elliot
+  subdomain: elliot
   delivery_email: elliot_jfur73yd@post.pagecord.com
   <<: *default
 
 vivian:
   user: vivian
-  name: vivian
+  subdomain: vivian
   delivery_email: vivian_jfur73yd@post.pagecord.com
   <<: *default
 
 annie:
   user: annie
-  name: annie
+  subdomain: annie
   delivery_email: annie_asj232j@post.pagecord.com
   custom_domain: annie.blog
   reply_by_email: true
@@ -32,11 +32,11 @@ annie:
 
 saul:
   user: saul
-  name: saul
+  subdomain: saul
   delivery_email: saul_asj232j@post.pagecord.com
   <<: *default
 
 pagecord:
   user: pagecord
-  name: pagecord
+  subdomain: pagecord
   delivery_email: pagecord_asj232j@post.pagecord.com

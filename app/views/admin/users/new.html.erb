@@ -17,9 +17,9 @@
 
     <div class="mb-4">
       <%= form.fields_for :blog do |blog_form| %>
-        <%= blog_form.label :name, "Subdomain", class: "block text-sm font-medium mb-1" %>
+        <%= blog_form.label :subdomain, "Subdomain", class: "block text-sm font-medium mb-1" %>
         <div class="flex items-center">
-          <%= blog_form.text_field :name, placeholder: "subdomain", autofocus: true, class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400", maxlength: 20, required: true %>
+          <%= blog_form.text_field :subdomain, placeholder: "subdomain", autofocus: true, class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400", maxlength: 20, required: true %>
         </div>
         <div class="text-slate-500 text-xs mt-1">
           Subdomain can only contain letters and numbers

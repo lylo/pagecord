@@ -5,43 +5,43 @@ class BlogTest < ActiveSupport::TestCase
     @blog = blogs(:joel)
   end
 
-  test "should validate length of name" do
-    @blog.name = "a" * 21
+  test "should validate length of subdomain" do
+    @blog.subdomain = "a" * 21
     assert_not @blog.valid?
 
-    @blog.name = "a"
+    @blog.subdomain = "a"
     assert_not @blog.valid?
 
-    @blog.name = "aaaa"
+    @blog.subdomain = "aaaa"
     assert @blog.valid?
   end
 
-  test "should validate presence of name" do
-    @blog.name = ""
+  test "should validate presence of subdomain" do
+    @blog.subdomain = ""
     assert_not @blog.valid?
   end
 
-  test "should validate uniqueness of name" do
-    @blog.name = "vivian"
+  test "should validate uniqueness of subdomain" do
+    @blog.subdomain = "vivian"
     assert_not @blog.valid?
   end
 
-  test "should reserve username" do
-    @blog.name = "pagecord"
+  test "should reserve subdomain" do
+    @blog.subdomain = "pagecord"
     assert_not @blog.valid?
   end
 
-  test "should validate format of name" do
-    @blog.name = "abcdef-"
+  test "should validate format of subdomain" do
+    @blog.subdomain = "abcdef-"
     assert_not @blog.valid?
 
-    @blog.name = "%12312"
+    @blog.subdomain = "%12312"
     assert_not @blog.valid?
 
-    @blog.name = "abcdef_1234"
+    @blog.subdomain = "abcdef_1234"
     assert_not @blog.valid?
 
-    @blog.name = "abcdef1234"
+    @blog.subdomain = "abcdef1234"
     assert @blog.valid?
   end
 
@@ -50,14 +50,14 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.valid?
   end
 
-  test "should store name in lowercase" do
-    @blog.name = "JOEL"
+  test "should store subdomain in lowercase" do
+    @blog.subdomain = "JOEL"
     @blog.save
-    assert_equal "joel", @blog.name
+    assert_equal "joel", @blog.subdomain
   end
 
   test "should generate unique delivery email" do
-    user = User.create!(email: "newuser@newuser.com", blog: Blog.new(name: "newuser"))
+    user = User.create!(email: "newuser@newuser.com", blog: Blog.new(subdomain: "newuser"))
     assert user.blog.delivery_email.present?
     assert user.blog.delivery_email =~ /newuser_[a-zA-Z0-9]{8}@post.pagecord.com/
   end

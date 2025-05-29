@@ -5,7 +5,7 @@
         <% if @blog.custom_title? %>
           <%= @blog.title %>
         <% else %>
-          @<%= persisted_value(@blog, :name) %>
+          @<%= persisted_value(@blog, :subdomain) %>
         <% end %>
       </div>
     <% end %>

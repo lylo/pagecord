@@ -10,7 +10,7 @@ module SubscriptionsHelper
       items: paddle_data_items,
       allow_logout: false,
       success_url: thanks_app_settings_subscriptions_url,
-      custom_data: { user_id: Current.user.id, blog_name: Current.user.blog.name }.to_json
+      custom_data: { user_id: Current.user.id, blog_subdomain: Current.user.blog.subdomain }.to_json
     }
   end
 

@@ -7,9 +7,9 @@ class AddCustomDomainJob < ApplicationJob
     domain_changes_in_the_past_year = blog.custom_domain_changes.where("created_at > ?", 1.year.ago).count
 
     if domain_changes_in_the_past_year >= 20
-      raise "Domain change limit exceeded for blog #{blog.name}"
+      raise "Domain change limit exceeded for blog #{blog.subdomain}"
     else
-      Rails.logger.info "Adding custom domain #{domain} for blog #{blog.name}"
+      Rails.logger.info "Adding custom domain #{domain} for blog #{blog.subdomain}"
 
       if Rails.env.production?
         HatchboxDomainApi.new(blog).add_domain(domain)

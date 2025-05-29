@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     if Current.user.present?
       redirect_to app_root_path
     else
-      @user = User.new(blog: Blog.new(name: ""))
+      @user = User.new(blog: Blog.new(subdomain: ""))
     end
   end
 
@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
     begin
       @user = User.kept.joins(:blog).find_by(
         blogs: {
-          name: user_params[:username]
+          subdomain: user_params[:subdomain]
         },
         email: user_params[:email]
       )
@@ -39,7 +39,7 @@ class SessionsController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:username, :email)
+      params.require(:user).permit(:subdomain, :email)
         .transform_values { |v| v.strip.downcase }
     end
 end

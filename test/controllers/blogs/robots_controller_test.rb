@@ -5,7 +5,7 @@ class Blogs::RobotsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @blog = blogs(:joel)
-    host! "#{@blog.name}.#{Rails.application.config.x.domain}"
+    host! "#{@blog.subdomain}.#{Rails.application.config.x.domain}"
   end
 
   test "should get robots.txt for regular domain" do
@@ -13,7 +13,7 @@ class Blogs::RobotsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal "text/plain; charset=utf-8", @response.content_type
-    assert_includes @response.body, "Blog robots.txt for #{@blog.name}"
+    assert_includes @response.body, "Blog robots.txt for #{@blog.subdomain}"
     assert_includes @response.body, "Allow: /"
     assert_includes @response.body, "Sitemap:"
     assert_includes @response.body, "User-agent: GPTBot"
@@ -26,7 +26,7 @@ class Blogs::RobotsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal "text/plain; charset=utf-8", @response.content_type
-    assert_includes @response.body, "Blog robots.txt for #{blog.name}"
+    assert_includes @response.body, "Blog robots.txt for #{blog.subdomain}"
     assert_includes @response.body, "Allow: /"
     assert_includes @response.body, "Sitemap:"
     assert_includes @response.body, "User-agent: GPTBot"

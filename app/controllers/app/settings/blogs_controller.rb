@@ -26,7 +26,7 @@ class App::Settings::BlogsController < AppController
 
     def blog_params
       permitted_params = [
-        :name,
+        :subdomain,
         :fediverse_author_attribution,
         :allow_search_indexing
       ]

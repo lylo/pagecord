@@ -5,7 +5,7 @@ class Blogs::BaseController < ApplicationController
   protected
 
   def blog_params
-    params.slice(:name, :page, :slug)
+    params.slice(:subdomain, :page, :slug)
   end
 
   private
@@ -14,10 +14,10 @@ class Blogs::BaseController < ApplicationController
       @blog ||= if custom_domain_request?
         blog_from_custom_domain
       elsif request.subdomain.present? && request.subdomain != "www"
-        Blog.includes(:social_links, :avatar_attachment).find_by(name: request.subdomain)
+        Blog.includes(:social_links, :avatar_attachment).find_by(subdomain: request.subdomain)
       else
-        if blog_params[:name].present?
-          Blog.includes(:social_links, :avatar_attachment).find_by(name: blog_params[:name])
+        if blog_params[:subdomain].present?
+          Blog.includes(:social_links, :avatar_attachment).find_by(subdomain: blog_params[:subdomain])
         end
       end
 
@@ -39,8 +39,8 @@ class Blogs::BaseController < ApplicationController
 
     def enforce_custom_domain
       if default_domain_request? && @blog.custom_domain.present?
-        escaped_name = Regexp.escape(@blog.name)
-        request_path = request.path.gsub(/^\/@?#{escaped_name}\/?/, "")
+        escaped_subdomain = Regexp.escape(@blog.subdomain)
+        request_path = request.path.gsub(/^\/@?#{escaped_subdomain}\/?/, "")
         full_url = root_url(host: @blog.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
 
         request_path = request_path.sub(/^\//, "") if full_url.end_with?("/")

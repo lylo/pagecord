@@ -3,8 +3,8 @@ require "json"
 require "open-uri"
 require "nokogiri"
 
-# Usage: ruby import_blog_archive.rb path/to/blog_archive.zip blog_name
-def import_blog_archive(file_path, blog_name)
+# Usage: ruby import_blog_archive.rb path/to/blog_archive.zip blog_subdomain
+def import_blog_archive(file_path, blog_subdomain)
   # Open the ZIP file
   Zip::File.open(file_path) do |zip_file|
     # Locate the feed.json file in the root of the ZIP
@@ -18,9 +18,9 @@ def import_blog_archive(file_path, blog_name)
     json_data = JSON.parse(feed_entry.get_input_stream.read)
 
     # Find the correct blog
-    blog = Blog.find_by(name: blog_name)
+    blog = Blog.find_by(subdomain: blog_subdomain)
     unless blog
-      puts "Blog not found: #{blog_name}. Exiting..."
+      puts "Blog not found: #{blog_subdomain}. Exiting..."
       return
     end
 
@@ -125,17 +125,17 @@ end
 # Run the script if executed directly
 if __FILE__ == $PROGRAM_NAME
   if ARGV.length != 2
-    puts "Usage: bundle exec rails runner import_blog_archive.rb path/to/blog_archive.zip blog_name"
+    puts "Usage: bundle exec rails runner import_blog_archive.rb path/to/blog_archive.zip blog_subdomain"
     exit 1
   end
 
   file_path = ARGV[0]
-  blog_name = ARGV[1]
+  blog_subdomain = ARGV[1]
 
   unless File.exist?(file_path)
     puts "File not found: #{file_path}"
     exit 1
   end
 
-  import_blog_archive(file_path, blog_name)
+  import_blog_archive(file_path, blog_subdomain)
 end

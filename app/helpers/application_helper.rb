@@ -16,7 +16,7 @@ module ApplicationHelper
     if blog.custom_title?
       blog.title
     else
-      "Posts from @#{blog.name}"
+      "Posts from @#{blog.subdomain}"
     end
   end
 

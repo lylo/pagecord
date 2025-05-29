@@ -12,11 +12,11 @@
   </p>
 
   <h2 class="text-xl sm:text-2xl">
-    Give your blog a custom name
+    Give your blog a custom title
   </h2>
 
   <p>
-    If you like, you can give your blog a different name to <span class="font-bold">@<%= @blog.name %></span>. Just enter it below and click Save.
+    If you like, you can give your blog a different title to <span class="font-bold">@<%= @blog.subdomain %></span>. Just enter it below and click Save.
   </p>
 
   <%= form_with url: app_onboarding_path, model: @blog,

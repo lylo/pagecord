@@ -3,7 +3,7 @@ require "test_helper"
 class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @post = posts(:one)
-    host! "#{@post.blog.name}.#{Rails.application.config.x.domain}"
+    host! "#{@post.blog.subdomain}.#{Rails.application.config.x.domain}"
   end
 
   test "should get new reply form" do

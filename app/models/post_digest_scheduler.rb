@@ -6,7 +6,7 @@ class PostDigestScheduler
 
       Time.use_zone(user.timezone || "UTC") do
         if Time.current.hour == 8
-          Rails.logger.info "Generating digest for blog #{blog.id} (#{blog.name}) - local time: #{Time.current}"
+          Rails.logger.info "Generating digest for blog #{blog.id} (#{blog.subdomain}) - local time: #{Time.current}"
           GeneratePostDigestJob.perform_later(blog.id)
         end
       end

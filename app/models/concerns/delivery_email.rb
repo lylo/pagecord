@@ -12,6 +12,6 @@ module DeliveryEmail
     def generate_delivery_email
       code = Nanoid.generate(size: 8, alphabet: "0123456789abcdefghijklmnopqrstuvwxyz")
 
-      self.delivery_email = "#{name}_#{code}#{MAIL_DOMAIN}" unless delivery_email.present?
+      self.delivery_email = "#{subdomain}_#{code}#{MAIL_DOMAIN}" unless delivery_email.present?
     end
 end

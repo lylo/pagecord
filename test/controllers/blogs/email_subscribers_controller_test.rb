@@ -3,12 +3,12 @@ require "test_helper"
 class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
-    host! "#{@blog.name}.#{Rails.application.config.x.domain}"
+    host! "#{@blog.subdomain}.#{Rails.application.config.x.domain}"
   end
 
   test "should add new email subscriber" do
     assert_difference("EmailSubscriber.count", 1) do
-      post email_subscribers_url(name: @blog.name), params: { blog_name: @blog.name, email_subscriber: { email: "test@example.com" }, rendered_at: 6.seconds.ago.to_i }, as: :turbo_stream
+      post email_subscribers_url(subdomain: @blog.subdomain), params: { blog_subdomain: @blog.subdomain, email_subscriber: { email: "test@example.com" }, rendered_at: 6.seconds.ago.to_i }, as: :turbo_stream
     end
 
     assert_response :success
@@ -17,7 +17,7 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
 
   test "should not add existing email subscriber" do
     assert_no_difference("EmailSubscriber.count") do
-      post email_subscribers_url(name: @blog.name), params: { blog_name: @blog.name, email_subscriber: { email: @blog.email_subscribers.first.email }, rendered_at: 6.seconds.ago.to_i }, as: :turbo_stream
+      post email_subscribers_url(subdomain: @blog.subdomain), params: { blog_subdomain: @blog.subdomain, email_subscriber: { email: @blog.email_subscribers.first.email }, rendered_at: 6.seconds.ago.to_i }, as: :turbo_stream
     end
 
     assert_response :success
@@ -25,7 +25,7 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
 
   test "should not add email subscriber if form is completed too quickly" do
     assert_no_difference("EmailSubscriber.count") do
-      post email_subscribers_url(name: @blog.name), params: { blog_name: @blog.name, email_subscriber: { email: "test@example.com" }, rendered_at: 1.second.ago.to_i }, as: :turbo_stream
+      post email_subscribers_url(subdomain: @blog.subdomain), params: { blog_subdomain: @blog.subdomain, email_subscriber: { email: "test@example.com" }, rendered_at: 1.second.ago.to_i }, as: :turbo_stream
     end
   end
 
@@ -35,14 +35,14 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
     assert_not blog.user.subscribed?
 
     assert_no_difference("EmailSubscriber.count") do
-      post email_subscribers_url(name: blog.name), params: { blog_name: blog.name, email_subscriber: { email: "test@example.com" }, rendered_at: 6.seconds.ago.to_i }, as: :turbo_stream
+      post email_subscribers_url(subdomain: blog.subdomain), params: { blog_subdomain: blog.subdomain, email_subscriber: { email: "test@example.com" }, rendered_at: 6.seconds.ago.to_i }, as: :turbo_stream
     end
   end
 
   test "should not add email subscriber if honeypot field is completed" do
     assert_no_difference("EmailSubscriber.count") do
-      post email_subscribers_url(name: @blog.name), params: {
-          blog_name: @blog.name,
+      post email_subscribers_url(subdomain: @blog.subdomain), params: {
+          blog_subdomain: @blog.subdomain,
           email_subscriber: {
             email: "test@example.com"
           },

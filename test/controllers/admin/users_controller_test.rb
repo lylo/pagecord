@@ -56,7 +56,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
           user: {
             email: "newuser@example.com",
             blog_attributes: {
-              name: "newuser"
+              subdomain: "newuser"
             }
           }
         }
@@ -68,7 +68,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     user = User.find_by(email: "newuser@example.com")
     assert_not_nil user
-    assert_equal "newuser", user.blog.name
+    assert_equal "newuser", user.blog.subdomain
     assert_not user.verified?
   end
 
@@ -79,7 +79,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
           user: {
             email: "test@example.com",
             blog_attributes: {
-              name: "test.test"
+              subdomain: "test.test"
             }
           }
         }
@@ -95,7 +95,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
         user: {
           email: "verification@example.com",
           blog_attributes: {
-            name: "verification"
+            subdomain: "verification"
           }
         }
       }

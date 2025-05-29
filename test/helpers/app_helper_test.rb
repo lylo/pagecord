@@ -6,14 +6,14 @@ class AppHelperTest < ActionView::TestCase
   end
 
   test "persisted_value returns was value when available" do
-    @blog.update(name: "joel.joel")
+    @blog.update(subdomain: "joel.joel")
 
     assert_not @blog.valid?
-    assert_equal "joel", persisted_value(@blog, :name)
-    assert_equal "joel", persisted_value(@blog, "name")
+    assert_equal "joel", persisted_value(@blog, :subdomain)
+    assert_equal "joel", persisted_value(@blog, "subdomain")
   end
 
   test "persisted_value returns current value when no was value exists" do
-    assert_equal "joel", persisted_value(@blog, :name)
+    assert_equal "joel", persisted_value(@blog, :subdomain)
   end
 end

@@ -28,7 +28,3 @@
 #       enabled: "ON"
 
 en:
-  activerecord:
-    attributes:
-      blog:
-        name: "Subdomain"

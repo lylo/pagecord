@@ -12,7 +12,7 @@
   </p>
   <p class="mt-4 text-center">
     To be notified of new posts, subscribe to the
-    <%= link_to "RSS feed", blog_posts_path(name: @blog.name, format: :rss),
+    <%= link_to "RSS feed", rss_feed_url(@blog),
         class: "font-semibold underline" %>
   </p>
 <% else %>

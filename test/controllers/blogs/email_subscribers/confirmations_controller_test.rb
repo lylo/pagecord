@@ -3,7 +3,7 @@ require "test_helper"
 class Blogs::EmailSubscribers::ConfirmationsControllerTest < ActionDispatch::IntegrationTest
   test "should confirm email subscription" do
     @blog = blogs(:joel)
-    host! "#{@blog.name}.#{Rails.application.config.x.domain}"
+    host! "#{@blog.subdomain}.#{Rails.application.config.x.domain}"
 
     subscriber = @blog.email_subscribers.create!(email: "new@test.com")
     assert subscriber.unconfirmed?
