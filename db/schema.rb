@@ -83,8 +83,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_29_124914) do
 
   create_table "blogs", force: :cascade do |t|
     t.boolean "allow_search_indexing", default: true, null: false
-    t.string "analytics_id"
-    t.string "analytics_service"
     t.datetime "created_at", null: false
     t.string "custom_domain"
     t.string "delivery_email"
