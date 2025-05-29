@@ -36,9 +36,13 @@ brew install redis
 
 ### Running the app
 
+To start the app, run:
+
 ```bash
 bin/dev
 ```
+
+You can view the app in your browser at [http://localhost:3000](http://localhost:3000), but it's currently configred to use `lvh.me`. You can view individual blogs on their respective subdomains, e.g. [http://joel.lvh.me:3000](http://joel.lvh.me:3000).
 
 ### Running the tests
 
