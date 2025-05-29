@@ -1,6 +1,8 @@
 require "test_helper"
 
 class PostDigestTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   setup do
     @blog = blogs(:joel)
   end
@@ -48,10 +50,15 @@ class PostDigestTest < ActiveSupport::TestCase
   test "should create deliveries for confirmed email subscribers" do
     create_new_post
 
+    @blog.email_subscribers.create!(email: "newsub@example.com", confirmed_at: Time.current)
+    assert_equal 2, @blog.email_subscribers.confirmed.count
+
     digest = PostDigest.generate_for(@blog)
 
-    assert_difference "PostDigestDelivery.count", @blog.email_subscribers.confirmed.count do
-      digest.deliver
+    assert_performed_jobs 2, only: SendPostDigestEmailJob do
+      assert_difference "PostDigestDelivery.count", 2 do
+        digest.deliver
+      end
     end
 
     assert digest.delivered_at?

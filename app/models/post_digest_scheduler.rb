@@ -1,6 +1,6 @@
 class PostDigestScheduler
   def self.run
-    Blog.where(email_subscriptions_enabled: true).includes(:user).find_each do |blog|
+    Blog.where(email_subscriptions_enabled: true).includes(:user).find_each(batch_size: 100) do |blog|
       user = blog.user
       next unless user&.kept? && user.subscribed?
 

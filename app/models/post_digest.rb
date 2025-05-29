@@ -34,9 +34,9 @@ class PostDigest < ApplicationRecord
   def deliver
     return if delivered_at?
 
-    blog.email_subscribers.confirmed.each do |subscriber|
-      PostDigestMailer.with(digest: self, subscriber: subscriber).weekly_digest.deliver_later
-      deliveries.create!(email_subscriber: subscriber, delivered_at: Time.current)
+    blog.email_subscribers.confirmed.find_each(batch_size: 100).with_index do |subscriber, index|
+      delay = index * 0.2 # Delay each email by 0.2 seconds
+      SendPostDigestEmailJob.set(wait: delay.seconds).perform_later(self.id, subscriber.id)
     end
 
     update!(delivered_at: Time.current)
