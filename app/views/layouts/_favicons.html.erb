@@ -1,15 +1,6 @@
 <% if @blog&.avatar&.attached? %>
-  <%= favicon_link_tag rails_blob_url(@blog.avatar.variant(:thumb), disposition: "inline"), rel: "apple-touch-icon", sizes: "300x300" %>
-  <%= favicon_link_tag rails_blob_url(@blog.avatar.variant(:thumb), disposition: "inline"), type: "image/png", sizes: "300x300", rel: "icon" %>
-
-  <meta name="apple-mobile-web-app-title" content="<%= @blog.subdomain %> | Pagecord">
+  <%= render "layouts/custom_favicons" %>
 <% else %>
-  <%= favicon_link_tag "apple-touch-icon.png", rel: "apple-touch-icon" %>
-  <%= favicon_link_tag "favicon.ico", sizes: "32x32", rel: "icon" %>
-  <%= favicon_link_tag "favicon.svg", type: "image/svg+xml", rel: "icon", "data-turbo-track": "reload" %>
-
-  <meta name="apple-mobile-web-app-title" content="Pagecord">
+  <%= render "layouts/default_favicons" %>
 <% end %>
-
-<%= favicon_link_tag "manifest.webmanifest", rel: "manifest" %>
-<meta name="mobile-web-app-capable" content="yes">
+<%= render "layouts/manifest" %>
