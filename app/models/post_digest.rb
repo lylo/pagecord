@@ -34,13 +34,27 @@ class PostDigest < ApplicationRecord
   def deliver
     return if delivered_at?
 
-    base_time = Time.current
+    blog.email_subscribers.confirmed.find_each(batch_size: 100).with_index do |subscriber, index|
+      SendPostDigestEmailJob.perform_later(self.id, subscriber.id)
+    end
+
+    update!(delivered_at: Time.current)
+  end
+
+  # Deliver a digest email to each subscriber in a background job,
+  # spreading delivery over a random window based on the number of
+  # emails to send to avoid mail server overload.
+  def deliver
+    return if delivered_at?
+
+    total_subs = blog.email_subscribers.confirmed.count
+    random_window = [ total_subs * 0.5.seconds, 30.minutes ].min
 
     blog.email_subscribers.confirmed.find_each(batch_size: 100).with_index do |subscriber, index|
-      delay_seconds = index * 0.2
-      run_at = base_time + delay_seconds.seconds
+      bump = index * 0.5.seconds
+      delay = bump + rand(random_window)
 
-      SendPostDigestEmailJob.set(wait_until: run_at).perform_later(self.id, subscriber.id)
+      SendPostDigestEmailJob.set(wait: delay).perform_later(self.id, subscriber.id)
     end
 
     update!(delivered_at: Time.current)
