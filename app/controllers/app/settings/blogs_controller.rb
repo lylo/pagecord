@@ -28,7 +28,8 @@ class App::Settings::BlogsController < AppController
       permitted_params = [
         :subdomain,
         :fediverse_author_attribution,
-        :allow_search_indexing
+        :allow_search_indexing,
+        :google_site_verification
       ]
 
       permitted_params << [

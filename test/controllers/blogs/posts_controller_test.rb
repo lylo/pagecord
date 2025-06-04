@@ -336,6 +336,43 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[href*='inter']", count: 0
   end
 
+  test "should render google site verification meta tag when present" do
+    @blog.update!(google_site_verification: "GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44")
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "meta[name='google-site-verification'][content='GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44']", count: 1
+  end
+
+  test "should not render google site verification meta tag when blank" do
+    @blog.update!(google_site_verification: "")
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "meta[name='google-site-verification']", count: 0
+  end
+
+  test "should not render google site verification meta tag when nil" do
+    @blog.update!(google_site_verification: nil)
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "meta[name='google-site-verification']", count: 0
+  end
+
+  test "should render google site verification meta tag on post show page" do
+    @blog.update!(google_site_verification: "GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44")
+    post = @blog.posts.visible.first
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "meta[name='google-site-verification'][content='GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44']", count: 1
+  end
+
   private
 
     def host_subdomain!(name)

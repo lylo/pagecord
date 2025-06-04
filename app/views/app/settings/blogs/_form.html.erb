@@ -50,6 +50,22 @@
   </div>
 
   <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Google Site Verification</h3>
+    <p>
+      If you need to add a Google Site Verification meta tag to your blog (e.g. for Google Search Console), enter the verification code below. You should only add the code - not the full meta tag. This will appear in your blog HTML as <code class="text-sm bg-slate-100 dark:bg-slate-800">&lt;meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" /&gt;</code>
+    </p>
+
+    <%= styled_text_field(form, :google_site_verification, placeholder: "e.g. Gzm-PA_FXh231_cgsIxY_h9OgR6r8DZ", class: "mt-4 md:w-full") %>
+    <%= field_error(@blog, :google_site_verification) %>
+
+    <% if @blog.google_site_verification.present? %>
+      <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm">
+        To remove your Google site verification, clear the box above and click Update.
+      </p>
+    <% end %>
+  </div>
+
+  <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Fediverse Author Attribution</h3>
     <p>
       To allow your Pagecord posts to be attributed to you when shared on Mastodon (or any other Fediverse platform), enter your

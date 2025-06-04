@@ -7,6 +7,10 @@
 <meta name="description" content="<%= meta_description %>">
 <meta name="keywords" content="open-source blog, email-first publishing, no-code blogging, privacy-first platform, exportable blog, minimalist blogging">
 
+<% if @blog&.google_site_verification.present? %>
+<meta name="google-site-verification" content="<%= @blog.google_site_verification %>" />
+<% end %>
+
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="<%= page_type %>">
 <meta property="og:url" content="<%= request.original_url %>">

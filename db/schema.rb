@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_05_29_124914) do
+ActiveRecord::Schema[8.1].define(version: 2025_06_04_144504) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,6 +83,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_29_124914) do
 
   create_table "blogs", force: :cascade do |t|
     t.boolean "allow_search_indexing", default: true, null: false
+    t.string "analytics_id"
+    t.string "analytics_service"
     t.datetime "created_at", null: false
     t.string "custom_domain"
     t.string "delivery_email"
@@ -91,6 +93,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_29_124914) do
     t.string "features", default: [], array: true
     t.string "fediverse_author_attribution"
     t.string "font", default: "sans", null: false
+    t.string "google_site_verification"
     t.integer "layout", default: 0
     t.boolean "reply_by_email", default: false, null: false
     t.boolean "show_branding", default: true, null: false
