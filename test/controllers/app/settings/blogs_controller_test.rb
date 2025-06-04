@@ -14,6 +14,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "h3", { count: 1, text: "Custom Domain" }
     assert_select "h3", { count: 1, text: "Search Engine Visibility" }
+    assert_select "h3", { count: 1, text: "Google Site Verification" }
     assert_select "h3", { count: 1, text: "Fediverse Author Attribution" }
     assert_response :success
   end
@@ -120,5 +121,28 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_settings_url
     assert_equal "@example@mastodon.social", @blog.reload.fediverse_author_attribution
+  end
+
+  test "should update google site verification" do
+    patch app_settings_blog_url(@blog), params: { blog: { google_site_verification: "GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44" } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal "GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44", @blog.reload.google_site_verification
+  end
+
+  test "should clear google site verification" do
+    @blog.update!(google_site_verification: "existing_code")
+
+    patch app_settings_blog_url(@blog), params: { blog: { google_site_verification: "" } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal "", @blog.reload.google_site_verification
+  end
+
+  test "should not update google site verification with invalid format" do
+    patch app_settings_blog_url(@blog), params: { blog: { google_site_verification: "invalid code with spaces" } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_nil @blog.reload.google_site_verification
   end
 end

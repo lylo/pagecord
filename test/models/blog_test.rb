@@ -100,4 +100,25 @@ class BlogTest < ActiveSupport::TestCase
       @blog.destroy
     end
   end
+
+  test "should validate google site verification" do
+    @blog.google_site_verification = "GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44"
+    assert @blog.valid?
+
+    @blog.google_site_verification = "abc123_DEF-456"
+    assert @blog.valid?
+
+    @blog.google_site_verification = "simple123"
+    assert @blog.valid?
+
+    @blog.google_site_verification = ""
+    assert @blog.valid?
+
+    @blog.google_site_verification = nil
+    assert @blog.valid?
+
+    @blog.google_site_verification = "invalid code with spaces"
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Google site verification can only contain letters, numbers, underscores, and hyphens"
+  end
 end
