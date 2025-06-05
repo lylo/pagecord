@@ -20,8 +20,9 @@ class Blogs::PostsController < Blogs::BaseController
     end
   end
 
+  # Shows a single post or page by its slug.
   def show
-    @post = @blog.posts.visible
+    @post = @blog.all_posts.visible
       .with_rich_text_content_and_embeds
       .find_by!(slug: blog_params[:slug])
 

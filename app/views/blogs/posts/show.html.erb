@@ -10,4 +10,4 @@
 <%= render @post %>
 </div>
 
-<%= render "blogs/email_subscriber_form" %>
+<%= render "blogs/email_subscriber_form" if @post.post? %>

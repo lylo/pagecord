@@ -1,15 +1,13 @@
 <div class="mt-2 mb-8 pb-2 border-b border-b-slate-200 dark:border-b-slate-500">
-    <nav class="flex">
-      <ul role="list" class="flex min-w-full flex-none gap-x-6 leading-6 text-slate-400">
-        <li>
-          <%= link_to "Posts", app_posts_path, class: nav_class_for("posts") %>
-        </li>
-        <li>
-          <%= link_to "Pages", app_pages_path, class: nav_class_for("pages") %>
-        </li>
-        <li>
-          <%= link_to "Settings", app_settings_path, class: nav_class_for("settings") %>
-        </li>
-      </ul>
-    </nav>
+  <ul role="list" class="flex gap-x-6 text-slate-400">
+    <li>
+      <%= link_to "Posts", app_posts_path, class: nav_class_for("posts") %>
+    </li>
+    <li>
+      <%= link_to "Pages", app_pages_path, class: nav_class_for("pages") %>
+    </li>
+    <li>
+      <%= link_to "Settings", app_settings_path, class: nav_class_for("settings") %>
+    </li>
+  </ul>
 </div>

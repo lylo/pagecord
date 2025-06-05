@@ -16,7 +16,6 @@ class Post < ApplicationRecord
   validate :content_present
   validate :title_present_for_pages
 
-  # Scopes for posts vs pages
   scope :posts, -> { where(is_page: false) }
   scope :pages, -> { where(is_page: true) }
   scope :navigation_pages, -> { pages.where(show_in_navigation: true) }

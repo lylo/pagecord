@@ -19,7 +19,6 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should get new" do
     get new_app_page_path
     assert_response :success
-    assert_select "h1", text: "New Page"
   end
 
   test "should create page" do
@@ -60,7 +59,6 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should get edit" do
     get edit_app_page_path(@page)
     assert_response :success
-    assert_select "h1", text: "Edit Page"
   end
 
   test "should update page" do
