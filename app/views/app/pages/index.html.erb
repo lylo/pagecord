@@ -1,6 +1,6 @@
 <div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
   <div class="my-8">
-    <p class="mb-8">
+    <div class="mb-8">
       <% if @pages.empty? && @drafts.empty? %>
         <div class="sm:flex gap-4">
           <div class="sm:flex-1 sm:min-w-0">
@@ -11,7 +11,7 @@
               Create static pages that can appear in your blog's navigation. Perfect for About, Contact, or any other permanent content.
             </p>
           </div>
-          <div class="mt-4 sm:mt-0 sm:flex-shrink-0 text-end sm:w-30">
+          <div class="mt-4 sm:mt-0 sm:flex-shrink-0 text-end sm:w-36">
             <%= link_to "✏️ New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
           </div>
         </div>
@@ -25,7 +25,7 @@
           <%= link_to "✏️ New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
         </div>
       <% end %>
-    </p>
+    </div>
 
     <% if @drafts.any? %>
       <div class="mb-8" id="draft_pages">
