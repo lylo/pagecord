@@ -75,8 +75,8 @@ Rails.application.routes.draw do
   get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
 
   namespace :app do
-    resources :posts, param: :token
-    resources :pages, param: :token
+    resources :posts, except: [ :show ], param: :token
+    resources :pages, except: [ :show ], param: :token
     resources :settings, only: [ :index ]
 
     resource :onboarding, only: [ :show, :update ], path: "onboarding" do

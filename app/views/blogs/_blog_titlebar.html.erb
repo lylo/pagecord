@@ -15,20 +15,6 @@
           <%= render "blogs/blog_title" %>
         </div>
       </div>
-
-      <% if current_features.enabled?(:pages) %>
-        <% navigation_pages = @blog.pages.navigation_pages.visible.order(:title) %>
-        <% if navigation_pages.any? %>
-          <ul class="flex flex-wrap <%= show_avatar ? 'justify-end' : '' %> gap-x-4 gap-y-1 text-sm">
-            <% navigation_pages.each do |page| %>
-              <li>
-                <%= link_to page.title, post_path(page), class: "underline" %>
-              </li>
-            <% end %>
-          </ul>
-        <% end %>
-      <% end %>
-      </ul>
     </div>
   </div>
 </div>
