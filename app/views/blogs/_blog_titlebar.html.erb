@@ -1,20 +1,21 @@
-<div class="titlebar mt-4">
-  <div class="flex items-top gap-x-4">
-    <% show_avatar = @blog.avatar&.attached? %>
-    <% if show_avatar %>
-    <div class="w-16 h-16 flex flex-shrink-0">
-      <%= link_to blog_home_url(@blog) do %>
-        <%= image_tag rails_public_blob_url(@blog.avatar), class: "border border-slate-200 dark:border-slate-800 shadow-sm object-cover rounded-full w-16 h-16" %>
-      <% end %>
-    </div>
-    <% end %>
+<div class="titlebar mt-4 flex items-center justify-between gap-x-4">
+  <% if @blog.avatar&.attached? %>
+    <div class="flex w-full items-top justify-between gap-x-4">
+      <div class="w-16 h-16">
+        <%= link_to blog_home_url(@blog) do %>
+          <%= image_tag rails_public_blob_url(@blog.avatar), class: "border border-slate-200 dark:border-slate-800 shadow-sm object-cover rounded-full w-16 h-16" %>
+        <% end %>
+      </div>
 
-    <div class="w-full">
-      <div class="flex items-center <%= show_avatar ? 'justify-end' : '' %> mb-1">
+      <div class="text-end">
         <div class="font-bold text-lg">
           <%= render "blogs/blog_title" %>
         </div>
       </div>
     </div>
-  </div>
+  <% else %>
+    <div class="font-bold text-lg">
+      <%= render "blogs/blog_title" %>
+    </div>
+  <% end %>
 </div>
