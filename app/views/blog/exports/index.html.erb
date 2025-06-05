@@ -5,6 +5,15 @@
   <title><%= blog.display_name %></title>
 </head>
 <body>
+  <% navigation_pages = blog.pages.navigation_pages.visible.order(:title) %>
+  <% if navigation_pages.any? %>
+    <ul>
+    <% navigation_pages.each do |page| %>
+      <li><a href="<%= page.slug %>.html"><%= page.title %></a></li>
+    <% end %>
+    </ul>
+  <% end %>
+
   <h1><%= blog.display_name %></h1>
   <% if blog.bio -%>
   <div><%= blog.bio %></div>

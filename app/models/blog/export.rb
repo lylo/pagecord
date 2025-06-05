@@ -32,7 +32,7 @@ class Blog::Export < ApplicationRecord
     def export_posts(dir)
       create_index_html(dir)
 
-      blog.posts.find_each do |post|
+      blog.all_posts.find_each do |post|
         export_post_to_html(post, dir)
       end
     end
