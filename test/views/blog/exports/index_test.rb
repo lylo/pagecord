@@ -26,7 +26,7 @@ class IndexTest < ActionView::TestCase
   test "formats post links correctly" do
     render_template
 
-    assert_select "li" do |elements|
+    assert_select "li.post" do |elements|
       posts = @blog.posts.visible.order(published_at: :desc)
       assert_equal posts.count, elements.count
 

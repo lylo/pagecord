@@ -9,7 +9,7 @@
   <% if navigation_pages.any? %>
     <ul>
     <% navigation_pages.each do |page| %>
-      <li><a href="<%= page.slug %>.html"><%= page.title %></a></li>
+      <li class="page"><a href="<%= page.slug %>.html"><%= page.title %></a></li>
     <% end %>
     </ul>
   <% end %>
@@ -27,7 +27,7 @@
       <ul>
       <% current_year = year -%>
     <% end -%>
-    <li>
+    <li class="post">
       <%= post.published_at.strftime("%d %b") %> &mdash;
       <a href="<%= post.slug %>.html"><%= post.title.presence || post.summary %></a>
     </li>
