@@ -5,7 +5,7 @@
       <% if navigation_pages.any? %>
         <div class="flex flex-wrap gap-x-3">
           <% navigation_pages.each do |page| %>
-            <%= link_to page.title, post_path(page), class: "social-link underline text-sm" %>
+            <%= link_to page.title, post_path(page), class: "social-link hover:underline text-sm" %>
           <% end %>
         </div>
       <% end %>
