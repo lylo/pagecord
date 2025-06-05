@@ -74,7 +74,6 @@ about:
   name: content
   body: |
     <p>Welcome to my blog! I'm passionate about photography and sharing my experiences through visual storytelling.</p>
-
     <p>I've been taking photos for over 10 years, specializing in street and landscape photography. This blog is where I share my favorite shots, techniques, and thoughts about the art of photography.</p>
 
 contact:
@@ -83,8 +82,7 @@ contact:
   body: |
     <p>Get in touch with me!</p>
 
-    <p>Email: hello@example.com</p>
-    <p>Instagram: @photographer</p>
+    <p>Email: joel@pagecord.com</p>
 
 draft_page:
   record: draft_page (Post)
