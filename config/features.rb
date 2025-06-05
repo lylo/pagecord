@@ -1,5 +1,5 @@
 env "FEATURE"
 
-feature :themes do |blog: nil|
-  blog&.features.include?("themes")
+feature :pages do |blog: nil|
+  blog&.features.include?("pages")
 end

@@ -3,9 +3,11 @@
     <li>
       <%= link_to "Posts", app_posts_path, class: nav_class_for("posts") %>
     </li>
+    <% if current_features.enabled?(:pages) %>
     <li>
       <%= link_to "Pages", app_pages_path, class: nav_class_for("pages") %>
     </li>
+    <% end %>
     <li>
       <%= link_to "Settings", app_settings_path, class: nav_class_for("settings") %>
     </li>
