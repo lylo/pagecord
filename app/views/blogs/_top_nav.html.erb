@@ -1,12 +1,14 @@
 <div class="social-links">
   <div class="flex justify-end items-center gap-x-3">
-    <% navigation_pages = @blog.pages.navigation_pages.visible.order(:title) %>
-    <% if navigation_pages.any? %>
-      <div class="flex flex-wrap gap-x-3">
-        <% navigation_pages.each do |page| %>
-          <%= link_to page.title, post_path(page), class: "social-link underline text-sm" %>
-        <% end %>
-      </div>
+    <% if current_features.enabled?(:pages) %>
+      <% navigation_pages = @blog.pages.navigation_pages.visible.order(:title) %>
+      <% if navigation_pages.any? %>
+        <div class="flex flex-wrap gap-x-3">
+          <% navigation_pages.each do |page| %>
+            <%= link_to page.title, post_path(page), class: "social-link underline text-sm" %>
+          <% end %>
+        </div>
+      <% end %>
     <% end %>
 
     <% if @blog.social_links.present? %>
