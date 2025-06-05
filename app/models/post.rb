@@ -3,23 +3,35 @@ class Post < ApplicationRecord
 
   belongs_to :blog, inverse_of: nil
 
-  has_one :open_graph_image, dependent: :destroy
   has_rich_text :content
   has_many_attached :attachments, dependent: :destroy
 
+  has_one :open_graph_image, dependent: :destroy
   has_many :digest_posts, dependent: :destroy
   has_many :post_digests, through: :digest_posts
   has_many :replies, class_name: "Post::Reply", dependent: :destroy
 
   before_create :set_published_at, :limit_content_size
-  after_create  :detect_open_graph_image
 
   validate :content_present
+  validate :title_present_for_pages
 
+  # Scopes for posts vs pages
+  scope :posts, -> { where(is_page: false) }
+  scope :pages, -> { where(is_page: true) }
+  scope :navigation_pages, -> { pages.where(show_in_navigation: true) }
   scope :visible, -> { published.where("published_at <= ?", Time.current) }
+
+  after_create :detect_open_graph_image
 
   def content_present
     errors.add(:content, "can't be blank") unless content.body.present?
+  end
+
+  def title_present_for_pages
+    if page? && title.blank?
+      errors.add(:title, "can't be blank")
+    end
   end
 
   def to_param
@@ -54,6 +66,14 @@ class Post < ApplicationRecord
 
   def published_at_in_user_timezone
     published_at.in_time_zone(timezone)
+  end
+
+  def page?
+    is_page
+  end
+
+  def post?
+    !is_page
   end
 
   private

@@ -55,3 +55,43 @@ joel_titleless:
   token: <%= SecureRandom.hex(4) %>
   slug: d3423ssd4
   <<: *default
+
+# Pages (is_page: true)
+about:
+  title: About
+  blog: joel
+  published_at: <%= 1.week.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: about
+  is_page: true
+  show_in_navigation: true
+  <<: *default
+
+contact:
+  title: Contact
+  blog: joel
+  published_at: <%= 1.week.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: contact
+  is_page: true
+  show_in_navigation: true
+  <<: *default
+
+draft_page:
+  title: Draft Page
+  blog: joel
+  token: <%= SecureRandom.hex(4) %>
+  slug: draft-page
+  is_page: true
+  show_in_navigation: false
+  status: draft
+
+hidden_page:
+  title: Hidden Page
+  blog: elliot
+  published_at: <%= 1.week.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: hidden-page
+  is_page: true
+  show_in_navigation: false
+  <<: *default

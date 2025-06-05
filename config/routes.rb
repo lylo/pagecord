@@ -76,6 +76,7 @@ Rails.application.routes.draw do
 
   namespace :app do
     resources :posts, param: :token
+    resources :pages, param: :token
     resources :settings, only: [ :index ]
 
     resource :onboarding, only: [ :show, :update ], path: "onboarding" do

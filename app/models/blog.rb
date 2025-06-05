@@ -4,7 +4,8 @@ class Blog < ApplicationRecord
   enum :layout, [ :stream_layout, :title_layout ]
 
   belongs_to :user, inverse_of: :blog
-  has_many :posts, dependent: :destroy
+  has_many :posts, -> { where(is_page: false) }, class_name: "Post", dependent: :destroy
+  has_many :pages, -> { where(is_page: true) }, class_name: "Post", dependent: :destroy
   has_many :social_links, dependent: :destroy
   accepts_nested_attributes_for :social_links, allow_destroy: true
 

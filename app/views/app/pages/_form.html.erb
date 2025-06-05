@@ -1,0 +1,105 @@
+<div data-controller="post-attributes">
+  <div class="flex justify-end mb-4" data-controller="toggle">
+    <%= link_to "#", class: "ms-3 font-medium text-slate-500 hover:text-black dark:text-slate-300 dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
+        <div class="">
+          <%= inline_svg_tag "icons/ellipsis-horizontal-circle.svg", class: "w-7 h-7" %>
+        </div>
+      <% end %>
+
+      <div class="relative hidden" data-toggle-target="element">
+        <div class="absolute top-7 end-0 z-10 w-56 rounded-md border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-lg" role="menu">
+          <div class="py-2 px-1">
+            <div class="p-1">
+              <%= link_to "#", class: "flex rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+                data: { action: "click->post-attributes#showSection", toggle_target: "slug" } do %>
+                <span class="ms-1">Edit URL</span>
+              <% end %>
+            </div>
+
+            <div class="p-1">
+              <%= link_to "#", class: "flex rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+                data: { action: "click->post-attributes#showSection", toggle_target: "navigation" } do %>
+                <span class="ms-1">Navigation Settings</span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <%= form_with(model: @page, url: @page.persisted? ? app_page_path(@page) : app_pages_path, html: { id: "page-form" }) do |form| %>
+
+    <div class="hidden mb-8" data-post-attributes-target="section" data-section="published-at">
+      <div class="mt-4 font-bold">
+      <%= form.label :published_at, "Publication Time" %>
+      </div>
+
+      <div class="mt-2">
+      <%= form.datetime_field :published_at,
+          value: @page.published_at&.strftime('%Y-%m-%dT%H:%M'),
+          class: "dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+      </div>
+    </div>
+
+    <div class="<%= 'hidden' unless @page.errors[:slug].any? %> mb-8" data-post-attributes-target="section" data-section="slug">
+      <div class="mt-4 font-bold">
+      <%= form.label :slug, "Slug" %>
+      </div>
+
+      <div class="mt-2">
+        <%= form.text_field :slug,
+            class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg #{'!border-red-500' if @page.errors[:slug].any?}",
+            placeholder: "custom-url-path" %>
+        <% if @page.errors[:slug].any? %>
+          <div class="mt-1 text-xs text-red-500">
+            <%= @page.errors[:slug].to_sentence %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="hidden mb-8" data-post-attributes-target="section" data-section="navigation">
+      <div class="mt-4 font-bold">
+        Navigation Settings
+      </div>
+
+      <div class="mt-2">
+        <label class="flex items-center">
+          <%= form.check_box :show_in_navigation,
+              class: "rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-400 dark:bg-slate-800" %>
+          <span class="ml-2 text-sm text-slate-700 dark:text-slate-300">
+            Show this page in the blog's navigation menu
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <%= form.text_field :title,
+    placeholder: "Page title",
+    class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
+    autofocus: true %>
+
+    <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
+    <%= form.rich_text_area :content,
+      placeholder: "Write your page content...",
+      class: "trix-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @page.errors[:content].any?}",
+      spellcheck: true,
+      data: { controller: "autogrow trix", subscribed: Current.user.subscribed? } %>
+    <% if @page.errors[:content].any? %>
+      <div class="mt-1 text-xs text-red-500">
+        A body is required
+      </div>
+    <% end %>
+    </div>
+
+    <div class="flex items-center justify-between mt-8">
+      <div>
+        <%= form.submit @page.persisted? ? "Update Page" : "Create Page", class: "btn-primary" %>
+        <%= link_to "Cancel", app_pages_path, class: "btn-secondary" %>
+      </div>
+      <div>
+        <%= form.button @page.persisted? ? "Save as Draft" : "Save Draft", value: "save_draft", class: "btn-optional" %>
+      </div>
+    </div>
+  <% end %>
+</div>

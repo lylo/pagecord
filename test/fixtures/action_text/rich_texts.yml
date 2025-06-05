@@ -67,3 +67,35 @@ seven:
   record: joel_titleless (Post)
   name: content
   body: This is a titleless post
+
+# Page content fixtures (now Posts with is_page: true)
+about:
+  record: about (Post)
+  name: content
+  body: |
+    <p>Welcome to my blog! I'm passionate about photography and sharing my experiences through visual storytelling.</p>
+
+    <p>I've been taking photos for over 10 years, specializing in street and landscape photography. This blog is where I share my favorite shots, techniques, and thoughts about the art of photography.</p>
+
+contact:
+  record: contact (Post)
+  name: content
+  body: |
+    <p>Get in touch with me!</p>
+
+    <p>Email: hello@example.com</p>
+    <p>Instagram: @photographer</p>
+
+draft_page:
+  record: draft_page (Post)
+  name: content
+  body: |
+    <p>This page is coming soon!</p>
+
+    <p>We're working on something exciting. Stay tuned for updates.</p>
+
+hidden_page:
+  record: hidden_page (Post)
+  name: content
+  body: |
+    <p>This is a hidden page that won't appear in navigation.</p>

@@ -10,7 +10,7 @@
   <div><%= blog.bio %></div>
   <% end -%>
   <% current_year = nil -%>
-  <% blog.posts.order(published_at: :desc).each do |post| -%>
+  <% blog.posts.visible.order(published_at: :desc).each do |post| -%>
     <% year = post.published_at.year -%>
     <% if year != current_year -%>
       <%= "</ul>".html_safe if current_year -%>

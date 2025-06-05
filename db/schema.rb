@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_06_04_144504) do
+ActiveRecord::Schema[8.1].define(version: 2025_06_05_103721) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -174,6 +174,22 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_04_144504) do
     t.index ["user_id"], name: "index_paddle_events_on_user_id"
   end
 
+  create_table "pages", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "published_at"
+    t.boolean "show_in_navigation", default: true, null: false
+    t.string "slug"
+    t.integer "status", default: 1, null: false
+    t.string "title"
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id", "slug"], name: "index_pages_on_blog_id_and_slug", unique: true
+    t.index ["blog_id"], name: "index_pages_on_blog_id"
+    t.index ["status"], name: "index_pages_on_status"
+    t.index ["token"], name: "index_pages_on_token", unique: true
+  end
+
   create_table "post_digest_deliveries", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "delivered_at"
@@ -210,16 +226,20 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_04_144504) do
     t.bigint "blog_id", null: false
     t.string "canonical_url"
     t.datetime "created_at", null: false
+    t.boolean "is_page", default: false, null: false
     t.datetime "published_at"
     t.text "raw_content"
+    t.boolean "show_in_navigation", default: true, null: false
     t.string "slug"
     t.integer "status", default: 1, null: false
     t.string "title"
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.integer "upvotes_count", default: 0, null: false
+    t.index ["blog_id", "is_page"], name: "index_posts_on_blog_id_and_is_page"
     t.index ["blog_id", "slug"], name: "index_posts_on_blog_id_and_slug", unique: true
     t.index ["blog_id"], name: "index_posts_on_blog_id"
+    t.index ["is_page"], name: "index_posts_on_is_page"
     t.index ["published_at"], name: "index_posts_on_published_at"
     t.index ["status"], name: "index_posts_on_status"
     t.index ["token"], name: "index_posts_on_token", unique: true
@@ -294,6 +314,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_04_144504) do
   add_foreign_key "email_subscribers", "blogs"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
+  add_foreign_key "pages", "blogs"
   add_foreign_key "post_digest_deliveries", "email_subscribers"
   add_foreign_key "post_digest_deliveries", "post_digests"
   add_foreign_key "post_digests", "blogs"

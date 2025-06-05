@@ -1,0 +1,12 @@
+<% navigation_pages = @blog.pages.navigation_pages.visible.order(:title) %>
+<% if navigation_pages.any? %>
+  <nav class="page-navigation mb-4">
+    <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+      <% navigation_pages.each do |page| %>
+        <li>
+          <%= link_to page.title, blog_post_path(page), class: "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 underline" %>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+<% end %>

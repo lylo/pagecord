@@ -27,7 +27,7 @@ class IndexTest < ActionView::TestCase
     render_template
 
     assert_select "li" do |elements|
-      posts = @blog.posts.order(published_at: :desc)
+      posts = @blog.posts.visible.order(published_at: :desc)
       assert_equal posts.count, elements.count
 
       elements.each_with_index do |element, index|
