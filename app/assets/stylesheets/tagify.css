@@ -26,29 +26,29 @@
   outline-offset: -1px;
 }
 
-/* Dark mode tagify styles - using Tailwind's dark mode */
+/* Dark mode tagify styles - using system preference */
 @media (prefers-color-scheme: dark) {
   .tagify {
-    --tags-border-color: #4b5563;
-    --tags-hover-border-color: #6b7280;
+    --tags-border-color: #475569;
+    --tags-hover-border-color: #64748b;
     --tags-focus-border-color: #3b82f6;
-    --tag-bg: #374151;
-    --tag-hover: #4b5563;
-    --tag-text-color: #e5e7eb;
-    --tag-text-color--edit: #e5e7eb;
-    --tag-remove-bg: #374151;
-    --tag-remove-btn-color: #e5e7eb;
-    --tag-remove-btn-bg: rgba(0, 0, 0, 0.2);
-    --tag-remove-btn-bg--hover: rgba(0, 0, 0, 0.3);
-    background-color: #1f2937;
-    color: #e5e7eb;
+    --tag-bg: #3b82f6;
+    --tag-hover: #2563eb;
+    --tag-text-color: white;
+    --tag-text-color--edit: white;
+    --tag-remove-bg: #3b82f6;
+    --tag-remove-btn-color: white;
+    --tag-remove-btn-bg: rgba(255, 255, 255, 0.2);
+    --tag-remove-btn-bg--hover: rgba(255, 255, 255, 0.3);
+    background-color: #0f172a;
+    color: #e2e8f0;
   }
 
   .tagify__input {
-    color: #e5e7eb;
+    color: #e2e8f0;
   }
 
   .tagify__input::before {
-    color: #9ca3af;
+    color: #64748b;
   }
 }
