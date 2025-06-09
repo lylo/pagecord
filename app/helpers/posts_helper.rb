@@ -13,6 +13,17 @@ module PostsHelper
     @upvote = post.upvotes.detect { |upvote| upvote.hash_id == @hash_id }
   end
 
+  # Generate URL for filtering posts by tag
+  def tag_filter_url(tag)
+    if @blog
+      # For public blog views
+      blog_home_path(@blog, tag: tag)
+    else
+      # For admin views
+      request.path + "?tag=#{tag}"
+    end
+  end
+
   # Returns the URL of the social link to avoid Brakeman warning
   # This is fine since the URL is sanitized by the SocialLink model
   def social_link_url(social_link)

@@ -2,9 +2,22 @@ class App::PostsController < AppController
   include Pagy::Backend
 
   def index
-    @pagy, @posts =  pagy(Current.user.blog.posts.published.order(published_at: :desc), limit: 25)
+    posts_query = Current.user.blog.posts.published.order(published_at: :desc)
+
+    # Filter by tag if specified
+    if params[:tag].present?
+      posts_query = posts_query.tagged_with(params[:tag])
+      @current_tag = params[:tag]
+    end
+
+    @pagy, @posts = pagy(posts_query, limit: 25)
 
     @drafts = Current.user.blog.posts.draft.order(updated_at: :desc)
+
+    # Apply tag filter to drafts as well
+    if params[:tag].present?
+      @drafts = @drafts.tagged_with(params[:tag])
+    end
   end
 
   def new
@@ -49,7 +62,7 @@ class App::PostsController < AppController
     def post_params
       status = params[:button] == "save_draft" ? :draft : :published
 
-      params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url).merge(status: status)
+      params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string).merge(status: status)
     end
 
     # HTML from inbound email doesn't often play nicely with Trix

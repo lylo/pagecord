@@ -105,6 +105,92 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "https://example.com", @user.blog.posts.first.canonical_url
   end
 
+  test "should create post with tags" do
+    assert_difference("Post.count") do
+      post app_posts_url, params: {
+        post: {
+          title: "Post with Tags",
+          content: "Content about Rails and JavaScript",
+          tags_string: "rails, javascript, web-development"
+        }
+      }
+    end
+
+    created_post = @user.blog.posts.last
+    assert_equal [ "javascript", "rails", "web-development" ], created_post.tag_list
+    assert_equal "javascript, rails, web-development", created_post.tags_string
+    assert_redirected_to app_posts_url
+  end
+
+  test "should update post with tags" do
+    post = posts(:three) # This is vivian's post
+
+    patch app_post_url(post), params: {
+      post: {
+        title: "Updated Post",
+        content: "Updated content",
+        tags_string: "ruby, rails, updated"
+      }
+    }
+
+    post.reload
+    assert_equal [ "rails", "ruby", "updated" ], post.tag_list
+    assert_redirected_to app_posts_url
+  end
+
+  test "should preserve tags on validation errors" do
+    post app_posts_url, params: {
+      post: {
+        title: "Invalid Post",
+        content: "", # Invalid - content is required
+        tags_string: "rails, javascript"
+      }
+    }
+
+    assert_response :unprocessable_entity
+    # The form should render with the tags input field (even if hidden) containing the submitted tags (sorted)
+    assert_select "input[name='post[tags_string]']" do |elements|
+      assert_equal "javascript, rails", elements.first.attr("value")
+    end
+  end
+
+  # Tag filtering tests
+
+  test "should filter posts by tag in admin view" do
+    # Create posts with different tags
+    @user.blog.posts.create!(content: "Rails post", tags_string: "rails, web")
+    @user.blog.posts.create!(content: "Python post", tags_string: "python, backend")
+    @user.blog.posts.create!(content: "General post", tags_string: "general")
+
+    get app_posts_path(tag: "rails")
+
+    assert_response :success
+    assert_includes @response.body, "Rails post"
+    assert_not_includes @response.body, "Python post"
+    assert_not_includes @response.body, "General post"
+  end
+
+  test "should show tag filter indicator in admin view" do
+    @user.blog.posts.create!(content: "Rails post", tags_string: "rails")
+
+    get app_posts_path(tag: "rails")
+
+    assert_response :success
+    assert_select "div", text: /Showing posts tagged with "rails"/
+    assert_select "a[href='#{app_posts_path}']", text: "Show all posts"
+  end
+
+  test "should filter drafts by tag in admin view" do
+    @user.blog.posts.create!(content: "Draft Rails post", tags_string: "rails", status: :draft)
+    @user.blog.posts.create!(content: "Draft Python post", tags_string: "python", status: :draft)
+
+    get app_posts_path(tag: "rails")
+
+    assert_response :success
+    assert_includes @response.body, "Draft Rails post"
+    assert_not_includes @response.body, "Draft Python post"
+  end
+
   test "app area should be inaccessible on custom domain" do
     post = posts(:four)
     login_as post.blog.user

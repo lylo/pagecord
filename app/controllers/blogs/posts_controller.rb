@@ -9,6 +9,12 @@ class Blogs::PostsController < Blogs::BaseController
       .includes(:upvotes)
       .order(published_at: :desc)
 
+    # Filter by tag if specified
+    if params[:tag].present?
+      @posts = @posts.tagged_with(params[:tag])
+      @current_tag = params[:tag]
+    end
+
     @pagy, @posts = pagy(@posts, limit: page_size)
 
     respond_to do |format|

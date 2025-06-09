@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_06_05_103721) do
+ActiveRecord::Schema[8.1].define(version: 2025_06_09_143721) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -232,6 +232,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_05_103721) do
     t.boolean "show_in_navigation", default: true, null: false
     t.string "slug"
     t.integer "status", default: 1, null: false
+    t.string "tag_list", default: [], array: true
     t.string "title"
     t.string "token", null: false
     t.datetime "updated_at", null: false
@@ -242,6 +243,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_05_103721) do
     t.index ["is_page"], name: "index_posts_on_is_page"
     t.index ["published_at"], name: "index_posts_on_published_at"
     t.index ["status"], name: "index_posts_on_status"
+    t.index ["tag_list"], name: "index_posts_on_tag_list", using: :gin
     t.index ["token"], name: "index_posts_on_token", unique: true
   end
 

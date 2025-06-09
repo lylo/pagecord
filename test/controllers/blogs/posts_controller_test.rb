@@ -375,6 +375,53 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "meta[name='google-site-verification'][content='GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44']", count: 1
   end
 
+  # Tag filtering tests
+
+  test "should filter posts by tag" do
+    # Create posts with different tags
+    @blog.posts.create!(content: "Rails post", tags_string: "rails, web")
+    @blog.posts.create!(content: "Python post", tags_string: "python, backend")
+    @blog.posts.create!(content: "General post", tags_string: "general")
+
+    get blog_posts_path(tag: "rails")
+
+    assert_response :success
+    assert_includes @response.body, "Rails post"
+    assert_not_includes @response.body, "Python post"
+    assert_not_includes @response.body, "General post"
+  end
+
+  test "should show all posts when no tag filter is applied" do
+    @blog.posts.create!(content: "Rails post", tags_string: "rails")
+    @blog.posts.create!(content: "Python post", tags_string: "python")
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_includes @response.body, "Rails post"
+    assert_includes @response.body, "Python post"
+  end
+
+  test "should show tag filter indicator when filtering" do
+    @blog.posts.create!(content: "Rails post", tags_string: "rails")
+
+    get blog_posts_path(tag: "rails")
+
+    assert_response :success
+    assert_select "div", text: /Showing posts tagged with "rails"/
+    assert_select "a[href='#{blog_posts_path}']", text: "Show all posts"
+  end
+
+  test "should show no posts message when tag has no matches" do
+    @blog.posts.create!(content: "Rails post", tags_string: "rails")
+
+    get blog_posts_path(tag: "nonexistent")
+
+    assert_response :success
+    assert_select "p", text: /No posts found with the tag "nonexistent"/
+    assert_select "a[href='#{blog_posts_path}']", text: "View all posts"
+  end
+
   private
 
     def host_subdomain!(name)

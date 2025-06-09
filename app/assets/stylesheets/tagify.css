@@ -1,0 +1,52 @@
+/* Tagify integration with design system using CSS custom properties */
+
+/* Light mode tagify styles */
+.tagify {
+  --tags-border-color: #d1d5db;
+  --tags-border-radius: 0.375rem;
+  --tags-hover-border-color: #9ca3af;
+  --tags-focus-border-color: #3b82f6;
+  --tag-bg: #3b82f6;
+  --tag-hover: #2563eb;
+  --tag-text-color: white;
+  --tag-text-color--edit: white;
+  --tag-remove-bg: #3b82f6;
+  --tag-remove-btn-color: white;
+  --tag-remove-btn-bg: rgba(255, 255, 255, 0.2);
+  --tag-remove-btn-bg--hover: rgba(255, 255, 255, 0.3);
+  background-color: #ffffff;
+  border-radius: 0.375rem;
+  font-family: inherit;
+  width: 100%;
+}
+
+.tagify.tagify--focus {
+  border-color: var(--tags-focus-border-color);
+  outline: 2px solid var(--tags-focus-border-color);
+  outline-offset: -1px;
+}
+
+/* Dark mode tagify styles */
+.dark .tagify {
+  --tags-border-color: #4b5563;
+  --tags-hover-border-color: #6b7280;
+  --tags-focus-border-color: #3b82f6;
+  --tag-bg: #3b82f6;
+  --tag-hover: #2563eb;
+  --tag-text-color: white;
+  --tag-text-color--edit: white;
+  --tag-remove-bg: #3b82f6;
+  --tag-remove-btn-color: white;
+  --tag-remove-btn-bg: rgba(255, 255, 255, 0.2);
+  --tag-remove-btn-bg--hover: rgba(255, 255, 255, 0.3);
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+.dark .tagify__input {
+  color: #e2e8f0;
+}
+
+.dark .tagify__input::before {
+  color: #64748b;
+}

@@ -144,4 +144,13 @@ class PostTest < ActiveSupport::TestCase
     assert_not draft_page.show_in_navigation?
     assert draft_page.draft?
   end
+
+  test "should include Taggable concern" do
+    post = Post.new(blog: blogs(:joel), content: "Test post")
+    assert post.respond_to?(:tag_list)
+    assert post.respond_to?(:tags_string)
+    assert post.respond_to?(:tags_string=)
+    assert Post.respond_to?(:tagged_with)
+    assert Post.respond_to?(:all_tags)
+  end
 end

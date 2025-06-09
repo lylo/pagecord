@@ -1,0 +1,14 @@
+<%# Display tags for a post with optional styling %>
+<% if local_assigns[:post] && post.tag_list.present? %>
+  <div class="<%= local_assigns[:container_class] || 'flex flex-wrap gap-1 mt-2' %>">
+    <% post.tag_list.each do |tag| %>
+      <% if local_assigns[:linkable] %>
+        <%= link_to tag, tag_filter_url(tag), class: local_assigns[:tag_class] || 'inline-flex items-center px-2 py-1 text-xs font-medium bg-slate-100 text-slate-800 rounded-md hover:bg-slate-200 transition-colors dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700' %>
+      <% else %>
+        <span class="<%= local_assigns[:tag_class] || 'inline-flex items-center px-2 py-1 text-xs font-medium bg-slate-100 text-slate-800 rounded-md dark:bg-slate-800 dark:text-slate-200' %>">
+          <%= tag %>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

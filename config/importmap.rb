@@ -16,3 +16,4 @@ pin "strava", to: "embeds/strava.js"
 pin "youtube", to: "embeds/youtube.js"
 pin "media_site", to: "embeds/media_site.js"
 pin "local-time" # @3.0.3
+pin "@yaireo/tagify", to: "https://ga.jspm.io/npm:@yaireo/tagify@4.35.1/dist/tagify.esm.js"

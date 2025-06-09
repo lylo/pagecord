@@ -50,6 +50,24 @@
       </div>
     </div>
 
+    <div class="<%= 'hidden' unless @post.tag_list.present? %> mb-8" data-post-attributes-target="section" data-section="tags">
+      <div class="mt-4 font-bold">
+        <%= form.label :tags_string, "Tags" %>
+      </div>
+
+      <div class="mt-2" data-controller="tags-input">
+        <%= form.text_field :tags_string,
+            class: "w-full",
+            data: {
+              tags_input_target: "input"
+            } %>
+
+        <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          Use letters, numbers, and hyphens only. Tags will be automatically formatted.
+        </div>
+      </div>
+    </div>
+
     <%= form.text_field :title,
     placeholder: "Optional post title",
     class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",

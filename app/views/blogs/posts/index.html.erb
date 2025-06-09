@@ -6,15 +6,35 @@
 
 <%= render "blogs/header" %>
 
+<% if @current_tag.present? %>
+  <div class="mb-6 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+    <div class="flex items-center justify-between">
+      <span class="text-blue-800 dark:text-blue-200">
+        Showing posts tagged with "<strong><%= @current_tag %></strong>"
+      </span>
+      <%= link_to "Show all posts", blog_home_path(@blog), class: "text-blue-600 dark:text-blue-300 hover:underline text-sm" %>
+    </div>
+  </div>
+<% end %>
+
 <% if @posts.empty? %>
-  <p class="text-center">
-    Nothing to read on this blog yet ✨
-  </p>
-  <p class="mt-4 text-center">
-    To be notified of new posts, subscribe to the
-    <%= link_to "RSS feed", rss_feed_url(@blog),
-        class: "font-semibold underline" %>
-  </p>
+  <% if @current_tag.present? %>
+    <p class="text-center">
+      No posts found with the tag "<%= @current_tag %>" ✨
+    </p>
+    <p class="mt-4 text-center">
+      <%= link_to "View all posts", blog_home_path(@blog), class: "font-semibold underline" %>
+    </p>
+  <% else %>
+    <p class="text-center">
+      Nothing to read on this blog yet ✨
+    </p>
+    <p class="mt-4 text-center">
+      To be notified of new posts, subscribe to the
+      <%= link_to "RSS feed", rss_feed_url(@blog),
+          class: "font-semibold underline" %>
+    </p>
+  <% end %>
 <% else %>
 
   <% if @blog.stream_layout? %>

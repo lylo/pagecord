@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-  include Draftable, Sluggable, Tokenable, Trimmable, Upvotable
+  include Draftable, Sluggable, Tokenable, Trimmable, Upvotable, Taggable
 
   belongs_to :blog, inverse_of: nil
 
