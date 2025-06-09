@@ -74,11 +74,6 @@ module ApplicationHelper
     end
   end
 
-  def prevent_indexing?
-    # free accounts are only indexable one week after they were created
-    @user && @user.created_at&.after?(1.week.ago) && !@user.subscribed?
-  end
-
   private
 
     # FIXME This is no longer needed.

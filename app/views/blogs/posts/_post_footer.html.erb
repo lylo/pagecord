@@ -9,6 +9,7 @@
         <%= link_to new_post_reply_path(post),
                   title: "Reply to this post via email",
                   data: { turbo_frame: "_top" },
+                  rel: "nofollow",
                   class: "flex" do %>
           <%= inline_svg_tag "icons/reply.svg", class: "icon cursor-pointer w-5 h-5" %>
         <% end %>

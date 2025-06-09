@@ -1,4 +1,4 @@
-<% if @blog.allow_search_indexing %>
+<% if @blog.allow_search_indexing && @blog.user.search_indexable? %>
 # Blog robots.txt for <%= @blog.subdomain %>
 # Last updated: May 2025
 

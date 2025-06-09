@@ -15,6 +15,10 @@ class User < ApplicationRecord
     self.update! verified: true
   end
 
+  def search_indexable?
+    self.created_at&.before?(1.week.ago) || subscribed?
+  end
+
   def pending_email_change_request
     email_change_requests.active.pending.order(created_at: :desc).first
   end

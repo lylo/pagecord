@@ -58,8 +58,10 @@
 <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 <%= javascript_importmap_tags %>
 
-<% if prevent_indexing? %>
-<meta name="robots" content="noindex, nofollow">
+<% unless @blog&.user&.search_indexable? %>
+  <meta name="robots" content="noindex, nofollow">
+<% else %>
+  <%= yield :robots_meta %>
 <% end %>
 
 <% if @blog&.subdomain == "olly" %>
