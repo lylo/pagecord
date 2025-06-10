@@ -1,7 +1,7 @@
 class SignupsController < ApplicationController
   include SpamPrevention, TimezoneTranslation
 
-  rate_limit to: 5, within: 1.minute, only: [ :new ]
+  rate_limit to: 20, within: 1.minute, only: [ :new ]
 
   layout "sessions"
 
