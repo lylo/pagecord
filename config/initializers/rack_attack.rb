@@ -1,6 +1,6 @@
 class Rack::Attack
-  throttle("req/ip/unauthenticated_exact_app", limit: 10, period: 1.minutes) do |req|
-    if [ "/app", "/app/" ].include?(req.path)
+  throttle("req/ip/unauthenticated_exact_app", limit: 5, period: 1.minutes) do |req|
+    if [ "/app", "/app/" ].include?(req.path) && !req.session["user_id"]
       req.ip
     end
   end
