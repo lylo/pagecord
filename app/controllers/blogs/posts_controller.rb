@@ -8,7 +8,11 @@ class Blogs::PostsController < Blogs::BaseController
       .with_rich_text_content_and_embeds
       .includes(
         :upvotes,
-        rich_text_content: { embeds_attachments: :blob }
+        rich_text_content: {
+            embeds_attachments: [
+             blob: :variant_records
+            ]
+          }
       )
       .order(published_at: :desc)
 
