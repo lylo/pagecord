@@ -6,13 +6,14 @@ class Blogs::PostsController < Blogs::BaseController
   def index
     @posts = @blog.posts.visible
       .with_rich_text_content_and_embeds
-      .includes(
-        :upvotes,
-        rich_text_content: { embeds_attachments: :blob }
-      )
       .order(published_at: :desc)
 
     @pagy, @posts = pagy(@posts, limit: page_size)
+
+    @posts = @posts.includes(
+      :upvotes,
+      rich_text_content: { embeds_attachments: :blob }
+    ).references(:upvotes)
 
     respond_to do |format|
       format.html { set_conditional_get_headers }
