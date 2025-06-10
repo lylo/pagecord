@@ -6,7 +6,10 @@ class Blogs::PostsController < Blogs::BaseController
   def index
     @posts = @blog.posts.visible
       .with_rich_text_content_and_embeds
-      .includes(:upvotes)
+      .includes(
+        :upvotes,
+        rich_text_content: { embeds_attachments: :blob }
+      )
       .order(published_at: :desc)
 
     @pagy, @posts = pagy(@posts, limit: page_size)
@@ -24,6 +27,7 @@ class Blogs::PostsController < Blogs::BaseController
   def show
     @post = @blog.all_posts.visible
       .with_rich_text_content_and_embeds
+      .includes(rich_text_content: { embeds_attachments: :blob })
       .find_by!(slug: blog_params[:slug])
 
     fresh_when @post, public: true, template: "blogs/posts/show"
