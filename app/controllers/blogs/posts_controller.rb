@@ -4,12 +4,11 @@ class Blogs::PostsController < Blogs::BaseController
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   def index
-    @posts = @blog.posts.visible
+    base_scope = @blog.posts.visible
       .with_rich_text_content_and_embeds
       .order(published_at: :desc)
 
-    @pagy, @posts = pagy(@posts, limit: page_size)
-
+    @pagy, @posts = pagy(base_scope, limit: page_size)
     @posts = @posts.includes(
       :upvotes,
       rich_text_content: { embeds_attachments: :blob }
