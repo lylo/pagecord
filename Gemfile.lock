@@ -299,6 +299,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.15)
+    rack-attack (6.7.0)
+      rack (>= 1.0, < 4)
     rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -475,6 +477,7 @@ DEPENDENCIES
   postmark-rails
   premailer-rails (~> 1.12)
   puma (>= 5.0)
+  rack-attack
   rails!
   rails-controller-testing
   rails_autolink
