@@ -200,8 +200,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should initially prevent free blogs from being indexed" do
     @blog = blogs(:vivian)
     host_subdomain! @blog.subdomain
-    puts "created_at #{@blog.user.created_at}"
-    puts "search indexable? #{@blog.user.search_indexable?}"
 
     get blog_posts_path
 
