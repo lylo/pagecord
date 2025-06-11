@@ -7,7 +7,7 @@ class Subscription < ApplicationRecord
   scope :active_paid, -> { where(cancelled_at: nil).where(complimentary: false).where("next_billed_at > ?", Time.current) }
 
   def self.price
-    "20"
+    "29"
   end
 
   def active?
