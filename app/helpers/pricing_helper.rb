@@ -1,5 +1,5 @@
 module PricingHelper
-  def localized_price
+  def localised_price
     country = request.headers["CF-IPCountry"]
 
     price = case country
@@ -7,7 +7,6 @@ module PricingHelper
     else Subscription.price
     end
 
-    puts "Localized price for country #{country}: #{price}"
     price
   end
 end

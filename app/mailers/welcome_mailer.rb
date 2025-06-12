@@ -4,6 +4,7 @@ class WelcomeMailer < MailpaceMailer
   def welcome_email
     @user = params[:user]
     @blog = @user.blog
+    @price = params[:price] || Subscription.price
 
     mail(
       to: @user.email,
