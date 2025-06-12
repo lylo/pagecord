@@ -38,5 +38,5 @@ saul:
 
 pagecord:
   user: pagecord
-  subdomain: pagecord
+  subdomain: blog
   delivery_email: pagecord_asj232j@post.pagecord.com

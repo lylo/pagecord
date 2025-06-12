@@ -7,7 +7,7 @@ class MarketingAutomation::DeleteContactJobTest < ActiveJob::TestCase
   end
 
   test "should remove from Pagecord mailing list if subscribed" do
-    pagecord = Blog.find_by(subdomain: "pagecord")
+    pagecord = Blog.find_by(subdomain: "blog")
     pagecord.email_subscribers.create!(email: @user.email)
 
     assert_difference("EmailSubscriber.count", -1) do
