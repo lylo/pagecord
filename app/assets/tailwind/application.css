@@ -3,6 +3,10 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/aspect-ratio";
 
+@theme {
+  --color-bmc-pink: #ff5f5f;
+}
+
 /* Themes */
 @import "./themes.css";
 

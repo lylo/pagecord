@@ -1,4 +1,6 @@
 class AccessRequestsController < ApplicationController
+  include PricingHelper
+
   def verify
     access_request = AccessRequest.active.pending.find_by(token_digest: params[:token]) ||
                      AccessRequest.active.recently_accepted.find_by(token_digest: params[:token])
@@ -8,7 +10,8 @@ class AccessRequestsController < ApplicationController
       if !@user.verified? && access_request.pending?
         @user.verify!
 
-        WelcomeMailer.with(user: @user).welcome_email.deliver_later
+        localized_price = localised_price
+        WelcomeMailer.with(user: @user, price: localized_price).welcome_email.deliver_later
 
         MarketingAutomation::AddContactJob.perform_later(@user.id)
       end
