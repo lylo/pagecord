@@ -72,11 +72,11 @@ module ThemeHelper
 
   def preload_fonts(paths)
     safe_join(paths.map { |path|
-      tag.link rel: "preload",
+      tag.link(rel: "preload",
               href: asset_path(path),
               as: "font",
               type: "font/woff2",
-              crossorigin: "anonymous"
+              crossorigin: "anonymous") + "\n"
     })
   end
 
