@@ -1,28 +1,28 @@
-<div class="md:mt-4 prose dark:prose-invert mb-4 md:mb-8 mx-auto max-w-4xl px-4">
-  <h1 class="text-center md:text-start text-4xl md:text-5xl tracking-tight">
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h1 class="text-center md:text-start text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
   Publish your writing effortlessly. All you need is email.
   </h1>
 
   <div class="md:text-xl text-base leading-7">
-    <h2 class="font-normal text-xl text-slate-700 dark:text-slate-300 mt-8 md:mt-12">
+    <h2 class="font-normal text-xl text-slate-900 dark:text-slate-100 mt-8 md:mt-12 mb-4">
       Be part of the small web. Create your own minimalist blog in seconds. For FREE ✨
     </h2>
 
-    <p>
+    <p class="my-5">
       Publish effortlessly using email or the Pagecord editor. People can
-      follow along using <a href="https://simple.wikipedia.org/wiki/Really_Simple_Syndication">RSS</a>,
+      follow along using <a href="https://simple.wikipedia.org/wiki/Really_Simple_Syndication" class="font-medium underline">RSS</a>,
       or subscribe by email to get your posts automatically in a weekly digest.
     </p>
 
-    <p>
+    <p class="my-5">
       It's the perfect antidote to social media scrollverload.
     </p>
 
-    <p>
-      Pagecord is <b>independent</b>, <b>open source</b> and <b>built to last</b>.
+    <p class="my-5">
+      Pagecord is <b class="font-semibold">independent</b>, <b class="font-semibold">open source</b> and <b class="font-semibold">built to last</b>.
     </p>
 
-    <div class="my-8 md:text-xl not-prose text-center">
+    <div class="my-8 md:text-xl text-center">
       <%= link_to new_signup_path do %>
         <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-pagecord-accent hover:bg-pagecord-accent/90">Get your FREE account today</div>
       <% end %>
@@ -31,10 +31,10 @@
       </div>
     </div>
 
-    <p>
-      To see it in action, check out <a href="https://olly.pagecord.com">Olly's home page</a> or <a href="https://blog.pagecord.com">the Pagecord blog</a>.
+    <p class="my-5">
+      To see it in action, check out <a href="https://olly.pagecord.com" class="font-medium underline">Olly's home page</a> or <a href="https://blog.pagecord.com" class="font-medium underline">the Pagecord blog</a>.
     </p>
-      </div>
+  </div>
 </div>
 <div class="relative w-full px-4 md:px-6 lg:px-8 my-12 py-8 bg-slate-100 dark:bg-slate-700">
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
@@ -74,18 +74,18 @@
 
 
 <!-- Pricing Section -->
-<div id="pricing" class="prose dark:prose-invert mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
-  <h2 class="text-center md:text-start text-3xl md:text-4xl tracking-tight">Pricing</h2>
-  <p class="md:text-xl">
+<div id="pricing" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h2 class="text-center font-bold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Pricing</h2>
+  <p class="md:text-xl my-5">
     The blogging basics are free forever. Upgrade any time to get the full monty for only <strong>$<%= localised_price %> per year</strong>.
   </p>
 
-  <div class="not-prose grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
     <!-- Classic Plan -->
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 p-8 relative transform hover:scale-105 transition-transform duration-200">
       <div class="text-center">
         <h3 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">Classic</h3>
-        <div class="text-4xl font-bold text-pagecord-accent mb-1">FREE</div>
+        <div class="text-4xl font-bold text-pagecord-accent dark:text-pagecord-accent mb-1">FREE</div>
         <p class="text-slate-600 dark:text-slate-400 mb-6">Your blogging basics. Free forever!</p>
 
         <%= link_to new_signup_path, class: "block w-full" do %>
@@ -188,10 +188,10 @@
   </div>
 </div>
 
-<div id="features" class="mt-16 prose dark:prose-invert mb-4 md:mb-8 mx-auto max-w-4xl px-4">
-  <h2 class="text-center md:text-start text-3xl md:text-4xl tracking-tight">Full of features. Unbeatable Value 😇</h2>
+<div id="features" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h2 class="font-bold text-center my-8 md:text-start text-3xl md:text-4xl tracking-tight">Full of features. Unbeatable Value 😇</h2>
 
-  <p class="md:text-xl">
+  <p class="md:text-xl my-5">
     Pagecord is super-simple to use, but chock-a-block with powerful features. Try it and you'll love it.
   </p>
 
@@ -314,7 +314,7 @@
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Email newsletter</div>
             <div class="hidden sm:block">Readers can sign up to receive a weekly email digest of your posts 📬
-            <br><span class="text-xs">(100 subscriber limit. More for <a href="/faq#subscribers">an additional fee</a>)</br>
+            <br><span class="text-xs">(100 subscriber limit. More for <a href="/faq#subscribers" class="font-medium underline">an additional fee</a>)</br>
             </div>
           </td>
           <td class="text-center align-middle text-xl"></td>
@@ -373,16 +373,16 @@
   </div>
 </div>
 
-<div class="mt-16 prose dark:prose-invert mb-4 md:mb-8 mx-auto max-w-4xl px-4">
-  <div class="mt-12 mb-20 text-center md:text-xl not-prose">
+<div class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <div class="mt-12 mb-20 text-center md:text-xl">
     <%= link_to new_signup_path do %>
       <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-pagecord-accent">Get your FREE account today</div>
     <% end %>
   </div>
 
-  <h2 class="text-center md:text-start mt-8 text-3xl md:text-4xl">Look under the hood 🤓</h2>
-  <p class="md:text-xl">
-    The Pagecord code is <a href="https://github.com/lylo/pagecord">open source under the MIT license</a>. Take a look under the hood, suggest improvements, or (if you're feeling brave) host it yourself!
+  <h2 class="font-bold my-8 text-center md:text-start text-3xl md:text-4xl tracking-tight">Look under the hood 🤓</h2>
+  <p class="md:text-xl my-5">
+    The Pagecord code is <a href="https://github.com/lylo/pagecord" class="font-medium underline">open source under the MIT license</a>. Take a look under the hood, suggest improvements, or (if you're feeling brave) host it yourself!
   </p>
 
   <div class="mt-12 mb-2 max-w-[500px] mx-auto bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 p-4 rounded-lg text-sm">
