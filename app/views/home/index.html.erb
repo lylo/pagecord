@@ -36,18 +36,17 @@
     </p>
       </div>
 </div>
-
 <div class="relative w-full px-4 md:px-6 lg:px-8 my-12 py-8 bg-slate-100 dark:bg-slate-700">
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
     <% (1..3).each do |i| %>
       <div class="transform hover:-translate-y-2 transition-transform duration-300 <%= 'md:mt-8' if i % 2 == 1 %>">
         <button onclick="document.getElementById('modal-<%= i %>').showModal()" class="w-full">
           <%= image_tag "home/screenshot-0#{i}.webp",
-              class: "rounded-xl shadow-lg border border-slate-200/50 shadow-[0_4px_12px_0px_rgba(255,255,255,0.05)] dark:shadow-slate-300/75 w-full cursor-pointer",
+              class: "aspect-[15/14] w-full rounded-xl shadow-lg border border-slate-200/50 shadow-[0_4px_12px_0px_rgba(255,255,255,0.05)] dark:shadow-slate-300/75 cursor-pointer",
               alt: "Pagecord screenshot #{i}",
               width: "1500",
-              height: "1420"
-               %>
+              height: "1420",
+              loading: "lazy" %>
         </button>
 
         <dialog id="modal-<%= i %>"
@@ -58,8 +57,8 @@
                 class: "w-full h-auto max-h-[90vh] object-contain rounded-xl",
                 alt: "Pagecord screenshot #{i}",
                 width: "1500",
-                height: "1420"
-                %>
+                height: "1420" %>
+
             <button onclick="document.getElementById('modal-<%= i %>').close()"
                     class="absolute top-4 right-4 text-white bg-gray-900/50 hover:bg-gray-900/75 rounded-full p-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
