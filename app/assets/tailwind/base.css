@@ -2,7 +2,7 @@
 :root {
   /* Typography */
   --font-sans: InterVariable, sans-serif;
-  --font-serif: 'Lora', Georgia, serif;
+  --font-serif: 'Lora Variable', Georgia, serif;
   --font-mono: 'IBM Plex Mono', monospace;
 
   /* Content width options */
