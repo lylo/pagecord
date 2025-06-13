@@ -32,7 +32,7 @@ module ApplicationHelper
     elsif @blog
       blog_title(@blog)
     else
-      "The best free blogging platform for the small web. Publish your writing effortlessly. All you need is email."
+      "Pagecord: Independent blogging for the small web"
     end
   end
 
