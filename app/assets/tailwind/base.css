@@ -46,8 +46,8 @@
   --color-input-bg: theme('colors.white');
   --color-input-border: theme('colors.slate.300');
   --color-input-focus: theme('colors.slate.400');
-  --color-button-bg: theme('colors.slate.500');
-  --color-button-hover: theme('colors.slate.400');
+  --color-button-bg: theme('colors.slate.600');
+  --color-button-hover: theme('colors.slate.500');
   --color-button-text: theme('colors.slate.100');
   --color-placeholder: theme('colors.slate.300');
 }
