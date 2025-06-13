@@ -32,6 +32,7 @@ class Blog::Export::ImageHandler
     end
 
     def download_image(src, local_path)
+      Rails.logger.info "Blog::Export::ImageHandler. Downloading image from #{src} to #{local_path}"
       File.open(local_path, "wb") { |file| file.write(URI.open(src).read) }
     end
 
