@@ -30,8 +30,12 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
       .with("http://example.com/test%20image.jpg", regexp_matches(/test_image\.jpg$/))
       .raises(StandardError, "Download failed")
 
-    assert_raises(StandardError) do
-      @image_handler.process_images(@post.content.body.to_s)
-    end
+    Sentry.expects(:capture_message)
+      .with(regexp_matches(/Unable to process image.*Download failed/))
+
+    processed_html = @image_handler.process_images(@post.content.body.to_s)
+
+    # The HTML should still be processed even with failed image download
+    assert_not_nil processed_html
   end
 end
