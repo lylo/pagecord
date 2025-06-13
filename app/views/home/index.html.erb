@@ -24,7 +24,7 @@
 
     <div class="my-8 md:text-xl not-prose text-center">
       <%= link_to new_signup_path do %>
-        <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-bmc-pink">Get your FREE account today</div>
+        <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-pagecord-accent hover:bg-pagecord-accent/90">Get your FREE account today</div>
       <% end %>
       <div class="mt-2 text-sm text-slate-500 dark:text-slate-400">
         (No credit card required)
@@ -44,7 +44,10 @@
         <button onclick="document.getElementById('modal-<%= i %>').showModal()" class="w-full">
           <%= image_tag "home/screenshot-0#{i}.webp",
               class: "rounded-xl shadow-lg border border-slate-200/50 shadow-[0_4px_12px_0px_rgba(255,255,255,0.05)] dark:shadow-slate-300/75 w-full cursor-pointer",
-              alt: "Pagecord screenshot #{i}" %>
+              alt: "Pagecord screenshot #{i}",
+              width: "1500",
+              height: "1420"
+               %>
         </button>
 
         <dialog id="modal-<%= i %>"
@@ -53,7 +56,10 @@
           <form method="dialog" class="m-0">
             <%= image_tag "home/screenshot-0#{i}.webp",
                 class: "w-full h-auto max-h-[90vh] object-contain rounded-xl",
-                alt: "Pagecord screenshot #{i}" %>
+                alt: "Pagecord screenshot #{i}",
+                width: "1500",
+                height: "1420"
+                %>
             <button onclick="document.getElementById('modal-<%= i %>').close()"
                     class="absolute top-4 right-4 text-white bg-gray-900/50 hover:bg-gray-900/75 rounded-full p-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -80,11 +86,11 @@
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 p-8 relative transform hover:scale-105 transition-transform duration-200">
       <div class="text-center">
         <h3 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">Classic</h3>
-        <div class="text-4xl font-bold text-bmc-pink mb-1">FREE</div>
+        <div class="text-4xl font-bold text-pagecord-accent mb-1">FREE</div>
         <p class="text-slate-600 dark:text-slate-400 mb-6">Your blogging basics. Free forever!</p>
 
         <%= link_to new_signup_path, class: "block w-full" do %>
-          <div class="w-full py-3 px-6 rounded-xl font-medium bg-bmc-pink text-white transition-colors text-center">
+          <div class="w-full py-3 px-6 rounded-xl font-medium bg-pagecord-accent text-white transition-colors text-center">
             Get Started for FREE
           </div>
         <% end %>
@@ -128,14 +134,14 @@
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 p-8 relative transform hover:scale-105 transition-transform duration-200">
       <div class="text-center">
         <h3 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">Premium</h3>
-        <div class="text-4xl font-bold text-bmc-pink mb-1">
+        <div class="text-4xl font-bold text-pagecord-accent mb-1">
           $<%= localised_price %>
           <span class="text-lg font-normal text-slate-600 dark:text-slate-400">/year</span>
         </div>
         <p class="text-slate-600 dark:text-slate-400 mb-6">All the features for an unbeatable price!</p>
 
         <%= link_to new_signup_path, class: "block w-full" do %>
-          <div class="w-full py-3 px-6 rounded-xl font-medium bg-bmc-pink text-white transition-colors text-center">
+          <div class="w-full py-3 px-6 rounded-xl font-medium bg-pagecord-accent text-white transition-colors text-center">
             Get Started for FREE
           </div>
         <% end %>
@@ -190,7 +196,7 @@
     Pagecord is super-simple to use, but chock-a-block with powerful features. Try it and you'll love it.
   </p>
 
-  <div class="mt-8 bg-slate-100 dark:bg-slate-800 px-6 py-4 rounded-xl">
+  <div class="mt-8 bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-xl">
     <table class="w-full text-base p-0 m-0">
       <thead>
         <tr>
@@ -214,7 +220,7 @@
         </tr>
       </thead>
 
-      <tbody class="text-sm text-slate-500 dark:text-slate-500">
+      <tbody class="text-sm text-slate-500 dark:text-slate-400">
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Number of posts</div>
@@ -371,7 +377,7 @@
 <div class="mt-16 prose dark:prose-invert mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <div class="mt-12 mb-20 text-center md:text-xl not-prose">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-bmc-pink">Get your FREE account today</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-pagecord-accent">Get your FREE account today</div>
     <% end %>
   </div>
 

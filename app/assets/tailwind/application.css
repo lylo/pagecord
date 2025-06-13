@@ -4,7 +4,7 @@
 @plugin "@tailwindcss/aspect-ratio";
 
 @theme {
-  --color-bmc-pink: #ff5f5f;
+  --color-pagecord-accent: hsl(258, 67%, 48%);
 }
 
 /* Themes */
