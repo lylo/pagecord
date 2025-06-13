@@ -4,7 +4,7 @@ module ApplicationHelper
   # <meta name="description" content="<%= meta_description %>">
   def meta_description
     if @post
-      @post.summary
+      @post.summary(limit: 160)
     elsif @blog.present?
       blog_description(@blog)
     else
@@ -23,7 +23,7 @@ module ApplicationHelper
   def page_title
     if @post
       if @post.title&.present?
-        @post.title
+        "#{@post.title} - #{@post.blog.display_name}"
       else
         "#{blog_title(@post.blog)} - #{@post.published_at.to_formatted_s(:long)}"
       end
