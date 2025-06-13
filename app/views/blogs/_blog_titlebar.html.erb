@@ -2,8 +2,8 @@
   <% if @blog.avatar&.attached? %>
     <div class="flex w-full items-top justify-between gap-x-4">
       <div class="w-16 h-16">
-        <%= link_to blog_home_url(@blog) do %>
-          <%= image_tag rails_public_blob_url(@blog.avatar), class: "border border-slate-200 dark:border-slate-800 shadow-sm object-cover rounded-full w-16 h-16" %>
+        <%= link_to blog_home_url(@blog), aria: { label: "#{@blog.title} Home" } do %>
+          <%= image_tag rails_public_blob_url(@blog.avatar), class: "border border-slate-200 dark:border-slate-800 shadow-sm object-cover rounded-full w-16 h-16", alt: "#{@blog.title} Avatar" %>
         <% end %>
       </div>
 
