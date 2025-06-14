@@ -34,7 +34,7 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
       post post_replies_path(@post), params: params
     end
 
-    assert_enqueued_emails 1
+    assert_enqueued_jobs 1, only: SendPostReplyJob
     assert_redirected_to blog_post_path(@post.slug)
     follow_redirect!
     assert_equal "Reply sent successfully!", flash[:notice]

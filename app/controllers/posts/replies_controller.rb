@@ -20,7 +20,7 @@ class Posts::RepliesController < Blogs::BaseController
     @reply = @post.replies.new(reply_params)
 
     if @reply.save
-      ReplyMailer.with(reply: @reply).new_reply.deliver_later
+      SendPostReplyJob.perform_later(@reply.id)
 
       redirect_to view_context.post_path(@post), notice: "Reply sent successfully!"
     else
