@@ -483,6 +483,7 @@ DEPENDENCIES
   rails_autolink
   redis (>= 4.0.1)
   rubocop-rails-omakase
+  ruby-vips
   rubyzip
   selenium-webdriver
   sentry-rails

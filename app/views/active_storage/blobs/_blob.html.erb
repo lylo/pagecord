@@ -3,9 +3,15 @@
     <%= video_tag rails_public_blob_url(blob), preload: "auto", controls: "controls", class: "attachment__video max-h-[600px] mx-auto" %>
   <% elsif blob.representable? %>
     <% if blob.content_type == "image/gif" %>
-      <%= image_tag rails_public_blob_url(blob), alt: "" %>
+      <%= image_tag rails_public_blob_url(blob), alt: "Uploaded image" %>
     <% else %>
-      <%= image_tag rails_public_blob_url(blob.representation(resize_to_limit: local_assigns[:in_gallery] ? [ 800, 600 ] : [ 1024, 768 ])), alt: "" %>
+      <% variant = blob.variant(
+          resize_to_limit: (local_assigns[:in_gallery] ? [800, 600] : [1600, 1200]),
+          format: :webp,
+          saver: { quality: 90, strip: true, compression: 6 }
+        ) %>
+
+      <%= image_tag rails_public_blob_url(variant), alt: "Uploaded image" %>
     <% end %>
   <% end %>
 </figure>
