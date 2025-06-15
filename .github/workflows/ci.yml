@@ -58,7 +58,15 @@ jobs:
 
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libsqlite3-0 libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            google-chrome-stable \
+            curl \
+            libjemalloc2 \
+            libsqlite3-0 \
+            libvips \
+            libvips-dev
 
       - name: Checkout code
         uses: actions/checkout@v4
