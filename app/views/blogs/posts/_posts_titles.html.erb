@@ -16,7 +16,6 @@
         </div>
         <div class="text-[var(--color-text-heading)]">
           <%= link_to post_title(post), post_path(post), class: "font-medium hover:underline" %>
-          <%= render "shared/tags", post: post, linkable: true, container_class: "flex flex-wrap gap-1 mt-1", tag_class: "inline-flex items-center px-1.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-600 rounded hover:bg-slate-200 transition-colors dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600" %>
         </div>
       </div>
     <% end %>
