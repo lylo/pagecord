@@ -1,5 +1,11 @@
-<div class="post-footer not-prose flex justify-between items-center my-4 text-sm">
-  <%= link_to post_path(post), class: "my-4 font-normal", data: { turbo_frame: "_top" } do %>
+<% top_margin = "mt-8" %>
+<% if post.tag_list.present? %>
+  <%= render "tags", post: post %>
+  <% top_margin = "mt-4" %>
+<% end %>
+
+<div class="post-footer not-prose flex justify-between items-center <%= top_margin %> mb-4 text-sm">
+  <%= link_to post_path(post), class: "font-normal", data: { turbo_frame: "_top" } do %>
     <%= local_time post.published_at, published_at_date_format %>
   <% end %>
 
@@ -23,5 +29,3 @@
     </div>
   <% end %>
 </div>
-
-<%= render "shared/tags", post: post, linkable: true, container_class: "flex flex-wrap gap-2 mt-6", tag_class: "inline-flex items-center px-2 py-1 text-sm font-medium bg-[var(--color-bg-subtle)] text-[var(--color-text)] rounded-md hover:bg-[var(--color-bg-elevated)] transition-colors" %>
