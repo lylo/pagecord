@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: b5b6900868712352b1b589ebfe201c7dd1d9bb75
+  revision: 1ac40035478cba2e21d698ffa57b43355f5bed7b
   branch: main
   specs:
     actioncable (8.1.0.alpha)
@@ -129,9 +129,9 @@ GEM
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.11.0)
       aws-eventstream (~> 1, >= 1.0.2)
-    base64 (0.2.0)
-    benchmark (0.4.0)
-    bigdecimal (3.1.9)
+    base64 (0.3.0)
+    benchmark (0.4.1)
+    bigdecimal (3.2.2)
     bindex (0.8.1)
     bootsnap (1.18.6)
       msgpack (~> 1.2)
@@ -247,7 +247,7 @@ GEM
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
     nanoid (2.0.0)
-    net-imap (0.5.8)
+    net-imap (0.5.9)
       date
       net-protocol
     net-pop (0.1.2)
@@ -298,7 +298,7 @@ GEM
     puma (6.6.0)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.15)
+    rack (3.1.16)
     rack-attack (6.7.0)
       rack (>= 1.0, < 4)
     rack-session (2.1.1)
@@ -324,8 +324,8 @@ GEM
       activesupport (> 3.1)
       railties (> 3.1)
     rainbow (3.1.1)
-    rake (13.2.1)
-    rdoc (6.14.0)
+    rake (13.3.0)
+    rdoc (6.14.1)
       erb
       psych (>= 4.0.0)
     redis (5.4.0)
