@@ -1,5 +1,5 @@
 <% if post&.tag_list.present? %>
-  <div class="flex flex-wrap gap-2 mt-4">
+  <div class="flex flex-wrap gap-2 mt-8">
     <% post.tag_list.each do |tag| %>
       <%= link_to tag, tag_filter_url(tag), class: "inline-flex items-center px-2 py-1 text-sm font-medium bg-[var(--color-bg-subtle)] text-[var(--color-text-muted)] rounded-md hover:bg-[var(--color-bg-elevated)] transition-colors" %>
     <% end %>
