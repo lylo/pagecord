@@ -6,17 +6,6 @@
 
 <%= render "blogs/header" %>
 
-<% if @current_tag.present? %>
-  <div class="mb-6 p-3 bg-[var(--color-bg-subtle)] border border-[var(--color-border)] rounded-lg">
-    <div class="flex items-center justify-between">
-      <span class="text-[var(--color-text)]">
-        Showing posts tagged with "<strong><%= @current_tag %></strong>"
-      </span>
-      <%= link_to "Show all posts", blog_home_path(@blog), class: "text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] hover:underline text-sm" %>
-    </div>
-  </div>
-<% end %>
-
 <% if @posts.empty? %>
   <% if @current_tag.present? %>
     <p class="text-center">
@@ -36,6 +25,16 @@
     </p>
   <% end %>
 <% else %>
+  <% if @current_tag.present? %>
+    <div class="mb-6 p-3 bg-[var(--color-bg-subtle)] border border-[var(--color-border)] rounded-lg">
+      <div class="flex items-center justify-between">
+        <span class="text-[var(--color-text)]">
+          Showing posts tagged with "<strong><%= @current_tag %></strong>"
+        </span>
+        <%= link_to "Show all posts", blog_home_path(@blog), class: "text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] hover:underline text-sm" %>
+      </div>
+    </div>
+  <% end %>
 
   <% if @blog.stream_layout? %>
     <%= render "posts_stream" %>

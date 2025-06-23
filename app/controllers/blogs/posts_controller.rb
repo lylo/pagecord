@@ -18,7 +18,7 @@ class Blogs::PostsController < Blogs::BaseController
 
     # Filter by tag if specified
     if params[:tag].present?
-      @posts = @posts.tagged_with(params[:tag])
+      base_scope = base_scope.tagged_with(params[:tag])
       @current_tag = params[:tag]
     end
 
