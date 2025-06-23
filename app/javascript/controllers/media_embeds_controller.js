@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import AppleMusic from "apple_music"
 import Bandcamp from "bandcamp"
+import Checkvist from "checkvist"
 import GitHub from "github"
 import Image from "image"
 import Spotify from "spotify"
@@ -10,7 +11,7 @@ import YouTube from "youtube"
 // Connects to data-controller="media-embed"
 export default class extends Controller {
   connect() {
-    this.mediaSites = [new AppleMusic(), new Spotify(), new YouTube(), new Bandcamp(), new Strava(), new GitHub(), new Image()]
+    this.mediaSites = [new AppleMusic(), new Spotify(), new YouTube(), new Bandcamp(), new Strava(), new GitHub(), new Image(), new Checkvist()]
     this.replaceMediaLinks()
   }
 
@@ -18,23 +19,22 @@ export default class extends Controller {
     const articles = document.querySelectorAll('article')
 
     for (const article of articles) {
-      for (const site of this.mediaSites) {
-        await this.embedMediaLinks(article, site)
-      }
+      const links = Array.from(article.querySelectorAll('a'))
+        .filter(link => link.href === link.textContent.trim())
+
+      await Promise.all(links.map(link => this.processLink(link)))
     }
   }
 
-  async embedMediaLinks(article, site) {
-    const links = Array.from(article.querySelectorAll('a')).filter(link => site.regex.test(link.href))
+  async processLink(link) {
+    const url = link.href
 
-    for (const link of links) {
-      const url = link.getAttribute("href")
-      const linkText = link.textContent.trim()
-
-      if (url === linkText) {
+    for (const site of this.mediaSites) {
+      if (site.regex.test(url)) {
         const iframe = await site.transform(url)
         if (iframe) {
           link.replaceWith(iframe)
+          break // Stop after first successful match
         }
       }
     }
