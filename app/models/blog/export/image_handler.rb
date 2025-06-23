@@ -24,6 +24,10 @@ class Blog::Export::ImageHandler
 
       download_image(src, local_path)
       update_img_src(img, safe_filename)
+    rescue StandardError => e
+      message = "Blog::Export::ImageHandler. Unable to process image #{src}: #{e.message}"
+      Sentry.capture_message(message)
+      Rails.logger.error message
     end
 
     def sanitized_filename(url)
@@ -32,6 +36,7 @@ class Blog::Export::ImageHandler
     end
 
     def download_image(src, local_path)
+      Rails.logger.info "Blog::Export::ImageHandler. Downloading image from #{src} to #{local_path}"
       File.open(local_path, "wb") { |file| file.write(URI.open(src).read) }
     end
 

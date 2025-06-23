@@ -19,6 +19,11 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Install libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y libvips libvips-dev
+
       - name: Scan for security vulnerabilities in Ruby dependencies
         run: bin/brakeman --no-pager
 
@@ -34,6 +39,11 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Install libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y libvips libvips-dev
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
         run: bin/importmap audit
@@ -58,7 +68,15 @@ jobs:
 
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libsqlite3-0 libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            google-chrome-stable \
+            curl \
+            libjemalloc2 \
+            libsqlite3-0 \
+            libvips \
+            libvips-dev
 
       - name: Checkout code
         uses: actions/checkout@v4

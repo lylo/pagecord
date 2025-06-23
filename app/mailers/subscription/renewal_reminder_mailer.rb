@@ -3,7 +3,7 @@ class Subscription::RenewalReminderMailer < MailpaceMailer
     @subscription = subscription
     @user = subscription.user
     @renewal_date = subscription.next_billed_at.to_date
-    @price = Subscription.price
+    @price = @subscription.unit_price / 100
 
     mail(
       to: @user.email,

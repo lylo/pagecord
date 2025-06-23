@@ -28,6 +28,9 @@ class PaddleApi
     PADDLE_CONFIG = Rails.application.config_for(:paddle)
 
     def headers
-      { "Authorization" => "Bearer #{PADDLE_CONFIG[:api_key]}" }
+      {
+        "Authorization" => "Bearer #{PADDLE_CONFIG[:api_key]}",
+        "Content-Type" => "application/json"
+      }
     end
 end

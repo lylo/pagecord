@@ -3,6 +3,11 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/aspect-ratio";
 
+@theme {
+  --color-pagecord-accent: hsl(258, 67%, 48%);
+  --color-pagecord-accent-light: hsl(258, 75%, 70%);
+}
+
 /* Themes */
 @import "./themes.css";
 

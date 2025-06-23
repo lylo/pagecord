@@ -1,30 +1,30 @@
-<div class="md:mt-4 prose dark:prose-invert mb-4 md:mb-8 mx-auto max-w-4xl px-4">
-  <h1 class="text-center md:text-start text-4xl md:text-5xl tracking-tight">
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h1 class="font-extrabold text-center md:text-start text-4xl md:text-5xl tracking-tight">
   Publish your writing effortlessly. All you need is email.
   </h1>
 
-  <div class="md:text-xl">
-    <h2 class="font-normal text-xl text-slate-700 dark:text-slate-300 mt-8 md:mt-12">
+  <div class="md:text-xl text-base leading-7 text-slate-800 dark:text-slate-200">
+    <h2 class="font-normal text-xl mt-8 md:mt-12">
       Be part of the small web. Create your own minimalist blog in seconds. For FREE ✨
     </h2>
 
-    <p>
+    <p class="my-5">
       Publish effortlessly using email or the Pagecord editor. People can
       follow along using <a href="https://simple.wikipedia.org/wiki/Really_Simple_Syndication">RSS</a>,
       or subscribe by email to get your posts automatically in a weekly digest.
     </p>
 
-    <p>
+    <p class="my-5">
       It's the perfect antidote to social media scrollverload.
     </p>
 
-    <p>
+    <p class="my-5">
       Pagecord is <b>independent</b>, <b>open source</b> and <b>built to last</b>.
     </p>
 
-    <div class="my-8 md:text-xl not-prose text-center">
+    <div class="my-8 md:text-xl text-center">
       <%= link_to new_signup_path do %>
-        <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-bmc-pink">Get your FREE account today</div>
+        <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-pagecord-accent hover:bg-pagecord-accent/90">Get your FREE account today</div>
       <% end %>
       <div class="mt-2 text-sm text-slate-500 dark:text-slate-400">
         (No credit card required)
@@ -43,8 +43,11 @@
       <div class="transform hover:-translate-y-2 transition-transform duration-300 <%= 'md:mt-8' if i % 2 == 1 %>">
         <button onclick="document.getElementById('modal-<%= i %>').showModal()" class="w-full">
           <%= image_tag "home/screenshot-0#{i}.webp",
-              class: "rounded-xl shadow-lg border border-slate-200/50 shadow-[0_4px_12px_0px_rgba(255,255,255,0.05)] dark:shadow-slate-300/75 w-full cursor-pointer",
-              alt: "Pagecord screenshot #{i}" %>
+              class: "aspect-[1500/1420] w-full rounded-xl shadow-lg border border-slate-200/50 shadow-[0_4px_12px_0px_rgba(255,255,255,0.05)] dark:shadow-slate-300/75 cursor-pointer",
+              alt: "Pagecord screenshot #{i}",
+              width: "1500",
+              height: "1420",
+              loading: "lazy" %>
         </button>
 
         <dialog id="modal-<%= i %>"
@@ -53,7 +56,10 @@
           <form method="dialog" class="m-0">
             <%= image_tag "home/screenshot-0#{i}.webp",
                 class: "w-full h-auto max-h-[90vh] object-contain rounded-xl",
-                alt: "Pagecord screenshot #{i}" %>
+                alt: "Pagecord screenshot #{i}",
+                width: "1500",
+                height: "1420" %>
+
             <button onclick="document.getElementById('modal-<%= i %>').close()"
                     class="absolute top-4 right-4 text-white bg-gray-900/50 hover:bg-gray-900/75 rounded-full p-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -68,14 +74,130 @@
 </div>
 
 
-<div id="features" class="mt-16 prose dark:prose-invert mb-4 md:mb-8 mx-auto max-w-4xl px-4">
-  <h2 class="text-center md:text-start text-3xl md:text-4xl tracking-tight">Full of features. Unbeatable Value 😇</h2>
+<!-- Pricing Section -->
+<div id="pricing" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="text-center font-bold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Pricing</h2>
 
-  <p class="md:text-xl">
+  <p class="md:text-xl my-5">
+    The blogging basics are free forever. Upgrade any time to get the full monty for only <strong>$<%= localised_price %> per year</strong>.
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+    <!-- Classic Plan -->
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 p-8 relative transform hover:scale-105 transition-transform duration-200">
+      <div class="text-center">
+        <h3 class="text-2xl font-bold mb-2">Classic</h3>
+        <div class="text-4xl font-bold text-pagecord-accent dark:text-pagecord-accent-light mb-1">FREE</div>
+        <p class="text-slate-600 dark:text-slate-400 mb-6">Your blogging basics. Free forever!</p>
+
+        <%= link_to new_signup_path, class: "block w-full" do %>
+          <div class="w-full py-3 px-6 rounded-xl font-medium bg-pagecord-accent text-white transition-colors text-center">
+            Get Started for FREE
+          </div>
+        <% end %>
+      </div>
+
+      <ul class="mt-8 space-y-3">
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          Unlimited posts
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          Write by email or rich text editor
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          Custom pages &amp; themes
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          RSS feeds &amp; media embeds
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          Full site HTML export
+        </li>
+      </ul>
+    </div>
+
+    <!-- Premium Plan -->
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 p-8 relative transform hover:scale-105 transition-transform duration-200">
+      <div class="text-center">
+        <h3 class="text-2xl font-bold mb-2">Premium</h3>
+        <div class="text-4xl font-bold text-pagecord-accent dark:text-pagecord-accent-light mb-1">
+          $<%= localised_price %>
+          <span class="text-lg font-normal text-slate-600 dark:text-slate-400">/year</span>
+        </div>
+        <p class="text-slate-600 dark:text-slate-400 mb-6">All the features for an unbeatable price!</p>
+
+        <%= link_to new_signup_path, class: "block w-full" do %>
+          <div class="w-full py-3 px-6 rounded-xl font-medium bg-pagecord-accent text-white transition-colors text-center">
+            Get Started for FREE
+          </div>
+        <% end %>
+      </div>
+
+      <ul class="mt-8 space-y-3">
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          <span><strong>Everything in Classic</strong></span>
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          Image attachments
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          Email newsletter (100 subscribers)
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          Custom domain &amp; avatar
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          Reply by email & post likes
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          Support independent open source 😊
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="features" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200 ">
+  <h2 class="font-bold text-center my-8 md:text-start text-3xl md:text-4xl tracking-tight">Full of features. Unbeatable Value 😇</h2>
+
+  <p class="md:text-xl my-5">
     Pagecord is super-simple to use, but chock-a-block with powerful features. Try it and you'll love it.
   </p>
 
-  <div class="mt-8 bg-slate-100 dark:bg-slate-800 px-6 py-4 rounded-xl">
+  <div class="mt-8 bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-xl">
     <table class="w-full text-base p-0 m-0">
       <thead>
         <tr>
@@ -94,15 +216,15 @@
             FREE!
           </th>
           <th class="text-center align-top ">
-            <span class="font-normal text-base py-1 sm:px-2 text-slate-600 dark:text-slate-300 rounded">Only <b>$<%= Subscription.price %> per year!</b></span>
+            <span class="font-normal text-base py-1 sm:px-2 text-slate-600 dark:text-slate-300 rounded">Only <b>$<%= localised_price %> per year!</b></span>
           </th>
         </tr>
       </thead>
 
-      <tbody class="text-sm text-slate-500 dark:text-slate-500">
+      <tbody class="text-sm text-slate-500 dark:text-slate-400">
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Number of posts</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Number of posts</div>
             <div class="hidden sm:block">Write as many posts as you like. Your blog app should never hold you back 🚀</div>
           </td>
           <td class="text-center align-middle text-base">Unlimited</td>
@@ -110,7 +232,7 @@
         </tr>
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Write by email</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Write by email</div>
             <div class="hidden sm:block">Publishing is as simple as sending an email. Rich text is fully supported 💌</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -118,7 +240,7 @@
         </tr>
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Online editor</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Online editor</div>
             <div class="hidden sm:block">Use a rich text editor if you prefer a traditional blogging experience 👩‍💻</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -126,7 +248,7 @@
         </tr>
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Long-form writing</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Long-form writing</div>
             <div class="hidden sm:block">Write long-form articles or microblog your thoughts. Both look great! 📝</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -134,7 +256,7 @@
         </tr>
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Pages</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Pages</div>
             <div class="hidden sm:block">Create standalone pages - handy for About, Now or Contact 📄</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -142,7 +264,7 @@
         </tr>
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Themes</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Themes</div>
             <div class="hidden sm:block">Style your blog with colour themes and fonts 🎨</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -150,7 +272,7 @@
         </tr>
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Media Embeds</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Media Embeds</div>
             <div class="hidden sm:block">Links to YouTube, Spotify, Bandcamp and GitHub are automatically embedded. Great for sharing your favourite tunes and videos 🎧 📺</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -158,7 +280,7 @@
         </tr>
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Follow your friends</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Follow your friends</div>
             <div class="hidden sm:block">Pagecord is social! Follow other Pagecord blogs and see the latest articles in your personal feed 🤝</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -166,7 +288,7 @@
         </tr>
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">RSS feeds</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">RSS feeds</div>
             <div class="hidden sm:block">Every site has a public RSS feed. You get a private RSS feed of all your followee's posts too! 📑</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -174,7 +296,7 @@
         </tr>
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Full Site Export</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Full Site Export</div>
             <div class="hidden sm:block">Export your entire Pagecord blog to a delightfully retro set of HTML files and images 💾</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -183,7 +305,7 @@
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Image Attachments</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Image Attachments</div>
             <div class="hidden sm:block">Attach images to your posts, as email attachments or using the editor 🖼️</div>
           </td>
           <td></td>
@@ -192,9 +314,9 @@
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Email newsletter</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Email newsletter</div>
             <div class="hidden sm:block">Readers can sign up to receive a weekly email digest of your posts 📬
-            <br><span class="text-xs">(100 subscriber limit. More for <a href="/faq#subscribers">an additional fee</a>)</br>
+            <br><span class="text-xs">(100 subscriber limit. More for <a href="/faq#subscribers" class="font-medium underline">an additional fee</a>)</br>
             </div>
           </td>
           <td class="text-center align-middle text-xl"></td>
@@ -205,7 +327,7 @@
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Reply by email</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Reply by email</div>
             <div class="hidden sm:block">Readers reply to your posts by email. Your email address is never revealed!</div>
           </td>
           <td></td>
@@ -214,7 +336,7 @@
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Post Likes</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Post Likes</div>
             <div class="hidden sm:block">Visitors can 'like' your posts. You track the stats in the app ❤️</div>
           </td>
           <td></td>
@@ -223,7 +345,7 @@
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Avatar</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Avatar</div>
             <div class="hidden sm:block">Add a touch of your own personality while retaining that classic Pagecord minimal look 🧑‍🎨</div>
           </td>
           <td></td>
@@ -232,7 +354,7 @@
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Custom Domains</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Custom Domains</div>
             <div class="hidden sm:block">If you'd prefer to use you own domain name for your site, set it up in one click 🌐</div>
           </td>
           <td></td>
@@ -241,7 +363,7 @@
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-900 dark:text-slate-100">Warm fuzzy feels</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Warm fuzzy feels</div>
             <div class="hidden sm:block">Feel great about supporting an independent open source business 😊</div>
           </td>
           <td></td>
@@ -251,17 +373,18 @@
       </tbody>
     </table>
   </div>
+</div>
 
-  <div class="mt-12 mb-20 text-center md:text-xl not-prose">
+<div class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200 ">
+  <div class="mt-12 mb-20 text-center md:text-xl">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-bmc-pink">Get your FREE account today</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm text-white bg-pagecord-accent">Get your FREE account today</div>
     <% end %>
   </div>
 
-  <h2 class="text-center md:text-start mt-8 text-3xl md:text-4xl">Look under the hood 🤓</h2>
-  <p class="md:text-xl">
-    The Pagecord code is <a href="https://github.com/lylo/pagecord">open source under the MIT license</a>. Take a look under the hood,
-    suggest improvements, or (if you're feeling brave) host it yourself!
+  <h2 class="font-bold my-8 text-center md:text-start text-3xl md:text-4xl tracking-tight">Look under the hood 🤓</h2>
+  <p class="md:text-xl my-5">
+    The Pagecord code is <a href="https://github.com/lylo/pagecord" class="font-medium underline">open source under the MIT license</a>. Take a look under the hood, suggest improvements, or (if you're feeling brave) host it yourself!
   </p>
 
   <div class="mt-12 mb-2 max-w-[500px] mx-auto bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 p-4 rounded-lg text-sm">

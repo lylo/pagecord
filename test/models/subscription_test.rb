@@ -16,8 +16,8 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_not users(:vivian).subscribed?
   end
 
-  test "should be priced at $20" do
-    assert_equal "20", Subscription.price
+  test "should be priced at $29" do
+    assert_equal "29", Subscription.price
   end
 
   test "active? should return true if not cancelled and not lapsed" do

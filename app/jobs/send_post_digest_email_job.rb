@@ -1,6 +1,4 @@
 class SendPostDigestEmailJob < ApplicationJob
-  queue_as :mailers
-
   def perform(post_digest_id, email_subscriber_id)
     digest = PostDigest.find(post_digest_id)
     subscriber = EmailSubscriber.find(email_subscriber_id)

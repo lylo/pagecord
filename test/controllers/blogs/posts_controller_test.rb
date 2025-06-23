@@ -200,8 +200,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should initially prevent free blogs from being indexed" do
     @blog = blogs(:vivian)
     host_subdomain! @blog.subdomain
-    puts "created_at #{@blog.user.created_at}"
-    puts "search indexable? #{@blog.user.search_indexable?}"
 
     get blog_posts_path
 
@@ -326,14 +324,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "link[href*='ibm-plex-mono']", count: 0
     assert_select "link[href*='lora']", count: 0
-    assert_select "link[href*='inter']", count: 1
+    assert_select "link[href*='inter']", minimum: 1
 
     @blog.update!(font: "mono")
 
     get blog_posts_path
 
     assert_response :success
-    assert_select "link[href*='ibm-plex-mono']", count: 1
+    assert_select "link[href*='ibm-plex-mono']", minimum: 1
     assert_select "link[href*='lora']", count: 0
     assert_select "link[href*='inter']", count: 0
   end

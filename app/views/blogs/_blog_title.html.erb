@@ -1,9 +1,5 @@
-<%= link_to blog_home_url(@blog), data: { turbo: false } do %>
+<%= link_to blog_home_url(@blog), data: { turbo: false }, aria: { label: "#{@blog.display_name} Home" } do %>
   <div class="blog-title">
-    <% if @blog.custom_title? %>
-      <%= @blog.title %>
-    <% else %>
-      @<%= @blog.subdomain %>
-    <% end %>
+    <%= @blog.display_name%>
   </div>
 <% end %>

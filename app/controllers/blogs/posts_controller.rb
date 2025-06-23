@@ -4,9 +4,16 @@ class Blogs::PostsController < Blogs::BaseController
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   def index
-    @posts = @blog.posts.visible
+    base_scope = @blog.posts.visible
       .with_rich_text_content_and_embeds
-      .includes(:upvotes)
+      .includes(
+        :upvotes,
+        rich_text_content: {
+            embeds_attachments: [
+             blob: :variant_records
+            ]
+          }
+      )
       .order(published_at: :desc)
 
     # Filter by tag if specified
@@ -15,7 +22,7 @@ class Blogs::PostsController < Blogs::BaseController
       @current_tag = params[:tag]
     end
 
-    @pagy, @posts = pagy(@posts, limit: page_size)
+    @pagy, @posts = pagy(base_scope, limit: page_size)
 
     respond_to do |format|
       format.html { set_conditional_get_headers }
@@ -30,6 +37,7 @@ class Blogs::PostsController < Blogs::BaseController
   def show
     @post = @blog.all_posts.visible
       .with_rich_text_content_and_embeds
+      .includes(rich_text_content: { embeds_attachments: :blob })
       .find_by!(slug: blog_params[:slug])
 
     fresh_when @post, public: true, template: "blogs/posts/show"

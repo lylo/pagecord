@@ -10,7 +10,7 @@ class MarketingAutomation::DeleteContactJob < ApplicationJob
   private
 
     def unsubscribe_from_pagecord_blog(user)
-      if pagecord = Blog.find_by(subdomain: "pagecord")
+      if pagecord = Blog.find_by(subdomain: "blog")
         pagecord.email_subscribers.find_by(email: user.email)&.destroy
       end
     end

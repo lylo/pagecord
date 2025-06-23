@@ -53,20 +53,24 @@
 <%= render "layouts/favicons" %>
 <%= csrf_meta_tags %>
 <%= csp_meta_tag %>
+
+<%= font_preload_links %>
 <%= stylesheet_link_tag "tailwind", font_stylesheet, "data-turbo-track": "reload" %>
 
 <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 <%= javascript_importmap_tags %>
 
-<% unless @blog&.user&.search_indexable? %>
-  <meta name="robots" content="noindex, nofollow">
-<% else %>
-  <%= yield :robots_meta %>
-<% end %>
+<% if @blog.present? %>
+  <% unless @blog.user.search_indexable? %>
+    <meta name="robots" content="noindex, nofollow">
+  <% else %>
+    <%= yield :robots_meta %>
+  <% end %>
 
-<% if @blog&.subdomain == "olly" %>
-<script defer data-domain="olly.pagecord.com" src="https://plausible.io/js/script.js"></script>
-<% end %>
-<% if @blog&.subdomain == "blog" %>
-<script defer data-domain="blog.pagecord.com" src="https://plausible.io/js/script.js"></script>
+  <% if @blog.subdomain == "olly" %>
+  <script defer data-domain="olly.pagecord.com" src="https://plausible.io/js/script.js"></script>
+  <% end %>
+  <% if @blog.subdomain == "blog" %>
+  <script defer data-domain="blog.pagecord.com" src="https://plausible.io/js/script.js"></script>
+  <% end %>
 <% end %>
