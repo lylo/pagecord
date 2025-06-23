@@ -20,7 +20,15 @@ class Post < ApplicationRecord
   scope :pages, -> { where(is_page: true) }
   scope :navigation_pages, -> { pages.where(show_in_navigation: true) }
   scope :visible, -> { published.where("published_at <= ?", Time.current) }
-
+  scope :with_full_rich_text, -> {
+      with_rich_text_content_and_embeds.includes(
+        rich_text_content: {
+          embeds_attachments: {
+            blob: :variant_records
+          }
+        }
+      )
+    }
   after_create :detect_open_graph_image
 
   def content_present

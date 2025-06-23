@@ -5,15 +5,8 @@ class Blogs::PostsController < Blogs::BaseController
 
   def index
     base_scope = @blog.posts.visible
-      .with_rich_text_content_and_embeds
-      .includes(
-        :upvotes,
-        rich_text_content: {
-            embeds_attachments: [
-             blob: :variant_records
-            ]
-          }
-      )
+      .with_full_rich_text
+      .includes(:upvotes)
       .order(published_at: :desc)
 
     # Filter by tag if specified
@@ -36,8 +29,8 @@ class Blogs::PostsController < Blogs::BaseController
   # Shows a single post or page by its slug.
   def show
     @post = @blog.all_posts.visible
-      .with_rich_text_content_and_embeds
-      .includes(rich_text_content: { embeds_attachments: :blob })
+      .with_full_rich_text
+      .includes(:upvotes)
       .find_by!(slug: blog_params[:slug])
 
     fresh_when @post, public: true, template: "blogs/posts/show"
