@@ -105,6 +105,20 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "https://example.com", @user.blog.posts.first.canonical_url
   end
 
+  test "should update post and preserve page via session" do
+    get edit_app_post_url(@user.blog.posts.first, page: 3)
+
+    patch app_post_url(@user.blog.posts.first), params: {
+      post: {
+        title: "Updated Title",
+        content: "Updated content"
+      }
+    }
+
+    assert_redirected_to app_posts_url(page: 3)
+    assert_equal "Updated Title", @user.blog.posts.first.title
+  end
+
   test "should create post with tags" do
     assert_difference("Post.count") do
       post app_posts_url, params: {

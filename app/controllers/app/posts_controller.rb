@@ -1,6 +1,8 @@
 class App::PostsController < AppController
   include Pagy::Backend
 
+  rescue_from Pagy::OverflowError, with: :redirect_to_first_page
+
   def index
     posts_query = Current.user.blog.posts.published.order(published_at: :desc)
 
@@ -27,6 +29,8 @@ class App::PostsController < AppController
   def edit
     @post = Current.user.blog.posts.find_by!(token: params[:token])
 
+    session[:return_to_page] = params[:page] if params[:page].present?
+
     prepare_content_for_trix
   end
 
@@ -44,7 +48,10 @@ class App::PostsController < AppController
     @post = Current.user.blog.posts.find_by!(token: params[:token])
 
     if @post.update(post_params)
-      redirect_to app_posts_path, notice: "Post was successfully updated"
+      page = session.delete(:return_to_page)
+      options = page.present? ? { page: page } : {}
+
+      redirect_to app_posts_path(options), notice: "Post was successfully updated"
     else
       prepare_content_for_trix
       render :edit, status: :unprocessable_entity
@@ -76,5 +83,9 @@ class App::PostsController < AppController
 
       # remove paragraph tags
       @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
+    end
+
+    def redirect_to_first_page
+      redirect_to app_posts_path
     end
 end
