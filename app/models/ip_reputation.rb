@@ -36,7 +36,7 @@ class IpReputation
       engines = json.dig("data", "report", "blacklists", "engines")
       return true unless engines
 
-      !engines.values.any? { |engine| engine["detected"] }
+      engines.values.count { |engine| engine["detected"] } < 2
     end
 
     def self.valid_country?(json)
