@@ -173,21 +173,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_24_135431) do
     t.index ["user_id"], name: "index_paddle_events_on_user_id"
   end
 
-  create_table "pages", force: :cascade do |t|
-    t.bigint "blog_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "published_at"
-    t.boolean "show_in_navigation", default: true, null: false
-    t.string "slug"
-    t.integer "status", default: 1, null: false
-    t.string "title"
-    t.string "token", null: false
-    t.datetime "updated_at", null: false
-    t.index ["blog_id", "slug"], name: "index_pages_on_blog_id_and_slug", unique: true
-    t.index ["status"], name: "index_pages_on_status"
-    t.index ["token"], name: "index_pages_on_token", unique: true
-  end
-
   create_table "pghero_query_stats", force: :cascade do |t|
     t.bigint "calls"
     t.datetime "captured_at", precision: nil
@@ -331,7 +316,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_24_135431) do
   add_foreign_key "email_subscribers", "blogs"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
-  add_foreign_key "pages", "blogs"
   add_foreign_key "post_digest_deliveries", "email_subscribers"
   add_foreign_key "post_digest_deliveries", "post_digests"
   add_foreign_key "post_digests", "blogs"
