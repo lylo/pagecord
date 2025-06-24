@@ -63,7 +63,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    assert_redirected_to admin_users_path
+    assert_redirected_to admin_user_path(User.last)
     assert_equal "User was successfully created.", flash[:notice]
 
     user = User.find_by(email: "newuser@example.com")
