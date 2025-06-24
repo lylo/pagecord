@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_06_24_132852) do
+ActiveRecord::Schema[8.1].define(version: 2025_06_24_135431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -147,7 +147,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_24_132852) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id", "email"], name: "index_email_subscribers_on_blog_id_and_email", unique: true
-    t.index ["blog_id"], name: "index_email_subscribers_on_blog_id"
   end
 
   create_table "followings", force: :cascade do |t|
@@ -185,7 +184,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_24_132852) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id", "slug"], name: "index_pages_on_blog_id_and_slug", unique: true
-    t.index ["blog_id"], name: "index_pages_on_blog_id"
     t.index ["status"], name: "index_pages_on_status"
     t.index ["token"], name: "index_pages_on_token", unique: true
   end
@@ -259,7 +257,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_24_132852) do
     t.integer "upvotes_count", default: 0, null: false
     t.index ["blog_id", "is_page"], name: "index_posts_on_blog_id_and_is_page"
     t.index ["blog_id", "slug"], name: "index_posts_on_blog_id_and_slug", unique: true
-    t.index ["blog_id"], name: "index_posts_on_blog_id"
     t.index ["is_page"], name: "index_posts_on_is_page"
     t.index ["published_at"], name: "index_posts_on_published_at"
     t.index ["status"], name: "index_posts_on_status"
@@ -283,7 +280,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_24_132852) do
     t.bigint "subscription_id", null: false
     t.datetime "updated_at", null: false
     t.index ["subscription_id", "period"], name: "idx_on_subscription_id_period_ee77f6799e", unique: true
-    t.index ["subscription_id"], name: "index_subscription_renewal_reminders_on_subscription_id"
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -307,7 +303,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_24_132852) do
     t.bigint "post_id", null: false
     t.datetime "updated_at", null: false
     t.index ["post_id", "hash_id"], name: "index_upvotes_on_post_id_and_hash_id", unique: true
-    t.index ["post_id"], name: "index_upvotes_on_post_id"
   end
 
   create_table "users", force: :cascade do |t|
