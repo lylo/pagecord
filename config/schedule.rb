@@ -18,6 +18,17 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+
+every 5.minutes do
+  rake "pghero:capture_query_stats"
+end
+
+every 1.day, at: "1:00 am" do
+  rake "pghero:capture_space_stats"
+  runner "PgHero.clean_query_stats(before: 14.days.ago)"
+  runner "PgHero.clean_space_stats(before: 90.days.ago)"
+end
+
 every 1.day, at: "2:30 am" do
   rake "email_change_requests:cleanup"
 end

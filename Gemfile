@@ -25,6 +25,8 @@ gem "sidekiq"
 
 # monitoring and alerting
 gem "appsignal"
+gem "pghero"
+gem "pg_query", ">= 2"
 gem "sentry-ruby"
 gem "sentry-rails"
 

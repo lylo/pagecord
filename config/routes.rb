@@ -14,6 +14,14 @@ class SidekiqAdminConstraint
   end
 end
 
+class PgHeroAdminConstraint
+  def matches?(request)
+    return false unless request.session[:user_id]
+    user = User.kept.find_by(id: request.session[:user_id])
+    user&.admin?
+  end
+end
+
 module DomainConstraints
   def self.default_domain?(request)
     if Rails.env.test?
@@ -51,6 +59,10 @@ Rails.application.routes.draw do
 
   constraints SidekiqAdminConstraint.new do
     mount Sidekiq::Web, at: "/admin/sidekiq"
+  end
+
+  constraints PgHeroAdminConstraint.new do
+    mount PgHero::Engine, at: "/admin/pghero"
   end
 
   get "/404", to: "errors#not_found"

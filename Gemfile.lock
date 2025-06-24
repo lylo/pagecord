@@ -180,6 +180,21 @@ GEM
     ffi (1.17.2-x86_64-linux-gnu)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    google-protobuf (4.31.1)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.31.1-aarch64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.31.1-arm64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.31.1-x86_64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.31.1-x86_64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
     htmlentities (4.3.4)
     httparty (0.23.1)
       csv
@@ -274,6 +289,10 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.9)
+    pg_query (6.1.0)
+      google-protobuf (>= 3.25.3)
+    pghero (3.7.0)
+      activerecord (>= 7.1)
     postmark (1.25.1)
       json
     postmark-rails (0.22.1)
@@ -474,6 +493,8 @@ DEPENDENCIES
   ostruct
   pagy
   pg
+  pg_query (>= 2)
+  pghero
   postmark-rails
   premailer-rails (~> 1.12)
   puma (>= 5.0)
