@@ -4,6 +4,12 @@
   <% end %>
 <% end %>
 
+<% if @post.hidden? %>
+  <%= content_for :robots_meta do %>
+    <meta name="robots" content="noindex, nofollow">
+  <% end %>
+<% end %>
+
 <%= render "blogs/header", hide_email_form: true, hide_bio: true %>
 
 <div data-controller="media-embeds">
