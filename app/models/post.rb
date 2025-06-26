@@ -50,14 +50,25 @@ class Post < ApplicationRecord
   end
 
   def summary(limit: 64)
-    summary = self.content.to_plain_text
-      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
-      .gsub(/\[Image\]/i, "").strip
-      .gsub(/https?:\/\/\S+/, "").strip
-      .truncate(limit, separator: /\s/)
+    return "Untitled" unless has_text_content?
 
-    summary.presence || "Untitled"
+    text_content.truncate(limit, separator: /\s/)
   end
+
+  def has_text_content?
+    text_content.present?
+  end
+
+  private
+
+    def text_content
+      @text_content ||= self.content.to_plain_text
+        .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
+        .gsub(/\[Image\]/i, "").strip
+        .gsub(/https?:\/\/\S+/, "").strip
+    end
+
+  public
 
   def display_title
     if title.present?

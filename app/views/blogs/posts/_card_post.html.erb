@@ -8,7 +8,16 @@
       <% end %>
 
       <div class="text-[var(--color-text-muted)] mb-4">
-        <%= post.summary(limit: 324) %>
+        <% if post.has_text_content? %>
+          <%= post.summary(limit: 324) %>
+        <% else %>
+          <% @post = post # Set @post for the helper %>
+          <% if has_open_graph_image? %>
+            <%= image_tag open_graph_image, alt: post.display_title, class: "rounded-lg mx-auto max-w-full" %>
+          <% else %>
+            <%= auto_link post.content %>
+          <% end %>
+        <% end %>
       </div>
 
       <%= render "tags", post: post if post.tag_list.present? %>

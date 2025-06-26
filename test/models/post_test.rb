@@ -153,4 +153,56 @@ class PostTest < ActiveSupport::TestCase
     assert Post.respond_to?(:tagged_with)
     assert Post.respond_to?(:all_tags)
   end
+
+  test "summary should return truncated text content" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      title: "Test Post",
+      content: "This is a long post with lots of text content that should be truncated when we call the summary method with a limit."
+    )
+
+    summary = post.summary(limit: 50)
+    assert_equal "This is a long post with lots of text content...", summary
+  end
+
+  test "summary should return 'Untitled' when no text content" do
+    blog = blogs(:joel)
+    post = blog.posts.new(
+      title: "Image Only Post",
+      content: "<action-text-attachment><figure><img src='test.jpg'></figure></action-text-attachment>"
+    )
+
+    summary = post.summary
+    assert_equal "Untitled", summary
+  end
+
+  test "has_text_content? should return true for posts with text" do
+    blog = blogs(:joel)
+    post = blog.posts.new(
+      title: "Text Post",
+      content: "This post has meaningful text content."
+    )
+
+    assert post.has_text_content?
+  end
+
+  test "has_text_content? should return false for image-only posts" do
+    blog = blogs(:joel)
+    post = blog.posts.new(
+      title: "Image Only Post",
+      content: "<action-text-attachment><figure><img src='test.jpg'></figure></action-text-attachment>"
+    )
+
+    assert_not post.has_text_content?
+  end
+
+  test "has_text_content? should return false for URL-only posts" do
+    blog = blogs(:joel)
+    post = blog.posts.new(
+      title: "URL Only Post",
+      content: "https://example.com"
+    )
+
+    assert_not post.has_text_content?
+  end
 end
