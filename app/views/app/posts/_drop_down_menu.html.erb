@@ -1,5 +1,5 @@
 <div class="relative hidden" data-toggle-target="element">
-  <div class="absolute top-7 end-0 z-10 w-56 rounded-md border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-lg" role="menu">
+  <div class="absolute end-0 z-10 w-56 rounded-md border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-lg" role="menu">
 
     <div class="py-2 px-1">
       <div class="p-1">
@@ -20,6 +20,13 @@
         <%= link_to "#", class: "flex rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
           data: { action: "click->post-attributes#showSection", toggle_target: "slug" } do %>
           <span class="ms-1">Change Slug</span>
+        <% end %>
+      </div>
+
+      <div class="p-1">
+        <%= link_to "#", class: "flex rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+          data: { action: "click->post-attributes#showSection", toggle_target: "visibility" } do %>
+          <span class="ms-1">Change Visibility</span>
         <% end %>
       </div>
 
