@@ -12,7 +12,7 @@ class Blogs::SitemapsControllerTest < ActionDispatch::IntegrationTest
     get blog_sitemap_path(subdomain: @blog.subdomain)
 
     assert_response :success
-    assert_equal @blog.posts.count + 1, Nokogiri::XML(@response.body).xpath("//xmlns:url").count
+    assert_equal @blog.posts.visible.count + 1, Nokogiri::XML(@response.body).xpath("//xmlns:url").count
   end
 
   test "should get sitemap for custom domain" do
