@@ -83,7 +83,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form#post-form" do
       assert_select "input[type=submit][value='Publish Post']"
       assert_select "button[type=submit]" do |elements|
-        assert_equal "Save Draft", elements.first.text.strip
+        assert_equal "Update Draft", elements.first.text.strip
       end
     end
   end
