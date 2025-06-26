@@ -1,5 +1,5 @@
 <%= turbo_frame_tag :posts do %>
-  <div class="list-of-titles flex flex-col" data-turbo="false">
+  <div class=" flex flex-col" data-turbo="false">
     <% previous_year = params[:last_visible_year]&.to_i %>
     <% @posts.each do |post| %>
       <% if post.published_at.year != previous_year %>
@@ -11,7 +11,7 @@
       <% end %>
 
       <div class="flex gap-x-2 mb-1">
-        <div class="text-[var(--color-text-tertiary)] w-16 flex-shrink-0">
+        <div class="text-[var(--color-text-muted)] w-16 flex-shrink-0">
           <%= local_time post.published_at, "%b %d" %>
         </div>
         <div class="text-[var(--color-text-heading)]">

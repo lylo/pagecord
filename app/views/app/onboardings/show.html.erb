@@ -93,7 +93,7 @@
     Choose your home page layout
   </h2>
   <p>
-    The default layout for a Pagecord blog is a stream of all your posts on the home page. If you prefer a more compact, traditional look, you can choose to display a list of post titles and dates.
+    The default layout for a Pagecord blog is a stream of all your posts on the home page. You can also choose a list of post titles and dates, or cards with excerpts.
   </p>
   <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
     <%= render "/app/settings/appearance/layout_options", form: form %>

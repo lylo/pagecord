@@ -43,7 +43,7 @@ class Blogs::PostsController < Blogs::BaseController
     end
 
     def page_size
-      @blog.stream_layout? ? 15 : 100
+      @blog.title_layout? ? 100 : 15
     end
 
     def set_conditional_get_headers

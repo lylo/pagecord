@@ -1,0 +1,26 @@
+<div class="mb-8">
+  <%= link_to post_path(post), class: "block no-underline", data: { turbo_frame: "_top" } do %>
+    <article class="bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg p-6 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
+      <% if post.title.present? %>
+        <h1 class="text-2xl font-bold tracking-tight pb-2 text-[var(--color-accent)]">
+          <%= post.title %>
+        </h1>
+      <% end %>
+
+      <div class="text-[var(--color-text-muted)] mb-4">
+        <%= post.summary(limit: 324) %>
+      </div>
+
+      <%= render "tags", post: post if post.tag_list.present? %>
+
+      <div class="flex items-center justify-between <%= post.tag_list.present? ? 'mt-4' : 'mt-6' %>">
+        <div class="text-sm text-[var(--color-text-muted)] opacity-75">
+          <%= local_time post.published_at, published_at_date_format %>
+        </div>
+        <span class="inline-flex items-center px-3 py-1 text-xs font-medium text-[var(--color-text-muted)] rounded-full border border-[var(--color-border)]">
+          Read more
+        </span>
+      </div>
+    </article>
+  <% end %>
+</div>

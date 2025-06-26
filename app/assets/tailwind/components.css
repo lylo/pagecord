@@ -22,6 +22,11 @@
       }
     }
 
+    /* Remove border when in cards layout */
+    .cards_layout header {
+      @apply border-b-0 mb-4;
+    }
+
     /* ---- BLOG POST  ---- */
     article {
       @apply text-[var(--color-text)];

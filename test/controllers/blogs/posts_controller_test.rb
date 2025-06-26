@@ -14,7 +14,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_not_nil assigns(:posts)
-    assert_select ".list-of-titles", count: 0
+    assert_select ".stream_layout", count: 1
   end
 
   test "should render a list of post titles" do
@@ -23,7 +23,17 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select ".list-of-titles", count: 1
+    assert_select ".title_layout", count: 1
+  end
+
+  test "should render cards" do
+    @blog.cards_layout!
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "article", minimum: 1
+    assert_select ".cards_layout", count: 1
   end
 
   test "should show email subscription form on index if enabled" do
@@ -418,6 +428,29 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "p", text: /No posts found with the tag "nonexistent"/
     assert_select "a[href='#{blog_posts_path}']", text: "View all posts"
+  end
+
+  test "should use correct page size for different layouts" do
+    # Test stream layout (default)
+    @blog.stream_layout!
+    get blog_posts_path
+    assert_response :success
+    pagy = assigns(:pagy)
+    assert_equal 15, pagy.limit
+
+    # Test title layout
+    @blog.title_layout!
+    get blog_posts_path
+    assert_response :success
+    pagy = assigns(:pagy)
+    assert_equal 100, pagy.limit
+
+    # Test cards layout
+    @blog.cards_layout!
+    get blog_posts_path
+    assert_response :success
+    pagy = assigns(:pagy)
+    assert_equal 15, pagy.limit
   end
 
   private

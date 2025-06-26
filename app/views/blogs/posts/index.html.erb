@@ -4,7 +4,9 @@
   <% end %>
 <% end %>
 
-<%= render "blogs/header" %>
+<div class="<%= @blog.layout %>">
+  <%= render "blogs/header" %>
+</div>
 
 <% if @posts.empty? %>
   <% if @current_tag.present? %>
@@ -38,6 +40,8 @@
 
   <% if @blog.stream_layout? %>
     <%= render "posts_stream" %>
+  <% elsif @blog.cards_layout? %>
+    <%= render "posts_cards" %>
   <% else %>
     <%= render "posts_titles" %>
   <% end %>
