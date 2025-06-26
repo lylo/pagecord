@@ -6,7 +6,6 @@ class App::PostsController < AppController
   def index
     posts_query = Current.user.blog.posts.published.order(published_at: :desc)
 
-    # Filter by tag if specified
     if params[:tag].present?
       posts_query = posts_query.tagged_with(params[:tag])
       @current_tag = params[:tag]
@@ -16,7 +15,6 @@ class App::PostsController < AppController
 
     @drafts = Current.user.blog.posts.draft.order(updated_at: :desc)
 
-    # Apply tag filter to drafts as well
     if params[:tag].present?
       @drafts = @drafts.tagged_with(params[:tag])
     end

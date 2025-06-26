@@ -508,6 +508,29 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 15, pagy.limit
   end
 
+  test "should not show future posts" do
+    post = @blog.posts.create!(
+      title: "Future Post",
+      content: "This is future content",
+      status: "published",
+      published_at: 1.hour.from_now
+    )
+
+    get blog_post_path(post.slug)
+    assert_response :not_found
+  end
+
+  test "should not show draft posts" do
+    post = @blog.posts.create!(
+      title: "Draft Post",
+      content: "This is draft content",
+      status: "draft"
+    )
+
+    get blog_post_path(post.slug)
+    assert_response :not_found
+  end
+
   private
 
     def host_subdomain!(name)

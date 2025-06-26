@@ -28,7 +28,9 @@ class Blogs::PostsController < Blogs::BaseController
 
   # Shows a single post or page by its slug.
   def show
-    @post = @blog.all_posts.visible
+    @post = @blog.all_posts
+      .published
+      .released
       .with_full_rich_text
       .includes(:upvotes)
       .find_by!(slug: blog_params[:slug])
