@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_06_26_140415) do
+ActiveRecord::Schema[8.1].define(version: 2025_06_26_150141) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -243,6 +243,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_26_140415) do
     t.integer "upvotes_count", default: 0, null: false
     t.index ["blog_id", "is_page"], name: "index_posts_on_blog_id_and_is_page"
     t.index ["blog_id", "slug"], name: "index_posts_on_blog_id_and_slug", unique: true
+    t.index ["hidden"], name: "index_posts_on_hidden"
     t.index ["is_page"], name: "index_posts_on_is_page"
     t.index ["published_at"], name: "index_posts_on_published_at"
     t.index ["status"], name: "index_posts_on_status"
