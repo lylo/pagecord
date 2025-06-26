@@ -199,16 +199,26 @@ Rails.application.routes.draw do
   end
 
   direct :rails_public_blob do |blob|
-    if ENV.fetch("ACTIVE_STORAGE_ASSET_HOST", false) && blob&.key
-      File.join(ENV.fetch("ACTIVE_STORAGE_ASSET_HOST"), blob.key)
-    else
-      route =
-        if blob.is_a?(ActiveStorage::Variant) || blob.is_a?(ActiveStorage::VariantWithRecord)
-          :rails_representation
-        else
-          :rails_blob
-        end
+    asset_host = ENV.fetch("ACTIVE_STORAGE_ASSET_HOST", nil)
 
+    # A 'blob' can be an original blob, a variant, or a representation.
+    is_processed = blob.is_a?(ActiveStorage::Variant) ||
+                   blob.is_a?(ActiveStorage::VariantWithRecord) ||
+                   blob.is_a?(ActiveStorage::Representation)
+
+    if asset_host
+      if is_processed
+        # For processed images (variants/representations), generate a
+        # representation URL that points to the CDN. The CDN must proxy
+        # these requests back to the Rails app for on-demand generation.
+        route_for(:rails_representation, blob, host: asset_host)
+      else
+        # For original, unprocessed blobs, link directly to the file on the CDN.
+        File.join(asset_host, blob.key)
+      end
+    else
+      # Fallback to default Rails behavior if no asset host is configured.
+      route = is_processed ? :rails_representation : :rails_blob
       route_for(route, blob)
     end
   end
