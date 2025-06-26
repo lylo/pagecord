@@ -55,7 +55,12 @@
                   <%= post_title(post) %>
                 </div>
               <% end %>
-              <%= render "tags", post: post %>
+              <div class="flex items-center gap-x-2">
+                <% if post.hidden? %>
+                  <%= inline_svg_tag "icons/eye-slash.svg", class: "w-4 h-4 text-slate-400", title: "Private post" %>
+                <% end %>
+                <%= render "tags", post: post %>
+              </div>
             </div>
           </div>
         <% end %>
@@ -75,33 +80,38 @@
       <div class="flex gap-x-2 mb-2 items-top">
         <div class="text-slate-500 dark:text-slate-400 w-16 flex-shrink-0">
           <%= post.published_at.to_date.to_formatted_s(:short) %>
-        </div>
-        <div class="flex w-full justify-between items-top">
-          <div>
-            <%= link_to edit_app_post_path(post, page: params[:page]), title: "Click to edit this post" do %>
-              <div class="font-medium pe-2 hover:underline">
-                <%= post_title(post) %>
-              </div>
-            <% end %>
-            <%= render "tags", post: post %>
-          </div>
-          <div class="flex items-top gap-x-4 text-slate-400 dark:text-slate-400">
-            <% if @user.subscribed? && post.upvotes_count > 0 %>
-              <div class="flex items-top gap-x-0.5">
-                <%= post.upvotes_count %>
-                <span class="mt-1"><%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %></span>
-               </div>
-            <% end %>
-
+        </div>          <div class="flex w-full justify-between items-top">
             <div>
-              <% unless post.pending? %>
-                <%= link_to post_url(post), title: "View this post" do %>
-                  <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
-                <% end %>
+              <%= link_to edit_app_post_path(post, page: params[:page]), title: "Click to edit this post" do %>
+                <div class="font-medium pe-2 hover:underline">
+                  <%= post_title(post) %>
+                </div>
               <% end %>
+              <%= render "tags", post: post %>
+            </div>
+            <div class="flex items-top gap-x-4 text-slate-400 dark:text-slate-400">
+              <% if post.hidden? %>
+                <div class="flex items-top">
+                  <%= inline_svg_tag "icons/eye-slash.svg", class: "w-4 h-4", title: "Private post" %>
+                </div>
+              <% end %>
+
+              <% if @user.subscribed? && post.upvotes_count > 0 %>
+                <div class="flex items-top gap-x-0.5">
+                  <%= post.upvotes_count %>
+                  <span class="mt-1"><%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %></span>
+                 </div>
+              <% end %>
+
+              <div>
+                <% unless post.pending? %>
+                  <%= link_to post_url(post), title: "View this post" do %>
+                    <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
+                  <% end %>
+                <% end %>
+              </div>
             </div>
           </div>
-        </div>
       </div>
     <% end %>
 

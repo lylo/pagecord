@@ -86,7 +86,7 @@ draft_page:
   show_in_navigation: false
   status: draft
 
-hidden_page:
+non_nav_page:
   title: Hidden Page
   blog: elliot
   published_at: <%= 1.week.ago %>

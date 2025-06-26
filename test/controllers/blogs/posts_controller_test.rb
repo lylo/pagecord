@@ -99,6 +99,38 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
   end
 
+  test "should exclude hidden posts from RSS feed" do
+    # Create a hidden post
+    hidden_post = @blog.posts.create!(
+      title: "Hidden Post",
+      content: "This is hidden content",
+      hidden: true,
+      status: :published,
+      published_at: 1.hour.ago
+    )
+
+    # Create a public post for comparison
+    public_post = @blog.posts.create!(
+      title: "Public Post",
+      content: "This is public content",
+      hidden: false,
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+
+    # Check that the hidden post is not in the RSS feed
+    assert_not @response.body.include?("Hidden Post")
+    assert_not @response.body.include?("This is hidden content")
+
+    # Check that the public post is in the RSS feed
+    assert @response.body.include?("Public Post")
+    assert @response.body.include?("This is public content")
+  end
+
   test "should redirect from old /name.rss to subdomain RSS feed" do
     host! Rails.application.config.x.domain
 

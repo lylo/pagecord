@@ -71,6 +71,11 @@
       </div>
     </div>
 
+    <div class="mb-4">
+      <%= form.check_box :hidden, class: "mr-2" %>
+      <%= form.label :hidden, "Hidden post", class: "text-sm text-slate-700 dark:text-slate-300" %>
+    </div>
+
     <%= form.text_field :title,
 
     placeholder: "Optional post title",

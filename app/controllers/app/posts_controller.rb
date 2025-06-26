@@ -69,7 +69,7 @@ class App::PostsController < AppController
     def post_params
       status = params[:button] == "save_draft" ? :draft : :published
 
-      params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string).merge(status: status)
+      params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden).merge(status: status)
     end
 
     # HTML from inbound email doesn't often play nicely with Trix

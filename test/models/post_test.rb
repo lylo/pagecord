@@ -100,7 +100,7 @@ class PostTest < ActiveSupport::TestCase
       status: :published,
       published_at: 1.day.ago
     )
-    hidden_page = blog.posts.create!(
+    non_nav_page = blog.posts.create!(
       title: "Hidden Page",
       content: "Hidden content",
       is_page: true,
@@ -110,7 +110,7 @@ class PostTest < ActiveSupport::TestCase
     )
 
     assert_includes blog.pages.navigation_pages.visible, visible_page
-    assert_not_includes blog.pages.navigation_pages.visible, hidden_page
+    assert_not_includes blog.pages.navigation_pages.visible, non_nav_page
   end
 
   test "show_in_navigation defaults to true" do
@@ -204,5 +204,15 @@ class PostTest < ActiveSupport::TestCase
     )
 
     assert_not post.has_text_content?
+  end
+
+  test "should exclude hidden posts from visible scope" do
+    post = Post.create(blog: blogs(:joel), title: "hidden post", content: "content", hidden: true)
+    assert_not Post.visible.include?(post)
+  end
+
+  test "should include non-hidden posts in visible scope" do
+    post = Post.create(blog: blogs(:joel), title: "public post", content: "content", hidden: false)
+    assert Post.visible.include?(post)
   end
 end

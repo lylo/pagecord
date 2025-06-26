@@ -45,6 +45,34 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "New content", @user.blog.posts.last.content.to_s.strip
   end
 
+  test "should create hidden post" do
+    assert_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        post: { title: "Hidden Post", content: "Hidden content", hidden: true }
+      }
+    end
+
+    assert_redirected_to app_posts_url
+    created_post = @user.blog.posts.last
+    assert created_post.published?
+    assert created_post.hidden?
+    assert_equal "Hidden Post", created_post.title
+  end
+
+  test "should create public post when hidden is false" do
+    assert_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        post: { title: "Public Post", content: "Public content", hidden: false }
+      }
+    end
+
+    assert_redirected_to app_posts_url
+    created_post = @user.blog.posts.last
+    assert created_post.published?
+    assert_not created_post.hidden?
+    assert_equal "Public Post", created_post.title
+  end
+
   test "should save draft post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {

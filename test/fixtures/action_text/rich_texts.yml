@@ -92,8 +92,8 @@ draft_page:
 
     <p>We're working on something exciting. Stay tuned for updates.</p>
 
-hidden_page:
-  record: hidden_page (Post)
+non_nav_page:
+  record: non_nav_page (Post)
   name: content
   body: |
     <p>This is a hidden page that won't appear in navigation.</p>

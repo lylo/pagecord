@@ -75,6 +75,13 @@ class PostDigestTest < ActiveSupport::TestCase
     end
   end
 
+  test "should not include hidden posts" do
+    hidden_post = create_new_post(hidden: true)
+
+    assert hidden_post.hidden?
+    assert_nil PostDigest.generate_for(@blog)
+  end
+
   private
 
     def create_new_post(options = {})

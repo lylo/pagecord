@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_06_24_135431) do
+ActiveRecord::Schema[8.1].define(version: 2025_06_26_140415) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -229,6 +229,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_24_135431) do
     t.bigint "blog_id", null: false
     t.string "canonical_url"
     t.datetime "created_at", null: false
+    t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.datetime "published_at"
     t.text "raw_content"
