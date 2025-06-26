@@ -14,7 +14,7 @@ export default class extends Controller {
     }
 
     if (this.hasContentTarget) {
-      this.contentTarget.addEventListener("input", () => {
+      this.contentTarget.addEventListener("trix-change", () => {
         this.save()
       })
     }
@@ -25,7 +25,7 @@ export default class extends Controller {
   save() {
     const data = {
       title: this.titleTarget?.value,
-      content: this.contentTarget?.editor?.element.innerHTML
+      content: this.contentTarget?.value
     }
 
     localStorage.setItem(this.keyValue, JSON.stringify(data))
