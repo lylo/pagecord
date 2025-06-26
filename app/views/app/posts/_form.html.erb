@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <div class="hidden mb-8" data-post-attributes-target="section" data-section="visibility">
+    <div class="<%= 'hidden' unless @post.hidden? %> mb-8" data-post-attributes-target="section" data-section="visibility">
       <div class="mt-4 font-bold">
         Post Visibility
       </div>
