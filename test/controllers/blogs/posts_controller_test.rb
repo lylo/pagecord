@@ -54,6 +54,29 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal post, assigns(:post)
   end
 
+  test "should include no-follow meta tag for hidden posts" do
+    post = @blog.posts.create!(
+      title: "Hidden Post",
+      content: "This is hidden content",
+      hidden: true,
+      status: "published"
+    )
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select 'meta[name="robots"][content="noindex, nofollow"]'
+  end
+
+  test "should not include no-follow meta tag for visible posts" do
+    post = @blog.posts.visible.first
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select 'meta[name="robots"][content="noindex, nofollow"]', count: 0
+  end
+
   test "should allow @ prefix and redirect to :name path" do
     host! Rails.application.config.x.domain
 
