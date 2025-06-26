@@ -167,4 +167,12 @@ class TaggableTest < ActiveSupport::TestCase
     assert_includes all_tags, "javascript"
     assert_equal all_tags, all_tags.sort # Should be sorted
   end
+
+  test "should clear tags when tags_string is empty" do
+    @post.tags_string = "rails, javascript, ruby"
+    assert_equal [ "javascript", "rails", "ruby" ], @post.tag_list
+
+    @post.tags_string = ""
+    assert_equal [], @post.tag_list
+  end
 end
