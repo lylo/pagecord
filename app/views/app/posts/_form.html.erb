@@ -1,4 +1,7 @@
-<div data-controller="post-attributes">
+<% is_new = !@post.persisted? %>
+
+<div data-controller="post-attributes autosave"
+     data-autosave-key-value="<%= is_new ? "draft-post-new" : "draft-post-#{@post.id}" %>">
   <div class="flex justify-end mb-4" data-controller="toggle">
     <%= link_to "#", class: "ms-3 font-medium text-slate-500 hover:text-black dark:text-slate-300 dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
         <div class="">
@@ -69,16 +72,22 @@
     </div>
 
     <%= form.text_field :title,
+
     placeholder: "Optional post title",
     class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
-    autofocus: true %>
+    autofocus: true,
+    data: { autosave_target: "title" } %>
 
     <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
     <%= form.rich_text_area :content,
       placeholder: "Write your post...",
       class: "trix-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @post.errors[:content].any?}",
       spellcheck: true,
-      data: { controller: "autogrow trix", subscribed: Current.user.subscribed? } %>
+      data: {
+        controller: "autogrow trix",
+        subscribed: Current.user.subscribed?,
+        autosave_target: "content"
+      } %>
     <% if @post.errors[:content].any? %>
       <div class="mt-1 text-xs text-red-500">
         A body is required
@@ -89,7 +98,10 @@
     <div class="flex items-center justify-between mt-8">
       <div>
         <%= form.submit publish_button_text(@post), class: "btn-primary" %>
-        <%= link_to "Cancel", app_posts_path, class: "btn-secondary" %>
+        <%= link_to (is_new ? "Discard" : "Cancel"),
+              app_posts_path,
+              class: "btn-secondary",
+              data: { action: "click->autosave#cancel" } %>
       </div>
       <div>
         <%= form.button draft_button_text(@post), value: "save_draft", class: "btn-optional" %>
