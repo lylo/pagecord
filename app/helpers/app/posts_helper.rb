@@ -12,8 +12,12 @@ module App::PostsHelper
   end
 
   def draft_button_text(post)
-    if post.persisted? && post.published?
-      "Unpublish"
+    if post.persisted?
+      if post.published?
+        "Unpublish"
+      else
+        "Update Draft"
+      end
     else
       "Save Draft"
     end
