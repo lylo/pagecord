@@ -16,9 +16,11 @@ module Taggable
 
   # Parse comma or space-separated string into tag_list array
   def tags_string=(value)
-    return if value.blank?
-
-    self.tag_list = parse_tags(value)
+    if value.blank?
+      self.tag_list = [] # Clear tags if the input is blank
+    else
+      self.tag_list = parse_tags(value)
+    end
   end
 
   # Get all unique tags across all posts (class method when included)
