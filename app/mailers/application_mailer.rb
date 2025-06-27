@@ -3,4 +3,6 @@ class ApplicationMailer < ActionMailer::Base
           reply_to: "Pagecord <hello@pagecord.com>"
 
   layout "mailer"
+
+  helper ImageHelper
 end
