@@ -12,7 +12,7 @@
                              Rails.configuration.x.cloudflare_image_resizing
 
         image_url = if cloudflare_enabled
-          "/cdn-cgi/image/width=#{width},height=#{height},format=webp,quality=90/#{rails_public_blob_url(blob)}"
+          "https://#{Rails.configuration.x.domain}/cdn-cgi/image/width=#{width},height=#{height},format=webp,quality=90/#{rails_public_blob_url(blob)}"
         else
           variant = blob.variant(
             resize_to_limit: [width, height],

@@ -19,6 +19,7 @@ Rails.application.configure do
 
   # Set domain configuration for development
   config.x.domain = ENV.fetch("APP_DOMAIN", "lvh.me")
+  config.x.cloudflare_image_resizing = false
 
   config.action_controller.default_url_options = { host: "lvh.me", port: "3000", protocol: "http" }
 
