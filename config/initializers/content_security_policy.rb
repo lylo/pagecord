@@ -9,7 +9,9 @@ Rails.application.configure do
     policy.font_src :self, :https, :data
 
     # Images
-    policy.img_src :self, :https, :data,
+    policy.img_src :self, :data,
+                   "http://lvh.me:3000",
+                   "https://storage.pagecord.com",
                    "https://githubusercontent.com",
                    "https://github.githubassets.com"
 
