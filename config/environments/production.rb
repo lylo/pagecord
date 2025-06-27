@@ -18,6 +18,7 @@ Rails.application.configure do
 
   # Set domain configuration once
   config.x.domain = ENV.fetch("APP_DOMAIN", "pagecord.com")
+  config.x.cloudflare_image_resizing = true
 
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local = false

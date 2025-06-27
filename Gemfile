@@ -5,7 +5,6 @@ ruby file: ".ruby-version"
 gem "rails", github: "rails/rails", branch: "main"
 
 gem "actionpack-page_caching"
-gem "cloudflare_image_resizing"
 gem "image_processing", "~> 1.2"
 gem "importmap-rails"
 gem "jbuilder"

@@ -5,13 +5,25 @@
     <% if blob.content_type == "image/gif" %>
       <%= image_tag rails_public_blob_url(blob), alt: "Uploaded image" %>
     <% else %>
-      <% variant = blob.variant(
-          resize_to_limit: (local_assigns[:in_gallery] ? [800, 600] : [1600, 1200]),
-          format: :webp,
-          saver: { quality: 90, strip: true, compression: 6 }
-        ) %>
+      <%
+        width, height = local_assigns[:in_gallery] ? [800, 600] : [1600, 1200]
 
-      <%= image_tag rails_public_blob_url(variant), alt: "Uploaded image" %>
+        cloudflare_enabled = Rails.configuration.x.respond_to?(:cloudflare_image_resizing) &&
+                             Rails.configuration.x.cloudflare_image_resizing
+
+        image_url = if cloudflare_enabled
+          "/cdn-cgi/image/width=#{width},height=#{height},format=webp,quality=90/#{rails_public_blob_url(blob)}"
+        else
+          variant = blob.variant(
+            resize_to_limit: [width, height],
+            format: :webp,
+            saver: { quality: 90, strip: true, compression: 6 }
+          )
+          rails_public_blob_url(variant)
+        end
+      %>
+
+      <%= image_tag image_url, alt: "Uploaded image" %>
     <% end %>
   <% end %>
 </figure>
