@@ -52,9 +52,9 @@ module ApplicationHelper
     if @post && @post.open_graph_image.present?
       @post.open_graph_image.url
     elsif @post && @post.attachments.any?               # email attachments
-      rails_public_blob_url @post.attachments.first
+      resized_image_url @post.attachments.first, width: 1200, height: 630, crop: true
     elsif @post && content_image_attachments(@post).any?  # rich text attachments
-      rails_public_blob_url content_image_attachments(@post).first
+      resized_image_url content_image_attachments(@post).first, width: 1200, height: 630, crop: true
     elsif !custom_domain_request?
       unless @blog.present?
         image_url "social/open-graph.jpg"
