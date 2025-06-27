@@ -10,7 +10,7 @@
         height = local_assigns[:in_gallery] ? 600 : 1200
       %>
       <%= resized_image_tag(blob,
-        {
+        resize: {
           width: width,
           height: height,
           format: :webp,
