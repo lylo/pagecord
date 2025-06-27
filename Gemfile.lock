@@ -155,6 +155,8 @@ GEM
       activesupport (>= 7.1.0, < 8.1.0)
       railties (>= 7.1.0, < 8.1.0)
       zeitwerk (>= 2.5.0)
+    cloudflare_image_resizing (1.0.4)
+      rails (>= 7.1.0)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.3)
     crass (1.0.6)
@@ -473,6 +475,7 @@ DEPENDENCIES
   brakeman
   capybara
   cloudflare-rails
+  cloudflare_image_resizing
   dalli
   debug
   discard (~> 1.2)
