@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center w-20 h-20 border border-slate-200 dark:border-slate-800 shadow-sm rounded-full">
   <% if blog.avatar&.attached? %>
-    <%= image_tag resized_image_url(blog.avatar, width: 80, height: 80), class: "object-cover rounded-full w-full h-full", alt: "#{blog.title} Avatar" %>
+    <%= image_tag resized_image_url(blog.avatar, width: 160, height: 160), class: "object-cover rounded-full w-full h-full", alt: "#{blog.title} Avatar" %>
   <% else %>
     <img class="object-cover rounded-full w-full h-full hidden" src="https://pbs.twimg.com/profile_images/1851287065062981632/t6ZpG7Pm_400x400.jpg">
     <div class="avatar-placeholder">
