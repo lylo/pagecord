@@ -12,7 +12,7 @@
           <%= post.summary(limit: 324) %>
         <% else %>
           <% if post.first_image.present? %>
-            <%= image_tag post.first_image, alt: post.display_title, class: "rounded-lg mx-auto max-w-full" %>
+            <%= image_tag resized_image_url(post.first_image), alt: post.display_title, class: "rounded-lg mx-auto max-w-full" %>
           <% else %>
             <%= post.content.to_plain_text %>
           <% end %>
