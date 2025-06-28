@@ -1,6 +1,8 @@
 namespace :email do
   desc "Loads all .eml files from a directory into PostsMailbox"
   task load: :environment do
+    ActiveJob::Base.queue_adapter = :async
+
     ENV["PAGECORD_RECIPIENT"] ="joel_gf35jsue@post.pagecord.com"
     ENV["PAGECORD_FROM"] ="joel@pagecord.com"
     ENV["PAGECORD_REPLYTO"] = ENV["PAGECORD_FROM"]
