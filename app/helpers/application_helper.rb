@@ -60,6 +60,7 @@ module ApplicationHelper
     end
   end
 
+  # FIXME remove?
   def content_image_attachments(post)
     post.content_image_attachments
   end
