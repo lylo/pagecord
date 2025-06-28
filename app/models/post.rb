@@ -97,10 +97,10 @@ class Post < ApplicationRecord
 
   def first_image
     @first_image ||= begin
-      if attachments.any?
-        attachments.first
-      elsif content_image_attachments.any?
+      if content_image_attachments.any?
         content_image_attachments.first
+      elsif attachments.any?
+        attachments.first
       end
     end
   end
