@@ -2,7 +2,7 @@
 
 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4">
   <div>
-    <%= pluralize @pagy.count, "user" %> in total.
+    <%= pluralize @total_users, "user" %> in total.
     <%= pluralize Subscription.active_paid.count, "paid subscription" %>, <%= Subscription.comped.count %> comped.
   </div>
   <%= link_to new_admin_user_path, class: "btn-primary text-sm whitespace-nowrap" do %>
@@ -13,6 +13,29 @@
   <% end %>
 </div>
 
+<%= form_with url: admin_stats_path, method: :get, data: { turbo_frame: "stats-content", controller: "search" }, local: true, class: "mb-4" do |form| %>
+  <div class="flex gap-2 items-center max-w-md">
+    <%= form.text_field :search, placeholder: "Search by subdomain or email...", value: params[:search],
+        class: "flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+        data: { action: "input->search#submit", search_target: "input" },
+        autofocus: true %>
+    <% if params[:search].present? %>
+      <%= link_to "Clear", admin_stats_path, class: "text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 whitespace-nowrap" %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= turbo_frame_tag "stats-content" do %>
+  <% if params[:search].present? %>
+    <div class="mb-4 text-sm text-slate-600 dark:text-slate-400">
+      <% if @pagy.count == 0 %>
+        No results found for "<strong><%= params[:search] %></strong>"
+      <% else %>
+        <%= pluralize @pagy.count, "result" %> found for "<strong><%= params[:search] %></strong>"
+      <% end %>
+      <%= link_to "Clear search", admin_stats_path, class: "ml-2 btn-secondary underline text-sm" %>
+    </div>
+  <% end %>
 <div class="overflow-auto">
   <table class="my-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
     <thead>
@@ -69,3 +92,4 @@
 </div>
 
 <%= render "app/shared/pagy_nav" %>
+<% end %>
