@@ -7,15 +7,14 @@
         </h1>
       <% end %>
 
-      <div class="text-[var(--color-text-muted)] mb-4">
+      <div class="text-[var(--color-text-muted)] mb-4 break-words">
         <% if post.has_text_content? %>
           <%= post.summary(limit: 324) %>
         <% else %>
-          <% @post = post # Set @post for the helper %>
-          <% if has_open_graph_image? %>
-            <%= image_tag open_graph_image, alt: post.display_title, class: "rounded-lg mx-auto max-w-full" %>
+          <% if post.first_image.present? %>
+            <%= image_tag post.first_image, alt: post.display_title, class: "rounded-lg mx-auto max-w-full" %>
           <% else %>
-            <%= auto_link post.content %>
+            <%= post.content.to_plain_text %>
           <% end %>
         <% end %>
       </div>

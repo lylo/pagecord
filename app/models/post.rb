@@ -95,6 +95,16 @@ class Post < ApplicationRecord
     !is_page
   end
 
+  def first_image
+    @first_image ||= begin
+      if attachments.any?
+        attachments.first
+      elsif content_image_attachments.any?
+        content_image_attachments.first
+      end
+    end
+  end
+
   private
 
     def set_published_at
@@ -111,5 +121,9 @@ class Post < ApplicationRecord
       else
         GenerateOpenGraphImageJob.perform_now(id)
       end
+    end
+
+    def content_image_attachments
+      content.body.attachments.select { |attachment| attachment.try(:image?) }
     end
 end

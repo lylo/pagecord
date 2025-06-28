@@ -51,10 +51,8 @@ module ApplicationHelper
   def open_graph_image
     if @post && @post.open_graph_image.present?
       @post.open_graph_image.url
-    elsif @post && @post.attachments.any?               # email attachments
-      resized_image_url @post.attachments.first, width: 1200, height: 630, crop: true
-    elsif @post && content_image_attachments(@post).any?  # rich text attachments
-      resized_image_url content_image_attachments(@post).first, width: 1200, height: 630, crop: true
+    elsif @post && @post.first_image.present?
+      resized_image_url @post.first_image, width: 1200, height: 630, crop: true
     elsif !custom_domain_request?
       unless @blog.present?
         image_url "social/open-graph.jpg"
@@ -63,7 +61,7 @@ module ApplicationHelper
   end
 
   def content_image_attachments(post)
-    post.content.body.attachments.select { |attachment| attachment.try(:image?) }
+    post.content_image_attachments
   end
 
   def canonical_url
