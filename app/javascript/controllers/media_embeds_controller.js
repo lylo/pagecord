@@ -6,12 +6,13 @@ import GitHub from "github"
 import Image from "image"
 import Spotify from "spotify"
 import Strava from "strava"
+import Transistor from "transistor"
 import YouTube from "youtube"
 
 // Connects to data-controller="media-embed"
 export default class extends Controller {
   connect() {
-    this.mediaSites = [new AppleMusic(), new Spotify(), new YouTube(), new Bandcamp(), new Strava(), new GitHub(), new Image(), new Checkvist()]
+    this.mediaSites = [new AppleMusic(), new Spotify(), new YouTube(), new Bandcamp(), new Strava(), new GitHub(), new Image(), new Transistor(), new Checkvist()]
     this.replaceMediaLinks()
   }
 

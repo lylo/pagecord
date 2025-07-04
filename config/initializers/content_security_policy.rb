@@ -52,6 +52,7 @@ Rails.application.configure do
                      "https://bandcamp.com",
                      "*.bandcamp.com",
                      "https://strava-embeds.com",
+                     "https://share.transistor.fm",
                      "https://paddle.com",
                      "*.paddle.com"
 
