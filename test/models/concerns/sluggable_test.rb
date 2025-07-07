@@ -67,6 +67,17 @@ class SluggableTest < ActiveSupport::TestCase
     assert_equal post.title.parameterize.truncate(100, omission: ""), post.slug
   end
 
+  test "should remove trailing hyphens from truncated slugs" do
+    title = "Futurism: Companies That Tried to Save Money With AI Are Now Spending a Fortune Hiring People to Fix Its Mistakes"
+    raw_slug = title.parameterize.truncate(100, omission: "")
+    assert raw_slug.end_with?("-")
+
+    post = @blog.posts.create!(title: title, content: "Content")
+
+    assert_not post.slug.end_with?("-")
+    assert post.valid?
+  end
+
   private
 
     def assert_invalid_slug_format(post, slug)
