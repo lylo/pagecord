@@ -50,4 +50,17 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
         as: :turbo_stream
     end
   end
+
+  test "should handle HTML request and redirect to blog home" do
+    assert_difference("EmailSubscriber.count", 1) do
+      post email_subscribers_url(subdomain: @blog.subdomain), params: {
+        blog_subdomain: @blog.subdomain,
+        email_subscriber: { email: "test@example.com" },
+        rendered_at: 6.seconds.ago.to_i
+      }
+    end
+
+    assert_redirected_to blog_posts_path
+    assert_equal "Thanks for subscribing. Unless you're already subscribed, a confirmation email is on its way to test@example.com", flash[:notice]
+  end
 end

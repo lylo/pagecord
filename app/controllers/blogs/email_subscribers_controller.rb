@@ -16,7 +16,7 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
 
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to blog_path(@blog), notice: @message }
+      format.html { redirect_to blog_posts_path, notice: @message }
     end
   end
 
