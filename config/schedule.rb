@@ -33,6 +33,10 @@ every 1.day, at: "2:30 am" do
   rake "email_change_requests:cleanup"
 end
 
+every 1.week, at: "3:00 am" do
+  rake "email_subscribers:cleanup_unconfirmed"
+end
+
 every :day, at: "4:00 am" do
   rake "exports:cleanup"
 end
