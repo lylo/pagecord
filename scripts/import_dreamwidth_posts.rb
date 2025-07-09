@@ -447,20 +447,24 @@ class DreamwidthImporter
 end
 
 # Usage when run with rails runner:
-# rails runner scripts/import_dreamwidth_posts.rb /path/to/dreamwidth-dump-html blog_subdomain [--dry-run]
+# rails runner scripts/import_dreamwidth_posts.rb /path/to/dreamwidth-dump-html blog_subdomain [--dry-run] [--skip-images]
 
 def print_usage
-  puts "Usage: rails runner #{__FILE__} <path_to_dreamwidth_folder> <blog_subdomain> [--dry-run]"
+  puts "Usage: rails runner #{__FILE__} <path_to_dreamwidth_folder> <blog_subdomain> [options]"
   puts ""
   puts "Arguments:"
   puts "  path_to_dreamwidth_folder  - Path to the extracted Dreamwidth dump folder"
   puts "  blog_subdomain            - Subdomain of the Pagecord blog to import into"
-  puts "  --dry-run                 - Optional: Preview what would be imported without making changes"
+  puts ""
+  puts "Options:"
+  puts "  --dry-run                 - Preview what would be imported without making changes"
+  puts "  --skip-images             - Import text content only, skip image processing"
   puts ""
   puts "Examples:"
   puts "  rails runner #{__FILE__} /Users/olly/Downloads/dreamwidth-dump-html myblog"
   puts "  rails runner #{__FILE__} /Users/olly/Downloads/dreamwidth-dump-html myblog --dry-run"
   puts "  rails runner #{__FILE__} /Users/olly/Downloads/dreamwidth-dump-html myblog --skip-images"
+  puts "  rails runner #{__FILE__} /Users/olly/Downloads/dreamwidth-dump-html myblog --dry-run --skip-images"
 end
 
 if ARGV.length < 2 || ARGV.length > 4
