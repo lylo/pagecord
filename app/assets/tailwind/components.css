@@ -70,6 +70,14 @@
 
       pre {
         @apply !my-2 !bg-[var(--color-bg-sunken)] !text-[var(--color-text)] text-wrap;
+
+        ol, ul {
+          @apply !py-0 !my-0;
+        }
+
+        li {
+          @apply !p-0 !m-0;
+        }
       }
 
       h1 {
