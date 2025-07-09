@@ -7,8 +7,8 @@ module Sluggable
       presence: true,
       length: { maximum: 100 },
       format: {
-        with: /\A[a-z0-9]+(-[a-z0-9]+)*\z/,
-        message: "can only contain lowercase letters, numbers, and single hyphens between words"
+        with: /\A[a-z0-9]+([-_][a-z0-9]+)*\z/,
+        message: "can only contain lowercase letters, numbers, hyphens, and underscores"
       },
       uniqueness: {
         scope: :blog_id,

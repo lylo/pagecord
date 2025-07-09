@@ -27,6 +27,15 @@ class SluggableTest < ActiveSupport::TestCase
     assert_invalid_slug_format post, "invalid-slug-"
     assert_invalid_slug_format post, "invalid slug"
     assert_invalid_slug_format post, "invalid--slug"
+
+    post.update(slug: "valid_slug_with_underscores")
+    assert post.valid?
+
+    post.update(slug: "valid-slug-with-hyphens")
+    assert post.valid?
+
+    post.update(slug: "mixed_slug-with_both")
+    assert post.valid?
   end
 
   test "should generate slug from token if title is blank" do
@@ -83,6 +92,6 @@ class SluggableTest < ActiveSupport::TestCase
     def assert_invalid_slug_format(post, slug)
       post.update(slug: slug)
       assert_not post.valid?
-      assert_includes post.errors[:slug], "can only contain lowercase letters, numbers, and single hyphens between words"
+      assert_includes post.errors[:slug], "can only contain lowercase letters, numbers, hyphens, and underscores"
     end
 end

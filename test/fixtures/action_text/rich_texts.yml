@@ -84,6 +84,12 @@ contact:
 
     <p>Email: joel@pagecord.com</p>
 
+joel_draft:
+  record: joel_draft (Post)
+  name: content
+  body: |
+    <p>Drafting a new post</p>
+
 draft_page:
   record: draft_page (Post)
   name: content
