@@ -1,7 +1,7 @@
 <% if post&.tag_list.present? %>
   <div class="flex flex-wrap mt-8">
     <% post.tag_list.each do |tag| %>
-      <%= link_to tag, tag_filter_url(tag), class: "inline-flex items-center px-2 py-1 me-2 text-sm font-medium bg-[var(--color-bg-subtle)] text-[var(--color-text-muted)] rounded-md hover:bg-[var(--color-bg-elevated)] transition-colors" %>
+      <%= link_to tag, tag_filter_url(tag), class: "inline-flex items-center px-2 py-1 me-2 mb-2 text-sm font-medium bg-[var(--color-bg-subtle)] text-[var(--color-text-muted)] rounded-md hover:bg-[var(--color-bg-elevated)] transition-colors" %>
     <% end %>
   </div>
 <% end %>
