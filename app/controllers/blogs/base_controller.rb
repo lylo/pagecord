@@ -1,6 +1,6 @@
 class Blogs::BaseController < ApplicationController
   skip_before_action :domain_check
-  before_action :load_blog, :validate_user, :enforce_custom_domain
+  before_action :load_blog, :validate_user, :enforce_custom_domain, :check_private_blog_access
 
   protected
 
@@ -47,6 +47,17 @@ class Blogs::BaseController < ApplicationController
         new_url = "#{full_url}#{request_path}"
 
         redirect_to new_url, status: :moved_permanently, allow_other_host: true
+      end
+    end
+
+    def check_private_blog_access
+      return unless @blog&.is_private?
+
+      stored_digest = session["blog_auth_#{@blog.id}"]
+      unless stored_digest && @blog.password_digest == stored_digest
+        # Store the current URL to redirect back after authentication
+        session[:return_to] = request.fullpath unless request.path == blog_authentication_path
+        redirect_to blog_authentication_path
       end
     end
 end

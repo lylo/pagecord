@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_06_26_150141) do
+ActiveRecord::Schema[8.1].define(version: 2025_07_10_130516) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -94,7 +94,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_26_150141) do
     t.string "fediverse_author_attribution"
     t.string "font", default: "sans", null: false
     t.string "google_site_verification"
+    t.boolean "is_private", default: false, null: false
     t.integer "layout", default: 0
+    t.string "password_digest"
     t.boolean "reply_by_email", default: false, null: false
     t.boolean "show_branding", default: true, null: false
     t.boolean "show_upvotes", default: true, null: false

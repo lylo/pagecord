@@ -121,4 +121,55 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.valid?
     assert_includes @blog.errors.full_messages, "Google site verification can only contain letters, numbers, underscores, and hyphens"
   end
+
+  test "should require password when blog is private" do
+    @blog.is_private = true
+    @blog.password = nil
+
+    assert_not @blog.valid?
+    assert_includes @blog.errors[:password], "can't be blank"
+  end
+
+  test "should validate password length when provided" do
+    @blog.password = "short"
+
+    assert_not @blog.valid?
+    assert_includes @blog.errors[:password], "is too short (minimum is 6 characters)"
+  end
+
+  test "should allow password of 6 or more characters" do
+    @blog.is_private = true
+    @blog.password = "secret123"
+
+    assert @blog.valid?
+  end
+
+  test "should not require password when blog is public" do
+    @blog.is_private = false
+    @blog.password = nil
+
+    assert @blog.valid?
+  end
+
+  test "should verify password for private blog" do
+    @blog.update!(is_private: true, password: "secret123")
+
+    assert @blog.verify_password("secret123")
+    assert_not @blog.verify_password("wrong")
+  end
+
+  test "should not verify password for public blog" do
+    @blog.update!(is_private: false)
+
+    assert_not @blog.verify_password("anything")
+  end
+
+  test "should change password digest when password changes" do
+    @blog.update!(is_private: true, password: "secret123")
+    old_digest = @blog.password_digest
+
+    @blog.update!(password: "newsecret")
+
+    assert_not_equal old_digest, @blog.password_digest
+  end
 end

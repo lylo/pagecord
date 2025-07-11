@@ -1,0 +1,28 @@
+<%= content_for :title, "Enter Password - #{@blog.display_name}" %>
+
+<div class="border border-[var(--color-input-border)] rounded-lg p-8 shadow-sm">
+  <div class="text-center">
+    <h1 class="text-xl font-semibold text-[var(--color-text-heading)] mb-2">
+      This blog is private
+    </h1>
+    <p class="text-[var(--color-text-muted)] mb-6">
+      Enter the password to view <span class="font-medium"><%= @blog.display_name %></span>
+    </p>
+  </div>
+
+  <%= form_with url: blog_authentication_path, local: true,
+        class: "flex flex-col items-center justify-center gap-y-2 text-center" do |form| %>
+
+    <fieldset class="flex w-full justify-center">
+      <%= form.password_field :password,
+        required: true,
+        placeholder: "Enter password...",
+        class: "px-2 py-1 w-48 sm:w-64 text-sm rounded-l-lg border-r-0 bg-[var(--color-input-bg)] border border-[var(--color-input-border)] text-[var(--color-text)] focus:border-[var(--color-input-focus)] focus:outline-none",
+        autofocus: true
+      %>
+
+      <%= form.submit "Access Blog",
+        class: "px-3 py-1 text-sm text-[var(--color-button-text)] bg-[var(--color-button-bg)] rounded-l-0 rounded-r-lg cursor-pointer hover:bg-[var(--color-button-hover)]" %>
+    </fieldset>
+  <% end %>
+</div>

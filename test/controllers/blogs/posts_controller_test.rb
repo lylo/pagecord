@@ -100,19 +100,47 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_url
   end
 
-  test "should redirect to root if user is unverified" do
-    @blog = blogs(:elliot)
-    host_subdomain! @blog.subdomain
+  test "should redirect private blog to authentication page" do
+    @blog.update!(is_private: true, password: "secret123")
 
     get blog_posts_path
-    assert_redirected_to root_path
+
+    assert_redirected_to blog_authentication_path
   end
 
-  test "should redirect to root if user is discarded" do
-    @blog.user.discard!
+  test "should allow access to private blog with valid session" do
+    @blog.update!(is_private: true, password: "secret123")
+
+    # First authenticate by posting the password
+    post blog_authentication_path, params: { password: "secret123" }
+    assert_redirected_to blog_posts_path
+
+    # Now access should work
+    get blog_posts_path
+    assert_response :success
+  end
+
+  test "should deny access to private blog with invalid session" do
+    @blog.update!(is_private: true, password: "secret123")
 
     get blog_posts_path
-    assert_redirected_to root_path
+
+    assert_redirected_to blog_authentication_path
+  end
+
+  test "should deny access to private blog when password changed" do
+    @blog.update!(is_private: true, password: "secret123")
+
+    # First authenticate with old password
+    post blog_authentication_path, params: { password: "secret123" }
+    assert_redirected_to blog_posts_path
+
+    # Change password
+    @blog.update!(password: "newsecret")
+
+    # Now access should be denied
+    get blog_posts_path
+    assert_redirected_to blog_authentication_path
   end
 
   test "should get index as RSS" do

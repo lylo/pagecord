@@ -75,6 +75,38 @@
     <%= styled_text_field(form, :fediverse_author_attribution, class: "mt-4 md:w-full") %>
   </div>
 
+  <div class="mt-8" data-controller="toggle">
+    <h3 class="font-bold text-lg mb-2">Private Blog</h3>
+    <p>
+      Make your blog private by requiring a password to access it. Only people with the password will be able to view your blog.
+    </p>
+
+    <div class="mt-6">
+      <div class="flex gap-3">
+        <div class="flex h-6 shrink-0 items-center">
+          <%= form.check_box :is_private, { checked: @blog.is_private?, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300", data: { action: "change->toggle#toggle" } } %>
+        </div>
+        <div>
+          <%= form.label :is_private, "Make this blog private", class: "text-slate-800 dark:text-slate-100" %>
+          <p class="text-slate-500 text-sm">
+            When checked, visitors will need to enter a password to view your blog.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="<%= 'hidden' unless @blog.is_private? %> mt-4" data-toggle-target="element">
+      <%= form.label :password, "Blog Password", class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2" %>
+      <%= form.password_field :password,
+          placeholder: "Enter a password for your blog",
+          class: "w-full md:w-96 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 dark:bg-slate-800 dark:text-slate-100" %>
+      <%= field_error(@blog, :password) %>
+      <p class="mt-1 text-slate-500 dark:text-slate-400 text-sm">
+        Password must be at least 6 characters long.
+      </p>
+    </div>
+  </div>
+
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2 mt-8">Blog Subdomain</h3>
     <p class="mb-4">

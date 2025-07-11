@@ -37,6 +37,7 @@ gem "premailer-rails", "~> 1.12"
 
 # everything else
 gem "aws-sdk-s3"
+gem "bcrypt"
 gem "discard", "~> 1.2"
 gem "fastimage"
 gem "feature_toggles"

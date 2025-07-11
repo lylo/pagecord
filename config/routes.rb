@@ -158,13 +158,17 @@ Rails.application.routes.draw do
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")
-    get "/:slug", to: "blogs/posts#show", as: :blog_post
 
-    resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
+    get "/authentication", to: "blogs/authentications#show", as: :blog_authentication
+    post "/authentication", to: "blogs/authentications#create"
+
+    resources :email_subscribers, only: [ :create ], controller: "blogs/email_subscribers"
 
     get "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#show", as: :email_subscriber_confirmation
     get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
-    post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
+    delete "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
+
+    get "/:slug", to: "blogs/posts#show", as: :blog_post
 
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create, :destroy ], module: :posts

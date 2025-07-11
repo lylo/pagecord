@@ -8,6 +8,7 @@ class App::Settings::AppearanceController < AppController
 
       redirect_to app_settings_path, notice: "Appearance settings updated"
     else
+      puts @blog.errors.full_messages
       render :index, status: :unprocessable_entity
     end
   end

@@ -1,6 +1,8 @@
 class Blog < ApplicationRecord
   include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable
 
+  has_secure_password :password, validations: false
+
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
   belongs_to :user, inverse_of: :blog
@@ -29,6 +31,8 @@ class Blog < ApplicationRecord
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
   validates :google_site_verification, format: { with: /\A[a-zA-Z0-9_-]+\z/, message: "can only contain letters, numbers, underscores, and hyphens" }, allow_blank: true
+  validates :password, presence: true, if: :private_and_password_required?
+  validates :password, length: { minimum: 6 }, allow_blank: true
 
   def custom_title?
     title.present?
@@ -36,6 +40,11 @@ class Blog < ApplicationRecord
 
   def display_name
     title.blank? ? "@#{subdomain}" : title
+  end
+
+  def verify_password(password)
+    return false unless is_private?
+    authenticate_password(password)
   end
 
   private
@@ -58,5 +67,12 @@ class Blog < ApplicationRecord
       if Subdomain.reserved?(subdomain)
         errors.add(:subdomain, "is reserved")
       end
+    end
+
+    def private_and_password_required?
+      # Only require password if:
+      # 1. Blog is being set to private (is_private? is true)
+      # 2. AND either it's a new record OR the password field was explicitly provided in the update
+      is_private? && (new_record? || password.present? || password_digest.blank?)
     end
 end
