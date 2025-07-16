@@ -64,4 +64,23 @@ class EmailChangeRequestTest < ActiveSupport::TestCase
     request.accept!
     assert_not_nil request.accepted_at
   end
+
+  test "validates new_email is not already taken by another user" do
+    request = EmailChangeRequest.new(
+      user: users(:joel),
+      new_email: users(:elliot).email
+    )
+
+    assert_not request.valid?
+    assert_includes request.errors[:new_email], "is already in use"
+  end
+
+  test "allows new_email if not taken by any user" do
+    request = EmailChangeRequest.new(
+      user: users(:joel),
+      new_email: "unique@example.com"
+    )
+
+    assert request.valid?
+  end
 end

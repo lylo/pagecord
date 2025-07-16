@@ -4,6 +4,7 @@ class EmailChangeRequest < ApplicationRecord
   before_create :generate_token, :set_expiration
 
   validates :new_email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validate :new_email_not_taken
 
   scope :pending, -> { where(accepted_at: nil) }
   scope :active, -> { where("expires_at > ?", Time.current) }
@@ -11,10 +12,16 @@ class EmailChangeRequest < ApplicationRecord
   def accept!
     user.update!(email: new_email)
     self.accepted_at = Time.current
-    save!
+    save!(validate: false)
   end
 
   private
+
+    def new_email_not_taken
+      if User.exists?(email: new_email)
+        errors.add(:new_email, "is already in use")
+      end
+    end
 
     def generate_token
       self.token_digest = SecureRandom.urlsafe_base64
