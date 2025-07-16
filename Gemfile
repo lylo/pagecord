@@ -11,7 +11,7 @@ gem "jbuilder"
 gem "ruby-vips"
 gem "sprockets-rails"
 gem "stimulus-rails"
-gem "tailwindcss-rails", "~> 4.2.1"
+gem "tailwindcss-rails", "~> 4.3.0"
 gem "turbo-rails"
 
 gem "puma", ">= 5.0"
