@@ -15,6 +15,10 @@
         a {
           @apply text-[var(--color-accent)] underline;
         }
+
+        strong, b {
+          @apply text-[var(--color-text)];
+        }
       }
 
       .blog-title {
