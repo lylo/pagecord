@@ -520,7 +520,7 @@ DEPENDENCIES
   whenever
 
 RUBY VERSION
-   ruby 3.4.5p51
+   ruby 3.4.4p34
 
 BUNDLED WITH
    2.7.0
