@@ -282,7 +282,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.8-x86_64-linux-gnu)
       racc (~> 1.4)
-    ostruct (0.6.2)
+    ostruct (0.6.3)
     pagy (9.3.5)
     parallel (1.27.0)
     parser (3.3.8.0)
