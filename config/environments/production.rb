@@ -80,7 +80,10 @@ Rails.application.configure do
 
   tagged_logger = ActiveSupport::TaggedLogging.new(broadcast_logger)
 
-  config.log_tags = [ :request_id ]
+  config.log_tags = [
+    :request_id,
+    ->(request) { "host=#{request.host}" }
+  ]
   config.logger = tagged_logger
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
 
