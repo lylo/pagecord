@@ -82,7 +82,8 @@ Rails.application.configure do
 
   config.log_tags = [
     :request_id,
-    ->(request) { "host=#{request.host}" }
+    ->(request) { "host=#{request.host}" },
+    ->(req) { "user_agent=#{req.user_agent}" }
   ]
   config.logger = tagged_logger
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
