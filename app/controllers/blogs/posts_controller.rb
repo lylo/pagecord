@@ -21,6 +21,7 @@ class Blogs::PostsController < Blogs::BaseController
       format.html { set_conditional_get_headers }
       format.rss {
         return unless set_conditional_get_headers
+        expires_in 5.minutes, public: true
         render layout: false
       }
     end
