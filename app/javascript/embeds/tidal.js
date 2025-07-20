@@ -32,7 +32,7 @@ class Tidal extends MediaSite {
         iframe.title = "TIDAL Embed Player"
         iframe.loading = "lazy"
         iframe.style.border = "none"
-        
+
         // Set height based on content type
         if (embedUrl.includes('/playlists/')) {
           iframe.height = "600"
@@ -41,7 +41,7 @@ class Tidal extends MediaSite {
         } else {
           iframe.height = "200" // tracks
         }
-        
+
         return iframe
       }
     )
