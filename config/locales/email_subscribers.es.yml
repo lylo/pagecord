@@ -1,0 +1,8 @@
+es:
+  email_subscribers:
+    form:
+      subscribe_description: "Suscríbete para recibir un resumen semanal de las publicaciones en tu bandeja de entrada"
+      email_placeholder: "Ingresa tu email..."
+      submit_button: "Suscribirse"
+  posts:
+    read_more: "Leer más"

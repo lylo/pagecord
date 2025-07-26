@@ -1,6 +1,6 @@
 class Blogs::BaseController < ApplicationController
   skip_before_action :domain_check
-  before_action :load_blog, :validate_user, :enforce_custom_domain
+  before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale
 
   protected
 
@@ -48,5 +48,9 @@ class Blogs::BaseController < ApplicationController
 
         redirect_to new_url, status: :moved_permanently, allow_other_host: true
       end
+    end
+
+    def set_locale
+      I18n.locale = @blog&.locale || I18n.default_locale
     end
 end

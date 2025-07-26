@@ -531,6 +531,24 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "should set locale based on blog setting" do
+    @blog.update!(locale: "es")
+
+    get blog_posts_path
+
+    assert_equal "es", I18n.locale.to_s
+    assert_response :success
+  end
+
+  test "should fall back to default locale when blog locale is nil" do
+    @blog.update!(locale: "en")
+
+    get blog_posts_path
+
+    assert_equal "en", I18n.locale.to_s
+    assert_response :success
+  end
+
   private
 
     def host_subdomain!(name)

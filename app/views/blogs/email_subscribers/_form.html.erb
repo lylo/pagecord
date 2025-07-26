@@ -1,7 +1,7 @@
 <%= form_with url: email_subscribers_path, model: [EmailSubscriber.new], local: true,
       class: "flex flex-col items-center justify-center gap-y-2 text-center" do |form| %>
   <div class="subscription-description">
-    Subscribe to get a weekly digest of posts in your inbox
+    <%= t('email_subscribers.form.subscribe_description') %>
   </div>
 
   <fieldset class="flex">
@@ -10,10 +10,10 @@
 
     <%= form.email_field :email,
       required: true,
-      placeholder: "Enter your email...",
+      placeholder: t('email_subscribers.form.email_placeholder'),
       class: "px-2 py-1 w-48 sm:w-64 text-sm rounded-l-lg border-r-0"
     %>
 
-    <%= form.submit "Subscribe" %>
+    <%= form.submit t('email_subscribers.form.submit_button') %>
   </fieldset>
 <% end %>

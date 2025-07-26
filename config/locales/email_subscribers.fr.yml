@@ -1,0 +1,8 @@
+fr:
+  email_subscribers:
+    form:
+      subscribe_description: "Abonnez-vous pour recevoir un résumé hebdomadaire des articles dans votre boîte de réception"
+      email_placeholder: "Entrez votre email..."
+      submit_button: "S'abonner"
+  posts:
+    read_more: "Lire la suite"
