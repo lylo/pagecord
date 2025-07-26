@@ -24,6 +24,19 @@
   <% end %>
 
   <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Language</h3>
+    <p>
+      Choose the language for your email subscription form and other interface elements.
+    </p>
+
+    <%= form.select :locale,
+        options_for_select(Blog.available_locales, @blog.locale),
+        {},
+        { class: "mt-4 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm" } %>
+    <%= field_error(@blog, :locale) %>
+  </div>
+
+  <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Search Engine Visibility</h3>
     <p>
       If your blog is on a custom domain, you can opt out of search engine indexing by checking the box below.

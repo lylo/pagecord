@@ -121,4 +121,30 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.valid?
     assert_includes @blog.errors.full_messages, "Google site verification can only contain letters, numbers, underscores, and hyphens"
   end
+
+  test "should validate locale" do
+    @blog.locale = "en"
+    assert @blog.valid?
+
+    @blog.locale = "es"
+    assert @blog.valid?
+
+    @blog.locale = "fr"
+    assert @blog.valid?
+
+    @blog.locale = "de"
+    assert @blog.valid?
+
+    @blog.locale = "invalid"
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Locale invalid is not a supported locale"
+
+    @blog.locale = nil
+    assert_not @blog.valid?
+  end
+
+  test "should have default locale" do
+    new_blog = Blog.new(subdomain: "test", user: users(:joel))
+    assert_equal "en", new_blog.locale
+  end
 end

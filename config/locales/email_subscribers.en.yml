@@ -1,0 +1,8 @@
+en:
+  email_subscribers:
+    form:
+      subscribe_description: "Subscribe to get a weekly digest of posts in your inbox"
+      email_placeholder: "Enter your email..."
+      submit_button: "Subscribe"
+  posts:
+    read_more: "Read more"

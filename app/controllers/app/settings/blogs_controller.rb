@@ -29,7 +29,8 @@ class App::Settings::BlogsController < AppController
         :subdomain,
         :fediverse_author_attribution,
         :allow_search_indexing,
-        :google_site_verification
+        :google_site_verification,
+        :locale
       ]
 
       permitted_params << [

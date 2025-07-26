@@ -29,6 +29,10 @@ module Pagecord
 
     config.active_record.automatically_invert_plural_associations = true
 
+    # Configure available locales
+    config.i18n.available_locales = [ :en, :es, :fr, :de ]
+    config.i18n.default_locale = :en
+
     config.filter_parameters += [ :RawEmail, :Attachments, :HtmlBody, :TextBody, :Headers ]
 
     Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_tags += [ "s", "u", "video", "source" ]

@@ -1,0 +1,8 @@
+de:
+  email_subscribers:
+    form:
+      subscribe_description: "Abonnieren Sie meinen Newsletter, um eine wöchentliche Zusammenfassung meiner Beiträge zu erhalten"
+      email_placeholder: "E-Mail Adresse hier eingeben"
+      submit_button: "Abonnieren"
+  posts:
+    read_more: "Weiterlesen"

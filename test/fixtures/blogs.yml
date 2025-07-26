@@ -2,6 +2,7 @@ DEFAULTS: &default
   theme: base
   width: standard
   font: sans
+  locale: en
 
 joel:
   user: joel

@@ -145,4 +145,26 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_nil @blog.reload.google_site_verification
   end
+
+  test "should update locale" do
+    patch app_settings_blog_url(@blog), params: { blog: { locale: "es" } }
+
+    assert_redirected_to app_settings_path
+    assert_equal "es", @blog.reload.locale
+  end
+
+  test "should not update with invalid locale" do
+    patch app_settings_blog_url(@blog), params: { blog: { locale: "invalid" } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_equal "en", @blog.reload.locale
+  end
+
+  test "should show language section" do
+    get app_settings_blogs_url
+
+    assert_select "h3", { count: 1, text: "Language" }
+    assert_select "select[name='blog[locale]']", count: 1
+    assert_response :success
+  end
 end
