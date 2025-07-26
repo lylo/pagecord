@@ -19,8 +19,8 @@
   <hr>
 
   <p class="digest-footer">
-    You're subscribed to receive new posts from <strong><%= @subscriber.blog.display_name %></strong>.
+    <%= t('email_subscribers.mailers.weekly_digest.footer', blog_name: @subscriber.blog.display_name) %>
     <br><br>
-    <%= link_to "Unsubscribe", email_subscriber_unsubscribe_url_for(@subscriber) %>
+    <%= link_to t('email_subscribers.mailers.weekly_digest.unsubscribe_link'), email_subscriber_unsubscribe_url_for(@subscriber) %>
   </p>
 </div>

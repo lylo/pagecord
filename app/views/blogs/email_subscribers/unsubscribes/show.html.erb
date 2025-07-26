@@ -3,14 +3,14 @@
 <div class="confirmation-card mt-12 text-center max-w-[450px] mx-auto p-8">
   <% if @subscriber.destroyed? %>
     <div class="text-body">
-      You're now unsubscribed from <span class="font-bold"><%= @blog.display_name %></span> 👋
+      <%= t('email_subscribers.unsubscribes.success_message', blog_name: @blog.display_name) %>
     </div>
   <% else %>
     <div class="text-body">
-      To unsubscribe from <span class="font-bold"><%= @blog.display_name %></span>, click the link below.
+      <%= t('email_subscribers.unsubscribes.confirm_message', blog_name: @blog.display_name) %>
     </div>
     <div class="mt-4">
-      <%= button_to "Unsubscribe", email_subscriber_unsubscribe_path(@subscriber.token),
+      <%= button_to t('email_subscribers.unsubscribes.unsubscribe_button'), email_subscriber_unsubscribe_path(@subscriber.token),
           class: "text-meta font-medium underline cursor-pointer",
           data: { turbo: false } %>
     </div>

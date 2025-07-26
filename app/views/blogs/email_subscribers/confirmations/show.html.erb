@@ -2,10 +2,9 @@
 
 <div class="confirmation-card mt-12 text-center max-w-[450px] mx-auto p-8">
   <div class="text-body">
-    Your subscription to <span class="font-bold"><%= @blog.display_name %></span> is confirmed.
-    You'll receive a weekly email digest when new posts are published.
+    <%= t('email_subscribers.confirmations.success_message', blog_name: @blog.display_name) %>
   </div>
   <div class="mt-4">
-    <%= link_to "Unsubscribe", email_subscriber_unsubscribe_path(@subscriber.token), data: { turbo: false }, class: "text-meta font-medium underline" %>
+    <%= link_to t('email_subscribers.confirmations.unsubscribe_link'), email_subscriber_unsubscribe_path(@subscriber.token), data: { turbo: false }, class: "text-meta font-medium underline" %>
   </div>
 </div>

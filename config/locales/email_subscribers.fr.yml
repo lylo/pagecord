@@ -4,5 +4,24 @@ fr:
       subscribe_description: "Abonnez-vous pour recevoir un résumé hebdomadaire des articles dans votre boîte de réception"
       email_placeholder: "Entrez votre email..."
       submit_button: "S'abonner"
+    create:
+      success_message: "Merci de vous être abonné. Sauf si vous êtes déjà abonné, un email de confirmation est en route vers %{email}"
+    confirmations:
+      success_message: "Votre abonnement à %{blog_name} est confirmé. Vous recevrez un résumé hebdomadaire par email lorsque de nouveaux articles seront publiés."
+      unsubscribe_link: "Se désabonner"
+    unsubscribes:
+      success_message: "Vous n'êtes plus abonné à %{blog_name} 👋"
+      confirm_message: "Pour vous désabonner de %{blog_name}, cliquez sur le lien ci-dessous."
+      unsubscribe_button: "Se désabonner"
+      not_found: "Aucun abonnement email trouvé"
+    mailers:
+      confirmation:
+        subject: "Confirmez votre abonnement à %{blog_name}"
+        message: "Veuillez confirmer votre abonnement à %{blog_name}. Si vous n'aviez pas l'intention de vous abonner, vous pouvez ignorer cet email."
+        button: "M'abonner"
+      weekly_digest:
+        subject: "Nouveaux articles de %{blog_name} - %{date}"
+        footer: "Vous êtes abonné pour recevoir de nouveaux articles de %{blog_name}."
+        unsubscribe_link: "Se désabonner"
   posts:
     read_more: "Lire la suite"

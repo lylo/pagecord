@@ -4,5 +4,24 @@ en:
       subscribe_description: "Subscribe to get a weekly digest of posts in your inbox"
       email_placeholder: "Enter your email..."
       submit_button: "Subscribe"
+    create:
+      success_message: "Thanks for subscribing. Unless you're already subscribed, a confirmation email is on its way to %{email}"
+    confirmations:
+      success_message: "Your subscription to %{blog_name} is confirmed. You'll receive a weekly email digest when new posts are published."
+      unsubscribe_link: "Unsubscribe"
+    unsubscribes:
+      success_message: "You're now unsubscribed from %{blog_name} 👋"
+      confirm_message: "To unsubscribe from %{blog_name}, click the link below."
+      unsubscribe_button: "Unsubscribe"
+      not_found: "No email subscription found"
+    mailers:
+      confirmation:
+        subject: "Confirm your subscription to %{blog_name}"
+        message: "Please confirm your subscription to %{blog_name}. If you didn't intend to subscribe, you can ignore this email."
+        button: "Subscribe me"
+      weekly_digest:
+        subject: "New posts from %{blog_name} - %{date}"
+        footer: "You're subscribed to receive new posts from %{blog_name}."
+        unsubscribe_link: "Unsubscribe"
   posts:
     read_more: "Read more"

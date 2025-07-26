@@ -15,7 +15,7 @@ class PostDigestMailer < PostmarkMailer
     mail(
       to: @subscriber.email,
       from: sender_address_for(@subscriber.blog),
-      subject: "New posts from #{@subscriber.blog.display_name} - #{Date.current.to_formatted_s(:long)}"
+      subject: I18n.t("email_subscribers.mailers.weekly_digest.subject", blog_name: @subscriber.blog.display_name, date: Date.current.to_formatted_s(:long))
     )
   end
 

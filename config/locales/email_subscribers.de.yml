@@ -4,9 +4,22 @@ de:
       subscribe_description: "Abonnieren Sie, um wöchentlich eine Zusammenfassung der Beiträge in Ihrem Posteingang zu erhalten"
       email_placeholder: "E-Mail eingeben..."
       submit_button: "Abonnieren"
+    create:
+      success_message: "Danke fürs Abonnieren. Es sei denn, Sie sind bereits abonniert, eine Bestätigungs-E-Mail ist unterwegs an %{email}"
     confirmations:
-      message: "Sie sind bei %{blog_name} abonniert!"
+      success_message: "Ihr Abonnement bei %{blog_name} ist bestätigt. Sie erhalten eine wöchentliche E-Mail-Zusammenfassung, wenn neue Beiträge veröffentlicht werden."
+      unsubscribe_link: "Abmelden"
     unsubscribes:
-      success_message: "Sie haben sich von %{blog_name} abgemeldet."
-      confirm_message: "Sind Sie sicher, dass Sie sich abmelden möchten?"
+      success_message: "Sie sind nun von %{blog_name} abgemeldet 👋"
+      confirm_message: "Um sich von %{blog_name} abzumelden, klicken Sie auf den Link unten."
       unsubscribe_button: "Abmelden"
+      not_found: "Kein E-Mail-Abonnement gefunden"
+    mailers:
+      confirmation:
+        subject: "Bestätigen Sie Ihr Abonnement bei %{blog_name}"
+        message: "Bitte bestätigen Sie Ihr Abonnement bei %{blog_name}. Wenn Sie sich nicht anmelden wollten, können Sie diese E-Mail ignorieren."
+        button: "Abonnieren"
+      weekly_digest:
+        subject: "Neue Beiträge von %{blog_name} - %{date}"
+        footer: "Sie sind abonniert, um neue Beiträge von %{blog_name} zu erhalten."
+        unsubscribe_link: "Abmelden"

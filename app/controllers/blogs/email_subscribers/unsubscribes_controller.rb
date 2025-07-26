@@ -16,7 +16,7 @@ class Blogs::EmailSubscribers::UnsubscribesController < ApplicationController
       if @subscriber = EmailSubscriber.find_by(token: params[:token])
         @blog = @subscriber.blog
       else
-        redirect_to root_path, alert: "No email subscription found" and return
+        redirect_to root_path, alert: I18n.t("email_subscribers.unsubscribes.not_found") and return
       end
     end
 end
