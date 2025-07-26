@@ -1,6 +1,7 @@
 class Blogs::EmailSubscribers::UnsubscribesController < ApplicationController
   before_action :load_subscriber
   skip_before_action :domain_check
+  around_action :set_locale
 
   def show
   end
@@ -18,5 +19,9 @@ class Blogs::EmailSubscribers::UnsubscribesController < ApplicationController
       else
         redirect_to root_path, alert: I18n.t("email_subscribers.unsubscribes.not_found") and return
       end
+    end
+
+    def set_locale(&block)
+      I18n.with_locale(@blog&.locale || I18n.default_locale, &block)
     end
 end

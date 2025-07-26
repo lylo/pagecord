@@ -5,6 +5,8 @@ class EmailSubscriptionConfirmationMailer < MailpaceMailer
   def confirm
     @subscriber = params[:subscriber]
 
-    mail(to: @subscriber.email, subject: I18n.t("email_subscribers.mailers.confirmation.subject", blog_name: @subscriber.blog.display_name))
+    I18n.with_locale(@subscriber.blog.locale) do
+      mail(to: @subscriber.email, subject: I18n.t("email_subscribers.mailers.confirmation.subject", blog_name: @subscriber.blog.display_name))
+    end
   end
 end

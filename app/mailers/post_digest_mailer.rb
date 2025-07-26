@@ -12,11 +12,13 @@ class PostDigestMailer < PostmarkMailer
     @posts = digest.posts.order(published_at: :desc)
     @subscriber = params[:subscriber]
 
-    mail(
-      to: @subscriber.email,
-      from: sender_address_for(@subscriber.blog),
-      subject: I18n.t("email_subscribers.mailers.weekly_digest.subject", blog_name: @subscriber.blog.display_name, date: Date.current.to_formatted_s(:long))
-    )
+    I18n.with_locale(@subscriber.blog.locale) do
+      mail(
+        to: @subscriber.email,
+        from: sender_address_for(@subscriber.blog),
+        subject: I18n.t("email_subscribers.mailers.weekly_digest.subject", blog_name: @subscriber.blog.display_name, date: Date.current.to_formatted_s(:long))
+      )
+    end
   end
 
   private
