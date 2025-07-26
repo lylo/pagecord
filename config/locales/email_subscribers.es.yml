@@ -2,7 +2,7 @@ es:
   email_subscribers:
     form:
       subscribe_description: "Suscríbete para recibir un resumen semanal de las publicaciones en tu bandeja de entrada"
-      email_placeholder: "Ingresa tu email..."
+      email_placeholder: "Introduce tu email..."
       submit_button: "Suscribirse"
     create:
       success_message: "Gracias por suscribirte. A menos que ya estés suscrito, un correo de confirmación está en camino a %{email}"
