@@ -1,8 +1,12 @@
 de:
   email_subscribers:
     form:
-      subscribe_description: "Abonnieren Sie meinen Newsletter, um eine wöchentliche Zusammenfassung meiner Beiträge zu erhalten"
-      email_placeholder: "E-Mail Adresse hier eingeben"
+      subscribe_description: "Abonnieren Sie, um wöchentlich eine Zusammenfassung der Beiträge in Ihrem Posteingang zu erhalten"
+      email_placeholder: "E-Mail eingeben..."
       submit_button: "Abonnieren"
-  posts:
-    read_more: "Weiterlesen"
+    confirmations:
+      message: "Sie sind bei %{blog_name} abonniert!"
+    unsubscribes:
+      success_message: "Sie haben sich von %{blog_name} abgemeldet."
+      confirm_message: "Sind Sie sicher, dass Sie sich abmelden möchten?"
+      unsubscribe_button: "Abmelden"
