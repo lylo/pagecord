@@ -1,7 +1,7 @@
 es:
   email_subscribers:
     form:
-      subscribe_description: "Suscríbete para recibir un resumen semanal de las publicaciones en tu bandeja de entrada"
+      subscribe_description: "Suscríbete para recibir un resumen semanal de los artículos en tu bandeja de entrada"
       email_placeholder: "Introduce tu email..."
       submit_button: "Suscribirse"
     create:
@@ -13,7 +13,7 @@ es:
       success_message: "Ya no estás suscrito a %{blog_name} 👋"
       confirm_message: "Para cancelar tu suscripción a %{blog_name}, haz clic en el enlace de abajo."
       unsubscribe_button: "Cancelar suscripción"
-      not_found: "No se encontró ninguna suscripción con ese email"
+      not_found: "No se encontró ninguna suscripción con ese email  "
     mailers:
       confirmation:
         subject: "Confirma tu suscripción a %{blog_name}"
