@@ -13,7 +13,7 @@ es:
       success_message: "Ya no estás suscrito a %{blog_name} 👋"
       confirm_message: "Para cancelar tu suscripción a %{blog_name}, haz clic en el enlace de abajo."
       unsubscribe_button: "Cancelar suscripción"
-      not_found: "No se encontró suscripción de correo electrónico"
+      not_found: "No se encontró ninguna suscripción con ese email"
     mailers:
       confirmation:
         subject: "Confirma tu suscripción a %{blog_name}"
