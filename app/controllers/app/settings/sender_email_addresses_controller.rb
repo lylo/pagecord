@@ -1,6 +1,6 @@
 class App::Settings::SenderEmailAddressesController < AppController
   before_action :load_sender_email_address, only: [ :verify ]
-  
+
   rate_limit to: 3, within: 1.hour, only: :create, by: -> { Current.user.id }
 
   def create
