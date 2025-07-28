@@ -1,84 +1,75 @@
 module Html
   class ExtractTags < Transformation
-    HASHTAG_REGEX = /#([a-zA-Z0-9-]+)(?=\s|$)/
+    HASHTAG_REGEX = /#([a-zA-Z0-9-]+)(?=\s|$|#)/
 
     def transform(input)
       @tags = []
 
-      if input.include?("<")
-        transform_html(input)
+      # Step 1: Convert to plain text (works for both HTML and plain text)
+      text = ActionText::Content.new(input).to_plain_text
+
+      # Step 2: Extract hashtags from hashtag-only lines at the end
+      extract_tags_from_trailing_lines(text)
+
+      # Step 3: Remove extracted hashtags from original input
+      if @tags.any?
+        result = input.dup
+        @tags.uniq.each do |tag|
+          result = result.gsub(/##{Regexp.escape(tag)}(?=\s|$|#|<)/i, "")
+        end
+        result
       else
-        transform_plaintext(input)
+        input
       end
     end
 
     def tags
-      @tags || []
+      (@tags || []).uniq.sort
     end
 
     private
 
-      def transform_html(html)
-        document = Nokogiri::HTML.fragment(html)
+      def extract_tags_from_trailing_lines(text)
+        lines = text.lines.map(&:chomp)
 
-        # Work backwards through elements to find consecutive hashtag-only elements
-        elements_to_remove = []
-        all_tags = []
+        # Remove empty lines from the end
+        lines.pop while lines.last&.strip&.empty?
 
-        # Get all block-level elements with text content
-        elements = document.css("p, div, span, li").select { |el| el.text.strip.present? }
+        # Extract hashtags from lines at the end
+        while lines.any?
+          line = lines.last.strip
 
-        # Work backwards from the last element
-        elements.reverse_each do |element|
-          text = element.text.strip
+          # Skip empty lines
+          if line.empty?
+            lines.pop
+            next
+          end
 
-          # Check if this element contains only hashtags
-          hashtags = extract_tags(text)
-          text_without_hashtags = text.gsub(HASHTAG_REGEX, "").strip
+          hashtags = extract_hashtags_from_line(line)
 
-          if hashtags.any? && text_without_hashtags.empty?
-            # This element contains only hashtags
-            all_tags.concat(hashtags)
-            elements_to_remove << element
+          if hashtags.any?
+            # Check if line has ONLY hashtags (and maybe invalid hashtags/whitespace)
+            line_without_hashtags = line.gsub(HASHTAG_REGEX, "").strip
+
+            if line_without_hashtags.empty?
+              # Line only had hashtags (and maybe invalid tags), extract them
+              @tags.concat(hashtags)
+              lines.pop
+            else
+              # Line has other content mixed with hashtags, don't extract anything, stop
+              break
+            end
           else
-            # Found non-hashtag content, stop processing
+            # No valid hashtags in this line, stop processing
             break
           end
         end
-
-        # Remove hashtag-only elements and set tags
-        elements_to_remove.each(&:remove)
-        @tags = all_tags.uniq.sort
-
-        document.to_html
       end
 
-      def transform_plaintext(text)
-        lines = text.lines.map(&:strip)
-        tag_lines = []
-
-        # Remove empty lines from the end first
-        lines.pop while lines.last&.empty?
-
-        # Then collect hashtag lines from the end
-        while lines.any? && lines.last.match?(HASHTAG_REGEX)
-          tag_lines.unshift(lines.pop)
-        end
-
-        return text unless tag_lines.any?
-
-        @tags = tag_lines.flat_map { |line| extract_tags(line) }.uniq.sort
-        lines.join("\n").strip
-      end
-
-      def extract_tags(text)
-        # Extract potential hashtags and then validate them
-        potential_tags = text.scan(HASHTAG_REGEX).flatten
-
-        # Filter to only valid tags using the shared validation from Taggable
+      def extract_hashtags_from_line(line)
+        potential_tags = line.scan(HASHTAG_REGEX).flatten
         valid_tags = potential_tags.select { |tag| tag.match?(Taggable::VALID_TAG_FORMAT) }
-
-        valid_tags.map(&:downcase).uniq.sort
+        valid_tags.map(&:downcase)
       end
   end
 end

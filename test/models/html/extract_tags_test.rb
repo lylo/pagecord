@@ -65,15 +65,21 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
   end
 
   test "should filter out invalid tag formats" do
-    html = "Content here.\n\n#valid-tag #invalid! #another-valid #invalid@tag"
-    result = @transformer.transform(html)
+    html = "Content here.\n\n#valid-tag #another-valid"
+    @transformer.transform(html)
 
     assert_equal [ "another-valid", "valid-tag" ], @transformer.tags
+
+    # Test that lines with mixed valid and invalid hashtags don't extract anything
+    transformer2 = Html::ExtractTags.new
+    html_mixed = "Content here.\n\n#valid-tag #invalid! #another-valid #invalid@tag"
+    transformer2.transform(html_mixed)
+    assert_equal [], transformer2.tags # Should extract nothing due to invalid tags
   end
 
   test "should remove duplicate tags" do
     html = "Content here.\n\n#ruby #rails #ruby #javascript #rails"
-    result = @transformer.transform(html)
+    @transformer.transform(html)
 
     assert_equal [ "javascript", "rails", "ruby" ], @transformer.tags
   end
@@ -141,5 +147,27 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
     assert_includes result, "More content"
     assert_includes result, "#tag1" # This should remain since it's not at the end
     assert_not_includes result, "#tag2" # This should be removed
+  end
+
+  test "should extract hashtags mixed with content in same element" do
+    html = "<div>This is content with hashtags at the end<br><br>#test #rails<br>#programming</div>"
+    result = @transformer.transform(html)
+
+    assert_equal [ "programming", "rails", "test" ], @transformer.tags
+    assert_includes result, "This is content with hashtags at the end"
+    assert_not_includes result, "#test"
+    assert_not_includes result, "#rails"
+    assert_not_includes result, "#programming"
+  end
+
+  test "should handle hashtags without spaces between them" do
+    html = "<div>Some content</div><div>#tag1#tag2 #tag3</div>"
+    result = @transformer.transform(html)
+
+    assert_equal [ "tag1", "tag2", "tag3" ], @transformer.tags
+    assert_includes result, "Some content"
+    assert_not_includes result, "#tag1"
+    assert_not_includes result, "#tag2"
+    assert_not_includes result, "#tag3"
   end
 end
