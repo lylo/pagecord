@@ -33,6 +33,7 @@ class PostsMailbox < ApplicationMailbox
             content: content,
             raw_content: mail.raw_source,
             attachments: parser.attachments,
+            tag_list: parser.tags,
             published_at: mail.date)
         end
       rescue => e

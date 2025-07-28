@@ -8,16 +8,20 @@ class MailParser
     @attachments = []
     store_attachments if process_attachments
 
+    @extract_tags = Html::ExtractTags.new
+
     @html_pipeline = [
       Html::BodyExtraction.new,
       Html::MonospaceDetection.new,
       Html::ImageUnfurl.new,
       Html::InlineAttachments.new(@attachments),
+      @extract_tags,
       Html::Sanitize.new
     ]
 
     @plain_text_pipeline = [
       Html::PlainTextToHtml.new,
+      @extract_tags,
       Html::ImageUnfurl.new
     ]
   end
@@ -36,6 +40,12 @@ class MailParser
 
   def has_attachments?
     !attachments.empty?
+  end
+
+  def tags
+    # Ensure body has been parsed to extract tags
+    body if @extract_tags
+    @extract_tags&.tags || []
   end
 
   def is_blank?
