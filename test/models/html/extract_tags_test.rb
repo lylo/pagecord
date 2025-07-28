@@ -59,7 +59,7 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
 
   test "should normalize tag case and sort tags" do
     html = "Content here.\n\n#Ruby #RAILS #javascript"
-    result = @transformer.transform(html)
+    @transformer.transform(html)
 
     assert_equal [ "javascript", "rails", "ruby" ], @transformer.tags
   end
@@ -70,11 +70,10 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
 
     assert_equal [ "another-valid", "valid-tag" ], @transformer.tags
 
-    # Test that lines with mixed valid and invalid hashtags don't extract anything
-    transformer2 = Html::ExtractTags.new
+    transformer = Html::ExtractTags.new
     html_mixed = "Content here.\n\n#valid-tag #invalid! #another-valid #invalid@tag"
-    transformer2.transform(html_mixed)
-    assert_equal [], transformer2.tags # Should extract nothing due to invalid tags
+    transformer.transform(html_mixed)
+    assert_equal [ "another-valid", "valid-tag" ], transformer.tags
   end
 
   test "should remove duplicate tags" do
@@ -96,7 +95,6 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
     result = @transformer.transform(html)
 
     assert_equal [ "programming", "rails", "ruby" ], @transformer.tags
-    # Result should be empty or minimal after removing hashtags
     assert result.strip.empty? || result.strip == "<br>" || result.strip == "<p></p>"
   end
 
@@ -120,7 +118,6 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
     assert_not_includes result, "#rails"
     assert_not_includes result, "#programming"
 
-    # Should preserve the original content and empty div but remove hashtag divs
     assert_includes result, "<div>This is a test</div>"
     assert_includes result, "<div><br></div>"
   end
@@ -141,12 +138,11 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
     html = "<div>Content</div><div>#tag1</div><div>More content</div><div>#tag2</div>"
     result = @transformer.transform(html)
 
-    # Should only extract #tag2 since #tag1 is not at the end (there's "More content" after it)
     assert_equal [ "tag2" ], @transformer.tags
     assert_includes result, "Content"
     assert_includes result, "More content"
-    assert_includes result, "#tag1" # This should remain since it's not at the end
-    assert_not_includes result, "#tag2" # This should be removed
+    assert_includes result, "#tag1"
+    assert_not_includes result, "#tag2"
   end
 
   test "should extract hashtags mixed with content in same element" do
@@ -169,5 +165,39 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
     assert_not_includes result, "#tag1"
     assert_not_includes result, "#tag2"
     assert_not_includes result, "#tag3"
+  end
+
+  test "should extract valid hashtags from lines with mixed valid and invalid formats" do
+    html = "Content here.\n\n#ruby #rails! #javascript #invalid@tag #python"
+    result = @transformer.transform(html)
+
+    assert_equal [ "javascript", "python", "ruby" ], @transformer.tags
+
+    assert_not_includes result, "#ruby"
+    assert_not_includes result, "#javascript"
+    assert_not_includes result, "#python"
+
+    assert_includes result, "Content here"
+    assert_includes result, "#rails!"
+    assert_includes result, "#invalid@tag"
+  end
+
+  test "should not extract hashtags when mixed with non-hashtag content" do
+    html = "Content here.\n\nCheck this out #ruby #rails"
+    result = @transformer.transform(html)
+
+    assert_equal [], @transformer.tags
+    assert_equal html, result
+  end
+
+  test "should handle edge cases with hashtag-like patterns" do
+    transformer = Html::ExtractTags.new
+    html1 = "Content here.\n\n#valid #123valid #another-valid #@symbol"
+    transformer.transform(html1)
+    assert_equal [ "123valid", "another-valid", "valid" ], transformer.tags
+
+    html2 = "Content here.\n\n#invalid! #@symbol #$money"
+    transformer.transform(html2)
+    assert_equal [], transformer.tags
   end
 end

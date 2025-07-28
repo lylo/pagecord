@@ -48,11 +48,9 @@ module Html
           hashtags = extract_hashtags_from_line(line)
 
           if hashtags.any?
-            # Check if line has ONLY hashtags (and maybe invalid hashtags/whitespace)
-            line_without_hashtags = line.gsub(HASHTAG_REGEX, "").strip
-
-            if line_without_hashtags.empty?
-              # Line only had hashtags (and maybe invalid tags), extract them
+            # Check if line contains ONLY hashtag-like patterns (valid and invalid)
+            if line.strip.match?(/\A\s*(#\S+\s*)+\z/)
+              # Line contains only hashtag-like patterns, extract the valid ones
               @tags.concat(hashtags)
               lines.pop
             else
