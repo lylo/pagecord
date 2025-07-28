@@ -32,4 +32,52 @@ class TrimmableTest < ActiveSupport::TestCase
 
     assert_equal "<div><p>this is some text<br><br>this is more text</p></div>", post.content.to_s.strip
   end
+
+  test "should remove empty divs after hashtag extraction" do
+    post = posts(:two)
+    post.content = "<div>This is a test</div><div><br></div><div></div>"
+    post.save!
+
+    assert_equal "<div>This is a test</div>", post.content.to_s.strip
+  end
+
+  test "should not remove divs with actual content" do
+    post = posts(:two)
+    post.content = "<div>This is a test</div><div><span>Keep this</span></div><div>And this</div>"
+    post.save!
+
+    assert_equal "<div>This is a test</div><div><span>Keep this</span></div><div>And this</div>", post.content.to_s.strip
+  end
+
+  test "should not remove divs with images or other elements" do
+    post = posts(:two)
+    post.content = "<div>This is a test</div><div><img src='test.jpg'></div><div><br></div><div></div>"
+    post.save!
+
+    assert_equal "<div>This is a test</div><div><img src=\"test.jpg\"></div>", post.content.to_s.strip
+  end
+
+  test "should remove divs with multiple br tags" do
+    post = posts(:two)
+    post.content = "<div>This is a test</div><div><br><br><br></div><div><br></div><div></div>"
+    post.save!
+
+    assert_equal "<div>This is a test</div>", post.content.to_s.strip
+  end
+
+  test "should not remove divs with br tags followed by content" do
+    post = posts(:two)
+    post.content = "<div>This is a test</div><div><br><br>Keep this content</div><div><br></div><div></div>"
+    post.save!
+
+    assert_equal "<div>This is a test</div><div><br><br>Keep this content</div>", post.content.to_s.strip.gsub("\n", "")
+  end
+
+  test "should not remove divs with content followed by br tags" do
+    post = posts(:two)
+    post.content = "<div>This is a test</div><div>Keep this content<br><br></div><div><br></div><div></div>"
+    post.save!
+
+    assert_equal "<div>This is a test</div><div>Keep this content</div>", post.content.to_s.strip
+  end
 end
