@@ -3,6 +3,9 @@
 module Taggable
   extend ActiveSupport::Concern
 
+  # Valid tag format: letters, numbers, and hyphens only
+  VALID_TAG_FORMAT = /\A[a-zA-Z0-9-]+\z/
+
   included do
     validates :tag_list, presence: true, allow_blank: true
     validate :validate_tag_format
@@ -65,6 +68,6 @@ module Taggable
   end
 
   def valid_tag_format?(tag)
-    tag.match?(/\A[a-zA-Z0-9-]+\z/)
+    tag.match?(VALID_TAG_FORMAT)
   end
 end

@@ -75,8 +75,8 @@ module Html
         # Extract potential hashtags and then validate them
         potential_tags = text.scan(HASHTAG_REGEX).flatten
 
-        # Filter to only valid tags (letters, numbers, hyphens only)
-        valid_tags = potential_tags.select { |tag| tag.match?(/\A[a-zA-Z0-9-]+\z/) }
+        # Filter to only valid tags using the shared validation from Taggable
+        valid_tags = potential_tags.select { |tag| tag.match?(Taggable::VALID_TAG_FORMAT) }
 
         valid_tags.map(&:downcase).uniq.sort
       end
