@@ -1,40 +1,40 @@
 fr:
   email_subscribers:
     form:
-      subscribe_description: "Abonnez-vous pour recevoir un résumé hebdomadaire des articles dans votre boîte de réception"
-      email_placeholder: "Entrez votre email..."
+      subscribe_description: "Abonne-toi pour recevoir un résumé hebdomadaire des articles dans ta boîte de réception"
+      email_placeholder: "Entre ton email..."
       submit_button: "S'abonner"
     create:
-      success_message: "Merci de vous être abonné. Sauf si vous êtes déjà abonné, un email de confirmation est en route vers %{email}"
+      success_message: "Merci de t'être abonné. Sauf si tu es déjà abonné, un email de confirmation est en route vers %{email}"
     confirmations:
-      success_message: "Votre abonnement à %{blog_name} est confirmé. Vous recevrez un résumé hebdomadaire par email lorsque de nouveaux articles seront publiés."
+      success_message: "Ton abonnement à %{blog_name} est confirmé. Tu recevras un résumé hebdomadaire par email lorsque de nouveaux articles seront publiés."
       unsubscribe_link: "Se désabonner"
     unsubscribes:
-      success_message: "Vous n'êtes plus abonné à %{blog_name} 👋"
-      confirm_message: "Pour vous désabonner de %{blog_name}, cliquez sur le lien ci-dessous."
+      success_message: "Tu n'es plus abonné à %{blog_name} 👋"
+      confirm_message: "Pour te désabonner de %{blog_name}, clique sur le lien ci-dessous."
       unsubscribe_button: "Se désabonner"
       not_found: "Aucun abonnement email trouvé"
     mailers:
       confirmation:
-        subject: "Confirmez votre abonnement à %{blog_name}"
-        message: "Veuillez confirmer votre abonnement à %{blog_name}. Si vous n'aviez pas l'intention de vous abonner, vous pouvez ignorer cet email."
+        subject: "Confirme ton abonnement à %{blog_name}"
+        message: "Confirme ton abonnement à %{blog_name}. Si tu n'avais pas l'intention de t'abonner, tu peux ignorer cet email."
         button: "M'abonner"
       weekly_digest:
         subject: "Nouveaux articles de %{blog_name} - %{date}"
-        footer: "Vous êtes abonné pour recevoir de nouveaux articles de %{blog_name}."
+        footer: "Tu es abonné pour recevoir de nouveaux articles de %{blog_name}."
         unsubscribe_link: "Se désabonner"
   posts:
     read_more: "Lire la suite"
   replies:
     form:
-      name_label: "Votre Nom"
-      email_label: "Votre Email"
+      name_label: "Ton Nom"
+      email_label: "Ton Email"
       subject_label: "Sujet"
       message_label: "Message"
       submit_button: "Envoyer la Réponse"
       cancel_link: "Annuler"
     mailer:
-      intro: "Super ! Quelqu'un a répondu à votre article"
+      intro: "Super ! Quelqu'un a répondu à ton article"
       from_label: "De"
-      footer: "Répondez à cet email pour répondre à %{name}."
-      footer_text: "Pour répondre à %{name}, répondez simplement à cet email."
+      footer: "Réponds à cet email pour contacter %{name}."
+      footer_text: "Pour contacter %{name}, réponds simplement à cet email."
