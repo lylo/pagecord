@@ -49,6 +49,10 @@ every :day, at: "5:00 am" do
   rake "subscriptions:send_renewal_reminders"
 end
 
+every 1.week, at: "6:00 am" do
+  rake "posts:clear_old_raw_content"
+end
+
 # every hour on a Tuesday
 every "0 * * * 2" do
   rake "post_digests:deliver"
