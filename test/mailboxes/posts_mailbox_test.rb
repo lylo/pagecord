@@ -359,6 +359,41 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_includes post.content.to_plain_text, "This is a regular post without any hashtags."
   end
 
+  test "should extract hashtags from HTML email with multiple div elements" do
+    user = users(:joel)
+
+    html_body = <<~HTML
+      <div>This is a test</div>
+      <div><br></div>
+      <div>#test #rails</div>
+      <div>#programming</div>
+      <div><br></div>
+    HTML
+
+    assert_difference -> { user.blog.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.blog.delivery_email,
+        from: user.email,
+        reply_to: user.email,
+        subject: "Tags across multiple divs",
+        body: html_body do |mail|
+          mail.content_type = "text/html"
+          mail.header["Received-SPF"] = "pass"
+      end
+    end
+
+    post = user.blog.posts.last
+    assert_equal "Tags across multiple divs", post.title
+    assert_equal [ "programming", "rails", "test" ], post.tag_list
+
+    # Tags should be removed from content
+    content_text = post.content.to_plain_text.strip
+    assert_not_includes content_text, "#test"
+    assert_not_includes content_text, "#rails"
+    assert_not_includes content_text, "#programming"
+    assert_includes content_text, "This is a test"
+  end
+
   test "should ignore hashtags in the middle of content" do
     user = users(:joel)
 

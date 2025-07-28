@@ -103,4 +103,43 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
     assert_not_includes result, "#tag1"
     assert_not_includes result, "#tag2"
   end
+
+  test "should extract hashtags from multiple consecutive HTML elements" do
+    html = "<div>This is a test</div><div><br></div><div>#test #rails</div><div>#programming</div><div><br></div>"
+    result = @transformer.transform(html)
+
+    assert_equal [ "programming", "rails", "test" ], @transformer.tags
+    assert_includes result, "This is a test"
+    assert_not_includes result, "#test"
+    assert_not_includes result, "#rails"
+    assert_not_includes result, "#programming"
+
+    # Should preserve the original content and empty div but remove hashtag divs
+    assert_includes result, "<div>This is a test</div>"
+    assert_includes result, "<div><br></div>"
+  end
+
+  test "should handle mixed content and hashtag elements" do
+    html = "<p>Regular content</p><p>More content</p><p>#tag1 #tag2</p><p>#tag3</p>"
+    result = @transformer.transform(html)
+
+    assert_equal [ "tag1", "tag2", "tag3" ], @transformer.tags
+    assert_includes result, "Regular content"
+    assert_includes result, "More content"
+    assert_not_includes result, "#tag1"
+    assert_not_includes result, "#tag2"
+    assert_not_includes result, "#tag3"
+  end
+
+  test "should stop at first non-hashtag element when working backwards" do
+    html = "<div>Content</div><div>#tag1</div><div>More content</div><div>#tag2</div>"
+    result = @transformer.transform(html)
+
+    # Should only extract #tag2 since #tag1 is not at the end (there's "More content" after it)
+    assert_equal [ "tag2" ], @transformer.tags
+    assert_includes result, "Content"
+    assert_includes result, "More content"
+    assert_includes result, "#tag1" # This should remain since it's not at the end
+    assert_not_includes result, "#tag2" # This should be removed
+  end
 end
