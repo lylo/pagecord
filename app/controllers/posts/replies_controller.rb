@@ -22,7 +22,7 @@ class Posts::RepliesController < Blogs::BaseController
     if @reply.save
       SendPostReplyJob.perform_later(@reply.id)
 
-      redirect_to view_context.post_path(@post), notice: "Reply sent successfully!"
+      redirect_to view_context.post_path(@post), notice: I18n.t("replies.success_message")
     else
       render :new, status: :unprocessable_entity
     end

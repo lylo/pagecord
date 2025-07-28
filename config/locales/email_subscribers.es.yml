@@ -33,6 +33,7 @@ es:
       message_label: "Mensaje"
       submit_button: "Enviar Respuesta"
       cancel_link: "Cancelar"
+    success_message: "¡Respuesta enviada con éxito!"
     mailer:
       intro: "¡Genial! Alguien respondió a tu publicación"
       from_label: "De"

@@ -33,6 +33,7 @@ en:
       message_label: "Message"
       submit_button: "Send Reply"
       cancel_link: "Cancel"
+    success_message: "Reply sent successfully!"
     mailer:
       intro: "Yay! Somebody replied to your post"
       from_label: "From"
