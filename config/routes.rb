@@ -111,7 +111,15 @@ Rails.application.routes.draw do
           get "verify/:token", to: "email_change_requests#verify", as: :verify
         end
       end
+
       resources :exports
+
+      resources :sender_email_addresses, only: [ :create, :destroy ] do
+        collection do
+          get "verify/:token", to: "sender_email_addresses#verify", as: :verify
+          post "resend", to: "sender_email_addresses#resend", as: :resend
+        end
+      end
 
       get "/account/edit", to: "account#edit"
 

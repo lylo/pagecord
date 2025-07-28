@@ -419,6 +419,57 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_not_includes content_text, "#coding"
   end
 
+  test "should receive email from verified sender email address" do
+    user = users(:joel)
+    sender_email_address = user.blog.sender_email_addresses.first
+
+    assert_difference -> { user.blog.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.blog.delivery_email,
+        from: sender_email_address.email,
+        reply_to: sender_email_address.email,
+        subject: "Post from verified sender email",
+        body: "This should work!"
+    end
+
+    assert_equal "Post from verified sender email", user.blog.posts.last.title
+    assert_equal "<p>This should work!</p>", user.blog.posts.last.content.to_s.strip
+  end
+
+  test "should not receive email from unverified sender email address" do
+    user = users(:joel)
+    sender_email = "unverified@example.com"
+
+    user.blog.sender_email_addresses.create!(email: sender_email)
+
+    Sentry.expects(:capture_message)
+
+    assert_difference -> { user.blog.posts.count }, 0 do
+      receive_inbound_email_from_mail \
+        to: user.blog.delivery_email,
+        from: sender_email,
+        reply_to: sender_email,
+        subject: "Post from unverified sender",
+        body: "This should not work!"
+    end
+  end
+
+  test "should not receive email from non-existent sender email address" do
+    user = users(:joel)
+    sender_email = "nonexistent@example.com"
+
+    Sentry.expects(:capture_message)
+
+    assert_difference -> { user.blog.posts.count }, 0 do
+      receive_inbound_email_from_mail \
+        to: user.blog.delivery_email,
+        from: sender_email,
+        reply_to: sender_email,
+        subject: "Post from non-existent sender",
+        body: "This should not work!"
+    end
+  end
+
   private
 
     def format_html(html)

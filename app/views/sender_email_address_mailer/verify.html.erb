@@ -1,0 +1,25 @@
+<p>Hi 👋</p>
+
+<p>Your email address (<strong><%= @sender_email_address.email %></strong>) has been added as a sender address for <strong><%= @blog.display_name %></strong>. Please click the link below to accept this request:</p>
+
+<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="padding-top:5px; padding-bottom:5px;">
+  <tbody>
+    <tr>
+      <td align="center">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td>
+                <%= link_to "Verify this email address", verify_app_settings_sender_email_addresses_url(token: @sender_email_address.token_digest) %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  This link will expire in 24 hours. If you've decided not to add this sender email address after all, you can just ignore this email.
+</p>

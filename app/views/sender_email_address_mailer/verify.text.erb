@@ -1,0 +1,7 @@
+Hi 👋
+
+Your email address (<%= @sender_email_address.email %>) has been added as a sender address for <%= @blog.display_name %>. Please click the link below to accept this request:
+
+<%= verify_app_settings_sender_email_addresses_url(token: @sender_email_address.token_digest) %>
+
+This link will expire in 24 hours. If you've decided not to add this sender email address after all, you can just ignore this email.

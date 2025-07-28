@@ -1,0 +1,5 @@
+joel:
+  blog: joel
+  email: joel@iamjoel.com
+  token_digest: jistduy239adye7
+  accepted_at: <%= 3.hours.ago %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_06_26_150141) do
+ActiveRecord::Schema[8.1].define(version: 2025_07_28_163204) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -251,6 +251,20 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_26_150141) do
     t.index ["token"], name: "index_posts_on_token", unique: true
   end
 
+  create_table "sender_email_addresses", force: :cascade do |t|
+    t.datetime "accepted_at"
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.datetime "expires_at"
+    t.string "token_digest"
+    t.datetime "updated_at", null: false
+    t.index ["blog_id", "email"], name: "index_sender_email_addresses_on_blog_id_and_email", unique: true
+    t.index ["blog_id"], name: "index_sender_email_addresses_on_blog_id"
+    t.index ["expires_at"], name: "index_sender_email_addresses_on_expires_at"
+    t.index ["token_digest"], name: "index_sender_email_addresses_on_token_digest", unique: true
+  end
+
   create_table "social_links", force: :cascade do |t|
     t.bigint "blog_id", null: false
     t.datetime "created_at", null: false
@@ -323,6 +337,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_26_150141) do
   add_foreign_key "post_digests", "blogs"
   add_foreign_key "post_replies", "posts"
   add_foreign_key "posts", "blogs"
+  add_foreign_key "sender_email_addresses", "blogs"
   add_foreign_key "social_links", "blogs"
   add_foreign_key "subscription_renewal_reminders", "subscriptions"
   add_foreign_key "subscriptions", "users"
