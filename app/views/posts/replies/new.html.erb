@@ -16,7 +16,7 @@
 
   <div class="md:flex md:space-x-4 space-y-6 md:space-y-0">
     <div class="md:flex-1">
-      <%= form.label :name, "Your Name", class: "block mb-1" %>
+      <%= form.label :name, t('replies.form.name_label'), class: "block mb-1" %>
       <%= form.text_field :name, class: "block w-full rounded-md", required: true, autofocus: true %>
       <% if @reply.errors[:name].any? %>
         <span class="text-red-500 text-sm"><%= @reply.errors.full_messages_for(:name).first %></span>
@@ -24,7 +24,7 @@
     </div>
 
     <div class="md:flex-1">
-      <%= form.label :email, "Your Email", class: "block mb-1" %>
+      <%= form.label :email, t('replies.form.email_label'), class: "block mb-1" %>
       <%= form.email_field :email, class: "block w-full rounded-md", required: true %>
       <% if @reply.errors[:email].any? %>
         <span class="text-red-500 text-sm"><%= @reply.errors.full_messages_for(:email).first %></span>
@@ -33,7 +33,7 @@
   </div>
 
   <div class="md:flex-1">
-    <%= form.label :subject, "Subject", class: "block mb-1" %>
+    <%= form.label :subject, t('replies.form.subject_label'), class: "block mb-1" %>
     <%= form.text_field :subject, class: "block w-full rounded-md", required: true %>
     <% if @reply.errors[:subject].any? %>
       <span class="text-red-500 text-sm"><%= @reply.errors.full_messages_for(:subject).first %></span>
@@ -41,7 +41,7 @@
   </div>
 
   <div class="md:flex-1">
-    <%= form.label :message, "Message", class: "block mb-1" %>
+    <%= form.label :message, t('replies.form.message_label'), class: "block mb-1" %>
     <%= form.text_area :message, rows: 6, class: "block w-full rounded-md", required: true %>
     <% if @reply.errors[:message].any? %>
       <span class="text-red-500 text-sm"><%= @reply.errors.full_messages_for(:message).first %></span>
@@ -49,8 +49,8 @@
   </div>
 
   <div class="flex">
-    <%= form.submit "Send Reply", class: "btn-primary" %>
-    <%= link_to "Cancel", post_path(@post), class: "btn-secondary" %>
+    <%= form.submit t('replies.form.submit_button'), class: "btn-primary" %>
+    <%= link_to t('replies.form.cancel_link'), post_path(@post), class: "btn-secondary" %>
   </div>
 <% end %>
 </div>

@@ -25,3 +25,16 @@ es:
         unsubscribe_link: "Cancelar suscripción"
   posts:
     read_more: "Leer más"
+  replies:
+    form:
+      name_label: "Tu Nombre"
+      email_label: "Tu Email"
+      subject_label: "Asunto"
+      message_label: "Mensaje"
+      submit_button: "Enviar Respuesta"
+      cancel_link: "Cancelar"
+    mailer:
+      intro: "¡Genial! Alguien respondió a tu publicación"
+      from_label: "De"
+      footer: "Responde a este email para contestar a %{name}."
+      footer_text: "Para responder a %{name}, simplemente responde a este email."

@@ -1,12 +1,12 @@
-Yay! Somebody replied to your post: <%= @post.display_title %>
+<%= t('replies.mailer.intro') %>: <%= @post.display_title %>
 
-From:
+<%= t('replies.mailer.from_label') %>:
 <%= @reply.name %> (<%= @reply.email %>)
 
-Subject:
+<%= t('replies.form.subject_label') %>:
 <%= @reply.subject %>
 
-Message:
+<%= t('replies.form.message_label') %>:
 <%= @reply.message %>
 
-To respond to <%= @reply.name %>, simply reply to this email.
+<%= t('replies.mailer.footer_text', name: @reply.name) %>

@@ -23,3 +23,18 @@ de:
         subject: "Neue Beiträge von %{blog_name} - %{date}"
         footer: "Sie sind abonniert, um neue Beiträge von %{blog_name} zu erhalten."
         unsubscribe_link: "Abmelden"
+  posts:
+    read_more: "Weiterlesen"
+  replies:
+    form:
+      name_label: "Ihr Name"
+      email_label: "Ihre E-Mail"
+      subject_label: "Betreff"
+      message_label: "Nachricht"
+      submit_button: "Antwort Senden"
+      cancel_link: "Abbrechen"
+    mailer:
+      intro: "Toll! Jemand hat auf Ihren Beitrag geantwortet"
+      from_label: "Von"
+      footer: "Antworten Sie auf diese E-Mail, um %{name} zu antworten."
+      footer_text: "Um %{name} zu antworten, antworten Sie einfach auf diese E-Mail."
