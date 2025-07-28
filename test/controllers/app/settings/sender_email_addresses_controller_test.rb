@@ -98,4 +98,42 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
     assert_redirected_to app_settings_account_edit_path
     assert_match "Invalid or expired verification link", flash[:alert]
   end
+
+  test "should verify sender email address when logged out" do
+    sender = @blog.sender_email_addresses.create!(email: "sender@example.com")
+    
+    # Sign out user
+    delete logout_path
+    
+    get verify_app_settings_sender_email_addresses_path(token: sender.token_digest)
+
+    assert_redirected_to login_path
+    assert_match "Sender email address has been verified", flash[:notice]
+
+    sender.reload
+    assert sender.accepted?
+  end
+
+  test "should verify sender email address when logged in" do
+    sender = @blog.sender_email_addresses.create!(email: "sender@example.com")
+    
+    # User is already logged in from setup
+    get verify_app_settings_sender_email_addresses_path(token: sender.token_digest)
+
+    assert_redirected_to app_settings_account_edit_path
+    assert_match "Sender email address has been verified", flash[:notice]
+
+    sender.reload
+    assert sender.accepted?
+  end
+
+  test "should redirect to login for invalid token when logged out" do
+    # Sign out user
+    delete logout_path
+    
+    get verify_app_settings_sender_email_addresses_path(token: "invalid_token")
+
+    assert_redirected_to login_path
+    assert_match "Invalid or expired verification link", flash[:alert]
+  end
 end
