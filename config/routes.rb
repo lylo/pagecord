@@ -117,7 +117,6 @@ Rails.application.routes.draw do
       resources :sender_email_addresses, only: [ :create, :destroy ] do
         collection do
           get "verify/:token", to: "sender_email_addresses#verify", as: :verify
-          post "resend", to: "sender_email_addresses#resend", as: :resend
         end
       end
 

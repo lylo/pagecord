@@ -1,5 +1,5 @@
 class App::Settings::SenderEmailAddressesController < AppController
-  before_action :load_sender_email_address, only: [ :resend, :verify ]
+  before_action :load_sender_email_address, only: [ :verify ]
 
   def create
     @sender_email_address = @blog.sender_email_addresses.new(sender_email_address_params)
@@ -9,16 +9,6 @@ class App::Settings::SenderEmailAddressesController < AppController
       redirect_to app_settings_account_edit_path, notice: "Verification email has been sent to #{@sender_email_address.email}."
     else
       redirect_to app_settings_account_edit_path, alert: @sender_email_address.errors.full_messages.join(", ")
-    end
-  end
-
-  def resend
-    if @sender_email_address && !@sender_email_address.accepted? && !@sender_email_address.expired?
-      send_verification_email(@sender_email_address)
-
-      redirect_to app_settings_account_edit_path, notice: "Verification email has been resent to #{@sender_email_address.email}."
-    else
-      redirect_to app_settings_account_edit_path, alert: "Sender email address has already been processed."
     end
   end
 

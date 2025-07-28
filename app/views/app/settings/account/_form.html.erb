@@ -99,11 +99,6 @@
             </div>
           </div>
           <div class="flex items-center gap-2 ml-4">
-            <% unless sender.accepted? %>
-              <%= button_to resend_app_settings_sender_email_addresses_path(token: sender.token_digest), method: :post, class: "text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 underline cursor-pointer", form: { data: { turbo: false } } do %>
-                Resend
-              <% end %>
-            <% end %>
             <%= button_to app_settings_sender_email_address_path(sender), method: :delete, class: "p-1 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 transition-colors cursor-pointer", title: "Remove sender email address", data: { turbo_confirm: "Are you sure you want to remove this sender email address?" } do %>
               <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 mt-1" %>
             <% end %>

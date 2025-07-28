@@ -56,39 +56,6 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
     assert_match "has already been taken", flash[:alert]
   end
 
-  test "should resend verification email for unverified address" do
-    sender = @blog.sender_email_addresses.create!(email: "sender@example.com")
-
-    assert_emails 1 do
-      post resend_app_settings_sender_email_addresses_path, params: { token: sender.token_digest }
-    end
-
-    assert_redirected_to app_settings_account_edit_path
-    assert_match "Verification email has been resent to sender@example.com", flash[:notice]
-  end
-
-  test "should not resend verification email for verified address" do
-    @blog.sender_email_addresses.create!(
-      email: "sender@example.com",
-      accepted_at: Time.current
-    )
-
-    assert_no_emails do
-      post resend_app_settings_sender_email_addresses_path, params: { token: "invalid_token" }
-    end
-
-    assert_redirected_to app_settings_account_edit_path
-    assert_match "already been processed", flash[:alert]
-  end
-
-  test "should not resend verification email with invalid token" do
-    assert_no_emails do
-      post resend_app_settings_sender_email_addresses_path, params: { token: "invalid_token" }
-    end
-
-    assert_redirected_to app_settings_account_edit_path
-    assert_match "already been processed", flash[:alert]
-  end
 
   test "should destroy sender email address" do
     sender = @blog.sender_email_addresses.create!(email: "sender@example.com")
