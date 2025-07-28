@@ -1,40 +1,40 @@
 de:
   email_subscribers:
     form:
-      subscribe_description: "Abonnieren Sie, um wöchentlich eine Zusammenfassung der Beiträge in Ihrem Posteingang zu erhalten"
+      subscribe_description: "Abonniere den Newsletter, um wöchentlich eine Zusammenfassung der Beiträge in Ihrem Posteingang zu erhalten"
       email_placeholder: "E-Mail eingeben..."
       submit_button: "Abonnieren"
     create:
-      success_message: "Danke fürs Abonnieren. Es sei denn, Sie sind bereits abonniert, eine Bestätigungs-E-Mail ist unterwegs an %{email}"
+      success_message: "Danke fürs Abonnieren. Eine Bestätigungs-E-Mail ist unterwegs an %{email}"
     confirmations:
-      success_message: "Ihr Abonnement bei %{blog_name} ist bestätigt. Sie erhalten eine wöchentliche E-Mail-Zusammenfassung, wenn neue Beiträge veröffentlicht werden."
+      success_message: "Dein Abonnement bei %{blog_name} ist bestätigt. Du erhältst eine wöchentliche E-Mail-Zusammenfassung, wenn neue Beiträge veröffentlicht werden."
       unsubscribe_link: "Abmelden"
     unsubscribes:
-      success_message: "Sie sind nun von %{blog_name} abgemeldet 👋"
-      confirm_message: "Um sich von %{blog_name} abzumelden, klicken Sie auf den Link unten."
+      success_message: "Du bist nun von %{blog_name} abgemeldet 👋"
+      confirm_message: "Um dich von %{blog_name} abzumelden, klicke auf den Link unten."
       unsubscribe_button: "Abmelden"
       not_found: "Kein E-Mail-Abonnement gefunden"
     mailers:
       confirmation:
-        subject: "Bestätigen Sie Ihr Abonnement bei %{blog_name}"
-        message: "Bitte bestätigen Sie Ihr Abonnement bei %{blog_name}. Wenn Sie sich nicht anmelden wollten, können Sie diese E-Mail ignorieren."
+        subject: "Bestätige dein Abonnement bei %{blog_name}"
+        message: "Bitte bestätige dein Abonnement bei %{blog_name}. Wenn du dich nicht anmelden wolltest, kannst du diese E-Mail ignorieren."
         button: "Abonnieren"
       weekly_digest:
         subject: "Neue Beiträge von %{blog_name} - %{date}"
-        footer: "Sie sind abonniert, um neue Beiträge von %{blog_name} zu erhalten."
+        footer: "Du hast den Newsletter abonniert, um neue Beiträge von %{blog_name} zu erhalten."
         unsubscribe_link: "Abmelden"
   posts:
     read_more: "Weiterlesen"
   replies:
     form:
-      name_label: "Ihr Name"
-      email_label: "Ihre E-Mail"
+      name_label: "Dein Name"
+      email_label: "Deine E-Mail"
       subject_label: "Betreff"
       message_label: "Nachricht"
       submit_button: "Antwort Senden"
       cancel_link: "Abbrechen"
     mailer:
-      intro: "Toll! Jemand hat auf Ihren Beitrag geantwortet"
+      intro: "Toll! Jemand hat auf deinen Beitrag geantwortet"
       from_label: "Von"
-      footer: "Antworten Sie auf diese E-Mail, um %{name} zu antworten."
-      footer_text: "Um %{name} zu antworten, antworten Sie einfach auf diese E-Mail."
+      footer: "Antworte auf diese E-Mail, um %{name} zu antworten."
+      footer_text: "Um %{name} zu antworten, antworte einfach auf diese E-Mail."
