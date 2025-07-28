@@ -93,4 +93,19 @@ class SenderEmailAddressTest < ActiveSupport::TestCase
 
     assert_equal custom_token, sender.token_digest
   end
+
+  test "should limit sender email addresses to 3 per blog" do
+    blog = blogs(:vivian)
+
+    3.times do |i|
+      sender = blog.sender_email_addresses.create!(email: "sender#{i}@example.com")
+      assert sender.persisted?, "Should be able to create sender email address #{i+1}"
+    end
+
+    sender = blog.sender_email_addresses.new(email: "sender4@example.com")
+    assert_not sender.valid?
+    assert_includes sender.errors[:base], "Cannot add more than 3 sender email addresses per blog"
+
+    assert_equal 3, blog.sender_email_addresses.count
+  end
 end
