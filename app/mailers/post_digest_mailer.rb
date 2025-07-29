@@ -13,7 +13,9 @@ class PostDigestMailer < PostmarkMailer
     @posts = digest.posts.order(published_at: :desc)
     @subscriber = params[:subscriber]
 
-    headers["List-Unsubscribe"] = "<#{email_subscriber_unsubscribe_url_for(@subscriber)}>"
+    one_click_url = email_subscriber_one_click_unsubscribe_url_for(@subscriber)
+    headers["List-Unsubscribe"] = "<#{one_click_url}>"
+    headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
     
     mail(
       to: @subscriber.email,

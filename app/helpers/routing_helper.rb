@@ -39,6 +39,10 @@ module RoutingHelper
     email_subscriber_unsubscribe_url(email_subscriber.token, host: host(email_subscriber.blog))
   end
 
+  def email_subscriber_one_click_unsubscribe_url_for(email_subscriber)
+    email_subscriber_one_click_unsubscribe_url(email_subscriber.token, host: host(email_subscriber.blog))
+  end
+
   private
 
     def route_for_blog(blog, route_name, type, options = {})
