@@ -35,6 +35,6 @@ module PostsHelper
   end
 
   def published_at_date_format
-    "%b %d, %Y"
+    :post_date
   end
 end

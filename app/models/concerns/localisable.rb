@@ -1,7 +1,7 @@
 module Localisable
   extend ActiveSupport::Concern
 
-  SUPPORTED_LOCALES = %w[en es fr de].freeze
+  SUPPORTED_LOCALES = %w[en es fr de pt].freeze
 
   included do
     validates :locale, inclusion: { in: SUPPORTED_LOCALES, message: "%{value} is not a supported locale" }
@@ -13,7 +13,8 @@ module Localisable
         [ "English", "en" ],
         [ "Español", "es" ],
         [ "Français", "fr" ],
-        [ "Deutsch", "de" ]
+        [ "Deutsch", "de" ],
+        [ "Português", "pt" ]
       ]
     end
   end

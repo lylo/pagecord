@@ -28,3 +28,6 @@
 #       enabled: "ON"
 
 en:
+  date:
+    formats:
+      post_date: "%b %d, %Y"
