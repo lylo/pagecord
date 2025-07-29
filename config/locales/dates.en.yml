@@ -1,0 +1,5 @@
+en:
+  date:
+    formats:
+      post_date: "%b %d, %Y"
+      month_day: "%d %b"
