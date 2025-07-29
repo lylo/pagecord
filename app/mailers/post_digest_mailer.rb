@@ -13,13 +13,12 @@ class PostDigestMailer < PostmarkMailer
     @posts = digest.posts.order(published_at: :desc)
     @subscriber = params[:subscriber]
 
+    headers["List-Unsubscribe"] = "<#{email_subscriber_unsubscribe_url_for(@subscriber)}>"
+    
     mail(
       to: @subscriber.email,
       from: sender_address_for(@subscriber.blog),
-      subject: "New posts from #{@subscriber.blog.display_name} - #{Date.current.to_formatted_s(:long)}",
-      headers: {
-        "List-Unsubscribe" => "<#{email_subscriber_unsubscribe_url_for(@subscriber)}>"
-      }
+      subject: "New posts from #{@subscriber.blog.display_name} - #{Date.current.to_formatted_s(:long)}"
     )
   end
 
