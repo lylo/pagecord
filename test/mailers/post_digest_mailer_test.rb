@@ -15,7 +15,12 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_equal [ "no-reply@notifications.pagecord.com" ], email.from
     assert_equal "\"#{blog.display_name}\" <no-reply@notifications.pagecord.com>", email.header["from"].to_s
     assert_equal [ email_subscriber.email ], email.to
-    assert_match I18n.t("email_subscribers.mailers.weekly_digest.subject", blog_name: blog.display_name, date: Date.current.to_formatted_s(:long)), email.subject
+    expected_subject = I18n.t(
+      "email_subscribers.mailers.weekly_digest.subject",
+      blog_name: blog.display_name,
+      date: I18n.l(Date.current, format: :post_date)
+    )
+    assert_match expected_subject, email.subject
   end
 
   test "digest email with custom blog domain" do
