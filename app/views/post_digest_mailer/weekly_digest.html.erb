@@ -11,7 +11,7 @@
         <%= without_action_text_image_wrapper(post.content.to_s).html_safe %>
       </div>
       <p class="post-timestamp">
-        <%= link_to post.published_at_in_user_timezone.to_date.to_formatted_s(:long), post_url(post) %>
+         <%= link_to l(post.published_at_in_user_timezone.to_date, format: :post_date), post_url(post) %>
       </p>
     </div>
   <% end %>

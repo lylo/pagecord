@@ -6,7 +6,7 @@
 <%= post.content.to_plain_text %>
 
 
--- <%= post.published_at_in_user_timezone.to_date.to_formatted_s(:long) %>
+-- <%= l(post.published_at_in_user_timezone.to_date, format: :post_date) %>
 <%= post_url(post) %>
 
 
