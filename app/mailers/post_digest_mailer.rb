@@ -1,5 +1,6 @@
 class PostDigestMailer < PostmarkMailer
   include PostsHelper
+  include RoutingHelper
 
   layout "mailer_digest"
 
@@ -15,7 +16,10 @@ class PostDigestMailer < PostmarkMailer
     mail(
       to: @subscriber.email,
       from: sender_address_for(@subscriber.blog),
-      subject: "New posts from #{@subscriber.blog.display_name} - #{Date.current.to_formatted_s(:long)}"
+      subject: "New posts from #{@subscriber.blog.display_name} - #{Date.current.to_formatted_s(:long)}",
+      headers: {
+        "List-Unsubscribe" => "<#{email_subscriber_unsubscribe_url_for(@subscriber)}>"
+      }
     )
   end
 
