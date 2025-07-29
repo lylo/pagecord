@@ -12,7 +12,8 @@
 
       <div class="flex gap-x-2 mb-1">
         <div class="text-[var(--color-text-muted)] w-16 flex-shrink-0">
-          <%= local_time post.published_at, "%b %d" %>
+          <%= local_time post.published_at.to_date, format: :month_day, use_localized: true %>
+
         </div>
         <div class="text-[var(--color-text-heading)]">
           <%= link_to post_title(post), post_path(post), class: "font-medium hover:underline" %>

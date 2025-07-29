@@ -6,7 +6,7 @@
 
 <div class="post-footer not-prose flex justify-between items-center <%= top_margin %> mb-4 text-sm">
   <%= link_to post_path(post), class: "font-normal", data: { turbo_frame: "_top" } do %>
-    <%= l post.published_at.to_date, format: published_at_date_format %>
+    <%= local_time post.published_at, format: published_at_date_format %>
   <% end %>
 
   <% if @user.subscribed? %>

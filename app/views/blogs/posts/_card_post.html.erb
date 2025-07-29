@@ -23,7 +23,7 @@
 
       <div class="flex items-center justify-between <%= post.tag_list.present? ? 'mt-4' : 'mt-6' %>">
         <div class="text-sm text-[var(--color-text-muted)] opacity-75">
-          <%= local_time post.published_at, published_at_date_format %>
+          <%= local_time post.published_at, format: published_at_date_format %>
         </div>
         <span class="inline-flex items-center px-3 py-1 text-xs font-medium text-[var(--color-text-muted)] rounded-full border border-[var(--color-border)]">
           <%= t('posts.read_more') %>
