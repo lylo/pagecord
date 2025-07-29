@@ -16,7 +16,7 @@ class PostDigestMailer < PostmarkMailer
     one_click_url = email_subscriber_one_click_unsubscribe_url_for(@subscriber)
     headers["List-Unsubscribe"] = "<#{one_click_url}>"
     headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
-    
+
     mail(
       to: @subscriber.email,
       from: sender_address_for(@subscriber.blog),

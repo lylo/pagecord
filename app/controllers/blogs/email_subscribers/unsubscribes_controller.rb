@@ -1,7 +1,7 @@
 class Blogs::EmailSubscribers::UnsubscribesController < ApplicationController
   before_action :load_subscriber
   skip_before_action :domain_check
-  skip_before_action :verify_authenticity_token, only: [:one_click]
+  skip_before_action :verify_authenticity_token, only: [ :one_click ]
 
   def show
   end
@@ -28,5 +28,4 @@ class Blogs::EmailSubscribers::UnsubscribesController < ApplicationController
         redirect_to root_path, alert: "No email subscription found" and return
       end
     end
-
 end
