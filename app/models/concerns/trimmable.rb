@@ -42,10 +42,19 @@ module Trimmable
         if last_child.text? && last_child.text.strip.empty?
           last_child.remove # Remove empty text nodes
         elsif last_child.element?
-          if last_child.name == "br" ||
-             ([ "div", "p" ].include?(last_child.name) && last_child.children.empty? && last_child.text.strip.empty?)
+          if last_child.name == "br"
+            last_child.remove  # Remove <br> tags
+          elsif [ "div", "p" ].include?(last_child.name)
+            # First clean up inside this element
+            remove_trailing_empty_nodes(last_child)
 
-            last_child.remove  # Remove <br> tags or empty <div>/<p> elements
+            # Then check if it became empty after cleanup and remove it
+            if last_child.children.empty? && last_child.text.strip.empty?
+              last_child.remove
+            else
+              # Stop if the element has content
+              break
+            end
           else
             remove_trailing_empty_nodes(last_child)
 

@@ -46,6 +46,7 @@
   <% end %>
 </div>
 
+
 <h3 class="mb-4 font-bold text-xl">Time Zone</h3>
 
 <div class="mb-12">
@@ -71,6 +72,59 @@
     </div>
   <% end %>
 </div>
+
+<% if current_features.enabled?(:sender_email) %>
+<h3 class="mb-4 font-bold text-xl">Sender Email Addresses</h3>
+
+<div class="mb-12">
+  <p class="mb-6">
+    You can add up to 3 additional email addresses for sending posts to your blog. Add one below and follow the verification instructions.
+  </p>
+
+  <% if @blog.sender_email_addresses.any? %>
+    <div class="space-y-3 mb-6">
+      <% @blog.sender_email_addresses.each do |sender| %>
+        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3">
+              <span class="text-sm text-slate-900 dark:text-slate-100 truncate"><%= sender.email %></span>
+              <% if sender.accepted? %>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
+                  ✓ Verified
+                </span>
+              <% else %>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                  ⏳ Pending
+                </span>
+              <% end %>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 ml-4">
+            <%= button_to app_settings_sender_email_address_path(sender), method: :delete, class: "p-1 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 transition-colors cursor-pointer", title: "Remove sender email address", data: { turbo_confirm: "Are you sure you want to remove this sender email address?" } do %>
+              <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 mt-1" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= form_with model: @sender_email_address, url: app_settings_sender_email_addresses_path, local: true do |form| %>
+    <div class="flex flex-col items-center sm:flex-row gap-3">
+      <div class="flex-1">
+        <%= form.label :email, "Add sender email address", class: "sr-only" %>
+        <%= form.email_field :email, required: true, placeholder: "sender@email.com", class: "w-full form-field" %>
+        <% if @sender_email_address && @sender_email_address.errors[:email].any? %>
+          <div class="text-red-600 text-sm mt-1"><%= @sender_email_address.errors[:email].join(", ") %></div>
+        <% end %>
+      </div>
+      <div class="flex-shrink-0">
+        <%= form.submit "Add Sender Email", class: "btn-primary w-full sm:w-auto" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+<% end %>
 
 <h3 class="mb-4 font-bold text-xl">Danger Zone</h3>
 <p>

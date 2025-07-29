@@ -8,6 +8,7 @@ class Blog < ApplicationRecord
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
   has_many :pages, -> { where(is_page: true) }, class_name: "Post"
+  has_many :sender_email_addresses, dependent: :destroy
 
   has_many :social_links, dependent: :destroy
   accepts_nested_attributes_for :social_links, allow_destroy: true

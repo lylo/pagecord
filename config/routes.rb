@@ -111,7 +111,14 @@ Rails.application.routes.draw do
           get "verify/:token", to: "email_change_requests#verify", as: :verify
         end
       end
+
       resources :exports
+
+      resources :sender_email_addresses, only: [ :create, :destroy ] do
+        collection do
+          get "verify/:token", to: "sender_email_addresses#verify", as: :verify
+        end
+      end
 
       get "/account/edit", to: "account#edit"
 
@@ -165,6 +172,7 @@ Rails.application.routes.draw do
     get "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#show", as: :email_subscriber_confirmation
     get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
     post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
+    post "/email_subscribers/:token/one_click_unsubscribe", to: "blogs/email_subscribers/unsubscribes#one_click", as: :email_subscriber_one_click_unsubscribe
 
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create, :destroy ], module: :posts

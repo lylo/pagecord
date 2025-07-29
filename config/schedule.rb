@@ -33,6 +33,10 @@ every 1.day, at: "2:30 am" do
   rake "email_change_requests:cleanup"
 end
 
+every 1.day, at: "2:35 am" do
+  rake "sender_email_addresses:cleanup"
+end
+
 every 1.week, at: "3:00 am" do
   rake "email_subscribers:cleanup_unconfirmed"
 end
@@ -47,6 +51,10 @@ end
 
 every :day, at: "5:00 am" do
   rake "subscriptions:send_renewal_reminders"
+end
+
+every 1.week, at: "6:00 am" do
+  rake "posts:clear_old_raw_content"
 end
 
 # every hour on a Tuesday

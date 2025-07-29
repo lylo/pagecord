@@ -1,5 +1,6 @@
 class PostDigestMailer < PostmarkMailer
   include PostsHelper
+  include RoutingHelper
 
   layout "mailer_digest"
 
@@ -11,6 +12,14 @@ class PostDigestMailer < PostmarkMailer
 
     @posts = digest.posts.order(published_at: :desc)
     @subscriber = params[:subscriber]
+
+    one_click_url = email_subscriber_one_click_unsubscribe_url_for(@subscriber)
+    headers["List-Unsubscribe"] = "<#{one_click_url}>"
+    headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
+
+    one_click_url = email_subscriber_one_click_unsubscribe_url_for(@subscriber)
+    headers["List-Unsubscribe"] = "<#{one_click_url}>"
+    headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
 
     I18n.with_locale(@subscriber.blog.locale) do
       mail(
