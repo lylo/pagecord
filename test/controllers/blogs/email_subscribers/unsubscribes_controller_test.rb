@@ -27,7 +27,7 @@ class Blogs::EmailSubscribers::UnsubscribesControllerTest < ActionDispatch::Inte
     end
 
     assert_response :success
-    assert_includes @response.body, "You're now unsubscribed"
+    assert_includes @response.body, "You&#39;re now unsubscribed"
   end
 
   test "should fail gracefully with invalid token for one click" do
