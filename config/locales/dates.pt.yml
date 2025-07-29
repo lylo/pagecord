@@ -1,0 +1,4 @@
+pt:
+  date:
+    formats:
+      post_date: "%d/%m/%Y"  # "28/07/2025"

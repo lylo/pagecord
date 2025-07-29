@@ -1,0 +1,41 @@
+pt:
+  email_subscribers:
+    form:
+      subscribe_description: "Assine para receber um resumo semanal dos posts no seu e-mail"
+      email_placeholder: "Digite seu e-mail..."
+      submit_button: "Assinar"
+    create:
+      success_message: "Valeu por assinar! Se você ainda não era assinante, um e-mail de confirmação foi enviado para %{email}"
+    confirmations:
+      success_message: "Sua assinatura no %{blog_name} está confirmada. Você vai receber um e-mail semanal com os novos posts publicados."
+      unsubscribe_link: "Cancelar assinatura"
+    unsubscribes:
+      success_message: "Você cancelou a assinatura de %{blog_name} 👋"
+      confirm_message: "Para cancelar sua assinatura de %{blog_name}, clique no link abaixo."
+      unsubscribe_button: "Cancelar assinatura"
+      not_found: "Assinatura de e-mail não encontrada"
+    mailers:
+      confirmation:
+        subject: "Confirme sua assinatura em %{blog_name}"
+        message: "Por favor, confirme sua assinatura no %{blog_name}. Se você não queria assinar, pode ignorar este e-mail."
+        button: "Quero assinar"
+      weekly_digest:
+        subject: "Novos posts do %{blog_name} - %{date}"
+        footer: "Você está inscrito para receber os novos posts do %{blog_name}."
+        unsubscribe_link: "Cancelar assinatura"
+  posts:
+    read_more: "Leia mais"
+  replies:
+    form:
+      name_label: "Seu nome"
+      email_label: "Seu e-mail"
+      subject_label: "Assunto"
+      message_label: "Mensagem"
+      submit_button: "Enviar resposta"
+      cancel_link: "Cancelar"
+    success_message: "Resposta enviada com sucesso!"
+    mailer:
+      intro: "Oba! Alguém respondeu ao seu post"
+      from_label: "De"
+      footer: "Responda a este e-mail para responder %{name}."
+      footer_text: "Pra responder %{name}, é só responder este e-mail."
