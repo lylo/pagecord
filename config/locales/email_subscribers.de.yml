@@ -1,7 +1,7 @@
 de:
   email_subscribers:
     form:
-      subscribe_description: "Abonniere den Newsletter, um wöchentlich eine Zusammenfassung der Beiträge in Ihrem Posteingang zu erhalten"
+      subscribe_description: "Abonniere den Newsletter, um wöchentlich eine Zusammenfassung der Beiträge in Deinem Posteingang zu erhalten"
       email_placeholder: "E-Mail eingeben..."
       submit_button: "Abonnieren"
     create:
