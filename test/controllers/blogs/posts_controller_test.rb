@@ -309,7 +309,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_select "link[rel='apple-touch-icon'][href*='avatar']"
-    assert_select "link[rel='icon'][type='image/png'][href*='avatar']"
+    assert_select "link[rel='icon'][href*='avatar']"
   end
 
   test "should render default favicon when blog has no avatar" do

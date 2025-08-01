@@ -10,7 +10,7 @@
       @apply mt-4 mb-8 pb-4 border-b border-[var(--color-border)];
 
       .bio {
-        @apply mt-4 text-sm prose text-[var(--color-text-muted)] break-words;
+        @apply mt-4 text-sm text-[var(--color-text-muted)] break-words;
 
         a {
           @apply text-[var(--color-accent)] underline;
