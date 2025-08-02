@@ -39,8 +39,8 @@ module Trimmable
       while node.children.any?
         last_child = node.children.last
 
-        if last_child.text? && last_child.text.strip.empty?
-          last_child.remove # Remove empty text nodes
+        if last_child.text? && last_child.text.gsub(/\u00A0/, "").strip.empty?
+          last_child.remove # Remove empty text nodes (including non-breaking spaces)
         elsif last_child.element?
           if last_child.name == "br"
             last_child.remove  # Remove <br> tags
@@ -49,7 +49,7 @@ module Trimmable
             remove_trailing_empty_nodes(last_child)
 
             # Then check if it became empty after cleanup and remove it
-            if last_child.children.empty? && last_child.text.strip.empty?
+            if last_child.children.empty? && last_child.text.gsub(/\u00A0/, "").strip.empty?
               last_child.remove
             else
               # Stop if the element has content
