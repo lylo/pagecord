@@ -21,16 +21,12 @@ class Admin::UsersController < AdminController
   def destroy
     @user = User.find(params[:id])
 
-    if @user.subscribed?
-      flash[:notice] = "You can't discard a premium user"
+    if params[:spam]
+      flash[:notice] = "User was marked as spam and discarded"
+      DestroyUserJob.perform_now(@user.id, spam: true)
     else
-      if params[:spam]
-        flash[:notice] = "User was marked as spam and discarded"
-        DestroyUserJob.perform_now(@user.id, spam: true)
-      else
-        flash[:notice] = "User was successfully discarded"
-        DestroyUserJob.perform_now(@user.id)
-      end
+      flash[:notice] = "User was successfully discarded"
+      DestroyUserJob.perform_now(@user.id)
     end
 
     redirect_to admin_stats_path
