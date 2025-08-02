@@ -1,6 +1,6 @@
 module Html
   class ExtractTags < Transformation
-    HASHTAG_REGEX = /#([a-zA-Z0-9-]+)(?=\s|$|#)/
+    HASHTAG_REGEX = /#([a-zA-Z0-9-]+)(?=\p{Space}|$|#)/
 
     def transform(input)
       @tags = []
@@ -15,7 +15,7 @@ module Html
       if @tags.any?
         result = input.dup
         @tags.uniq.each do |tag|
-          result = result.gsub(/##{Regexp.escape(tag)}(?=\s|$|#|<)/i, "")
+          result = result.gsub(/##{Regexp.escape(tag)}(?=\p{Space}|$|#|<)/i, "")
         end
         result
       else

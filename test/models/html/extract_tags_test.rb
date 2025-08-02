@@ -200,4 +200,16 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
     transformer.transform(html2)
     assert_equal [], transformer.tags
   end
+
+  test "should extract hashtags followed by non-breaking space" do
+    nbsp = "\u00A0"
+    html = "This is a post about Pagecord.\n\n#pagecord#{nbsp}#rails#{nbsp}#ruby#{nbsp}"
+    result = @transformer.transform(html)
+
+    assert_equal [ "pagecord", "rails", "ruby" ], @transformer.tags
+    assert_not_includes result, "#pagecord"
+    assert_not_includes result, "#rails"
+    assert_not_includes result, "#ruby"
+    assert_includes result, "This is a post about Pagecord."
+  end
 end
