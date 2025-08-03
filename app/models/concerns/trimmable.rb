@@ -31,7 +31,7 @@ module Trimmable
 
       remove_trailing_empty_nodes(document)
 
-      document.to_html
+      document.to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_HTML)
     end
 
     def remove_trailing_empty_nodes(node)
