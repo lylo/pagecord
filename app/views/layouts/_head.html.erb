@@ -29,21 +29,8 @@
   <meta property="twitter:card" content="summary">
 <% end %>
 
-<!-- Structured Data (JSON‑LD) -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "url": "https://pagecord.com/",
-  "name": "Pagecord",
-  "description": "<%= meta_description %>",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Pagecord",
-    "url": "https://pagecord.com/"
-  }
-}
-</script>
+<%= render "layouts/structured_data" %>
+
 <%= yield :fediverse %>
 
 <link rel="canonical" href="<%= canonical_url %>" />

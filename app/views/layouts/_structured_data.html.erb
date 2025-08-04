@@ -1,0 +1,25 @@
+<!-- Structured Data (JSON‑LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  <% if @blog.present? %>
+  "url": "<%= blog_home_url(@blog) %>",
+  "name": "<%= @blog.title %>",
+  <% else %>
+  "url": "https://pagecord.com/",
+  "name": "Pagecord",
+  <% end %>
+  "description": "<%= meta_description %>",
+  "publisher": {
+    "@type": "Organization",
+    <% if @blog.present? %>
+    "name": "<%= @blog.display_name %>",
+    "url": "<%= blog_home_url(@blog) %>"
+    <% else %>
+    "name": "Pagecord",
+    "url": "https://pagecord.com/"
+    <% end %>
+  }
+}
+</script>
