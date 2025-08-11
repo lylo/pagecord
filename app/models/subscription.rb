@@ -4,16 +4,14 @@ class Subscription < ApplicationRecord
   has_many :renewal_reminders, class_name: "Subscription::RenewalReminder", dependent: :destroy
 
   scope :comped, -> { where(complimentary: true) }
-  scope :active_paid, -> { where(cancelled_at: nil).where(complimentary: false).where("next_billed_at > ?", Time.current) }
+  scope :active_paid, -> { where(complimentary: false).where(cancelled_at: nil).where("next_billed_at > ?", Time.current) }
 
   def self.price
     "29"
   end
 
   def active?
-    active_paid = !cancelled? && !lapsed?
-
-    complimentary? || active_paid
+    complimentary? || !lapsed?
   end
 
   def cancelled?
