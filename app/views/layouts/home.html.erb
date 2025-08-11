@@ -3,6 +3,21 @@
   <head>
     <%= render "layouts/head" %>
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+    <script type="text/javascript">
+      document.addEventListener('turbo:load', function() {
+        <% if Rails.env.development? %>
+          Paddle.Environment.set("sandbox")
+          Paddle.Initialize({
+            token: "test_945b246ef8df8bfe446632bf70b"
+          })
+        <% else %>
+          Paddle.Environment.set("production")
+          Paddle.Initialize({
+            token: "live_8d79ebbaac5c745a173f00967fb"
+          })
+        <% end %>
+      })
+    </script>
     <script defer data-domain="pagecord.com" src="https://plausible.io/js/script.js"></script>
   </head>
 
