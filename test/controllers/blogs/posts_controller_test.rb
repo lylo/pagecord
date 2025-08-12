@@ -115,6 +115,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
+  ## RSS
+
   test "should get index as RSS" do
     get rss_feed_path(@blog)
 
@@ -186,6 +188,35 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
+  end
+
+  test "should display times in blog timezone in RSS feed" do
+    post_time = 1.minute.ago
+
+    @blog.user.update!(timezone: "America/New_York")
+    @blog.posts.create!(
+      published_at: post_time,
+      status: "published",
+      content: "Test post content"
+    )
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+
+    doc = Nokogiri::XML(@response.body)
+    pub_date = doc.xpath("//item/pubDate").first.text
+    assert_match(/-0[45]00$/, pub_date, "pubDate should include EST/EDT timezone offset")
+
+    expected_time_in_timezone = post_time.in_time_zone("America/New_York")
+    expected_hour = expected_time_in_timezone.strftime("%H")
+    expected_minute = expected_time_in_timezone.strftime("%M")
+    assert_match(/#{expected_hour}:#{expected_minute}:/, pub_date, "pubDate should show correct time in blog timezone")
+
+    title = doc.xpath("//item/title").first.text
+    expected_time_string = expected_time_in_timezone.to_formatted_s(:long)
+    assert_match(/^@#{@blog.subdomain} - /, title, "Title should start with @subdomain - ")
+    assert_includes title, expected_time_string, "Title should include the formatted local time"
   end
 
   # Custom domains
