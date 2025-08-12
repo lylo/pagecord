@@ -41,6 +41,7 @@
          <%= link_to "Posts", admin_posts_path, class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
         <% end %>
 
+        <%= mail_to "hello@pagecord.com", "Contact", class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
         <%= button_to logout_path, method: :delete, class: "text-sm font-semibold hover:underline dark:text-slate-200", form: { class: "flex" } do %>
           Logout
         <% end %>
