@@ -21,7 +21,6 @@ xml.rss version: "2.0" do
 
         xml.pubDate publication_time.to_formatted_s(:rfc822)
         xml.link link
-        xml.test @blog.user.timezone
         xml.guid link
       end
     end
