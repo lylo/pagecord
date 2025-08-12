@@ -7,17 +7,18 @@ xml.rss version: "2.0" do
 
     @posts.each do |post|
       link = post_url(post)
+        publication_time = post.published_at.in_time_zone(@user.timezone || "UTC")
 
       xml.item do
         if post.title.blank?
-          xml.title "#{post.blog.display_name} - #{post.published_at.to_formatted_s(:long)}"
+          xml.title "#{post.blog.display_name} - #{publication_time.to_formatted_s(:long)}"
         else
           xml.title "#{post.blog.display_name} - #{post.title}"
         end
         xml.description do
           xml.cdata! without_action_text_image_wrapper(post.content.to_s)
         end
-        xml.pubDate post.published_at.to_formatted_s(:rfc822)
+        xml.pubDate publication_time.to_formatted_s(:rfc822)
         xml.link link
         xml.guid link
       end
