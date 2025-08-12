@@ -1,0 +1,5 @@
+ja:
+  date:
+    formats:
+      post_date: "%d/%m/%Y"  # "28/07/2025"
+      month_day: "%d/%m"
