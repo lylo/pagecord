@@ -54,10 +54,10 @@
     <% @blogs.each do |blog| %>
       <tr>
         <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">
-          <%= link_to blog.subdomain, admin_user_path(blog.user), data: { turbo_frame: "_top" } %>
-          <% if blog.custom_domain.present? %>
-            <div class="text-xs font-light text-slate-500 dark:text-slate-400"><%= blog.custom_domain %></div>
-          <% end %>
+          <div class="flex flex-col gap-y-1">
+            <%= link_to blog.subdomain, admin_user_path(blog.user), data: { turbo_frame: "_top" } %>
+            <%= link_to blog_home_url(blog), blog_home_url(blog), class: "text-xs hover:underline font-light text-slate-500 dark:text-slate-400", target: "_blank" %>
+          </div>
         </td>
         <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.posts_count %></td>
         <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><!--email_off--><%= blog.user.email %><!--/email_off--></td>
