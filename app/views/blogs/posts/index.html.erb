@@ -29,10 +29,12 @@
 <% else %>
   <% if @current_tag.present? %>
     <div class="mb-6 p-3 bg-[var(--color-bg-subtle)] border border-[var(--color-border)] rounded-lg">
-      <div class="flex items-center justify-between">
+      <div>
         <span class="text-[var(--color-text)]">
           Showing posts tagged with "<strong><%= @current_tag %></strong>"
         </span>
+      </div>
+      <div class="mt-2">
         <%= link_to "Show all posts", blog_home_path(@blog), class: "text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] hover:underline text-sm" %>
       </div>
     </div>
