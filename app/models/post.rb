@@ -60,17 +60,6 @@ class Post < ApplicationRecord
     text_content.present?
   end
 
-  private
-
-    def text_content
-      @text_content ||= self.content.to_plain_text
-        .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
-        .gsub(/\[Image\]/i, "").strip
-        .gsub(/https?:\/\/\S+/, "").strip
-    end
-
-  public
-
   def display_title
     if title.present?
       title.truncate(100).strip
@@ -106,6 +95,13 @@ class Post < ApplicationRecord
   end
 
   private
+
+    def text_content
+      @text_content ||= self.content.to_plain_text
+      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
+      .gsub(/\[Image\]/i, "").strip
+      .gsub(/https?:\/\/\S+/, "").strip
+    end
 
     def set_published_at
       self.published_at ||= created_at

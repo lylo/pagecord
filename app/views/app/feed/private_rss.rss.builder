@@ -7,7 +7,7 @@ xml.rss version: "2.0" do
 
     @posts.each do |post|
       link = post_url(post)
-        publication_time = post.published_at.in_time_zone(@user.timezone || "UTC")
+      publication_time = post.published_at_in_user_timezone
 
       xml.item do
         if post.title.blank?
