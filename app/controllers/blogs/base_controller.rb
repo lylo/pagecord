@@ -2,8 +2,9 @@ class Blogs::BaseController < ApplicationController
   skip_before_action :domain_check
   before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale
 
-  rescue_from ActionController::RoutingError, with: :render_blog_not_found
   rescue_from ActiveRecord::RecordNotFound, with: :render_blog_not_found
+  rescue_from ActionController::UnpermittedParameters, with: :render_blog_unacceptable
+  rescue_from StandardError, with: :render_blog_internal_error
 
   protected
 
@@ -58,6 +59,14 @@ class Blogs::BaseController < ApplicationController
     end
 
     def render_blog_not_found
-      render "blogs/errors/not_found", status: 404, layout: "application"
+      render "blogs/errors/not_found", status: 404
+    end
+
+    def render_blog_unacceptable
+      render "blogs/errors/unacceptable", status: 422
+    end
+
+    def render_blog_internal_error
+      render "blogs/errors/internal_error", status: 500
     end
 end
