@@ -14,7 +14,7 @@ class App::PostsController < AppController
     end
 
     @pagy, @posts = pagy(posts_query, limit: 25)
-    @drafts = drafts_query.limit(25)
+    @drafts = @pagy.page == 1 ? drafts_query : []
   end
 
   def new
