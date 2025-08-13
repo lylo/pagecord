@@ -511,7 +511,7 @@ DEPENDENCIES
   redis (>= 4.0.1)
   rubocop-rails-omakase
   ruby-vips
-  rubyzip
+  rubyzip (~> 2)
   selenium-webdriver
   sentry-rails
   sentry-ruby
