@@ -588,6 +588,21 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_template layout: "application"
   end
 
+  test "should render blog 404 template for unmatched routes" do
+    get "/wp-json/activitypub/1.0/actors/-1/inbox"
+
+    assert_response :not_found
+    assert_template "blogs/errors/not_found"
+    assert_template layout: "application"
+  end
+
+  test "should handle unmatched XML routes with proper 404" do
+    get "/some/random/path.xml"
+
+    assert_response :not_found
+    assert_equal "", @response.body
+  end
+
   private
 
     def host_subdomain!(name)

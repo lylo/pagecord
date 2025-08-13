@@ -179,6 +179,9 @@ Rails.application.routes.draw do
       resources :upvotes, only: [ :create, :destroy ], module: :posts
       resources :replies, only: [ :new, :create ], module: :posts
     end
+
+    # Catch-all for unmatched routes on blog domains
+    match "*path", to: "blogs/posts#not_found", via: :all
   end
 
   constraints(DomainConstraints.method(:default_domain?)) do

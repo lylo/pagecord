@@ -41,6 +41,11 @@ class Blogs::PostsController < Blogs::BaseController
     fresh_when @post, public: true, template: "blogs/posts/show"
   end
 
+  # Handle unmatched routes on blog domains
+  def not_found
+    raise ActiveRecord::RecordNotFound
+  end
+
   private
 
     def redirect_to_last_page(exception)
