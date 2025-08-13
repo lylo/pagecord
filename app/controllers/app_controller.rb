@@ -7,8 +7,6 @@ class AppController < ApplicationController
   around_action :set_timezone, if: -> { Current.user.present? }
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_app_not_found
-  rescue_from ActionController::UnpermittedParameters, with: :render_app_unacceptable  
-  rescue_from StandardError, with: :render_app_internal_error
 
   private
 
@@ -30,13 +28,5 @@ class AppController < ApplicationController
 
     def render_app_not_found
       render "errors/not_found", status: 404
-    end
-
-    def render_app_unacceptable
-      render "errors/unacceptable", status: 422
-    end
-
-    def render_app_internal_error
-      render "errors/internal_error", status: 500
     end
 end
