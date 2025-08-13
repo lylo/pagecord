@@ -64,7 +64,7 @@ class Blog::Export < ApplicationRecord
     def attach_zip_file(dir)
       zip_path = File.join(dir, "#{blog.subdomain.parameterize}_export_#{Time.current.to_i}.zip")
 
-      Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
+      Zip::File.open(zip_path, create: true) do |zipfile|
         Dir[File.join(dir, "**", "**")].each do |file|
           next if file == zip_path  # Skip the zip file itself
           zipfile.add(file.sub(dir + "/", ""), file)
