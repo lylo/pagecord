@@ -580,6 +580,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should render blog 404 template for non-existent post" do
+    get blog_post_path("non-existent-slug")
+
+    assert_response :not_found
+    assert_template "blogs/errors/not_found"
+    assert_template layout: "application"
+  end
+
   private
 
     def host_subdomain!(name)
