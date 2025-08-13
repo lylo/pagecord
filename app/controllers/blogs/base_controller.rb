@@ -57,6 +57,9 @@ class Blogs::BaseController < ApplicationController
     end
 
     def render_blog_not_found
-      render "blogs/errors/not_found", status: 404
+      respond_to do |format|
+        format.html { render "blogs/errors/not_found", status: 404 }
+        format.any { head :not_found }
+      end
     end
 end
