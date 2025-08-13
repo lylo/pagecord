@@ -16,7 +16,7 @@
 
         </div>
         <div class="text-[var(--color-text-heading)]">
-          <%= link_to post_title(post), post_path(post), class: "font-medium hover:underline" %>
+          <%= link_to post.display_title, post_path(post), class: "font-medium hover:underline" %>
         </div>
       </div>
     <% end %>

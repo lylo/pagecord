@@ -38,7 +38,7 @@
             <div class="flex w-full justify-between items-top">
               <%= link_to edit_app_page_path(page), title: "Click to edit this page" do %>
                 <div class="font-medium pe-2 hover:underline">
-                  <%= post_title(page) %>
+                  <%= page.display_title %>
                 </div>
               <% end %>
             </div>
@@ -58,7 +58,7 @@
             <div>
               <%= link_to edit_app_page_path(page), title: "Click to edit this page" do %>
                 <div class="font-medium pe-2 hover:underline">
-                  <%= post_title(page) %>
+                  <%= page.display_title %>
                 </div>
               <% end %>
             </div>

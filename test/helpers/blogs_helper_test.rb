@@ -1,29 +1,7 @@
 require "test_helper"
 
-class PostsHelperTest < ActionView::TestCase
-  include ApplicationHelper
-
-  test "post_title with title present" do
-    post = posts(:one)
-    assert_equal post.title, post_title(post)
-
-    post.title = "A" * 120
-    assert_equal "#{'A' * 97}...", post_title(post)
-  end
-
-  test "post_title without title present" do
-    post = Blog.first.posts.build content: "Test post"
-    assert_equal "Test post", post_title(post)
-
-    post = Blog.first.posts.build content: "<p></p>"
-    assert_equal "Untitled", post_title(post)
-
-    post = Blog.first.posts.build content: "<div><p>Hello, World</p><img src='example.com'></div>"
-    assert_equal "Hello, World", post_title(post)
-
-    post = Blog.first.posts.build content: "<div><p><img src='https://example.com/image.png'></div>"
-    assert_equal "Untitled", post_title(post)
-  end
+class BlogsHelperTest < ActionView::TestCase
+  include BlogsHelper
 
   test "blog title" do
     blog = blogs(:joel)
@@ -73,16 +51,13 @@ class PostsHelperTest < ActionView::TestCase
     assert_equal "https://example.com/resized-image.jpg", open_graph_image_helper
   end
 
-  test "open_graph_image with no images returns default" do
+  test "open_graph_image with no images returns nil" do
     @post = posts(:one)
     @post.stubs(:open_graph_image).returns(nil)
     @post.stubs(:first_image).returns(nil)
-    @blog = nil
+    @blog = @post.blog
 
-    stubs(:custom_domain_request?).returns(false)
-    stubs(:image_url).with("social/open-graph.jpg").returns("https://example.com/default.jpg")
-
-    assert_equal "https://example.com/default.jpg", open_graph_image_helper
+    assert_nil open_graph_image_helper
   end
 
   test "open_graph_image with no post returns nil" do
