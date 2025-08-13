@@ -5,6 +5,7 @@ export default class extends Controller {
 
   connect() {
     this.timeout = null
+    // Handle Cmd+K (Mac) or Ctrl+K (Windows/Linux) to focus search
     document.addEventListener("keydown", this.handleKeydown.bind(this))
   }
 
@@ -41,7 +42,7 @@ export default class extends Controller {
   }
 
   handleKeydown(event) {
-    if ((event.metaKey || event.ctrlKey) && event.key === "f") {
+    if ((event.metaKey || event.ctrlKey) && event.key === "k") {
       event.preventDefault()
       if (this.hasContainerTarget && this.containerTarget.classList.contains("hidden")) {
         this.toggle()

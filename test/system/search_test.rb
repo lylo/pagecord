@@ -17,8 +17,8 @@ class SearchTest < ApplicationSystemTestCase
   test "search functionality works with keyboard shortcuts" do
     visit app_posts_path
 
-    # Test Cmd+F opens search
-    find("body").send_keys([ :command, "f" ])
+    # Test Cmd+K opens search
+    find("body").send_keys([ :command, "k" ])
     assert_selector "[data-search-target='input']", visible: true
 
     # Type search term
