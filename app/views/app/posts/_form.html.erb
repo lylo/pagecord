@@ -119,7 +119,7 @@
       <div>
         <%= form.submit publish_button_text(@post), class: "btn-primary" %>
         <%= link_to (is_new ? "Discard" : "Cancel"),
-              app_posts_path,
+              app_posts_path(page: session[:return_to_page]),
               class: "btn-secondary",
               data: { action: "click->autosave#cancel" } %>
       </div>

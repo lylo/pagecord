@@ -1,0 +1,24 @@
+<% if @drafts.any? %>
+  <div class="mb-8" id="draft_posts">
+    <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100">
+      🖋️ Drafts
+    </div>
+
+    <% @drafts.each do |post| %>
+      <%= render "post", post: post %>
+    <% end %>
+  </div>
+<% end %>
+
+<% previous_year = nil %>
+<% @posts.each do |post| %>
+  <% if post.published_at.year != previous_year %>
+    <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100 <%= 'mt-8' unless previous_year.nil? %>">
+      <%= post.published_at.year %>
+
+      <% previous_year = post.published_at.year %>
+    </div>
+  <% end %>
+
+  <%= render "post", post: post %>
+<% end %>

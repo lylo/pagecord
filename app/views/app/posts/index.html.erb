@@ -1,15 +1,5 @@
 <div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
   <div class="my-8">
-    <% if @current_tag.present? %>
-      <div class="mb-6 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-        <div class="flex items-center justify-between">
-          <span class="text-blue-800 dark:text-blue-200">
-            Showing posts tagged with "<strong><%= @current_tag %></strong>"
-          </span>
-          <%= link_to "Show all posts", app_posts_path, class: "text-blue-600 dark:text-blue-300 hover:underline text-sm" %>
-        </div>
-      </div>
-    <% end %>
 
     <p class="mb-8">
       <% if @posts.empty? %>
@@ -32,37 +22,37 @@
           or <%= link_to "create a new post", new_app_post_path, class: "font-medium underline" %>
         <% end %>
 
-        <div class="text-end mb-4">
-          <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
+        <div data-controller="search">
+          <div class="flex items-center justify-end gap-2 mb-4">
+            <button data-action="click->search#toggle" class="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" title="Search posts">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </button>
+            <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
+          </div>
+          
+          <div data-search-target="container" class="<%= 'hidden' unless @search_term %> mb-4">
+            <%= form_with url: app_posts_path, method: :get, local: true, data: { turbo_frame: "posts", search_target: "form", turbo_action: "advance" } do |form| %>
+              <div class="relative">
+                <%= form.text_field :search, value: @search_term, placeholder: "Search posts...", 
+                    data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
+                    class: "w-full px-4 py-3 pr-12 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+                <button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Close search">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+            <% end %>
+          </div>
         </div>
       <% end %>
     </p>
 
-    <% if @drafts.any? %>
-      <div class="mb-8" id="draft_posts">
-        <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100">
-          🖋️ Drafts
-        </div>
-
-        <% @drafts.each do |post| %>
-          <%= render "post", post: post %>
-        <% end %>
-      </div>
+    <%= turbo_frame_tag "posts" do %>
+      <%= render "posts_list" %>
+      <%= render "app/shared/pagy_nav" %>
     <% end %>
-
-    <% previous_year = nil %>
-    <% @posts.each do |post| %>
-      <% if post.published_at.year != previous_year %>
-        <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100 <%= 'mt-8' unless previous_year.nil? %>">
-          <%= post.published_at.year %>
-
-          <% previous_year = post.published_at.year %>
-        </div>
-      <% end %>
-
-      <%= render "post", post: post %>
-    <% end %>
-
-    <%= render "app/shared/pagy_nav" %>
   </div>
 </div>

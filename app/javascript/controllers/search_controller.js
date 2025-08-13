@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input"]
+  static targets = ["input", "container", "form"]
 
   connect() {
     this.timeout = null
@@ -14,11 +14,33 @@ export default class extends Controller {
     document.removeEventListener("keydown", this.handleKeydown.bind(this))
   }
 
+  toggle() {
+    if (this.containerTarget.classList.contains("hidden")) {
+      this.containerTarget.classList.remove("hidden")
+      this.inputTarget.focus()
+    } else {
+      this.containerTarget.classList.add("hidden")
+      this.inputTarget.value = ""
+      this.formTarget.requestSubmit()
+    }
+  }
+
+  search() {
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      this.formTarget.requestSubmit()
+    }, 300) // Debounce by 300ms
+  }
+
   handleKeydown(event) {
     if ((event.metaKey || event.ctrlKey) && event.key === "f") {
       event.preventDefault()
-      this.inputTarget.focus()
-      this.inputTarget.select()
+      if (this.containerTarget.classList.contains("hidden")) {
+        this.toggle()
+      } else {
+        this.inputTarget.focus()
+        this.inputTarget.select()
+      }
     }
 
     if (event.key === "Escape") {
@@ -26,18 +48,11 @@ export default class extends Controller {
       if (this.inputTarget.value) {
         // Clear the search if there's text
         this.inputTarget.value = ""
-        this.element.closest("form").requestSubmit()
+        this.formTarget.requestSubmit()
       } else {
-        // Blur the input if it's already empty
-        this.inputTarget.blur()
+        // Hide search container if it's empty
+        this.containerTarget.classList.add("hidden")
       }
     }
-  }
-
-  submit() {
-    clearTimeout(this.timeout)
-    this.timeout = setTimeout(() => {
-      this.element.closest("form").requestSubmit()
-    }, 300) // Debounce by 300ms
   }
 }
