@@ -50,7 +50,7 @@ gem "pagy"
 gem "nanoid", "~> 2.0"
 gem "rack-attack"
 gem "rails_autolink"
-gem "rubyzip"
+gem "rubyzip", "~> 2"
 gem "whenever"
 gem "tzinfo-data"
 
