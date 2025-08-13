@@ -2,6 +2,8 @@ class Blogs::BaseController < ApplicationController
   skip_before_action :domain_check
   before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale
 
+  rescue_from ActiveRecord::RecordNotFound, with: :render_blog_not_found
+
   protected
 
   def blog_params
@@ -52,5 +54,12 @@ class Blogs::BaseController < ApplicationController
 
     def set_locale
       I18n.locale = @blog&.locale || I18n.default_locale
+    end
+
+    def render_blog_not_found
+      respond_to do |format|
+        format.html { render "blogs/errors/not_found", status: 404 }
+        format.any { head :not_found }
+      end
     end
 end
