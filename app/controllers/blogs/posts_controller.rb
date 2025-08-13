@@ -1,6 +1,8 @@
 class Blogs::PostsController < Blogs::BaseController
   include Pagy::Backend, RequestHash, PostsHelper
 
+  rate_limit to: 60, within: 1.minute
+
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   def index

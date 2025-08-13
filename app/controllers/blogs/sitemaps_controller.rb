@@ -1,4 +1,6 @@
 class Blogs::SitemapsController < Blogs::BaseController
+  rate_limit to: 60, within: 1.minute
+
   def show
     fresh_when(
       etag: @blog.posts.maximum(:updated_at),
