@@ -196,41 +196,88 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  # Tag filtering tests
+  # Search functionality tests
 
-  test "should filter posts by tag in admin view" do
-    # Create posts with different tags
-    @user.blog.posts.create!(content: "Rails post", tags_string: "rails, web")
-    @user.blog.posts.create!(content: "Python post", tags_string: "python, backend")
-    @user.blog.posts.create!(content: "General post", tags_string: "general")
+  test "should search posts by title" do
+    @user.blog.posts.create!(title: "Rails Tutorial", content: "Learning Rails")
+    @user.blog.posts.create!(title: "Python Guide", content: "Learning Python")
+    @user.blog.posts.create!(title: "JavaScript Basics", content: "Learning JS")
 
-    get app_posts_path(tag: "rails")
+    get app_posts_path(search: "Rails")
 
     assert_response :success
-    assert_includes @response.body, "Rails post"
-    assert_not_includes @response.body, "Python post"
-    assert_not_includes @response.body, "General post"
+    assert_includes @response.body, "Rails Tutorial"
+    assert_not_includes @response.body, "Python Guide"
+    assert_not_includes @response.body, "JavaScript Basics"
   end
 
-  test "should show tag filter indicator in admin view" do
-    @user.blog.posts.create!(content: "Rails post", tags_string: "rails")
+  test "should search posts by content" do
+    @user.blog.posts.create!(title: "Tutorial One", content: "This covers Ruby programming")
+    @user.blog.posts.create!(title: "Tutorial Two", content: "This covers Python programming")
 
-    get app_posts_path(tag: "rails")
+    get app_posts_path(search: "Ruby")
 
     assert_response :success
-    assert_select "div", text: /Showing posts tagged with "rails"/
-    assert_select "a[href='#{app_posts_path}']", text: "Show all posts"
+    assert_includes @response.body, "Tutorial One"
+    assert_not_includes @response.body, "Tutorial Two"
   end
 
-  test "should filter drafts by tag in admin view" do
-    @user.blog.posts.create!(content: "Draft Rails post", tags_string: "rails", status: :draft)
-    @user.blog.posts.create!(content: "Draft Python post", tags_string: "python", status: :draft)
+  test "should search posts by tags" do
+    @user.blog.posts.create!(title: "Web Dev Post", content: "About development", tags_string: "rails, backend")
+    @user.blog.posts.create!(title: "Mobile Post", content: "About mobile apps", tags_string: "ios, swift")
 
-    get app_posts_path(tag: "rails")
+    get app_posts_path(search: "rails")
 
     assert_response :success
-    assert_includes @response.body, "Draft Rails post"
-    assert_not_includes @response.body, "Draft Python post"
+    assert_includes @response.body, "Web Dev Post"
+    assert_not_includes @response.body, "Mobile Post"
+  end
+
+  test "should search drafts as well as published posts" do
+    @user.blog.posts.create!(title: "Published Rails Post", content: "Published content", tags_string: "rails")
+    @user.blog.posts.create!(title: "Draft Rails Post", content: "Draft content", tags_string: "rails", status: :draft)
+
+    get app_posts_path(search: "rails")
+
+    assert_response :success
+    assert_includes @response.body, "Published Rails Post"
+    assert_includes @response.body, "Draft Rails Post"
+  end
+
+  test "should return empty results for non-matching search" do
+    @user.blog.posts.create!(title: "Rails Post", content: "About Rails")
+
+    get app_posts_path(search: "Python")
+
+    assert_response :success
+    assert_not_includes @response.body, "Rails Post"
+  end
+
+  test "should handle empty search parameter" do
+    @user.blog.posts.create!(title: "Test Post", content: "Test content")
+
+    get app_posts_path(search: "")
+
+    assert_response :success
+    assert_includes @response.body, "Test Post"
+  end
+
+  test "should only show drafts on page 1 when searching" do
+    # Create enough posts to span multiple pages
+    30.times do |i|
+      @user.blog.posts.create!(title: "Published Post #{i}", content: "Published content #{i}")
+    end
+    @user.blog.posts.create!(title: "Draft Post", content: "Draft content", status: :draft)
+
+    # Page 1 should show drafts
+    get app_posts_path(search: "Post")
+    assert_response :success
+    assert_includes @response.body, "Draft Post"
+
+    # Page 2 should not show drafts
+    get app_posts_path(search: "Post", page: 2)
+    assert_response :success
+    assert_not_includes @response.body, "Draft Post"
   end
 
   test "app area should be inaccessible on custom domain" do
