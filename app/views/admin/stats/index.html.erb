@@ -13,15 +13,19 @@
   <% end %>
 </div>
 
-<%= form_with url: admin_stats_path, method: :get, data: { turbo_frame: "stats-content", controller: "search" }, local: true, class: "mb-4" do |form| %>
-  <div class="flex gap-2 items-center max-w-md">
-    <%= form.text_field :search, placeholder: "Search by subdomain or email...", value: params[:search],
-        class: "flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-        data: { action: "input->search#submit", search_target: "input" },
-        autofocus: true %>
-    <% if params[:search].present? %>
-      <%= link_to "Clear", admin_stats_path, class: "text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 whitespace-nowrap" %>
-    <% end %>
+<%= form_with url: admin_stats_path, method: :get, data: { turbo_frame: "stats-content", controller: "search", search_target: "form" }, local: true, class: "mb-4" do |form| %>
+  <div class="max-w-md">
+    <div class="relative">
+      <%= form.text_field :search, placeholder: "Search by subdomain or email...", value: params[:search],
+          class: "w-full px-3 py-2 pr-10 border border-slate-300 dark:border-slate-600 rounded-md text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
+          data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
+          autofocus: true %>
+      <button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Clear search">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
   </div>
 <% end %>
 
@@ -33,7 +37,6 @@
       <% else %>
         <%= pluralize @pagy.count, "result" %> found for "<strong><%= params[:search] %></strong>"
       <% end %>
-      <%= link_to "Clear search", admin_stats_path, class: "ml-2 btn-secondary underline text-sm" %>
     </div>
   <% end %>
 <div class="overflow-auto">

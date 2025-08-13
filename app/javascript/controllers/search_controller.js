@@ -5,8 +5,6 @@ export default class extends Controller {
 
   connect() {
     this.timeout = null
-
-    // Handle Cmd+F (Mac) or Ctrl+F (Windows/Linux) to focus search
     document.addEventListener("keydown", this.handleKeydown.bind(this))
   }
 
@@ -15,27 +13,37 @@ export default class extends Controller {
   }
 
   toggle() {
-    if (this.containerTarget.classList.contains("hidden")) {
+    if (this.hasContainerTarget && this.containerTarget.classList.contains("hidden")) {
       this.containerTarget.classList.remove("hidden")
       this.inputTarget.focus()
     } else {
-      this.containerTarget.classList.add("hidden")
+      if (this.hasContainerTarget) {
+        this.containerTarget.classList.add("hidden")
+      }
       this.inputTarget.value = ""
-      this.formTarget.requestSubmit()
+      this.clearSearch()
     }
   }
 
   search() {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      this.formTarget.requestSubmit()
-    }, 300) // Debounce by 300ms
+      if (this.inputTarget.value.trim() === "") {
+        this.clearSearch()
+      } else {
+        this.formTarget.requestSubmit()
+      }
+    }, 300)
+  }
+
+  clearSearch() {
+    window.location.href = this.formTarget.action
   }
 
   handleKeydown(event) {
     if ((event.metaKey || event.ctrlKey) && event.key === "f") {
       event.preventDefault()
-      if (this.containerTarget.classList.contains("hidden")) {
+      if (this.hasContainerTarget && this.containerTarget.classList.contains("hidden")) {
         this.toggle()
       } else {
         this.inputTarget.focus()
@@ -46,11 +54,9 @@ export default class extends Controller {
     if (event.key === "Escape") {
       event.preventDefault()
       if (this.inputTarget.value) {
-        // Clear the search if there's text
         this.inputTarget.value = ""
-        this.formTarget.requestSubmit()
-      } else {
-        // Hide search container if it's empty
+        this.clearSearch()
+      } else if (this.hasContainerTarget) {
         this.containerTarget.classList.add("hidden")
       }
     }
