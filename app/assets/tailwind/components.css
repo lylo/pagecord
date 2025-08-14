@@ -161,7 +161,7 @@
   /* ---- APP COMPONENTS ---- */
 
   .btn-primary {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-slate-300 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800 cursor-pointer;
+    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-[#4fbd9c] rounded-lg hover:bg-[#4bb193] focus:ring-4 focus:outline-none focus:ring-pagecord-accent/30 cursor-pointer;
   }
 
   .btn-optional {
