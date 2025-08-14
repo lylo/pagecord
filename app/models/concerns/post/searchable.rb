@@ -12,7 +12,7 @@ module Post::Searchable
       using: {
         tsearch: {
           prefix: true,
-          dictionary: "english",
+          dictionary: "simple",
           normalization: 2,
           any_word: true
         }
