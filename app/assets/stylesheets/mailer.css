@@ -121,7 +121,8 @@ ol {
   }
 
 a {
-  color: #3498db;
+  color: #4bb193;
+  font-weight: 600;
   text-decoration: underline; }
 
 
@@ -215,11 +216,11 @@ a {
     text-transform: capitalize; }
 
 .btn-primary table td {
-  background-color: #000000; }
+  background-color: #4fbd9c; }
 
 .btn-primary a {
-  background-color: #000000;
-  border-color: #000000;
+  background-color: #4fbd9c;
+  border-color: #4fbd9c;
   color: #ffffff; }
 
 /* -------------------------------------
@@ -341,7 +342,7 @@ hr {
     line-height: inherit !important;
     text-decoration: none !important; }
   .btn-primary table td:hover {
-    background-color: #34495e !important; }
+    background-color: #4bb193 !important; }
   .btn-primary a:hover {
-    background-color: #34495e !important;
-    border-color: #34495e !important; } }
+    background-color: #4bb193 !important;
+    border-color: #4bb193 !important; } }
