@@ -198,4 +198,14 @@
       transform: scale(1);
     }
   }
+
+  /* Home page components */
+  .home-link {
+    @apply underline decoration-pagecord-accent decoration-2 font-medium hover:bg-pagecord-accent/10 transition-all duration-200 rounded;
+  }
+
+  /* Override prose styles for home-link */
+  .prose .home-link {
+    @apply !text-current !underline !decoration-pagecord-accent !decoration-2 !font-medium hover:!bg-pagecord-accent/10 !transition-all !duration-200 !rounded;
+  }
 }

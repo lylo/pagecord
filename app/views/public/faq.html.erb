@@ -5,12 +5,12 @@
 
   <h3 class="source-serif text-2xl">How does Pagecord work?</h3>
   <p>
-    <%= link_to "Create an account", new_signup_path %> by choosing a subdomain for your blog and supplying your email address. Once you verify
+    <%= link_to "Create an account", new_signup_path, class: "home-link" %> by choosing a subdomain for your blog and supplying your email address. Once you verify
     your email, you'll receive a secret email address. Emails sent to this secret address from the email address you give us will
     appear as posts on your Pagecord page. If you prefer, you can log in to your account and create posts directly in the app.
   </p>
   <p>
-    Your Pagecord page is a public profile that anyone can view. It looks like <a href="https://pagecord.com/blog">https://pagecord.com/blog</a>.
+    Your Pagecord page is a public profile that anyone can view. It looks like <a href="https://pagecord.com/blog" class="home-link">https://pagecord.com/blog</a>.
   </p>
 
   <h3 class="source-serif text-2xl">Is there a way of creating posts without sending an email?</h3>
@@ -20,12 +20,12 @@
 
   <h3 class="source-serif text-2xl">Do I own the content that I post?</h3>
   <p>
-    Yes. As long as what you post is your own work, you own it (posting copyrighted material that you don't own <a href="https://pagecord.com/terms">is a no-no</a>). Pagecord does not claim ownership of any content you post.
+    Yes. As long as what you post is your own work, you own it (posting copyrighted material that you don't own <a href="https://pagecord.com/terms" class="home-link">is a no-no</a>). Pagecord does not claim ownership of any content you post.
   </p>
 
   <h3 class="source-serif text-2xl">Can I add a bio to my page?</h3>
   <p>
-    Yep! <%= link_to "Log in", login_path %> and in the <strong>Account</strong> section you'll see a field to add a bio to your profile.
+    Yep! <%= link_to "Log in", login_path, class: "home-link" %> and in the <strong>Account</strong> section you'll see a field to add a bio to your profile.
   </p>
 
   <h3 class="source-serif text-2xl">Can I include images in my posts?</h3>
@@ -35,7 +35,7 @@
   <p>
     Free customers can include a URL to an existing image (e.g. https://example.com/image.gif)
     in the body of your email and Pagecord will render the image in the post. There are plenty of
-    free image hosting sites out there such as <a href="https://postimages.org/">PostImage</a>.
+    free image hosting sites out there such as <a href="https://postimages.org/" class="home-link">PostImage</a>.
   </p>
 
   <h3 class="source-serif text-2xl">Can I embed media?</h3>
@@ -45,12 +45,12 @@
 
   <h3 class="source-serif text-2xl">How can I edit a post?</h3>
   <p>
-    <%= link_to "Log in", login_path  %> and click the post title to edit the post.
+    <%= link_to "Log in", login_path, class: "home-link" %> and click the post title to edit the post.
   </p>
 
   <h3 class="source-serif text-2xl">How do I delete a post?</h3>
   <p>
-    <%= link_to "Log in", login_path  %> to your account and you'll see a list of posts. Click the title to edit the post, then click the trash icon to delete it.
+    <%= link_to "Log in", login_path, class: "home-link" %> to your account and you'll see a list of posts. Click the title to edit the post, then click the trash icon to delete it.
   </p>
 
   <h3 class="source-serif text-2xl">Can I make a post without a title?</h3>
@@ -70,13 +70,13 @@
 
   <h3 class="source-serif text-2xl">Does Pagecord support RSS?</h3>
   <p>
-    Yes. Just append <span class="font-mono">/feed.xml</span> on a blog's domain, e.g. <a href="https://blog.pagecord.com/feed.xml">https://blog.pagecord.com/feed.xml</a>
+    Yes. Just append <span class="font-mono">/feed.xml</span> on a blog's domain, e.g. <a href="https://blog.pagecord.com/feed.xml" class="home-link">https://blog.pagecord.com/feed.xml</a>
   </p>
 
   <h3 class="source-serif text-2xl">Can I follow other Pagecord blogs?</h3>
   <p>
-    Yes! Since all Pagecord blogs support <a href="https://en.wikipedia.org/wiki/RSS">RSS</a>, you can follow them using any RSS reader. RSS is awesome, you should check out
-    <a href="https://feedgrab.net">Feedgrab</a> - a beautifully simple all-in-one reader <a href="https://olly.pagecord.com">Olly</a> built! 🤙
+    Yes! Since all Pagecord blogs support <a href="https://en.wikipedia.org/wiki/RSS" class="home-link">RSS</a>, you can follow them using any RSS reader. RSS is awesome, you should check out
+    <a href="https://feedgrab.net" class="home-link">Feedgrab</a> - a beautifully simple all-in-one reader <a href="https://olly.pagecord.com" class="home-link">Olly</a> built! 🤙
   </p>
 
   <h3 id="dns">How do I set up DNS for a custom domain?</h3>
