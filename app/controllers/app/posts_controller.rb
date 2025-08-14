@@ -7,10 +7,12 @@ class App::PostsController < AppController
     posts_query = Current.user.blog.posts.published.order(published_at: :desc)
     drafts_query = Current.user.blog.posts.draft.order(updated_at: :desc)
 
-    @search_term = params[:search]
-    if @search_term.present?
-      posts_query = posts_query.search_by_title_and_content(@search_term)
-      drafts_query = drafts_query.search_by_title_and_content(@search_term)
+    if current_features.enabled?(:admin_search)
+      @search_term = params[:search]
+      if @search_term.present?
+        posts_query = posts_query.search_by_title_and_content(@search_term)
+        drafts_query = drafts_query.search_by_title_and_content(@search_term)
+      end
     end
 
     @pagy, @posts = pagy(posts_query, limit: 25)

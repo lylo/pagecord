@@ -199,6 +199,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   # Search functionality tests
 
   test "should search posts by title" do
+    @user.blog.update!(features: [ "admin_search" ])
     @user.blog.posts.create!(title: "Rails Tutorial", content: "Learning Rails")
     @user.blog.posts.create!(title: "Python Guide", content: "Learning Python")
     @user.blog.posts.create!(title: "JavaScript Basics", content: "Learning JS")
@@ -212,6 +213,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should search posts by content" do
+    @user.blog.update!(features: [ "admin_search" ])
     @user.blog.posts.create!(title: "Tutorial One", content: "This covers Ruby programming")
     @user.blog.posts.create!(title: "Tutorial Two", content: "This covers Python programming")
 
@@ -223,6 +225,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should search posts by tags" do
+    @user.blog.update!(features: [ "admin_search" ])
     @user.blog.posts.create!(title: "Web Dev Post", content: "About development", tags_string: "rails, backend")
     @user.blog.posts.create!(title: "Mobile Post", content: "About mobile apps", tags_string: "ios, swift")
 
@@ -234,6 +237,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should search drafts as well as published posts" do
+    @user.blog.update!(features: [ "admin_search" ])
     @user.blog.posts.create!(title: "Published Rails Post", content: "Published content", tags_string: "rails")
     @user.blog.posts.create!(title: "Draft Rails Post", content: "Draft content", tags_string: "rails", status: :draft)
 
@@ -245,6 +249,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should return empty results for non-matching search" do
+    @user.blog.update!(features: [ "admin_search" ])
     @user.blog.posts.create!(title: "Rails Post", content: "About Rails")
 
     get app_posts_path(search: "Python")
@@ -254,6 +259,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should handle empty search parameter" do
+    @user.blog.update!(features: [ "admin_search" ])
     @user.blog.posts.create!(title: "Test Post", content: "Test content")
 
     get app_posts_path(search: "")
@@ -263,6 +269,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should only show drafts on page 1 when searching" do
+    @user.blog.update!(features: [ "admin_search" ])
     # Create enough posts to span multiple pages
     30.times do |i|
       @user.blog.posts.create!(title: "Published Post #{i}", content: "Published content #{i}")

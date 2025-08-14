@@ -1,5 +1,5 @@
 env "FEATURE"
 
-feature :sender_email do |blog: nil|
-  blog&.features.include?("sender_email")
+feature :admin_search do |blog: nil|
+  blog&.features.include?("admin_search")
 end
