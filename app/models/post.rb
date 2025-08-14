@@ -23,11 +23,11 @@ class Post < ApplicationRecord
   scope :visible, -> { where.not(hidden: true).published.released }
   scope :with_full_rich_text, -> {
       with_rich_text_content_and_embeds.includes(
-        rich_text_content: {
-          embeds_attachments: {
-            blob: :variant_records
-          }
-        }
+        :rich_text_content,
+        rich_text_content: [
+          :embeds_attachments,
+          { embeds_attachments: { blob: :variant_records } }
+        ]
       )
     }
   after_create :detect_open_graph_image
