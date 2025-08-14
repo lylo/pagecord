@@ -23,7 +23,7 @@ class IpReputation
     return true unless json["success"]
 
     valid_ip?(json) && valid_country?(json)
-  rescue HTTParty::Error, JSON::ParserError, Net::TimeoutError, Timeout::Error => e
+  rescue HTTParty::Error, JSON::ParserError, Net::ReadTimeout, Net::OpenTimeout, Timeout::Error => e
     Rails.logger.error "IP Reputation check failed for #{ip}: #{e.message}"
     true
   end

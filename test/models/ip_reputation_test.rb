@@ -33,6 +33,17 @@ class IpReputationTest < ActiveSupport::TestCase
     assert IpReputation.valid?(@valid_ip)
   end
 
+  test "returns true on timeout errors" do
+    IpReputation.stubs(:get).raises(Net::ReadTimeout)
+    assert IpReputation.valid?(@valid_ip)
+
+    IpReputation.stubs(:get).raises(Net::OpenTimeout)
+    assert IpReputation.valid?(@valid_ip)
+
+    IpReputation.stubs(:get).raises(Timeout::Error)
+    assert IpReputation.valid?(@valid_ip)
+  end
+
   private
 
   def stub_valid_response
