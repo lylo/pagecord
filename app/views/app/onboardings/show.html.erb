@@ -110,6 +110,17 @@
   <% end %>
 
   <h2 class="text-xl sm:text-2xl">
+    Choose your language
+  </h2>
+  <p>
+    Choose the language for your email subscription form and other interface elements.
+  </p>
+
+  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "select-auto-submit" } do |form| %>
+    <%= render "/app/settings/blogs/language_select", form: form %>
+  <% end %>
+
+  <h2 class="text-xl sm:text-2xl">
     Create your first post
   </h2>
 
