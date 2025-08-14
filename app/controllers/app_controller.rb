@@ -6,6 +6,8 @@ class AppController < ApplicationController
   before_action :load_user, :onboarding_check
   around_action :set_timezone, if: -> { Current.user.present? }
 
+  rescue_from ActiveRecord::RecordNotFound, with: :render_app_not_found
+
   private
 
     def load_user
@@ -22,5 +24,9 @@ class AppController < ApplicationController
 
     def set_timezone(&block)
       Time.use_zone(Current.user.timezone, &block)
+    end
+
+    def render_app_not_found
+      render "errors/not_found", status: 404
     end
 end

@@ -4,7 +4,7 @@ class IpReputation
   include HTTParty
 
   base_uri ENV["IP_REPUTATION_ENDPOINT"]
-  default_timeout 5
+  default_timeout 2
 
   def self.valid?(ip)
     return true if Rails.env.production? && !ENV["IP_REPUTATION_API_KEY"] && !ENV["IP_REPUTATION_ENDPOINT"]
@@ -23,7 +23,7 @@ class IpReputation
     return true unless json["success"]
 
     valid_ip?(json) && valid_country?(json)
-  rescue HTTParty::Error, JSON::ParserError => e
+  rescue HTTParty::Error, JSON::ParserError, Net::TimeoutError, Timeout::Error => e
     Rails.logger.error "IP Reputation check failed for #{ip}: #{e.message}"
     true
   end

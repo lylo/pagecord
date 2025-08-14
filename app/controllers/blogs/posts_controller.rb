@@ -1,6 +1,9 @@
 class Blogs::PostsController < Blogs::BaseController
   include Pagy::Backend, RequestHash, PostsHelper
 
+  rate_limit to: 60, within: 1.minute
+
+  skip_before_action :verify_authenticity_token, only: :not_found
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   def index
@@ -37,6 +40,11 @@ class Blogs::PostsController < Blogs::BaseController
       .find_by!(slug: blog_params[:slug])
 
     fresh_when @post, public: true, template: "blogs/posts/show"
+  end
+
+  # Handle unmatched routes on blog domains
+  def not_found
+    raise ActiveRecord::RecordNotFound
   end
 
   private
