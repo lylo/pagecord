@@ -1,9 +1,9 @@
 <% content_for :title, "Pagecord FAQ" %>
 
 <div class="prose dark:prose-invert mb-12 px-4">
-  <h1 class="source-serif font-bold tracking-tight text-4xl">Frequently asked questions</h1>
+  <h1 class="source-serif font-semibold tracking-tight text-4xl">Frequently asked questions</h1>
 
-  <h3 id="how-does-pagecord-work" class="source-serif text-2xl">How does Pagecord work?</h3>
+  <h3 id="how-does-pagecord-work" class="source-serif font-semibold text-2xl">How does Pagecord work?</h3>
   <p>
     <%= link_to "Create an account", new_signup_path, class: "home-link" %> by choosing a subdomain for your blog and supplying your email address. Once you verify
     your email, you'll receive a secret email address. Emails sent to this secret address from the email address you give us will
@@ -13,22 +13,22 @@
     Your Pagecord page is a public profile that anyone can view. It looks like <a href="https://pagecord.com/blog" class="home-link">https://pagecord.com/blog</a>.
   </p>
 
-  <h3 id="creating-posts-without-email" class="source-serif text-2xl">Is there a way of creating posts without sending an email?</h3>
+  <h3 id="creating-posts-without-email" class="source-serif text-2xl font-semibold">Is there a way of creating posts without sending an email?</h3>
   <p>
     Yes! Log into your account and click the <strong>New Post</strong> button to use our delightful in-app editor! ✍️
   </p>
 
-  <h3 id="content-ownership" class="source-serif text-2xl">Do I own the content that I post?</h3>
+  <h3 id="content-ownership" class="source-serif text-2xl font-semibold">Do I own the content that I post?</h3>
   <p>
     Yes. As long as what you post is your own work, you own it (posting copyrighted material that you don't own <a href="https://pagecord.com/terms" class="home-link">is a no-no</a>). Pagecord does not claim ownership of any content you post.
   </p>
 
-  <h3 id="add-bio" class="source-serif text-2xl">Can I add a bio to my page?</h3>
+  <h3 id="add-bio" class="source-serif text-2xl font-semibold">Can I add a bio to my page?</h3>
   <p>
     Yep! <%= link_to "Log in", login_path, class: "home-link" %> and in the <strong>Account</strong> section you'll see a field to add a bio to your profile.
   </p>
 
-  <h3 id="include-images" class="source-serif text-2xl">Can I include images in my posts?</h3>
+  <h3 id="include-images" class="source-serif text-2xl font-semibold">Can I include images in my posts?</h3>
   <p>
     Premium subscribers can attach images to emails which Pagecord processes and hosts for you.
   </p>
@@ -38,48 +38,48 @@
     free image hosting sites out there such as <a href="https://postimages.org/" class="home-link">PostImage</a>.
   </p>
 
-  <h3 id="embed-media" class="source-serif text-2xl">Can I embed media?</h3>
+  <h3 id="embed-media" class="source-serif text-2xl font-semibold">Can I embed media?</h3>
   <p>
     Yes! If you include a link to a YouTube video, a Spotify or Apple Music album/playlist/track, a Bandcamp album/track or a GitHub gist in your post, Pagecord will auto-embed the media when people view your post.
   </p>
 
-  <h3 id="edit-post" class="source-serif text-2xl">How can I edit a post?</h3>
+  <h3 id="edit-post" class="source-serif text-2xl font-semibold">How can I edit a post?</h3>
   <p>
     <%= link_to "Log in", login_path, class: "home-link" %> and click the post title to edit the post.
   </p>
 
-  <h3 id="delete-post" class="source-serif text-2xl">How do I delete a post?</h3>
+  <h3 id="delete-post" class="source-serif text-2xl font-semibold">How do I delete a post?</h3>
   <p>
     <%= link_to "Log in", login_path, class: "home-link" %> to your account and you'll see a list of posts. Click the title to edit the post, then click the trash icon to delete it.
   </p>
 
-  <h3 id="post-without-title" class="source-serif text-2xl">Can I make a post without a title?</h3>
+  <h3 id="post-without-title" class="source-serif text-2xl font-semibold">Can I make a post without a title?</h3>
   <p>
     Yes, just send an email with the post content in either the email subject or the body.
   </p>
 
-  <h3 id="standalone-pages" class="source-serif text-2xl">Can I create standalone pages as well as blog posts?</h3>
+  <h3 id="standalone-pages" class="source-serif text-2xl font-semibold">Can I create standalone pages as well as blog posts?</h3>
   <p>
     Yes! Using the Pagecord app you can create individual pages and add them to your home page navigation bar. Handy for adding an About page, Contact or Now.
   </p>
 
-  <h3 id="export-posts-pages" class="source-serif text-2xl">Can I export my posts and pages</h3>
+  <h3 id="export-posts-pages" class="source-serif text-2xl font-semibold">Can I export my posts and pages</h3>
   <p>
     Yes! Head to <code>Settings > Exports</code> where you can download a ZIP file containing your entire site in delightfully retro HTML files and images.
   </p>
 
-  <h3 id="rss-support" class="source-serif text-2xl">Does Pagecord support RSS?</h3>
+  <h3 id="rss-support" class="source-serif text-2xl font-semibold">Does Pagecord support RSS?</h3>
   <p>
     Yes. Just append <span class="font-mono">/feed.xml</span> on a blog's domain, e.g. <a href="https://blog.pagecord.com/feed.xml" class="home-link">https://blog.pagecord.com/feed.xml</a>
   </p>
 
-  <h3 id="follow-blogs" class="source-serif text-2xl">Can I follow other Pagecord blogs?</h3>
+  <h3 id="follow-blogs" class="source-serif text-2xl font-semibold">Can I follow other Pagecord blogs?</h3>
   <p>
     Yes! Since all Pagecord blogs support <a href="https://en.wikipedia.org/wiki/RSS" class="home-link">RSS</a>, you can follow them using any RSS reader. RSS is awesome, you should check out
     <a href="https://feedgrab.net" class="home-link">Feedgrab</a> - a beautifully simple all-in-one reader <a href="https://olly.pagecord.com" class="home-link">Olly</a> built! 🤙
   </p>
 
-  <h3 id="dns" class="source-serif text-2xl">How do I set up DNS for a custom domain?</h3>
+  <h3 id="dns" class="source-serif text-2xl font-semibold">How do I set up DNS for a custom domain?</h3>
   <p>
     If you're a paying customer, you can use your own domain name for your Pagecord. To host your Pagecord on a root domain
     (e.g. mydomain.com) you'll need to create the following DNS records:
@@ -136,30 +136,30 @@
     <em>Note: If you're using Cloudflare to manage DNS, you need to set SSL/TLS mode to <strong>Full (Strict)</strong> or disable the proxy (the orange cloud).</em>
   </p>
 
-  <h3 id="subscribers" class="source-serif text-2xl">How many people can subscribe to my email newsletter?</h3>
+  <h3 id="subscribers" class="source-serif text-2xl font-semibold">How many people can subscribe to my email newsletter?</h3>
   <p>
     Pagecord Premium accounts include 100 email subscribers. If your blog is popular enough to need more than that, we can
     up your limit for an additional fee (currently $5/year for each additional 500 subscribers).
   </p>
 
-  <h3 id="refund-policy" class="source-serif text-2xl">What is your refund policy?</h3>
+  <h3 id="refund-policy" class="source-serif text-2xl font-semibold">What is your refund policy?</h3>
   <p>
     If you've paid for an account and you decide you're unhappy with it, we'll refund your money if you've
     been a subscriber for less than a month. No questions asked (although we'd love to know why you didn't like it).
   </p>
 
-  <h3 id="downgrade-account" class="source-serif text-2xl">Can I downgrade my account?</h3>
+  <h3 id="downgrade-account" class="source-serif text-2xl font-semibold">Can I downgrade my account?</h3>
   <p>
     Yes. Cancel your subscription and once it lapses you'll be downgraded to a free account.
   </p>
 
-  <h3 id="delete-account" class="source-serif text-2xl">How do I delete my account?</h3>
+  <h3 id="delete-account" class="source-serif text-2xl font-semibold">How do I delete my account?</h3>
   <p>
     Log in, click the "Delete account" button at the bottom of the screen. This will
     display a confirmation, but once you confirm your account will be deleted immediatey.
   </p>
 
-  <h3 id="data-storage" class="source-serif text-2xl">Where is my data stored?</h3>
+  <h3 id="data-storage" class="source-serif text-2xl font-semibold">Where is my data stored?</h3>
   <p>
     Pagecord is hosted on servers run by <a href="https://hetzner.cloud/?ref=cZJ4pqOEU3g9" class="home-link">Hetzner</a>, in their <a href="https://www.hetzner.com/unternehmen/rechenzentrum/" class="home-link">Nuremberg, Germany data centre</a>. Your blogs posts are stored in a database here. Any images you attach to your posts (Premium customers) are stored in <a href="https://www.cloudflare.com/en-gb/developer-platform/products/r2/" class="home-link">Cloudflare's R2 Object Storage</a>, in their Western Europe (WEUR) data centre. Database backups are also stored in R2.
   </p>
