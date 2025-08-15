@@ -60,7 +60,7 @@
       }
 
       blockquote {
-        @apply !my-2 !text-[var(--color-text-muted)] !border-l-[var(--color-border)];
+        @apply !my-2 !text-[var(--color-text-muted)] !border-l-[var(--color-border)] !font-normal;
       }
 
       code {
