@@ -37,6 +37,10 @@ every 1.day, at: "2:35 am" do
   rake "sender_email_addresses:cleanup"
 end
 
+every 1.day, at: "2:40 am" do
+  rake "access_requests:cleanup"
+end
+
 every 1.week, at: "3:00 am" do
   rake "email_subscribers:cleanup_unconfirmed"
 end
