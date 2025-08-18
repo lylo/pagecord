@@ -4,6 +4,7 @@ module Post::Searchable
   included do
     include PgSearch::Model
 
+    # Fast pg_search without ranking for scalability
     pg_search_scope :search_by_title_and_content,
       against: [ :title, :tag_list ],
       associated_against: {
@@ -12,11 +13,11 @@ module Post::Searchable
       using: {
         tsearch: {
           dictionary: "simple",
-          prefix: true # partial matching
+          prefix: true
         }
       }
 
-        def self.search_exact_phrase(query)
+    def self.search_exact_phrase(query)
       return all if query.blank?
 
       sanitized_query = "%#{sanitize_sql_like(query)}%"

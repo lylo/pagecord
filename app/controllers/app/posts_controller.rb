@@ -22,7 +22,7 @@ class App::PostsController < AppController
     end
 
     @pagy, @posts = pagy(posts_query, limit: 25)
-    @drafts = @pagy.page == 1 ? drafts_query : []
+    @drafts = @pagy.page == 1 ? drafts_query.load : []
     @total_posts_count = Current.user.blog.posts.published.count
   end
 

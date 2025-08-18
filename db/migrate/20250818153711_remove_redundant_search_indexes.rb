@@ -5,7 +5,7 @@ class RemoveRedundantSearchIndexes < ActiveRecord::Migration[8.1]
     # Remove redundant tsvector indexes (trigram indexes are more versatile)
     execute "DROP INDEX CONCURRENTLY IF EXISTS index_posts_on_title_tsvector"
     execute "DROP INDEX CONCURRENTLY IF EXISTS index_action_text_rich_texts_on_body_tsvector"
-    
+
     # Remove duplicate GIN indexes from AddFullTextSearchIndexes migration
     remove_index :posts, name: "index_posts_on_title_gin", if_exists: true
     remove_index :action_text_rich_texts, name: "index_action_text_rich_texts_on_body_gin", if_exists: true
