@@ -11,23 +11,21 @@ module Post::Searchable
       },
       using: {
         tsearch: {
-          prefix: true,
           dictionary: "simple",
-          normalization: 2,
-          any_word: true
+          prefix: true # partial matching
         }
       }
 
-    pg_search_scope :search_exact_phrase,
-      against: [ :title, :tag_list ],
-      associated_against: {
-        rich_text_content: [ :body ]
-      },
-      using: {
-        tsearch: {
-          dictionary: "simple",
-          any_word: false
-        }
-      }
+        def self.search_exact_phrase(query)
+      return all if query.blank?
+
+      sanitized_query = "%#{sanitize_sql_like(query)}%"
+
+      joins(:rich_text_content)
+        .where(
+          "posts.title ILIKE ? OR array_to_string(posts.tag_list, ' ') ILIKE ? OR action_text_rich_texts.body ILIKE ?",
+          sanitized_query, sanitized_query, sanitized_query
+        )
+    end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_08_18_143428) do
+ActiveRecord::Schema[8.1].define(version: 2025_08_18_153711) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -43,7 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_18_143428) do
     t.bigint "record_id", null: false
     t.string "record_type", null: false
     t.datetime "updated_at", null: false
-    t.index ["body"], name: "index_action_text_rich_texts_on_body_gin", opclass: :gin_trgm_ops, using: :gin
+    t.index ["body"], name: "index_action_text_rich_texts_on_body_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
   end
 
@@ -251,7 +251,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_18_143428) do
     t.index ["published_at"], name: "index_posts_on_published_at"
     t.index ["status"], name: "index_posts_on_status"
     t.index ["tag_list"], name: "index_posts_on_tag_list", using: :gin
-    t.index ["title"], name: "index_posts_on_title_gin", opclass: :gin_trgm_ops, using: :gin
+    t.index ["title"], name: "index_posts_on_title_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["token"], name: "index_posts_on_token", unique: true
   end
 
