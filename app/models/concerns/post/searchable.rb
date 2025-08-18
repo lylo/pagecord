@@ -17,5 +17,17 @@ module Post::Searchable
           any_word: true
         }
       }
+
+    pg_search_scope :search_exact_phrase,
+      against: [ :title, :tag_list ],
+      associated_against: {
+        rich_text_content: [ :body ]
+      },
+      using: {
+        tsearch: {
+          dictionary: "simple",
+          any_word: false
+        }
+      }
   end
 end

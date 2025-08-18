@@ -13,6 +13,8 @@ class SearchTest < ApplicationSystemTestCase
     @user.blog.posts.create!(title: "Rails Tutorial", content: "Learning Rails framework", tags_string: "rails, web")
     @user.blog.posts.create!(title: "Python Guide", content: "Learning Python programming", tags_string: "python, backend")
     @user.blog.posts.create!(title: "Draft Post", content: "This is a draft", status: :draft)
+    @user.blog.posts.create!(title: "Bill Gates Biography", content: "Bill Gates founded Microsoft and is now a philanthropist", tags_string: "biography, tech")
+    @user.blog.posts.create!(title: "About Bill", content: "Bill works at our company as a developer", tags_string: "team, staff")
   end
 
   test "search functionality works with keyboard shortcuts" do
@@ -108,6 +110,28 @@ class SearchTest < ApplicationSystemTestCase
     # Should show all posts
     assert_text "Rails Tutorial"
     assert_text "Python Guide"
+  end
+
+  test "any word search finds posts with any matching word" do
+    visit app_posts_path
+
+    click_button title: "Search posts"
+    fill_in "search", with: "Bill Gates"
+
+    # Should find both posts containing "Bill" or "Gates"
+    assert_text "Bill Gates Biography"
+    assert_text "About Bill"
+  end
+
+  test "exact phrase search with quotes finds only exact matches" do
+    visit app_posts_path
+
+    click_button title: "Search posts"
+    fill_in "search", with: '"Bill Gates"'
+
+    # Should only find the post with exact phrase "Bill Gates"
+    assert_text "Bill Gates Biography"
+    assert_no_text "About Bill"
   end
 
   private

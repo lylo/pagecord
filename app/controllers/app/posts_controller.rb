@@ -10,8 +10,14 @@ class App::PostsController < AppController
     if current_features.enabled?(:admin_search)
       @search_term = params[:search]
       if @search_term.present?
-        posts_query = posts_query.search_by_title_and_content(@search_term)
-        drafts_query = drafts_query.search_by_title_and_content(@search_term)
+        if @search_term.match?(/^".*"$/)  # Starts and ends with quotes
+          clean_query = @search_term.gsub(/^"|"$/, '')  # Remove quotes
+          posts_query = posts_query.search_exact_phrase(clean_query)
+          drafts_query = drafts_query.search_exact_phrase(clean_query)
+        else
+          posts_query = posts_query.search_by_title_and_content(@search_term)
+          drafts_query = drafts_query.search_by_title_and_content(@search_term)
+        end
       end
     end
 
