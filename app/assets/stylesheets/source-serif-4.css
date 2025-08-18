@@ -1,0 +1,11 @@
+@font-face {
+  font-family: "SourceSerif4Variable";
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url("source-serif-4/SourceSerif4Variable-Roman.ttf.woff2") format("woff2-variations");
+}
+
+.source-serif {
+  font-family: "SourceSerif4Variable", sans-serif;
+}

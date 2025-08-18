@@ -1,10 +1,12 @@
 <h2 class="text-2xl font-bold py-4">Stats</h2>
 
 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4">
-  <div>
-    <%= pluralize @total_users, "user" %> in total.
-    <%= pluralize Subscription.active_paid.count, "paid subscription" %>, <%= Subscription.comped.count %> comped.
+  <div class="flex flex-wrap items-center gap-x-1 gap-y-2">
+    <span><%= link_to "#{pluralize(@total_users, "user")} in total", admin_stats_path, class: "underline font-medium" %>.</span>
+    <span><%= link_to pluralize(Subscription.active_paid.count, "paid subscription"), admin_stats_path(status: "paid"), class: "underline font-medium" %>,</span>
+    <span><%= link_to "#{Subscription.comped.count} comped", admin_stats_path(status: "comped"), class: "underline font-medium" %>.</span>
   </div>
+
   <%= link_to new_admin_user_path, class: "btn-primary text-sm whitespace-nowrap" do %>
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-1 inline-block">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -26,17 +28,40 @@
         </svg>
       </button>
     </div>
+    <%= form.hidden_field :status, value: params[:status] %>
+    <% if params[:search].present? || params[:status].present? %>
+      <%= link_to "Clear", admin_stats_path, class: "text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 whitespace-nowrap" %>
+    <% end %>
   </div>
 <% end %>
 
 <%= turbo_frame_tag "stats-content" do %>
-  <% if params[:search].present? %>
+  <% if params[:search].present? || params[:status].present? %>
     <div class="mb-4 text-sm text-slate-600 dark:text-slate-400">
-      <% if @pagy.count == 0 %>
-        No results found for "<strong><%= params[:search] %></strong>"
-      <% else %>
-        <%= pluralize @pagy.count, "result" %> found for "<strong><%= params[:search] %></strong>"
+      <% if params[:search].present? && params[:status].present? %>
+        <% status_label = case params[:status]
+             when "paid" then "paid subscribers"
+             when "comped" then "comped users"
+           end %>
+        <% if @pagy.count == 0 %>
+          No <%= status_label %> found for "<strong><%= params[:search] %></strong>"
+        <% else %>
+          <%= pluralize @pagy.count, "result" %> found in <%= status_label %> for "<strong><%= params[:search] %></strong>"
+        <% end %>
+      <% elsif params[:search].present? %>
+        <% if @pagy.count == 0 %>
+          No results found for "<strong><%= params[:search] %></strong>"
+        <% else %>
+          <%= pluralize @pagy.count, "result" %> found for "<strong><%= params[:search] %></strong>"
+        <% end %>
+      <% elsif params[:status].present? %>
+        <% status_label = case params[:status]
+             when "paid" then "Showing paid subscribers"
+             when "comped" then "Showing comped users"
+           end %>
+        <strong><%= status_label %></strong> (<%= pluralize @pagy.count, "result" %>)
       <% end %>
+      <%= link_to "Clear filters", admin_stats_path, class: "ml-2 btn-secondary underline text-sm" %>
     </div>
   <% end %>
 <div class="overflow-auto">

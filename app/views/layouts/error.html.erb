@@ -1,7 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <%= render "layouts/head" %>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <title><%= content_for?(:title) ? content_for(:title) : "Pagecord: Independent blogging for the small web" %></title>
+    <%= render "layouts/default_favicons" %>
+    <%= render "layouts/manifest" %>
+
+    <meta name="description" content="The best free blogging platform for the small web. Publish your writing effortlessly, via email or editor. RSS, email newsletter, and more. Get started for free!">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= request.original_url %>">
+    <meta property="og:title" content="Pagecord: Independent blogging for the small web">
+    <meta property="og:description" content="The best free blogging platform for the small web. Publish your writing effortlessly, via email or editor. RSS, email newsletter, and more. Get started for free!">
+    <meta property="og:image" content="<%= image_url "social/open-graph.webp" %>">
+
+    <meta property="twitter:url" content="<%= request.original_url %>">
+    <meta property="twitter:title" content="Pagecord: Independent blogging for the small web">
+    <meta property="twitter:description" content="The best free blogging platform for the small web. Publish your writing effortlessly, via email or editor. RSS, email newsletter, and more. Get started for free!">
+    <meta property="twitter:image" content="<%= image_url "social/open-graph.webp" %>">
+    <meta property="twitter:card" content="summary_large_image">
+
+    <%= stylesheet_link_tag "tailwind", "inter", "source-serif-4", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <script defer data-domain="pagecord.com" src="https://plausible.io/js/script.js"></script>
   </head>
 
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">

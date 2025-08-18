@@ -60,7 +60,7 @@
       }
 
       blockquote {
-        @apply !my-2 !text-[var(--color-text-muted)] !border-l-[var(--color-border)];
+        @apply !my-2 !text-[var(--color-text-muted)] !border-l-[var(--color-border)] !font-normal;
       }
 
       code {
@@ -161,7 +161,7 @@
   /* ---- APP COMPONENTS ---- */
 
   .btn-primary {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-slate-300 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800 cursor-pointer;
+    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-[#4fbd9c] rounded-lg hover:bg-[#4bb193] focus:ring-4 focus:outline-none focus:ring-pagecord-accent/30 cursor-pointer;
   }
 
   .btn-optional {
@@ -197,5 +197,15 @@
       opacity: 1;
       transform: scale(1);
     }
+  }
+
+  /* Home page components */
+  .home-link {
+    @apply underline decoration-pagecord-accent decoration-2 font-medium hover:bg-pagecord-accent/10 transition-all duration-200 rounded;
+  }
+
+  /* Override prose styles for home-link */
+  .prose .home-link {
+    @apply !text-current !underline !decoration-pagecord-accent !decoration-2 !font-medium hover:!bg-pagecord-accent/10 !transition-all !duration-200 !rounded;
   }
 }
