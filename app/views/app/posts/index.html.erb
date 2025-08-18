@@ -2,7 +2,7 @@
   <div class="my-8">
 
     <p class="mb-8">
-      <% if @posts.empty? %>
+      <% if @posts.empty? && @search_term.blank? %>
         <div class="sm:flex gap-4">
           <div class="sm:flex-1 sm:min-w-0">
             <p>
@@ -18,7 +18,7 @@
         </div>
       <% else %>
         <%= render "app/shared/callout" do %>
-          You have written <%= pluralize @pagy.count, "post" %>. Click on the title to edit an existing post,
+          You have written <%= pluralize @total_posts_count, "post" %>. Click on the title to edit an existing post,
           or <%= link_to "create a new post", new_app_post_path, class: "font-medium underline" %>
         <% end %>
 

@@ -11,7 +11,7 @@ class App::PostsController < AppController
       @search_term = params[:search]
       if @search_term.present?
         if @search_term.match?(/^".*"$/)  # Starts and ends with quotes
-          clean_query = @search_term.gsub(/^"|"$/, '')  # Remove quotes
+          clean_query = @search_term.gsub(/^"|"$/, "")  # Remove quotes
           posts_query = posts_query.search_exact_phrase(clean_query)
           drafts_query = drafts_query.search_exact_phrase(clean_query)
         else
@@ -23,6 +23,7 @@ class App::PostsController < AppController
 
     @pagy, @posts = pagy(posts_query, limit: 25)
     @drafts = @pagy.page == 1 ? drafts_query : []
+    @total_posts_count = Current.user.blog.posts.published.count
   end
 
   def new

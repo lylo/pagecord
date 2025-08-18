@@ -10,15 +10,23 @@
   </div>
 <% end %>
 
-<% previous_year = nil %>
-<% @posts.each do |post| %>
-  <% if post.published_at.year != previous_year %>
-    <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100 <%= 'mt-8' unless previous_year.nil? %>">
-      <%= post.published_at.year %>
+<% if @search_term.present? && @posts.empty? && @drafts.empty? %>
+  <div class="text-center">
+    <p>
+      No posts found for "<%= @search_term %>"
+    </p>
+  </div>
+<% else %>
+  <% previous_year = nil %>
+  <% @posts.each do |post| %>
+    <% if post.published_at.year != previous_year %>
+      <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100 <%= 'mt-8' unless previous_year.nil? %>">
+        <%= post.published_at.year %>
 
-      <% previous_year = post.published_at.year %>
-    </div>
+        <% previous_year = post.published_at.year %>
+      </div>
+    <% end %>
+
+    <%= render "post", post: post %>
   <% end %>
-
-  <%= render "post", post: post %>
 <% end %>
