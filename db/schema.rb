@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_08_18_000001) do
+ActiveRecord::Schema[8.1].define(version: 2025_08_18_143428) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -264,7 +264,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_18_000001) do
     t.string "token_digest"
     t.datetime "updated_at", null: false
     t.index ["blog_id", "email"], name: "index_sender_email_addresses_on_blog_id_and_email", unique: true
-    t.index ["blog_id"], name: "index_sender_email_addresses_on_blog_id"
     t.index ["expires_at"], name: "index_sender_email_addresses_on_expires_at"
     t.index ["token_digest"], name: "index_sender_email_addresses_on_token_digest", unique: true
   end
