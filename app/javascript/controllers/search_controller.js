@@ -5,12 +5,20 @@ export default class extends Controller {
 
   connect() {
     this.timeout = null
-    // Handle Cmd+K (Mac) or Ctrl+K (Windows/Linux) to focus search
-    document.addEventListener("keydown", this.handleKeydown.bind(this))
+    this.boundKeydown = this.handleKeydown.bind(this)
+    document.addEventListener("keydown", this.boundKeydown)
+
+    // Optional: Enter key triggers immediate search
+    this.inputTarget.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        clearTimeout(this.timeout)
+        this.submitSearch()
+      }
+    })
   }
 
   disconnect() {
-    document.removeEventListener("keydown", this.handleKeydown.bind(this))
+    document.removeEventListener("keydown", this.boundKeydown)
   }
 
   toggle() {
@@ -29,15 +37,23 @@ export default class extends Controller {
   search() {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      if (this.inputTarget.value.trim() === "") {
+      const query = this.inputTarget.value.trim()
+      if (query.length === 0) {
         this.clearSearch()
-      } else {
-        this.formTarget.requestSubmit()
+      } else if (query.length >= 2) {  // optional minimum length
+        this.submitSearch()
       }
-    }, 300)
+    }, 300)  // debounce time in ms
+  }
+
+  submitSearch() {
+    if (this.hasFormTarget) {
+      this.formTarget.requestSubmit()
+    }
   }
 
   clearSearch() {
+    // Reset to the unfiltered page
     window.location.href = this.formTarget.action
   }
 
