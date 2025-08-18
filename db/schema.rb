@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_07_28_163204) do
+ActiveRecord::Schema[8.1].define(version: 2025_08_18_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_trgm"
 
   create_table "access_requests", force: :cascade do |t|
     t.datetime "accepted_at"
@@ -42,6 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_07_28_163204) do
     t.bigint "record_id", null: false
     t.string "record_type", null: false
     t.datetime "updated_at", null: false
+    t.index ["body"], name: "index_action_text_rich_texts_on_body_gin", opclass: :gin_trgm_ops, using: :gin
     t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
   end
 
@@ -249,6 +251,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_07_28_163204) do
     t.index ["published_at"], name: "index_posts_on_published_at"
     t.index ["status"], name: "index_posts_on_status"
     t.index ["tag_list"], name: "index_posts_on_tag_list", using: :gin
+    t.index ["title"], name: "index_posts_on_title_gin", opclass: :gin_trgm_ops, using: :gin
     t.index ["token"], name: "index_posts_on_token", unique: true
   end
 
