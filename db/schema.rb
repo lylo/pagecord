@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_08_19_072526) do
+ActiveRecord::Schema[8.1].define(version: 2025_08_19_072700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -249,6 +249,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_19_072526) do
     t.index ["blog_id", "slug"], name: "index_posts_on_blog_id_and_slug", unique: true
     t.index ["blog_id", "status", "published_at"], name: "index_posts_published_lookup", order: { published_at: :desc }, where: "(status = 1)"
     t.index ["blog_id", "status"], name: "index_posts_search_filter", where: "(status = ANY (ARRAY[0, 1]))"
+    t.index ["blog_id"], name: "index_posts_on_blog_id_published_count_only", where: "((is_page = false) AND (status = 1))"
     t.index ["hidden"], name: "index_posts_on_hidden"
     t.index ["is_page"], name: "index_posts_on_is_page"
     t.index ["published_at"], name: "index_posts_on_published_at"
