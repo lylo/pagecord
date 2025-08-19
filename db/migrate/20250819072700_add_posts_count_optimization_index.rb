@@ -1,6 +1,6 @@
 class AddPostsCountOptimizationIndex < ActiveRecord::Migration[8.1]
   disable_ddl_transaction!
-  
+
   def up
     # Partial index optimized specifically for published posts count queries
     # This eliminates sequential scans when counting published posts per blog

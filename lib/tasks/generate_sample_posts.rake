@@ -1,22 +1,22 @@
 namespace :posts do
   desc "Generate sample blog posts for testing"
-  task :generate_samples, [:blog_subdomain, :count] => :environment do |task, args|
+  task :generate_samples, [ :blog_subdomain, :count ] => :environment do |task, args|
     blog_subdomain = args[:blog_subdomain] || "joel"
     post_count = (args[:count] || 100).to_i
-    
+
     # Find the blog
     blog = Blog.find_by(subdomain: blog_subdomain)
     if blog.nil?
       puts "❌ Blog with subdomain '#{blog_subdomain}' not found"
       exit 1
     end
-    
+
     puts "Found blog: #{blog.subdomain} with #{blog.posts.count} existing posts"
-    
+
     # Sample data arrays
     titles = [
       "The Future of Web Development",
-      "Understanding Ruby on Rails Performance", 
+      "Understanding Ruby on Rails Performance",
       "10 Tips for Better Code Reviews",
       "Database Optimization Strategies",
       "Building Scalable Applications",
@@ -36,7 +36,7 @@ namespace :posts do
       "Agile Development Methodologies",
       "Full-Stack Development Guide"
     ]
-    
+
     content_paragraphs = [
       "In today's rapidly evolving tech landscape, staying up-to-date with the latest trends and best practices is crucial for success.",
       "Performance optimization is not just about making things faster - it's about creating better user experiences and reducing operational costs.",
@@ -49,30 +49,30 @@ namespace :posts do
       "Understanding your users' needs and pain points is essential for building products that truly solve problems.",
       "The best solutions often come from understanding the problem deeply rather than jumping straight to implementation."
     ]
-    
+
     # Valid tags without special characters
     tags_pool = [
-      "ruby", "rails", "javascript", "performance", "database", "security", "testing", 
+      "ruby", "rails", "javascript", "performance", "database", "security", "testing",
       "devops", "api", "frontend", "backend", "fullstack", "mobile", "web", "cloud",
       "docker", "microservices", "agile", "tdd", "design", "ux", "algorithms",
       "optimization", "monitoring", "deployment", "cicd", "graphql", "rest"
     ]
-    
+
     # Calculate how many posts to create
     current_count = blog.posts.count
-    posts_to_create = [post_count - current_count, 0].max
-    
+    posts_to_create = [ post_count - current_count, 0 ].max
+
     if posts_to_create == 0
       puts "✅ Blog already has #{current_count} posts (target: #{post_count})"
       exit 0
     end
-    
+
     puts "Creating #{posts_to_create} additional posts..."
-    
+
     posts_to_create.times do |i|
       # Random title
       title = "#{titles.sample} #{current_count + i + 1}"
-      
+
       # Random rich text content (2-4 paragraphs)
       num_paragraphs = rand(2..4)
       content_html = "<div>"
@@ -80,14 +80,14 @@ namespace :posts do
         content_html += "<p>#{content_paragraphs.sample}</p>"
       end
       content_html += "</div>"
-      
+
       # Random tags (1-4 tags)
       num_tags = rand(1..4)
       selected_tags = tags_pool.sample(num_tags)
-      
+
       # Random published date in the past 6 months
       published_at = rand(6.months.ago..Time.current)
-      
+
       begin
         blog.posts.create!(
           title: title,
@@ -96,7 +96,7 @@ namespace :posts do
           status: :published,
           published_at: published_at
         )
-        
+
         print "."
         if (i + 1) % 10 == 0
           puts " #{i + 1} posts created"
@@ -106,7 +106,7 @@ namespace :posts do
         break
       end
     end
-    
+
     puts "\n✅ Final counts:"
     puts "Total posts: #{blog.posts.reload.count}"
     puts "Published posts: #{blog.posts.published.count}"
