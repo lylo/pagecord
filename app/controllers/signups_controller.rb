@@ -25,7 +25,7 @@ class SignupsController < ApplicationController
     end
 
     @user = User.new(user_params)
-    if @user.save
+    if signup_from_allowed_timezone && @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
       redirect_to thanks_signups_path
@@ -37,8 +37,10 @@ class SignupsController < ApplicationController
   private
 
     def user_params
-      raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, blog_attributes: [ :subdomain ])
-      translate_timezone_param(raw_params)
+      @user_params ||= begin
+        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, blog_attributes: [ :subdomain ])
+        translate_timezone_param(raw_params)
+      end
     end
 
     def translate_timezone_param(params)
@@ -69,5 +71,9 @@ class SignupsController < ApplicationController
     def fail
       flash[:error] = "Sorry, that didn't work. Contact support if the problem persists"
       redirect_to new_signup_path
+    end
+
+    def signup_from_allowed_timezone
+      [ "Chennai" ].exclude?(user_params[:timezone])
     end
 end
