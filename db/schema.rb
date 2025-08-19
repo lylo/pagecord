@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_08_18_170721) do
+ActiveRecord::Schema[8.1].define(version: 2025_08_19_072526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -44,6 +44,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_18_170721) do
     t.string "record_type", null: false
     t.datetime "updated_at", null: false
     t.index ["body"], name: "index_action_text_rich_texts_on_body_trigram", opclass: :gin_trgm_ops, using: :gin
+    t.index ["record_type", "name", "record_id"], name: "index_action_text_rich_texts_on_post_content", where: "(((record_type)::text = 'Post'::text) AND ((name)::text = 'content'::text))"
     t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
   end
 
