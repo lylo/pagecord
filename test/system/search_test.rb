@@ -4,7 +4,6 @@ class SearchTest < ApplicationSystemTestCase
   setup do
     @user = users(:vivian)
     access_request = @user.access_requests.create!
-    @user.blog.update!(features: [ "admin_search" ])
 
     visit verify_access_request_url(token: access_request.token_digest)
 

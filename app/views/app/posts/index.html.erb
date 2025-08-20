@@ -22,23 +22,17 @@
           or <%= link_to "create a new post", new_app_post_path, class: "font-medium underline" %>
         <% end %>
 
-        <% if current_features.enabled?(:admin_search) %>
-          <div data-controller="search">
-        <% else %>
-          <div>
-        <% end %>
+        <div data-controller="search">
           <div class="flex items-center justify-end gap-2 mb-4">
-            <% if current_features.enabled?(:admin_search) %>
             <button data-action="click->search#toggle" class="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer" title="Search posts">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </button>
-            <% end %>
+
             <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
           </div>
 
-          <% if current_features.enabled?(:admin_search) %>
           <div data-search-target="container" class="<%= 'hidden' unless @search_term %> mb-8">
             <%= form_with url: app_posts_path, method: :get, local: true, data: { turbo_frame: "posts", search_target: "form", turbo_action: "advance" } do |form| %>
               <div class="relative">
@@ -53,7 +47,6 @@
               </div>
             <% end %>
           </div>
-          <% end %>
         </div>
       <% end %>
     </p>
