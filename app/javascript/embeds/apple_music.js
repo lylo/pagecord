@@ -3,7 +3,7 @@ import MediaSite from "media_site"
 class AppleMusic extends MediaSite {
   constructor() {
     super(
-      /(https:\/\/(music|podcasts)\.apple\.com\/(..)\/(album|playlist|podcast)\/[^\/]+\/(id)?([0-9]+))(\?.*)?/,
+      /(https:\/\/(music|podcasts)\.apple\.com\/(..)\/(album|song|playlist|podcast)\/[^\/]+\/(id)?([0-9]+))(\?.*)?/,
 
       async (url) => {
         const match = url.match(this.regex)
@@ -22,7 +22,7 @@ class AppleMusic extends MediaSite {
         iframe.src = embedUrl
         iframe.width = "100%"
 
-        const isTrack = /\?i=\d+$/.test(embedUrl)
+        const isTrack = /\?i=\d+$/.test(embedUrl) || /\/song\//.test(embedUrl)
         iframe.height = isTrack ? "175" : "450"
         iframe.allow = "autoplay *; encrypted-media *; fullscreen *"
         iframe.loading = "lazy"
