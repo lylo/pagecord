@@ -348,8 +348,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     get blog_posts_path
 
-    assert_select "link[rel='apple-touch-icon'][href*='/assets/apple-touch-icon']"
-    assert_select "link[rel='icon'][type='image/svg+xml'][href*='/assets/favicon']"
+    assert_select "link[rel='apple-touch-icon'][href*='/apple-touch-icon']"
+    assert_select "link[rel='icon'][type='image/svg+xml'][href*='/favicon']"
   end
 
   test "should render upvotes for a subscriber" do
