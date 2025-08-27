@@ -91,7 +91,7 @@
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Subdomain</td>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
-              <%= link_to @user.blog.subdomain, blog_posts_path(@user.blog.subdomain), class: "text-blue-600 hover:underline", target: "_blank" %>
+              <%= link_to @user.blog.subdomain, blog_home_url(@user.blog), class: "text-blue-600 hover:underline", target: "_blank" %>
             </td>
           </tr>
           <tr>
