@@ -41,6 +41,6 @@ module Pagecord
     config.exceptions_app = self.routes
 
     # ignore mismatches between HTTP_CLIENT_IP and HTTP_X_FORWARDED_FOR
-    # config.action_dispatch.ip_spoofing_check = false
+    config.action_dispatch.ip_spoofing_check = false
   end
 end
