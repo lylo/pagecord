@@ -27,6 +27,7 @@ gem "sidekiq"
 gem "appsignal"
 gem "pghero"
 gem "pg_query", ">= 2"
+gem "rollups"  # Analytics data aggregation
 gem "sentry-ruby"
 gem "sentry-rails"
 

@@ -17,3 +17,6 @@
 </div>
 
 <%= render "blogs/email_subscriber_form" if @post.post? %>
+
+<!-- Analytics tracking -->
+<%= render 'shared/analytics_tracking', post: @post %>

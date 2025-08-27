@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_08_19_072700) do
+ActiveRecord::Schema[8.1].define(version: 2025_08_27_113222) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -177,6 +177,26 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_19_072700) do
     t.index ["user_id"], name: "index_paddle_events_on_user_id"
   end
 
+  create_table "page_views", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.string "ip_address"
+    t.boolean "is_unique", default: false
+    t.string "path", null: false
+    t.bigint "post_id"
+    t.text "referrer"
+    t.datetime "updated_at", null: false
+    t.text "user_agent"
+    t.datetime "viewed_at", null: false
+    t.string "visitor_hash", null: false
+    t.index ["blog_id", "viewed_at"], name: "index_page_views_on_blog_id_and_viewed_at"
+    t.index ["blog_id"], name: "index_page_views_on_blog_id"
+    t.index ["post_id"], name: "index_page_views_on_post_id"
+    t.index ["viewed_at"], name: "index_page_views_on_viewed_at"
+    t.index ["visitor_hash", "post_id", "viewed_at"], name: "index_page_views_on_visitor_hash_and_post_id_and_viewed_at"
+  end
+
   create_table "pghero_query_stats", force: :cascade do |t|
     t.bigint "calls"
     t.datetime "captured_at", precision: nil
@@ -259,6 +279,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_19_072700) do
     t.index ["token"], name: "index_posts_on_token", unique: true
   end
 
+  create_table "rollups", force: :cascade do |t|
+    t.jsonb "dimensions", default: {}, null: false
+    t.string "interval", null: false
+    t.string "name", null: false
+    t.datetime "time", null: false
+    t.float "value"
+    t.index ["name", "interval", "time", "dimensions"], name: "index_rollups_on_name_and_interval_and_time_and_dimensions", unique: true
+  end
+
   create_table "sender_email_addresses", force: :cascade do |t|
     t.datetime "accepted_at"
     t.bigint "blog_id", null: false
@@ -339,6 +368,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_19_072700) do
   add_foreign_key "email_subscribers", "blogs"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
+  add_foreign_key "page_views", "blogs"
+  add_foreign_key "page_views", "posts"
   add_foreign_key "post_digest_deliveries", "email_subscribers"
   add_foreign_key "post_digest_deliveries", "post_digests"
   add_foreign_key "post_digests", "blogs"

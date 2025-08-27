@@ -61,6 +61,10 @@ every 1.week, at: "6:00 am" do
   rake "posts:clear_old_raw_content"
 end
 
+every 1.day, at: "6:30 am" do
+  runner "RollupAndCleanupPageViewsJob.perform_later"
+end
+
 # every hour on a Tuesday
 every "0 * * * 2" do
   rake "post_digests:deliver"

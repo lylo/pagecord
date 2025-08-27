@@ -166,6 +166,9 @@ Rails.application.routes.draw do
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")
+
+    post "/hit", to: "blogs/analytics#create", as: :blog_analytics_hit
+
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
     resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
