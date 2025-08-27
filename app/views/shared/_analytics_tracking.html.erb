@@ -1,4 +1,4 @@
-<% if current_features.enabled?(:analytics) %>
+<% if Current.blog.user.subscribed? %>
   <% if local_assigns[:post] %>
     <% post_token = post.token %>
   <% else %>
