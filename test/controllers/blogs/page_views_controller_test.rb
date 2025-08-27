@@ -35,14 +35,12 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
     assert page_view.is_unique?
   end
 
-  test "should handle referrer from headers" do
+  test "should handle referrer from params" do
     referrer_url = "https://google.com/search"
 
     post blog_page_views_path,
-         headers: {
-           "Referer" => referrer_url,
-           "User-Agent" => "Mozilla/5.0 (Test Browser)"
-         }
+         params: { referrer: referrer_url },
+         headers: { "User-Agent" => "Mozilla/5.0 (Test Browser)" }
 
     page_view = PageView.last
     assert_equal referrer_url, page_view.referrer
