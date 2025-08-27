@@ -100,7 +100,7 @@ class App::AnalyticsController < AppController
     # Create one data point for each day of the month
     (start_date..end_date).map do |day|
       page_views = @blog.page_views.where(viewed_at: day.beginning_of_day..day.end_of_day)
-      
+
       {
         date: day,
         unique_visitors: page_views.where(is_unique: true).count,

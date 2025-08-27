@@ -52,7 +52,7 @@ module App::AnalyticsHelper
 
     max_visitors = chart_data.map { |d| [ d[:unique_visitors], d[:total_visitors] ] }.flatten.max
     return 10 if max_visitors.nil? || max_visitors == 0
-    
+
     (max_visitors * 1.1).ceil
   end
 
