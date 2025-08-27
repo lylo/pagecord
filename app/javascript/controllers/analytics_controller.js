@@ -17,10 +17,11 @@ export default class extends Controller {
 
     const data = new FormData()
     if (this.postTokenValue) data.append('post_token', this.postTokenValue)
-    // Include referrer if desired
+   
     if (document.referrer) data.append('referrer', document.referrer)
 
-    // Send the beacon; fail silently if any error occurs
+    data.append('path', window.location.pathname + window.location.search);
+
     try {
       navigator.sendBeacon(this.hitUrlValue, data)
     } catch (_) {}

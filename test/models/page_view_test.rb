@@ -31,11 +31,11 @@ class PageViewTest < ActiveSupport::TestCase
     )
 
     # First view should be unique
-    view1 = PageView.track_view(blog: blog, post: post, request: mock_request)
+    view1 = PageView.track_view(blog: blog, post: post, request: mock_request, path: "/test-post")
     assert view1.is_unique?
 
     # Second view from same visitor on same day should not be unique
-    view2 = PageView.track_view(blog: blog, post: post, request: mock_request)
+    view2 = PageView.track_view(blog: blog, post: post, request: mock_request, path: "/test-post")
     assert_not view2.is_unique?
   end
 
@@ -51,6 +51,6 @@ class PageViewTest < ActiveSupport::TestCase
       headers: {}
     )
 
-    assert_nil PageView.track_view(blog: blog, post: post, request: bot_request)
+    assert_nil PageView.track_view(blog: blog, post: post, request: bot_request, path: "/")
   end
 end

@@ -2,7 +2,7 @@ class PageView < ApplicationRecord
   belongs_to :blog
   belongs_to :post, optional: true  # Optional for index page views
 
-  validates :path, :visitor_hash, :viewed_at, presence: true
+  validates :visitor_hash, :viewed_at, presence: true
 
   self.rollup_column = :viewed_at
 
@@ -24,7 +24,7 @@ class PageView < ApplicationRecord
     bot_patterns.any? { |pattern| user_agent.match?(pattern) }
   end
 
-  def self.track_view(blog:, post: nil, request:)
+  def self.track_view(blog:, post: nil, request:, path: nil)
     return if bot_user_agent?(request.user_agent)
 
     ip = request.remote_ip
@@ -44,7 +44,7 @@ class PageView < ApplicationRecord
     create!(
       blog: blog,
       post: post,
-      path: request.fullpath,
+      path: path,
       visitor_hash: visitor_hash,
       ip_address: ip,
       user_agent: user_agent,
