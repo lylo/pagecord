@@ -7,6 +7,6 @@ class CreateRollups < ActiveRecord::Migration[8.1]
       t.jsonb :dimensions, null: false, default: {}
       t.float :value
     end
-    add_index :rollups, [:name, :interval, :time, :dimensions], unique: true
+    add_index :rollups, [ :name, :interval, :time, :dimensions ], unique: true
   end
 end

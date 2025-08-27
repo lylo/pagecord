@@ -14,9 +14,9 @@ class CreatePageViews < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    
-    add_index :page_views, [:blog_id, :viewed_at]
-    add_index :page_views, [:visitor_hash, :post_id, :viewed_at]
+
+    add_index :page_views, [ :blog_id, :viewed_at ]
+    add_index :page_views, [ :visitor_hash, :post_id, :viewed_at ]
     add_index :page_views, :viewed_at  # For cleanup job
   end
 end
