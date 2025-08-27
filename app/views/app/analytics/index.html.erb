@@ -12,15 +12,39 @@
         <% 
           # Context-aware dates for view switching
           context_day = case @view_type
-            when "month" then @date # If viewing a month, use first day of that month
-            when "year" then @date  # If viewing a year, use first day of that year
-            else @date              # If already day view, keep current day
+            when "month" 
+              # If viewing a month, use today if we're in current month, otherwise use current day number of that month
+              if @date.beginning_of_month == Date.current.beginning_of_month
+                Date.current
+              else
+                # Use current day number, but clamp to the last day of the viewed month if needed
+                target_day = Date.current.day
+                last_day_of_month = @date.end_of_month.day
+                actual_day = [target_day, last_day_of_month].min
+                Date.new(@date.year, @date.month, actual_day)
+              end
+            when "year"
+              # If viewing a year, use today if we're in current year, otherwise use first day of that year
+              if @date.beginning_of_year == Date.current.beginning_of_year
+                Date.current
+              else
+                @date # First day of the viewed year
+              end
+            else 
+              @date # If already day view, keep current day
           end
           
           context_month = case @view_type
             when "day" then @date.beginning_of_month    # If viewing a day, use its month
-            when "year" then @date                      # If viewing a year, use first month of that year  
-            else @date                                  # If already month view, keep current month
+            when "year" 
+              # If viewing a year, use current month if we're in current year, otherwise use current month number of that year
+              if @date.beginning_of_year == Date.current.beginning_of_year
+                Date.current.beginning_of_month
+              else
+                # Use current month number in the viewed year
+                Date.new(@date.year, Date.current.month, 1)
+              end
+            else @date # If already month view, keep current month
           end
           
           context_year = case @view_type
