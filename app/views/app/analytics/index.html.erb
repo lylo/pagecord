@@ -1,0 +1,289 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Analytics</h1>
+  </div>
+
+  <!-- View Type Navigation -->
+  <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800 rounded-lg p-4">
+    <div class="flex space-x-2">
+      <% 
+        # Context-aware dates for view switching
+        context_day = case @view_type
+          when "month" then @date # If viewing a month, use first day of that month
+          when "year" then @date  # If viewing a year, use first day of that year
+          else @date              # If already day view, keep current day
+        end
+        
+        context_month = case @view_type
+          when "day" then @date.beginning_of_month    # If viewing a day, use its month
+          when "year" then @date                      # If viewing a year, use first month of that year  
+          else @date                                  # If already month view, keep current month
+        end
+        
+        context_year = case @view_type
+          when "day" then @date.beginning_of_year     # If viewing a day, use its year
+          when "month" then @date.beginning_of_year   # If viewing a month, use its year
+          else @date                                  # If already year view, keep current year
+        end
+      %>
+      
+      <%= link_to "Day", app_analytics_path(view_type: "day", date: context_day.strftime("%Y-%m-%d")), 
+          class: "px-3 py-1 rounded text-sm font-medium #{'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' if @view_type == 'day'} #{'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' if @view_type != 'day'}" %>
+      <%= link_to "Month", app_analytics_path(view_type: "month", date: context_month.strftime("%Y-%m")), 
+          class: "px-3 py-1 rounded text-sm font-medium #{'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' if @view_type == 'month'} #{'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' if @view_type != 'month'}" %>
+      <%= link_to "Year", app_analytics_path(view_type: "year", date: context_year.strftime("%Y")), 
+          class: "px-3 py-1 rounded text-sm font-medium #{'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' if @view_type == 'year'} #{'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' if @view_type != 'year'}" %>
+    </div>
+    
+    <!-- Date Navigation -->
+    <div class="flex items-center space-x-2">
+      <!-- Today button - only show when not viewing current period -->
+      <% 
+        is_current_period = case @view_type
+          when "day" then @date.to_date == Date.current
+          when "month" then @date.beginning_of_month == Date.current.beginning_of_month
+          when "year" then @date.beginning_of_year == Date.current.beginning_of_year
+        end
+      %>
+      
+      <% if is_current_period %>
+        <div class="w-[50px]"></div> <!-- Spacer to maintain layout -->
+      <% else %>
+        <% 
+          today_date = case @view_type
+            when "day" then Date.current.strftime("%Y-%m-%d")
+            when "month" then Date.current.strftime("%Y-%m")
+            when "year" then Date.current.strftime("%Y")
+          end
+        %>
+        <%= link_to app_analytics_path(view_type: @view_type, date: today_date),
+            class: "px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800 transition-colors",
+            title: "Jump to current #{@view_type}" do %>
+          Today
+        <% end %>
+      <% end %>
+      
+      <%= link_to nav_path_for_date(@view_type, previous_date(@date, @view_type)), 
+          class: "p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      <% end %>
+      
+      <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[120px] text-center">
+        <%= format_date_for_view_type(@date, @view_type) %>
+      </span>
+      
+      <% unless next_date(@date, @view_type) > Date.current %>
+        <%= link_to nav_path_for_date(@view_type, next_date(@date, @view_type)), 
+            class: "p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400" do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        <% end %>
+      <% else %>
+        <div class="p-1 w-6 h-6"></div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Metrics Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+      <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Unique Visitors</h3>
+      <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">
+        <%= format_number(@analytics_data[:unique_visitors]) %>
+      </p>
+    </div>
+    
+    <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+      <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Visitors</h3>
+      <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">
+        <%= format_number(@analytics_data[:total_visitors]) %>
+      </p>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Visitors Over Time</h3>
+    
+    <% if @chart_data.any? %>
+      <div class="relative h-64">
+        <svg class="w-full h-full" viewBox="0 0 640 250">
+          <% chart_max = chart_max_value(@chart_data) %>
+          <% chart_left_margin = 35 %>
+          <% chart_right_margin = 20 %>
+          <% chart_top_margin = 20 %>
+          <% chart_bottom_margin = 40 %>
+          <% chart_width = 640 - chart_left_margin - chart_right_margin %>
+          <% chart_height = 250 - chart_top_margin - chart_bottom_margin %>
+          <% step_x = chart_width / [@chart_data.length - 1, 1].max %>
+          
+          <!-- Grid lines and Y-axis labels -->
+          <% (0..4).each do |i| %>
+            <% y = chart_top_margin + chart_height - (i * chart_height / 4) %>
+            <% y_value = chart_max > 0 ? (chart_max * i / 4).round : i %>
+            <line x1="<%= chart_left_margin %>" y1="<%= y %>" x2="<%= chart_left_margin + chart_width %>" y2="<%= y %>" stroke="#e2e8f0" stroke-width="1" opacity="0.3"/>
+            <text x="<%= chart_left_margin - 5 %>" y="<%= y + 4 %>" class="text-xs fill-slate-400" text-anchor="end">
+              <%= y_value %>
+            </text>
+          <% end %>
+          
+          <!-- X-axis labels -->
+          <% if @chart_data.length > 1 %>
+            <% 
+              # Smart labeling with special handling for year view (12 months)
+              if @view_type == "year" && @chart_data.length == 12
+                # For year view, show every other month: Jan, Mar, May, Jul, Sep, Nov
+                indices_to_show = [0, 2, 4, 6, 8, 10]
+              else
+                # General smart labeling: show first, last, and evenly distributed points
+                max_labels = 6
+                indices_to_show = []
+                
+                if @chart_data.length <= max_labels
+                  indices_to_show = (0...@chart_data.length).to_a
+                else
+                  step = (@chart_data.length - 1) / (max_labels - 1).to_f
+                  (0...max_labels).each do |i|
+                    indices_to_show << (i * step).round
+                  end
+                  indices_to_show = indices_to_show.uniq.sort
+                end
+              end
+            %>
+            
+            <% indices_to_show.each do |index| %>
+              <% data = @chart_data[index] %>
+              <% x = chart_left_margin + (index * step_x) %>
+              <% label = case @view_type
+                   when "day" then data[:date].strftime("%H:00")
+                   when "month" then data[:date].strftime("%m/%d")
+                   when "year" then data[:date].strftime("%b")
+                   end %>
+              <text x="<%= x %>" y="<%= chart_top_margin + chart_height + 15 %>" class="text-xs fill-slate-400" text-anchor="middle">
+                <%= label %>
+              </text>
+            <% end %>
+          <% else %>
+            <!-- Single point label for day view -->
+            <% center_x = chart_left_margin + (chart_width / 2) %>
+            <% label = @chart_data.first[:date].strftime("%B %d") %>
+            <text x="<%= center_x %>" y="<%= chart_top_margin + chart_height + 15 %>" class="text-xs fill-slate-400" text-anchor="middle">
+              <%= label %>
+            </text>
+          <% end %>
+          
+          <!-- Unique visitors line -->
+          <% if @chart_data.length > 1 %>
+            <polyline 
+              fill="none" 
+              stroke="#3b82f6" 
+              stroke-width="2" 
+              points="<%= @chart_data.map.with_index { |data, index| 
+                x = chart_left_margin + (index * step_x)
+                y = chart_top_margin + chart_height - (data[:unique_visitors].to_f / chart_max * chart_height)
+                "#{x},#{y}"
+              }.join(' ') %>"
+            />
+          <% end %>
+          
+          <!-- Total visitors line -->
+          <% if @chart_data.length > 1 %>
+            <polyline 
+              fill="none" 
+              stroke="#10b981" 
+              stroke-width="2" 
+              points="<%= @chart_data.map.with_index { |data, index| 
+                x = chart_left_margin + (index * step_x)
+                y = chart_top_margin + chart_height - (data[:total_visitors].to_f / chart_max * chart_height)
+                "#{x},#{y}"
+              }.join(' ') %>"
+            />
+          <% end %>
+          
+          <!-- Data points -->
+          <% @chart_data.each_with_index do |data, index| %>
+            <% x = chart_left_margin + (index * step_x) %>
+            <% unique_y = chart_top_margin + chart_height - (data[:unique_visitors].to_f / chart_max * chart_height) %>
+            <% total_y = chart_top_margin + chart_height - (data[:total_visitors].to_f / chart_max * chart_height) %>
+            
+            <circle cx="<%= x %>" cy="<%= unique_y %>" r="3" fill="#3b82f6"/>
+            <circle cx="<%= x %>" cy="<%= total_y %>" r="3" fill="#10b981"/>
+          <% end %>
+          
+          <!-- Full line for day view -->
+          <% if @view_type == "day" && @chart_data.length == 1 %>
+            <% data = @chart_data.first %>
+            <% line_start_x = chart_left_margin %>
+            <% line_end_x = chart_left_margin + chart_width %>
+            <% unique_y = chart_top_margin + chart_height - (data[:unique_visitors].to_f / chart_max * chart_height) %>
+            <% total_y = chart_top_margin + chart_height - (data[:total_visitors].to_f / chart_max * chart_height) %>
+            
+            <!-- Unique visitors line -->
+            <line x1="<%= line_start_x %>" y1="<%= unique_y %>" x2="<%= line_end_x %>" y2="<%= unique_y %>" stroke="#3b82f6" stroke-width="3"/>
+            <!-- Total visitors line -->
+            <line x1="<%= line_start_x %>" y1="<%= total_y %>" x2="<%= line_end_x %>" y2="<%= total_y %>" stroke="#10b981" stroke-width="3"/>
+            
+            <!-- End point circles for visual emphasis -->
+            <circle cx="<%= line_end_x %>" cy="<%= unique_y %>" r="3" fill="#3b82f6"/>
+            <circle cx="<%= line_end_x %>" cy="<%= total_y %>" r="3" fill="#10b981"/>
+          <% end %>
+        </svg>
+      </div>
+      
+      <!-- Legend -->
+      <div class="flex items-center justify-center space-x-6 mt-4 text-sm">
+        <div class="flex items-center space-x-2">
+          <div class="w-3 h-3 bg-blue-500 rounded"></div>
+          <span class="text-slate-600 dark:text-slate-400">Unique Visitors</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="w-3 h-3 bg-emerald-500 rounded"></div>
+          <span class="text-slate-600 dark:text-slate-400">Total Visitors</span>
+        </div>
+      </div>
+    <% else %>
+      <div class="text-center py-12 text-slate-500 dark:text-slate-400">
+        No data available for this time period
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Path Popularity -->
+  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Popular Pages</h3>
+    
+    <% if @path_popularity.any? %>
+      <div class="space-y-3">
+        <% @path_popularity.each_with_index do |(path, visits), index| %>
+          <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
+            <div class="flex items-center space-x-3">
+              <span class="text-sm font-mono text-slate-400 w-6 text-center">
+                <%= index + 1 %>
+              </span>
+              <span class="text-sm font-medium text-slate-900 dark:text-slate-100 truncate max-w-md">
+                <%= path || "/" %>
+              </span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
+                <% max_visits = @path_popularity.first[1] %>
+                <% width = (visits.to_f / max_visits * 100).round(1) %>
+                <div class="bg-blue-500 rounded-full h-2 transition-all duration-300" style="width: <%= width %>%"></div>
+              </div>
+              <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
+                <%= format_number(visits) %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-8 text-slate-500 dark:text-slate-400">
+        No page views found for this time period
+      </div>
+    <% end %>
+  </div>
+</div>

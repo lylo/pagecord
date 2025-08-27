@@ -88,6 +88,7 @@ Rails.application.routes.draw do
   get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
 
   namespace :app do
+    resources :analytics, only: [:index]
     resources :posts, except: [ :show ], param: :token
     resources :pages, except: [ :show ], param: :token
     resources :settings, only: [ :index ]
