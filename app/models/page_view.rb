@@ -4,11 +4,7 @@ class PageView < ApplicationRecord
 
   validates :path, :visitor_hash, :viewed_at, presence: true
 
-  scope :for_posts, -> { where.not(post_id: nil) }
-  scope :for_index, -> { where(post_id: nil) }
-  scope :unique_views, -> { where(is_unique: true) }
-  scope :total_views, -> { all }
-  scope :recent, ->(days = 30) { where(viewed_at: days.days.ago..) }
+  self.rollup_column = :viewed_at
 
   def self.generate_visitor_hash(ip, user_agent, date = Date.current)
     Digest::SHA256.hexdigest("#{ip}#{user_agent}#{date}")
@@ -58,15 +54,4 @@ class PageView < ApplicationRecord
       viewed_at: Time.current
     )
   end
-
-  def index_page_view?
-    post_id.nil?
-  end
-
-  def post_view?
-    post_id.present?
-  end
-
-  # Set rollup column for this model
-  self.rollup_column = :viewed_at
 end

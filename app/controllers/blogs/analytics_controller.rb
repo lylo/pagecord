@@ -4,12 +4,7 @@ class Blogs::AnalyticsController < Blogs::BaseController
   def create
     post = @blog.all_posts.published.released.find_by(token: params[:post_token]) if params[:post_token].present?
 
-    PageView.track_view(
-      blog: @blog,
-      post: post,
-      request: request,
-      referrer: params[:referrer].presence || request.referrer
-    )
+    PageView.track_view(blog: @blog, post: post, request: request)
 
     head :no_content
   rescue => e
