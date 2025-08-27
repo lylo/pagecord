@@ -24,7 +24,7 @@ class PageView < ApplicationRecord
     bot_patterns.any? { |pattern| user_agent.match?(pattern) }
   end
 
-  def self.track_view(blog:, post: nil, request:, path: nil)
+  def self.track(blog:, post: nil, request:, path: nil)
     return if bot_user_agent?(request.user_agent)
 
     ip = request.remote_ip
