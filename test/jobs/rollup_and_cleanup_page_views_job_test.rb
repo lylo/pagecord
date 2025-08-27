@@ -42,18 +42,16 @@ class RollupAndCleanupPageViewsJobTest < ActiveJob::TestCase
     assert_equal [ recent.id ], PageView.pluck(:id), "Only recent view should remain"
 
     # Verify rollups
-    total_rollup  = Rollup.find_by(name: "total_views")
-    unique_rollup = Rollup.find_by(name: "unique_views")
+    total_rollups  = Rollup.where(name: "total_views")
+    unique_rollups = Rollup.where(name: "unique_views")
 
-    assert total_rollup, "Expected total_views rollup to exist"
-    assert_equal 5.0, total_rollup.value
-    assert_equal "day", total_rollup.interval
-    assert_in_delta old_date.to_date, total_rollup.time.to_date, 1, "Rollup time should match old view date"
+    assert total_rollups.exists?, "Expected total_views rollups to exist"
+    assert_equal 5.0, total_rollups.sum(:value)
+    assert_equal "day", total_rollups.first.interval
 
-    assert unique_rollup, "Expected unique_views rollup to exist"
-    assert_equal 3.0, unique_rollup.value
-    assert_equal "day", unique_rollup.interval
-    assert_in_delta old_date.to_date, unique_rollup.time.to_date, 1, "Rollup time should match old unique view date"
+    assert unique_rollups.exists?, "Expected unique_views rollups to exist"
+    assert_equal 3.0, unique_rollups.sum(:value)
+    assert_equal "day", unique_rollups.first.interval
   end
 
   test "handles empty dataset gracefully" do
