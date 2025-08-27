@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_08_27_125617) do
+ActiveRecord::Schema[8.1].define(version: 2025_08_27_213054) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -185,6 +185,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_27_125617) do
     t.boolean "is_unique", default: false
     t.string "path"
     t.bigint "post_id"
+    t.text "query_string"
     t.text "referrer"
     t.datetime "updated_at", null: false
     t.text "user_agent"

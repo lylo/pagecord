@@ -33,6 +33,8 @@ class PageView < ApplicationRecord
 
     visitor_hash = generate_visitor_hash(ip, user_agent, today)
 
+    parsed_path, query_string = parse_path_and_query(path)
+
     # Check if this is a unique view for this visitor/post/day
     existing_view = where(
       blog: blog,
@@ -44,7 +46,8 @@ class PageView < ApplicationRecord
     create!(
       blog: blog,
       post: post,
-      path: path,
+      path: parsed_path,
+      query_string: query_string,
       visitor_hash: visitor_hash,
       ip_address: ip,
       user_agent: user_agent,
@@ -53,5 +56,19 @@ class PageView < ApplicationRecord
       is_unique: !existing_view,
       viewed_at: Time.current
     )
+  end
+
+  private
+
+  def self.parse_path_and_query(full_path)
+    return [ nil, nil ] if full_path.blank?
+
+    uri = URI.parse(full_path) rescue nil
+    return [ full_path, nil ] if uri.nil?
+
+    clean_path = uri.path.presence || "/"
+    query_string = uri.query.presence
+
+    [ clean_path, query_string ]
   end
 end
