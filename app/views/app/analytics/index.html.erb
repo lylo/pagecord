@@ -137,6 +137,29 @@
               if @view_type == "year" && @chart_data.length == 12
                 # For year view, show every other month: Jan, Mar, May, Jul, Sep, Nov
                 indices_to_show = [0, 2, 4, 6, 8, 10]
+              elsif @view_type == "month"
+                # For month view, show every other day starting from day 1
+                indices_to_show = (0...@chart_data.length).step(2).to_a
+                
+                # Special handling for last day based on month length
+                last_day = @date.end_of_month.day
+                last_index = @chart_data.length - 1
+                
+                case last_day
+                when 29
+                  # Feb leap year: show 29 (it's special!)
+                  unless indices_to_show.include?(last_index)
+                    indices_to_show << last_index
+                  end
+                when 28, 30
+                  # Feb regular year (28) or 30-day months: don't add last day
+                  # Pattern looks better ending at 27 or 29
+                when 31
+                  # 31-day months: include 31 to complete the month
+                  unless indices_to_show.include?(last_index)
+                    indices_to_show << last_index
+                  end
+                end
               else
                 # General smart labeling: show first, last, and evenly distributed points
                 max_labels = 6
@@ -159,7 +182,14 @@
               <% x = chart_left_margin + (index * step_x) %>
               <% label = case @view_type
                    when "day" then data[:date].strftime("%H:00")
-                   when "month" then data[:date].strftime("%m/%d")
+                   when "month" then 
+                     if index == 0
+                       "1"  # Always show "1" for first label in month view
+                     elsif index == @chart_data.length - 1
+                       @date.end_of_month.day.to_s  # Always show last day of month for final label
+                     else
+                       data[:date].day.to_s  # Remove zero prefix
+                     end
                    when "year" then data[:date].strftime("%b")
                    end %>
               <text x="<%= x %>" y="<%= chart_top_margin + chart_height + 15 %>" class="text-xs fill-slate-400" text-anchor="middle">
