@@ -3,6 +3,7 @@ DEFAULTS: &default
   width: standard
   font: sans
   locale: en
+  features: ["analytics"]
 
 joel:
   user: joel
