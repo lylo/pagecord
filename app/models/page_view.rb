@@ -60,15 +60,15 @@ class PageView < ApplicationRecord
 
   private
 
-  def self.parse_path_and_query(full_path)
-    return [ nil, nil ] if full_path.blank?
+    def self.parse_path_and_query(full_path)
+      return [ nil, nil ] if full_path.blank?
 
-    uri = URI.parse(full_path) rescue nil
-    return [ full_path, nil ] if uri.nil?
+      uri = URI.parse(full_path) rescue nil
+      return [ full_path, nil ] if uri.nil?
 
-    clean_path = uri.path.presence || "/"
-    query_string = uri.query.presence
+      clean_path = uri.path.presence || "/"
+      query_string = uri.query.presence
 
-    [ clean_path, query_string ]
-  end
+      [ clean_path, query_string ]
+    end
 end
