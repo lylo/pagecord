@@ -1,4 +1,4 @@
-class Blogs::AnalyticsController < Blogs::BaseController
+class Blogs::PageViewsController < Blogs::BaseController
   skip_before_action :verify_authenticity_token
 
   def create
