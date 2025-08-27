@@ -1,7 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Analytics tracking controller for Pagecord blogs
-// Tracks page views via navigator.sendBeacon, silently fails if unsupported
 export default class extends Controller {
   static values = { 
     hitUrl: String,
