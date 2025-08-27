@@ -1,7 +1,4 @@
-<%
-  track_analytics = !Rails.env.production? || (Rails.env.production? && ["blog", "olly"].include?(@blog&.subdomain)) 
-  if track_analytics
-%>
+<% if current_features.enabled?(:analytics) %>
   <% if local_assigns[:post] %>
     <% post_token = post.token %>
   <% else %>

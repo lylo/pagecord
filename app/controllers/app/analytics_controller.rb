@@ -1,5 +1,7 @@
 class App::AnalyticsController < AppController
   def index
+    redirect_to app_root_path unless current_features.enabled?(:analytics)
+
     @view_type = params[:view_type] || "month"
     @date = parse_date_param
 
@@ -147,7 +149,7 @@ class App::AnalyticsController < AppController
 
   def get_visitor_counts_for_period(start_date, end_date)
     cutoff_date = 30.days.ago.to_date
-    
+
     # Split the period into rollup (old) and raw data (recent) periods
     if end_date <= cutoff_date
       # Entire period is in rollup data
@@ -159,8 +161,8 @@ class App::AnalyticsController < AppController
       # Period spans both rollup and raw data
       rollup_unique, rollup_total = get_rollup_counts(start_date, cutoff_date)
       raw_unique, raw_total = get_raw_counts(cutoff_date + 1.day, end_date)
-      
-      [rollup_unique + raw_unique, rollup_total + raw_total]
+
+      [ rollup_unique + raw_unique, rollup_total + raw_total ]
     end
   end
 
@@ -173,20 +175,20 @@ class App::AnalyticsController < AppController
     ).sum(:value).to_i
 
     total_count = Rollup.where(
-      name: "total_views_by_blog", 
+      name: "total_views_by_blog",
       time: start_date.beginning_of_day..end_date.end_of_day,
       dimensions: { blog_id: @blog.id }
     ).sum(:value).to_i
 
-    [unique_count, total_count]
+    [ unique_count, total_count ]
   end
 
   def get_raw_counts(start_date, end_date)
     page_views = @blog.page_views.where(viewed_at: start_date.beginning_of_day..end_date.end_of_day)
-    
+
     unique_count = page_views.where(is_unique: true).count
     total_count = page_views.count
-    
-    [unique_count, total_count]
+
+    [ unique_count, total_count ]
   end
 end
