@@ -8,7 +8,8 @@ class Blogs::AnalyticsController < Blogs::BaseController
 
     head :no_content
   rescue => e
-    Rails.logger.error "Analytics error: #{e.class} - #{e.message}\n#{e.backtrace.take(5).join("\n")}"
+    Rails.logger.error "Analytics error: #{e.message}\n#{e.backtrace.take(5).join("\n")}"
+    Sentry.capture_message("Analytics error: #{e.message}")
     head :no_content
   end
 end
