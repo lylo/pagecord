@@ -52,11 +52,11 @@ class App::AnalyticsController < AppController
   end
 
   def day_analytics(date)
-    page_views = @blog.page_views.where(viewed_at: date.beginning_of_day..date.end_of_day)
+    unique_visitors, total_visitors = get_visitor_counts_for_period(date, date)
 
     {
-      unique_visitors: page_views.where(is_unique: true).count,
-      total_visitors: page_views.count,
+      unique_visitors: unique_visitors,
+      total_visitors: total_visitors,
       date: date
     }
   end
@@ -64,11 +64,11 @@ class App::AnalyticsController < AppController
   def month_analytics(date)
     start_date = date.beginning_of_month
     end_date = date.end_of_month
-    page_views = @blog.page_views.where(viewed_at: start_date.beginning_of_day..end_date.end_of_day)
+    unique_visitors, total_visitors = get_visitor_counts_for_period(start_date, end_date)
 
     {
-      unique_visitors: page_views.where(is_unique: true).count,
-      total_visitors: page_views.count,
+      unique_visitors: unique_visitors,
+      total_visitors: total_visitors,
       date: date
     }
   end
@@ -76,11 +76,11 @@ class App::AnalyticsController < AppController
   def year_analytics(date)
     start_date = date.beginning_of_year
     end_date = date.end_of_year
-    page_views = @blog.page_views.where(viewed_at: start_date.beginning_of_day..end_date.end_of_day)
+    unique_visitors, total_visitors = get_visitor_counts_for_period(start_date, end_date)
 
     {
-      unique_visitors: page_views.where(is_unique: true).count,
-      total_visitors: page_views.count,
+      unique_visitors: unique_visitors,
+      total_visitors: total_visitors,
       date: date
     }
   end
@@ -99,12 +99,12 @@ class App::AnalyticsController < AppController
 
     # Create one data point for each day of the month
     (start_date..end_date).map do |day|
-      page_views = @blog.page_views.where(viewed_at: day.beginning_of_day..day.end_of_day)
+      unique_visitors, total_visitors = get_visitor_counts_for_period(day, day)
 
       {
         date: day,
-        unique_visitors: page_views.where(is_unique: true).count,
-        total_visitors: page_views.count
+        unique_visitors: unique_visitors,
+        total_visitors: total_visitors
       }
     end
   end
@@ -115,12 +115,12 @@ class App::AnalyticsController < AppController
     (0..11).map do |month_offset|
       month_start = start_date.beginning_of_month + month_offset.months
       month_end = month_start.end_of_month
-      page_views = @blog.page_views.where(viewed_at: month_start.beginning_of_day..month_end.end_of_day)
+      unique_visitors, total_visitors = get_visitor_counts_for_period(month_start, month_end)
 
       {
         date: month_start,
-        unique_visitors: page_views.where(is_unique: true).count,
-        total_visitors: page_views.count
+        unique_visitors: unique_visitors,
+        total_visitors: total_visitors
       }
     end
   end
@@ -141,5 +141,52 @@ class App::AnalyticsController < AppController
          .count
          .sort_by { |_, count| -count }
          .first(20)
+  end
+
+  private
+
+  def get_visitor_counts_for_period(start_date, end_date)
+    cutoff_date = 30.days.ago.to_date
+    
+    # Split the period into rollup (old) and raw data (recent) periods
+    if end_date <= cutoff_date
+      # Entire period is in rollup data
+      get_rollup_counts(start_date, end_date)
+    elsif start_date > cutoff_date
+      # Entire period is in raw data
+      get_raw_counts(start_date, end_date)
+    else
+      # Period spans both rollup and raw data
+      rollup_unique, rollup_total = get_rollup_counts(start_date, cutoff_date)
+      raw_unique, raw_total = get_raw_counts(cutoff_date + 1.day, end_date)
+      
+      [rollup_unique + raw_unique, rollup_total + raw_total]
+    end
+  end
+
+  def get_rollup_counts(start_date, end_date)
+    # Query rollup data for the blog
+    unique_count = Rollup.where(
+      name: "unique_views_by_blog",
+      time: start_date.beginning_of_day..end_date.end_of_day,
+      dimensions: { blog_id: @blog.id }
+    ).sum(:value).to_i
+
+    total_count = Rollup.where(
+      name: "total_views_by_blog", 
+      time: start_date.beginning_of_day..end_date.end_of_day,
+      dimensions: { blog_id: @blog.id }
+    ).sum(:value).to_i
+
+    [unique_count, total_count]
+  end
+
+  def get_raw_counts(start_date, end_date)
+    page_views = @blog.page_views.where(viewed_at: start_date.beginning_of_day..end_date.end_of_day)
+    
+    unique_count = page_views.where(is_unique: true).count
+    total_count = page_views.count
+    
+    [unique_count, total_count]
   end
 end
