@@ -66,4 +66,3 @@ class RollupAndCleanupPageViewsJobTest < ActiveJob::TestCase
     assert_equal 0, Rollup.count
   end
 end
-
