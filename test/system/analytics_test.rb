@@ -21,7 +21,12 @@ class AnalyticsTest < ApplicationSystemTestCase
   end
 
   test "individual post page tracks analytics with post token" do
-    visit blog_post_path(@post.slug)
+    assert_difference("PageView.count", 1) do
+      visit blog_post_path(@post.slug)
+
+      # Wait for the analytics request to complete
+      sleep 0.2
+    end
 
     # Check that analytics controller has post token
     assert_selector '[data-controller="analytics"]', visible: false
@@ -30,6 +35,12 @@ class AnalyticsTest < ApplicationSystemTestCase
     # Verify post token is present
     post_token = find('[data-controller="analytics"]', visible: false)["data-analytics-post-token-value"]
     assert_equal @post.token, post_token
+
+    # Verify the pageview was created with correct attributes
+    pageview = PageView.last
+    assert_equal @blog, pageview.blog
+    assert_equal @post, pageview.post
+    assert pageview.is_unique?
   end
 
   test "analytics works on Turbo navigation" do
@@ -45,4 +56,3 @@ class AnalyticsTest < ApplicationSystemTestCase
     assert_equal @post.token, post_token
   end
 end
-
