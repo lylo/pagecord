@@ -128,7 +128,7 @@ if __FILE__ == $PROGRAM_NAME
   if ARGV.length != 3
     puts "Usage: bundle exec rails runner import_ghost_json.rb path/to/ghost_export.json blog_subdomain ghost_url"
     puts "Example: bundle exec rails runner import_ghost_json.rb ghost_export.json myblog https://your.ghostdomain.com"
-    exit 1
+    return
   end
 
   file_path = ARGV[0]
@@ -137,7 +137,7 @@ if __FILE__ == $PROGRAM_NAME
 
   unless File.exist?(file_path)
     puts "File not found: #{file_path}"
-    exit 1
+    return
   end
 
   import_ghost_json(file_path, blog_subdomain, ghost_url)
