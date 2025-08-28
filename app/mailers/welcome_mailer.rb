@@ -1,16 +1,21 @@
 class WelcomeMailer < MailpaceMailer
   helper :routing
 
+ default from: "Olly at Pagecord <no-reply@mailer.pagecord.com>",
+         reply_to: "Olly at Pagecord <olly@pagecord.com>"
+
   def welcome_email
     @user = params[:user]
     @blog = @user.blog
     @price = params[:price] || Subscription.price
 
-    mail(
-      from: "Olly at Pagecord <no-reply@mailer.pagecord.com>",
-      reply_to: "Olly at Pagecord <hello@pagecord.com>",
-      to: @user.email,
-      subject: "Welcome to Pagecord!"
-    )
+    mail to: @user.email, subject: "Welcome to Pagecord!"
+  end
+
+  def unengaged_follow_up
+    @user = params[:user]
+    @blog = @user.blog
+
+    mail to: @user.email, subject: "Can I help you get started with Pagecord?"
   end
 end
