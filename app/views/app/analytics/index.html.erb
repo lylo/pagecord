@@ -334,25 +334,25 @@
     
     <% if @path_popularity.any? %>
       <div class="space-y-3">
-        <% @path_popularity.each_with_index do |(path, visits), index| %>
+        <% @path_popularity.each_with_index do |path_data, index| %>
           <div class="flex items-start justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
             <div class="flex items-start space-x-3 flex-1 min-w-0">
               <span class="text-sm font-mono text-slate-400 w-6 text-center flex-shrink-0 mt-0.5">
                 <%= index + 1 %>
               </span>
               <span class="text-sm font-medium text-slate-900 dark:text-slate-100 break-all">
-                <%= path || "/" %>
+                <%= path_data[:path] || "/" %>
               </span>
             </div>
             <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
               <!-- Hide progress bar on mobile, show on desktop -->
               <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
-                <% max_visits = @path_popularity.first[1] %>
-                <% width = (visits.to_f / max_visits * 100).round(1) %>
+                <% max_visits = @path_popularity.first[:count] %>
+                <% width = (path_data[:count].to_f / max_visits * 100).round(1) %>
                 <div class="bg-blue-500 rounded-full h-2 transition-all duration-300" style="width: <%= width %>%"></div>
               </div>
               <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
-                <%= format_number(visits) %>
+                <%= format_number(path_data[:count]) %>
               </span>
             </div>
           </div>
