@@ -103,7 +103,7 @@ class App::AnalyticsController < AppController
       start_date = date.beginning_of_month
       end_date = date.end_of_month
       user_timezone = Current.user.timezone || "UTC"
-      
+
       current_month = Date.current.beginning_of_month
 
       if start_date >= current_month
@@ -129,7 +129,7 @@ class App::AnalyticsController < AppController
         # Entire year is in rollup data - batch query all months at once
         get_year_chart_data_from_rollups(start_date, end_date, user_timezone)
       elsif start_time_utc > cutoff_time
-        # Entire year is in raw data - batch query all months at once  
+        # Entire year is in raw data - batch query all months at once
         get_year_chart_data_from_raw_data(start_date, end_date, user_timezone)
       else
         # Year spans both rollup and raw data - batch query both sources
@@ -236,14 +236,14 @@ class App::AnalyticsController < AppController
       ).group(:time).sum(:value)
 
       total_rollups = Rollup.where(
-        name: "total_views_by_blog", 
+        name: "total_views_by_blog",
         time: start_time_utc..cutoff_time,
         dimensions: { blog_id: @blog.id }
       ).group(:time).sum(:value)
 
       # Batch query raw data for recent period
       recent_page_views = @blog.page_views.where(viewed_at: cutoff_time..end_time_utc)
-      
+
       # Group raw data by month in memory
       unique_views_by_month = Hash.new(0)
       total_views_by_month = Hash.new(0)
@@ -318,7 +318,7 @@ class App::AnalyticsController < AppController
 
       # Batch query all page views for the entire month
       page_views = @blog.page_views.where(viewed_at: start_time_utc..end_time_utc)
-      
+
       # Group by day and count in memory
       unique_views_by_day = Hash.new(0)
       total_views_by_day = Hash.new(0)
