@@ -10,6 +10,7 @@ class Post < ApplicationRecord
   has_many :digest_posts, dependent: :destroy
   has_many :post_digests, through: :digest_posts
   has_many :replies, class_name: "Post::Reply", dependent: :destroy
+  has_many :page_views, dependent: :destroy
 
   before_create :set_published_at, :limit_content_size
 
