@@ -123,13 +123,14 @@ class Analytics::Chart < Analytics::Base
         dimensions: { blog_id: blog.id }
       ).group(:time).sum(:value)
 
-      recent_page_views = blog.page_views.where(viewed_at: cutoff_time..end_time_utc)
+      # Get raw page views for the entire year to handle months without rollups
+      all_page_views = blog.page_views.where(viewed_at: start_time_utc..end_time_utc)
 
       unique_views_by_month = Hash.new(0)
       total_views_by_month = Hash.new(0)
 
-      recent_page_views.find_each do |page_view|
-        month_key = page_view.viewed_at.in_time_zone(user_timezone).beginning_of_month
+      all_page_views.find_each do |page_view|
+        month_key = page_view.viewed_at.in_time_zone(user_timezone).beginning_of_month.to_date
         total_views_by_month[month_key] += 1
         unique_views_by_month[month_key] += 1 if page_view.is_unique?
       end
@@ -139,9 +140,13 @@ class Analytics::Chart < Analytics::Base
         month_start_utc = month_start.in_time_zone(user_timezone).beginning_of_day.utc
         month_end_utc = month_start.end_of_month.in_time_zone(user_timezone).end_of_day.utc
 
-        if month_end_utc <= cutoff_time
-          unique_views = unique_rollups.select { |time, _| time >= month_start_utc && time <= month_end_utc }.values.sum.to_i
-          total_views = total_rollups.select { |time, _| time >= month_start_utc && time <= month_end_utc }.values.sum.to_i
+        # Use rollups if month ended more than 30 days ago AND rollups exist for this month
+        rollup_unique_views = unique_rollups.select { |time, _| time >= month_start_utc && time <= month_end_utc }.values.sum.to_i
+        rollup_total_views = total_rollups.select { |time, _| time >= month_start_utc && time <= month_end_utc }.values.sum.to_i
+
+        if month_end_utc <= cutoff_time && (rollup_unique_views > 0 || rollup_total_views > 0)
+          unique_views = rollup_unique_views
+          total_views = rollup_total_views
         else
           unique_views = unique_views_by_month[month_start] || 0
           total_views = total_views_by_month[month_start] || 0
