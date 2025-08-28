@@ -23,33 +23,37 @@ class App::AnalyticsController < AppController
   private
 
   def parse_date_param
+    user_timezone = Current.user.timezone || "UTC"
+
     if params[:date].present?
       case @view_type
       when "day"
-        Date.parse(params[:date])
+        Date.parse(params[:date]).in_time_zone(user_timezone).to_date
       when "month"
-        Date.parse("#{params[:date]}-01")
+        Date.parse("#{params[:date]}-01").in_time_zone(user_timezone).to_date
       when "year"
-        Date.parse("#{params[:date]}-01-01")
+        Date.parse("#{params[:date]}-01-01").in_time_zone(user_timezone).to_date
       end
     else
+      current_date_in_timezone = Time.now.in_time_zone(user_timezone).to_date
       case @view_type
       when "day"
-        Date.current
+        current_date_in_timezone
       when "month"
-        Date.current.beginning_of_month
+        current_date_in_timezone.beginning_of_month
       when "year"
-        Date.current.beginning_of_year
+        current_date_in_timezone.beginning_of_year
       end
     end
   rescue ArgumentError
+    current_date_in_timezone = Time.now.in_time_zone(user_timezone).to_date
     case @view_type
     when "day"
-      Date.current
+      current_date_in_timezone
     when "month"
-      Date.current.beginning_of_month
+      current_date_in_timezone.beginning_of_month
     when "year"
-      Date.current.beginning_of_year
+      current_date_in_timezone.beginning_of_year
     end
   end
 
@@ -128,13 +132,22 @@ class App::AnalyticsController < AppController
   end
 
   def path_popularity_data(view_type, date)
+    user_timezone = Current.user.timezone || "UTC"
+
+    # Convert user-timezone date to UTC time range for database query
     date_range = case view_type
     when "day"
-      date.beginning_of_day..date.end_of_day
+      start_time = date.in_time_zone(user_timezone).beginning_of_day.utc
+      end_time = date.in_time_zone(user_timezone).end_of_day.utc
+      start_time..end_time
     when "month"
-      date.beginning_of_month.beginning_of_day..date.end_of_month.end_of_day
+      start_time = date.beginning_of_month.in_time_zone(user_timezone).beginning_of_day.utc
+      end_time = date.end_of_month.in_time_zone(user_timezone).end_of_day.utc
+      start_time..end_time
     when "year"
-      date.beginning_of_year.beginning_of_day..date.end_of_year.end_of_day
+      start_time = date.beginning_of_year.in_time_zone(user_timezone).beginning_of_day.utc
+      end_time = date.end_of_year.in_time_zone(user_timezone).end_of_day.utc
+      start_time..end_time
     end
 
     @blog.page_views
@@ -148,43 +161,48 @@ class App::AnalyticsController < AppController
   private
 
   def get_page_view_counts_for_period(start_date, end_date)
-    cutoff_date = 30.days.ago.to_date
+    # Convert user-timezone dates to UTC time ranges for database queries
+    user_timezone = Current.user.timezone || "UTC"
+    start_time_utc = start_date.in_time_zone(user_timezone).beginning_of_day.utc
+    end_time_utc = end_date.in_time_zone(user_timezone).end_of_day.utc
+
+    cutoff_time = 30.days.ago.beginning_of_day
 
     # Split the period into rollup (old) and raw data (recent) periods
-    if end_date <= cutoff_date
+    if end_time_utc <= cutoff_time
       # Entire period is in rollup data
-      get_rollup_counts(start_date, end_date)
-    elsif start_date > cutoff_date
+      get_rollup_counts(start_time_utc, end_time_utc)
+    elsif start_time_utc > cutoff_time
       # Entire period is in raw data
-      get_raw_counts(start_date, end_date)
+      get_raw_counts(start_time_utc, end_time_utc)
     else
       # Period spans both rollup and raw data
-      rollup_unique, rollup_total = get_rollup_counts(start_date, cutoff_date)
-      raw_unique, raw_total = get_raw_counts(cutoff_date + 1.day, end_date)
+      rollup_unique, rollup_total = get_rollup_counts(start_time_utc, cutoff_time)
+      raw_unique, raw_total = get_raw_counts(cutoff_time, end_time_utc)
 
       [ rollup_unique + raw_unique, rollup_total + raw_total ]
     end
   end
 
-  def get_rollup_counts(start_date, end_date)
+  def get_rollup_counts(start_time, end_time)
     # Query rollup data for the blog
     unique_count = Rollup.where(
       name: "unique_views_by_blog",
-      time: start_date.beginning_of_day..end_date.end_of_day,
+      time: start_time..end_time,
       dimensions: { blog_id: @blog.id }
     ).sum(:value).to_i
 
     total_count = Rollup.where(
       name: "total_views_by_blog",
-      time: start_date.beginning_of_day..end_date.end_of_day,
+      time: start_time..end_time,
       dimensions: { blog_id: @blog.id }
     ).sum(:value).to_i
 
     [ unique_count, total_count ]
   end
 
-  def get_raw_counts(start_date, end_date)
-    page_views = @blog.page_views.where(viewed_at: start_date.beginning_of_day..end_date.end_of_day)
+  def get_raw_counts(start_time, end_time)
+    page_views = @blog.page_views.where(viewed_at: start_time..end_time)
 
     unique_count = page_views.where(is_unique: true).count
     total_count = page_views.count
