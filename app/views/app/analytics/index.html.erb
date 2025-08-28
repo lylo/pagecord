@@ -1,8 +1,4 @@
 <div class="space-y-6">
-  <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Analytics</h1>
-  </div>
-
   <!-- View Type Navigation -->
   <div class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 space-y-3 md:space-y-0">
     <!-- Mobile: Stacked Layout, Desktop: Side by Side -->
@@ -141,23 +137,23 @@
   <!-- Metrics Cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-      <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Unique Visitors</h3>
+      <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Unique Page Views</h3>
       <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">
-        <%= format_number(@analytics_data[:unique_visitors]) %>
+        <%= format_number(@analytics_data[:unique_page_views]) %>
       </p>
     </div>
     
     <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-      <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Visitors</h3>
+      <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Page Views</h3>
       <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">
-        <%= format_number(@analytics_data[:total_visitors]) %>
+        <%= format_number(@analytics_data[:total_page_views]) %>
       </p>
     </div>
   </div>
 
   <!-- Chart -->
   <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
-    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Visitors Over Time</h3>
+    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Page Views Over Time</h3>
     
     <% if @chart_data.any? %>
       <div class="relative h-64">
@@ -264,7 +260,7 @@
               stroke-width="2" 
               points="<%= @chart_data.map.with_index { |data, index| 
                 x = chart_left_margin + (index * step_x)
-                y = chart_top_margin + chart_height - (data[:unique_visitors].to_f / chart_max * chart_height)
+                y = chart_top_margin + chart_height - (data[:unique_page_views].to_f / chart_max * chart_height)
                 "#{x},#{y}"
               }.join(' ') %>"
             />
@@ -278,7 +274,7 @@
               stroke-width="2" 
               points="<%= @chart_data.map.with_index { |data, index| 
                 x = chart_left_margin + (index * step_x)
-                y = chart_top_margin + chart_height - (data[:total_visitors].to_f / chart_max * chart_height)
+                y = chart_top_margin + chart_height - (data[:total_page_views].to_f / chart_max * chart_height)
                 "#{x},#{y}"
               }.join(' ') %>"
             />
@@ -287,8 +283,8 @@
           <!-- Data points -->
           <% @chart_data.each_with_index do |data, index| %>
             <% x = chart_left_margin + (index * step_x) %>
-            <% unique_y = chart_top_margin + chart_height - (data[:unique_visitors].to_f / chart_max * chart_height) %>
-            <% total_y = chart_top_margin + chart_height - (data[:total_visitors].to_f / chart_max * chart_height) %>
+            <% unique_y = chart_top_margin + chart_height - (data[:unique_page_views].to_f / chart_max * chart_height) %>
+            <% total_y = chart_top_margin + chart_height - (data[:total_page_views].to_f / chart_max * chart_height) %>
             
             <circle cx="<%= x %>" cy="<%= unique_y %>" r="3" fill="#3b82f6"/>
             <circle cx="<%= x %>" cy="<%= total_y %>" r="3" fill="#10b981"/>
@@ -299,8 +295,8 @@
             <% data = @chart_data.first %>
             <% line_start_x = chart_left_margin %>
             <% line_end_x = chart_left_margin + chart_width %>
-            <% unique_y = chart_top_margin + chart_height - (data[:unique_visitors].to_f / chart_max * chart_height) %>
-            <% total_y = chart_top_margin + chart_height - (data[:total_visitors].to_f / chart_max * chart_height) %>
+            <% unique_y = chart_top_margin + chart_height - (data[:unique_page_views].to_f / chart_max * chart_height) %>
+            <% total_y = chart_top_margin + chart_height - (data[:total_page_views].to_f / chart_max * chart_height) %>
             
             <!-- Unique visitors line -->
             <line x1="<%= line_start_x %>" y1="<%= unique_y %>" x2="<%= line_end_x %>" y2="<%= unique_y %>" stroke="#3b82f6" stroke-width="3"/>
@@ -318,11 +314,11 @@
       <div class="flex items-center justify-center space-x-6 mt-4 text-sm">
         <div class="flex items-center space-x-2">
           <div class="w-3 h-3 bg-blue-500 rounded"></div>
-          <span class="text-slate-600 dark:text-slate-400">Unique Visitors</span>
+          <span class="text-slate-600 dark:text-slate-400">Unique Page Views</span>
         </div>
         <div class="flex items-center space-x-2">
           <div class="w-3 h-3 bg-emerald-500 rounded"></div>
-          <span class="text-slate-600 dark:text-slate-400">Total Visitors</span>
+          <span class="text-slate-600 dark:text-slate-400">Total Page Views</span>
         </div>
       </div>
     <% else %>

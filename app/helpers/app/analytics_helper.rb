@@ -50,10 +50,10 @@ module App::AnalyticsHelper
   def chart_max_value(chart_data)
     return 10 if chart_data.empty?
 
-    max_visitors = chart_data.map { |d| [ d[:unique_visitors], d[:total_visitors] ] }.flatten.max
-    return 10 if max_visitors.nil? || max_visitors == 0
+    max_page_views = chart_data.map { |d| [ d[:unique_page_views], d[:total_page_views] ] }.flatten.max
+    return 10 if max_page_views.nil? || max_page_views == 0
 
-    (max_visitors * 1.1).ceil
+    (max_page_views * 1.1).ceil
   end
 
   def chart_point_position(value, max_value, chart_width = 100)

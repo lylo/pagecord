@@ -54,11 +54,11 @@ class App::AnalyticsController < AppController
   end
 
   def day_analytics(date)
-    unique_visitors, total_visitors = get_visitor_counts_for_period(date, date)
+    unique_page_views, total_page_views = get_page_view_counts_for_period(date, date)
 
     {
-      unique_visitors: unique_visitors,
-      total_visitors: total_visitors,
+      unique_page_views: unique_page_views,
+      total_page_views: total_page_views,
       date: date
     }
   end
@@ -66,11 +66,11 @@ class App::AnalyticsController < AppController
   def month_analytics(date)
     start_date = date.beginning_of_month
     end_date = date.end_of_month
-    unique_visitors, total_visitors = get_visitor_counts_for_period(start_date, end_date)
+    unique_page_views, total_page_views = get_page_view_counts_for_period(start_date, end_date)
 
     {
-      unique_visitors: unique_visitors,
-      total_visitors: total_visitors,
+      unique_page_views: unique_page_views,
+      total_page_views: total_page_views,
       date: date
     }
   end
@@ -78,11 +78,11 @@ class App::AnalyticsController < AppController
   def year_analytics(date)
     start_date = date.beginning_of_year
     end_date = date.end_of_year
-    unique_visitors, total_visitors = get_visitor_counts_for_period(start_date, end_date)
+    unique_page_views, total_page_views = get_page_view_counts_for_period(start_date, end_date)
 
     {
-      unique_visitors: unique_visitors,
-      total_visitors: total_visitors,
+      unique_page_views: unique_page_views,
+      total_page_views: total_page_views,
       date: date
     }
   end
@@ -90,8 +90,8 @@ class App::AnalyticsController < AppController
   def day_chart_data(date)
     [ {
       date: date,
-      unique_visitors: @analytics_data[:unique_visitors],
-      total_visitors: @analytics_data[:total_visitors]
+      unique_page_views: @analytics_data[:unique_page_views],
+      total_page_views: @analytics_data[:total_page_views]
     } ]
   end
 
@@ -101,12 +101,12 @@ class App::AnalyticsController < AppController
 
     # Create one data point for each day of the month
     (start_date..end_date).map do |day|
-      unique_visitors, total_visitors = get_visitor_counts_for_period(day, day)
+      unique_page_views, total_page_views = get_page_view_counts_for_period(day, day)
 
       {
         date: day,
-        unique_visitors: unique_visitors,
-        total_visitors: total_visitors
+        unique_page_views: unique_page_views,
+        total_page_views: total_page_views
       }
     end
   end
@@ -117,12 +117,12 @@ class App::AnalyticsController < AppController
     (0..11).map do |month_offset|
       month_start = start_date.beginning_of_month + month_offset.months
       month_end = month_start.end_of_month
-      unique_visitors, total_visitors = get_visitor_counts_for_period(month_start, month_end)
+      unique_page_views, total_page_views = get_page_view_counts_for_period(month_start, month_end)
 
       {
         date: month_start,
-        unique_visitors: unique_visitors,
-        total_visitors: total_visitors
+        unique_page_views: unique_page_views,
+        total_page_views: total_page_views
       }
     end
   end
@@ -147,7 +147,7 @@ class App::AnalyticsController < AppController
 
   private
 
-  def get_visitor_counts_for_period(start_date, end_date)
+  def get_page_view_counts_for_period(start_date, end_date)
     cutoff_date = 30.days.ago.to_date
 
     # Split the period into rollup (old) and raw data (recent) periods
