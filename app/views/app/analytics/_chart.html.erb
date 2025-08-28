@@ -1,0 +1,176 @@
+<!-- Chart -->
+<div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
+  <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Page Views Over Time</h3>
+  
+  <% if @chart_data.any? %>
+    <div class="relative h-64">
+      <svg class="w-full h-full" viewBox="0 0 640 250">
+        <% chart_max = chart_max_value(@chart_data) %>
+        <% chart_left_margin = 35 %>
+        <% chart_right_margin = 20 %>
+        <% chart_top_margin = 20 %>
+        <% chart_bottom_margin = 40 %>
+        <% chart_width = 640 - chart_left_margin - chart_right_margin %>
+        <% chart_height = 250 - chart_top_margin - chart_bottom_margin %>
+        <% step_x = chart_width / [@chart_data.length - 1, 1].max %>
+        
+        <!-- Grid lines and Y-axis labels -->
+        <% (0..4).each do |i| %>
+          <% y = chart_top_margin + chart_height - (i * chart_height / 4) %>
+          <% y_value = chart_max > 0 ? (chart_max * i / 4).round : i %>
+          <line x1="<%= chart_left_margin %>" y1="<%= y %>" x2="<%= chart_left_margin + chart_width %>" y2="<%= y %>" stroke="#e2e8f0" stroke-width="1" opacity="0.3"/>
+          <text x="<%= chart_left_margin - 5 %>" y="<%= y + 4 %>" class="text-xs fill-slate-400" text-anchor="end">
+            <%= y_value %>
+          </text>
+        <% end %>
+        
+        <!-- X-axis labels -->
+        <% if @chart_data.length > 1 %>
+          <% 
+            # Smart labeling with special handling for year view (12 months)
+            if @view_type == "year" && @chart_data.length == 12
+              # For year view, show every other month: Jan, Mar, May, Jul, Sep, Nov
+              indices_to_show = [0, 2, 4, 6, 8, 10]
+            elsif @view_type == "month"
+              # For month view, show every other day starting from day 1
+              indices_to_show = (0...@chart_data.length).step(2).to_a
+              
+              # Special handling for last day based on month length
+              last_day = @date.end_of_month.day
+              last_index = @chart_data.length - 1
+              
+              case last_day
+              when 29
+                # Feb leap year: show 29 (it's special!)
+                unless indices_to_show.include?(last_index)
+                  indices_to_show << last_index
+                end
+              when 28, 30
+                # Feb regular year (28) or 30-day months: don't add last day
+                # Pattern looks better ending at 27 or 29
+              when 31
+                # 31-day months: include 31 to complete the month
+                unless indices_to_show.include?(last_index)
+                  indices_to_show << last_index
+                end
+              end
+            else
+              # General smart labeling: show first, last, and evenly distributed points
+              max_labels = 6
+              indices_to_show = []
+              
+              if @chart_data.length <= max_labels
+                indices_to_show = (0...@chart_data.length).to_a
+              else
+                step = (@chart_data.length - 1) / (max_labels - 1).to_f
+                (0...max_labels).each do |i|
+                  indices_to_show << (i * step).round
+                end
+                indices_to_show = indices_to_show.uniq.sort
+              end
+            end
+          %>
+          
+          <% indices_to_show.each do |index| %>
+            <% data = @chart_data[index] %>
+            <% x = chart_left_margin + (index * step_x) %>
+            <% label = case @view_type
+                 when "day" then data[:date].strftime("%H:00")
+                 when "month" then 
+                   if index == 0
+                     "1"  # Always show "1" for first label in month view
+                   elsif index == @chart_data.length - 1
+                     @date.end_of_month.day.to_s  # Always show last day of month for final label
+                   else
+                     data[:date].day.to_s  # Remove zero prefix
+                   end
+                 when "year" then data[:date].strftime("%b")
+                 end %>
+            <text x="<%= x %>" y="<%= chart_top_margin + chart_height + 15 %>" class="text-xs fill-slate-400" text-anchor="middle">
+              <%= label %>
+            </text>
+          <% end %>
+        <% else %>
+          <!-- Single point label for day view -->
+          <% center_x = chart_left_margin + (chart_width / 2) %>
+          <% label = @chart_data.first[:date].strftime("%B %d") %>
+          <text x="<%= center_x %>" y="<%= chart_top_margin + chart_height + 15 %>" class="text-xs fill-slate-400" text-anchor="middle">
+            <%= label %>
+          </text>
+        <% end %>
+        
+        <!-- Unique visitors line -->
+        <% if @chart_data.length > 1 %>
+          <polyline 
+            fill="none" 
+            stroke="#3b82f6" 
+            stroke-width="2" 
+            points="<%= @chart_data.map.with_index { |data, index| 
+              x = chart_left_margin + (index * step_x)
+              y = chart_top_margin + chart_height - (data[:unique_page_views].to_f / chart_max * chart_height)
+              "#{x},#{y}"
+            }.join(' ') %>"
+          />
+        <% end %>
+        
+        <!-- Total visitors line -->
+        <% if @chart_data.length > 1 %>
+          <polyline 
+            fill="none" 
+            stroke="#10b981" 
+            stroke-width="2" 
+            points="<%= @chart_data.map.with_index { |data, index| 
+              x = chart_left_margin + (index * step_x)
+              y = chart_top_margin + chart_height - (data[:total_page_views].to_f / chart_max * chart_height)
+              "#{x},#{y}"
+            }.join(' ') %>"
+          />
+        <% end %>
+        
+        <!-- Data points -->
+        <% @chart_data.each_with_index do |data, index| %>
+          <% x = chart_left_margin + (index * step_x) %>
+          <% unique_y = chart_top_margin + chart_height - (data[:unique_page_views].to_f / chart_max * chart_height) %>
+          <% total_y = chart_top_margin + chart_height - (data[:total_page_views].to_f / chart_max * chart_height) %>
+          
+          <circle cx="<%= x %>" cy="<%= unique_y %>" r="3" fill="#3b82f6"/>
+          <circle cx="<%= x %>" cy="<%= total_y %>" r="3" fill="#10b981"/>
+        <% end %>
+        
+        <!-- Full line for day view -->
+        <% if @view_type == "day" && @chart_data.length == 1 %>
+          <% data = @chart_data.first %>
+          <% line_start_x = chart_left_margin %>
+          <% line_end_x = chart_left_margin + chart_width %>
+          <% unique_y = chart_top_margin + chart_height - (data[:unique_page_views].to_f / chart_max * chart_height) %>
+          <% total_y = chart_top_margin + chart_height - (data[:total_page_views].to_f / chart_max * chart_height) %>
+          
+          <!-- Unique visitors line -->
+          <line x1="<%= line_start_x %>" y1="<%= unique_y %>" x2="<%= line_end_x %>" y2="<%= unique_y %>" stroke="#3b82f6" stroke-width="3"/>
+          <!-- Total visitors line -->
+          <line x1="<%= line_start_x %>" y1="<%= total_y %>" x2="<%= line_end_x %>" y2="<%= total_y %>" stroke="#10b981" stroke-width="3"/>
+          
+          <!-- End point circles for visual emphasis -->
+          <circle cx="<%= line_end_x %>" cy="<%= unique_y %>" r="3" fill="#3b82f6"/>
+          <circle cx="<%= line_end_x %>" cy="<%= total_y %>" r="3" fill="#10b981"/>
+        <% end %>
+      </svg>
+    </div>
+    
+    <!-- Legend -->
+    <div class="flex items-center justify-center space-x-6 mt-4 text-sm">
+      <div class="flex items-center space-x-2">
+        <div class="w-3 h-3 bg-blue-500 rounded"></div>
+        <span class="text-slate-600 dark:text-slate-400">Unique Page Views</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <div class="w-3 h-3 bg-emerald-500 rounded"></div>
+        <span class="text-slate-600 dark:text-slate-400">Total Page Views</span>
+      </div>
+    </div>
+  <% else %>
+    <div class="text-center py-12 text-slate-500 dark:text-slate-400">
+      No data available for this time period
+    </div>
+  <% end %>
+</div>
