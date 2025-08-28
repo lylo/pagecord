@@ -66,7 +66,7 @@ class PageView < ApplicationRecord
       uri = URI.parse(full_path) rescue nil
       return [ full_path, nil ] if uri.nil?
 
-      clean_path = uri.path.presence || "/"
+      clean_path = uri.path.presence&.chomp("/").presence || "/"
       query_string = uri.query.presence
 
       [ clean_path, query_string ]

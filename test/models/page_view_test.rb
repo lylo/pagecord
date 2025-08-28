@@ -39,7 +39,7 @@ class PageViewTest < ActiveSupport::TestCase
     assert_not view2.is_unique?
   end
 
-  test "does not track bots" do
+  test "should not track bots" do
     blog = blogs(:joel)
     post = posts(:one)
 
@@ -54,7 +54,7 @@ class PageViewTest < ActiveSupport::TestCase
     assert_nil PageView.track(blog: blog, post: post, request: bot_request, path: "/")
   end
 
-  test "parses path and query string correctly" do
+  test "should parse path and query string correctly" do
     # Test basic path without query
     path, query = PageView.send(:parse_path_and_query, "/blog/post")
     assert_equal "/blog/post", path
@@ -73,6 +73,11 @@ class PageViewTest < ActiveSupport::TestCase
     # Test root path
     path, query = PageView.send(:parse_path_and_query, "/")
     assert_equal "/", path
+    assert_nil query
+
+    # Test trailing slash normalisation
+    path, query = PageView.send(:parse_path_and_query, "/post/")
+    assert_equal "/post", path
     assert_nil query
 
     # Test root path with query
@@ -95,7 +100,7 @@ class PageViewTest < ActiveSupport::TestCase
     assert_equal "trk=comments_comments-list_comment-text", query
   end
 
-  test "stores path and query string separately when tracking" do
+  test "should store path and query string separately when tracking" do
     blog = blogs(:joel)
     post = posts(:one)
 
@@ -116,7 +121,7 @@ class PageViewTest < ActiveSupport::TestCase
     assert_equal post, view.post
   end
 
-  test "handles malformed URLs gracefully" do
+  test "should handle malformed URLs gracefully" do
     # Test URL with scheme but no path (becomes root path)
     path, query = PageView.send(:parse_path_and_query, "not-a-valid-url://malformed")
     assert_equal "/", path  # Empty path becomes root
@@ -170,7 +175,7 @@ class PageViewTest < ActiveSupport::TestCase
     assert_equal expected_queries, query_strings
   end
 
-  test "preserves existing behavior for paths without query strings" do
+  test "should preserve existing behavior for paths without query strings" do
     blog = blogs(:joel)
     post = posts(:one)
 
