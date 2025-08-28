@@ -34,7 +34,7 @@ namespace :analytics do
     end
 
     # Generate data for the past year
-    start_date = 1.month.ago.to_date
+    start_date = 1.year.ago.to_date
     end_date = Date.current
 
     # Get actual post slugs from the blog
