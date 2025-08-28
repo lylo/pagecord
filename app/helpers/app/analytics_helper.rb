@@ -1,6 +1,6 @@
 module App::AnalyticsHelper
   def format_number(number)
-    number_with_delimiter(number)
+    number_with_delimiter(number.to_i)
   end
 
   def format_date_for_view_type(date, view_type)
