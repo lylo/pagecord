@@ -4,25 +4,31 @@
   
   <% if @path_popularity.any? %>
     <div class="space-y-3">
-      <% @path_popularity.each_with_index do |path_data, index| %>
+      <% @path_popularity.each_with_index do |post_data, index| %>
         <div class="flex items-start justify-between py-2 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
           <div class="flex items-start space-x-4 flex-1 min-w-0">
             <span class="text-sm text-slate-400 w-6 text-center flex-shrink-0">
               <%= index + 1 %>
             </span>
             <span class="text-sm font-medium text-slate-900 dark:text-slate-100 break-all">
-              <%= path_data[:post_title] %>
+              <% if post_data[:post] %>
+                <%= link_to post_data[:post_title], post_url(post_data[:post]), 
+                    class: "hover:underline", target: "_blank" %>
+              <% else %>
+                <%= link_to post_data[:post_title], blog_home_url(@blog), 
+                    class: "hover:underline", target: "_blank" %>
+              <% end %>
             </span>
           </div>
           <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
             <!-- Hide progress bar on mobile, show on desktop -->
             <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
               <% max_visits = @path_popularity.first[:count] %>
-              <% width = (path_data[:count].to_f / max_visits * 100).round(1) %>
+              <% width = (post_data[:count].to_f / max_visits * 100).round(1) %>
               <div class="bg-blue-500 rounded-full h-2 transition-all duration-300" style="width: <%= width %>%"></div>
             </div>
             <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
-              <%= format_number(path_data[:count]) %>
+              <%= format_number(post_data[:count]) %>
             </span>
           </div>
         </div>

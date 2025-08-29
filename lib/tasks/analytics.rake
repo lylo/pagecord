@@ -9,6 +9,7 @@ namespace :analytics do
     end
 
     blog_subdomain = ENV["BLOG"] || "joel"
+    scale_factor = (ENV["SCALE"] || "1").to_f
 
     blog = Blog.find_by(subdomain: blog_subdomain)
 
@@ -19,6 +20,7 @@ namespace :analytics do
     end
 
     puts "🚀 Generating sample page view data for #{blog.display_name}..."
+    puts "📏 Scale factor: #{scale_factor}x" if scale_factor != 1.0
 
     # Clear existing page views for clean slate
     existing_count = blog.page_views.count
@@ -38,7 +40,7 @@ namespace :analytics do
     end_date = Date.current
 
     # Get actual post slugs from the blog
-    post_paths = blog.posts.map { |post| "/#{post.slug}" }
+    post_paths = blog.posts.published.map { |post| "/#{post.slug}" }
 
     if post_paths.empty?
       puts "⚠️  No posts found for #{blog.display_name}"
@@ -51,6 +53,14 @@ namespace :analytics do
 
     puts "📄 Found #{post_paths.count} posts to generate analytics for"
     puts "📅 Generating data from #{start_date.strftime('%B %d, %Y')} to #{end_date.strftime('%B %d, %Y')}"
+
+    # Generate pool of realistic returning visitors
+    visitor_pool = []
+    returning_visitor_count = (50 * scale_factor).to_i
+    (1..returning_visitor_count).each do |i|
+      visitor_pool << "visitor_#{SecureRandom.hex(6)}"
+    end
+    puts "👥 Created pool of #{visitor_pool.size} potential returning visitors"
 
     created_count = 0
 
@@ -70,12 +80,24 @@ namespace :analytics do
       else 1.0                      # Normal for other months
       end
 
-      total_views = (rand(base_traffic) * seasonal_multiplier).round
+      total_views = (rand(base_traffic) * seasonal_multiplier * scale_factor).round
       unique_views = [ (total_views * 0.7).round, total_views ].min
+
+      # Track unique visitors for this day
+      daily_visitors = Set.new
 
       # Create page views throughout the day
       (1..total_views).each do |i|
-        is_unique = i <= unique_views
+        # Determine visitor - 60% chance of returning visitor from pool
+        visitor_hash = if rand < 0.6 && visitor_pool.any?
+          visitor_pool.sample
+        else
+          "new_visitor_#{date}_#{SecureRandom.hex(4)}"
+        end
+
+        # Mark as unique if first time seeing this visitor today
+        is_unique = !daily_visitors.include?(visitor_hash)
+        daily_visitors.add(visitor_hash) if is_unique
 
         # Random time throughout the day (business hours weighted)
         if rand < 0.7  # 70% during business hours
@@ -119,7 +141,7 @@ namespace :analytics do
           blog: blog,
           post: post,
           path: selected_path,
-          visitor_hash: "seed_#{date}_#{i}_#{SecureRandom.hex(4)}",
+          visitor_hash: visitor_hash,
           ip_address: "192.168.#{rand(1..255)}.#{rand(1..254)}",
           user_agent: "Mozilla/5.0 (#{[ 'Windows NT 10.0', 'Macintosh', 'X11; Linux x86_64' ].sample}) Seed Browser",
           referrer: referrers.sample,
@@ -140,6 +162,17 @@ namespace :analytics do
     puts "\n✅ Generated #{created_count} new page views"
     puts "📊 Blog now has #{total_views} total page views (#{unique_views} unique)"
     puts "📅 Data spans: #{start_date.strftime('%B %d, %Y')} to #{end_date.strftime('%B %d, %Y')}"
+
+    # Run rollup job to generate historical rollups
+    puts "📈 Running rollup job to generate historical data..."
+    begin
+      deleted_count = RollupAndCleanupPageViewsJob.perform_now
+      puts "✨ Rolled up and cleaned #{deleted_count} historical page views"
+    rescue => e
+      puts "⚠️  Rollup job failed: #{e.message}"
+      puts "💡 You may need to run it manually: RollupAndCleanupPageViewsJob.perform_now"
+    end
+
     puts "🎯 View your analytics at /app/analytics"
   end
 

@@ -12,7 +12,7 @@ class Analytics::Leaderboard < Analytics::Base
       combine_rollup_and_pageview_data(start_time, end_time)
     end
 
-    add_post_titles(data)
+    add_post_data(data)
   end
 
   private
@@ -51,19 +51,22 @@ class Analytics::Leaderboard < Analytics::Base
                   .map { |post_id, count| { post_id: post_id, count: count } }
     end
 
-    def add_post_titles(data)
+    def add_post_data(data)
       post_ids = data.map { |item| item[:post_id] }.compact
-      posts_by_id = Post.where(id: post_ids, blog: blog).index_by(&:id)
+      posts_by_id = Post.includes(:blog, :rich_text_content).where(id: post_ids, blog: blog).index_by(&:id)
 
       data.map do |item|
         post_id = item[:post_id]
-        post_title = if post_id.nil?
-          "Home Page"
-        else
-          posts_by_id[post_id].display_title
-        end
 
-        item.merge(post_title: post_title)
+        if post_id.nil?
+          item.merge(post_title: "Home Page", post: nil)
+        else
+          post = posts_by_id[post_id]
+          item.merge(
+            post_title: post&.display_title || "Unknown Post",
+            post: post
+          )
+        end
       end
     end
 end
