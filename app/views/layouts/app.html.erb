@@ -40,8 +40,7 @@
     <footer class="p-8 flex flex-col w-full text-center">
       <div class="flex gap-x-4 justify-center items-center">
         <% if Current.user.admin? %>
-         <%= link_to "Stats", admin_stats_path, class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
-         <%= link_to "Posts", admin_posts_path, class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
+         <%= link_to "Admin", admin_blogs_path, class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
         <% end %>
 
         <%= mail_to "hello@pagecord.com", "Contact", class: "text-sm font-semibold hover:underline dark:text-slate-200" %>

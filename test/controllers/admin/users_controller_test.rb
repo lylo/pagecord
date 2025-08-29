@@ -15,7 +15,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       delete admin_user_url(user)
     end
 
-    assert_redirected_to admin_stats_path
+    assert_redirected_to admin_blogs_path
     assert_equal "User was successfully discarded", flash[:notice]
     assert user.reload.discarded?
   end
@@ -28,7 +28,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       post restore_admin_user_path(user)
     end
 
-    assert_redirected_to admin_stats_path
+    assert_redirected_to admin_blogs_path
     assert_equal "User was successfully restored", flash[:notice]
     assert_not user.reload.discarded?
   end

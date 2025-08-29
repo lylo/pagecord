@@ -1,10 +1,8 @@
-<h2 class="text-2xl font-bold py-4">Stats</h2>
-
 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4">
   <div class="flex flex-wrap items-center gap-x-1 gap-y-2">
-    <span><%= link_to "#{pluralize(@total_users, "user")} in total", admin_stats_path, class: "underline font-medium" %>.</span>
-    <span><%= link_to pluralize(Subscription.active_paid.count, "paid subscription"), admin_stats_path(status: "paid"), class: "underline font-medium" %>,</span>
-    <span><%= link_to "#{Subscription.comped.count} comped", admin_stats_path(status: "comped"), class: "underline font-medium" %>.</span>
+    <span><%= link_to "#{pluralize(@total_users, "user")} in total", admin_blogs_path, class: "underline font-medium" %>.</span>
+    <span><%= link_to pluralize(Subscription.active_paid.count, "paid subscription"), admin_blogs_path(status: "paid"), class: "underline font-medium" %>,</span>
+    <span><%= link_to "#{Subscription.comped.count} comped", admin_blogs_path(status: "comped"), class: "underline font-medium" %>.</span>
   </div>
 
   <%= link_to new_admin_user_path, class: "btn-primary text-sm whitespace-nowrap" do %>
@@ -15,7 +13,7 @@
   <% end %>
 </div>
 
-<%= form_with url: admin_stats_path, method: :get, data: { turbo_frame: "stats-content", controller: "search", search_target: "form" }, local: true, class: "mb-4" do |form| %>
+<%= form_with url: admin_blogs_path, method: :get, data: { turbo_frame: "stats-content", controller: "search", search_target: "form" }, local: true, class: "mb-4" do |form| %>
   <div class="max-w-md">
     <div class="relative">
       <%= form.text_field :search, placeholder: "Search by subdomain or email...", value: params[:search],
@@ -58,7 +56,7 @@
            end %>
         <strong><%= status_label %></strong> (<%= pluralize @pagy.count, "result" %>)
       <% end %>
-      <%= link_to "Clear filters", admin_stats_path, class: "ml-2 btn-secondary underline text-sm" %>
+      <%= link_to "Clear filters", admin_blogs_path, class: "ml-2 btn-secondary underline text-sm" %>
     </div>
   <% end %>
 <div class="overflow-auto">

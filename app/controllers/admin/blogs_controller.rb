@@ -1,4 +1,4 @@
-class Admin::StatsController < AdminController
+class Admin::BlogsController < AdminController
   include Pagy::Backend
 
   def index

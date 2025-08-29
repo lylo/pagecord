@@ -1,0 +1,79 @@
+<div class="space-y-6">
+  <!-- Top Posts Leaderboard -->
+  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
+    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Top posts</h3>
+    
+    <% if @top_posts.any? %>
+      <div class="space-y-3">
+        <% @top_posts.each_with_index do |post_data, index| %>
+          <div class="flex items-start justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
+            <div class="flex items-start space-x-3 flex-1 min-w-0">
+              <span class="text-sm font-mono text-slate-400 w-6 text-center flex-shrink-0 mt-0.5">
+                <%= index + 1 %>
+              </span>
+              <div class="flex flex-col min-w-0 flex-1">
+                <%= link_to post_data[:post].title, post_url(post_data[:post]), target: "_blank", class: "text-sm font-medium hover:underline truncate" %>
+                <span class="text-xs text-slate-500 dark:text-slate-400">
+                  <%= link_to blog_home_url(post_data[:post].blog), blog_home_url(post_data[:post].blog), target: "_blank", class: "hover:underline" %>
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
+              <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
+                <% max_views = @top_posts.first[:count] %>
+                <% width = (post_data[:count].to_f / max_views * 100).round(1) %>
+                <div class="rounded-full h-2 transition-all duration-300" style="width: <%= width %>%; background-color: #56cda9"></div>
+              </div>
+              <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
+                <%= number_with_delimiter(post_data[:count].to_i) %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-8 text-slate-500 dark:text-slate-400">
+        No posts found
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Top Blogs Leaderboard -->
+  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
+    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Top blogs</h3>
+    
+    <% if @top_blogs.any? %>
+      <div class="space-y-3">
+        <% @top_blogs.each_with_index do |blog_data, index| %>
+          <div class="flex items-start justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
+            <div class="flex items-start space-x-3 flex-1 min-w-0">
+              <span class="text-sm font-mono text-slate-400 w-6 text-center flex-shrink-0 mt-0.5">
+                <%= index + 1 %>
+              </span>
+              <div class="flex flex-col min-w-0 flex-1">
+                <%= link_to blog_data[:blog].display_name, blog_home_url(blog_data[:blog]), target: "_blank", class: "text-sm font-medium hover:underline truncate" %>
+                <span class="text-xs text-slate-500 dark:text-slate-400">
+                  <%= link_to blog_home_url(blog_data[:blog]), blog_home_url(blog_data[:blog]), target: "_blank", class: "hover:underline" %>
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
+              <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
+                <% max_views = @top_blogs.first[:count] %>
+                <% width = (blog_data[:count].to_f / max_views * 100).round(1) %>
+                <div class="rounded-full h-2 transition-all duration-300" style="width: <%= width %>%; background-color: #56cda9"></div>
+              </div>
+              <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
+                <%= number_with_delimiter(blog_data[:count].to_i) %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-8 text-slate-500 dark:text-slate-400">
+        No blogs found
+      </div>
+    <% end %>
+  </div>
+</div>

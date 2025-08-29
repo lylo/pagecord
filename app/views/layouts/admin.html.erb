@@ -12,34 +12,15 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
-    <header class="mb-4">
-    </header>
-    <main class="container mx-auto px-5 flex flex-grow">
+  <body class="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900">
+    <%= render "admin/shared/header" %>
+    
+    <main class="container mx-auto px-5 flex flex-grow mb-8">
       <div class="mx-auto max-w-6xl w-full text-slate-950 dark:text-slate-50">
         <%= render "app/shared/flash" %>
 
         <%= yield %>
       </div>
     </main>
-
-    <footer class="mt-4 p-8 flex flex-col w-full text-center">
-      <div class="flex gap-x-4 justify-center items-center">
-        <% if Current.user.admin? %>
-         <%= link_to "Stats", admin_stats_path, class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
-         <%= link_to "Posts", admin_posts_path, class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
-        <% end %>
-
-        <%= button_to logout_path, method: :delete, class: "text-sm font-semibold hover:underline dark:text-slate-200", form: { class: "flex" } do %>
-          Logout
-        <% end %>
-      </div>
-
-      <div>
-        <%= link_to app_root_path do %>
-          <%= inline_svg_tag "logo.svg", class: "w-[120px] mt-8 inline-flex dark:text-slate-100 text-slate-900" %>
-        <% end %>
-      </div>
-    </footer>
   </body>
 </html>

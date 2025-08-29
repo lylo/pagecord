@@ -29,7 +29,7 @@ class Admin::UsersController < AdminController
       DestroyUserJob.perform_now(@user.id)
     end
 
-    redirect_to admin_stats_path
+    redirect_to admin_blogs_path
   end
 
   def restore
@@ -40,7 +40,7 @@ class Admin::UsersController < AdminController
       flash[:notice] = "User was successfully restored"
     end
 
-    redirect_to admin_stats_path
+    redirect_to admin_blogs_path
   end
 
   private

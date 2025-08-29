@@ -151,7 +151,8 @@ Rails.application.routes.draw do
 
   get "/admin", to: "admin#index", as: :admin
   namespace :admin do
-    resources :stats, only: [ :index ]
+    resources :blogs, only: [ :index ]
+    resources :analytics, only: [ :index ]
     resources :posts, only: [ :index ]
     resources :users, only: [ :show, :destroy, :new, :create ] do
       member do
