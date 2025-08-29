@@ -1,17 +1,17 @@
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <h1 class="source-serif font-semibold text-center md:text-start text-4xl md:text-5xl tracking-tight">
-  Publish your writing effortlessly. All you need is email.
+  Effortless blogging. All you need is email.
   </h1>
 
   <div class="md:text-xl text-base leading-7 text-slate-800 dark:text-slate-200">
     <p class="mt-8">
-      Be part of the small web. Create your own minimalist blog in seconds. For FREE ✨
+      Embrace the small web. Create your own minimalist blog in seconds. It's FREE, forever! ✨
     </p>
 
     <p class="my-5">
-      Publish effortlessly using email or the Pagecord editor. People can
-      follow along using <a href="https://simple.wikipedia.org/wiki/Really_Simple_Syndication" class="home-link">RSS</a>,
-      or subscribe by email to get your posts automatically in a weekly digest.
+      Effortlessly publish your thoughts using email or the Pagecord editor. Readers can
+      subscribe using <a href="https://simple.wikipedia.org/wiki/Really_Simple_Syndication" class="home-link">RSS</a>,
+      or get posts in a weekly email digest. It's fully automated!
     </p>
 
     <p class="my-5">
@@ -32,9 +32,10 @@
     </div>
 
     <p>
-      To see it in action, check out <a href="https://olly.pagecord.com" class="home-link">Olly's home page</a> or <a href="https://blog.pagecord.com" class="home-link">the Pagecord blog</a>.
+    To see Pagecord in action, check out <a href="https://olly.pagecord.com" class="home-link">Olly's home page</a> 
+    or <a href="https://blog.pagecord.com" class="home-link">the Pagecord blog</a>. 
     </p>
-      </div>
+   </div>
 </div>
 
 <div class="relative w-full px-4 md:px-6 lg:px-8 my-12 py-8 bg-slate-100 dark:bg-slate-700">
@@ -73,13 +74,85 @@
   </div>
 </div>
 
+<!-- Post by Email Section -->
+<div id="post-by-email" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Post by Email</h2>
+
+  <p class="md:text-xl my-5">
+  Posting by email is effortless. It's right there on your phone or laptop. It uses a familiar editor with all the <b>formatting</b> <tt>you</tt> <i>need</i>. It lowers the barrier to creating a post, which means you'll blog more! 
+  </p>
+
+  <p class="md:text-xl my-5">
+  Click compose, tap out a message, click send. Pagecord does the rest. 
+  </p>
+  <%= image_tag "home/gmail-compose.webp",
+        alt: "Screenshot of composing a post in Gmail",
+        width: "1600",
+        height: "967" %>
+</div>
+
+<!-- Inline Editor Section -->
+<div id="post-by-editor" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">A delightful text editor</h2>
+
+  <p class="md:text-xl my-5">
+  If posting by email isn't your thing you can use Pagecord's rich text editor. It supports all your formatting needs, allows 
+  you to schedule posts, add tags and more!
+  </p>
+
+  <%= image_tag "home/rich-text-editor.webp",
+    alt: "A screenshot of Pagecord's rich text editor",
+    width: "1600",
+    height: "967" %>
+</div>
+
+<!-- Newsletter Section -->
+<div id="newsletter" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">A weekly email digest of all your posts. Fully automated!</h2>
+
+  <p class="md:text-xl my-5">
+  Premium customers can allow people to subscribe to their blog by email. Each week,
+  Pagecord will create a digest of your recent posts and send it to your subscribers.
+  </p>
+  <p class="md:text-xl my-5">
+  You focus on writing, Pagecord does the promotion.
+  </p>
+
+  <%= image_tag "home/weekly-digest.webp",
+    alt: "A screenshot of Apple Mail with a weekly digest email",
+    width: "1600",
+    height: "967" %>
+</div>
+
+<% if false %>
+<!-- Analytics Section -->
+<div id="analytics" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Privacy-respecting analytics built in<sup>*</sup></h2>
+
+  <p class="md:text-xl my-5">
+  It's fun to know how many people are visiting your blog, but dealing with third-party analytics is a hassle.
+  It can be too technical and fiddly, not to mention expensive, plus some providers don't respect your privacy.
+  </p>
+  <p class="md:text-xl my-5">
+  Pagecord Premium customers have privacy-first analytics built in. It looks great and there's no effort required!
+  </p>
+  <p class="italic my-5">
+  <sup>*</sup> Analyics is currently in private beta but it's coming to everyone soon
+  </p>
+
+  <%= image_tag "home/analytics.webp",
+    alt: "A screenshot of Pagecord's page view analytics page",
+    width: "1600",
+    height: "967" %>
+</div>
+<% end %>
 
 <!-- Pricing Section -->
 <div id="pricing" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
   <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Pricing</h2>
 
-  <p class="md:text-xl my-5">
-    The blogging basics are free forever. Upgrade any time to get the full monty for only <strong>$<%= localised_price %> per year</strong>.
+  <p class="md:text-xl mt-5 mb-8">
+    The blogging basics are free forever. Upgrade any time to get the full monty for only <strong>$<%= localised_price %> per year</strong>. It's the best deal out there.
   </p>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -200,7 +273,7 @@
   <h2 class="source-serif font-semibold text-center my-8 md:text-start text-3xl md:text-4xl tracking-tight">Full of features. Unbeatable Value 😇</h2>
 
   <p class="md:text-xl my-5">
-    Pagecord is super-simple to use, but chock-a-block with powerful features. Try it and you'll love it.
+    Pagecord is super-simple to use, but chock-a-block with powerful features. Try it and you'll love it. Here's the full list.
   </p>
 
   <div class="mt-8 bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-xl">
