@@ -11,8 +11,9 @@ class Admin::AnalyticsController < AdminController
       # Get all posts with their total view counts (PageViews + Rollups)
       post_view_counts = {}
 
-      # Add recent PageView counts
+      # Add recent unique PageView counts
       PageView.joins(:post)
+        .where(is_unique: true)
         .group("posts.id")
         .count
         .each { |post_id, count| post_view_counts[post_id] = count }
@@ -41,8 +42,9 @@ class Admin::AnalyticsController < AdminController
       # Get all blogs with their total view counts (PageViews + Rollups)
       blog_view_counts = {}
 
-      # Add recent PageView counts
+      # Add recent unique PageView counts
       PageView.joins(:blog)
+        .where(is_unique: true)
         .group("blogs.id")
         .count
         .each { |blog_id, count| blog_view_counts[blog_id] = count }
