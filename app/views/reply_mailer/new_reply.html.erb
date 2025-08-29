@@ -17,9 +17,9 @@
     <strong><%= t('replies.form.message_label') %>:</strong>
   </p>
 
-  <p>
-    <%= @reply.message %>
-  </p>
+  <div>
+    <%= simple_format(@reply.message) %>
+  </div>
 </div>
 
 <p>

@@ -7,6 +7,6 @@
 <%= @reply.subject %>
 
 <%= t('replies.form.message_label') %>:
-<%= @reply.message %>
+<%= @reply.message.gsub(/\r?\n/, "\n") %>
 
 <%= t('replies.mailer.footer_text', name: @reply.name) %>

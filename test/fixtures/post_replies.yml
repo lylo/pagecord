@@ -6,4 +6,9 @@ test:
   email: fred@example.com
   name: Freddie
   subject: Re - your blog post
-  message: Great post! Keep it up
+  message: |
+    Great post! Keep it up.
+    
+    I especially liked the section about Rails mailers. The formatting tips were really helpful.
+    
+    Thanks for sharing this with us!
