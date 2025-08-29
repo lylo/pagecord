@@ -14,13 +14,20 @@ class Analytics::Leaderboard < Analytics::Base
   private
 
     def path_popularity_from_page_views(start_time, end_time)
-      blog.page_views
+      post_view_counts = blog.page_views
+          .joins(:post)
           .where(viewed_at: start_time..end_time, is_unique: true)
-          .group(:path)
+          .group("posts.id")
           .count
-          .sort_by { |_, count| -count }
-          .first(20)
-          .map { |path, count| { path: path, count: count } }
+
+      post_ids = post_view_counts.keys
+      posts_by_id = Post.includes(:rich_text_content).where(id: post_ids).index_by(&:id)
+
+      post_view_counts.map do |post_id, count|
+        post = posts_by_id[post_id]
+        next unless post
+        { path: post.display_title, count: count }
+      end.compact.sort_by { |item| -item[:count] }.first(20)
     end
 
     def path_popularity_from_rollups(start_time, end_time)
@@ -31,9 +38,9 @@ class Analytics::Leaderboard < Analytics::Base
       .group("dimensions->>'post_id'").sum(:value)
 
       post_ids = rollup_data.keys.compact.map(&:to_i)
-      posts_by_id = Post.where(id: post_ids).index_by(&:id)
+      posts_by_id = Post.includes(:rich_text_content).where(id: post_ids).index_by(&:id)
 
-      path_data = {}
+      title_data = {}
       rollup_data.each do |post_id_string, count|
         next if post_id_string.nil? || count == 0
 
@@ -41,13 +48,13 @@ class Analytics::Leaderboard < Analytics::Base
         post = posts_by_id[post_id]
         next unless post
 
-        path = "/#{post.slug}"
-        path_data[path] = (path_data[path] || 0) + count
+        title = post.display_title
+        title_data[title] = (title_data[title] || 0) + count
       end
 
-      path_data.sort_by { |_, count| -count }
+      title_data.sort_by { |_, count| -count }
               .first(20)
-              .map { |path, count| { path: path, count: count } }
+              .map { |title, count| { path: title, count: count } }
     end
 
     def combine_rollup_and_pageview_data(start_time, end_time)
@@ -60,6 +67,6 @@ class Analytics::Leaderboard < Analytics::Base
 
       combined_data.sort_by { |_, count| -count }
                   .first(20)
-                  .map { |path, count| { path: path, count: count } }
+                  .map { |title, count| { path: title, count: count } }
     end
 end
