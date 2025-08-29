@@ -2,6 +2,7 @@ class Admin::AnalyticsController < AdminController
   def index
     @top_posts = top_posts_with_view_counts
     @top_blogs = top_blogs_with_view_counts
+    @top_blogs_by_subscribers = top_blogs_with_subscriber_counts
   end
 
   private
@@ -63,5 +64,15 @@ class Admin::AnalyticsController < AdminController
       blogs_with_counts = Blog.where(id: top_blog_ids)
         .map { |blog| { blog: blog, count: blog_view_counts[blog.id] || 0 } }
         .sort_by { |item| -item[:count] }
+    end
+
+    def top_blogs_with_subscriber_counts
+      Blog.joins(:email_subscribers)
+        .group(:id)
+        .select('blogs.*, COUNT(email_subscribers.id) as subscriber_count')
+        .having('COUNT(email_subscribers.id) > 0')
+        .order('COUNT(email_subscribers.id) DESC')
+        .limit(10)
+        .map { |blog| { blog: blog, count: blog.subscriber_count } }
     end
 end
