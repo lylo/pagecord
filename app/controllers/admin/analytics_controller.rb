@@ -32,7 +32,7 @@ class Admin::AnalyticsController < AdminController
       top_post_ids = post_view_counts.sort_by { |_, count| -count }.first(10).map(&:first)
 
       # Fetch the actual Post objects with their blogs
-      posts_with_counts = Post.includes(:blog)
+      Post.includes(:blog)
         .where(id: top_post_ids)
         .map { |post| { post: post, count: post_view_counts[post.id] || 0 } }
         .sort_by { |item| -item[:count] }
@@ -71,9 +71,9 @@ class Admin::AnalyticsController < AdminController
     def top_blogs_with_subscriber_counts
       Blog.joins(:email_subscribers)
         .group(:id)
-        .select('blogs.*, COUNT(email_subscribers.id) as subscriber_count')
-        .having('COUNT(email_subscribers.id) > 0')
-        .order('COUNT(email_subscribers.id) DESC')
+        .select("blogs.*, COUNT(email_subscribers.id) as subscriber_count")
+        .having("COUNT(email_subscribers.id) > 0")
+        .order("COUNT(email_subscribers.id) DESC")
         .limit(10)
         .map { |blog| { blog: blog, count: blog.subscriber_count } }
     end
