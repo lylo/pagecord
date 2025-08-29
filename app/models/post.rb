@@ -62,7 +62,7 @@ class Post < ApplicationRecord
   end
 
   def display_title
-    if title.present?
+    @display_title ||= if title.present?
       title.truncate(100).strip
     else
       summary
