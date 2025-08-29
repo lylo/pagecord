@@ -7,7 +7,7 @@ class App::AnalyticsController < AppController
 
     @analytics_data = summary.analytics_data(@view_type, @date)
     @chart_data = chart.chart_data(@view_type, @date, @analytics_data)
-    @path_popularity = leaderboard.path_popularity_data(@view_type, @date)
+    @path_popularity = leaderboard.post_popularity_data(@view_type, @date)
   end
 
   private

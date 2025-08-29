@@ -1,65 +1,69 @@
 class Analytics::Leaderboard < Analytics::Base
-  def path_popularity_data(view_type, date)
+  # Returns array of hashes: [{ post_id: 123, count: 45, post_title: "My Post" }, { post_id: nil, count: 12, post_title: "Home Page" }]
+  # post_id is nil for homepage views, integer for specific posts
+  def post_popularity_data(view_type, date)
     start_time, end_time = time_range_for_view_type(view_type, date)
 
-    if end_time <= cutoff_time
-      path_popularity_from_rollups(start_time, end_time)
+    data = if end_time <= cutoff_time
+      post_popularity_from_rollups(start_time, end_time)
     elsif start_time > cutoff_time
-      path_popularity_from_page_views(start_time, end_time)
+      post_popularity_from_page_views(start_time, end_time)
     else
       combine_rollup_and_pageview_data(start_time, end_time)
     end
+
+    add_post_titles(data)
   end
 
   private
 
-    def path_popularity_from_page_views(start_time, end_time)
+    def post_popularity_from_page_views(start_time, end_time)
       blog.page_views
           .where(viewed_at: start_time..end_time, is_unique: true)
-          .group(:path)
+          .group(:post_id)
           .count
           .sort_by { |_, count| -count }
           .first(20)
-          .map { |path, count| { path: path, count: count } }
+          .map { |post_id, count| { post_id: post_id, count: count } }
     end
 
-    def path_popularity_from_rollups(start_time, end_time)
-      rollup_data = Rollup.where(
+    def post_popularity_from_rollups(start_time, end_time)
+      Rollup.where(
         name: "unique_views_by_blog_post",
         time: start_time..end_time
       ).where("dimensions->>'blog_id' = ?", blog.id.to_s)
-      .group("dimensions->>'post_id'").sum(:value)
-
-      post_ids = rollup_data.keys.compact.map(&:to_i)
-      posts_by_id = Post.where(id: post_ids).index_by(&:id)
-
-      path_data = {}
-      rollup_data.each do |post_id_string, count|
-        next if post_id_string.nil? || count == 0
-
-        post_id = post_id_string.to_i
-        post = posts_by_id[post_id]
-        next unless post
-
-        path = "/#{post.slug}"
-        path_data[path] = (path_data[path] || 0) + count
-      end
-
-      path_data.sort_by { |_, count| -count }
-              .first(20)
-              .map { |path, count| { path: path, count: count } }
+       .group("dimensions->>'post_id'").sum(:value)
+       .sort_by { |_, count| -count }
+       .first(20)
+       .map { |post_id_string, count| { post_id: post_id_string&.to_i, count: count } }
     end
 
     def combine_rollup_and_pageview_data(start_time, end_time)
-      rollup_data = path_popularity_from_rollups(start_time, cutoff_time)
-      pageview_data = path_popularity_from_page_views(cutoff_time, end_time)
+      rollup_data = post_popularity_from_rollups(start_time, cutoff_time)
+      pageview_data = post_popularity_from_page_views(cutoff_time, end_time)
 
       combined_data = {}
-      rollup_data.each { |item| combined_data[item[:path]] = (combined_data[item[:path]] || 0) + item[:count] }
-      pageview_data.each { |item| combined_data[item[:path]] = (combined_data[item[:path]] || 0) + item[:count] }
+      rollup_data.each { |item| combined_data[item[:post_id]] = (combined_data[item[:post_id]] || 0) + item[:count] }
+      pageview_data.each { |item| combined_data[item[:post_id]] = (combined_data[item[:post_id]] || 0) + item[:count] }
 
       combined_data.sort_by { |_, count| -count }
                   .first(20)
-                  .map { |path, count| { path: path, count: count } }
+                  .map { |post_id, count| { post_id: post_id, count: count } }
+    end
+
+    def add_post_titles(data)
+      post_ids = data.map { |item| item[:post_id] }.compact
+      posts_by_id = Post.where(id: post_ids, blog: blog).index_by(&:id)
+
+      data.map do |item|
+        post_id = item[:post_id]
+        post_title = if post_id.nil?
+          "Home Page"
+        else
+          posts_by_id[post_id].display_title
+        end
+
+        item.merge(post_title: post_title)
+      end
     end
 end
