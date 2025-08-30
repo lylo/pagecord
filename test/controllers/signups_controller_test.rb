@@ -38,15 +38,15 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Warsaw", User.last.timezone
   end
 
-  # test "should not create user from Chennai timezone" do
-  #   assert_no_difference("User.count") do
-  #     assert_emails 0 do
-  #       post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, marketing_consent: true, timezone: "Asia/Kolkata" }, rendered_at: 6.seconds.ago.to_i }
-  #     end
-  #   end
+  test "should not create user from Chennai timezone" do
+    assert_no_difference("User.count") do
+      assert_emails 0 do
+        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, marketing_consent: true, timezone: "Asia/Kolkata" }, rendered_at: 6.seconds.ago.to_i }
+      end
+    end
 
-  #   assert_response :unprocessable_entity
-  # end
+    assert_response :unprocessable_entity
+  end
 
   test "should not create user with invalid subdomain" do
     assert_no_difference("User.count") do
