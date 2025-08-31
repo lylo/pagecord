@@ -97,7 +97,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     host_subdomain! "nope"
 
     get blog_posts_path
-    assert_redirected_to root_url
+    assert_redirected_to "http://www.example.com/"
   end
 
   test "should redirect to root if user is unverified" do
@@ -105,14 +105,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     host_subdomain! @blog.subdomain
 
     get blog_posts_path
-    assert_redirected_to root_path
+    assert_redirected_to "http://www.example.com/"
   end
 
   test "should redirect to root if user is discarded" do
     @blog.user.discard!
 
     get blog_posts_path
-    assert_redirected_to root_path
+    assert_redirected_to "http://www.example.com/"
   end
 
   ## RSS
