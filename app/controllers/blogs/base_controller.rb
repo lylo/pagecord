@@ -32,7 +32,7 @@ class Blogs::BaseController < ApplicationController
     end
 
     def validate_user
-      redirect_to root_path unless @blog.user&.verified? && @blog.user&.kept?
+      redirect_to_app_home unless @blog.user&.verified? && @blog.user&.kept?
     end
 
     def blog_from_custom_domain
