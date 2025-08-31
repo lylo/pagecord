@@ -21,19 +21,4 @@ class Posts::UpvotesControllerTest < ActionDispatch::IntegrationTest
     end
     assert_response :success
   end
-
-  test "should destroy upvote" do
-    post post_upvotes_path(@post), as: :turbo_stream
-    upvote = Upvote.last
-
-    assert_difference("Upvote.count", -1) do
-      delete post_upvote_path(@post, upvote), as: :turbo_stream
-    end
-    assert_response :success
-  end
-
-  test "should return not found for non-existent upvote" do
-    delete "/posts/#{@post.to_param}/upvotes/unknown", as: :turbo_stream
-    assert_response :not_found
-  end
 end

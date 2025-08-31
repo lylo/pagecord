@@ -1,15 +1,10 @@
-<% if upvoted_by_current_viewer?(post) %>
-  <%= button_to post_upvote_path(post, @upvote),
-                method: :delete,
-                class: "flex",
-                title: "You liked this post 😊" do %>
-    <%= inline_svg_tag "icons/heart.svg", class: "icon icon-active cursor-pointer w-5 h-5" %>
-  <% end %>
-<% else %>
-  <%= button_to post_upvotes_path(post),
-                method: :post,
-                class: "flex",
-                title: "Click to like this post" do %>
-    <%= inline_svg_tag "icons/heart.svg", class: "icon cursor-pointer w-5 h-5" %>
-  <% end %>
+<%= button_to post_upvotes_path(post),
+              method: :post,
+              class: "flex upvote-button",
+              data: { controller: "upvote", action: "click->upvote#pulse" },
+              title: "Click to like this post" do %>
+  <%= inline_svg_tag "icons/heart.svg",
+        class: "icon cursor-pointer w-5 h-5 upvote-heart",
+        data: { upvote_target: "heart" } %>
 <% end %>
+

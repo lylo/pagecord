@@ -181,7 +181,7 @@ Rails.application.routes.draw do
     post "/email_subscribers/:token/one_click_unsubscribe", to: "blogs/email_subscribers/unsubscribes#one_click", as: :email_subscriber_one_click_unsubscribe
 
     resources :posts, only: [], param: :token do
-      resources :upvotes, only: [ :create, :destroy ], module: :posts
+      resources :upvotes, only: [ :create ], module: :posts
       resources :replies, only: [ :new, :create ], module: :posts
     end
 

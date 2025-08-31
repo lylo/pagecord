@@ -9,9 +9,6 @@ module PostsHelper
     html.gsub(attachment_regex) { |match| $1.gsub(/<figure[^>]*>/, "").gsub(/<\/figure>/, "") }
   end
 
-  def upvoted_by_current_viewer?(post)
-    @upvote = post.upvotes.detect { |upvote| upvote.hash_id == @hash_id }
-  end
 
   # Generate URL for filtering posts by tag
   def tag_filter_url(tag)
