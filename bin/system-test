@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# System test script for running Capybara tests with Docker PostgreSQL
+# This must be run on the HOST machine, not inside Docker containers
+# Docker containers can't run browsers properly for system tests
+
+if [ -n "$DOCKER" ] || [ -f /.dockerenv ]; then
+  echo "❌ This script must be run on the host machine, not inside Docker."
+  echo "Run this command on your host:"
+  echo "  bin/system-test"
+  exit 1
+fi
+
+export DATABASE_URL=postgresql://postgres:password@localhost:5432/pagecord_test
+
+echo "Running system tests with Docker PostgreSQL..."
+bin/rails test:system "$@"

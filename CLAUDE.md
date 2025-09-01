@@ -38,7 +38,10 @@ bin/dev  # Starts Rails, Tailwind CSS watcher, Redis, and Sidekiq
 ### Testing
 ```bash
 bin/rails test        # Run unit tests
-bin/rails test:system # Run system tests
+bin/rails test:system # Run system tests (won't work in Docker - browser issues)
+
+# System tests with Docker database (run on host):
+bin/system-test
 ```
 
 ### Linting and Code Quality
