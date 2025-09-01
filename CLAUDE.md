@@ -44,6 +44,27 @@ bin/rails test:system # Run system tests (won't work in Docker - browser issues)
 bin/system-test
 ```
 
+#### Writing System Tests
+System tests can be unreliable due to timing issues. Here are key patterns to avoid flakiness:
+
+**Flash Messages**: Flash messages are initially hidden and shown via JavaScript. Wait for them to become visible:
+```ruby
+# ❌ Flaky - may find hidden text
+assert_text "Settings updated"
+
+# ✅ Reliable - waits for visible content
+assert page.has_content?("Settings updated", wait: 2)
+```
+
+**Form Submissions**: Allow time for async operations after clicking submit buttons:
+```ruby
+click_on "Create account"
+sleep 1  # Allow form submission to complete
+user = User.find_by(email: "test@example.com")
+```
+
+**Parallel Test Locale Issues**: Tests may run in different locales causing translation errors. The test helper ensures English locale for all tests with `I18n.locale = :en` in setup.
+
 ### Linting and Code Quality
 ```bash
 bin/rails db:migrate  # Run database migrations
