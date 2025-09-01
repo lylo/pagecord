@@ -4,7 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
-### Setup
+### Docker Setup (Preferred)
+```bash
+docker-compose up                    # Start all services (Rails, PostgreSQL, Redis, Memcached)
+docker-compose up -d                 # Start in background
+docker-compose down                  # Stop and remove containers
+docker-compose exec web COMMAND     # Run command in running container
+docker-compose run web COMMAND      # Run command in new container (if containers not running)
+```
+
+### Docker Development Commands
+```bash
+docker-compose exec web bin/rails console
+docker-compose exec web bin/rails test
+docker-compose exec web bin/rails test:system
+docker-compose exec web bin/rails db:migrate
+docker-compose exec web bundle exec rubocop
+docker-compose exec web bundle exec brakeman
+```
+
+### Native Setup (Alternative)
 ```bash
 bundle install
 rails db:setup
