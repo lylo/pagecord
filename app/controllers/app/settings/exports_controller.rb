@@ -25,6 +25,5 @@ class App::Settings::ExportsController < AppController
 
     def export_params
       params.fetch(:blog_export, {}).permit(:format)
-      # params.require(:blog_export).permit(:format)
     end
 end
