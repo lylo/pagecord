@@ -9,13 +9,41 @@ class App::Settings::ExportsControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
-  test "should create export" do
+  test "should create export with default html format" do
     assert_difference -> { Blog::Export.count } do
       assert_enqueued_with(job: BlogExportJob) do
         post app_settings_exports_path
       end
     end
 
+    export = Blog::Export.last
+    assert export.html?
+    assert_redirected_to app_settings_exports_path
+    assert_equal "Export started", flash[:notice]
+  end
+
+  test "should create export with markdown format" do
+    assert_difference -> { Blog::Export.count } do
+      assert_enqueued_with(job: BlogExportJob) do
+        post app_settings_exports_path, params: { blog_export: { format: "markdown" } }
+      end
+    end
+
+    export = Blog::Export.last
+    assert export.markdown?
+    assert_redirected_to app_settings_exports_path
+    assert_equal "Export started", flash[:notice]
+  end
+
+  test "should create export with html format explicitly" do
+    assert_difference -> { Blog::Export.count } do
+      assert_enqueued_with(job: BlogExportJob) do
+        post app_settings_exports_path
+      end
+    end
+
+    export = Blog::Export.last
+    assert export.html?
     assert_redirected_to app_settings_exports_path
     assert_equal "Export started", flash[:notice]
   end

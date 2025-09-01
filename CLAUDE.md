@@ -166,3 +166,28 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - Admin constraints for Sidekiq/PgHero access
 - Environment-based feature toggles
 - **Privacy**: No raw IP storage, only visitor_hash for uniqueness detection
+
+### Blog Export System
+- **Two formats**: HTML (with layout) and Markdown (with front-matter)
+- **Export process**: BlogExportJob creates ZIP files with all blog content
+- **HTML exports**: Creates `index.html` + individual `.html` files for each post/page
+- **Markdown exports**: Creates `index.md` + individual `.md` files with YAML front-matter
+- **Image handling**: Downloads and includes referenced images in `images/` directory
+- **File structure**: Uses post slugs as filenames, preserves relative image links
+- **Auto-cleanup**: Exports are automatically deleted after 7 days
+- **Status tracking**: pending → in_progress → completed/failed
+- **Rate limiting**: 5 exports per day per user
+
+#### Export Testing
+- Test both HTML and Markdown format creation
+- Verify `display_format` method returns "HTML" or "Markdown" 
+- Test controller accepts format parameter correctly
+- Verify both index formats are created with proper links
+- Test image downloading and path rewriting
+- Test failed exports can still be deleted
+
+## Code Style Guidelines
+- **String quotes**: Always use double quotes for strings, not single quotes
+- **Whitespace**: Remove trailing whitespace from all lines
+- **Component pattern**: Check existing implementations before creating new ones
+- **Method complexity**: Keep methods simple - prefer ternary operators over case statements for 2-option logic

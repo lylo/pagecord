@@ -8,6 +8,11 @@ class Blog::Export < ApplicationRecord
   has_one_attached :file
 
   enum :status, [ :pending, :in_progress, :completed, :failed ]
+  enum :format, [ :html, :markdown ]
+
+  def display_format
+    html? ? "HTML" : format.titleize
+  end
 
   def perform
     in_progress!
@@ -30,35 +35,54 @@ class Blog::Export < ApplicationRecord
   private
 
     def export_posts(dir)
-      create_index_html(dir)
+      create_index(dir)
 
       blog.all_posts.find_each do |post|
-        export_post_to_html(post, dir)
+        export_post(post, dir)
       end
     end
 
-    def create_index_html(dir)
-      template_path = Rails.root.join("app/views/blog/exports/index.html.erb")
+    def create_index(dir)
+      if markdown?
+        template_path = Rails.root.join("app/views/blog/exports/index.md.erb")
+        filename = "index.md"
+      else
+        template_path = Rails.root.join("app/views/blog/exports/index.html.erb")
+        filename = "index.html"
+      end
+
       template = ERB.new(File.read(template_path), trim_mode: "-")
 
-      File.open(File.join(dir, "index.html"), "w") do |file|
+      File.open(File.join(dir, filename), "w") do |file|
         file.write(template.result(binding))
       end
     end
 
-    def export_post_to_html(post, dir)
+    def export_post(post, dir)
       images_dir = File.join(dir, "images")
       FileUtils.mkdir_p(images_dir)
 
       stripped_html = Html::StripActionTextAttachments.new.transform(post.content.to_s)
-      @post_content = Blog::Export::ImageHandler.new(post, images_dir).process_images(stripped_html)
 
-      template_path = Rails.root.join("app/views/blog/exports/post.html.erb")
+      if markdown?
+        @post_content = html_to_markdown(Blog::Export::ImageHandler.new(post, images_dir).process_images(stripped_html))
+        template_path = Rails.root.join("app/views/blog/exports/post.md.erb")
+        file_extension = "md"
+      else
+        @post_content = Blog::Export::ImageHandler.new(post, images_dir).process_images(stripped_html)
+        template_path = Rails.root.join("app/views/blog/exports/post.html.erb")
+        file_extension = "html"
+      end
+
       template = ERB.new(File.read(template_path), trim_mode: "-")
 
-      File.open(File.join(dir, "#{post.slug}.html"), "w") do |file|
+      File.open(File.join(dir, "#{post.slug}.#{file_extension}"), "w") do |file|
         file.write(template.result(binding))
       end
+    end
+
+    def html_to_markdown(html)
+      ReverseMarkdown.convert(html)
     end
 
     def attach_zip_file(dir)

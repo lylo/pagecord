@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_09_01_083353) do
+ActiveRecord::Schema[8.1].define(version: 2025_09_01_130412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -79,6 +79,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_083353) do
   create_table "blog_exports", force: :cascade do |t|
     t.bigint "blog_id", null: false
     t.datetime "created_at", null: false
+    t.integer "format", default: 0, null: false
     t.integer "status", default: 0
     t.datetime "updated_at", null: false
     t.index ["blog_id"], name: "index_blog_exports_on_blog_id"

@@ -364,6 +364,8 @@ GEM
     regexp_parser (2.11.2)
     reline (0.6.2)
       io-console (~> 0.5)
+    reverse_markdown (3.0.0)
+      nokogiri
     rexml (3.4.2)
     rollups (0.5.0)
       activesupport (>= 7.1)
@@ -518,6 +520,7 @@ DEPENDENCIES
   rails-controller-testing
   rails_autolink
   redis (>= 4.0.1)
+  reverse_markdown
   rollups
   rubocop-rails-omakase
   ruby-vips

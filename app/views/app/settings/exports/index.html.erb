@@ -1,8 +1,8 @@
 <h3 class="mb-4 font-bold text-xl">Exports</h3>
 
-<div class="flex flex-col sm:flex-row justify-between w-full">
+<div class="flex flex-col w-full">
   <% if @exports.empty? %>
-    <div>You have no exports</div>
+    <div>You have no exports.</div>
   <% else %>
     <div>
       <p>
@@ -15,9 +15,32 @@
     </div>
   <% end %>
 
-  <div class="mt-8 sm:mt-0 w-56 sm:text-end">
-    <%= button_to "💾 Generate New Export", app_settings_exports_path, class: "btn-primary" %>
-  </div>
+  <%= form_with model: Blog::Export.new, url: app_settings_exports_path, local: true, class: "space-y-4" do |form| %>
+    <div class="my-4 space-y-3">
+      <label class="block text-base font-medium">Export Format</label>
+      <div class="flex flex-col sm:flex-row gap-y-2 sm:gap-x-4">
+        <fieldset class="w-full flex border border-slate-200 dark:border-slate-700 rounded-lg items-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+          <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
+            <%= form.radio_button :format, 'html', 
+              checked: true,
+              class: "peer w-4 h-4 border-slate-300 checked:border-sky-600 dark:checked:border-gray-600 ring-offset-0 ring-0 text-sky-600 dark:focus:ring-gray-800 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 cursor-pointer",
+              id: "format_html" %>
+            <span>HTML</span>
+          </label>
+        </fieldset>
+
+        <fieldset class="w-full flex border border-slate-200 dark:border-slate-700 rounded-lg items-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+          <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
+            <%= form.radio_button :format, 'markdown',
+              class: "peer w-4 h-4 border-slate-300 checked:border-sky-600 dark:checked:border-gray-600 ring-offset-0 ring-0 text-sky-600 dark:focus:ring-gray-800 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 cursor-pointer",
+              id: "format_markdown" %>
+            <span>Markdown (with front-matter)</span>
+          </label>
+        </fieldset>
+      </div>
+    </div>
+    <%= form.submit "💾 Generate New Export", class: "btn-primary" %>
+  <% end %>
 </div>
 
 <%= render "exports" unless @exports.empty? %>
