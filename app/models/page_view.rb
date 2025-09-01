@@ -49,10 +49,8 @@ class PageView < ApplicationRecord
       path: parsed_path,
       query_string: query_string,
       visitor_hash: visitor_hash,
-      ip_address: ip,
       user_agent: user_agent,
       referrer: referrer,
-      country: request.headers["CF-IPCountry"],
       is_unique: !existing_view,
       viewed_at: Time.current
     )

@@ -11,7 +11,6 @@ class Analytics::SummaryTest < ActiveSupport::TestCase
     PageView.create!(
       blog: @blog,
       visitor_hash: "visitor1",
-      ip_address: "127.0.0.1",
       user_agent: "Test Browser",
       is_unique: true,
       viewed_at: 2.months.ago
@@ -57,7 +56,6 @@ class Analytics::SummaryTest < ActiveSupport::TestCase
     PageView.create!(
       blog: @blog,
       visitor_hash: "current_visitor",
-      ip_address: "127.0.0.1",
       user_agent: "Test Browser",
       is_unique: true,
       viewed_at: Time.current

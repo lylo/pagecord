@@ -13,7 +13,6 @@ class RollupAndCleanupPageViewsJobTest < ActiveJob::TestCase
         blog: @blog,
         post: @post,
         visitor_hash: SecureRandom.hex(8),
-        ip_address: "127.0.0.1",
         user_agent: "Minitest Browser",
         is_unique: false,
         viewed_at: Time.current

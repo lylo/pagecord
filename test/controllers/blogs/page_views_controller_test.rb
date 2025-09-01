@@ -79,15 +79,4 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
     second_view = PageView.last
     assert_not second_view.is_unique?
   end
-
-  test "should handle Cloudflare country header" do
-    post blog_page_views_path,
-         headers: {
-           "CF-IPCountry" => "US",
-           "User-Agent" => "Mozilla/5.0 (Test Browser)"
-         }
-
-    page_view = PageView.last
-    assert_equal "US", page_view.country
-  end
 end

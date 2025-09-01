@@ -11,7 +11,6 @@ class Analytics::ChartTest < ActiveSupport::TestCase
     PageView.create!(
       blog: @blog,
       visitor_hash: "month_visitor",
-      ip_address: "127.0.0.1",
       user_agent: "Test Browser",
       is_unique: true,
       viewed_at: 1.month.ago
@@ -56,7 +55,6 @@ class Analytics::ChartTest < ActiveSupport::TestCase
     PageView.create!(
       blog: @blog,
       visitor_hash: "old_visitor",
-      ip_address: "127.0.0.1",
       user_agent: "Test Browser",
       is_unique: true,
       viewed_at: 6.months.ago
@@ -66,7 +64,6 @@ class Analytics::ChartTest < ActiveSupport::TestCase
     PageView.create!(
       blog: @blog,
       visitor_hash: "recent_visitor",
-      ip_address: "127.0.0.1",
       user_agent: "Test Browser",
       is_unique: true,
       viewed_at: 1.week.ago

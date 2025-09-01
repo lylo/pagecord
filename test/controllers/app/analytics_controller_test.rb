@@ -42,7 +42,6 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
       PageView.create!(
         blog: @user.blog,
         visitor_hash: "test_timezone_visitor",
-        ip_address: "127.0.0.1",
         user_agent: "Test Browser",
         path: "/timezone-test",
         is_unique: true,
@@ -88,7 +87,6 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
       PageView.create!(
         blog: blog,
         visitor_hash: "tokyo_visitor_1",
-        ip_address: "192.168.1.1",
         user_agent: "Tokyo Browser",
         path: "/tokyo-test",
         is_unique: true,
@@ -100,7 +98,6 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
       PageView.create!(
         blog: blog,
         visitor_hash: "tokyo_visitor_2",
-        ip_address: "192.168.1.2",
         user_agent: "Tokyo Browser",
         path: "/tokyo-test",
         is_unique: true,
