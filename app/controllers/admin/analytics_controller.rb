@@ -2,7 +2,7 @@ class Admin::AnalyticsController < AdminController
   def index
     @view_type = params[:view_type] || "month"
     @date = parse_date(@view_type, params[:date])
-    
+
     @top_posts = top_posts_with_view_counts
     @top_blogs = top_blogs_with_view_counts
     @top_blogs_by_subscribers = top_blogs_with_subscriber_counts
@@ -40,9 +40,9 @@ class Admin::AnalyticsController < AdminController
     def date_range_for_view_type
       case @view_type
       when "month"
-        [@date.beginning_of_month.beginning_of_day, @date.end_of_month.end_of_day]
+        [ @date.beginning_of_month.beginning_of_day, @date.end_of_month.end_of_day ]
       when "year"
-        [@date.beginning_of_year.beginning_of_day, @date.end_of_year.end_of_day]
+        [ @date.beginning_of_year.beginning_of_day, @date.end_of_year.end_of_day ]
       end
     end
 
