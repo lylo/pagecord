@@ -24,7 +24,11 @@ class Analytics::Base
   protected
 
     def cutoff_time
-      Date.current.beginning_of_month.beginning_of_day
+      if Rollup.exists?
+        Date.current.prev_month.beginning_of_month.beginning_of_day
+      else
+        Date.new(1900, 1, 1)
+      end
     end
 
     def time_range_for_view_type(view_type, date)

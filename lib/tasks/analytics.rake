@@ -163,14 +163,21 @@ namespace :analytics do
     puts "📊 Blog now has #{total_views} total page views (#{unique_views} unique)"
     puts "📅 Data spans: #{start_date.strftime('%B %d, %Y')} to #{end_date.strftime('%B %d, %Y')}"
 
-    # Run rollup job to generate historical rollups
-    puts "📈 Running rollup job to generate historical data..."
-    begin
-      deleted_count = RollupAndCleanupPageViewsJob.perform_now
-      puts "✨ Rolled up and cleaned #{deleted_count} historical page views"
-    rescue => e
-      puts "⚠️  Rollup job failed: #{e.message}"
-      puts "💡 You may need to run it manually: RollupAndCleanupPageViewsJob.perform_now"
+    # Optional rollup generation
+    if ENV["ROLLUP"] == "true"
+      puts "📈 Running rollup job to generate historical data..."
+      begin
+        cutoff_date = Date.current.prev_month.beginning_of_month.beginning_of_day
+        puts "⏰ Using cutoff date: #{cutoff_date}"
+        deleted_count = RollupAndCleanupPageViewsJob.perform_now
+        puts "✨ Rolled up and cleaned #{deleted_count} historical page views"
+      rescue => e
+        puts "⚠️  Rollup job failed: #{e.message}"
+        puts "💡 You may need to run it manually: RollupAndCleanupPageViewsJob.perform_now"
+      end
+    else
+      puts "💡 To generate rollups, add ROLLUP=true flag"
+      puts "   Example: rake analytics:generate_sample_data BLOG=joel ROLLUP=true"
     end
 
     puts "🎯 View your analytics at /app/analytics"

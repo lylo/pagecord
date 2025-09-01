@@ -2,16 +2,25 @@ class RollupAndCleanupPageViewsJob < ApplicationJob
   queue_as :default
 
   def perform
-    # Rollup data from previous months, then delete raw records
-    cutoff_date = Date.current.beginning_of_month.beginning_of_day
+    # Always use previous month cutoff for rollup job (regardless of existing rollups)
+    cutoff_date = Date.current.prev_month.beginning_of_month.beginning_of_day
     old_data = PageView.where("viewed_at < ?", cutoff_date)
 
+    Rails.logger.info "RollupAndCleanupPageViewsJob starting with cutoff_date: #{cutoff_date}"
+
+    if old_data.empty?
+      Rails.logger.info "No page views found older than #{cutoff_date.to_date} - nothing to rollup"
+      return 0
+    end
+
     # === Total Views ===
+    Rails.logger.info "Creating total view rollups..."
     old_data.rollup("total_views")
     old_data.group(:blog_id).rollup("total_views_by_blog")
     old_data.group(:blog_id, :post_id).rollup("total_views_by_blog_post")
 
     # === Unique Views ===
+    Rails.logger.info "Creating unique view rollups..."
     unique_old_data = old_data.where(is_unique: true)
     unique_old_data.rollup("unique_views")
     unique_old_data.group(:blog_id).rollup("unique_views_by_blog")
