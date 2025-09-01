@@ -11,7 +11,7 @@ class SignUpTest < ApplicationSystemTestCase
 
     # Wait for form submission to complete
     sleep 1
-    
+
     user = User.kept.find_by(email: "test@example.com")
     assert user, "User should be created"
   end

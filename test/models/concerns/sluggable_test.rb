@@ -64,7 +64,7 @@ class SluggableTest < ActiveSupport::TestCase
   test "should update slug when title changes on draft post" do
     post = posts(:one)
     post.update!(status: :draft)
-    
+
     post.update!(title: "Updated Draft Title")
 
     assert_equal "updated-draft-title", post.slug
