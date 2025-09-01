@@ -1,7 +1,80 @@
 <div class="space-y-6">
+  <!-- Date/View Type Navigation -->
+  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
+      <!-- View Type Buttons -->
+      <div class="flex space-x-2 justify-center md:justify-start">
+        <% 
+          context_month = case @view_type
+            when "year"
+              Date.new(@date.year, Date.current.month, 1)
+            else 
+              @date
+          end
+          
+          context_year = @date.beginning_of_year
+        %>
+        <%= link_to admin_analytics_path(view_type: "month", date: context_month.strftime("%Y-%m")), 
+            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@view_type == 'month' ? 'bg-[#4fbd9c] text-white hover:bg-[#4bb193]' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}" do %>
+          Month
+        <% end %>
+        <%= link_to admin_analytics_path(view_type: "year", date: context_year.strftime("%Y")), 
+            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@view_type == 'year' ? 'bg-[#4fbd9c] text-white hover:bg-[#4bb193]' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}" do %>
+          Year
+        <% end %>
+      </div>
+
+      <!-- Date Navigation -->
+      <div class="flex items-center space-x-3">
+        <% if @view_type == "month" %>
+          <%= link_to admin_analytics_path(view_type: @view_type, date: (@date - 1.month).strftime("%Y-%m")), 
+              class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          <% end %>
+          
+          <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[8rem] text-center">
+            <%= @date.strftime("%B %Y") %>
+          </span>
+          
+          <%= link_to admin_analytics_path(view_type: @view_type, date: (@date + 1.month).strftime("%Y-%m")), 
+              class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          <% end %>
+        <% else %>
+          <%= link_to admin_analytics_path(view_type: @view_type, date: (@date - 1.year).strftime("%Y")), 
+              class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          <% end %>
+          
+          <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[8rem] text-center">
+            <%= @date.strftime("%Y") %>
+          </span>
+          
+          <%= link_to admin_analytics_path(view_type: @view_type, date: (@date + 1.year).strftime("%Y")), 
+              class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
   <!-- Top Posts Leaderboard -->
   <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
-    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Top posts</h3>
+    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+      Top posts 
+      <div class="text-sm font-normal text-slate-600 dark:text-slate-400">
+        <%= @view_type == "month" ? @date.strftime("%B %Y") : @date.strftime("%Y") %>
+      </div>
+    </h3>
     
     <% if @top_posts.any? %>
       <div class="space-y-3">
@@ -40,7 +113,12 @@
 
   <!-- Top Blogs Leaderboard -->
   <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
-    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Top blogs</h3>
+    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+      Top blogs 
+      <div class="text-sm font-normal text-slate-600 dark:text-slate-400">
+        <%= @view_type == "month" ? @date.strftime("%B %Y") : @date.strftime("%Y") %>
+      </div>
+    </h3>
     
     <% if @top_blogs.any? %>
       <div class="space-y-3">
