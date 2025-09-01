@@ -43,12 +43,41 @@ class SluggableTest < ActiveSupport::TestCase
     assert_equal post.token, post.slug
   end
 
-  test "should update slug when title changes" do
+  test "should preserve slug when title changes on persisted published post" do
     post = posts(:one)
+    post.update!(status: :published)  # Ensure it's published
+    original_slug = post.slug
 
     post.update!(title: "Updated Title")
 
-    assert_equal "updated-title", post.slug
+    assert_equal original_slug, post.slug
+  end
+
+  test "should update slug when explicitly changed on persisted post" do
+    post = posts(:one)
+
+    post.update!(slug: "new-explicit-slug")
+
+    assert_equal "new-explicit-slug", post.slug
+  end
+
+  test "should update slug when title changes on draft post" do
+    post = posts(:one)
+    post.update!(status: :draft)
+    
+    post.update!(title: "Updated Draft Title")
+
+    assert_equal "updated-draft-title", post.slug
+  end
+
+  test "should preserve slug when title changes on published post" do
+    post = posts(:one)
+    post.update!(status: :published)
+    original_slug = post.slug
+
+    post.update!(title: "Updated Published Title")
+
+    assert_equal original_slug, post.slug
   end
 
   test "should handle duplicate slugs by appending a unique identifier" do

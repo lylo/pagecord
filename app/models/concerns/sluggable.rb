@@ -19,9 +19,13 @@ module Sluggable
   private
 
     def set_slug
-      if slug.blank? || title_changed?
+      if slug.blank? || should_regenerate_slug?
         generate_slug
       end
+    end
+
+    def should_regenerate_slug?
+      title_changed? && (new_record? || draft?)
     end
 
     def generate_slug
