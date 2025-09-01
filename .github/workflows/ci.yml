@@ -92,10 +92,12 @@ jobs:
         with:
           database: pagecord_test
           postgres-version: 17
+          user: runner
 
       - name: Database load
         env:
           RAILS_ENV: test
+          DATABASE_USERNAME: runner
         run: bin/rails db:schema:load
 
       - name: Clobber and precompile assets
@@ -106,6 +108,7 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
+          DATABASE_USERNAME: runner
         run: bin/rails db:test:prepare test test:system
 
       - name: Keep screenshots from failed system tests
