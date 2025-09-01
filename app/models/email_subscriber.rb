@@ -9,6 +9,7 @@ class EmailSubscriber < ApplicationRecord
   scope :unconfirmed, -> { where(confirmed_at: nil) }
 
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :email, uniqueness: { scope: :blog_id, message: "is already subscribed to this blog" }
 
   def confirmed?
     confirmed_at.present?

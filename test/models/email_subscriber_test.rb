@@ -9,7 +9,7 @@ class EmailSubscriberTest < ActiveSupport::TestCase
   test "should be unique for a given blog" do
     blog = blogs(:joel)
 
-    assert_raises(ActiveRecord::RecordNotUnique) do
+    assert_raises(ActiveRecord::RecordInvalid) do
       blog.email_subscribers.create!(email: blog.email_subscribers.first.email)
     end
 

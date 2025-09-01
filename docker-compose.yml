@@ -36,7 +36,7 @@ services:
       - .:/rails
     stdin_open: true
     tty: true
-    command: bash -c "bin/rails db:prepare && bin/rails server -b 0.0.0.0"
+    command: bash -c "bin/rails db:prepare && bin/rails db:test:prepare && bin/rails server -b 0.0.0.0"
 
 volumes:
   postgres_data:
