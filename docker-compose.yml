@@ -3,7 +3,7 @@ services:
     image: postgres:17
     environment:
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: pagecord_development
+      POSTGRES_DB: pagecord_dev
     ports:
       - "5432:5432"
     volumes:
@@ -28,7 +28,8 @@ services:
       - redis
       - memcached
     environment:
-      DATABASE_URL: postgresql://postgres:password@db:5432/pagecord_development
+      DATABASE_HOST: db
+      DATABASE_PASSWORD: password
       REDIS_URL: redis://redis:6379/0
       MEMCACHE_SERVERS: memcached:11211
       RAILS_ENV: development
@@ -36,7 +37,7 @@ services:
       - .:/rails
     stdin_open: true
     tty: true
-    command: bash -c "bin/rails db:prepare && bin/rails db:test:prepare && bin/rails server -b 0.0.0.0"
+    command: bash -c "rm -f tmp/pids/server.pid && bin/rails db:prepare && bin/rails db:test:prepare && bin/rails server -b 0.0.0.0"
 
 volumes:
   postgres_data:
