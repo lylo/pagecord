@@ -23,9 +23,9 @@ class Analytics::Chart < Analytics::Base
     def month_chart_data(date)
       start_date = date.beginning_of_month
       end_date = date.end_of_month
-      current_month = Date.current.beginning_of_month
+      start_time_utc = start_date.in_time_zone(user_timezone).beginning_of_day.utc
 
-      if start_date >= current_month
+      if start_time_utc >= cutoff_time
         month_chart_data_from_raw_data(start_date, end_date)
       else
         month_chart_data_from_rollups(start_date, end_date)
