@@ -8,50 +8,67 @@ Publish your writing effortlessly. All you need is email.
 
 ## Development
 
-To set up your development environment, install Ruby 3.3+ using [HomeBrew](https://brew.sh/) and [rbenv](https://github.com/rbenv/rbenv).
+### Quick Start with Docker
 
-Then checkout this repository and run:
+The easiest way to get Pagecord running locally is with Docker.
+
+First, install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and make sure it's running.
+
+Then:
 
 ```bash
 git clone https://github.com/lylo/pagecord.git
 cd pagecord
+docker-compose up
+```
+
+This will:
+- Start PostgreSQL, Redis, and Memcached containers
+- Build and run the Rails app
+- Set up the database automatically
+
+You can view the app at [http://localhost:3000](http://localhost:3000). It's configured to use `lvh.me`, so you can view individual blogs on their respective subdomains, e.g. [http://joel.lvh.me:3000](http://joel.lvh.me:3000).
+
+### Running commands in Docker
+
+```bash
+# Rails console
+docker-compose exec web bin/rails console
+
+# Run tests
+docker-compose exec web bin/rails test
+docker-compose exec web bin/rails test:system
+
+# Run migrations
+docker-compose exec web bin/rails db:migrate
+
+# Process emails (debug)
+docker-compose exec web bash -c "DIR=tmp/emails rake email:load"
+```
+
+### Native Development (Alternative)
+
+If you prefer to run Rails natively without Docker:
+
+<details>
+<summary>Click to expand native setup instructions</summary>
+
+Install Ruby 3.4.5+ using [HomeBrew](https://brew.sh/) and [rbenv](https://github.com/rbenv/rbenv).
+
+```bash
 bundle install
-```
-
-### Setting up the database
-
-Before you run the app in development, first set up the database:
-
-```bash
 rails db:setup
-```
-
-### Install Redis
-
-Pagecord uses Sidekiq, which uses Redis.
-
-```
-brew install redis
-```
-
-### Running the app
-
-To start the app, run:
-
-```bash
+brew install redis postgresql
 bin/dev
 ```
 
-You can view the app in your browser at [http://localhost:3000](http://localhost:3000), but it's currently configred to use `lvh.me`. You can view individual blogs on their respective subdomains, e.g. [http://joel.lvh.me:3000](http://joel.lvh.me:3000).
-
-### Running the tests
-
-The app is tested using the Rails standard, minitest. To run the tests, use the following commands:
-
+Run tests:
 ```bash
 bin/rails test
 bin/rails test:system
 ```
+
+</details>
 
 ## Processing an email locally
 
