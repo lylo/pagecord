@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 331f3d585f898311870b793b66621cfa77eb986d
+  revision: d18731bed119911867d55983e07b2c853805d7d2
   branch: main
   specs:
     actioncable (8.1.0.alpha)
@@ -108,13 +108,13 @@ GEM
       actionpack (>= 4.0.0)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    appsignal (4.6.0)
+    appsignal (4.7.0)
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1151.0)
-    aws-sdk-core (3.230.0)
+    aws-partitions (1.1153.0)
+    aws-sdk-core (3.232.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -122,11 +122,11 @@ GEM
       bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-kms (1.110.0)
-      aws-sdk-core (~> 3, >= 3.228.0)
+    aws-sdk-kms (1.112.0)
+      aws-sdk-core (~> 3, >= 3.231.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.197.0)
-      aws-sdk-core (~> 3, >= 3.228.0)
+    aws-sdk-s3 (1.198.0)
+      aws-sdk-core (~> 3, >= 3.231.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
@@ -265,7 +265,7 @@ GEM
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
     nanoid (2.0.0)
-    net-imap (0.5.9)
+    net-imap (0.5.10)
       date
       net-protocol
     net-pop (0.1.2)
@@ -370,7 +370,7 @@ GEM
     rollups (0.5.0)
       activesupport (>= 7.1)
       groupdate (>= 6.1)
-    rubocop (1.80.0)
+    rubocop (1.80.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
