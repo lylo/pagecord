@@ -53,7 +53,7 @@ class SocialLinksTest < ApplicationSystemTestCase
     click_on "Update"
 
     # Verify we're back at the settings page
-    assert_text "Appearance settings updated"
+    assert page.has_content?("Appearance settings updated", wait: 2)
 
     # Verify the YouTube link was saved
     visit app_settings_appearance_index_path
@@ -92,7 +92,7 @@ class SocialLinksTest < ApplicationSystemTestCase
     click_on "Update"
 
     # Verify the link was saved
-    assert_text "Appearance settings updated"
+    assert page.has_content?("Appearance settings updated", wait: 2)
     visit app_settings_appearance_index_path
 
     # Now remove the link we just added
@@ -100,9 +100,10 @@ class SocialLinksTest < ApplicationSystemTestCase
 
     click_on "Update"
 
-    assert_text "Appearance settings updated"
+    assert page.has_content?("Appearance settings updated", wait: 2)
     visit app_settings_appearance_index_path
 
-    assert_equal initial_count, all("select[name*='[platform]']", visible: true).count
+    visible_selects = all("select[name*='[platform]']").select(&:visible?)
+    assert_equal initial_count, visible_selects.count
   end
 end
