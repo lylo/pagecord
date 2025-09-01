@@ -34,6 +34,13 @@ bundle exec brakeman  # Security vulnerability scanner
 DIR=tmp/emails rake email:load  # Process .eml files for debugging
 ```
 
+### Analytics (Development)
+```bash
+rake analytics:generate_sample_data BLOG=joel                    # Generate sample pageview data
+rake analytics:generate_sample_data BLOG=joel ROLLUP=true        # Generate data + create rollups
+RollupAndCleanupPageViewsJob.perform_now                         # Manually run rollup job
+```
+
 ## Code Architecture
 
 ### Core Models
@@ -69,12 +76,22 @@ DIR=tmp/emails rake email:load  # Process .eml files for debugging
 
 ### Database
 - PostgreSQL with standard Rails migrations
-- Key tables: users, blogs, posts, subscriptions, email_subscribers
+- Key tables: users, blogs, posts, subscriptions, email_subscribers, page_views, rollups
 - Soft deletion with Discard gem
+
+### Analytics System
+- **PageView model**: Tracks individual page views with visitor_hash for uniqueness detection
+- **Rollup model**: Aggregated analytics data using the `rollups` gem for performance
+- **Mixed data approach**: Uses raw PageViews for recent data, Rollups for historical data
+- **Analytics::Base**: Core class with `cutoff_time` logic (uses rollups when they exist, raw data otherwise)
+- **Analytics::Summary**: Handles summary metrics with automatic data source selection
+- **Analytics::Chart**: Generates chart data, supports month/year views with mixed data sources
+- **RollupAndCleanupPageViewsJob**: Monthly job (1st at 1:30 AM) that creates rollups and deletes old PageViews
+- **Privacy-focused**: Only stores visitor_hash (SHA256 of IP+UA+date), no raw IP addresses
 
 ### Background Processing
 - Sidekiq for async jobs
-- Jobs: email processing, image generation, subscription handling
+- Jobs: email processing, image generation, subscription handling, analytics rollups
 - Redis required for job queue
 
 ## Development Notes
@@ -89,7 +106,20 @@ DIR=tmp/emails rake email:load  # Process .eml files for debugging
 - Can process saved .eml files for debugging
 - ActionMailbox handles inbound email parsing
 
+### Analytics Development
+- **Key insight**: Analytics show zero data when no rollups exist BUT rollup job hasn't run yet
+- **Solution pattern**: `Analytics::Base#cutoff_time` returns 1900-01-01 when no rollups exist, ensuring raw PageViews are always used until rollups are available
+- **Data flow**: PageViews → (monthly job) → Rollups → PageViews deleted → Analytics use mixed data
+- **Testing**: Use `Analytics::Base.new(blog)` for summary, `Analytics::Chart.new(blog)` for charts
+- **Admin analytics**: Has month/year navigation, filters data by selected time period
+
+### Styling & Components
+- **Primary button**: `btn-primary` class uses `bg-[#4fbd9c]` and `hover:bg-[#4bb193]`
+- **Component pattern**: Check existing implementations before creating new ones
+- **Admin UI**: Uses slate colors with primary green accents for active states
+
 ### Security
 - Brakeman for vulnerability scanning
 - Admin constraints for Sidekiq/PgHero access
 - Environment-based feature toggles
+- **Privacy**: No raw IP storage, only visitor_hash for uniqueness detection
