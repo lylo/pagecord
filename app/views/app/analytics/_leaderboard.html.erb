@@ -10,7 +10,7 @@
             <span class="text-sm text-slate-400 w-6 text-center flex-shrink-0">
               <%= index + 1 %>
             </span>
-            <span class="text-sm font-medium text-slate-900 dark:text-slate-100 break-all">
+            <span class="text-sm font-medium text-slate-900 dark:text-slate-100 break-words">
               <% if post_data[:post] %>
                 <%= link_to post_data[:post_title], post_url(post_data[:post]), 
                     class: "hover:underline", target: "_blank" %>
