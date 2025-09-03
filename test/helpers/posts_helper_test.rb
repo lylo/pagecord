@@ -16,4 +16,14 @@ class PostsHelperTest < ActionView::TestCase
 
     assert_equal expected_html, stripped_html
   end
+
+  test "social_link_url should return mailto link for email social link" do
+    social_link = SocialLink.new(platform: "Email", url: "test@pagecord.com")
+    assert_equal "mailto:test@pagecord.com", social_link_url(social_link)
+  end
+
+  test "social_link_url should return url for email social link if url starts with http" do
+    social_link = SocialLink.new(platform: "Email", url: "https://pagecord.com")
+    assert_equal "https://pagecord.com", social_link_url(social_link)
+  end
 end
