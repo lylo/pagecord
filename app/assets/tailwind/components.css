@@ -79,8 +79,12 @@
         }
       }
 
-      h1 {
-        @apply !text-[var(--color-text)];
+      h1, h2, h3, h4, h5 {
+        @apply !text-[var(--color-text-heading)];
+      }
+
+      h2, h3, h4 {
+        @apply !text-lg;
       }
 
       h1.post-title {
