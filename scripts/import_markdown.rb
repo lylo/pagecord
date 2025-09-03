@@ -88,19 +88,15 @@ def import_markdown(path, blog_subdomain, dry_run = false)
       end
     end
 
-    # Convert H2-H4 to bold text (since only H1 is supported), trim whitespace and ensure paragraph breaks
-    markdown_content = markdown_content.gsub(/^(##|###|####)\s+(.+)$/) { "\n**#{$2.strip}**\n" }
-
     # Convert markdown to HTML
     html_content = markdown_parser.render(markdown_content)
-
-    # Extract title from first H1 in HTML only if it's the first element and remove it from content
-    title = nil
     parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
 
     # Find the first non-empty element
     first_element = parsed_html.children.find { |child| !child.text.strip.empty? }
 
+    # Extract title from H1 if it's the first element in the HTML, then remove it from the content
+    title = nil
     if first_element && first_element.name == 'h1'
       title = first_element.text.strip
       first_element.remove
