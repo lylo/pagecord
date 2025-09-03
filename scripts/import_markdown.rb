@@ -162,7 +162,7 @@ def import_markdown(path, blog_subdomain, dry_run = false)
     # Process HTML content for images and convert them to ActionText attachments
     processed_content = Nokogiri::HTML::DocumentFragment.parse(html_content)
     image_processing_failed = false
-    
+
     processed_content.css("img").each do |img|
       image_src = img["src"]
       next unless image_src
@@ -174,11 +174,11 @@ def import_markdown(path, blog_subdomain, dry_run = false)
         filename = File.basename(URI.parse(image_src).path)
         filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
 
-        # Create blob 
+        # Create blob
         blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
 
         # Replace the <img> with the ActionText attachable representation
-        attachment_node = ActionText::Content.new("").append_attachables([blob]).to_trix_html
+        attachment_node = ActionText::Content.new("").append_attachables([ blob ]).to_trix_html
         img.replace(attachment_node)
       rescue => e
         puts "Failed to process image #{image_src}: #{e.message}"
