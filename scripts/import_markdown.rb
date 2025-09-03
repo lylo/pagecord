@@ -156,7 +156,8 @@ def import_markdown(path, blog_subdomain, dry_run = false)
       title: title,
       published_at: published_at,
       tag_list: tag_list,
-      is_page: is_page
+      is_page: is_page,
+      show_in_navigation: false
     )
 
     # Process HTML content for images and convert them to ActionText attachments
