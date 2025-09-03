@@ -357,6 +357,7 @@ GEM
     rdoc (6.14.2)
       erb
       psych (>= 4.0.0)
+    redcarpet (3.6.1)
     redis (5.4.1)
       redis-client (>= 0.22.0)
     redis-client (0.25.2)
@@ -517,6 +518,7 @@ DEPENDENCIES
   rails!
   rails-controller-testing
   rails_autolink
+  redcarpet
   redis (>= 4.0.1)
   rollups
   rubocop-rails-omakase

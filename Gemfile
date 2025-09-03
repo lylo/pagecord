@@ -39,6 +39,7 @@ gem "premailer-rails", "~> 1.12"
 # everything else
 gem "aws-sdk-s3"
 gem "discard", "~> 1.2"
+gem "redcarpet"
 gem "pg_search"
 gem "fastimage"
 gem "feature_toggles"
