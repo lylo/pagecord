@@ -34,15 +34,14 @@ module Sluggable
 
       candidate_slug = base_slug
       while slug_taken?(candidate_slug)
-        candidate_slug = "#{base_slug}-#{temp_token}"
-        temp_token = SecureRandom.hex(4)
+        candidate_slug = "#{base_slug}-#{SecureRandom.hex(4)}"
       end
 
       self.slug = candidate_slug
     end
 
     def slug_taken?(candidate)
-      blog.posts.where.not(id: id).exists?(slug: candidate)
+      blog.all_posts.where.not(id: id).exists?(slug: candidate)
     end
 
     def parameterized_title

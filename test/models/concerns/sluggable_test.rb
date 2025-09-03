@@ -86,7 +86,7 @@ class SluggableTest < ActiveSupport::TestCase
 
     assert_equal "duplicate", post1.slug
     assert_not_equal post1.slug, post2.slug
-    assert_equal "#{post1.slug}-#{post2.token}", post2.slug
+    assert_match /^#{post1.slug}-[a-f0-9]+$/, post2.slug
   end
 
   test "should allow identical slugs across different blogs" do
