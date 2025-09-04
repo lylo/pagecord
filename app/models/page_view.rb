@@ -35,13 +35,15 @@ class PageView < ApplicationRecord
 
     parsed_path, query_string = parse_path_and_query(path)
 
-    # Check if this is a unique view for this visitor/post/day
+    # Only create page views for unique visits (first visit per visitor/post/day)
     existing_view = where(
       blog: blog,
       post: post,
       visitor_hash: visitor_hash,
       viewed_at: today.beginning_of_day..today.end_of_day
     ).exists?
+
+    return if existing_view
 
     create!(
       blog: blog,
@@ -51,7 +53,7 @@ class PageView < ApplicationRecord
       visitor_hash: visitor_hash,
       user_agent: user_agent,
       referrer: referrer,
-      is_unique: !existing_view,
+      is_unique: true,
       viewed_at: Time.current
     )
   end

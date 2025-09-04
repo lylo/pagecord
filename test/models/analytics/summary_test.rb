@@ -18,7 +18,6 @@ class Analytics::SummaryTest < ActiveSupport::TestCase
 
     # Should use raw data since no rollups exist
     data = @summary.analytics_data("month", 2.months.ago.beginning_of_month.to_date)
-    assert_equal 1, data[:total_page_views]
     assert_equal 1, data[:unique_page_views]
   end
 
@@ -34,17 +33,8 @@ class Analytics::SummaryTest < ActiveSupport::TestCase
       value: 5.0,
       dimensions: { blog_id: @blog.id }
     )
-    Rollup.create!(
-      name: "total_views_by_blog",
-      time: old_time,
-      interval: "day",
-      value: 10.0,
-      dimensions: { blog_id: @blog.id }
-    )
-
     # Should use rollup data
     data = @summary.analytics_data("month", 3.months.ago.beginning_of_month.to_date)
-    assert_equal 10, data[:total_page_views]
     assert_equal 5, data[:unique_page_views]
   end
 
@@ -63,7 +53,6 @@ class Analytics::SummaryTest < ActiveSupport::TestCase
 
     # Should use raw data for current month
     data = @summary.analytics_data("month", Date.current.beginning_of_month)
-    assert_equal 1, data[:total_page_views]
     assert_equal 1, data[:unique_page_views]
   end
 end

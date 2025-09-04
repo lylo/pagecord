@@ -99,7 +99,7 @@
           </text>
         <% end %>
         
-        <!-- Unique visitors line -->
+        <!-- Page views line -->
         <% if @chart_data.length > 1 %>
           <polyline 
             fill="none" 
@@ -113,28 +113,12 @@
           />
         <% end %>
         
-        <!-- Total visitors line -->
-        <% if @chart_data.length > 1 %>
-          <polyline 
-            fill="none" 
-            stroke="#10b981" 
-            stroke-width="2" 
-            points="<%= @chart_data.map.with_index { |data, index| 
-              x = chart_left_margin + (index * step_x)
-              y = chart_top_margin + chart_height - (data[:total_page_views].to_f / chart_max * chart_height)
-              "#{x},#{y}"
-            }.join(' ') %>"
-          />
-        <% end %>
-        
         <!-- Data points -->
         <% @chart_data.each_with_index do |data, index| %>
           <% x = chart_left_margin + (index * step_x) %>
           <% unique_y = chart_top_margin + chart_height - (data[:unique_page_views].to_f / chart_max * chart_height) %>
-          <% total_y = chart_top_margin + chart_height - (data[:total_page_views].to_f / chart_max * chart_height) %>
           
           <circle cx="<%= x %>" cy="<%= unique_y %>" r="3" fill="#3b82f6"/>
-          <circle cx="<%= x %>" cy="<%= total_y %>" r="3" fill="#10b981"/>
         <% end %>
         
         <!-- Full line for day view -->
@@ -143,29 +127,21 @@
           <% line_start_x = chart_left_margin %>
           <% line_end_x = chart_left_margin + chart_width %>
           <% unique_y = chart_top_margin + chart_height - (data[:unique_page_views].to_f / chart_max * chart_height) %>
-          <% total_y = chart_top_margin + chart_height - (data[:total_page_views].to_f / chart_max * chart_height) %>
           
-          <!-- Unique visitors line -->
+          <!-- Page views line -->
           <line x1="<%= line_start_x %>" y1="<%= unique_y %>" x2="<%= line_end_x %>" y2="<%= unique_y %>" stroke="#3b82f6" stroke-width="3"/>
-          <!-- Total visitors line -->
-          <line x1="<%= line_start_x %>" y1="<%= total_y %>" x2="<%= line_end_x %>" y2="<%= total_y %>" stroke="#10b981" stroke-width="3"/>
           
-          <!-- End point circles for visual emphasis -->
+          <!-- End point circle for visual emphasis -->
           <circle cx="<%= line_end_x %>" cy="<%= unique_y %>" r="3" fill="#3b82f6"/>
-          <circle cx="<%= line_end_x %>" cy="<%= total_y %>" r="3" fill="#10b981"/>
         <% end %>
       </svg>
     </div>
     
     <!-- Legend -->
-    <div class="flex items-center justify-center space-x-6 mt-4 text-sm">
+    <div class="flex items-center justify-center mt-4 text-sm">
       <div class="flex items-center space-x-2">
         <div class="w-3 h-3 bg-blue-500 rounded"></div>
-        <span class="text-slate-600 dark:text-slate-400">Unique Page Views</span>
-      </div>
-      <div class="flex items-center space-x-2">
-        <div class="w-3 h-3 bg-emerald-500 rounded"></div>
-        <span class="text-slate-600 dark:text-slate-400">Total Page Views</span>
+        <span class="text-slate-600 dark:text-slate-400">Page Views</span>
       </div>
     </div>
   <% else %>

@@ -134,21 +134,12 @@
     </div>
   </div>
 
-  <!-- Metrics Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-      <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Unique Page Views</h3>
-      <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">
-        <%= format_number(@analytics_data[:unique_page_views]) %>
-      </p>
-    </div>
-    
-    <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-      <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Page Views</h3>
-      <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">
-        <%= format_number(@analytics_data[:total_page_views]) %>
-      </p>
-    </div>
+  <!-- Metrics Card -->
+  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+    <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Page Views</h3>
+    <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">
+      <%= format_number(@analytics_data[:unique_page_views]) %>
+    </p>
   </div>
 
   <%= render 'chart' %>

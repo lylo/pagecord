@@ -41,17 +41,15 @@ class RollupAndCleanupPageViewsJobTest < ActiveJob::TestCase
     assert_equal 5, deleted_count, "Expected 5 old views to be deleted"
     assert_equal [ recent1.id, recent2.id ].sort, PageView.pluck(:id).sort, "Recent views should remain"
 
-    # Verify rollups
-    total_rollups  = Rollup.where(name: "total_views")
+    # Verify rollups (only unique views now)
     unique_rollups = Rollup.where(name: "unique_views")
-
-    assert total_rollups.exists?, "Expected total_views rollups to exist"
-    assert_equal 5.0, total_rollups.sum(:value)
-    assert_equal "day", total_rollups.first.interval
 
     assert unique_rollups.exists?, "Expected unique_views rollups to exist"
     assert_equal 3.0, unique_rollups.sum(:value)
     assert_equal "day", unique_rollups.first.interval
+
+    # No total_views rollups should be created
+    assert_not Rollup.where(name: "total_views").exists?
   end
 
   test "handles case when no rollups exist" do
@@ -66,7 +64,7 @@ class RollupAndCleanupPageViewsJobTest < ActiveJob::TestCase
 
     assert_equal 1, deleted_count, "Old view should be deleted even when no rollups exist"
     assert_equal [ recent_view.id ], PageView.pluck(:id), "Recent view should remain"
-    assert_equal 6, Rollup.count, "New rollups should be created"
+    assert_equal 3, Rollup.count, "New rollups should be created (unique views only)"
   end
 
   test "handles empty dataset gracefully" do
