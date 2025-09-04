@@ -2,6 +2,7 @@
   <thead>
     <tr>
       <th class="p-2 text-start font-bold">Date</th>
+      <th class="p-2 text-start font-bold">Format</th>
       <th class="p-2 text-start font-bold">Status</th>
       <th></th>
     </tr>
@@ -14,6 +15,10 @@
         </td>
 
         <td class="p-2 text-slate-600 dark:text-slate-500">
+          <%= export.display_format %>
+        </td>
+        
+        <td class="p-2 text-slate-600 dark:text-slate-500">
           <%= export.status.titleize %>
         </td>
 
@@ -23,11 +28,11 @@
               <%= inline_svg_tag "icons/download.svg", class: "w-4 h-4" %>
               <span class="hidden sm:inline ml-2">Download</span>
             <% end %>
+          <% end %>
 
-            <%= button_to app_settings_export_path(export), method: :delete, class: "btn-danger", data: { turbo_confirm: "Are you sure?" } do %>
-              <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
-              <span class="hidden sm:inline ml-2">Delete</span>
-            <% end %>
+          <%= button_to app_settings_export_path(export), method: :delete, class: "btn-danger", data: { turbo_confirm: "Are you sure?" } do %>
+            <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
+            <span class="hidden sm:inline ml-2">Delete</span>
           <% end %>
         </td>
       </tr>

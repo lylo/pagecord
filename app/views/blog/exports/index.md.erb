@@ -1,0 +1,30 @@
+# <%= blog.display_name %>
+
+<% if blog.bio -%>
+<%= blog.bio %>
+
+<% end -%>
+<% navigation_pages = blog.pages.navigation_pages.visible.order(:title) %>
+<% if navigation_pages.any? %>
+## Pages
+
+<% navigation_pages.each do |page| %>
+- [<%= page.title %>](<%= page.slug %>.md)
+<% end %>
+
+<% end %>
+## Posts
+
+<% current_year = nil -%>
+<% blog.posts.visible.order(published_at: :desc).each do |post| -%>
+<% year = post.published_at.year -%>
+<% if year != current_year -%>
+<% if current_year -%>
+
+<% end -%>
+### <%= year %>
+
+<% current_year = year -%>
+<% end -%>
+- <%= post.published_at.strftime("%d %b") %> — [<%= post.title.presence || post.summary %>](<%= post.slug %>.md)
+<% end -%>
