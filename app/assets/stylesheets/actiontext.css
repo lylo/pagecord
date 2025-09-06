@@ -35,27 +35,32 @@ trix-toolbar .trix-button-group:not(:first-child) {
   }
 
   /*
-  * We need to override trix.css’s image gallery styles to accommodate the
+  * We need to override trix.css's image gallery styles to accommodate the
   * <action-text-attachment> element we wrap around attachments. Otherwise,
   * images in galleries will be squished by the max-width: 33%; rule.
   */
   .attachment-gallery > action-text-attachment,
   .attachment-gallery > .attachment {
-    flex: 1 0 33%;
+    flex: 1 0 100%;
     padding: 0 0.5em;
-    max-width: 33%;
+    max-width: 100%;
   }
 
   .attachment-gallery.attachment-gallery--2 > action-text-attachment,
-  .attachment-gallery.attachment-gallery--2 > .attachment,
-  .attachment-gallery.attachment-gallery--4 > action-text-attachment,
-  .attachment-gallery.attachment-gallery--4 > .attachment {
-    flex-basis: 50%;
+  .attachment-gallery.attachment-gallery--2 > .attachment {
+    flex: 1 0 50%;
     max-width: 50%;
   }
 
+  .attachment-gallery.attachment-gallery--3 > action-text-attachment,
+  .attachment-gallery.attachment-gallery--3 > .attachment {
+    flex: 1 0 33%;
+    max-width: 33%;
+  }
+
   img {
-    width: auto;
+    width: 100%;
+    height: auto;
     margin: 0 auto;
     max-height: 36rem;
   }
@@ -73,7 +78,11 @@ trix-editor {
   line-height: 1.75em !important;
 
   .attachment__caption {
-    display: none;
+    text-align: center;
+  }
+
+  figcaption.attachment__caption {
+    text-align: center !important;
   }
 
   li {
