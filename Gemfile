@@ -15,7 +15,7 @@ gem "tailwindcss-rails"
 gem "turbo-rails"
 
 gem "puma", ">= 5.0"
-
+gem "playwright-ruby-client"
 # database / caching
 gem "dalli"
 gem "kredis", "~> 1.7"
