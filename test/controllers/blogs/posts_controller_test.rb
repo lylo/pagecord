@@ -219,6 +219,27 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_includes title, expected_time_string, "Title should include the formatted local time"
   end
 
+  test "should include tags as RSS categories in RSS feed" do
+    @blog.posts.create!(
+      title: "Tagged Post",
+      content: "Post with tags",
+      status: "published",
+      tags_string: "ruby, rails, web-development"
+    )
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+
+    doc = Nokogiri::XML(@response.body)
+    categories = doc.xpath("//item/category").map(&:text)
+
+    assert_includes categories, "ruby"
+    assert_includes categories, "rails"
+    assert_includes categories, "web-development"
+    assert_equal 3, categories.count
+  end
+
   # Custom domains
 
   test "should get index on custom domain" do
