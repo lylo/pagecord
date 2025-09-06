@@ -224,7 +224,7 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
 
             filename = File.basename(URI.parse(image_src).path)
             filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
-            puts "  Creating blob with filename: #{filename}"
+            puts "  Creating blob with filename: #{filename} (#{file.size} bytes)"
 
             # Determine content type from file extension
             content_type = case File.extname(filename).downcase
