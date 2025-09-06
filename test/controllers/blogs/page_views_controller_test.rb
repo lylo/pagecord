@@ -66,17 +66,17 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
   end
 
 
-  test "should track unique visitors correctly" do
+  test "should track unique visitors only" do
     headers = { "User-Agent" => "Mozilla/5.0 (Test Browser)" }
 
     # First request should be unique
-    post blog_page_views_path, headers: headers
-    first_view = PageView.last
-    assert first_view.is_unique?
+    assert_difference("PageView.count", 1) do
+      post blog_page_views_path, headers: headers
+    end
 
-    # Second request from same IP/UA on same day should not be unique
-    post blog_page_views_path, headers: headers
-    second_view = PageView.last
-    assert_not second_view.is_unique?
+    # Second request from same IP/UA on same day should not record page view
+    assert_no_difference("PageView.count") do
+      post blog_page_views_path, headers: headers
+    end
   end
 end
