@@ -1,10 +1,12 @@
 require "open-uri"
 require "nokogiri"
 require "cgi"
+require_relative "import_helpers"
 
 # Import Pika.page exported HTML files into Pagecord posts
 # Usage: ruby import_pika.rb path/to/html/directory_or_file blog_subdomain [--dry-run] [--as-pages] [--title-suffix="suffix"]
 def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_suffix = nil)
+  include ImportHelpers
   # Find the correct blog
   blog = Blog.find_by(subdomain: blog_subdomain)
   unless blog
@@ -116,17 +118,7 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
     is_page = as_pages
 
     # Check if post already exists by title (case-insensitive) or slug
-    existing_post = nil
-    if title
-      # Check for exact title match (case-insensitive)
-      existing_post = blog.all_posts.where("LOWER(title) = LOWER(?)", title).first
-
-      # Check for slug collision using the same logic as the model
-      if !existing_post
-        simple_slug = title.parameterize.truncate(100, omission: "").gsub(/-+\z/, "")
-        existing_post = blog.all_posts.find_by(slug: simple_slug) if simple_slug.present?
-      end
-    end
+    existing_post = post_exists?(blog, title)
 
     if existing_post
       puts "Skipping duplicate post: #{title} (matches existing: '#{existing_post.title}', slug: '#{existing_post.slug}')"
@@ -174,59 +166,14 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
       attachment.replace(img_tag)
     end
 
-    # Step 4: Process all img tags like import_markdown: download, create blobs, create trix attachments
-    processed_content = Nokogiri::HTML::DocumentFragment.parse(article_content.to_html)
-    image_processing_failed = false
-
-    processed_content.css("img").each do |img|
-      image_src = img["src"]
-      alt_text = img["alt"] || ""
-      next unless image_src
-
-      begin
-        # Download the image
-        file = URI.open(image_src)
-        filename = File.basename(URI.parse(image_src).path)
-        filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
-
-        # Create blob
-        blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
-
-        # Replace the <img> with the ActionText attachable representation
-        # Create Trix figure with URL for editing support
-        url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
-        trix_attributes = {
-          sgid: blob.attachable_sgid,
-          contentType: blob.content_type,
-          filename: blob.filename.to_s,
-          filesize: blob.byte_size,
-          previewable: blob.previewable?,
-          url: url
-        }
-
-        # Add caption if alt text exists
-        if alt_text && !alt_text.empty?
-          trix_attributes[:caption] = alt_text
-        end
-
-        attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
-        img.replace(attachment_node)
-      rescue => e
-        puts "Failed to process image #{image_src}: #{e.message}"
-        image_processing_failed = true
-        break
-      end
-    end
-
-    # Skip this post if image processing failed
-    if image_processing_failed
-      puts "Skipping post due to image processing failure: #{title}"
+    # Step 4: Process all img tags using shared helper
+    begin
+      post.content = process_images_to_actiontext(article_content.to_html)
+    rescue => e
+      puts "Skipping post due to image processing failure: #{title} - #{e.message}"
       failed_count += 1
       next
     end
-
-    # Assign processed HTML into ActionText
-    post.content = processed_content.to_html
 
     if dry_run
       puts "[DRY RUN] Would create #{is_page ? 'page' : 'post'}: #{title}"
@@ -300,45 +247,6 @@ def process_article_content(article, title)
   article_content
 end
 
-# Process all img tags: download images and create ActionText attachments
-def process_images_to_actiontext(article_content)
-  processed_content = Nokogiri::HTML::DocumentFragment.parse(article_content.to_html)
-
-  processed_content.css("img").each do |img|
-    image_src = img["src"]
-    alt_text = img["alt"] || ""
-    next unless image_src
-
-    # Download the image
-    file = URI.open(image_src)
-    filename = File.basename(URI.parse(image_src).path)
-    filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
-
-    # Create blob
-    blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
-
-    # Create ActionText attachment with optional caption
-    url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
-    trix_attributes = {
-      sgid: blob.attachable_sgid,
-      contentType: blob.content_type,
-      filename: blob.filename.to_s,
-      filesize: blob.byte_size,
-      previewable: blob.previewable?,
-      url: url
-    }
-
-    # Add caption if alt text exists
-    if alt_text && !alt_text.empty?
-      trix_attributes[:caption] = alt_text
-    end
-
-    attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
-    img.replace(attachment_node)
-  end
-
-  processed_content.to_html
-end
 
 # Run the script if executed directly
 if __FILE__ == $PROGRAM_NAME

@@ -1,9 +1,11 @@
 require "redcarpet"
 require "open-uri"
 require "nokogiri"
+require_relative "import_helpers"
 
 # Usage: ruby import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--dry-run]
 def import_markdown(path, blog_subdomain, dry_run = false)
+  include ImportHelpers
   # Find the correct blog
   blog = Blog.find_by(subdomain: blog_subdomain)
   unless blog
@@ -129,17 +131,7 @@ def import_markdown(path, blog_subdomain, dry_run = false)
     is_page = front_matter['type'] == 'page'
 
     # Check if post already exists by title (case-insensitive) or slug
-    existing_post = nil
-    if title
-      # Check for exact title match (case-insensitive)
-      existing_post = blog.all_posts.where("LOWER(title) = LOWER(?)", title).first
-
-      # Check for slug collision using the same logic as the model
-      if !existing_post
-        simple_slug = title.parameterize.truncate(100, omission: "").gsub(/-+\z/, "")
-        existing_post = blog.all_posts.find_by(slug: simple_slug) if simple_slug.present?
-      end
-    end
+    existing_post = post_exists?(blog, title)
 
     if existing_post
       puts "Skipping duplicate post: #{title || File.basename(file_path)} (matches existing: '#{existing_post.title}', slug: '#{existing_post.slug}')"
@@ -156,60 +148,14 @@ def import_markdown(path, blog_subdomain, dry_run = false)
       show_in_navigation: false
     )
 
-    # Process HTML content for images and convert them to ActionText attachments
-    processed_content = Nokogiri::HTML::DocumentFragment.parse(html_content)
-    image_processing_failed = false
-
-    processed_content.css("img").each do |img|
-      image_src = img["src"]
-      next unless image_src
-      next if image_src.include?("rails/active_storage") || image_src.start_with?("data:")
-
-      begin
-        # Download the image
-        file = URI.open(image_src)
-        filename = File.basename(URI.parse(image_src).path)
-        filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
-
-        # Create blob
-        blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
-
-        # Replace the <img> with the ActionText attachable representation
-        # Create Trix figure with URL for editing support
-        url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
-        trix_attributes = {
-          sgid: blob.attachable_sgid,
-          contentType: blob.content_type,
-          filename: blob.filename.to_s,
-          filesize: blob.byte_size,
-          previewable: blob.previewable?,
-          url: url
-        }
-        attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
-        puts "ATTACHMENT NODE"
-        puts attachment_node
-        img.replace(attachment_node)
-      rescue => e
-        puts "Failed to process image #{image_src}: #{e.message}"
-        image_processing_failed = true
-        break
-      end
-    end
-
-    # Skip this post if image processing failed
-    if image_processing_failed
-      puts "Skipping post due to image processing failure: #{title || File.basename(file_path)}"
+    # Process images and create ActionText content
+    begin
+      post.content = process_images_to_actiontext(html_content)
+    rescue => e
+      puts "Skipping post due to image processing failure: #{title || File.basename(file_path)} - #{e.message}"
       failed_count += 1
       next
     end
-
-    # Assign processed HTML into ActionText
-    puts "PROCESSED CONTENT BEFORE SAVE:"
-    puts processed_content.to_html
-    post.content = processed_content.to_html
-
-    puts "PROCESSED CONTENT AFTER ASSIGNMENT:"
-    puts post.content
 
     if dry_run
       puts "[DRY RUN] Would create #{is_page ? 'page' : 'post'}: #{title || File.basename(file_path)}"
