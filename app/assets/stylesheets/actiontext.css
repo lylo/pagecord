@@ -77,6 +77,15 @@ trix-editor {
   color: var(--color-slate-800);
   line-height: 1.75em !important;
 
+  /* Fix aspect ratio for Trix attachment images */
+  figure[data-trix-attachment] img {
+    aspect-ratio: auto !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: 36rem !important;
+  }
+
   .attachment__caption {
     text-align: center;
   }

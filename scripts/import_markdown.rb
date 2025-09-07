@@ -175,7 +175,19 @@ def import_markdown(path, blog_subdomain, dry_run = false)
         blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
 
         # Replace the <img> with the ActionText attachable representation
-        attachment_node = ActionText::Content.new("").append_attachables([ blob ]).to_trix_html
+        # Create Trix figure with URL for editing support
+        url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
+        trix_attributes = {
+          sgid: blob.attachable_sgid,
+          contentType: blob.content_type,
+          filename: blob.filename.to_s,
+          filesize: blob.byte_size,
+          previewable: blob.previewable?,
+          url: url
+        }
+        attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
+        puts "ATTACHMENT NODE"
+        puts attachment_node
         img.replace(attachment_node)
       rescue => e
         puts "Failed to process image #{image_src}: #{e.message}"
@@ -192,7 +204,12 @@ def import_markdown(path, blog_subdomain, dry_run = false)
     end
 
     # Assign processed HTML into ActionText
+    puts "PROCESSED CONTENT BEFORE SAVE:"
+    puts processed_content.to_html
     post.content = processed_content.to_html
+
+    puts "PROCESSED CONTENT AFTER ASSIGNMENT:"
+    puts post.content
 
     if dry_run
       puts "[DRY RUN] Would create #{is_page ? 'page' : 'post'}: #{title || File.basename(file_path)}"
