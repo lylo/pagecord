@@ -2,6 +2,7 @@ require "open-uri"
 require "nokogiri"
 require "cgi"
 
+# Import Pika.page exported HTML files into Pagecord posts
 # Usage: ruby import_pika.rb path/to/html/directory_or_file blog_subdomain [--dry-run] [--as-pages] [--title-suffix="suffix"]
 def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_suffix = nil)
   # Find the correct blog
@@ -173,11 +174,6 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
       attachment.replace(img_tag)
     end
 
-    # Step 3: Print out the converted HTML with img tags
-    puts "=== CONVERTED HTML WITH IMG TAGS ==="
-    puts article_content.to_html
-    puts "==================================="
-
     # Step 4: Process all img tags like import_markdown: download, create blobs, create trix attachments
     processed_content = Nokogiri::HTML::DocumentFragment.parse(article_content.to_html)
     image_processing_failed = false
@@ -214,8 +210,6 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
         end
 
         attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
-        puts "ATTACHMENT NODE"
-        puts attachment_node
         img.replace(attachment_node)
       rescue => e
         puts "Failed to process image #{image_src}: #{e.message}"
@@ -233,9 +227,6 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
 
     # Assign processed HTML into ActionText
     post.content = processed_content.to_html
-
-    puts "PROCESSED CONTENT AFTER ASSIGNMENT:"
-    puts post.content
 
     if dry_run
       puts "[DRY RUN] Would create #{is_page ? 'page' : 'post'}: #{title}"
@@ -272,6 +263,81 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
   puts "Failed: #{failed_count}"
   puts "Skipped (duplicates): #{skipped_count}"
   puts "====================="
+end
+
+# Process article content: remove duplicate title and convert action-text-attachments to img tags
+def process_article_content(article, title)
+  article_content = article.dup
+
+  # Remove the first <h1> if it matches the title
+  if title
+    first_h1 = article_content.at('h1')
+    if first_h1 && first_h1.text.strip == title
+      first_h1.remove
+    end
+  end
+
+  # Replace all <action-text-attachment> nodes with <img> tags
+  article_content.css("action-text-attachment").each do |attachment|
+    image_url = attachment['url']
+    next unless image_url
+
+    # Extract alt text from figcaption if present
+    alt_text = ""
+    figure = attachment.at('figure')
+    if figure
+      figcaption = figure.at('figcaption')
+      if figcaption
+        alt_text = CGI.unescapeHTML(figcaption.text.strip)
+      end
+    end
+
+    # Create a simple img tag
+    img_tag = "<img src=\"#{CGI.escapeHTML(image_url)}\" alt=\"#{CGI.escapeHTML(alt_text)}\">"
+    attachment.replace(img_tag)
+  end
+
+  article_content
+end
+
+# Process all img tags: download images and create ActionText attachments
+def process_images_to_actiontext(article_content)
+  processed_content = Nokogiri::HTML::DocumentFragment.parse(article_content.to_html)
+
+  processed_content.css("img").each do |img|
+    image_src = img["src"]
+    alt_text = img["alt"] || ""
+    next unless image_src
+
+    # Download the image
+    file = URI.open(image_src)
+    filename = File.basename(URI.parse(image_src).path)
+    filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
+
+    # Create blob
+    blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
+
+    # Create ActionText attachment with optional caption
+    url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
+    trix_attributes = {
+      sgid: blob.attachable_sgid,
+      contentType: blob.content_type,
+      filename: blob.filename.to_s,
+      filesize: blob.byte_size,
+      previewable: blob.previewable?,
+      url: url
+    }
+
+    # Add caption if alt text exists
+    if alt_text && !alt_text.empty?
+      trix_attributes[:caption] = alt_text
+    end
+
+    attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
+    img.replace(attachment_node)
+  end
+
+  processed_content.to_html
 end
 
 # Run the script if executed directly
