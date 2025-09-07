@@ -142,7 +142,7 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
       show_in_navigation: false
     )
 
-    # Process article content for images and convert them to ActionText attachments
+    # Step 1: Extract the <article> as basis of post
     article_content = article.dup
 
     # Remove the first <h1> if it matches the title
@@ -153,85 +153,41 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
       end
     end
 
-    image_processing_failed = false
-
-    # Note: Don't decode HTML entities globally as it can break HTML structure
-    # ActionText handles HTML entities properly when rendering
-
-    # Process ActionText attachments - extract image URLs and recreate attachments
+    # Step 2: Replace all <action-text-attachment> nodes with <img> tags
     article_content.css("action-text-attachment").each do |attachment|
       image_url = attachment['url']
       next unless image_url
 
-      puts "  Processing ActionText attachment: #{image_url}"
-
-      # Extract figcaption content as plain text from nested figure
+      # Extract alt text from figcaption if present
+      alt_text = ""
       figure = attachment.at('figure')
-      figcaption_content = nil
       if figure
         figcaption = figure.at('figcaption')
         if figcaption
-          figcaption_content = CGI.unescapeHTML(figcaption.text.strip)
-          puts "  Extracted figcaption: #{figcaption_content}"
+          alt_text = CGI.unescapeHTML(figcaption.text.strip)
         end
       end
 
-      begin
-        # Download the image
-        file = URI.open(image_url)
-        filename = attachment['filename'] || File.basename(URI.parse(image_url).path)
-        filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
-
-        # Create blob
-        blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
-        puts "  Downloaded and attached image: #{filename}"
-
-        # Create new ActionText attachment with caption
-        if figcaption_content && !figcaption_content.empty?
-          attachment_node = ActionText::Attachment.from_attachable(blob, caption: figcaption_content).to_html
-          puts "  Set caption on attachment: #{figcaption_content}"
-        else
-          attachment_node = ActionText::Attachment.from_attachable(blob).to_html
-        end
-
-        # Replace the entire ActionText attachment
-        attachment.replace(attachment_node)
-      rescue => e
-        puts "Failed to process ActionText attachment #{image_url}: #{e.message}"
-        image_processing_failed = true
-        break
-      end
+      # Create a simple img tag
+      img_tag = "<img src=\"#{CGI.escapeHTML(image_url)}\" alt=\"#{CGI.escapeHTML(alt_text)}\">"
+      attachment.replace(img_tag)
     end
 
-    article_content.css("img").each do |img|
+    # Step 3: Print out the converted HTML with img tags
+    puts "=== CONVERTED HTML WITH IMG TAGS ==="
+    puts article_content.to_html
+    puts "==================================="
+
+    # Step 4: Process all img tags like import_markdown: download, create blobs, create trix attachments
+    processed_content = Nokogiri::HTML::DocumentFragment.parse(article_content.to_html)
+    image_processing_failed = false
+
+    processed_content.css("img").each do |img|
       image_src = img["src"]
-      puts "  Processing regular image: #{image_src}"
+      alt_text = img["alt"] || ""
       next unless image_src
-      next if image_src.include?("rails/active_storage") || image_src.start_with?("data:")
 
       begin
-        # Handle relative URLs by making them absolute if needed
-        if image_src.start_with?('/') || !image_src.match?(/\A[a-zA-Z][a-zA-Z\d+.-]*:/)
-          puts "Warning: Relative image URL found: #{image_src}. You may need to manually fix this."
-          # Skip relative URLs for now as we don't know the base domain
-          next
-        end
-
-        # Extract figcaption content as plain text before processing
-        figure = img.ancestors('figure').first
-        figcaption_content = nil
-        puts "  Looking for figure: #{!!figure}"
-        if figure
-          figcaption = figure.at('figcaption')
-          puts "  Looking for figcaption: #{!!figcaption}"
-          if figcaption
-            puts "  Raw figcaption HTML: #{figcaption.inner_html}"
-            # Get text content and decode HTML entities
-            figcaption_content = CGI.unescapeHTML(figcaption.text.strip)
-            puts "  Extracted figcaption: #{figcaption_content}"
-          end
-        end
-
         # Download the image
         file = URI.open(image_src)
         filename = File.basename(URI.parse(image_src).path)
@@ -239,22 +195,28 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
 
         # Create blob
         blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
-        puts "  Downloaded and attached image: #{filename}"
 
-        # Create ActionText attachment with caption
-        if figcaption_content && !figcaption_content.empty?
-          attachment_node = ActionText::Attachment.from_attachable(blob, caption: figcaption_content).to_html
-          puts "  Set caption on attachment: #{figcaption_content}"
-        else
-          attachment_node = ActionText::Attachment.from_attachable(blob).to_html
+        # Replace the <img> with the ActionText attachable representation
+        # Create Trix figure with URL for editing support
+        url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
+        trix_attributes = {
+          sgid: blob.attachable_sgid,
+          contentType: blob.content_type,
+          filename: blob.filename.to_s,
+          filesize: blob.byte_size,
+          previewable: blob.previewable?,
+          url: url
+        }
+
+        # Add caption if alt text exists
+        if alt_text && !alt_text.empty?
+          trix_attributes[:caption] = alt_text
         end
 
-        # Replace the entire figure (not just img) if it exists, otherwise just the img
-        if figure
-          figure.replace(attachment_node)
-        else
-          img.replace(attachment_node)
-        end
+        attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
+        puts "ATTACHMENT NODE"
+        puts attachment_node
+        img.replace(attachment_node)
       rescue => e
         puts "Failed to process image #{image_src}: #{e.message}"
         image_processing_failed = true
@@ -270,7 +232,10 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
     end
 
     # Assign processed HTML into ActionText
-    post.content = article_content.inner_html
+    post.content = processed_content.to_html
+
+    puts "PROCESSED CONTENT AFTER ASSIGNMENT:"
+    puts post.content
 
     if dry_run
       puts "[DRY RUN] Would create #{is_page ? 'page' : 'post'}: #{title}"
