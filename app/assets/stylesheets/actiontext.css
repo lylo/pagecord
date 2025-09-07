@@ -91,10 +91,7 @@ trix-editor {
 
   .attachment__caption {
     text-align: center;
-  }
-
-  figcaption.attachment__caption {
-    text-align: center !important;
+    margin-top: 0.5rem;
   }
 
   li {

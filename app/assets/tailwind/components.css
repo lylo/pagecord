@@ -120,11 +120,15 @@
       }
 
       figure.attachment {
-        @apply !my-0;
+        @apply !my-0 inline-block;
       }
 
       figcaption.attachment__caption {
         @apply text-center px-4 sm:px-8 !mt-0;
+      }
+
+      action-text-attachment {
+        @apply inline-block;
       }
     }
 
