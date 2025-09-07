@@ -98,10 +98,15 @@ class Post < ApplicationRecord
   private
 
     def text_content
-      @text_content ||= self.content.to_plain_text
-      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
-      .gsub(/\[Image\]/i, "").strip
-      .gsub(/https?:\/\/\S+/, "").strip
+      @text_content ||= begin
+        doc = Nokogiri::HTML::DocumentFragment.parse(self.content.to_s)
+        doc.css("figcaption").remove  # don't want captions in the summary
+        content = doc.text
+        content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
+               .gsub(/\[Image\]/i, "").strip
+               .gsub(/https?:\/\/\S+/, "").strip
+               .gsub(/\s+/, " ").strip  # Normalize whitespace
+      end
     end
 
     def set_published_at

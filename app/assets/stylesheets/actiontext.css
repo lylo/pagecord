@@ -94,6 +94,10 @@ trix-editor {
     margin-top: 0.5rem;
   }
 
+  .attachment__caption-editor {
+    background-color: var(--color-bg);
+  }
+
   li {
     margin: 0.5rem 0 0.5rem 1rem !important;
     &:first-child {

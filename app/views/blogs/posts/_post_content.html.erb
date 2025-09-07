@@ -1,3 +1,6 @@
 <div class="text-size-standard">
-  <%= post.content %>
+  <%= auto_link post.content,
+        sanitize_options: {
+          tags: %w[figure img figcaption action-text-attachment] + Rails::Html::SafeListSanitizer.allowed_tags.to_a
+        } %>
 </div>
