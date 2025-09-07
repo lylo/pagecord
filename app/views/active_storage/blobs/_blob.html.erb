@@ -9,4 +9,10 @@
       <%= image_tag resized_image_url(blob, width: width, height: height), alt: "Uploaded image" %>
     <% end %>
   <% end %>
+
+  <figcaption class="attachment__caption">
+    <% if caption = blob.try(:caption) %>
+      <%= caption %>
+    <% end %>
+  </figcaption>
 </figure>

@@ -1,7 +1,7 @@
 module Html
   class Sanitize < Transformation
     ALLOWED_TAGS = %w[
-      a abbr figure action-text-attachment b blockquote br cite code del div em h1 h2 h3 h4 h5 h6 hr i img li mark ol p pre s span strike strong u ul
+      a abbr figure figcaption action-text-attachment b blockquote br cite code del div em h1 h2 h3 h4 h5 h6 hr i img li mark ol p pre s span strike strong u ul
     ]
     ALLOWED_ATTRIBUTES = %w[
       href src sgid url content-type name filename
@@ -10,7 +10,9 @@ module Html
     def transform(html)
       document = Nokogiri::HTML::DocumentFragment.parse(html)
       document.search("img").each do |img|
-        if img["pagecord"] == "true"
+        # Preserve images inside ActionText attachments
+        if img.ancestors("action-text-attachment").any?
+        elsif img["pagecord"] == "true"
           img.remove_attribute("pagecord")
         else
           img.remove

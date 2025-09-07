@@ -64,7 +64,11 @@
       }
 
       code {
-        @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text)] px-1 py-0.5 rounded-sm;
+        @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text)] px-1 py-0.5 rounded-sm !font-normal;
+      }
+
+      code::before, code::after {
+        content: none !important;
       }
 
       pre {
@@ -105,14 +109,26 @@
 
       .attachment-gallery--2 {
         img {
-          @apply !w-1/2;
+          @apply !w-full;
         }
       }
 
       .attachment-gallery--3 {
         img {
-          @apply !w-1/3;
+          @apply !w-full;
         }
+      }
+
+      figure.attachment {
+        @apply !my-0 inline-block;
+      }
+
+      action-text-attachment {
+        @apply w-full text-center;
+      }
+
+      figcaption.attachment__caption {
+        @apply text-center px-4 sm:px-8 !mt-0;
       }
     }
 
