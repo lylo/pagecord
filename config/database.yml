@@ -8,7 +8,7 @@ development:
   database: pagecord_dev
   host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
   port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
-  username: <%= ENV.fetch("DATABASE_USERNAME", "olly") %>
+  username: <%= ENV.fetch("DATABASE_USERNAME", ENV["USER"]) %>
   password: <%= ENV.fetch("DATABASE_PASSWORD", "") %>
 
 test:
@@ -16,7 +16,7 @@ test:
   database: pagecord_test
   host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
   port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
-  username: <%= ENV.fetch("DATABASE_USERNAME", "olly") %>
+  username: <%= ENV.fetch("DATABASE_USERNAME", ENV["USER"]) %>
   password: <%= ENV.fetch("DATABASE_PASSWORD", "") %>
 
 production:

@@ -1,4 +1,7 @@
 <div class="overflow-auto">
+  <div>
+    Currently hosting <%= pluralize(number_with_delimiter(@pagy.count), "post") %>.
+  </div>
   <table class="mt-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
     <thead>
       <tr>

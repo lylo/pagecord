@@ -54,7 +54,7 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
 
       # The view should appear in analytics data for EST date
       assigns_data = assigns(:analytics_data)
-      assert assigns_data[:total_page_views] > 0, "Should show page views for EST date boundary"
+      assert assigns_data[:unique_page_views] > 0, "Should show page views for EST date boundary"
     end
   end
 
@@ -110,7 +110,6 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
 
       # Should only show the first page view (11:30 PM Tokyo on June 15th)
       analytics_data = assigns(:analytics_data)
-      assert_equal 1, analytics_data[:total_page_views]
       assert_equal 1, analytics_data[:unique_page_views]
 
       # Request analytics for June 16th Tokyo time
@@ -119,7 +118,6 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
 
       # Should show the second page view (12:30 AM Tokyo on June 16th)
       analytics_data = assigns(:analytics_data)
-      assert_equal 1, analytics_data[:total_page_views]
       assert_equal 1, analytics_data[:unique_page_views]
     end
   end

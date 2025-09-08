@@ -1,9 +1,12 @@
 require "json"
 require "open-uri"
 require "nokogiri"
+require "cgi"
+require_relative "import_helpers"
 
 # Usage: ruby import_ghost_json.rb path/to/ghost_export.json blog_subdomain ghost_url
 def import_ghost_json(file_path, blog_subdomain, ghost_url)
+  include ImportHelpers
   # Parse the Ghost JSON file
   json_data = JSON.parse(File.read(file_path))
 
@@ -66,12 +69,23 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url)
       content_to_use = "#{feature_img_tag}\n#{content_to_use}"
     end
 
-    # Create and save the Post object
+    # Create the Post object (without content yet, so we don't trigger ActionText parsing of <img>)
     post = blog.posts.new(
       title: title,
-      published_at: published_at,
-      content: content_to_use
+      published_at: published_at
     )
+
+    # Process images and create ActionText content
+    if content_to_use.present?
+      begin
+        post.content = process_images_to_actiontext(content_to_use)
+      rescue => e
+        puts "Skipping post due to image processing failure: #{title} - #{e.message}"
+        next
+      end
+    else
+      post.content = ""
+    end
 
     if post.save
       puts "Successfully created post: #{title}"
@@ -80,48 +94,11 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url)
       puts post.errors.full_messages
       next
     end
-
-    # Process HTML content for images and convert them to ActionText attachments
-    if content_to_use.present?
-      processed_content = Nokogiri::HTML::DocumentFragment.parse(content_to_use)
-      processed_content.css("img").each do |img|
-        image_src = img["src"]
-
-        # Skip if no src or if it's already processed
-        next unless image_src
-
-        # Replace __GHOST_URL__ in image src if present
-        image_src = image_src.gsub("__GHOST_URL__", ghost_url)
-
-        # Skip if it's already an ActionText attachment or data URL
-        next if image_src.include?("rails/active_storage") || image_src.start_with?("data:")
-
-        begin
-          puts "Processing image: #{image_src}"
-
-          # Download the image
-          file = URI.open(image_src)
-          post.attachments.attach(io: file, filename: File.basename(URI.parse(image_src).path))
-
-          # Ensure the attachment is saved
-          post.attachments.reload
-
-          # Replace the <img> tag with ActionText attachment
-          attachment = post.attachments.last
-          img.replace(ActionText::Attachment.from_attachable(attachment).to_html)
-        rescue => e
-          puts "Failed to process image #{image_src}: #{e.message}"
-          # Keep the original img tag if download fails
-        end
-      end
-
-      # Update the post's content with processed attachments
-      post.update(content: processed_content.to_html)
-    end
   end
 
   puts "Import completed. Imported #{posts_to_import.length} posts."
 end
+
 
 # Run the script if executed directly
 if __FILE__ == $PROGRAM_NAME

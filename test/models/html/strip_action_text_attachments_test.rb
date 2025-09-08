@@ -17,7 +17,36 @@ class Html::StripActionTextAttachmentsTest < ActiveSupport::TestCase
       <div>
       Hello, World
       <br>
-      <img src="image.jpg" alt="Sample Image">
+
+        <figure>
+          <img src="image.jpg" alt="Sample Image">
+        </figure>
+
+      </div>
+    HTML
+    result = Html::StripActionTextAttachments.new.transform(html)
+    assert_equal expected_html, result
+  end
+
+  test "should preserve figure and figcaption" do
+    html = <<~HTML
+      <div>
+      <action-text-attachment sgid="456">
+        <figure>
+          <img src="chart.jpg" alt="Sales Chart">
+          <figcaption>Q4 Sales Performance</figcaption>
+        </figure>
+      </action-text-attachment>
+      </div>
+    HTML
+    expected_html = <<~HTML
+      <div>
+
+        <figure>
+          <img src="chart.jpg" alt="Sales Chart">
+          <figcaption>Q4 Sales Performance</figcaption>
+        </figure>
+
       </div>
     HTML
     result = Html::StripActionTextAttachments.new.transform(html)

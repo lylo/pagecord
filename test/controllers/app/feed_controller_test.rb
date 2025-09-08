@@ -42,6 +42,29 @@ class App::FeedControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test "private_rss should include tags as RSS categories" do
+    # Create a post with tags in followed blog
+    @joel.blog.posts.create!(
+      title: "Tagged Post",
+      content: "Post with tags",
+      status: "published",
+      tags_string: "ruby, rails, web-development"
+    )
+
+    @vivian.follow(@joel.blog)
+
+    get app_private_rss_feed_path(token: "vivian_jfur73yd", format: :rss)
+    assert_response :success
+
+    doc = Nokogiri::XML(@response.body)
+    categories = doc.xpath("//item/category").map(&:text)
+
+    assert_includes categories, "ruby"
+    assert_includes categories, "rails"
+    assert_includes categories, "web-development"
+    assert_equal 3, categories.count
+  end
+
   def assert_select(selector, count)
     doc = Nokogiri::HTML(@response.body)
     assert_equal count, doc.css(selector).size

@@ -30,13 +30,13 @@ class PageViewTest < ActiveSupport::TestCase
       { "CF-IPCountry" => "US" }
     )
 
-    # First view should be unique
+    # First view should be created and is unique
     view1 = PageView.track(blog: blog, post: post, request: mock_request, path: "/test-post")
     assert view1.is_unique?
 
-    # Second view from same visitor on same day should not be unique
+    # Second view from same visitor on same day should not be tracked (returns nil)
     view2 = PageView.track(blog: blog, post: post, request: mock_request, path: "/test-post")
-    assert_not view2.is_unique?
+    assert_nil view2
   end
 
   test "should not track bots" do
