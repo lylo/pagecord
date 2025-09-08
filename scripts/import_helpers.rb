@@ -14,8 +14,11 @@ module ImportHelpers
       next unless image_src
 
       begin
-        # Download the image
-        file = URI.open(image_src)
+        # Download the image with timeouts
+        file = URI.open(image_src,
+          open_timeout: 10,    # 10 seconds to establish connection
+          read_timeout: 30     # 30 seconds to read the response
+        )
         filename = File.basename(URI.parse(image_src).path)
         filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
 
