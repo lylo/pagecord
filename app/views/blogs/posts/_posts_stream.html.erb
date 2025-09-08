@@ -1,9 +1,9 @@
-<%= turbo_frame_tag :posts do %>
+<%= turbo_frame_tag "posts_#{@pagy.page}" do %>
   <div data-controller="media-embeds turbo-frame-top">
     <%= render partial: "stream_post", collection: @posts, as: :post %>
   </div>
 
   <% if @pagy.next %>
-    <%= turbo_frame_tag :posts, src: blog_home_path(@blog, page: @pagy.next), loading: :lazy %>
+    <%= turbo_frame_tag "posts_#{@pagy.next}", src: blog_home_path(@blog, page: @pagy.next), loading: :lazy %>
   <% end %>
 <% end %>
