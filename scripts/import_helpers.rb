@@ -32,7 +32,7 @@ module ImportHelpers
           previewable: blob.previewable?,
           url: url
         }
-        
+
         # Add caption if alt text exists
         if alt_text && !alt_text.empty?
           trix_attributes[:caption] = alt_text
@@ -51,7 +51,7 @@ module ImportHelpers
   # Check if a post already exists by title (case-insensitive) or slug
   def post_exists?(blog, title)
     return false unless title
-    
+
     # Check for exact title match (case-insensitive)
     existing_post = blog.all_posts.where("LOWER(title) = LOWER(?)", title).first
     return existing_post if existing_post
