@@ -4,8 +4,8 @@
   <% post_token = nil %>
 <% end %>
 
-<div data-controller="analytics" 
-     data-analytics-hit-url-value="<%= blog_page_views_path %>"
-     <% if post_token %>data-analytics-post-token-value="<%= post_token %>"<% end %>>
+<div data-controller="pv"
+     data-pv-pth-value="<%= blog_page_views_path %>"
+     <% if post_token %>data-pv-post-token-value="<%= post_token %>"<% end %>>
 </div>
 

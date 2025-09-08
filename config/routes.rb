@@ -169,7 +169,7 @@ Rails.application.routes.draw do
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")
 
-    post "/hit", to: "blogs/page_views#create", as: :blog_page_views
+    post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
