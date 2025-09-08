@@ -166,7 +166,7 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
     base_slug = if basename.present?
                   basename
     elsif title.present?
-                  title.parameterize.truncate(100, omission: "").gsub(/-+\z/, "")
+                  title.parameterize.gsub(/-+\z/, "")
     end
 
     potential_slugs[base_slug] += 1 if base_slug.present?
@@ -238,14 +238,29 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
                base_slug
       end
 
+      # Final uniqueness check - append number if slug already exists
+      if slug.present?
+        original_slug = slug
+        counter = 1
+        while blog.all_posts.exists?(slug: slug)
+          slug = "#{original_slug}-#{counter}"
+          counter += 1
+        end
+      end
+
       tag_list = categories.map { |category| clean_tag(category) }.reject(&:empty?).uniq.sort
 
-      # Check if post already exists by title or slug
-      existing_post = post_exists?(blog, title)
+      # Check if post already exists - prioritize slug-based detection
+      existing_post = nil
 
-      # Also check by slug if we have one
-      if !existing_post && slug.present?
+      # First check by our computed slug (most reliable for TypePad imports)
+      if slug.present?
         existing_post = blog.all_posts.find_by(slug: slug)
+      end
+
+      # Only check by title if no slug match and no slug was generated
+      if !existing_post && slug.blank? && title.present?
+        existing_post = post_exists?(blog, title)
       end
 
       if existing_post
