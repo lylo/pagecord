@@ -1,8 +1,8 @@
 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4">
   <div class="flex flex-wrap items-center gap-x-1 gap-y-2">
-    <span><%= link_to "#{pluralize(@total_users, "user")} in total", admin_blogs_path, class: "underline font-medium" %>.</span>
-    <span><%= link_to pluralize(Subscription.active_paid.count, "paid subscription"), admin_blogs_path(status: "paid"), class: "underline font-medium" %>,</span>
-    <span><%= link_to "#{Subscription.comped.count} comped", admin_blogs_path(status: "comped"), class: "underline font-medium" %>.</span>
+    <span><%= link_to "#{pluralize(number_with_delimiter(@total_users), "user")} in total", admin_blogs_path, class: "underline font-medium" %>.</span>
+    <span><%= link_to pluralize(number_with_delimiter(Subscription.active_paid.count), "paid subscription"), admin_blogs_path(status: "paid"), class: "underline font-medium" %>,</span>
+    <span><%= link_to "#{number_with_delimiter(Subscription.comped.count)} comped", admin_blogs_path(status: "comped"), class: "underline font-medium" %>.</span>
   </div>
 
   <%= link_to new_admin_user_path, class: "btn-primary text-sm whitespace-nowrap" do %>
@@ -82,7 +82,7 @@
             <%= link_to blog_home_url(blog), blog_home_url(blog), class: "text-xs hover:underline font-light text-slate-500 dark:text-slate-400", target: "_blank" %>
           </div>
         </td>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.posts_count %></td>
+        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= number_with_delimiter blog.posts_count %></td>
         <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><!--email_off--><%= blog.user.email %><!--/email_off--></td>
         <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.user.verified %></td>
         <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.user.discarded_at&.to_formatted_s :short %></td>
