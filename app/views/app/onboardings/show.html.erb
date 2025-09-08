@@ -46,7 +46,7 @@
     Emojis and links are recommended! 😊
   </p>
 
-  <div class="trix-container trix-minimal">
+  <div class="lexxy-minimal">
     <%= form_with url: app_onboarding_path, model: @blog,
           data: {
             controller: "save-button",
@@ -57,7 +57,7 @@
         placeholder: "add a bio to your profile if you like...",
         class: "trix-content min-h-[150px] prose border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
         spellcheck: true,
-        data: { controller: "autogrow trix", subscribed: false } %>
+        data: { controller: "autogrow", subscribed: false } %>
       <%= form.submit "Save",
         data: {
           save_button_target: "button",

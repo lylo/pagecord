@@ -14,7 +14,7 @@ export default class extends Controller {
     }
 
     if (this.hasContentTarget) {
-      this.contentTarget.addEventListener("trix-change", () => {
+      this.contentTarget.addEventListener("lexxy:change", () => {
         this.save()
       })
     }
@@ -42,14 +42,8 @@ export default class extends Controller {
         this.titleTarget.value = title
       }
 
-      if (content && this.hasContentTarget) {
-        const load = () => {
-          this.contentTarget.editor.loadHTML(content)
-          console.log("Draft restored from previous session")
-        }
-        this.contentTarget.editor
-          ? load()
-          : this.contentTarget.addEventListener("trix-initialize", load, { once: true })
+      if (content && this.contentTarget.value) {
+        this.contentTarget.value = content
       }
     } catch {
       this.clear()

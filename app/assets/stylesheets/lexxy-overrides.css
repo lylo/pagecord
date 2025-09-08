@@ -1,51 +1,38 @@
 /* Override Tailwind's resets for Lexxy editor */
-lexxy-editor ul {
-  list-style-type: disc !important;
-  margin-left: 1.5em !important;
+lexxy-editor {
+  ul {
+    list-style-type: disc !important;
+    margin-left: 1.5em !important;
+  }
+
+  ol {
+    list-style-type: decimal !important;
+    margin-left: 1.5em !important;
+  }
+
+  a {
+   font-weight: 500;
+    text-decoration: underline;
+  }
+
+  h2 {
+    font-weight: 700;
+    font-size: larger;
+  }
+
+  blockquote {
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+  }
 }
 
-lexxy-editor ol {
-  list-style-type: decimal !important;
-  margin-left: 1.5em !important;
-}
-
-lexxy-editor h1,
-lexxy-editor h2,
-lexxy-editor h3,
-lexxy-editor h4,
-lexxy-editor h5,
-lexxy-editor h6 {
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  margin: inherit !important;
-}
-
-lexxy-editor p {
-  margin: inherit !important;
-}
-
-lexxy-editor code {
-  font-family: var(--lexxy-font-mono) !important;
-  background-color: var(--lexxy-color-code-bg) !important;
-}
-
-lexxy-editor pre,
-lexxy-editor code[data-language] {
-  font-family: var(--lexxy-font-mono) !important;
-  background-color: var(--lexxy-color-code-bg) !important;
-  padding: 0.25ch 0.5ch !important;
-  border-radius: var(--lexxy-radius) !important;
-  display: block !important;
-}
-
-/* Ensure syntax highlighting tokens work */
-lexxy-editor .code-token__attr,
-lexxy-editor .code-token__property,
-lexxy-editor .code-token__selector,
-lexxy-editor .code-token__comment,
-lexxy-editor .code-token__operator,
-lexxy-editor .code-token__function,
-lexxy-editor .code-token__variable,
-lexxy-editor .code-token__punctuation {
-  color: inherit !important;
+.lexxy-minimal lexxy-toolbar {
+  button[name="quote"],
+  button[name="code"],
+  button[name="upload"],
+  button[name="unordered-list"],
+  button[name="ordered-list"],
+  button[name="link"] {
+    display: none;
+  }
 }
