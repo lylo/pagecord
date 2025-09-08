@@ -2,6 +2,8 @@ require "open-uri"
 require "nokogiri"
 require "playwright"
 require "tempfile"
+require "cgi"
+require_relative "import_helpers"
 
 # Helper: Download an image via Playwright to bypass Cloudflare JS
 def download_typepad_image(url)
@@ -24,7 +26,7 @@ def download_typepad_image(url)
       # Create browser context with realistic settings
       context = browser.new_context(
         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        viewport: {'width' => 1920, 'height' => 1080},
+        viewport: { 'width' => 1920, 'height' => 1080 },
         extraHTTPHeaders: {
           'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
           'Accept-Language' => 'en-US,en;q=0.5',
@@ -34,7 +36,7 @@ def download_typepad_image(url)
           'Upgrade-Insecure-Requests' => '1'
         }
       )
-      
+
       page = context.new_page
 
       # Navigate to the image URL and capture the response
@@ -43,7 +45,7 @@ def download_typepad_image(url)
 
       # Get the response body as bytes
       binary = response.body
-      
+
       # Ensure binary data is in correct encoding
       binary = binary.force_encoding('ASCII-8BIT') if binary.respond_to?(:force_encoding)
 
@@ -65,8 +67,56 @@ def download_typepad_image(url)
   file
 end
 
+# Custom TypePad image processing that uses Playwright but follows the helper pattern
+def process_images_to_actiontext_typepad(html_content)
+  processed_content = Nokogiri::HTML::DocumentFragment.parse(html_content)
+
+  processed_content.css("img").each do |img|
+    image_src = img["src"]
+    alt_text = img["alt"] || ""
+    next unless image_src
+    next if image_src.include?("rails/active_storage") || image_src.start_with?("data:")
+
+    begin
+      # Use TypePad-specific download method
+      puts "  Downloading image: #{image_src}"
+      file = download_typepad_image(image_src)
+      puts "  ✓ Downloaded successfully"
+
+      filename = File.basename(URI.parse(image_src).path)
+      filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
+
+      # Create blob (same as helper)
+      blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
+      puts "  ✓ Blob created: #{blob.filename} (#{blob.byte_size} bytes)"
+
+      # Create ActionText attachment with optional caption (same as helper)
+      url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
+      trix_attributes = {
+        sgid: blob.attachable_sgid,
+        contentType: blob.content_type,
+        filename: blob.filename.to_s,
+        filesize: blob.byte_size,
+        previewable: blob.previewable?,
+        url: url
+      }
+
+      attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
+      img.replace(attachment_node)
+      puts "  ✓ Image attached to post content"
+    rescue => e
+      raise "Failed to process image #{image_src}: #{e.message}"
+    ensure
+      file.close! if file
+    end
+  end
+
+  processed_content.to_html
+end
+
 # Usage: ruby import_typepad.rb path/to/typepad_export.txt blog_subdomain [--dry-run]
 def import_typepad(file_path, blog_subdomain, dry_run = false)
+  include ImportHelpers
   blog = Blog.find_by(subdomain: blog_subdomain)
   unless blog
     puts "Blog not found: #{blog_subdomain}. Exiting..."
@@ -158,12 +208,11 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
         basename = basename.gsub('_', '-').gsub(/-+/, '-').gsub(/^-|-$/, '')
       end
 
-      published_at = if date_str
+      published_at = if date_str.present?
                        begin
                          Time.strptime(date_str, "%m/%d/%Y %I:%M:%S %p")
                        rescue
-                         puts "Warning: Could not parse date '#{date_str}' for '#{title}'"
-                         Time.current
+                         parse_datetime(date_str, fallback_message: "Warning: Could not parse date '#{date_str}' for '#{title}'")
                        end
       else
                        Time.current
@@ -181,17 +230,19 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
                base_slug
       end
 
-      tag_list = categories.map do |category|
-        normalized = category.strip.downcase.gsub(/\s+/, '-').gsub(/[^a-z0-9\-]/, '').gsub(/-+/, '-').gsub(/^-|-$/, '')
-        normalized if normalized.match?(/\A[a-z0-9-]+\z/)
-      end.compact.uniq.sort
+      tag_list = categories.map { |category| clean_tag(category) }.reject(&:empty?).uniq.sort
 
-      existing_post = if slug.present?
-                        blog.all_posts.find_by(slug: slug)
+      # Check if post already exists by title or slug
+      existing_post = post_exists?(blog, title)
+
+      # Also check by slug if we have one
+      if !existing_post && slug.present?
+        existing_post = blog.all_posts.find_by(slug: slug)
       end
+
       if existing_post
         display_title = title.presence || "[Untitled]"
-        puts "Skipping duplicate post: #{display_title} (slug: '#{existing_post.slug}', published_at: #{existing_post.published_at})"
+        puts "Skipping duplicate post: #{display_title} (matches existing: '#{existing_post.title}', slug: '#{existing_post.slug}')"
         skipped_count += 1
         next
       end
@@ -207,67 +258,22 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
       )
       post.slug = slug
 
-      processed_content = Nokogiri::HTML::DocumentFragment.parse(html_content)
-      image_processing_failed = false
-
-      unless dry_run
-        # Process regular img tags
-        processed_content.css("img").each do |img|
-          image_src = img["src"]
-          next unless image_src
-          next if image_src.include?("rails/active_storage") || image_src.start_with?("data:")
-
-          begin
-            puts "  Downloading image: #{image_src}"
-            file = download_typepad_image(image_src)
-            puts "  ✓ Downloaded successfully"
-
-            filename = File.basename(URI.parse(image_src).path)
-            filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
-            puts "  Creating blob with filename: #{filename} (#{file.size} bytes)"
-
-            # Determine content type from file extension
-            content_type = case File.extname(filename).downcase
-                          when '.jpg', '.jpeg' then 'image/jpeg'
-                          when '.png' then 'image/png'
-                          when '.gif' then 'image/gif'
-                          when '.webp' then 'image/webp'
-                          else 'image/jpeg' # default fallback
-                          end
-            
-            blob = ActiveStorage::Blob.create_and_upload!(
-              io: file, 
-              filename: filename,
-              content_type: content_type
-            )
-            puts "  ✓ Blob created: #{blob.filename} (#{blob.byte_size} bytes) - content_type: #{blob.content_type}"
-
-            # Replace with ActionText attachable representation (same as import_markdown.rb)
-            attachment_node = ActionText::Content.new("").append_attachables([ blob ]).to_trix_html
-            img.replace(attachment_node)
-            puts "  ✓ Image attached to post content"
-          rescue => e
-            puts "Failed to process image #{image_src}: #{e.message}"
-            image_processing_failed = true
-            break
-          ensure
-            file.close! if file
-          end
+      # Process images and create ActionText content
+      begin
+        if dry_run
+          # For dry run, just count images without processing
+          parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
+          image_count = parsed_html.css("img").count
+          puts "[DRY RUN] Would process #{image_count} images" if image_count > 0
+          post.content = html_content
+        else
+          post.content = process_images_to_actiontext_typepad(html_content)
         end
-
-      else
-        image_count = processed_content.css("img").count
-        puts "[DRY RUN] Would process #{image_count} images" if image_count > 0
-      end
-
-      if image_processing_failed
-        display_title = title.presence || "[Untitled]"
-        puts "Skipping post due to image processing failure: #{display_title}"
+      rescue => e
+        puts "Skipping post due to image processing failure: #{title || '[Untitled]'} - #{e.message}"
         failed_count += 1
         next
       end
-
-      post.content = processed_content.to_html
 
       display_title = title.presence || "[Untitled]"
       if dry_run
