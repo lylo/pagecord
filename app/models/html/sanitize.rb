@@ -4,7 +4,7 @@ module Html
       a abbr action-text-attachment b blockquote br cite code del div em figure figcaption h1 h2 h3 h4 h5 h6 hr i img li mark ol p pre s span strike strong u ul
     ]
     ALLOWED_ATTRIBUTES = %w[
-      href src sgid url content-type name filename previewable filesize class alt
+      href src sgid url content-type name filename previewable filesize alt
     ]
 
     def transform(html)
