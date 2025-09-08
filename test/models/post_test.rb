@@ -169,7 +169,7 @@ class PostTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     post = blog.posts.new(
       title: "Image Only Post",
-      content: "<action-text-attachment><figure><img src='test.jpg'></figure></action-text-attachment>"
+      content: "<figure><img src='test.jpg'><figcaption>Test Image</figcaption></figure>"
     )
 
     summary = post.summary
@@ -190,7 +190,7 @@ class PostTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     post = blog.posts.new(
       title: "Image Only Post",
-      content: "<action-text-attachment><figure><img src='test.jpg'></figure></action-text-attachment>"
+      content: "<figure><img src='test.jpg'></figure>"
     )
 
     assert_not post.has_text_content?

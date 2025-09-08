@@ -64,7 +64,11 @@
       }
 
       code {
-        @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text)] px-1 py-0.5 rounded-sm;
+        @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text)] px-1 py-0.5 rounded-sm !font-normal;
+      }
+
+      code::before, code::after {
+        content: none !important;
       }
 
       pre {
@@ -92,7 +96,7 @@
       }
 
       img {
-        @apply !mt-2 !mb-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
+        @apply !mt-2 !mb-2 rounded-lg mx-auto max-w-full;
       }
 
       .attachment-gallery {
@@ -105,14 +109,22 @@
 
       .attachment-gallery--2 {
         img {
-          @apply !w-1/2;
+          @apply !w-full;
         }
       }
 
       .attachment-gallery--3 {
         img {
-          @apply !w-1/3;
+          @apply !w-full;
         }
+      }
+
+      figure {
+        @apply !inline-block relative w-full !my-0;
+      }
+
+      figcaption.attachment__caption {
+        @apply text-center px-4 sm:px-8 !mt-0;
       }
     }
 
@@ -172,10 +184,6 @@
     .confirmation-card {
       @apply bg-[var(--color-bg-subtle)] rounded-lg shadow-md border border-[var(--color-border)] text-[var(--color-text)];
     }
-
-    .follow-button {
-      @apply text-xs inline-block border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] rounded-xl px-2 py-1 hover:bg-[var(--color-bg-subtle)] text-center;
-    }
   }
 
   /* ---- APP COMPONENTS ---- */
@@ -233,13 +241,9 @@
     @keyframes pulseGrow {
       0%, 100% {
         transform: scale(1);
-        fill: currentColor;
-        stroke: currentColor;
       }
       50% {
-        transform: scale(1.3);
-        fill: theme('colors.red.500'); /* Tailwind token */
-        stroke: theme('colors.red.500');
+        transform: scale(1.4);
       }
     }
 

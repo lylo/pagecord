@@ -21,6 +21,10 @@ xml.rss version: "2.0" do
         xml.pubDate publication_time.to_formatted_s(:rfc822)
         xml.link link
         xml.guid link
+
+        post.tag_list.each do |tag|
+          xml.category tag
+        end
       end
     end
   end

@@ -51,6 +51,7 @@ class Blog::Export < ApplicationRecord
       FileUtils.mkdir_p(images_dir)
 
       stripped_html = Html::StripActionTextAttachments.new.transform(post.content.to_s)
+      stripped_html = Html::Sanitize.new.transform(stripped_html)
       @post_content = Blog::Export::ImageHandler.new(post, images_dir).process_images(stripped_html)
 
       template_path = Rails.root.join("app/views/blog/exports/post.html.erb")

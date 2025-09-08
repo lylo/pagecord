@@ -80,14 +80,14 @@ namespace :analytics do
       else 1.0                      # Normal for other months
       end
 
-      total_views = (rand(base_traffic) * seasonal_multiplier * scale_factor).round
-      unique_views = [ (total_views * 0.7).round, total_views ].min
+      # Only generate unique views now (no total vs unique distinction)
+      unique_views = (rand(base_traffic) * seasonal_multiplier * scale_factor).round
 
       # Track unique visitors for this day
       daily_visitors = Set.new
 
-      # Create page views throughout the day
-      (1..total_views).each do |i|
+      # Create unique page views throughout the day
+      (1..unique_views).each do |i|
         # Determine visitor - 60% chance of returning visitor from pool
         visitor_hash = if rand < 0.6 && visitor_pool.any?
           visitor_pool.sample
@@ -95,9 +95,9 @@ namespace :analytics do
           "new_visitor_#{date}_#{SecureRandom.hex(4)}"
         end
 
-        # Mark as unique if first time seeing this visitor today
-        is_unique = !daily_visitors.include?(visitor_hash)
-        daily_visitors.add(visitor_hash) if is_unique
+        # Skip if we've already seen this visitor today (enforce uniqueness)
+        next if daily_visitors.include?(visitor_hash)
+        daily_visitors.add(visitor_hash)
 
         # Random time throughout the day (business hours weighted)
         if rand < 0.7  # 70% during business hours
@@ -128,7 +128,6 @@ namespace :analytics do
           "https://linkedin.com"
         ]
 
-        countries = [ "US", "CA", "UK", "DE", "FR", "AU", "JP", "NL" ]
 
         # Find the corresponding post if it's a post path
         post = nil
@@ -142,11 +141,9 @@ namespace :analytics do
           post: post,
           path: selected_path,
           visitor_hash: visitor_hash,
-          ip_address: "192.168.#{rand(1..255)}.#{rand(1..254)}",
           user_agent: "Mozilla/5.0 (#{[ 'Windows NT 10.0', 'Macintosh', 'X11; Linux x86_64' ].sample}) Seed Browser",
           referrer: referrers.sample,
-          country: countries.sample,
-          is_unique: is_unique,
+          is_unique: true,
           viewed_at: view_time
         )
 
@@ -157,10 +154,9 @@ namespace :analytics do
     end
 
     total_views = blog.page_views.count
-    unique_views = blog.page_views.where(is_unique: true).count
 
     puts "\n✅ Generated #{created_count} new page views"
-    puts "📊 Blog now has #{total_views} total page views (#{unique_views} unique)"
+    puts "📊 Blog now has #{total_views} unique page views"
     puts "📅 Data spans: #{start_date.strftime('%B %d, %Y')} to #{end_date.strftime('%B %d, %Y')}"
 
     # Optional rollup generation

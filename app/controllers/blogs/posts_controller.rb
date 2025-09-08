@@ -10,7 +10,7 @@ class Blogs::PostsController < Blogs::BaseController
     base_scope = @blog.posts.visible
       .with_full_rich_text
       .includes(:upvotes)
-      .order(published_at: :desc)
+      .order(published_at: :desc, id: :desc)
 
     # Filter by tag if specified
     if params[:tag].present?
