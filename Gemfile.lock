@@ -255,10 +255,6 @@ GEM
       httparty (>= 0.18.1)
     marcel (1.0.4)
     matrix (0.4.3)
-    mime-types (3.7.0)
-      logger
-      mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0902)
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
@@ -307,9 +303,6 @@ GEM
       activesupport (>= 6.1)
     pghero (3.7.0)
       activerecord (>= 7.1)
-    playwright-ruby-client (1.55.0)
-      concurrent-ruby (>= 1.1.6)
-      mime-types (>= 3.0)
     postmark (1.25.1)
       json
     postmark-rails (0.22.1)
@@ -518,7 +511,6 @@ DEPENDENCIES
   pg_query (>= 2)
   pg_search
   pghero
-  playwright-ruby-client
   postmark-rails
   premailer-rails (~> 1.12)
   puma (>= 5.0)

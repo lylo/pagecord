@@ -1,9 +1,18 @@
 require "open-uri"
 require "nokogiri"
-require "playwright"
 require "tempfile"
 require "cgi"
 require_relative "import_helpers"
+
+# Only require playwright when actually needed
+begin
+  require "playwright"
+rescue LoadError
+  puts "Error: playwright-ruby-client gem not found. Install it with:"
+  puts "  gem install playwright-ruby-client"
+  puts "  npx playwright install chromium"
+  exit 1
+end
 
 # Helper: Download an image via Playwright to bypass Cloudflare JS
 def download_typepad_image(url)
@@ -73,7 +82,6 @@ def process_images_to_actiontext_typepad(html_content)
 
   processed_content.css("img").each do |img|
     image_src = img["src"]
-    alt_text = img["alt"] || ""
     next unless image_src
     next if image_src.include?("rails/active_storage") || image_src.start_with?("data:")
 
