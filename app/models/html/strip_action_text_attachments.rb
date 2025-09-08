@@ -4,11 +4,9 @@ module Html
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
 
       doc.css("action-text-attachment").each do |attachment|
-        if img = attachment.at_css("img")
-          figure = img.parent
-          figure.replace(img) if figure.name == "figure"
-          attachment.replace(img)
-        end
+        # Replace the action-text-attachment with its inner content
+        # This preserves figure and figcaption elements
+        attachment.replace(attachment.children)
       end
 
       doc.to_html
