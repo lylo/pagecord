@@ -11,7 +11,7 @@ class Html::SanitizeTest < ActiveSupport::TestCase
     expected_html = <<~HTML
       <div>
       <p>hello, world!</p>
-      <br><img src=\"https://example.com/image.jpeg\"><br>
+      <br><figure><img src=\"https://example.com/image.jpeg\"></figure><br>
       </div>
     HTML
     assert_equal expected_html.strip, transformed_html
