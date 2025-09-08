@@ -241,13 +241,9 @@
     @keyframes pulseGrow {
       0%, 100% {
         transform: scale(1);
-        fill: currentColor;
-        stroke: currentColor;
       }
       50% {
-        transform: scale(1.3);
-        fill: theme('colors.red.500'); /* Tailwind token */
-        stroke: theme('colors.red.500');
+        transform: scale(1.4);
       }
     }
 
