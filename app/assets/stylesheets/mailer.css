@@ -187,6 +187,14 @@ a {
   font-size: 14px !important;
 }
 
+.post-content figcaption {
+  color: #888;
+  font-size: 14px;
+  text-align: center;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 /* -------------------------------------
     BUTTONS
 ------------------------------------- */
