@@ -104,12 +104,3 @@ non_nav_page:
   body: |
     <p>This is a hidden page that won't appear in navigation.</p>
 
-space_post:
-  record: space_post (Post)
-  name: content
-  body: |
-    <p>See how they shine for you.</p>
-
-    <%= ActionText::FixtureSet.attachment("active_storage/blobs", :space_image).sub('></action-text-attachment>', ' caption="A gallery wall"></action-text-attachment>').html_safe %>
-
-    <p>They were all yellow.</p>

@@ -1,4 +1,0 @@
-space_content_attachment:
-  name: attachments
-  record: space_post (ActionText::RichText)
-  blob: space_image

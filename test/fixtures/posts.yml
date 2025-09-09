@@ -56,13 +56,6 @@ joel_titleless:
   slug: d3423ssd4
   <<: *default
 
-space_post:
-  title: "Look at the stars"
-  blog: joel
-  published_at: <%= 3.days.ago %>
-  token: <%= SecureRandom.hex(4) %>
-  slug: look-at-the-stars
-  <<: *default
 
 # Pages (is_page: true)
 about:
