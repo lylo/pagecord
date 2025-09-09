@@ -1,0 +1,6 @@
+space_image:
+  <%= ActiveStorage::FixtureSet.blob(
+    filename: "space.jpg",
+    content_type: "image/jpeg",
+    metadata: { caption: "A gallery wall" }
+  ) %>
