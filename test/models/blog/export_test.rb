@@ -21,10 +21,10 @@ class Blog::ExportTest < ActiveSupport::TestCase
 
     @image_data = "fake image data"
     fake_image = StringIO.new(@image_data)
-    
+
     # Mock the test image URL
     URI.expects(:open).with("http://example.com/test%20image.jpg").returns(fake_image)
-    
+
     # Mock any ActiveStorage URLs from fixtures (they'll have different URLs)
     # Use a regex to match ActiveStorage representation URLs
     URI.stubs(:open).with(regexp_matches(/rails\/active_storage/)).returns(StringIO.new("fixture image data"))
