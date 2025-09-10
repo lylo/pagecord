@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "posts_#{@pagy.page}" do %>
+<%= turbo_frame_tag :posts do %>
   <div class=" flex flex-col" data-turbo="false">
     <% previous_year = params[:last_visible_year]&.to_i %>
     <% @posts.each do |post| %>
@@ -23,7 +23,7 @@
   </div>
 
   <% if @pagy.next %>
-    <%= turbo_frame_tag "posts_#{@pagy.next}", src: blog_home_path(@blog, page: @pagy.next, last_visible_year: previous_year), loading: :lazy %>
+    <%= turbo_frame_tag :posts, src: blog_home_path(@blog, page: @pagy.next, last_visible_year: previous_year), loading: :lazy %>
   <% end %>
 <% end %>
 

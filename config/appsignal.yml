@@ -13,3 +13,4 @@ production:
     - ActionController::RoutingError
     - ActionController::UnknownFormat
     - ActionController::InvalidAuthenticityToken
+    - ActionController::TooManyRequests

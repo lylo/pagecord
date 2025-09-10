@@ -8,6 +8,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:latest
@@ -24,17 +29,22 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
-      - redis
-      - memcached
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      memcached:
+        condition: service_started
     environment:
       DATABASE_HOST: db
+      DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: password
       REDIS_URL: redis://redis:6379/0
       MEMCACHE_SERVERS: memcached:11211
       RAILS_ENV: development
     volumes:
       - .:/rails
+      - bundle_cache:/usr/local/bundle   # gem cache for fast bundle installs
     stdin_open: true
     tty: true
     command: bash -c "rm -f tmp/pids/server.pid && bin/rails db:prepare && bin/rails db:test:prepare && bin/rails server -b 0.0.0.0"
@@ -45,9 +55,11 @@ services:
       RAILS_ENV: development
     volumes:
       - .:/rails
+      - bundle_cache:/usr/local/bundle
     working_dir: /rails
     command: sh -c "bin/rails tailwindcss:build && bin/rails tailwindcss:watch"
     restart: unless-stopped
 
 volumes:
   postgres_data:
+  bundle_cache:

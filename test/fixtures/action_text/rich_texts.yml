@@ -103,3 +103,4 @@ non_nav_page:
   name: content
   body: |
     <p>This is a hidden page that won't appear in navigation.</p>
+
