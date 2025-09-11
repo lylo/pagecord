@@ -1,6 +1,6 @@
 @layer components {
   .lexxy-content {
-    --lexxy-content-margin: 1.25rem;
+    --lexxy-content-margin: 1.5rem;
   }
 
   /* Apply base theme styles to html and body */
@@ -41,6 +41,8 @@
 
     article {
       @apply max-w-none text-[var(--color-text)];
+      --lexxy-color-text-subtle: var(--color-text-light);
+      --lexxy-text-small: 0.875rem;
 
       a {
         @apply text-[var(--color-accent)] underline;
@@ -55,7 +57,7 @@
       }
 
       p {
-        @apply text-[var(--color-text)];
+        @apply text-[var(--color-text)] leading-7;
       }
 
       ul {
@@ -67,7 +69,7 @@
       }
 
       li {
-        @apply pl-1.5 my-2 text-[var(--color-text)];
+        @apply pl-1.5 my-2 text-[var(--color-text)] leading-7;
       }
 
       li::marker {
@@ -100,7 +102,7 @@
       }
 
       h1, h2, h3, h4, h5 {
-        @apply text-[var(--color-text-heading)];
+        @apply text-[var(--color-text-heading)] leading-tight;
       }
 
       h2 {
@@ -147,8 +149,8 @@
         @apply inline-block relative w-full my-0;
       }
 
-      figcaption.attachment__caption {
-        @apply text-center px-4 sm:px-8 mt-0;
+      .attachment__caption {
+        @apply text-center px-4 sm:px-8 mt-0 !text-[var(--color-text-light)] !text-sm;
       }
     }
 
