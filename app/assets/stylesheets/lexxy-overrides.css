@@ -31,7 +31,7 @@ lexxy-editor {
   }
 
   li::marker {
-    color: var(--color-text-muted) !important;
+    color: var(--color-slate-400) !important;
   }
 
   a {
