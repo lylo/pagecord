@@ -68,9 +68,10 @@ lexxy-editor {
     opacity: 0.5;
   }
 
-  where(.attachment--preview) {
-  & .attachment__caption {
-    margin-block-start: 0;
+  :where(.attachment--preview) {
+    & .attachment__caption {
+      margin-block-start: 0;
+    }
   }
 }
 
@@ -107,7 +108,7 @@ lexxy-toolbar {
   .lexxy-editor__toolbar-button[aria-pressed="true"] {
     background-color: var(--color-slate-400);
     color: var(--color-white);
-  } 
+  }
 }
 
 /* ================================== */
@@ -129,7 +130,7 @@ lexxy-toolbar {
 
     strong, b, i, em, a, h1, h2, h3, h4, h5, h6 {
       color: #fff !important;
-    
+
 
     blockquote {
       color: #fff;
@@ -156,7 +157,7 @@ lexxy-toolbar {
   lexxy-toolbar .lexxy-editor__toolbar-button[aria-pressed="true"] {
     background-color: var(--color-slate-600);
     color: var(--color-white);
-  } 
+  }
 
   lexxy-toolbar .lexxy-editor__toolbar-button svg path {
     fill: currentColor;
