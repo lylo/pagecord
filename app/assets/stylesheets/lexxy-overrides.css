@@ -128,14 +128,6 @@ lexxy-toolbar {
     background-color: var(--color-slate-900);
     border-color: var(--color-slate-600);
 
-    strong, b, i, em, a, h1, h2, h3, h4, h5, h6 {
-      color: #fff !important;
-
-
-    blockquote {
-      color: #fff;
-    }
-
     li::marker {
       color: #9ba1aa;
     }
