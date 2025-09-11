@@ -1,4 +1,8 @@
 @layer components {
+  .lexxy-content {
+    --lexxy-content-margin: 1.25rem;
+  }
+
   /* Apply base theme styles to html and body */
   html, body {
     @apply bg-[var(--color-bg)] text-[var(--color-text)];
@@ -35,7 +39,7 @@
       }
     }
 
-    article.prose {
+    article {
       @apply !max-w-none !text-[var(--color-text)];
 
       a {
@@ -43,16 +47,23 @@
       }
 
       a:hover {
-          @apply !text-[var(--color-accent-hover)];
-        }
+        @apply !text-[var(--color-accent-hover)];
+      }
 
       strong {
         @apply !text-[var(--color-text)];
       }
 
-      ol, ul {
-        @apply ml-5;
-        list-style-position: outside !important;
+      ul {
+        @apply list-disc pl-6 ml-6 list-outside;
+      }
+
+      ol {
+        @apply list-decimal pl-6 ml-6 list-outside;
+      }
+
+      li {
+        @apply pl-1.5 my-2;
       }
 
       li::marker {
@@ -60,10 +71,10 @@
       }
 
       blockquote {
-        @apply !my-2 !text-[var(--color-text-muted)] !border-l-[var(--color-border)] !font-normal;
+        @apply !my-5 !text-[var(--color-text-muted)] !border-l-[var(--color-border)] !font-normal;
       }
 
-      code {
+      code:not([data-language]) {
         @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text)] px-1 py-0.5 rounded-sm !font-normal;
       }
 
@@ -71,9 +82,10 @@
         content: none !important;
       }
 
-      pre {
-        @apply !my-2 !bg-[var(--color-bg-sunken)] !text-[var(--color-text)] text-wrap;
-
+      pre,
+      code[data-language] {
+        @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text)]
+               rounded !font-normal whitespace-pre-wrap break-words overflow-x-auto;
         ol, ul {
           @apply !py-0 !my-0;
         }
@@ -87,7 +99,19 @@
         @apply !text-[var(--color-text-heading)];
       }
 
-      h2, h3, h4 {
+      h1 {
+        margin-top: 1.75rem;
+      }
+
+      h2 {
+        @apply !text-2xl;
+      }
+
+      h3 {
+        @apply !text-xl;
+      }
+
+      h4 {
         @apply !text-lg;
       }
 

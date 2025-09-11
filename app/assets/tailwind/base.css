@@ -1,5 +1,6 @@
 /* Global design tokens that don't change between themes */
 :root {
+
   /* Typography */
   --font-sans: InterVariable, sans-serif;
   --font-serif: 'Lora Variable', Georgia, serif;

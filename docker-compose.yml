@@ -42,6 +42,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       MEMCACHE_SERVERS: memcached:11211
       RAILS_ENV: development
+      WEB_CONSOLE_ALLOWED_IPS: 0.0.0.0/0
     volumes:
       - .:/rails
       - bundle_cache:/usr/local/bundle
