@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 604e8e057020d3ae522f674e3fdcaf4dea160d31
+  revision: b927e4d45907a3c2eaecc9a31095337856b71e95
   branch: main
   specs:
     actioncable (8.1.0.beta1)
@@ -237,7 +237,12 @@ GEM
       logger (~> 1.6)
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
-    lexxy (0.1.3.beta)
+    letter_opener_web (3.0.0)
+      actionmailer (>= 6.1)
+      letter_opener (~> 1.9)
+      railties (>= 6.1)
+      rexml
+    lexxy (0.1.6.beta)
       rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
@@ -505,8 +510,8 @@ DEPENDENCIES
   inline_svg
   jbuilder
   kredis (~> 1.7)
-  letter_opener
-  lexxy (~> 0.1.3.beta)
+  letter_opener_web
+  lexxy
   local_time
   mailpace-rails
   mocha
