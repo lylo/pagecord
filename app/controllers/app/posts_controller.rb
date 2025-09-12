@@ -31,6 +31,9 @@ class App::PostsController < AppController
   def edit
     @post = Current.user.blog.posts.find_by!(token: params[:token])
 
+    # Clean up old content before editing
+    clean_old_content(@post)
+
     session[:return_to_page] = params[:page] if params[:page].present?
   end
 
@@ -70,6 +73,24 @@ class App::PostsController < AppController
       status = params[:button] == "save_draft" ? :draft : :published
 
       params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden).merge(status: status)
+    end
+
+    def clean_old_content(post)
+      original_content = post.content.to_s
+
+      # Only clean if content has old div structure but no paragraph tags
+      has_divs = original_content.include?("<div>")
+      has_paragraphs = original_content.include?("<p>")
+      return if !has_divs || has_paragraphs
+
+      # Remove newlines but preserve pre and p blocks, then clean up br tags and empty divs
+      cleaned_content = original_content
+        .gsub(/(<pre[\s\S]*?<\/pre>)|(<p[\s\S]*?<\/p>)|[\r\n]+/, '\1\2')
+        .gsub(/<br\s*\/?>/i, "")
+        .gsub(/<div>\s*<\/div>/i, "")
+
+      # Only modify the in-memory object for display, don't save
+      post.content = cleaned_content if cleaned_content != original_content
     end
 
     def redirect_to_first_page

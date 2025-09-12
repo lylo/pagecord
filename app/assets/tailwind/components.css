@@ -69,6 +69,21 @@
         color: var(--color-text-light) !important;
       }
 
+      /* Give content divs proper spacing using Lexxy margin */
+      .lexxy-content > div:not(.lexxy-content) {
+        margin-bottom: var(--lexxy-content-margin);
+      }
+      
+      .lexxy-content > div:not(.lexxy-content):last-child {
+        margin-bottom: 0;
+      }
+      
+      /* Hide br tags only in direct content divs (old Trix), not in paragraphs */
+      .lexxy-content > div:not(.lexxy-content) br {
+        display: none;
+      }
+
+
       h1.post-title {
         @apply text-3xl mb-8 text-[var(--color-text-heading)] font-extrabold;
       }
