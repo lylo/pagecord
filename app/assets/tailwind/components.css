@@ -14,6 +14,7 @@
       @apply mt-4 mb-8 pb-4 border-b border-[var(--color-border)];
 
       .bio {
+        --lexxy-color-ink: var(--color-text-muted);
         @apply mt-4 text-sm text-[var(--color-text-muted)] break-words;
 
         a {
@@ -41,108 +42,35 @@
 
     article {
       @apply max-w-none text-[var(--color-text)];
-      --lexxy-color-text-subtle: var(--color-text-light);
-      --lexxy-text-small: 0.875rem;
 
-      a {
-        @apply text-[var(--color-accent)] underline;
+      /* Override lexxy variables to use theme colors */
+      .lexxy-content {
+        --lexxy-color-ink: var(--color-text);
+        --lexxy-color-ink-medium: var(--color-text-muted);
+        --lexxy-color-ink-light: var(--color-text-light);
+        --lexxy-color-ink-lightest: var(--color-bg-sunken);
+        --lexxy-color-text: var(--color-text);
+        --lexxy-color-text-subtle: var(--color-text-light);
+        --lexxy-color-link: var(--color-accent);
+        --lexxy-color-accent-dark: var(--color-accent);
+        --lexxy-color-accent-medium: var(--color-accent-hover);
+        --lexxy-color-code-bg: var(--color-bg-sunken);
       }
 
-      a:hover {
-        @apply text-[var(--color-accent-hover)];
+      .lexxy-content a {
+        color: var(--color-accent) !important;
       }
 
-      strong {
-        @apply text-[var(--color-text)] font-bold;
+      .lexxy-content a:hover {
+        color: var(--color-accent-hover) !important;
       }
 
-      p {
-        @apply text-[var(--color-text)] leading-7;
-      }
-
-      ul {
-        @apply list-disc pl-6 ml-6 list-outside text-[var(--color-text)];
-      }
-
-      ol {
-        @apply list-decimal pl-6 ml-6 list-outside text-[var(--color-text)];
-      }
-
-      li {
-        @apply pl-1.5 my-2 text-[var(--color-text)] leading-7;
-      }
-
-      li::marker {
-        @apply text-[var(--color-text-light)];
-      }
-
-      blockquote {
-        @apply my-5 text-[var(--color-text-muted)] border-l-[var(--color-border)] font-normal;
-      }
-
-      code:not([data-language]) {
-        @apply bg-[var(--color-bg-sunken)] text-[var(--color-text)] px-1 py-0.5 rounded-sm font-normal;
-      }
-
-      code::before, code::after {
-        content: none;
-      }
-
-      pre,
-      code[data-language] {
-        @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text)]
-               rounded !font-normal whitespace-pre-wrap break-words overflow-x-auto;
-        ol, ul {
-          @apply py-0 my-0;
-        }
-
-        li {
-          @apply p-0 m-0;
-        }
-      }
-
-      h1, h2, h3, h4, h5 {
-        @apply text-[var(--color-text-heading)] leading-tight;
-      }
-
-      h2 {
-        @apply !text-2xl;
-      }
-
-      h3 {
-        @apply !text-xl;
-      }
-
-      h4 {
-        @apply !text-lg;
+      .lexxy-content li::marker {
+        color: var(--color-text-light) !important;
       }
 
       h1.post-title {
         @apply text-3xl mb-8 text-[var(--color-text-heading)] font-extrabold;
-      }
-
-      img {
-        @apply mt-2 mb-2 rounded-lg mx-auto max-w-full;
-      }
-
-      .attachment-gallery {
-        @apply flex gap-2 justify-center items-start;
-
-        img {
-          @apply mt-0 mb-0 max-w-none left-0 translate-x-0 w-full h-auto object-contain;
-        }
-      }
-
-      .attachment-gallery--2 {
-        img {
-          @apply w-full;
-        }
-      }
-
-      .attachment-gallery--3 {
-        img {
-          @apply w-full;
-        }
       }
 
       figure {
@@ -150,7 +78,7 @@
       }
 
       .attachment__caption {
-        @apply text-center px-4 sm:px-8 mt-0 !text-[var(--color-text-light)] !text-sm;
+        @apply px-4 sm:px-8;
       }
     }
 

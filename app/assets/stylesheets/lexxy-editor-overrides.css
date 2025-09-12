@@ -1,69 +1,13 @@
+
 /* ================================== */
-/* Lexxy Editor Base Styles           */
+/* Lexxy Editor Specific Styles       */
 /* ================================== */
 lexxy-editor:focus-within {
   border: 1px solid var(--color-slate-400);
 }
 
 lexxy-editor {
-  --lexxy-content-margin: 1.5rem;
-  line-height: 1.75;
-
-  ul {
-    list-style-position: outside;
-    list-style-type: disc !important;
-    padding-inline-start: 1.625em;
-    padding-left: 1.5em;
-    margin-left: 1.25em;
-  }
-
-  ol {
-    list-style-position: outside;
-    list-style-type: decimal !important;
-    padding-inline-start: 1.625em;
-    padding-left: 1.25em;
-    margin-left: 1.5em;
-  }
-
-  li {
-    padding-inline-start: 0.375em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-  }
-
-  li::marker {
-    color: var(--color-slate-400) !important;
-  }
-
-  a {
-    text-decoration: underline;
-  }
-
-  h2 {
-    font-weight: 700;
-    font-size: 1.5rem;
-    margin-top: 1.75rem;
-    line-height: 1.25;
-  }
-
-  h3 {
-    font-weight: 700;
-    font-size: 1.25rem;
-    margin-top: 1.5rem;
-    line-height: 1.25;
-  }
-
-  h4 {
-    font-weight: 700;
-    font-size: 1.125rem;
-    margin-top: 1.25rem;
-    line-height: 1.25;
-  }
-
-  blockquote {
-    padding-top: 0.375rem;
-    padding-bottom: 0.375rem;
-  }
+  --lexxy-content-margin: 1.25rem;
 
   /* Placeholder color */
   &[placeholder]::before {
@@ -73,9 +17,8 @@ lexxy-editor {
   }
 
   :where(.attachment--preview) {
-    & .attachment__caption > input {
-      padding: 0;
-      font-size: 0.875rem;
+    & .attachment__caption {
+      margin-block-start: 0;
     }
   }
 }
@@ -120,26 +63,41 @@ lexxy-toolbar {
 /* Dark Mode Overrides                */
 /* ================================== */
 @media (prefers-color-scheme: dark) {
-
   lexxy-editor:focus-within {
     border: 1px solid var(--color-slate-400);
   }
 
   lexxy-toolbar {
-    background: var(--color-slate-800); /* same as buttons */
+    background: var(--color-slate-800);
   }
 
-  :where(.lexxy-content) {
+  .lexxy-content {
     color: var(--color-slate-300);
     background-color: var(--color-slate-900);
     border-color: var(--color-slate-600);
+
+    strong, b, i, em, a, h1, h2, h3, h4, h5, h6 {
+      color: #fff !important;
+    }
+
+    blockquote {
+      color: #fff;
+    }
 
     li::marker {
       color: #9ba1aa;
     }
 
-    h2, h3, h4 {
-      color: white;
+    .attachment__caption,
+    .attachment__caption input {
+      background-color: transparent !important;
+      color: var(--color-slate-400) !important;
+    }
+
+    code, pre,
+    code[data-language] {
+      background-color: var(--color-slate-700) !important;
+      color: var(--color-slate-200) !important;
     }
   }
 

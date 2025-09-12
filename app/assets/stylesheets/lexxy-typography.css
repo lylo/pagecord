@@ -1,0 +1,131 @@
+/* ================================== */
+/* Lexxy Content Typography & Layout  */
+/* ================================== */
+.lexxy-content {
+  line-height: 1.75;
+
+  ul {
+    list-style-position: outside;
+    list-style-type: disc !important;
+    padding-inline-start: 1.625em;
+    padding-left: 1.5em;
+    margin-left: 1.25em;
+  }
+
+  ol {
+    list-style-position: outside;
+    list-style-type: decimal !important;
+    padding-inline-start: 1.625em;
+    padding-left: 1.25em;
+    margin-left: 1.5em;
+  }
+
+  li {
+    padding-inline-start: 0.375em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.75;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  strong, b {
+    font-weight: 600;
+  }
+
+  h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-top: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+    margin-top: 1.25rem;
+  }
+
+  blockquote {
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+  }
+
+  .attachment__caption {
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  code::before, code::after {
+    content: none;
+  }
+
+  pre,
+  code[data-language] {
+    border-radius: 0.5rem;
+    font-weight: normal;
+    white-space: pre-wrap;
+    word-break: break-words;
+    overflow-x: auto;
+
+    ol, ul {
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  img {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+  }
+
+  .attachment-gallery {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: flex-start;
+
+    img {
+      margin-top: 0;
+      margin-bottom: 0;
+      max-width: none;
+      left: 0;
+      transform: translateX(0);
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+
+  .attachment-gallery--2 img,
+  .attachment-gallery--3 img {
+    width: 100%;
+  }
+
+  figure {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    margin: 0;
+  }
+}
