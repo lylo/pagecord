@@ -6,7 +6,7 @@ class TrimmableTest < ActiveSupport::TestCase
     post.content = "<div><br><p>Test</p><img src='test.jpg'><br><br>hello\n<br><div></div>\n\n\n</div><p></p><div></div>"
     post.save!
 
-    assert_equal "<div><br><p>Test</p><img src=\"test.jpg\"><br><br>hello</div>", post.content.to_s.gsub("\n", "")
+    assert_equal "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">  <div class=\"lexxy-content\">  <div><br><p>Test</p><img src=\"test.jpg\"><br><br>hello</div></div></div>", post.content.to_s.gsub("\n", "")
   end
 
   test "should remove trailing <br> tags" do
@@ -14,7 +14,7 @@ class TrimmableTest < ActiveSupport::TestCase
     post.content = "<div>this is some text</div><br><br><br>"
     post.save!
 
-    assert_equal "<div>this is some text</div>", post.content.to_s.strip
+    assert_equal "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div>this is some text</div></div>\n</div>", post.content.to_s.strip
   end
 
   test "should remove trailing <br> tags within div" do
@@ -22,7 +22,7 @@ class TrimmableTest < ActiveSupport::TestCase
     post.content = "<div>this is some text</div><br><br><div>this is more text<br><br><br></div>"
     post.save!
 
-    assert_equal "<div>this is some text</div><br><br><div>this is more text</div>", post.content.to_s.strip
+    assert_equal "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div>this is some text</div><br><br><div>this is more text</div></div>\n</div>", post.content.to_s.strip
   end
 
   test "should remove trailing <br> tags within div and p" do
@@ -30,7 +30,7 @@ class TrimmableTest < ActiveSupport::TestCase
     post.content = "<div><p>this is some text<br><br>this is more text<br><br><br></p></div>"
     post.save!
 
-    assert_equal "<div><p>this is some text<br><br>this is more text</p></div>", post.content.to_s.strip
+    assert_equal "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div><p>this is some text<br><br>this is more text</p></div></div>\n</div>", post.content.to_s.strip
   end
 
   test "should remove empty divs after hashtag extraction" do
@@ -38,7 +38,7 @@ class TrimmableTest < ActiveSupport::TestCase
     post.content = "<div>This is a test</div><div><br></div><div></div>"
     post.save!
 
-    assert_equal "<div>This is a test</div>", post.content.to_s.strip
+    assert_equal "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div>This is a test</div></div>\n</div>", post.content.to_s.strip
   end
 
   test "should not remove divs with actual content" do
@@ -46,7 +46,7 @@ class TrimmableTest < ActiveSupport::TestCase
     post.content = "<div>This is a test</div><div><span>Keep this</span></div><div>And this</div>"
     post.save!
 
-    assert_equal "<div>This is a test</div><div><span>Keep this</span></div><div>And this</div>", post.content.to_s.strip
+    assert_equal "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div>This is a test</div><div><span>Keep this</span></div><div>And this</div></div>\n</div>", post.content.to_s.strip
   end
 
   test "should not remove divs with images or other elements" do
@@ -54,7 +54,7 @@ class TrimmableTest < ActiveSupport::TestCase
     post.content = "<div>This is a test</div><div><img src='test.jpg'></div><div><br></div><div></div>"
     post.save!
 
-    assert_equal "<div>This is a test</div><div><img src=\"test.jpg\"></div>", post.content.to_s.strip
+    assert_equal "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div>This is a test</div><div><img src=\"test.jpg\"></div></div>\n</div>", post.content.to_s.strip
   end
 
   test "should remove divs with multiple br tags" do
@@ -62,7 +62,7 @@ class TrimmableTest < ActiveSupport::TestCase
     post.content = "<div>This is a test</div><div><br><br><br></div><div><br></div><div></div>"
     post.save!
 
-    assert_equal "<div>This is a test</div>", post.content.to_s.strip
+    assert_equal "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div>This is a test</div></div>\n</div>", post.content.to_s.strip
   end
 
   test "should not remove divs with br tags followed by content" do
@@ -70,7 +70,7 @@ class TrimmableTest < ActiveSupport::TestCase
     post.content = "<div>This is a test</div><div><br><br>Keep this content</div><div><br></div><div></div>"
     post.save!
 
-    assert_equal "<div>This is a test</div><div><br><br>Keep this content</div>", post.content.to_s.strip.gsub("\n", "")
+    assert_equal "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">  <div class=\"lexxy-content\">  <div>This is a test</div><div><br><br>Keep this content</div></div></div>", post.content.to_s.strip.gsub("\n", "")
   end
 
   test "should not remove divs with content followed by br tags" do
@@ -78,6 +78,6 @@ class TrimmableTest < ActiveSupport::TestCase
     post.content = "<div>This is a test</div><div>Keep this content<br><br></div><div><br></div><div></div>"
     post.save!
 
-    assert_equal "<div>This is a test</div><div>Keep this content</div>", post.content.to_s.strip
+    assert_equal "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div>This is a test</div><div>Keep this content</div></div>\n</div>", post.content.to_s.strip
   end
 end

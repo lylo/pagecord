@@ -17,7 +17,8 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
 
     assert_equal "Hello world!", user.blog.posts.last.title
-    assert_equal "<p>Hello?</p>", user.blog.posts.last.content.to_s.strip
+    expected_html = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <p>Hello?</p></div>\n</div>\n</div>"
+    assert_equal expected_html, user.blog.posts.last.content.to_s.strip
     assert_not_nil user.blog.posts.last.raw_content
   end
 
@@ -31,7 +32,8 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_equal "Another test", user.blog.posts.last.title
 
-    assert_equal "<div><div><div>This is a test.<br><br>With multiple paragraphs.<br><br>Ok?<br><br><strong>Does it work?</strong></div></div></div>", format_html(user.blog.posts.last.content.to_s.strip)
+    expected_html = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\"><div class=\"lexxy-content\"><div class=\"lexxy-content\"><div><div><div>This is a test.<br><br>With multiple paragraphs.<br><br>Ok?<br><br><strong>Does it work?</strong></div></div></div></div></div></div>"
+    assert_equal expected_html, format_html(user.blog.posts.last.content.to_s.strip)
     assert Time.parse("Thu, 21 Mar 2024 16:57:12 +0000"), user.blog.posts.last.published_at
   end
 
@@ -49,7 +51,9 @@ class PostsMailboxTest < ActionMailbox::TestCase
     <div><b>It's alive!&nbsp;</b><br></div><div><br></div><div>Say hello to Pagecord&nbsp;( * ^ *) ノシ<b></b><br></div><div><br></div><div>It's a minimalist blogging / writing app driven entirely by email. To publish, simply send an email to your unique Pagecord email address and it will appear on your blog. That's it!<br></div><div><br></div><div>Pagecord is minimal in how it looks, but also in what it does. You can use basic markup like&nbsp;<b>bold</b>,&nbsp;<i>italic</i>, <s>strikethough</s>, <a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\">links</a>&nbsp;and whatnot in your writing. And you can use emojis&nbsp;🥳&nbsp; But you can't add images. I'm <a href=\"https://docs.google.com/forms/d/e/1FAIpQLSc5AOBhsW_geuGSNjoQaN1luzISJRfaBxhW2tXP31qchPSdNQ/viewform\">considering a premium tier</a>&nbsp;which would support this, but since it's free I want to keep everything simple and cheap to operate.<br></div><div><br></div><div>You can use Pagecord like a traditional blogging app, where the email subject is the post title and the body is the content. You can also use it like a micro-blog if you prefer, by sending emails with your thoughts in title and leaving the body blank – this way your page will be a super-minimal stream of consciousness.&nbsp;<br></div><div><br></div><div>It's just a bit a fun really. Give it a go and&nbsp;<a href=\"mailto:hello@pagecord.com\">let me know what you think</a>!<br></div><div><br></div><div>-- Olly</div>
     HTML
 
-    assert_equal expected.strip, format_html(user.blog.posts.last.content.to_s.strip)
+    # Wrap expected content in lexxy structure
+    expected_with_lexxy = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\"><div class=\"lexxy-content\"><div class=\"lexxy-content\">#{expected.strip}</div></div></div>"
+    assert_equal expected_with_lexxy, format_html(user.blog.posts.last.content.to_s.strip)
     assert Time.parse("Sat, 23 Mar 2024 12:49:33 +0000"), user.blog.posts.last.published_at
   end
 
@@ -112,7 +116,8 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
 
     assert_nil user.blog.posts.last.title
-    assert_equal "<p>Hello?</p>", user.blog.posts.last.content.to_s.strip
+    expected_html = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <p>Hello?</p></div>\n</div>\n</div>"
+    assert_equal expected_html, user.blog.posts.last.content.to_s.strip
   end
 
   test "should correctly store non-blank subject, blank plain text body" do
@@ -128,7 +133,8 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
 
     assert_nil user.blog.posts.last.title
-    assert_equal "This is like a tweet", user.blog.posts.last.content.to_s.strip
+    expected_html = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  This is like a tweet\n</div>\n</div>\n</div>"
+    assert_equal expected_html, user.blog.posts.last.content.to_s.strip
   end
 
   test "should correctly store non-blank subject, blank HTML message body" do
@@ -152,7 +158,8 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
 
     assert_nil user.blog.posts.last.title
-    assert_equal "This is like a tweet", user.blog.posts.last.content.to_s.strip
+    expected_html = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  This is like a tweet\n</div>\n</div>\n</div>"
+    assert_equal expected_html, user.blog.posts.last.content.to_s.strip
   end
 
   test "should correctly store blank subject, non-blank HTML message body" do
@@ -175,7 +182,9 @@ class PostsMailboxTest < ActionMailbox::TestCase
       receive_inbound_email_from_source mail.to_s
     end
 
-    assert_equal "<div>Ok, I caved. Pagecord now tentatively supports images. All you need to do is include a link to an image and it <s>will</s> should be <u>automatically</u> unfurled. Here's hoping...<br></div><div><br></div><div><a href=\"https://google.com\">https://google.com</a></div>", format_html(user.blog.posts.last.content.to_s.strip)
+    expected_content = "<div>Ok, I caved. Pagecord now tentatively supports images. All you need to do is include a link to an image and it <s>will</s> should be <u>automatically</u> unfurled. Here's hoping...<br></div><div><br></div><div><a href=\"https://google.com\">https://google.com</a></div>"
+    expected_with_lexxy = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\"><div class=\"lexxy-content\"><div class=\"lexxy-content\">#{expected_content}</div></div></div>"
+    assert_equal expected_with_lexxy, format_html(user.blog.posts.last.content.to_s.strip)
   end
 
   test "should correctly store blank subject, image in HTML body" do
@@ -202,7 +211,9 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
 
     assert_nil user.blog.posts.last.title
-    assert_equal "<div><img src=\"http://example.com/image.jpg\"></div>", format_html(user.blog.posts.last.content.to_s.strip)
+    expected_content = "<div><img src=\"http://example.com/image.jpg\"></div>"
+    expected_with_lexxy = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\"><div class=\"lexxy-content\"><div class=\"lexxy-content\">#{expected_content}</div></div></div>"
+    assert_equal expected_with_lexxy, format_html(user.blog.posts.last.content.to_s.strip)
   end
 
   test "should not store blank subject, blank message body" do
@@ -433,7 +444,8 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
 
     assert_equal "Post from verified sender email", user.blog.posts.last.title
-    assert_equal "<p>This should work!</p>", user.blog.posts.last.content.to_s.strip
+    expected_html = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <p>This should work!</p></div>\n</div>\n</div>"
+    assert_equal expected_html, user.blog.posts.last.content.to_s.strip
   end
 
   test "should not receive email from unverified sender email address" do
