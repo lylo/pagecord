@@ -2,29 +2,23 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   connect() {
-    // Initialize and enhance the Trix editor
-    this.element.addEventListener("trix-initialize", (event) => {
+    this.element.addEventListener("lexxy:initialize", (event) => {
       const editor = event.target
-      const subscribed = editor.dataset.subscribed === "true"
+      const attachments = editor.dataset.attachments === "true"
 
-      if (!subscribed) {
-        editor.addEventListener("trix-file-accept", (e) => {
+      if (!attachments) {
+        editor.addEventListener("lexxy:file-accept", (e) => {
           e.preventDefault()
           alert("Attachments are only available for paying customers")
         })
-
-        editor.addEventListener("trix-attachment-add", (e) => {
-          e.attachment.remove()
-          alert("Attachments are only available for paying customers")
-        })
       } else {
-        editor.addEventListener("trix-file-accept", (e) => {
-          const exceedsMaxFileSize = e.file.size > (1024 * 1024 * 20) // 20MB
+        editor.addEventListener("lexxy:file-accept", (e) => {
+          const exceedsMaxFileSize = e.detail.file.size > (1024 * 1024 * 20) // 20MB
           const acceptedFileType = [
             "image/jpeg", "image/jpg", "image/png",
             "image/gif", "image/webp", "video/mp4",
             "video/quicktime",
-          ].includes(e.file.type)
+          ].includes(e.detail.file.type)
 
           if (exceedsMaxFileSize || !acceptedFileType) {
             e.preventDefault()

@@ -56,14 +56,6 @@
   }
 }
 
-@layer base {
-  trix-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    @apply bg-white dark:bg-slate-900;
-  }
-}
 
 hr {
   @apply border-gray-300 dark:border-gray-600;

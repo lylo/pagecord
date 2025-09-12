@@ -31,9 +31,10 @@ class App::PostsController < AppController
   def edit
     @post = Current.user.blog.posts.find_by!(token: params[:token])
 
-    session[:return_to_page] = params[:page] if params[:page].present?
+    # Clean up old content before editing
+    clean_old_content(@post)
 
-    prepare_content_for_trix
+    session[:return_to_page] = params[:page] if params[:page].present?
   end
 
   def create
@@ -74,17 +75,22 @@ class App::PostsController < AppController
       params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden).merge(status: status)
     end
 
-    # HTML from inbound email doesn't often play nicely with Trix
-    # This method performs some tweaks to try and help.
-    def prepare_content_for_trix
-      # Remove all newlines except for within <pre> blocks
-      @post.content.to_s.gsub(/(<pre[\s\S]*?<\/pre>)|[\r\n]+/, '\1')
+    def clean_old_content(post)
+      original_content = post.content.to_s
 
-      # remove whitespace between tags (Trix seems to add a <br> tag in some cases)
-      @post.content = @post.content.to_s.gsub(/>\s+</, "><")
+      # Only clean if content has old div structure but no paragraph tags
+      has_divs = original_content.include?("<div>")
+      has_paragraphs = original_content.include?("<p>")
+      return if !has_divs || has_paragraphs
 
-      # remove paragraph tags
-      @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
+      # Remove newlines but preserve pre and p blocks, then clean up br tags and empty divs
+      cleaned_content = original_content
+        .gsub(/(<pre[\s\S]*?<\/pre>)|(<p[\s\S]*?<\/p>)|[\r\n]+/, '\1\2')
+        .gsub(/<br\s*\/?>/i, "")
+        .gsub(/<div>\s*<\/div>/i, "")
+
+      # Only modify the in-memory object for display, don't save
+      post.content = cleaned_content if cleaned_content != original_content
     end
 
     def redirect_to_first_page

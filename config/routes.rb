@@ -66,6 +66,8 @@ Rails.application.routes.draw do
     mount PgHero::Engine, at: "/admin/pghero"
   end
 
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+
   get "/404", to: "errors#not_found"
   get "/422", to: "errors#unacceptable"
   get "/500", to: "errors#internal_error"
