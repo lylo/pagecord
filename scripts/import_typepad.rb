@@ -279,9 +279,8 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
       end
 
       # Only check by title if no slug match and no slug was generated
-      if !existing_post && slug.blank? && title.present?
-        existing_post = post_exists?(blog, title)
-      end
+      existing_post = blog.all_posts.find_by(slug: slug) ||
+                blog.all_posts.find_by(title: title, published_at: published_at)
 
       if existing_post
         display_title = title.presence || "[Untitled]"
