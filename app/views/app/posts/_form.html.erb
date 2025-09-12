@@ -103,7 +103,8 @@
       class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @post.errors[:content].any?}",
       spellcheck: true,
       data: {
-        subscribed: Current.user.subscribed?,
+        controller: "lexxy",
+        attachments: Current.user.subscribed?,
         autosave_target: "content"
       } %>
     <% if @post.errors[:content].any? %>

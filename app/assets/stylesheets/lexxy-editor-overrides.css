@@ -145,7 +145,7 @@ lexxy-toolbar {
   button[name="upload"],
   button[name="unordered-list"],
   button[name="ordered-list"],
-  button[name="link"] {
+  button[name="heading"] {
     display: none;
   }
 }
