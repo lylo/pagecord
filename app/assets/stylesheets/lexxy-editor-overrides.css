@@ -21,6 +21,13 @@ lexxy-editor {
       margin-block-start: 0;
     }
   }
+
+  /* Caption styling for editor */
+  .attachment__caption input {
+    font-size: 0.875rem !important;
+    padding: 0;
+    color: var(--color-slate-500) !important;
+  }
 }
 
 /* ================================== */
