@@ -42,8 +42,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_posts_url
     assert @user.blog.posts.last.published?
     assert_equal "New Post", @user.blog.posts.last.title
-    expected_html = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  New content\n</div>\n</div>\n</div>"
-    assert_equal expected_html, @user.blog.posts.last.content.to_s.strip
+    assert_equal "New content", @user.blog.posts.last.content.to_s.strip
   end
 
   test "should create hidden post" do
@@ -129,8 +128,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_posts_url
     assert_equal "New Title", @user.blog.posts.first.title
-    expected_html = "<div data-controller=\"syntax-highlight\" class=\"lexxy-content\">\n  <div class=\"lexxy-content\">\n  New content\n</div>\n</div>"
-    assert_equal expected_html, @user.blog.posts.first.content.to_s.strip
+    assert_equal "New content", @user.blog.posts.first.content.to_s.strip
     assert_equal 1.month.ago.to_date, @user.blog.posts.first.published_at
     assert_equal "https://example.com", @user.blog.posts.first.canonical_url
   end
