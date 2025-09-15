@@ -1,4 +1,20 @@
 module SubscriptionsHelper
+  def paddle_environment
+    Rails.env.development? ? "sandbox" : "production"
+  end
+
+  def paddle_initialize_data
+    data = {
+      token: Rails.env.development? ? "test_945b246ef8df8bfe446632bf70b" : "live_8d79ebbaac5c745a173f00967fb"
+    }
+
+    if Current.user.subscribed? && !Current.user.subscription.complimentary?
+      data["pwCustomer"] = { id: "#{Current.user.subscription.paddle_customer_id}" }
+    end
+
+    data.to_json.html_safe
+  end
+
   def paddle_data_items
     items = { priceId: annual_price_id, quantity: 1 }
 
