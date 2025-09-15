@@ -1,0 +1,72 @@
+/* Lightbox Component */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+  cursor: zoom-out;
+}
+
+.lightbox.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox__close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 51;
+}
+
+.lightbox__content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 100vh;
+  width: 100vw;
+  transform: translate(-50%, -50%);
+  padding: 2rem;
+}
+
+.lightbox__content img {
+  width: auto;
+  max-height: 100%;
+  max-width: 100%;
+  transform: scale(0.95);
+  transition: transform 0.3s ease-out;
+}
+
+.lightbox.show .lightbox__content img {
+  transform: scale(1);
+}
+
+/* Button styles inspired by HEY */
+.btn--icon-round {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+.btn--icon-round:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
