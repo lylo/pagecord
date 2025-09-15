@@ -33,10 +33,12 @@ export default class extends Controller {
     this.lightboxImage.alt = img.alt || ''
 
     // Show the modal with smooth animation - prevent scrolling on mobile too
+    // Save current scroll position
+    this.scrollY = window.scrollY
     document.body.style.overflow = 'hidden'
     document.body.style.position = 'fixed'
+    document.body.style.top = `-${this.scrollY}px`
     document.body.style.width = '100%'
-    document.body.style.height = '100%'
 
     // Use requestAnimationFrame to ensure the modal is rendered before adding show class
     requestAnimationFrame(() => {
@@ -54,10 +56,12 @@ export default class extends Controller {
 
     if (this.modal) {
       this.modal.classList.remove('show')
+      // Restore scroll position
       document.body.style.overflow = ''
       document.body.style.position = ''
+      document.body.style.top = ''
       document.body.style.width = ''
-      document.body.style.height = ''
+      window.scrollTo(0, this.scrollY || 0)
     }
 
     // Remove keyboard listener
