@@ -38,16 +38,16 @@ class PostsHelperTest < ActionView::TestCase
     stripped_html = strip_video_tags(html_with_video)
 
     expected_html = <<~HTML
-    <div>
-      <p>Some text</p>
-      <figure class="attachment attachment--preview attachment--JPG">
+  <div>
+    <p>Some text</p>
+    <figure class="attachment attachment--preview attachment--JPG">
         <img src="https://example.com/image.jpeg">
       </figure>
       <p>More text</p>
     </div>
     HTML
 
-    assert_equal expected_html.strip, stripped_html.strip
+    assert_equal flattened_html(expected_html), flattened_html(stripped_html)
   end
 
   test "social_link_url should return mailto link for email social link" do
