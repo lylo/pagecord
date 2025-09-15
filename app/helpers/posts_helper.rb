@@ -5,8 +5,8 @@ module PostsHelper
     # Regular expression to match the action-text-attachment wrapper
     attachment_regex = /<action-text-attachment[^>]*>(.*?)<\/action-text-attachment>/m
 
-    # Replace the ActionText attachment wrapper with just the image tag
-    html.gsub(attachment_regex) { |match| $1.gsub(/<figure[^>]*>/, "").gsub(/<\/figure>/, "") }
+    # Replace the ActionText attachment wrapper with its inner HTML (preserving <figure>)
+    html.gsub(attachment_regex) { |match| $1 }
   end
 
 
