@@ -32,8 +32,11 @@ export default class extends Controller {
     this.lightboxImage.src = img.src
     this.lightboxImage.alt = img.alt || ''
 
-    // Show the modal with smooth animation
+    // Show the modal with smooth animation - prevent scrolling on mobile too
     document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.width = '100%'
+    document.body.style.height = '100%'
 
     // Use requestAnimationFrame to ensure the modal is rendered before adding show class
     requestAnimationFrame(() => {
@@ -52,6 +55,9 @@ export default class extends Controller {
     if (this.modal) {
       this.modal.classList.remove('show')
       document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.width = ''
+      document.body.style.height = ''
     }
 
     // Remove keyboard listener
@@ -66,8 +72,8 @@ export default class extends Controller {
   }
 
   handleBackdropClick(event) {
-    // Close when clicking on the backdrop or content wrapper
-    if (event.target === this.modal || event.target === this.contentWrapper) {
+    // Close on any click within the lightbox (except the close button)
+    if (event.target !== this.closeButton) {
       this.closeLightbox()
     }
   }
@@ -78,7 +84,6 @@ export default class extends Controller {
     modal.className = 'lightbox'
     modal.addEventListener('click', this.handleBackdropClick.bind(this))
 
-    // Close button using HEY-inspired styling
     const closeButton = document.createElement('button')
     closeButton.className = 'lightbox__close btn--icon-round'
     closeButton.innerHTML = `
