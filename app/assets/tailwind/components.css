@@ -124,7 +124,7 @@
       }
 
       figcaption.attachment__caption {
-        @apply text-center px-4 sm:px-8 !mt-0;
+        @apply text-center px-4 sm:px-8 !mt-2;
       }
     }
 
