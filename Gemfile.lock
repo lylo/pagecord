@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 604e8e057020d3ae522f674e3fdcaf4dea160d31
+  revision: c60683d1868ad1f6667b2feb3cf5c9b485fa356c
   branch: main
   specs:
     actioncable (8.1.0.beta1)
@@ -279,15 +279,15 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.4)
-    nokogiri (1.18.9-aarch64-linux-gnu)
+    nokogiri (1.18.10-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.18.9-arm-linux-gnu)
+    nokogiri (1.18.10-arm-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.18.9-arm64-darwin)
+    nokogiri (1.18.10-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.9-x86_64-darwin)
+    nokogiri (1.18.10-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.9-x86_64-linux-gnu)
+    nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     ostruct (0.6.3)
     pagy (9.4.0)
