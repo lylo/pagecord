@@ -1,148 +1,61 @@
-<div class="space-y-6">
-  <!-- View Type Navigation -->
-  <div class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 space-y-3 md:space-y-0">
-    <!-- Mobile: Stacked Layout, Desktop: Side by Side -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
-      <!-- View Type Buttons -->
-      <div class="flex space-x-2 justify-center md:justify-start">
-        <%
-          # Context-aware dates for view switching
-          context_day = case @view_type
-            when "month"
-              # If viewing a month, use today if we're in current month, otherwise use current day number of that month
-              if @date.beginning_of_month == Date.current.beginning_of_month
-                Date.current
-              else
-                # Use current day number, but clamp to the last day of the viewed month if needed
-                target_day = Date.current.day
-                last_day_of_month = @date.end_of_month.day
-                actual_day = [target_day, last_day_of_month].min
-                Date.new(@date.year, @date.month, actual_day)
-              end
-            when "year"
-              # If viewing a year, use today if we're in current year, otherwise use first day of that year
-              if @date.beginning_of_year == Date.current.beginning_of_year
-                Date.current
-              else
-                @date # First day of the viewed year
-              end
-            else
-              @date # If already day view, keep current day
-          end
+<!-- Container for analytics content and overlay -->
+<div class="relative">
+  <!-- Analytics Content (shown for everyone, blurred for non-premium) -->
+  <div class="<%= 'pointer-events-none select-none opacity-30' unless Current.user.subscribed? %> space-y-6">
+    <!-- View Type Navigation -->
+    <div class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 space-y-3 md:space-y-0">
+      <!-- Mobile: Stacked Layout, Desktop: Side by Side -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
+        <!-- View Type Buttons -->
+        <div class="flex space-x-2 justify-center md:justify-start">
+          <%
+            # Context-aware dates for view switching (simplified for demo)
+            context_day = @date
+            context_month = @date.beginning_of_month
+            context_year = @date.beginning_of_year
+          %>
 
-          context_month = case @view_type
-            when "day" then @date.beginning_of_month    # If viewing a day, use its month
-            when "year"
-              # If viewing a year, use current month if we're in current year, otherwise use current month number of that year
-              if @date.beginning_of_year == Date.current.beginning_of_year
-                Date.current.beginning_of_month
-              else
-                # Use current month number in the viewed year
-                Date.new(@date.year, Date.current.month, 1)
-              end
-            else @date # If already month view, keep current month
-          end
-
-          context_year = case @view_type
-            when "day" then @date.beginning_of_year     # If viewing a day, use its year
-            when "month" then @date.beginning_of_year   # If viewing a month, use its year
-            else @date                                  # If already year view, keep current year
-          end
-        %>
-
-        <%= link_to "Day", app_analytics_path(view_type: "day", date: context_day.strftime("%Y-%m-%d")),
-            class: "px-3 py-1 rounded text-sm font-medium #{'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' if @view_type == 'day'} #{'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' if @view_type != 'day'}" %>
-        <%= link_to "Month", app_analytics_path(view_type: "month", date: context_month.strftime("%Y-%m")),
-            class: "px-3 py-1 rounded text-sm font-medium #{'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' if @view_type == 'month'} #{'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' if @view_type != 'month'}" %>
-        <%= link_to "Year", app_analytics_path(view_type: "year", date: context_year.strftime("%Y")),
-            class: "px-3 py-1 rounded text-sm font-medium #{'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' if @view_type == 'year'} #{'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700' if @view_type != 'year'}" %>
-      </div>
-
-      <!-- Date Navigation -->
-      <div class="flex items-center justify-between md:justify-end">
-        <!-- Today button - left aligned on mobile -->
-        <%
-          is_current_period = case @view_type
-            when "day" then @date.to_date == Date.current
-            when "month" then @date.beginning_of_month == Date.current.beginning_of_month
-            when "year" then @date.beginning_of_year == Date.current.beginning_of_year
-          end
-        %>
-
-        <div class="md:hidden"> <!-- Mobile: show today button on left -->
-          <% unless is_current_period %>
-            <%
-              today_date = case @view_type
-                when "day" then Date.current.strftime("%Y-%m-%d")
-                when "month" then Date.current.strftime("%Y-%m")
-                when "year" then Date.current.strftime("%Y")
-              end
-            %>
-            <%= link_to app_analytics_path(view_type: @view_type, date: today_date),
-                class: "px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800 transition-colors",
-                title: "Jump to current #{@view_type}" do %>
-              Today
-            <% end %>
-          <% end %>
+          <span class="px-3 py-1 rounded text-sm font-medium <%= @view_type == 'day' ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' : 'text-slate-600 dark:text-slate-400' %>">Day</span>
+          <span class="px-3 py-1 rounded text-sm font-medium <%= @view_type == 'month' ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' : 'text-slate-600 dark:text-slate-400' %>">Month</span>
+          <span class="px-3 py-1 rounded text-sm font-medium <%= @view_type == 'year' ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' : 'text-slate-600 dark:text-slate-400' %>">Year</span>
         </div>
 
-        <!-- Date navigation arrows and display -->
-        <div class="flex items-center space-x-2">
-          <!-- Desktop today button (before arrows) -->
-          <div class="hidden md:block">
-            <% if is_current_period %>
-              <div class="w-[50px]"></div> <!-- Spacer to maintain layout -->
-            <% else %>
-              <%
-                today_date = case @view_type
-                  when "day" then Date.current.strftime("%Y-%m-%d")
-                  when "month" then Date.current.strftime("%Y-%m")
-                  when "year" then Date.current.strftime("%Y")
-                end
-              %>
-              <%= link_to app_analytics_path(view_type: @view_type, date: today_date),
-                  class: "px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800 transition-colors",
-                  title: "Jump to current #{@view_type}" do %>
-                Today
-              <% end %>
-            <% end %>
-          </div>
+        <!-- Date Navigation -->
+        <div class="flex items-center justify-between md:justify-end">
+          <!-- Date navigation arrows and display -->
+          <div class="flex items-center space-x-2">
+            <div class="p-1 rounded text-slate-600 dark:text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </div>
 
-          <%= link_to nav_path_for_date(@view_type, previous_date(@date, @view_type)),
-              class: "p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400" do %>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-          <% end %>
+            <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[120px] text-center">
+              <%= @date.strftime("%B %Y") %>
+            </span>
 
-          <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[120px] text-center">
-            <%= format_date_for_view_type(@date, @view_type) %>
-          </span>
-
-          <% unless next_date(@date, @view_type) > Date.current %>
-            <%= link_to nav_path_for_date(@view_type, next_date(@date, @view_type)),
-                class: "p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400" do %>
+            <div class="p-1 rounded text-slate-600 dark:text-slate-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
-            <% end %>
-          <% else %>
-            <div class="p-1 w-6 h-6"></div>
-          <% end %>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Metrics Card -->
+    <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+      <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Page Views</h3>
+      <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">
+        <%= format_number(@analytics_data[:unique_page_views]) %>
+      </p>
+    </div>
+
+    <%= render 'chart' %>
+
+    <%= render 'leaderboard' %>
   </div>
 
-  <!-- Metrics Card -->
-  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-    <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Page Views</h3>
-    <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">
-      <%= format_number(@analytics_data[:unique_page_views]) %>
-    </p>
-  </div>
-
-  <%= render 'chart' %>
-
-  <%= render 'leaderboard' %>
+  <%= render 'premium_overlay' unless Current.user.subscribed? %>
 </div>

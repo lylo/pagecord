@@ -6,11 +6,9 @@
     <li>
       <%= link_to "Pages", app_pages_path, class: nav_class_for("pages") %>
     </li>
-    <% if current_features.enabled?(:analytics) %>
     <li>
       <%= link_to "Analytics", app_analytics_path, class: nav_class_for("analytics") %>
-    </li>
-    <% end %> 
+    </li> 
     <li>
       <%= link_to "Settings", app_settings_path, class: nav_class_for("settings") %>
     </li>

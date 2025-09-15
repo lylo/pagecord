@@ -4,7 +4,7 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
   setup do
-    @user = users(:vivian)
+    @user = users(:joel)
     login_as @user
   end
 
@@ -135,5 +135,15 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
       utc_date = Time.now.utc.to_date
       assert_equal utc_date, assigned_date
     end
+  end
+
+  test "non-subscriber gets demo data and sees overlay" do
+    user = users(:vivian)
+    login_as user
+
+    get app_analytics_path
+    assert_response :success
+
+    assert_select "h2", text: /Go Premium to unlock your blog analytics!/i, count: 1
   end
 end
