@@ -22,7 +22,7 @@ class DigestReplyMailerTest < ActionMailer::TestCase
       email.deliver_now
     end
 
-    assert_equal [blog_owner.email], email.to
+    assert_equal [ blog_owner.email ], email.to
     assert_equal "subscriber@example.com", email.from.first
     assert_equal "Re: #{digest.subject}", email.subject
     assert_equal "I really enjoyed your latest posts about Rails.", email.body.to_s
