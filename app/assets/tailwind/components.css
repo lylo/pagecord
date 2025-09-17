@@ -1,5 +1,5 @@
 @layer components {
-  .lexxy-content {
+  {
     --lexxy-content-margin: 1.5rem;
   }
 
@@ -54,29 +54,29 @@
       --lexxy-color-accent-medium: var(--color-accent-hover);
       --lexxy-color-code-bg: var(--color-bg-sunken);
 
-      .lexxy-content a {
+      a {
         color: var(--color-accent) !important;
       }
 
-      .lexxy-content a:hover {
+      a:hover {
         color: var(--color-accent-hover) !important;
       }
 
-      .lexxy-content li::marker {
+      li::marker {
         color: var(--color-text-light) !important;
       }
 
       /* Give content divs proper spacing using Lexxy margin */
-      .lexxy-content > div:not(.lexxy-content) {
+      /* > div:not(.lexxy-content) {
         margin-bottom: var(--lexxy-content-margin);
-      }
+      } */
 
-      /* .lexxy-content > div:not(.lexxy-content):last-child {
+      /* > div:not(.lexxy-content):last-child {
         margin-bottom: 0;
       } */
 
       /* Hide br tags only in direct content divs (old Trix), not in paragraphs */
-      /* .lexxy-content > div:not(.lexxy-content) br {
+      /* > div:not(.lexxy-content) br {
         display: none;
       } */
 
