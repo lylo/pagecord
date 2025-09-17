@@ -56,7 +56,7 @@
       </div>
     <% end %>
 
-    <%= link_to app_settings_subscriptions_path do %>
+    <%= link_to app_settings_subscriptions_path, data: { turbo: false } do %>
       <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
         <div class="mb-4">
           <span class="text-4xl">💳</span>
