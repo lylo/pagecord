@@ -10,9 +10,9 @@ class DigestReplyMailer < ApplicationMailer
     original_sender = @original_mail.from.first
     sender_name = if @original_mail[:from].display_names.first.present?
                     @original_mail[:from].display_names.first
-                  else
+    else
                     original_sender
-                  end
+    end
 
     mail(
       to: @blog.user.email,
