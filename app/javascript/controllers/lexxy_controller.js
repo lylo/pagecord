@@ -13,11 +13,12 @@ export default class extends Controller {
         })
       } else {
         editor.addEventListener("lexxy:file-accept", (e) => {
+          console.log("File accepted:", e.detail.file)
           const exceedsMaxFileSize = e.detail.file.size > (1024 * 1024 * 20) // 20MB
           const acceptedFileType = [
             "image/jpeg", "image/jpg", "image/png",
             "image/gif", "image/webp", "video/mp4",
-            "video/quicktime",
+            "video/quicktime", "audio/mpeg", "audio/wav"
           ].includes(e.detail.file.type)
 
           if (exceedsMaxFileSize || !acceptedFileType) {
