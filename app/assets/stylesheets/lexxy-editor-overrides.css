@@ -34,6 +34,10 @@ lexxy-editor {
 /* Lexxy Toolbar Base Styles          */
 /* ================================== */
 lexxy-toolbar {
+  position: sticky !important;
+  top: 0;
+  z-index: 10;
+
   background: var(--color-slate-100); /* same as buttons */
   border-top-left-radius: calc(var(--lexxy-radius) + var(--lexxy-toolbar-gap));
   border-top-right-radius: calc(var(--lexxy-radius) + var(--lexxy-toolbar-gap));
