@@ -6,10 +6,9 @@ class DigestReplyMailer < ApplicationMailer
 
     return unless @original_mail.from&.first
 
-    # Forward the original email verbatim with "Re:" to the digest subject
+    # Forward the original email with default sender and original sender as reply-to
     mail(
       to: @blog.user.email,
-      from: @original_mail.from.first,
       reply_to: @original_mail.from.first,
       subject: "Re: #{@digest.subject}",
       body: @original_mail.body.to_s,
