@@ -26,11 +26,13 @@ class SocialLinksTest < ApplicationSystemTestCase
 
     # Set it to GitHub with a URL
     select "GitHub", from: new_platform_select[:id]
+    sleep 0.1  # Allow JavaScript to process platform change
     github_url = "https://github.com/example"
     fill_in new_url_field[:id], with: github_url
 
     # Now change to Bluesky and verify URL is cleared
     select "YouTube", from: new_platform_select[:id]
+    sleep 0.1  # Allow JavaScript to process platform change
     assert_equal "", new_url_field.value
 
     # Add a YouTube URL
@@ -39,21 +41,29 @@ class SocialLinksTest < ApplicationSystemTestCase
 
     # Change to RSS and verify it's set to RSS feed
     select "RSS", from: new_platform_select[:id]
+    sleep 0.1  # Allow JavaScript to process platform change
     assert_match "/feed.xml", new_url_field.value
 
     # Change back to GitHub and verify original GitHub URL is restored
     select "GitHub", from: new_platform_select[:id]
+    sleep 0.1  # Allow JavaScript to process platform change
     assert_equal github_url, new_url_field.value
 
     # Change back to YouTube and verify the YouTube URL is restored
     select "YouTube", from: new_platform_select[:id]
+    sleep 0.1  # Allow JavaScript to process platform change
     assert_equal youtube_url, new_url_field.value
 
     # Submit the form
     click_on "Update"
+    sleep 1  # Allow form submission to complete
 
-    # Verify we're back at the settings page
-    assert page.has_content?("Appearance settings updated", wait: 2)
+    # Verify we're redirected to the main settings page with flash message
+    assert_current_path app_settings_path
+
+    # Wait for flash message to become visible (starts hidden, shown via JavaScript)
+    assert page.has_selector?("[data-controller='fade']:not(.hidden)", wait: 3)
+    assert page.has_content?("Appearance settings updated", wait: 1)
 
     # Verify the YouTube link was saved
     visit app_settings_appearance_index_path
@@ -86,21 +96,32 @@ class SocialLinksTest < ApplicationSystemTestCase
     new_url_field = all("input[name*='[url]']").last
 
     select "Instagram", from: new_platform_select[:id]
+    sleep 0.1  # Allow JavaScript to process platform change
     instagram_url = "https://instagram.com/example"
     fill_in new_url_field[:id], with: instagram_url
 
     click_on "Update"
+    sleep 1  # Allow form submission to complete
 
-    # Verify the link was saved
-    assert page.has_content?("Appearance settings updated", wait: 2)
+    # Verify the link was saved - check on the main settings page after redirect
+    assert_current_path app_settings_path
+
+    # Wait for flash message to become visible (starts hidden, shown via JavaScript)
+    assert page.has_selector?("[data-controller='fade']:not(.hidden)", wait: 3)
+    assert page.has_content?("Appearance settings updated", wait: 1)
     visit app_settings_appearance_index_path
 
     # Now remove the link we just added
     all("a[data-action='click->social-links#removeLink']").last.click
 
     click_on "Update"
+    sleep 1  # Allow form submission to complete
 
-    assert page.has_content?("Appearance settings updated", wait: 2)
+    assert_current_path app_settings_path
+
+    # Wait for flash message to become visible (starts hidden, shown via JavaScript)
+    assert page.has_selector?("[data-controller='fade']:not(.hidden)", wait: 3)
+    assert page.has_content?("Appearance settings updated", wait: 1)
     visit app_settings_appearance_index_path
 
     visible_selects = all("select[name*='[platform]']").select(&:visible?)
