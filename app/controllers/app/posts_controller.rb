@@ -92,6 +92,9 @@ class App::PostsController < AppController
       else
         cleaned_content = Html::StripParagraphs.new.transform(original_content)
 
+        # Replace <h2>, <h3>, <h4> with <h1>
+        cleaned_content = cleaned_content.gsub(/<\/?h[2-4]>/i) { |tag| tag.sub(/h[2-4]/i, "h1") }
+
         # Remove all newlines except for within <pre> blocks
         cleaned_content = cleaned_content.gsub(/(<pre[\s\S]*?<\/pre>)|[\r\n]+/, '\1')
 

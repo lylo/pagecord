@@ -10,8 +10,10 @@ class Html::StripParagraphsTest < ActiveSupport::TestCase
     transformed_html = Html::StripParagraphs.new.transform(html)
 
     expected_html = <<~HTML
-      hello, world!<br><br>
-      this is a test<br><br>
+      <div>hello, world!<br><br>
+      </div>
+      <div>this is a test<br><br>
+      </div>
     HTML
     assert_equal expected_html, transformed_html
   end
