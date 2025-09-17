@@ -2,13 +2,21 @@ module PostsHelper
   include Pagy::Frontend
 
   def without_action_text_image_wrapper(html)
-    # Regular expression to match the action-text-attachment wrapper
-    attachment_regex = /<action-text-attachment[^>]*>(.*?)<\/action-text-attachment>/m
-
-    # Replace the ActionText attachment wrapper with just the image tag
-    html.gsub(attachment_regex) { |match| $1.gsub(/<figure[^>]*>/, "").gsub(/<\/figure>/, "") }
+    doc = Nokogiri::HTML::DocumentFragment.parse(html)
+    doc.css("action-text-attachment").each do |attachment|
+      figure = attachment.at_css("figure")
+      attachment.replace(figure) if figure
+    end
+    doc.to_html
   end
 
+  def strip_video_tags(html)
+    doc = Nokogiri::HTML::DocumentFragment.parse(html)
+    doc.css("figure").each do |figure|
+      figure.remove if figure.at_css("video")
+    end
+    doc.to_html
+  end
 
   # Generate URL for filtering posts by tag
   def tag_filter_url(tag)

@@ -82,6 +82,45 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_nil PostDigest.generate_for(@blog)
   end
 
+  test "masked_id should generate consistent masked ID" do
+    digest = post_digests(:one)
+
+    masked_id1 = digest.masked_id
+    masked_id2 = digest.masked_id
+
+    assert_equal masked_id1, masked_id2
+    assert_not_equal digest.id.to_s, masked_id1
+  end
+
+  test "find_by_masked_id should find digest by masked ID" do
+    digest = post_digests(:one)
+    masked_id = digest.masked_id
+
+    found_digest = PostDigest.find_by_masked_id(masked_id)
+
+    assert_equal digest, found_digest
+  end
+
+  test "find_by_masked_id should return nil for invalid masked ID" do
+    assert_nil PostDigest.find_by_masked_id("invalid")
+    assert_nil PostDigest.find_by_masked_id("")
+    assert_nil PostDigest.find_by_masked_id(nil)
+  end
+
+  test "subject should return localized digest subject" do
+    digest = post_digests(:one)
+
+    expected_subject = I18n.with_locale(digest.blog.locale) do
+      I18n.t(
+        "email_subscribers.mailers.weekly_digest.subject",
+        blog_name: digest.blog.display_name,
+        date: I18n.l(digest.created_at.to_date, format: :post_date)
+      )
+    end
+
+    assert_equal expected_subject, digest.subject
+  end
+
   private
 
     def create_new_post(options = {})

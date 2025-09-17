@@ -1,0 +1,68 @@
+/* Lightbox Component */
+.lightbox {
+  position: fixed;
+  inset: 0; /* Modern shorthand for top: 0; left: 0; right: 0; bottom: 0; */
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+  cursor: zoom-out;
+  /* Use modern viewport units */
+  width: 100vw;
+  height: 100svh; /* Small viewport height - stable across mobile browsers */
+}
+
+.lightbox.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox__close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 51;
+}
+
+.lightbox__content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  inset: 0;
+  padding: 1rem;
+}
+
+.lightbox__content img {
+  width: auto;
+  max-height: 100%;
+  max-width: 100%;
+  transform: scale(0.95);
+  transition: transform 0.3s ease-out;
+}
+
+.lightbox.show .lightbox__content img {
+  transform: scale(1);
+}
+
+/* Button styles inspired by HEY */
+.btn--icon-round {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+.btn--icon-round:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}

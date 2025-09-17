@@ -433,6 +433,9 @@ trix-editor .attachment__metadata .attachment__size {
 }
 .trix-content .attachment__caption {
   text-align: center;
+  color: #666;
+  font-size: .875em;
+  line-height: 1.2;
 }
 .trix-content .attachment__caption .attachment__name + .attachment__size::before {
   content: " •";
@@ -441,10 +444,12 @@ trix-editor .attachment__metadata .attachment__size {
   width: 100%;
   text-align: center;
 }
-.trix-content .attachment--preview .attachment__caption {
-  color: #666;
-  font-size: 0.9em;
-  line-height: 1.2;
+.trix-content .attachment--content {
+  text-align: center;
+  width: 100%;
+}
+.trix-content .attachment--content img {
+  max-width: 400px !important;
 }
 .trix-content .attachment--file {
   color: #333;

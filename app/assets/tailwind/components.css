@@ -89,8 +89,8 @@
         @apply inline-block relative w-full my-0;
       }
 
-      .attachment__caption {
-        @apply px-4 sm:px-8;
+      figcaption.attachment__caption {
+        @apply text-center px-4 sm:px-8 !mt-2;
       }
     }
 

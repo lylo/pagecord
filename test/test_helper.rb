@@ -18,5 +18,11 @@ module ActiveSupport
     end
 
     # Add more helper methods to be used by all tests here...
+
+
+    # Removes new lines and whitespace between HTML tags for comparison
+    def flattened_html(html)
+      html.gsub(/\s+/, " ").strip
+    end
   end
 end

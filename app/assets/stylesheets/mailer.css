@@ -187,6 +187,10 @@ a {
   font-size: 14px !important;
 }
 
+.post-content figure {
+  text-align: center;
+}
+
 .post-content figcaption {
   color: #888;
   font-size: 14px;

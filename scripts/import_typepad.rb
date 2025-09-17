@@ -132,18 +132,30 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
   end
 
   content = File.read(file_path)
-  all_entries = content.split("--------").map(&:strip).reject(&:empty?)
-  entries = all_entries.reject { |entry| entry.include?('COMMENT:') }
 
-  puts "Found #{all_entries.length} total entries (#{entries.length} posts, #{all_entries.length - entries.length} comments)"
+  # Split file into entries (each entry == one post block which may include comments)
+  all_entries = content.split(/^--------\n/).map(&:strip).reject(&:empty?)
+
+  # Count comment blocks across the whole file (a quick diagnostic)
+  comment_blocks = content.scan(/^-----\nCOMMENT:/).size
+
+  # Keep the full entries — do NOT reject entries containing COMMENT:
+  entries = all_entries
+
+  puts "Found #{all_entries.length} total entries (#{entries.length} posts). Detected #{comment_blocks} comment blocks."
 
   # Pre-process slugs
   potential_slugs = Hash.new(0)
   entry_metadata = []
 
   entries.each do |entry|
-    sections = entry.split("-----")
-    next if sections.length < 2
+    sections = entry.split(/^-----\n/)
+    if sections.length < 2
+      puts "Skipping malformed entry (no header/body separator): #{entry[0..200]}..."
+      # keep index alignment by pushing a nil placeholder
+      entry_metadata << nil
+      next
+    end
 
     header_section = sections[0].strip
     fields = {}
@@ -163,11 +175,12 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
     basename = fields['BASENAME']&.strip&.gsub('_', '-')&.gsub(/-+/, '-')&.gsub(/^-|-$/, '')
     unique_url = fields['UNIQUE URL']
 
-    base_slug = if basename.present?
-                  basename
-    elsif title.present?
-                  title.parameterize.gsub(/-+\z/, "")
-    end
+    base_slug =
+      if basename.present?
+        basename
+      elsif title.present?
+        title.parameterize.gsub(/-+\z/, "")
+      end
 
     potential_slugs[base_slug] += 1 if base_slug.present?
 
@@ -188,7 +201,13 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
     puts "Processing entry #{index + 1} of #{entries.length}"
     begin
       metadata = entry_metadata[index]
-      sections = entry.split("-----")
+      unless metadata
+        puts "Skipping malformed entry at index #{index + 1} (no metadata)"
+        failed_count += 1
+        next
+      end
+
+      sections = entry.split(/^-----\n/)
       next if sections.length < 2
       header_section = sections[0].strip
       body_section = sections[1].strip if sections[1]
@@ -228,15 +247,16 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
 
       post_status = (status == "Publish") ? "published" : "draft"
 
-      slug = if base_slug.present? && potential_slugs[base_slug] > 1 && unique_url.present?
-               if match = unique_url.match(/\/(\d{4})\/(\d{2})\//)
-                 "#{base_slug}-#{match[1]}-#{match[2]}"
-               else
-                 base_slug
-               end
-      else
-               base_slug
-      end
+      slug =
+        if base_slug.present? && potential_slugs[base_slug] > 1 && unique_url.present?
+          if match = unique_url.match(/\/(\d{4})\/(\d{2})\//)
+            "#{base_slug}-#{match[1]}-#{match[2]}"
+          else
+            base_slug
+          end
+        else
+          base_slug
+        end
 
       # Final uniqueness check - append number if slug already exists
       if slug.present?
@@ -259,9 +279,8 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
       end
 
       # Only check by title if no slug match and no slug was generated
-      if !existing_post && slug.blank? && title.present?
-        existing_post = post_exists?(blog, title)
-      end
+      existing_post = blog.all_posts.find_by(slug: slug) ||
+                blog.all_posts.find_by(title: title, published_at: published_at)
 
       if existing_post
         display_title = title.presence || "[Untitled]"
@@ -301,10 +320,18 @@ def import_typepad(file_path, blog_subdomain, dry_run = false)
       display_title = title.presence || "[Untitled]"
       if dry_run
         puts "[DRY RUN] Would create post: #{display_title}, Status: #{post_status}, Published at: #{published_at}, Slug: #{slug}"
-        success_count += 1 if post.valid?
-        failed_count += 1 unless post.valid?
+
+        if post.valid?
+          success_count += 1
+        else
+          puts "[DRY RUN] INVALID post: #{display_title}"
+          puts "Errors: #{post.errors.full_messages.join(', ')}"
+          failed_count += 1
+        end
+
         next
       end
+
 
       if post.save
         post.update_column(:slug, slug) if post.slug != slug

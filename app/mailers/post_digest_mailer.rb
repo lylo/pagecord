@@ -5,10 +5,11 @@ class PostDigestMailer < PostmarkMailer
   layout "mailer_digest"
 
   helper :routing
-  helper_method :without_action_text_image_wrapper
+  helper_method :without_action_text_image_wrapper, :strip_video_tags
 
   def weekly_digest
     digest = params[:digest]
+    @digest = digest
 
     @posts = digest.posts.order(published_at: :desc)
     @subscriber = params[:subscriber]
@@ -21,11 +22,8 @@ class PostDigestMailer < PostmarkMailer
       mail(
         to: @subscriber.email,
         from: sender_address_for(@subscriber.blog),
-        subject: I18n.t(
-          "email_subscribers.mailers.weekly_digest.subject",
-          blog_name: @subscriber.blog.display_name,
-          date: I18n.l(Date.current, format: :post_date)
-        )
+        reply_to: "digest-reply-#{@digest.masked_id}@post.pagecord.com",
+        subject: @digest.subject
       )
     end
   end
