@@ -7,8 +7,6 @@ lexxy-editor:focus-within {
 }
 
 lexxy-editor {
-  --lexxy-content-margin: 1.25rem;
-
   /* Placeholder color */
   &[placeholder]::before {
     color: var(--color-slate-600);
