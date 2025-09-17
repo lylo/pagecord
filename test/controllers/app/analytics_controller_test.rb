@@ -144,6 +144,6 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
     get app_analytics_path
     assert_response :success
 
-    assert_select "h2", text: /Go Premium to unlock your blog analytics!/i, count: 1
+    assert_select "h2", text: /Unlock your blog's analytics with Premium/i, count: 1
   end
 end
