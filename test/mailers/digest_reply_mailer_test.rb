@@ -23,7 +23,7 @@ class DigestReplyMailerTest < ActionMailer::TestCase
     end
 
     assert_equal [ blog_owner.email ], email.to
-    assert_equal "no-reply@notifications.pagecord.com", email.from.first
+    assert_equal "subscriber@example.com <no-reply@notifications.pagecord.com>", email[:from].value
     assert_equal "subscriber@example.com", email.reply_to.first
     assert_equal "Re: #{digest.subject}", email.subject
     assert_equal "I really enjoyed your latest posts about Rails.", email.body.to_s
@@ -64,6 +64,29 @@ class DigestReplyMailerTest < ActionMailer::TestCase
         original_mail: original_mail
       ).forward_reply.deliver_now
     end
+  end
+
+  test "forward_reply uses display name when available" do
+    digest = post_digests(:one)
+    blog_owner = digest.blog.user
+
+    # Create a mock original mail with display name
+    original_mail = Mail.new do
+      from "John Doe <subscriber@example.com>"
+      subject "Thanks for the digest!"
+      body "I really enjoyed your latest posts about Rails."
+      content_type "text/plain"
+    end
+
+    email = DigestReplyMailer.with(
+      digest: digest,
+      original_mail: original_mail
+    ).forward_reply
+
+    assert_equal [ blog_owner.email ], email.to
+    assert_equal "John Doe <no-reply@notifications.pagecord.com>", email[:from].value
+    assert_equal "subscriber@example.com", email.reply_to.first
+    assert_equal "Re: #{digest.subject}", email.subject
   end
 
   test "forward_reply uses correct subject with digest date" do

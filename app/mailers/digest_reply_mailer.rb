@@ -6,9 +6,18 @@ class DigestReplyMailer < ApplicationMailer
 
     return unless @original_mail.from&.first
 
+    # Extract sender name from original email, fallback to email address
+    original_sender = @original_mail.from.first
+    sender_name = if @original_mail[:from].display_names.first.present?
+                    @original_mail[:from].display_names.first
+                  else
+                    original_sender
+                  end
+
     mail(
       to: @blog.user.email,
-      reply_to: @original_mail.from.first,
+      from: "#{sender_name} <no-reply@notifications.pagecord.com>",
+      reply_to: original_sender,
       subject: "Re: #{@digest.subject}"
     ) do |format|
       if @original_mail.multipart?
