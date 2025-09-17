@@ -37,8 +37,9 @@ lexxy-editor {
 /* ================================== */
 /* Lexxy Toolbar Base Styles          */
 /* ================================== */
-lexxy-toolbar {
-  position: sticky !important;
+
+:where(lexxy-toolbar) {
+  position: sticky;
   top: 0;
   z-index: 10;
 
