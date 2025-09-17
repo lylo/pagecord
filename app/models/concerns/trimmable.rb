@@ -19,8 +19,7 @@ module Trimmable
     if rich_text_attribute.present?
       if send(rich_text_attribute).body.present?
         doc = trim(send(rich_text_attribute).body.to_html)
-
-        send("#{rich_text_attribute}=", ActionText::Content.new(doc))
+        send("#{rich_text_attribute}=", doc)  # just assign the string
       end
     end
   end

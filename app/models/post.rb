@@ -115,9 +115,7 @@ class Post < ApplicationRecord
 
     def limit_content_size
       if content && content.body.to_html.bytesize > 64.kilobytes
-        self.content = ActionText::Content.new(
-          content.body.to_html.byteslice(0, 64.kilobytes)
-        )
+        self.content = content.body.to_html.byteslice(0, 64.kilobytes)
       end
     end
 

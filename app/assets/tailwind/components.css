@@ -33,14 +33,6 @@
 
     /* ---- BLOG POST  ---- */
     article {
-      @apply text-[var(--color-text)];
-
-      h1:not(.post-title) {
-        @apply !text-2xl !mb-0;
-      }
-    }
-
-    article {
       @apply max-w-none text-[var(--color-text)];
 
       --lexxy-color-ink: var(--color-text);
@@ -66,20 +58,10 @@
         color: var(--color-text-light) !important;
       }
 
-      /* Give content divs proper spacing using Lexxy margin */
-      /* > div:not(.lexxy-content) {
-        margin-bottom: var(--lexxy-content-margin);
-      } */
-
-      /* > div:not(.lexxy-content):last-child {
-        margin-bottom: 0;
-      } */
-
-      /* Hide br tags only in direct content divs (old Trix), not in paragraphs */
-      /* > div:not(.lexxy-content) br {
-        display: none;
-      } */
-
+      /* Trix uses H1 whereas the largest in Lexxy is H2, so render H1 as H2 */
+      h1 {
+        font-size: 1.5rem !important;
+      }
 
       h1.post-title {
         @apply text-3xl mb-8 text-[var(--color-text-heading)] font-extrabold;

@@ -76,39 +76,27 @@ class App::PostsController < AppController
     end
 
     def clean_content(post)
-      if current_features.enabled?(:lexxy)
-        original_content = post.content.body.to_html
+      original_content = post.content.body&.to_html
+      return if original_content.blank?
 
+      if current_features.enabled?(:lexxy)
         # Only clean if content has old div structure but no paragraph tags
         has_divs = original_content.include?("<div>")
         has_paragraphs = original_content.include?("<p>")
         nil if !has_divs || has_paragraphs
 
-        # puts "Cleaning post content for Lexxy"
-        # puts original_content
+        # Remove divs that are visually empty (only contain spaces, &nbsp;, or <br>)
+        cleaned_content = original_content.gsub(/<div>(?:\s|&nbsp;|<br\s*\/?>)*<\/div>/i, "")
 
-        # # Remove newlines but preserve pre and p blocks, then clean up br tags and empty divs
-        # cleaned_content = original_content
-        #   .gsub(/(<pre[\s\S]*?<\/pre>)|(<p[\s\S]*?<\/p>)|[\r\n]+/, '\1\2')
-        #   .gsub(/<br\s*\/?>/i, "")
-        #   .gsub(/<div>\s*<\/div>/i, "")
-
-        #   puts "cleaned content"
-        #   puts cleaned_content
-
-        # Only modify the in-memory object for display, don't save
-        # post.content = cleaned_content if cleaned_content != original_content
+        post.content = cleaned_content
       else
-        # HTML from inbound email doesn't often play nicely with Trix
-
-        # remove paragraph tags
-        cleaned_content = Html::StripParagraphs.new.transform(post.content.to_s)
+        cleaned_content = Html::StripParagraphs.new.transform(original_content)
 
         # Remove all newlines except for within <pre> blocks
         cleaned_content = cleaned_content.gsub(/(<pre[\s\S]*?<\/pre>)|[\r\n]+/, '\1')
 
-        # # remove whitespace between tags (Trix seems to add a <br> tag in some cases)
-        post.content = ActionText::Content.new(cleaned_content.gsub(/>\s+</, "><"))
+        # remove whitespace between tags (Trix seems to add a <br> tag in some cases)
+        post.content = cleaned_content.gsub(/>\s+</, "><")
       end
     end
 
