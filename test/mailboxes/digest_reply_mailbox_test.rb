@@ -7,7 +7,10 @@ class DigestReplyMailboxTest < ActionMailbox::TestCase
     digest = post_digests(:one)
     subscriber_email = "fred@example.com"  # Use existing confirmed subscriber
 
-    DigestReplyMailer.expects(:forward_reply).once.returns(stub(deliver_now: true))
+    DigestReplyMailer.expects(:with).with(
+      digest: digest,
+      original_mail: anything
+    ).returns(stub(forward_reply: stub(deliver_now: true)))
 
     receive_inbound_email_from_mail(
       to: "digest-reply-#{digest.masked_id}@post.pagecord.com",
@@ -72,8 +75,7 @@ class DigestReplyMailboxTest < ActionMailbox::TestCase
     digest = post_digests(:one)
     subscriber_email = "fred@example.com"  # Use existing confirmed subscriber
 
-    mock_mailer = stub(deliver_now: nil)
-    DigestReplyMailer.expects(:forward_reply).raises(StandardError.new("SMTP error"))
+    DigestReplyMailer.expects(:with).raises(StandardError.new("SMTP error"))
     Rails.logger.expects(:error).with(regexp_matches(/Unable to process digest reply/))
     Sentry.expects(:capture_exception)
 
