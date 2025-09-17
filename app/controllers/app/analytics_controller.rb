@@ -1,7 +1,5 @@
 class App::AnalyticsController < AppController
   def index
-    redirect_to app_root_path unless current_features.enabled?(:analytics)
-
     @view_type = params[:view_type] || "month"
     @date = summary.parse_date(@view_type, params[:date])
 

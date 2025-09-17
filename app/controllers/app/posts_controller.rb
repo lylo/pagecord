@@ -31,8 +31,7 @@ class App::PostsController < AppController
   def edit
     @post = Current.user.blog.posts.find_by!(token: params[:token])
 
-    # Clean up old content before editing
-    clean_old_content(@post)
+    clean_content(@post)
 
     session[:return_to_page] = params[:page] if params[:page].present?
   end
@@ -56,7 +55,7 @@ class App::PostsController < AppController
 
       redirect_to app_posts_path(options), notice: "Post was successfully updated"
     else
-      prepare_content_for_trix
+      clean_content(@post)
       render :edit, status: :unprocessable_entity
     end
   end
@@ -69,28 +68,48 @@ class App::PostsController < AppController
   end
 
   private
+
     def post_params
       status = params[:button] == "save_draft" ? :draft : :published
 
       params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden).merge(status: status)
     end
 
-    def clean_old_content(post)
-      original_content = post.content.to_s
+    def clean_content(post)
+      if current_features.enabled?(:lexxy)
+        original_content = post.content.to_s
 
-      # Only clean if content has old div structure but no paragraph tags
-      has_divs = original_content.include?("<div>")
-      has_paragraphs = original_content.include?("<p>")
-      return if !has_divs || has_paragraphs
+        # Only clean if content has old div structure but no paragraph tags
+        has_divs = original_content.include?("<div>")
+        has_paragraphs = original_content.include?("<p>")
+        nil if !has_divs || has_paragraphs
 
-      # Remove newlines but preserve pre and p blocks, then clean up br tags and empty divs
-      cleaned_content = original_content
-        .gsub(/(<pre[\s\S]*?<\/pre>)|(<p[\s\S]*?<\/p>)|[\r\n]+/, '\1\2')
-        .gsub(/<br\s*\/?>/i, "")
-        .gsub(/<div>\s*<\/div>/i, "")
+        # puts "Cleaning post content for Lexxy"
+        # puts original_content
 
-      # Only modify the in-memory object for display, don't save
-      post.content = cleaned_content if cleaned_content != original_content
+        # # Remove newlines but preserve pre and p blocks, then clean up br tags and empty divs
+        # cleaned_content = original_content
+        #   .gsub(/(<pre[\s\S]*?<\/pre>)|(<p[\s\S]*?<\/p>)|[\r\n]+/, '\1\2')
+        #   .gsub(/<br\s*\/?>/i, "")
+        #   .gsub(/<div>\s*<\/div>/i, "")
+
+        #   puts "cleaned content"
+        #   puts cleaned_content
+
+        # Only modify the in-memory object for display, don't save
+        # post.content = cleaned_content if cleaned_content != original_content
+      else
+        # HTML from inbound email doesn't often play nicely with Trix
+
+        # remove paragraph tags
+        post.content = Html::StripParagraphs.new.transform(post.content.to_s)
+
+        # Remove all newlines except for within <pre> blocks
+        post.content.to_s.gsub(/(<pre[\s\S]*?<\/pre>)|[\r\n]+/, '\1')
+
+        # # remove whitespace between tags (Trix seems to add a <br> tag in some cases)
+        post.content = post.content.to_s.gsub(/>\s+</, "><")
+      end
     end
 
     def redirect_to_first_page

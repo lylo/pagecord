@@ -14,12 +14,19 @@ export default class extends Controller {
     }
 
     if (this.hasContentTarget) {
+      // FIXME remove when Lexxy is fully deployed
+      this.contentTarget.addEventListener("trix-change", () => {
+        this.save()
+      })
+
       this.contentTarget.addEventListener("lexxy:change", () => {
         this.save()
       })
     }
 
     this.element.addEventListener("submit", () => this.clear())
+
+    console.log("Autosave connected")
   }
 
   save() {

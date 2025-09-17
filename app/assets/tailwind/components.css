@@ -43,19 +43,16 @@
     article {
       @apply max-w-none text-[var(--color-text)];
 
-      /* Override lexxy variables to use theme colors */
-      .lexxy-content {
-        --lexxy-color-ink: var(--color-text);
-        --lexxy-color-ink-medium: var(--color-text-muted);
-        --lexxy-color-ink-light: var(--color-text-light);
-        --lexxy-color-ink-lightest: var(--color-bg-sunken);
-        --lexxy-color-text: var(--color-text);
-        --lexxy-color-text-subtle: var(--color-text-light);
-        --lexxy-color-link: var(--color-accent);
-        --lexxy-color-accent-dark: var(--color-accent);
-        --lexxy-color-accent-medium: var(--color-accent-hover);
-        --lexxy-color-code-bg: var(--color-bg-sunken);
-      }
+      --lexxy-color-ink: var(--color-text);
+      --lexxy-color-ink-medium: var(--color-text-muted);
+      --lexxy-color-ink-light: var(--color-text-light);
+      --lexxy-color-ink-lightest: var(--color-bg-sunken);
+      --lexxy-color-text: var(--color-text);
+      --lexxy-color-text-subtle: var(--color-text-light);
+      --lexxy-color-link: var(--color-accent);
+      --lexxy-color-accent-dark: var(--color-accent);
+      --lexxy-color-accent-medium: var(--color-accent-hover);
+      --lexxy-color-code-bg: var(--color-bg-sunken);
 
       .lexxy-content a {
         color: var(--color-accent) !important;
@@ -73,15 +70,15 @@
       .lexxy-content > div:not(.lexxy-content) {
         margin-bottom: var(--lexxy-content-margin);
       }
-      
-      .lexxy-content > div:not(.lexxy-content):last-child {
+
+      /* .lexxy-content > div:not(.lexxy-content):last-child {
         margin-bottom: 0;
-      }
-      
+      } */
+
       /* Hide br tags only in direct content divs (old Trix), not in paragraphs */
-      .lexxy-content > div:not(.lexxy-content) br {
+      /* .lexxy-content > div:not(.lexxy-content) br {
         display: none;
-      }
+      } */
 
 
       h1.post-title {

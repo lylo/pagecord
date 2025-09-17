@@ -36,6 +36,19 @@ export default class extends Controller {
           }
         })
       }
+
+      editor.addEventListener("trix-attachment-add", (e) => {
+        const attachment = e.attachment
+        if (attachment.file && attachment.file.type.startsWith("video/")) {
+          const thumbnailUrl = "/video.png"
+          attachment.setAttributes({
+            url: thumbnailUrl,
+            contentType: "image/png",
+            filename: "video-thumbnail.png",
+            previewable: true,
+          })
+        }
+      })
     })
   }
 }

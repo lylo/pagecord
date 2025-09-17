@@ -98,15 +98,22 @@
       data: { autosave_target: "title" }
     %>
 
-    <%= form.rich_text_area :content,
-      placeholder: "Write your post...",
-      class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @post.errors[:content].any?}",
-      spellcheck: true,
-      data: {
-        controller: "lexxy",
-        attachments: Current.user.subscribed?,
-        autosave_target: "content"
-      } %>
+    <% if current_features.enabled? :lexxy %>
+      <%= form.lexxy_rich_text_area :content,
+        placeholder: "Write your post content...",
+        class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @post.errors[:content].any?}",
+        spellcheck: true,
+        data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
+    <% else %>
+      <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
+        <%= form.rich_text_area :content,
+          placeholder: "Write your post content...",
+          class: "trix-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @post.errors[:content].any?}",
+          spellcheck: true,
+          data: { controller: "autogrow trix", subscribed: Current.user.subscribed? }
+        %>
+        </div>
+    <% end %>
     <% if @post.errors[:content].any? %>
       <div class="mt-1 text-xs text-red-500">
         A body is required
