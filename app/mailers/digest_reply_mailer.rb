@@ -10,6 +10,7 @@ class DigestReplyMailer < ApplicationMailer
     mail(
       to: @blog.user.email,
       from: @original_mail.from.first,
+      reply_to: @original_mail.from.first,
       subject: "Re: #{@digest.subject}",
       body: @original_mail.body.to_s,
       content_type: @original_mail.content_type
