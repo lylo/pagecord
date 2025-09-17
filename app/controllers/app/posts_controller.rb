@@ -77,7 +77,7 @@ class App::PostsController < AppController
 
     def clean_content(post)
       if current_features.enabled?(:lexxy)
-        original_content = post.content.to_s
+        original_content = post.content.body.to_html
 
         # Only clean if content has old div structure but no paragraph tags
         has_divs = original_content.include?("<div>")
@@ -102,13 +102,13 @@ class App::PostsController < AppController
         # HTML from inbound email doesn't often play nicely with Trix
 
         # remove paragraph tags
-        post.content = Html::StripParagraphs.new.transform(post.content.to_s)
+        cleaned_content = Html::StripParagraphs.new.transform(post.content.to_s)
 
         # Remove all newlines except for within <pre> blocks
-        post.content.to_s.gsub(/(<pre[\s\S]*?<\/pre>)|[\r\n]+/, '\1')
+        cleaned_content = cleaned_content.gsub(/(<pre[\s\S]*?<\/pre>)|[\r\n]+/, '\1')
 
         # # remove whitespace between tags (Trix seems to add a <br> tag in some cases)
-        post.content = post.content.to_s.gsub(/>\s+</, "><")
+        post.content = ActionText::Content.new(cleaned_content.gsub(/>\s+</, "><"))
       end
     end
 

@@ -101,8 +101,8 @@ class Post < ApplicationRecord
       @text_content ||= begin
         doc = Nokogiri::HTML::DocumentFragment.parse(self.content.to_s)
         doc.css("figcaption").remove  # don't want captions in the summary
-        content = doc.text
-        content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
+        text_content = doc.text
+        text_content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
                .gsub(/\[Image\]/i, "").strip
                .gsub(/https?:\/\/\S+/, "").strip
                .gsub(/\s+/, " ").strip  # Normalize whitespace
@@ -114,7 +114,11 @@ class Post < ApplicationRecord
     end
 
     def limit_content_size
-      self.content = content.to_s.slice(0, 64.kilobytes)
+      if content && content.body.to_html.bytesize > 64.kilobytes
+        self.content = ActionText::Content.new(
+          content.body.to_html.byteslice(0, 64.kilobytes)
+        )
+      end
     end
 
     def detect_open_graph_image
