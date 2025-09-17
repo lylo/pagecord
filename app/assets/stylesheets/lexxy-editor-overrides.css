@@ -28,6 +28,10 @@ lexxy-editor {
     padding: 0;
     color: var(--color-slate-500) !important;
   }
+
+  h1 {
+    font-size: 1.5rem !important;
+  }
 }
 
 /* ================================== */
