@@ -64,7 +64,7 @@
       }
 
       h1.post-title {
-        @apply text-3xl mb-8 text-[var(--color-text-heading)] font-extrabold;
+        @apply !text-3xl mb-8 text-[var(--color-text-heading)] font-extrabold;
       }
 
       figure {
