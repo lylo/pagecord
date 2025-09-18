@@ -56,8 +56,8 @@
 
   /* Adjustment for Trix-based content */
   div + blockquote {
-    margin: 0 0;
-  }
+    margin: calc(var(--lexxy-content-margin) / 2) 0;
+  } 
 
   .attachment__caption {
     font-size: 0.875rem;
