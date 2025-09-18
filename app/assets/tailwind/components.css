@@ -68,11 +68,7 @@
         @apply inline-block relative w-full my-0;
       }
 
-      figcaption:empty {
-        display: none !important;
-      }
-
-      figcaption.attachment__caption:not(:empty) { 
+      figcaption.attachment__caption { 
         @apply text-center px-4 sm:px-8 !mt-2; 
       } 
      } 
