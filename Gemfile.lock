@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/basecamp/lexxy.git
+  revision: e79d1823e27fb0a924a46912d3ff178a00ade6ef
+  branch: main
+  specs:
+    lexxy (0.1.7.beta)
+      rails (>= 8.0.2)
+
+GIT
   remote: https://github.com/rails/rails.git
   revision: d8795bd762ab2716b6e7fd07a403566b28159cdc
   branch: main
@@ -237,6 +245,11 @@ GEM
       logger (~> 1.6)
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
+    letter_opener_web (3.0.0)
+      actionmailer (>= 6.1)
+      letter_opener (~> 1.9)
+      railties (>= 6.1)
+      rexml
     lint_roller (1.1.0)
     local_time (3.0.3)
     logger (1.7.0)
@@ -503,7 +516,8 @@ DEPENDENCIES
   inline_svg
   jbuilder
   kredis (~> 1.7)
-  letter_opener
+  letter_opener_web
+  lexxy!
   local_time
   mailpace-rails
   mocha

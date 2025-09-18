@@ -12,7 +12,6 @@
 
 /* Components */
 @import "./components.css";
-@import "./components/lightbox.css";
 
 /* Rest of your CSS for layout, utilities, etc. */
 @layer utilities {
@@ -57,14 +56,6 @@
   }
 }
 
-@layer base {
-  trix-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    @apply bg-white dark:bg-slate-900;
-  }
-}
 
 hr {
   @apply border-gray-300 dark:border-gray-600;
@@ -103,4 +94,3 @@ a:not([href]), a:not([href]):hover { /* disabled links */
   display: contents; /* This makes the wrapper "invisible" to flexbox */
 }
 
-@import "../stylesheets/actiontext.css";

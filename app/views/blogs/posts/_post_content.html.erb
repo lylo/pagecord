@@ -1,6 +1,3 @@
-<div class="text-size-standard">
-  <%= auto_link post.content,
-        sanitize_options: {
-          tags: %w[figure img video figcaption action-text-attachment] + Rails::Html::SafeListSanitizer.allowed_tags.to_a
-        } %>
+<div class="text-size-standard lexxy-content" data-controller="syntax-highlight">
+  <%= auto_link(post.content.to_s, sanitize: false).html_safe %>
 </div>

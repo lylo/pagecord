@@ -9,3 +9,7 @@ two:
 three:
   post_digest: one
   post: joel_titleless
+
+four:
+  post_digest: one
+  post: trix

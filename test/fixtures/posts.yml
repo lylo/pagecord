@@ -33,6 +33,13 @@ four:
   slug: what-ive-learned-about-photography
   <<: *default
 
+trix:
+  title: Created with Trix
+  blog: joel
+  published_at: <%= 1.day.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: created-with-trix
+
 joel_draft:
   title: Draft post
   blog: joel
