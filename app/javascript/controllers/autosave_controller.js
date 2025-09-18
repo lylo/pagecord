@@ -14,12 +14,19 @@ export default class extends Controller {
     }
 
     if (this.hasContentTarget) {
+      // FIXME remove when Lexxy is fully deployed
       this.contentTarget.addEventListener("trix-change", () => {
+        this.save()
+      })
+
+      this.contentTarget.addEventListener("lexxy:change", () => {
         this.save()
       })
     }
 
     this.element.addEventListener("submit", () => this.clear())
+
+    console.log("Autosave connected")
   }
 
   save() {
@@ -42,14 +49,8 @@ export default class extends Controller {
         this.titleTarget.value = title
       }
 
-      if (content && this.hasContentTarget) {
-        const load = () => {
-          this.contentTarget.editor.loadHTML(content)
-          console.log("Draft restored from previous session")
-        }
-        this.contentTarget.editor
-          ? load()
-          : this.contentTarget.addEventListener("trix-initialize", load, { once: true })
+      if (content && this.contentTarget.value) {
+        this.contentTarget.value = content
       }
     } catch {
       this.clear()

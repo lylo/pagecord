@@ -55,18 +55,27 @@
           class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
           autofocus: true %>
 
-    <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
-      <%= form.rich_text_area :content,
+    <% if current_features.enabled? :lexxy %>
+      <%= form.lexxy_rich_text_area :content,
         placeholder: "Write your page content...",
-        class: "trix-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @page.errors[:content].any?}",
+        class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @page.errors[:content].any?}",
         spellcheck: true,
+        data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
+    <% else %>
+      <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
+        <%= form.rich_text_area :content,
+          placeholder: "Write your page content...",
+          class: "trix-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @page.errors[:content].any?}",
+          spellcheck: true,
         data: { controller: "autogrow trix", subscribed: Current.user.subscribed? } %>
-      <% if @page.errors[:content].any? %>
-        <div class="mt-1 text-xs text-red-500">
-          A body is required
-        </div>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
+
+    <% if @page.errors[:content].any? %>
+      <div class="mt-1 text-xs text-red-500">
+        A body is required
+      </div>
+    <% end %>
 
     <div class="mt-2">
       <label class="flex items-center">
