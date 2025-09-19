@@ -34,7 +34,7 @@ class Post < ApplicationRecord
   after_create :detect_open_graph_image
 
   def content_present
-    errors.add(:content, "can't be blank") unless content.body.present?
+    errors.add(:content, "can't be blank") unless content.body.present? && content.body.to_plain_text.strip.present?
   end
 
   def title_present_for_pages

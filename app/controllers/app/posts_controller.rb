@@ -87,8 +87,9 @@ class App::PostsController < AppController
 
         # Remove divs that are visually empty (only contain spaces, &nbsp;, or <br>)
         cleaned_content = original_content.gsub(/<div>(?:\s|&nbsp;|<br\s*\/?>)*<\/div>/i, "")
-
-        post.content = cleaned_content
+        if cleaned_content != original_content
+          post.content = cleaned_content
+        end
       else
         cleaned_content = Html::StripParagraphs.new.transform(original_content)
 
