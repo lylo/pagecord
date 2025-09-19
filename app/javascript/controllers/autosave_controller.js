@@ -25,8 +25,6 @@ export default class extends Controller {
     }
 
     this.element.addEventListener("submit", () => this.clear())
-
-    console.log("Autosave connected")
   }
 
   save() {
@@ -49,7 +47,7 @@ export default class extends Controller {
         this.titleTarget.value = title
       }
 
-      if (content && this.contentTarget.value) {
+      if (content && this.hasContentTarget) {
         this.contentTarget.value = content
       }
     } catch {
