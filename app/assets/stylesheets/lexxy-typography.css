@@ -54,10 +54,21 @@
     padding-bottom: 0.375rem;
   }
 
-  /* Adjustment for Trix-based content */
-  div + blockquote {
+  /* -- Adjustment for Trix-based content */
+  div + blockquote,
+  div + pre,
+  blockquote + pre {
     margin: calc(var(--lexxy-content-margin) / 2) 0;
-  } 
+  }
+  blockquote + pre {
+    margin: 0;
+  }
+  div + ul,
+  div + ol {
+    margin-top: var(--lexxy-content-margin);
+    margin-bottom: var(--lexxy-content-margin);
+  }
+  /* -- End Adjustments */
 
   .attachment__caption {
     font-size: 0.875rem;
@@ -72,6 +83,7 @@
   pre,
   code[data-language] {
     margin: calc(var(--lexxy-content-margin) * 1.5) 0;
+    padding: 1.5ch;
     border-radius: 0.5rem;
     font-weight: normal;
     white-space: pre-wrap;
