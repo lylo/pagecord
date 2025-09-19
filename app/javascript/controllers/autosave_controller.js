@@ -45,7 +45,6 @@ export default class extends Controller {
       if (content && this.hasContentTarget) {
         const load = () => {
           this.contentTarget.editor.loadHTML(content)
-          console.log("Draft restored from previous session")
         }
         this.contentTarget.editor
           ? load()
