@@ -110,7 +110,7 @@
           placeholder: "Write your post content...",
           class: "trix-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @post.errors[:content].any?}",
           spellcheck: true,
-          data: { controller: "autogrow trix", subscribed: Current.user.subscribed? }
+          data: { controller: "autogrow trix", subscribed: Current.user.subscribed?, autosave_target: "content" }
         %>
         </div>
     <% end %>
