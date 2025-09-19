@@ -62,13 +62,13 @@ class MailParserTest < ActiveSupport::TestCase
 
   private
 
-  def create_mail(subject:, body:, content_type: "text/plain", from: "test@example.com", to: "recipient@example.com")
-    Mail.new do
-      from from
-      to to
-      subject subject
-      content_type content_type
-      body body
+    def create_mail(subject:, body:, content_type: "text/plain", from: "test@example.com", to: "recipient@example.com")
+      Mail.new do
+        from from
+        to to
+        subject subject
+        content_type content_type
+        body body
+      end
     end
-  end
 end
