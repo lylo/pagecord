@@ -77,7 +77,7 @@
       }
 
       audio {
-        @apply my-[var(--lexxy-content-margin)] border;
+        @apply my-[var(--lexxy-content-margin)];
       }
      }
 
