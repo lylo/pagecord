@@ -54,8 +54,9 @@ trix:
     <div>
       Yesterday I discovered an interesting bug in our deployment pipeline. The issue started when we upgraded
       our Docker images to use the latest Alpine Linux base, but somehow missed updating the Node.js version.&nbsp;
+      <br>
+      <br>
     </div>
-    <div></div>
     <div>The error message was cryptic at first, but after digging into the logs I found this:</div>
     <div><br></div>
     <blockquote>Module not found: Can't resolve 'fs/promises' in '/app/src/utils'</blockquote>
@@ -63,8 +64,9 @@ trix:
     <div>
       Turns out we were still running Node 12 in the container, but our code was using fs/promises which was
       only stabilized in Node 14. The fix was straightforward once we identified the root cause.
+      <br>
+      <br>
     </div>
-    <div></div>
     <pre>
       // Updated package.json to specify engine requirements
       {
@@ -74,8 +76,8 @@ trix:
         }
       }
     </pre>
-    <div></div>
     <div>
+      <br>
       This reminded me why it's important to keep our development and production environments in sync.
       We've now added automated checks to catch version mismatches before they make it to production.&nbsp;
     </div>
