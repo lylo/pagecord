@@ -68,10 +68,10 @@
         @apply inline-block relative w-full my-0;
       }
 
-      figcaption.attachment__caption {
-        @apply text-center px-4 sm:px-8 !mt-2;
-      }
-    }
+      figcaption.attachment__caption { 
+        @apply text-center px-4 sm:px-8 !mt-2; 
+      } 
+     } 
 
     .post-footer {
       a, button {

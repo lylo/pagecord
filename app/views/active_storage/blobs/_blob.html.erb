@@ -12,9 +12,9 @@
     <% end %>
   <% end %>
 
-  <figcaption class="attachment__caption">
-    <% if caption = blob.try(:caption) %>
+  <% if caption = blob.try(:caption) %>
+    <figcaption class="attachment__caption">
       <%= caption %>
-    <% end %>
-  </figcaption>
+    </figcaption>
+ <% end %>
 </figure>

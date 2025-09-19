@@ -74,6 +74,6 @@ class SignupsController < ApplicationController
     end
 
     def signup_from_allowed_timezone
-      [ "Chennai" ].exclude?(user_params[:timezone])
+      [ "Chennai", "Ekaterinburg" ].exclude?(user_params[:timezone])
     end
 end
