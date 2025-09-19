@@ -106,7 +106,7 @@ lexxy-editor {
 
     code, pre,
     code[data-language] {
-      background-color: var(--color-slate-700) !important;
+      background-color: var(--color-slate-800) !important;
       color: var(--color-slate-200) !important;
     }
   }

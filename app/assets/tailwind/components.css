@@ -42,7 +42,7 @@
       --lexxy-color-link: var(--color-accent);
       --lexxy-color-accent-dark: var(--color-accent);
       --lexxy-color-accent-medium: var(--color-accent-hover);
-      --lexxy-color-code-bg: var(--color-bg-sunken);
+      --lexxy-color-code-bg: var(--color-bg-subtle);
 
       a {
         color: var(--color-accent) !important;
@@ -68,10 +68,15 @@
         @apply inline-block relative w-full my-0;
       }
 
-      figcaption.attachment__caption { 
-        @apply text-center px-4 sm:px-8 !mt-2; 
-      } 
-     } 
+      figcaption.attachment__caption {
+        @apply text-center px-4 sm:px-8 !mt-2;
+      }
+
+
+      code {
+        @apply !bg-[var(--color-bg-subtle)];
+      }
+     }
 
     .post-footer {
       a, button {
