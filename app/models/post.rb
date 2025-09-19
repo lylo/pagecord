@@ -98,7 +98,7 @@ class Post < ApplicationRecord
       if content_image_attachments.any?
         content_image_attachments.first
       elsif attachments.any?
-        attachments.first
+        attachments.find(&:image?)
       end
     end
   end
