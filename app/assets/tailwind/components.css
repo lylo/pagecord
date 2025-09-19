@@ -75,6 +75,10 @@
       code {
         @apply !bg-[var(--color-bg-subtle)];
       }
+
+      audio {
+        @apply my-[var(--lexxy-content-margin)] border;
+      }
      }
 
     .post-footer {
