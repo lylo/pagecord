@@ -3,6 +3,9 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
 
   connect() {
+    // Disable lightbox on mobile devices
+    if (this.isMobile()) return;
+
     // Find all images in article content and make them clickable
     this.element.querySelectorAll('article img').forEach(img => {
       img.style.cursor = 'zoom-in'
@@ -11,6 +14,10 @@ export default class extends Controller {
 
     // Handle keyboard events
     this.handleKeydown = this.handleKeydown.bind(this)
+  }
+
+  isMobile() {
+    return window.innerWidth <= 768
   }
 
   disconnect() {
