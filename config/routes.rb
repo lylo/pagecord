@@ -58,6 +58,9 @@ Rails.application.routes.draw do
   get "up", to: "rails/health#show", as: :rails_health_check
   get "verify_domain", to: "custom_domains#verify", as: :verify_custom_domain
 
+  # PWA routes
+  get "manifest", to: "rails/pwa#manifest", as: :pwa_manifest
+
   constraints SidekiqAdminConstraint.new do
     mount Sidekiq::Web, at: "/admin/sidekiq"
   end
