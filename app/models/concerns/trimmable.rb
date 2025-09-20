@@ -18,8 +18,8 @@ module Trimmable
     rich_text_attribute = self.class.rich_text_attribute_name
     if rich_text_attribute.present?
       if send(rich_text_attribute).body.present?
-        doc = trim(send(rich_text_attribute).body.to_s)
-        send(rich_text_attribute).body = doc
+        doc = trim(send(rich_text_attribute).body.to_html)
+        send("#{rich_text_attribute}=", doc)  # just assign the string
       end
     end
   end

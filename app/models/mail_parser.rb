@@ -95,18 +95,8 @@ class MailParser
 
           transformed_html = html_transform(html_content)
 
-          # Process any image attachments that are not referenced inline
-          @attachments.each do |attachment|
-            content_id = attachment[:original].content_id&.gsub(/\A<|>\Z/, "")
-
-            next if content_id.present? && html_content.include?(content_id)
-
-            transformed_html << attachment_preview_node(
-                attachment[:blob],
-                attachment[:url],
-                attachment[:original]
-              )
-          end
+          # Process any attachments that are not referenced inline
+          transformed_html << process_unreferenced_attachments(html_content)
 
           transformed_html
         else
@@ -117,14 +107,11 @@ class MailParser
           @mail.parts.each do |part|
             if part.text?
               nodes << plain_text_transform(part.decoded)
-            elsif image_part?(part)
+            elsif part.attachment? && media_attachment?(part)
               attachment = find_attachment_from_part(part)
               next unless attachment
 
-              nodes << attachment_preview_node(
-                attachment[:blob],
-                attachment[:url],
-                attachment[:original])
+              nodes << process_attachment(attachment)
             end
           end
 
@@ -151,7 +138,7 @@ class MailParser
     end
 
     def store_attachments
-      @attachments = image_attachments.map do |attachment|
+      @attachments = media_attachments.map do |attachment|
         blob = ActiveStorage::Blob.create_and_upload!(
           io: StringIO.new(attachment.body.to_s),
           filename: attachment.filename,
@@ -162,15 +149,35 @@ class MailParser
       end
     end
 
-    def image_attachments
-      @mail.attachments.select { |attachment| image_part?(attachment) }
+    def media_attachments
+      @mail.attachments.select { |attachment| media_attachment?(attachment) }
     end
 
     def find_attachment_from_part(part)
       @attachments.find { |a| a[:original].object_id == part.object_id }
     end
 
-    def image_part?(part)
-      part.content_type.start_with?("image/")
+    def media_attachment?(part)
+      part.content_type.start_with?("image/", "video/", "audio/")
+    end
+
+    def process_unreferenced_attachments(html_content)
+      attachment_html = ""
+      @attachments.each do |attachment|
+        content_id = attachment[:original].content_id&.gsub(/\A<|>\Z/, "")
+        next if content_id.present? && html_content.include?(content_id)
+
+        attachment_html << process_attachment(attachment)
+      end
+      attachment_html
+    end
+
+    def process_attachment(attachment)
+      preview_html = attachment_preview_node(
+        attachment[:blob],
+        attachment[:url],
+        attachment[:original]
+      )
+      preview_html || ""
     end
 end

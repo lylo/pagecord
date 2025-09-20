@@ -34,7 +34,15 @@ class Post < ApplicationRecord
   after_create :detect_open_graph_image
 
   def content_present
-    errors.add(:content, "can't be blank") unless content.body.present?
+    has_content = content.body.present? && content.body.to_plain_text.strip.present?
+    has_attachments = content.body&.attachments&.any?
+
+    unless has_content || has_attachments
+      doc = Nokogiri::HTML::DocumentFragment.parse(content.body.to_s)
+      unless doc.css("img, video, audio").any?
+        errors.add(:content, "can't be blank")
+      end
+    end
   end
 
   def title_present_for_pages
@@ -90,7 +98,7 @@ class Post < ApplicationRecord
       if content_image_attachments.any?
         content_image_attachments.first
       elsif attachments.any?
-        attachments.first
+        attachments.find(&:image?)
       end
     end
   end
