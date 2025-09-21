@@ -42,7 +42,7 @@
 
   <div class="md:flex-1">
     <%= form.label :message, t('replies.form.message_label'), class: "block mb-1" %>
-    <%= form.text_area :message, rows: 6, class: "block w-full rounded-md", required: true, data: { controller: "autogrow" }  %>
+    <%= form.text_area :message, rows: 6, class: "block w-full rounded-md", required: true %>
     <% if @reply.errors[:message].any? %>
       <span class="text-red-500 text-sm"><%= @reply.errors.full_messages_for(:message).first %></span>
     <% end %>
