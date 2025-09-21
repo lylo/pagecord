@@ -116,6 +116,14 @@ class SluggableTest < ActiveSupport::TestCase
     assert post.valid?
   end
 
+  test "should not replace apostrophes with hypens" do
+    title = "it's just not cricket"
+    post = @blog.posts.create!(title: title, content: "Content")
+
+    assert_equal "its-just-not-cricket", post.slug
+    assert post.valid?
+  end
+
   private
 
     def assert_invalid_slug_format(post, slug)

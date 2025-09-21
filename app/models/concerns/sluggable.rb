@@ -45,9 +45,13 @@ module Sluggable
     end
 
     def parameterized_title
-      parameterized = title.to_s.parameterize.truncate(100, omission: "") || ""
+      # remove apostrophes to avoid unwanted hyphens during parameterization
+      parameterized = title.to_s.delete("'")
 
-      # Remove trailing hyphens that might result from truncation
+      # convert to URL-friendly form and cap at 100 chars
+      parameterized = parameterized.parameterize.truncate(100, omission: "") || ""
+
+      # Remove trailing hyphens that canresult from truncation
       parameterized.gsub(/-+\z/, "")
     end
 end
