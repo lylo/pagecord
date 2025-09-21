@@ -51,7 +51,7 @@ module Sluggable
       # convert to URL-friendly form and cap at 100 chars
       parameterized = parameterized.parameterize.truncate(100, omission: "") || ""
 
-      # Remove trailing hyphens that canresult from truncation
+      # Remove trailing hyphens that can result from truncation
       parameterized.gsub(/-+\z/, "")
     end
 end
