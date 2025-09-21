@@ -36,7 +36,28 @@ class Blogs::BaseController < ApplicationController
     end
 
     def blog_from_custom_domain
-      Blog.find_by(custom_domain: request.host)
+      blog = Blog.find_by(custom_domain: request.host)
+      return blog if blog
+
+      # If no exact match, try www/non-www variant
+      blog = if request.host.start_with?("www.")
+        # Current request is www.domain.com, try domain.com
+        variant_host = request.host.sub(/\Awww\./, "")
+        Blog.find_by(custom_domain: variant_host)
+      else
+        # Current request is domain.com, try www.domain.com
+        variant_host = "www.#{request.host}"
+        Blog.find_by(custom_domain: variant_host)
+      end
+
+      if blog
+        # 301 redirect to canonical
+        query_string = request.query_string.present? ? "?#{request.query_string}" : ""
+        canonical_url = "#{request.protocol}#{blog.custom_domain}#{request.path}#{query_string}"
+        redirect_to canonical_url, status: :moved_permanently, allow_other_host: true
+      end
+
+      blog
     end
 
     def enforce_custom_domain
@@ -51,6 +72,7 @@ class Blogs::BaseController < ApplicationController
         redirect_to new_url, status: :moved_permanently, allow_other_host: true
       end
     end
+
 
     def set_locale
       I18n.locale = @blog&.locale || I18n.default_locale
