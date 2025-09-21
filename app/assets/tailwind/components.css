@@ -26,6 +26,10 @@
       .blog-title {
         @apply !text-[var(--color-text-heading)];
       }
+
+      .avatar img {
+        @apply border border-[var(--color-border)] w-16 h-16;
+      }
     }
 
     /* ---- BLOG POST  ---- */
