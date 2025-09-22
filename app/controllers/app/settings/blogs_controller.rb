@@ -16,7 +16,7 @@ class App::Settings::BlogsController < AppController
         end
       end
 
-      @blog.posts.touch_all # cache busting
+      # FIXME bust the cache itself, don't update the post @blog.posts.touch_all # cache busting
 
       redirect_to app_settings_path, notice: "Blog settings updated"
     else

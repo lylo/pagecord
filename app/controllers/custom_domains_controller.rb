@@ -5,7 +5,7 @@ class CustomDomainsController < ApplicationController
     domain = params[:domain]&.downcase
     return head :bad_request if domain.blank?
 
-    blog = Blog.find_by(custom_domain: domain)
+    blog = Blog.find_by_domain_with_www_fallback(domain)
     return head :unprocessable_content unless blog&.user&.subscribed?
 
     head :ok
