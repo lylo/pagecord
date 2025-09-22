@@ -13,8 +13,6 @@ class Blog < ApplicationRecord
   has_many :social_links, dependent: :destroy
   accepts_nested_attributes_for :social_links, allow_destroy: true
 
-  has_many :followings, foreign_key: :followed_id, dependent: :destroy
-  has_many :followers, through: :followings, source: :follower
 
   has_many :exports, class_name: "Blog::Export", dependent: :destroy
   has_many :page_views, dependent: :destroy
