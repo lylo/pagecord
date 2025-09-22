@@ -1,0 +1,5 @@
+@media (prefers-color-scheme: dark) {
+  .lexxy-content {
+    --lexxy-color-code-token-punctuation: var(--color-text);
+  }
+}
