@@ -7,6 +7,8 @@ lexxy-editor:focus-within {
 }
 
 lexxy-editor {
+  --lexxy-color-accent-dark: #4fbd9c;
+
   /* Placeholder color */
   &[placeholder]::before {
     color: var(--color-slate-600);
