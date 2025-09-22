@@ -8,7 +8,7 @@ class CustomDomainsControllerTest < ActionDispatch::IntegrationTest
 
   test "should return not found for nonexistent custom domain" do
     get verify_custom_domain_path, params: { domain: "nonexistent.com" }
-    assert_response :not_found
+    assert_response :unprocessable_content
   end
 
   test "should return bad request when domain parameter is missing" do
@@ -27,6 +27,6 @@ class CustomDomainsControllerTest < ActionDispatch::IntegrationTest
     assert user.subscription.lapsed?
 
     get verify_custom_domain_path, params: { domain: "annie.blog" }
-    assert_response :not_found
+    assert_response :unprocessable_content
   end
 end

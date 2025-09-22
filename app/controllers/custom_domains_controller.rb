@@ -6,7 +6,7 @@ class CustomDomainsController < ApplicationController
     return head :bad_request if domain.blank?
 
     blog = Blog.find_by(custom_domain: domain)
-    return head :not_found unless blog&.user&.subscribed?
+    return head :unprocessable_content unless blog&.user&.subscribed?
 
     head :ok
   end
