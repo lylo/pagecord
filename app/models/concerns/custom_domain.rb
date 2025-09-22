@@ -46,7 +46,7 @@ module CustomDomain
           "www.#{host}"
         end
       end
-      
+
       def extract_host(domain)
         if domain.start_with?("http")
           URI.parse(domain).host
