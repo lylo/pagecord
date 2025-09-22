@@ -93,4 +93,7 @@ Rails.application.configure do
 
   # allow any host in dev
   config.hosts.clear
+
+  # Allow web console from Docker host
+  config.web_console.allowed_ips = %w[172.0.0.0/8 10.0.0.0/8 192.168.0.0/16]
 end
