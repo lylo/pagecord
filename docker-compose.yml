@@ -38,17 +38,8 @@ services:
       - .:/rails
     stdin_open: true
     tty: true
-    command: bash -c "rm -f tmp/pids/server.pid && bin/rails db:prepare && bin/rails db:test:prepare && bin/rails server -b 0.0.0.0"
+    command: bash -c "rm -f tmp/pids/server.pid && bin/rails db:prepare && bin/rails db:test:prepare && bin/rails tailwindcss:watch & bin/rails server -b 0.0.0.0"
 
-  css:
-    build: .
-    environment:
-      RAILS_ENV: development
-    volumes:
-      - .:/rails
-    working_dir: /rails
-    command: sh -c "bin/rails tailwindcss:build && bin/rails tailwindcss:watch"
-    restart: unless-stopped
 
 volumes:
   postgres_data:
