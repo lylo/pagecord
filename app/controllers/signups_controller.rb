@@ -25,9 +25,9 @@ class SignupsController < ApplicationController
     end
 
     @user = User.new(user_params)
-    
-    # New users should get Lexxy if configured 
-    @user.features = ["lexxy"] if ENV["LEXXY_FOR_NEW_USERS"]
+
+    # New users should get Lexxy if configured
+    @user.features = [ "lexxy" ] if ENV["LEXXY_FOR_NEW_USERS"]
 
     if signup_from_allowed_timezone && @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
