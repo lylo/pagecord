@@ -165,7 +165,13 @@ a {
   font-style: italic;
 }
 
-.digest pre, .digest code {
+.digest code:not([data-language]) {
+  background: #f6f8fa;
+  padding: 1px;
+  font-size: 95%;
+}
+
+.digest pre, .digest code[data-language] {
   background: #f6f8fa;
   border-radius: 3px;
   font-family: monospace;
