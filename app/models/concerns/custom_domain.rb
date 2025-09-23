@@ -12,6 +12,50 @@ module CustomDomain
     validate :restricted_domain
   end
 
+  class_methods do
+    def find_by_domain_with_www_fallback(domain)
+      return unless domain.present?
+
+      blog = find_by(custom_domain: domain)
+      return blog if blog
+
+      return unless root_domain?(domain)
+
+      find_by(custom_domain: variant_domain(domain))
+    end
+
+    private
+
+      def root_domain?(domain)
+        host = extract_host(domain)
+        return false unless host
+
+        parts = host.split(".")
+
+        # Root domain: example.com (2 parts) or www.example.com (3 parts starting with www)
+        parts.length == 2 || (parts.length == 3 && parts.first == "www")
+      end
+
+      def variant_domain(domain)
+        host = extract_host(domain)
+        return nil unless host
+
+        if host.start_with?("www.")
+          host.delete_prefix("www.")
+        else
+          "www.#{host}"
+        end
+      end
+
+      def extract_host(domain)
+        if domain.start_with?("http")
+          URI.parse(domain).host
+        else
+          domain
+        end
+      end
+  end
+
   def domain_changed?
     # we don't want a nil to "" to be considered a domain change
     nil_to_blank_change = (custom_domain_previously_was.nil? && custom_domain.blank?) ||

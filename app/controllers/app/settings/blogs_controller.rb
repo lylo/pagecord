@@ -3,18 +3,20 @@ class App::Settings::BlogsController < AppController
   end
 
   def update
+    on_demand_tls = ENV["ON_DEMAND_TLS"].present?
+
     if @blog.update(blog_params)
       if @blog.domain_changed?
         if @blog.custom_domain_previously_was.present?
-          RemoveCustomDomainJob.perform_later(@blog.id, @blog.custom_domain_previously_was)
+          RemoveCustomDomainJob.perform_later(@blog.id, @blog.custom_domain_previously_was) unless on_demand_tls
         end
 
         if @blog.custom_domain.present?
-          AddCustomDomainJob.perform_later(@blog.id, @blog.custom_domain)
+          AddCustomDomainJob.perform_later(@blog.id, @blog.custom_domain) unless on_demand_tls
         end
       end
 
-      @blog.posts.touch_all # cache busting
+      # FIXME bust the cache itself, don't update the post @blog.posts.touch_all # cache busting
 
       redirect_to app_settings_path, notice: "Blog settings updated"
     else

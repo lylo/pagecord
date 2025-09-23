@@ -289,6 +289,38 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
   end
 
+  test "should redirect from www variant to canonical custom domain" do
+    @blog = blogs(:annie)
+    @blog.update!(custom_domain: "example.blog")
+    host! "www.example.blog"
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_redirected_to "http://example.blog/#{post.slug}"
+  end
+
+  test "should redirect from root domain to www variant when canonical domain is www" do
+    @blog = blogs(:annie)
+    @blog.update!(custom_domain: "www.example.blog")
+    host! "example.blog"
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_redirected_to "http://www.example.blog/#{post.slug}"
+  end
+
+  test "should not redirect when on canonical custom domain" do
+    @blog = blogs(:annie)
+    host! @blog.custom_domain
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_response :success
+  end
+
   test "should redirect to last page on pagy overflow" do
     get blog_posts_path(page: 999)
 

@@ -81,38 +81,106 @@
 
   <h3 id="dns" class="source-serif text-2xl font-semibold">How do I set up DNS for a custom domain?</h3>
   <p>
-    If you're a paying customer, you can use your own domain name for your Pagecord. To host your Pagecord on a root domain
-    (e.g. mydomain.com) you'll need to create the following DNS records:
-  </p>
-  <table>
-    <thead>
-      <tr>
-        <th>Record Type</th>
-        <th>Name</th>
-        <th>Content</th>
-        <th>TTL</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>CNAME</td>
-        <td><strong>@</strong></td>
-        <td>proxy.pagecord.com</td>
-        <td>3600</td>
-      </tr>
-      <tr>
-        <td>CNAME</td>
-        <td><strong>www</strong></td>
-        <td>proxy.pagecord.com</td>
-        <td>3600</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p>
-    If you want your Pagecord on subdomain (eg: https://blog.mydomain.com), you'll need to create the following DNS records instead:
+    If you're a paying customer, you can use your own domain name for your Pagecord.
   </p>
 
+  <h4 class="text-lg font-medium mt-6 mb-3">For root domains (e.g. mydomain.com)</h4>
+   <p class="mb-3">
+    Pagecord automatically handles both www and non-www versions of your domain. Set up both records below so visitors can reach your site either way, and Pagecord will
+  redirect them to your preferred version.
+   </p> 
+   <p class="mb-3">
+    Create these DNS records. Try the options in order - use the first one your DNS provider supports:
+  </p>
+
+  <div class="mb-4">
+    <p class="font-medium mb-2">Option 1: CNAME + ALIAS (recommended)</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Record Type</th>
+          <th>Name</th>
+          <th>Content</th>
+          <th>TTL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ALIAS</td>
+          <td><strong>@</strong></td>
+          <td>proxy.pagecord.com</td>
+          <td>3600</td>
+        </tr>
+        <tr>
+          <td>CNAME</td>
+          <td><strong>www</strong></td>
+          <td>proxy.pagecord.com</td>
+          <td>3600</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mb-4">
+    <p class="font-medium mb-2">Option 2: CNAME only (Cloudflare users)</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Record Type</th>
+          <th>Name</th>
+          <th>Content</th>
+          <th>TTL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CNAME</td>
+          <td><strong>@</strong></td>
+          <td>proxy.pagecord.com</td>
+          <td>3600</td>
+        </tr>
+        <tr>
+          <td>CNAME</td>
+          <td><strong>www</strong></td>
+          <td>proxy.pagecord.com</td>
+          <td>3600</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mb-4">
+    <p class="font-medium mb-2">Option 3: A record (if ALIAS not supported)</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Record Type</th>
+          <th>Name</th>
+          <th>Content</th>
+          <th>TTL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A</td>
+          <td><strong>@</strong></td>
+          <td>94.130.191.219</td>
+          <td>3600</td>
+        </tr>
+        <tr>
+          <td>CNAME</td>
+          <td><strong>www</strong></td>
+          <td>proxy.pagecord.com</td>
+          <td>3600</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="text-sm text-gray-600 mt-2">
+      <em>⚠️ Warning: This IP address may change in the future. Use ALIAS if your provider supports it.</em>
+    </p>
+  </div>
+
+  <h4 class="text-lg font-medium mt-6 mb-3">For subdomains (e.g. blog.mydomain.com)</h4>
   <table>
     <thead>
       <tr>
@@ -132,7 +200,7 @@
     </tbody>
   </table>
 
-  <p>
+  <p class="mt-6">
     <em>Note: If you're using Cloudflare to manage DNS, you need to set SSL/TLS mode to <strong>Full (Strict)</strong> or disable the proxy (the orange cloud).</em>
   </p>
 
