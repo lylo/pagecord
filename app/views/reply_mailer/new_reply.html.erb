@@ -1,5 +1,5 @@
 <p>
-  <%= t('replies.mailer.intro') %> <%= link_to "your post", post_url(@post) %>, <b><%= @post.display_title %></b>.
+  <%= t('replies.mailer.intro') %>, <%= link_to @post.display_title, post_url(@post) %>.
 </p>
 
 <div style="background-color: #F3F4F6; padding: 15px; border-radius: 5px; margin: 20px 0;">

@@ -11,7 +11,7 @@ class ReplyMailerTest < ActionMailer::TestCase
 
     assert_equal [ "fred@example.com" ], email.reply_to
     assert_equal [ reply.post.blog.user.email ], email.to
-    assert_equal "New reply to your post: #{reply.post.title}", email.subject
+    assert_equal "Re: #{reply.post.title}", email.subject
     assert_match "Great post! Keep it up.", email.body.encoded
     assert_match "Rails mailers", email.body.encoded
   end

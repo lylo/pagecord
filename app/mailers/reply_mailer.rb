@@ -5,7 +5,7 @@ class ReplyMailer < MailpaceMailer
     @reply = params[:reply]
     @post = @reply.post
 
-    subject = "New reply to your post: #{@post.display_title}"
+    subject = "Re: #{@post.display_title}"
 
     mail(
       to: @post.blog.user.email,

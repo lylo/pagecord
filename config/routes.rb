@@ -176,6 +176,10 @@ Rails.application.routes.draw do
 
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 
+    namespace :api do
+      post "embeds/bandcamp", to: "embeds#bandcamp"
+    end
+
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
     resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
@@ -214,10 +218,6 @@ Rails.application.routes.draw do
       path = params[:path] ? "/#{params[:path]}" : "/"
       subdomain_redirect(path).call(params, _req)
     }, constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }
-  end
-
-  namespace :api do
-    post "embeds/bandcamp", to: "embeds#bandcamp"
   end
 
   direct :rails_public_blob do |blob|
