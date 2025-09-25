@@ -5,6 +5,7 @@ class Blogs::PostsController < Blogs::BaseController
 
   skip_before_action :verify_authenticity_token, only: :not_found
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
+  rescue_from Pagy::VariableError, with: :redirect_to_first_page
 
   def index
     base_scope = @blog.posts.visible
@@ -51,6 +52,10 @@ class Blogs::PostsController < Blogs::BaseController
 
     def redirect_to_last_page(exception)
       redirect_to url_for(page: exception.pagy.last, host: request.host)
+    end
+
+    def redirect_to_first_page
+      redirect_to url_for(page: 1, host: request.host)
     end
 
     def page_size
