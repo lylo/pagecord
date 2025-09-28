@@ -25,7 +25,7 @@ class Blog::Export::ImageHandler
       download_image(src, local_path)
       update_img_src(img, safe_filename)
     rescue StandardError => e
-      message = "Blog::Export::ImageHandler. Unable to process image #{src}: #{e.message}"
+      message = "Blog::Export::ImageHandler. Unable to process image #{src} for post #{@post.slug}: #{e.message}"
       Sentry.capture_message(message)
       Rails.logger.error message
     end
@@ -36,8 +36,16 @@ class Blog::Export::ImageHandler
     end
 
     def download_image(src, local_path)
-      Rails.logger.info "Blog::Export::ImageHandler. Downloading image from #{src} to #{local_path}"
-      File.open(local_path, "wb") { |file| file.write(URI.open(src).read) }
+      # Extract original URL if it's a Cloudflare CDN image URL
+      actual_src = extract_original_url(src)
+      Rails.logger.info "Blog::Export::ImageHandler. Downloading image from post #{@post.slug}: #{actual_src} to #{local_path}"
+      File.open(local_path, "wb") { |file| file.write(URI.open(actual_src).read) }
+    end
+
+    def extract_original_url(src)
+      # Extract original URL from Cloudflare CDN image URLs like:
+      # https://pagecord.com/cdn-cgi/image/width=1600,height=1200,format=webp,quality=90/https://storage.pagecord.com/78v1ct1yskcl66bzrl5zf8bz2rpw
+      src.gsub(%r{https://pagecord\.com/cdn-cgi/image/[^/]+/}, "")
     end
 
     def update_img_src(img, safe_filename)
