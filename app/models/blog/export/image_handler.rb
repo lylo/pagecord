@@ -1,7 +1,7 @@
 class Blog::Export::ImageHandler
   def initialize(post, root_dir)
     @post = post
-    @post_images_dir = File.join(root_dir, @post.token)
+    @post_images_dir = File.join(root_dir, @post.slug)
   end
 
   def process_images(html)
@@ -49,6 +49,6 @@ class Blog::Export::ImageHandler
     end
 
     def update_img_src(img, safe_filename)
-      img["src"] = "images/#{@post.token}/#{safe_filename}"
+      img["src"] = "images/#{@post.slug}/#{safe_filename}"
     end
 end

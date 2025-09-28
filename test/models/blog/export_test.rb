@@ -52,10 +52,10 @@ class Blog::ExportTest < ActiveSupport::TestCase
       assert_includes content, "<title>Test Post</title>"
       assert_includes content, "<h1>Test Post</h1>"
 
-      image_path = File.join(dir, "images", @post.token, "test_image.jpg")
+      image_path = File.join(dir, "images", @post.slug, "test_image.jpg")
       assert File.exist?(image_path)
       assert_equal @image_data, File.read(image_path)
-      assert_includes content, "images/#{@post.token}/test_image.jpg"
+      assert_includes content, "images/#{@post.slug}/test_image.jpg"
     end
   end
 end
