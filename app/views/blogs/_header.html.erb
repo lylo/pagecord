@@ -4,7 +4,7 @@
   <%= render "blogs/blog_titlebar" %>
 
   <% if @blog.bio.present? && !local_assigns[:hide_bio] %>
-  <div class="bio">
+  <div class="bio lexxy-content">
     <%= auto_link @blog.bio %>
   </div>
   <% end %>
