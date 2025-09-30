@@ -76,7 +76,7 @@
         @apply text-center px-4 sm:px-8 !mt-2;
       }
 
-      code {
+      code, pre {
         @apply !bg-[var(--color-bg-subtle)];
       }
 
