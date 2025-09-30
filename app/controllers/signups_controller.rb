@@ -78,6 +78,7 @@ class SignupsController < ApplicationController
     end
 
     def signup_from_allowed_timezone
-      [ "Chennai", "Ekaterinburg" ].exclude?(user_params[:timezone])
+      banned_timezones = ENV["BANNED_TIMEZONES"]&.split(",")&.map(&:strip) || []
+      banned_timezones.exclude?(user_params[:timezone])
     end
 end
