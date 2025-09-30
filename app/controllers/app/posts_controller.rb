@@ -97,6 +97,9 @@ class App::PostsController < AppController
         # replace double <br> from Trix with single <br>
         cleaned_content = cleaned_content.gsub(/<br><br><\/div>/, "<br></div>")
 
+        # replace <div><br></div> with empty string (remove empty paragraphs)
+        cleaned_content = cleaned_content.gsub(/<div><br><\/div>/, "")
+
         # replace <div><br> from Trix with just <div>
         cleaned_content = cleaned_content.gsub(/<div><br>/, "<div>")
 
