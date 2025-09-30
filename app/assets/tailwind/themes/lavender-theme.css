@@ -1,7 +1,7 @@
 [data-theme="lavender"] {
   --theme-hue: 300;
   --theme-lightness: 0.98;
-  --theme-chroma: 0.04;
+  --theme-chroma: 0.0175;
   --theme-accent-hue-shift: 60;
 }
 

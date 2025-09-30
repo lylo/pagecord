@@ -1,7 +1,7 @@
 [data-theme="coral"] {
   --theme-hue: 6;
   --theme-lightness: 0.96;
-  --theme-chroma: 0.06;
+  --theme-chroma: 0.035;
   --theme-accent-hue-shift: -40;
 }
 

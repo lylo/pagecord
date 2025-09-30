@@ -1,13 +1,14 @@
 [data-theme="sand"] {
+  /* used in oklch(theme-lightness, theme-chroma, theme-hue) */
   --theme-hue: 75;
   --theme-lightness: 0.97;
-  --theme-chroma: 0.02;
-  --theme-accent-hue-shift: -30;
+  --theme-chroma: 0.01;
+  --theme-accent-hue-shift: -60;
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="sand"] {
-    --theme-hue: 90;
+    --theme-hue: 100;
     --theme-chroma: 0.01;
     --theme-lightness: 0.18;
   }

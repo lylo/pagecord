@@ -17,11 +17,11 @@
   --color-bg-inverted: oklch(0.25 0.04 calc(var(--theme-hue) + 20)); /* A darkish inverted background */
 
   /* === Text === */
-  --color-text: oklch(0.25 0.04 calc(var(--theme-hue) + 20));
-  --color-text-heading: oklch(0.25 0.04 calc(var(--theme-hue) + 20));
-  --color-text-muted: oklch(0.50 0.04 calc(var(--theme-hue) + 20));
-  --color-text-light: oklch(0.65 0.03 calc(var(--theme-hue) + 20));
-  --color-text-disabled: oklch(0.8 0.02 calc(var(--theme-hue) + 20));
+  --color-text: oklch(0.25 0 0);
+  --color-text-heading: oklch(0.25 0 0);
+  --color-text-muted: oklch(0.50 0 0);
+  --color-text-light: oklch(0.65 0 0);
+  --color-text-disabled: oklch(0.8 0 0);
   --color-text-inverted: white;
 
   /* === Accent === */
@@ -56,12 +56,12 @@
     --color-bg-inverted: oklch(0.90 0.03 var(--theme-hue)); /* Light background in dark mode */
 
     /* === Text === */
-    --color-text: oklch(0.90 0.04 calc(var(--theme-hue) + 20));
-    --color-text-heading: oklch(0.95 0.05 calc(var(--theme-hue) + 20));
-    --color-text-muted: oklch(0.70 0.03 calc(var(--theme-hue) + 20));
-    --color-text-light: oklch(0.60 0.02 calc(var(--theme-hue) + 20));
-    --color-text-disabled: oklch(0.50 0.015 calc(var(--theme-hue) + 20));
-    --color-text-inverted: oklch(0.15 0.03 var(--theme-hue)); /* Dark on light */
+    --color-text: oklch(0.90 0 0);
+    --color-text-heading: oklch(0.95 0 0);
+    --color-text-muted: oklch(0.70 0 0);
+    --color-text-light: oklch(0.60 0 0);
+    --color-text-disabled: oklch(0.50 0 0);
+    --color-text-inverted: oklch(0.15 0 0);
 
     /* === Accent === */
     --color-accent: oklch(0.60 0.12 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));

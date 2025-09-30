@@ -1,7 +1,7 @@
 [data-theme="mint"] {
   --theme-hue: 120;
   --theme-lightness: 0.98;
-  --theme-chroma: 0.03;
+  --theme-chroma: 0.0175;
   --theme-accent-hue-shift: 100;
 }
 

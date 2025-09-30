@@ -1,7 +1,7 @@
 [data-theme="sky"] {
   --theme-hue: 210;
-  --theme-lightness: 0.97;
-  --theme-chroma: 0.03;
+  --theme-lightness: 0.98;
+  --theme-chroma: 0.0125;
   --theme-accent-hue-shift: 40;
 }
 
