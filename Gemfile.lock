@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: d8795bd762ab2716b6e7fd07a403566b28159cdc
+  revision: cf6b3107753a762b27bfcf9eefcfd9feb43f0242
   branch: main
   specs:
     actioncable (8.1.0.beta1)
@@ -180,7 +180,7 @@ GEM
     ffi (1.17.2-arm64-darwin)
     ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
-    globalid (1.2.1)
+    globalid (1.3.0)
       activesupport (>= 6.1)
     google-protobuf (4.32.1)
       bigdecimal
