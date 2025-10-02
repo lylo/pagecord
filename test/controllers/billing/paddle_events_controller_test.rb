@@ -105,6 +105,47 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal subscription.reload.next_billed_at, Time.parse(payload["data"]["billing_period"]["ends_at"])
   end
 
+  test "should use base unit price when no overrides present" do
+    user = users(:vivian)
+    payload = payload_for("subscription.created", user)
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert_equal 3000, user.subscription.reload.unit_price
+  end
+
+  test "should use override unit price when present" do
+    user = users(:vivian)
+    payload = payload_for("subscription.created", user)
+
+    # Add unit price overrides to the payload
+    payload["data"]["items"][0]["price"]["unit_price_overrides"] = [
+      {
+        "country_codes" => [ "BR", "IN" ],
+        "unit_price" => { "amount" => "1900", "currency_code" => "USD" }
+      }
+    ]
+
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert_equal 1900, user.subscription.reload.unit_price
+  end
+
   private
 
     def payload_for(event_type, user)

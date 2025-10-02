@@ -77,7 +77,7 @@ module Billing
           paddle_subscription_id: data.id,
           paddle_customer_id: data.customer_id,
           paddle_price_id: data.items[0].price.id,
-          unit_price: data.items[0].price.unit_price.amount.to_i,
+          unit_price: unit_price,
           next_billed_at: Time.parse(data.next_billed_at)
         )
       end
@@ -100,7 +100,7 @@ module Billing
         Rails.logger.info "Subscription next billed at updated to #{next_billed_at}"
         @subscription.update!(
             paddle_price_id: data.items[0].price.id,
-            unit_price: data.items[0].price.unit_price.amount.to_i,
+            unit_price: unit_price,
             next_billed_at: next_billed_at
           )
 
@@ -148,6 +148,16 @@ module Billing
       def transaction_payment_failed
         Rails.logger.info "Transaction payment failed"
         raise "Payment failed for user #{@user.id} (#{@user.blog.subdomain})"
+      end
+
+      def unit_price
+        price_data = data.items[0].price
+
+        if price_data.unit_price_overrides.present?
+          price_data.unit_price_overrides[0].unit_price.amount.to_i
+        else
+          price_data.unit_price.amount.to_i
+        end
       end
 
       def data
