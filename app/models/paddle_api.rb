@@ -13,6 +13,10 @@ class PaddleApi
     get "subscriptions/#{subscription_id}/update-payment-method-transaction"
   end
 
+  def get_discount(id)
+    get "discounts/#{id}"
+  end
+
   def get(path)
     response = HTTParty.get("#{PADDLE_CONFIG[:base_url]}/#{path}", headers: headers)
     JSON.parse(response.body)
