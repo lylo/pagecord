@@ -35,8 +35,8 @@ export default class extends Controller {
       this.createModal()
     }
 
-    // Set the image source to the clicked image
-    this.lightboxImage.src = img.src
+    // Set the image source to the full-size version if available, otherwise use the clicked image
+    this.lightboxImage.src = img.dataset.lightboxFullUrl || img.src
     this.lightboxImage.alt = img.alt || ''
 
     // Show the modal with smooth animation - prevent scrolling on mobile too
