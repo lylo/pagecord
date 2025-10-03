@@ -134,4 +134,5 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
   end
+
 end

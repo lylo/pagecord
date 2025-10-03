@@ -124,6 +124,22 @@ class SluggableTest < ActiveSupport::TestCase
     assert post.valid?
   end
 
+  test "should not allow reserved slugs" do
+    Sluggable::RESERVED_SLUGS.each do |reserved_slug|
+      post = @blog.posts.build(title: "Test", content: "Test")
+      post.slug = reserved_slug
+      post.valid?  # Trigger validations which will also trigger set_slug callback
+      # The slug should have been regenerated to avoid the reserved slug
+      assert_not_equal reserved_slug, post.slug, "Expected slug to be regenerated from reserved '#{reserved_slug}'"
+    end
+  end
+
+  test "should prevent posts slug from being generated" do
+    post = @blog.posts.create!(title: "Posts", content: "This should not get the slug 'posts'")
+    assert_not_equal "posts", post.slug
+    assert_match /^posts-[a-f0-9]+$/, post.slug
+  end
+
   private
 
     def assert_invalid_slug_format(post, slug)

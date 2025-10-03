@@ -8,6 +8,7 @@ class Blog < ApplicationRecord
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
   has_many :pages, -> { where(is_page: true) }, class_name: "Post"
+  belongs_to :home_page, class_name: "Post", optional: true
   has_many :sender_email_addresses, dependent: :destroy
 
   has_many :social_links, dependent: :destroy
@@ -31,6 +32,7 @@ class Blog < ApplicationRecord
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
   validates :google_site_verification, format: { with: /\A[a-zA-Z0-9_-]+\z/, message: "can only contain letters, numbers, underscores, and hyphens" }, allow_blank: true
+  validate :homepage_is_a_page
 
   def custom_title?
     title.present?
@@ -59,6 +61,12 @@ class Blog < ApplicationRecord
 
       if Subdomain.reserved?(subdomain)
         errors.add(:subdomain, "is reserved")
+      end
+    end
+
+    def homepage_is_a_page
+      if home_page_id.present? && home_page.present? && !home_page.is_page
+        errors.add(:home_page, "must be a page")
       end
     end
 end

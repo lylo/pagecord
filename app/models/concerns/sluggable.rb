@@ -1,6 +1,8 @@
 module Sluggable
   extend ActiveSupport::Concern
 
+  RESERVED_SLUGS = %w[posts feed feed.xml admin api app rails].freeze
+
   included do
     before_validation :set_slug
     validates :slug,
@@ -13,6 +15,10 @@ module Sluggable
       uniqueness: {
         scope: :blog_id,
         message: "This slug has already been taken. Please choose another one."
+      },
+      exclusion: {
+        in: RESERVED_SLUGS,
+        message: "is reserved and cannot be used"
       }
   end
 
@@ -20,6 +26,9 @@ module Sluggable
 
     def set_slug
       if slug.blank? || should_regenerate_slug?
+        generate_slug
+      elsif RESERVED_SLUGS.include?(slug)
+        # If someone manually sets a reserved slug, regenerate it
         generate_slug
       end
     end
@@ -41,7 +50,7 @@ module Sluggable
     end
 
     def slug_taken?(candidate)
-      blog.all_posts.where.not(id: id).exists?(slug: candidate)
+      RESERVED_SLUGS.include?(candidate) || blog.all_posts.where.not(id: id).exists?(slug: candidate)
     end
 
     def parameterized_title

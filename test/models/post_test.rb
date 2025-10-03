@@ -215,4 +215,12 @@ class PostTest < ActiveSupport::TestCase
     post = Post.create(blog: blogs(:joel), title: "public post", content: "content", hidden: false)
     assert Post.visible.include?(post)
   end
+
+  test "pages require a title" do
+    blog = blogs(:joel)
+    page = blog.posts.new(content: "Page content", is_page: true, title: "")
+    assert_not page.valid?
+    assert_includes page.errors[:title], "can't be blank"
+  end
+
 end

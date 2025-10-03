@@ -5,6 +5,9 @@ class App::Settings::BlogsController < AppController
   def update
     on_demand_tls = ENV["ON_DEMAND_TLS"].present?
 
+    # Convert empty string to nil for home_page_id
+    params[:blog][:home_page_id] = nil if params[:blog][:home_page_id].blank?
+
     if @blog.update(blog_params)
       if @blog.domain_changed?
         if @blog.custom_domain_previously_was.present?
@@ -32,7 +35,8 @@ class App::Settings::BlogsController < AppController
         :fediverse_author_attribution,
         :allow_search_indexing,
         :google_site_verification,
-        :locale
+        :locale,
+        :home_page_id
       ]
 
       permitted_params << [

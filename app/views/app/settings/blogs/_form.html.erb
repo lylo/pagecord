@@ -24,6 +24,19 @@
   <% end %>
 
   <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Homepage</h3>
+    <p>
+      By default, your homepage displays your latest posts. You can choose a specific page to be your homepage instead.
+    </p>
+
+    <%= form.select :home_page_id,
+        @blog.pages.published.map { |page| [page.display_title, page.id] },
+        { include_blank: "Default (Latest Posts)" },
+        class: "mt-4 block w-full md:w-96 rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 shadow-sm focus:border-slate-500 focus:ring focus:ring-slate-200 focus:ring-opacity-50" %>
+    <%= field_error(@blog, :home_page) %>
+  </div>
+
+  <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Language</h3>
     <p>
       Choose the language for your email subscription form and other interface elements.

@@ -1,5 +1,15 @@
 <div class="social-links">
   <div class="flex justify-end items-center gap-x-3">
+    <% if @blog.home_page_id.present? %>
+      <div class="flex flex-wrap gap-x-3">
+        <% if current_page?(blog_posts_list_path) %>
+          <%= link_to "Home", root_path, class: "social-link hover:underline text-sm" %>
+        <% else %>
+          <%= link_to "Posts", blog_posts_list_path, class: "social-link hover:underline text-sm" %>
+        <% end %>
+      </div>
+    <% end %>
+
     <% navigation_pages = @blog.pages.navigation_pages.visible.order(:title) %>
     <% if navigation_pages.any? %>
       <div class="flex flex-wrap gap-x-3">

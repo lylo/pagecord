@@ -96,6 +96,7 @@ Rails.application.routes.draw do
     resources :analytics, only: [ :index ]
     resources :posts, except: [ :show ], param: :token
     resources :pages, except: [ :show ], param: :token
+    resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
     resources :settings, only: [ :index ]
 
     resource :onboarding, only: [ :show, :update ], path: "onboarding" do
@@ -170,6 +171,7 @@ Rails.application.routes.draw do
     get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
     get "/", to: "blogs/posts#index", as: :blog_posts
+    get "/posts", to: "blogs/posts#posts_list", as: :blog_posts_list
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")

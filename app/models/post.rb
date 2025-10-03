@@ -45,8 +45,10 @@ class Post < ApplicationRecord
     end
   end
 
+  attr_accessor :is_home_page
+
   def title_present_for_pages
-    if page? && title.blank?
+    if page? && title.blank? && !is_home_page
       errors.add(:title, "can't be blank")
     end
   end

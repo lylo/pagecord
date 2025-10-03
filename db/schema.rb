@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_09_01_083353) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_03_223426) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -97,6 +97,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_083353) do
     t.string "fediverse_author_attribution"
     t.string "font", default: "sans", null: false
     t.string "google_site_verification"
+    t.integer "home_page_id"
     t.integer "layout", default: 0
     t.string "locale", default: "en", null: false
     t.boolean "reply_by_email", default: false, null: false
@@ -109,6 +110,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_083353) do
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
+    t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
@@ -359,6 +361,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_083353) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "blog_exports", "blogs"
+  add_foreign_key "blogs", "posts", column: "home_page_id"
   add_foreign_key "blogs", "users"
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"
