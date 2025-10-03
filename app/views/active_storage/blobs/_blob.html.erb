@@ -8,7 +8,8 @@
       <%= image_tag rails_public_blob_url(blob), alt: "Uploaded image" %>
     <% else %>
       <% width, height = local_assigns[:in_gallery] ? [800, 600] : [1600, 1200] %>
-      <%= image_tag resized_image_url(blob, width: width, height: height), alt: "Uploaded image", data: { lightbox_full_url: rails_public_blob_url(blob)  } %>
+      <% lightbox_image_url = resized_image_url(blob, width: 1600, height: 1200) %>
+      <%= image_tag resized_image_url(blob, width: width, height: height), alt: "Uploaded image", data: { lightbox_full_url: lightbox_image_url } %>
     <% end %>
   <% end %>
 
