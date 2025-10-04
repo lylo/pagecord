@@ -104,4 +104,73 @@ class LiquidRenderingTest < ActionDispatch::IntegrationTest
     assert_select "body", text: /Ruby Post/
     assert_select "body", text: /ruby/
   end
+
+  test "does not process liquid tags in regular posts" do
+    post = @blog.posts.create!(
+      title: "Regular Post",
+      content: "This is a post with {% posts %} tag",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_response :success
+    # Liquid tag should appear literally, not be processed
+    assert_includes response.body, "{% posts %}"
+  end
+
+  test "processes liquid tags only in pages not posts" do
+    @blog.posts.create!(title: "Test Post", content: "Content", status: :published)
+
+    # Create a regular post with liquid tag
+    regular_post = @blog.posts.create!(
+      title: "Regular Post",
+      content: "{% posts %}",
+      status: :published,
+      is_page: false
+    )
+
+    # Create a page with liquid tag
+    page = @blog.pages.create!(
+      title: "Page",
+      content: "{% posts %}",
+      status: :published
+    )
+
+    # Regular post should show liquid tag literally in the content
+    get blog_post_url(subdomain: @blog.subdomain, slug: regular_post.slug)
+    assert_response :success
+    assert_select ".lexxy-content", text: /{% posts %}/
+
+    # Page should process the liquid tag in the content
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+    assert_response :success
+    assert_select ".lexxy-content", text: /Test Post/
+    # Make sure liquid tag is not in the actual content area
+    doc = Nokogiri::HTML(response.body)
+    content_div = doc.at_css(".lexxy-content")
+    assert_not_includes content_div.text, "{% posts %}"
+  end
+
+  test "respects raw blocks to escape liquid processing" do
+    @blog.posts.create!(title: "Test Post", content: "Content", status: :published)
+
+    page = @blog.pages.create!(
+      title: "Raw Example",
+      content: "<p>Normal: {% posts %}</p><p>Escaped: {% raw %}{% posts %}{% endraw %}</p>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    doc = Nokogiri::HTML(response.body)
+    content_div = doc.at_css(".lexxy-content")
+
+    # Normal liquid tag should be processed
+    assert_includes content_div.text, "Test Post"
+
+    # Raw block should NOT be processed - liquid tag appears literally
+    assert_includes content_div.inner_html, "{% posts %}"
+  end
 end
