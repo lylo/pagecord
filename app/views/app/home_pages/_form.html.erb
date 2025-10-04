@@ -4,7 +4,7 @@
   <%= form_with(model: home_page, url: home_page.persisted? ? app_home_page_path : app_home_page_path, method: home_page.persisted? ? :patch : :post, html: { id: "homepage-form" }) do |form| %>
 
     <%= form.text_field :title,
-          placeholder: "Homepage title (optional)",
+          placeholder: "Home page title (optional)",
           class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
           autofocus: true,
           data: { autosave_target: "title" }
@@ -12,14 +12,14 @@
 
     <% if current_features.enabled? :lexxy %>
       <%= form.lexxy_rich_text_area :content,
-        placeholder: "Write your homepage content...",
+        placeholder: "Write your home page content...",
         class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if home_page.errors[:content].any?}",
         spellcheck: true,
         data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
     <% else %>
       <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
         <%= form.rich_text_area :content,
-          placeholder: "Write your homepage content...",
+          placeholder: "Write your home page content...",
           class: "trix-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if home_page.errors[:content].any?}",
           spellcheck: true,
         data: { controller: "autogrow trix", subscribed: Current.user.subscribed?, autosave_target: "content" } %>
@@ -34,15 +34,14 @@
 
     <div class="flex items-center justify-between mt-8">
       <div>
-        <%= form.submit home_page.persisted? ? "Update Homepage" : "Create Homepage", class: "btn-primary" %>
+        <%= form.submit home_page.persisted? ? "Update Home Page" : "Create Home Page", class: "btn-primary" %>
         <%= link_to "Cancel", app_pages_path, class: "btn-secondary" %>
       </div>
-    </div>
-  <% end %>
-
-  <% if home_page.persisted? %>
-    <div class="mt-4">
-      <%= button_to "Remove Homepage", app_home_page_path, method: :delete, class: "btn-optional", data: { turbo_confirm: "Remove this page as your homepage?" } %>
+      <% if home_page.persisted? %>
+        <div>
+          <%= link_to "Remove Home Page", app_home_page_path, method: :delete, class: "btn-optional", data: { turbo_method: :delete, turbo_confirm: "Remove this page as your home page?" } %>
+        </div>
+      <% end %>
     </div>
   <% end %>
 </div>

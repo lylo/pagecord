@@ -1,6 +1,6 @@
 <div class="social-links">
   <div class="flex justify-end items-center gap-x-3">
-    <% if @blog.home_page_id.present? %>
+    <% if @blog.has_custom_home_page? %>
       <div class="flex flex-wrap gap-x-3">
         <% if current_page?(blog_posts_list_path) %>
           <%= link_to "Home", root_path, class: "social-link hover:underline text-sm" %>

@@ -48,7 +48,7 @@ class Post < ApplicationRecord
   attr_accessor :is_home_page
 
   def title_present_for_pages
-    if page? && title.blank? && !is_home_page
+    if page? && title.blank? && !home_page?
       errors.add(:title, "can't be blank")
     end
   end
@@ -62,6 +62,7 @@ class Post < ApplicationRecord
   end
 
   def summary(limit: 64)
+    return "Home Page" if home_page?
     return "Untitled" unless has_text_content?
 
     text_content.truncate(limit, separator: /\s/)
@@ -93,6 +94,10 @@ class Post < ApplicationRecord
 
   def post?
     !is_page
+  end
+
+  def home_page?
+    (blog.home_page_id.present? && blog.home_page_id == id) || is_home_page
   end
 
   def first_image

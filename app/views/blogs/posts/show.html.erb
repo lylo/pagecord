@@ -10,7 +10,7 @@
   <% end %>
 <% end %>
 
-<%= render "blogs/header", hide_email_form: true, hide_bio: true %>
+<%= render "blogs/header", hide_email_form: true, hide_bio: !@post.home_page? %>
 
 <div data-controller="media-embeds lightbox">
 <%= render @post %>

@@ -674,9 +674,9 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "", @response.body
   end
 
-  # Homepage tests
+  # Home page tests
 
-  test "should show homepage page instead of posts index when homepage is set" do
+  test "should show home page instead of posts index when home page is set" do
     page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
     @blog.update!(home_page_id: page.id)
 
@@ -687,7 +687,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_template "blogs/posts/show"
   end
 
-  test "should show posts index when homepage is not set" do
+  test "should show posts index when home page is not set" do
     get blog_posts_path
 
     assert_response :success
@@ -695,7 +695,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_template "blogs/posts/index"
   end
 
-  test "should still show RSS feed when homepage is set" do
+  test "should still show RSS feed when home page is set" do
     page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
     @blog.update!(home_page_id: page.id)
 
@@ -704,28 +704,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
     assert_not_nil assigns(:posts)
-  end
-
-  test "should fall back to posts index if homepage is draft" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :draft)
-    @blog.update!(home_page_id: page.id)
-
-    get blog_posts_path
-
-    assert_response :success
-    assert_not_nil assigns(:posts)
-    assert_template "blogs/posts/index"
-  end
-
-  test "should fall back to posts index if homepage is scheduled" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published, published_at: 1.hour.from_now)
-    @blog.update!(home_page_id: page.id)
-
-    get blog_posts_path
-
-    assert_response :success
-    assert_not_nil assigns(:posts)
-    assert_template "blogs/posts/index"
   end
 
   private

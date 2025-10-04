@@ -167,31 +167,4 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_select "select[name='blog[locale]']", count: 1
     assert_response :success
   end
-
-  test "should show homepage section" do
-    get app_settings_blogs_url
-
-    assert_select "h3", { count: 1, text: "Homepage" }
-    assert_select "select[name='blog[home_page_id]']", count: 1
-    assert_response :success
-  end
-
-  test "should update homepage" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
-
-    patch app_settings_blog_url(@blog), params: { blog: { home_page_id: page.id } }
-
-    assert_redirected_to app_settings_url
-    assert_equal page.id, @blog.reload.home_page_id
-  end
-
-  test "should clear homepage" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
-    @blog.update!(home_page_id: page.id)
-
-    patch app_settings_blog_url(@blog), params: { blog: { home_page_id: "" } }
-
-    assert_redirected_to app_settings_url
-    assert_nil @blog.reload.home_page_id
-  end
 end

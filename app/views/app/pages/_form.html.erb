@@ -56,10 +56,16 @@
 
     <%= form.text_field :title,
           placeholder: "Page title",
-          class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
+          class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 #{'!border-red-500' if @page.errors[:title].any?}",
           autofocus: true,
           data: { autosave_target: "title" }
     %>
+
+    <% if @page.errors[:title].any? %>
+      <div class="mt-1 text-xs text-red-500">
+        <%= @page.errors[:title].to_sentence %>
+      </div>
+    <% end %>
 
     <% if current_features.enabled? :lexxy %>
       <%= form.lexxy_rich_text_area :content,

@@ -1,7 +1,7 @@
 module Sluggable
   extend ActiveSupport::Concern
 
-  RESERVED_SLUGS = %w[posts feed feed.xml admin api app rails].freeze
+  RESERVED_SLUGS = %w[posts feed].freeze
 
   included do
     before_validation :set_slug
@@ -26,9 +26,6 @@ module Sluggable
 
     def set_slug
       if slug.blank? || should_regenerate_slug?
-        generate_slug
-      elsif RESERVED_SLUGS.include?(slug)
-        # If someone manually sets a reserved slug, regenerate it
         generate_slug
       end
     end

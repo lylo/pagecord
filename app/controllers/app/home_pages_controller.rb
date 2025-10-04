@@ -5,11 +5,10 @@ class App::HomePagesController < AppController
 
   def create
     @home_page = Current.user.blog.pages.build(home_page_params)
-    @home_page.is_home_page = true
 
     if @home_page.save
       Current.user.blog.update!(home_page_id: @home_page.id)
-      redirect_to edit_app_home_page_path, notice: "Homepage created."
+      redirect_to edit_app_home_page_path, notice: "Home page created!"
     else
       render :new, status: :unprocessable_entity
     end
@@ -22,10 +21,9 @@ class App::HomePagesController < AppController
 
   def update
     @home_page = Current.user.blog.home_page
-    @home_page.is_home_page = true
 
     if @home_page.update(home_page_params)
-      redirect_to app_pages_path, notice: "Homepage updated."
+      redirect_to app_pages_path, notice: "Home page updated"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -33,16 +31,19 @@ class App::HomePagesController < AppController
 
   def destroy
     home_page = Current.user.blog.home_page
-    home_page.update!(title: "Home Page") if home_page.title.blank?
-    Current.user.blog.update!(home_page_id: nil)
-    redirect_to app_pages_path, notice: "Homepage removed."
+
+    # Give the former home page a recognisable title if it doesn't have one already
+    ActiveRecord::Base.transaction do
+      home_page.update!(title: "Home Page") if home_page.title.blank?
+      Current.user.blog.update!(home_page_id: nil)
+    end
+
+    redirect_to app_pages_path, notice: "Home page removed"
   end
 
   private
 
     def home_page_params
-      status = params[:button] == "save_draft" ? :draft : :published
-
-      params.require(:post).permit(:title, :content, :slug).merge(is_page: true, status: status, show_in_navigation: false)
+      params.require(:post).permit(:title, :content, :slug).merge(is_page: true, status: :published, is_home_page: true, show_in_navigation: false)
     end
 end

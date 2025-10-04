@@ -4,12 +4,19 @@ class Blogs::PostsController < Blogs::BaseController
   rate_limit to: 60, within: 1.minute
 
   skip_before_action :verify_authenticity_token, only: :not_found
-  before_action :show_homepage_if_set, only: :index
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
   rescue_from Pagy::VariableError, with: :redirect_to_first_page
 
   def index
-    posts_list
+    if request.format.html? && @blog.has_custom_home_page?
+      @post = @blog.home_page
+      return unless @post&.published? && !@post.pending?
+
+      return if fresh_when @post, public: true, template: "blogs/posts/show"
+      render :show
+    else
+      posts_list
+    end
   end
 
   def posts_list
@@ -28,7 +35,7 @@ class Blogs::PostsController < Blogs::BaseController
 
     respond_to do |format|
       format.html do
-        set_conditional_get_headers
+        return unless set_conditional_get_headers
         render :index
       end
       format.rss {
@@ -57,16 +64,6 @@ class Blogs::PostsController < Blogs::BaseController
   end
 
   private
-
-    def show_homepage_if_set
-      return unless @blog.home_page_id.present? && request.format.html?
-
-      @post = @blog.home_page
-      return unless @post&.published? && !@post.pending?
-
-      fresh_when @post, public: true, template: "blogs/posts/show"
-      render "blogs/posts/show"
-    end
 
     def redirect_to_last_page(exception)
       redirect_to url_for(page: exception.pagy.last, host: request.host)

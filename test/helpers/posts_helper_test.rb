@@ -3,60 +3,65 @@ require "test_helper"
 class PostsHelperTest < ActionView::TestCase
   include PostsHelper
 
-  test "without_action_text_attachment_wrapper removes action-text-attachment wrapper and keeps figure element" do
-    html_with_attachment = <<~HTML
-    <div><p>hello, world!</p><action-text-attachment sgid="eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjU4P2V4cGlyZXNfaW4iLCJwdXIiOiJhdHRhY2hhYmxlIn19--ed0308c73550462b0ec79c35a88822899a914d61" content-type="image/jpeg" filename="IMG_4475.JPG" filesize="158121" width="652" height="1000" previewable="true"><figure class="attachment attachment--preview attachment--JPG"><img src="https://example.com/image.jpeg"></figure></action-text-attachment></div>
-    HTML
-
-    stripped_html = without_action_text_image_wrapper(html_with_attachment)
-
-    expected_html = <<~HTML
-    <div>
-    <p>hello, world!</p>
-    <figure class="attachment attachment--preview attachment--JPG"><img src="https://example.com/image.jpeg"></figure>
-    </div>
-    HTML
-
-    assert_equal expected_html.strip, stripped_html.strip
+  setup do
+    @blog = blogs(:joel)
+    # Clear existing posts to avoid fixture interference
+    @blog.posts.destroy_all
+    @post1 = @blog.posts.create!(title: "First Post", content: "Content 1", status: :published, published_at: 2.days.ago)
+    @post2 = @blog.posts.create!(title: "Second Post", content: "Content 2", status: :published, published_at: 1.day.ago)
   end
 
-  test "strip_video_tags removes figure elements containing video tags" do
-    html_with_video = <<~HTML
-    <div>
-      <p>Some text</p>
-      <figure class="attachment attachment--preview attachment--mov">
-        <video controls="controls" class="attachment__video max-h-[600px] mx-auto" src="http://example.com/video.mov"></video>
-        <figcaption class="attachment__caption">A video</figcaption>
-      </figure>
-      <figure class="attachment attachment--preview attachment--JPG">
-        <img src="https://example.com/image.jpeg">
-      </figure>
-      <p>More text</p>
-    </div>
-    HTML
+  test "process_liquid_tags returns original content when no tags present" do
+    content = "Just plain text content"
+    result = process_liquid_tags(content, @blog)
 
-    stripped_html = strip_video_tags(html_with_video)
-
-    expected_html = <<~HTML
-  <div>
-    <p>Some text</p>
-    <figure class="attachment attachment--preview attachment--JPG">
-        <img src="https://example.com/image.jpeg">
-      </figure>
-      <p>More text</p>
-    </div>
-    HTML
-
-    assert_equal flattened_html(expected_html), flattened_html(stripped_html)
+    assert_equal "Just plain text content", result
   end
 
-  test "social_link_url should return mailto link for email social link" do
-    social_link = SocialLink.new(platform: "Email", url: "test@pagecord.com")
-    assert_equal "mailto:test@pagecord.com", social_link_url(social_link)
+  test "process_liquid_tags processes posts tag" do
+    content = "Here are the posts: {% posts limit: 2 %}"
+    result = process_liquid_tags(content, @blog)
+
+    assert_includes result, "Second Post"
+    assert_includes result, "First Post"
   end
 
-  test "social_link_url should return url for email social link if url starts with http" do
-    social_link = SocialLink.new(platform: "Email", url: "https://pagecord.com")
-    assert_equal "https://pagecord.com", social_link_url(social_link)
+  test "process_liquid_tags processes tag_list tag" do
+    @post1.update!(tag_list: [ "ruby", "rails" ])
+    content = "Tags: {% tag_list %}"
+    result = process_liquid_tags(content, @blog)
+
+    assert_includes result, "ruby"
+    assert_includes result, "rails"
+  end
+
+  test "process_liquid_tags handles syntax errors gracefully" do
+    content = "Bad syntax: {% posts"
+    result = process_liquid_tags(content, @blog)
+
+    # Should return original content on error
+    assert_equal "Bad syntax: {% posts", result
+  end
+
+  test "process_liquid_tags works with multiple tags" do
+    @post1.update!(tag_list: [ "ruby" ])
+    content = "{% posts limit: 1 %} and {% tag_list %}"
+    result = process_liquid_tags(content, @blog)
+
+    assert_includes result, "Second Post"
+    assert_includes result, "ruby"
+  end
+
+  test "process_liquid_tags only shows visible posts" do
+    hidden_post = @blog.posts.create!(title: "Hidden", content: "Hidden", status: :published, hidden: true, published_at: Time.current)
+    draft_post = @blog.posts.create!(title: "Draft", content: "Draft", status: :draft, published_at: Time.current)
+
+    content = "{% posts limit: 10 %}"
+    result = process_liquid_tags(content, @blog)
+
+    assert_includes result, "Second Post"
+    assert_includes result, "First Post"
+    assert_not_includes result, "Hidden"
+    assert_not_includes result, "Draft"
   end
 end

@@ -222,5 +222,4 @@ class PostTest < ActiveSupport::TestCase
     assert_not page.valid?
     assert_includes page.errors[:title], "can't be blank"
   end
-
 end

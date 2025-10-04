@@ -1,0 +1,9 @@
+<% if tags.any? %>
+  <ul>
+    <% tags.each do |tag| %>
+      <li>
+        <%= link_to tag, blog_posts_list_path(tag: tag), class: "hover:underline" %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

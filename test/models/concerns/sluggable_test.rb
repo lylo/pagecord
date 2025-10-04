@@ -127,10 +127,14 @@ class SluggableTest < ActiveSupport::TestCase
   test "should not allow reserved slugs" do
     Sluggable::RESERVED_SLUGS.each do |reserved_slug|
       post = @blog.posts.build(title: "Test", content: "Test")
+      # Save first to get past initial slug generation
+      post.save!
+
+      # Now try to manually change to reserved slug
       post.slug = reserved_slug
-      post.valid?  # Trigger validations which will also trigger set_slug callback
-      # The slug should have been regenerated to avoid the reserved slug
-      assert_not_equal reserved_slug, post.slug, "Expected slug to be regenerated from reserved '#{reserved_slug}'"
+
+      assert_not post.valid?, "Expected post with slug '#{reserved_slug}' to be invalid"
+      assert_includes post.errors[:slug], "is reserved and cannot be used"
     end
   end
 

@@ -16,14 +16,9 @@
           </div>
         </div>
       <% else %>
-        <%= render "app/shared/callout" do %>
-          You have created <%= pluralize (@pages.count + @drafts.count), "page" %>. Click on the title to edit an existing page,
-          or <%= link_to "create a new page", new_app_page_path, class: "font-medium underline" %>
-        <% end %>
-
-        <div class="text-end mb-4 flex gap-2 justify-end">
+        <div class="text-end mb-8 flex gap-2 justify-end">
           <% if @blog.home_page_id.nil? %>
-            <%= link_to "🏠 Create Homepage", new_app_home_page_path, class: "btn-secondary", title: "Create a blank homepage" %>
+            <%= link_to "🏠 Create Home Page", new_app_home_page_path, class: "btn-secondary", title: "Create a blank home page" %>
           <% end %>
           <%= link_to "✏️ New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
         </div>
@@ -59,16 +54,16 @@
         <div class="flex gap-x-2 mb-2 items-top">
           <div class="flex w-full justify-between items-top">
             <div>
-              <% edit_path = @blog.home_page_id == page.id ? edit_app_home_page_path : edit_app_page_path(page) %>
+              <% edit_path = page.home_page? ? edit_app_home_page_path : edit_app_page_path(page) %>
               <%= link_to edit_path, title: "Click to edit this page" do %>
                 <div class="font-medium pe-2 hover:underline">
-                  <%= @blog.home_page_id == page.id && page.title.blank? ? "Home Page" : page.display_title %>
+                  <%= page.display_title %>
                 </div>
               <% end %>
             </div>
             <div class="flex items-top gap-x-4 text-slate-400 dark:text-slate-400">
-              <% if @blog.home_page_id == page.id %>
-                <div class="flex items-center text-[#4fbd9c]" title="This page is your homepage">
+              <% if page.home_page? %>
+                <div class="flex items-center text-[#4fbd9c]" title="This page is your home page">
                   🏠
                 </div>
               <% end %>

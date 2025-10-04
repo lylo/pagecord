@@ -44,4 +44,17 @@ module PostsHelper
   def published_at_date_format
     :post_date
   end
+
+  def process_liquid_tags(content, blog)
+    template = Liquid::Template.parse(content.to_s, environment: BlogLiquid)
+
+    template.registers[:blog] = blog
+    template.registers[:view] = self
+    template.registers[:posts_relation] = blog.posts.visible.order(published_at: :desc)
+
+    template.render({})
+  rescue Liquid::SyntaxError => e
+    Rails.logger.error("Liquid syntax error: #{e.message}")
+    content.to_s
+  end
 end
