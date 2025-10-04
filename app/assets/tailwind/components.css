@@ -195,6 +195,61 @@
     @apply !text-current !underline !decoration-pagecord-accent !decoration-2 !font-medium hover:!bg-pagecord-accent/10 !transition-all !duration-200 !rounded;
   }
 
+  /* Posts list component */
+  .posts-list {
+    list-style: none;
+    padding: 0 !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    display: grid;
+    gap: 0.25rem;
+    grid-template-columns: min-content 1fr;
+  }
+
+  .posts-list li {
+    display: grid;
+    gap: 0.75rem;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.6;
+  }
+
+  .posts-list time {
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .posts-list a {
+    font-weight: 500;
+  }
+
+  .posts-list a:hover {
+    text-decoration: underline;
+  }
+
+  /* Tag list component */
+  .tag-list {
+    list-style: disc;
+    padding-left: 1.5em;
+    margin: 0;
+  }
+
+  .tag-list li {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .tag-list a {
+    font-weight: 500;
+  }
+
+  .tag-list a:hover {
+    text-decoration: underline;
+  }
+
   @layer utilities {
     @keyframes pulseGrow {
       0%, 100% {
