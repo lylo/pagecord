@@ -129,12 +129,11 @@
   You can delete your account by clicking the button below. Sorry to see you go!
 </p>
 
-<div class="mt-4 flex items-center">
+<div class="mt-4 flex gap-x-2 items-center">
   <%= button_to app_settings_user_path(@user),
         method: :delete,
         data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
         class: "btn-danger" do %>
     Delete account
   <% end %>
-  <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
 </div>
