@@ -32,8 +32,8 @@
       </div>
     <% end %>
 
-    <div class="flex items-center justify-between mt-8">
-      <div>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-8">
+      <div class="flex flex-wrap gap-2">
         <%= form.submit home_page.persisted? ? "Update Home Page" : "Create Home Page", class: "btn-primary" %>
         <%= link_to "Cancel", app_pages_path, class: "btn-secondary" %>
       </div>
