@@ -1,5 +1,5 @@
 <% if @blog.email_subscriptions_enabled? && @blog.user.subscribed? %>
-  <div class="form max-w-[475px]">
+  <div class="form email-subscriber-form max-w-[475px]">
     <%= turbo_frame_tag "email_subscriber_form" do %>
       <%= render "blogs/email_subscribers/form" %>
     <% end %>

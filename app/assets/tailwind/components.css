@@ -6,6 +6,7 @@
   }
 
   .blog {
+    font-size: 1em;
     /* ---- BLOG HEADER  ---- */
     header {
       @apply mt-4 mb-8 pb-4 border-b border-[var(--color-border)];
@@ -104,14 +105,28 @@
       }
     }
 
-    /* Email subscription form component */
     .form {
-      @apply mt-6 mb-2 p-4 rounded-lg mx-auto text-sm bg-[var(--color-bg-subtle)] text-[var(--color-text)];
+      @apply mt-6 mb-2 p-4 rounded-lg mx-auto bg-[var(--color-bg-subtle)] text-[var(--color-text)];
     }
 
     /* Form elements */
     .form label {
       @apply font-medium;
+    }
+
+    .form input, .form textarea {
+      font-size: 1em;
+    }
+
+    .form .button {
+      font-size: 0.875em;
+    }
+    .form a.btn-cancel {
+      @apply inline-flex items-center font-medium;
+    }
+
+    .email-subscriber-form {
+      font-size: 0.875em;
     }
 
     .form input[type="text"], .form input[type="email"], .form textarea {
@@ -123,7 +138,11 @@
     }
 
     .form input[type="submit"] {
-      @apply bg-[var(--color-button-bg)] text-[var(--color-button-text)] rounded-r-md py-1 px-3 cursor-pointer;
+      @apply bg-[var(--color-button-bg)] text-[var(--color-button-text)] rounded-md py-2 px-3 cursor-pointer;
+    }
+
+    .email-subscriber-form input[type="submit"] {
+      @apply rounded-l-none py-1;
     }
 
     .form input[type="submit"]:hover {
@@ -147,19 +166,19 @@
   /* ---- APP COMPONENTS ---- */
 
   .btn-primary {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-[#4fbd9c] rounded-lg hover:bg-[#4bb193] focus:ring-4 focus:outline-none focus:ring-pagecord-accent/30 cursor-pointer;
+    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-white bg-[#4fbd9c] rounded-lg hover:bg-[#4bb193] focus:ring-4 focus:outline-none focus:ring-pagecord-accent/30 cursor-pointer;
   }
 
   .btn-optional {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:hover:bg-slate-800 dark:focus:ring-slate-800 cursor-pointer;
+    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:hover:bg-slate-800 dark:focus:ring-slate-800 cursor-pointer;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100;
+    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-slate-800 dark:text-slate-100 bg-slate-200 dark:bg-slate-600 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 cursor-pointer;
   }
 
   .btn-danger {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 hover:text-white dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-red-700 dark:focus:ring-slate-800 cursor-pointer;
+    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-slate-800 hover:text-white dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-red-700 dark:focus:ring-slate-800 cursor-pointer;
   }
 
   .form-field {

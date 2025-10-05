@@ -48,9 +48,9 @@
     <% end %>
   </div>
 
-  <div class="flex">
-    <%= form.submit t('replies.form.submit_button'), class: "btn-primary" %>
-    <%= link_to t('replies.form.cancel_link'), post_path(@post), class: "btn-secondary" %>
+  <div class="flex gap-x-4">
+    <%= form.submit t('replies.form.submit_button'), class: "button" %>
+    <%= link_to t('replies.form.cancel_link'), post_path(@post), class: "button btn-cancel" %>
   </div>
 <% end %>
 </div>
