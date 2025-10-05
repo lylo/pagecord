@@ -167,7 +167,7 @@ class MailParser
         content_id = attachment[:original].content_id&.gsub(/\A<|>\Z/, "")
         next if content_id.present? && html_content.include?(content_id)
 
-        attachment_html += process_attachment(attachment)
+        attachment_html << process_attachment(attachment)
       end
       attachment_html
     end
