@@ -1,7 +1,7 @@
 /* ================================== */
 /* Lexxy Content Typography & Layout  */
 /* ================================== */
-.lexxy-content {
+:where(.lexxy-content) {
   line-height: 1.75;
   --lexxy-content-margin: 1.25rem;
 
@@ -38,15 +38,15 @@
   }
 
   h1, h2 {
-    font-size: 1.5rem;
+    font-size: 1.5em;
   }
 
   h3 {
-    font-size: 1.25rem;
+    font-size: 1.25em;
   }
 
   h4 {
-    font-size: 1.125rem;
+    font-size: 1.125em;
   }
 
   blockquote {
@@ -71,7 +71,7 @@
   /* -- End Adjustments */
 
   .attachment__caption {
-    font-size: 0.875rem;
+    font-size: 0.875em;
     margin-bottom: var(--lexxy-content-margin);
     text-align: center;
   }

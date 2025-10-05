@@ -55,7 +55,7 @@
   </head>
 
   <body class="flex flex-col min-h-screen <%= font_class %>" <%= theme_data_attribute %>>
-    <main class="container mx-auto px-4 flex flex-grow">
+    <main class="container mx-auto px-4 flex flex-grow text-size-standard">
       <div class="blog <%= content_width_class %> w-full mx-auto">
         <%= render "blogs/flash" %>
 
@@ -63,10 +63,10 @@
       </div>
     </main>
 
-    <footer class="w-full flex flex-col text-center p-8 text-sm text-slate-400 dark:text-slate-500">
+    <footer class="w-full flex flex-col text-center p-8 text-slate-400 dark:text-slate-500">
       <% if @blog&.show_branding? %>
         <%= link_to "https://pagecord.com", id: "brand", aria: { label: "Pagecord Home" } do %>
-          <%= inline_svg_tag "logo-black.svg", class: "w-[120px] mt-8 inline-flex dark:text-slate-100 text-slate-900" %>
+          <%= inline_svg_tag "logo-black.svg", class: "w-[110px] mt-8 inline-flex dark:text-slate-100 text-slate-900" %>
         <% end %>
       <% end %>
     </footer>

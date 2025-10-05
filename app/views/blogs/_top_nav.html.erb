@@ -1,11 +1,11 @@
-<div class="social-links">
+<div class="top-nav">
   <div class="flex justify-end items-center gap-x-3">
     <% if @blog.has_custom_home_page? %>
       <div class="flex flex-wrap gap-x-3">
         <% if current_page?(blog_posts_list_path) %>
-          <%= link_to "Home", root_path, class: "social-link hover:underline text-sm" %>
+          <%= link_to "Home", root_path, class: "social-link hover:underline" %>
         <% else %>
-          <%= link_to "Posts", blog_posts_list_path, class: "social-link hover:underline text-sm" %>
+          <%= link_to "Posts", blog_posts_list_path, class: "social-link hover:underline" %>
         <% end %>
       </div>
     <% end %>
@@ -14,7 +14,7 @@
     <% if navigation_pages.any? %>
       <div class="flex flex-wrap gap-x-3">
         <% navigation_pages.each do |page| %>
-          <%= link_to page.title, post_path(page), class: "social-link hover:underline text-sm" %>
+          <%= link_to page.title, post_path(page), class: "social-link hover:underline" %>
         <% end %>
       </div>
     <% end %>

@@ -4,7 +4,7 @@
   <% top_margin = "mt-4" %>
 <% end %>
 
-<div class="post-footer not-prose flex justify-between items-center <%= top_margin %> mb-4 text-sm">
+<div class="post-footer not-prose flex justify-between items-center <%= top_margin %> mb-4">
   <%= link_to post_path(post), class: "font-normal", data: { turbo_frame: "_top" } do %>
     <%= local_time post.published_at, format: published_at_date_format %>
   <% end %>
@@ -17,7 +17,7 @@
                   data: { turbo_frame: "_top" },
                   rel: "nofollow",
                   class: "flex" do %>
-          <%= inline_svg_tag "icons/reply.svg", class: "icon cursor-pointer w-5 h-5" %>
+          <%= inline_svg_tag "icons/reply.svg", class: "icon cursor-pointer" %>
         <% end %>
       <% end %>
 

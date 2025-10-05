@@ -10,10 +10,15 @@
     header {
       @apply mt-4 mb-8 pb-4 border-b border-[var(--color-border)];
 
+      .top-nav {
+        font-size: 0.875em;
+      }
+
       .bio {
         --lexxy-color-ink: var(--color-text-muted);
         --lexxy-content-margin: 1rem;
-        @apply mt-4 text-sm text-[var(--color-text-muted)] break-words;
+
+        @apply mt-4 text-[var(--color-text-muted)] break-words;
 
         a {
           @apply text-[var(--color-accent)] underline !font-normal;
@@ -26,6 +31,7 @@
 
       .blog-title {
         @apply !text-[var(--color-text-heading)];
+        font-size: 1.25em;
       }
 
       .avatar img {
@@ -88,7 +94,7 @@
 
     .post-footer {
       a, button {
-        @apply text-sm text-[var(--color-text-light)];
+        @apply text-[var(--color-text-light)];
       }
 
       a:hover, button:hover {
@@ -106,7 +112,8 @@
 
     /* Email subscription form component */
     .form {
-      @apply mt-6 mb-2 p-4 rounded-lg mx-auto text-sm bg-[var(--color-bg-subtle)] text-[var(--color-text)];
+      @apply mt-6 mb-2 p-4 rounded-lg mx-auto bg-[var(--color-bg-subtle)] text-[var(--color-text)];
+      font-size: 0.85em;
     }
 
     /* Form elements */
@@ -141,6 +148,19 @@
     /* Confirmation card component */
     .confirmation-card {
       @apply bg-[var(--color-bg-subtle)] rounded-lg shadow-md border border-[var(--color-border)] text-[var(--color-text)];
+    }
+
+    .post-footer {
+      font-size: 0.875em;
+    }
+
+    .tag {
+      font-size: 0.875em;
+    }
+
+    .icon {
+      width: 1.5em;
+      height: 1.5em;
     }
   }
 
