@@ -34,7 +34,7 @@
 
       .blog-title {
         @apply !text-[var(--color-text-heading)];
-        font-size: 1.125em;
+        font-size: 1.25em;
       }
 
       .avatar img {
