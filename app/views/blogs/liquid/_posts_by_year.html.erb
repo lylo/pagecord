@@ -2,9 +2,9 @@
   <% previous_year = nil %>
   <% posts.each do |post| %>
     <% if post.published_at.year != previous_year %>
-      <div class="year-header">
+      <h2>
         <%= local_time post.published_at, "%Y" %>
-      </div>
+      </h2>
       <% previous_year = post.published_at.year %>
     <% end %>
     <li><%= local_time post.published_at.to_date, format: :month_day %> <%= link_to post.display_title, post_path(post) %></li>

@@ -255,11 +255,6 @@
     padding: 0 !important;
   }
 
-  .posts-list time {
-    color: var(--color-text-muted);
-    white-space: nowrap;
-  }
-
   .posts-list a {
     font-weight: 500;
     text-decoration: none !important;
@@ -269,16 +264,17 @@
     text-decoration: underline !important;
   }
 
-  /* Year header for posts list */
-  .posts-list .year-header {
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    grid-column: 1 / -1;
+  .posts-list li time {
+    color: var(--color-text-muted);
+    white-space: nowrap;
   }
 
-  .posts-list .year-header:not(:first-child) {
-    margin-top: 1.5rem;
+  .posts-list h2 {
+    margin-bottom: 0.5em !important;
+  }
+
+  .posts-list h2:not(:first-child) {
+    margin-top: 1.5rem !important;
   }
 
   /* Tag list component */
