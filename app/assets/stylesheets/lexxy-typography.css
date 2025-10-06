@@ -55,6 +55,9 @@
   }
 
   /* -- Adjustment for Trix-based content */
+  h1 {
+    margin: 0;
+  }
   div + blockquote,
   div + pre,
   blockquote + pre {
