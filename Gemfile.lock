@@ -516,6 +516,7 @@ DEPENDENCIES
   kredis (~> 1.7)
   letter_opener_web
   lexxy (~> 0.1.10.beta)
+  liquid
   local_time
   mailpace-rails
   mocha
