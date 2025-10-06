@@ -56,8 +56,8 @@ module PostsHelper
     template.registers[:posts_relation] = post.blog.posts.visible.order(published_at: :desc)
 
     template.render({})
-  rescue Liquid::SyntaxError => e
-    Rails.logger.error("Liquid syntax error: #{e.message}")
+  rescue Liquid::SyntaxError, Liquid::Error => e
+    Rails.logger.error("Liquid error: #{e.message}")
     post.content.to_s
   end
 end

@@ -1,2 +1,3 @@
 <ul class="posts-list"><%- posts.each do |post| -%>
-<li><%= local_time post.published_at.to_date, format: :month_day %> <%= link_to post.display_title, post_path(post) %></li><%- end -%></ul>
+<li><%= local_time post.published_at.to_date, format: :month_day %> <%= link_to post.display_title, post_path(post) %></li><%- end -%>
+</ul>
