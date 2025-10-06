@@ -2,17 +2,18 @@
   <div class="my-8">
     <div class="mb-8">
       <% if @pages.empty? && @drafts.empty? %>
-        <div class="sm:flex gap-4">
-          <div class="sm:flex-1 sm:min-w-0">
-            <p>
-              Create your first page! ✨
-            </p>
-            <p class="mt-4 break-words">
-              Pages are perfect for an About or Contact page. They can be private or set to appear in your blog's navigation.
-            </p>
-          </div>
-          <div class="mt-4 sm:mt-0 sm:flex-shrink-0 text-end sm:w-36">
+        <div>
+          <p>
+            Create your first page! ✨
+          </p>
+          <p class="mt-4 break-words">
+            Pages are perfect for an About or Contact page. They can be private or set to appear in your blog's navigation.
+          </p>
+          <div class="mt-4 flex gap-2">
             <%= link_to "✏️ New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
+            <% if current_features.enabled?(:home_page) && @blog.home_page_id.nil? %>
+              <%= link_to "🏠 Create Home Page", new_app_home_page_path, class: "btn-secondary", title: "Create a blank home page" %>
+            <% end %>
           </div>
         </div>
       <% else %>
