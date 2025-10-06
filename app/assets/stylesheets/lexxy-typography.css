@@ -69,6 +69,15 @@
     margin-top: var(--lexxy-content-margin);
     margin-bottom: var(--lexxy-content-margin);
   }
+
+  br + action-text-attachment {
+    margin-top: 0;
+  }
+
+  action-text-attachment + br {
+    display: none; /* or visibility:hidden; if you prefer */
+  }
+
   /* -- End Adjustments */
 
   .attachment__caption {
