@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_06_140008) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_06_162859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -362,7 +362,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_06_140008) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "blog_exports", "blogs"
-  add_foreign_key "blogs", "posts", column: "home_page_id"
+  add_foreign_key "blogs", "posts", column: "home_page_id", on_delete: :nullify
   add_foreign_key "blogs", "users"
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"
