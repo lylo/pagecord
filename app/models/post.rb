@@ -13,6 +13,7 @@ class Post < ApplicationRecord
   has_many :page_views, dependent: :destroy
 
   before_create :set_published_at, :limit_content_size
+  before_save :set_text_summary
 
   validate :content_present
   validate :title_present_for_pages
@@ -62,21 +63,23 @@ class Post < ApplicationRecord
   end
 
   def summary(limit: 64)
-    return "Home Page" if home_page?
-    return "Untitled" unless has_text_content?
-
-    text_content.truncate(limit, separator: /\s/)
+    return "" unless has_text_content?
+    text_summary.truncate(limit, separator: /\s/)
   end
 
   def has_text_content?
-    text_content.present?
+    text_summary.present?
   end
 
   def display_title
     @display_title ||= if title.present?
       title.truncate(100).strip
+    elsif home_page?
+      "Home Page"
+    elsif text_summary.present?
+      text_summary.truncate(64, separator: /\s/)
     else
-      summary
+      "Untitled"
     end
   end
 
@@ -113,15 +116,17 @@ class Post < ApplicationRecord
   private
 
     def text_content
-      @text_content ||= begin
-        doc = Nokogiri::HTML::DocumentFragment.parse(self.content.to_s)
-        doc.css("figcaption").remove  # don't want captions in the summary
-        text_content = doc.text
-        text_content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
-               .gsub(/\[Image\]/i, "").strip
-               .gsub(/https?:\/\/\S+/, "").strip
-               .gsub(/\s+/, " ").strip  # Normalize whitespace
-      end
+      doc = Nokogiri::HTML::DocumentFragment.parse(self.content.to_s)
+      doc.css("figcaption").remove  # don't want captions in the summary
+      text_content = doc.text
+      text_content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
+             .gsub(/\[Image\]/i, "").strip
+             .gsub(/https?:\/\/\S+/, "").strip
+             .gsub(/\s+/, " ").strip  # Normalize whitespace
+    end
+
+    def set_text_summary
+      self.text_summary = text_content
     end
 
     def set_published_at

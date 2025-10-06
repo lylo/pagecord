@@ -165,7 +165,7 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "This is a long post with lots of text content...", summary
   end
 
-  test "summary should return 'Untitled' when no text content" do
+  test "summary should return empty string when no text content" do
     blog = blogs(:joel)
     post = blog.posts.new(
       title: "Image Only Post",
@@ -173,12 +173,12 @@ class PostTest < ActiveSupport::TestCase
     )
 
     summary = post.summary
-    assert_equal "Untitled", summary
+    assert_equal "", summary
   end
 
   test "has_text_content? should return true for posts with text" do
     blog = blogs(:joel)
-    post = blog.posts.new(
+    post = blog.posts.create!(
       title: "Text Post",
       content: "This post has meaningful text content."
     )
@@ -221,5 +221,61 @@ class PostTest < ActiveSupport::TestCase
     page = blog.posts.new(content: "Page content", is_page: true, title: "")
     assert_not page.valid?
     assert_includes page.errors[:title], "can't be blank"
+  end
+
+  test "should set text_summary when post without title is saved" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "This is my post content that should be cached.")
+
+    assert_equal "This is my post content that should be cached.", post.text_summary
+  end
+
+  test "should set text_summary even when post has a title" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(title: "My Title", content: "This content should be cached.")
+
+    assert_equal "This content should be cached.", post.text_summary
+  end
+
+  test "should update text_summary when content changes on untitled post" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Original content")
+
+    assert_equal "Original content", post.text_summary
+
+    post.update!(content: "Updated content")
+    post.reload
+
+    assert_equal "Updated content", post.text_summary
+  end
+
+  test "display_title should use title when present" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(title: "My Title", content: "Content")
+
+    assert_equal "My Title", post.display_title
+  end
+
+  test "display_title should use text_summary when title is blank" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "This is my content that will be used as the title")
+
+    assert_equal "This is my content that will be used as the title", post.display_title
+  end
+
+  test "display_title should truncate long text_summary" do
+    blog = blogs(:joel)
+    long_content = "This is a very long piece of content " * 10
+    post = blog.posts.create!(content: long_content)
+
+    assert_operator post.display_title.length, :<=, 64
+    assert post.display_title.end_with?("...")
+  end
+
+  test "display_title should return Untitled when no title or text_summary" do
+    blog = blogs(:joel)
+    post = blog.posts.new(content: "<figure><img src='test.jpg'></figure>")
+
+    assert_equal "Untitled", post.display_title
   end
 end
