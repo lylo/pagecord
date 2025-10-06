@@ -6,9 +6,7 @@
   }
 
   .blog {
-    font-size: 1em;
-    /* ---- BLOG HEADER  ---- */
-    header {
+      header {
       @apply mt-4 mb-8 pb-4 border-b border-[var(--color-border)];
 
       .bio {
