@@ -53,7 +53,7 @@ module PostsHelper
 
     template.registers[:blog] = post.blog
     template.registers[:view] = self
-    template.registers[:posts_relation] = post.blog.posts.visible.order(published_at: :desc)
+    template.registers[:posts_relation] = post.blog.posts.visible.with_full_rich_text.order(published_at: :desc)
 
     template.render({})
   rescue Liquid::SyntaxError, Liquid::Error => e
