@@ -1,5 +1,7 @@
 class App::HomePagesController < AppController
   include EditorPreparation
+  before_action :require_home_page_feature
+
   def new
     @home_page = Current.user.blog.pages.build
   end
@@ -44,6 +46,10 @@ class App::HomePagesController < AppController
   end
 
   private
+
+    def require_home_page_feature
+      redirect_to app_pages_path, alert: "Feature not available" unless current_features.enabled?(:home_page)
+    end
 
     def home_page_params
       params.require(:post).permit(:title, :content, :slug).merge(is_page: true, status: :published, is_home_page: true, show_in_navigation: false)

@@ -5,6 +5,7 @@ class PostsHelperTest < ActionView::TestCase
 
   setup do
     @blog = blogs(:joel)
+    @blog.update!(features: [ "home_page" ])
     # Clear existing posts to avoid fixture interference
     @blog.posts.destroy_all
     @post1 = @blog.posts.create!(title: "First Post", content: "Content 1", status: :published, published_at: 2.days.ago)

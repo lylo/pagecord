@@ -7,7 +7,7 @@ class LiquidRenderingTest < ActionDispatch::IntegrationTest
     @user = users(:joel)
     login_as @user
     @blog = @user.blog
-    @blog.posts.destroy_all
+    @blog.update!(features: [ "home_page" ])
   end
 
   test "renders posts liquid tag" do

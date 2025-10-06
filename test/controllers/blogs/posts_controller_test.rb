@@ -677,6 +677,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   # Home page tests
 
   test "should show home page instead of posts index when home page is set" do
+    @blog.update!(features: [ "home_page" ])
     page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
     @blog.update!(home_page_id: page.id)
 
@@ -696,6 +697,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should still show RSS feed when home page is set" do
+    @blog.update!(features: [ "home_page" ])
     page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
     @blog.update!(home_page_id: page.id)
 
