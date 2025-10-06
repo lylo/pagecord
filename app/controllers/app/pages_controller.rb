@@ -1,4 +1,5 @@
 class App::PagesController < AppController
+  include EditorPreparation
   def index
     @pages = Current.user.blog.pages.published.order(:title)
     @drafts = Current.user.blog.pages.draft.order(:title)
@@ -20,6 +21,7 @@ class App::PagesController < AppController
 
   def edit
     @page = Current.user.blog.pages.find_by!(token: params[:token])
+    prepare_content_for_editor(@page)
   end
 
   def update
