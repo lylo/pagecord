@@ -239,7 +239,7 @@
   .posts-list {
     list-style: none;
     padding-left: 0 !important;
-    margin-left: 0 !important;
+    margin: 0 !important;
     margin-block: 0 var(--lexxy-content-margin);
     display: grid;
     gap: 0.25rem;
@@ -253,7 +253,6 @@
     grid-template-columns: subgrid;
     margin: 0 !important;
     padding: 0 !important;
-    line-height: 1.6;
   }
 
   .posts-list time {
@@ -273,7 +272,7 @@
   .tag-list {
     list-style: disc;
     padding-left: 1.5em;
-    margin: 0;
+    margin: 0 !important;
   }
 
   .tag-list li {
