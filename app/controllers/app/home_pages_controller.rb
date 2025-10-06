@@ -1,4 +1,5 @@
 class App::HomePagesController < AppController
+  include EditorPreparation
   def new
     @home_page = Current.user.blog.pages.build
   end
@@ -16,7 +17,8 @@ class App::HomePagesController < AppController
 
   def edit
     @home_page = Current.user.blog.home_page
-    redirect_to new_app_home_page_path unless @home_page
+    redirect_to new_app_home_page_path and return unless @home_page
+    prepare_content_for_editor(@home_page)
   end
 
   def update
