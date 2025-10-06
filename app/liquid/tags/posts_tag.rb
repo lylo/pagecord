@@ -14,8 +14,14 @@ module Tags
       # Apply tag filter if specified
       relation = relation.tagged_with(params[:tag]) if params[:tag]
 
-      # Apply limit
-      posts = relation.limit(params[:limit] || 10)
+      # Apply year filter if specified
+      if params[:year]
+        start_date = Date.new(params[:year], 1, 1)
+        end_date = Date.new(params[:year], 12, 31).end_of_day
+        relation = relation.where(published_at: start_date..end_date)
+      end
+
+      posts = params[:limit] ? relation.limit(params[:limit]) : relation.all
 
       # Render the partial
       view = context.registers[:view]
@@ -38,6 +44,11 @@ module Tags
         # Parse tag: "ruby"
         if markup =~ /tag:\s*["']([^"']+)["']/
           params[:tag] = $1
+        end
+
+        # Parse year: 2025
+        if markup =~ /year:\s*(\d{4})/
+          params[:year] = $1.to_i
         end
 
         params

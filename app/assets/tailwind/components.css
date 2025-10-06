@@ -262,10 +262,23 @@
 
   .posts-list a {
     font-weight: 500;
+    text-decoration: none !important;
   }
 
   .posts-list a:hover {
-    text-decoration: underline;
+    text-decoration: underline !important;
+  }
+
+  /* Year header for posts list */
+  .posts-list .year-header {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    grid-column: 1 / -1;
+  }
+
+  .posts-list .year-header:not(:first-child) {
+    margin-top: 1.5rem;
   }
 
   /* Tag list component */
@@ -282,10 +295,11 @@
 
   .tag-list a {
     font-weight: 500;
+    text-decoration: none !important;
   }
 
   .tag-list a:hover {
-    text-decoration: underline;
+    text-decoration: underline !important;
   }
 
   @layer utilities {
