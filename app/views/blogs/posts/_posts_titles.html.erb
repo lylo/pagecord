@@ -1,6 +1,6 @@
 <%= turbo_frame_tag :posts do %>
   <div class="flex flex-col" data-turbo="false">
-    <% previous_year = local_assigns[:previous_year] %>
+    <% previous_year = params[:last_visible_year]&.to_i %>
     <% @posts.each do |post| %>
       <% if post.published_at.year != previous_year %>
         <div class="text-lg font-semibold mb-2 <%= 'mt-6' unless previous_year.nil? %>">
@@ -21,7 +21,7 @@
   </div>
 
   <% if @pagy.next %>
-    <%= turbo_frame_tag :posts, src: blog_home_path(@blog, page: @pagy.next, last_visible_year: previous_year), loading: :lazy %>
+    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, last_visible_year: previous_year, host: request.host), loading: :lazy %>
   <% end %>
 <% end %>
 
