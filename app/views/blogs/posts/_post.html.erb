@@ -1,4 +1,4 @@
-<% cache(post) do %>
+<% cache_if(post.post?, post) do %>
   <article class="overflow-auto break-words">
     <%= render "post_title", post: post %>
 
