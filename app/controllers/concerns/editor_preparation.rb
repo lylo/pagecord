@@ -12,6 +12,8 @@ module EditorPreparation
       original_content = post.content.body&.to_html
       return if original_content.blank?
 
+      cleaned_content = original_content
+
       if current_features.enabled?(:lexxy)
         doc = Nokogiri::HTML::DocumentFragment.parse(original_content)
 
@@ -76,10 +78,6 @@ module EditorPreparation
         end
 
         cleaned_content = doc.to_html
-
-        if cleaned_content != original_content
-          post.content = cleaned_content
-        end
       else
         doc = Nokogiri::HTML::DocumentFragment.parse(original_content)
 
@@ -100,10 +98,10 @@ module EditorPreparation
 
         # Remove whitespace between tags
         cleaned_content = cleaned_content.gsub(/>\s+</, "><")
+      end
 
-        if cleaned_content != original_content
-          post.content = cleaned_content
-        end
+      if cleaned_content != original_content
+        post.content = cleaned_content
       end
     end
 end
