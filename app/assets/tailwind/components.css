@@ -236,11 +236,11 @@
   }
 
   /* Posts list component */
-  .posts-list {
+  ul.posts-list {
     list-style: none;
     padding-left: 0 !important;
-    margin: 0 !important;
-    margin-block: 0 var(--lexxy-content-margin);
+    margin-left: 0 !important;
+    margin-block: 0 var(--lexxy-content-margin) !important;
     display: grid;
     gap: 0.25rem;
     grid-template-columns: min-content 1fr;
@@ -272,7 +272,7 @@
   .tag-list {
     list-style: disc;
     padding-left: 1.5em;
-    margin: 0 !important;
+    margin-block: 0 var(--lexxy-content-margin) !important;
   }
 
   .tag-list li {

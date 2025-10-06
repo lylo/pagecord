@@ -5,7 +5,7 @@
   line-height: 1.75;
   --lexxy-content-margin: 1.25rem;
 
-  ul:not(.posts-list):not(.tag-list) {
+  ul {
     list-style-position: outside;
     list-style-type: disc !important;
     padding-inline-start: 1.625em;
