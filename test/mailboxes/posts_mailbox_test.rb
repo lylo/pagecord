@@ -90,7 +90,10 @@ class PostsMailboxTest < ActionMailbox::TestCase
   end
 
   test "should alert Sentry if user not found" do
-    Sentry.expects(:capture_message)
+    scope = mock
+    scope.expects(:set_tags).with(from: "missing@pagecord.com", recipient: users(:joel).blog.delivery_email)
+    Sentry.expects(:with_scope).yields(scope)
+    Sentry.expects(:capture_message).with("User not found")
 
     receive_inbound_email_from_mail \
     to: users(:joel).blog.delivery_email,
@@ -442,7 +445,10 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     user.blog.sender_email_addresses.create!(email: sender_email)
 
-    Sentry.expects(:capture_message)
+    scope = mock
+    scope.expects(:set_tags).with(from: sender_email, recipient: user.blog.delivery_email)
+    Sentry.expects(:with_scope).yields(scope)
+    Sentry.expects(:capture_message).with("User not found")
 
     assert_difference -> { user.blog.posts.count }, 0 do
       receive_inbound_email_from_mail \
@@ -458,7 +464,10 @@ class PostsMailboxTest < ActionMailbox::TestCase
     user = users(:joel)
     sender_email = "nonexistent@example.com"
 
-    Sentry.expects(:capture_message)
+    scope = mock
+    scope.expects(:set_tags).with(from: sender_email, recipient: user.blog.delivery_email)
+    Sentry.expects(:with_scope).yields(scope)
+    Sentry.expects(:capture_message).with("User not found")
 
     assert_difference -> { user.blog.posts.count }, 0 do
       receive_inbound_email_from_mail \
