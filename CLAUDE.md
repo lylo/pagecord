@@ -122,6 +122,17 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - Key tables: users, blogs, posts, subscriptions, email_subscribers, page_views, rollups
 - Soft deletion with Discard gem
 
+#### Post Model Performance
+- **text_summary column**: Cached plain text extracted from ActionText content
+- **Purpose**: Eliminates N+1 queries when rendering post lists (archive pages, liquid tags, etc.)
+- **Updated via `before_save` callback**: Parses content on every save to populate `text_summary`
+- **Key methods**:
+  - `display_title`: Returns title if present, otherwise truncated `text_summary` (64 chars), falls back to "Untitled" or "Home Page"
+  - `summary(limit:)`: Returns truncated `text_summary` for any limit (used for meta descriptions, card previews, exports)
+  - `has_text_content?`: Checks if `text_summary` is present
+- **Important**: `text_content` method (private) has no memoization - always parses `content.to_s` fresh. Used only internally by callback.
+- **ActionText gotcha**: In `before_save`, must read from `content.to_s` directly, not memoized helpers, because ActionText content changes aren't persisted until the callback completes
+
 ### Analytics System
 - **PageView model**: Tracks individual page views with visitor_hash for uniqueness detection
 - **Rollup model**: Aggregated analytics data using the `rollups` gem for performance
@@ -149,6 +160,19 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - Can process saved .eml files for debugging
 - ActionMailbox handles inbound email parsing
 
+### Liquid Tags
+- **Custom environment**: `BlogLiquid` - separate from default Liquid
+- **Available tags**: `{% posts %}`, `{% posts_by_year %}`, `{% tags %}`, `{% email_subscription %}`
+- **Posts tag options**:
+  - `limit: N` or `limit: false` (no limit)
+  - `tag: 'ruby'` (filter by tag)
+  - `year: 2025` (filter by year)
+- **Posts by year**: Automatically groups posts by year with headers, accepts `tag:` parameter
+- **Performance**: All tags use `.with_full_rich_text` in base relation to prevent N+1 queries
+- **Usage**: Only processed in pages (is_page: true), not regular posts
+- **Error handling**: Invalid liquid syntax returns original content (no "Liquid error" shown to users)
+- **Disable prefetch**: Add `data: { turbo_prefetch: false }` to links in archive pages to prevent excessive prefetching
+
 ### Analytics Development
 - **Key insight**: Analytics show zero data when no rollups exist BUT rollup job hasn't run yet
 - **Solution pattern**: `Analytics::Base#cutoff_time` returns 1900-01-01 when no rollups exist, ensuring raw PageViews are always used until rollups are available
@@ -160,6 +184,16 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - **Primary button**: `btn-primary` class uses `bg-[#4fbd9c]` and `hover:bg-[#4bb193]`
 - **Component pattern**: Check existing implementations before creating new ones
 - **Admin UI**: Uses slate colors with primary green accents for active states
+
+### CSS Architecture
+- **Typography system**: Uses `em` units for scalable content (font sizes, padding, margins within text)
+- **Layout spacing**: Uses `rem` for CSS variables like `--lexxy-content-margin` (consistent across font sizes)
+- **Logical properties**: Prefer `margin-inline-start` over `margin-left`, `padding-inline-start` over `padding-left` for RTL support
+- **Blog styles**: All blog content uses `em` for relative scaling; app UI uses fixed Tailwind sizes
+- **Component files**:
+  - `lexxy-typography.css`: Core content typography (`.lexxy-content` wrapper)
+  - `components.css`: Blog themes, app buttons, utility classes
+  - `themes/*.css`: Color variable definitions per theme
 
 ### Security
 - Brakeman for vulnerability scanning
