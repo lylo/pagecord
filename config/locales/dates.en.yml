@@ -2,4 +2,5 @@ en:
   date:
     formats:
       post_date: "%b %d, %Y"
+      post_date_short: "%d %b"
       month_day: "%d %b"
