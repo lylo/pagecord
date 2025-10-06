@@ -19,7 +19,7 @@ module Tags
 
       # Render the partial
       view = context.registers[:view]
-      view.render(partial: "blogs/liquid/latest_posts", locals: { posts: posts })
+      view.render(partial: "blogs/liquid/posts", locals: { posts: posts })
     rescue => e
       Rails.logger.error("PostsTag error: #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}")
       raise

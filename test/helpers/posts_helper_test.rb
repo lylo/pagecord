@@ -27,9 +27,9 @@ class PostsHelperTest < ActionView::TestCase
     assert_includes result, "First Post"
   end
 
-  test "process_liquid_tags processes tag_list tag" do
+  test "process_liquid_tags processes tags tag" do
     @post1.update!(tag_list: [ "ruby", "rails" ])
-    page = @blog.pages.build(content: "Tags: {% tag_list %}")
+    page = @blog.pages.build(content: "Tags: {% tags %}")
     result = process_liquid_tags(page)
 
     assert_includes result, "ruby"
@@ -46,7 +46,7 @@ class PostsHelperTest < ActionView::TestCase
 
   test "process_liquid_tags works with multiple tags" do
     @post1.update!(tag_list: [ "ruby" ])
-    page = @blog.pages.build(content: "{% posts limit: 1 %} and {% tag_list %}")
+    page = @blog.pages.build(content: "{% posts limit: 1 %} and {% tags %}")
     result = process_liquid_tags(page)
 
     assert_includes result, "Second Post"

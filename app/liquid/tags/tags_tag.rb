@@ -1,5 +1,5 @@
 module Tags
-  class TagListTag < Liquid::Tag
+  class TagsTag < Liquid::Tag
     def render(context)
       blog = context.registers[:blog]
       view = context.registers[:view]
@@ -7,7 +7,7 @@ module Tags
       # Get all unique tags from the blog's posts
       tags = blog.posts.visible.all_tags
 
-      view.render(partial: "blogs/liquid/tag_list", locals: { tags: tags, blog: blog })
+      view.render(partial: "blogs/liquid/tags", locals: { tags: tags, blog: blog })
     end
   end
 end

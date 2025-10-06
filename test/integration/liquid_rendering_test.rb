@@ -51,11 +51,11 @@ class LiquidRenderingTest < ActionDispatch::IntegrationTest
     assert_select "body", text: /JS Post/, count: 0
   end
 
-  test "renders tag_list liquid tag" do
+  test "renders tags liquid tag" do
     @blog.posts.create!(title: "Post 1", content: "Content", status: :published, tag_list: [ "ruby", "rails" ])
     @blog.posts.create!(title: "Post 2", content: "Content", status: :published, tag_list: [ "javascript" ])
 
-    page = @blog.pages.create!(title: "Tags", content: "{% tag_list %}", status: :published)
+    page = @blog.pages.create!(title: "Tags", content: "{% tags %}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -70,7 +70,7 @@ class LiquidRenderingTest < ActionDispatch::IntegrationTest
     @blog.posts.create!(title: "Draft", content: "Content", status: :draft, tag_list: [ "draft" ])
     @blog.posts.create!(title: "Hidden", content: "Content", status: :published, hidden: true, tag_list: [ "hidden" ])
 
-    page = @blog.pages.create!(title: "Tags", content: "{% tag_list %}", status: :published)
+    page = @blog.pages.create!(title: "Tags", content: "{% tags %}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -94,7 +94,7 @@ class LiquidRenderingTest < ActionDispatch::IntegrationTest
 
     page = @blog.pages.create!(
       title: "Multi Tag Page",
-      content: "{% posts limit: 1 %} and {% tag_list %}",
+      content: "{% posts limit: 1 %} and {% tags %}",
       status: :published
     )
 
