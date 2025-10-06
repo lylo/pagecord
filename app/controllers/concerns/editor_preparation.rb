@@ -15,69 +15,11 @@ module EditorPreparation
       cleaned_content = original_content
 
       if current_features.enabled?(:lexxy)
-        doc = Nokogiri::HTML::DocumentFragment.parse(original_content)
+        has_divs = original_content.include?("<div>")
+        has_paragraphs = original_content.include?("<p>")
+        return if !has_divs || has_paragraphs
 
-        # Shift <h1> to <h2>
-        doc.css("h1").each { |node| node.name = "h2" }
-
-        # Mark divs that contain other divs (wrapper divs) - don't convert these
-        wrapper_divs = []
-        doc.css("div").each do |node|
-          if node.css("div").any?
-            wrapper_divs << node
-          end
-        end
-
-        # Convert non-wrapper divs to paragraphs (cleaning up Trix-created content)
-        doc.css("div").each do |node|
-          # Skip wrapper divs
-          next if wrapper_divs.include?(node)
-
-          # Check if div only has br tags (ignoring whitespace text nodes)
-          only_br_tags = node.children.all? { |c| c.name == "br" || (c.text? && c.content.strip.empty?) }
-
-          # Remove empty divs or divs with only br tags
-          if node.content.strip.empty? && only_br_tags
-            node.remove
-          else
-            # Remove leading whitespace and br tags
-            loop do
-              first = node.children.first
-              break unless first
-              if first.text? && first.content.strip.empty?
-                first.remove
-              elsif first.name == "br"
-                first.remove
-                break # Only remove one leading br
-              else
-                break
-              end
-            end
-
-            # Remove trailing whitespace and br tags
-            loop do
-              last = node.children.last
-              break unless last
-              if last.text? && last.content.strip.empty?
-                last.remove
-              elsif last.name == "br"
-                last.remove
-              else
-                break
-              end
-            end
-
-            # Convert div to paragraph
-            node.name = "p"
-          end
-        end
-
-        # Remove wrapper divs that are now empty
-        wrapper_divs.each do |node|
-          node.replace(node.children) if node.parent
-        end
-
-        cleaned_content = doc.to_html
+        cleaned_content = Html::LexxyCleaner.clean(original_content)
       else
         doc = Nokogiri::HTML::DocumentFragment.parse(original_content)
 
