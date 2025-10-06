@@ -26,11 +26,16 @@ module Html
         return unless original.content_id
 
         content_id = original.content_id.gsub(/\A<|>\Z/, "")
-        element = document.at_css "img[src='cid:#{content_id}']"
+        img_element = document.at_css "img[src='cid:#{content_id}']"
+        return unless img_element
 
-        if element
-          node_html = attachment_preview_node(blob, url, original)
-          element.replace node_html
+        node_html = attachment_preview_node(blob, url, original)
+
+        # If the img is wrapped in a <figure>, replace that figure instead
+        if (figure = img_element.ancestors("figure").first)
+          figure.replace node_html
+        else
+          img_element.replace node_html
         end
       end
   end
