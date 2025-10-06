@@ -30,23 +30,30 @@ class Blog::Export < ApplicationRecord
   private
 
     def export_posts(dir)
-      create_index_html(dir)
+      if blog.has_custom_home_page?
+        export_post_to_html(blog.home_page, dir, filename: "index.html")
+        create_posts_list_html(dir, filename: "posts.html")
+      else
+        create_posts_list_html(dir, filename: "index.html")
+      end
 
-      blog.all_posts.find_each do |post|
+      posts_to_export = blog.all_posts
+      posts_to_export = posts_to_export.where.not(id: blog.home_page_id) if blog.has_custom_home_page?
+      posts_to_export.find_each do |post|
         export_post_to_html(post, dir)
       end
     end
 
-    def create_index_html(dir)
+    def create_posts_list_html(dir, filename: "index.html")
       template_path = Rails.root.join("app/views/blog/exports/index.html.erb")
       template = ERB.new(File.read(template_path), trim_mode: "-")
 
-      File.open(File.join(dir, "index.html"), "w") do |file|
+      File.open(File.join(dir, filename), "w") do |file|
         file.write(template.result(binding))
       end
     end
 
-    def export_post_to_html(post, dir)
+    def export_post_to_html(post, dir, filename: nil)
       images_dir = File.join(dir, "images")
       FileUtils.mkdir_p(images_dir)
 
@@ -57,7 +64,8 @@ class Blog::Export < ApplicationRecord
       template_path = Rails.root.join("app/views/blog/exports/post.html.erb")
       template = ERB.new(File.read(template_path), trim_mode: "-")
 
-      File.open(File.join(dir, "#{post.slug}.html"), "w") do |file|
+      filename ||= "#{post.slug}.html"
+      File.open(File.join(dir, filename), "w") do |file|
         file.write(template.result(binding))
       end
     end
