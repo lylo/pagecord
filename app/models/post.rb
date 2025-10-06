@@ -126,7 +126,7 @@ class Post < ApplicationRecord
     end
 
     def set_text_summary
-      self.text_summary = text_content
+      self.text_summary = text_content.truncate(512, separator: /\s/, omission: "")
     end
 
     def set_published_at
