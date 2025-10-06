@@ -12,7 +12,10 @@
       .bio {
         --lexxy-color-ink: var(--color-text-muted);
         --lexxy-content-margin: 1rem;
-        @apply mt-4 text-sm text-[var(--color-text-muted)] break-words;
+
+        font-size: 0.875em;
+
+        @apply mt-4 text-[var(--color-text-muted)] break-words;
 
         a {
           @apply text-[var(--color-accent)] underline !font-normal;
