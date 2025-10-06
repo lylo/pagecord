@@ -11,7 +11,7 @@ class App::HomePagesController < AppController
 
     if @home_page.save
       Current.user.blog.update!(home_page_id: @home_page.id)
-      redirect_to edit_app_home_page_path, notice: "Home page created!"
+      redirect_to app_pages_path, notice: "Home page created!"
     else
       render :new, status: :unprocessable_entity
     end

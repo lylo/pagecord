@@ -25,7 +25,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
       post app_home_page_url, params: { post: { title: "Welcome", content: "Welcome to my blog" } }
     end
 
-    assert_redirected_to edit_app_home_page_path
+    assert_redirected_to app_pages_path
     home_page = @blog.reload.home_page
     assert_equal "Welcome", home_page.title
     assert_equal true, home_page.is_page
@@ -38,7 +38,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
       post app_home_page_url, params: { post: { content: "Welcome to my blog" } }
     end
 
-    assert_redirected_to edit_app_home_page_path
+    assert_redirected_to app_pages_path
     home_page = @blog.reload.home_page
     assert_nil home_page.title
     assert home_page.persisted?
