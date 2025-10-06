@@ -14,7 +14,7 @@ module Html
     end
 
     def clean
-      process_divs(@doc)
+      flatten_divs(@doc)
       wrap_inline_content(@doc)
       normalize_headings(@doc)
       @doc.to_html.strip
@@ -22,22 +22,21 @@ module Html
 
     private
 
-    # Process divs until none remain: convert paragraph-like divs to <p>, flatten wrapper divs
-    def process_divs(node)
-      while node.css("div").any?
-        node.css("div").each do |div|
-          if paragraph_like?(div)
-            convert_to_paragraph(div)
-          else
-            div.replace(div.children)
-          end
+    # Post-order recursive flatten: process children first, then divs bottom-up
+    def flatten_divs(node)
+      node.children.each { |child| flatten_divs(child) }
+
+      if node.element? && node.name == "div"
+        if paragraph_like?(node)
+          convert_to_paragraph(node)
+        else
+          node.replace(node.children)
         end
       end
     end
 
     def paragraph_like?(div)
-      !div.children.any? { |c| c.element? && BLOCK_ELEMENTS.include?(c.name) } &&
-        div.css("div").empty?
+      !div.children.any? { |c| c.element? && BLOCK_ELEMENTS.include?(c.name) }
     end
 
     def convert_to_paragraph(div)
@@ -48,87 +47,72 @@ module Html
         return
       end
 
-      p_node = Nokogiri::XML::Node.new("p", @doc)
-      children.each { |c| p_node.add_child(c.dup) }
+      p_node = build_paragraph(children)
       div.replace(p_node)
     end
 
-    # Wrap any remaining inline content in paragraphs, splitting on <br><br>
+    # Wrap remaining inline content in <p>s, splitting on <br><br>
     def wrap_inline_content(node)
-      blocks = []
-      inline_buffer = []
+      return if node.children.empty?
 
-      node.children.to_a.each do |child|
+      blocks = []
+      current_p_nodes = []
+
+      node.children.each do |child|
         if child.element? && BLOCK_ELEMENTS.include?(child.name)
-          # Flush inline buffer before adding block
-          blocks.concat(create_paragraphs_from_buffer(inline_buffer))
-          inline_buffer = []
+          # Flush current paragraph before adding block
+          paragraph = build_paragraph(current_p_nodes)
+          blocks << paragraph if paragraph
+          current_p_nodes = []
           blocks << child
         else
-          inline_buffer << child
-        end
-      end
-
-      # Flush remaining inline content
-      blocks.concat(create_paragraphs_from_buffer(inline_buffer))
-
-      # Replace children
-      node.children.remove
-      blocks.each { |b| node.add_child(b) }
-    end
-
-    # Split inline buffer on <br><br> and create paragraphs
-    def create_paragraphs_from_buffer(nodes)
-      return [] if nodes.empty?
-
-      paragraphs = []
-      current = []
-
-      nodes.each_with_index do |node, i|
-        if node.name == "br" && nodes[i + 1]&.name == "br"
-          # Found <br><br> - flush current paragraph
-          para = build_paragraph(current)
-          paragraphs << para if para
-          current = []
-        elsif node.name == "br" && nodes[i - 1]&.name == "br"
-          # Skip second br in sequence
-          next
-        elsif node.name == "br" && current.empty?
-          # Skip leading br
-          next
-        else
-          current << node
+          # Buffer inline or single <br>
+          if child.element? && child.name == "br" && current_p_nodes.last&.element? && current_p_nodes.last.name == "br"
+            # Double <br>: end current paragraph, skip the second
+            paragraph = build_paragraph(current_p_nodes)
+            blocks << paragraph if paragraph
+            current_p_nodes = []
+            next  # Skip this <br>
+          elsif child.element? && child.name == "br" && current_p_nodes.empty?
+            # Skip leading <br>
+            next
+          end
+          current_p_nodes << child
         end
       end
 
       # Flush final paragraph
-      para = build_paragraph(current)
-      paragraphs << para if para
+      paragraph = build_paragraph(current_p_nodes)
+      blocks << paragraph if paragraph
 
-      paragraphs
+      # Replace all children with blocks
+      node.children.remove
+      blocks.each { |b| node.add_child(b) }
     end
 
+    # Build a <p> from nodes (shared helper)
     def build_paragraph(nodes)
       nodes = strip_br_edges(nodes)
-      return nil if nodes.empty?
-      return nil if nodes.all? { |n| n.text? && n.text.strip.empty? }
+      return nil if nodes.empty? || nodes.all? { |n| n.text? && n.text.strip.empty? }
 
-      p = Nokogiri::XML::Node.new("p", @doc)
-      nodes.each { |n| p.add_child(n.dup) }
-      p
+      p_node = Nokogiri::XML::Node.new("p", @doc)
+      nodes.each { |n| p_node.add_child(n.dup) }
+      p_node
     end
 
     # Remove leading/trailing <br> and whitespace-only text nodes
     def strip_br_edges(nodes)
       nodes = nodes.dup
 
-      # Remove leading
-      nodes.shift while nodes.first && (nodes.first.name == "br" ||
-                                        (nodes.first.text? && nodes.first.text.strip.empty?))
+      nodes.shift while nodes.first && (
+        (nodes.first.element? && nodes.first.name == "br") ||
+        (nodes.first.text? && nodes.first.text.strip.empty?)
+      )
 
-      # Remove trailing
-      nodes.pop while nodes.last && (nodes.last.name == "br" ||
-                                     (nodes.last.text? && nodes.last.text.strip.empty?))
+      nodes.pop while nodes.last && (
+        (nodes.last.element? && nodes.last.name == "br") ||
+        (nodes.last.text? && nodes.last.text.strip.empty?)
+      )
 
       nodes
     end
