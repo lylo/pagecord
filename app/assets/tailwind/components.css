@@ -6,7 +6,7 @@
   }
 
   .blog {
-    font-size: 1em;
+
     /* ---- BLOG HEADER  ---- */
     header {
       @apply mt-4 mb-8 pb-4 border-b border-[var(--color-border)];
@@ -236,10 +236,9 @@
   /* Posts list component */
   .posts-list {
     list-style: none;
-    padding: 0 !important;
-    margin: 0 !important;
     padding-left: 0 !important;
     margin-left: 0 !important;
+    margin-block: 0 var(--lexxy-content-margin);
     display: grid;
     gap: 0.25rem;
     grid-template-columns: min-content 1fr;
