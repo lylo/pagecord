@@ -124,6 +124,10 @@ module Billing
       def transaction_completed
         Rails.logger.info "Transaction completed. Updating next_billed_at"
 
+        # transaction.completed gets called if a customer updates their card.
+        # in this scenario, simply return - it's a no-op
+        return if data.origin == "subscription_payment_method_change"
+
         billing_period_ends_at = if data.billing_period.present?
           data.billing_period.ends_at
         else
