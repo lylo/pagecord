@@ -56,6 +56,24 @@ class NavigationItemTest < ActiveSupport::TestCase
     assert_equal 2, item1.reload.position
     assert_equal 1, item2.reload.position
   end
+
+  test "destroying item reorders remaining items" do
+    item1 = navigation_items(:joel_about)
+    item2 = navigation_items(:joel_custom)
+    item3 = navigation_items(:joel_social_bluesky)
+    item4 = navigation_items(:joel_hidden)
+
+    assert_equal 1, item1.position
+    assert_equal 2, item2.position
+    assert_equal 3, item3.position
+    assert_equal 4, item4.position
+
+    item2.destroy
+
+    assert_equal 1, item1.reload.position
+    assert_equal 2, item3.reload.position
+    assert_equal 3, item4.reload.position
+  end
 end
 
 class PageNavigationItemTest < ActiveSupport::TestCase
