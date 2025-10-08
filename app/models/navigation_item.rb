@@ -4,6 +4,9 @@ class NavigationItem < ApplicationRecord
 
   validates :label, presence: true
 
+  before_create :set_position
+  after_destroy :compact_positions
+
   scope :ordered, -> { order(:position, :id) }
   scope :social_links, -> { where(type: "SocialNavigationItem") }
 
@@ -26,4 +29,15 @@ class NavigationItem < ApplicationRecord
 
     update_column(:position, new_position)
   end
+
+  private
+
+    def set_position
+      self.position = (blog.navigation_items.maximum(:position) || 0) + 1
+    end
+
+    def compact_positions
+      blog.navigation_items.where("position > ?", position)
+           .update_all("position = position - 1")
+    end
 end

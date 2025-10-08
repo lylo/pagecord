@@ -15,7 +15,6 @@ class App::Settings::NavigationItemsController < AppController
 
     @navigation_item = klass.new(navigation_item_params)
     @navigation_item.blog = @blog
-    @navigation_item.position = (@blog.navigation_items.maximum(:position) || 0) + 1
 
     if @navigation_item.save
       redirect_to app_settings_navigation_items_path, notice: "Navigation item added"
