@@ -41,6 +41,11 @@ module PostsHelper
     end
   end
 
+  # Returns the URL of the navigation item to avoid Brakeman warning
+  def navigation_item_url(item)
+    item.link_url
+  end
+
   def published_at_date_format
     :post_date
   end
