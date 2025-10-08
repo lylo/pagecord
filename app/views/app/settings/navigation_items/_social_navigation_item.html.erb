@@ -1,0 +1,8 @@
+<%= render layout: "navigation_item", locals: { navigation_item: social_navigation_item } do %>
+  <% content_for :icon do %>
+    <%= inline_svg_tag "icons/social/#{social_navigation_item.platform.downcase}.svg", class: "w-4 h-4" %>
+  <% end %>
+  <% content_for :details do %>
+    <%= social_navigation_item.url %>
+  <% end %>
+<% end %>

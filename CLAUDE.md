@@ -2,6 +2,57 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Code Style & Conventions
+
+**IMPORTANT**: When writing code for this project, always follow these principles:
+
+### Ruby & Rails Style
+- **Idiomatic Ruby**: Use Ruby conventions (`.map`, `.select`, `.find`, `&:method_name` shorthand, etc.)
+- **Idiomatic Rails**: Follow Rails conventions (fat models, skinny controllers, RESTful routes, concerns for shared behavior)
+- **Minimal code**: Prefer fewer lines when clarity is maintained - Ruby's expressiveness is a feature
+- **Elegant solutions**: Choose simple, readable solutions over complex ones
+- **ActiveRecord patterns**: Use scopes, associations, validations, and callbacks appropriately
+- **No over-engineering**: Avoid premature abstraction or unnecessary complexity
+- **Private methods**: Indent private methods one additional level (2 spaces) after the `private` keyword per Rails conventions
+
+### JavaScript & Frontend
+- **Importmaps**: This project uses importmaps (NOT npm/yarn/webpack). Add packages with `bin/importmap pin package-name`
+- **Stimulus controllers**: ALWAYS use Stimulus for JavaScript - NEVER use inline `<script>` tags or vanilla JS in views
+- **Controller naming**: Use descriptive names like `navigation_form_controller.js`, `social_links_controller.js`
+- **Stimulus components**: Prefer existing Stimulus components (e.g., `stimulus-sortable`) over custom implementations
+- **Stimulus targets**: Use targets instead of `querySelector`
+- **Stimulus actions**: Use `data-action` for event handling
+- **Stimulus values**: Use values for passing data to controllers
+- **No jQuery**: This is a modern Rails app using Hotwire/Stimulus
+- **Turbo**: Leverage Turbo Frames and Streams for dynamic updates when appropriate
+
+### Testing
+- **Not over-tested**: Write focused tests for business logic, validations, and key methods
+- **Fixtures**: Use fixtures for test data (already set up)
+- **Minitest**: Use Minitest assertions (not RSpec)
+- **Test file location**: Follow Rails conventions (`test/models/`, `test/controllers/`, etc.)
+
+### CSS & Styling
+- **Tailwind CSS**: Use Tailwind utility classes for styling
+- **Existing patterns**: Check existing components before creating new styles
+- **Primary color**: Use `bg-[#4fbd9c]` for primary buttons (see `btn-primary` class)
+- **Dark mode**: Always include dark mode variants (`dark:bg-slate-800`, etc.)
+
+### Performance
+- **Avoid N+1 queries**: Use `.includes()`, `.eager_load()`, or `.preload()` when loading associations
+- **Caching**: Leverage Rails fragment caching and Russian Doll caching patterns
+- **Database indexes**: Add indexes for foreign keys and frequently queried columns
+- **Query optimization**: Use `.select()` to limit columns, `.pluck()` for single values
+
+### Code Review Checklist
+Before considering a feature complete, verify:
+- [ ] No inline JavaScript (all in Stimulus controllers)
+- [ ] Idiomatic Ruby/Rails patterns used
+- [ ] Tests written and passing
+- [ ] N+1 queries avoided
+- [ ] Dark mode styles included
+- [ ] Documentation added to CLAUDE.md (if significant feature)
+
 ## Development Commands
 
 ### Docker Setup (Preferred)
@@ -88,8 +139,10 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 
 ### Core Models
 - **User**: Has one blog, includes authentication and subscription management
-- **Blog**: Belongs to user, has many posts/pages, handles custom domains and theming
+- **Blog**: Belongs to user, has many posts/pages, navigation_items, handles custom domains and theming
 - **Post**: Blog content with rich text, attachments, and scheduling. Includes both posts and pages (is_page flag)
+- **NavigationItem**: Manages blog header navigation links (pages or custom URLs), with ordering via position column
+- **SocialLink**: Social media links displayed as icons in blog header (separate from text navigation)
 - **Email processing**: Uses ActionMailbox with PostsMailbox to create posts from emails
 
 ### Key Features
@@ -119,7 +172,7 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 
 ### Database
 - PostgreSQL with standard Rails migrations
-- Key tables: users, blogs, posts, subscriptions, email_subscribers, page_views, rollups
+- Key tables: users, blogs, posts, navigation_items, social_links, subscriptions, email_subscribers, page_views, rollups
 - Soft deletion with Discard gem
 
 #### Post Model Performance
@@ -194,6 +247,21 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
   - `lexxy-typography.css`: Core content typography (`.lexxy-content` wrapper)
   - `components.css`: Blog themes, app buttons, utility classes
   - `themes/*.css`: Color variable definitions per theme
+
+### Navigation System
+- **NavigationItem model**: Unified navigation system for blog header links
+- **Two types**:
+  1. **Page links**: Link to a Post (is_page: true) - label auto-syncs from post.title
+  2. **Custom links**: Manual label + URL (e.g., "Posts" → "/posts", "Archive" → "https://...")
+- **Ordering**: `position` column (integer, default 0) with `.ordered` scope (`order(:position, :id)`)
+- **Visibility**: `visible` boolean flag, `.visible` scope filters displayed items
+- **Separate from social links**: SocialLink model handles icon-based social media links
+- **Management**: Settings → Navigation (`app/settings/navigation_items`)
+- **View rendering**: `@blog.navigation_items.visible.ordered` in `_top_nav.html.erb`
+- **Legacy**: Old `show_in_navigation` column on Post model is deprecated (removed from UI)
+- **Performance**: Uses `.includes(:post)` to avoid N+1 queries
+- **URL generation**: `link_url` method returns `blog_post_path(post)` for pages, raw `url` for custom links
+- **Stimulus controller**: `navigation_form_controller.js` handles page/custom toggle in settings form
 
 ### Security
 - Brakeman for vulnerability scanning

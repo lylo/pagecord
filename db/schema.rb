@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_06_162859) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_08_170127) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -161,6 +161,22 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_06_162859) do
     t.bigint "follower_id"
     t.datetime "updated_at", null: false
     t.index ["follower_id", "followed_id"], name: "index_followings_on_follower_id_and_followed_id", unique: true
+  end
+
+  create_table "navigation_items", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.string "label"
+    t.string "platform"
+    t.integer "position", default: 0, null: false
+    t.bigint "post_id"
+    t.string "type", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.index ["blog_id", "position"], name: "index_navigation_items_on_blog_id_and_position"
+    t.index ["blog_id"], name: "index_navigation_items_on_blog_id"
+    t.index ["post_id"], name: "index_navigation_items_on_post_id"
+    t.index ["type"], name: "index_navigation_items_on_type"
   end
 
   create_table "open_graph_images", force: :cascade do |t|
@@ -369,6 +385,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_06_162859) do
   add_foreign_key "digest_posts", "posts"
   add_foreign_key "email_change_requests", "users"
   add_foreign_key "email_subscribers", "blogs"
+  add_foreign_key "navigation_items", "blogs"
+  add_foreign_key "navigation_items", "posts"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
   add_foreign_key "page_views", "blogs"
