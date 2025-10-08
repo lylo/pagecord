@@ -14,7 +14,8 @@
   <%= button_to app_settings_navigation_item_path(navigation_item),
       method: :delete,
       data: { turbo_confirm: "Remove this navigation item?" },
-      class: "text-slate-400 hover:text-red-600" do %>
+      title: "Delete this navigation item",
+      class: "text-slate-400 hover:text-red-600 cursor-pointer" do %>
     <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
   <% end %>
 </div>
