@@ -110,6 +110,8 @@ Rails.application.routes.draw do
       resources :users, only: [ :update, :destroy ]
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
+      resources :navigation_items, only: [ :index, :create, :update, :destroy ]
+      resource :social_links, only: [ :update ]
       resources :email_subscribers, only: [ :index ]
       resources :email_change_requests, only: [ :create, :destroy ] do
         member do

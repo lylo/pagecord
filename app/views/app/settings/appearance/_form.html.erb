@@ -94,29 +94,6 @@
     <%= form.file_field :avatar, class: "hidden", accept: "image/jpeg, image/png, image/webp", data: { avatar_target: "input" } %>
   <% end %>
 
-  <div class="mt-8" data-controller="social-links"
-       data-social-links-rss-feed-url-value="<%= rss_feed_url(Current.user.blog) %>"
-       data-social-links-platform-urls-value="<%= @blog.social_links.map { |sl| [sl.platform, sl.url] }.to_h.to_json %>">
-    <h3 class="font-bold text-lg mb-2">Social Links</h3>
-    <p>
-      Add links to your social profiles to display them on your Pagecord.
-    </p>
-
-    <div data-social-links-target="addLink" class="mt-8 ">
-      <%= link_to "Add Link", "#", class: "btn-optional mb-4", data: { action: "click->social-links#addLink" } %>
-    </div>
-
-    <template data-social-links-target="template">
-      <%= form.fields_for :social_links, SocialLink.new, child_index: 'TEMPLATE_RECORD' do |social_link_form| %>
-        <%= render "social_links_form", form: social_link_form %>
-      <% end %>
-    </template>
-
-    <%= form.fields_for :social_links do |social_link_form| %>
-      <%= render "social_links_form", form: social_link_form %>
-    <% end %>
-  </div>
-
   <% if @blog.user.subscribed? %>
     <h3 class="mt-8 font-bold text-lg mb-4">Branding</h3>
 

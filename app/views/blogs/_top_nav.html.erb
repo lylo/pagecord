@@ -1,32 +1,13 @@
 <div class="top-nav">
   <div class="flex justify-end items-center gap-x-3">
-    <% if @blog.has_custom_home_page? %>
-      <div class="flex flex-wrap gap-x-3">
-        <% if current_page?(blog_posts_list_path) %>
-          <%= link_to "Home", root_path, class: "social-link hover:underline" %>
-        <% else %>
-          <%= link_to "Posts", blog_posts_list_path, class: "social-link hover:underline" %>
+    <% @blog.navigation_items.ordered.each do |item| %>
+      <% if item.is_a?(SocialNavigationItem) %>
+        <%= link_to item.link_url, class: "social-link", aria: { label: "#{item.platform.titleize} Link" } do %>
+          <%= inline_svg_tag "icons/social/#{item.platform.downcase}.svg", class: "w-4 h-4" %>
         <% end %>
-      </div>
-    <% end %>
-
-    <% navigation_pages = @blog.pages.navigation_pages.visible.order(:title) %>
-    <% if navigation_pages.any? %>
-      <div class="flex flex-wrap gap-x-3">
-        <% navigation_pages.each do |page| %>
-          <%= link_to page.title, post_path(page), class: "social-link hover:underline" %>
-        <% end %>
-      </div>
-    <% end %>
-
-    <% if @blog.social_links.present? %>
-      <div class="flex gap-x-3">
-      <% @blog.social_links.each do |social_link| %>
-        <%= link_to social_link_url(social_link), class: "social-link", aria: { label: "#{social_link.platform.titleize} Link" } do %>
-          <%= inline_svg_tag "icons/social/#{social_link.platform.downcase}.svg", class: "w-4 h-4" %>
-        <% end %>
+      <% else %>
+        <%= link_to item.label, item.link_url, class: "social-link hover:underline" %>
       <% end %>
-      </div>
     <% end %>
   </div>
 </div>
