@@ -18,10 +18,7 @@ class CustomTagProcessor
   private
 
     def tag_pattern
-      # TEMPORARY: Support both {{ }} and {% %} syntax for backwards compatibility
-      # TODO: Remove {% %} support once all production pages use {{ }}
-      # Original regex (restore this when ready): /\{\{\s*(\w+)([^}]*)\}\}/
-      /\{[{%]\s*(\w+)([^}%]*)\s*[}%]\}/
+      /\{\{\s*(\w+)([^}]*)\}\}/
     end
 
     def render_tag(tag_name, params_string)

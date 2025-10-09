@@ -253,36 +253,4 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # Unknown tag should appear literally
     assert_includes response.body, "{{ unknown_tag }}"
   end
-
-  test "supports legacy {% %} syntax temporarily" do
-    @blog.posts.create!(title: "Test Post", content: "Content", status: :published, tag_list: [ "ruby" ])
-
-    # Test all tag types with {% %} syntax
-    page = @blog.pages.create!(
-      title: "Legacy Syntax",
-      content: "{% posts %} and {% tags %}",
-      status: :published
-    )
-
-    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
-
-    assert_response :success
-    assert_select "body", text: /Test Post/
-    assert_select "body", text: /ruby/
-  end
-
-  test "supports mixed {{ }} and {% %} syntax" do
-    @blog.posts.create!(title: "Mixed Post", content: "Content", status: :published)
-
-    page = @blog.pages.create!(
-      title: "Mixed Syntax",
-      content: "{{ posts limit: 1 }} and {% tags %}",
-      status: :published
-    )
-
-    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
-
-    assert_response :success
-    assert_select "body", text: /Mixed Post/
-  end
 end
