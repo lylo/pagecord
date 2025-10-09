@@ -86,4 +86,41 @@ class PostsHelperTest < ActionView::TestCase
     result = process_liquid_tags(page)
     assert_includes result, "First Post"
   end
+
+  test "navigation_item_url prepends mailto for email social links" do
+    item = SocialNavigationItem.new(
+      blog: @blog,
+      platform: "Email",
+      url: "test@example.com",
+      label: "Email",
+      position: 1
+    )
+
+    assert_equal "mailto:test@example.com", navigation_item_url(item)
+  end
+
+  test "navigation_item_url returns url as-is for non-email social links" do
+    item = SocialNavigationItem.new(
+      blog: @blog,
+      platform: "GitHub",
+      url: "https://github.com/user",
+      label: "GitHub",
+      position: 1
+    )
+
+    assert_equal "https://github.com/user", navigation_item_url(item)
+  end
+
+  test "navigation_item_url returns link_url for page navigation items" do
+    item = navigation_items(:joel_about)
+    expected_url = Rails.application.routes.url_helpers.blog_post_path(item.post)
+
+    assert_equal expected_url, navigation_item_url(item)
+  end
+
+  test "navigation_item_url returns url for custom navigation items" do
+    item = navigation_items(:joel_custom)
+
+    assert_equal "/posts", navigation_item_url(item)
+  end
 end
