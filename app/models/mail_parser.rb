@@ -6,6 +6,7 @@ class MailParser
     @mail = mail
 
     @attachments = []
+    @processed_attachment_ids = Set.new  # Track attachments processed inline
     store_attachments if process_attachments
 
     @extract_tags = Html::ExtractTags.new
@@ -86,38 +87,30 @@ class MailParser
 
     def parse_body
       if @mail.multipart?
-        html_parts = flatten_parts(@mail).select { |part| part.content_type.start_with?("text/html") }
-
-        if html_parts.any?
-          # If there are any HTML parts in the mail message, use these exclusively. Typically
-          # there will only be one
-          html_content = html_parts.map(&:decoded).join("\n")
-
+        # Let the Mail gem handle multipart/alternative - it picks the best part
+        if @mail.html_part
+          html_content = collect_html_content
           transformed_html = html_transform(html_content)
-
-          # Process any attachments that are not referenced inline
           transformed_html << process_unreferenced_attachments(html_content)
-
           transformed_html
+        elsif @mail.text_part
+          plain_text_transform(@mail.text_part.decoded)
         else
+          # No html_part or text_part - process parts manually
+          # This handles plain text + inline images (Apple Mail default)
           nodes = []
-
-          # Multipart mail with no HTML parts, just plain text and images. Apple Mail defaults
-          # to this, and the order matters.
           @mail.parts.each do |part|
             if part.text?
               nodes << plain_text_transform(part.decoded)
             elsif part.attachment? && media_attachment?(part)
               attachment = find_attachment_from_part(part)
-              next unless attachment
-
-              nodes << process_attachment(attachment)
+              nodes << process_attachment(attachment) if attachment
             end
           end
-
           nodes.join("\n")
         end
       else
+        # Not multipart
         case @mail.content_type
         when /text\/plain/
           plain_text_transform(@mail.decoded)
@@ -129,8 +122,53 @@ class MailParser
       end
     end
 
-    def flatten_parts(mail_part)
-      mail_part.parts.flat_map { |part| part.multipart? ? flatten_parts(part) : part }
+    # Collects HTML content from the email
+    # Returns early for standard cases, delegates to edge case handler if needed
+    def collect_html_content
+      html_content = @mail.html_part.decoded
+
+      # Check if this is the Apple Mail edge case
+      if apple_mail_multipart_mixed_in_alternative?
+        return handle_apple_mail_edge_case
+      end
+
+      html_content
+    end
+
+    # Apple Mail violates RFC 2046 by nesting multipart/mixed (with multiple HTML
+    # fragments) inside multipart/alternative. This happens when users insert images
+    # between paragraphs - Apple Mail creates: HTML + image + HTML structure.
+    # We need to process parts in order to preserve image positioning.
+    def handle_apple_mail_edge_case
+      chosen_part = @mail.parts.first
+      nodes = []
+
+      chosen_part.parts.each do |part|
+        if part.content_type.start_with?("text/html")
+          doc = Nokogiri::HTML(part.decoded)
+          nodes << (doc.at_css("body")&.inner_html || part.decoded)
+        elsif part.attachment? && media_attachment?(part)
+          attachment = find_attachment_from_part(part)
+          if attachment
+            nodes << process_attachment(attachment)
+            @processed_attachment_ids << attachment[:original].object_id
+          end
+        end
+      end
+
+      nodes.join("\n")
+    end
+
+    # Detects Apple Mail's RFC violation: multipart/alternative containing
+    # multipart/mixed with multiple HTML fragments
+    def apple_mail_multipart_mixed_in_alternative?
+      return false unless @mail.mime_type == "multipart/alternative"
+
+      chosen_part = @mail.parts.first
+      return false unless chosen_part&.multipart? && chosen_part.mime_type == "multipart/mixed"
+
+      html_parts = chosen_part.parts.select { |p| p.content_type.start_with?("text/html") }
+      html_parts.size > 1
     end
 
     def sanitized_body
@@ -164,6 +202,10 @@ class MailParser
     def process_unreferenced_attachments(html_content)
       attachment_html = ""
       @attachments.each do |attachment|
+        # Skip if already processed inline (Apple Mail edge case)
+        next if @processed_attachment_ids.include?(attachment[:original].object_id)
+
+        # Skip if referenced by Content-Id in HTML
         content_id = attachment[:original].content_id&.gsub(/\A<|>\Z/, "")
         next if content_id.present? && html_content.include?(content_id)
 

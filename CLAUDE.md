@@ -210,8 +210,33 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 
 ### Email Testing
 - Letter opener for development email preview
-- Can process saved .eml files for debugging
+- Can process saved .eml files for debugging (`DIR=tmp/emails rake email:load`)
 - ActionMailbox handles inbound email parsing
+
+### Email Parsing (MailParser)
+- **Location**: `app/models/mail_parser.rb` (~180 lines)
+- **Purpose**: Parses inbound emails into structured content (subject, body, attachments, tags)
+- **Strategy**: Relies on the Mail gem's `html_part` and `text_part` methods for MIME handling
+- **Apple Mail edge case**: Handles RFC violation where Apple Mail nests `multipart/mixed` (with multiple HTML fragments) inside `multipart/alternative` when users insert inline images between paragraphs
+  - Affects ~6% of emails from Apple Mail users
+  - Documented Apple Mail bug since at least 2010
+  - Workaround extracts body content from each HTML fragment and joins them (10 lines in `collect_html_content` method)
+- **Test coverage**: 14 tests covering multipart structures, attachments, edge cases
+  - Test fixtures in `test/fixtures/emails/`
+  - Tests include: multipart/alternative, Apple Mail edge case, inline images, attachments, empty emails
+- **Key methods**:
+  - `parse_body`: Main parsing logic, delegates to Mail gem for MIME handling
+  - `collect_html_content`: Handles Apple Mail edge case
+  - `html_transform`/`plain_text_transform`: Pipeline-based content transformation
+  - Tag extraction via `Html::ExtractTags` pipeline step
+- **Attachment handling**: Uses `process_unreferenced_attachments` to append attachments not referenced by Content-Id
+- **Pipeline transformations** (applied in order):
+  1. `Html::BodyExtraction` - Extracts `<body>` content
+  2. `Html::MonospaceDetection` - Detects code blocks
+  3. `Html::ImageUnfurl` - Processes image URLs
+  4. `Html::InlineAttachments` - Handles Content-Id references
+  5. `Html::ExtractTags` - Extracts hashtags
+  6. `Html::Sanitize` - Sanitizes HTML
 
 ### Custom Tags (Pika/BearBlog Compatible)
 - **Syntax**: Uses `{{ }}` syntax (similar to Pika and BearBlog)

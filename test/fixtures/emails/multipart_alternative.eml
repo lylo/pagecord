@@ -1,0 +1,16 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: Multipart Alternative Test
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="boundary-alt"
+
+--boundary-alt
+Content-Type: text/plain; charset="utf-8"
+
+This is plain text content.
+
+--boundary-alt
+Content-Type: text/html; charset="utf-8"
+
+<html><body><p>This is <strong>HTML</strong> content.</p></body></html>
+--boundary-alt--

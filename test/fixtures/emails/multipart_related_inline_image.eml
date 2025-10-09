@@ -1,0 +1,18 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: Email with Inline Image
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="boundary-related"
+
+--boundary-related
+Content-Type: text/html; charset="utf-8"
+
+<html><body><p>Check out this image:</p><img src="cid:image001" /></body></html>
+--boundary-related
+Content-Type: image/jpeg; name="photo.jpg"
+Content-Disposition: inline; filename="photo.jpg"
+Content-ID: <image001>
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRg==
+--boundary-related--

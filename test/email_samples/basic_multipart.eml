@@ -1,0 +1,20 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: Multipart Alternative Email
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="boundary-string"
+
+--boundary-string
+Content-Type: text/plain; charset="utf-8"
+
+This is the plain text version.
+
+--boundary-string
+Content-Type: text/html; charset="utf-8"
+
+<html>
+<body>
+<p>This is the <b>HTML</b> version.</p>
+</body>
+</html>
+--boundary-string--
