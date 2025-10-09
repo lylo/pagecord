@@ -89,16 +89,6 @@
       </div>
     <% end %>
 
-    <div class="mt-2">
-      <label class="flex items-center">
-        <%= form.check_box :show_in_navigation,
-            class: "rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-400 dark:bg-slate-800" %>
-        <span class="ml-2 text-sm text-slate-700 dark:text-slate-300">
-          Show this page in the blog header navigation 📍
-        </span>
-      </label>
-    </div>
-
     <div class="flex items-center justify-between mt-8">
       <div>
         <%= form.submit @page.persisted? ? "Update Page" : "Create Page", class: "btn-primary" %>

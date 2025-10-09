@@ -1,0 +1,28 @@
+joel_about:
+  type: PageNavigationItem
+  blog: joel
+  post: about
+  label: "About"
+  position: 1
+
+joel_custom:
+  type: CustomNavigationItem
+  blog: joel
+  label: "Posts"
+  url: "/posts"
+  position: 2
+
+joel_social_bluesky:
+  type: SocialNavigationItem
+  blog: joel
+  label: "Bluesky"
+  platform: "Bluesky"
+  url: "https://bsky.app/profile/joel.example.com"
+  position: 3
+
+joel_hidden:
+  type: PageNavigationItem
+  blog: joel
+  post: contact
+  label: "Contact"
+  position: 4

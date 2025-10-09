@@ -10,7 +10,7 @@
           <span class="text-4xl">🎨</span>
         </div>
         <h3 class="mb-2 text-xl font-bold dark:text-white">Appearance</h3>
-        <p class="text-slate-500 dark:text-slate-400">Edit your bio, blog title, avatar and social links</p>
+        <p class="text-slate-500 dark:text-slate-400">Edit your bio, blog title, avatar, theme and layout</p>
       </div>
     <% end %>
 
@@ -21,6 +21,16 @@
         </div>
         <h3 class="mb-2 text-xl font-bold dark:text-white">Blog Settings</h3>
         <p class="text-slate-500 dark:text-slate-400">Configure custom domain and search engine visibility</p>
+      </div>
+    <% end %>
+
+    <%= link_to app_settings_navigation_items_path do %>
+      <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
+        <div class="mb-4">
+          <span class="text-4xl">🧭</span>
+        </div>
+        <h3 class="mb-2 text-xl font-bold dark:text-white">Navigation</h3>
+        <p class="text-slate-500 dark:text-slate-400">Manage header navigation links and social icons</p>
       </div>
     <% end %>
 

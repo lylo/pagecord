@@ -7,7 +7,7 @@
             Create your first page! ✨
           </p>
           <p class="mt-4 break-words">
-            Pages are perfect for an About or Contact page. They can be private or set to appear in your blog's navigation.
+            Pages are perfect for an About or Contact page. Add them to your blog's navigation from Settings → Navigation.
           </p>
           <div class="mt-4 flex gap-2">
             <%= link_to "✏️ New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
@@ -66,12 +66,6 @@
               <% if page.home_page? && current_features.enabled?(:home_page) %>
                 <div class="flex items-center text-[#4fbd9c]" title="This page is your home page">
                   🏠
-                </div>
-              <% end %>
-
-              <% if page.show_in_navigation? %>
-                <div class="flex items-center text-blue-600 dark:text-blue-400" title="Visible in navigation">
-                  📍
                 </div>
               <% end %>
 

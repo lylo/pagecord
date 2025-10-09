@@ -86,4 +86,10 @@ class PostsHelperTest < ActionView::TestCase
     result = process_liquid_tags(page)
     assert_includes result, "First Post"
   end
+
+  test "navigation_item_url returns item link_url" do
+    item = navigation_items(:joel_custom)
+
+    assert_equal item.url, navigation_item_url(item)
+  end
 end

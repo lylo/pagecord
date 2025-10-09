@@ -15,7 +15,6 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_select "h3", { count: 1, text: "Bio" }
     assert_select "h3", { count: 1, text: "Title" }
     assert_select "h3", { count: 1, text: "Layout" }
-    assert_select "h3", { count: 1, text: "Social Links" }
     assert_response :success
   end
 

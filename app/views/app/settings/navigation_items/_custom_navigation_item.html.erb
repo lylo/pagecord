@@ -1,0 +1,5 @@
+<%= render layout: "navigation_item", locals: { navigation_item: custom_navigation_item } do %>
+  <% content_for :details do %>
+    <%= custom_navigation_item.url %>
+  <% end %>
+<% end %>
