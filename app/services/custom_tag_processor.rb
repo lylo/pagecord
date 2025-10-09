@@ -32,8 +32,8 @@ class CustomTagProcessor
       when "email_subscription"
         render_email_subscription_tag(params_string)
       else
-        # Unknown tag - return original
-        "{{ #{tag_name} #{params_string} }}"
+        unknown_tag = "#{tag_name} #{params_string}".strip
+        "{{ #{unknown_tag} }}"
       end
     end
 
