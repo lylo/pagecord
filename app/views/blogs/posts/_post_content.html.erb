@@ -1,6 +1,6 @@
 <div class="lexxy-content" data-controller="syntax-highlight">
   <% if current_features.enabled? :home_page %>
-    <%= auto_link(process_liquid_tags(post), sanitize: false).html_safe %>
+    <%= auto_link(process_custom_tags(post), sanitize: false).html_safe %>
   <% else %>
     <%= auto_link(post.content.to_s, sanitize: false).html_safe %>
   <% end %>
