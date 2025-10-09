@@ -9,7 +9,7 @@ class SocialNavigationItem < NavigationItem
   before_validation :set_label_from_platform, if: -> { platform.present? && label.blank? }
 
   def link_url
-    url
+    email? ? "mailto:#{url}" : url
   end
 
   def email?

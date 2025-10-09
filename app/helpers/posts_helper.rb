@@ -43,13 +43,7 @@ module PostsHelper
 
   # Returns the URL of the navigation item to avoid Brakeman warning
   def navigation_item_url(item)
-    url = item.link_url
-
-    if item.is_a?(SocialNavigationItem) && item.email?
-      "mailto:#{url}"
-    else
-      url
-    end
+    item.link_url
   end
 
   def published_at_date_format
