@@ -278,4 +278,11 @@ class PostTest < ActiveSupport::TestCase
 
     assert_equal "Untitled", post.display_title
   end
+
+  test "display_title should not include tags" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "<p>This is a test</p><p>{{ posts limit:5 }}</p>")
+
+    assert_equal "This is a test", post.display_title
+  end
 end

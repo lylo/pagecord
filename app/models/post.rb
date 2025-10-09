@@ -120,9 +120,11 @@ class Post < ApplicationRecord
       doc = Nokogiri::HTML::DocumentFragment.parse(self.content.to_s)
       doc.css("figcaption").remove  # don't want captions in the summary
       text_content = doc.text
+      # Remove image references, [Image], URLs, and custom tags like {{ tag_name }}
       text_content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
              .gsub(/\[Image\]/i, "").strip
              .gsub(/https?:\/\/\S+/, "").strip
+             .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "").strip # strip tags
              .gsub(/\s+/, " ").strip  # Normalize whitespace
     end
 
