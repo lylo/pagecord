@@ -7,7 +7,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     @user = users(:joel)
     login_as @user
     @blog = @user.blog
-    @blog.update!(features: [ "home_page" ])
   end
 
   test "renders posts custom tag" do
