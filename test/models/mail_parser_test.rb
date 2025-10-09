@@ -109,7 +109,7 @@ class MailParserTest < ActiveSupport::TestCase
     mail = Mail.read(fixture_path("empty_email.eml"))
     parser = MailParser.new(mail, process_attachments: false)
 
-    assert parser.is_blank?, "Email with no subject or body should be blank"
+    assert parser.blank?, "Email with no subject or body should be blank"
     assert parser.subject_blank?
     assert parser.body_blank?
   end
@@ -120,7 +120,7 @@ class MailParserTest < ActiveSupport::TestCase
 
     assert parser.subject_blank?
     assert_not parser.body_blank?
-    assert_not parser.is_blank?
+    assert_not parser.blank?
   end
 
   test "should handle email with empty body" do
@@ -129,7 +129,7 @@ class MailParserTest < ActiveSupport::TestCase
 
     assert_not parser.subject_blank?
     assert parser.body_blank?
-    assert_not parser.is_blank?
+    assert_not parser.blank?
   end
 
   test "should handle email with only whitespace in body" do

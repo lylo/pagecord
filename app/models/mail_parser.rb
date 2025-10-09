@@ -4,10 +4,10 @@ class MailParser
 
   def initialize(mail, process_attachments: true)
     @mail = mail
-
+    @processed_attachment_ids = Set.new
     @attachments = []
-    @processed_attachment_ids = Set.new  # Track attachments processed inline
-    store_attachments if process_attachments
+
+    build_attachments if process_attachments
 
     @extract_tags = Html::ExtractTags.new
 
@@ -18,17 +18,17 @@ class MailParser
       Html::InlineAttachments.new(@attachments),
       @extract_tags,
       Html::Sanitize.new
-    ]
+    ].freeze
 
     @plain_text_pipeline = [
       Html::PlainTextToHtml.new,
       @extract_tags,
       Html::ImageUnfurl.new
-    ]
+    ].freeze
   end
 
   def subject
-    @title ||= @mail.subject&.strip
+    @subject ||= @mail.subject&.strip
   end
 
   def body
@@ -36,7 +36,7 @@ class MailParser
   end
 
   def attachments
-    @attachments&.map { |attachment| attachment[:blob] } || []
+    @attachments.map { |attachment| attachment[:blob] }
   end
 
   def has_attachments?
@@ -44,12 +44,11 @@ class MailParser
   end
 
   def tags
-    # Ensure body has been parsed to extract tags
-    body if @extract_tags
-    @extract_tags&.tags || []
+    body # ensure parsing
+    Array(@extract_tags&.tags)
   end
 
-  def is_blank?
+  def blank?
     subject_blank? && body_blank?
   end
 
@@ -72,54 +71,54 @@ class MailParser
     end
 
     def transform(pipeline, html)
-      charset = @mail.charset || "UTF-8"
-      if charset.downcase != "utf-8"
-        Rails.logger.info "Converting mail from #{charset} to UTF-8"
-        decoded = html.encode(charset, "UTF-8", invalid: :replace, undef: :replace, replace: "")
-        html = decoded.force_encoding("UTF-8")
-      end
+      html = ensure_utf8(html)
+      pipeline.reduce(html) { |content, step| step.transform(content) }
+    end
 
-      pipeline.each do |transformation|
-        html = transformation.transform(html)
-      end
-      html
+    def ensure_utf8(html)
+      charset = @mail.charset&.downcase
+      return html if charset.blank? || charset == "utf-8"
+
+      Rails.logger.info "Converting mail from #{charset} to UTF-8"
+      html.encode("UTF-8", charset, invalid: :replace, undef: :replace, replace: "")
     end
 
     def parse_body
       if @mail.multipart?
-        # Let the Mail gem handle multipart/alternative - it picks the best part
-        if @mail.html_part
-          html_content = collect_html_content
-          transformed_html = html_transform(html_content)
-          transformed_html << process_unreferenced_attachments(html_content)
-          transformed_html
-        elsif @mail.text_part
-          plain_text_transform(@mail.text_part.decoded)
-        else
-          # No html_part or text_part - process parts manually
-          # This handles plain text + inline images (Apple Mail default)
-          nodes = []
-          @mail.parts.each do |part|
-            if part.text?
-              nodes << plain_text_transform(part.decoded)
-            elsif part.attachment? && media_attachment?(part)
-              attachment = find_attachment_from_part(part)
-              nodes << process_attachment(attachment) if attachment
-            end
-          end
-          nodes.join("\n")
-        end
+        parse_multipart_body
       else
-        # Not multipart
-        case @mail.content_type
-        when /text\/plain/
-          plain_text_transform(@mail.decoded)
-        when /text\/html/
-          html_transform(@mail.decoded)
-        else
-          raise "Unknown content type #{@mail.content_type}"
-        end
+        parse_singlepart_body
       end
+    end
+
+    def parse_multipart_body
+      if @mail.html_part
+        html_content = collect_html_content
+        html_transform(html_content) + append_unreferenced_attachments(html_content)
+      elsif @mail.text_part
+        plain_text_transform(@mail.text_part.decoded)
+      else
+        parse_mixed_parts
+      end
+    end
+
+    def parse_singlepart_body
+      case @mail.content_type
+      when /text\/plain/ then plain_text_transform(@mail.decoded)
+      when /text\/html/  then html_transform(@mail.decoded)
+      else raise "Unknown content type #{@mail.content_type}"
+      end
+    end
+
+    def parse_mixed_parts
+      @mail.parts.map do |part|
+        if part.text?
+          plain_text_transform(part.decoded)
+        elsif part.attachment? && media_attachment?(part)
+          attachment = find_attachment_from_part(part)
+          process_attachment(attachment) if attachment
+        end
+      end.compact.join("\n")
     end
 
     # Collects HTML content from the email
@@ -151,7 +150,7 @@ class MailParser
           attachment = find_attachment_from_part(part)
           if attachment
             nodes << process_attachment(attachment)
-            @processed_attachment_ids << attachment[:original].object_id
+            @processed_attachment_ids << attachment_id(attachment)
           end
         end
       end
@@ -175,7 +174,7 @@ class MailParser
       @sanitized_body ||= sanitize(body, tags: %w[img], attributes: %w[src alt])
     end
 
-    def store_attachments
+    def build_attachments
       @attachments = media_attachments.map do |attachment|
         blob = ActiveStorage::Blob.create_and_upload!(
           io: StringIO.new(attachment.body.to_s),
@@ -192,18 +191,18 @@ class MailParser
     end
 
     def find_attachment_from_part(part)
-      @attachments.find { |a| a[:original].object_id == part.object_id }
+      @attachments&.find { |a| a[:original].object_id == part.object_id }
     end
 
     def media_attachment?(part)
       part.content_type.start_with?("image/", "video/", "audio/")
     end
 
-    def process_unreferenced_attachments(html_content)
+    def append_unreferenced_attachments(html_content)
       attachment_html = ""
       @attachments.each do |attachment|
         # Skip if already processed inline (Apple Mail edge case)
-        next if @processed_attachment_ids.include?(attachment[:original].object_id)
+        next if @processed_attachment_ids.include?(attachment_id(attachment))
 
         # Skip if referenced by Content-Id in HTML
         content_id = attachment[:original].content_id&.gsub(/\A<|>\Z/, "")
@@ -221,5 +220,9 @@ class MailParser
         attachment[:original]
       )
       preview_html || ""
+    end
+
+    def attachment_id(attachment)
+      attachment[:original].object_id
     end
 end
