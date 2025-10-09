@@ -98,8 +98,9 @@ class PageNavigationItemTest < ActiveSupport::TestCase
     assert_equal @page.display_title, @nav_item.label
   end
 
-  test "link_url returns post path" do
-    assert_equal Rails.application.routes.url_helpers.blog_post_path(@page), @nav_item.link_url
+  test "link_url returns post path with slug" do
+    expected_path = Rails.application.routes.url_helpers.blog_post_path(@page.slug)
+    assert_equal expected_path, @nav_item.link_url
   end
 end
 
@@ -166,8 +167,19 @@ class SocialNavigationItemTest < ActiveSupport::TestCase
     assert_equal "GitHub", item.label
   end
 
-  test "link_url returns url" do
+  test "link_url returns url for non-email platforms" do
     assert_equal "https://bsky.app/profile/joel.example.com", @nav_item.link_url
+  end
+
+  test "link_url prepends mailto for email platform" do
+    item = SocialNavigationItem.new(
+      blog: @blog,
+      platform: "Email",
+      url: "test@example.com",
+      label: "Email"
+    )
+
+    assert_equal "mailto:test@example.com", item.link_url
   end
 
   test "email? returns true for Email platform" do

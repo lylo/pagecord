@@ -8,6 +8,6 @@ class PageNavigationItem < NavigationItem
   end
 
   def link_url
-    Rails.application.routes.url_helpers.blog_post_path(post)
+    Rails.application.routes.url_helpers.blog_post_path(post.slug)
   end
 end
