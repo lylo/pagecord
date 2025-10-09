@@ -48,7 +48,6 @@ gem "feature_toggles"
 gem "htmlentities"
 gem "httparty"
 gem "inline_svg"
-gem "liquid"
 gem "local_time"
 gem "ostruct"
 gem "pagy"
@@ -76,6 +75,7 @@ group :development do
   gem "web-console"
 
   gem "letter_opener_web"
+  gem "faker"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false

@@ -213,17 +213,33 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - Can process saved .eml files for debugging
 - ActionMailbox handles inbound email parsing
 
-### Liquid Tags
-- **Custom environment**: `BlogLiquid` - separate from default Liquid
-- **Available tags**: `{% posts %}`, `{% posts_by_year %}`, `{% tags %}`, `{% email_subscription %}`
+### Custom Tags (Pika/BearBlog Compatible)
+- **Syntax**: Uses `{{ }}` syntax (similar to Pika and BearBlog)
+- **Legacy support**: Temporarily also supports `{% %}` syntax for backwards compatibility with existing production pages
+- **Available tags**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}`
 - **Posts tag options**:
-  - `limit: N` or `limit: false` (no limit)
-  - `tag: 'ruby'` (filter by tag)
-  - `year: 2025` (filter by year)
-- **Posts by year**: Automatically groups posts by year with headers, accepts `tag:` parameter
-- **Performance**: All tags use `.with_full_rich_text` in base relation to prevent N+1 queries
+  - `{{ posts }}` - Shows all posts
+  - `{{ posts limit: 10 }}` - Shows 10 most recent posts
+  - `{{ posts tag: ruby }}` - Shows posts tagged with "ruby" (quotes optional)
+  - `{{ posts year: 2025 }}` - Shows posts from 2025
+  - Can combine: `{{ posts limit: 5 tag: rails }}`
+- **Posts by year tag**:
+  - `{{ posts_by_year }}` - Groups all posts by year with headers
+  - `{{ posts_by_year tag: ruby }}` - Filter by tag
+- **Tags tag**:
+  - `{{ tags }}` - Outputs comma-separated list of all tags
+- **Email subscription tag**:
+  - `{{ email_subscription }}` - Embeds email subscription form
+- **Implementation**:
+  - `CustomTagProcessor` service (`app/services/custom_tag_processor.rb`) - ~90 lines
+  - Simple, elegant interface: `processor.process(content)` returns rendered HTML
+  - Encapsulates all tag parsing, relation building, and partial rendering
+  - Helper (`process_custom_tags` in `posts_helper.rb`) is just 3 lines - creates processor and calls `process`
+  - No exposed internals - all implementation details are private
+- **Performance**: All tags use `.visible` scope and proper ordering to prevent N+1 queries
 - **Usage**: Only processed in pages (is_page: true), not regular posts
-- **Error handling**: Invalid liquid syntax returns original content (no "Liquid error" shown to users)
+- **Error handling**: Unknown tags appear literally in output (graceful degradation)
+- **Testing**: Integration tests in `test/integration/custom_tags_rendering_test.rb` verify full rendering behavior
 - **Disable prefetch**: Add `data: { turbo_prefetch: false }` to links in archive pages to prevent excessive prefetching
 
 ### Analytics Development

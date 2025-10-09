@@ -50,19 +50,14 @@ module PostsHelper
     :post_date
   end
 
-  def process_liquid_tags(post)
-    # Only process liquid tags for pages, not regular posts
+  def process_custom_tags(post)
+    # Only process custom tags for pages, not regular posts
     return post.content.to_s unless post.is_page?
 
-    template = Liquid::Template.parse(post.content.to_s, environment: BlogLiquid)
-
-    template.registers[:blog] = post.blog
-    template.registers[:view] = self
-    template.registers[:posts_relation] = post.blog.posts.visible.order(published_at: :desc)
-
-    template.render({})
-  rescue Liquid::SyntaxError, Liquid::Error => e
-    Rails.logger.error("Liquid error: #{e.message}")
+    processor = CustomTagProcessor.new(blog: post.blog, view: self)
+    processor.process(post.content.to_s)
+  rescue => e
+    Rails.logger.error("Custom tag error: #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}")
     post.content.to_s
   end
 end
