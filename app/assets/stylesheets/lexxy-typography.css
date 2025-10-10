@@ -80,12 +80,6 @@
 
   /* -- End Adjustments */
 
-  .attachment__caption {
-    font-size: 0.875em;
-    margin-bottom: var(--lexxy-content-margin);
-    text-align: center;
-  }
-
   code::before, code::after {
     content: none;
   }
