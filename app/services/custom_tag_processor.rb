@@ -73,10 +73,16 @@ class CustomTagProcessor
 
     def parse_params(params_string)
       params = {}
+      return params if params_string.blank?
 
-      # Match key: value pairs, stopping at next key or closing brace
-      params_string.scan(/(\w+):\s*([^}]+?)(?=\s+\w+:|$)/) do |key, value|
-        value = value.strip
+      # Split by pipe, each part is a parameter
+      params_string.split("|").each do |param|
+        param = param.strip
+        next if param.blank?
+
+        # Split on first colon to get key and value
+        key, value = param.split(":", 2).map(&:strip)
+        next if key.blank? || value.blank?
 
         # Remove quotes if present
         value = value[1..-2] if value.start_with?('"', "'") && value.end_with?('"', "'")

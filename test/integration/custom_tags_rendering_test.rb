@@ -43,7 +43,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
       @blog.posts.create!(title: "Post #{i}", content: "Content", status: :published, published_at: i.days.ago)
     end
 
-    page = @blog.pages.create!(title: "Limited Posts", content: "{{ posts limit: 2 }}", status: :published)
+    page = @blog.pages.create!(title: "Limited Posts", content: "{{ posts | limit: 2 }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -54,7 +54,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts tag with tag filter" do
-    page = @blog.pages.create!(title: "Photography Posts", content: "{{ posts tag: photography }}", status: :published)
+    page = @blog.pages.create!(title: "Photography Posts", content: "{{ posts | tag: photography }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -101,7 +101,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   test "renders multiple custom tags in same page" do
     page = @blog.pages.create!(
       title: "Multi Tag Page",
-      content: "{{ posts limit: 1 }} and {{ tags }}",
+      content: "{{ posts | limit: 1 }} and {{ tags }}",
       status: :published
     )
 
@@ -163,7 +163,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     @blog.posts.create!(title: "2024 Post", content: "Content", status: :published, published_at: Date.new(2024, 6, 15))
     @blog.posts.create!(title: "2025 Post", content: "Content", status: :published, published_at: Date.new(2025, 3, 20))
 
-    page = @blog.pages.create!(title: "2025 Posts", content: "{{ posts year: 2025 }}", status: :published)
+    page = @blog.pages.create!(title: "2025 Posts", content: "{{ posts | year: 2025 }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -173,7 +173,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts tag with combined limit and tag parameters" do
-    page = @blog.pages.create!(title: "Limited Photography", content: "{{ posts limit: 1 tag: photography }}", status: :published)
+    page = @blog.pages.create!(title: "Limited Photography", content: "{{ posts | limit: 1 | tag: photography }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -202,7 +202,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts_by_year tag with tag filter" do
-    page = @blog.pages.create!(title: "Photography Archive", content: "{{ posts_by_year tag: photography }}", status: :published)
+    page = @blog.pages.create!(title: "Photography Archive", content: "{{ posts_by_year | tag: photography }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -235,7 +235,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts tag with multiple tags (OR logic)" do
-    page = @blog.pages.create!(title: "Test Page", content: "{{ posts tag: photography, technology }}", status: :published)
+    page = @blog.pages.create!(title: "Test Page", content: "{{ posts | tag: photography, technology }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -247,7 +247,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts_by_year tag with multiple tags (OR logic)" do
-    page = @blog.pages.create!(title: "Photography and Tech Archive", content: "{{ posts_by_year tag: photography, technology }}", status: :published)
+    page = @blog.pages.create!(title: "Photography and Tech Archive", content: "{{ posts_by_year | tag: photography, technology }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -258,7 +258,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts tag with multiple tags without spaces" do
-    page = @blog.pages.create!(title: "Test", content: "{{ posts tag: photography,technology }}", status: :published)
+    page = @blog.pages.create!(title: "Test", content: "{{ posts | tag: photography,technology }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
