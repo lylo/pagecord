@@ -139,3 +139,10 @@ non_nav_page:
   body: |
     <p>This is a hidden page that won't appear in navigation.</p>
 
+photography_and_tech:
+  record: photography_and_tech (Post)
+  name: content
+  body: |
+    <p>Exploring how modern technology is transforming the art of photography.</p>
+    <p>From mirrorless cameras to AI-powered editing tools, the intersection of photography and technology continues to evolve.</p>
+

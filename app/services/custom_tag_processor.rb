@@ -40,7 +40,7 @@ class CustomTagProcessor
     def render_posts_tag(params_string)
       params = parse_params(params_string)
       relation = blog.posts.visible.order(published_at: :desc)
-      relation = relation.tagged_with(params[:tag]) if params[:tag]
+      relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
 
       if params[:year]
         start_date = Date.new(params[:year], 1, 1)
@@ -55,7 +55,8 @@ class CustomTagProcessor
     def render_posts_by_year_tag(params_string)
       params = parse_params(params_string)
       relation = blog.posts.visible.order(published_at: :desc)
-      relation = relation.tagged_with(params[:tag]) if params[:tag]
+      relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
+
       posts = relation.all
 
       view.render(partial: "blogs/custom_tags/posts_by_year", locals: { posts: posts })
@@ -73,12 +74,22 @@ class CustomTagProcessor
     def parse_params(params_string)
       params = {}
 
-      # Match key: value or key: 'value' or key: "value"
-      params_string.scan(/(\w+):\s*(?:'([^']*)'|"([^"]*)"|(\w+))/) do |key, single_quoted, double_quoted, unquoted|
-        value = single_quoted || double_quoted || unquoted
+      # Match key: value pairs, stopping at next key or closing brace
+      params_string.scan(/(\w+):\s*([^}]+?)(?=\s+\w+:|$)/) do |key, value|
+        value = value.strip
+
+        # Remove quotes if present
+        value = value[1..-2] if value.start_with?('"', "'") && value.end_with?('"', "'")
+
+        # Handle comma-separated values (only for 'tag' parameter)
+        if key == "tag" && value.include?(",")
+          value = value.split(",").map(&:strip)
+        end
 
         # Convert to appropriate type
-        params[key.to_sym] = if value =~ /^\d+$/
+        params[key.to_sym] = if value.is_a?(Array)
+          value
+        elsif value =~ /^\d+$/
           value.to_i
         elsif value == "true"
           true

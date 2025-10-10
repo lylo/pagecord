@@ -118,6 +118,50 @@ class TaggableTest < ActiveSupport::TestCase
     assert_not_includes js_posts, post1
   end
 
+  test "should find posts tagged with all specified tags (AND logic)" do
+    post1 = Post.create!(
+      title: "Rails and Ruby Post",
+      content: ActionText::RichText.new(body: "About Rails and Ruby"),
+      blog: @blog,
+      tag_list: [ "rails", "ruby", "web" ]
+    )
+
+    post2 = Post.create!(
+      title: "Rails Only Post",
+      content: ActionText::RichText.new(body: "About Rails"),
+      blog: @blog,
+      tag_list: [ "rails", "web" ]
+    )
+
+    post3 = Post.create!(
+      title: "Ruby Only Post",
+      content: ActionText::RichText.new(body: "About Ruby"),
+      blog: @blog,
+      tag_list: [ "ruby", "web" ]
+    )
+
+    post4 = Post.create!(
+      title: "JavaScript Post",
+      content: ActionText::RichText.new(body: "About JavaScript"),
+      blog: @blog,
+      tag_list: [ "javascript", "web" ]
+    )
+
+    # Should only return posts that have BOTH rails AND ruby
+    both_tags = Post.tagged_with("rails", "ruby")
+    assert_includes both_tags, post1, "Should include post with both rails and ruby"
+    assert_not_includes both_tags, post2, "Should not include post with only rails"
+    assert_not_includes both_tags, post3, "Should not include post with only ruby"
+    assert_not_includes both_tags, post4, "Should not include post with neither tag"
+
+    # Verify single tag still works
+    rails_only = Post.tagged_with("rails")
+    assert_includes rails_only, post1
+    assert_includes rails_only, post2
+    assert_not_includes rails_only, post3
+    assert_not_includes rails_only, post4
+  end
+
   test "should find posts tagged with any of the specified tags" do
     post1 = Post.create!(
       title: "Rails Post",
