@@ -16,12 +16,6 @@ lexxy-editor {
     opacity: 0.5;
   }
 
-  :where(.attachment--preview) {
-    & .attachment__caption {
-      margin-block-start: 0;
-    }
-  }
-
   /* Caption styling for editor */
   .attachment__caption input {
     font-size: 0.875rem !important;
