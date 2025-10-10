@@ -18,7 +18,7 @@ class PostsMailbox < ApplicationMailbox
     if blog = blog_from_email(from, recipient)
       begin
         parser = MailParser.new(mail, process_attachments: blog.user.subscribed?)
-        unless parser.is_blank?
+        unless parser.blank?
           content = parser.body
           title = parser.subject
 
