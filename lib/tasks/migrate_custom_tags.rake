@@ -60,7 +60,7 @@ namespace :custom_tags do
 
     if apply_changes
       changes.each do |change|
-        change[:post].update_column(:content, change[:updated])
+        change[:post].update!(content: change[:updated])
       end
       puts "✓ Applied #{changes.count} changes"
     else
