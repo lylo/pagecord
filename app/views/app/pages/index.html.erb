@@ -11,14 +11,14 @@
           </p>
           <div class="mt-4 flex gap-2">
             <%= link_to "✏️ New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
-            <% if current_features.enabled?(:home_page) && @blog.home_page_id.nil? %>
+            <% unless @blog.has_custom_home_page? %>
               <%= link_to "🏠 Create Home Page", new_app_home_page_path, class: "btn-secondary", title: "Create a blank home page" %>
             <% end %>
           </div>
         </div>
       <% else %>
         <div class="text-end mb-8 flex gap-2 justify-end">
-          <% if current_features.enabled?(:home_page) && @blog.home_page_id.nil? %>
+          <% unless @blog.has_custom_home_page? %>
             <%= link_to "🏠 Create Home Page", new_app_home_page_path, class: "btn-secondary", title: "Create a blank home page" %>
           <% end %>
           <%= link_to "✏️ New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
@@ -55,7 +55,7 @@
         <div class="flex gap-x-2 mb-2 items-top">
           <div class="flex w-full justify-between items-top">
             <div>
-              <% edit_path = (page.home_page? && current_features.enabled?(:home_page)) ? edit_app_home_page_path : edit_app_page_path(page) %>
+              <% edit_path = page.home_page? ? edit_app_home_page_path : edit_app_page_path(page) %>
               <%= link_to edit_path, title: "Click to edit this page" do %>
                 <div class="font-medium pe-2 hover:underline">
                   <%= page.display_title %>
@@ -63,7 +63,7 @@
               <% end %>
             </div>
             <div class="flex items-top gap-x-4 text-slate-400 dark:text-slate-400">
-              <% if page.home_page? && current_features.enabled?(:home_page) %>
+              <% if page.home_page? %>
                 <div class="flex items-center text-[#4fbd9c]" title="This page is your home page">
                   🏠
                 </div>
