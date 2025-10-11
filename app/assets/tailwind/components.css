@@ -135,6 +135,7 @@
 
     .email-subscriber-form {
       font-size: 0.875em;
+      margin-block: 0 var(--lexxy-content-margin);
     }
 
     .form input[type="text"], .form input[type="email"], .form textarea {
