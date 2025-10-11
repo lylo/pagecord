@@ -42,7 +42,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
       @blog.posts.create!(title: "Post #{i}", content: "Content", status: :published, published_at: i.days.ago)
     end
 
-    page = @blog.pages.create!(title: "Limited Posts", content: "{{ posts limit: 2 }}", status: :published)
+    page = @blog.pages.create!(title: "Limited Posts", content: "{{ posts | limit: 2 }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -53,30 +53,24 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts tag with tag filter" do
-    @blog.posts.create!(title: "Ruby Post", content: "Content", status: :published, tag_list: [ "ruby" ])
-    @blog.posts.create!(title: "JS Post", content: "Content", status: :published, tag_list: [ "javascript" ])
-
-    page = @blog.pages.create!(title: "Ruby Posts", content: "{{ posts tag: ruby }}", status: :published)
+    page = @blog.pages.create!(title: "Photography Posts", content: "{{ posts | tag: photography }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
-    assert_select "body", text: /Ruby Post/
-    assert_select "body", text: /JS Post/, count: 0
+    assert_select "body", text: /The Art of Street Photography/
+    assert_select "body", text: /The Beauty of Landscape Photography/
+    assert_select "body", text: /Created with Trix/, count: 0
   end
 
   test "renders tags custom tag" do
-    @blog.posts.create!(title: "Post 1", content: "Content", status: :published, tag_list: [ "ruby", "rails" ])
-    @blog.posts.create!(title: "Post 2", content: "Content", status: :published, tag_list: [ "javascript" ])
-
     page = @blog.pages.create!(title: "Tags", content: "{{ tags }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
-    assert_select "body", text: /ruby/
-    assert_select "body", text: /rails/
-    assert_select "body", text: /javascript/
+    assert_select "body", text: /photography/
+    assert_select "body", text: /technology/
   end
 
   test "tag_list only shows tags from visible posts" do
@@ -104,19 +98,17 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders multiple custom tags in same page" do
-    @blog.posts.create!(title: "Ruby Post", content: "Content", status: :published, tag_list: [ "ruby" ])
-
     page = @blog.pages.create!(
       title: "Multi Tag Page",
-      content: "{{ posts limit: 1 }} and {{ tags }}",
+      content: "{{ posts | limit: 1 }} and {{ tags }}",
       status: :published
     )
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
-    assert_select "body", text: /Ruby Post/
-    assert_select "body", text: /ruby/
+    assert_select "body", text: /The Art of Street Photography/
+    assert_select "body", text: /photography/
   end
 
   test "does not process custom tags in regular posts" do
@@ -170,7 +162,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     @blog.posts.create!(title: "2024 Post", content: "Content", status: :published, published_at: Date.new(2024, 6, 15))
     @blog.posts.create!(title: "2025 Post", content: "Content", status: :published, published_at: Date.new(2025, 3, 20))
 
-    page = @blog.pages.create!(title: "2025 Posts", content: "{{ posts year: 2025 }}", status: :published)
+    page = @blog.pages.create!(title: "2025 Posts", content: "{{ posts | year: 2025 }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
@@ -180,22 +172,14 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts tag with combined limit and tag parameters" do
-    @blog.posts.create!(title: "Ruby 1", content: "Content", status: :published, published_at: 3.days.ago, tag_list: [ "ruby" ])
-    @blog.posts.create!(title: "Ruby 2", content: "Content", status: :published, published_at: 2.days.ago, tag_list: [ "ruby" ])
-    @blog.posts.create!(title: "Ruby 3", content: "Content", status: :published, published_at: 1.day.ago, tag_list: [ "ruby" ])
-    @blog.posts.create!(title: "JS Post", content: "Content", status: :published, tag_list: [ "javascript" ])
-
-    page = @blog.pages.create!(title: "Limited Ruby", content: "{{ posts limit: 2 tag: ruby }}", status: :published)
+    page = @blog.pages.create!(title: "Limited Photography", content: "{{ posts | limit: 1 | tag: photography }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
-    # Should show the 2 most recent Ruby posts
-    assert_select "body", text: /Ruby 3/
-    assert_select "body", text: /Ruby 2/
-    # Should not show older Ruby post or JS post
-    assert_select "body", text: /Ruby 1/, count: 0
-    assert_select "body", text: /JS Post/, count: 0
+    # Should show only 1 photography post (the most recent)
+    assert_select "body", text: /The Art of Street Photography/
+    assert_select "body", text: /The Beauty of Landscape Photography/, count: 0
   end
 
   test "renders posts_by_year tag" do
@@ -217,18 +201,14 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts_by_year tag with tag filter" do
-    @blog.posts.create!(title: "Ruby 2023", content: "Content", status: :published, published_at: Date.new(2023, 6, 15), tag_list: [ "ruby" ])
-    @blog.posts.create!(title: "Ruby 2024", content: "Content", status: :published, published_at: Date.new(2024, 3, 20), tag_list: [ "ruby" ])
-    @blog.posts.create!(title: "JS 2024", content: "Content", status: :published, published_at: Date.new(2024, 8, 10), tag_list: [ "javascript" ])
-
-    page = @blog.pages.create!(title: "Ruby Archive", content: "{{ posts_by_year tag: ruby }}", status: :published)
+    page = @blog.pages.create!(title: "Photography Archive", content: "{{ posts_by_year | tag: photography }}", status: :published)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
-    assert_select "body", text: /Ruby 2023/
-    assert_select "body", text: /Ruby 2024/
-    assert_select "body", text: /JS 2024/, count: 0
+    assert_select "body", text: /The Art of Street Photography/
+    assert_select "body", text: /The Beauty of Landscape Photography/
+    assert_select "body", text: /Created with Trix/, count: 0
   end
 
   test "renders email_subscription tag" do
@@ -251,5 +231,39 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     # Unknown tag should appear literally
     assert_includes response.body, "{{ unknown_tag }}"
+  end
+
+  test "renders posts tag with multiple tags (OR logic)" do
+    page = @blog.pages.create!(title: "Test Page", content: "{{ posts | tag: photography, technology }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    # Should show posts with EITHER tag
+    assert_select "body", text: /Photography and Technology/
+    assert_select "body", text: /The Art of Street Photography/
+    assert_select "body", text: /Created with Trix/
+  end
+
+  test "renders posts_by_year tag with multiple tags (OR logic)" do
+    page = @blog.pages.create!(title: "Photography and Tech Archive", content: "{{ posts_by_year | tag: photography, technology }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /Photography and Technology/
+    assert_select "body", text: /The Art of Street Photography/
+    assert_select "body", text: /Created with Trix/
+  end
+
+  test "renders posts tag with multiple tags without spaces" do
+    page = @blog.pages.create!(title: "Test", content: "{{ posts | tag: photography,technology }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /Photography and Technology/
+    assert_select "body", text: /The Art of Street Photography/
+    assert_select "body", text: /Created with Trix/
   end
 end

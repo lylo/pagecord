@@ -44,7 +44,7 @@ class App::FeedControllerTest < ActionDispatch::IntegrationTest
 
   test "private_rss should include tags as RSS categories" do
     # Create a post with tags in followed blog
-    @joel.blog.posts.create!(
+    post = @joel.blog.posts.create!(
       title: "Tagged Post",
       content: "Post with tags",
       status: "published",
@@ -57,7 +57,13 @@ class App::FeedControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     doc = Nokogiri::XML(@response.body)
-    categories = doc.xpath("//item/category").map(&:text)
+
+    # Find the specific item for our tagged post by link (using slug)
+    item = doc.xpath("//item[contains(link, '#{post.slug}')]").first
+    assert_not_nil item, "Tagged Post should be in RSS feed"
+
+    # Get categories only for this specific item
+    categories = item.xpath("category").map(&:text)
 
     assert_includes categories, "ruby"
     assert_includes categories, "rails"
