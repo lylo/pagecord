@@ -19,6 +19,7 @@
         --lexxy-color-ink: var(--color-text-muted);
         --lexxy-content-margin: 1rem;
 
+        margin-block: 0 var(--lexxy-content-margin);
         font-size: 0.875em;
 
         @apply mt-4 text-[var(--color-text-muted)] break-words;
