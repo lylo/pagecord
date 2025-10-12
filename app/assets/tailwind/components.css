@@ -45,7 +45,7 @@
 
     /* ---- BLOG POST  ---- */
     article {
-      @apply max-w-none text-[var(--color-text)];
+      @apply max-w-none text-[var(--color-text)] text-pretty;
 
       --lexxy-color-ink: var(--color-text);
       --lexxy-color-ink-medium: var(--color-text-muted);
