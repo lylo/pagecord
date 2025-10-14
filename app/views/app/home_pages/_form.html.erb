@@ -37,7 +37,7 @@
         <%= form.submit home_page.persisted? ? "Update Home Page" : "Create Home Page", class: "btn-primary" %>
         <%= link_to "Cancel", app_pages_path, class: "btn-secondary" %>
       </div>
-      <% if home_page.persisted? && current_features.enabled?(:home_page) %>
+      <% if home_page.persisted? %>
         <div>
           <%= link_to "Remove Home Page", app_home_page_path, method: :delete, class: "btn-optional", data: { turbo_method: :delete, turbo_confirm: "Remove this page as your home page?" } %>
         </div>

@@ -36,9 +36,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".cards_layout", count: 1
   end
 
-  test "should show email subscription form on index if enabled" do
-    @blog.update!(email_subscriptions_enabled: true, features: [ "email_subscribers" ])
-
+  test "should show email subscription form on index" do
     get blog_posts_path
 
     assert_response :success
@@ -220,7 +218,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should include tags as RSS categories in RSS feed" do
-    @blog.posts.create!(
+    post = @blog.posts.create!(
       title: "Tagged Post",
       content: "Post with tags",
       status: "published",
@@ -232,7 +230,13 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     doc = Nokogiri::XML(@response.body)
-    categories = doc.xpath("//item/category").map(&:text)
+
+    # Find the specific item for our tagged post by link (using slug)
+    item = doc.xpath("//item[contains(link, '#{post.slug}')]").first
+    assert_not_nil item, "Tagged Post should be in RSS feed"
+
+    # Get categories only for this specific item
+    categories = item.xpath("category").map(&:text)
 
     assert_includes categories, "ruby"
     assert_includes categories, "rails"
@@ -677,7 +681,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   # Home page tests
 
   test "should show home page instead of posts index when home page is set" do
-    @blog.update!(features: [ "home_page" ])
     page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
     @blog.update!(home_page_id: page.id)
 
@@ -697,7 +700,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should still show RSS feed when home page is set" do
-    @blog.update!(features: [ "home_page" ])
     page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
     @blog.update!(home_page_id: page.id)
 

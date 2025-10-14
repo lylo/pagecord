@@ -8,7 +8,6 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
     login_as @user
 
     @blog = @user.blog
-    @blog.update!(features: [ "home_page" ])
   end
 
   # New action
