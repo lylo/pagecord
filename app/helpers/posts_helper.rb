@@ -22,7 +22,7 @@ module PostsHelper
   def tag_filter_url(tag)
     if @blog
       # For public blog views
-      blog_home_path(@blog, tag: tag)
+      blog_posts_list_path(tag: tag)
     else
       # For admin views
       request.path + "?tag=#{tag}"
