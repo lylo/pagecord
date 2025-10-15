@@ -88,6 +88,32 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     assert_select ".text-red-500", /can't be blank/
   end
 
+  test "create social navigation with validation errors uses navigation_item params" do
+    # This test ensures the form uses scope: :navigation_item
+    # Without it, validation errors would cause params[:social_navigation_item]
+    # which would raise ParameterMissing exception
+    assert_no_difference -> { SocialNavigationItem.count } do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "social",
+        navigation_item: { platform: "Email" } # Missing URL
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select ".text-red-500", /can't be blank/
+  end
+
+  test "create page navigation with validation errors uses navigation_item params" do
+    assert_no_difference -> { PageNavigationItem.count } do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "page",
+        navigation_item: { post_id: nil } # Missing post_id
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
   test "update position via drag and drop" do
     item = navigation_items(:joel_about)
     assert_equal 1, item.position
