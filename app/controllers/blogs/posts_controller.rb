@@ -8,7 +8,8 @@ class Blogs::PostsController < Blogs::BaseController
   rescue_from Pagy::VariableError, with: :redirect_to_first_page
 
   def index
-    if request.format.html? && @blog.has_custom_home_page?
+    filtered = params[:tag].present?
+    if request.format.html? && @blog.has_custom_home_page? && !filtered
       @post = @blog.home_page
       return unless @post&.published? && !@post.pending?
 
