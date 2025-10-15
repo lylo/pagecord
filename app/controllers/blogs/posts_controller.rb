@@ -8,6 +8,7 @@ class Blogs::PostsController < Blogs::BaseController
   rescue_from Pagy::VariableError, with: :redirect_to_first_page
 
   def index
+    # FIXME this filtered check can be removed after cache has been reset
     filtered = params[:tag].present?
     if request.format.html? && @blog.has_custom_home_page? && !filtered
       @post = @blog.home_page
