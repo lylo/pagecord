@@ -1,17 +1,18 @@
 module App::PostsHelper
-  def publish_button_text(post)
+  def publish_button_text(post, model_name: nil)
+    name = model_name || infer_model_name(post)
     if post.persisted?
       if post.published?
-        "Update Post"
+        "Update #{name}"
       else
-        "Publish Post"
+        "Publish #{name}"
       end
     else
-      "Publish Post"
+      "Publish #{name}"
     end
   end
 
-  def draft_button_text(post)
+  def draft_button_text(post, model_name: nil)
     if post.persisted?
       if post.published?
         "Unpublish"
@@ -22,4 +23,18 @@ module App::PostsHelper
       "Save Draft"
     end
   end
+
+  private
+
+    def infer_model_name(post)
+      if post.page?
+        if post.home_page?
+          "Home Page"
+        else
+          "Page"
+        end
+      else
+        "Post"
+      end
+    end
 end

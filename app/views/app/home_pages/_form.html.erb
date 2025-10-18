@@ -32,16 +32,18 @@
       </div>
     <% end %>
 
+    <% show_unlink = home_page.persisted? && current_features.enabled?(:home_page) %>
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-8">
       <div class="flex flex-wrap gap-2">
-        <%= form.submit home_page.persisted? ? "Update Home Page" : "Create Home Page", class: "btn-primary" %>
+        <%= form.submit publish_button_text(home_page, model_name: "Home Page"), class: "btn-primary" %>
         <%= link_to "Cancel", app_pages_path, class: "btn-secondary" %>
       </div>
-      <% if home_page.persisted? && current_features.enabled?(:home_page) %>
-        <div>
-          <%= link_to "Remove Home Page", app_home_page_path, method: :delete, class: "btn-optional", data: { turbo_method: :delete, turbo_confirm: "Remove this page as your home page?" } %>
-        </div>
-      <% end %>
+      <div class="flex flex-wrap gap-2">
+        <%= form.button draft_button_text(home_page, model_name: "Home Page"), value: "save_draft", class: "btn-optional" %>
+        <% if show_unlink %>
+          <%= link_to "Unlink Home Page", app_home_page_path, method: :delete, class: "btn-optional", data: { turbo_method: :delete, turbo_confirm: "Remove this page as your home page?" } %>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div>

@@ -8,6 +8,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     login_as @user
 
     @blog = blogs(:joel)
+    @blog.update!(features: [ "home_page" ])
     @page = posts(:about)  # This is now a Post with is_page: true
     @draft_page = posts(:draft_page)
   end
@@ -133,5 +134,43 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
+  end
+
+  test "should set page as home page" do
+    assert_nil @blog.home_page_id
+
+    post set_as_home_page_app_page_path(@page)
+
+    @blog.reload
+    assert_equal @page.id, @blog.home_page_id
+    assert_redirected_to app_pages_path
+    assert_equal "Home page set!", flash[:notice]
+  end
+
+  test "should not set other user's page as home page" do
+    other_blog = blogs(:elliot)
+    other_page = other_blog.posts.create!(
+      title: "Other Page",
+      content: "Other content",
+      is_page: true,
+      status: :published
+    )
+
+    post set_as_home_page_app_page_path(other_page.token)
+
+    assert_response :not_found
+    @blog.reload
+    assert_nil @blog.home_page_id
+  end
+
+  test "should set draft page as home page" do
+    assert_nil @blog.home_page_id
+
+    post set_as_home_page_app_page_path(@draft_page)
+
+    @blog.reload
+    assert_equal @draft_page.id, @blog.home_page_id
+    assert_redirected_to app_pages_path
+    assert_equal "Home page set!", flash[:notice]
   end
 end

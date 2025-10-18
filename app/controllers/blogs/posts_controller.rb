@@ -12,13 +12,13 @@ class Blogs::PostsController < Blogs::BaseController
     filtered = params[:tag].present?
     if request.format.html? && @blog.has_custom_home_page? && !filtered
       @post = @blog.home_page
-      return unless @post&.published? && !@post.pending?
-
-      return if fresh_when @post, public: true, template: "blogs/posts/show"
-      render :show
-    else
-      posts_list
+      if @post&.published? && !@post.pending?
+        return if fresh_when @post, public: true, template: "blogs/posts/show"
+        return render :show
+      end
     end
+
+    posts_list
   end
 
   def posts_list

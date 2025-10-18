@@ -714,6 +714,18 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil assigns(:posts)
   end
 
+  test "should show posts index when home page is draft" do
+    @blog.update!(features: [ "home_page" ])
+    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :draft)
+    @blog.update!(home_page_id: page.id)
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_not_nil assigns(:posts)
+    assert_template "blogs/posts/index"
+  end
+
   private
 
     def host_subdomain!(name)
