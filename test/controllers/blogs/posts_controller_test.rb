@@ -45,6 +45,57 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-frame#email_subscriber_form"
   end
 
+  test "should not show email subscription form on index if show_subscription_in_header is false" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_header: false
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form", count: 0
+  end
+
+  test "should show email subscription form on post show if enabled" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_footer: true
+    )
+    post = @blog.posts.visible.first
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form"
+  end
+
+  test "should not show email subscription form on post show if show_subscription_in_footer is false" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_footer: false
+    )
+    post = @blog.posts.visible.first
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form", count: 0
+  end
+
+  test "should not show email subscription form on page show" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_footer: true
+    )
+    page = @blog.pages.create!(title: "Test Page", content: "Content", status: "published")
+
+    get blog_post_path(page.slug)
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form", count: 0
+  end
+
   test "should get show" do
     post = @blog.posts.visible.first
 

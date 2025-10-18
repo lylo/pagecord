@@ -9,5 +9,5 @@
   </div>
   <% end %>
 
-  <%= render "blogs/email_subscriber_form" unless local_assigns[:hide_email_form] %>
+  <%= render "blogs/email_subscriber_form" if @blog.show_subscription_in_header? && !local_assigns[:hide_email_form] %>
 </header>

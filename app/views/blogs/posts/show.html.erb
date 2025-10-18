@@ -16,6 +16,6 @@
 <%= render @post %>
 </div>
 
-<%= render "blogs/email_subscriber_form" if @post.post? %>
+<%= render "blogs/email_subscriber_form" if @post.post? && @blog.show_subscription_in_footer? %>
 
 <%= render 'shared/analytics_tracking', post: @post %>
