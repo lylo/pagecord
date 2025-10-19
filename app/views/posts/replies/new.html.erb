@@ -9,6 +9,7 @@
           url: post_replies_path(@post),
           method: :post,
           scope: :reply,
+          data: { turbo: false },
           class: "form-container" do |form| %>
 
   <%= hidden_field_tag :form_token, @form_token %>
