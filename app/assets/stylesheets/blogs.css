@@ -53,23 +53,11 @@ footer.blog-footer {
   color: var(--color-text-light);
 }
 
-@media (prefers-color-scheme: dark) {
-  footer.blog-footer {
-    color: var(--color-text-muted);
-  }
-}
-
 footer.blog-footer #brand svg {
   width: 110px;
   margin-top: 2rem;
   display: inline-flex;
   color: var(--color-text-heading);
-}
-
-@media (prefers-color-scheme: dark) {
-  footer.blog-footer #brand svg {
-    color: var(--color-text-heading);
-  }
 }
 
 /* ================================== */
@@ -270,13 +258,8 @@ html, body {
     color: var(--color-text-muted);
   }
 
-  .post-footer .icon {
-    color: var(--color-text-disabled);
-  }
 
-  .post-footer .icon:hover {
-    color: var(--color-text-light);
-  }
+  /* Form elements */
 
   .form {
     padding: 1rem;
@@ -286,14 +269,8 @@ html, body {
     border: none;
   }
 
-  /* Form elements */
   .form label {
     font-weight: 500;
-  }
-
-  .form input,
-  .form textarea {
-    font-size: 1em;
   }
 
   .form .button {
@@ -311,6 +288,7 @@ html, body {
   .form input[type="email"],
   .form textarea {
     font-family: inherit;
+    font-size: 1em;
     background-color: var(--color-input-bg);
     border: 1px solid var(--color-input-border);
     color: var(--color-text);
@@ -345,7 +323,7 @@ html, body {
     border: none;
   }
 
-  /* Email subscription form - inline input with attached submit button */
+  /* Email subscription form  */
   .email-subscriber-form input[type="email"] {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -587,13 +565,9 @@ button {
   text-align: center;
 }
 
-.empty-state-message {
-  margin-top: 1rem;
-  text-align: center;
-}
-
-.empty-state-link {
-  font-weight: 600;
+.empty-state a {
+  color: var(--color-accent);
+  font-weight: 500;
   text-decoration: underline;
 }
 
@@ -655,9 +629,7 @@ button {
 /* Layout - Flash Messages       */
 /* ============================= */
 
-.flash-container {
-  /* Note: Uses .hidden class for initial display: none */
-}
+/* Note: Flash container uses .hidden class for initial display: none */
 
 .flash-wrapper {
   position: absolute;
