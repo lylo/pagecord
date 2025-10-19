@@ -1,0 +1,11 @@
+/* ================================== */
+/* Application Shared Styles         */
+/* ================================== */
+
+/* This file is loaded by ALL layouts (blog, admin, app, home, etc.)
+   It should only contain truly shared styles that apply everywhere. */
+
+/* Field errors wrapper - makes Rails error wrapper invisible to flexbox */
+.field_with_errors {
+  display: contents;
+}

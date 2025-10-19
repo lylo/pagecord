@@ -1,12 +1,3 @@
-/* ================================== */
-/* Blog Layout Styles                 */
-/* ================================== */
-
-/* This file provides layout and structural styles for blog pages,
-   replacing Tailwind utility classes with semantic CSS.
-   Typography within post content is handled by lexxy-typography.css.
-   Theme colors and variables are defined in app/assets/tailwind/. */
-
 /* ============================= */
 /* Layout - Page Structure       */
 /* ============================= */
@@ -36,11 +27,6 @@ main {
   width: 100%;
 }
 
-.blog header .bio {
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-}
-
 /* Content width modifiers (applied via content_width_class helper) */
 .max-w-content-narrow {
   max-width: var(--content-width-narrow);
@@ -61,12 +47,12 @@ footer.blog-footer {
   flex-direction: column;
   text-align: center;
   padding: 2rem;
-  color: #94a3b8; /* slate-400 */
+  color: var(--color-text-light);
 }
 
 @media (prefers-color-scheme: dark) {
   footer.blog-footer {
-    color: #64748b; /* slate-500 in dark mode */
+    color: var(--color-text-muted);
   }
 }
 
@@ -74,12 +60,321 @@ footer.blog-footer #brand svg {
   width: 110px;
   margin-top: 2rem;
   display: inline-flex;
-  color: #0f172a; /* slate-900 for light mode */
+  color: var(--color-text-heading);
 }
 
 @media (prefers-color-scheme: dark) {
   footer.blog-footer #brand svg {
-    color: #f1f5f9; /* slate-100 for dark mode */
+    color: var(--color-text-heading);
+  }
+}
+
+/* ================================== */
+/* Blog Components (Pure CSS)        */
+/* ================================== */
+
+/* Apply base theme styles to html and body */
+html, body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.blog {
+  header {
+    border-bottom: 1px solid var(--color-border);
+    padding-top: 0.5rem;
+    margin-bottom: 2rem;
+
+    .top-nav {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.75rem;
+
+      .social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-light) !important;
+      }
+
+      .social-link:hover {
+        color: var(--color-text-muted) !important;
+      }
+    }
+
+    .top-nav svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .titlebar {
+      margin-top: 1em;
+      margin-bottom: 1em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+  }
+
+    .titlebar .avatar-container {
+      display: flex;
+      width: 100%;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .titlebar .avatar {
+      width: 4rem;
+      height: 4rem;
+      flex-shrink: 0;
+    }
+
+    .titlebar .avatar img {
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      object-fit: cover;
+      border-radius: 9999px;
+      width: 4rem;
+      height: 4rem;
+    }
+  }
+
+  header .top-nav {
+    font-size: 0.875em;
+  }
+
+  header .bio {
+    --lexxy-color-ink: var(--color-text-muted);
+    --lexxy-content-margin: 1rem;
+
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    font-size: 0.875em;
+    color: var(--color-text-muted);
+    word-break: break-words;
+  }
+
+  header .bio a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    font-weight: 400 !important;
+  }
+
+  header .bio strong,
+  header .bio b {
+    color: var(--color-text);
+  }
+
+  header .blog-title {
+    color: var(--color-text-heading) !important;
+    font-size: 1.25em;
+    font-weight: 700;
+  }
+
+  header .avatar img {
+    border: 1px solid var(--color-border);
+    width: 4rem;
+    height: 4rem;
+  }
+
+  article {
+    max-width: none;
+    color: var(--color-text);
+    text-wrap: pretty;
+
+    --lexxy-color-ink: var(--color-text);
+    --lexxy-color-ink-medium: var(--color-text-muted);
+    --lexxy-color-ink-light: var(--color-text-light);
+    --lexxy-color-ink-lighter: var(--color-text-disabled);
+    --lexxy-color-ink-lightest: var(--color-bg-sunken);
+    --lexxy-color-text: var(--color-text);
+    --lexxy-color-text-subtle: var(--color-text-muted);
+    --lexxy-color-link: var(--color-accent);
+    --lexxy-color-accent-dark: var(--color-accent);
+    --lexxy-color-accent-medium: var(--color-accent-hover);
+    --lexxy-color-code-bg: var(--color-bg-subtle);
+  }
+
+  article a.post-title-link {
+    text-decoration: none !important;
+  }
+
+  article.blog-post {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  article a {
+    color: var(--color-accent) !important;
+    text-decoration: underline;
+  }
+
+  article a:hover {
+    color: var(--color-accent-hover) !important;
+  }
+
+  article blockquote {
+    color: var(--color-text-muted) !important;
+    border-left-color: var(--color-border) !important;
+  }
+
+  article li::marker {
+    color: var(--color-text-light) !important;
+  }
+
+  article h1.post-title {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    color: var(--color-text-heading);
+    font-weight: 800;
+  }
+
+  article figcaption.attachment__caption {
+    text-align: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-top: 0.5rem !important;
+  }
+
+  @media (min-width: 640px) {
+    article figcaption.attachment__caption {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  article code,
+  article pre {
+    background-color: var(--color-bg-subtle) !important;
+  }
+
+  article audio {
+    margin: var(--lexxy-content-margin) 0;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .post-footer a,
+  .post-footer button {
+    color: var(--color-text-light);
+    background-color: inherit;
+  }
+
+  .post-footer a:hover,
+  .post-footer button:hover {
+    color: var(--color-text-muted);
+  }
+
+  .post-footer .icon {
+    color: var(--color-text-disabled);
+  }
+
+  .post-footer .icon:hover {
+    color: var(--color-text-light);
+  }
+
+  .form {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: var(--color-bg-subtle);
+    color: var(--color-text);
+    border: none;
+  }
+
+  /* Form elements */
+  .form label {
+    font-weight: 500;
+  }
+
+  .form input,
+  .form textarea {
+    font-size: 1em;
+  }
+
+  .form .button {
+    font-size: 0.875em;
+  }
+
+  .form a.btn-cancel {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 500;
+    color: inherit;
+  }
+
+  .form input[type="text"],
+  .form input[type="email"],
+  .form textarea {
+    font-family: inherit;
+    background-color: var(--color-input-bg);
+    border: 1px solid var(--color-input-border);
+    color: var(--color-text);
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    box-shadow: none;
+  }
+
+  .form input[type="text"]:focus,
+  .form input[type="email"]:focus,
+  .form textarea:focus {
+    border-color: var(--color-input-focus);
+    outline: none;
+  }
+
+  .form input[type="email"]::placeholder {
+    color: var(--color-placeholder);
+  }
+
+  .form input[type="submit"] {
+    font-family: inherit;
+    background-color: var(--color-button-bg);
+    color: var(--color-button-text);
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    border: none;
+  }
+
+  /* Email subscription form - inline input with attached submit button */
+  .email-subscriber-form input[type="email"] {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+  }
+
+  .email-subscriber-form input[type="submit"] {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding: 0.25rem 0.75rem;
+  }
+
+  .form input[type="submit"]:hover {
+    background-color: var(--color-button-hover);
+  }
+
+  /* Confirmation card component */
+  .confirmation-card {
+    background-color: var(--color-bg-subtle);
+    text-align: center;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+  }
+
+  .post-footer {
+    font-size: 0.875em;
+  }
+
+  .tag {
+    font-size: 0.875em;
+  }
+
+  .icon {
+    width: 1.5em;
+    height: 1.5em;
   }
 }
 
@@ -91,59 +386,6 @@ a {
   text-decoration: none;
 }
 
-/* ============================= */
-/* Layout - Blog Header          */
-/* ============================= */
-
-header {
-  padding-top: 0.5rem;
-  margin-bottom: 2rem;
-}
-
-/* Top navigation - right-aligned horizontal nav */
-.top-nav {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.top-nav svg {
-  width: 1rem;
-  height: 1rem;
-}
-
-/* Blog titlebar - horizontal layout with space between */
-.titlebar {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Avatar layout (when present) */
-.titlebar .avatar-container {
-  display: flex;
-  width: 100%;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.titlebar .avatar {
-  width: 4rem;
-  height: 4rem;
-  flex-shrink: 0;
-}
-
-.titlebar .avatar img {
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  object-fit: cover;
-  border-radius: 9999px;
-  width: 4rem;
-  height: 4rem;
-}
 
 /* ============================= */
 /* Layout - Post Lists           */
@@ -272,19 +514,6 @@ header {
 }
 
 /* ============================= */
-/* Layout - Article (Post)       */
-/* ============================= */
-
-article.blog-post {
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-article a.post-title-link {
-  text-decoration: none;
-}
-
-/* ============================= */
 /* Layout - Post Footer          */
 /* ============================= */
 
@@ -407,30 +636,12 @@ button {
   font-size: var(--font-size-large) !important;
 }
 
-/* Font weight utilities used in partials */
-.font-bold {
-  font-weight: 700;
-}
-
-.font-semibold {
-  font-weight: 600;
-}
-
-.font-medium {
-  font-weight: 500;
-}
-
-.font-normal {
-  font-weight: 400;
-}
-
 /* ============================= */
 /* Layout - Flash Messages       */
 /* ============================= */
 
 .flash-container {
-  display: none;
-  pointer-events: none;
+  /* Note: Uses .hidden class for initial display: none */
 }
 
 .flash-wrapper {
@@ -635,5 +846,105 @@ button {
 
 .pointer-events-none {
   pointer-events: none;
+}
+
+dialog::backdrop {
+  backdrop-filter: blur(2px);
+}
+
+dialog[open] {
+  animation: modal-open 150ms ease-out;
+}
+
+@keyframes modal-open {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* Posts list component */
+ul.posts-list {
+  list-style: none;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  margin-block: 0 var(--lexxy-content-margin) !important;
+  display: grid;
+  gap: 0.25rem;
+  grid-template-columns: min-content 1fr;
+}
+
+.posts-list li {
+  display: grid;
+  gap: 0.75rem;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.posts-list a {
+  font-weight: 500;
+  text-decoration: none !important;
+}
+
+.posts-list a:hover {
+  text-decoration: underline !important;
+}
+
+.posts-list li time {
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.posts-list h2 {
+  margin-bottom: 0.5em !important;
+}
+
+.posts-list h2:not(:first-child) {
+  margin-top: 1.5rem !important;
+}
+
+/* Tag list component */
+.tag-list {
+  list-style: disc;
+  padding-left: 1.5em;
+  margin-block: 0 var(--lexxy-content-margin) !important;
+}
+
+.tag-list li {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.tag-list a {
+  font-weight: 500;
+  text-decoration: none !important;
+}
+
+.tag-list a:hover {
+  text-decoration: underline !important;
+}
+
+/* ============================= */
+/* Animations                    */
+/* ============================= */
+
+@keyframes pulseGrow {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+}
+
+.animate-pulse-grow {
+  animation: pulseGrow 500ms ease-in-out;
 }
 
