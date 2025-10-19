@@ -258,6 +258,13 @@ html, body {
     color: var(--color-text-muted);
   }
 
+  .post-footer .icon {
+    color: var(--color-text-disabled);
+  }
+
+  .post-footer .icon:hover {
+    color: var(--color-text-light);
+  }
 
   /* Form elements */
 
