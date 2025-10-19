@@ -1,11 +1,13 @@
-<nav class="top-nav">
-  <% @blog.navigation_items.ordered.each do |item| %>
-    <% if item.is_a?(SocialNavigationItem) %>
-      <%= link_to navigation_item_url(item), class: "social-link", aria: { label: "#{item.platform.titleize} Link" } do %>
-        <%= inline_svg_tag "icons/social/#{item.platform.downcase}.svg" %>
+<% if @blog.navigation_items.ordered.any? %>
+  <nav class="top-nav">
+    <% @blog.navigation_items.ordered.each do |item| %>
+      <% if item.is_a?(SocialNavigationItem) %>
+        <%= link_to navigation_item_url(item), class: "social-link", aria: { label: "#{item.platform.titleize} Link" } do %>
+          <%= inline_svg_tag "icons/social/#{item.platform.downcase}.svg" %>
+        <% end %>
+      <% else %>
+        <%= link_to item.label, navigation_item_url(item), class: "social-link" %>
       <% end %>
-    <% else %>
-      <%= link_to item.label, navigation_item_url(item), class: "social-link" %>
     <% end %>
-  <% end %>
-</nav>
+  </nav>
+<% end %>

@@ -117,7 +117,7 @@ html, body {
       display: flex;
       align-items: center;
       justify-content: space-between;
-  }
+    }
 
     .titlebar .avatar-container {
       display: flex;
