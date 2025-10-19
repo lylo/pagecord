@@ -319,6 +319,11 @@ html, body {
     box-shadow: none;
   }
 
+  .form textarea {
+    resize: vertical;
+    max-width: 100%;
+  }
+
   .form input[type="text"]:focus,
   .form input[type="email"]:focus,
   .form textarea:focus {
