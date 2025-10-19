@@ -12,7 +12,6 @@
 
 /* Components */
 @import "./components.css";
-@import "./components/lightbox.css";
 
 /* Rest of your CSS for layout, utilities, etc. */
 @layer utilities {
