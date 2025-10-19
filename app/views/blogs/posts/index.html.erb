@@ -7,23 +7,20 @@
 <%= render "blogs/header" %>
 
 <% if @posts.empty? %>
-  <% if @current_tag.present? %>
-    <p class="empty-state">
-      No posts found with the tag "<%= @current_tag %>" ✨
-    </p>
-    <p class="empty-state-message">
-      <%= link_to "View all posts", blog_home_path(@blog), class: "empty-state-link" %>
-    </p>
-  <% else %>
-    <p class="empty-state">
-      Nothing to read on this blog yet ✨
-    </p>
-    <p class="empty-state-message">
-      To be notified of new posts, subscribe to the
-      <%= link_to "RSS feed", rss_feed_url(@blog),
-          class: "empty-state-link" %>
-    </p>
-  <% end %>
+  <div class="empty-state">
+    <% if @current_tag.present? %>
+      <p>No posts found with the tag "<%= @current_tag %>" ✨</p>
+      <p>
+        <%= link_to "View all posts", blog_home_path(@blog), class: "empty-state-link" %>
+      </p>
+    <% else %>
+      <p>Nothing to read on this blog yet ✨</p>
+      <p>
+        To be notified of new posts, subscribe to the
+        <%= link_to "RSS feed", rss_feed_url(@blog), class: "empty-state-link" %>
+      </p>
+    <% end %>
+  </div>
 <% else %>
   <% if @current_tag.present? %>
     <div class="tag-filter-notice">
