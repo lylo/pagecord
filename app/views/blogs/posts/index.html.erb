@@ -36,13 +36,15 @@
     </div>
   <% end %>
 
-  <% if @blog.stream_layout? %>
-    <%= render "posts_stream" %>
-  <% elsif @blog.cards_layout? %>
-    <%= render "posts_cards" %>
-  <% else %>
-    <%= render "posts_titles" %>
-  <% end %>
+  <div class="<%= @blog.layout %>">
+    <% if @blog.stream_layout? %>
+      <%= render "posts_stream" %>
+    <% elsif @blog.cards_layout? %>
+      <%= render "posts_cards" %>
+    <% else %>
+      <%= render "posts_titles" %>
+    <% end %>
+  </div>
 <% end %>
 
 <%= render 'shared/analytics_tracking' %>
