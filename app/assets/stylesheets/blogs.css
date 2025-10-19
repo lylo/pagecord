@@ -11,6 +11,11 @@
 /* Layout - Page Structure       */
 /* ============================= */
 
+/* Universal box-sizing to include padding in width calculations */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 /* Body layout - vertical flex container */
 body {
   display: flex;
@@ -271,8 +276,8 @@ header {
 /* ============================= */
 
 article.blog-post {
-  overflow: auto;
-  word-break: break-words;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 article a.post-title-link {
@@ -287,7 +292,7 @@ article a.post-title-link {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .post-footer.with-tags {
@@ -323,14 +328,14 @@ button {
   padding: 0;
 }
 
-/* Email subscription form */
 .email-subscriber-form {
+  display: flex;
+  justify-content: center;
   font-size: 0.875em;
   margin-left: auto;
   margin-right: auto;
   margin-block: 0 var(--lexxy-content-margin);
   max-width: 450px;
-  width: 450px;
 }
 
 /* Empty state messages */

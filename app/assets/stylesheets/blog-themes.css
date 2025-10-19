@@ -429,9 +429,7 @@ html, body {
   }
 
   .form {
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-    padding: 1rem;
+    padding: 0.75rem;
     border-radius: 0.5rem;
     background-color: var(--color-bg-subtle);
     color: var(--color-text);
@@ -456,6 +454,7 @@ html, body {
     display: inline-flex;
     align-items: center;
     font-weight: 500;
+    color: inherit;
   }
 
   .form input[type="text"],
