@@ -1,5 +1,5 @@
 <%= turbo_frame_tag :posts do %>
-  <div class="posts-titles title_layout" data-turbo="false">
+  <div class="posts-titles" data-turbo="false">
     <% previous_year = params[:last_visible_year]&.to_i %>
     <% @posts.each do |post| %>
       <% if post.published_at.year != previous_year %>
