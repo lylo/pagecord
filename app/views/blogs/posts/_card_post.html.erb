@@ -10,12 +10,10 @@
       <div class="post-card-summary">
         <% if post.has_text_content? %>
           <%= post.summary(limit: 324) %>
+        <% elsif post.first_image.present? %>
+          <%= image_tag resized_image_url(post.first_image, width: 1600, height: 1200), alt: post.display_title %>
         <% else %>
-          <% if post.first_image.present? %>
-            <%= image_tag resized_image_url(post.first_image, width: 1600, height: 1200), alt: post.display_title %>
-          <% else %>
-            <%= post.content.to_plain_text %>
-          <% end %>
+          <%= post.content.to_plain_text %>
         <% end %>
       </div>
 
