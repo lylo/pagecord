@@ -1,5 +1,5 @@
 <%= turbo_frame_tag :posts do %>
-  <div data-controller="media-embeds turbo-frame-top">
+  <div class="cards_layout" data-controller="media-embeds turbo-frame-top">
     <%= render partial: "card_post", collection: @posts, as: :post %>
   </div>
 
