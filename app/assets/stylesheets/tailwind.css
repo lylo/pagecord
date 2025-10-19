@@ -7,9 +7,6 @@
   --color-pagecord-accent: hsl(162, 54%, 57%); /* #56cda9 */
 }
 
-/* Themes */
-@import "./themes.css";
-
 /* Components */
 @import "./components.css";
 
