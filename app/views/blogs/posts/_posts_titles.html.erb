@@ -1,20 +1,20 @@
 <%= turbo_frame_tag :posts do %>
-  <div class="flex flex-col" data-turbo="false">
+  <div class="posts-titles-container" data-turbo="false">
     <% previous_year = params[:last_visible_year]&.to_i %>
     <% @posts.each do |post| %>
       <% if post.published_at.year != previous_year %>
-        <div class="text-lg font-semibold mb-2 <%= 'mt-6' unless previous_year.nil? %>">
+        <div class="year-header <%= 'has-previous' unless previous_year.nil? %>">
           <%= local_time post.published_at, "%Y" %>
         </div>
         <% previous_year = post.published_at.year %>
       <% end %>
 
-      <div class="flex gap-x-2 mb-1">
-        <div class="text-[var(--color-text-muted)] w-16 flex-shrink-0">
+      <div class="post-row">
+        <time class="post-date" datetime="<%= post.published_at.iso8601 %>">
           <%= local_time post.published_at.to_date, format: :month_day %>
-        </div>
-        <div class="text-[var(--color-text-heading)]">
-          <%= link_to post.display_title, post_path(post), class: "font-medium hover:underline" %>
+        </time>
+        <div>
+          <%= link_to post.display_title, post_path(post), class: "post-link" %>
         </div>
       </div>
     <% end %>

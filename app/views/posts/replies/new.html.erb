@@ -9,46 +9,46 @@
           url: post_replies_path(@post),
           method: :post,
           scope: :reply,
-          class: "p-2 sm:p-4 space-y-6" do |form| %>
+          class: "form-container" do |form| %>
 
   <%= hidden_field_tag :form_token, @form_token %>
   <%= render "/shared/spam_prevention" %>
 
-  <div class="md:flex md:space-x-4 space-y-6 md:space-y-0">
-    <div class="md:flex-1">
-      <%= form.label :name, t('replies.form.name_label'), class: "block mb-1" %>
-      <%= form.text_field :name, class: "block w-full rounded-md", required: true, autofocus: true %>
+  <div class="form-row">
+    <div class="form-field">
+      <%= form.label :name, t('replies.form.name_label') %>
+      <%= form.text_field :name, required: true, autofocus: true %>
       <% if @reply.errors[:name].any? %>
-        <span class="text-red-500 text-sm"><%= @reply.errors.full_messages_for(:name).first %></span>
+        <span class="form-error"><%= @reply.errors.full_messages_for(:name).first %></span>
       <% end %>
     </div>
 
-    <div class="md:flex-1">
-      <%= form.label :email, t('replies.form.email_label'), class: "block mb-1" %>
-      <%= form.email_field :email, class: "block w-full rounded-md", required: true %>
+    <div class="form-field">
+      <%= form.label :email, t('replies.form.email_label') %>
+      <%= form.email_field :email, required: true %>
       <% if @reply.errors[:email].any? %>
-        <span class="text-red-500 text-sm"><%= @reply.errors.full_messages_for(:email).first %></span>
+        <span class="form-error"><%= @reply.errors.full_messages_for(:email).first %></span>
       <% end %>
     </div>
   </div>
 
-  <div class="md:flex-1">
-    <%= form.label :subject, t('replies.form.subject_label'), class: "block mb-1" %>
-    <%= form.text_field :subject, class: "block w-full rounded-md", required: true %>
+  <div class="form-field">
+    <%= form.label :subject, t('replies.form.subject_label') %>
+    <%= form.text_field :subject, required: true %>
     <% if @reply.errors[:subject].any? %>
-      <span class="text-red-500 text-sm"><%= @reply.errors.full_messages_for(:subject).first %></span>
+      <span class="form-error"><%= @reply.errors.full_messages_for(:subject).first %></span>
     <% end %>
   </div>
 
-  <div class="md:flex-1">
-    <%= form.label :message, t('replies.form.message_label'), class: "block mb-1" %>
-    <%= form.text_area :message, rows: 6, class: "block w-full rounded-md", required: true %>
+  <div class="form-field">
+    <%= form.label :message, t('replies.form.message_label') %>
+    <%= form.text_area :message, rows: 6, required: true %>
     <% if @reply.errors[:message].any? %>
-      <span class="text-red-500 text-sm"><%= @reply.errors.full_messages_for(:message).first %></span>
+      <span class="form-error"><%= @reply.errors.full_messages_for(:message).first %></span>
     <% end %>
   </div>
 
-  <div class="flex gap-x-4">
+  <div class="form-actions">
     <%= form.submit t('replies.form.submit_button'), class: "button" %>
     <%= link_to t('replies.form.cancel_link'), post_path(@post), class: "button btn-cancel" %>
   </div>

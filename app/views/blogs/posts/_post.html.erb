@@ -1,5 +1,5 @@
 <% cache_if(post.post?, post) do %>
-  <article class="overflow-auto break-words">
+  <article class="blog-post">
     <%= render "post_title", post: post %>
 
     <%= render "post_content", post: post %>

@@ -1,10 +1,10 @@
 <%= render "blogs/header", hide_email_form: true %>
 
-<div class="confirmation-card mt-12 text-center max-w-[450px] mx-auto p-8">
-  <div class="text-body">
+<div class="confirmation-card confirmation-page">
+  <div class="confirmation-text">
     <%= t('email_subscribers.confirmations.success_message', blog_name: @blog.display_name) %>
   </div>
-  <div class="mt-4">
-    <%= link_to t('email_subscribers.confirmations.unsubscribe_link'), email_subscriber_unsubscribe_path(@subscriber.token), data: { turbo: false }, class: "text-meta font-medium underline" %>
+  <div class="confirmation-link">
+    <%= link_to t('email_subscribers.confirmations.unsubscribe_link'), email_subscriber_unsubscribe_path(@subscriber.token), data: { turbo: false }, class: "font-medium" %>
   </div>
 </div>
