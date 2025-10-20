@@ -16,10 +16,9 @@ class YouTube extends MediaSite {
 
       (embedUrl) => {
         const div = document.createElement('div')
-        div.className = "aspect-w-16 aspect-h-9"
+        div.className = "video-embed-container"
 
         const iframe = document.createElement('iframe')
-        iframe.className = "mx-auto w-full h-full"
         iframe.src = embedUrl
         iframe.loading = "lazy"
         iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
