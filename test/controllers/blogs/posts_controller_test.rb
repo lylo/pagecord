@@ -713,7 +713,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
     assert_template "blogs/errors/not_found"
-    assert_template layout: "application"
+    assert_template layout: "blog"
   end
 
   test "should render blog 404 template for unmatched routes" do
@@ -721,7 +721,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
     assert_template "blogs/errors/not_found"
-    assert_template layout: "application"
+    assert_template layout: "blog"
   end
 
   test "should handle unmatched XML routes with proper 404" do
