@@ -121,6 +121,15 @@
     max-width: 100%;
   }
 
+  /* Full width images on mobile for better portrait image display */
+  @media (max-width: 640px) {
+    img {
+      width: 100%;
+      height: auto;
+      max-block-size: none;
+    }
+  }
+
   .attachment-gallery {
     display: flex;
     gap: 0.5em;
