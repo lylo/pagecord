@@ -1,15 +1,13 @@
 module CssSanitizable
   extend ActiveSupport::Concern
 
-  # NOTE: The custom_css attribute is mutated during validation:
-  # - Dangerous content (XSS, invalid @imports) is removed
-  # - Whitespace is stripped
-  # - Line endings are normalized
-  # This ensures the stored CSS is safe and clean.
+  # NOTE: The custom_css attribute is NOT mutated during validation.
+  # Instead, validation checks if the CSS would be modified by sanitization.
+  # If it would be modified, validation fails and the original CSS is preserved
+  # in the textarea so the user can fix it without losing their work.
 
   included do
-    before_validation :sanitize_custom_css, if: -> { custom_css_changed? }
-    validate :custom_css_safety
+    validate :custom_css_safety, if: -> { custom_css.present? }
   end
 
   def sanitized_custom_css
@@ -20,30 +18,21 @@ module CssSanitizable
 
   private
 
-    def sanitize_custom_css
+    def custom_css_safety
       return unless custom_css.present?
-
-      # Store original for validation
-      @original_custom_css = custom_css.dup
 
       # Use custom CSS sanitizer that handles XSS prevention,
       # @import whitelisting for Google Fonts, and CSS custom properties
       sanitized = CssSanitizer.sanitize_stylesheet(custom_css)
 
-      # Strip leading/trailing whitespace before saving
-      self.custom_css = sanitized.strip
-    end
+      # Normalize for comparison (browsers may send \r\n)
+      original_normalized = custom_css.gsub("\r\n", "\n").strip
+      sanitized_normalized = sanitized.gsub("\r\n", "\n").strip
 
-    def custom_css_safety
-      return unless @original_custom_css.present?
-
-      # Normalize line endings before comparing (browsers may send \r\n)
-      original_normalized = @original_custom_css.gsub("\r\n", "\n").strip
-      current_normalized = custom_css.to_s.gsub("\r\n", "\n").strip
-
-      # If sanitization changed the CSS, something unsafe was removed
-      if original_normalized != current_normalized
-        errors.add(:custom_css, "contains invalid content")
+      # If sanitization changed the CSS, something unsafe or unsupported was removed
+      # Don't mutate the attribute - let the user see what failed and fix it
+      if original_normalized != sanitized_normalized
+        errors.add(:custom_css, "contains invalid or potentially unsafe content")
       end
     end
 end
