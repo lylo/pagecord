@@ -75,6 +75,14 @@ joel_titleless:
   slug: d3423ssd4
   <<: *default
 
+embeds:
+  title: Embeds
+  blog: joel
+  published_at: <%= 4.days.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: embeds
+  <<: *default
+
 
 # Pages (is_page: true)
 about:
