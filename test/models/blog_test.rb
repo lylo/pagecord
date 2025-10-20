@@ -157,19 +157,19 @@ class BlogTest < ActiveSupport::TestCase
   test "should reject custom CSS with XSS attempt via </style>" do
     @blog.custom_css = ".blog { color: red; }</style><script>alert(1)</script>"
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid content"
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
   end
 
   test "should reject custom CSS with script tags" do
     @blog.custom_css = ".blog { color: red; }<script>alert(1)</script>"
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid content"
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
   end
 
   test "should reject invalid @import URLs" do
     @blog.custom_css = '@import url("https://evil.com/steal.css");'
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid content"
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
   end
 
   test "should allow Google Fonts @import" do
@@ -194,6 +194,6 @@ class BlogTest < ActiveSupport::TestCase
   test "should reject CSS exceeding size limit" do
     @blog.custom_css = "." + ("a" * 11_000) # Exceeds 10KB limit
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid content"
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
   end
 end
