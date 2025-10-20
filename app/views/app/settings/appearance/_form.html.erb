@@ -112,15 +112,22 @@
   <% end %>
 
   <% if current_features.enabled? :custom_css %>
-    <div class="mt-8">
+    <div class="mt-8" id="custom-css-section">
       <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
       <p class="mb-4">
         Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
+        You can use <code>@import</code> for Google Fonts and CSS custom properties (variables).
       </p>
       <%= form.text_area :custom_css,
           placeholder: ".blog { /* your custom styles here */ }",
-          class: "w-full h-64 font-mono text-sm border border-slate-300 dark:border-slate-600 rounded-md p-3 focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100",
+          class: "w-full h-64 font-mono text-sm border border-slate-300 dark:border-slate-600 rounded-md p-3 focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 #{'!border-red-500' if @blog.errors[:custom_css].any?}",
           spellcheck: false %>
+
+      <% if @blog.errors[:custom_css].any? %>
+        <div class="mt-1 text-xs text-red-500">
+          <%= @blog.errors[:custom_css].first %>
+        </div>
+      <% end %>
     </div>
   <% end %>
 

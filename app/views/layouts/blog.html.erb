@@ -55,7 +55,7 @@
 
     <% if @blog.present? && current_features.enabled?(:custom_css) && @blog.custom_css.present? %>
       <style>
-        <%= raw @blog.custom_css %>
+        <%= @blog.sanitized_custom_css %>
       </style>
     <% end %>
   </head>

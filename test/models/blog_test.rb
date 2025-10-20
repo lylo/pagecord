@@ -147,4 +147,53 @@ class BlogTest < ActiveSupport::TestCase
     new_blog = Blog.new(subdomain: "test", user: users(:joel))
     assert_equal "en", new_blog.locale
   end
+
+  test "should sanitize valid custom CSS" do
+    @blog.custom_css = ".blog { color: red; }"
+    assert @blog.valid?
+    assert_equal ".blog { color: red; }", @blog.custom_css
+  end
+
+  test "should reject custom CSS with XSS attempt via </style>" do
+    @blog.custom_css = ".blog { color: red; }</style><script>alert(1)</script>"
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid content"
+  end
+
+  test "should reject custom CSS with script tags" do
+    @blog.custom_css = ".blog { color: red; }<script>alert(1)</script>"
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid content"
+  end
+
+  test "should reject invalid @import URLs" do
+    @blog.custom_css = '@import url("https://evil.com/steal.css");'
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid content"
+  end
+
+  test "should allow Google Fonts @import" do
+    @blog.custom_css = '@import url("https://fonts.googleapis.com/css2?family=Roboto");'
+    assert @blog.valid?
+    assert_includes @blog.custom_css, "fonts.googleapis.com"
+  end
+
+  test "should allow CSS custom properties" do
+    @blog.custom_css = "[data-theme] { --theme-bg: #f4f5dc; --theme-accent: #3a2fad; }"
+    assert @blog.valid?
+    assert_includes @blog.custom_css, "--theme-bg"
+    assert_includes @blog.custom_css, "--theme-accent"
+  end
+
+  test "should allow CSS with leading and trailing whitespace" do
+    @blog.custom_css = "\n\n.blog { color: red; }\n\n"
+    assert @blog.valid?
+    assert_includes @blog.custom_css, "color: red"
+  end
+
+  test "should reject CSS exceeding size limit" do
+    @blog.custom_css = "." + ("a" * 11_000) # Exceeds 10KB limit
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid content"
+  end
 end

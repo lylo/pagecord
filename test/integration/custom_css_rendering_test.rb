@@ -59,4 +59,18 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "head style", text: /\.custom-style { color: blue; }/
   end
+
+  test "prevents saving malicious CSS and shows validation error" do
+    malicious_css = ".blog { color: red; }</style><script>alert('xss')</script><style>"
+    @blog.features = [ "custom_css" ]
+    @blog.custom_css = malicious_css
+
+    # Validation should prevent saving malicious CSS
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid content"
+
+    # Update should fail
+    result = @blog.update(custom_css: malicious_css)
+    assert_not result
+  end
 end

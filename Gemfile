@@ -55,6 +55,7 @@ gem "nanoid", "~> 2.0"
 gem "rack-attack"
 gem "rails_autolink"
 gem "rubyzip", "~> 3"
+gem "sanitize"  # CSS and HTML sanitization for user-provided custom CSS
 gem "whenever"
 gem "tzinfo-data"
 

