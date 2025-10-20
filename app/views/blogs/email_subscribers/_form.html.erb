@@ -1,17 +1,17 @@
 <%= form_with url: email_subscribers_path, model: [EmailSubscriber.new], local: true,
-      class: "flex flex-col items-center justify-center gap-y-2 text-center" do |form| %>
+      class: "email-form-container" do |form| %>
   <div class="subscription-description">
     <%= t('email_subscribers.form.subscribe_description') %>
   </div>
 
-  <fieldset class="flex">
+  <fieldset class="form-fieldset">
     <%= hidden_field_tag :blog_name, @blog.subdomain %>
     <%= render "/shared/spam_prevention" %>
 
     <%= form.email_field :email,
       required: true,
       placeholder: t('email_subscribers.form.email_placeholder'),
-      class: "px-2 py-1 w-48 sm:w-64 rounded-l-lg border-r-0"
+      class: "email-input"
     %>
 
     <%= form.submit t('email_subscribers.form.submit_button') %>

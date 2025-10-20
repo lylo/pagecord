@@ -95,7 +95,11 @@ Rails.application.routes.draw do
   namespace :app do
     resources :analytics, only: [ :index ]
     resources :posts, except: [ :show ], param: :token
-    resources :pages, except: [ :show ], param: :token
+    resources :pages, except: [ :show ], param: :token do
+      member do
+        post :set_as_home_page
+      end
+    end
     resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
     resources :settings, only: [ :index ]
 

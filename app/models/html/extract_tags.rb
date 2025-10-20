@@ -32,15 +32,15 @@ module Html
       def extract_tags_from_trailing_lines(text)
         lines = text.lines.map(&:chomp)
 
-        # Remove empty lines from the end
-        lines.pop while lines.last&.strip&.empty?
+        # Remove empty lines from the end (including nbsp and other Unicode whitespace)
+        lines.pop while lines.last && blank_line?(lines.last)
 
         # Extract hashtags from lines at the end
         while lines.any?
           line = lines.last.strip
 
           # Skip empty lines
-          if line.empty?
+          if blank_line?(line)
             lines.pop
             next
           end
@@ -68,6 +68,11 @@ module Html
         potential_tags = line.scan(HASHTAG_REGEX).flatten
         valid_tags = potential_tags.select { |tag| tag.match?(Taggable::VALID_TAG_FORMAT) }
         valid_tags.map(&:downcase)
+      end
+
+      # Check if a line is blank (including nbsp and other Unicode whitespace)
+      def blank_line?(line)
+        line.gsub(/\p{Space}/, "").empty?
       end
   end
 end

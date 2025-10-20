@@ -289,6 +289,48 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
   - `components.css`: Blog themes, app buttons, utility classes
   - `themes/*.css`: Color variable definitions per theme
 
+### Blog Markup Architecture
+**No Tailwind**: Public-facing blog views use semantic CSS classes instead of Tailwind utilities
+
+**Layout**: Blog views use `layouts/blog.html.erb` (not `application.html.erb`)
+
+**Layout Structure**:
+```
+<body class="[font-class]" data-theme="[theme-name]">
+  └── <main>
+      └── <div class="blog blog-container [max-w-content-*] text-size-standard">
+          ├── Flash messages
+          ├── <header> (top nav, titlebar, bio, email form)
+          └── Content (posts list or individual post)
+```
+
+**Individual Post**:
+```
+<article>
+  ├── <h1 class="post-title"> (optional)
+  ├── <div class="lexxy-content"> (rich text with ActionText)
+  ├── <div class="tags-container"> (optional)
+  └── <footer> (date, reply, upvotes)
+```
+
+**Post List Layouts** (controlled by `@blog.layout`):
+- **Stream**: `.post-stream-item` → Full post content in vertical list
+- **Cards**: `.post-card` → Card grid with title, summary, meta
+- **Titles**: `.posts-titles` → Chronological list grouped by year
+
+**Key Classes**:
+- `.blog-container` → Main content wrapper
+- `.lexxy-content` → Rich text typography wrapper (em-based scaling)
+- `.tags-container` → Tag badges
+- `.empty-state` → Empty state messages
+- `.flash-container` → Flash messages with fade animation
+
+**Stimulus Controllers on Blogs**:
+- `fade` → Flash message animations
+- `media-embeds` → Transforms URLs into embeds (YouTube, etc.)
+- `lightbox` → Image lightbox
+- `syntax-highlight` → Code block highlighting
+
 ### Navigation System
 - **NavigationItem model**: Unified navigation system for blog header links
 - **Two types**:

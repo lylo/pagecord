@@ -34,8 +34,13 @@
 
         <% @drafts.each do |page| %>
           <div class="flex gap-x-2 mb-2 items-top">
-            <div class="flex w-full justify-between items-top">
-              <%= link_to edit_app_page_path(page), title: "Click to edit this page" do %>
+            <div class="flex w-full justify-start items-top">
+              <% if page.home_page? && current_features.enabled?(:home_page) %>
+                <span class="mr-1">🏠</span>
+              <% end %>
+              <% edit_path = (page.home_page? && current_features.enabled?(:home_page)) ? edit_app_home_page_path : edit_app_page_path(page) %>
+
+              <%= link_to edit_path, title: "Click to edit this page" do %>
                 <div class="font-medium pe-2 hover:underline">
                   <%= page.display_title %>
                 </div>
@@ -54,8 +59,12 @@
       <% @pages.each do |page| %>
         <div class="flex gap-x-2 mb-2 items-top">
           <div class="flex w-full justify-between items-top">
-            <div>
-              <% edit_path = page.home_page? ? edit_app_home_page_path : edit_app_page_path(page) %>
+            <div class="flex justify-start items-top">
+              <% if page.home_page? && current_features.enabled?(:home_page) %>
+                <span title="This page is your home page" class="mr-1">🏠</span>
+              <% end %>
+
+              <% edit_path = (page.home_page? && current_features.enabled?(:home_page)) ? edit_app_home_page_path : edit_app_page_path(page) %>
               <%= link_to edit_path, title: "Click to edit this page" do %>
                 <div class="font-medium pe-2 hover:underline">
                   <%= page.display_title %>
@@ -63,17 +72,9 @@
               <% end %>
             </div>
             <div class="flex items-top gap-x-4 text-slate-400 dark:text-slate-400">
-              <% if page.home_page? %>
-                <div class="flex items-center text-[#4fbd9c]" title="This page is your home page">
-                  🏠
-                </div>
+              <%= link_to post_url(page), title: "View this page" do %>
+                <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
               <% end %>
-
-              <div>
-                <%= link_to post_url(page), title: "View this page" do %>
-                  <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
-                <% end %>
-              </div>
             </div>
           </div>
         </div>

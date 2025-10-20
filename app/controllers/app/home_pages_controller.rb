@@ -47,6 +47,10 @@ class App::HomePagesController < AppController
   private
 
     def home_page_params
-      params.require(:post).permit(:title, :content, :slug).merge(is_page: true, status: :published, is_home_page: true, show_in_navigation: false)
+      status = params[:button] == "save_draft" ? :draft : :published
+
+      params.require(:post).permit(:title, :content, :slug).merge(
+          is_page: true, status: status, is_home_page: true, show_in_navigation: false
+        )
     end
 end

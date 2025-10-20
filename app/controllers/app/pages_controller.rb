@@ -40,6 +40,16 @@ class App::PagesController < AppController
     redirect_to app_pages_path, notice: "Page was successfully deleted."
   end
 
+  def set_as_home_page
+    unless current_features.enabled?(:home_page)
+      redirect_to app_pages_path, alert: "Feature not available" and return
+    end
+
+    @page = Current.user.blog.pages.find_by!(token: params[:token])
+    Current.user.blog.update!(home_page_id: @page.id)
+    redirect_to app_pages_path, notice: "Home page set!"
+  end
+
   private
 
     def page_params

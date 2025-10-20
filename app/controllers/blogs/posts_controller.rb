@@ -8,15 +8,17 @@ class Blogs::PostsController < Blogs::BaseController
   rescue_from Pagy::VariableError, with: :redirect_to_first_page
 
   def index
-    if request.format.html? && @blog.has_custom_home_page?
+    # FIXME this filtered check can be removed after cache has been reset
+    filtered = params[:tag].present?
+    if request.format.html? && @blog.has_custom_home_page? && !filtered
       @post = @blog.home_page
-      return unless @post&.published? && !@post.pending?
-
-      return if fresh_when @post, public: true, template: "blogs/posts/show"
-      render :show
-    else
-      posts_list
+      if @post&.published? && !@post.pending?
+        return if fresh_when @post, public: true, template: "blogs/posts/show"
+        return render :show
+      end
     end
+
+    posts_list
   end
 
   def posts_list

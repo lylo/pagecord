@@ -89,13 +89,17 @@
       </div>
     <% end %>
 
-    <div class="flex items-center justify-between mt-8">
-      <div>
-        <%= form.submit @page.persisted? ? "Update Page" : "Create Page", class: "btn-primary" %>
+    <% show_make_home_page = current_features.enabled?(:home_page) && !@blog.has_custom_home_page? && @page.persisted? %>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-8">
+      <div class="flex flex-wrap gap-2">
+        <%= form.submit publish_button_text(@page), class: "btn-primary" %>
         <%= link_to "Cancel", app_pages_path, class: "btn-secondary" %>
       </div>
-      <div>
-        <%= form.button @page.persisted? ? "Save as Draft" : "Save Draft", value: "save_draft", class: "btn-optional" %>
+      <div class="flex flex-wrap gap-2">
+        <%= form.button draft_button_text(@page), value: "save_draft", class: "btn-optional" %>
+        <% if show_make_home_page %>
+          <%= link_to "Make Home Page", set_as_home_page_app_page_path(@page.token), data: { turbo_method: :post }, class: "btn-optional" %>
+        <% end %>
       </div>
     </div>
   <% end %>

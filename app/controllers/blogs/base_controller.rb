@@ -1,4 +1,6 @@
 class Blogs::BaseController < ApplicationController
+  layout "blog"
+
   skip_before_action :domain_check
   before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale
 

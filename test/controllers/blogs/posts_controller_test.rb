@@ -32,7 +32,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "article", minimum: 1
+    assert_select "div.post-card", minimum: 1
     assert_select ".cards_layout", count: 1
   end
 
@@ -41,6 +41,57 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "turbo-frame#email_subscriber_form"
+  end
+
+  test "should not show email subscription form on index if show_subscription_in_header is false" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_header: false
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form", count: 0
+  end
+
+  test "should show email subscription form on post show if enabled" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_footer: true
+    )
+    post = @blog.posts.visible.first
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form"
+  end
+
+  test "should not show email subscription form on post show if show_subscription_in_footer is false" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_footer: false
+    )
+    post = @blog.posts.visible.first
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form", count: 0
+  end
+
+  test "should not show email subscription form on page show" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_footer: true
+    )
+    page = @blog.pages.create!(title: "Test Page", content: "Content", status: "published")
+
+    get blog_post_path(page.slug)
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form", count: 0
   end
 
   test "should get show" do
@@ -578,7 +629,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "div", text: /Showing posts tagged with "rails"/
-    assert_select "a[href='#{blog_posts_path}']", text: "Show all posts"
+    assert_select "a[href='#{blog_posts_list_path}']", text: "Show all posts"
   end
 
   test "should show no posts message when tag has no matches" do
@@ -660,7 +711,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
     assert_template "blogs/errors/not_found"
-    assert_template layout: "application"
+    assert_template layout: "blog"
   end
 
   test "should render blog 404 template for unmatched routes" do
@@ -668,7 +719,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
     assert_template "blogs/errors/not_found"
-    assert_template layout: "application"
+    assert_template layout: "blog"
   end
 
   test "should handle unmatched XML routes with proper 404" do
@@ -708,6 +759,18 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
     assert_not_nil assigns(:posts)
+  end
+
+  test "should show posts index when home page is draft" do
+    @blog.update!(features: [ "home_page" ])
+    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :draft)
+    @blog.update!(home_page_id: page.id)
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_not_nil assigns(:posts)
+    assert_template "blogs/posts/index"
   end
 
   private

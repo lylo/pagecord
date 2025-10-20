@@ -1,23 +1,21 @@
-<% top_margin = "mt-8" %>
 <% if post.tag_list.present? %>
   <%= render "tags", post: post %>
-  <% top_margin = "mt-4" %>
 <% end %>
 
-<div class="post-footer not-prose flex justify-between items-center <%= top_margin %> mb-4">
-  <%= link_to post_path(post), class: "font-normal", data: { turbo_frame: "_top" } do %>
+<footer>
+  <%= link_to post_path(post), class: "post-date", data: { turbo_frame: "_top" } do %>
     <%= local_time post.published_at, format: published_at_date_format %>
   <% end %>
 
   <% if @user.subscribed? %>
-    <div class="flex items-center gap-x-2">
+    <div class="post-actions">
       <% if @user.blog.reply_by_email %>
         <%= link_to new_post_reply_path(post),
                   title: "Reply to this post via email",
                   data: { turbo_frame: "_top" },
                   rel: "nofollow",
-                  class: "flex" do %>
-          <%= inline_svg_tag "icons/reply.svg", class: "icon cursor-pointer" %>
+                  class: "reply-by-email" do %>
+          <%= inline_svg_tag "icons/reply.svg", class: "icon" %>
         <% end %>
       <% end %>
 
@@ -28,4 +26,4 @@
       <% end %>
     </div>
   <% end %>
-</div>
+</footer>

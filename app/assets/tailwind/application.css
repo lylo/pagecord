@@ -7,33 +7,14 @@
   --color-pagecord-accent: hsl(162, 54%, 57%); /* #56cda9 */
 }
 
-/* Themes */
-@import "./themes.css";
-
 /* Components */
 @import "./components.css";
-@import "./components/lightbox.css";
+
+/* Shared animations (imported from stylesheets, not in @layer to work everywhere) */
+@import "../stylesheets/animations.css";
 
 /* Rest of your CSS for layout, utilities, etc. */
 @layer utilities {
-  @keyframes fadeIn {
-    0%   { opacity: 0; }
-    100% { opacity: 1; }
-  }
-
-  @keyframes fadeOut {
-    0%   { opacity: 1; }
-    100% { opacity: 0; }
-  }
-
-  .animate-fadeIn {
-    animation: fadeIn 1s ease-out;
-  }
-
-  .animate-fadeOut {
-    animation: fadeOut 1s ease-out forwards;
-  }
-
   /* Theme width utility classes */
   .max-w-content-narrow {
     max-width: var(--content-width-narrow);
@@ -97,10 +78,6 @@ a:not([href]), a:not([href]):hover { /* disabled links */
 
 .pagy label input {
   @apply bg-slate-100 border-none rounded-md;
-}
-
-.field_with_errors {
-  display: contents; /* This makes the wrapper "invisible" to flexbox */
 }
 
 @import "../stylesheets/actiontext.css";
