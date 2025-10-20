@@ -164,7 +164,7 @@ html, body {
     :where(a) {
       color: var(--color-accent);
       text-decoration: underline;
-      font-weight: 400;
+      font-weight: 400 !important;
 
       &:hover {
         color: var(--color-accent-hover);
