@@ -88,20 +88,20 @@ html, body {
     gap: 0.75rem;
     font-size: 0.875em;
 
+    :where(a) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted) !important;
+
+      &:hover {
+        color: var(--color-text) !important;
+      }
+    }
+
     svg {
       width: 1rem;
       height: 1rem;
-    }
-  }
-
-  :where(.social-link) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-muted) !important;
-
-    &:hover {
-      color: var(--color-text) !important;
     }
   }
 

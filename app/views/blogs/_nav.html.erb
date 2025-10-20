@@ -6,7 +6,7 @@
           <%= inline_svg_tag "icons/social/#{item.platform.downcase}.svg" %>
         <% end %>
       <% else %>
-        <%= link_to item.label, navigation_item_url(item), class: "social-link" %>
+        <%= link_to item.label, navigation_item_url(item) %>
       <% end %>
     <% end %>
   </nav>
