@@ -1,12 +1,15 @@
-<ul class="posts-list">
-  <% previous_year = nil %>
-  <% posts.each do |post| %>
-    <% if post.published_at.year != previous_year %>
-      <h2>
-        <%= local_time post.published_at, "%Y" %>
-      </h2>
-      <% previous_year = post.published_at.year %>
+<% previous_year = nil %>
+<% posts.each do |post| %>
+  <% if post.published_at.year != previous_year %>
+    <% unless previous_year.nil? %>
+      </ul>
     <% end %>
-    <li><%= local_time post.published_at.to_date, format: :month_day %> <%= link_to post.display_title, post_path(post), data: { turbo_prefetch: false } %></li>
+    <h2>
+      <%= local_time post.published_at, "%Y" %>
+    </h2>
+    <ul class="posts-list">
+    <% previous_year = post.published_at.year %>
   <% end %>
+  <li><%= local_time post.published_at.to_date, format: :month_day %> <%= link_to post.display_title, post_path(post), data: { turbo_prefetch: false } %></li>
+<% end %>
 </ul>
