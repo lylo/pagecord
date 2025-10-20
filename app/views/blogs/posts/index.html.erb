@@ -34,13 +34,7 @@
   <% end %>
 
   <div class="<%= @blog.layout %>">
-    <% if @blog.stream_layout? %>
-      <%= render "posts_stream" %>
-    <% elsif @blog.cards_layout? %>
-      <%= render "posts_cards" %>
-    <% else %>
-      <%= render "posts_titles" %>
-    <% end %>
+    <%= render @blog.layout %>
   </div>
 <% end %>
 
