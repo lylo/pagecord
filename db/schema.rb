@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_18_124255) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_20_163511) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -89,6 +89,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_18_124255) do
     t.string "analytics_id"
     t.string "analytics_service"
     t.datetime "created_at", null: false
+    t.text "custom_css"
     t.string "custom_domain"
     t.string "delivery_email"
     t.datetime "discarded_at"

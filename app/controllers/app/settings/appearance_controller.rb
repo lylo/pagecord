@@ -21,10 +21,11 @@ class App::Settings::AppearanceController < AppController
         social_links_attributes: [ :id, :platform, :url, :_destroy ]
       ]
 
-      permitted_params << [
-        :avatar,
-        :show_branding
-       ] if @blog.user.subscribed?
+      if @blog.user.subscribed?
+        permitted_params += [ :avatar, :show_branding ]
+      end
+
+      permitted_params << :custom_css if current_features.enabled?(:custom_css)
 
       params.require(:blog).permit(permitted_params)
     end

@@ -52,6 +52,12 @@
         <%= yield :robots_meta %>
       <% end %>
     <% end %>
+
+    <% if @blog.present? && current_features.enabled?(:custom_css) && @blog.custom_css.present? %>
+      <style>
+        <%= raw @blog.custom_css %>
+      </style>
+    <% end %>
   </head>
 
   <body class="<%= font_class %>" <%= theme_data_attribute %>>
