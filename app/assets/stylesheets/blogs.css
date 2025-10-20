@@ -267,14 +267,6 @@ html, body {
         color: var(--color-text-muted);
       }
     }
-
-    .icon {
-      color: var(--color-text-disabled);
-
-      &:hover {
-        color: var(--color-text-light);
-      }
-    }
   }
 
   :where(.tag) {
