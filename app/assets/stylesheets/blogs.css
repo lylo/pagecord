@@ -189,12 +189,6 @@ html, body {
 
 :where(.blog) {
   :where(article) {
-    max-width: none;
-    color: var(--color-text);
-    text-wrap: pretty;
-    overflow-wrap: break-word;
-    word-break: break-word;
-
     --lexxy-color-ink: var(--color-text);
     --lexxy-color-ink-medium: var(--color-text-muted);
     --lexxy-color-ink-light: var(--color-text-light);
@@ -206,6 +200,12 @@ html, body {
     --lexxy-color-accent-dark: var(--color-accent);
     --lexxy-color-accent-medium: var(--color-accent-hover);
     --lexxy-color-code-bg: var(--color-bg-subtle);
+
+    max-width: none;
+    color: var(--color-text) !important;
+    text-wrap: pretty;
+    overflow-wrap: break-word;
+    word-break: break-word;
 
     :where(a) {
       color: var(--color-accent);
@@ -252,7 +252,7 @@ html, body {
 
     :where(code),
     :where(pre) {
-      background-color: var(--color-bg-subtle);
+      background-color: var(--color-bg-subtle) !important;
     }
 
     :where(audio) {
