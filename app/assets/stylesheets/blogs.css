@@ -71,6 +71,15 @@ html, body {
   color: var(--color-text);
 }
 
+/* ============================= */
+/* Links - Remove default underline except in article content */
+/* ============================= */
+
+a {
+  text-decoration: none;
+}
+
+
 /* Header
 /* -------------------------------------------------------------------------- */
 
@@ -390,15 +399,6 @@ html, body {
     color: var(--color-text);
   }
 }
-
-/* ============================= */
-/* Links - Remove default underline except in article content */
-/* ============================= */
-
-a {
-  text-decoration: none;
-}
-
 
 /* ============================= */
 /* Layout - Post Lists           */
