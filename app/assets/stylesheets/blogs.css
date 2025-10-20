@@ -81,7 +81,7 @@ html, body {
     margin-bottom: 2rem;
   }
 
-  :where(.top-nav) {
+  :where(nav) {
     display: flex;
     justify-content: flex-end;
     align-items: center;

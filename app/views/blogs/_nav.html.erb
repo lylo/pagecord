@@ -1,5 +1,5 @@
 <% if @blog.navigation_items.ordered.any? %>
-  <nav class="top-nav">
+  <nav>
     <% @blog.navigation_items.ordered.each do |item| %>
       <% if item.is_a?(SocialNavigationItem) %>
         <%= link_to navigation_item_url(item), class: "social-link", aria: { label: "#{item.platform.titleize} Link" } do %>
