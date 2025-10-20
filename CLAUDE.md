@@ -292,6 +292,8 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 ### Blog Markup Architecture
 **No Tailwind**: Public-facing blog views use semantic CSS classes instead of Tailwind utilities
 
+**Layout**: Blog views use `layouts/blog.html.erb` (not `application.html.erb`)
+
 **Layout Structure**:
 ```
 <body class="[font-class]" data-theme="[theme-name]">
