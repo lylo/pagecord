@@ -13,6 +13,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-family: var(--font-body, var(--font-sans));
 }
 
 /* Main content area - grows vertically */
@@ -70,71 +71,72 @@ html, body {
   color: var(--color-text);
 }
 
-.blog {
-  header {
+/* Header
+/* -------------------------------------------------------------------------- */
+
+:where(.blog) {
+  :where(header) {
     border-bottom: 1px solid var(--color-border);
     margin-top: 1rem;
     margin-bottom: 2rem;
+  }
 
-    .top-nav {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 0.75rem;
+  :where(.top-nav) {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875em;
 
-      .social-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--color-text-light) !important;
-      }
-
-      .social-link:hover {
-        color: var(--color-text-muted) !important;
-      }
-    }
-
-    .top-nav svg {
+    svg {
       width: 1rem;
       height: 1rem;
     }
+  }
 
-    .titlebar {
-      margin-top: 1.25em;
-      margin-bottom: 1.25em;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+  :where(.social-link) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted) !important;
+
+    &:hover {
+      color: var(--color-text) !important;
     }
+  }
 
-    .titlebar .avatar-container {
-      display: flex;
-      width: 100%;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-    }
+  :where(.titlebar) {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-    .titlebar .avatar {
-      width: 4rem;
-      height: 4rem;
-      flex-shrink: 0;
-    }
+  :where(.avatar-container) {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
 
-    .titlebar .avatar img {
+  :where(.avatar) {
+    width: 4rem;
+    height: 4rem;
+    flex-shrink: 0;
+
+    img {
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       object-fit: cover;
       border-radius: 9999px;
+      border: 1px solid var(--color-border);
       width: 4rem;
       height: 4rem;
     }
   }
 
-  header .top-nav {
-    font-size: 0.875em;
-  }
-
-  header .bio {
+  :where(.bio) {
     --lexxy-color-ink: var(--color-text-muted);
     --lexxy-content-margin: 1rem;
 
@@ -143,32 +145,35 @@ html, body {
     font-size: 0.875em;
     color: var(--color-text-muted);
     word-break: break-words;
+
+    a {
+      color: var(--color-accent);
+      text-decoration: underline;
+      font-weight: 400 !important;
+
+      &:hover {
+        color: var(--color-accent-hover);
+      }
+    }
+
+    strong,
+    b {
+      color: var(--color-text);
+    }
   }
 
-  header .bio a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    font-weight: 400 !important;
-  }
-
-  header .bio strong,
-  header .bio b {
-    color: var(--color-text);
-  }
-
-  header .blog-title {
+  :where(.blog-title) {
     color: var(--color-text-heading) !important;
     font-size: 1.25em;
     font-weight: 700;
   }
+}
 
-  header .avatar img {
-    border: 1px solid var(--color-border);
-    width: 4rem;
-    height: 4rem;
-  }
+/* Article
+/* -------------------------------------------------------------------------- */
 
-  article {
+:where(.blog) {
+  :where(article) {
     max-width: none;
     color: var(--color-text);
     text-wrap: pretty;
@@ -184,190 +189,195 @@ html, body {
     --lexxy-color-accent-dark: var(--color-accent);
     --lexxy-color-accent-medium: var(--color-accent-hover);
     --lexxy-color-code-bg: var(--color-bg-subtle);
-  }
 
-  article a.post-title-link {
-    text-decoration: none !important;
-  }
+    a {
+      color: var(--color-accent) !important;
+      text-decoration: underline;
 
-  article.blog-post {
-    overflow-wrap: break-word;
-    word-break: break-word;
-  }
+      &:hover {
+        color: var(--color-accent-hover) !important;
+      }
 
-  article a {
-    color: var(--color-accent) !important;
-    text-decoration: underline;
-  }
+      &.post-title-link {
+        text-decoration: none !important;
+      }
+    }
 
-  article a:hover {
-    color: var(--color-accent-hover) !important;
-  }
+    &.blog-post {
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
 
-  article blockquote {
-    color: var(--color-text-muted) !important;
-    border-left-color: var(--color-border) !important;
-  }
+    blockquote {
+      color: var(--color-text-muted) !important;
+      border-left-color: var(--color-border) !important;
+    }
 
-  article li::marker {
-    color: var(--color-text-light) !important;
-  }
+    li::marker {
+      color: var(--color-text-light) !important;
+    }
 
-  article h1.post-title {
-    font-size: 1.875rem;
-    line-height: 2.25rem;
-    margin-top: 0;
-    margin-bottom: 2rem;
-    color: var(--color-text-heading);
-    font-weight: 800;
-  }
+    h1.post-title {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+      margin-top: 0;
+      margin-bottom: 2rem;
+      color: var(--color-text-heading);
+      font-weight: 800;
+    }
 
-  article figcaption.attachment__caption {
-    text-align: center;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    margin-top: 0.5rem !important;
-  }
+    figcaption.attachment__caption {
+      text-align: center;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      margin-top: 0.5rem !important;
 
-  @media (min-width: 640px) {
-    article figcaption.attachment__caption {
-      padding-left: 2rem;
-      padding-right: 2rem;
+      @media (min-width: 640px) {
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+    }
+
+    code,
+    pre {
+      background-color: var(--color-bg-subtle) !important;
+    }
+
+    audio {
+      margin: var(--lexxy-content-margin) 0;
+      width: 100%;
+      max-width: 500px;
+    }
+  }
+}
+
+/* Post footer
+/* -------------------------------------------------------------------------- */
+
+:where(.blog) {
+  :where(.post-footer) {
+    font-size: 0.875em;
+
+    a,
+    button {
+      color: var(--color-text-light);
+      background-color: inherit;
+
+      &:hover {
+        color: var(--color-text-muted);
+      }
+    }
+
+    .icon {
+      color: var(--color-text-disabled);
+
+      &:hover {
+        color: var(--color-text-light);
+      }
     }
   }
 
-  article code,
-  article pre {
-    background-color: var(--color-bg-subtle) !important;
+  :where(.tag) {
+    font-size: 0.875em;
   }
 
-  article audio {
-    margin: var(--lexxy-content-margin) 0;
-    width: 100%;
-    max-width: 500px;
+  :where(.icon) {
+    width: 1.5em;
+    height: 1.5em;
   }
+}
 
-  .post-footer a,
-  .post-footer button {
-    color: var(--color-text-light);
-    background-color: inherit;
-  }
+/* Forms
+/* -------------------------------------------------------------------------- */
 
-  .post-footer a:hover,
-  .post-footer button:hover {
-    color: var(--color-text-muted);
-  }
-
-  .post-footer .icon {
-    color: var(--color-text-disabled);
-  }
-
-  .post-footer .icon:hover {
-    color: var(--color-text-light);
-  }
-
-  /* Form elements */
-
-  .form {
+:where(.blog) {
+  :where(.form) {
     padding: 1rem;
     border-radius: 0.5rem;
     background-color: var(--color-bg-subtle);
     color: var(--color-text);
     border: none;
+
+    label {
+      font-weight: 500;
+    }
+
+    .button {
+      font-size: 0.875em;
+    }
+
+    a.btn-cancel {
+      display: inline-flex;
+      align-items: center;
+      font-weight: 500;
+      color: inherit;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      font-family: inherit;
+      font-size: 1em;
+      background-color: var(--color-input-bg);
+      border: 1px solid var(--color-input-border);
+      color: var(--color-text);
+      border-radius: 0.375rem;
+      padding: 0.5rem 0.75rem;
+      box-shadow: none;
+
+      &:focus {
+        border-color: var(--color-input-focus);
+        outline: none;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      max-width: 100%;
+    }
+
+    input[type="email"]::placeholder {
+      color: var(--color-placeholder);
+    }
+
+    input[type="submit"] {
+      font-family: inherit;
+      background-color: var(--color-button-bg);
+      color: var(--color-button-text);
+      border-radius: 0.375rem;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      border: none;
+
+      &:hover {
+        background-color: var(--color-button-hover);
+      }
+    }
   }
 
-  .form label {
-    font-weight: 500;
+  /* Email subscription form */
+  :where(.email-subscriber-form) {
+    input[type="email"] {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: none;
+    }
+
+    input[type="submit"] {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      padding: 0.25rem 0.75rem;
+    }
   }
 
-  .form .button {
-    font-size: 0.875em;
-  }
-
-  .form a.btn-cancel {
-    display: inline-flex;
-    align-items: center;
-    font-weight: 500;
-    color: inherit;
-  }
-
-  .form input[type="text"],
-  .form input[type="email"],
-  .form textarea {
-    font-family: inherit;
-    font-size: 1em;
-    background-color: var(--color-input-bg);
-    border: 1px solid var(--color-input-border);
-    color: var(--color-text);
-    border-radius: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    box-shadow: none;
-  }
-
-  .form textarea {
-    resize: vertical;
-    max-width: 100%;
-  }
-
-  .form input[type="text"]:focus,
-  .form input[type="email"]:focus,
-  .form textarea:focus {
-    border-color: var(--color-input-focus);
-    outline: none;
-  }
-
-  .form input[type="email"]::placeholder {
-    color: var(--color-placeholder);
-  }
-
-  .form input[type="submit"] {
-    font-family: inherit;
-    background-color: var(--color-button-bg);
-    color: var(--color-button-text);
-    border-radius: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    cursor: pointer;
-    border: none;
-  }
-
-  /* Email subscription form  */
-  .email-subscriber-form input[type="email"] {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: none;
-  }
-
-  .email-subscriber-form input[type="submit"] {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    padding: 0.25rem 0.75rem;
-  }
-
-  .form input[type="submit"]:hover {
-    background-color: var(--color-button-hover);
-  }
-
-  /* Confirmation card component */
-  .confirmation-card {
+  /* Confirmation card */
+  :where(.confirmation-card) {
     background-color: var(--color-bg-subtle);
     text-align: center;
     border-radius: 0.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     border: 1px solid var(--color-border);
     color: var(--color-text);
-  }
-
-  .post-footer {
-    font-size: 0.875em;
-  }
-
-  .tag {
-    font-size: 0.875em;
-  }
-
-  .icon {
-    width: 1.5em;
-    height: 1.5em;
   }
 }
 
@@ -419,6 +429,7 @@ a {
 }
 
 .posts-titles a:hover {
+  color: var(--color-accent-hover);
   text-decoration: underline;
 }
 
@@ -612,15 +623,15 @@ button {
 
 /* Font family classes (applied dynamically) */
 .font-sans {
-  font-family: var(--font-sans);
+   --font-body: var(--font-sans);
 }
 
 .font-serif {
-  font-family: var(--font-serif);
+   --font-body: var(--font-serif);
 }
 
 .font-mono {
-  font-family: var(--font-mono);
+  --font-body: var(--font-mono);
 }
 
 /* Font size utilities - must be standalone for use on <main> element */
