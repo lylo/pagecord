@@ -18,7 +18,7 @@ body {
 
 /* Main content area - grows vertically */
 main {
-  margin-top: 0 !important;
+  margin-top: 0;
   padding: 0 1em;
   display: flex;
   flex-grow: 1;
@@ -75,7 +75,7 @@ html, body {
 /* Links - Remove default underline except in article content */
 /* ============================= */
 
-a {
+:where(a) {
   text-decoration: none;
 }
 
@@ -101,10 +101,10 @@ a {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--color-text-muted) !important;
+      color: var(--color-text-muted);
 
       &:hover {
-        color: var(--color-text) !important;
+        color: var(--color-text);
       }
     }
 
@@ -135,7 +135,7 @@ a {
     height: 4rem;
     flex-shrink: 0;
 
-    img {
+    :where(img) {
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       object-fit: cover;
       border-radius: 9999px;
@@ -155,10 +155,10 @@ a {
     color: var(--color-text-muted);
     word-break: break-words;
 
-    a {
+    :where(a) {
       color: var(--color-accent);
       text-decoration: underline;
-      font-weight: 400 !important;
+      font-weight: 400;
 
       &:hover {
         color: var(--color-accent-hover);
@@ -172,7 +172,7 @@ a {
   }
 
   :where(.blog-title) {
-    color: var(--color-text-heading) !important;
+    color: var(--color-text-heading);
     font-size: 1.25em;
     font-weight: 700;
   }
@@ -201,26 +201,26 @@ a {
     --lexxy-color-accent-medium: var(--color-accent-hover);
     --lexxy-color-code-bg: var(--color-bg-subtle);
 
-    a {
-      color: var(--color-accent) !important;
+    :where(a) {
+      color: var(--color-accent);
       text-decoration: underline;
 
       &:hover {
-        color: var(--color-accent-hover) !important;
+        color: var(--color-accent-hover);
       }
 
       &.post-title-link {
-        text-decoration: none !important;
+        text-decoration: none;
       }
     }
 
-    blockquote {
-      color: var(--color-text-muted) !important;
-      border-left-color: var(--color-border) !important;
+    :where(blockquote) {
+      color: var(--color-text-muted);
+      border-left-color: var(--color-border);
     }
 
     li::marker {
-      color: var(--color-text-light) !important;
+      color: var(--color-text-light);
     }
 
     h1.post-title {
@@ -236,7 +236,7 @@ a {
       text-align: center;
       padding-left: 1rem;
       padding-right: 1rem;
-      margin-top: 0.5rem !important;
+      margin-top: 0.5rem;
 
       @media (min-width: 640px) {
         padding-left: 2rem;
@@ -244,12 +244,12 @@ a {
       }
     }
 
-    code,
-    pre {
-      background-color: var(--color-bg-subtle) !important;
+    :where(code),
+    :where(pre) {
+      background-color: var(--color-bg-subtle);
     }
 
-    audio {
+    :where(audio) {
       margin: var(--lexxy-content-margin) 0;
       width: 100%;
       max-width: 500px;
@@ -459,7 +459,7 @@ a {
 }
 
 .post-card a {
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
 .post-card:hover .post-card-content {
@@ -612,11 +612,11 @@ button {
 
 /* Font size utilities - must be standalone for use on <main> element */
 .text-size-standard {
-  font-size: 16px !important;
+  font-size: 16px;
 }
 
 .text-size-large {
-  font-size: var(--font-size-large) !important;
+  font-size: var(--font-size-large);
 }
 
 /* ============================= */
@@ -704,7 +704,7 @@ button {
 }
 
 .confirmation-link a, .confirmation-button button {
-  color: var(--color-accent) !important;
+  color: var(--color-accent);
   background-color: inherit;
   font-size: inherit;
   font-weight: 500;
@@ -852,9 +852,9 @@ dialog[open] {
 /* Posts list component (for custom tags in page content) */
 ul.posts-list {
   list-style: none;
-  padding-left: 0 !important;
-  margin-left: 0 !important;
-  margin-block: 0 var(--lexxy-content-margin) !important;
+  padding-left: 0;
+  margin-left: 0;
+  margin-block: 0 var(--lexxy-content-margin);
   display: grid;
   gap: 0.25rem;
   grid-template-columns: min-content 1fr;
@@ -865,17 +865,17 @@ ul.posts-list {
   gap: 0.75rem;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 
 .posts-list a {
   font-weight: 500;
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
 .posts-list a:hover {
-  text-decoration: underline !important;
+  text-decoration: underline;
 }
 
 .posts-list li time {
@@ -884,32 +884,32 @@ ul.posts-list {
 }
 
 .posts-list h2 {
-  margin-bottom: 0.5em !important;
+  margin-bottom: 0.5em;
 }
 
 .posts-list h2:not(:first-child) {
-  margin-top: 1.5rem !important;
+  margin-top: 1.5rem;
 }
 
 /* Tag list component */
 .tag-list {
   list-style: disc;
   padding-left: 1.5em;
-  margin-block: 0 var(--lexxy-content-margin) !important;
+  margin-block: 0 var(--lexxy-content-margin);
 }
 
 .tag-list li {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 
 .tag-list a {
   font-weight: 500;
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
 .tag-list a:hover {
-  text-decoration: underline !important;
+  text-decoration: underline;
 }
 
 /* ============================= */
