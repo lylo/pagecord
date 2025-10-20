@@ -146,3 +146,33 @@ photography_and_tech:
     <p>Exploring how modern technology is transforming the art of photography.</p>
     <p>From mirrorless cameras to AI-powered editing tools, the intersection of photography and technology continues to evolve.</p>
 
+embeds:
+  record: embeds (Post)
+  name: content
+  body: |
+    <p>Spotify:</p>
+    <p><a href="https://open.spotify.com/album/1cqqIH16XzBnDchrXJ9Enf?si=DjimKTtmRFiidyhKTpgNzA">https://open.spotify.com/album/1cqqIH16XzBnDchrXJ9Enf?si=DjimKTtmRFiidyhKTpgNzA</a></p>
+
+    <p>YouTube:</p>
+    <p><a href="https://www.youtube.com/watch?v=eVrJCTW8GgE">https://www.youtube.com/watch?v=eVrJCTW8GgE</a></p>
+
+    <p>GitHub:</p>
+    <p><a href="https://gist.github.com/lylo/170b2fe0b0eccc36b65c8dc22aca737f">https://gist.github.com/lylo/170b2fe0b0eccc36b65c8dc22aca737f</a></p>
+
+    <p>Bandcamp:</p>
+    <p><a href="https://louisepost.bandcamp.com/album/but-i-love-you-without-mascara-demos-97-98">https://louisepost.bandcamp.com/album/but-i-love-you-without-mascara-demos-97-98</a></p>
+
+    <p>Apple Music:</p>
+    <p><a href="https://music.apple.com/us/album/my-old-ways/1836226516">https://music.apple.com/us/album/my-old-ways/1836226516</a></p>
+    <p><a href="https://music.apple.com/us/song/it-depends-the-remix-feat-bryson-tiller-usher/1846136480">https://music.apple.com/us/song/it-depends-the-remix-feat-bryson-tiller-usher/1846136480</a></p>
+
+    <p>Tidal:</p>
+    <p><a href="https://tidal.com/album/459457157">https://tidal.com/album/459457157</a></p>
+    <p><a href="https://tidal.com/track/459457156">https://tidal.com/track/459457156</a></p>
+
+    <p>Transistor:</p>
+    <p><a href="https://share.transistor.fm/s/c19f1cb2">https://share.transistor.fm/s/c19f1cb2</a></p>
+
+    <p>Strava:</p>
+    <p><a href="https://www.strava.com/activities/2307958367">https://www.strava.com/activities/2307958367</a></p>
+

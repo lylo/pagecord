@@ -16,12 +16,10 @@ class GitHub extends MediaSite {
 
   static createIframeEmbed(username, gistId) {
     const container = document.createElement("div")
-    container.className = "border border-slate-300 dark:border-slate-700 rounded-lg overflow-hidden"
+    container.className = "gist-embed-container"
 
     const iframe = document.createElement("iframe")
-    iframe.className = "w-full rounded-lg"
-    iframe.style.border = "none"
-    iframe.style.overflow = "hidden"
+    iframe.className = "gist-embed-iframe"
 
     iframe.srcdoc = `
       <!DOCTYPE html>

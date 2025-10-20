@@ -3,7 +3,7 @@ import MediaSite from "media_site"
 class Strava extends MediaSite {
   constructor() {
     super(
-      /https:\/\/www\.strava\.com\/activities\/([0-9]+)/,
+      /https:\/\/www\.strava\.com\/activities\/([0-9]+)(?:\/.*)?/,
 
       async (url) => {
         const match = url.match(this.regex)
