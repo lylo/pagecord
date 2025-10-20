@@ -55,6 +55,18 @@ module BlogsHelper
     end
   end
 
+  def content_type_class
+    return "" unless @post
+
+    if @post.home_page?
+      "home-page"
+    elsif @post.page?
+      "page"
+    else
+      "post"
+    end
+  end
+
   private
 
     def blog_description(blog)
