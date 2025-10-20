@@ -185,6 +185,13 @@ class BlogTest < ActiveSupport::TestCase
     assert_includes @blog.custom_css, "--theme-accent"
   end
 
+  test "should allow CSS logical properties" do
+    @blog.custom_css = "header hr { margin-inline: auto; padding-inline-start: 1rem; }"
+    assert @blog.valid?
+    assert_includes @blog.custom_css, "margin-inline"
+    assert_includes @blog.custom_css, "padding-inline-start"
+  end
+
   test "should allow CSS with leading and trailing whitespace" do
     @blog.custom_css = "\n\n.blog { color: red; }\n\n"
     assert @blog.valid?

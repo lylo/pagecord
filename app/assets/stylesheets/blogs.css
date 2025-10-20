@@ -85,9 +85,15 @@ html, body {
 
 :where(.blog) {
   :where(header) {
-    border-bottom: 1px solid var(--color-border);
     margin-top: 1rem;
     margin-bottom: 2rem;
+
+    :where(hr) {
+      padding: 0;
+      margin: 0;
+      border: none;
+      border-top: 1px solid var(--color-border);
+    }
   }
 
   :where(nav) {
