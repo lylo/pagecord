@@ -32,7 +32,7 @@
       </div>
     <% end %>
 
-    <% show_unlink = home_page.persisted? && current_features.enabled?(:home_page) %>
+    <% show_unlink = home_page.persisted? %>
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-8">
       <div class="flex flex-wrap gap-2">
         <%= form.submit publish_button_text(home_page, model_name: "Home Page"), class: "btn-primary" %>

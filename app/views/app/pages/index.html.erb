@@ -35,10 +35,10 @@
         <% @drafts.each do |page| %>
           <div class="flex gap-x-2 mb-2 items-top">
             <div class="flex w-full justify-start items-top">
-              <% if page.home_page? && current_features.enabled?(:home_page) %>
+              <% if page.home_page? %>
                 <span class="mr-1">🏠</span>
               <% end %>
-              <% edit_path = (page.home_page? && current_features.enabled?(:home_page)) ? edit_app_home_page_path : edit_app_page_path(page) %>
+              <% edit_path = (page.home_page? ? edit_app_home_page_path : edit_app_page_path(page)) %>
 
               <%= link_to edit_path, title: "Click to edit this page" do %>
                 <div class="font-medium pe-2 hover:underline">
@@ -60,11 +60,11 @@
         <div class="flex gap-x-2 mb-2 items-top">
           <div class="flex w-full justify-between items-top">
             <div class="flex justify-start items-top">
-              <% if page.home_page? && current_features.enabled?(:home_page) %>
+              <% if page.home_page? %>
                 <span title="This page is your home page" class="mr-1">🏠</span>
               <% end %>
 
-              <% edit_path = (page.home_page? && current_features.enabled?(:home_page)) ? edit_app_home_page_path : edit_app_page_path(page) %>
+              <% edit_path = page.home_page? ? edit_app_home_page_path : edit_app_page_path(page) %>
               <%= link_to edit_path, title: "Click to edit this page" do %>
                 <div class="font-medium pe-2 hover:underline">
                   <%= page.display_title %>
