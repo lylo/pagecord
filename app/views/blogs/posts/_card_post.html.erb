@@ -1,6 +1,6 @@
 <div class="post-card">
   <%= link_to post_path(post), class: "post-card-link", data: { turbo_frame: "_top" } do %>
-    <article class="post-card-content">
+    <div class="post-card-content">
       <% if post.title.present? %>
         <h2 class="post-card-title">
           <%= post.title %>
@@ -27,6 +27,6 @@
           <%= t('posts.read_more') %>
         </span>
       </div>
-    </article>
+    </div>
   <% end %>
 </div>

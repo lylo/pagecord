@@ -32,7 +32,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "article", minimum: 1
+    assert_select "div.post-card", minimum: 1
     assert_select ".cards_layout", count: 1
   end
 
@@ -631,7 +631,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "div", text: /Showing posts tagged with "rails"/
-    assert_select "a[href='#{blog_posts_path}']", text: "Show all posts"
+    assert_select "a[href='#{blog_posts_list_path}']", text: "Show all posts"
   end
 
   test "should show no posts message when tag has no matches" do

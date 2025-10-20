@@ -28,7 +28,7 @@
         Showing posts tagged with "<strong><%= @current_tag %></strong>"
       </div>
       <div class="tag-filter-notice-actions">
-        <%= link_to "Show all posts", blog_home_path(@blog), class: "tag-filter-clear-link" %>
+        <%= link_to "Show all posts", blog_posts_list_path, class: "tag-filter-clear-link" %>
       </div>
     </div>
   <% end %>
