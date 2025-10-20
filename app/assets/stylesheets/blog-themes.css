@@ -17,7 +17,7 @@
   --font-source-serif: 'SourceSerif4Variable', Georgia, serif;
   --font-mono: 'IBM Plex Mono', monospace;
 
-  /* Content width options (halved - testing retina theory) */
+  /* Content width options */
   --content-width-narrow: 28rem;   /* container-md */
   --content-width-standard: 36rem; /* container-xl */
   --content-width-wide: 48rem;     /* container-3xl */
@@ -29,261 +29,225 @@
 
   /* Pagecord accent color */
   --color-pagecord-accent: hsl(162, 54%, 57%); /* #56cda9 */
+}
 
-  /* Default theme variables for OKLCH themes */
-  --theme-hue: 0;
-  --theme-lightness: 0.98;
-  --theme-chroma: 0.03;
-  --theme-accent-hue-shift: 120;
+/* ============================================ */
+/* Shared Color Derivation System             */
+/* ============================================ */
+/* This applies to all themes that set --theme-bg, --theme-text, --theme-accent */
+
+[data-theme] {
+  /* Default base colors (can be overridden by specific themes) */
+  --theme-bg: #ffffff;
+  --theme-text: #334155;
+  --theme-accent: #334155;
+
+  /* === Backgrounds === */
+  --color-bg: var(--theme-bg);
+  --color-bg-subtle: color-mix(in oklch, var(--theme-bg) 95%, var(--theme-text) 5%);
+  --color-bg-elevated: color-mix(in oklch, var(--theme-bg) 90%, var(--theme-text) 10%);
+  --color-bg-sunken: color-mix(in oklch, var(--theme-bg) 85%, var(--theme-text) 15%);
+  --color-bg-inverted: color-mix(in oklch, var(--theme-text) 100%, var(--theme-bg) 0%);
+
+  /* === Text === */
+  --color-text: var(--theme-text);
+  --color-text-heading: var(--theme-text);
+  --color-text-muted: color-mix(in oklch, var(--theme-text) 60%, var(--theme-bg) 40%);
+  --color-text-light: color-mix(in oklch, var(--theme-text) 40%, var(--theme-bg) 60%);
+  --color-text-disabled: color-mix(in oklch, var(--theme-text) 20%, var(--theme-bg) 80%);
+  --color-text-inverted: var(--theme-bg);
+
+  /* === Accent === */
+  --color-accent: var(--theme-accent);
+  --color-accent-hover: color-mix(in oklch, var(--theme-accent) 70%, black 30%);
+  --color-accent-muted: color-mix(in oklch, var(--theme-accent) 50%, var(--theme-bg) 50%);
+
+  /* === Borders & UI === */
+  --color-border: color-mix(in oklch, var(--theme-bg) 85%, var(--theme-text) 15%);
+  --color-border-strong: color-mix(in oklch, var(--theme-bg) 65%, var(--theme-text) 35%);
+  --color-focus: color-mix(in oklch, var(--theme-accent) 50%, transparent 50%);
+  --color-shadow: color-mix(in oklch, var(--theme-text) 30%, transparent 70%);
+
+  /* === Forms === */
+  --color-input-bg: white;
+  --color-input-border: var(--color-border);
+  --color-input-focus: color-mix(in oklch, var(--theme-accent) 50%, transparent 50%);
+  --color-button-bg: color-mix(in oklch, var(--theme-bg) 50%, var(--theme-text) 50%);
+  --color-button-hover: color-mix(in oklch, var(--theme-bg) 40%, var(--theme-text) 60%);
+  --color-button-text: var(--theme-bg);
+  --color-placeholder: var(--color-text-light);
 }
 
 /* ============================= */
-/* Base Theme (Light Mode)       */
+/* Dark Mode Adjustments         */
 /* ============================= */
 
+@media (prefers-color-scheme: dark) {
+  [data-theme] {
+    /* Invert the mixing ratios for dark mode */
+    --color-bg-subtle: color-mix(in oklch, var(--theme-bg) 90%, white 10%);
+    --color-bg-elevated: color-mix(in oklch, var(--theme-bg) 85%, white 15%);
+    --color-bg-sunken: color-mix(in oklch, var(--theme-bg) 80%, black 20%);
+
+    /* Text mixings stay similar but heading gets brighter */
+    --color-text-heading: color-mix(in oklch, var(--theme-text) 100%, white 5%);
+
+    /* Accent gets slightly lighter on hover in dark mode */
+    --color-accent-hover: color-mix(in oklch, var(--theme-accent) 70%, white 30%);
+
+    /* Borders are lighter in dark mode */
+    --color-border: color-mix(in oklch, var(--theme-bg) 70%, white 30%);
+    --color-border-strong: color-mix(in oklch, var(--theme-bg) 50%, white 50%);
+
+    /* Forms - darker input in dark mode */
+    --color-input-bg: color-mix(in oklch, var(--theme-bg) 85%, black 15%);
+  }
+}
+
+/* ============================= */
+/* Base Theme (Override default) */
+/* ============================= */
+/* The "base" theme uses Tailwind slate colors - defined manually for precision */
+
 [data-theme="base"] {
-  /* === Backgrounds === */
-  --color-bg: #ffffff;
+  /* Override the base colors */
+  --theme-bg: #ffffff;
+  --theme-text: #334155;
+  --theme-accent: #334155;
+
+  /* Manual overrides for precise Tailwind colors */
   --color-bg-subtle: #f1f5f9;      /* slate-100 */
   --color-bg-elevated: #e2e8f0;    /* slate-200 */
   --color-bg-sunken: #cbd5e1;      /* slate-300 */
 
-  /* === Text === */
-  --color-text: #334155;            /* slate-700 */
-  --color-text-heading: #0f172a;    /* slate-900 */
-  --color-text-muted: #64748b;      /* slate-500 */
-  --color-text-light: #94a3b8;      /* slate-400 */
-  --color-text-disabled: #cbd5e1;   /* slate-300 */
-  --color-text-inverted: #ffffff;
+  --color-text-heading: #0f172a;   /* slate-900 */
+  --color-text-muted: #64748b;     /* slate-500 */
+  --color-text-light: #94a3b8;     /* slate-400 */
+  --color-text-disabled: #cbd5e1;  /* slate-300 */
 
-  /* === Accent === */
-  --color-accent: #334155;          /* slate-700 */
-  --color-accent-hover: #1e293b;    /* slate-800 */
-  --color-accent-muted: #94a3b8;    /* slate-400 */
+  --color-accent-hover: #1e293b;   /* slate-800 */
+  --color-accent-muted: #94a3b8;   /* slate-400 */
 
-  /* === Borders & UI === */
-  --color-border: #e2e8f0;          /* slate-200 */
-  --color-border-strong: #64748b;   /* slate-500 */
-  --color-focus: rgba(100, 116, 139, 0.5);  /* slate-500 / 0.5 */
-  --color-shadow: rgba(148, 163, 184, 0.3); /* slate-400 / 0.3 */
+  --color-border: #e2e8f0;         /* slate-200 */
+  --color-border-strong: #64748b;  /* slate-500 */
 
-  /* === Forms === */
-  --color-input-bg: #ffffff;
-  --color-input-border: #cbd5e1;    /* slate-300 */
-  --color-input-focus: #94a3b8;     /* slate-400 */
-  --color-button-bg: #475569;       /* slate-600 */
-  --color-button-hover: #64748b;    /* slate-500 */
-  --color-button-text: #f1f5f9;     /* slate-100 */
-  --color-placeholder: #cbd5e1;     /* slate-300 */
+  --color-button-bg: #475569;      /* slate-600 */
+  --color-button-hover: #64748b;   /* slate-500 */
+  --color-button-text: #f1f5f9;    /* slate-100 */
 }
 
-/* Base theme - dark mode */
 @media (prefers-color-scheme: dark) {
   [data-theme="base"] {
-    /* === Backgrounds === */
-    --color-bg: #0f172a;            /* slate-900 */
-    --color-bg-subtle: #1e293b;     /* slate-800 */
-    --color-bg-elevated: #334155;   /* slate-700 */
-    --color-bg-sunken: #475569;     /* slate-600 */
+    --theme-bg: #0f172a;           /* slate-900 */
+    --theme-text: #cbd5e1;         /* slate-300 */
+    --theme-accent: #ffffff;
 
-    /* === Text === */
-    --color-text-heading: #f1f5f9;  /* slate-100 */
-    --color-text: #cbd5e1;          /* slate-300 */
-    --color-text-muted: #94a3b8;    /* slate-400 */
-    --color-text-light: #64748b;    /* slate-500 */
-    --color-text-disabled: #475569; /* slate-600 */
-    --color-text-inverted: #0f172a; /* slate-900 */
+    --color-bg-subtle: #1e293b;    /* slate-800 */
+    --color-bg-elevated: #334155;  /* slate-700 */
+    --color-bg-sunken: #475569;    /* slate-600 */
 
-    /* === Accent === */
-    --color-accent: #ffffff;
-    --color-accent-hover: #e2e8f0;  /* slate-200 */
-    --color-accent-muted: #475569;  /* slate-600 */
+    --color-text-heading: #f1f5f9; /* slate-100 */
+    --color-text-muted: #94a3b8;   /* slate-400 */
+    --color-text-light: #64748b;   /* slate-500 */
+    --color-text-disabled: #475569;/* slate-600 */
 
-    /* === Borders & UI === */
-    --color-border: #475569;        /* slate-600 */
-    --color-border-strong: #64748b; /* slate-500 */
-    --color-focus: rgba(96, 165, 250, 0.5);  /* blue-400 / 0.5 */
-    --color-shadow: rgba(51, 65, 85, 0.3);   /* slate-700 / 0.3 */
+    --color-accent-hover: #e2e8f0; /* slate-200 */
+    --color-accent-muted: #475569; /* slate-600 */
 
-    /* === Forms === */
-    --color-input-bg: #0f172a;      /* slate-900 */
-    --color-input-border: #475569;  /* slate-600 */
-    --color-input-focus: #64748b;   /* slate-500 */
-    --color-button-bg: #475569;     /* slate-600 */
-    --color-button-hover: #64748b;  /* slate-500 */
-    --color-button-text: #e2e8f0;   /* slate-200 */
-    --color-placeholder: #475569;   /* slate-600 */
+    --color-border: #475569;       /* slate-600 */
+    --color-border-strong: #64748b;/* slate-500 */
+
+    --color-button-bg: #475569;    /* slate-600 */
+    --color-button-hover: #64748b; /* slate-500 */
+    --color-button-text: #e2e8f0;  /* slate-200 */
   }
 }
 
 /* ============================= */
-/* OKLCH Color Themes            */
+/* Color Themes                  */
 /* ============================= */
-
-/* Shared theme calculations for all OKLCH-based themes */
-[data-theme]:not([data-theme="base"]) {
-  /* === Backgrounds === */
-  --color-bg: oklch(var(--theme-lightness) var(--theme-chroma) var(--theme-hue));
-  --color-bg-subtle: oklch(calc(var(--theme-lightness) - 0.05) var(--theme-chroma) var(--theme-hue));
-  --color-bg-elevated: oklch(calc(var(--theme-lightness) - 0.1) var(--theme-chroma) var(--theme-hue));
-  --color-bg-sunken: oklch(0.93 0.03 var(--theme-hue));
-  --color-bg-inverted: oklch(0.25 0.04 calc(var(--theme-hue) + 20));
-
-  /* === Text === */
-  --color-text: oklch(0.25 0 0);
-  --color-text-heading: oklch(0.25 0 0);
-  --color-text-muted: oklch(0.50 0 0);
-  --color-text-light: oklch(0.65 0 0);
-  --color-text-disabled: oklch(0.8 0 0);
-  --color-text-inverted: white;
-
-  /* === Accent === */
-  --color-accent: oklch(0.55 0.12 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
-  --color-accent-hover: oklch(0.40 0.10 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
-  --color-accent-muted: oklch(0.65 0.05 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
-
-  /* === Borders & UI === */
-  --color-border: oklch(0.85 0.03 var(--theme-hue));
-  --color-border-strong: oklch(0.65 0.05 var(--theme-hue));
-  --color-focus: oklch(0.80 0.10 var(--theme-hue) / 0.5);
-  --color-shadow: oklch(0.30 0.03 var(--theme-hue) / 0.3);
-
-  /* === Forms === */
-  --color-input-bg: white;
-  --color-input-border: oklch(0.85 0.03 var(--theme-hue));
-  --color-input-focus: oklch(0.50 0.10 var(--theme-hue) / 0.5);
-  --color-button-bg: oklch(0.50 0.06 var(--theme-hue));
-  --color-button-hover: oklch(0.60 0.07 var(--theme-hue));
-  --color-button-text: oklch(0.95 0.02 var(--theme-hue));
-  --color-placeholder: oklch(0.65 0.02 calc(var(--theme-hue) + 20));
-}
-
-/* Dark mode shared calculations */
-@media (prefers-color-scheme: dark) {
-  [data-theme]:not([data-theme="base"]) {
-    /* === Backgrounds === */
-    --color-bg: oklch(var(--theme-lightness) var(--theme-chroma) var(--theme-hue));
-    --color-bg-subtle: oklch(calc(var(--theme-lightness) + 0.1) var(--theme-chroma) var(--theme-hue));
-    --color-bg-elevated: oklch(calc(var(--theme-lightness) + 0.15) var(--theme-chroma) var(--theme-hue));
-    --color-bg-sunken: oklch(0.25 0.03 var(--theme-hue));
-    --color-bg-inverted: oklch(0.90 0.03 var(--theme-hue));
-
-    /* === Text === */
-    --color-text: oklch(0.90 0 0);
-    --color-text-heading: oklch(0.95 0 0);
-    --color-text-muted: oklch(0.70 0 0);
-    --color-text-light: oklch(0.60 0 0);
-    --color-text-disabled: oklch(0.50 0 0);
-    --color-text-inverted: oklch(0.15 0 0);
-
-    /* === Accent === */
-    --color-accent: oklch(0.60 0.12 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
-    --color-accent-hover: oklch(0.65 0.10 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
-    --color-accent-muted: oklch(0.50 0.05 calc(var(--theme-hue) + var(--theme-accent-hue-shift)));
-
-    /* === Borders & UI === */
-    --color-border: oklch(0.35 0.03 var(--theme-hue));
-    --color-border-strong: oklch(0.50 0.05 var(--theme-hue));
-    --color-focus: oklch(0.65 0.10 var(--theme-hue) / 0.5);
-    --color-shadow: oklch(0.00 0.00 0 / 0.5);
-
-    /* === Forms === */
-    --color-input-bg: oklch(0.20 0.02 var(--theme-hue));
-    --color-input-border: oklch(0.35 0.03 var(--theme-hue));
-    --color-input-focus: oklch(0.50 0.07 var(--theme-hue));
-    --color-button-bg: oklch(0.40 0.06 var(--theme-hue));
-    --color-button-hover: oklch(0.50 0.07 var(--theme-hue));
-    --color-button-text: oklch(0.95 0.02 var(--theme-hue));
-    --color-placeholder: oklch(0.55 0.02 calc(var(--theme-hue) + 20));
-  }
-}
-
-/* ============================= */
-/* Individual Theme Definitions  */
-/* ============================= */
+/* Each theme only needs to set 3 base colors - everything else is derived! */
 
 [data-theme="mint"] {
-  --theme-hue: 120;
-  --theme-lightness: 0.98;
-  --theme-chroma: 0.0175;
-  --theme-accent-hue-shift: 100;
+  --theme-bg: oklch(0.98 0.0175 120);
+  --theme-text: oklch(0.25 0 0);
+  --theme-accent: oklch(0.55 0.12 220);
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="mint"] {
-    --theme-hue: 140;
-    --theme-lightness: 0.19;
-    --theme-chroma: 0.02;
-    --theme-accent-hue-shift: 80;
+    --theme-bg: oklch(0.19 0.02 140);
+    --theme-text: oklch(0.90 0 0);
+    --theme-accent: oklch(0.60 0.12 220);
   }
 }
 
 [data-theme="lavender"] {
-  --theme-hue: 300;
-  --theme-lightness: 0.98;
-  --theme-chroma: 0.0175;
-  --theme-accent-hue-shift: 60;
+  --theme-bg: oklch(0.98 0.0175 300);
+  --theme-text: oklch(0.25 0 0);
+  --theme-accent: oklch(0.55 0.12 0);
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="lavender"] {
-    --theme-lightness: 0.17;
+    --theme-bg: oklch(0.17 0.0175 300);
+    --theme-text: oklch(0.90 0 0);
+    --theme-accent: oklch(0.60 0.12 0);
   }
 }
 
 [data-theme="coral"] {
-  --theme-hue: 6;
-  --theme-lightness: 0.96;
-  --theme-chroma: 0.035;
-  --theme-accent-hue-shift: -40;
+  --theme-bg: oklch(0.96 0.035 6);
+  --theme-text: oklch(0.25 0 0);
+  --theme-accent: oklch(0.55 0.12 326);
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="coral"] {
-    --theme-lightness: 0.19;
-    --theme-chroma: 0.04;
+    --theme-bg: oklch(0.19 0.04 6);
+    --theme-text: oklch(0.90 0 0);
+    --theme-accent: oklch(0.60 0.12 326);
   }
 }
 
 [data-theme="sand"] {
-  --theme-hue: 75;
-  --theme-lightness: 0.97;
-  --theme-chroma: 0.015;
-  --theme-accent-hue-shift: -50;
+  --theme-bg: oklch(0.97 0.015 75);
+  --theme-text: oklch(0.25 0 0);
+  --theme-accent: oklch(0.55 0.12 25);
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="sand"] {
-    --theme-hue: 100;
-    --theme-chroma: 0.01;
-    --theme-lightness: 0.18;
+    --theme-bg: oklch(0.18 0.01 100);
+    --theme-text: oklch(0.90 0 0);
+    --theme-accent: oklch(0.60 0.12 50);
   }
 }
 
 [data-theme="sky"] {
-  --theme-hue: 210;
-  --theme-lightness: 0.98;
-  --theme-chroma: 0.0125;
-  --theme-accent-hue-shift: 40;
+  --theme-bg: oklch(0.98 0.0125 210);
+  --theme-text: oklch(0.25 0 0);
+  --theme-accent: oklch(0.55 0.12 250);
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="sky"] {
-    --theme-hue: 240;
-    --theme-lightness: 0.17;
+    --theme-bg: oklch(0.17 0.0125 240);
+    --theme-text: oklch(0.90 0 0);
+    --theme-accent: oklch(0.60 0.12 280);
   }
 }
 
 [data-theme="berry"] {
-  --theme-hue: 330;
-  --theme-lightness: 0.97;
-  --theme-chroma: 0.03;
-  --theme-accent-hue-shift: 50;
+  --theme-bg: oklch(0.97 0.03 330);
+  --theme-text: oklch(0.25 0 0);
+  --theme-accent: oklch(0.55 0.12 20);
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="berry"] {
-    --theme-lightness: 0.19;
-    --theme-chroma: 0.05;
+    --theme-bg: oklch(0.19 0.05 330);
+    --theme-text: oklch(0.90 0 0);
+    --theme-accent: oklch(0.60 0.12 20);
   }
 }
