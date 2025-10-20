@@ -2,7 +2,7 @@
   <%= render "tags", post: post %>
 <% end %>
 
-<footer class="post-footer <%= post.tag_list.present? ? 'with-tags' : 'without-tags' %>">
+<footer>
   <%= link_to post_path(post), class: "post-date", data: { turbo_frame: "_top" } do %>
     <%= local_time post.published_at, format: published_at_date_format %>
   <% end %>
@@ -14,7 +14,7 @@
                   title: "Reply to this post via email",
                   data: { turbo_frame: "_top" },
                   rel: "nofollow",
-                  class: "post-action-link" do %>
+                  class: "reply-by-email" do %>
           <%= inline_svg_tag "icons/reply.svg", class: "icon" %>
         <% end %>
       <% end %>

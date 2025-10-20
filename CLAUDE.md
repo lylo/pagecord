@@ -304,11 +304,11 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 
 **Individual Post**:
 ```
-<article class="blog-post">
+<article>
   ├── <h1 class="post-title"> (optional)
   ├── <div class="lexxy-content"> (rich text with ActionText)
   ├── <div class="tags-container"> (optional)
-  └── <footer class="post-footer"> (date, reply, upvotes)
+  └── <footer> (date, reply, upvotes)
 ```
 
 **Post List Layouts** (controlled by `@blog.layout`):
@@ -319,7 +319,6 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 **Key Classes**:
 - `.blog-container` → Main content wrapper
 - `.lexxy-content` → Rich text typography wrapper (em-based scaling)
-- `.post-footer` → Date and action buttons (reply/upvote icons)
 - `.tags-container` → Tag badges
 - `.empty-state` → Empty state messages
 - `.flash-container` → Flash messages with fade animation
