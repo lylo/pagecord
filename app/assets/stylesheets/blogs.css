@@ -342,6 +342,7 @@ html, body {
 
     input[type="submit"] {
       font-family: inherit;
+      font-size: inherit;
       background-color: var(--color-button-bg);
       color: var(--color-button-text);
       border-radius: 0.375rem;
