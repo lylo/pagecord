@@ -100,7 +100,7 @@
     --color-border-strong: color-mix(in oklch, var(--theme-bg) 50%, white 50%);
 
     /* Forms - darker input in dark mode */
-    --color-input-bg: color-mix(in oklch, var(--theme-bg) 85%, black 15%);
+    --color-input-bg: var(--theme-bg);
   }
 }
 
