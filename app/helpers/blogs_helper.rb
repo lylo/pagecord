@@ -21,10 +21,10 @@ module BlogsHelper
 
   def page_title
     if @post
-      if @post.title&.present?
-        "#{@post.title} - #{@post.blog.display_name}"
-      elsif @post.home_page?
+      if @post.home_page?
         blog_title(@post.blog)
+      elsif @post.title&.present?
+        "#{@post.title} - #{@post.blog.display_name}"
       else 
         "#{blog_title(@post.blog)} - #{@post.published_at_in_user_timezone.to_formatted_s(:long)}"
       end
