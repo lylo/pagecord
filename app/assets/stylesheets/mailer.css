@@ -41,8 +41,9 @@ table {
   padding:  0 !important;
   margin: 0 auto !important;
   /* makes it centered */
-  max-width: 600px;
-  width: 600px;
+  max-width: 580px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* This should also be a block element, so that it will fill 100% of the .container */
@@ -312,7 +313,7 @@ hr {
 /* -------------------------------------
     RESPONSIVE AND MOBILE FRIENDLY STYLES
 ------------------------------------- */
-@media only screen and (max-width: 620px) {
+@media only screen and (max-width: 600px) {
   body {
     background-color: #ffffff !important; /* Change background to white on mobile */
   }
