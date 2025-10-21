@@ -132,7 +132,6 @@ draft_page:
     <p>This page is coming soon!</p>
 
     <p>We're working on something exciting. Stay tuned for updates.</p>
-
 non_nav_page:
   record: non_nav_page (Post)
   name: content
@@ -150,29 +149,36 @@ embeds:
   record: embeds (Post)
   name: content
   body: |
-    <p>Spotify:</p>
+    <h3>Spotify</h3>
+    <h4>Album</h4>
     <p><a href="https://open.spotify.com/album/1cqqIH16XzBnDchrXJ9Enf?si=DjimKTtmRFiidyhKTpgNzA">https://open.spotify.com/album/1cqqIH16XzBnDchrXJ9Enf?si=DjimKTtmRFiidyhKTpgNzA</a></p>
+    <h4>Track</h4>
+    <p><a href="https://open.spotify.com/track/15xYayQFFYeKEWRruuzsfZ?si=42770845087849be">https://open.spotify.com/track/15xYayQFFYeKEWRruuzsfZ?si=42770845087849be</a></p>
 
-    <p>YouTube:</p>
+    <h3>YouTube</h3>
     <p><a href="https://www.youtube.com/watch?v=eVrJCTW8GgE">https://www.youtube.com/watch?v=eVrJCTW8GgE</a></p>
 
-    <p>GitHub:</p>
+    <h3>GitHub</h3>
     <p><a href="https://gist.github.com/lylo/170b2fe0b0eccc36b65c8dc22aca737f">https://gist.github.com/lylo/170b2fe0b0eccc36b65c8dc22aca737f</a></p>
 
-    <p>Bandcamp:</p>
-    <p><a href="https://louisepost.bandcamp.com/album/but-i-love-you-without-mascara-demos-97-98">https://louisepost.bandcamp.com/album/but-i-love-you-without-mascara-demos-97-98</a></p>
+    <h3>Bandcamp</h3>
+    <p><a href="https://fredagainagain.bandcamp.com/album/actual-life-april-14-december-17-2020">https://fredagainagain.bandcamp.com/album/actual-life-april-14-december-17-2020</a></p>
 
-    <p>Apple Music:</p>
-    <p><a href="https://music.apple.com/us/album/my-old-ways/1836226516">https://music.apple.com/us/album/my-old-ways/1836226516</a></p>
-    <p><a href="https://music.apple.com/us/song/it-depends-the-remix-feat-bryson-tiller-usher/1846136480">https://music.apple.com/us/song/it-depends-the-remix-feat-bryson-tiller-usher/1846136480</a></p>
+    <h3>Apple Music</h3>
+    <h4>Album</h4>
+    <p><a href="https://music.apple.com/us/album/songs-of-a-lost-world/1768728131">https://music.apple.com/us/album/songs-of-a-lost-world/1768728131</a></p>
+    <h4>Track</h4>
+    <p><a href="https://music.apple.com/us/song/perfect-stranger/1767658853">https://music.apple.com/us/song/perfect-stranger/1767658853</a></p>
 
-    <p>Tidal:</p>
-    <p><a href="https://tidal.com/album/459457157">https://tidal.com/album/459457157</a></p>
-    <p><a href="https://tidal.com/track/459457156">https://tidal.com/track/459457156</a></p>
+    <h3>Tidal</h3>
+    <h4>Album</h4>
+    <p><a href="https://tidal.com/album/445734494">https://tidal.com/album/445734494</a></p>
+    <h4>Track</h4>
+    <p><a href="https://tidal.com/track/401317293/u">https://tidal.com/track/401317293/u</a></p>
 
-    <p>Transistor:</p>
+    <h3>Transistor</h3>
     <p><a href="https://share.transistor.fm/s/c19f1cb2">https://share.transistor.fm/s/c19f1cb2</a></p>
 
-    <p>Strava:</p>
+    <h3>Strava</h3>
     <p><a href="https://www.strava.com/activities/2307958367">https://www.strava.com/activities/2307958367</a></p>
 
