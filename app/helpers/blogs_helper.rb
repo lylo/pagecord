@@ -23,7 +23,9 @@ module BlogsHelper
     if @post
       if @post.title&.present?
         "#{@post.title} - #{@post.blog.display_name}"
-      else
+      elsif post.home_page?
+        blog_title(@post.blog)
+      else 
         "#{blog_title(@post.blog)} - #{@post.published_at_in_user_timezone.to_formatted_s(:long)}"
       end
     elsif @blog
