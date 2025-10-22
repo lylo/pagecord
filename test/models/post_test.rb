@@ -285,4 +285,45 @@ class PostTest < ActiveSupport::TestCase
 
     assert_equal "This is a test", post.display_title
   end
+
+  test "text_summary should preserve space between paragraphs" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>First paragraph ends here.</p><p>Second paragraph starts here.</p>"
+    )
+
+    # Should have space between sentences from different paragraphs
+    assert_equal "First paragraph ends here. Second paragraph starts here.", post.text_summary
+    assert_includes post.text_summary, "here. Second"
+  end
+
+  test "text_summary should preserve space between headings and paragraphs" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<h1>My Heading</h1><p>Paragraph text here.</p>"
+    )
+
+    assert_equal "My Heading Paragraph text here.", post.text_summary
+    assert_includes post.text_summary, "Heading Paragraph"
+  end
+
+  test "text_summary should preserve space between list items" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<ul><li>First item.</li><li>Second item.</li></ul>"
+    )
+
+    assert_equal "First item. Second item.", post.text_summary
+    assert_includes post.text_summary, "item. Second"
+  end
+
+  test "text_summary should preserve space between divs" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<div>First block.</div><div>Second block.</div>"
+    )
+
+    assert_equal "First block. Second block.", post.text_summary
+    assert_includes post.text_summary, "block. Second"
+  end
 end
