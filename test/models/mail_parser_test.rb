@@ -143,7 +143,7 @@ class MailParserTest < ActiveSupport::TestCase
 
     # Verify attachment details
     filenames = parser.attachments.map(&:filename).map(&:to_s).sort
-    assert_equal ["image1.jpg", "image2.png"], filenames
+    assert_equal [ "image1.jpg", "image2.png" ], filenames
   end
 
   # ========================================
