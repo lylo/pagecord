@@ -29,6 +29,13 @@ class BlogsHelperTest < ActionView::TestCase
     assert_equal bio.strip, blog_description(blog)
   end
 
+  test "blog title with home page" do
+    blog = blogs(:joel)
+    blog.title = "My blog"
+    blog.update! home_page: posts(:about)
+    assert_equal "My blog", blog_title(blog)
+  end
+
   test "open_graph_image with open graph image present" do
     @post = posts(:one)
     open_graph_image = OpenGraphImage.new(url: "https://example.com/og-image.jpg")
@@ -69,7 +76,7 @@ class BlogsHelperTest < ActionView::TestCase
 
   private
 
-  def open_graph_image_helper
-    open_graph_image
-  end
+    def open_graph_image_helper
+      open_graph_image
+    end
 end
