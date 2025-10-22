@@ -101,6 +101,51 @@ class MailParserTest < ActiveSupport::TestCase
     assert_equal 1, parser.attachments.size
   end
 
+  test "should embed attachments in content for multipart/mixed emails" do
+    mail = Mail.read(fixture_path("plain_text_with_attachments.eml"))
+    parser = MailParser.new(mail)
+
+    # Verify the attachment is embedded in the content as ActionText attachment
+    assert_includes parser.body, "<action-text-attachment",
+      "Attachment should be embedded as action-text-attachment in the content"
+
+    # Verify attachment attributes are present
+    assert_includes parser.body, 'content-type="image/jpeg"'
+    assert_includes parser.body, 'filename="attachment.jpg"'
+
+    # Verify text content is preserved along with the attachment
+    assert_includes parser.body, "Here is some text content"
+
+    # Verify this is treated as having attachments
+    assert parser.has_attachments?
+    assert_equal 1, parser.attachments.size
+
+    # Verify the attachment blob properties
+    attachment = parser.attachments.first
+    assert_equal "attachment.jpg", attachment.filename.to_s
+    assert_equal "image/jpeg", attachment.content_type
+  end
+
+  test "should handle multipart/mixed emails with multiple attachments" do
+    mail = Mail.read(fixture_path("multipart_mixed_multiple_attachments.eml"))
+    parser = MailParser.new(mail)
+
+    # Should embed both attachments in content
+    action_text_attachments = parser.body.scan(/<action-text-attachment/).size
+    assert_equal 2, action_text_attachments, "Should embed both attachments in content"
+
+    # Should detect both attachments
+    assert_equal 2, parser.attachments.size
+    assert parser.has_attachments?
+
+    # Should preserve text content
+    assert_includes parser.body, "Text with multiple images below."
+
+    # Verify attachment details
+    filenames = parser.attachments.map(&:filename).map(&:to_s).sort
+    assert_equal ["image1.jpg", "image2.png"], filenames
+  end
+
   # ========================================
   # Edge Cases and Error Handling
   # ========================================

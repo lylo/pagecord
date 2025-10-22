@@ -96,7 +96,8 @@ class MailParser
         html_content = collect_html_content
         html_transform(html_content) + append_unreferenced_attachments(html_content)
       elsif @mail.text_part
-        plain_text_transform(@mail.text_part.decoded)
+        text_content = plain_text_transform(@mail.text_part.decoded)
+        text_content + append_unreferenced_attachments(text_content)
       else
         parse_mixed_parts
       end
