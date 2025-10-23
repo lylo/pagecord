@@ -33,16 +33,21 @@
 /* Testimonial Carousel          */
 /* ============================= */
 
-@keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(calc(-100% / 2)); }
+@keyframes scroll-smooth {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--scroll-distance, -50%));
+  }
 }
 
-.animate-scroll {
-  animation: scroll 20s linear infinite;
+.animate-scroll-smooth {
+  animation: scroll-smooth 20s linear infinite;
+  will-change: transform; /* smoother hardware-accelerated animation */
 }
 
-.hover\:pause-animation:hover {
+.animate-scroll-smooth:hover {
   animation-play-state: paused;
 }
 
@@ -56,14 +61,21 @@
   display: none; /* Chrome, Safari, Opera */
 }
 
-/* Ensure testimonials carousel container clips properly */
+/* Testimonials carousel container */
 .testimonials-fade-edges {
+  position: relative; /* required for fade pseudo-elements */
   overflow-x: auto;
   max-width: 100vw;
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
-/* Fade edges effect */
+.testimonials-fade-edges::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Fade edges */
 .testimonials-fade-edges::before,
 .testimonials-fade-edges::after {
   content: '';
@@ -96,7 +108,6 @@
   }
 }
 
-/* Support for explicit dark mode class */
 .dark .testimonials-fade-edges::before {
   background: linear-gradient(to right, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
 }

@@ -6,78 +6,67 @@ export default class extends Controller {
   connect() {
     this.scrollTimeout = null
     this.isHovering = false
-    this.animationFrame = null
-    this.position = 0
-    this.speed = 0.5 // pixels per frame
 
-    // Disable CSS animation, use JS instead
-    this.sliderTarget.style.animation = 'none'
+    // Store original cards for cloning
+    this.originalCards = Array.from(this.sliderTarget.children).map(card => card.cloneNode(true))
 
-    // Clone all cards for infinite scroll
-    const originalCards = Array.from(this.sliderTarget.children)
-    originalCards.forEach(card => {
-      const clone = card.cloneNode(true)
-      this.sliderTarget.appendChild(clone)
-    })
+    // Add enough duplicates to start
+    for (let i = 0; i < 3; i++) {
+      this.appendSet()
+    }
 
-    // Calculate width after cloning
-    requestAnimationFrame(() => {
-      // Calculate exact width of original cards (not scrollWidth which includes padding)
-      const originalWidth = Array.from(this.sliderTarget.children)
-        .slice(0, this.sliderTarget.children.length / 2)
-        .reduce((total, card) => total + card.offsetWidth + 24, 0) // 24px gap-6
+    // Use CSS scroll for smooth animation
+    this.startScroll()
+  }
 
-      this.resetPoint = originalWidth
-
-      // Start animation
-      this.startAnimation()
+  appendSet() {
+    this.originalCards.forEach(card => {
+      this.sliderTarget.appendChild(card.cloneNode(true))
     })
   }
 
-  startAnimation() {
-    const animate = () => {
-      if (!this.isHovering && !this.scrollTimeout) {
-        this.position -= this.speed
+  startScroll() {
+    let position = 0
 
-        // Reset cleanly to 0 (no cumulative offset drift)
-        if (Math.abs(this.position) >= this.resetPoint) {
-          this.position = 0
+    // Calculate the width of one set for looping
+    requestAnimationFrame(() => {
+      const firstCard = this.sliderTarget.children[0]
+      this.oneSetWidth = firstCard.offsetWidth * this.originalCards.length + (24 * this.originalCards.length) // cards + gaps
+    })
+
+    const scroll = () => {
+      if (!this.isHovering && !this.scrollTimeout && this.oneSetWidth) {
+        position -= 0.5
+
+        // Loop position when we've scrolled past one set
+        if (Math.abs(position) >= this.oneSetWidth) {
+          position += this.oneSetWidth
         }
 
-        this.sliderTarget.style.transform = `translateX(${this.position}px)`
+        this.sliderTarget.style.transform = `translateX(${position}px)`
       }
 
-      this.animationFrame = requestAnimationFrame(animate)
+      this.animationFrame = requestAnimationFrame(scroll)
     }
 
-    this.animationFrame = requestAnimationFrame(animate)
+    this.animationFrame = requestAnimationFrame(scroll)
   }
 
   scroll(event) {
-    // User is manually scrolling - pause temporarily
     this.isHovering = true
-
-    // Clear existing timeout
     clearTimeout(this.scrollTimeout)
-
-    // Resume animation after user stops scrolling
     this.scrollTimeout = setTimeout(() => {
-      if (!this.isHovering) {
-        this.scrollTimeout = null
-      }
+      this.isHovering = false
+      this.scrollTimeout = null
     }, 1000)
   }
 
   pause() {
-    // Pause on hover
     this.isHovering = true
   }
 
   resume() {
-    // Resume on mouse leave
     this.isHovering = false
-
-    // Clear any pending scroll timeout
     clearTimeout(this.scrollTimeout)
     this.scrollTimeout = null
   }
