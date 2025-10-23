@@ -1,10 +1,10 @@
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
-  <h1 class="source-serif font-semibold text-center md:text-start text-4xl md:text-5xl tracking-tight">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight">
   Blog from your inbox
   </h1>
 
   <div class="md:text-xl text-base leading-7 text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
-    <p class="mt-8 text-2xl font-bold"><span class="inline bg-[linear-gradient(180deg,transparent_65%,rgb(79_189_156_/_0.3)_65%)] dark:bg-[linear-gradient(180deg,transparent_65%,rgb(79_189_156_/_0.4)_65%)] [box-decoration-break:clone] px-1 -mx-1 leading-relaxed">Write an email. Hit send. You're published!</span></p>
+    <p class="mt-8 md:mt-12 text-2xl font-bold"><span class="inline bg-[linear-gradient(180deg,transparent_65%,rgb(79_189_156_/_0.3)_65%)] dark:bg-[linear-gradient(180deg,transparent_65%,rgb(79_189_156_/_0.4)_65%)] [box-decoration-break:clone] px-1 -mx-1 leading-relaxed">Write an email. Hit send. You're published!</span></p>
 
     <p>Create a beautiful home page and blog in seconds. No config, no effort.</p>
 
@@ -58,9 +58,91 @@
   </div>
 </div>
 
+<!-- Testimonials Section -->
+<div id="testimonials" class="relative w-full px-4 md:px-6 lg:px-8 my-12 py-8">
+  <h2 class="source-serif text-center font-semibold mb-8 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">What people are saying</h2>
+
+  <div class="relative -mx-4 md:-mx-6 lg:-mx-8 testimonials-fade-edges"
+       data-controller="testimonials-carousel"
+       data-action="mouseenter->testimonials-carousel#pause mouseleave->testimonials-carousel#resume">
+    <div class="relative overflow-auto"
+         data-action="scroll->testimonials-carousel#scroll">
+      <div class="flex gap-6 animate-scroll pl-4 md:pl-6 lg:pl-8" data-testimonials-carousel-target="slider">
+
+      <!-- Testimonial 1 -->
+      <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+        <div class="flex items-start mb-4">
+          <svg class="w-10 h-10 text-pagecord-accent opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+          </svg>
+        </div>
+
+        <p class="text-lg mb-6 leading-relaxed">
+          "Pagecord has been super easy and fun to use for blogging for free, as well as an affordable price for extras! Thanks for supporting the small, indie web!"
+        </p>
+
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-gradient-to-br from-[#4fbd9c] to-[#3da688] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+            BD
+          </div>
+          <div class="ml-3">
+            <p class="font-semibold">BinaryDigit</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://digit.blue/" class="hover:underline">digit.blue</a></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 2 -->
+      <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+        <div class="flex items-start mb-4">
+          <svg class="w-10 h-10 text-pagecord-accent opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+          </svg>
+        </div>
+        <p class="text-lg mb-6 leading-relaxed">
+          "Pagecord has two big attractions. One is rediscovering blogging by email, but a bigger win is the source availability.
+          It does what I need, very nicely."
+        </p>
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-gradient-to-br from-[#4fbd9c] to-[#3da688] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+            RD
+          </div>
+          <div class="ml-3">
+            <p class="font-semibold">Richard Dallaway</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://richard.dallaway.com" class="hover:underline">richard.dallaway.com</a></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+        <div class="flex items-start mb-4">
+          <svg class="w-10 h-10 text-pagecord-accent opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+          </svg>
+        </div>
+        <p class="text-lg mb-6 leading-relaxed">
+          "It's simple, it's niche, it's elegant. The most important thing is the words and it takes away all the excuses that distract us from the real purpose of a blog, which is to learn about ourselves."
+        </p>
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-gradient-to-br from-[#4fbd9c] to-[#3da688] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+            E
+          </div>
+          <div class="ml-3">
+            <p class="font-semibold">Egon</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://e6on.pagecord.com" class="hover:underline">e6on.pagecord.com</a></p>
+          </div>
+        </div>
+      </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Pricing Section -->
 <div id="pricing" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Pricing</h2>
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Pricing</h2>
 
   <p class="md:text-xl mt-5 mb-8">
     The blogging basics are <strong>free forever</strong>. Upgrade any time to get all the features for only <strong>$<%= localised_price %> per year</strong>. It's the best deal out there.
@@ -199,7 +281,7 @@
 
 <!-- Post by Email Section -->
 <div id="post-by-email" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Post by Email</h2>
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Post by Email</h2>
 
   <p class="md:text-xl my-5">
   Posting by email is effortless. It's right there on your phone or laptop. It uses a familiar editor with all the <b>formatting</b> <tt>you</tt> <i>need</i>. It lowers the barrier to creating a post, so you'll actually write more!
@@ -216,7 +298,7 @@
 
 <!-- Inline Editor Section -->
 <div id="post-by-editor" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">A delightful text editor</h2>
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">A delightful text editor</h2>
 
   <p class="md:text-xl my-5">
   If posting by email isn't your thing you can use Pagecord's rich text editor. It supports all your formatting needs, allows
@@ -231,7 +313,7 @@
 
 <!-- Newsletter Section -->
 <div id="newsletter" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">A weekly email digest of all your posts. Fully automated!</h2>
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">A weekly email digest of all your posts. Fully automated!</h2>
 
   <p class="md:text-xl my-5">
   Premium customers can allow people to subscribe to their blog by email. Each week,
@@ -249,7 +331,7 @@
 
 <!-- Analytics Section -->
 <div id="analytics" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Privacy-respecting analytics built in</h2>
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Privacy-respecting analytics built in</h2>
 
   <p class="md:text-xl my-5">
   It's fun to know how many people are visiting your blog, but third-party analytics are fiddly, expensive, and often don't respect privacy.
@@ -265,7 +347,7 @@
 </div>
 
 <div id="features" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200 ">
-  <h2 class="source-serif font-semibold text-center my-8 md:text-start text-3xl md:text-4xl tracking-tight">Full of features. Unbeatable Value 😇</h2>
+  <h2 class="source-serif font-semibold text-center my-8 text-3xl md:text-4xl tracking-tight">Full of features. Unbeatable Value 😇</h2>
 
   <p class="md:text-xl my-5">
     Pagecord is super-simple to use, but chock-a-block with powerful features. Try it and you'll love it. Here's the full list.
@@ -483,7 +565,7 @@
     <% end %>
   </div>
 
-  <h2 class="source-serif font-semibold my-8 text-center md:text-start text-3xl md:text-4xl tracking-tight">Look under the hood 🤓</h2>
+  <h2 class="source-serif font-semibold my-8 text-center text-3xl md:text-4xl tracking-tight">Look under the hood 🤓</h2>
   <p class="md:text-xl my-5">
     The Pagecord code is <a href="https://github.com/lylo/pagecord" class="home-link">source available</a>. Take a look under the hood, suggest improvements, or (if you're feeling brave) host it yourself!
   </p>

@@ -28,3 +28,79 @@
 .animate-fadeOut {
   animation: fadeOut 1s ease-out forwards;
 }
+
+/* ============================= */
+/* Testimonial Carousel          */
+/* ============================= */
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-100% / 2)); }
+}
+
+.animate-scroll {
+  animation: scroll 20s linear infinite;
+}
+
+.hover\:pause-animation:hover {
+  animation-play-state: paused;
+}
+
+/* Hide scrollbar but allow scrolling */
+.overflow-x-auto {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Ensure testimonials carousel container clips properly */
+.testimonials-fade-edges {
+  overflow-x: auto;
+  max-width: 100vw;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+/* Fade edges effect */
+.testimonials-fade-edges::before,
+.testimonials-fade-edges::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.testimonials-fade-edges::before {
+  left: 0;
+  background: linear-gradient(to right, rgb(255 255 255 / 1), rgb(255 255 255 / 0));
+}
+
+.testimonials-fade-edges::after {
+  right: 0;
+  background: linear-gradient(to left, rgb(255 255 255 / 1), rgb(255 255 255 / 0));
+}
+
+/* Dark mode fade edges */
+@media (prefers-color-scheme: dark) {
+  .testimonials-fade-edges::before {
+    background: linear-gradient(to right, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
+  }
+
+  .testimonials-fade-edges::after {
+    background: linear-gradient(to left, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
+  }
+}
+
+/* Support for explicit dark mode class */
+.dark .testimonials-fade-edges::before {
+  background: linear-gradient(to right, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
+}
+
+.dark .testimonials-fade-edges::after {
+  background: linear-gradient(to left, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
+}
