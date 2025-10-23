@@ -1,39 +1,23 @@
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <h1 class="source-serif font-semibold text-center md:text-start text-4xl md:text-5xl tracking-tight">
-  Blogging as easy as sending an email
+  Blog from your inbox
   </h1>
 
-  <div class="md:text-xl text-base leading-7 text-slate-800 dark:text-slate-200">
-    <p class="mt-8">
-    Write your post, send the email &ndash; it's published!
-    </p>
+  <div class="md:text-xl text-base leading-7 text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+    <p class="mt-8 text-2xl font-bold"><span class="inline bg-[linear-gradient(180deg,transparent_65%,rgb(79_189_156_/_0.3)_65%)] dark:bg-[linear-gradient(180deg,transparent_65%,rgb(79_189_156_/_0.4)_65%)] [box-decoration-break:clone] px-1 -mx-1 leading-relaxed">Write an email. Hit send. You're published!</span></p>
 
-    <p class="my-5">
-    A beautiful, customisable minimalist design. Serious features underneath.
-    </p>
+    <p>Create a beautiful home page and blog in seconds. No config, no effort.</p>
 
-    <p class="my-5">
-    The Pagecord blogging basics are FREE, forever! ✨ Go premium to unlock
-    features such as custom domains, private analytics, image and video
-    attachments and an email newsletter.
-    </p>
+    <p>Open source. Built to last. Classic sites are <strong>free forever</strong>. Premium is $<%= localised_price %>/year.</p>
 
-    <p class="my-5">
-    Pagecord is the perfect antidote to social media scrollverload. <b>Independent</b>, <b>privacy-focused</b>, <b>built to last</b>.
-    </p>
-
-    <div class="my-8 md:text-xl text-center">
+    <div class="text-center mt-2 mb-4 md:text-xl">
       <%= link_to new_signup_path do %>
         <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
       <% end %>
-      <div class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-        (No credit card required)
-      </div>
     </div>
 
     <p>
-    To see Pagecord in action, check out <a href="https://olly.pagecord.com" class="home-link">Olly's home page</a>
-    or <a href="https://blog.pagecord.com" class="home-link">the Pagecord blog</a>.
+    Check out real sites: <a href="https://olly.pagecord.com" class="home-link">Olly's home page</a>, <a href="https://blog.pagecord.com" class="home-link">the Pagecord blog</a> or <a href="https://yeechie.nl" class="home-link">Yeechie's corner</a>.
     </p>
    </div>
 </div>
@@ -74,80 +58,12 @@
   </div>
 </div>
 
-<!-- Post by Email Section -->
-<div id="post-by-email" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Post by Email</h2>
-
-  <p class="md:text-xl my-5">
-  Posting by email is effortless. It's right there on your phone or laptop. It uses a familiar editor with all the <b>formatting</b> <tt>you</tt> <i>need</i>. It lowers the barrier to creating a post, which means you'll blog more!
-  </p>
-
-  <p class="md:text-xl my-5">
-  Click compose, tap out a message, hit send. <a href="https://noodlings.pagecord.com/what-s-so-great-about-posting-by-email" class="font-medium underline">Pagecord does the rest</a>.
-  </p>
-  <%= image_tag "home/gmail-compose.webp",
-        alt: "Screenshot of composing a post in Gmail",
-        width: "1600",
-        height: "967" %>
-</div>
-
-<!-- Inline Editor Section -->
-<div id="post-by-editor" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">A delightful text editor</h2>
-
-  <p class="md:text-xl my-5">
-  If posting by email isn't your thing you can use Pagecord's rich text editor. It supports all your formatting needs, allows
-  you to schedule posts, add tags and more!
-  </p>
-
-  <%= image_tag "home/rich-text-editor.webp",
-    alt: "A screenshot of Pagecord's rich text editor",
-    width: "1600",
-    height: "967" %>
-</div>
-
-<!-- Newsletter Section -->
-<div id="newsletter" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">A weekly email digest of all your posts. Fully automated!</h2>
-
-  <p class="md:text-xl my-5">
-  Premium customers can allow people to subscribe to their blog by email. Each week,
-  Pagecord will create a digest of your recent posts and send it to your subscribers.
-  </p>
-  <p class="md:text-xl my-5">
-  You focus on writing, Pagecord does the promotion.
-  </p>
-
-  <%= image_tag "home/weekly-digest.webp",
-    alt: "A screenshot of Apple Mail with a weekly digest email",
-    width: "1600",
-    height: "967" %>
-</div>
-
-<!-- Analytics Section -->
-<div id="analytics" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Privacy-respecting analytics built in</h2>
-
-  <p class="md:text-xl my-5">
-  It's fun to know how many people are visiting your blog, but dealing with third-party analytics is a hassle.
-  It can be too technical and fiddly, not to mention expensive, plus some providers don't respect your privacy.
-  </p>
-  <p class="md:text-xl my-5">
-  Pagecord Premium customers have privacy-first analytics built in. It looks great and there's no effort required!
-  </p>
-
-  <%= image_tag "home/analytics.webp",
-    alt: "A screenshot of Pagecord's page view analytics page",
-    width: "1600",
-    height: "964" %>
-</div>
-
 <!-- Pricing Section -->
 <div id="pricing" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
   <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Pricing</h2>
 
   <p class="md:text-xl mt-5 mb-8">
-    The blogging basics are free forever. Upgrade any time to get the full monty for only <strong>$<%= localised_price %> per year</strong>. It's the best deal out there.
+    The blogging basics are <strong>free forever</strong>. Upgrade any time to get all the features for only <strong>$<%= localised_price %> per year</strong>. It's the best deal out there.
   </p>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -170,7 +86,7 @@
           <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
           </svg>
-          Unlimited posts
+          Unlimited posts and pages
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -182,7 +98,7 @@
           <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
           </svg>
-          Optional custom home page
+          Custom home pages
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -222,8 +138,7 @@
       <div class="text-center">
         <h3 class="text-2xl font-semibold mb-2">Premium</h3>
         <div class="text-4xl font-bold text-pagecord-accent dark:text-pagecord-accent mb-1">
-          $<%= localised_price %>
-          <span class="text-lg font-normal text-slate-600 dark:text-slate-400">/year</span>
+          $<%= localised_price %><span class="text-lg font-normal text-slate-600 dark:text-slate-400"> / year</span>
         </div>
         <p class="text-slate-600 dark:text-slate-400 mb-6">All the features for an unbeatable price!</p>
 
@@ -245,13 +160,7 @@
           <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
           </svg>
-          Image attachments
-        </li>
-        <li class="flex items-center text-slate-700 dark:text-slate-300">
-          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-          </svg>
-          Email newsletter (100 subscribers)
+          Custom domain
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -263,7 +172,13 @@
           <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
           </svg>
-          Custom domain &amp; avatar
+          Image hosting &amp; avatar
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+          </svg>
+          Email newsletter (100 subscribers)
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -280,6 +195,73 @@
       </ul>
     </div>
   </div>
+</div>
+
+<!-- Post by Email Section -->
+<div id="post-by-email" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Post by Email</h2>
+
+  <p class="md:text-xl my-5">
+  Posting by email is effortless. It's right there on your phone or laptop. It uses a familiar editor with all the <b>formatting</b> <tt>you</tt> <i>need</i>. It lowers the barrier to creating a post, so you'll actually write more!
+  </p>
+
+  <p class="md:text-xl my-5">
+  Click compose, tap out a message, hit send. <a href="https://noodlings.pagecord.com/what-s-so-great-about-posting-by-email" class="font-medium underline">Pagecord does the rest</a>.
+  </p>
+  <%= image_tag "home/gmail-compose.webp",
+        alt: "Screenshot of composing a post in Gmail",
+        width: "1600",
+        height: "967" %>
+</div>
+
+<!-- Inline Editor Section -->
+<div id="post-by-editor" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">A delightful text editor</h2>
+
+  <p class="md:text-xl my-5">
+  If posting by email isn't your thing you can use Pagecord's rich text editor. It supports all your formatting needs, allows
+  you to schedule posts, add tags and more!
+  </p>
+
+  <%= image_tag "home/rich-text-editor.webp",
+    alt: "A screenshot of Pagecord's rich text editor",
+    width: "1600",
+    height: "967" %>
+</div>
+
+<!-- Newsletter Section -->
+<div id="newsletter" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">A weekly email digest of all your posts. Fully automated!</h2>
+
+  <p class="md:text-xl my-5">
+  Premium customers can allow people to subscribe to their blog by email. Each week,
+  Pagecord will create a digest of your recent posts and send it to your subscribers.
+  </p>
+  <p class="md:text-xl my-5">
+  You focus on writing, we handle trhe rest.
+  </p>
+
+  <%= image_tag "home/weekly-digest.webp",
+    alt: "A screenshot of Apple Mail with a weekly digest email",
+    width: "1600",
+    height: "967" %>
+</div>
+
+<!-- Analytics Section -->
+<div id="analytics" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 md:text-start text-3xl md:text-4xl tracking-tight">Privacy-respecting analytics built in</h2>
+
+  <p class="md:text-xl my-5">
+  It's fun to know how many people are visiting your blog, but third-party analytics are fiddly, expensive, and often don't respect privacy.
+  </p>
+  <p class="md:text-xl my-5">
+  Pagecord Premium has simple, privacy-first analytics built in.
+  </p>
+
+  <%= image_tag "home/analytics.webp",
+    alt: "A screenshot of Pagecord's page view analytics page",
+    width: "1600",
+    height: "964" %>
 </div>
 
 <div id="features" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200 ">
@@ -413,8 +395,8 @@
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Image Attachments</div>
-            <div class="hidden sm:block">Attach images to your posts, as email attachments or using the editor 🖼️</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Image Hosting</div>
+            <div class="hidden sm:block">Upload images for your posts, via email attachments or using the editor 🖼️</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
