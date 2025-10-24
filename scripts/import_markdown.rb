@@ -132,10 +132,17 @@ def import_markdown(path, blog_subdomain, assets_root: nil, dry_run: false)
       published_at = Time.current
     end
 
-    # Parse tags
+    # Parse tags - handle multiple formats:
+    # tags: ruby, rails
+    # tags: [ruby rails]
+    # tags: [ruby, rails]
+    # tags: ["ruby", "rails"]
     tag_list = []
     if front_matter['tags']
-      tag_list = front_matter['tags'].split(',').map do |tag|
+      tags_string = front_matter['tags']
+        .gsub(/[\[\]]/, '')      # Remove square brackets
+        .gsub(/["']/, '')        # Remove quotes
+      tag_list = tags_string.split(/[,\s]+/).map do |tag|
         # Clean up the tag: strip whitespace, replace spaces with hyphens, keep only alphanumeric and hyphens
         tag.strip.downcase.gsub(/\s+/, '-').gsub(/[^a-z0-9\-]/, '')
       end.reject(&:empty?)
