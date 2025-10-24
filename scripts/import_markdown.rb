@@ -171,7 +171,7 @@ def import_markdown(path, blog_subdomain, assets_root: nil, dry_run: false)
 
     # Process images and create ActionText content
     begin
-      post.content = process_images_to_actiontext(html_content, assets_root: assets_root)
+      post.content = process_images_to_actiontext(html_content, assets_root: assets_root, dry_run: dry_run)
     rescue => e
       puts "Skipping post due to image processing failure: #{title || File.basename(file_path)} - #{e.message}"
       failed_count += 1

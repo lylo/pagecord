@@ -5,7 +5,7 @@ require "cgi"
 # Shared helper methods for import scripts
 module ImportHelpers
   # Process all img tags in HTML content: download images and create ActionText attachments
-  def process_images_to_actiontext(html_content, assets_root: nil)
+  def process_images_to_actiontext(html_content, assets_root: nil, dry_run: false)
     processed_content = Nokogiri::HTML::DocumentFragment.parse(html_content)
 
     processed_content.css("img").each do |img|
@@ -14,6 +14,19 @@ module ImportHelpers
       next unless image_src
 
       begin
+        # In dry run mode, just verify file exists but don't upload
+        if dry_run
+          if assets_root && image_src.start_with?('/')
+            decoded_src = CGI.unescape(image_src)
+            local_path = File.join(assets_root, decoded_src)
+            unless File.exist?(local_path)
+              raise "Local file not found: #{local_path}"
+            end
+          end
+          # Skip actual processing in dry run
+          next
+        end
+
         # Handle local file paths (starting with /) vs remote URLs
         if assets_root && image_src.start_with?('/')
           # Local file path - resolve relative to assets_root
