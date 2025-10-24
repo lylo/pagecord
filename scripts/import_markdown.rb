@@ -3,14 +3,21 @@ require "open-uri"
 require "nokogiri"
 require_relative "import_helpers"
 
-# Usage: ruby import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--dry-run]
-def import_markdown(path, blog_subdomain, dry_run = false)
+# Usage: ruby import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--assets-root=/path/to/assets] [--dry-run]
+def import_markdown(path, blog_subdomain, assets_root: nil, dry_run: false)
   include ImportHelpers
   # Find the correct blog
   blog = Blog.find_by(subdomain: blog_subdomain)
   unless blog
     puts "Blog not found: #{blog_subdomain}. Exiting..."
     return
+  end
+
+  if assets_root
+    puts "Using assets root: #{assets_root}"
+    unless File.directory?(assets_root)
+      puts "Warning: Assets root directory not found: #{assets_root}"
+    end
   end
 
   # Find all markdown files - handle both single files and directories
@@ -90,19 +97,26 @@ def import_markdown(path, blog_subdomain, dry_run = false)
       end
     end
 
+    # Remove <!--more--> comments (Jekyll excerpt separator)
+    markdown_content = markdown_content.gsub(/<!--\s*more\s*-->/, '')
+
     # Convert markdown to HTML
     html_content = markdown_parser.render(markdown_content)
     parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
 
-    # Find the first non-empty element
-    first_element = parsed_html.children.find { |child| !child.text.strip.empty? }
+    # Extract title from front matter first, then fall back to first H1
+    title = front_matter['title']
+    # Strip surrounding quotes from title if present
+    title = title.gsub(/\A["']|["']\z/, '') if title
 
-    # Extract title from H1 if it's the first element in the HTML, then remove it from the content
-    title = nil
-    if first_element && first_element.name == 'h1'
-      title = first_element.text.strip
-      first_element.remove
-      html_content = parsed_html.to_html
+    # If no title in front matter, try to extract from first H1 in content
+    if title.nil?
+      first_element = parsed_html.children.find { |child| !child.text.strip.empty? }
+      if first_element && first_element.name == 'h1'
+        title = first_element.text.strip
+        first_element.remove
+        html_content = parsed_html.to_html
+      end
     end
 
     # Parse published date
@@ -150,7 +164,7 @@ def import_markdown(path, blog_subdomain, dry_run = false)
 
     # Process images and create ActionText content
     begin
-      post.content = process_images_to_actiontext(html_content)
+      post.content = process_images_to_actiontext(html_content, assets_root: assets_root)
     rescue => e
       puts "Skipping post due to image processing failure: #{title || File.basename(file_path)} - #{e.message}"
       failed_count += 1
@@ -197,21 +211,35 @@ end
 
 # Run the script if executed directly
 if __FILE__ == $PROGRAM_NAME
-  if ARGV.length < 2 || ARGV.length > 3
-    puts "Usage: bundle exec rails runner import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--dry-run]"
+  if ARGV.length < 2
+    puts "Usage: bundle exec rails runner import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--assets-root=/path/to/assets] [--dry-run]"
     puts "Examples:"
     puts "  bundle exec rails runner import_markdown.rb ./markdown_posts myblog"
     puts "  bundle exec rails runner import_markdown.rb ./single_post.md myblog --dry-run"
+    puts "  bundle exec rails runner import_markdown.rb ~/dev/mysite/_posts myblog --assets-root=~/dev/mysite"
     return
   end
 
   path = ARGV[0]
   blog_subdomain = ARGV[1]
-  dry_run = ARGV[2] == '--dry-run'
+
+  # Parse optional flags
+  dry_run = false
+  assets_root = nil
+
+  ARGV[2..-1]&.each do |arg|
+    if arg == '--dry-run'
+      dry_run = true
+    elsif arg.start_with?('--assets-root=')
+      assets_root = arg.split('=', 2)[1]
+      # Expand ~ to home directory
+      assets_root = File.expand_path(assets_root) if assets_root
+    end
+  end
 
   if dry_run
     puts "=== DRY RUN MODE - No posts will be created ==="
   end
 
-  import_markdown(path, blog_subdomain, dry_run)
+  import_markdown(path, blog_subdomain, assets_root: assets_root, dry_run: dry_run)
 end

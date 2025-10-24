@@ -5,7 +5,7 @@ require "cgi"
 # Shared helper methods for import scripts
 module ImportHelpers
   # Process all img tags in HTML content: download images and create ActionText attachments
-  def process_images_to_actiontext(html_content)
+  def process_images_to_actiontext(html_content, assets_root: nil)
     processed_content = Nokogiri::HTML::DocumentFragment.parse(html_content)
 
     processed_content.css("img").each do |img|
@@ -14,13 +14,26 @@ module ImportHelpers
       next unless image_src
 
       begin
-        # Download the image with timeouts
-        file = URI.open(image_src,
-          open_timeout: 10,    # 10 seconds to establish connection
-          read_timeout: 30     # 30 seconds to read the response
-        )
-        filename = File.basename(URI.parse(image_src).path)
-        filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
+        # Handle local file paths (starting with /) vs remote URLs
+        if assets_root && image_src.start_with?('/')
+          # Local file path - resolve relative to assets_root
+          # Decode URL-encoded characters (e.g., %20 -> space)
+          decoded_src = CGI.unescape(image_src)
+          local_path = File.join(assets_root, decoded_src)
+          unless File.exist?(local_path)
+            raise "Local file not found: #{local_path}"
+          end
+          file = File.open(local_path)
+          filename = File.basename(local_path)
+        else
+          # Remote URL - download with timeouts
+          file = URI.open(image_src,
+            open_timeout: 10,    # 10 seconds to establish connection
+            read_timeout: 30     # 30 seconds to read the response
+          )
+          filename = File.basename(URI.parse(image_src).path)
+          filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
+        end
 
         # Create blob
         blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
@@ -36,13 +49,32 @@ module ImportHelpers
           url: url
         }
 
-        # Add caption if alt text exists
-        if alt_text && !alt_text.empty?
-          trix_attributes[:caption] = alt_text
+        # Check if img is inside a figure with figcaption
+        parent_figure = img.ancestors('figure').first
+        caption_text = nil
+
+        if parent_figure
+          # Extract caption from figcaption if it exists
+          figcaption = parent_figure.at_css('figcaption')
+          caption_text = figcaption&.text&.strip
+        end
+
+        # Use figcaption if available, otherwise fall back to alt text
+        caption_text = alt_text if caption_text.nil? || caption_text.empty?
+
+        # Add caption if it exists
+        if caption_text && !caption_text.empty?
+          trix_attributes[:caption] = caption_text
         end
 
         attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
-        img.replace(attachment_node)
+
+        # If inside a figure, replace the entire figure; otherwise just replace the img
+        if parent_figure
+          parent_figure.replace(attachment_node)
+        else
+          img.replace(attachment_node)
+        end
       rescue => e
         raise "Failed to process image #{image_src}: #{e.message}"
       end
