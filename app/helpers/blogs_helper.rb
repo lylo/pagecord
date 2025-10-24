@@ -34,11 +34,9 @@ module BlogsHelper
   end
 
   def blog_title(blog)
-    if blog.custom_title?
-      blog.title
-    else
-      "Posts from @#{blog.subdomain}"
-    end
+    return blog.seo_title if blog.seo_title.present?
+    return blog.title if blog.custom_title?
+    "Posts from @#{blog.subdomain}"
   end
 
   def meta_description
