@@ -76,6 +76,16 @@
   </div>
 
   <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">SEO Blog Title</h3>
+    <p>
+      By default your blog name is used in the HTML title for search engines and social sharing. You can override this by entering a different title below.
+    </p>
+
+    <%= styled_text_field(form, :seo_title, placeholder: "e.g. #{@blog.display_name} - Personal Blog", class: "mt-4 md:w-full") %>
+    <%= field_error(@blog, :seo_title) %>
+  </div>
+
+  <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Fediverse Author Attribution</h3>
     <p>
       To allow your Pagecord posts to be attributed to you when shared on Mastodon (or any other Fediverse platform), enter your

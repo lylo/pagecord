@@ -32,6 +32,7 @@ class App::Settings::BlogsController < AppController
         :fediverse_author_attribution,
         :allow_search_indexing,
         :google_site_verification,
+        :seo_title,
         :locale
       ]
 
