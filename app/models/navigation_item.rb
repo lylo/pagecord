@@ -8,7 +8,7 @@ class NavigationItem < ApplicationRecord
   after_destroy :compact_positions
 
   scope :ordered, -> { order(:position, :id) }
-  scope :social_links, -> { where(type: "SocialNavigationItem") }
+  scope :social, -> { where(type: "SocialNavigationItem") }
 
   def link_url
     raise NotImplementedError, "Subclass must implement link_url"

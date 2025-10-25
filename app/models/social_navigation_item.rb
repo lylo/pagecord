@@ -8,6 +8,8 @@ class SocialNavigationItem < NavigationItem
 
   before_validation :set_label_from_platform, if: -> { platform.present? && label.blank? }
 
+  scope :mastodon, -> { where(platform: "Mastodon") }
+
   def link_url
     email? ? "mailto:#{url}" : url
   end

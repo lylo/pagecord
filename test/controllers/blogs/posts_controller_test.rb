@@ -450,10 +450,22 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end
 
-  test "should include rel='me' link if Maston social link is present" do
+  test "should include rel='me' link if Mastodon social navigation item is present" do
+    mastodon_link = SocialNavigationItem.create!(
+      blog: @blog,
+      platform: "Mastodon",
+      url: "https://mas.to/@joel_on_pagecord"
+    )
+
     get blog_posts_path
 
-    assert_select "link[rel=\"me\"][href=\"#{@blog.social_links.mastodon.first.url}\"]"
+    assert_select "link[rel=\"me\"][href=\"#{mastodon_link.url}\"]"
+  end
+
+  test "should not include rel='me' link if Mastodon social navigation item is not present" do
+    get blog_posts_path
+
+    assert_select "link[rel=\"me\"]", count: 0
   end
 
   test "should render avatar favicon when blog has an avatar" do

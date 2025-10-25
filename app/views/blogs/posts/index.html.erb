@@ -1,6 +1,7 @@
-<% if @blog.social_links.mastodon.any? %>
+<% mastodon_link = @blog.social_navigation_items.mastodon.first %>
+<% if mastodon_link.present? %>
   <%= content_for :fediverse do %>
-    <link href="<%= @blog.social_links.mastodon.first.url %>" rel="me">
+    <link href="<%= mastodon_link.url %>" rel="me">
   <% end %>
 <% end %>
 
