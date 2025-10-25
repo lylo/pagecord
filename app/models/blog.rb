@@ -12,9 +12,6 @@ class Blog < ApplicationRecord
 
   has_many :sender_email_addresses, dependent: :destroy
 
-  has_many :social_links, dependent: :destroy
-  accepts_nested_attributes_for :social_links, allow_destroy: true
-
   has_many :navigation_items, dependent: :destroy
   has_many :social_navigation_items, -> { where(type: "SocialNavigationItem") }, class_name: "SocialNavigationItem", foreign_key: :blog_id
 

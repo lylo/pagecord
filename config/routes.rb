@@ -115,7 +115,6 @@ Rails.application.routes.draw do
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
       resources :navigation_items, only: [ :index, :create, :update, :destroy ]
-      resource :social_links, only: [ :update ]
       resources :email_subscribers, only: [ :index ]
       resources :email_change_requests, only: [ :create, :destroy ] do
         member do
@@ -144,8 +143,6 @@ Rails.application.routes.draw do
 
     resources :blogs do
       resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
-
-      resources :social_links, only: [ :new ], controller: "blogs/social_links"
 
       post :follow, to: "followings#create"
       delete :unfollow, to: "followings#destroy"

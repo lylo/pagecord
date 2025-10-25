@@ -94,42 +94,6 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_not non_subscribed_blog.reload.avatar.attached?
   end
 
-  test "should add a new social link for valid platform" do
-    assert_difference -> { @blog.social_links.count }, 1 do
-      patch app_settings_appearance_url(@blog), params: {
-          blog: {
-            social_links_attributes: {
-              "#{Time.current.to_i}": { platform: "X", url: "https://x.com/whatever" }
-            }
-          }
-        }, as: :turbo_stream
-    end
-  end
-
-  test "should not add a new social link for invalid platform" do
-    assert_no_difference -> { @blog.social_links.count } do
-      patch app_settings_appearance_url(@blog), params: {
-          blog: {
-            social_links_attributes: {
-              "#{Time.current.to_i}": { platform: "pagecord", url: "https://pagecord.com/whatever" }
-            }
-          }
-        }, as: :turbo_stream
-    end
-  end
-
-  test "should delete an existing social link" do
-    assert_difference -> { @blog.social_links.count }, -1 do
-      patch app_settings_appearance_url(@blog), params: {
-          blog: {
-            social_links_attributes: {
-              "0": { "_destroy": true, id: @blog.social_links.first.id }
-            }
-          }
-        }, as: :turbo_stream
-    end
-  end
-
   test "should show custom css section if feature is enabled" do
     @blog.update(features: [ "custom_css" ])
 

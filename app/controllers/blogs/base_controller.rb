@@ -18,10 +18,10 @@ class Blogs::BaseController < ApplicationController
       @blog ||= if custom_domain_request?
         blog_from_custom_domain
       elsif request.subdomain.present? && request.subdomain != "www"
-        Blog.includes(:social_links, :avatar_attachment).find_by(subdomain: request.subdomain)
+        Blog.includes(:avatar_attachment).find_by(subdomain: request.subdomain)
       else
         if blog_params[:subdomain].present?
-          Blog.includes(:social_links, :avatar_attachment).find_by(subdomain: blog_params[:subdomain])
+          Blog.includes(:avatar_attachment).find_by(subdomain: blog_params[:subdomain])
         end
       end
 

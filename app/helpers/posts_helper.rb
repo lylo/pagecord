@@ -29,18 +29,6 @@ module PostsHelper
     end
   end
 
-  # Returns the URL of the social link to avoid Brakeman warning
-  # This is fine since the URL is sanitized by the SocialLink model
-  def social_link_url(social_link)
-    # Hack to allow people to link to their own contact form and get
-    # an email social link icon
-    if social_link.email? && !social_link.url.starts_with?("http")
-      "mailto:#{social_link.url}"
-    else
-      social_link.url
-    end
-  end
-
   # Returns the URL of the navigation item to avoid Brakeman warning
   def navigation_item_url(item)
     item.link_url
