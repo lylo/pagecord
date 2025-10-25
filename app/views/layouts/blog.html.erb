@@ -32,7 +32,9 @@
     <% end %>
 
     <%= render "layouts/structured_data" %>
+
     <%= render "layouts/fediverse_identity" %>
+    <%= yield :fediverse %>
 
     <link rel="canonical" href="<%= canonical_url %>" />
 
