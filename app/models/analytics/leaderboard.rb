@@ -59,7 +59,8 @@ class Analytics::Leaderboard < Analytics::Base
         post_id = item[:post_id]
 
         if post_id.nil?
-          item.merge(post_title: "Home Page", post: nil)
+          title = Current.blog&.has_custom_home_page? ? "Blog Home" : "Home Page"
+          item.merge(post_title: title, post: nil)
         else
           post = posts_by_id[post_id]
           item.merge(
