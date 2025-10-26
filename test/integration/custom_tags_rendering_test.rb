@@ -71,6 +71,20 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "body", text: /photography/
     assert_select "body", text: /technology/
+    assert_select "ul.tag-list"
+  end
+
+  test "renders tags with inline style" do
+    page = @blog.pages.create!(title: "Tags Inline", content: "{{ tags | style: inline }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "span.tags-inline"
+    assert_select "body", text: /photography/
+    assert_select "body", text: /technology/
+    # Should not render as a list when inline
+    assert_select "ul.tag-list", count: 0
   end
 
   test "tag_list only shows tags from visible posts" do

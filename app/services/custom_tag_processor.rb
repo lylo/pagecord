@@ -63,8 +63,10 @@ class CustomTagProcessor
     end
 
     def render_tags_tag(params_string)
+      params = parse_params(params_string)
       tags = blog.posts.visible.all_tags
-      view.render(partial: "blogs/custom_tags/tags", locals: { tags: tags, blog: blog })
+      partial = params[:style] == "inline" ? "blogs/custom_tags/tags_inline" : "blogs/custom_tags/tags"
+      view.render(partial: partial, locals: { tags: tags, blog: blog })
     end
 
     def render_email_subscription_tag(params_string)

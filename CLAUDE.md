@@ -252,7 +252,8 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
   - `{{ posts_by_year }}` - Groups all posts by year with headers
   - `{{ posts_by_year tag: ruby }}` - Filter by tag
 - **Tags tag**:
-  - `{{ tags }}` - Outputs comma-separated list of all tags
+  - `{{ tags }}` - Outputs tags as a `<ul>` list (default)
+  - `{{ tags style: inline }}` - Outputs tags as comma-separated inline links
 - **Email subscription tag**:
   - `{{ email_subscription }}` - Embeds email subscription form
 - **Implementation**:

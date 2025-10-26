@@ -1,0 +1,3 @@
+<% if tags.any? %>
+<span class="tags-inline"><%- tags.each_with_index do |tag, index| -%><%= link_to tag, blog_posts_list_path(tag: tag) %><%= ", " unless index == tags.size - 1 %><%- end -%></span>
+<% end %>
