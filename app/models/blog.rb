@@ -31,7 +31,7 @@ class Blog < ApplicationRecord
   validate :bio_length
 
   before_validation :downcase_subdomain
-  after_commit :generate_default_og_image, on: [:create, :update], if: -> { saved_change_to_subdomain? || saved_change_to_title? || saved_change_to_theme? }
+  after_commit :generate_default_og_image, on: [ :create, :update ], if: -> { saved_change_to_subdomain? || saved_change_to_title? || saved_change_to_theme? }
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
