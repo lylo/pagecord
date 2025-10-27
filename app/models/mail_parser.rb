@@ -92,12 +92,21 @@ class MailParser
     end
 
     def parse_multipart_body
-      if @mail.html_part
-        html_content = collect_html_content
-        html_transform(html_content) + append_unreferenced_attachments(html_content)
-      elsif @mail.text_part
-        text_content = plain_text_transform(@mail.text_part.decoded)
-        text_content + append_unreferenced_attachments(text_content)
+      # Handle different multipart structures:
+      # - multipart/mixed: Attachments interspersed with content (text → image → text)
+      #   Must process all parts sequentially since @mail.text_part only returns first part
+      # - multipart/alternative: Multiple representations (HTML + plain text), prefer HTML
+      # - multipart/related: HTML with inline images referenced by Content-ID
+
+      case
+      when @mail.mime_type == "multipart/mixed"
+        parse_mixed_parts
+      when @mail.html_part
+        html = collect_html_content
+        html_transform(html) + append_unreferenced_attachments(html)
+      when @mail.text_part
+        text = plain_text_transform(@mail.text_part.decoded)
+        text + append_unreferenced_attachments(text)
       else
         parse_mixed_parts
       end
@@ -112,14 +121,14 @@ class MailParser
     end
 
     def parse_mixed_parts
-      @mail.parts.map do |part|
+      @mail.parts.filter_map do |part|
         if part.text?
           plain_text_transform(part.decoded)
         elsif part.attachment? && media_attachment?(part)
           attachment = find_attachment_from_part(part)
           process_attachment(attachment) if attachment
         end
-      end.compact.join("\n")
+      end.join("\n")
     end
 
     # Collects HTML content from the email

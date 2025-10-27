@@ -146,6 +146,19 @@ class MailParserTest < ActiveSupport::TestCase
     assert_equal [ "image1.jpg", "image2.png" ], filenames
   end
 
+  test "should handle multipart/mixed with text-image-text structure" do
+    # This tests the bug where content after an image was being stripped
+    # Email structure: text/plain → image/jpeg → text/plain
+    mail = Mail.read(fixture_path("text_image_text.eml"))
+    parser = MailParser.new(mail, process_attachments: false)
+
+    # Should include content from BOTH text parts
+    assert_includes parser.body, "Fancy a change from apple cake", "Should include intro text before image"
+    assert_includes parser.body, "Place two oranges in a saucepan", "Should include content after image"
+    assert_includes parser.body, "served this warm", "Should include closing text after image"
+    assert_equal [ "cooking" ], parser.tags, "Should extract tag from content after image"
+  end
+
   # ========================================
   # Edge Cases and Error Handling
   # ========================================

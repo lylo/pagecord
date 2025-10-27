@@ -1,0 +1,27 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: Test text-image-text structure
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary-text-image-text"
+
+--boundary-text-image-text
+Content-Type: text/plain; charset="utf-8"
+
+Fancy a change from apple cake? Orange and almond bake could be just the thing.
+--boundary-text-image-text
+Content-Type: image/jpeg; name="image.jpg"
+Content-Disposition: inline; filename="image.jpg"
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRg==
+--boundary-text-image-text
+Content-Type: text/plain; charset="utf-8"
+
+Place two oranges in a saucepan of boiling water and simmer for about an hour.
+
+Mix all ingredients together and bake at 180 degrees for 30 minutes.
+
+I served this warm with a dollop of cream. It is lovely and moist.
+
+#cooking
+--boundary-text-image-text--
