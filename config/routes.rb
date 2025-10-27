@@ -179,6 +179,9 @@ Rails.application.routes.draw do
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")
 
+    # Social preview images
+    get "/social_previews/:post_token.png", to: "social_previews#show", as: :social_preview
+
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 
     namespace :api do
