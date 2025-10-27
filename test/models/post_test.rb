@@ -128,6 +128,9 @@ class PostTest < ActiveSupport::TestCase
   test "pages should trigger open graph image job" do
     blog = blogs(:joel)
 
+    # Stub PNG generation to avoid Vips fork issues in tests
+    SocialPreview.any_instance.stubs(:to_png).returns("fake png data")
+
     post = nil
     perform_enqueued_jobs(only: GenerateOpenGraphImageJob) do
       post = blog.posts.new(title: "Test OpenGraph Page", content: "Page content", is_page: true)

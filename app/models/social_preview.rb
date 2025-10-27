@@ -5,7 +5,9 @@ class SocialPreview
   end
 
   def to_png
-    MiniMagick::Image.read(to_svg, ".svg").tap { _1.format("png") }.to_blob
+    # Use Vips directly to convert SVG string to PNG without temp file
+    image = Vips::Image.new_from_buffer(to_svg, "")
+    image.write_to_buffer(".png")
   end
 
   def to_svg
