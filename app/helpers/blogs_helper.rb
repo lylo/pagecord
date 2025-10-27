@@ -50,6 +50,10 @@ module BlogsHelper
   def canonical_url
     if @post.present? && @post.canonical_url.present?
       @post.canonical_url
+    elsif @post.present?
+      post_url(@post)
+    elsif @blog.present?
+      blog_home_url(@blog)
     else
       request&.original_url
     end

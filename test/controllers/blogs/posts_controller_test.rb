@@ -233,7 +233,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
 
-    get "/feed/"
+    get "/feed"
 
     assert_response :success
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
@@ -417,6 +417,37 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "link[rel=canonical][href=?]", "https://myblog.net"
+  end
+
+  test "should redirect trailing slash on post URL to non-trailing slash version" do
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}/"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{post.slug}"
+    assert_equal 301, @response.status
+  end
+
+  test "should redirect trailing slash on /posts to non-trailing slash version" do
+    get "/posts/"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/posts"
+    assert_equal 301, @response.status
+  end
+
+  test "should preserve query strings when redirecting trailing slash" do
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}/?utm_source=feed&utm_medium=rss"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{post.slug}?utm_source=feed&utm_medium=rss"
+    assert_equal 301, @response.status
+  end
+
+  test "should not redirect trailing slash on root path" do
+    get "/"
+
+    assert_response :success
   end
 
   test "should initially prevent free blogs from being indexed" do
