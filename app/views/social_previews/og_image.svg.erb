@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
     <clipPath id="circle-clip">
-      <circle cx="<%= layout[:favicon_center_x] %>" cy="<%= layout[:favicon_center_y] %>" r="48"/>
+      <circle cx="<%= layout[:favicon_center_x] %>" cy="<%= layout[:favicon_center_y] %>" r="<%= layout[:favicon_size] / 2.0 %>"/>
     </clipPath>
   </defs>
 
@@ -18,26 +18,30 @@
            clip-path="url(#circle-clip)" />
   <% end %>
 
-  <!-- Title -->
-  <% title_lines.each_with_index do |line, i| %>
-    <text x="<%= layout[:padding] %>"
-          y="<%= layout[:title_y] + (i * layout[:title_line_height]) %>"
-          font-size="72"
-          font-weight="700"
-          font-family="<%= font_family %>"
-          fill="<%= theme_colors[:text] %>"
-          letter-spacing="-0.02em">
-      <%= h(line) %>
-    </text>
+  <% if central_text_lines&.any? %>
+    <!-- Central text (post title or blog name) -->
+    <% central_text_lines.each_with_index do |line, i| %>
+      <text x="<%= layout[:padding] %>"
+            y="<%= layout[:title_y] + (i * layout[:title_line_height]) %>"
+            font-size="72"
+            font-weight="700"
+            font-family="<%= font_family %>"
+            fill="<%= theme_colors[:text] %>"
+            letter-spacing="-0.02em">
+        <%= h(line) %>
+      </text>
+    <% end %>
   <% end %>
 
-  <!-- Blog name -->
-  <text x="<%= layout[:padding] %>"
-        y="<%= layout[:blog_name_y] %>"
-        font-size="56"
-        font-weight="500"
-        font-family="<%= font_family %>"
-        fill="<%= theme_colors[:accent] %>">
-    <%= h(blog.display_name) %>
-  </text>
+  <% if post %>
+    <!-- Blog name (posts only) -->
+    <text x="<%= layout[:padding] %>"
+          y="<%= layout[:blog_name_y] %>"
+          font-size="<%= layout[:blog_name_font_size] %>"
+          font-weight="500"
+          font-family="<%= font_family %>"
+          fill="<%= theme_colors[:accent] %>">
+      <%= h(blog.display_name) %>
+    </text>
+  <% end %>
 </svg>

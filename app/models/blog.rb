@@ -21,6 +21,8 @@ class Blog < ApplicationRecord
   has_many :exports, class_name: "Blog::Export", dependent: :destroy
   has_many :page_views, dependent: :destroy
 
+  has_one :open_graph_image, as: :imageable, dependent: :destroy
+
   has_one_attached :avatar do |attachable|
     attachable.variant :thumb, resize_to_limit: [ 300, 300 ]
   end
@@ -29,6 +31,7 @@ class Blog < ApplicationRecord
   validate :bio_length
 
   before_validation :downcase_subdomain
+  after_commit :generate_default_og_image, on: [:create, :update], if: -> { saved_change_to_subdomain? || saved_change_to_title? || saved_change_to_theme? }
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
@@ -44,6 +47,14 @@ class Blog < ApplicationRecord
 
   def display_name
     title.blank? ? "@#{subdomain}" : title
+  end
+
+  def og_image_filename
+    "og-blog-#{subdomain}.png"
+  end
+
+  def should_generate_og_image?
+    true
   end
 
   private
@@ -65,6 +76,16 @@ class Blog < ApplicationRecord
 
       if Subdomain.reserved?(subdomain)
         errors.add(:subdomain, "is reserved")
+      end
+    end
+
+    def generate_default_og_image
+      return if Rails.env.test? && !@enable_open_graph_image_generation
+
+      if Rails.env.production?
+        GenerateOpenGraphImageJob.perform_later("Blog", id)
+      else
+        GenerateOpenGraphImageJob.perform_now("Blog", id)
       end
     end
 end

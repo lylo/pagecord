@@ -180,6 +180,7 @@ Rails.application.routes.draw do
     get "/:name.rss", to: redirect("/feed.xml")
 
     get "/og/:post_token.png", to: "open_graph_images#show", as: :open_graph_image
+    get "/og/blog.png", to: "open_graph_images#blog", as: :blog_open_graph_image
 
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 

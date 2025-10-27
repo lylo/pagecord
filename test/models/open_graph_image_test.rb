@@ -5,9 +5,9 @@ class OpenGraphImageTest < ActiveSupport::TestCase
     @post = posts(:one)
   end
 
-  test "belongs to post" do
-    og_image = OpenGraphImage.new(post: @post)
-    assert_equal @post, og_image.post
+  test "belongs to imageable (post)" do
+    og_image = OpenGraphImage.new(imageable: @post)
+    assert_equal @post, og_image.imageable
   end
 
   test "can attach an image" do

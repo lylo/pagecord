@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_27_160615) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_27_170440) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -185,9 +185,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_27_160615) do
 
   create_table "open_graph_images", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "post_id", null: false
+    t.bigint "imageable_id", null: false
+    t.string "imageable_type", null: false
     t.datetime "updated_at", null: false
-    t.index ["post_id"], name: "index_open_graph_images_on_post_id"
+    t.index ["imageable_type", "imageable_id"], name: "index_open_graph_images_on_imageable"
   end
 
   create_table "paddle_events", force: :cascade do |t|
@@ -381,7 +382,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_27_160615) do
   add_foreign_key "email_subscribers", "blogs"
   add_foreign_key "navigation_items", "blogs"
   add_foreign_key "navigation_items", "posts"
-  add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
   add_foreign_key "page_views", "blogs"
   add_foreign_key "page_views", "posts"

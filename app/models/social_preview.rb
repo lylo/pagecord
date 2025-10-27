@@ -1,7 +1,8 @@
 class SocialPreview
-  def initialize(post)
-    @post = post
-    @blog = post.blog
+  def initialize(imageable)
+    @imageable = imageable
+    @blog = imageable.respond_to?(:blog) ? imageable.blog : imageable
+    @post = imageable.respond_to?(:blog) ? imageable : nil
   end
 
   def to_png
@@ -25,7 +26,7 @@ class SocialPreview
     {
       post: @post,
       blog: @blog,
-      title_lines: wrap_title,
+      central_text_lines: central_text_lines,
       favicon_data_uri: favicon_data_uri,
       font_family: font_family,
       theme_colors: theme_colors,
@@ -33,9 +34,19 @@ class SocialPreview
     }
   end
 
-  def wrap_title
+  def central_text_lines
+    if @post
+      # For posts, wrap the title into multiple lines
+      wrap_text(@post.display_title)
+    else
+      # For blogs, just show the blog name as a single line
+      [ @blog.display_name ]
+    end
+  end
+
+  def wrap_text(text)
     max_chars = { "mono" => 20, "serif" => 28 }.fetch(@blog.font, 30)
-    words = @post.display_title.split
+    words = text.split
     lines = [ [] ]
     words.each do |word|
       test = (lines.last + [ word ]).join(" ")
@@ -86,8 +97,13 @@ class SocialPreview
     blog_name_font_size = 56
     canvas_height = 630
 
-    title_height = wrap_title.size * title_line_height
-    total = favicon_size + title_height + blog_name_font_size
+    # Calculate central text height
+    text_lines = central_text_lines
+    title_height = text_lines.size * title_line_height
+
+    # For posts: favicon + title + blog name at bottom
+    # For blogs: favicon + blog name (no bottom text)
+    total = favicon_size + title_height + (@post ? blog_name_font_size : 0)
     gap = (canvas_height - total) / 4.0
 
     {
@@ -98,7 +114,8 @@ class SocialPreview
       favicon_size: favicon_size,
       title_y: gap + favicon_size + gap * 0.7 + 72,
       title_line_height: title_line_height,
-      blog_name_y: canvas_height - gap
+      blog_name_y: canvas_height - gap,
+      blog_name_font_size: blog_name_font_size
     }
   end
 end

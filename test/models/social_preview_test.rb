@@ -62,7 +62,7 @@ class SocialPreviewTest < ActiveSupport::TestCase
   test "limits title to 3 lines maximum" do
     @post.update!(title: "A " * 100) # Very long title
     preview = SocialPreview.new(@post)
-    lines = preview.send(:wrap_title)
+    lines = preview.send(:wrap_text, @post.display_title)
 
     assert_operator lines.length, :<=, 3
   end

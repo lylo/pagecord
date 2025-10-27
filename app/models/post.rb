@@ -6,7 +6,7 @@ class Post < ApplicationRecord
   has_rich_text :content
   has_many_attached :attachments, dependent: :destroy
 
-  has_one :open_graph_image, dependent: :destroy
+  has_one :open_graph_image, as: :imageable, dependent: :destroy
   has_many :digest_posts, dependent: :destroy
   has_many :post_digests, through: :digest_posts
   has_many :replies, class_name: "Post::Reply", dependent: :destroy
@@ -104,6 +104,14 @@ class Post < ApplicationRecord
     (blog.home_page_id.present? && blog.home_page_id == id) || is_home_page
   end
 
+  def og_image_filename
+    "og-preview-#{token}.png"
+  end
+
+  def should_generate_og_image?
+    first_image.blank?
+  end
+
   def first_image
     @first_image ||= begin
       if content_image_attachments.any?
@@ -156,9 +164,9 @@ class Post < ApplicationRecord
       return unless saved_change_to_title? || saved_change_to_text_summary?
 
       if Rails.env.production?
-        GenerateOpenGraphImageJob.perform_later(id)
+        GenerateOpenGraphImageJob.perform_later("Post", id)
       else
-        GenerateOpenGraphImageJob.perform_now(id)
+        GenerateOpenGraphImageJob.perform_now("Post", id)
       end
     end
 

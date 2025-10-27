@@ -8,6 +8,8 @@ module BlogsHelper
       open_graph_image_url_for(@post)
     elsif @post && @post.first_image.present?
       resized_image_url @post.first_image, width: 1200, height: 630, crop: true
+    elsif @blog&.open_graph_image&.image&.attached?
+      blog_open_graph_image_url
     end
   end
 

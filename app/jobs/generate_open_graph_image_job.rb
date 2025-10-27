@@ -1,25 +1,24 @@
 class GenerateOpenGraphImageJob < ApplicationJob
   queue_as :default
 
-  def perform(post_id)
-    post = Post.find_by(id: post_id)
-    return unless post
-    return if post.first_image.present?
+  def perform(imageable_type, imageable_id)
+    imageable = imageable_type.constantize.find_by(id: imageable_id)
+    return unless imageable
+    return unless imageable.should_generate_og_image?
 
-    preview = SocialPreview.new(post)
-    og_image = post.open_graph_image || post.create_open_graph_image!
+    preview = SocialPreview.new(imageable)
+    og_image = imageable.open_graph_image || imageable.create_open_graph_image!
     og_image.image.purge if og_image.image.attached?
 
-    # Attach new PNG image generated frm the SVG preview
     og_image.image.attach(
       io: StringIO.new(preview.to_png),
-      filename: "og-preview-#{post.token}.png",
+      filename: imageable.og_image_filename,
       content_type: "image/png"
     )
 
-    Rails.logger.info("Generated social preview for post #{post.id}")
+    Rails.logger.info("Generated social preview for #{imageable_type} #{imageable.id}")
   rescue => e
-    Rails.logger.error("Failed to generate OG image for post #{post_id}: #{e.message}")
+    Rails.logger.error("Failed to generate OG image for #{imageable_type} #{imageable_id}: #{e.message}")
     raise
   end
 end
