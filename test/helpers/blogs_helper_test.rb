@@ -2,6 +2,7 @@ require "test_helper"
 
 class BlogsHelperTest < ActionView::TestCase
   include BlogsHelper
+  include RoutingHelper
 
   test "blog title" do
     blog = blogs(:joel)
@@ -52,10 +53,20 @@ class BlogsHelperTest < ActionView::TestCase
 
   test "open_graph_image with open graph image present" do
     @post = posts(:one)
-    open_graph_image = OpenGraphImage.new(url: "https://example.com/og-image.jpg")
-    @post.stubs(:open_graph_image).returns(open_graph_image)
+    @blog = @post.blog
 
-    assert_equal "https://example.com/og-image.jpg", open_graph_image_helper
+    # Create a real OG image with attachment
+    og_image = @post.create_open_graph_image!
+    og_image.image.attach(
+      io: StringIO.new("fake png data"),
+      filename: "og-preview.png",
+      content_type: "image/png"
+    )
+
+    result = open_graph_image_helper
+
+    # Should generate URL with correct path
+    assert_includes result, "/og/#{@post.token}.png"
   end
 
   test "open_graph_image with first image fallback" do

@@ -33,7 +33,7 @@ class Post < ApplicationRecord
         ]
       )
     }
-  after_create :detect_open_graph_image
+  after_commit :generate_open_graph_image, on: [ :create, :update ]
 
   def content_present
     has_content = content.body.present? && content.body.to_plain_text.strip.present?
@@ -148,7 +148,13 @@ class Post < ApplicationRecord
       end
     end
 
-    def detect_open_graph_image
+    def generate_open_graph_image
+      # Skip in test mode unless explicitly enabled for performance
+      return if Rails.env.test? && !@enable_open_graph_image_generation
+
+      return if attachments.any? || content_image_attachments.any?
+      return unless saved_change_to_title? || saved_change_to_text_summary?
+
       if Rails.env.production?
         GenerateOpenGraphImageJob.perform_later(id)
       else

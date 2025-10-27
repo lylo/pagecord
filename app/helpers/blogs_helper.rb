@@ -4,15 +4,10 @@ module BlogsHelper
   end
 
   def open_graph_image
-    if @post && @post.open_graph_image.present?
-      @post.open_graph_image.url
+    if @post && @post.open_graph_image&.image&.attached?
+      open_graph_image_url_for(@post)
     elsif @post && @post.first_image.present?
       resized_image_url @post.first_image, width: 1200, height: 630, crop: true
-    elsif @post
-      # Generate text-based OG image on-the-fly
-      blog = @post.blog
-      host = blog.custom_domain.presence || "#{blog.subdomain}.#{Rails.configuration.x.domain}"
-      social_preview_url(@post.token, host: host, protocol: request.protocol)
     end
   end
 

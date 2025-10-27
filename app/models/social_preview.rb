@@ -13,7 +13,7 @@ class SocialPreview
       template: "social_previews/og_image",
       locals: view_assigns,
       layout: false,
-      formats: [:svg]
+      formats: [ :svg ]
     )
   end
 
@@ -32,13 +32,13 @@ class SocialPreview
   end
 
   def wrap_title
-    max_chars = { "mono" => 25, "serif" => 32 }.fetch(@blog.font, 35)
+    max_chars = { "mono" => 20, "serif" => 28 }.fetch(@blog.font, 30)
     words = @post.display_title.split
-    lines = [[]]
+    lines = [ [] ]
     words.each do |word|
-      test = (lines.last + [word]).join(" ")
+      test = (lines.last + [ word ]).join(" ")
       if test.length > max_chars && lines.last.any?
-        lines << [word]
+        lines << [ word ]
       else
         lines.last << word
       end

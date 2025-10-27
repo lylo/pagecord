@@ -27,7 +27,7 @@
           font-family="<%= font_family %>"
           fill="<%= theme_colors[:text] %>"
           letter-spacing="-0.02em">
-      <%= CGI.escapeHTML(line) %>
+      <%= h(line) %>
     </text>
   <% end %>
 
@@ -38,6 +38,6 @@
         font-weight="500"
         font-family="<%= font_family %>"
         fill="<%= theme_colors[:accent] %>">
-    <%= CGI.escapeHTML(blog.display_name) %>
+    <%= h(blog.display_name) %>
   </text>
 </svg>
