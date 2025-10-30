@@ -64,6 +64,25 @@ class MailParserTest < ActiveSupport::TestCase
     assert_includes parser.body, "#ruby today"  # This hashtag should remain
   end
 
+  test "should extract tags from multipart/mixed email with video attachment" do
+    mail = Mail.read(fixture_path("multipart_mixed_with_tags.eml"))
+    parser = MailParser.new(mail)
+
+    # Tags should be extracted even when email has attachments
+    assert_equal [ "nplusplus" ], parser.tags,
+      "Tags should be extracted from multipart/alternative inside multipart/mixed"
+
+    # Tags should be removed from the body
+    content_text = ActionText::RichText.new(body: parser.body).to_plain_text
+    assert_not_includes content_text, "#nplusplus",
+      "Extracted tags should be removed from content"
+
+    # Video attachment should be processed
+    assert parser.has_attachments?, "Should detect video attachment"
+    assert_equal 1, parser.attachments.size
+    assert_equal "test-video.mp4", parser.attachments.first.filename.to_s
+  end
+
   # ========================================
   # Multipart Email Tests
   # ========================================

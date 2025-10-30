@@ -1,0 +1,38 @@
+From: Test User <test@example.com>
+To: Recipient <recipient@example.com>
+Message-ID: <test123@example.com>
+Subject: Test with tags and attachment
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+    boundary="----=_Part_1849_791940426.1761730571801"
+
+------=_Part_1849_791940426.1761730571801
+Content-Type: multipart/alternative;
+    boundary="----=_Part_1850_2036180828.1761730571801"
+
+------=_Part_1850_2036180828.1761730571801
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+#nplusplus
+------=_Part_1850_2036180828.1761730571801
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+<div dir="auto">#nplusplus</div>  </body>
+</html>
+
+------=_Part_1850_2036180828.1761730571801--
+
+------=_Part_1849_791940426.1761730571801
+Content-Type: video/mp4; name=test-video.mp4
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=test-video.mp4
+
+AAAABGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAACKBtZGF0AAACrgYF//+q
+------=_Part_1849_791940426.1761730571801--

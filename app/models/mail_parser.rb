@@ -122,13 +122,27 @@ class MailParser
 
     def parse_mixed_parts
       @mail.parts.filter_map do |part|
-        if part.text?
+        if part.multipart?
+          # Handle nested multipart parts (e.g., multipart/alternative inside multipart/mixed)
+          parse_multipart_part(part)
+        elsif part.text?
           plain_text_transform(part.decoded)
         elsif part.attachment? && media_attachment?(part)
           attachment = find_attachment_from_part(part)
           process_attachment(attachment) if attachment
         end
       end.join("\n")
+    end
+
+    def parse_multipart_part(part)
+      # Handle nested multipart structures (e.g., multipart/alternative)
+      if part.html_part
+        html = part.html_part.decoded
+        html_transform(html) + append_unreferenced_attachments(html)
+      elsif part.text_part
+        text = plain_text_transform(part.text_part.decoded)
+        text + append_unreferenced_attachments(text)
+      end
     end
 
     # Collects HTML content from the email
