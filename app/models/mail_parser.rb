@@ -136,12 +136,14 @@ class MailParser
 
     def parse_multipart_part(part)
       # Handle nested multipart structures (e.g., multipart/alternative)
+      # Note: Don't append unreferenced attachments here - the parent parse_mixed_parts
+      # loop will handle attachments directly to avoid duplication
       if part.html_part
         html = part.html_part.decoded
-        html_transform(html) + append_unreferenced_attachments(html)
+        html_transform(html)
       elsif part.text_part
-        text = plain_text_transform(part.text_part.decoded)
-        text + append_unreferenced_attachments(text)
+        text = part.text_part.decoded
+        plain_text_transform(text)
       end
     end
 

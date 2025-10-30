@@ -81,6 +81,11 @@ class MailParserTest < ActiveSupport::TestCase
     assert parser.has_attachments?, "Should detect video attachment"
     assert_equal 1, parser.attachments.size
     assert_equal "test-video.mp4", parser.attachments.first.filename.to_s
+
+    # Video should only appear ONCE in the body
+    attachment_count = parser.body.scan(/<action-text-attachment/).size
+    assert_equal 1, attachment_count,
+      "Video attachment should appear exactly once, not twice (found #{attachment_count})"
   end
 
   # ========================================
