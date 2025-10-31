@@ -20,6 +20,10 @@ class RedirectTrailingSlash
     end
 
     @app.call(env)
+  rescue Rack::Multipart::EmptyContentError
+    # Malformed multipart request (bots sending empty body with multipart content-type)
+    # Return 400 instead of 500 to avoid error tracking noise
+    [ 400, { "Content-Type" => "text/plain" }, [ "Bad Request\n" ] ]
   end
 end
 
