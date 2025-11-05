@@ -39,7 +39,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
 
   test "renders posts tag with limit parameter" do
     3.times do |i|
-      @blog.posts.create!(title: "Post #{i}", content: "Content", status: :published, published_at: i.days.ago)
+      @blog.posts.create!(title: "Post #{i}", content: "Content", status: :published, published_at: (i + 1).minutes.ago)
     end
 
     page = @blog.pages.create!(title: "Limited Posts", content: "{{ posts | limit: 2 }}", status: :published)
