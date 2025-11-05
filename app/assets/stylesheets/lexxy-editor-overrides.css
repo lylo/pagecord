@@ -1,4 +1,3 @@
-
 /* ================================== */
 /* Lexxy Editor Specific Styles       */
 /* ================================== */
@@ -22,8 +21,11 @@ lexxy-editor {
     padding: 0;
     color: var(--color-slate-500) !important;
   }
-}
 
+  a {
+    color: inherit; /* or color: #000; for explicit black */
+  }
+}
 /* ================================== */
 /* Lexxy Toolbar Base Styles          */
 /* ================================== */
