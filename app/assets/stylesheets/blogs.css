@@ -260,6 +260,12 @@ html, body {
       width: 100%;
       max-width: 500px;
     }
+
+    :where(hr) {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin-block: var(--lexxy-content-margin);
+    }
   }
 }
 
