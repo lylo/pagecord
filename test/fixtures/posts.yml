@@ -4,7 +4,7 @@ DEFAULTS: &default
 one:
   title: The Art of Street Photography
   blog: joel
-  published_at: <%= 1.day.ago %>
+  published_at: <%= 1.day.ago.change(hour: 19, min: 45) %>
   token: <%= SecureRandom.hex(4) %>
   slug: the-art-of-street-photography
   tag_list: [photography]

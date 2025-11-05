@@ -567,6 +567,28 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "time[datetime='2025-05-11T10:00:00Z']"
   end
 
+  test "title layout should render datetime not just date" do
+    @blog.title_layout!
+    post = posts(:one)
+
+    get blog_posts_path
+
+    assert_response :success
+    # Should render full datetime with time component (19:45), not midnight
+    assert_select "time[datetime$='T19:45:00Z']"
+  end
+
+  test "cards layout should render datetime not just date" do
+    @blog.cards_layout!
+    post = posts(:one)
+
+    get blog_posts_path
+
+    assert_response :success
+    # Should render full datetime with time component (19:45), not midnight
+    assert_select "time[datetime$='T19:45:00Z']"
+  end
+
   test "should pagecord branding" do
     get blog_posts_path
 

@@ -9,7 +9,7 @@
         <% previous_year = post.published_at.year %>
       <% end %>
       <div class="post-row">
-        <%= local_time post.published_at.to_date, format: :month_day %>
+        <%= local_time post.published_at, format: :month_day %>
         <%= link_to post.display_title, post_path(post), data: { turbo_prefetch: false } %>
       </div>
     <% end %>

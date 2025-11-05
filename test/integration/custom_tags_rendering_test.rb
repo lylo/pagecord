@@ -280,4 +280,24 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select "body", text: /The Art of Street Photography/
     assert_select "body", text: /Created with Trix/
   end
+
+  test "posts tag renders datetime not just date" do
+    page = @blog.pages.create!(title: "Archive", content: "{{ posts }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    # Should render full datetime with time component (19:45), not midnight
+    assert_select "time[datetime$='T19:45:00Z']"
+  end
+
+  test "posts_by_year tag renders datetime not just date" do
+    page = @blog.pages.create!(title: "Archive", content: "{{ posts_by_year }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    # Should render full datetime with time component (19:45), not midnight
+    assert_select "time[datetime$='T19:45:00Z']"
+  end
 end
