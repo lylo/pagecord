@@ -2,7 +2,8 @@
 class BotErrorFilter
   HANDLED_ERRORS = [
     Rack::Multipart::EmptyContentError,
-    ActionDispatch::Http::MimeNegotiation::InvalidType
+    ActionDispatch::Http::MimeNegotiation::InvalidType,
+    URI::InvalidURIError
   ].freeze
 
   def initialize(app)
