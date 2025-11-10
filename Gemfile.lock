@@ -486,7 +486,6 @@ GEM
       chronic (>= 0.6.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yaml (0.4.0)
     zeitwerk (2.7.3)
 
 PLATFORMS
@@ -525,7 +524,7 @@ DEPENDENCIES
   mocha
   nanoid (~> 2.0)
   ostruct
-  pagy
+  pagy (~> 9.4)
   pg
   pg_query (>= 2)
   pg_search
