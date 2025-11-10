@@ -84,6 +84,18 @@ html, body {
 /* -------------------------------------------------------------------------- */
 
 :where(.blog) {
+    --lexxy-color-ink: var(--color-text);
+    --lexxy-color-ink-medium: var(--color-text-muted);
+    --lexxy-color-ink-light: var(--color-text-light);
+    --lexxy-color-ink-lighter: var(--color-text-disabled);
+    --lexxy-color-ink-lightest: var(--color-bg-sunken);
+    --lexxy-color-text: var(--color-text);
+    --lexxy-color-text-subtle: var(--color-text-muted);
+    --lexxy-color-link: var(--color-accent);
+    --lexxy-color-accent-dark: var(--color-accent);
+    --lexxy-color-accent-medium: var(--color-accent-hover);
+    --lexxy-color-code-bg: var(--color-bg-subtle);
+
   :where(header) {
     margin-top: 1rem;
     margin-bottom: 2rem;
@@ -189,18 +201,6 @@ html, body {
 
 :where(.blog) {
   :where(article) {
-    --lexxy-color-ink: var(--color-text);
-    --lexxy-color-ink-medium: var(--color-text-muted);
-    --lexxy-color-ink-light: var(--color-text-light);
-    --lexxy-color-ink-lighter: var(--color-text-disabled);
-    --lexxy-color-ink-lightest: var(--color-bg-sunken);
-    --lexxy-color-text: var(--color-text);
-    --lexxy-color-text-subtle: var(--color-text-muted);
-    --lexxy-color-link: var(--color-accent);
-    --lexxy-color-accent-dark: var(--color-accent);
-    --lexxy-color-accent-medium: var(--color-accent-hover);
-    --lexxy-color-code-bg: var(--color-bg-subtle);
-
     max-width: none;
     color: var(--color-text) !important;
     text-wrap: pretty;
