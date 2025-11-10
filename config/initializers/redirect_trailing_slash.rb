@@ -5,15 +5,7 @@ class RedirectTrailingSlash
   end
 
   def call(env)
-    # Catch multipart errors early before they bubble up to error tracking
-    begin
-      request = Rack::Request.new(env)
-    rescue Rack::Multipart::EmptyContentError
-      # Malformed multipart request (bots sending empty body with multipart content-type)
-      # Return 400 instead of 500 to avoid error tracking noise
-      return [ 400, { "Content-Type" => "text/plain" }, [ "Bad Request\n" ] ]
-    end
-
+    request = Rack::Request.new(env)
     path = request.path
 
     # Redirect if path has trailing slash and is not root
