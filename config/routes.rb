@@ -59,7 +59,7 @@ Rails.application.routes.draw do
   get "verify_domain", to: "custom_domains#verify", as: :verify_custom_domain
 
   # PWA routes
-  get "manifest", to: "rails/pwa#manifest", as: :pwa_manifest
+  get "manifest", to: "rails/pwa#manifest", as: :pwa_manifest, defaults: { format: :json }, constraints: { format: :json }
 
   constraints SidekiqAdminConstraint.new do
     mount Sidekiq::Web, at: "/admin/sidekiq"
