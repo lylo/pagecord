@@ -9,9 +9,12 @@ class Blogs::EmailSubscribers::ConfirmationsController < Blogs::BaseController
   private
 
     def load_subscriber
-      @subscriber = EmailSubscriber.find_by!(token: params[:token])
-      @blog = @subscriber.blog
-      Current.blog = @blog
-      @user = @blog.user
+      if @subscriber = EmailSubscriber.find_by(token: params[:token])
+        @blog = @subscriber.blog
+        Current.blog = @blog
+        @user = @blog.user
+      else
+        redirect_to root_path
+      end
     end
 end
