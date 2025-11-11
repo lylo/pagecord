@@ -14,3 +14,7 @@ production:
     - ActionController::UnknownFormat
     - ActionController::InvalidAuthenticityToken
     - ActionController::TooManyRequests
+    - URI::InvalidURIError
+    - ActionDispatch::Http::MimeNegotiation::InvalidType
+    - Rack::Multipart::EmptyContentError
+    - Encoding::CompatibilityError

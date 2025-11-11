@@ -3,7 +3,8 @@ class BotErrorFilter
   HANDLED_ERRORS = [
     Rack::Multipart::EmptyContentError,
     ActionDispatch::Http::MimeNegotiation::InvalidType,
-    URI::InvalidURIError
+    URI::InvalidURIError,
+    Encoding::CompatibilityError
   ].freeze
 
   def initialize(app)
@@ -13,7 +14,6 @@ class BotErrorFilter
   def call(env)
     @app.call(env)
   rescue *HANDLED_ERRORS
-    # Bots sending malformed requests (empty multipart bodies, malicious MIME types, etc.)
     [ 400, { "Content-Type" => "text/plain" }, [ "Bad Request\n" ] ]
   end
 end

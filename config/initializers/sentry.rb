@@ -37,7 +37,11 @@ if Rails.env.production?
     config.excluded_exceptions += [
       "ActiveRecord::RecordNotFound",
       "ActionDispatch::RemoteIp::IpSpoofAttackError",
-      "ActionController::TooManyRequests"
+      "ActionController::TooManyRequests",
+      "URI::InvalidURIError",
+      "ActionDispatch::Http::MimeNegotiation::InvalidType",
+      "Rack::Multipart::EmptyContentError",
+      "Encoding::CompatibilityError"
     ]
 
     # Only enable Sentry in production
