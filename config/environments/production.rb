@@ -73,7 +73,7 @@ Rails.application.configure do
   # Broadcast to all three loggers
   broadcast_logger = ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger, appsignal_logger)
   broadcast_logger.formatter = proc do |severity, time, progname, msg|
-    "#{time.iso8601} #{severity} #{msg.strip}\n"
+    "#{time.iso8601} #{severity} #{msg&.strip}\n"
   end
 
   tagged_logger = ActiveSupport::TaggedLogging.new(broadcast_logger)
