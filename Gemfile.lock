@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: a9b4f5f638fbfc908dc4e657915278cc2451810c
+  revision: 88ddc0e1c3ce62e9a9e217ae899099688fd6a176
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -170,7 +170,7 @@ GEM
     discard (1.4.0)
       activerecord (>= 4.2, < 9.0)
     drb (2.2.3)
-    erb (5.1.3)
+    erb (6.0.0)
     erubi (1.13.1)
     faker (3.5.2)
       i18n (>= 1.8.11, < 2)
@@ -384,7 +384,7 @@ GEM
     redis-client (0.26.1)
       connection_pool
     regexp_parser (2.11.3)
-    reline (0.6.2)
+    reline (0.6.3)
       io-console (~> 0.5)
     rexml (3.4.4)
     rollups (0.5.0)
@@ -448,7 +448,7 @@ GEM
       redis-client (>= 0.23.2)
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
-    stringio (3.1.7)
+    stringio (3.1.8)
     tailwindcss-rails (4.4.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
