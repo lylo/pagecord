@@ -31,6 +31,10 @@ module RoutingHelper
     route_for_blog(blog, "blog_sitemap", "url")
   end
 
+  def open_graph_image_url_for(post)
+    route_for_blog(post.blog, "open_graph_image", "url", post_token: post.token)
+  end
+
   def email_subscriber_confirmation_url_for(email_subscriber)
     email_subscriber_confirmation_url(email_subscriber.token, host: host(email_subscriber.blog))
   end
