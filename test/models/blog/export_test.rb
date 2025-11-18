@@ -110,10 +110,35 @@ class Blog::ExportTest < ActiveSupport::TestCase
       assert_includes content, "title: \"Test Post\""
       assert_includes content, "# Test Post"
 
-      image_path = File.join(dir, "images", @post.token, "test_image.jpg")
+      image_path = File.join(dir, "images", @post.slug, "test_image.jpg")
       assert File.exist?(image_path)
       assert_equal @image_data, File.read(image_path)
-      assert_includes content, "images/#{@post.token}/test_image.jpg"
+      assert_includes content, "images/#{@post.slug}/test_image.jpg"
+    end
+  end
+
+  test "markdown export preserves code block language" do
+    post = @blog.posts.new(title: "Code Test")
+    post.content = ActionText::Content.new(<<~HTML)
+      <pre data-language="ruby" data-highlight-language="ruby">def hello
+  puts "world"
+end</pre>
+    HTML
+    post.save!
+
+    export = Blog::Export.create!(blog: @blog, format: :markdown)
+
+    Dir.mktmpdir do |dir|
+      export.send(:export_posts, dir)
+
+      md_file = File.join(dir, "#{post.slug}.md")
+      assert File.exist?(md_file)
+      content = File.read(md_file)
+
+      # Check that the code fence includes the language
+      assert_includes content, "```ruby"
+      assert_includes content, 'def hello'
+      assert_includes content, 'puts "world"'
     end
   end
 end
