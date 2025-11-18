@@ -518,7 +518,7 @@ DEPENDENCIES
   jbuilder
   kredis (~> 1.7)
   letter_opener_web
-  lexxy (~> 0.1.18.beta)
+  lexxy (~> 0.1.20.beta)
   local_time
   mailpace-rails
   mocha
