@@ -137,7 +137,7 @@ end</pre>
 
       # Check that the code fence includes the language
       assert_includes content, "```ruby"
-      assert_includes content, 'def hello'
+      assert_includes content, "def hello"
       assert_includes content, 'puts "world"'
     end
   end
