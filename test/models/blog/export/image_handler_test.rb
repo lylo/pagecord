@@ -25,18 +25,18 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
     assert_match %r{src="images/[^/]+/test_image\.jpg"}, processed_html
   end
 
-  test "failed image download" do
+  test "failed image download raises exception" do
     @image_handler.stubs(:download_image)
       .with("http://example.com/test%20image.jpg", regexp_matches(/test_image\.jpg$/))
       .raises(StandardError, "Download failed")
 
-    Sentry.expects(:capture_message)
-      .with(regexp_matches(/Unable to process image.*Download failed/))
+    Sentry.expects(:capture_exception)
+      .with(instance_of(StandardError), has_entries(extra: has_entries(post_slug: @post.slug, image_src: "http://example.com/test%20image.jpg")))
 
-    processed_html = @image_handler.process_images(@post.content.body.to_s)
-
-    # The HTML should still be processed even with failed image download
-    assert_not_nil processed_html
+    # Should raise the exception instead of silently continuing
+    assert_raises(StandardError, "Download failed") do
+      @image_handler.process_images(@post.content.body.to_s)
+    end
   end
 
   test "extracts original URL from Cloudflare CDN image URLs" do
