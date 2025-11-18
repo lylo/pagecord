@@ -1,0 +1,15 @@
+<div class="titlebar">
+  <% if @blog.avatar&.attached? %>
+    <div class="avatar-container">
+      <div class="avatar">
+        <%= link_to blog_home_url(@blog), aria: { label: "#{@blog.title} Home" } do %>
+          <%= image_tag resized_image_url(@blog.avatar, width: 160, height: 160), alt: "#{@blog.title} Avatar" %>
+        <% end %>
+      </div>
+
+      <%= render "blogs/title" %>
+    </div>
+  <% else %>
+    <%= render "blogs/title" %>
+  <% end %>
+</div>

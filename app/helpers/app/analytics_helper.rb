@@ -50,7 +50,7 @@ module App::AnalyticsHelper
   def chart_max_value(chart_data)
     return 10 if chart_data.empty?
 
-    max_page_views = chart_data.map { |d| [ d[:unique_page_views], d[:total_page_views] ] }.flatten.max
+    max_page_views = chart_data.map { |d| d[:unique_page_views] }.max
     return 10 if max_page_views.nil? || max_page_views == 0
 
     (max_page_views * 1.1).ceil

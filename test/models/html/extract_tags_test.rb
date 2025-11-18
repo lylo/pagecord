@@ -212,4 +212,15 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
     assert_not_includes result, "#ruby"
     assert_includes result, "This is a post about Pagecord."
   end
+
+  test "should extract hashtags followed by HTML elements containing only nbsp" do
+    # This simulates Apple Mail output where tags are followed by <div>&nbsp;</div>
+    html = "<div>Safari password autofill issue.</div><div>#software #web</div><div>&nbsp;</div><div><br></div>"
+    result = @transformer.transform(html)
+
+    assert_equal [ "software", "web" ], @transformer.tags
+    assert_not_includes result, "#software"
+    assert_not_includes result, "#web"
+    assert_includes result, "Safari password autofill issue."
+  end
 end

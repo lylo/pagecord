@@ -1,0 +1,117 @@
+/* ================================== */
+/* Shared Animations                 */
+/* ================================== */
+
+/* This file contains animations and utilities that are shared across
+   both Tailwind-based layouts (admin, app, home) and non-Tailwind
+   layouts (blog). Import this in both application.css and tailwind.css
+   to avoid duplication. */
+
+/* ============================= */
+/* Fade Animations               */
+/* ============================= */
+
+@keyframes fadeIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1s ease-out;
+}
+
+.animate-fadeOut {
+  animation: fadeOut 1s ease-out forwards;
+}
+
+/* ============================= */
+/* Testimonial Carousel          */
+/* ============================= */
+
+@keyframes scroll-smooth {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--scroll-distance, -50%));
+  }
+}
+
+.animate-scroll-smooth {
+  animation: scroll-smooth 20s linear infinite;
+  will-change: transform; /* smoother hardware-accelerated animation */
+}
+
+.animate-scroll-smooth:hover {
+  animation-play-state: paused;
+}
+
+/* Hide scrollbar but allow scrolling */
+.overflow-x-auto {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Testimonials carousel container */
+.testimonials-fade-edges {
+  position: relative; /* required for fade pseudo-elements */
+  overflow-x: auto;
+  max-width: 100vw;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.testimonials-fade-edges::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Fade edges */
+.testimonials-fade-edges::before,
+.testimonials-fade-edges::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.testimonials-fade-edges::before {
+  left: 0;
+  background: linear-gradient(to right, rgb(255 255 255 / 1), rgb(255 255 255 / 0));
+}
+
+.testimonials-fade-edges::after {
+  right: 0;
+  background: linear-gradient(to left, rgb(255 255 255 / 1), rgb(255 255 255 / 0));
+}
+
+/* Dark mode fade edges */
+@media (prefers-color-scheme: dark) {
+  .testimonials-fade-edges::before {
+    background: linear-gradient(to right, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
+  }
+
+  .testimonials-fade-edges::after {
+    background: linear-gradient(to left, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
+  }
+}
+
+.dark .testimonials-fade-edges::before {
+  background: linear-gradient(to right, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
+}
+
+.dark .testimonials-fade-edges::after {
+  background: linear-gradient(to left, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
+}

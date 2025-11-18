@@ -46,11 +46,10 @@ class Analytics::Summary < Analytics::Base
   private
 
     def day_analytics(date)
-      unique_page_views, total_page_views = page_view_counts_for_period(date, date)
+      unique_page_views = page_view_counts_for_period(date, date)
 
       {
         unique_page_views: unique_page_views,
-        total_page_views: total_page_views,
         date: date
       }
     end
@@ -58,11 +57,10 @@ class Analytics::Summary < Analytics::Base
     def month_analytics(date)
       start_date = date.beginning_of_month
       end_date = date.end_of_month
-      unique_page_views, total_page_views = page_view_counts_for_period(start_date, end_date)
+      unique_page_views = page_view_counts_for_period(start_date, end_date)
 
       {
         unique_page_views: unique_page_views,
-        total_page_views: total_page_views,
         date: date
       }
     end
@@ -70,11 +68,10 @@ class Analytics::Summary < Analytics::Base
     def year_analytics(date)
       start_date = date.beginning_of_year
       end_date = date.end_of_year
-      unique_page_views, total_page_views = page_view_counts_for_period(start_date, end_date)
+      unique_page_views = page_view_counts_for_period(start_date, end_date)
 
       {
         unique_page_views: unique_page_views,
-        total_page_views: total_page_views,
         date: date
       }
     end
@@ -88,10 +85,10 @@ class Analytics::Summary < Analytics::Base
       elsif start_time_utc > cutoff_time
         raw_counts(start_time_utc, end_time_utc)
       else
-        rollup_unique, rollup_total = rollup_counts(start_time_utc, cutoff_time)
-        raw_unique, raw_total = raw_counts(cutoff_time, end_time_utc)
+        rollup_unique = rollup_counts(start_time_utc, cutoff_time)
+        raw_unique = raw_counts(cutoff_time, end_time_utc)
 
-        [ rollup_unique + raw_unique, rollup_total + raw_total ]
+        rollup_unique + raw_unique
       end
     end
 end

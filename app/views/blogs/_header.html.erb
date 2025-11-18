@@ -1,13 +1,15 @@
 <header>
-  <%= render "blogs/top_nav" %>
+  <%= render "blogs/nav" %>
 
-  <%= render "blogs/blog_titlebar" %>
+  <%= render "blogs/titlebar" %>
 
   <% if @blog.bio.present? && !local_assigns[:hide_bio] %>
-  <div class="bio">
+  <div class="bio lexxy-content">
     <%= auto_link @blog.bio %>
   </div>
   <% end %>
 
-  <%= render "blogs/email_subscriber_form" unless local_assigns[:hide_email_form] %>
+  <%= render "blogs/email_subscriber_form" if @blog.show_subscription_in_header? && !local_assigns[:hide_email_form] %>
+
+  <hr>
 </header>

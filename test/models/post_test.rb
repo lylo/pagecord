@@ -165,20 +165,20 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "This is a long post with lots of text content...", summary
   end
 
-  test "summary should return 'Untitled' when no text content" do
+  test "summary should return empty string when no text content" do
     blog = blogs(:joel)
     post = blog.posts.new(
       title: "Image Only Post",
-      content: "<action-text-attachment><figure><img src='test.jpg'></figure></action-text-attachment>"
+      content: "<figure><img src='test.jpg'><figcaption>Test Image</figcaption></figure>"
     )
 
     summary = post.summary
-    assert_equal "Untitled", summary
+    assert_equal "", summary
   end
 
   test "has_text_content? should return true for posts with text" do
     blog = blogs(:joel)
-    post = blog.posts.new(
+    post = blog.posts.create!(
       title: "Text Post",
       content: "This post has meaningful text content."
     )
@@ -190,7 +190,7 @@ class PostTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     post = blog.posts.new(
       title: "Image Only Post",
-      content: "<action-text-attachment><figure><img src='test.jpg'></figure></action-text-attachment>"
+      content: "<figure><img src='test.jpg'></figure>"
     )
 
     assert_not post.has_text_content?
@@ -214,5 +214,116 @@ class PostTest < ActiveSupport::TestCase
   test "should include non-hidden posts in visible scope" do
     post = Post.create(blog: blogs(:joel), title: "public post", content: "content", hidden: false)
     assert Post.visible.include?(post)
+  end
+
+  test "pages require a title" do
+    blog = blogs(:joel)
+    page = blog.posts.new(content: "Page content", is_page: true, title: "")
+    assert_not page.valid?
+    assert_includes page.errors[:title], "can't be blank"
+  end
+
+  test "should set text_summary when post without title is saved" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "This is my post content that should be cached.")
+
+    assert_equal "This is my post content that should be cached.", post.text_summary
+  end
+
+  test "should set text_summary even when post has a title" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(title: "My Title", content: "This content should be cached.")
+
+    assert_equal "This content should be cached.", post.text_summary
+  end
+
+  test "should update text_summary when content changes on untitled post" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Original content")
+
+    assert_equal "Original content", post.text_summary
+
+    post.update!(content: "Updated content")
+    post.reload
+
+    assert_equal "Updated content", post.text_summary
+  end
+
+  test "display_title should use title when present" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(title: "My Title", content: "Content")
+
+    assert_equal "My Title", post.display_title
+  end
+
+  test "display_title should use text_summary when title is blank" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "This is my content that will be used as the title")
+
+    assert_equal "This is my content that will be used as the title", post.display_title
+  end
+
+  test "display_title should truncate long text_summary" do
+    blog = blogs(:joel)
+    long_content = "This is a very long piece of content " * 10
+    post = blog.posts.create!(content: long_content)
+
+    assert_operator post.display_title.length, :<=, 64
+    assert post.display_title.end_with?("...")
+  end
+
+  test "display_title should return Untitled when no title or text_summary" do
+    blog = blogs(:joel)
+    post = blog.posts.new(content: "<figure><img src='test.jpg'></figure>")
+
+    assert_equal "Untitled", post.display_title
+  end
+
+  test "display_title should not include tags" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "<p>This is a test</p><p>{{ posts limit:5 }}</p>")
+
+    assert_equal "This is a test", post.display_title
+  end
+
+  test "text_summary should preserve space between paragraphs" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>First paragraph ends here.</p><p>Second paragraph starts here.</p>"
+    )
+
+    # Should have space between sentences from different paragraphs
+    assert_equal "First paragraph ends here. Second paragraph starts here.", post.text_summary
+    assert_includes post.text_summary, "here. Second"
+  end
+
+  test "text_summary should preserve space between headings and paragraphs" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<h1>My Heading</h1><p>Paragraph text here.</p>"
+    )
+
+    assert_equal "My Heading Paragraph text here.", post.text_summary
+    assert_includes post.text_summary, "Heading Paragraph"
+  end
+
+  test "text_summary should preserve space between list items" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<ul><li>First item.</li><li>Second item.</li></ul>"
+    )
+
+    assert_equal "First item. Second item.", post.text_summary
+    assert_includes post.text_summary, "item. Second"
+  end
+
+  test "text_summary should preserve space between divs" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<div>First block.</div><div>Second block.</div>"
+    )
+
+    assert_equal "First block. Second block.", post.text_summary
+    assert_includes post.text_summary, "block. Second"
   end
 end

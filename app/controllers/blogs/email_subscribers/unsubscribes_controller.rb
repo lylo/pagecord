@@ -1,8 +1,7 @@
-class Blogs::EmailSubscribers::UnsubscribesController < ApplicationController
+class Blogs::EmailSubscribers::UnsubscribesController < Blogs::BaseController
   before_action :load_subscriber
-  skip_before_action :domain_check
+  skip_before_action :load_blog, :validate_user, :enforce_custom_domain
   skip_before_action :verify_authenticity_token, only: [ :one_click ]
-  around_action :set_locale
 
   def show
   end
@@ -25,12 +24,10 @@ class Blogs::EmailSubscribers::UnsubscribesController < ApplicationController
     def load_subscriber
       if @subscriber = EmailSubscriber.find_by(token: params[:token])
         @blog = @subscriber.blog
+        Current.blog = @blog
+        @user = @blog.user
       else
         redirect_to root_path, alert: I18n.t("email_subscribers.unsubscribes.not_found") and return
       end
-    end
-
-    def set_locale(&block)
-      I18n.with_locale(@blog&.locale || I18n.default_locale, &block)
     end
 end

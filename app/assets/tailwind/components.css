@@ -1,175 +1,20 @@
 @layer components {
-  /* Apply base theme styles to html and body */
-  html, body {
-    @apply bg-[var(--color-bg)] text-[var(--color-text)];
-  }
-
-  .blog {
-    /* ---- BLOG HEADER  ---- */
-    header {
-      @apply mt-4 mb-8 pb-4 border-b border-[var(--color-border)];
-
-      .bio {
-        @apply mt-4 text-sm text-[var(--color-text-muted)] break-words;
-
-        a {
-          @apply text-[var(--color-accent)] underline;
-        }
-
-        strong, b {
-          @apply text-[var(--color-text)];
-        }
-      }
-
-      .blog-title {
-        @apply !text-[var(--color-text-heading)];
-      }
-    }
-
-    /* ---- BLOG POST  ---- */
-    article {
-      @apply text-[var(--color-text)];
-
-      h1:not(.post-title) {
-        @apply !text-2xl !mb-0;
-      }
-    }
-
-    article.prose {
-      @apply !max-w-none !text-[var(--color-text)];
-
-      a {
-        @apply !text-[var(--color-accent)] underline;
-      }
-
-      a:hover {
-          @apply !text-[var(--color-accent-hover)];
-        }
-
-      strong {
-        @apply !text-[var(--color-text)];
-      }
-
-      ol, ul {
-        @apply ml-5;
-        list-style-position: outside !important;
-      }
-
-      li::marker {
-        @apply !text-[var(--color-text-light)];
-      }
-
-      blockquote {
-        @apply !my-2 !text-[var(--color-text-muted)] !border-l-[var(--color-border)] !font-normal;
-      }
-
-      code {
-        @apply !bg-[var(--color-bg-sunken)] !text-[var(--color-text)] px-1 py-0.5 rounded-sm;
-      }
-
-      pre {
-        @apply !my-2 !bg-[var(--color-bg-sunken)] !text-[var(--color-text)] text-wrap;
-
-        ol, ul {
-          @apply !py-0 !my-0;
-        }
-
-        li {
-          @apply !p-0 !m-0;
-        }
-      }
-
-      h1 {
-        @apply !text-[var(--color-text)];
-      }
-
-      h1.post-title {
-        @apply !text-3xl !mb-8 !text-[var(--color-text-heading)];
-      }
-
-      img {
-        @apply !mt-2 !mb-2 rounded-lg mx-auto relative inline-block left-1/2 -translate-x-1/2 max-w-full;
-      }
-    }
-
-    .post-footer {
-      a, button {
-        @apply text-sm !text-[var(--color-text-light)];
-      }
-
-      a:hover, button:hover {
-        @apply !text-[var(--color-text-muted)];
-      }
-
-      .icon {
-        @apply !text-[var(--color-text-disabled)];
-      }
-
-      .icon:hover {
-        @apply !text-[var(--color-text-light)];
-      }
-    }
-
-    /* Email subscription form component */
-    .form {
-      @apply mt-6 mb-2 p-4 rounded-lg mx-auto text-sm bg-[var(--color-bg-subtle)] text-[var(--color-text)];
-    }
-
-    /* Form elements */
-    .form label {
-      @apply font-medium;
-    }
-
-    .form input[type="text"], .form input[type="email"], .form textarea {
-      @apply bg-[var(--color-input-bg)] border border-[var(--color-input-border)] text-[var(--color-text)] rounded-l-md ring-0 focus:border-[var(--color-input-focus)] focus:outline-none;
-    }
-
-    .form input[type="email"]::placeholder {
-      @apply text-[var(--color-placeholder)];
-    }
-
-    .form input[type="submit"] {
-      @apply bg-[var(--color-button-bg)] text-[var(--color-button-text)] rounded-r-md py-1 px-3 cursor-pointer;
-    }
-
-    .form input[type="submit"]:hover {
-      @apply bg-[var(--color-button-hover)];
-    }
-
-    .social-link {
-      @apply !text-[var(--color-text-light)];
-    }
-
-    .social-link:hover {
-      @apply !text-[var(--color-text-muted)];
-    }
-
-    /* Confirmation card component */
-    .confirmation-card {
-      @apply bg-[var(--color-bg-subtle)] rounded-lg shadow-md border border-[var(--color-border)] text-[var(--color-text)];
-    }
-
-    .follow-button {
-      @apply text-xs inline-block border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] rounded-xl px-2 py-1 hover:bg-[var(--color-bg-subtle)] text-center;
-    }
-  }
-
   /* ---- APP COMPONENTS ---- */
 
   .btn-primary {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-[#4fbd9c] rounded-lg hover:bg-[#4bb193] focus:ring-4 focus:outline-none focus:ring-pagecord-accent/30 cursor-pointer;
+    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-white bg-[#4fbd9c] rounded-lg hover:bg-[#4bb193] focus:ring-4 focus:outline-none focus:ring-pagecord-accent/30 cursor-pointer;
   }
 
   .btn-optional {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:hover:bg-slate-800 dark:focus:ring-slate-800 cursor-pointer;
+    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:hover:bg-slate-800 dark:focus:ring-slate-800 cursor-pointer;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 dark:text-slate-100;
+    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-slate-800 dark:text-slate-100 bg-slate-200 dark:bg-slate-600 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 cursor-pointer;
   }
 
   .btn-danger {
-    @apply inline-flex items-center px-4 py-2 text-sm font-medium text-center text-slate-800 hover:text-white dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-red-700 dark:focus:ring-slate-800 cursor-pointer;
+    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-slate-800 hover:text-white dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-red-700 dark:focus:ring-slate-800 cursor-pointer;
   }
 
   .form-field {
@@ -205,22 +50,4 @@
     @apply !text-current !underline !decoration-pagecord-accent !decoration-2 !font-medium hover:!bg-pagecord-accent/10 !transition-all !duration-200 !rounded;
   }
 
-  @layer utilities {
-    @keyframes pulseGrow {
-      0%, 100% {
-        transform: scale(1);
-        fill: currentColor;
-        stroke: currentColor;
-      }
-      50% {
-        transform: scale(1.3);
-        fill: theme('colors.red.500'); /* Tailwind token */
-        stroke: theme('colors.red.500');
-      }
-    }
-
-    .animate-pulse-grow {
-      animation: pulseGrow 500ms ease-in-out;
-    }
-  }
 }

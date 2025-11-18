@@ -58,6 +58,9 @@ Rails.application.routes.draw do
   get "up", to: "rails/health#show", as: :rails_health_check
   get "verify_domain", to: "custom_domains#verify", as: :verify_custom_domain
 
+  # PWA routes
+  get "manifest", to: "rails/pwa#manifest", as: :pwa_manifest, defaults: { format: :json }, constraints: { format: :json }
+
   constraints SidekiqAdminConstraint.new do
     mount Sidekiq::Web, at: "/admin/sidekiq"
   end
@@ -65,6 +68,8 @@ Rails.application.routes.draw do
   constraints PgHeroAdminConstraint.new do
     mount PgHero::Engine, at: "/admin/pghero"
   end
+
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 
   get "/404", to: "errors#not_found"
   get "/422", to: "errors#unacceptable"
@@ -90,7 +95,12 @@ Rails.application.routes.draw do
   namespace :app do
     resources :analytics, only: [ :index ]
     resources :posts, except: [ :show ], param: :token
-    resources :pages, except: [ :show ], param: :token
+    resources :pages, except: [ :show ], param: :token do
+      member do
+        post :set_as_home_page
+      end
+    end
+    resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
     resources :settings, only: [ :index ]
 
     resource :onboarding, only: [ :show, :update ], path: "onboarding" do
@@ -104,6 +114,7 @@ Rails.application.routes.draw do
       resources :users, only: [ :update, :destroy ]
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
+      resources :navigation_items, only: [ :index, :create, :update, :destroy ]
       resources :email_subscribers, only: [ :index ]
       resources :email_change_requests, only: [ :create, :destroy ] do
         member do
@@ -132,8 +143,6 @@ Rails.application.routes.draw do
 
     resources :blogs do
       resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
-
-      resources :social_links, only: [ :new ], controller: "blogs/social_links"
 
       post :follow, to: "followings#create"
       delete :unfollow, to: "followings#destroy"
@@ -165,11 +174,16 @@ Rails.application.routes.draw do
     get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
     get "/", to: "blogs/posts#index", as: :blog_posts
+    get "/posts", to: "blogs/posts#posts_list", as: :blog_posts_list
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")
 
-    post "/hit", to: "blogs/page_views#create", as: :blog_page_views
+    post "/pv", to: "blogs/page_views#create", as: :blog_page_views
+
+    namespace :api do
+      post "embeds/bandcamp", to: "embeds#bandcamp"
+    end
 
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
@@ -209,10 +223,6 @@ Rails.application.routes.draw do
       path = params[:path] ? "/#{params[:path]}" : "/"
       subdomain_redirect(path).call(params, _req)
     }, constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }
-  end
-
-  namespace :api do
-    post "embeds/bandcamp", to: "embeds#bandcamp"
   end
 
   direct :rails_public_blob do |blob|

@@ -11,8 +11,8 @@
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
-    <%= stylesheet_link_tag "tailwind", "inter", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "application", "actiontext", "tagify", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "actiontext", "trix", "tailwind", "inter", "tagify", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "blog-themes", "lexxy", "lexxy-typography", "lexxy-editor-overrides", "lexxy-variable-overrides" %>
     <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css"/>
     <%= javascript_importmap_tags %>
 
@@ -26,7 +26,7 @@
         <%= render "/app/shared/premium_upsell_banner" %>
       <% end %>
     </header>
-    <main class="container mx-auto px-5 flex flex-grow">
+    <main class="container mx-auto px-4 flex flex-grow">
       <div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
         <%= render "app/shared/flash" %>
 

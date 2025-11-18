@@ -3,7 +3,7 @@ import MediaSite from "media_site"
 class YouTube extends MediaSite {
   constructor() {
     super(
-      /(?:https:\/\/www\.youtube\.com\/(?:watch\?v=|live\/)|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]+)/,
+      /(?:https:\/\/(?:www\.)?youtube\.com\/(?:watch\?v=|live\/|shorts\/)|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]+)/,
 
       async (url) => {
         const match = url.match(this.regex)
@@ -16,10 +16,9 @@ class YouTube extends MediaSite {
 
       (embedUrl) => {
         const div = document.createElement('div')
-        div.className = "aspect-w-16 aspect-h-9"
+        div.className = "video-embed-container"
 
         const iframe = document.createElement('iframe')
-        iframe.className = "mx-auto w-full h-full"
         iframe.src = embedUrl
         iframe.loading = "lazy"
         iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"

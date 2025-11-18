@@ -32,17 +32,66 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "article", minimum: 1
+    assert_select "div.post-card", minimum: 1
     assert_select ".cards_layout", count: 1
   end
 
-  test "should show email subscription form on index if enabled" do
-    @blog.update!(email_subscriptions_enabled: true, features: [ "email_subscribers" ])
-
+  test "should show email subscription form on index" do
     get blog_posts_path
 
     assert_response :success
     assert_select "turbo-frame#email_subscriber_form"
+  end
+
+  test "should not show email subscription form on index if show_subscription_in_header is false" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_header: false
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form", count: 0
+  end
+
+  test "should show email subscription form on post show if enabled" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_footer: true
+    )
+    post = @blog.posts.visible.first
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form"
+  end
+
+  test "should not show email subscription form on post show if show_subscription_in_footer is false" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_footer: false
+    )
+    post = @blog.posts.visible.first
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form", count: 0
+  end
+
+  test "should not show email subscription form on page show" do
+    @blog.update!(
+      email_subscriptions_enabled: true,
+      show_subscription_in_footer: true
+    )
+    page = @blog.pages.create!(title: "Test Page", content: "Content", status: "published")
+
+    get blog_post_path(page.slug)
+
+    assert_response :success
+    assert_select "turbo-frame#email_subscriber_form", count: 0
   end
 
   test "should get show" do
@@ -184,7 +233,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
 
-    get "/feed/"
+    get "/feed"
 
     assert_response :success
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
@@ -217,6 +266,33 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     expected_time_string = expected_time_in_timezone.to_formatted_s(:long)
     assert_match(/^@#{@blog.subdomain} - /, title, "Title should start with @subdomain - ")
     assert_includes title, expected_time_string, "Title should include the formatted local time"
+  end
+
+  test "should include tags as RSS categories in RSS feed" do
+    post = @blog.posts.create!(
+      title: "Tagged Post",
+      content: "Post with tags",
+      status: "published",
+      tags_string: "ruby, rails, web-development"
+    )
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+
+    doc = Nokogiri::XML(@response.body)
+
+    # Find the specific item for our tagged post by link (using slug)
+    item = doc.xpath("//item[contains(link, '#{post.slug}')]").first
+    assert_not_nil item, "Tagged Post should be in RSS feed"
+
+    # Get categories only for this specific item
+    categories = item.xpath("category").map(&:text)
+
+    assert_includes categories, "ruby"
+    assert_includes categories, "rails"
+    assert_includes categories, "web-development"
+    assert_equal 3, categories.count
   end
 
   # Custom domains
@@ -268,8 +344,58 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
   end
 
+  test "should redirect from www variant to canonical custom domain" do
+    @blog = blogs(:annie)
+    @blog.update!(custom_domain: "example.blog")
+    host! "www.example.blog"
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_redirected_to "http://example.blog/#{post.slug}"
+  end
+
+  test "should redirect from root domain to www variant when canonical domain is www" do
+    @blog = blogs(:annie)
+    @blog.update!(custom_domain: "www.example.blog")
+    host! "example.blog"
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_redirected_to "http://www.example.blog/#{post.slug}"
+  end
+
+  test "should not redirect when on canonical custom domain" do
+    @blog = blogs(:annie)
+    host! @blog.custom_domain
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_response :success
+  end
+
   test "should redirect to last page on pagy overflow" do
     get blog_posts_path(page: 999)
+
+    assert_redirected_to blog_posts_path(page: 1)
+  end
+
+  test "should redirect malformed page parameter to page 1" do
+    get blog_posts_path(page: "\"><h1>Cortex</h1>2")
+
+    assert_redirected_to blog_posts_path(page: 1)
+  end
+
+  test "should redirect negative page parameter to page 1" do
+    get blog_posts_path(page: -5)
+
+    assert_redirected_to blog_posts_path(page: 1)
+  end
+
+  test "should redirect zero page parameter to page 1" do
+    get blog_posts_path(page: 0)
 
     assert_redirected_to blog_posts_path(page: 1)
   end
@@ -291,6 +417,37 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "link[rel=canonical][href=?]", "https://myblog.net"
+  end
+
+  test "should redirect trailing slash on post URL to non-trailing slash version" do
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}/"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{post.slug}"
+    assert_equal 301, @response.status
+  end
+
+  test "should redirect trailing slash on /posts to non-trailing slash version" do
+    get "/posts/"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/posts"
+    assert_equal 301, @response.status
+  end
+
+  test "should preserve query strings when redirecting trailing slash" do
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}/?utm_source=feed&utm_medium=rss"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{post.slug}?utm_source=feed&utm_medium=rss"
+    assert_equal 301, @response.status
+  end
+
+  test "should not redirect trailing slash on root path" do
+    get "/"
+
+    assert_response :success
   end
 
   test "should initially prevent free blogs from being indexed" do
@@ -324,10 +481,22 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end
 
-  test "should include rel='me' link if Maston social link is present" do
+  test "should include rel='me' link if Mastodon social navigation item is present" do
+    mastodon_link = SocialNavigationItem.create!(
+      blog: @blog,
+      platform: "Mastodon",
+      url: "https://mas.to/@joel_on_pagecord"
+    )
+
     get blog_posts_path
 
-    assert_select "link[rel=\"me\"][href=\"#{@blog.social_links.mastodon.first.url}\"]"
+    assert_select "link[rel=\"me\"][href=\"#{mastodon_link.url}\"]"
+  end
+
+  test "should not include rel='me' link if Mastodon social navigation item is not present" do
+    get blog_posts_path
+
+    assert_select "link[rel=\"me\"]", count: 0
   end
 
   test "should render avatar favicon when blog has an avatar" do
@@ -396,6 +565,28 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_post_path(Post.last.slug)
 
     assert_select "time[datetime='2025-05-11T10:00:00Z']"
+  end
+
+  test "title layout should render datetime not just date" do
+    @blog.title_layout!
+    post = posts(:one)
+
+    get blog_posts_path
+
+    assert_response :success
+    # Should render full datetime with time component (19:45), not midnight
+    assert_select "time[datetime$='T19:45:00Z']"
+  end
+
+  test "cards layout should render datetime not just date" do
+    @blog.cards_layout!
+    post = posts(:one)
+
+    get blog_posts_path
+
+    assert_response :success
+    # Should render full datetime with time component (19:45), not midnight
+    assert_select "time[datetime$='T19:45:00Z']"
   end
 
   test "should pagecord branding" do
@@ -503,7 +694,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "div", text: /Showing posts tagged with "rails"/
-    assert_select "a[href='#{blog_posts_path}']", text: "Show all posts"
+    assert_select "a[href='#{blog_posts_list_path}']", text: "Show all posts"
   end
 
   test "should show no posts message when tag has no matches" do
@@ -585,7 +776,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
     assert_template "blogs/errors/not_found"
-    assert_template layout: "application"
+    assert_template layout: "blog"
   end
 
   test "should render blog 404 template for unmatched routes" do
@@ -593,7 +784,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
     assert_template "blogs/errors/not_found"
-    assert_template layout: "application"
+    assert_template layout: "blog"
   end
 
   test "should handle unmatched XML routes with proper 404" do
@@ -601,6 +792,50 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
     assert_equal "", @response.body
+  end
+
+  # Home page tests
+
+  test "should show home page instead of posts index when home page is set" do
+    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
+    @blog.update!(home_page_id: page.id)
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_equal page, assigns(:post)
+    assert_template "blogs/posts/show"
+  end
+
+  test "should show posts index when home page is not set" do
+    get blog_posts_path
+
+    assert_response :success
+    assert_not_nil assigns(:posts)
+    assert_template "blogs/posts/index"
+  end
+
+  test "should still show RSS feed when home page is set" do
+    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
+    @blog.update!(home_page_id: page.id)
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+    assert_equal "application/rss+xml; charset=utf-8", @response.content_type
+    assert_not_nil assigns(:posts)
+  end
+
+  test "should show posts index when home page is draft" do
+    @blog.update!(features: [ "home_page" ])
+    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :draft)
+    @blog.update!(home_page_id: page.id)
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_not_nil assigns(:posts)
+    assert_template "blogs/posts/index"
   end
 
   private

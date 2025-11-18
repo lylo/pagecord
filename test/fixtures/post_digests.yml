@@ -1,3 +1,4 @@
 one:
   blog: joel
   delivered_at: <%= 1.day.ago %>
+  created_at: <%= 2.days.ago %>

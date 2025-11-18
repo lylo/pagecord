@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_09_01_130412) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_25_140641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -90,6 +90,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_130412) do
     t.string "analytics_id"
     t.string "analytics_service"
     t.datetime "created_at", null: false
+    t.text "custom_css"
     t.string "custom_domain"
     t.string "delivery_email"
     t.datetime "discarded_at"
@@ -98,10 +99,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_130412) do
     t.string "fediverse_author_attribution"
     t.string "font", default: "sans", null: false
     t.string "google_site_verification"
+    t.integer "home_page_id"
     t.integer "layout", default: 0
     t.string "locale", default: "en", null: false
     t.boolean "reply_by_email", default: false, null: false
+    t.string "seo_title"
     t.boolean "show_branding", default: true, null: false
+    t.boolean "show_subscription_in_footer", default: true, null: false
+    t.boolean "show_subscription_in_header", default: true, null: false
     t.boolean "show_upvotes", default: true, null: false
     t.string "subdomain", null: false
     t.string "theme", default: "base", null: false
@@ -110,6 +115,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_130412) do
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
+    t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
@@ -160,6 +166,22 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_130412) do
     t.bigint "follower_id"
     t.datetime "updated_at", null: false
     t.index ["follower_id", "followed_id"], name: "index_followings_on_follower_id_and_followed_id", unique: true
+  end
+
+  create_table "navigation_items", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.string "label"
+    t.string "platform"
+    t.integer "position", default: 0, null: false
+    t.bigint "post_id"
+    t.string "type", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.index ["blog_id", "position"], name: "index_navigation_items_on_blog_id_and_position"
+    t.index ["blog_id"], name: "index_navigation_items_on_blog_id"
+    t.index ["post_id"], name: "index_navigation_items_on_post_id"
+    t.index ["type"], name: "index_navigation_items_on_type"
   end
 
   create_table "open_graph_images", force: :cascade do |t|
@@ -261,6 +283,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_130412) do
     t.string "slug"
     t.integer "status", default: 1, null: false
     t.string "tag_list", default: [], array: true
+    t.text "text_summary"
     t.string "title"
     t.string "token", null: false
     t.datetime "updated_at", null: false
@@ -299,15 +322,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_130412) do
     t.index ["blog_id", "email"], name: "index_sender_email_addresses_on_blog_id_and_email", unique: true
     t.index ["expires_at"], name: "index_sender_email_addresses_on_expires_at"
     t.index ["token_digest"], name: "index_sender_email_addresses_on_token_digest", unique: true
-  end
-
-  create_table "social_links", force: :cascade do |t|
-    t.bigint "blog_id", null: false
-    t.datetime "created_at", null: false
-    t.string "platform", null: false
-    t.datetime "updated_at", null: false
-    t.string "url", null: false
-    t.index ["blog_id"], name: "index_social_links_on_blog_id"
   end
 
   create_table "subscription_renewal_reminders", force: :cascade do |t|
@@ -360,12 +374,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_130412) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "blog_exports", "blogs"
+  add_foreign_key "blogs", "posts", column: "home_page_id", on_delete: :nullify
   add_foreign_key "blogs", "users"
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"
   add_foreign_key "digest_posts", "posts"
   add_foreign_key "email_change_requests", "users"
   add_foreign_key "email_subscribers", "blogs"
+  add_foreign_key "navigation_items", "blogs"
+  add_foreign_key "navigation_items", "posts"
   add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
   add_foreign_key "page_views", "blogs"
@@ -376,7 +393,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_01_130412) do
   add_foreign_key "post_replies", "posts"
   add_foreign_key "posts", "blogs"
   add_foreign_key "sender_email_addresses", "blogs"
-  add_foreign_key "social_links", "blogs"
   add_foreign_key "subscription_renewal_reminders", "subscriptions"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "upvotes", "posts"

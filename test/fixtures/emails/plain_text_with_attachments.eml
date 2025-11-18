@@ -1,0 +1,17 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: Plain Text with Image
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary-mixed"
+
+--boundary-mixed
+Content-Type: text/plain; charset="utf-8"
+
+Here is some text content.
+--boundary-mixed
+Content-Type: image/jpeg; name="attachment.jpg"
+Content-Disposition: attachment; filename="attachment.jpg"
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRg==
+--boundary-mixed--

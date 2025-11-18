@@ -2,9 +2,7 @@
  * Provides a drop-in pointer for the default Trix stylesheet that will format the toolbar and
  * the trix-editor content (whether displayed or under editing). Feel free to incorporate this
  * inclusion directly in any other asset bundle and remove this file.
- *
- *= require trix
-*/
+ */
 trix-toolbar {
   margin-top: 2em;
   position: sticky;
@@ -35,27 +33,32 @@ trix-toolbar .trix-button-group:not(:first-child) {
   }
 
   /*
-  * We need to override trix.css’s image gallery styles to accommodate the
+  * We need to override trix.css's image gallery styles to accommodate the
   * <action-text-attachment> element we wrap around attachments. Otherwise,
   * images in galleries will be squished by the max-width: 33%; rule.
   */
   .attachment-gallery > action-text-attachment,
   .attachment-gallery > .attachment {
-    flex: 1 0 33%;
+    flex: 1 0 100%;
     padding: 0 0.5em;
-    max-width: 33%;
+    max-width: 100%;
   }
 
   .attachment-gallery.attachment-gallery--2 > action-text-attachment,
-  .attachment-gallery.attachment-gallery--2 > .attachment,
-  .attachment-gallery.attachment-gallery--4 > action-text-attachment,
-  .attachment-gallery.attachment-gallery--4 > .attachment {
-    flex-basis: 50%;
+  .attachment-gallery.attachment-gallery--2 > .attachment {
+    flex: 1 0 50%;
     max-width: 50%;
   }
 
+  .attachment-gallery.attachment-gallery--3 > action-text-attachment,
+  .attachment-gallery.attachment-gallery--3 > .attachment {
+    flex: 1 0 33%;
+    max-width: 33%;
+  }
+
   img {
-    width: auto;
+    width: 100%;
+    height: auto;
     margin: 0 auto;
     max-height: 36rem;
   }
@@ -72,8 +75,25 @@ trix-editor {
   color: var(--color-slate-800);
   line-height: 1.75em !important;
 
+  figure {
+    margin: 0 !important;
+  }
+  /* Fix aspect ratio for Trix attachment images */
+  figure[data-trix-attachment] img {
+    aspect-ratio: auto !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: 36rem !important;
+  }
+
   .attachment__caption {
-    display: none;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  .attachment__caption-editor {
+    background-color: var(--color-bg);
   }
 
   li {

@@ -1,17 +1,8 @@
 <% content_for :billing do %>
   <script type="text/javascript">
     document.addEventListener('turbo:load', function() {
-      <% if Rails.env.development? %>
-        Paddle.Environment.set("sandbox")
-        Paddle.Initialize({
-          token: "test_945b246ef8df8bfe446632bf70b"
-        })
-      <% else %>
-        Paddle.Environment.set("production")
-        Paddle.Initialize({
-          token: "live_8d79ebbaac5c745a173f00967fb"
-        })
-      <% end %>
+      Paddle.Environment.set('<%= paddle_environment %>')
+      Paddle.Initialize(<%= paddle_initialize_data %>)
     })
   </script>
 <% end %>
@@ -58,7 +49,9 @@
       <%= link_to "Cancel Subscription", cancel_confirm_app_settings_subscriptions_path, class: "btn-danger" %>
     </div>
 
-    <%= link_to "← Back", app_settings_path, class: "btn-secondary" %>
+    <div class="mt-8 flex items-center gap-x-2 pt-4 border-t border-t-slate-200 dark:border-slate-600">
+      <%= link_to "Back", app_settings_path, class: "btn-secondary" %>
+    </div>
   <% end %>
 <% else %>
   <p>
@@ -68,6 +61,7 @@
     Premium subscribers get access to <b>image attachments</b>, <b>custom
     domains</b>, <b>email subscribers</b>, <b>reply by email</b> and <b>human customer support</b>! 💖
   </p>
+
 
   <p class="mt-4">
     It's only <strong>$<%= localised_price %>/year!</strong> What are you waiting for? 😊

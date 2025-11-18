@@ -1,9 +1,0 @@
-<%= turbo_frame_tag :posts do %>
-  <div data-controller="media-embeds turbo-frame-top">
-    <%= render partial: "card_post", collection: @posts, as: :post %>
-  </div>
-
-  <% if @pagy.next %>
-    <%= turbo_frame_tag :posts, src: blog_home_path(@blog, page: @pagy.next), loading: :lazy %>
-  <% end %>
-<% end %>

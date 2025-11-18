@@ -86,7 +86,7 @@ class SluggableTest < ActiveSupport::TestCase
 
     assert_equal "duplicate", post1.slug
     assert_not_equal post1.slug, post2.slug
-    assert_equal "#{post1.slug}-#{post2.token}", post2.slug
+    assert_match /^#{post1.slug}-[a-f0-9]+$/, post2.slug
   end
 
   test "should allow identical slugs across different blogs" do
@@ -114,6 +114,34 @@ class SluggableTest < ActiveSupport::TestCase
 
     assert_not post.slug.end_with?("-")
     assert post.valid?
+  end
+
+  test "should not replace apostrophes with hypens" do
+    title = "it's just not cricket"
+    post = @blog.posts.create!(title: title, content: "Content")
+
+    assert_equal "its-just-not-cricket", post.slug
+    assert post.valid?
+  end
+
+  test "should not allow reserved slugs" do
+    Sluggable::RESERVED_SLUGS.each do |reserved_slug|
+      post = @blog.posts.build(title: "Test", content: "Test")
+      # Save first to get past initial slug generation
+      post.save!
+
+      # Now try to manually change to reserved slug
+      post.slug = reserved_slug
+
+      assert_not post.valid?, "Expected post with slug '#{reserved_slug}' to be invalid"
+      assert_includes post.errors[:slug], "is reserved and cannot be used"
+    end
+  end
+
+  test "should prevent posts slug from being generated" do
+    post = @blog.posts.create!(title: "Posts", content: "This should not get the slug 'posts'")
+    assert_not_equal "posts", post.slug
+    assert_match /^posts-[a-f0-9]+$/, post.slug
   end
 
   private

@@ -1,10 +1,10 @@
 <%= button_to post_upvotes_path(post),
               method: :post,
-              class: "flex upvote-button",
+              class: "upvote-button",
               data: { controller: "upvote", action: "click->upvote#pulse" },
               title: "Click to like this post" do %>
   <%= inline_svg_tag "icons/heart.svg",
-        class: "icon cursor-pointer w-5 h-5 upvote-heart",
+        class: "icon cursor-pointer upvote-heart",
         data: { upvote_target: "heart" } %>
 <% end %>
 

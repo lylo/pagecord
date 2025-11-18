@@ -1,12 +1,21 @@
 <figure class="attachment attachment--<%= blob.representable? ? "preview" : "file" %> attachment--<%= blob.filename.extension %>">
   <% if blob.video? %>
     <%= video_tag rails_public_blob_url(blob), preload: "auto", controls: "controls", class: "attachment__video max-h-[600px] mx-auto" %>
+  <% elsif blob.audio? %>
+    <%= audio_tag rails_public_blob_url(blob), preload: "auto", controls: "controls", class: "attachment__audio w-full" %>
   <% elsif blob.representable? %>
     <% if blob.content_type == "image/gif" %>
       <%= image_tag rails_public_blob_url(blob), alt: "Uploaded image" %>
     <% else %>
       <% width, height = local_assigns[:in_gallery] ? [800, 600] : [1600, 1200] %>
-      <%= image_tag resized_image_url(blob, width: width, height: height), alt: "Uploaded image" %>
+      <% lightbox_image_url = resized_image_url(blob, width: 1600, height: 1200) %>
+      <%= image_tag resized_image_url(blob, width: width, height: height), alt: "Uploaded image", data: { lightbox_full_url: lightbox_image_url } %>
     <% end %>
   <% end %>
+
+  <% if caption = blob.try(:caption) %>
+    <figcaption class="attachment__caption">
+      <%= caption %>
+    </figcaption>
+ <% end %>
 </figure>

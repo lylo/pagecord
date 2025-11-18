@@ -1,52 +1,35 @@
-<% if @blog.social_links.mastodon.any? %>
-  <%= content_for :fediverse do %>
-    <link href="<%= @blog.social_links.mastodon.first.url %>" rel="me">
-  <% end %>
-<% end %>
-
-<div class="<%= @blog.layout %>">
-  <%= render "blogs/header" %>
-</div>
+<%= render "blogs/header" %>
 
 <% if @posts.empty? %>
-  <% if @current_tag.present? %>
-    <p class="text-center">
-      No posts found with the tag "<%= @current_tag %>" ✨
-    </p>
-    <p class="mt-4 text-center">
-      <%= link_to "View all posts", blog_home_path(@blog), class: "font-semibold underline" %>
-    </p>
-  <% else %>
-    <p class="text-center">
-      Nothing to read on this blog yet ✨
-    </p>
-    <p class="mt-4 text-center">
-      To be notified of new posts, subscribe to the
-      <%= link_to "RSS feed", rss_feed_url(@blog),
-          class: "font-semibold underline" %>
-    </p>
-  <% end %>
+  <div class="empty-state">
+    <% if @current_tag.present? %>
+      <p>No posts found with the tag "<%= @current_tag %>" ✨</p>
+      <p>
+        <%= link_to "View all posts", blog_home_path(@blog), class: "empty-state-link" %>
+      </p>
+    <% else %>
+      <p>Nothing to read on this blog yet ✨</p>
+      <p>
+        To be notified of new posts, subscribe to the
+        <%= link_to "RSS feed", rss_feed_url(@blog), class: "empty-state-link" %>
+      </p>
+    <% end %>
+  </div>
 <% else %>
   <% if @current_tag.present? %>
-    <div class="mb-6 p-3 bg-[var(--color-bg-subtle)] border border-[var(--color-border)] rounded-lg">
-      <div>
-        <span class="text-[var(--color-text)]">
-          Showing posts tagged with "<strong><%= @current_tag %></strong>"
-        </span>
+    <div class="tag-filter-notice">
+      <div class="tag-filter-notice-text">
+        Showing posts tagged with "<strong><%= @current_tag %></strong>"
       </div>
-      <div class="mt-2">
-        <%= link_to "Show all posts", blog_home_path(@blog), class: "text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] hover:underline text-sm" %>
+      <div class="tag-filter-notice-actions">
+        <%= link_to "Show all posts", blog_posts_list_path, class: "tag-filter-clear-link" %>
       </div>
     </div>
   <% end %>
 
-  <% if @blog.stream_layout? %>
-    <%= render "posts_stream" %>
-  <% elsif @blog.cards_layout? %>
-    <%= render "posts_cards" %>
-  <% else %>
-    <%= render "posts_titles" %>
-  <% end %>
+  <div class="<%= @blog.layout %>">
+    <%= render @blog.layout %>
+  </div>
 <% end %>
 
 <%= render 'shared/analytics_tracking' %>

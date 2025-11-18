@@ -1,15 +1,11 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
- * vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
- *= require_self
- *= stub "mailer.css"
- */
+/* ================================== */
+/* Application Shared Styles         */
+/* ================================== */
+
+/* This file is loaded by ALL layouts (blog, admin, app, home, etc.)
+   It should only contain truly shared styles that apply everywhere. */
+
+/* Field errors wrapper - makes Rails error wrapper invisible to flexbox */
+.field_with_errors {
+  display: contents;
+}

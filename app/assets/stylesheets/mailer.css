@@ -41,8 +41,9 @@ table {
   padding:  0 !important;
   margin: 0 auto !important;
   /* makes it centered */
-  max-width: 600px;
-  width: 600px;
+  max-width: 580px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* This should also be a block element, so that it will fill 100% of the .container */
@@ -154,6 +155,35 @@ a {
   text-decoration: none;
 }
 
+.digest blockquote {
+  border-left: 2px solid #ccc;
+  margin-left: 0;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1.25rem;
+  font-style: italic;
+}
+
+.digest code:not([data-language]) {
+  background: #f6f8fa;
+  padding: 1px;
+  font-size: 95%;
+}
+
+.digest pre, .digest code[data-language] {
+  background: #f6f8fa;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 85%;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
 .digest .post-content {
   padding-bottom: 1.5rem !important;
 }
@@ -183,7 +213,20 @@ a {
 
 .post-timestamp a {
   color: #888;
+  font-weight: 400;
   font-size: 14px !important;
+}
+
+.post-content figure {
+  text-align: center;
+}
+
+.post-content figcaption {
+  color: #888;
+  font-size: 14px;
+  text-align: center;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 /* -------------------------------------
@@ -273,7 +316,7 @@ hr {
 /* -------------------------------------
     RESPONSIVE AND MOBILE FRIENDLY STYLES
 ------------------------------------- */
-@media only screen and (max-width: 620px) {
+@media only screen and (max-width: 600px) {
   body {
     background-color: #ffffff !important; /* Change background to white on mobile */
   }

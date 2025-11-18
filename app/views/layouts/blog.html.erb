@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="<%= @blog&.locale || I18n.default_locale %>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <title><%= page_title %></title>
+
+    <meta name="description" content="<%= meta_description %>">
+
+    <% if @blog&.google_site_verification.present? %>
+    <meta name="google-site-verification" content="<%= @blog.google_site_verification %>" />
+    <% end %>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="<%= page_type %>">
+    <meta property="og:url" content="<%= request.original_url %>">
+    <meta property="og:title" content="<%= page_title %>">
+    <meta property="og:description" content="<%= meta_description %>">
+
+    <meta property="twitter:url" content="<%= request.original_url %>">
+    <meta property="twitter:title" content="<%= page_title %>">
+    <meta property="twitter:description" content="<%= meta_description %>">
+
+    <% if has_open_graph_image? %>
+      <meta property="og:image" content="<%= open_graph_image %>">
+      <meta property="twitter:image" content="<%= open_graph_image %>">
+      <meta property="twitter:card" content="summary_large_image">
+    <% else %>
+      <meta property="twitter:card" content="summary">
+    <% end %>
+
+    <%= render "layouts/structured_data" %>
+
+    <%= render "layouts/fediverse_identity" %>
+    <%= yield :fediverse %>
+
+    <link rel="canonical" href="<%= canonical_url %>" />
+
+    <%= render "layouts/rss" %>
+    <%= render "layouts/favicons" %>
+
+    <%= font_preload_links %>
+    <%= stylesheet_link_tag "blog-themes", "lexxy", "lexxy-variable-overrides", "lexxy-typography", font_stylesheet, "blogs", "lightbox", "animations", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <% if @blog.present? %>
+      <% unless @blog.user.search_indexable? %>
+        <meta name="robots" content="noindex, nofollow">
+      <% else %>
+        <%= yield :robots_meta %>
+      <% end %>
+    <% end %>
+
+    <% if @blog.present? && current_features.enabled?(:custom_css) && @blog.custom_css.present? %>
+      <style>
+        <%= @blog.sanitized_custom_css %>
+      </style>
+    <% end %>
+  </head>
+
+  <body class="<%= font_class %>" <%= theme_data_attribute %>>
+    <main>
+      <div class="blog blog-container <%= content_width_class %> text-size-standard <%= content_type_class %>">
+        <%= render "blogs/flash" %>
+
+        <%= yield %>
+      </div>
+    </main>
+
+    <footer class="blog-footer">
+      <% if @blog&.show_branding? %>
+        <%= link_to "https://pagecord.com", id: "brand", aria: { label: "Pagecord Home" } do %>
+          <%= inline_svg_tag "logo-black.svg" %>
+        <% end %>
+      <% end %>
+    </footer>
+  </body>
+</html>

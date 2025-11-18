@@ -38,10 +38,13 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Warsaw", User.last.timezone
   end
 
-  test "should not create user from Chennai timezone" do
+  test "should not create user from banned timezone" do
     assert_no_difference("User.count") do
       assert_emails 0 do
+        previous_env = ENV["BANNED_TIMEZONES"]
+        ENV["BANNED_TIMEZONES"] = "Chennai"
         post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, marketing_consent: true, timezone: "Asia/Kolkata" }, rendered_at: 6.seconds.ago.to_i }
+        ENV["BANNED_TIMEZONES"] = previous_env
       end
     end
 

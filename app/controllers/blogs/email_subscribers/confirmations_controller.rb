@@ -1,7 +1,6 @@
-class Blogs::EmailSubscribers::ConfirmationsController < ApplicationController
+class Blogs::EmailSubscribers::ConfirmationsController < Blogs::BaseController
   before_action :load_subscriber
-  skip_before_action :domain_check
-  around_action :set_locale
+  skip_before_action :load_blog, :validate_user, :enforce_custom_domain
 
   def show
     @subscriber.confirm! unless @subscriber.confirmed?
@@ -10,11 +9,12 @@ class Blogs::EmailSubscribers::ConfirmationsController < ApplicationController
   private
 
     def load_subscriber
-      @subscriber = EmailSubscriber.find_by!(token: params[:token])
-      @blog = @subscriber.blog
-    end
-
-    def set_locale(&block)
-      I18n.with_locale(@blog.locale, &block)
+      if @subscriber = EmailSubscriber.find_by(token: params[:token])
+        @blog = @subscriber.blog
+        Current.blog = @blog
+        @user = @blog.user
+      else
+        redirect_to root_path
+      end
     end
 end

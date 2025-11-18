@@ -51,4 +51,32 @@ class PostDigest < ApplicationRecord
 
     update!(delivered_at: Time.current)
   end
+
+  def subject
+    I18n.with_locale(blog.locale) do
+      I18n.t(
+        "email_subscribers.mailers.weekly_digest.subject",
+        blog_name: blog.display_name,
+        date: I18n.l(created_at.to_date, format: :post_date)
+      )
+    end
+  end
+
+  def masked_id
+    # Simple obfuscation: XOR with a constant and encode in base36
+    obfuscated = id ^ 0x5a5a5a5a
+    obfuscated.to_s(36)
+  end
+
+  def self.find_by_masked_id(masked_id)
+    return nil if masked_id.blank?
+
+    # Decode and XOR back to get original ID
+    obfuscated = masked_id.to_i(36)
+    real_id = obfuscated ^ 0x5a5a5a5a
+    find_by(id: real_id)
+  rescue => e
+    Rails.logger.warn "Invalid masked digest ID: #{masked_id}"
+    nil
+  end
 end

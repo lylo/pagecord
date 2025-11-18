@@ -47,6 +47,41 @@ four:
     <p><b>Photography was my first love</b>.</p>
     <p>I've taken photos every day since I got my first camera</p>
 
+trix:
+  record: trix (Post)
+  name: content
+  body: |
+    <div>
+      Yesterday I discovered an interesting bug in our deployment pipeline. The issue started when we upgraded
+      our Docker images to use the latest Alpine Linux base, but somehow missed updating the Node.js version.&nbsp;
+      <br>
+      <br>
+    </div>
+    <div>The error message was cryptic at first, but after digging into the logs I found this:</div>
+    <div><br></div>
+    <blockquote>Module not found: Can't resolve 'fs/promises' in '/app/src/utils'</blockquote>
+    <div><br></div>
+    <div>
+      Turns out we were still running Node 12 in the container, but our code was using fs/promises which was
+      only stabilized in Node 14. The fix was straightforward once we identified the root cause.
+      <br>
+      <br>
+    </div>
+    <pre>
+      // Updated package.json to specify engine requirements
+      {
+        "engines": {
+          "node": ">=14.0.0",
+          "npm": ">=6.0.0"
+        }
+      }
+    </pre>
+    <div>
+      <br>
+      This reminded me why it's important to keep our development and production environments in sync.
+      We've now added automated checks to catch version mismatches before they make it to production.&nbsp;
+    </div>
+
 five:
   record: joel (User)
   name: bio
@@ -97,9 +132,53 @@ draft_page:
     <p>This page is coming soon!</p>
 
     <p>We're working on something exciting. Stay tuned for updates.</p>
-
 non_nav_page:
   record: non_nav_page (Post)
   name: content
   body: |
     <p>This is a hidden page that won't appear in navigation.</p>
+
+photography_and_tech:
+  record: photography_and_tech (Post)
+  name: content
+  body: |
+    <p>Exploring how modern technology is transforming the art of photography.</p>
+    <p>From mirrorless cameras to AI-powered editing tools, the intersection of photography and technology continues to evolve.</p>
+
+embeds:
+  record: embeds (Post)
+  name: content
+  body: |
+    <h3>Spotify</h3>
+    <h4>Album</h4>
+    <p><a href="https://open.spotify.com/album/1cqqIH16XzBnDchrXJ9Enf?si=DjimKTtmRFiidyhKTpgNzA">https://open.spotify.com/album/1cqqIH16XzBnDchrXJ9Enf?si=DjimKTtmRFiidyhKTpgNzA</a></p>
+    <h4>Track</h4>
+    <p><a href="https://open.spotify.com/track/15xYayQFFYeKEWRruuzsfZ?si=42770845087849be">https://open.spotify.com/track/15xYayQFFYeKEWRruuzsfZ?si=42770845087849be</a></p>
+
+    <h3>YouTube</h3>
+    <p><a href="https://www.youtube.com/watch?v=eVrJCTW8GgE">https://www.youtube.com/watch?v=eVrJCTW8GgE</a></p>
+
+    <h3>GitHub</h3>
+    <p><a href="https://gist.github.com/lylo/170b2fe0b0eccc36b65c8dc22aca737f">https://gist.github.com/lylo/170b2fe0b0eccc36b65c8dc22aca737f</a></p>
+
+    <h3>Bandcamp</h3>
+    <p><a href="https://fredagainagain.bandcamp.com/album/actual-life-april-14-december-17-2020">https://fredagainagain.bandcamp.com/album/actual-life-april-14-december-17-2020</a></p>
+
+    <h3>Apple Music</h3>
+    <h4>Album</h4>
+    <p><a href="https://music.apple.com/us/album/songs-of-a-lost-world/1768728131">https://music.apple.com/us/album/songs-of-a-lost-world/1768728131</a></p>
+    <h4>Track</h4>
+    <p><a href="https://music.apple.com/us/song/perfect-stranger/1767658853">https://music.apple.com/us/song/perfect-stranger/1767658853</a></p>
+
+    <h3>Tidal</h3>
+    <h4>Album</h4>
+    <p><a href="https://tidal.com/album/445734494">https://tidal.com/album/445734494</a></p>
+    <h4>Track</h4>
+    <p><a href="https://tidal.com/track/401317293/u">https://tidal.com/track/401317293/u</a></p>
+
+    <h3>Transistor</h3>
+    <p><a href="https://share.transistor.fm/s/c19f1cb2">https://share.transistor.fm/s/c19f1cb2</a></p>
+
+    <h3>Strava</h3>
+    <p><a href="https://www.strava.com/activities/2307958367">https://www.strava.com/activities/2307958367</a></p>
+

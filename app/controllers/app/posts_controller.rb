@@ -1,5 +1,6 @@
 class App::PostsController < AppController
   include Pagy::Backend
+  include EditorPreparation  # Add this line
 
   rescue_from Pagy::OverflowError, with: :redirect_to_first_page
 
@@ -31,9 +32,9 @@ class App::PostsController < AppController
   def edit
     @post = Current.user.blog.posts.find_by!(token: params[:token])
 
-    session[:return_to_page] = params[:page] if params[:page].present?
+    prepare_content_for_editor(@post)
 
-    prepare_content_for_trix
+    session[:return_to_page] = params[:page] if params[:page].present?
   end
 
   def create
@@ -55,7 +56,7 @@ class App::PostsController < AppController
 
       redirect_to app_posts_path(options), notice: "Post was successfully updated"
     else
-      prepare_content_for_trix
+      prepare_content_for_editor(@post)
       render :edit, status: :unprocessable_entity
     end
   end
@@ -68,23 +69,11 @@ class App::PostsController < AppController
   end
 
   private
+
     def post_params
       status = params[:button] == "save_draft" ? :draft : :published
 
       params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden).merge(status: status)
-    end
-
-    # HTML from inbound email doesn't often play nicely with Trix
-    # This method performs some tweaks to try and help.
-    def prepare_content_for_trix
-      # Remove all newlines except for within <pre> blocks
-      @post.content.to_s.gsub(/(<pre[\s\S]*?<\/pre>)|[\r\n]+/, '\1')
-
-      # remove whitespace between tags (Trix seems to add a <br> tag in some cases)
-      @post.content = @post.content.to_s.gsub(/>\s+</, "><")
-
-      # remove paragraph tags
-      @post.content = Html::StripParagraphs.new.transform(@post.content.to_s)
     end
 
     def redirect_to_first_page

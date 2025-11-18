@@ -5,6 +5,11 @@
   <title><%= post.display_title %></title>
 </head>
 <body>
+  <% if post == blog.home_page -%>
+    <nav>
+      <a href="posts.html">Posts</a>
+    </nav>
+  <% end -%>
   <% if post.title.present? -%>
     <h1><%= post.title %></h1>
   <% end %>

@@ -23,7 +23,13 @@ class Blog::ExportTest < ActiveSupport::TestCase
 
     @image_data = "fake image data"
     fake_image = StringIO.new(@image_data)
+
+    # Mock the test image URL
     URI.expects(:open).with("http://example.com/test%20image.jpg").returns(fake_image)
+
+    # Mock any ActiveStorage URLs from fixtures (they'll have different URLs)
+    # Use a regex to match ActiveStorage representation URLs
+    URI.stubs(:open).with(regexp_matches(/rails\/active_storage/)).returns(StringIO.new("fixture image data"))
   end
 
   test "defaults to html format" do
@@ -76,10 +82,10 @@ class Blog::ExportTest < ActiveSupport::TestCase
       assert_includes content, "<title>Test Post</title>"
       assert_includes content, "<h1>Test Post</h1>"
 
-      image_path = File.join(dir, "images", @post.token, "test_image.jpg")
+      image_path = File.join(dir, "images", @post.slug, "test_image.jpg")
       assert File.exist?(image_path)
       assert_equal @image_data, File.read(image_path)
-      assert_includes content, "images/#{@post.token}/test_image.jpg"
+      assert_includes content, "images/#{@post.slug}/test_image.jpg"
     end
   end
 

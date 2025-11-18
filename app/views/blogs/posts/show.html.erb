@@ -10,12 +10,12 @@
   <% end %>
 <% end %>
 
-<%= render "blogs/header", hide_email_form: true, hide_bio: true %>
+<%= render "blogs/header", hide_email_form: true, hide_bio: !@post.home_page? %>
 
-<div data-controller="media-embeds">
+<div data-controller="media-embeds lightbox">
 <%= render @post %>
 </div>
 
-<%= render "blogs/email_subscriber_form" if @post.post? %>
+<%= render "blogs/email_subscriber_form" if @post.post? && @blog.show_subscription_in_footer? %>
 
 <%= render 'shared/analytics_tracking', post: @post %>

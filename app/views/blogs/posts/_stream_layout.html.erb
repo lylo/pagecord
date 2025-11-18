@@ -1,0 +1,9 @@
+<%= turbo_frame_tag :posts do %>
+  <div data-controller="media-embeds lightbox turbo-frame-top">
+    <%= render partial: "stream_post", collection: @posts, as: :post %>
+  </div>
+
+  <% if @pagy.next %>
+    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, host: request.host), loading: :lazy %>
+  <% end %>
+<% end %>

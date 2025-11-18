@@ -8,13 +8,15 @@ gem "actionpack-page_caching"
 gem "image_processing", "~> 1.2"
 gem "importmap-rails"
 gem "jbuilder"
+gem "lexxy", "~> 0.1.20.beta"
 gem "ruby-vips"
-gem "sprockets-rails"
+gem "propshaft"
 gem "stimulus-rails"
 gem "tailwindcss-rails"
 gem "turbo-rails"
 
 gem "puma", ">= 5.0"
+gem "playwright-ruby-client"
 
 # database / caching
 gem "dalli"
@@ -39,6 +41,7 @@ gem "premailer-rails", "~> 1.12"
 # everything else
 gem "aws-sdk-s3"
 gem "discard", "~> 1.2"
+gem "redcarpet"
 gem "pg_search"
 gem "reverse_markdown"
 gem "fastimage"
@@ -48,11 +51,12 @@ gem "httparty"
 gem "inline_svg"
 gem "local_time"
 gem "ostruct"
-gem "pagy"
+gem "pagy", "~> 9.4"
 gem "nanoid", "~> 2.0"
 gem "rack-attack"
 gem "rails_autolink"
 gem "rubyzip", "~> 3"
+gem "sanitize"  # CSS and HTML sanitization for user-provided custom CSS
 gem "whenever"
 gem "tzinfo-data"
 
@@ -72,7 +76,8 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
-  gem "letter_opener"
+  gem "letter_opener_web"
+  gem "faker"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false

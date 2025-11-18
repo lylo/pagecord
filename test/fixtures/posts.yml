@@ -4,9 +4,10 @@ DEFAULTS: &default
 one:
   title: The Art of Street Photography
   blog: joel
-  published_at: <%= 1.day.ago %>
+  published_at: <%= 1.day.ago.change(hour: 19, min: 45) %>
   token: <%= SecureRandom.hex(4) %>
   slug: the-art-of-street-photography
+  tag_list: [photography]
   <<: *default
 
 two:
@@ -15,6 +16,7 @@ two:
   published_at: <%= 2.days.ago %>
   token: <%= SecureRandom.hex(4) %>
   slug: the-beauty-of-landscape-photography
+  tag_list: [photography]
   <<: *default
 
 three:
@@ -31,6 +33,23 @@ four:
   published_at: <%= 1.day.ago %>
   token: <%= SecureRandom.hex(4) %>
   slug: what-ive-learned-about-photography
+  <<: *default
+
+trix:
+  title: Created with Trix
+  blog: joel
+  published_at: <%= 1.day.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: created-with-trix
+  tag_list: [technology]
+
+photography_and_tech:
+  title: Photography and Technology
+  blog: joel
+  published_at: <%= 3.days.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: photography-and-technology
+  tag_list: [photography, technology]
   <<: *default
 
 joel_draft:
@@ -55,6 +74,15 @@ joel_titleless:
   token: <%= SecureRandom.hex(4) %>
   slug: d3423ssd4
   <<: *default
+
+embeds:
+  title: Embeds
+  blog: joel
+  published_at: <%= 4.days.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: embeds
+  <<: *default
+
 
 # Pages (is_page: true)
 about:

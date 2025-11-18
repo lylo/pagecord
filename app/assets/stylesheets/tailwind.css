@@ -1,0 +1,74 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/aspect-ratio";
+
+@theme {
+  --color-pagecord-accent: hsl(162, 54%, 57%); /* #56cda9 */
+}
+
+/* Components */
+@import "./components.css";
+
+/* Shared animations (imported from stylesheets, not in @layer to work everywhere) */
+@import "./animations.css";
+
+/* Rest of your CSS for layout, utilities, etc. */
+@layer utilities {
+  /* Theme width utility classes */
+  .max-w-content-narrow {
+    max-width: var(--content-width-narrow);
+  }
+
+  .max-w-content-standard {
+    max-width: var(--content-width-standard);
+  }
+
+  .max-w-content-wide {
+    max-width: var(--content-width-wide);
+  }
+
+  /* Font size utility classes */
+  .text-size-standard {
+    font-size: var(--font-size-standard);
+  }
+
+  .text-size-large {
+    font-size: var(--font-size-large);
+  }
+}
+
+
+hr {
+  @apply border-gray-300 dark:border-gray-600;
+}
+
+/* Pagy pagination */
+.pagy {
+  @apply flex space-x-1 font-semibold text-sm text-slate-500 dark:text-slate-300;
+}
+
+.pagy a {
+  @apply block rounded-lg px-3 py-1 bg-slate-200 dark:bg-slate-700;
+}
+
+.pagy a:hover {
+  @apply bg-slate-300 dark:bg-slate-500 dark:text-slate-100;
+}
+
+a:not([href]), a:not([href]):hover { /* disabled links */
+  @apply text-slate-300 bg-slate-100 dark:bg-slate-800 dark:text-slate-700 cursor-default;
+}
+
+.pagy a.current {
+  @apply text-white bg-slate-400 dark:bg-slate-500;
+}
+
+.pagy label {
+  @apply inline-block whitespace-nowrap bg-slate-200 rounded-lg px-3 py-0.5;
+}
+
+.pagy label input {
+  @apply bg-slate-100 border-none rounded-md;
+}
+

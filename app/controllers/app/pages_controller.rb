@@ -1,4 +1,5 @@
 class App::PagesController < AppController
+  include EditorPreparation
   def index
     @pages = Current.user.blog.pages.published.order(:title)
     @drafts = Current.user.blog.pages.draft.order(:title)
@@ -20,6 +21,7 @@ class App::PagesController < AppController
 
   def edit
     @page = Current.user.blog.pages.find_by!(token: params[:token])
+    prepare_content_for_editor(@page)
   end
 
   def update
@@ -36,6 +38,12 @@ class App::PagesController < AppController
     @page = Current.user.blog.pages.find_by!(token: params[:token])
     @page.destroy!
     redirect_to app_pages_path, notice: "Page was successfully deleted."
+  end
+
+  def set_as_home_page
+    @page = Current.user.blog.pages.find_by!(token: params[:token])
+    Current.user.blog.update!(home_page_id: @page.id)
+    redirect_to app_pages_path, notice: "Home page set!"
   end
 
   private

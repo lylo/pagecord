@@ -1,34 +1,32 @@
-<div class="mb-8">
-  <%= link_to post_path(post), class: "block no-underline", data: { turbo_frame: "_top" } do %>
-    <article class="bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg p-6 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
+<div class="post-card">
+  <%= link_to post_path(post), class: "post-card-link", data: { turbo_frame: "_top" } do %>
+    <div class="post-card-content">
       <% if post.title.present? %>
-        <h1 class="text-2xl font-bold tracking-tight pb-2 text-[var(--color-accent)]">
+        <h2 class="post-card-title">
           <%= post.title %>
-        </h1>
+        </h2>
       <% end %>
 
-      <div class="text-[var(--color-text-muted)] mb-4 break-words">
+      <div class="post-card-summary">
         <% if post.has_text_content? %>
           <%= post.summary(limit: 324) %>
+        <% elsif post.first_image.present? %>
+          <%= image_tag resized_image_url(post.first_image, width: 1600, height: 1200), alt: post.display_title %>
         <% else %>
-          <% if post.first_image.present? %>
-            <%= image_tag resized_image_url(post.first_image, width: 1600, height: 1200), alt: post.display_title, class: "rounded-lg mx-auto max-w-full" %>
-          <% else %>
-            <%= post.content.to_plain_text %>
-          <% end %>
+          <%= post.content.to_plain_text %>
         <% end %>
       </div>
 
       <%= render "tags", post: post if post.tag_list.present? %>
 
-      <div class="flex items-center justify-between <%= post.tag_list.present? ? 'mt-4' : 'mt-6' %>">
-        <div class="text-sm text-[var(--color-text-muted)] opacity-75">
+      <div class="post-card-meta <%= post.tag_list.present? ? 'has-tags' : 'no-tags' %>">
+        <time class="post-card-date" datetime="<%= post.published_at.iso8601 %>">
           <%= local_time post.published_at, format: published_at_date_format %>
-        </div>
-        <span class="inline-flex items-center px-3 py-1 text-xs font-medium text-[var(--color-text-muted)] rounded-full border border-[var(--color-border)]">
+        </time>
+        <span class="post-card-badge">
           <%= t('posts.read_more') %>
         </span>
       </div>
-    </article>
+    </div>
   <% end %>
 </div>

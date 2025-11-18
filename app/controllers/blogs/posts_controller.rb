@@ -5,12 +5,27 @@ class Blogs::PostsController < Blogs::BaseController
 
   skip_before_action :verify_authenticity_token, only: :not_found
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
+  rescue_from Pagy::VariableError, with: :redirect_to_first_page
 
   def index
+    # FIXME this filtered check can be removed after cache has been reset
+    filtered = params[:tag].present?
+    if request.format.html? && @blog.has_custom_home_page? && !filtered
+      @post = @blog.home_page
+      if @post&.published? && !@post.pending?
+        return if fresh_when @post, public: true, template: "blogs/posts/show"
+        return render :show
+      end
+    end
+
+    posts_list
+  end
+
+  def posts_list
     base_scope = @blog.posts.visible
       .with_full_rich_text
       .includes(:upvotes)
-      .order(published_at: :desc)
+      .order(published_at: :desc, id: :desc)
 
     # Filter by tag if specified
     if params[:tag].present?
@@ -21,11 +36,14 @@ class Blogs::PostsController < Blogs::BaseController
     @pagy, @posts = pagy(base_scope, limit: page_size)
 
     respond_to do |format|
-      format.html { set_conditional_get_headers }
+      format.html do
+        return unless set_conditional_get_headers
+        render :index
+      end
       format.rss {
         return unless set_conditional_get_headers
         expires_in 5.minutes, public: true
-        render layout: false
+        render :index, layout: false
       }
     end
   end
@@ -51,6 +69,10 @@ class Blogs::PostsController < Blogs::BaseController
 
     def redirect_to_last_page(exception)
       redirect_to url_for(page: exception.pagy.last, host: request.host)
+    end
+
+    def redirect_to_first_page
+      redirect_to url_for(page: 1, host: request.host)
     end
 
     def page_size

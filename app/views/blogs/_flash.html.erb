@@ -1,8 +1,8 @@
 <% unless flash.empty? %>
-<div class="hidden pointer-events-none" data-controller="fade">
-  <div class="absolute w-full top-4 left-1/2 -translate-x-1/2 justify-center z-10">
-    <div class="max-w-[300px] sm:max-w-[400px] px-4 py-2 mx-auto rounded-md bg-[var(--color-bg-subtle)] shadow-[var(--color-shadow)]">
-      <div class="text-[var(--color-text)] text-center">
+<div class="flash-container hidden pointer-events-none" data-controller="fade">
+  <div class="flash-wrapper">
+    <div class="flash-message">
+      <div class="flash-message-text">
         <% flash.each do |flash_type, message| %>
           <%= message %>
         <% end %>

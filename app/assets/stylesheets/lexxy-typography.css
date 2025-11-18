@@ -1,0 +1,163 @@
+/* ================================== */
+/* Lexxy Content Typography & Layout  */
+/* ================================== */
+:where(.lexxy-content) {
+  line-height: 1.75;
+  --lexxy-content-margin: 1.25rem;
+
+  ul {
+    list-style-position: outside;
+    list-style-type: disc !important;
+    padding-inline-start: 1.625em;
+    margin-inline-start: 1.25em;
+  }
+
+  ol {
+    list-style-position: outside;
+    list-style-type: decimal !important;
+    padding-inline-start: 1.625em;
+    margin-inline-start: 1.5em;
+  }
+
+  li {
+    padding-inline-start: 0.375em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.75;
+  }
+
+  a {
+    text-decoration: underline;
+    font-weight: 500;
+  }
+
+  strong, b {
+    font-weight: 600;
+  }
+
+  h1, h2 {
+    font-size: 1.5em;
+    line-height: 1.5em;
+  }
+
+  h3 {
+    font-size: 1.25em;
+    line-height: 1.25em;
+  }
+
+  h4 {
+    font-size: 1.125em;
+    line-height: 1.125em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: wrap;
+    hyphens: none;
+  }
+
+  blockquote {
+    padding-top: 0.375em;
+    padding-bottom: 0.375em;
+  }
+
+  /* -- Adjustment for Trix-based content */
+  h1 {
+    margin: 0;
+  }
+  div + blockquote,
+  div + pre,
+  blockquote + pre {
+    margin: calc(var(--lexxy-content-margin) / 2) 0;
+  }
+  blockquote + pre {
+    margin: 0;
+  }
+  div + ul,
+  div + ol {
+    margin-top: var(--lexxy-content-margin);
+    margin-bottom: var(--lexxy-content-margin);
+  }
+
+  br + action-text-attachment {
+    margin-top: 0;
+  }
+
+  action-text-attachment + br {
+    display: none; /* or visibility:hidden; if you prefer */
+  }
+
+  /* -- End Adjustments */
+
+  code::before, code::after {
+    content: none;
+  }
+
+  pre,
+  code[data-language] {
+    margin: calc(var(--lexxy-content-margin) * 1.5) 0;
+    padding: 1.5ch;
+    border-radius: 0.5em;
+    font-weight: normal;
+    word-break: break-words;
+    overflow-x: auto;
+
+    ol, ul {
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  img {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    border-radius: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    display: block;
+  }
+
+  /* Full width images on mobile for better portrait image display */
+  @media (max-width: 640px) {
+    img {
+      width: 100%;
+      height: auto;
+      max-block-size: none;
+    }
+  }
+
+  .attachment-gallery {
+    display: flex;
+    gap: 0.5em;
+    justify-content: center;
+    align-items: flex-start;
+
+    img {
+      margin-top: 0;
+      margin-bottom: 0;
+      max-width: none;
+      left: 0;
+      transform: translateX(0);
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+
+  .attachment-gallery--2 img,
+  .attachment-gallery--3 img {
+    width: 100%;
+  }
+
+  figure {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    margin: 0;
+  }
+}

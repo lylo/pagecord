@@ -41,4 +41,6 @@
 /config/credentials/production.key
 .DS_Store
 *.rdb
-*.eml
+/tmp/emails/*.eml
+
+node_modules

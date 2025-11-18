@@ -11,8 +11,10 @@ class Post < ApplicationRecord
   has_many :post_digests, through: :digest_posts
   has_many :replies, class_name: "Post::Reply", dependent: :destroy
   has_many :page_views, dependent: :destroy
+  has_many :navigation_items, dependent: :destroy
 
   before_create :set_published_at, :limit_content_size
+  before_save :set_text_summary
 
   validate :content_present
   validate :title_present_for_pages
@@ -34,11 +36,21 @@ class Post < ApplicationRecord
   after_create :detect_open_graph_image
 
   def content_present
-    errors.add(:content, "can't be blank") unless content.body.present?
+    has_content = content.body.present? && content.body.to_plain_text.strip.present?
+    has_attachments = content.body&.attachments&.any?
+
+    unless has_content || has_attachments
+      doc = Nokogiri::HTML::DocumentFragment.parse(content.body.to_s)
+      unless doc.css("img, video, audio").any?
+        errors.add(:content, "can't be blank")
+      end
+    end
   end
 
+  attr_accessor :is_home_page
+
   def title_present_for_pages
-    if page? && title.blank?
+    if page? && title.blank? && !home_page?
       errors.add(:title, "can't be blank")
     end
   end
@@ -52,20 +64,23 @@ class Post < ApplicationRecord
   end
 
   def summary(limit: 64)
-    return "Untitled" unless has_text_content?
-
-    text_content.truncate(limit, separator: /\s/)
+    return "" unless has_text_content?
+    text_summary.truncate(limit, separator: /\s/)
   end
 
   def has_text_content?
-    text_content.present?
+    text_summary.present?
   end
 
   def display_title
     @display_title ||= if title.present?
       title.truncate(100).strip
+    elsif home_page?
+      "Home Page"
+    elsif text_summary.present?
+      text_summary.truncate(64, separator: /\s/)
     else
-      summary
+      "Untitled"
     end
   end
 
@@ -85,12 +100,16 @@ class Post < ApplicationRecord
     !is_page
   end
 
+  def home_page?
+    (blog.home_page_id.present? && blog.home_page_id == id) || is_home_page
+  end
+
   def first_image
     @first_image ||= begin
       if content_image_attachments.any?
         content_image_attachments.first
       elsif attachments.any?
-        attachments.first
+        attachments.find(&:image?)
       end
     end
   end
@@ -98,10 +117,25 @@ class Post < ApplicationRecord
   private
 
     def text_content
-      @text_content ||= self.content.to_plain_text
-      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
-      .gsub(/\[Image\]/i, "").strip
-      .gsub(/https?:\/\/\S+/, "").strip
+      doc = Nokogiri::HTML::DocumentFragment.parse(self.content.to_s)
+      doc.css("figcaption").remove  # don't want captions in the summary
+
+      # Add space after block-level elements to preserve paragraph boundaries
+      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
+        element.add_next_sibling(Nokogiri::XML::Text.new(" ", doc))
+      end
+
+      text_content = doc.text
+      # Remove image references, [Image], URLs, and custom tags like {{ tag_name }}
+      text_content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
+             .gsub(/\[Image\]/i, "").strip
+             .gsub(/https?:\/\/\S+/, "").strip
+             .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "").strip # strip tags
+             .gsub(/\s+/, " ").strip  # Normalize whitespace
+    end
+
+    def set_text_summary
+      self.text_summary = text_content.truncate(512, separator: /\s/, omission: "")
     end
 
     def set_published_at
@@ -109,7 +143,9 @@ class Post < ApplicationRecord
     end
 
     def limit_content_size
-      self.content = content.to_s.slice(0, 64.kilobytes)
+      if content && content.body.to_html.bytesize > 64.kilobytes
+        self.content = content.body.to_html.byteslice(0, 64.kilobytes)
+      end
     end
 
     def detect_open_graph_image

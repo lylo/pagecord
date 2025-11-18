@@ -3,7 +3,7 @@ import MediaSite from "media_site"
 class Transistor extends MediaSite {
   constructor() {
     super(
-      /https:\/\/share\.transistor\.fm\/e\/([a-zA-Z0-9\-]+)(?:\/(latest|playlist|[a-zA-Z0-9\-]+))?\??(.*)$/,
+      /https:\/\/share\.transistor\.fm\/[se]\/([a-zA-Z0-9\-]+)(?:\/(latest|playlist|[a-zA-Z0-9\-]+))?\??(.*)$/,
 
       async (url) => {
         const match = url.match(this.regex)

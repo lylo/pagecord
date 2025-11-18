@@ -25,7 +25,7 @@
       </div>
 
       <!-- Date Navigation -->
-      <div class="flex items-center space-x-3">
+      <div class="flex justify-center items-center space-x-3">
         <% if @view_type == "month" %>
           <%= link_to admin_analytics_path(view_type: @view_type, date: (@date - 1.month).strftime("%Y-%m")), 
               class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>

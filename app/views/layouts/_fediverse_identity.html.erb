@@ -1,0 +1,4 @@
+<% mastodon_link = @blog.social_navigation_items.mastodon.first %>
+<% if mastodon_link.present? %>
+  <link href="<%= mastodon_link.url %>" rel="me">
+<% end %>

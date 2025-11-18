@@ -37,18 +37,30 @@ class Blog::Export < ApplicationRecord
     def export_posts(dir)
       create_index(dir)
 
-      blog.all_posts.find_each do |post|
+      posts_to_export = blog.all_posts
+      posts_to_export = posts_to_export.where.not(id: blog.home_page_id) if blog.has_custom_home_page?
+      posts_to_export.find_each do |post|
         export_post(post, dir)
       end
     end
 
     def create_index(dir)
+      if blog.has_custom_home_page?
+        # Export home page as index
+        export_post(blog.home_page, dir, filename: markdown? ? "index.md" : "index.html")
+        # Export posts list
+        create_posts_list(dir, filename: markdown? ? "posts.md" : "posts.html")
+      else
+        # Export posts list as index
+        create_posts_list(dir, filename: markdown? ? "index.md" : "index.html")
+      end
+    end
+
+    def create_posts_list(dir, filename:)
       if markdown?
         template_path = Rails.root.join("app/views/blog/exports/index.md.erb")
-        filename = "index.md"
       else
         template_path = Rails.root.join("app/views/blog/exports/index.html.erb")
-        filename = "index.html"
       end
 
       template = ERB.new(File.read(template_path), trim_mode: "-")
@@ -58,11 +70,12 @@ class Blog::Export < ApplicationRecord
       end
     end
 
-    def export_post(post, dir)
+    def export_post(post, dir, filename: nil)
       images_dir = File.join(dir, "images")
       FileUtils.mkdir_p(images_dir)
 
       stripped_html = Html::StripActionTextAttachments.new.transform(post.content.to_s)
+      stripped_html = Html::Sanitize.new.transform(stripped_html)
 
       if markdown?
         @post_content = html_to_markdown(Blog::Export::ImageHandler.new(post, images_dir).process_images(stripped_html))
@@ -76,7 +89,8 @@ class Blog::Export < ApplicationRecord
 
       template = ERB.new(File.read(template_path), trim_mode: "-")
 
-      File.open(File.join(dir, "#{post.slug}.#{file_extension}"), "w") do |file|
+      filename ||= "#{post.slug}.#{file_extension}"
+      File.open(File.join(dir, filename), "w") do |file|
         file.write(template.result(binding))
       end
     end

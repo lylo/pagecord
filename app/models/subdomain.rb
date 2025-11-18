@@ -1,5 +1,5 @@
 class Subdomain
-  RESERVED = %w[ about admin app api careers contact faq feed
+  RESERVED = %w[ about admin app api careers community contact discover faq feed
                  help images jobs login pagecord privacy pricing rails rss
                  sidekiq signup support terms ]
 

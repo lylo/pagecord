@@ -7,15 +7,43 @@
     </p>
   <% end %>
 
-  <div class="mt-8 flex gap-3">
-    <div class="flex h-6 shrink-0 items-center">
-      <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+  <div data-controller="subscription-settings" class="mt-8">
+    <div class="flex gap-3">
+      <div class="flex h-6 shrink-0 items-center">
+        <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300", data: { subscription_settings_target: "primary", action: "change->subscription-settings#toggleDependents" } } %>
+      </div>
+      <div>
+        <%= form.label :email_subscriptions_enabled, "Email subscriptions enabled", class: "text-slate-800 dark:text-slate-100" %>
+        <p class="text-slate-500 text-sm">
+          Allow readers to subscribe to your blog via email. When enabled, subscribers will receive an email digest of your latest posts every Tuesday morning.
+        </p>
+      </div>
     </div>
-    <div>
-      <%= form.label :email_subscriptions_enabled, "Email subscriptions enabled", class: "text-slate-800 dark:text-slate-100" %>
-      <p class="text-slate-500 text-sm">
-        Allow readers to subscribe to your blog via email. When enabled, subscribers will receive an email digest of your latest posts every Tuesday morning.
-      </p>
+
+    <div class="mt-4 ml-8">
+      <div class="flex gap-3" data-subscription-settings-target="dependent">
+        <div class="flex h-6 shrink-0 items-center">
+          <%= form.check_box :show_subscription_in_header, { checked: @blog.show_subscription_in_header, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
+        </div>
+        <div>
+          <%= form.label :show_subscription_in_header, "Show subscription form in blog header", class: "text-slate-800 dark:text-slate-100" %>
+          <p class="text-slate-500 text-sm">
+            Display the email subscription form in your blog's header when viewing all posts.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-4 flex gap-3" data-subscription-settings-target="dependent">
+        <div class="flex h-6 shrink-0 items-center">
+          <%= form.check_box :show_subscription_in_footer, { checked: @blog.show_subscription_in_footer, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
+        </div>
+        <div>
+          <%= form.label :show_subscription_in_footer, "Show subscription form in post footer", class: "text-slate-800 dark:text-slate-100" %>
+          <p class="text-slate-500 text-sm">
+            Display the email subscription form at the bottom of the page when viewing individual posts.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -49,7 +77,7 @@
     </div>
   </div>
 
-  <div class="mt-12 flex items-cente pt-4 border-t border-t-slate-200 dark:border-slate-600">
+  <div class="mt-12 flex items-center gap-x-2 pt-4 border-t border-t-slate-200 dark:border-slate-600">
     <%= form.submit "Update", class: "btn-primary" %>
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
   </div>

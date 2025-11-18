@@ -1,2 +1,2 @@
-<%= favicon_link_tag "manifest.webmanifest", rel: "manifest" %>
-<meta name="mobile-web-app-capable" content="yes">
+<%= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+<meta name="apple-mobile-web-app-capable" content="yes">

@@ -36,27 +36,14 @@ class Analytics::Base
     end
 
     def rollup_counts(start_time, end_time)
-      unique_count = Rollup.where(
+      Rollup.where(
         name: "unique_views_by_blog",
         time: start_time..end_time,
         dimensions: { blog_id: blog.id }
       ).sum(:value).to_i
-
-      total_count = Rollup.where(
-        name: "total_views_by_blog",
-        time: start_time..end_time,
-        dimensions: { blog_id: blog.id }
-      ).sum(:value).to_i
-
-      [ unique_count, total_count ]
     end
 
     def raw_counts(start_time, end_time)
-      page_views = blog.page_views.where(viewed_at: start_time..end_time)
-
-      unique_count = page_views.where(is_unique: true).count
-      total_count = page_views.count
-
-      [ unique_count, total_count ]
+      blog.page_views.where(viewed_at: start_time..end_time, is_unique: true).count
     end
 end

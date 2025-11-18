@@ -167,4 +167,33 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_select "select[name='blog[locale]']", count: 1
     assert_response :success
   end
+
+  test "should update show_subscription_in_header" do
+    patch app_settings_blog_url(@blog), params: { blog: { show_subscription_in_header: false } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal false, @blog.reload.show_subscription_in_header
+  end
+
+  test "should update show_subscription_in_footer" do
+    patch app_settings_blog_url(@blog), params: { blog: { show_subscription_in_footer: false } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal false, @blog.reload.show_subscription_in_footer
+  end
+
+  test "should not allow non-subscribed user to update subscription location settings" do
+    login_as users(:vivian)
+
+    patch app_settings_blog_url(users(:vivian).blog), params: {
+      blog: {
+        show_subscription_in_header: false,
+        show_subscription_in_footer: false
+      }
+    }, as: :turbo_stream
+
+    blog = users(:vivian).blog.reload
+    assert blog.show_subscription_in_header
+    assert blog.show_subscription_in_footer
+  end
 end

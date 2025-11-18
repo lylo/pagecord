@@ -1,6 +1,8 @@
 module Sluggable
   extend ActiveSupport::Concern
 
+  RESERVED_SLUGS = %w[posts feed].freeze
+
   included do
     before_validation :set_slug
     validates :slug,
@@ -13,6 +15,10 @@ module Sluggable
       uniqueness: {
         scope: :blog_id,
         message: "This slug has already been taken. Please choose another one."
+      },
+      exclusion: {
+        in: RESERVED_SLUGS,
+        message: "is reserved and cannot be used"
       }
   end
 
@@ -34,21 +40,24 @@ module Sluggable
 
       candidate_slug = base_slug
       while slug_taken?(candidate_slug)
-        candidate_slug = "#{base_slug}-#{temp_token}"
-        temp_token = SecureRandom.hex(4)
+        candidate_slug = "#{base_slug}-#{SecureRandom.hex(4)}"
       end
 
       self.slug = candidate_slug
     end
 
     def slug_taken?(candidate)
-      blog.posts.where.not(id: id).exists?(slug: candidate)
+      RESERVED_SLUGS.include?(candidate) || blog.all_posts.where.not(id: id).exists?(slug: candidate)
     end
 
     def parameterized_title
-      parameterized = title.to_s.parameterize.truncate(100, omission: "") || ""
+      # remove apostrophes to avoid unwanted hyphens during parameterization
+      parameterized = title.to_s.delete("'")
 
-      # Remove trailing hyphens that might result from truncation
+      # convert to URL-friendly form and cap at 100 chars
+      parameterized = parameterized.parameterize.truncate(100, omission: "") || ""
+
+      # Remove trailing hyphens that can result from truncation
       parameterized.gsub(/-+\z/, "")
     end
 end

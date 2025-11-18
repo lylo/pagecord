@@ -21,7 +21,9 @@ module BlogsHelper
 
   def page_title
     if @post
-      if @post.title&.present?
+      if @post.home_page?
+        blog_title(@post.blog)
+      elsif @post.title&.present?
         "#{@post.title} - #{@post.blog.display_name}"
       else
         "#{blog_title(@post.blog)} - #{@post.published_at_in_user_timezone.to_formatted_s(:long)}"
@@ -32,11 +34,9 @@ module BlogsHelper
   end
 
   def blog_title(blog)
-    if blog.custom_title?
-      blog.title
-    else
-      "Posts from @#{blog.subdomain}"
-    end
+    return blog.seo_title if blog.seo_title.present?
+    return blog.title if blog.custom_title?
+    "Posts from @#{blog.subdomain}"
   end
 
   def meta_description
@@ -50,8 +50,24 @@ module BlogsHelper
   def canonical_url
     if @post.present? && @post.canonical_url.present?
       @post.canonical_url
+    elsif @post.present?
+      post_url(@post)
+    elsif @blog.present?
+      blog_home_url(@blog)
     else
       request&.original_url
+    end
+  end
+
+  def content_type_class
+    return "" unless @post
+
+    if @post.home_page?
+      "home-page"
+    elsif @post.page?
+      "page"
+    else
+      "post"
     end
   end
 

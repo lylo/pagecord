@@ -18,7 +18,7 @@ class PostsMailbox < ApplicationMailbox
     if blog = blog_from_email(from, recipient)
       begin
         parser = MailParser.new(mail, process_attachments: blog.user.subscribed?)
-        unless parser.is_blank?
+        unless parser.blank?
           content = parser.body
           title = parser.subject
 
@@ -42,7 +42,11 @@ class PostsMailbox < ApplicationMailbox
       end
     else
       # Raise an error in Sentry for information. No need to retry the email
-      Sentry.capture_message("User not found. From: #{from}, To: #{recipient}")
+      Sentry.with_scope do |scope|
+        scope.set_tags(from: from, recipient: recipient)
+        Sentry.capture_message("User not found")
+      end
+
       Appsignal.report_error(StandardError.new("User not found")) do |transaction|
         Appsignal.set_action("PostsMailbox#process")
         Appsignal.add_tags(

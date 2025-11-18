@@ -42,7 +42,7 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.delivery_method = :letter_opener_web
   config.action_mailer.perform_deliveries = true
 
   # Use different settings based on whether we're using puma-dev or regular Rails server
@@ -74,8 +74,6 @@ Rails.application.configure do
   config.active_job.verbose_enqueue_logs = true
   config.active_job.queue_adapter = :inline
 
-  # Suppress logger output for asset requests.
-  config.assets.quiet = true
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
@@ -95,4 +93,7 @@ Rails.application.configure do
 
   # allow any host in dev
   config.hosts.clear
+
+  # Allow web console from Docker host
+  config.web_console.allowed_ips = %w[172.0.0.0/8 10.0.0.0/8 192.168.0.0/16]
 end

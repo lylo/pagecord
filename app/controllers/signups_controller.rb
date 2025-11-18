@@ -25,6 +25,10 @@ class SignupsController < ApplicationController
     end
 
     @user = User.new(user_params)
+
+    # New users should get Lexxy if configured
+    @user.blog.features = [ "lexxy" ] if ENV["LEXXY_FOR_NEW_USERS"]
+
     if signup_from_allowed_timezone && @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
@@ -74,6 +78,7 @@ class SignupsController < ApplicationController
     end
 
     def signup_from_allowed_timezone
-      [ "Chennai" ].exclude?(user_params[:timezone])
+      banned_timezones = ENV["BANNED_TIMEZONES"]&.split(",")&.map(&:strip) || []
+      banned_timezones.exclude?(user_params[:timezone])
     end
 end

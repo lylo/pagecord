@@ -1,0 +1,122 @@
+<div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
+  <div class="my-8">
+    <h2 class="text-2xl font-bold mb-2">Navigation</h2>
+    <p class="text-slate-600 dark:text-slate-400 mb-8">
+      Manage the links in your blog's header. Drag to reorder.
+    </p>
+
+    <% if @navigation_items.any? %>
+      <div class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+           data-controller="sortable"
+           data-sortable-resource-name-value="navigation_item"
+           data-sortable-handle-value=".handle"
+           data-sortable-animation-value="150">
+        <% @navigation_items.each do |item| %>
+          <%= render partial: item.class.name.underscore, locals: { item.class.name.underscore.to_sym => item } %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="mt-8" data-controller="navigation-form" data-navigation-form-rss-feed-url-value="<%= rss_feed_url(@blog) %>">
+      <h3 class="font-bold text-lg mb-4">Add Navigation Item</h3>
+
+      <%= form_with model: [:app, :settings, @navigation_item || NavigationItem.new], scope: :navigation_item, url: @navigation_item&.persisted? ? app_settings_navigation_item_path(@navigation_item) : app_settings_navigation_items_path, class: "space-y-6" do |form| %>
+        <div>
+          <div class="space-y-3">
+            <% selected_type = @navigation_item&.is_a?(PageNavigationItem) ? "page" : (@navigation_item&.is_a?(SocialNavigationItem) ? "social" : "custom") %>
+            <% selected_type = "page" unless @navigation_item %>
+            <label class="flex items-center">
+              <%= radio_button_tag :nav_type, "page", selected_type == "page",
+                  class: "rounded-full border-slate-300 dark:border-slate-600 text-[#4fbd9c] focus:ring-[#4fbd9c]",
+                  data: { navigation_form_target: "pageRadio", action: "change->navigation-form#toggleFields" } %>
+              <span class="ml-2">Link to a page</span>
+            </label>
+            <label class="flex items-center">
+              <%= radio_button_tag :nav_type, "custom", selected_type == "custom",
+                  class: "rounded-full border-slate-300 dark:border-slate-600 text-[#4fbd9c] focus:ring-[#4fbd9c]",
+                  data: { navigation_form_target: "customRadio", action: "change->navigation-form#toggleFields" } %>
+              <span class="ml-2">Custom link</span>
+            </label>
+            <label class="flex items-center">
+              <%= radio_button_tag :nav_type, "social", selected_type == "social",
+                  class: "rounded-full border-slate-300 dark:border-slate-600 text-[#4fbd9c] focus:ring-[#4fbd9c]",
+                  data: { navigation_form_target: "socialRadio", action: "change->navigation-form#toggleFields" } %>
+              <span class="ml-2">Social link</span>
+            </label>
+          </div>
+        </div>
+
+        <div data-navigation-form-target="pageFields" class="<%= 'hidden' if selected_type != 'page' %>">
+          <%= form.label :post_id, "Page", class: "block font-medium mb-2" %>
+          <%= form.select :post_id,
+              options_from_collection_for_select(@pages, :id, :title),
+              { include_blank: "Select a page..." },
+              class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200" %>
+        </div>
+
+        <div data-navigation-form-target="customFields" class="space-y-4 <%= 'hidden' if selected_type != 'custom' %>">
+          <div>
+            <%= form.label :label, "Label", class: "block font-medium mb-2" %>
+            <%= form.text_field :label,
+                placeholder: "e.g., Posts, Archive, Blog",
+                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 #{'!border-red-500' if @navigation_item&.errors&.[](:label)&.any?}" %>
+            <% if @navigation_item&.errors&.[](:label)&.any? %>
+              <div class="mt-1 text-xs text-red-500">
+                <%= @navigation_item.errors[:label].to_sentence %>
+              </div>
+            <% end %>
+          </div>
+
+          <div>
+            <%= form.label :url, "URL", class: "block font-medium mb-2" %>
+            <%= form.text_field :url,
+                placeholder: "e.g., /posts, /archive, https://example.com",
+                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 #{'!border-red-500' if @navigation_item&.errors&.[](:url)&.any?}" %>
+            <% if @navigation_item&.errors&.[](:url)&.any? %>
+              <div class="mt-1 text-xs text-red-500">
+                <%= @navigation_item.errors[:url].to_sentence %>
+              </div>
+            <% else %>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Use relative paths (e.g., /posts) or full URLs (https://...)
+              </p>
+            <% end %>
+          </div>
+        </div>
+
+        <div data-navigation-form-target="socialFields" class="space-y-4 <%= 'hidden' if selected_type != 'social' %>">
+          <div>
+            <%= form.label :platform, "Platform", class: "block font-medium mb-2" %>
+            <%= form.select :platform,
+                options_for_select(SocialNavigationItem::PLATFORMS, @navigation_item&.platform),
+                { include_blank: "Select platform..." },
+                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 #{'!border-red-500' if @navigation_item&.errors&.[](:platform)&.any?}",
+                data: { navigation_form_target: "platform", action: "change->navigation-form#handlePlatformChange" } %>
+            <% if @navigation_item&.errors&.[](:platform)&.any? %>
+              <div class="mt-1 text-xs text-red-500">
+                <%= @navigation_item.errors[:platform].to_sentence %>
+              </div>
+            <% end %>
+          </div>
+
+          <div>
+            <%= form.label :url, "URL", class: "block font-medium mb-2" %>
+            <%= form.text_field :url,
+                placeholder: "https://...",
+                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 #{'!border-red-500' if @navigation_item&.errors&.[](:url)&.any?}",
+                data: { navigation_form_target: "url" } %>
+            <% if @navigation_item&.errors&.[](:url)&.any? %>
+              <div class="mt-1 text-xs text-red-500">
+                <%= @navigation_item.errors[:url].to_sentence %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div>
+          <%= form.submit "Add to Navigation", class: "btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
