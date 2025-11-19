@@ -779,6 +779,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_template layout: "blog"
   end
 
+  test "should return 404 for null byte injection attempts" do
+    get "/test-post%00"
+
+    assert_response :not_found
+    assert_template "blogs/errors/not_found"
+    assert_template layout: "blog"
+  end
+
   test "should render blog 404 template for unmatched routes" do
     get "/wp-json/activitypub/1.0/actors/-1/inbox"
 

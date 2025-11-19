@@ -2,7 +2,7 @@ class Blogs::BaseController < ApplicationController
   layout "blog"
 
   skip_before_action :domain_check
-  before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale
+  before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale, :reject_null_bytes
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_blog_not_found
 
@@ -74,6 +74,12 @@ class Blogs::BaseController < ApplicationController
 
     def set_locale
       I18n.locale = @blog&.locale || I18n.default_locale
+    end
+
+    def reject_null_bytes
+      params.each do |key, value|
+        raise ActiveRecord::RecordNotFound if value.is_a?(String) && value.include?("\u0000")
+      end
     end
 
     def render_blog_not_found
