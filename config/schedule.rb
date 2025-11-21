@@ -19,13 +19,14 @@
 
 # Learn more: http://github.com/javan/whenever
 
-every 5.minutes do
+# Run hourly instead of suggested 5 min to reduce overhead
+every 1.hour do
   rake "pghero:capture_query_stats"
 end
 
 every 1.day, at: "1:00 am" do
   rake "pghero:capture_space_stats"
-  runner "PgHero.clean_query_stats(before: 14.days.ago)"
+  runner "PgHero.clean_query_stats(before: 7.days.ago)"  # Reduced from default of 14 to save space
   runner "PgHero.clean_space_stats(before: 90.days.ago)"
 end
 
