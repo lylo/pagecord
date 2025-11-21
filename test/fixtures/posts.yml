@@ -38,10 +38,11 @@ four:
 trix:
   title: Created with Trix
   blog: joel
-  published_at: <%= 1.day.ago %>
+  published_at: <%= 1.day.ago.change(hour: 10, min: 0) %>
   token: <%= SecureRandom.hex(4) %>
   slug: created-with-trix
   tag_list: [technology]
+  <<: *default
 
 photography_and_tech:
   title: Photography and Technology
