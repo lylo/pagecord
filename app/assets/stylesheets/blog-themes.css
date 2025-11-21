@@ -44,36 +44,36 @@
 
   /* === Backgrounds === */
   --color-bg: var(--theme-bg);
-  --color-bg-subtle: color-mix(in oklch, var(--theme-bg) 95%, var(--theme-text) 5%);
-  --color-bg-elevated: color-mix(in oklch, var(--theme-bg) 90%, var(--theme-text) 10%);
-  --color-bg-sunken: color-mix(in oklch, var(--theme-bg) 85%, var(--theme-text) 15%);
-  --color-bg-inverted: color-mix(in oklch, var(--theme-text) 100%, var(--theme-bg) 0%);
+  --color-bg-subtle: color-mix(in srgb, var(--theme-bg) 95%, var(--theme-text) 5%);
+  --color-bg-elevated: color-mix(in srgb, var(--theme-bg) 90%, var(--theme-text) 10%);
+  --color-bg-sunken: color-mix(in srgb, var(--theme-bg) 85%, var(--theme-text) 15%);
+  --color-bg-inverted: color-mix(in srgb, var(--theme-text) 100%, var(--theme-bg) 0%);
 
   /* === Text === */
   --color-text: var(--theme-text);
   --color-text-heading: var(--theme-text);
-  --color-text-muted: color-mix(in oklch, var(--theme-text) 60%, var(--theme-bg) 40%);
-  --color-text-light: color-mix(in oklch, var(--theme-text) 40%, var(--theme-bg) 60%);
-  --color-text-disabled: color-mix(in oklch, var(--theme-text) 20%, var(--theme-bg) 80%);
+  --color-text-muted: color-mix(in srgb, var(--theme-text) 60%, var(--theme-bg) 40%);
+  --color-text-light: color-mix(in srgb, var(--theme-text) 40%, var(--theme-bg) 60%);
+  --color-text-disabled: color-mix(in srgb, var(--theme-text) 20%, var(--theme-bg) 80%);
   --color-text-inverted: var(--theme-bg);
 
   /* === Accent === */
   --color-accent: var(--theme-accent);
-  --color-accent-hover: color-mix(in oklch, var(--theme-accent) 70%, black 30%);
-  --color-accent-muted: color-mix(in oklch, var(--theme-accent) 50%, var(--theme-bg) 50%);
+  --color-accent-hover: color-mix(in srgb, var(--theme-accent) 70%, black 30%);
+  --color-accent-muted: color-mix(in srgb, var(--theme-accent) 50%, var(--theme-bg) 50%);
 
   /* === Borders & UI === */
-  --color-border: color-mix(in oklch, var(--theme-bg) 85%, var(--theme-text) 15%);
-  --color-border-strong: color-mix(in oklch, var(--theme-bg) 65%, var(--theme-text) 35%);
-  --color-focus: color-mix(in oklch, var(--theme-accent) 50%, transparent 50%);
-  --color-shadow: color-mix(in oklch, var(--theme-text) 30%, transparent 70%);
+  --color-border: color-mix(in srgb, var(--theme-bg) 85%, var(--theme-text) 15%);
+  --color-border-strong: color-mix(in srgb, var(--theme-bg) 65%, var(--theme-text) 35%);
+  --color-focus: color-mix(in srgb, var(--theme-accent) 50%, transparent 50%);
+  --color-shadow: color-mix(in srgb, var(--theme-text) 30%, transparent 70%);
 
   /* === Forms === */
   --color-input-bg: white;
   --color-input-border: var(--color-border);
-  --color-input-focus: color-mix(in oklch, var(--theme-accent) 50%, transparent 50%);
-  --color-button-bg: color-mix(in oklch, var(--theme-bg) 50%, var(--theme-text) 50%);
-  --color-button-hover: color-mix(in oklch, var(--theme-bg) 40%, var(--theme-text) 60%);
+  --color-input-focus: color-mix(in srgb, var(--theme-accent) 50%, transparent 50%);
+  --color-button-bg: color-mix(in srgb, var(--theme-bg) 50%, var(--theme-text) 50%);
+  --color-button-hover: color-mix(in srgb, var(--theme-bg) 40%, var(--theme-text) 60%);
   --color-button-text: var(--theme-bg);
   --color-placeholder: var(--color-text-light);
 }
@@ -85,19 +85,19 @@
 @media (prefers-color-scheme: dark) {
   [data-theme] {
     /* Invert the mixing ratios for dark mode */
-    --color-bg-subtle: color-mix(in oklch, var(--theme-bg) 90%, white 10%);
-    --color-bg-elevated: color-mix(in oklch, var(--theme-bg) 85%, white 15%);
-    --color-bg-sunken: color-mix(in oklch, var(--theme-bg) 80%, black 20%);
+    --color-bg-subtle: color-mix(in srgb, var(--theme-bg) 90%, white 10%);
+    --color-bg-elevated: color-mix(in srgb, var(--theme-bg) 85%, white 15%);
+    --color-bg-sunken: color-mix(in srgb, var(--theme-bg) 80%, black 20%);
 
     /* Text mixings stay similar but heading gets brighter */
-    --color-text-heading: color-mix(in oklch, var(--theme-text) 100%, white 5%);
+    --color-text-heading: color-mix(in srgb, var(--theme-text) 100%, white 5%);
 
     /* Accent gets slightly lighter on hover in dark mode */
-    --color-accent-hover: color-mix(in oklch, var(--theme-accent) 70%, white 30%);
+    --color-accent-hover: color-mix(in srgb, var(--theme-accent) 70%, white 30%);
 
     /* Borders are lighter in dark mode */
-    --color-border: color-mix(in oklch, var(--theme-bg) 70%, white 30%);
-    --color-border-strong: color-mix(in oklch, var(--theme-bg) 50%, white 50%);
+    --color-border: color-mix(in srgb, var(--theme-bg) 70%, white 30%);
+    --color-border-strong: color-mix(in srgb, var(--theme-bg) 50%, white 50%);
 
     /* Forms - darker input in dark mode */
     --color-input-bg: var(--theme-bg);
