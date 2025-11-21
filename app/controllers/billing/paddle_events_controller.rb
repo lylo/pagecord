@@ -77,7 +77,7 @@ module Billing
           paddle_subscription_id: data.id,
           paddle_customer_id: data.customer_id,
           paddle_price_id: data.items[0].price.id,
-          unit_price: unit_price,
+          unit_price: base_unit_price,
           next_billed_at: Time.parse(data.next_billed_at)
         )
       end
@@ -99,10 +99,9 @@ module Billing
 
         Rails.logger.info "Subscription next billed at updated to #{next_billed_at}"
         @subscription.update!(
-            paddle_price_id: data.items[0].price.id,
-            unit_price: unit_price,
-            next_billed_at: next_billed_at
-          )
+          paddle_price_id: data.items[0].price.id,
+          next_billed_at: next_billed_at
+        )
 
         # this webhook is also called when a subscription is cancelled, with the
         # scheduled_change action set to cancel.
@@ -119,13 +118,9 @@ module Billing
         Rails.logger.info "Subscription past due"
       end
 
-      # Called when a payment is successfully processed (either a new subscription or a renewal)
-      # Use this method to update the next billing date
       def transaction_completed
-        Rails.logger.info "Transaction completed. Updating next_billed_at"
+        Rails.logger.info "Transaction completed. Updating next_billed_at and unit_price"
 
-        # transaction.completed gets called if a customer updates their card.
-        # in this scenario, simply return - it's a no-op
         return if data.origin == "subscription_payment_method_change"
 
         billing_period_ends_at = if data.billing_period.present?
@@ -141,9 +136,14 @@ module Billing
 
         if @subscription.present?
           next_billed_at = Time.parse(billing_period_ends_at)
-          @subscription.update!(next_billed_at: next_billed_at)
+          actual_unit_price = transaction_unit_price
 
-          Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}"
+          @subscription.update!(
+            next_billed_at: next_billed_at,
+            unit_price: actual_unit_price
+          )
+
+          Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}, unit_price: #{actual_unit_price}"
         else
           raise "Subscription not found for transaction_completed event for #{@user.id} (#{@user.blog.subdomain})"
         end
@@ -154,14 +154,12 @@ module Billing
         raise "Payment failed for user #{@user.id} (#{@user.blog.subdomain})"
       end
 
-      def unit_price
-        price_data = data.items[0].price
+      def base_unit_price
+        data.items[0].price.unit_price.amount.to_i
+      end
 
-        if price_data.unit_price_overrides.present?
-          price_data.unit_price_overrides[0].unit_price.amount.to_i
-        else
-          price_data.unit_price.amount.to_i
-        end
+      def transaction_unit_price
+        data.details.line_items[0].unit_totals.total.to_i
       end
 
       def data
