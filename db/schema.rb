@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_11_21_115753) do
+ActiveRecord::Schema[8.2].define(version: 2025_11_21_221229) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -44,7 +44,6 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_115753) do
     t.string "record_type", null: false
     t.datetime "updated_at", null: false
     t.index ["body"], name: "index_action_text_rich_texts_on_body_trigram", opclass: :gin_trgm_ops, using: :gin
-    t.index ["record_type", "name", "record_id"], name: "index_action_text_rich_texts_on_post_content", where: "(((record_type)::text = 'Post'::text) AND ((name)::text = 'content'::text))"
     t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
   end
 
@@ -82,7 +81,6 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_115753) do
     t.integer "format", default: 0, null: false
     t.integer "status", default: 0
     t.datetime "updated_at", null: false
-    t.index ["blog_id"], name: "index_blog_exports_on_blog_id"
   end
 
   create_table "blogs", force: :cascade do |t|
@@ -131,7 +129,6 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_115753) do
     t.datetime "created_at", null: false
     t.string "custom_domain"
     t.datetime "updated_at", null: false
-    t.index ["blog_id"], name: "index_custom_domain_changes_on_blog_id"
   end
 
   create_table "digest_posts", force: :cascade do |t|
@@ -185,9 +182,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_115753) do
     t.datetime "updated_at", null: false
     t.string "url"
     t.index ["blog_id", "position"], name: "index_navigation_items_on_blog_id_and_position"
-    t.index ["blog_id"], name: "index_navigation_items_on_blog_id"
     t.index ["post_id"], name: "index_navigation_items_on_post_id"
-    t.index ["type"], name: "index_navigation_items_on_type"
   end
 
   create_table "open_graph_images", force: :cascade do |t|
@@ -195,7 +190,6 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_115753) do
     t.bigint "post_id", null: false
     t.datetime "updated_at", null: false
     t.string "url", null: false
-    t.index ["post_id"], name: "index_open_graph_images_on_post_id"
   end
 
   create_table "paddle_events", force: :cascade do |t|
@@ -219,7 +213,6 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_115753) do
     t.datetime "viewed_at", null: false
     t.string "visitor_hash", null: false
     t.index ["blog_id", "viewed_at"], name: "index_page_views_on_blog_id_and_viewed_at"
-    t.index ["blog_id"], name: "index_page_views_on_blog_id"
     t.index ["post_id"], name: "index_page_views_on_post_id"
     t.index ["viewed_at"], name: "index_page_views_on_viewed_at"
     t.index ["visitor_hash", "post_id", "viewed_at"], name: "index_page_views_on_visitor_hash_and_post_id_and_viewed_at"
@@ -272,8 +265,6 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_115753) do
     t.bigint "post_id", null: false
     t.string "subject", null: false
     t.datetime "updated_at", null: false
-    t.index ["created_at"], name: "index_post_replies_on_created_at"
-    t.index ["email"], name: "index_post_replies_on_email"
     t.index ["post_id"], name: "index_post_replies_on_post_id"
   end
 
@@ -350,7 +341,6 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_115753) do
     t.integer "unit_price"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["paddle_customer_id"], name: "index_subscriptions_on_paddle_customer_id"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
