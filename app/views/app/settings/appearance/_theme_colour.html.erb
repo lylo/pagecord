@@ -1,11 +1,12 @@
-<div class="mt-4 mb-8">
+<div class="mt-4 mb-8" data-controller="theme-selector">
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
     <% Themeable::THEMES.each do |theme_name| %>
       <div class="theme-option relative">
         <%= form.radio_button :theme, theme_name,
           checked: @blog.theme == theme_name,
           class: "sr-only peer",
-          id: "theme_#{theme_name}" %>
+          id: "theme_#{theme_name}",
+          data: { action: "theme-selector#selectTheme" } %>
         <label for="theme_<%= theme_name %>"
           class="flex flex-col rounded-lg border-2 border-transparent p-3 cursor-pointer
                  peer-checked:border-sky-500 dark:peer-checked:border-sky-600
@@ -25,6 +26,46 @@
         </label>
       </div>
     <% end %>
+  </div>
+
+  <div data-theme-selector-target="customThemeFields" class="mt-8 <%= 'hidden' unless @blog.custom_theme? %>">
+    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 mb-4">Custom Theme Colors</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Light Mode</h4>
+        <div class="space-y-4">
+          <div>
+            <%= form.label :custom_theme_bg_light, "Background Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.color_field :custom_theme_bg_light, value: @blog.custom_theme_colors[:light][:bg], class: "mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm h-8 appearance-none overflow-hidden" %>
+          </div>
+          <div>
+            <%= form.label :custom_theme_text_light, "Text Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.color_field :custom_theme_text_light, value: @blog.custom_theme_colors[:light][:text], class: "mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-sky-500 focus:focus:border-sky-500 sm:text-sm h-8 appearance-none overflow-hidden" %>
+          </div>
+          <div>
+            <%= form.label :custom_theme_accent_light, "Accent Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.color_field :custom_theme_accent_light, value: @blog.custom_theme_colors[:light][:accent], class: "mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm h-8 appearance-none overflow-hidden" %>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Dark Mode</h4>
+        <div class="space-y-4">
+          <div>
+            <%= form.label :custom_theme_bg_dark, "Background Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.color_field :custom_theme_bg_dark, value: @blog.custom_theme_colors[:dark][:bg], class: "mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm h-8 appearance-none overflow-hidden" %>
+          </div>
+          <div>
+            <%= form.label :custom_theme_text_dark, "Text Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.color_field :custom_theme_text_dark, value: @blog.custom_theme_colors[:dark][:text], class: "mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm h-8 appearance-none overflow-hidden" %>
+          </div>
+          <div>
+            <%= form.label :custom_theme_accent_dark, "Accent Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.color_field :custom_theme_accent_dark, value: @blog.custom_theme_colors[:dark][:accent], class: "mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-sky-500 focus:focus:border-sky-500 sm:text-sm h-8 appearance-none overflow-hidden" %>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

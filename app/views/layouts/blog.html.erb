@@ -59,6 +59,24 @@
         <%= @blog.sanitized_custom_css %>
       </style>
     <% end %>
+
+    <% if @blog.present? && @blog.custom_theme? %>
+      <style>
+        [data-theme="custom"] {
+          --theme-bg: <%= @blog.custom_theme_colors[:light][:bg] %>;
+          --theme-text: <%= @blog.custom_theme_colors[:light][:text] %>;
+          --theme-accent: <%= @blog.custom_theme_colors[:light][:accent] %>;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          [data-theme="custom"] {
+            --theme-bg: <%= @blog.custom_theme_colors[:dark][:bg] %>;
+            --theme-text: <%= @blog.custom_theme_colors[:dark][:text] %>;
+            --theme-accent: <%= @blog.custom_theme_colors[:dark][:accent] %>;
+          }
+        }
+      </style>
+    <% end %>
   </head>
 
   <body class="<%= font_class %>" <%= theme_data_attribute %>>

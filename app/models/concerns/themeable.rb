@@ -1,7 +1,7 @@
 module Themeable
   extend ActiveSupport::Concern
 
-  THEMES = %w[base mint lavender coral sand sky berry].freeze
+  THEMES = %w[base mint lavender coral sand sky berry custom].freeze
   FONTS = %w[sans serif mono].freeze
   PAGE_WIDTHS = %w[narrow standard wide].freeze
 

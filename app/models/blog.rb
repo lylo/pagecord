@@ -1,6 +1,14 @@
 class Blog < ApplicationRecord
   include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable
 
+  class ColorFormatValidator < ActiveModel::EachValidator
+    def validate_each(record, attribute, value)
+      if value.present? && !value.match?(/\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/)
+        record.errors.add(attribute, "must be a valid hex color code (e.g., #RRGGBB)")
+      end
+    end
+  end
+
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
   belongs_to :user, inverse_of: :blog
@@ -33,6 +41,29 @@ class Blog < ApplicationRecord
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
   validates :google_site_verification, format: { with: /\A[a-zA-Z0-9_-]+\z/, message: "can only contain letters, numbers, underscores, and hyphens" }, allow_blank: true
+
+  validates :custom_theme_bg_light, :custom_theme_text_light, :custom_theme_accent_light,
+            :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark,
+            color_format: true, if: :custom_theme?
+
+  def custom_theme?
+    theme == "custom"
+  end
+
+  def custom_theme_colors
+    {
+      light: {
+        bg: custom_theme_bg_light.presence || "#ffffff",
+        text: custom_theme_text_light.presence || "#334155",
+        accent: custom_theme_accent_light.presence || "#334155"
+      },
+      dark: {
+        bg: custom_theme_bg_dark.presence || "#0f172a",
+        text: custom_theme_text_dark.presence || "#cbd5e1",
+        accent: custom_theme_accent_dark.presence || "#ffffff"
+      }
+    }
+  end
 
   def has_custom_home_page?
     home_page.present?

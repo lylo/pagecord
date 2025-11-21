@@ -17,7 +17,9 @@ class App::Settings::AppearanceController < AppController
     def appearance_params
       permitted_params = [
         :bio, :title, :layout,
-        :theme, :font, :width
+        :theme, :font, :width,
+        :custom_theme_bg_light, :custom_theme_text_light, :custom_theme_accent_light,
+        :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark
       ]
 
       if @blog.user.subscribed?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_10_25_140641) do
+ActiveRecord::Schema[8.2].define(version: 2025_11_21_115753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -92,6 +92,12 @@ ActiveRecord::Schema[8.2].define(version: 2025_10_25_140641) do
     t.datetime "created_at", null: false
     t.text "custom_css"
     t.string "custom_domain"
+    t.string "custom_theme_accent_dark"
+    t.string "custom_theme_accent_light"
+    t.string "custom_theme_bg_dark"
+    t.string "custom_theme_bg_light"
+    t.string "custom_theme_text_dark"
+    t.string "custom_theme_text_light"
     t.string "delivery_email"
     t.datetime "discarded_at"
     t.boolean "email_subscriptions_enabled", default: true, null: false
