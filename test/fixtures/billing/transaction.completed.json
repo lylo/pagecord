@@ -99,15 +99,15 @@
     "status": "completed",
     "details": {
       "totals": {
-        "fee": "3311",
-        "tax": "5315",
-        "total": "65215",
+        "fee": "195",
+        "tax": "0",
+        "total": "2900",
         "credit": "0",
         "balance": "0",
         "discount": "0",
-        "earnings": "56589",
-        "subtotal": "59900",
-        "grand_total": "65215",
+        "earnings": "2705",
+        "subtotal": "2900",
+        "grand_total": "2900",
         "currency_code": "USD",
         "credit_to_balance": "0"
       },
@@ -115,10 +115,10 @@
         {
           "id": "txnitm_01hv8wt98jahpbm1t1tzr06z6n",
           "totals": {
-            "tax": "2662",
-            "total": "32662",
+            "tax": "0",
+            "total": "2900",
             "discount": "0",
-            "subtotal": "30000"
+            "subtotal": "2900"
           },
           "product": {
             "id": "pro_01gsz4t5hdjse780zja8vvr7jg",
@@ -148,75 +148,13 @@
             "tax_category": "standard"
           },
           "price_id": "pri_01gsz8x8sawmvhz1pv30nge1ke",
-          "quantity": 10,
-          "tax_rate": "0.08875",
-          "unit_totals": {
-            "tax": "266",
-            "total": "3266",
-            "discount": "0",
-            "subtotal": "3000"
-          }
-        },
-        {
-          "id": "txnitm_01hv8wt98jahpbm1t1v1sd067y",
-          "totals": {
-            "tax": "887",
-            "total": "10887",
-            "discount": "0",
-            "subtotal": "10000"
-          },
-          "product": {
-            "id": "pro_01h1vjes1y163xfj1rh1tkfb65",
-            "name": "Analytics addon",
-            "type": "standard",
-            "status": "active",
-            "image_url": "https://paddle.s3.amazonaws.com/user/165798/97dRpA6SXzcE6ekK9CAr_analytics.png",
-            "created_at": "2023-06-01T13:30:50.302Z",
-            "updated_at": "2024-04-05T15:47:17.163Z",
-            "custom_data": null,
-            "description": "Unlock advanced insights into your flight data with enhanced analytics and reporting features. Includes customizable reporting templates and trend analysis across flights.",
-            "import_meta": null,
-            "tax_category": "standard"
-          },
-          "price_id": "pri_01h1vjfevh5etwq3rb416a23h2",
           "quantity": 1,
-          "tax_rate": "0.08875",
+          "tax_rate": "0",
           "unit_totals": {
-            "tax": "887",
-            "total": "10887",
+            "tax": "0",
+            "total": "2900",
             "discount": "0",
-            "subtotal": "10000"
-          }
-        },
-        {
-          "id": "txnitm_01hv8wt98jahpbm1t1v67vqnb6",
-          "totals": {
-            "tax": "1766",
-            "total": "21666",
-            "discount": "0",
-            "subtotal": "19900"
-          },
-          "product": {
-            "id": "pro_01gsz97mq9pa4fkyy0wqenepkz",
-            "name": "Custom domains",
-            "type": "standard",
-            "status": "active",
-            "image_url": "https://paddle.s3.amazonaws.com/user/165798/XIG7UXoJQHmlIAiKcnkA_custom-domains.png",
-            "created_at": "2023-02-23T14:01:02.441Z",
-            "updated_at": "2024-04-05T15:43:28.971Z",
-            "custom_data": null,
-            "description": "Make AeroEdit truly your own with custom domains. Custom domains reinforce your brand identity and make it easy for your team to access your account.",
-            "import_meta": null,
-            "tax_category": "standard"
-          },
-          "price_id": "pri_01gsz98e27ak2tyhexptwc58yk",
-          "quantity": 1,
-          "tax_rate": "0.08875",
-          "unit_totals": {
-            "tax": "1766",
-            "total": "21666",
-            "discount": "0",
-            "subtotal": "19900"
+            "subtotal": "2900"
           }
         }
       ],

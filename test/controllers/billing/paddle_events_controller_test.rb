@@ -86,8 +86,9 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_nil user.subscription
   end
 
-  test "should update next billing date on transaction.completed event" do
+  test "should update next billing date and unit price on transaction.completed event" do
     subscription = subscriptions(:one)
+    original_unit_price = subscription.unit_price
 
     payload = payload_for("transaction.completed", subscription.user)
     json_payload = payload.to_json
@@ -103,9 +104,10 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal subscription.reload.next_billed_at, Time.parse(payload["data"]["billing_period"]["ends_at"])
+    assert_equal 2900, subscription.unit_price
   end
 
-  test "should use base unit price when no overrides present" do
+  test "should set base unit price on subscription.created" do
     user = users(:vivian)
     payload = payload_for("subscription.created", user)
     json_payload = payload.to_json
@@ -121,11 +123,10 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 3000, user.subscription.reload.unit_price
   end
 
-  test "should use override unit price when present" do
+  test "should ignore unit_price_overrides in subscription webhook" do
     user = users(:vivian)
     payload = payload_for("subscription.created", user)
 
-    # Add unit price overrides to the payload
     payload["data"]["items"][0]["price"]["unit_price_overrides"] = [
       {
         "country_codes" => [ "BR", "IN" ],
@@ -143,7 +144,7 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
       }
 
     assert_response :success
-    assert_equal 1900, user.subscription.reload.unit_price
+    assert_equal 3000, user.subscription.reload.unit_price
   end
 
   private

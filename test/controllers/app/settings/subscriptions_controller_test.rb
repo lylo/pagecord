@@ -35,4 +35,10 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
     get cancel_confirm_app_settings_subscriptions_path
     assert_response :success
   end
+
+  test "should display stored unit_price on settings page" do
+    get app_settings_subscriptions_path
+    assert_response :success
+    assert_select "body", text: /\$20/
+  end
 end
