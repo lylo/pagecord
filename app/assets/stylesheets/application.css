@@ -9,3 +9,18 @@
 .field_with_errors {
   display: contents;
 }
+
+/* Color picker - remove browser default padding so color fills entire input */
+input[type="color"].color-picker-full {
+  padding: 0;
+}
+
+input[type="color"].color-picker-full::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 0.375rem;
+}
+
+input[type="color"].color-picker-full::-webkit-color-swatch {
+  border: none;
+  border-radius: 0.25rem;
+}
