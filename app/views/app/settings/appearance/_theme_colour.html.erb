@@ -29,39 +29,38 @@
   </div>
 
   <div data-theme-selector-target="customThemeFields" class="mt-8 <%= 'hidden' unless @blog.custom_theme? %>">
-    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 mb-4">Custom Theme Colors</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Light Mode</h4>
-        <div class="space-y-4">
+      <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-5">
+        <h4 class="text-base font-medium text-slate-800 dark:text-slate-200 mb-4">Light Mode</h4>
+        <div class="space-y-3">
           <div>
-            <%= form.label :custom_theme_bg_light, "Background Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
-            <%= form.color_field :custom_theme_bg_light, value: @blog.custom_theme_colors[:light][:bg], class: "color-picker-full mt-1 block w-full h-10 rounded-md cursor-pointer border border-gray-300 dark:border-gray-600" %>
+            <%= form.label :custom_theme_bg_light, "Background", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+            <%= form.color_field :custom_theme_bg_light, value: @blog.custom_theme_colors[:light][:bg], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
           </div>
           <div>
-            <%= form.label :custom_theme_text_light, "Text Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
-            <%= form.color_field :custom_theme_text_light, value: @blog.custom_theme_colors[:light][:text], class: "color-picker-full mt-1 block w-full h-10 rounded-md cursor-pointer border border-gray-300 dark:border-gray-600" %>
+            <%= form.label :custom_theme_text_light, "Text", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+            <%= form.color_field :custom_theme_text_light, value: @blog.custom_theme_colors[:light][:text], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
           </div>
           <div>
-            <%= form.label :custom_theme_accent_light, "Accent Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
-            <%= form.color_field :custom_theme_accent_light, value: @blog.custom_theme_colors[:light][:accent], class: "color-picker-full mt-1 block w-full h-10 rounded-md cursor-pointer border border-gray-300 dark:border-gray-600" %>
+            <%= form.label :custom_theme_accent_light, "Accent", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+            <%= form.color_field :custom_theme_accent_light, value: @blog.custom_theme_colors[:light][:accent], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
           </div>
         </div>
       </div>
-      <div>
-        <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Dark Mode</h4>
-        <div class="space-y-4">
+      <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-5">
+        <h4 class="text-base font-medium text-slate-800 dark:text-slate-200 mb-4">Dark Mode</h4>
+        <div class="space-y-3">
           <div>
-            <%= form.label :custom_theme_bg_dark, "Background Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
-            <%= form.color_field :custom_theme_bg_dark, value: @blog.custom_theme_colors[:dark][:bg], class: "color-picker-full mt-1 block w-full h-10 rounded-md cursor-pointer border border-gray-300 dark:border-gray-600" %>
+            <%= form.label :custom_theme_bg_dark, "Background", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+            <%= form.color_field :custom_theme_bg_dark, value: @blog.custom_theme_colors[:dark][:bg], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
           </div>
           <div>
-            <%= form.label :custom_theme_text_dark, "Text Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
-            <%= form.color_field :custom_theme_text_dark, value: @blog.custom_theme_colors[:dark][:text], class: "color-picker-full mt-1 block w-full h-10 rounded-md cursor-pointer border border-gray-300 dark:border-gray-600" %>
+            <%= form.label :custom_theme_text_dark, "Text", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+            <%= form.color_field :custom_theme_text_dark, value: @blog.custom_theme_colors[:dark][:text], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
           </div>
           <div>
-            <%= form.label :custom_theme_accent_dark, "Accent Color", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
-            <%= form.color_field :custom_theme_accent_dark, value: @blog.custom_theme_colors[:dark][:accent], class: "color-picker-full mt-1 block w-full h-10 rounded-md cursor-pointer border border-gray-300 dark:border-gray-600" %>
+            <%= form.label :custom_theme_accent_dark, "Accent", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+            <%= form.color_field :custom_theme_accent_dark, value: @blog.custom_theme_colors[:dark][:accent], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
           </div>
         </div>
       </div>
