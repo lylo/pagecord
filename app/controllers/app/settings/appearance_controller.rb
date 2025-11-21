@@ -17,10 +17,15 @@ class App::Settings::AppearanceController < AppController
     def appearance_params
       permitted_params = [
         :bio, :title, :layout,
-        :theme, :font, :width,
-        :custom_theme_bg_light, :custom_theme_text_light, :custom_theme_accent_light,
-        :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark
+        :theme, :font, :width
       ]
+
+      if current_features.enabled?(:custom_theme)
+        permitted_params += [
+          :custom_theme_bg_light, :custom_theme_text_light, :custom_theme_accent_light,
+          :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark
+        ]
+      end
 
       if @blog.user.subscribed?
         permitted_params += [ :avatar, :show_branding ]
