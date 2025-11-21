@@ -79,6 +79,8 @@ class Api::EmbedsControllerTest < ActionDispatch::IntegrationTest
 
   test "should skip CSRF token verification" do
     # This test ensures the endpoint works without CSRF tokens (important for API endpoints)
+    URI.stubs(:open).with("https://example.com/album").returns(StringIO.new("<html></html>"))
+
     post "/api/embeds/bandcamp", params: { url: "https://example.com/album" }
 
     # Should not get InvalidAuthenticityToken error
