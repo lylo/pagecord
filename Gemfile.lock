@@ -1,6 +1,14 @@
 GIT
+  remote: https://github.com/basecamp/lexxy.git
+  revision: 1fd27e603e8a848825e35ded189384efde76abbb
+  branch: main
+  specs:
+    lexxy (0.1.20.beta)
+      rails (>= 8.0.2)
+
+GIT
   remote: https://github.com/rails/rails.git
-  revision: 4f7ab01bb5d6be78c7447dbb230c55027d08ae34
+  revision: 17f6e00bce8c35b6c5355450331da170c768e3e0
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -243,8 +251,6 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (0.1.20.beta)
-      rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
     logger (1.7.0)
@@ -520,7 +526,7 @@ DEPENDENCIES
   jbuilder
   kredis (~> 1.7)
   letter_opener_web
-  lexxy (~> 0.1.20.beta)
+  lexxy!
   local_time
   mailpace-rails
   mocha

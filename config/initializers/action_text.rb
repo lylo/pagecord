@@ -15,5 +15,9 @@ Rails.application.config.after_initialize do
   # Rails 8.2 changed ActionText to use HTML4 sanitizer instead of HTML5 sanitizer
   # The HTML4 sanitizer doesn't include several tags we need in its defaults
   # Add them directly to the sanitizer's class-level allowed_tags so ActionText picks them up
-  Rails::HTML4::SafeListSanitizer.allowed_tags.merge([ "s", "u", "video", "source", "audio" ])
+  Rails::HTML4::SafeListSanitizer.allowed_tags.merge([ "s", "u", "video", "source", "audio", "mark" ])
+
+  # Allow var() CSS function for lexxy color highlighting
+  # Lexxy uses CSS variables like var(--highlight-bg-5) for text highlighting
+  Loofah::HTML5::SafeList::ALLOWED_CSS_FUNCTIONS.add("var")
 end

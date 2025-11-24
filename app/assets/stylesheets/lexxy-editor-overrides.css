@@ -16,7 +16,8 @@ lexxy-editor {
   }
 
   /* Caption styling for editor */
-  .attachment__caption input {
+  .attachment__caption input,
+  .attachment__caption textarea {
     font-size: 0.875rem !important;
     padding: 0;
     color: var(--color-slate-500) !important;
@@ -97,7 +98,8 @@ lexxy-editor {
     }
 
     .attachment__caption,
-    .attachment__caption input {
+    .attachment__caption input,
+    .attachment__caption textarea {
       background-color: transparent !important;
       color: var(--color-slate-400) !important;
     }

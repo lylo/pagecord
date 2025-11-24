@@ -1,7 +1,7 @@
 module Sluggable
   extend ActiveSupport::Concern
 
-  RESERVED_SLUGS = %w[posts feed].freeze
+  RESERVED_SLUGS = %w[posts feedk].freeze
 
   included do
     before_validation :set_slug
