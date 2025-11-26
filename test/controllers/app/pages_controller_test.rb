@@ -8,7 +8,6 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     login_as @user
 
     @blog = blogs(:joel)
-    @blog.update!(features: [ "home_page" ])
     @page = posts(:about)  # This is now a Post with is_page: true
     @draft_page = posts(:draft_page)
   end

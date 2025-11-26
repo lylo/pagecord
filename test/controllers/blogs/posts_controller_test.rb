@@ -851,7 +851,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show posts index when home page is draft" do
-    @blog.update!(features: [ "home_page" ])
     page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :draft)
     @blog.update!(home_page_id: page.id)
 

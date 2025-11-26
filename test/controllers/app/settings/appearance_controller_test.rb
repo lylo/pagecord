@@ -156,9 +156,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_select "textarea.\\!border-red-500"
   end
 
-  test "should update custom theme colors if feature is enabled" do
-    @blog.update(theme: "custom", features: [ "custom_theme" ])
-
+  test "should update custom theme colors" do
     patch app_settings_appearance_url(@blog), params: {
       blog: {
         custom_theme_bg_light: "#111111",
@@ -178,29 +176,5 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_equal "#444444", @blog.custom_theme_bg_dark
     assert_equal "#555555", @blog.custom_theme_text_dark
     assert_equal "#666666", @blog.custom_theme_accent_dark
-  end
-
-  test "should not update custom theme colors if feature is disabled" do
-    @blog.update(theme: "custom", features: [])
-
-    patch app_settings_appearance_url(@blog), params: {
-      blog: {
-        custom_theme_bg_light: "#111111",
-        custom_theme_text_light: "#222222",
-        custom_theme_accent_light: "#333333",
-        custom_theme_bg_dark: "#444444",
-        custom_theme_text_dark: "#555555",
-        custom_theme_accent_dark: "#666666"
-      }
-    }, as: :turbo_stream
-
-    assert_redirected_to app_settings_url
-    @blog.reload
-    assert_nil @blog.custom_theme_bg_light
-    assert_nil @blog.custom_theme_text_light
-    assert_nil @blog.custom_theme_accent_light
-    assert_nil @blog.custom_theme_bg_dark
-    assert_nil @blog.custom_theme_text_dark
-    assert_nil @blog.custom_theme_accent_dark
   end
 end
