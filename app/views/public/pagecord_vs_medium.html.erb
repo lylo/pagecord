@@ -1,25 +1,25 @@
 <%= content_for :title do %>
-  Pagecord vs Substack: No revenue share. No $50 domain fee. Free forever or $29/year.
+  Pagecord vs Medium: Your readers won't hit a paywall. No popups. You own your content.
 <% end %>
 
 <%= content_for :meta_description do %>
-  Substack charges $50 for custom domains and takes 10% of your revenue. Pagecord is free forever (Classic) or $29/year (Premium) with custom domains included. Email-to-blog publishing, open source, built to last.
+  Medium puts your writing behind a paywall and bombards readers with popups. Pagecord is free to read, zero popups, and you own your domain. Free forever or $29/year.
 <% end %>
 
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
-    Pagecord: A Better Substack Alternative
+    Pagecord: A Better Medium Alternative
   </h1>
 
   <div class="md:text-xl text-base leading-7 text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
     <p class="mt-8 md:mt-12">
-      Substack charges you $50 to use your own domain. They take 10% of your revenue. They're VC-backed and haven't turned a profit despite being around since 2017.
+      Medium locks your writing behind a paywall. Your readers get three free articles a month, then hit a wall. They get bombarded with popups begging them to sign up. You don't own your domain or your content.
     </p>
     <p>
-      Pagecord is different. No revenue share. Built by one person, profitable from day one, and will be around for the long haul. Plus you can blog by email—just hit send and you're published.
+      Pagecord is the opposite. Your readers never hit a paywall. Zero popups. You own your domain. You can export everything as HTML or Markdown anytime. Plus you can blog by email—just hit send and you're published.
     </p>
     <p>
-      Open source. Classic plan is free forever. Premium is $<%= localised_price %>/year and includes custom domains, analytics, and more.
+      Open source. Classic plan is free forever. Premium is $<%= localised_price %>/year.
     </p>
   </div>
 
@@ -41,18 +41,23 @@
         <tr>
           <th class="text-left py-3 px-4 border-b-2 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200">Feature</th>
           <th class="text-center py-3 px-4 border-b-2 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200">Pagecord</th>
-          <th class="text-center py-3 px-4 border-b-2 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200">Substack</th>
+          <th class="text-center py-3 px-4 border-b-2 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200">Medium</th>
         </tr>
       </thead>
       <tbody class="text-slate-700 dark:text-slate-300">
         <!-- Both platforms have these -->
         <tr>
-          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Free version</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Rich text editor</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
-          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Automatic email newsletters</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Email newsletters</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Tags and topics</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
@@ -61,29 +66,34 @@
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
-        <tr>
-          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Privacy-respecting analytics</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-        </tr>
-        <tr>
-          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Reply by email</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-        </tr>
-        <tr>
-          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">RSS feeds</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-        </tr>
         <!-- Pagecord advantages -->
         <tr>
-          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Custom domains</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">No paywall for readers</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700">✅<br><span class="text-sm">($50 charge)</span></td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700">❌<br><span class="text-sm">(3 free articles/month)</span></td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">No popups</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Own your domain</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
         </tr>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Create blog posts by sending an email</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Colour themes and fonts</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Standalone pages (About, Now, Contact, etc.)</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
         </tr>
@@ -93,17 +103,17 @@
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
         </tr>
         <tr>
-          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Micro-blog posts without titles</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
-        </tr>
-        <tr>
-          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Multi-language support</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
-        </tr>
-        <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Full site HTML export</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Built-in analytics</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Reply by email</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
         </tr>
@@ -113,9 +123,15 @@
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
         </tr>
         <tr>
-          <td class="py-3 px-4">Independent and profitable</td>
-          <td class="text-center py-3 px-4 text-xl">✅</td>
-          <td class="text-center py-3 px-4">❌<br><span class="text-sm">(VC backed, never made a profit)</span></td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Free version</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+
+        <!-- Pricing -->
+        <tr>
+          <td class="py-3 px-4">Premium version</td>
+          <td class="text-center py-3 px-4">$<%= localised_price %>/year</td>
+          <td class="text-center py-3 px-4">$60/year<br><span class="text-sm">(as reader)</span></td>
         </tr>
       </tbody>
     </table>

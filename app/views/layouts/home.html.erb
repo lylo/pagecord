@@ -9,7 +9,7 @@
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
-    <meta name="description" content="Write an email, hit send, you're published. Simple blogging and microblogging in seconds. Free forever, premium $29/year.">
+    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Write an email, hit send, you're published. Simple blogging and microblogging in seconds. Free forever, premium $29/year." %>">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">

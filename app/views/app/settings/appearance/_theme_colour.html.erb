@@ -1,7 +1,6 @@
 <div class="mt-4 mb-8" data-controller="theme-selector">
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
     <% Themeable::THEMES.each do |theme_name| %>
-      <% next if theme_name == "custom" && !current_features.enabled?(:custom_theme) %>
       <div class="theme-option relative">
         <%= form.radio_button :theme, theme_name,
           checked: @blog.theme == theme_name,
@@ -29,8 +28,7 @@
     <% end %>
   </div>
 
-  <% if current_features.enabled? :custom_theme %>
-    <div data-theme-selector-target="customThemeFields" class="mt-8 <%= 'hidden' unless @blog.custom_theme? %>">
+  <div data-theme-selector-target="customThemeFields" class="mt-8 <%= 'hidden' unless @blog.custom_theme? %>">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-5">
         <h4 class="text-base font-medium text-slate-800 dark:text-slate-200 mb-4">Light Mode</h4>
@@ -67,7 +65,6 @@
         </div>
       </div>
     </div>
-    </div>
-  <% end %>
+  </div>
 </div>
 

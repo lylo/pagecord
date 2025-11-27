@@ -1,99 +1,144 @@
 <%= content_for :title do %>
-  Pagecord: Simple WordPress Alternative for Blogging
+  Pagecord vs WordPress: Zero setup. No plugins. No maintenance. Just write.
 <% end %>
 
 <%= content_for :meta_description do %>
-  Looking for a WordPress alternative? Pagecord lets you blog by email with zero setup. Compare features vs WordPress and see why bloggers are switching.
+  WordPress needs hosting, plugin updates, and security patches. Pagecord just works. Send an email, you're published. Free forever (Classic) or $29/year (Premium). Open source like WordPress, simple like it should be.
 <% end %>
 
-<div class="prose dark:prose-invert mb-4 sm:mb-8 px-4">
-  <h1 class="text-center">Pagecord: A Simple WordPress Alternative</h1>
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tihtml text-slate-800 dark:text-slate-200">
+    Pagecord: A Better WordPress Alternative
+  </h1>
 
-  <p class="text-center text-lg">
-    Pagecord is a great alternative to WordPress. Get started in seconds. Beautiful
-    minimal themes out of the box. Independent and source available.
-  </p>
-  <p class="text-center text-lg">
-    Here's a handy breakdown of the benefits of using Pagecord over WordPress.
-  </p>
+  <div class="md:text-xl text-base leading-7 text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+    <p class="mt-8 md:mt-12">
+      WordPress is powerful but complicated. You need hosting, you need to update plugins, you need to worry about security patches. It's a lot of work just to write some words on the internet.
+    </p>
+    <p>
+      Pagecord is the opposite. No setup, no maintenance, no plugins. Just send an email and you're published. Use the web editor if you prefer. Either way, your blog just works.
+    </p>
+    <p>
+      Open source. Classic plan is free forever. Premium is $<%= localised_price %>/year.
+    </p>
+  </div>
 
-  <div class="overflow-x-auto">
-    <table class="table-auto w-full">
+  <div class="text-center mt-8 mb-4 md:text-xl">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
+    <% end %>
+  </div>
+</div>
+
+<%= render "screenshots" %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">Feature Comparison</h2>
+
+  <div class="bg-slate-50 dark:bg-slate-800 px-6 py-8 rounded-xl overflow-x-auto">
+    <table class="w-full border-collapse">
       <thead>
         <tr>
-          <th class="border border-slate-200 dark:border-slate-700 px-4 py-2 text-left">Feature</th>
-          <th class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">Pagecord</th>
-          <th class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">WordPress</th>
+          <th class="text-left py-3 px-4 border-b-2 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200">Feature</th>
+          <th class="text-center py-3 px-4 border-b-2 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200">Pagecord</th>
+          <th class="text-center py-3 px-4 border-b-2 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200">WordPress</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="text-slate-700 dark:text-slate-300">
+        <!-- Both platforms have these -->
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Source available</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Free version</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Free version</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Rich text editor</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Standalone pages</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Standalone pages</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Custom domains</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Custom home pages</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Create blog posts by sending an email</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">❌</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Tags</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Embed Spotify, Apple Music, Bandcamp, YouTube, GitHub, Strava links</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">❌</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Multi-language support</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Micro-blog posts without titles</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">❌</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">RSS feeds</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Follow other accounts</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">❌</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Custom domains</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Social links</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">❌</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Source available</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Automatic email newsletters</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">❌<br>(plug-ins requried)</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Themes included</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700">✅<br><span class="text-sm">(requires plugins)</span></td>
         </tr>
         <tr>
-          <td class="border border-slate-200 dark:border-slate-700 px-4 py-2">Effortless to get started</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">✅</td>
-          <td class="text-center border border-slate-200 dark:border-slate-700 px-4 py-2">❌</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Social links</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700">✅<br><span class="text-sm">(requires plugins)</span></td>
         </tr>
-
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Email newsletters</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700">✅<br><span class="text-sm">(requires plugins)</span></td>
+        </tr>
+        <!-- Pagecord advantages -->
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Full site HTML export</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Zero setup required</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">No maintenance or updates needed</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Create blog posts by sending an email</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Reply by email</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
       </tbody>
     </table>
   </div>
 
-  <p class="text-center">
-    Sounds good, right? Give Pagecord a try today!
-  </p>
-
-  <div class="my-8 text-center not-prose">
+  <div class="my-8 text-center">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-pagecord-accent">Create your FREE account now!</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
     <% end %>
   </div>
 </div>
