@@ -1,10 +1,11 @@
 require "open-uri"
 require "nokogiri"
 require "cgi"
+require "json"
 require_relative "import_helpers"
 
-# Import Pika.page exported HTML files into Pagecord posts
-# Usage: ruby import_pika.rb path/to/html/directory_or_file blog_subdomain [--dry-run] [--as-pages] [--title-suffix="suffix"]
+# Import Pika.page exported HTML or JSON files into Pagecord posts
+# Usage: ruby import_pika.rb path/to/html/directory_or_file_or_json blog_subdomain [--dry-run] [--as-pages] [--title-suffix="suffix"]
 def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_suffix = nil)
   include ImportHelpers
   # Find the correct blog
@@ -14,14 +15,16 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
     return
   end
 
-  # Find all HTML files - handle both single files and directories
-  html_files = []
-
+  # Detect format and process accordingly
   if File.file?(path)
-    if path.end_with?('.html', '.htm')
+    if path.end_with?('.json')
+      # Process JSON export
+      import_from_json(path, blog, dry_run, as_pages)
+      return
+    elsif path.end_with?('.html', '.htm')
       html_files = [ path ]
     else
-      puts "File #{path} is not an HTML file (must end with .html or .htm)"
+      puts "File #{path} is not an HTML or JSON file (must end with .html, .htm, or .json)"
       return
     end
   elsif File.directory?(path)
@@ -212,6 +215,144 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
   puts "====================="
 end
 
+# Import from Pika JSON export format
+def import_from_json(path, blog, dry_run = false, as_pages = false)
+  include ImportHelpers
+
+  puts "Reading JSON export from #{path}"
+  json_content = File.read(path)
+  data = JSON.parse(json_content)
+
+  posts = data.dig("data", "posts") || []
+  tags_lookup = {}
+  post_tags_lookup = Hash.new { |h, k| h[k] = [] }
+
+  # Build tags lookup by id
+  if data.dig("data", "tags")
+    data["data"]["tags"].each do |tag|
+      tags_lookup[tag["id"]] = tag["name"]
+    end
+  end
+
+  # Build post_id -> tag_names mapping
+  if data.dig("data", "post_tags")
+    data["data"]["post_tags"].each do |pt|
+      post_id = pt["post_id"]
+      tag_id = pt["tag_id"]
+      tag_name = tags_lookup[tag_id]
+      post_tags_lookup[post_id] << tag_name if tag_name
+    end
+  end
+
+  puts "Found #{posts.length} posts in JSON export"
+  if as_pages
+    puts "All imports will be created as pages (is_page = true)"
+  end
+
+  success_count = 0
+  failed_count = 0
+  skipped_count = 0
+
+  posts.each do |post_data|
+    title = post_data["title"]
+    html_content = post_data["html"]
+    status = post_data["status"]
+    type = post_data["type"]
+    published_at_str = post_data["published_at"]
+
+    puts "Processing post: #{title}"
+
+    # Skip drafts unless they want them
+    if status != "published"
+      puts "Skipping unpublished post: #{title} (status: #{status})"
+      skipped_count += 1
+      next
+    end
+
+    # Parse published_at
+    published_at = nil
+    if published_at_str
+      begin
+        published_at = Time.parse(published_at_str)
+      rescue ArgumentError
+        puts "Warning: Could not parse datetime '#{published_at_str}' for #{title}"
+        published_at = Time.current
+      end
+    else
+      published_at = Time.current
+      puts "Warning: No publication time found for #{title}, using current time"
+    end
+
+    # Extract tags for this post
+    tag_list = post_tags_lookup[post_data["id"]] || []
+
+    # Determine is_page: use --as-pages flag if provided, otherwise use type from JSON
+    is_page = as_pages ? true : (type == "page")
+
+    # Check if post already exists by title (case-insensitive) or slug
+    existing_post = post_exists?(blog, title)
+
+    if existing_post
+      puts "Skipping duplicate post: #{title} (matches existing: '#{existing_post.title}', slug: '#{existing_post.slug}')"
+      skipped_count += 1
+      next
+    end
+
+    # Create the Post object (without content yet, so we don't trigger ActionText parsing of <img>)
+    post = blog.all_posts.new(
+      title: title,
+      published_at: published_at,
+      tag_list: tag_list,
+      is_page: is_page,
+      show_in_navigation: false
+    )
+
+    # Process images in HTML content
+    begin
+      post.content = process_images_to_actiontext(html_content)
+    rescue => e
+      puts "Skipping post due to image processing failure: #{title} - #{e.message}"
+      failed_count += 1
+      next
+    end
+
+    if dry_run
+      puts "[DRY RUN] Would create #{is_page ? 'page' : 'post'}: #{title}"
+      puts "[DRY RUN] Published at: #{published_at}"
+      puts "[DRY RUN] Tags: #{tag_list.join(', ')}" if tag_list.any?
+      puts "[DRY RUN] Content length: #{post.content.to_plain_text.length} characters"
+
+      # Validate without saving
+      if post.valid?
+        puts "[DRY RUN] Post validation: PASSED"
+        success_count += 1
+      else
+        puts "[DRY RUN] Post validation: FAILED"
+        puts "[DRY RUN] Errors: #{post.errors.full_messages.join(', ')}"
+        failed_count += 1
+      end
+      next
+    end
+
+    if post.save
+      puts "Successfully created #{is_page ? 'page' : 'post'}: #{title}"
+      success_count += 1
+    else
+      puts "Failed to create #{is_page ? 'page' : 'post'}: #{title}"
+      puts post.errors.full_messages
+      failed_count += 1
+      next
+    end
+  end
+
+  puts "\n=== IMPORT SUMMARY ==="
+  puts "Total posts processed: #{posts.length}"
+  puts "Successful: #{success_count}"
+  puts "Failed: #{failed_count}"
+  puts "Skipped: #{skipped_count}"
+  puts "====================="
+end
+
 # Process article content: remove duplicate title and convert action-text-attachments to img tags
 def process_article_content(article, title)
   article_content = article.dup
@@ -251,8 +392,16 @@ end
 # Run the script if executed directly
 if __FILE__ == $PROGRAM_NAME
   if ARGV.length < 2
-    puts "Usage: bundle exec rails runner import_pika.rb path/to/html/directory_or_file blog_subdomain [--dry-run] [--as-pages] [--title-suffix=\"suffix\"]"
+    puts "Usage: bundle exec rails runner import_pika.rb path/to/file_or_directory blog_subdomain [--dry-run] [--as-pages] [--title-suffix=\"suffix\"]"
+    puts ""
+    puts "Supports both HTML and JSON export formats from Pika.page"
+    puts ""
     puts "Examples:"
+    puts "  # Import from JSON export"
+    puts "  bundle exec rails runner import_pika.rb ./pika-export.json myblog"
+    puts "  bundle exec rails runner import_pika.rb ./pika-export.json myblog --dry-run"
+    puts ""
+    puts "  # Import from HTML files"
     puts "  bundle exec rails runner import_pika.rb ./html_posts myblog"
     puts "  bundle exec rails runner import_pika.rb ./single_post.html myblog --dry-run"
     puts "  bundle exec rails runner import_pika.rb ./html_posts myblog --as-pages"

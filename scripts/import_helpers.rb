@@ -13,6 +13,18 @@ module ImportHelpers
       alt_text = img["alt"] || ""
       next unless image_src
 
+      # Skip data URI images (commonly used as placeholders for lazy loading)
+      if image_src.start_with?("data:")
+        # Remove the placeholder image entirely
+        parent_figure = img.ancestors("figure").first
+        if parent_figure
+          parent_figure.remove
+        else
+          img.remove
+        end
+        next
+      end
+
       begin
         # In dry run mode, just verify file exists but don't upload
         if dry_run
