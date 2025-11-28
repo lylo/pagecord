@@ -14,6 +14,7 @@ class App::Settings::SubscriptionsController < AppController
       response = PaddleApi.new.cancel_subscription(@subscription.paddle_subscription_id)
       Rails.logger.info response
       @subscription.update!(cancelled_at: Time.current)
+      SendCancellationEmailJob.set(wait: 4.hours).perform_later(Current.user.id, subscriber: true)
     end
 
     redirect_to app_settings_path
