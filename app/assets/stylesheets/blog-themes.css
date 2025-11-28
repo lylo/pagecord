@@ -69,7 +69,7 @@
   --color-shadow: color-mix(in srgb, var(--theme-text) 30%, transparent 70%);
 
   /* === Forms === */
-  --color-input-bg: white;
+  --color-input-bg: var(--color-bg);
   --color-input-border: var(--color-border);
   --color-input-focus: color-mix(in srgb, var(--theme-accent) 50%, transparent 50%);
   --color-button-bg: color-mix(in srgb, var(--theme-bg) 50%, var(--theme-text) 50%);
@@ -98,9 +98,6 @@
     /* Borders are lighter in dark mode */
     --color-border: color-mix(in srgb, var(--theme-bg) 70%, white 30%);
     --color-border-strong: color-mix(in srgb, var(--theme-bg) 50%, white 50%);
-
-    /* Forms - darker input in dark mode */
-    --color-input-bg: var(--theme-bg);
   }
 }
 
