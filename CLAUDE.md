@@ -141,8 +141,7 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - **User**: Has one blog, includes authentication and subscription management
 - **Blog**: Belongs to user, has many posts/pages, navigation_items, handles custom domains and theming
 - **Post**: Blog content with rich text, attachments, and scheduling. Includes both posts and pages (is_page flag)
-- **NavigationItem**: Manages blog header navigation links (pages or custom URLs), with ordering via position column
-- **SocialLink**: Social media links displayed as icons in blog header (separate from text navigation)
+- **NavigationItem**: Unified navigation system (STI) with three types: PageNavigationItem, CustomNavigationItem, and SocialNavigationItem
 - **Email processing**: Uses ActionMailbox with PostsMailbox to create posts from emails
 
 ### Key Features
@@ -333,19 +332,31 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - `syntax-highlight` → Code block highlighting
 
 ### Navigation System
-- **NavigationItem model**: Unified navigation system for blog header links
-- **Two types**:
-  1. **Page links**: Link to a Post (is_page: true) - label auto-syncs from post.title
-  2. **Custom links**: Manual label + URL (e.g., "Posts" → "/posts", "Archive" → "https://...")
+- **NavigationItem model**: Unified navigation system using STI (Single Table Inheritance) for blog header links
+- **Three types**:
+  1. **PageNavigationItem**: Links to a Post (is_page: true) - label auto-syncs from post.title
+  2. **CustomNavigationItem**: Manual label + URL (e.g., "Posts" → "/posts", "Archive" → "https://...")
+  3. **SocialNavigationItem**: Social media icons with platform-specific rendering
 - **Ordering**: `position` column (integer, default 0) with `.ordered` scope (`order(:position, :id)`)
 - **Visibility**: `visible` boolean flag, `.visible` scope filters displayed items
-- **Separate from social links**: SocialLink model handles icon-based social media links
 - **Management**: Settings → Navigation (`app/settings/navigation_items`)
-- **View rendering**: `@blog.navigation_items.visible.ordered` in `_top_nav.html.erb`
+- **View rendering**: `@blog.navigation_items.visible.ordered` in `_nav.html.erb`
 - **Legacy**: Old `show_in_navigation` column on Post model is deprecated (removed from UI)
 - **Performance**: Uses `.includes(:post)` to avoid N+1 queries
-- **URL generation**: `link_url` method returns `blog_post_path(post)` for pages, raw `url` for custom links
+- **URL generation**: `link_url` method returns `blog_post_path(post)` for pages, raw `url` for custom/social links
 - **Stimulus controller**: `navigation_form_controller.js` handles page/custom toggle in settings form
+
+#### SocialNavigationItem Details
+- **Platforms**: Defined in `PLATFORMS` constant in `app/models/social_navigation_item.rb`
+- **Current platforms**: Bluesky, Email, GitHub, Instagram, LinkedIn, Mastodon, Reddit, RSS, Spotify, Threads, TikTok, Web, X, YouTube
+- **Icons**: SVG files stored in `app/assets/images/icons/social/{platform.downcase}.svg`
+- **Icon pattern**: All icons use `fill="currentColor"` or `stroke="currentColor"` to adapt to theme colors
+- **Adding new platforms**:
+  1. Add platform name to `PLATFORMS` array (alphabetically sorted)
+  2. Create matching SVG icon in `app/assets/images/icons/social/` (use lowercase filename)
+  3. No other changes needed - views dynamically load icons using `inline_svg_tag`
+- **Special handling**: Email platform uses `mailto:` prefix in `link_url` method
+- **Validation**: Validates platform inclusion, URL format (HTTP/HTTPS for web, email format for Email platform)
 
 ### Security
 - Brakeman for vulnerability scanning
