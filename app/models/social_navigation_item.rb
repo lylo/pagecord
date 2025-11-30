@@ -1,6 +1,6 @@
 class SocialNavigationItem < NavigationItem
   PLATFORMS = [ "Bluesky", "Email", "GitHub", "Instagram", "LinkedIn", "Mastodon",
-                "RSS", "Spotify", "Threads", "TikTok", "Web", "X", "YouTube" ].sort
+                "Reddit", "RSS", "Spotify", "Threads", "TikTok", "Web", "X", "YouTube" ].sort
 
   validates :platform, presence: true, inclusion: { in: PLATFORMS }
   validates :url, presence: true
