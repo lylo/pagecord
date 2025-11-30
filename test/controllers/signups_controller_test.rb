@@ -68,7 +68,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to new_signup_path
-    assert_equal "Sorry, that didn't work. Contact support if the problem persists", flash[:error]
+    assert_equal "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists.", flash[:error]
   end
 
   test "should not create user if form rendered and submitted within 5 seconds" do
@@ -77,6 +77,6 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to new_signup_path
-    assert_equal "Sorry, that didn't work. Contact support if the problem persists", flash[:error]
+    assert_equal "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists.", flash[:error]
   end
 end

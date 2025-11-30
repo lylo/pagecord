@@ -40,6 +40,12 @@ class SignupsController < ApplicationController
 
   private
 
+    def fail
+      @spammer_detected = true
+      flash[:error] = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."
+      redirect_to new_signup_path
+    end
+
     def user_params
       @user_params ||= begin
         raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, blog_attributes: [ :subdomain ])
@@ -70,11 +76,6 @@ class SignupsController < ApplicationController
     rescue HTTParty::Error => e
       Rails.logger.error "Turnstile verification failed: #{e.message}"
       false
-    end
-
-    def fail
-      flash[:error] = "Sorry, that didn't work. Contact support if the problem persists"
-      redirect_to new_signup_path
     end
 
     def signup_from_allowed_timezone

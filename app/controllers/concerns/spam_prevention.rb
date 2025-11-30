@@ -15,6 +15,9 @@ module SpamPrevention
   end
 
   def ip_reputation_check
+    # Uncomment to test in development:
+    # fail and return
+
     return true unless Rails.env.production?
 
     unless IpReputation.valid?(request.remote_ip)
