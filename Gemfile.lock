@@ -316,7 +316,7 @@ GEM
       activesupport (>= 6.1)
     pghero (3.7.0)
       activerecord (>= 7.1)
-    playwright-ruby-client (1.56.0)
+    playwright-ruby-client (1.57.0)
       concurrent-ruby (>= 1.1.6)
       mime-types (>= 3.0)
     postmark (1.25.1)
