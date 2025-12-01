@@ -20,7 +20,7 @@
           <% y_value = chart_max > 0 ? (chart_max * i / 4).round : i %>
           <line x1="<%= chart_left_margin %>" y1="<%= y %>" x2="<%= chart_left_margin + chart_width %>" y2="<%= y %>" stroke="#e2e8f0" stroke-width="1" opacity="0.3"/>
           <text x="<%= chart_left_margin - 5 %>" y="<%= y + 4 %>" class="text-xs fill-slate-400" text-anchor="end">
-            <%= y_value %>
+            <%= number_with_delimiter(y_value) %>
           </text>
         <% end %>
 
