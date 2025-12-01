@@ -38,7 +38,7 @@ class App::PostsController < AppController
   end
 
   def show
-    @post = Current.user.blog.posts.find_by!(token: params[:token])
+    @post = Current.user.blog.all_posts.find_by!(token: params[:token])
     @blog = Current.user.blog
     @user = Current.user
 
