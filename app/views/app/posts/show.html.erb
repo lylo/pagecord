@@ -2,17 +2,8 @@
 
 <div data-controller="media-embeds lightbox">
   <article>
-    <% if @post.title.present? %>
-      <%= link_to post_url(@post), class: "post-title-link", data: { turbo_frame: "_top" } do %>
-        <h1 class="post-title">
-          <%= @post.title %>
-        </h1>
-      <% end %>
-    <% end %>
-
-    <div class="lexxy-content" data-controller="syntax-highlight">
-      <%= auto_link(process_custom_tags(@post), sanitize: false).html_safe %>
-    </div>
+    <%= render "blogs/posts/post_title", post: @post %>
+    <%= render "blogs/posts/post_content", post: @post %>
   </article>
 
   <% if @post.post? %>
