@@ -37,6 +37,14 @@ class App::PostsController < AppController
     session[:return_to_page] = params[:page] if params[:page].present?
   end
 
+  def show
+    @post = Current.user.blog.posts.find_by!(token: params[:token])
+    @blog = Current.user.blog
+    @user = Current.user
+
+    render layout: "blog"
+  end
+
   def create
     post = Current.user.blog.posts.build(post_params)
     if post.save

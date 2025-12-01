@@ -288,4 +288,36 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_url(host: post.blog.custom_domain)
   end
+
+  test "should preview draft post with blog layout" do
+    draft_post = @user.blog.posts.create!(
+      title: "Draft Preview",
+      content: "Draft content for preview",
+      status: :draft
+    )
+
+    get app_post_url(draft_post)
+
+    assert_response :success
+    assert_select "article"
+    assert_select ".lexxy-content"
+  end
+
+  test "should preview published post with blog layout" do
+    published_post = @user.blog.posts.published.first
+
+    get app_post_url(published_post)
+
+    assert_response :success
+    assert_select "article"
+    assert_select ".lexxy-content"
+  end
+
+  test "should not preview post from another user's blog" do
+    other_user_post = posts(:one) # Joel's post
+
+    get app_post_url(other_user_post)
+
+    assert_response :not_found
+  end
 end
