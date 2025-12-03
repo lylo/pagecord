@@ -14,12 +14,12 @@
           
           context_year = @date.beginning_of_year
         %>
-        <%= link_to admin_analytics_path(view_type: "month", date: context_month.strftime("%Y-%m")), 
-            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@view_type == 'month' ? 'bg-[#4fbd9c] text-white hover:bg-[#4bb193]' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}" do %>
+        <%= link_to admin_analytics_path(view_type: "month", date: context_month.strftime("%Y-%m")),
+            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@view_type == 'month' ? 'bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}" do %>
           Month
         <% end %>
-        <%= link_to admin_analytics_path(view_type: "year", date: context_year.strftime("%Y")), 
-            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@view_type == 'year' ? 'bg-[#4fbd9c] text-white hover:bg-[#4bb193]' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}" do %>
+        <%= link_to admin_analytics_path(view_type: "year", date: context_year.strftime("%Y")),
+            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@view_type == 'year' ? 'bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}" do %>
           Year
         <% end %>
       </div>
