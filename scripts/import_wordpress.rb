@@ -193,7 +193,7 @@ def trim_leading_empty_nodes(node)
     elsif first_child.element?
       if first_child.name == "br"
         first_child.remove
-      elsif ["div", "p"].include?(first_child.name)
+      elsif [ "div", "p" ].include?(first_child.name)
         trim_leading_empty_nodes(first_child)
         if first_child.children.empty? && first_child.text.gsub(/\u00A0/, "").strip.empty?
           first_child.remove
@@ -219,7 +219,7 @@ def trim_trailing_empty_nodes(node)
     elsif last_child.element?
       if last_child.name == "br"
         last_child.remove
-      elsif ["div", "p"].include?(last_child.name)
+      elsif [ "div", "p" ].include?(last_child.name)
         trim_trailing_empty_nodes(last_child)
         if last_child.children.empty? && last_child.text.gsub(/\u00A0/, "").strip.empty?
           last_child.remove
