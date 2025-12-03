@@ -172,7 +172,7 @@ GEM
     drb (2.2.3)
     erb (6.0.0)
     erubi (1.13.1)
-    faker (3.5.2)
+    faker (3.5.3)
       i18n (>= 1.8.11, < 2)
     fastimage (2.4.0)
     feature_toggles (1.2.1)
