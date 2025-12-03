@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 5322159d325ed67d7f5662caf0fb048dc616400d
+  revision: c397e502a12a837899c17686eadec6f706a25d78
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -450,7 +450,7 @@ GEM
       redis-client (>= 0.23.2)
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
-    stringio (3.1.8)
+    stringio (3.1.9)
     tailwindcss-rails (4.4.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
