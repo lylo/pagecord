@@ -1,0 +1,20 @@
+<%= render "blogs/header", hide_email_form: true, hide_bio: !@post.home_page? %>
+
+<div data-controller="media-embeds lightbox">
+  <article>
+    <%= render "blogs/posts/post_title", post: @post %>
+    <%= render "blogs/posts/post_content", post: @post %>
+  </article>
+
+  <% if @post.post? %>
+    <% if @post.tag_list.present? %>
+      <%= render "blogs/posts/tags", post: @post %>
+    <% end %>
+
+    <footer>
+      <%= link_to app_post_path(@post), class: "post-date", data: { turbo_frame: "_top" } do %>
+        <%= local_time @post.published_at, format: published_at_date_format %>
+      <% end %>
+    </footer>
+  <% end %>
+</div>

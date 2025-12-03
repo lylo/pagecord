@@ -34,17 +34,26 @@
 
         <% @drafts.each do |page| %>
           <div class="flex gap-x-2 mb-2 items-top">
-            <div class="flex w-full justify-start items-top">
-              <% if page.home_page? %>
-                <span class="mr-1">🏠</span>
-              <% end %>
-              <% edit_path = (page.home_page? ? edit_app_home_page_path : edit_app_page_path(page)) %>
+            <div class="flex w-full justify-between items-top">
+              <div class="flex items-top">
+                <% if page.home_page? %>
+                  <span class="mr-1">🏠</span>
+                <% end %>
+                <% edit_path = (page.home_page? ? edit_app_home_page_path : edit_app_page_path(page)) %>
 
-              <%= link_to edit_path, title: "Click to edit this page" do %>
-                <div class="font-medium pe-2 hover:underline">
-                  <%= page.display_title %>
+                <%= link_to edit_path, title: "Click to edit this page" do %>
+                  <div class="font-medium pe-2 hover:underline">
+                    <%= page.display_title %>
+                  </div>
+                <% end %>
+              </div>
+              <div class="flex items-top gap-x-2 text-slate-400 dark:text-slate-400">
+                <div>
+                  <%= link_to app_post_path(page), title: "Preview draft", target: "_blank", data: { turbo_frame: "_top" } do %>
+                    <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>
+                  <% end %>
                 </div>
-              <% end %>
+              </div>
             </div>
           </div>
         <% end %>
@@ -72,8 +81,8 @@
               <% end %>
             </div>
             <div class="flex items-top gap-x-4 text-slate-400 dark:text-slate-400">
-              <%= link_to post_url(page), title: "View this page" do %>
-                <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-5 h-5" %>
+              <%= link_to post_url(page), title: "View this page", target: "_blank" do %>
+                <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>
               <% end %>
             </div>
           </div>
