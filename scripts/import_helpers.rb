@@ -5,7 +5,8 @@ require "cgi"
 # Shared helper methods for import scripts
 module ImportHelpers
   # Process all img tags in HTML content: download images and create ActionText attachments
-  def process_images_to_actiontext(html_content, assets_root: nil, dry_run: false)
+  # If skip_on_error is true, failed downloads will leave the original img tag intact instead of raising
+  def process_images_to_actiontext(html_content, assets_root: nil, dry_run: false, skip_on_error: false)
     processed_content = Nokogiri::HTML::DocumentFragment.parse(html_content)
 
     processed_content.css("img").each do |img|
@@ -101,7 +102,12 @@ module ImportHelpers
           img.replace(attachment_node)
         end
       rescue => e
-        raise "Failed to process image #{image_src}: #{e.message}"
+        if skip_on_error
+          puts "  Warning: Could not download image #{image_src}, keeping original URL: #{e.message}"
+          # Leave the original img tag intact - do nothing
+        else
+          raise "Failed to process image #{image_src}: #{e.message}"
+        end
       end
     end
 
