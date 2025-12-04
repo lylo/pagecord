@@ -94,7 +94,8 @@ module BlogsHelper
       }
 
       if post.blog.avatar.attached?
-        params[:avatar] = resized_image_url(post.blog.avatar, width: 160, height: 160)
+        # Use JPEG format for OG images (Worker doesn't support WebP)
+        params[:avatar] = resized_image_url(post.blog.avatar, width: 160, height: 160, format: :jpeg)
       else
         # Use default Pagecord favicon as avatar
         params[:avatar] = "#{request.protocol}#{request.host_with_port}/apple-touch-icon.png"

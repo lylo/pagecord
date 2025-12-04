@@ -148,7 +148,7 @@ class BlogsHelperTest < ActionView::TestCase
     avatar = mock("avatar")
     avatar.stubs(:attached?).returns(true)
     @blog.stubs(:avatar).returns(avatar)
-    stubs(:resized_image_url).with(avatar, width: 160, height: 160).returns("https://example.com/avatar.jpg")
+    stubs(:resized_image_url).with(avatar, width: 160, height: 160, format: :jpeg).returns("https://example.com/avatar.jpg")
 
     # Temporarily configure worker URL via ENV
     ENV.stubs(:[]).with("OG_WORKER_URL").returns("https://og.example.com/og")
