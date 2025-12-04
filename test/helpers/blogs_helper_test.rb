@@ -1,4 +1,5 @@
 require "test_helper"
+require "mocha/minitest"
 
 class BlogsHelperTest < ActionView::TestCase
   include BlogsHelper
@@ -86,6 +87,62 @@ class BlogsHelperTest < ActionView::TestCase
     @blog = blogs(:joel)
     stubs(:custom_domain_request?).returns(false)
     assert_nil open_graph_image_helper
+  end
+
+  test "open_graph_image with dynamic OG worker URL configured" do
+    @post = posts(:one)
+    @post.stubs(:open_graph_image).returns(nil)
+    @post.stubs(:first_image).returns(nil)
+    @post.stubs(:display_title).returns("My Blog Post")
+    @blog = @post.blog
+    @blog.stubs(:subdomain).returns("joel")
+    @blog.stubs(:display_name).returns("Joel's Blog")
+    @blog.stubs(:avatar).returns(stub(attached?: false))
+
+    # Temporarily configure worker URL
+    Rails.configuration.x.stubs(:og_worker_url).returns("https://og.example.com/og")
+
+    result = open_graph_image_helper
+    uri = URI.parse(result)
+    params = CGI.parse(uri.query)
+
+    assert_equal "https", uri.scheme
+    assert_equal "og.example.com", uri.host
+    assert_equal "/og", uri.path
+    assert_equal [ "joel" ], params["subdomain"]
+    assert_equal [ "My Blog Post" ], params["title"]
+    assert_equal [ "Joel's Blog" ], params["blogTitle"]
+  end
+
+  test "open_graph_image with dynamic OG worker URL and avatar" do
+    @post = posts(:one)
+    @post.stubs(:open_graph_image).returns(nil)
+    @post.stubs(:first_image).returns(nil)
+    @post.stubs(:display_title).returns("My Blog Post")
+    @blog = @post.blog
+    @blog.stubs(:subdomain).returns("joel")
+    @blog.stubs(:display_name).returns("Joel's Blog")
+
+    # Mock avatar
+    avatar = mock("avatar")
+    avatar.stubs(:attached?).returns(true)
+    @blog.stubs(:avatar).returns(avatar)
+    stubs(:resized_image_url).with(avatar, width: 160, height: 160).returns("https://example.com/avatar.jpg")
+
+    # Temporarily configure worker URL
+    Rails.configuration.x.stubs(:og_worker_url).returns("https://og.example.com/og")
+
+    result = open_graph_image_helper
+    uri = URI.parse(result)
+    params = CGI.parse(uri.query)
+
+    assert_equal "https", uri.scheme
+    assert_equal "og.example.com", uri.host
+    assert_equal "/og", uri.path
+    assert_equal [ "joel" ], params["subdomain"]
+    assert_equal [ "My Blog Post" ], params["title"]
+    assert_equal [ "Joel's Blog" ], params["blogTitle"]
+    assert_equal [ "https://example.com/avatar.jpg" ], params["avatar"]
   end
 
   private

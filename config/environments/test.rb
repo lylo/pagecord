@@ -25,6 +25,8 @@ Rails.application.configure do
 
   # Set domain configuration for test environment
   config.x.domain = "example.com"
+  config.x.og_worker_url = nil
+  config.x.og_signing_secret = nil
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local = true

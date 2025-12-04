@@ -82,6 +82,20 @@ folder and create posts for the first user account in the seed data (`joel@pagec
 DIR=tmp/emails rake email:load
 ```
 
+## Open Graph Images
+
+Pagecord can optionally generate dynamic Open Graph images for blog posts using a separate Cloudflare Worker service. This worker is currently **closed source** and not required to run Pagecord locally.
+
+**What it does**: Generates social media preview images for posts without explicit OG images.
+
+**Local development**: Pagecord gracefully falls back to standard behavior when the worker is not configured. Your local installation will work perfectly fine without it - posts will simply use their first image or no OG image, just like they did originally.
+
+If you're interested in setting up your own OG image worker, you can configure it with these optional environment variables:
+```bash
+OG_WORKER_URL=https://your-worker-url.com/og
+OG_SIGNING_SECRET=your-secret-key
+```
+
 ## More info
 
 Read about [the Pagecord architecture](architecture.md) or [making contributions](CONTRIBUTIONS.md).

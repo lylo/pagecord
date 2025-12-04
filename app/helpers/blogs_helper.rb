@@ -8,6 +8,8 @@ module BlogsHelper
       @post.open_graph_image.url
     elsif @post && @post.first_image.present?
       resized_image_url @post.first_image, width: 1200, height: 630, crop: true
+    elsif @post
+      dynamic_og_image_url(@post)
     end
   end
 
@@ -79,5 +81,43 @@ module BlogsHelper
       else
         blog_title(blog)
       end
+    end
+
+    def dynamic_og_image_url(post)
+      return nil unless Rails.configuration.x.og_worker_url.present?
+
+      params = {
+        subdomain: post.blog.subdomain,
+        title: post.display_title,
+        blogTitle: post.blog.display_name
+      }
+
+      if post.blog.avatar.attached?
+        params[:avatar] = resized_image_url(post.blog.avatar, width: 160, height: 160)
+      end
+
+      # Add HMAC signature if secret is configured
+      if Rails.configuration.x.og_signing_secret.present?
+        params[:signature] = generate_og_signature(params)
+      end
+
+      "#{Rails.configuration.x.og_worker_url}?#{params.to_query}"
+    end
+
+    def generate_og_signature(params)
+      # Create canonical string: subdomain|title|blogTitle|avatar
+      canonical = [
+        params[:subdomain],
+        params[:title],
+        params[:blogTitle],
+        params[:avatar] || ""
+      ].join("|")
+
+      # Generate HMAC-SHA256 signature
+      OpenSSL::HMAC.hexdigest(
+        "SHA256",
+        Rails.configuration.x.og_signing_secret,
+        canonical
+      )
     end
 end
