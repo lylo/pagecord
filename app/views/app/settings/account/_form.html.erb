@@ -73,36 +73,17 @@
   <% end %>
 </div>
 
-<h3 class="mb-4 font-bold text-xl">Password</h3>
+<h3 class="mb-4 font-bold text-xl">Account Password</h3>
 
 <div class="mb-12">
   <% if Current.user.has_password? %>
-    <p class="mb-4">
+    <p>
       To change your password, use the <%= link_to "forgot password", new_password_reset_path, class: "text-slate-900 dark:text-slate-100 underline" %> flow.
     </p>
   <% else %>
-    <p class="mb-4">
-      You haven't set a password yet. You can continue using email login links, or set a password below.
+    <p>
+      By default Pagecord uses magic link emails for logging in. You can <%= link_to "set a password", new_password_reset_path, class: "text-slate-900 dark:text-slate-100 underline" %> if you prefer to log in that way.
     </p>
-
-    <%= form_with url: app_settings_user_path(@user), model: @user, method: :patch, class: "mt-4" do |form| %>
-      <div class="mt-6">
-        <div>
-          <%= form.label :password, "New password", class: "block text-sm font-medium mb-1" %>
-          <%= form.password_field :password, class: "w-full md:w-96 form-field" %>
-          <div class="text-slate-500 text-xs mt-1">
-            Minimum 12 characters
-          </div>
-        </div>
-        <div class="mt-4">
-          <%= form.label :password_confirmation, "Confirm password", class: "block text-sm font-medium mb-1" %>
-          <%= form.password_field :password_confirmation, class: "w-full md:w-96 form-field" %>
-        </div>
-        <div class="mt-4">
-          <%= form.submit "Set Password", class: "btn-primary" %>
-        </div>
-      </div>
-    <% end %>
   <% end %>
 </div>
 

@@ -25,17 +25,6 @@ class PasswordAuthenticationTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_root_path
   end
 
-  test "set password in settings" do
-    user = users(:joel)
-    login_as user
-
-    patch app_settings_user_url(user), params: {
-      user: { password: "password1234", password_confirmation: "password1234" }
-    }
-
-    assert user.reload.has_password?
-  end
-
   test "password reset flow" do
     user = users(:joel)
     access_request = user.access_requests.create!(purpose: "password_reset")
