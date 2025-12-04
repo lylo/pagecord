@@ -51,4 +51,13 @@ class AccessRequestsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_path
   end
+
+  test "should reject password_reset token for login" do
+    user = users(:joel)
+    access_request = user.access_requests.create!(purpose: "password_reset")
+
+    get verify_access_request_url(access_request.token_digest)
+
+    assert_redirected_to root_path
+  end
 end

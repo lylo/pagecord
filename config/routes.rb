@@ -90,6 +90,10 @@ Rails.application.routes.draw do
     get :thanks, on: :collection
   end
 
+  resources :password_resets, only: [ :new, :create, :edit, :update ], param: :token do
+    get :thanks, on: :collection
+  end
+
   get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
 
   namespace :app do

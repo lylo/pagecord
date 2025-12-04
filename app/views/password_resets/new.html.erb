@@ -1,0 +1,21 @@
+<% content_for :title, "Pagecord - Reset Password" %>
+
+<p>
+  Enter your blog subdomain and email address to receive a password reset link.
+</p>
+
+<%= form_with url: password_resets_path, model: @user, data: { turbo: "false" }, class: "mt-8" do |form| %>
+  <div class="flex items-center">
+    <%= form.text_field :subdomain, placeholder: "subdomain", autofocus: true, class: "px-2 py-1 m-0 form-field rounded-sm", maxlength: 20, required: true %>
+    <div class="font-semibold">.pagecord.com</div>
+  </div>
+
+  <div class="mt-4">
+    <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "mt-1 px-2 py-1 m-0 form-field rounded-sm" %>
+  </div>
+
+  <div class="mt-8 flex items-center gap-4">
+    <%= form.submit "Send reset link", class: "btn-primary" %>
+    <%= link_to "Cancel", login_path(mode: :password), class: "text-sm font-medium underline" %>
+  </div>
+<% end %>

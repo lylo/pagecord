@@ -17,6 +17,6 @@ class App::Settings::UsersController < AppController
   private
 
     def user_params
-      params.require(:user).permit(:timezone)
+      params.require(:user).permit(:timezone, :password, :password_confirmation)
     end
 end

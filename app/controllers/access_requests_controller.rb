@@ -2,8 +2,8 @@ class AccessRequestsController < ApplicationController
   include PricingHelper
 
   def verify
-    access_request = AccessRequest.active.pending.find_by(token_digest: params[:token]) ||
-                     AccessRequest.active.recently_accepted.find_by(token_digest: params[:token])
+    access_request = AccessRequest.login.active.pending.find_by(token_digest: params[:token]) ||
+                     AccessRequest.login.active.recently_accepted.find_by(token_digest: params[:token])
     if access_request
       @user = access_request.user
 
