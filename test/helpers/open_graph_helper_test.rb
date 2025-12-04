@@ -40,11 +40,44 @@ class OpenGraphHelperTest < ActionView::TestCase
     assert_nil open_graph_image_helper
   end
 
-  test "open_graph_image with no post returns nil" do
+  test "open_graph_image with no post and no dynamic OG returns nil" do
     @post = nil
     @blog = blogs(:joel)
-    stubs(:custom_domain_request?).returns(false)
+    # Feature not enabled, so should return nil
+    @blog.features = []
+    @blog.save!
     assert_nil open_graph_image_helper
+  end
+
+  test "open_graph_image for blog home page with dynamic OG" do
+    @post = nil
+    @blog = blogs(:joel)
+    @blog.subdomain = "jason"
+    @blog.stubs(:display_name).returns("Jason Journals")
+    @blog.stubs(:custom_domain).returns(nil)
+    @blog.stubs(:avatar).returns(stub(attached?: false))
+
+    # Enable the dynamic_open_graph feature
+    @blog.features = [ "dynamic_open_graph" ]
+    @blog.save!
+
+    # Temporarily configure worker URL via ENV
+    ENV["OG_WORKER_URL"] = "https://og.example.com/og"
+    ENV["OG_SIGNING_SECRET"] = nil
+
+    # Mock request for default favicon URL
+    stubs(:request).returns(stub(protocol: "http://", host_with_port: "example.com:3000"))
+
+    result = open_graph_image_helper
+    uri = URI.parse(result)
+    params = CGI.parse(uri.query)
+
+    assert_equal "https", uri.scheme
+    assert_equal "og.example.com", uri.host
+    assert_equal "/og", uri.path
+    assert_equal [ "Jason Journals" ], params["title"]
+    assert_equal [ "jason.pagecord.com" ], params["blogTitle"]
+    assert_equal [ "http://example.com:3000/apple-touch-icon.png" ], params["avatar"]
   end
 
   test "open_graph_image with dynamic OG worker URL configured" do

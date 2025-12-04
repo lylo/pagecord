@@ -9,38 +9,57 @@ module OpenGraphHelper
     elsif @post && @post.first_image.present?
       resized_image_url @post.first_image, width: 1200, height: 630, crop: true
     elsif @post
-      dynamic_og_image_url(@post)
+      dynamic_og_image_for_post(@post)
+    elsif @blog
+      dynamic_og_image_for_blog(@blog)
     end
   end
 
   private
 
-    def dynamic_og_image_url(post)
+    def dynamic_og_image_for_post(post)
+      build_dynamic_og_url(
+        title: post.display_title,
+        subtitle: post.blog.display_name,
+        blog: post.blog
+      )
+    end
+
+    def dynamic_og_image_for_blog(blog)
+      build_dynamic_og_url(
+        title: blog.display_name,
+        subtitle: blog_domain(blog),
+        blog: blog
+      )
+    end
+
+    def build_dynamic_og_url(title:, subtitle:, blog:)
       worker_url = ENV["OG_WORKER_URL"]
       return nil unless worker_url.present?
       return nil unless current_features.enabled?(:dynamic_open_graph)
 
       params = {
-        title: post.display_title,
-        blogTitle: post.blog.display_name
+        title: title,
+        blogTitle: subtitle
       }
 
-      if post.blog.avatar.attached?
-        # Use :thumb variant which returns JPEG format to ensure support for dynamic OG image
-        # Use direct URL to avoid cdn-cgi proxy (Workers can't fetch from same-domain cdn-cgi)
-        params[:avatar] = rails_public_blob_url(post.blog.avatar.variant(:thumb))
+      params[:avatar] = if blog.avatar.attached?
+        # Use :thumb variant (JPEG format) to avoid cdn-cgi proxy issues
+        rails_public_blob_url(blog.avatar.variant(:thumb))
       else
-        # Use default Pagecord favicon as avatar
-        params[:avatar] = "#{request.protocol}#{request.host_with_port}/apple-touch-icon.png"
+        "#{request.protocol}#{request.host_with_port}/apple-touch-icon.png"
       end
 
-      # Add HMAC signature if secret is configured
-      signing_secret = ENV["OG_SIGNING_SECRET"]
-      if signing_secret.present?
+      # Add HMAC signature if configured
+      if (signing_secret = ENV["OG_SIGNING_SECRET"]).present?
         params[:signature] = generate_og_signature(params, signing_secret)
       end
 
       "#{worker_url}?#{params.to_query}"
+    end
+
+    def blog_domain(blog)
+      blog.custom_domain.presence || "#{blog.subdomain}.pagecord.com"
     end
 
     def generate_og_signature(params, secret)
