@@ -22,7 +22,7 @@ class Blog < ApplicationRecord
   has_many :page_views, dependent: :destroy
 
   has_one_attached :avatar do |attachable|
-    attachable.variant :thumb, resize_to_limit: [ 300, 300 ], format: :jpeg
+    attachable.variant :thumb, resize_to_limit: [ 300, 300 ], format: :jpeg, saver: { background: [255, 255, 255], flatten: true }
   end
 
   has_rich_text :bio
