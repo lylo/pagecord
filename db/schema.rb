@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_11_21_221229) do
+ActiveRecord::Schema[8.2].define(version: 2025_12_04_221326) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -19,6 +19,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_221229) do
     t.datetime "accepted_at"
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
+    t.string "purpose", default: "login", null: false
     t.string "token_digest"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -359,11 +360,13 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_221229) do
     t.string "email", null: false
     t.boolean "marketing_consent", default: false, null: false
     t.string "onboarding_state", default: "account_created"
+    t.string "password_digest"
     t.string "timezone", default: "UTC", null: false
     t.datetime "updated_at", null: false
     t.boolean "verified", default: false
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["password_digest"], name: "index_users_on_password_digest"
   end
 
   add_foreign_key "access_requests", "users"

@@ -5,8 +5,12 @@
     Signups are currently disabled. Please check back later.
   </p>
 <% else %>
-  <p>
-    To create your account, choose a subdomain for your blog and enter your email address.
-  </p>
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold mb-2">Create your Pagecord blog!</h1>
+    <p class="text-slate-600 dark:text-slate-400">
+      Start blogging in seconds. Choose a subdomain and enter your email. You can add a password if you like,
+      but Pagecord doesn't need one.
+    </p>
+  </div>
   <%= render "form" %>
 <% end %>
