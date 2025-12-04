@@ -95,12 +95,14 @@ class BlogsHelperTest < ActionView::TestCase
     @post.stubs(:first_image).returns(nil)
     @post.stubs(:display_title).returns("My Blog Post")
     @blog = @post.blog
-    @blog.stubs(:subdomain).returns("joel")
     @blog.stubs(:display_name).returns("Joel's Blog")
     @blog.stubs(:avatar).returns(stub(attached?: false))
 
     # Temporarily configure worker URL
     Rails.configuration.x.stubs(:og_worker_url).returns("https://og.example.com/og")
+
+    # Mock request for default favicon URL
+    stubs(:request).returns(stub(protocol: "http://", host_with_port: "example.com:3000"))
 
     result = open_graph_image_helper
     uri = URI.parse(result)
@@ -109,9 +111,9 @@ class BlogsHelperTest < ActionView::TestCase
     assert_equal "https", uri.scheme
     assert_equal "og.example.com", uri.host
     assert_equal "/og", uri.path
-    assert_equal [ "joel" ], params["subdomain"]
     assert_equal [ "My Blog Post" ], params["title"]
     assert_equal [ "Joel's Blog" ], params["blogTitle"]
+    assert_equal [ "http://example.com:3000/favicon-32x32.png" ], params["favicon"]
   end
 
   test "open_graph_image with dynamic OG worker URL and avatar" do
@@ -120,7 +122,6 @@ class BlogsHelperTest < ActionView::TestCase
     @post.stubs(:first_image).returns(nil)
     @post.stubs(:display_title).returns("My Blog Post")
     @blog = @post.blog
-    @blog.stubs(:subdomain).returns("joel")
     @blog.stubs(:display_name).returns("Joel's Blog")
 
     # Mock avatar
@@ -139,10 +140,10 @@ class BlogsHelperTest < ActionView::TestCase
     assert_equal "https", uri.scheme
     assert_equal "og.example.com", uri.host
     assert_equal "/og", uri.path
-    assert_equal [ "joel" ], params["subdomain"]
     assert_equal [ "My Blog Post" ], params["title"]
     assert_equal [ "Joel's Blog" ], params["blogTitle"]
     assert_equal [ "https://example.com/avatar.jpg" ], params["avatar"]
+    assert_equal [ "https://example.com/avatar.jpg" ], params["favicon"]
   end
 
   private

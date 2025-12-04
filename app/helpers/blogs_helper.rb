@@ -87,13 +87,17 @@ module BlogsHelper
       return nil unless Rails.configuration.x.og_worker_url.present?
 
       params = {
-        subdomain: post.blog.subdomain,
         title: post.display_title,
         blogTitle: post.blog.display_name
       }
 
       if post.blog.avatar.attached?
-        params[:avatar] = resized_image_url(post.blog.avatar, width: 160, height: 160)
+        avatar_url = resized_image_url(post.blog.avatar, width: 160, height: 160)
+        params[:avatar] = avatar_url
+        params[:favicon] = avatar_url
+      else
+        # Use default Pagecord favicon
+        params[:favicon] = "#{request.protocol}#{request.host_with_port}/favicon-32x32.png"
       end
 
       # Add HMAC signature if secret is configured
@@ -105,12 +109,12 @@ module BlogsHelper
     end
 
     def generate_og_signature(params)
-      # Create canonical string: subdomain|title|blogTitle|avatar
+      # Create canonical string: title|blogTitle|avatar|favicon
       canonical = [
-        params[:subdomain],
         params[:title],
         params[:blogTitle],
-        params[:avatar] || ""
+        params[:avatar] || "",
+        params[:favicon] || ""
       ].join("|")
 
       # Generate HMAC-SHA256 signature
