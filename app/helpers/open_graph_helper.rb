@@ -26,8 +26,9 @@ module OpenGraphHelper
       }
 
       if post.blog.avatar.attached?
-        # Use JPEG format for OG images (Worker doesn't support WebP)
-        params[:avatar] = resized_image_url(post.blog.avatar, width: 160, height: 160, format: :jpeg)
+        # Use :thumb variant which returns JPEG format to ensure support for dynamic OG image
+        # Use direct URL to avoid cdn-cgi proxy (Workers can't fetch from same-domain cdn-cgi)
+        params[:avatar] = rails_public_blob_url(post.blog.avatar.variant(:thumb))
       else
         # Use default Pagecord favicon as avatar
         params[:avatar] = "#{request.protocol}#{request.host_with_port}/apple-touch-icon.png"

@@ -105,11 +105,13 @@ class OpenGraphHelperTest < ActionView::TestCase
     @blog.features = [ "dynamic_open_graph" ]
     @blog.save!
 
-    # Mock avatar
+    # Mock avatar and :thumb variant
     avatar = mock("avatar")
     avatar.stubs(:attached?).returns(true)
+    thumb_variant = mock("thumb_variant")
+    avatar.stubs(:variant).with(:thumb).returns(thumb_variant)
     @blog.stubs(:avatar).returns(avatar)
-    stubs(:resized_image_url).with(avatar, width: 160, height: 160, format: :jpeg).returns("https://example.com/avatar.jpg")
+    stubs(:rails_public_blob_url).with(thumb_variant).returns("https://example.com/avatar.jpg")
 
     # Temporarily configure worker URL via ENV
     ENV["OG_WORKER_URL"] = "https://og.example.com/og"
