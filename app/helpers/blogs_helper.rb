@@ -86,7 +86,7 @@ module BlogsHelper
     def dynamic_og_image_url(post)
       worker_url = ENV["OG_WORKER_URL"]
       return nil unless worker_url.present?
-      return nil unless feature?(:dynamic_open_graph, blog: post.blog)
+      return nil unless current_features.enabled?(:dynamic_open_graph)
 
       params = {
         title: post.display_title,
