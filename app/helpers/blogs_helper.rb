@@ -94,12 +94,10 @@ module BlogsHelper
       }
 
       if post.blog.avatar.attached?
-        avatar_url = resized_image_url(post.blog.avatar, width: 160, height: 160)
-        params[:avatar] = avatar_url
-        params[:favicon] = avatar_url
+        params[:avatar] = resized_image_url(post.blog.avatar, width: 160, height: 160)
       else
-        # Use default Pagecord favicon
-        params[:favicon] = "#{request.protocol}#{request.host_with_port}/apple-touch-icon.png"
+        # Use default Pagecord favicon as avatar
+        params[:avatar] = "#{request.protocol}#{request.host_with_port}/apple-touch-icon.png"
       end
 
       # Add HMAC signature if secret is configured
@@ -112,12 +110,11 @@ module BlogsHelper
     end
 
     def generate_og_signature(params, secret)
-      # Create canonical string: title|blogTitle|avatar|favicon
+      # Create canonical string: title|blogTitle|avatar
       canonical = [
         params[:title],
         params[:blogTitle],
-        params[:avatar] || "",
-        params[:favicon] || ""
+        params[:avatar] || ""
       ].join("|")
 
       # Generate HMAC-SHA256 signature

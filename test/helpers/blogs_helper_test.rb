@@ -117,7 +117,7 @@ class BlogsHelperTest < ActionView::TestCase
     assert_equal "/og", uri.path
     assert_equal [ "My Blog Post" ], params["title"]
     assert_equal [ "Joel's Blog" ], params["blogTitle"]
-    assert_equal [ "http://example.com:3000/apple-touch-icon.png" ], params["favicon"]
+    assert_equal [ "http://example.com:3000/apple-touch-icon.png" ], params["avatar"]
   end
 
   test "open_graph_image with dynamic OG disabled returns nil" do
@@ -167,7 +167,6 @@ class BlogsHelperTest < ActionView::TestCase
     assert_equal [ "My Blog Post" ], params["title"]
     assert_equal [ "Joel's Blog" ], params["blogTitle"]
     assert_equal [ "https://example.com/avatar.jpg" ], params["avatar"]
-    assert_equal [ "https://example.com/avatar.jpg" ], params["favicon"]
   end
 
   private
