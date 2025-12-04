@@ -22,6 +22,16 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
 
   private
 
+    def fail
+      @spammer_detected = true
+      @message = "There's an issue with your subscription. If you're using a VPN, try subscribing without it. Contact support if the problem persists."
+
+      respond_to do |format|
+        format.turbo_stream { render :create }
+        format.html { redirect_to blog_posts_path, alert: @message }
+      end
+    end
+
     def requires_user_subscription
       head :unprocessable_entity unless @blog.user.subscribed?
     end
