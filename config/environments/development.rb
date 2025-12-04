@@ -20,8 +20,6 @@ Rails.application.configure do
   # Set domain configuration for development
   config.x.domain = ENV.fetch("APP_DOMAIN", "lvh.me")
   config.x.cloudflare_image_resizing = false
-  config.x.og_worker_url = ENV.fetch("OG_WORKER_URL", nil)
-  config.x.og_signing_secret = ENV.fetch("OG_SIGNING_SECRET", nil)
 
   config.action_controller.default_url_options = { host: "lvh.me", port: "3000", protocol: "http" }
 

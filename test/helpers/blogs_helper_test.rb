@@ -98,8 +98,12 @@ class BlogsHelperTest < ActionView::TestCase
     @blog.stubs(:display_name).returns("Joel's Blog")
     @blog.stubs(:avatar).returns(stub(attached?: false))
 
-    # Temporarily configure worker URL
-    Rails.configuration.x.stubs(:og_worker_url).returns("https://og.example.com/og")
+    # Temporarily configure worker URL via ENV
+    ENV.stubs(:[]).with("OG_WORKER_URL").returns("https://og.example.com/og")
+    ENV.stubs(:[]).with("OG_SIGNING_SECRET").returns(nil)
+
+    # Mock feature flag to be enabled
+    stubs(:feature?).with(:dynamic_open_graph, blog: @blog).returns(true)
 
     # Mock request for default favicon URL
     stubs(:request).returns(stub(protocol: "http://", host_with_port: "example.com:3000"))
@@ -113,7 +117,23 @@ class BlogsHelperTest < ActionView::TestCase
     assert_equal "/og", uri.path
     assert_equal [ "My Blog Post" ], params["title"]
     assert_equal [ "Joel's Blog" ], params["blogTitle"]
-    assert_equal [ "http://example.com:3000/favicon-32x32.png" ], params["favicon"]
+    assert_equal [ "http://example.com:3000/apple-touch-icon.png" ], params["favicon"]
+  end
+
+  test "open_graph_image with dynamic OG disabled returns nil" do
+    @post = posts(:one)
+    @post.stubs(:open_graph_image).returns(nil)
+    @post.stubs(:first_image).returns(nil)
+    @blog = @post.blog
+
+    # Configure worker URL via ENV
+    ENV.stubs(:[]).with("OG_WORKER_URL").returns("https://og.example.com/og")
+    ENV.stubs(:[]).with("OG_SIGNING_SECRET").returns(nil)
+
+    # Mock feature flag to be disabled
+    stubs(:feature?).with(:dynamic_open_graph, blog: @blog).returns(false)
+
+    assert_nil open_graph_image_helper
   end
 
   test "open_graph_image with dynamic OG worker URL and avatar" do
@@ -130,8 +150,12 @@ class BlogsHelperTest < ActionView::TestCase
     @blog.stubs(:avatar).returns(avatar)
     stubs(:resized_image_url).with(avatar, width: 160, height: 160).returns("https://example.com/avatar.jpg")
 
-    # Temporarily configure worker URL
-    Rails.configuration.x.stubs(:og_worker_url).returns("https://og.example.com/og")
+    # Temporarily configure worker URL via ENV
+    ENV.stubs(:[]).with("OG_WORKER_URL").returns("https://og.example.com/og")
+    ENV.stubs(:[]).with("OG_SIGNING_SECRET").returns(nil)
+
+    # Mock feature flag to be enabled
+    stubs(:feature?).with(:dynamic_open_graph, blog: @blog).returns(true)
 
     result = open_graph_image_helper
     uri = URI.parse(result)

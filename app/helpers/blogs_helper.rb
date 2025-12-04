@@ -84,7 +84,9 @@ module BlogsHelper
     end
 
     def dynamic_og_image_url(post)
-      return nil unless Rails.configuration.x.og_worker_url.present?
+      worker_url = ENV["OG_WORKER_URL"]
+      return nil unless worker_url.present?
+      return nil unless feature?(:dynamic_open_graph, blog: post.blog)
 
       params = {
         title: post.display_title,
@@ -97,18 +99,19 @@ module BlogsHelper
         params[:favicon] = avatar_url
       else
         # Use default Pagecord favicon
-        params[:favicon] = "#{request.protocol}#{request.host_with_port}/favicon-32x32.png"
+        params[:favicon] = "#{request.protocol}#{request.host_with_port}/apple-touch-icon.png"
       end
 
       # Add HMAC signature if secret is configured
-      if Rails.configuration.x.og_signing_secret.present?
-        params[:signature] = generate_og_signature(params)
+      signing_secret = ENV["OG_SIGNING_SECRET"]
+      if signing_secret.present?
+        params[:signature] = generate_og_signature(params, signing_secret)
       end
 
-      "#{Rails.configuration.x.og_worker_url}?#{params.to_query}"
+      "#{worker_url}?#{params.to_query}"
     end
 
-    def generate_og_signature(params)
+    def generate_og_signature(params, secret)
       # Create canonical string: title|blogTitle|avatar|favicon
       canonical = [
         params[:title],
@@ -120,7 +123,7 @@ module BlogsHelper
       # Generate HMAC-SHA256 signature
       OpenSSL::HMAC.hexdigest(
         "SHA256",
-        Rails.configuration.x.og_signing_secret,
+        secret,
         canonical
       )
     end

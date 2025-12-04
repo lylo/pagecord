@@ -19,8 +19,6 @@ Rails.application.configure do
   # Set domain configuration once
   config.x.domain = ENV.fetch("APP_DOMAIN", "pagecord.com")
   config.x.cloudflare_image_resizing = true
-  config.x.og_worker_url = ENV.fetch("OG_WORKER_URL", "https://og.pagecord.com/og")
-  config.x.og_signing_secret = ENV.fetch("OG_SIGNING_SECRET")
 
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local = false
