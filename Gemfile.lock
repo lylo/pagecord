@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 0f3585ee229f1b3ee700a3e11a1527ff7ad364b8
+  revision: 5973c9a45c12e7d979d2385c9c187890be35bc57
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -157,7 +157,7 @@ GEM
       railties (>= 7.2.0, < 8.2.0)
       zeitwerk (>= 2.5.0)
     concurrent-ruby (1.3.5)
-    connection_pool (2.5.5)
+    connection_pool (3.0.1)
     crass (1.0.6)
     css_parser (1.21.1)
       addressable
@@ -243,7 +243,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (0.1.22.beta)
+    lexxy (0.1.23.beta)
       rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
@@ -355,7 +355,7 @@ GEM
       rack (>= 3.0.0)
     rack-test (2.2.0)
       rack (>= 1.3)
-    rackup (2.2.1)
+    rackup (2.3.0)
       rack (>= 3)
     rails-controller-testing (1.0.5)
       actionpack (>= 5.0.1.rc1)
