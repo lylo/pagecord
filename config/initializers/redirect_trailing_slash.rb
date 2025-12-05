@@ -20,6 +20,8 @@ class RedirectTrailingSlash
     end
 
     @app.call(env)
+  rescue Rack::Multipart::EmptyContentError
+    [ 400, { "Content-Type" => "text/plain" }, [ "Bad Request" ] ]
   end
 end
 
