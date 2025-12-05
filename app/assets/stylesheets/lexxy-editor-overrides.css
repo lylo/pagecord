@@ -8,6 +8,12 @@ lexxy-editor:focus-within {
 lexxy-editor {
   --lexxy-color-accent-dark: #4fbd9c;
 
+    /* Safari renders caret inconsistently on <br> lines when inheriting
+     Tailwind's line-height: 1.5 from html. Reset to browser default. */
+  .lexxy-editor__content {
+    line-height: normal;
+  }
+
   /* Placeholder color */
   &[placeholder]::before {
     color: var(--color-slate-600);
