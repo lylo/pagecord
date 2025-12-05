@@ -36,7 +36,7 @@ module OpenGraphHelper
     def build_dynamic_og_url(title:, subtitle:, blog:)
       worker_url = ENV["OG_WORKER_URL"]
       return nil unless worker_url.present?
-      return nil unless current_features.enabled?(:dynamic_open_graph)
+      return nil unless blog.user.subscribed? # only paid-for accounts have this feature right now
 
       params = {
         title: title,
