@@ -17,7 +17,12 @@
     <%= javascript_importmap_tags %>
 
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-    <%= yield :billing %>
+    <script type="text/javascript">
+      document.addEventListener('turbo:load', function() {
+        Paddle.Environment.set('<%= paddle_environment %>')
+        Paddle.Initialize(<%= paddle_initialize_data %>)
+      })
+    </script>
   </head>
 
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">

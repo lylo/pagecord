@@ -150,8 +150,7 @@ module Billing
       end
 
       def transaction_payment_failed
-        Rails.logger.info "Transaction payment failed"
-        raise "Payment failed for user #{@user.id} (#{@user.blog.subdomain})"
+        Rails.logger.warn "Payment failed for user #{@user.id} (#{@user.blog.subdomain}) - Paddle Retain will retry automatically"
       end
 
       def base_unit_price

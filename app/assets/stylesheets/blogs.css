@@ -96,6 +96,10 @@ html, body {
     --lexxy-color-accent-medium: var(--color-accent-hover);
     --lexxy-color-code-bg: var(--color-bg-subtle);
 
+  :where(.lexxy-content) {
+    line-height: 1.75;
+  }
+
   :where(header) {
     margin-top: 1rem;
     margin-bottom: 2rem;

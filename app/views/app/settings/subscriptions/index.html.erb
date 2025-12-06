@@ -1,12 +1,3 @@
-<% content_for :billing do %>
-  <script type="text/javascript">
-    document.addEventListener('turbo:load', function() {
-      Paddle.Environment.set('<%= paddle_environment %>')
-      Paddle.Initialize(<%= paddle_initialize_data %>)
-    })
-  </script>
-<% end %>
-
 <div class="mt-4 flex flex-col gap-y-4">
 <% if Current.user.subscribed? %>
   <% if @subscription.complimentary? %>
