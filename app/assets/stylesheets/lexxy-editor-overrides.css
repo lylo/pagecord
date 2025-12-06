@@ -11,7 +11,7 @@ lexxy-editor {
     /* Safari renders caret inconsistently on <br> lines when inheriting
      Tailwind's line-height: 1.5 from html. Reset to browser default. */
   .lexxy-editor__content {
-    line-height: normal;
+    line-height: 1.75;
   }
 
   /* Placeholder color */
@@ -157,4 +157,22 @@ lexxy-editor {
   button[name="heading"] {
     display: none;
   }
+}
+
+/* ================================== */
+/* Lexxy Dropdown Fixes               */
+/* (Tailwind overrides :where())      */
+/* ================================== */
+
+.lexxy-highlight-button {
+  font: initial;
+}
+
+lexxy-highlight-dropdown button {
+  line-height: normal;
+}
+
+lexxy-link-dropdown input[type="url"] {
+  min-inline-size: 30ch;
+  line-height: normal;
 }
