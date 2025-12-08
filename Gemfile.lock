@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 5d2630ffccdf79ab2545d8373be6a677868c722d
+  revision: a04d5fd75050caf2d894ee016f2ba26fd84ba641
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -391,7 +391,7 @@ GEM
       railties (> 3.1)
     rainbow (3.1.1)
     rake (13.3.1)
-    rdoc (6.16.1)
+    rdoc (6.17.0)
       erb
       psych (>= 4.0.0)
       tsort
@@ -479,7 +479,7 @@ GEM
     tailwindcss-ruby (4.1.16-x86_64-linux-gnu)
     tailwindcss-ruby (4.1.16-x86_64-linux-musl)
     thor (1.4.0)
-    timeout (0.4.4)
+    timeout (0.5.0)
     tsort (0.2.0)
     turbo-rails (2.0.20)
       actionpack (>= 7.1.0)
