@@ -13,15 +13,15 @@ export default class extends Controller {
   pv() {
     if (!navigator.sendBeacon) return
 
-    const data = new FormData()
-    if (this.postTokenValue) data.append('post_token', this.postTokenValue)
-
-    if (document.referrer) data.append('referrer', document.referrer)
-
-    data.append('path', window.location.pathname + window.location.search);
+    const data = {
+      path: window.location.pathname + window.location.search
+    }
+    if (this.postTokenValue) data.post_token = this.postTokenValue
+    if (document.referrer) data.referrer = document.referrer
 
     try {
-      navigator.sendBeacon(this.pthValue, data)
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
+      navigator.sendBeacon(this.pthValue, blob)
     } catch (_) {}
   }
 }

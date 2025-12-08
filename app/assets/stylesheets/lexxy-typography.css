@@ -2,7 +2,6 @@
 /* Lexxy Content Typography & Layout  */
 /* ================================== */
 :where(.lexxy-content) {
-  line-height: 1.75;
   --lexxy-content-margin: 1.25rem;
 
   ul {

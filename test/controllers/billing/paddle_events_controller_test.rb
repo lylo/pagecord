@@ -73,14 +73,12 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     payload = payload_for("transaction.payment_failed", user)
     json_payload = payload.to_json
 
-    assert_raises do
-      post billing_paddle_events_url,
-        params: json_payload,
-        headers: {
-          "Content-Type" => "application/json",
-          "Paddle-Signature" => paddle_signature_for(json_payload)
-        }
-    end
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
 
     assert_not user.reload.subscribed?
     assert_nil user.subscription
