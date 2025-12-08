@@ -12,14 +12,6 @@ class ReplyMailer < MailpaceMailer
       to: @blog.user.email,
       subject: subject,
       reply_to: @reply.email
-    ).tap { |m| use_resend(m) if Rails.features.for(blog: @blog).enabled?(:resend) }
+    )
   end
-
-  private
-
-    def use_resend(message)
-      return unless Rails.env.production?
-      message.delivery_method(Resend::Mailer, { api_key: Resend.api_key })
-      message.from = "Pagecord <no-reply@remailer.pagecord.com>"
-    end
 end
