@@ -7,7 +7,3 @@ end
 feature :custom_css do |blog: nil|
   blog&.features.include?("custom_css")
 end
-
-feature :resend do |blog: nil|
-  blog&.features.include?("resend")
-end

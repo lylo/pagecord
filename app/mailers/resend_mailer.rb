@@ -1,5 +1,5 @@
 class ResendMailer < ApplicationMailer
   self.delivery_method = :resend if Rails.env.production?
 
-  default from: "Pagecord <no-reply@remailer.pagecord.com>"
+  default from: "Pagecord <hello@remailer.pagecord.com>"
 end
