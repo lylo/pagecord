@@ -9,7 +9,7 @@ class MailpaceMailer < ApplicationMailer
 
     def use_resend_if_configured
       return unless Rails.env.production?
-      return unless @blog && feature?(:resend, blog: @blog)
+      return unless @blog && Rails.features.for(blog: @blog).enabled?(:resend)
 
       message.delivery_method(Resend::Mailer, { api_key: Resend.api_key })
       message.from = "Pagecord <no-reply@remailer.pagecord.com>"
