@@ -19,7 +19,7 @@ class ReplyMailer < MailpaceMailer
 
     def use_resend(message)
       return unless Rails.env.production?
-      message.delivery_method(:resend)
+      message.delivery_method(Resend::Mailer, { api_key: Resend.api_key })
       message.from = "Pagecord <no-reply@remailer.pagecord.com>"
     end
 end
