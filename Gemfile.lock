@@ -99,18 +99,14 @@ GIT
       tsort (>= 0.2)
       zeitwerk (~> 2.6)
 
-PATH
-  remote: ../actionmailbox-resend
-  specs:
-    actionmailbox-resend (1.0.1)
-      rails (>= 7.0)
-      svix (~> 1.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
     action_text-trix (2.1.15)
       railties
+    actionmailbox-resend (1.0.1)
+      rails (>= 7.0)
+      svix (~> 1.0)
     actionpack-page_caching (1.2.4)
       actionpack (>= 4.0.0)
     addressable (2.8.8)
@@ -532,7 +528,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  actionmailbox-resend!
+  actionmailbox-resend
   actionpack-page_caching
   appsignal
   aws-sdk-s3
