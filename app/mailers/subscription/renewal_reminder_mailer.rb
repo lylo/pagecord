@@ -1,4 +1,4 @@
-class Subscription::RenewalReminderMailer < ApplicationMailer
+class Subscription::RenewalReminderMailer < MailpaceMailer
   def reminder(subscription)
     @subscription = subscription
     @user = subscription.user

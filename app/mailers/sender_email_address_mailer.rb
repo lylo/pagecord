@@ -1,4 +1,4 @@
-class SenderEmailAddressMailer < ApplicationMailer
+class SenderEmailAddressMailer < MailpaceMailer
   def verify
     @sender_email_address = params[:sender_email_address]
     @blog = @sender_email_address.blog

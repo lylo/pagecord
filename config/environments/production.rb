@@ -100,7 +100,10 @@ Rails.application.configure do
   config.action_mailer.asset_host = "https://#{config.x.domain}"
   config.action_mailer.perform_caching = false
   config.action_mailer.default_url_options = { host: config.x.domain }
-  config.action_mailer.delivery_method = :resend
+  config.action_mailer.delivery_method = :mailpace
+  config.action_mailer.mailpace_settings = {
+    api_token: ENV["MAILPACE_API_TOKEN"]
+  }
   config.action_mailer.postmark_settings = {
     api_token: ENV["POSTMARK_API_TOKEN"]
   }

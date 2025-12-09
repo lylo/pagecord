@@ -1,4 +1,4 @@
-class CancellationMailer < ApplicationMailer
+class CancellationMailer < MailpaceMailer
   helper :routing
 
   default from: "Olly at Pagecord <hello@mailer.pagecord.com>",

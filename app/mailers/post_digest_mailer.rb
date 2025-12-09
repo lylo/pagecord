@@ -1,10 +1,8 @@
-class PostDigestMailer < ApplicationMailer
+class PostDigestMailer < PostmarkMailer
   include PostsHelper
   include RoutingHelper
 
   layout "mailer_digest"
-
-  default from: "Pagecord <hello@notifications.pagecord.com>"
 
   helper :routing
   helper_method :without_action_text_image_wrapper, :strip_video_tags
