@@ -1,7 +1,7 @@
 class WelcomeMailer < ApplicationMailer
   helper :routing
 
- default from: "Olly at Pagecord <hello@remailer.pagecord.com>",
+ default from: "Olly at Pagecord <hello@mailer.pagecord.com>",
          reply_to: "Olly at Pagecord <olly@pagecord.com>"
 
   def welcome_email
