@@ -35,6 +35,7 @@ gem "sentry-rails"
 
 # email sending and receiving
 gem "actionmailbox-resend"
+gem "postmark-rails"
 gem "premailer-rails", "~> 1.12"
 gem "resend"
 

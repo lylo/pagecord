@@ -4,8 +4,7 @@ class ApplicationMailbox < ActionMailbox::Base
     else
       routing(
         /digest-reply-[a-z0-9]+@post\.pagecord\.com/i => :digest_reply,
-        /^(?!digest-reply-).*@post\.pagecord\.com/i => :posts,
-        /.+@postbox\.pagecord\.com/i => :posts # FIXME remove once finished with testing Resend
+        /^(?!digest-reply-).*@post\.pagecord\.com/i => :posts
       )
     end
 end
