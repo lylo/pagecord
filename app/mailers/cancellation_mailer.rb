@@ -1,4 +1,4 @@
-class CancellationMailer < ResendMailer
+class CancellationMailer < ApplicationMailer
   helper :routing
 
   default from: "Olly at Pagecord <hello@remailer.pagecord.com>",

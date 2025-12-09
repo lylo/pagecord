@@ -1,4 +1,4 @@
-class WelcomeMailer < ResendMailer
+class WelcomeMailer < ApplicationMailer
   helper :routing
 
  default from: "Olly at Pagecord <hello@remailer.pagecord.com>",

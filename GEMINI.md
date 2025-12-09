@@ -120,7 +120,7 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 
 ### Storage & External Services
 - **ActiveStorage**: Images on Cloudflare R2.
-- **Email**: Postmark (inbound/outbound) and Mailpace (trial).
+- **Email**: Resend (inbound/outbound)
 - **Monitoring**: Sentry (errors), AppSignal (observability).
 - **Hosting**: Single Hetzner server via Hatchbox.
 

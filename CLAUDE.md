@@ -159,7 +159,7 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 
 ### Storage & External Services
 - **ActiveStorage**: Images on Cloudflare R2
-- **Email**: Postmark (inbound/outbound) and Mailpace (trial)
+- **Email**: Resend (inbound/outbound)
 - **Monitoring**: Sentry (errors), AppSignal (observability)
 - **Hosting**: Single Hetzner server via Hatchbox
 
@@ -396,7 +396,7 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 
 #### Export Testing
 - Test both HTML and Markdown format creation
-- Verify `display_format` method returns "HTML" or "Markdown" 
+- Verify `display_format` method returns "HTML" or "Markdown"
 - Test controller accepts format parameter correctly
 - Verify both index formats are created with proper links
 - Test image downloading and path rewriting

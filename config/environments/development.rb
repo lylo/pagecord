@@ -48,8 +48,6 @@ Rails.application.configure do
   # Use different settings based on whether we're using puma-dev or regular Rails server
   config.action_mailer.default_url_options = { host: "lvh.me", port: "3000" }
 
-  config.action_mailbox.ingress = :postmark
-
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 

@@ -269,11 +269,6 @@ GEM
       net-imap
       net-pop
       net-smtp
-    mailpace-rails (0.4.3)
-      actionmailbox (>= 6.0.0)
-      actionmailer (>= 6.0.0)
-      activestorage (>= 6.0.0)
-      httparty (>= 0.18.1)
     marcel (1.1.0)
     matrix (0.4.3)
     mime-types (3.7.0)
@@ -339,11 +334,6 @@ GEM
     playwright-ruby-client (1.57.0)
       concurrent-ruby (>= 1.1.6)
       mime-types (>= 3.0)
-    postmark (1.25.1)
-      json
-    postmark-rails (0.22.1)
-      actionmailer (>= 3.0.0)
-      postmark (>= 1.21.3, < 2.0)
     pp (0.6.3)
       prettyprint
     premailer (1.27.0)
@@ -552,7 +542,6 @@ DEPENDENCIES
   letter_opener_web
   lexxy (= 0.1.23.beta)
   local_time
-  mailpace-rails
   mocha
   nanoid (~> 2.0)
   ostruct
@@ -562,7 +551,6 @@ DEPENDENCIES
   pg_search
   pghero
   playwright-ruby-client
-  postmark-rails
   premailer-rails (~> 1.12)
   propshaft
   puma (>= 5.0)
