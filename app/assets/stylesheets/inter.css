@@ -13,3 +13,7 @@
   font-display: swap;
   src: url("inter/InterVariable-Italic.woff2") format("woff2-variations");
 }
+
+body {
+  font-family: "InterVariable", ui-sans-serif, system-ui, sans-serif;
+}
