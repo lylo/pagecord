@@ -76,4 +76,27 @@ module Themeable
       }
     }
   end
+
+  # Hex color values used for OG images
+  THEME_COLORS = {
+    "base"     => { bg: "#ffffff", text: "#334155", accent: "#4fbd9c" },
+    "mint"     => { bg: "#f7faed", text: "#222222", accent: "#0080a1" },
+    "lavender" => { bg: "#faf6ff", text: "#222222", accent: "#a8506f" },
+    "coral"    => { bg: "#ffe9ee", text: "#222222", accent: "#955697" },
+    "sand"     => { bg: "#fbf4ea", text: "#222222", accent: "#ad524d" },
+    "sky"      => { bg: "#effbfd", text: "#222222", accent: "#3275b4" },
+    "berry"    => { bg: "#ffeeff", text: "#222222", accent: "#ac5154" }
+  }.freeze
+
+  def og_theme_colors
+    if custom_theme?
+      {
+        bg: custom_theme_bg_light.presence || "#ffffff",
+        text: custom_theme_text_light.presence || "#334155",
+        accent: custom_theme_accent_light.presence || "#334155"
+      }
+    else
+      THEME_COLORS[theme] || THEME_COLORS["base"]
+    end
+  end
 end

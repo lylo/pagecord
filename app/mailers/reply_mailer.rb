@@ -1,14 +1,15 @@
-class ReplyMailer < MailpaceMailer
+class ReplyMailer < ApplicationMailer
   helper :routing
 
   def new_reply
     @reply = params[:reply]
     @post = @reply.post
+    @blog = @post.blog
 
     subject = "Re: #{@post.display_title}"
 
     mail(
-      to: @post.blog.user.email,
+      to: @blog.user.email,
       subject: subject,
       reply_to: @reply.email
     )

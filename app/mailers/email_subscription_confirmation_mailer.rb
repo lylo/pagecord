@@ -1,4 +1,4 @@
-class EmailSubscriptionConfirmationMailer < MailpaceMailer
+class EmailSubscriptionConfirmationMailer < ApplicationMailer
   layout "mailer_digest"
   helper RoutingHelper
 

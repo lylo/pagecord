@@ -71,6 +71,8 @@ Rails.application.routes.draw do
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 
+  mount ActionMailbox::Resend::Engine, at: "/rails/action_mailbox/resend"
+
   get "/404", to: "errors#not_found"
   get "/422", to: "errors#unacceptable"
   get "/500", to: "errors#internal_error"
@@ -214,6 +216,7 @@ Rails.application.routes.draw do
     get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"
     get "/pagecord-vs-wordpress", to: "public#pagecord_vs_wordpress"
     get "/pagecord-vs-substack", to: "public#pagecord_vs_substack"
+    get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
 
     get "/@:name", to: redirect("/%{name}")

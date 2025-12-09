@@ -12,8 +12,8 @@ class PostDigestMailerTest < ActionMailer::TestCase
       email.deliver_now
     end
 
-    assert_equal [ "no-reply@notifications.pagecord.com" ], email.from
-    assert_equal "\"#{blog.display_name}\" <no-reply@notifications.pagecord.com>", email.header["from"].to_s
+    assert_equal [ "hello@notifications.pagecord.com" ], email.from
+    assert_equal "\"#{blog.display_name}\" <hello@notifications.pagecord.com>", email.header["from"].to_s
     assert_equal [ email_subscriber.email ], email.to
     # Just check that the subject contains the blog name
     assert_match blog.display_name, email.subject

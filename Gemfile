@@ -34,9 +34,9 @@ gem "sentry-ruby"
 gem "sentry-rails"
 
 # email sending and receiving
-gem "mailpace-rails"
-gem "postmark-rails"
+gem "actionmailbox-resend"
 gem "premailer-rails", "~> 1.12"
+gem "resend"
 
 # everything else
 gem "aws-sdk-s3"

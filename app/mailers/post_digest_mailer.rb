@@ -1,8 +1,10 @@
-class PostDigestMailer < PostmarkMailer
+class PostDigestMailer < ApplicationMailer
   include PostsHelper
   include RoutingHelper
 
   layout "mailer_digest"
+
+  default from: "Pagecord <hello@notifications.pagecord.com>"
 
   helper :routing
   helper_method :without_action_text_image_wrapper, :strip_video_tags
@@ -31,6 +33,6 @@ class PostDigestMailer < PostmarkMailer
   private
 
     def sender_address_for(blog)
-      "#{blog.display_name} <no-reply@notifications.pagecord.com>"
+      "#{blog.display_name} <hello@notifications.pagecord.com>"
     end
 end

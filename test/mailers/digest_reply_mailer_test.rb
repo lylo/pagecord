@@ -23,7 +23,7 @@ class DigestReplyMailerTest < ActionMailer::TestCase
     end
 
     assert_equal [ blog_owner.email ], email.to
-    assert_equal "subscriber@example.com <no-reply@notifications.pagecord.com>", email[:from].value
+    assert_equal "subscriber@example.com <hello@notifications.pagecord.com>", email[:from].value
     assert_equal "subscriber@example.com", email.reply_to.first
     assert_equal "Re: #{digest.subject}", email.subject
     assert_equal "I really enjoyed your latest posts about Rails.", email.body.to_s
@@ -84,7 +84,7 @@ class DigestReplyMailerTest < ActionMailer::TestCase
     ).forward_reply
 
     assert_equal [ blog_owner.email ], email.to
-    assert_equal "John Doe <no-reply@notifications.pagecord.com>", email[:from].value
+    assert_equal "John Doe <hello@notifications.pagecord.com>", email[:from].value
     assert_equal "subscriber@example.com", email.reply_to.first
     assert_equal "Re: #{digest.subject}", email.subject
   end

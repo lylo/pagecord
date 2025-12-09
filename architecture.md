@@ -34,9 +34,9 @@ DNS for Pagecord is managed by [Cloudflare](https://cloudflare.com).
 
 ### Email
 
-Inbound emails are managed by [Postmark](https://postmarkapp.com). The Pagecord app uses ActionMailbox to receive and process the emails.
+Inbound emails are managed by [Resend](https://resend.com). The Pagecord app uses ActionMailbox to receive and process the emails.
 
-Transacitonal emails are send via Postmark and [Mailpace](https://mailpace.com). I'm trialling Mailpace in the hope of better deliverability but it's early days. If it's notiably better, I'll move all emails to Mailpace.
+Transacitonal emails are sent via [Resend](https://resend.com).
 
 ### Observability
 
