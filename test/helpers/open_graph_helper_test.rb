@@ -29,7 +29,7 @@ class OpenGraphHelperTest < ActionView::TestCase
     with_og_env_vars do
       @post = posts(:one)
 
-      assert_equal "https://og.example.com/og?accentColor=%234fbd9c&avatar=http%3A%2F%2Ftest.host%2Fpagecord-mark-122025.png&bgColor=%23ffffff&blogTitle=%40joel&textColor=%23334155&title=The+Art+of+Street+Photography", open_graph_image
+      assert_equal "https://og.example.com/og?accentColor=%234fbd9c&avatar=http%3A%2F%2Ftest.host%2Fpagecord-mark-96.png&bgColor=%23ffffff&blogTitle=%40joel&textColor=%23334155&title=The+Art+of+Street+Photography", open_graph_image
     end
   end
 
