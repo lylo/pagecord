@@ -62,11 +62,15 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_p
     excerpt = post_data["custom_excerpt"]
     feature_image = post_data["feature_image"]
     ghost_type = post_data["type"]
+    ghost_status = post_data["status"]
 
     puts "Processing: #{title}"
 
-    # Parse published_at
+    # Parse published_at (drafts may not have one)
     published_at = parse_datetime(published_at_str, fallback_message: "Warning: Could not parse datetime for #{title}")
+
+    # Determine Pagecord status based on Ghost status
+    is_draft = ghost_status == "draft"
 
     # Extract tags for this post
     tag_list = (post_tags_lookup[post_data["id"]] || []).map { |t| clean_tag(t) }.reject(&:empty?)
@@ -91,6 +95,20 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_p
 
     if html_content.present?
       content_to_use = html_content.gsub("__GHOST_URL__", ghost_url)
+      # Convert WordPress-style video shortcodes to HTML video tags
+      # [video width="854" height="480" mp4="url"][/video] -> <video ...><source ...></video>
+      content_to_use = content_to_use.gsub(/\[video([^\]]*)\]\[\/video\]/) do |match|
+        attrs = $1
+        mp4_url = attrs[/mp4="([^"]+)"/, 1]
+        width = attrs[/width="([^"]+)"/, 1]
+        height = attrs[/height="([^"]+)"/, 1]
+        if mp4_url
+          size_attrs = [width ? "width=\"#{width}\"" : nil, height ? "height=\"#{height}\"" : nil].compact.join(" ")
+          "<video controls #{size_attrs}><source src=\"#{mp4_url}\" type=\"video/mp4\"></video>"
+        else
+          match # Keep original if no mp4 URL found
+        end
+      end
     elsif plaintext_content.present?
       content_to_use = Html::PlainTextToHtml.call(plaintext_content)
       content_needs_feature_image = true
@@ -111,24 +129,18 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_p
       published_at: published_at,
       tag_list: tag_list,
       is_page: is_page,
+      status: is_draft ? :draft : :published,
       show_in_navigation: false
     )
 
-    # Process images and create ActionText content
-    if content_to_use.present?
-      begin
-        post.content = process_images_to_actiontext(content_to_use, dry_run: dry_run)
-      rescue => e
-        puts "Skipping post due to image processing failure: #{title} - #{e.message}"
-        failed_count += 1
-        next
-      end
-    else
-      post.content = ""
-    end
+    # Process images/videos and create ActionText content
+    # skip_on_error: true keeps original URLs for any media that fails to download
+    post.content = content_to_use.present? ? process_images_to_actiontext(content_to_use, dry_run: dry_run, skip_on_error: true) : ""
 
     if dry_run
-      puts "[DRY RUN] Would create #{is_page ? 'page' : 'post'}: #{title}"
+      type_label = is_page ? "page" : "post"
+      status_label = is_draft ? " (draft)" : ""
+      puts "[DRY RUN] Would create #{type_label}#{status_label}: #{title}"
       puts "[DRY RUN] Published at: #{published_at}"
       puts "[DRY RUN] Tags: #{tag_list.join(', ')}" if tag_list.any?
       puts "[DRY RUN] Content length: #{post.content.to_plain_text.length} characters"
@@ -144,8 +156,10 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_p
       next
     end
 
+    type_label = is_page ? "page" : "post"
+    status_label = is_draft ? " (draft)" : ""
     if post.save
-      puts "Successfully created #{is_page ? 'page' : 'post'}: #{title}"
+      puts "Successfully created #{type_label}#{status_label}: #{title}"
       success_count += 1
     else
       puts "Failed to create #{is_page ? 'page' : 'post'}: #{title}"
