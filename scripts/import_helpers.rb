@@ -110,7 +110,7 @@ module ImportHelpers
         raise "Local file not found: #{local_path}" unless File.exist?(local_path)
         filename = File.basename(local_path)
         puts "  Uploading local #{type}: #{filename}"
-        [File.open(local_path), filename]
+        [ File.open(local_path), filename ]
       else
         filename = File.basename(URI.parse(src).path)
         filename = "#{type}_#{Time.current.to_i}.#{type == 'video' ? 'mp4' : 'jpg'}" if filename.empty? || !filename.include?('.')
@@ -119,7 +119,7 @@ module ImportHelpers
           open_timeout: 10,
           read_timeout: type == "video" ? 120 : 30  # Longer timeout for videos
         )
-        [file, filename]
+        [ file, filename ]
       end
     end
 

@@ -103,7 +103,7 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_p
         width = attrs[/width="([^"]+)"/, 1]
         height = attrs[/height="([^"]+)"/, 1]
         if mp4_url
-          size_attrs = [width ? "width=\"#{width}\"" : nil, height ? "height=\"#{height}\"" : nil].compact.join(" ")
+          size_attrs = [ width ? "width=\"#{width}\"" : nil, height ? "height=\"#{height}\"" : nil ].compact.join(" ")
           "<video controls #{size_attrs}><source src=\"#{mp4_url}\" type=\"video/mp4\"></video>"
         else
           match # Keep original if no mp4 URL found
