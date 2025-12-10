@@ -103,6 +103,7 @@
         placeholder: "Craft your draft...",
         class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @post.errors[:content].any?}",
         spellcheck: true,
+        autocorrect: "on",
         data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
     <% else %>
       <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
