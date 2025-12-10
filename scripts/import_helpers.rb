@@ -49,20 +49,22 @@ module ImportHelpers
           unless File.exist?(local_path)
             raise "Local file not found: #{local_path}"
           end
+          puts "  Uploading local image: #{filename = File.basename(local_path)}"
           file = File.open(local_path)
-          filename = File.basename(local_path)
         else
           # Remote URL - download with timeouts
+          filename = File.basename(URI.parse(image_src).path)
+          filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
+          puts "  Downloading image: #{filename}"
           file = URI.open(image_src,
             open_timeout: 10,    # 10 seconds to establish connection
             read_timeout: 30     # 30 seconds to read the response
           )
-          filename = File.basename(URI.parse(image_src).path)
-          filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
         end
 
         # Create blob
         blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
+        puts "    Stored as: #{blob.key} (#{blob.byte_size} bytes)"
 
         # Create ActionText attachment with optional caption
         url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
