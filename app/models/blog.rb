@@ -1,5 +1,5 @@
 class Blog < ApplicationRecord
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, StorageTrackable
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
