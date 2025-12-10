@@ -48,7 +48,11 @@ module OpenGraphHelper
         # Use :thumb variant (JPEG format) to avoid cdn-cgi proxy issues
         rails_public_blob_url(blog.avatar.variant(:thumb))
       else
-        "#{request.protocol}#{request.host_with_port}/pagecord-mark-96.png"
+        if Rails.env.production?
+          "https://pagecord.com/pagecord-mark-96.png"
+        else
+          "#{request.protocol}#{request.host_with_port}/pagecord-mark-96.png"
+        end
       end
 
       # Colors from blog theme
