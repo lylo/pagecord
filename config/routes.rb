@@ -1,20 +1,6 @@
 require "sidekiq/web"
 
-class SidekiqAdminConstraint
-  def matches?(request)
-    if current_user = User.kept.find(request.session[:user_id])
-      ENV["ADMIN_USERNAME"] == current_user.blog.subdomain &&
-      # FIXME this should be a password
-      ENV["ADMIN_DELIVERY_EMAIL"] == current_user.blog.delivery_email
-    else
-      false
-    end
-  rescue
-    false
-  end
-end
-
-class PgHeroAdminConstraint
+class AdminConstraint
   def matches?(request)
     return false unless request.session[:user_id]
     user = User.kept.find_by(id: request.session[:user_id])
@@ -61,11 +47,8 @@ Rails.application.routes.draw do
   # PWA routes
   get "manifest", to: "rails/pwa#manifest", as: :pwa_manifest, defaults: { format: :json }, constraints: { format: :json }
 
-  constraints SidekiqAdminConstraint.new do
+  constraints AdminConstraint.new do
     mount Sidekiq::Web, at: "/admin/sidekiq"
-  end
-
-  constraints PgHeroAdminConstraint.new do
     mount PgHero::Engine, at: "/admin/pghero"
   end
 
