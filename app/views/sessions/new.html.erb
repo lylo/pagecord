@@ -1,9 +1,9 @@
 <% content_for :title, "Pagecord - Log In" %>
 
 <div class="mb-8">
-  <h1 class="text-2xl font-bold mb-2">Welcome back!</h1>
+  <h1 class="text-2xl font-bold mb-4"><%= greeting %>! 👋</h1>
   <p class="text-slate-600 dark:text-slate-400">
-    <%= @password_mode ? "Enter your subdomain and password to log in." : "Enter your subdomain and email. We'll send you a magic link to log in – no password required!" %>
+    <%= @password_mode ? "Enter your subdomain and password to log in." : "Enter your account details below and we'll send you a magic link to log in." %>
   </p>
 </div>
 

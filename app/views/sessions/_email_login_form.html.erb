@@ -1,7 +1,6 @@
-<%= form_with url: sessions_path, model: @user, data: { turbo: false }, class: "space-y-6" do |form| %>
+<%= form_with url: sessions_path, model: @user, data: { turbo: false }, class: "space-y-4" do |form| %>
   <div>
-    <label class="block text-base font-semibold text-slate-700 dark:text-slate-200 mb-2.5">Blog subdomain</label>
-    <div class="flex items-center gap-1.5">
+    <div class="flex items-center gap-1">
       <%= form.text_field :subdomain,
           placeholder: "subdomain",
           autofocus: true,
@@ -13,20 +12,20 @@
   </div>
 
   <div>
-    <label class="block text-base font-semibold text-slate-700 dark:text-slate-200 mb-2.5">Email address</label>
     <%= form.email_field :email,
         placeholder: "you@example.com",
         required: true,
         class: "w-full sm:w-96 px-3 py-2.5 form-field rounded-lg" %>
-    <div class="mt-2">
-      <%= link_to "Log in with password instead",
-          login_path(mode: :password),
-          data: { turbo_frame: "login_form" },
-          class: "text-sm font-medium underline" %>
-    </div>
   </div>
 
   <div class="mt-8">
     <%= form.submit "Log in", class: "btn-primary" %>
+  </div>
+
+  <div class="mt-4">
+    <%= link_to "Log in with password instead",
+        login_path(mode: :password),
+        data: { turbo_frame: "login_form" },
+        class: "text-sm font-medium underline" %>
   </div>
 <% end %>
