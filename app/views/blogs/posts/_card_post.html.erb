@@ -17,8 +17,6 @@
         <% end %>
       </div>
 
-      <%= render "tags", post: post if post.tag_list.present? %>
-
       <div class="post-card-meta <%= post.tag_list.present? ? 'has-tags' : 'no-tags' %>">
         <time class="post-card-date" datetime="<%= post.published_at.iso8601 %>">
           <%= local_time post.published_at, format: published_at_date_format %>
