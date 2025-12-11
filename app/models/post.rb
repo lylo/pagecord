@@ -120,16 +120,15 @@ class Post < ApplicationRecord
       doc = Nokogiri::HTML::DocumentFragment.parse(self.content.to_s)
       doc.css("figcaption").remove  # don't want captions in the summary
 
-      # Add space after block-level elements to preserve paragraph boundaries
+      # Add space inside block-level elements to preserve paragraph boundaries
       doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
-        element.add_next_sibling(Nokogiri::XML::Text.new(" ", doc))
+        element.add_child(Nokogiri::XML::Text.new(" ", doc))
       end
 
       text_content = doc.text
       # Remove image references, [Image], URLs, and custom tags like {{ tag_name }}
       text_content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
              .gsub(/\[Image\]/i, "").strip
-             .gsub(/https?:\/\/\S+/, "").strip
              .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "").strip # strip tags
              .gsub(/\s+/, " ").strip  # Normalize whitespace
     end

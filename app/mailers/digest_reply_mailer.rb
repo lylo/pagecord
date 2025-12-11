@@ -16,7 +16,7 @@ class DigestReplyMailer < ApplicationMailer
 
     mail(
       to: @blog.user.email,
-      from: "#{sender_name} <no-reply@notifications.pagecord.com>",
+      from: "#{sender_name} <hello@notifications.pagecord.com>",
       reply_to: original_sender,
       subject: "Re: #{@digest.subject}"
     ) do |format|

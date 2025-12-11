@@ -1,5 +1,5 @@
 class Blog < ApplicationRecord
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, StorageTrackable
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
@@ -22,7 +22,7 @@ class Blog < ApplicationRecord
   has_many :page_views, dependent: :destroy
 
   has_one_attached :avatar do |attachable|
-    attachable.variant :thumb, resize_to_limit: [ 300, 300 ]
+    attachable.variant :thumb, resize_to_limit: [ 96, 96 ], format: :png
   end
 
   has_rich_text :bio

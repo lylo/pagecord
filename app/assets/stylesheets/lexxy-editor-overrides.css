@@ -8,6 +8,10 @@ lexxy-editor:focus-within {
 lexxy-editor {
   --lexxy-color-accent-dark: #4fbd9c;
 
+  .lexxy-editor__content {
+    line-height: 1.75;
+  }
+
   /* Placeholder color */
   &[placeholder]::before {
     color: var(--color-slate-600);
@@ -31,7 +35,7 @@ lexxy-editor {
 /* Lexxy Toolbar Base Styles          */
 /* ================================== */
 
-:where(lexxy-toolbar) {
+lexxy-toolbar {
   position: sticky;
   top: 0;
   z-index: 10;
@@ -60,11 +64,20 @@ lexxy-editor {
       background: var(--color-slate-200);
       color: var(--color-slate-900);
     }
+
+    &:active:not([aria-disabled="true"]) {
+      background: var(--color-slate-300);
+    }
   }
 
   .lexxy-editor__toolbar-button[aria-pressed="true"] {
     background-color: var(--color-slate-400);
     color: var(--color-white);
+  }
+
+  /* Dropdown open state */
+  .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button {
+    background-color: var(--color-slate-300);
   }
 }
 
@@ -124,9 +137,18 @@ lexxy-editor {
     color: var(--color-white);
   }
 
+  lexxy-toolbar .lexxy-editor__toolbar-button:active:not([aria-disabled="true"]) {
+    background: var(--color-slate-600);
+  }
+
   lexxy-toolbar .lexxy-editor__toolbar-button[aria-pressed="true"] {
     background-color: var(--color-slate-600);
     color: var(--color-white);
+  }
+
+  /* Dropdown open state */
+  lexxy-toolbar .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button {
+    background-color: var(--color-slate-600);
   }
 
   lexxy-toolbar .lexxy-editor__toolbar-button svg path {
@@ -151,4 +173,23 @@ lexxy-editor {
   button[name="heading"] {
     display: none;
   }
+}
+
+/* ================================== */
+/* Lexxy Dropdown Fixes               */
+/* (Tailwind overrides :where())      */
+/* ================================== */
+
+.lexxy-highlight-button {
+  font: initial;
+}
+
+lexxy-highlight-dropdown button {
+  --button-size: 2rem;
+  line-height: normal;
+}
+
+lexxy-link-dropdown input[type="url"] {
+  min-inline-size: 30ch;
+  line-height: normal;
 }

@@ -1,7 +1,7 @@
 class CancellationMailer < MailpaceMailer
   helper :routing
 
-  default from: "Olly at Pagecord <no-reply@mailer.pagecord.com>",
+  default from: "Olly at Pagecord <hello@mailer.pagecord.com>",
           reply_to: "Olly at Pagecord <olly@pagecord.com>"
 
   def subscriber_cancellation

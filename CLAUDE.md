@@ -159,7 +159,7 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 
 ### Storage & External Services
 - **ActiveStorage**: Images on Cloudflare R2
-- **Email**: Postmark (inbound/outbound) and Mailpace (trial)
+- **Email**: Resend (inbound/outbound)
 - **Monitoring**: Sentry (errors), AppSignal (observability)
 - **Hosting**: Single Hetzner server via Hatchbox
 
@@ -194,6 +194,25 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - **Analytics::Chart**: Generates chart data, supports month/year views with mixed data sources
 - **RollupAndCleanupPageViewsJob**: Monthly job (1st at 1:30 AM) that creates rollups and deletes old PageViews
 - **Privacy-focused**: Only stores visitor_hash (SHA256 of IP+UA+date), no raw IP addresses
+
+### Billing & Subscriptions (Paddle)
+- **Payment provider**: Paddle (handles payments, tax, invoicing)
+- **Controller**: `Billing::PaddleEventsController` receives webhooks from Paddle
+- **Model**: `Subscription` stores paddle_subscription_id, paddle_customer_id, paddle_price_id, unit_price, next_billed_at, cancelled_at
+- **Webhook events handled**:
+  - `subscription.created` - Creates/updates subscription record
+  - `subscription.updated` - Updates billing info, handles scheduled cancellations
+  - `subscription.canceled` - Marks subscription as cancelled
+  - `subscription.past_due` - Logged only (Paddle handles recovery)
+  - `transaction.completed` - Updates next_billed_at and unit_price
+  - `transaction.payment_failed` - Logged only (Paddle Retain handles recovery)
+- **Payment failure handling**: Paddle Retain automatically:
+  - Retries failed payments up to 7 times over 30 days
+  - Sends up to 4 recovery emails to customers (white-labeled)
+  - Pauses or cancels subscription after recovery period (configurable in Paddle dashboard)
+- **No manual intervention needed**: Don't email customers about failed payments - Paddle handles all dunning
+- **Event logging**: All webhook events stored in `PaddleEvent` model for debugging
+- **Signature verification**: HMAC-SHA256 verification of webhook payloads
 
 ### Background Processing
 - Sidekiq for async jobs
@@ -377,7 +396,7 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 
 #### Export Testing
 - Test both HTML and Markdown format creation
-- Verify `display_format` method returns "HTML" or "Markdown" 
+- Verify `display_format` method returns "HTML" or "Markdown"
 - Test controller accepts format parameter correctly
 - Verify both index formats are created with proper links
 - Test image downloading and path rewriting

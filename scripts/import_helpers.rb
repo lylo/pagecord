@@ -4,67 +4,78 @@ require "cgi"
 
 # Shared helper methods for import scripts
 module ImportHelpers
-  # Process all img tags in HTML content: download images and create ActionText attachments
-  # If skip_on_error is true, failed downloads will leave the original img tag intact instead of raising
+  include ActionView::Helpers::NumberHelper
+
+  # Process all img and video tags in HTML content: download media and create ActionText attachments
+  # If skip_on_error is true, failed downloads will leave the original tag intact instead of raising
   def process_images_to_actiontext(html_content, assets_root: nil, dry_run: false, skip_on_error: false)
     processed_content = Nokogiri::HTML::DocumentFragment.parse(html_content)
 
+    # Process images
     processed_content.css("img").each do |img|
+      process_image(img, assets_root: assets_root, dry_run: dry_run, skip_on_error: skip_on_error)
+    end
+
+    # Process videos
+    processed_content.css("video").each do |video|
+      process_video(video, assets_root: assets_root, dry_run: dry_run, skip_on_error: skip_on_error)
+    end
+
+    processed_content.to_html
+  end
+
+  private
+
+    def process_image(img, assets_root:, dry_run:, skip_on_error:)
       image_src = img["src"]
       alt_text = img["alt"] || ""
-      next unless image_src
+      return unless image_src
 
       # Skip data URI images (commonly used as placeholders for lazy loading)
       if image_src.start_with?("data:")
-        # Remove the placeholder image entirely
         parent_figure = img.ancestors("figure").first
-        if parent_figure
-          parent_figure.remove
-        else
-          img.remove
-        end
-        next
+        parent_figure ? parent_figure.remove : img.remove
+        return
       end
 
       begin
-        # In dry run mode, just verify file exists but don't upload
+        return if dry_run && !local_file?(image_src, assets_root)
+
         if dry_run
-          if assets_root && image_src.start_with?('/')
-            decoded_src = CGI.unescape(image_src)
-            local_path = File.join(assets_root, decoded_src)
-            unless File.exist?(local_path)
-              raise "Local file not found: #{local_path}"
-            end
-          end
-          # Skip actual processing in dry run
-          next
+          verify_local_file(image_src, assets_root)
+          return
         end
 
-        # Handle local file paths (starting with /) vs remote URLs
-        if assets_root && image_src.start_with?('/')
-          # Local file path - resolve relative to assets_root
-          # Decode URL-encoded characters (e.g., %20 -> space)
-          decoded_src = CGI.unescape(image_src)
-          local_path = File.join(assets_root, decoded_src)
-          unless File.exist?(local_path)
-            raise "Local file not found: #{local_path}"
-          end
-          file = File.open(local_path)
-          filename = File.basename(local_path)
-        else
-          # Remote URL - download with timeouts
-          file = URI.open(image_src,
-            open_timeout: 10,    # 10 seconds to establish connection
-            read_timeout: 30     # 30 seconds to read the response
-          )
-          filename = File.basename(URI.parse(image_src).path)
-          filename = "image_#{Time.current.to_i}.jpg" if filename.empty? || !filename.include?('.')
-        end
-
-        # Create blob
+        file, filename = download_or_open_file(image_src, assets_root: assets_root, type: "image")
         blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
+        puts "    Stored as: #{blob.key} (#{number_to_human_size(blob.byte_size)})"
 
-        # Create ActionText attachment with optional caption
+        attachment_node = build_attachment_node(blob, img, alt_text)
+        replace_with_attachment(img, attachment_node)
+      rescue => e
+        handle_media_error(e, image_src, "image", skip_on_error)
+      end
+    end
+
+    def process_video(video, assets_root:, dry_run:, skip_on_error:)
+      # Get video source - either from src attribute or from <source> child
+      source = video.at_css("source")
+      video_src = video["src"] || source&.[]("src")
+      return unless video_src
+
+      begin
+        return if dry_run && !local_file?(video_src, assets_root)
+
+        if dry_run
+          verify_local_file(video_src, assets_root)
+          return
+        end
+
+        file, filename = download_or_open_file(video_src, assets_root: assets_root, type: "video")
+        blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
+        puts "    Stored as: #{blob.key} (#{number_to_human_size(blob.byte_size)})"
+
+        # Build video attachment node
         url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
         trix_attributes = {
           sgid: blob.attachable_sgid,
@@ -74,45 +85,78 @@ module ImportHelpers
           previewable: blob.previewable?,
           url: url
         }
-
-        # Check if img is inside a figure with figcaption
-        parent_figure = img.ancestors('figure').first
-        caption_text = nil
-
-        if parent_figure
-          # Extract caption from figcaption if it exists
-          figcaption = parent_figure.at_css('figcaption')
-          caption_text = figcaption&.text&.strip
-        end
-
-        # Use figcaption if available, otherwise fall back to alt text
-        caption_text = alt_text if caption_text.nil? || caption_text.empty?
-
-        # Add caption if it exists
-        if caption_text && !caption_text.empty?
-          trix_attributes[:caption] = caption_text
-        end
-
         attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
-
-        # If inside a figure, replace the entire figure; otherwise just replace the img
-        if parent_figure
-          parent_figure.replace(attachment_node)
-        else
-          img.replace(attachment_node)
-        end
+        video.replace(attachment_node)
       rescue => e
-        if skip_on_error
-          puts "  Warning: Could not download image #{image_src}, keeping original URL: #{e.message}"
-          # Leave the original img tag intact - do nothing
-        else
-          raise "Failed to process image #{image_src}: #{e.message}"
-        end
+        handle_media_error(e, video_src, "video", skip_on_error)
       end
     end
 
-    processed_content.to_html
-  end
+    def local_file?(src, assets_root)
+      assets_root && src.start_with?('/')
+    end
+
+    def verify_local_file(src, assets_root)
+      return unless local_file?(src, assets_root)
+      decoded_src = CGI.unescape(src)
+      local_path = File.join(assets_root, decoded_src)
+      raise "Local file not found: #{local_path}" unless File.exist?(local_path)
+    end
+
+    def download_or_open_file(src, assets_root:, type:)
+      if local_file?(src, assets_root)
+        decoded_src = CGI.unescape(src)
+        local_path = File.join(assets_root, decoded_src)
+        raise "Local file not found: #{local_path}" unless File.exist?(local_path)
+        filename = File.basename(local_path)
+        puts "  Uploading local #{type}: #{filename}"
+        [ File.open(local_path), filename ]
+      else
+        filename = File.basename(URI.parse(src).path)
+        filename = "#{type}_#{Time.current.to_i}.#{type == 'video' ? 'mp4' : 'jpg'}" if filename.empty? || !filename.include?('.')
+        puts "  Downloading #{type}: #{filename}"
+        file = URI.open(src,
+          open_timeout: 10,
+          read_timeout: type == "video" ? 120 : 30  # Longer timeout for videos
+        )
+        [ file, filename ]
+      end
+    end
+
+    def build_attachment_node(blob, img, alt_text)
+      url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
+      trix_attributes = {
+        sgid: blob.attachable_sgid,
+        contentType: blob.content_type,
+        filename: blob.filename.to_s,
+        filesize: blob.byte_size,
+        previewable: blob.previewable?,
+        url: url
+      }
+
+      # Check if img is inside a figure with figcaption
+      parent_figure = img.ancestors('figure').first
+      caption_text = parent_figure&.at_css('figcaption')&.text&.strip
+      caption_text = alt_text if caption_text.nil? || caption_text.empty?
+      trix_attributes[:caption] = caption_text if caption_text && !caption_text.empty?
+
+      %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
+    end
+
+    def replace_with_attachment(img, attachment_node)
+      parent_figure = img.ancestors('figure').first
+      parent_figure ? parent_figure.replace(attachment_node) : img.replace(attachment_node)
+    end
+
+    def handle_media_error(error, src, type, skip_on_error)
+      if skip_on_error
+        puts "  Warning: Could not download #{type} #{src}, keeping original URL: #{error.message}"
+      else
+        raise "Failed to process #{type} #{src}: #{error.message}"
+      end
+    end
+
+  public
 
   # Check if a post already exists by title (case-insensitive) or slug
   def post_exists?(blog, title)

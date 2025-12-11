@@ -8,6 +8,7 @@
           placeholder: "add a bio to your profile if you like...",
           class: "lexxy-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @blog.errors[:bio].any?}",
           spellcheck: true,
+          autocorrect: "on",
           attachments: false,
           autofocus: true,
           data: { controller: "lexxy autogrow", subscribed: false } %>

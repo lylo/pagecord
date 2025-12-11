@@ -31,6 +31,6 @@ class PostDigestMailer < PostmarkMailer
   private
 
     def sender_address_for(blog)
-      "#{blog.display_name} <no-reply@notifications.pagecord.com>"
+      "#{blog.display_name} <hello@notifications.pagecord.com>"
     end
 end

@@ -1,0 +1,64 @@
+<%= content_for :title do %>
+  Minimalist Blogging Platform: Write, Publish, Done. No clutter, no distractions.
+<% end %>
+
+<%= content_for :meta_description do %>
+  Pagecord is a minimalist blogging platform that gets out of your way. No complex dashboards, no plugins, no themes to configure. Just write and publish. Free forever or $29/year for premium.
+<% end %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
+    Minimalist Blogging for People Who Actually Want to Write
+  </h1>
+
+  <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4 mt-8 md:mt-12">
+    <p>
+      Most blogging platforms are bloated with features you'll never use. Complex dashboards. Endless plugins. Theme customization rabbit holes. Before you know it, you've spent hours tweaking your blog instead of writing.
+    </p>
+    <p>
+      Pagecord is different. It's a minimalist blogging platform designed for one thing: getting your words out into the world. No clutter. No distractions. Just you and your writing.
+    </p>
+    <p>
+      Write in a clean editor, or skip the editor entirely and blog by email. Hit send, and you're published. That's it.
+    </p>
+    <p>
+      Open source. Classic plan is free forever. Premium is $<%= localised_price %>/year.
+    </p>
+  </div>
+
+  <div class="text-center mt-8 mb-4 md:text-xl">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start Writing Today</div>
+    <% end %>
+  </div>
+</div>
+
+<%= render "screenshots" %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+
+  <h2 class="source-serif text-center font-semibold my-8 mt-12 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">Less is More</h2>
+
+  <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+    <p>
+      Pagecord deliberately doesn't have:
+    </p>
+    <ul class="list-disc list-inside space-y-2 ml-4">
+      <li>Endless plugin updates</li>
+      <li>Theme customisation rabbit holes</li>
+      <li>AI trying to write for you</li>
+      <li>Paywalls blocking your readers</li>
+      <li>Popups begging people to sign up</li>
+      <li>Algorithmic feeds deciding who sees your work</li>
+    </ul>
+    <p>
+      What it does have: the most effortless way to write and share your thoughts with the world. Nothing more, nothing less.
+    </p>
+  </div>
+
+  <div class="my-8 text-center">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
+    <% end %>
+  </div>
+</div>
