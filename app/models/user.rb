@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   include Discard::Model
-  include Onboardable, Followable, Subscribable
+  include Onboardable, Followable, Subscribable, PasswordSecured
 
   has_one :blog, dependent: :destroy, inverse_of: :user
   has_many :access_requests, dependent: :destroy

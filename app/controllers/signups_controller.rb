@@ -48,7 +48,7 @@ class SignupsController < ApplicationController
 
     def user_params
       @user_params ||= begin
-        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, blog_attributes: [ :subdomain ])
+        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation, blog_attributes: [ :subdomain ])
         translate_timezone_param(raw_params)
       end
     end

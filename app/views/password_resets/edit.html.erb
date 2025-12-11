@@ -1,0 +1,31 @@
+<% content_for :title, "Pagecord - Set New Password" %>
+
+
+<h1 class="text-2xl font-bold mb-4">@<%= @user.blog.subdomain %></h1>
+
+<p>
+  Enter your new password below.
+</p>
+
+<%= form_with url: password_reset_path(params[:token]), model: @user, method: :patch, data: { turbo: "false" }, class: "mt-8 space-y-6" do |form| %>
+  <div>
+    <%= form.label :password, "New password", class: "block text-sm font-medium mb-1" %>
+    <%= form.password_field :password, required: true, autofocus: true, class: "px-2 py-1 m-0 form-field rounded-sm" %>
+    <% if @user.errors[:password].any? %>
+      <div class="text-red-600 text-sm mt-1"><%= @user.errors[:password].first %></div>
+    <% end %>
+    <div class="text-slate-500 text-xs mt-1">
+      Minimum 12 characters
+    </div>
+  </div>
+
+  <div>
+    <%= form.label :password_confirmation, "Confirm password", class: "block text-sm font-medium mb-1" %>
+    <%= form.password_field :password_confirmation, required: true, class: "px-2 py-1 m-0 form-field rounded-sm" %>
+    <% if @user.errors[:password_confirmation].any? %>
+      <div class="text-red-600 text-sm mt-1"><%= @user.errors[:password_confirmation].first %></div>
+    <% end %>
+  </div>
+
+  <%= form.submit "Update password", class: "btn-primary" %>
+<% end %>

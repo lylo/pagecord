@@ -1,20 +1,12 @@
 <% content_for :title, "Pagecord - Log In" %>
 
-<p>
-  Enter your blog subdomain and email address to log in.
-</p>
+<div class="mb-8">
+  <h1 class="text-2xl font-bold mb-4"><%= greeting %>! 👋</h1>
+  <p class="text-slate-600 dark:text-slate-400">
+    <%= @password_mode ? "Enter your subdomain and password to log in." : "Enter your account details below and we'll send you a magic link to log in." %>
+  </p>
+</div>
 
-<%= form_with url: sessions_path, model: @user, data: { turbo: "false" }, class: "mt-8" do |form| %>
-  <div class="flex items-center">
-    <%= form.text_field :subdomain, placeholder: "subdomain", autofocus: true, class: "px-2 py-1 m-0 form-field rounded-sm", maxlength: 20, required: true %>
-    <div class="font-semibold">.pagecord.com</div>
-  </div>
-
-  <div class="mt-4">
-    <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "mt-1 px-2 py-1 m-0 form-field rounded-sm" %>
-  </div>
-
-  <div class="mt-8">
-    <%= form.submit "Login", class: "btn-primary" %>
-  </div>
+<%= turbo_frame_tag "login_form" do %>
+  <%= render @password_mode ? "password_login_form" : "email_login_form" %>
 <% end %>

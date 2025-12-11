@@ -57,4 +57,28 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get login_url
     assert_redirected_to app_root_path
   end
+
+  test "login with correct password" do
+    user = users(:joel)
+    user.update!(password: "testpass1234", password_confirmation: "testpass1234")
+
+    post sessions_url, params: {
+      user: { subdomain: user.blog.subdomain, password: "testpass1234" }
+    }
+
+    assert_redirected_to app_root_path
+    assert_equal user.id, session[:user_id]
+  end
+
+  test "login with wrong password" do
+    user = users(:joel)
+    user.update!(password: "testpass1234", password_confirmation: "testpass1234")
+
+    post sessions_url, params: {
+      user: { subdomain: user.blog.subdomain, password: "wrongpassword" }
+    }
+
+    assert_response :unprocessable_entity
+    assert_nil session[:user_id]
+  end
 end

@@ -1,0 +1,8 @@
+@<%= @access_request.user.blog.subdomain %>
+
+We received a request to reset your Pagecord password.
+
+Click this link to set a new password:
+<%= edit_password_reset_url(@access_request.token_digest) %>
+
+This link will expire in 24 hours. If you didn't request this reset, you can safely ignore this email.
