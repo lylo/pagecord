@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 69763325dd86f839a58e2096785b31a66b763378
+  revision: de345feb08ebd0cfffe152690fae903a130ad5b1
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -163,7 +163,7 @@ GEM
       addressable
     csv (3.3.5)
     dalli (3.2.8)
-    date (3.5.0)
+    date (3.5.1)
     debug (1.11.0)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -235,7 +235,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.17.1)
+    json (2.18.0)
     kredis (1.8.0)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -280,7 +280,7 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (5.26.2)
+    minitest (5.27.0)
     mocha (2.8.2)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
@@ -357,7 +357,7 @@ GEM
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
       rack
-    psych (5.2.6)
+    psych (5.3.0)
       date
       stringio
     public_suffix (7.0.0)
