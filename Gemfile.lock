@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 69763325dd86f839a58e2096785b31a66b763378
+  revision: 8ffc9a0e29df82bbf7ac015a0d85bc9f7cbdc335
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -156,21 +156,21 @@ GEM
       activesupport (>= 7.2.0, < 8.2.0)
       railties (>= 7.2.0, < 8.2.0)
       zeitwerk (>= 2.5.0)
-    concurrent-ruby (1.3.5)
+    concurrent-ruby (1.3.6)
     connection_pool (3.0.2)
     crass (1.0.6)
     css_parser (1.21.1)
       addressable
     csv (3.3.5)
     dalli (3.2.8)
-    date (3.5.0)
+    date (3.5.1)
     debug (1.11.0)
       irb (~> 1.10)
       reline (>= 0.3.8)
     discard (1.4.0)
       activerecord (>= 4.2, < 9.0)
     drb (2.2.3)
-    erb (6.0.0)
+    erb (6.0.1)
     erubi (1.13.1)
     faker (3.5.3)
       i18n (>= 1.8.11, < 2)
@@ -226,7 +226,7 @@ GEM
     inline_svg (1.10.0)
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
-    io-console (0.8.1)
+    io-console (0.8.2)
     irb (1.15.3)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
@@ -235,7 +235,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.17.1)
+    json (2.18.0)
     kredis (1.8.0)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -257,7 +257,7 @@ GEM
     lint_roller (1.1.0)
     local_time (3.0.3)
     logger (1.7.0)
-    loofah (2.24.1)
+    loofah (2.25.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     mail (2.9.0)
@@ -280,14 +280,14 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (5.26.2)
+    minitest (5.27.0)
     mocha (2.8.2)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
     nanoid (2.0.0)
-    net-imap (0.5.12)
+    net-imap (0.6.0)
       date
       net-protocol
     net-pop (0.1.2)
@@ -357,7 +357,7 @@ GEM
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
       rack
-    psych (5.2.6)
+    psych (5.3.0)
       date
       stringio
     public_suffix (7.0.0)
