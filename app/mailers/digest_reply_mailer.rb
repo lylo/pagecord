@@ -1,4 +1,4 @@
-class DigestReplyMailer < ApplicationMailer
+class DigestReplyMailer < PostmarkMailer
   def forward_reply
     @digest = params[:digest]
     @blog = @digest.blog
@@ -9,9 +9,9 @@ class DigestReplyMailer < ApplicationMailer
     # Extract sender name from original email, fallback to email address
     original_sender = @original_mail.from.first
     sender_name = if @original_mail[:from].display_names.first.present?
-                    @original_mail[:from].display_names.first
+      @original_mail[:from].display_names.first
     else
-                    original_sender
+      original_sender
     end
 
     mail(
