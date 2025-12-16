@@ -91,7 +91,8 @@
     <% end %>
 
     <% show_make_home_page = !@blog.has_custom_home_page? && @page.persisted? %>
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-8">
+    <% flex_class = show_make_home_page ? "flex-col" : "justify-between" %>
+    <div class="flex <%= flex_class %> sm:flex-row sm:items-center sm:justify-between gap-3 mt-8">
       <div class="flex flex-wrap gap-2">
         <%= form.submit publish_button_text(@page), class: "btn-primary" %>
         <%= link_to "Cancel", app_pages_path, class: "btn-secondary" %>
