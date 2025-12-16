@@ -1,7 +1,8 @@
 class PasswordResetsController < ApplicationController
+  include SpamPrevention
+
   skip_before_action :authenticate, :domain_check
   before_action :find_access_request, only: [ :edit, :update ]
-  rate_limit to: 5, within: 5.minutes, only: :create
 
   layout "sessions"
 
@@ -34,6 +35,11 @@ class PasswordResetsController < ApplicationController
   end
 
   private
+
+    def fail
+      @spammer_detected = true
+      redirect_to new_password_reset_path, alert: "Something went wrong, please try again or contact support if the problem persists"
+    end
 
     def find_access_request
       @access_request = AccessRequest.password_reset.active.pending.find_by(token_digest: params[:token])
