@@ -138,7 +138,6 @@ a {
   margin-bottom: 0 !important;
 }
 
-
 .digest h2 {
   font-weight: 700;
   font-size: 24px !important;
@@ -219,6 +218,8 @@ a {
 
 .post-content figure {
   text-align: center;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .post-content figcaption {
