@@ -91,7 +91,7 @@ jobs:
         uses: ankane/setup-postgres@v1
         with:
           database: pagecord_test
-          postgres-version: 17
+          postgres-version: 18
           user: runner
 
       - name: Database load
