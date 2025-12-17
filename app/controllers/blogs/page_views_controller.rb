@@ -1,5 +1,5 @@
 class Blogs::PageViewsController < Blogs::BaseController
-  skip_before_action :verify_authenticity_token
+  skip_forgery_protection
 
   def create
     post = @blog.all_posts.published.released.find_by(token: params[:post_token]) if params[:post_token].present?

@@ -3,7 +3,8 @@ require "ostruct"
 
 module Billing
   class PaddleEventsController < ApplicationController
-    skip_before_action :verify_authenticity_token, :authenticate, :domain_check
+    skip_forgery_protection
+    skip_before_action :authenticate, :domain_check
 
     PADDLE_CONFIG = Rails.application.config_for(:paddle)
 
