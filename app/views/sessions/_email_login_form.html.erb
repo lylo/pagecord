@@ -1,0 +1,31 @@
+<%= form_with url: sessions_path, model: @user, data: { turbo: false }, class: "space-y-4" do |form| %>
+  <div>
+    <div class="flex items-center gap-1">
+      <%= form.text_field :subdomain,
+          placeholder: "subdomain",
+          autofocus: true,
+          class: "px-3 py-2.5 form-field rounded-lg flex-shrink min-w-0",
+          maxlength: 20,
+          required: true %>
+      <span class="font-medium text-slate-700 dark:text-slate-300 flex-shrink-0">.pagecord.com</span>
+    </div>
+  </div>
+
+  <div>
+    <%= form.email_field :email,
+        placeholder: "you@example.com",
+        required: true,
+        class: "w-full sm:w-96 px-3 py-2.5 form-field rounded-lg" %>
+  </div>
+
+  <div class="mt-8">
+    <%= form.submit "Log in", class: "btn-primary" %>
+  </div>
+
+  <div class="mt-4">
+    <%= link_to "Log in with password instead",
+        login_path(mode: :password),
+        data: { turbo_frame: "login_form" },
+        class: "text-sm font-medium underline" %>
+  </div>
+<% end %>

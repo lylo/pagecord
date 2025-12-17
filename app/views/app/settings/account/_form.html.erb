@@ -73,6 +73,20 @@
   <% end %>
 </div>
 
+<h3 class="mb-4 font-bold text-xl">Account Password</h3>
+
+<div class="mb-12">
+  <% if Current.user.has_password? %>
+    <p>
+      To change your password, use the <%= link_to "forgot password", new_password_reset_path, class: "text-slate-900 dark:text-slate-100 underline" %> flow.
+    </p>
+  <% else %>
+    <p>
+      By default Pagecord uses magic link emails for logging in. You can <%= link_to "set a password", new_password_reset_path, class: "text-slate-900 dark:text-slate-100 underline" %> if you prefer to log in that way.
+    </p>
+  <% end %>
+</div>
+
 <h3 class="mb-4 font-bold text-xl">Sender Email Addresses</h3>
 
 <div class="mb-12">

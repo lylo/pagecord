@@ -1,7 +1,7 @@
 class Blogs::EmailSubscribers::UnsubscribesController < Blogs::BaseController
   before_action :load_subscriber
   skip_before_action :load_blog, :validate_user, :enforce_custom_domain
-  skip_before_action :verify_authenticity_token, only: [ :one_click ]
+  skip_forgery_protection only: [ :one_click ]
 
   def show
   end

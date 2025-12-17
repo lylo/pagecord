@@ -3,7 +3,7 @@ class Blogs::PostsController < Blogs::BaseController
 
   rate_limit to: 60, within: 1.minute
 
-  skip_before_action :verify_authenticity_token, only: :not_found
+  skip_forgery_protection only: :not_found
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
   rescue_from Pagy::VariableError, with: :redirect_to_first_page
 

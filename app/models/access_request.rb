@@ -1,6 +1,8 @@
 class AccessRequest < ApplicationRecord
   belongs_to :user, inverse_of: nil
 
+  enum :purpose, { login: "login", password_reset: "password_reset" }, default: :login
+
   before_create :generate_token, :set_exiration
 
   scope :pending, -> { where(accepted_at: nil) }

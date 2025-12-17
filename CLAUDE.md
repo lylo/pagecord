@@ -44,6 +44,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Database indexes**: Add indexes for foreign keys and frequently queried columns
 - **Query optimization**: Use `.select()` to limit columns, `.pluck()` for single values
 
+### Git Commits
+- **No footers**: Do NOT add "Generated with Claude Code" or "Co-Authored-By" lines to commits
+- **Concise messages**: Write clear, descriptive commit messages without unnecessary metadata
+
 ### Code Review Checklist
 Before considering a feature complete, verify:
 - [ ] No inline JavaScript (all in Stimulus controllers)
