@@ -1,6 +1,6 @@
 class Subdomain
   RESERVED = %w[ about admin app api careers community contact discover faq feed
-                 guide help images jobs login og pagecord privacy pricing rails
+                 guide images jobs login og pagecord privacy pricing rails
                  rss sidekiq signup support terms ]
 
   FORMAT_REGEX = /\A[a-zA-Z0-9]+\z/
