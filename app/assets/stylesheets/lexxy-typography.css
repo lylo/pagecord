@@ -54,6 +54,23 @@
     hyphens: none;
   }
 
+  /* Heading spacing - more space above, slightly less below for visual hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    margin-block-end: calc(var(--lexxy-content-margin) * 0.75);
+  }
+
+  * + h1, * + h2 {
+    margin-block-start: calc(var(--lexxy-content-margin) * 1.75);
+  }
+
+  * + h3 {
+    margin-block-start: calc(var(--lexxy-content-margin) * 1.5);
+  }
+
+  * + h4, * + h5, * + h6 {
+    margin-block-start: calc(var(--lexxy-content-margin) * 1.25);
+  }
+
   blockquote {
     padding-top: 0.375em;
     padding-bottom: 0.375em;
