@@ -87,6 +87,13 @@
     margin-block-start: calc(var(--lexxy-content-margin) * 1.25);
   }
 
+  /* No extra top margin on headings after images */
+  figure + h1, figure + h2, figure + h3, figure + h4, figure + h5, figure + h6,
+  action-text-attachment + h1, action-text-attachment + h2, action-text-attachment + h3,
+  action-text-attachment + h4, action-text-attachment + h5, action-text-attachment + h6 {
+    margin-block-start: 0;
+  }
+
   blockquote {
     padding-top: 0.375em;
     padding-bottom: 0.375em;
