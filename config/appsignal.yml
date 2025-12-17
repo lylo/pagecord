@@ -13,6 +13,7 @@ production:
     - ActionController::RoutingError
     - ActionController::UnknownFormat
     - ActionController::InvalidAuthenticityToken
+    - ActionController::InvalidCrossOriginRequest
     - ActionController::TooManyRequests
     - URI::InvalidURIError
     - ActionDispatch::Http::MimeNegotiation::InvalidType
