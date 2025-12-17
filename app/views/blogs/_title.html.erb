@@ -1,5 +1,3 @@
-<%= link_to blog_home_url(@blog), data: { turbo: false }, aria: { label: "#{@blog.display_name} Home" } do %>
-  <div class="blog-title">
-    <%= @blog.display_name%>
-  </div>
-<% end %>
+<div class="blog-title">
+  <%= link_to @blog.display_name, blog_home_url(@blog), data: { turbo: false }, aria: { label: "#{@blog.display_name} Home" } %>
+</div>

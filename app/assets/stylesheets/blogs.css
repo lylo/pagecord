@@ -198,6 +198,11 @@ html, body {
     color: var(--color-text-heading);
     font-size: 1.25em;
     font-weight: 700;
+
+    a, a:visited {
+      color: inherit;
+      text-decoration: none;
+    }
   }
 }
 
@@ -221,6 +226,7 @@ html, body {
       }
 
       &.post-title-link {
+        color: inherit;
         text-decoration: none;
       }
     }
