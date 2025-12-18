@@ -300,4 +300,34 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # Should render full datetime with time component (19:45), not midnight
     assert_select "time[datetime$='T19:45:00Z']"
   end
+
+  test "does not process custom tags inside code blocks" do
+    page = @blog.pages.create!(
+      title: "Code Example",
+      content: "<p>Here is how to use the posts tag:</p><pre><code>{{ posts }}</code></pre><p>And here is the actual tag:</p>{{ posts }}",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    # The code block should contain literal {{ posts }}
+    assert_select "pre code", text: /{{ posts }}/
+    # But the actual tag outside code should be processed (rendered as list)
+    assert_select ".posts-list"
+  end
+
+  test "does not process custom tags inside inline code" do
+    page = @blog.pages.create!(
+      title: "Inline Code Example",
+      content: "<p>Use <code>{{ posts }}</code> to display posts.</p>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    # The inline code should contain literal {{ posts }}
+    assert_select "code", text: /{{ posts }}/
+  end
 end

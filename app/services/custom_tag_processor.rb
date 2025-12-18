@@ -7,12 +7,26 @@ class CustomTagProcessor
   end
 
   def process(content)
-    content.gsub(tag_pattern) do
+    # Protect code blocks from processing
+    code_blocks = []
+    protected_content = content.gsub(%r{<(pre|code)[^>]*>.*?</\1>}m) do |match|
+      code_blocks << match
+      "___CODE_BLOCK_#{code_blocks.length - 1}___"
+    end
+
+    # Process tags in the remaining content
+    processed = protected_content.gsub(tag_pattern) do
       tag_name = $1
       params_string = $2.strip
-
       render_tag(tag_name, params_string)
     end
+
+    # Restore code blocks
+    code_blocks.each_with_index do |block, i|
+      processed = processed.sub("___CODE_BLOCK_#{i}___", block)
+    end
+
+    processed
   end
 
   private
