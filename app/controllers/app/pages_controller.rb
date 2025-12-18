@@ -1,7 +1,8 @@
 class App::PagesController < AppController
   include EditorPreparation
   def index
-    @pages = Current.user.blog.pages.published.order(:title)
+    home_page_id = Current.user.blog.home_page_id
+    @pages = Current.user.blog.pages.published.order(:title).sort_by { |p| p.id == home_page_id ? 0 : 1 }
     @drafts = Current.user.blog.pages.draft.order(:title)
   end
 
