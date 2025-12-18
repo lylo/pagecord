@@ -12,7 +12,7 @@
 
   <%= render "/blogs/posts/post_title", post: post %>
 
-  <%= auto_link post.content %>
+  <%= safe_auto_link post.content.to_s %>
 </article>
 
 <div class="w-64 mx-auto py-8">

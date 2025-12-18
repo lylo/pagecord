@@ -48,4 +48,20 @@ module PostsHelper
     Rails.logger.error("Custom tag error: #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}")
     post.content.to_s
   end
+
+  def safe_auto_link(content, options = {})
+    code_blocks = []
+    protected = content.gsub(%r{<(pre|code)[^>]*>.*?</\1>}m) do |match|
+      code_blocks << match
+      "___CODE_BLOCK_#{code_blocks.length - 1}___"
+    end
+
+    linked = auto_link(protected, options)
+
+    code_blocks.each_with_index do |block, i|
+      linked = linked.sub("___CODE_BLOCK_#{i}___", block)
+    end
+
+    linked
+  end
 end
