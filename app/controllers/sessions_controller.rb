@@ -61,7 +61,9 @@ class SessionsController < ApplicationController
     end
 
     def user_params
-      params.require(:user).permit(:subdomain, :email, :password)
-        .transform_values { |v| v.is_a?(String) ? v.strip.downcase : v }
+      permitted = params.require(:user).permit(:subdomain, :email, :password)
+      permitted[:subdomain] = permitted[:subdomain].strip.downcase if permitted[:subdomain].present?
+      permitted[:email] = permitted[:email].strip.downcase if permitted[:email].present?
+      permitted
     end
 end

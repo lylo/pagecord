@@ -60,10 +60,10 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "login with correct password" do
     user = users(:joel)
-    user.update!(password: "testpass1234", password_confirmation: "testpass1234")
+    user.update!(password: "TestPass1234", password_confirmation: "TestPass1234")
 
     post sessions_url, params: {
-      user: { subdomain: user.blog.subdomain, password: "testpass1234" }
+      user: { subdomain: user.blog.subdomain, password: "TestPass1234" }
     }
 
     assert_redirected_to app_root_path
@@ -72,7 +72,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "login with wrong password" do
     user = users(:joel)
-    user.update!(password: "testpass1234", password_confirmation: "testpass1234")
+    user.update!(password: "TestPass1234", password_confirmation: "TestPass1234")
 
     post sessions_url, params: {
       user: { subdomain: user.blog.subdomain, password: "wrongpassword" }
