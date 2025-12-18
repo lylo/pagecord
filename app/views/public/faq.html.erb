@@ -2,6 +2,11 @@
 
 <div class="prose dark:prose-invert mb-12 px-4">
   <h1 class="source-serif font-semibold tracking-tight text-4xl">Frequently asked questions</h1>
+
+  <p class="text-lg">
+    For detailed guides and tutorials, visit our <a href="https://help.pagecord.com" class="home-link">Help Guide</a>.
+  </p>
+
   <h3 id="what-does-pagecord-mean" class="source-serif font-semibold text-2xl">What does Pagecord mean?</h3>
   <p>
     There's a blog post for that! <a href="https://blog.pagecord.com/what-is-the-meaning-of-pagecord">What is the meaning of "pagecord"?</a>
@@ -16,10 +21,8 @@
   <p>
     Your Pagecord page is a public profile that anyone can view. It looks like <a href="https://pagecord.com/blog" class="home-link">https://pagecord.com/blog</a>.
   </p>
-
-  <h3 id="creating-posts-without-email" class="source-serif text-2xl font-semibold">Is there a way of creating posts without sending an email?</h3>
   <p>
-    Yes! Log into your account and click the <strong>New Post</strong> button to use our delightful in-app editor! ✍️
+    <a href="https://help.pagecord.com/getting-started-with-pagecord" class="home-link">Read the Getting Started guide</a>
   </p>
 
   <h3 id="content-ownership" class="source-serif text-2xl font-semibold">Do I own the content that I post?</h3>
@@ -27,208 +30,18 @@
     Yes. As long as what you post is your own work, you own it (posting copyrighted material that you don't own <a href="https://pagecord.com/terms" class="home-link">is a no-no</a>). Pagecord does not claim ownership of any content you post.
   </p>
 
-  <h3 id="add-bio" class="source-serif text-2xl font-semibold">Can I add a bio to my page?</h3>
-  <p>
-    Yep! <%= link_to "Log in", login_path, class: "home-link" %> and in the <strong>Account</strong> section you'll see a field to add a bio to your profile.
-  </p>
-
-  <h3 id="include-images" class="source-serif text-2xl font-semibold">Can I include images in my posts?</h3>
-  <p>
-    Premium subscribers can attach images to emails which Pagecord processes and hosts for you.
-  </p>
-  <p>
-    Free customers can include a URL to an existing image (e.g. https://example.com/image.gif)
-    in the body of your email and Pagecord will render the image in the post. There are plenty of
-    free image hosting sites out there such as <a href="https://postimages.org/" class="home-link">PostImage</a>.
-  </p>
-
-  <h3 id="embed-media" class="source-serif text-2xl font-semibold">Can I embed media?</h3>
-  <p>
-    Yes! If you include a link to a YouTube video, a Spotify or Apple Music album/playlist/track, a Bandcamp album/track or a GitHub gist in your post, Pagecord will auto-embed the media when people view your post.
-  </p>
-
-  <h3 id="edit-post" class="source-serif text-2xl font-semibold">How can I edit a post?</h3>
-  <p>
-    <%= link_to "Log in", login_path, class: "home-link" %> and click the post title to edit the post.
-  </p>
-
-  <h3 id="delete-post" class="source-serif text-2xl font-semibold">How do I delete a post?</h3>
-  <p>
-    <%= link_to "Log in", login_path, class: "home-link" %> to your account and you'll see a list of posts. Click the title to edit the post, then click the trash icon to delete it.
-  </p>
-
-  <h3 id="post-without-title" class="source-serif text-2xl font-semibold">Can I make a post without a title?</h3>
-  <p>
-    Yes, just send an email with the post content in either the email subject or the body.
-  </p>
-
-  <h3 id="standalone-pages" class="source-serif text-2xl font-semibold">Can I create standalone pages as well as blog posts?</h3>
-  <p>
-    Yes! Using the Pagecord app you can create individual pages and add them to your home page navigation bar. Handy for adding an About page, Contact or Now.
-  </p>
-
-  <h3 id="export-posts-pages" class="source-serif text-2xl font-semibold">Can I export my posts and pages</h3>
-  <p>
-    Yes! Head to <code>Settings > Exports</code> where you can download a ZIP file containing your entire site in delightfully retro HTML files and images.
-  </p>
-
   <h3 id="rss-support" class="source-serif text-2xl font-semibold">Does Pagecord support RSS?</h3>
   <p>
-    Yes. Just append <span class="font-mono">/feed.xml</span> on a blog's domain, e.g. <a href="https://blog.pagecord.com/feed.xml" class="home-link">https://blog.pagecord.com/feed.xml</a>
+    Yes. Just append <span class="font-mono">/feed.xml</span> to any blog's domain, e.g. <a href="https://blog.pagecord.com/feed.xml" class="home-link">https://blog.pagecord.com/feed.xml</a>
   </p>
-
-  <h3 id="follow-blogs" class="source-serif text-2xl font-semibold">Can I follow other Pagecord blogs?</h3>
   <p>
-    Yes! Since all Pagecord blogs support <a href="https://en.wikipedia.org/wiki/RSS" class="home-link">RSS</a>, you can follow them using any RSS reader. RSS is awesome, you should check out
-    <a href="https://feedgrab.net" class="home-link">Feedgrab</a> - a beautifully simple all-in-one reader <a href="https://olly.pagecord.com" class="home-link">Olly</a> built! 🤙
-  </p>
-
-  <h3 id="dns" class="source-serif text-2xl font-semibold">How do I set up DNS for a custom domain?</h3>
-  <p>
-    If you're a paying customer, you can use your own domain name for your Pagecord.
-  </p>
-
-  <h4 class="text-lg font-medium mt-6 mb-3">For root domains (e.g. mydomain.com)</h4>
-   <p class="mb-3">
-    Pagecord automatically handles both www and non-www versions of your domain. Set up both records below so visitors can reach your site either way, and Pagecord will
-  redirect them to your preferred version.
-   </p>
-   <p class="mb-3">
-    Create these DNS records. Try the options in order - use the first one your DNS provider supports:
-  </p>
-
-  <div class="mb-4">
-    <p class="font-medium mb-2">Option 1: CNAME + ALIAS (recommended)</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Record Type</th>
-          <th>Name</th>
-          <th>Content</th>
-          <th>TTL</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>ALIAS</td>
-          <td><strong>@</strong></td>
-          <td>proxy.pagecord.com</td>
-          <td>3600</td>
-        </tr>
-        <tr>
-          <td>CNAME</td>
-          <td><strong>www</strong></td>
-          <td>proxy.pagecord.com</td>
-          <td>3600</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="mb-4">
-    <p class="font-medium mb-2">Option 2: CNAME only (Cloudflare users)</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Record Type</th>
-          <th>Name</th>
-          <th>Content</th>
-          <th>TTL</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>CNAME</td>
-          <td><strong>@</strong></td>
-          <td>proxy.pagecord.com</td>
-          <td>3600</td>
-        </tr>
-        <tr>
-          <td>CNAME</td>
-          <td><strong>www</strong></td>
-          <td>proxy.pagecord.com</td>
-          <td>3600</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="mb-4">
-    <p class="font-medium mb-2">Option 3: A record (if ALIAS not supported)</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Record Type</th>
-          <th>Name</th>
-          <th>Content</th>
-          <th>TTL</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>A</td>
-          <td><strong>@</strong></td>
-          <td>94.130.191.219</td>
-          <td>3600</td>
-        </tr>
-        <tr>
-          <td>CNAME</td>
-          <td><strong>www</strong></td>
-          <td>proxy.pagecord.com</td>
-          <td>3600</td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="text-sm text-gray-600 mt-2">
-      <em>⚠️ Warning: This IP address may change in the future. Use ALIAS if your provider supports it.</em>
-    </p>
-  </div>
-
-  <h4 class="text-lg font-medium mt-6 mb-3">For subdomains (e.g. blog.mydomain.com)</h4>
-  <table>
-    <thead>
-      <tr>
-        <th>Record Type</th>
-        <th>Name</th>
-        <th>Content</th>
-        <th>TTL</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>CNAME</td>
-        <td><strong>blog</strong></td>
-        <td>proxy.pagecord.com</td>
-        <td>3600</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p class="mt-6">
-    <em>Note: If you're using Cloudflare to manage DNS, you need to set SSL/TLS mode to <strong>Full (Strict)</strong> or disable the proxy (the orange cloud).</em>
-  </p>
-
-  <h3 id="subscribers" class="source-serif text-2xl font-semibold">How many people can subscribe to my email newsletter?</h3>
-  <p>
-    Pagecord Premium accounts include 100 email subscribers. If your blog is popular enough to need more than that, you
-    can upgrade to our Pro plan for $99/year which includes 2,000 subscribers.
+    <a href="https://help.pagecord.com/rss" class="home-link">Learn more about RSS feeds</a>
   </p>
 
   <h3 id="refund-policy" class="source-serif text-2xl font-semibold">What is your refund policy?</h3>
   <p>
     If you've paid for an account and you decide you're unhappy with it, we'll refund your money if you've
     been a subscriber for less than a month. No questions asked (although we'd love to know why you didn't like it).
-  </p>
-
-  <h3 id="downgrade-account" class="source-serif text-2xl font-semibold">Can I downgrade my account?</h3>
-  <p>
-    Yes. Cancel your subscription and once it lapses you'll be downgraded to a free account.
-  </p>
-
-  <h3 id="delete-account" class="source-serif text-2xl font-semibold">How do I delete my account?</h3>
-  <p>
-    Log in, click the "Delete account" button at the bottom of the screen. This will
-    display a confirmation, but once you confirm your account will be deleted immediatey.
   </p>
 
   <h3 id="data-storage" class="source-serif text-2xl font-semibold">Where is my data stored?</h3>
