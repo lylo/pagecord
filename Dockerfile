@@ -24,6 +24,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 # Install application gems
 COPY Gemfile Gemfile.lock .ruby-version ./
+RUN gem install bundler
 RUN --mount=type=cache,target=/usr/local/bundle/cache \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
