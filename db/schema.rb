@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_12_04_221326) do
+ActiveRecord::Schema[8.2].define(version: 2025_12_19_084849) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -162,14 +162,6 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_04_221326) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id", "email"], name: "index_email_subscribers_on_blog_id_and_email", unique: true
-  end
-
-  create_table "followings", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "followed_id"
-    t.bigint "follower_id"
-    t.datetime "updated_at", null: false
-    t.index ["follower_id", "followed_id"], name: "index_followings_on_follower_id_and_followed_id", unique: true
   end
 
   create_table "navigation_items", force: :cascade do |t|

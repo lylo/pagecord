@@ -1,7 +1,0 @@
-<% if logged_in? && @blog != Current.user.blog %>
-  <div class="follow-button">
-    <%= turbo_frame_tag "#{dom_id(@blog)}-follow-button" do %>
-      <%= render partial: "blogs/follow_button", locals: { blog: @blog } %>
-    <% end %>
-  </div>
-<% end %>
