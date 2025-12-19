@@ -272,6 +272,24 @@ html, body {
       max-width: 500px;
     }
 
+    table {
+      margin-bottom: var(--lexxy-content-margin);
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid var(--color-input-border);
+    }
+
+    table th,
+    table td {
+      border: 1px solid var(--color-input-border);
+      padding: 0.5em;
+      text-align: left;
+    }
+
+    th.lexxy-content__table-cell--header {
+      background-color: var(--color-bg-subtle) !important;
+    }
+
     :where(hr) {
       border: none;
       border-top: 1px solid var(--color-border);
