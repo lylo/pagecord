@@ -10,7 +10,7 @@ class Blog::ExportTest < ActiveSupport::TestCase
   def setup_post_with_image
     @post = @blog.posts.new(title: "Test Post")
     @post.content = ActionText::Content.new(<<~HTML)
-      <div class="trix-content">
+      <div class="lexxy-content">
         <p>Here is an image:</p>
         <action-text-attachment sgid="123" content-type="image/jpeg" url="http://example.com/test%20image.jpg">
           <figure>

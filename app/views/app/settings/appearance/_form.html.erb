@@ -2,7 +2,6 @@
   <div>
     <h3 class="font-bold text-lg mb-2">Bio</h3>
 
-    <% if current_features.enabled? :lexxy %>
       <div class="lexxy-minimal">
       <%= form.lexxy_rich_text_area :bio,
           placeholder: "add a bio to your profile if you like...",
@@ -13,17 +12,6 @@
           autofocus: true,
           data: { controller: "lexxy autogrow", subscribed: false } %>
       </div>
-    <% else %>
-      <div class="trix-minimal">
-      <%= form.rich_text_area :bio,
-          placeholder: "add a bio to your profile if you like...",
-          class: "trix-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @blog.errors[:bio].any?}",
-          spellcheck: true,
-          attachments: false,
-          autofocus: true,
-          data: { controller: "trix autogrow", subscribed: false } %>
-      </div>
-    <% end %>
   </div>
 
   <div class="mt-8">

@@ -1,6 +1,6 @@
 class App::PostsController < AppController
   include Pagy::Backend
-  include EditorPreparation  # Add this line
+  include EditorPreparation
 
   rescue_from Pagy::OverflowError, with: :redirect_to_first_page
 

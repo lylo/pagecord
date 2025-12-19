@@ -60,7 +60,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "body", text: /The Art of Street Photography/
     assert_select "body", text: /The Beauty of Landscape Photography/
-    assert_select "body", text: /Created with Trix/, count: 0
   end
 
   test "renders tags custom tag" do
@@ -222,7 +221,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "body", text: /The Art of Street Photography/
     assert_select "body", text: /The Beauty of Landscape Photography/
-    assert_select "body", text: /Created with Trix/, count: 0
   end
 
   test "renders email_subscription tag" do
@@ -256,7 +254,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # Should show posts with EITHER tag
     assert_select "body", text: /Photography and Technology/
     assert_select "body", text: /The Art of Street Photography/
-    assert_select "body", text: /Created with Trix/
   end
 
   test "renders posts_by_year tag with multiple tags (OR logic)" do
@@ -267,7 +264,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "body", text: /Photography and Technology/
     assert_select "body", text: /The Art of Street Photography/
-    assert_select "body", text: /Created with Trix/
   end
 
   test "renders posts tag with multiple tags without spaces" do
@@ -278,7 +274,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "body", text: /Photography and Technology/
     assert_select "body", text: /The Art of Street Photography/
-    assert_select "body", text: /Created with Trix/
   end
 
   test "posts tag renders datetime not just date" do
