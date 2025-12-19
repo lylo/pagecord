@@ -15,9 +15,6 @@ class Blog < ApplicationRecord
   has_many :navigation_items, dependent: :destroy
   has_many :social_navigation_items, -> { where(type: "SocialNavigationItem") }, class_name: "SocialNavigationItem", foreign_key: :blog_id
 
-  has_many :followings, foreign_key: :followed_id, dependent: :destroy
-  has_many :followers, through: :followings, source: :follower
-
   has_many :exports, class_name: "Blog::Export", dependent: :destroy
   has_many :page_views, dependent: :destroy
 

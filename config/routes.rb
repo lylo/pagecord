@@ -130,17 +130,9 @@ Rails.application.routes.draw do
 
     resources :blogs do
       resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
-
-      post :follow, to: "followings#create"
-      delete :unfollow, to: "followings#destroy"
     end
 
-    resources :followings, only: [ :index ]
-
     get "/account", to: "account#index"
-
-    get "/feed", to: "feed#index"
-    get "/feed/rss/:token", to: "feed#private_rss", as: :private_rss_feed, format: :rss
 
     root "posts#index"
   end
