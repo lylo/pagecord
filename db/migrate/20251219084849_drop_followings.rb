@@ -4,7 +4,7 @@ class DropFollowings < ActiveRecord::Migration[8.2]
       t.bigint :followed_id
       t.bigint :follower_id
       t.timestamps
-      t.index [:follower_id, :followed_id], unique: true
+      t.index [ :follower_id, :followed_id ], unique: true
     end
   end
 end
