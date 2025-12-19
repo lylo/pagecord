@@ -15,14 +15,11 @@ export default class extends Controller {
     })
 
     this.element.addEventListener("input", this.queueAutogrow.bind(this))
-    this.element.addEventListener("trix-change", this.queueAutogrow.bind(this))
-    this.element.addEventListener("trix-initialize", this.autogrow.bind(this))
     window.addEventListener("resize", this.queueAutogrow.bind(this))
   }
 
   disconnect() {
     window.removeEventListener("resize", this.queueAutogrow.bind(this))
-    this.element.removeEventListener("trix-change", this.queueAutogrow.bind(this))
   }
 
   queueAutogrow() {

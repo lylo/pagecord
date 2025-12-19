@@ -47,40 +47,7 @@ four:
     <p><b>Photography was my first love</b>.</p>
     <p>I've taken photos every day since I got my first camera</p>
 
-trix:
-  record: trix (Post)
-  name: content
-  body: |
-    <div>
-      Yesterday I discovered an interesting bug in our deployment pipeline. The issue started when we upgraded
-      our Docker images to use the latest Alpine Linux base, but somehow missed updating the Node.js version.&nbsp;
-      <br>
-      <br>
-    </div>
-    <div>The error message was cryptic at first, but after digging into the logs I found this:</div>
-    <div><br></div>
-    <blockquote>Module not found: Can't resolve 'fs/promises' in '/app/src/utils'</blockquote>
-    <div><br></div>
-    <div>
-      Turns out we were still running Node 12 in the container, but our code was using fs/promises which was
-      only stabilized in Node 14. The fix was straightforward once we identified the root cause.
-      <br>
-      <br>
-    </div>
-    <pre>
-      // Updated package.json to specify engine requirements
-      {
-        "engines": {
-          "node": ">=14.0.0",
-          "npm": ">=6.0.0"
-        }
-      }
-    </pre>
-    <div>
-      <br>
-      This reminded me why it's important to keep our development and production environments in sync.
-      We've now added automated checks to catch version mismatches before they make it to production.&nbsp;
-    </div>
+
 
 five:
   record: joel (User)
