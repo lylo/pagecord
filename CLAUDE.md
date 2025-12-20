@@ -38,6 +38,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Primary color**: Use `bg-[#4fbd9c]` for primary buttons (see `btn-primary` class)
 - **Dark mode**: Always include dark mode variants (`dark:bg-slate-800`, etc.)
 
+### SVG Icons
+- **Always use `inline_svg_tag`**: Never hardcode `<svg>` elements in views - use `inline_svg_tag "icons/name.svg"`
+- **Icon location**: Store SVGs in `app/assets/images/icons/` (with `social/` subdirectory for social icons)
+- **currentColor**: All icons should use `fill="currentColor"` or `stroke="currentColor"` to inherit text color
+- **Exceptions**: Dynamically generated SVGs (e.g., analytics charts) may use inline markup
+
 ### Performance
 - **Avoid N+1 queries**: Use `.includes()`, `.eager_load()`, or `.preload()` when loading associations
 - **Caching**: Leverage Rails fragment caching and Russian Doll caching patterns

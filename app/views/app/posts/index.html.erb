@@ -25,9 +25,7 @@
         <div data-controller="search">
           <div class="flex items-center justify-end gap-2 mb-4">
             <button data-action="click->search#toggle" class="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer" title="Search posts">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
+<%= inline_svg_tag "icons/search.svg", class: "w-5 h-5" %>
             </button>
 
             <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
@@ -39,10 +37,8 @@
                 <%= form.text_field :search, value: @search_term, placeholder: "Search posts...",
                     data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
                     class: "w-full px-4 py-2 pr-12 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400" %>
-                <button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Close search">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                  </svg>
+<button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Close search">
+                  <%= inline_svg_tag "icons/close.svg", class: "w-5 h-5" %>
                 </button>
               </div>
             <% end %>

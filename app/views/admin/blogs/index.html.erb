@@ -5,10 +5,8 @@
     <span><%= link_to "#{number_with_delimiter(Subscription.comped.count)} comped", admin_blogs_path(status: "comped"), class: "underline font-medium" %>.</span>
   </div>
 
-  <%= link_to new_admin_user_path, class: "btn-primary text-sm whitespace-nowrap" do %>
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-1 inline-block">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-    </svg>
+<%= link_to new_admin_user_path, class: "btn-primary text-sm whitespace-nowrap" do %>
+    <%= inline_svg_tag "icons/plus.svg", class: "w-4 h-4 mr-1 inline-block" %>
     Create New User
   <% end %>
 </div>
@@ -20,10 +18,8 @@
           class: "w-full px-3 py-2 pr-10 border border-slate-300 dark:border-slate-600 rounded-md text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
           data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
           autofocus: true %>
-      <button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Clear search">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
+<button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Clear search">
+        <%= inline_svg_tag "icons/close.svg", class: "w-4 h-4" %>
       </button>
     </div>
     <%= form.hidden_field :status, value: params[:status] %>

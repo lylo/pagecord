@@ -40,6 +40,12 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 - **Blog Markup Architecture**: Public-facing blog views use semantic CSS classes, not Tailwind utilities. Layout uses `layouts/blog.html.erb`. `em` units for scalable blog content, `rem` for layout spacing.
 - **Logical Properties**: Prefer `margin-inline-start` over `margin-left` for RTL support.
 
+### SVG Icons
+- **Always use `inline_svg_tag`**: Never hardcode `<svg>` elements in views - use `inline_svg_tag "icons/name.svg"`.
+- **Icon location**: Store SVGs in `app/assets/images/icons/` (with `social/` subdirectory for social icons).
+- **currentColor**: All icons should use `fill="currentColor"` or `stroke="currentColor"` to inherit text color.
+- **Exceptions**: Dynamically generated SVGs (e.g., analytics charts) may use inline markup.
+
 ### Performance
 - **N+1 Queries**: Avoid by using `.includes()`, `.eager_load()`, or `.preload()`.
 - **Caching**: Utilize Rails fragment and Russian Doll caching.
