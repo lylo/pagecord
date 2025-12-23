@@ -10,6 +10,7 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 
 ### Ruby & Rails
 - **Idiomatic Ruby and Rails**: Follow standard Ruby conventions (`.map`, `.select`, `&:method_name`) and Rails patterns (fat models, skinny controllers, RESTful routes, concerns).
+- **Vanilla Rails**: No services, commands, or interactors - use private methods in controllers and rich domain models. See [Vanilla Rails is Plenty](https://dev.37signals.com/vanilla-rails-is-plenty/).
 - **Minimal & Elegant**: Prioritize clear, concise, and simple solutions. Avoid over-engineering.
 - **ActiveRecord**: Utilize scopes, associations, validations, and callbacks.
 - **Private Methods**: Indent private methods by two additional spaces after the `private` keyword.

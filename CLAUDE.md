@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Ruby & Rails Style
 - **Idiomatic Ruby**: Use Ruby conventions (`.map`, `.select`, `.find`, `&:method_name` shorthand, etc.)
 - **Idiomatic Rails**: Follow Rails conventions (fat models, skinny controllers, RESTful routes, concerns for shared behavior)
+- **Vanilla Rails**: No services, commands, or interactors - use private methods in controllers and rich domain models. See [Vanilla Rails is Plenty](https://dev.37signals.com/vanilla-rails-is-plenty/)
 - **Minimal code**: Prefer fewer lines when clarity is maintained - Ruby's expressiveness is a feature
 - **Elegant solutions**: Choose simple, readable solutions over complex ones
 - **ActiveRecord patterns**: Use scopes, associations, validations, and callbacks appropriately
