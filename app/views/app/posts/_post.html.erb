@@ -25,13 +25,13 @@
           </div>
       <% end %>
 
-      <% if post.draft? %>
+      <% if post.draft? || post.pending? %>
         <div>
           <%= link_to app_post_path(post), title: "Preview draft", target: "_blank", data: { turbo_frame: "_top" } do %>
             <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>
           <% end %>
         </div>
-      <% elsif post.published? && !post.pending? %>
+      <% elsif post.published? %>
         <div>
           <%= link_to post_url(post), title: "View this post", target: "_blank", data: { turbo_frame: "_top" } do %>
             <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>

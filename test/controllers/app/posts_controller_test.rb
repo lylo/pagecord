@@ -303,6 +303,19 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".lexxy-content"
   end
 
+  test "should preview pending post with blog layout" do
+    future_dated_post = @user.blog.posts.create!(
+      title: "Future Preview",
+      content: "Future-dated post",
+      published_at: 1.week.from_now,
+    )
+
+    get app_post_url(future_dated_post)
+    assert_response :success
+    assert_select "article"
+    assert_select ".lexxy-content"
+  end
+
   test "should preview published post with blog layout" do
     published_post = @user.blog.posts.published.first
 
