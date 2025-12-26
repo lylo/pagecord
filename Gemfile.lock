@@ -177,6 +177,7 @@ GEM
       i18n (>= 1.8.11, < 2)
     fastimage (2.4.0)
     feature_toggles (1.2.1)
+    ffi (1.17.2)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -281,6 +282,7 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (5.27.0)
     mocha (3.0.1)
       ruby2_keywords (>= 0.0.5)
@@ -298,6 +300,9 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.5)
+    nokogiri (1.18.10)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.18.10-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.18.10-aarch64-linux-musl)
@@ -491,7 +496,7 @@ GEM
       tzinfo (>= 1.0.0)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
-    unicode-emoji (4.1.0)
+    unicode-emoji (4.2.0)
     uri (1.1.1)
     useragent (0.16.11)
     web-console (4.2.1)
@@ -585,7 +590,7 @@ DEPENDENCIES
   whenever
 
 RUBY VERSION
-  ruby 3.4.7p58
+  ruby 4.0.0
 
 BUNDLED WITH
-  4.0.2
+  4.0.3
