@@ -129,6 +129,7 @@ class Post < ApplicationRecord
       # Remove image references, [Image], URLs, and custom tags like {{ tag_name }}
       text_content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
              .gsub(/\[Image\]/i, "").strip
+             .gsub(/https?:\/\/\S+/, "").strip
              .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "").strip # strip tags
              .gsub(/\s+/, " ").strip  # Normalize whitespace
     end
