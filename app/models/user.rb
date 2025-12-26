@@ -6,8 +6,7 @@ class User < ApplicationRecord
   has_many :access_requests, dependent: :destroy
   has_many :email_change_requests, dependent: :destroy
 
-  accepts_nested_attributes_for :blog
-
+  validates_associated :blog
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   normalizes :email, with: -> { it.downcase.strip }
 

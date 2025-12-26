@@ -4,7 +4,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should create user and redirect to posts path" do
     assert_difference("User.count") do
       assert_emails 1 do
-        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" } }, rendered_at: 6.seconds.ago.to_i }
+        post signups_url, params: { user: { email: "test@example.com", blog: { subdomain: "testuser" } }, rendered_at: 6.seconds.ago.to_i }
       end
     end
 
@@ -18,7 +18,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should create user with marketing consent" do
     assert_difference("User.count") do
       assert_emails 1 do
-        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, marketing_consent: true }, rendered_at: 6.seconds.ago.to_i }
+        post signups_url, params: { user: { email: "test@example.com", blog: { subdomain: "testuser" }, marketing_consent: true }, rendered_at: 6.seconds.ago.to_i }
       end
     end
 
@@ -29,7 +29,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should create user with timezone" do
     assert_difference("User.count") do
       assert_emails 1 do
-        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, marketing_consent: true, timezone: "Europe/Warsaw" }, rendered_at: 6.seconds.ago.to_i }
+        post signups_url, params: { user: { email: "test@example.com", blog: { subdomain: "testuser" }, marketing_consent: true, timezone: "Europe/Warsaw" }, rendered_at: 6.seconds.ago.to_i }
       end
     end
 
@@ -43,7 +43,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       assert_emails 0 do
         previous_env = ENV["BANNED_TIMEZONES"]
         ENV["BANNED_TIMEZONES"] = "Chennai"
-        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, marketing_consent: true, timezone: "Asia/Kolkata" }, rendered_at: 6.seconds.ago.to_i }
+        post signups_url, params: { user: { email: "test@example.com", blog: { subdomain: "testuser" }, marketing_consent: true, timezone: "Asia/Kolkata" }, rendered_at: 6.seconds.ago.to_i }
         ENV["BANNED_TIMEZONES"] = previous_env
       end
     end
@@ -54,7 +54,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should not create user with invalid subdomain" do
     assert_no_difference("User.count") do
       assert_emails 0 do
-        post signups_url, params: { user: { email: "test@pagecord.com", blog_attributes: { subdomain: " invalid.subdomain" } }, rendered_at: 6.seconds.ago.to_i }
+        post signups_url, params: { user: { email: "test@pagecord.com", blog: { subdomain: " invalid.subdomain" } }, rendered_at: 6.seconds.ago.to_i }
       end
     end
 
@@ -64,7 +64,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create user if honeypot field is populated" do
     assert_no_difference("User.count") do
-      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" } } }
+      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blog: { subdomain: "testuser" } } }
     end
 
     assert_redirected_to new_signup_path
@@ -73,7 +73,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create user if form rendered and submitted within 5 seconds" do
     assert_no_difference("User.count") do
-      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" } }, rendered_at: 3.seconds.ago.to_i }
+      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blog: { subdomain: "testuser" } }, rendered_at: 3.seconds.ago.to_i }
     end
 
     assert_redirected_to new_signup_path

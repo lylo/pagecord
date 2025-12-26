@@ -4,7 +4,7 @@ class SignUpTest < ApplicationSystemTestCase
   test "sign up and verify email" do
     visit new_signup_path
 
-    fill_in "user[blog_attributes][subdomain]", with: "testuser"
+    fill_in "user[blog][subdomain]", with: "testuser"
     fill_in "user[email]", with: "test@example.com"
     sleep 5 # anti-bot protection
     click_on "Create account"

@@ -25,8 +25,7 @@ class SignupsController < ApplicationController
     end
 
     @user = User.new(user_params)
-
-    # New users should get Lexxy if configured
+    @user.build_blog(subdomain: params.dig(:user, :blog, :subdomain))
     @user.blog.features = [ "lexxy" ] if ENV["LEXXY_FOR_NEW_USERS"]
 
     if signup_from_allowed_timezone && @user.save
@@ -48,7 +47,7 @@ class SignupsController < ApplicationController
 
     def user_params
       @user_params ||= begin
-        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation, blog_attributes: [ :subdomain ])
+        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation)
         translate_timezone_param(raw_params)
       end
     end

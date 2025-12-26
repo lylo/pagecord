@@ -44,7 +44,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
         post admin_users_url, params: {
           user: {
             email: "newuser@example.com",
-            blog_attributes: {
+            blog: {
               subdomain: "newuser"
             }
           }
@@ -67,7 +67,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
         post admin_users_url, params: {
           user: {
             email: "test@example.com",
-            blog_attributes: {
+            blog: {
               subdomain: "test.test"
             }
           }
@@ -83,7 +83,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       post admin_users_url, params: {
         user: {
           email: "verification@example.com",
-          blog_attributes: {
+          blog: {
             subdomain: "verification"
           }
         }

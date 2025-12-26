@@ -10,6 +10,7 @@ class Admin::UsersController < AdminController
 
   def create
     @user = User.new(user_params)
+    @user.build_blog(subdomain: params.dig(:user, :blog, :subdomain))
     if @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
       redirect_to admin_user_path(@user), notice: "User was successfully created."
@@ -46,6 +47,6 @@ class Admin::UsersController < AdminController
   private
 
   def user_params
-    params.require(:user).permit(:email, blog_attributes: [ :subdomain ])
+    params.require(:user).permit(:email)
   end
 end
