@@ -5,7 +5,7 @@
   <div class="flex w-full justify-between items-top">
     <div>
       <%= link_to edit_app_post_path(post, page: params[:page]), title: "Click to edit this post", data: { turbo_frame: "_top", turbo_prefetch: false } do %>
-        <div class="font-medium pe-2 hover:underline">
+        <div class="font-medium pe-2 hover:underline [overflow-wrap:anywhere]">
           <%= post.display_title %>
         </div>
       <% end %>
