@@ -29,6 +29,11 @@ module Html
 
       def valid_image?(url)
         sanitized_url = sanitize_url(url)
+        return false if sanitized_url.blank?
+
+        # Ensure URL has a valid host before making HTTP request
+        uri = URI.parse(sanitized_url)
+        return false if uri.host.blank?
 
         size = FastImage.size(sanitized_url)
         type = FastImage.type(sanitized_url)
@@ -37,7 +42,7 @@ module Html
         valid_size = size.present? && size[0] <= MAX_WIDTH && size[1] <= MAX_HEIGHT
 
         valid_type && valid_size
-      rescue FastImage::UnknownImageType, FastImage::ImageFetchFailure
+      rescue FastImage::UnknownImageType, FastImage::ImageFetchFailure, URI::InvalidURIError
         false
       end
 
