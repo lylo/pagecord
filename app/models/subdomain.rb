@@ -1,7 +1,7 @@
 class Subdomain
   RESERVED = %w[ about admin app api careers community contact discover faq feed
                  guide images jobs login og pagecord privacy pricing rails
-                 rss shuffle sidekiq signup support terms ]
+                 rss shuffle sidekiq signup support terms test ]
 
   FORMAT_REGEX = /\A[a-zA-Z0-9]+\z/
   MIN_LENGTH = 3
