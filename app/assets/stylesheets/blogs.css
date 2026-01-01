@@ -188,7 +188,7 @@ html, body {
     :where(a) {
       color: var(--color-accent);
       text-decoration: underline;
-      font-weight: 400 !important;
+      font-weight: 400;
 
       &:hover {
         color: var(--color-accent-hover);
@@ -219,7 +219,7 @@ html, body {
 :where(.blog) {
   :where(article) {
     max-width: none;
-    color: var(--color-text) !important;
+    color: var(--color-text);
     text-wrap: pretty;
     overflow-wrap: break-word;
     word-break: break-word;
@@ -270,7 +270,7 @@ html, body {
 
     :where(code),
     :where(pre) {
-      background-color: var(--color-bg-subtle) !important;
+      background-color: var(--color-bg-subtle);
     }
 
     :where(audio) {
