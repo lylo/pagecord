@@ -8,7 +8,7 @@ class Posts::UpvotesController < Blogs::BaseController
 
   def create
     @post.upvotes.find_or_create_by!(hash_id: @hash_id)
-    render partial: "blogs/posts/upvotes", locals: { post: @post, upvoted: true }
+    head :ok
   end
 
 

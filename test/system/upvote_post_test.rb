@@ -12,12 +12,13 @@ class UpvotePostTest < ApplicationSystemTestCase
     visit blog_post_path(post.slug)
 
     find("a.upvote").click
-    assert_selector "a.upvote[data-upvoted]"
+    assert_selector ".upvote-heart[style*='fill']"  # JS sets fill color immediately
+    sleep 0.5  # Allow request to complete
     assert_equal 1, post.upvotes.reload.count
 
     # Second click is idempotent (same visitor can't upvote twice)
     find("a.upvote").click
-    assert_selector "a.upvote[data-upvoted]"
+    sleep 0.5
     assert_equal 1, post.upvotes.reload.count
   end
 end

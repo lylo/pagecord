@@ -525,7 +525,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "turbo-frame[id^='upvotes_post_']"
+    assert_select "a.upvote"
   end
 
   test "should not render upvotes for a non-subscriber" do
@@ -535,7 +535,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "turbo-frame[id^='upvotes_post_']", count: 0
+    assert_select "a.upvote", count: 0
   end
 
   test "should not render upvotes if show_upvotes is false" do
@@ -544,7 +544,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "turbo-frame[id^='upvotes_post_']", count: 0
+    assert_select "a.upvote", count: 0
   end
 
   test "post published_at is stored and rendered correctly in UTC" do
