@@ -160,6 +160,13 @@ class BlogTest < ActiveSupport::TestCase
     assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
   end
 
+  test "should reject custom CSS with </style > whitespace bypass" do
+    # HTML5 parsers accept </style > (with whitespace before >) as valid end tag
+    @blog.custom_css = '.test:after { content: "</style ><script>alert(1)</script>"; }'
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
+  end
+
   test "should reject custom CSS with script tags" do
     @blog.custom_css = ".blog { color: red; }<script>alert(1)</script>"
     assert_not @blog.valid?

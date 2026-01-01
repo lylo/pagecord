@@ -46,6 +46,12 @@ module CssSanitizer
       )
     )
 
-    Sanitize::CSS.stylesheet(css, config)
+    sanitized = Sanitize::CSS.stylesheet(css, config)
+
+    # Prevent XSS via </style> breakout when embedded in HTML
+    # The Sanitize gem does not handle this context-aware escaping.
+    # We escape the slash to <\/style which is valid CSS but breaks the HTML end-tag sequence.
+    # See: https://github.com/rgrove/sanitize/issues/176
+    sanitized.gsub(/<\/style/i, '<\\/style')
   end
 end
