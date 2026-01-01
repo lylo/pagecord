@@ -11,17 +11,23 @@
           autocorrect: "on",
           attachments: false,
           autofocus: true,
-          data: { controller: "lexxy autogrow", subscribed: false } %>
+          data: { controller: "lexxy", subscribed: false } %>
       </div>
     <% else %>
       <div class="trix-minimal">
       <%= form.rich_text_area :bio,
           placeholder: "add a bio to your profile if you like...",
-          class: "trix-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @blog.errors[:bio].any?}",
+          class: "autogrow trix-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @blog.errors[:bio].any?}",
           spellcheck: true,
           attachments: false,
           autofocus: true,
-          data: { controller: "trix autogrow", subscribed: false } %>
+          data: { controller: "trix", subscribed: false } %>
+      </div>
+    <% end %>
+
+    <% if @blog.errors[:bio].any? %>
+      <div class="mt-1 text-xs text-red-500">
+        <%= @blog.errors[:bio].first %>
       </div>
     <% end %>
   </div>
@@ -121,7 +127,7 @@
       </p>
       <%= form.text_area :custom_css,
           placeholder: ".blog { /* your custom styles here */ }",
-          class: "w-full h-64 font-mono text-sm border border-slate-300 dark:border-slate-600 rounded-md p-3 focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 #{'!border-red-500' if @blog.errors[:custom_css].any?}",
+          class: "autogrow w-full min-h-64 font-mono text-sm border border-slate-300 dark:border-slate-600 rounded-md p-3 focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 #{'!border-red-500' if @blog.errors[:custom_css].any?}",
           spellcheck: false %>
 
       <% if @blog.errors[:custom_css].any? %>

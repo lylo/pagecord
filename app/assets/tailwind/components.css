@@ -21,6 +21,11 @@
     @apply dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 border-slate-300 dark:border-slate-700;
   }
 
+  /* Native auto-growing textarea (Chrome 123+, Safari 17.4+, Edge 123+) */
+  .autogrow {
+    field-sizing: content;
+  }
+
   dialog::backdrop {
     backdrop-filter: blur(2px);
   }
