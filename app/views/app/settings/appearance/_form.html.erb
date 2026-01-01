@@ -1,36 +1,32 @@
 <%= form_with url: app_settings_appearance_path(@blog), model: @blog, data: { controller: "avatar" } do |form| %>
-  <div>
+  <fieldset>
     <h3 class="font-bold text-lg mb-2">Bio</h3>
 
     <% if current_features.enabled? :lexxy %>
       <div class="lexxy-minimal">
-      <%= form.lexxy_rich_text_area :bio,
-          placeholder: "add a bio to your profile if you like...",
-          class: "lexxy-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @blog.errors[:bio].any?}",
-          spellcheck: true,
-          autocorrect: "on",
-          attachments: false,
-          autofocus: true,
-          data: { controller: "lexxy", subscribed: false } %>
+        <%= form.lexxy_rich_text_area :bio,
+            placeholder: "add a bio to your profile if you like...",
+            class: "lexxy-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
+            spellcheck: true,
+            autocorrect: "on",
+            attachments: false,
+            autofocus: true,
+            data: { controller: "lexxy", subscribed: false } %>
       </div>
     <% else %>
       <div class="trix-minimal">
-      <%= form.rich_text_area :bio,
-          placeholder: "add a bio to your profile if you like...",
-          class: "autogrow trix-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @blog.errors[:bio].any?}",
-          spellcheck: true,
-          attachments: false,
-          autofocus: true,
-          data: { controller: "trix", subscribed: false } %>
+        <%= form.rich_text_area :bio,
+            placeholder: "add a bio to your profile if you like...",
+            class: "autogrow trix-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
+            spellcheck: true,
+            attachments: false,
+            autofocus: true,
+            data: { controller: "trix", subscribed: false } %>
       </div>
     <% end %>
 
-    <% if @blog.errors[:bio].any? %>
-      <div class="mt-1 text-xs text-red-500">
-        <%= @blog.errors[:bio].first %>
-      </div>
-    <% end %>
-  </div>
+    <div class="field-error"><%= @blog.errors[:bio].first if @blog.errors[:bio].any? %></div>
+  </fieldset>
 
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Title</h3>
@@ -119,7 +115,7 @@
   <% end %>
 
   <% if current_features.enabled? :custom_css %>
-    <div class="mt-8" id="custom-css-section">
+    <fieldset class="mt-8" id="custom-css-section">
       <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
       <p class="mb-4">
         Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
@@ -127,15 +123,11 @@
       </p>
       <%= form.text_area :custom_css,
           placeholder: ".blog { /* your custom styles here */ }",
-          class: "autogrow w-full min-h-64 font-mono text-sm border border-slate-300 dark:border-slate-600 rounded-md p-3 focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 #{'!border-red-500' if @blog.errors[:custom_css].any?}",
+          class: "autogrow w-full min-h-64 font-mono text-sm border border-slate-300 dark:border-slate-600 rounded-md p-3 focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100",
           spellcheck: false %>
 
-      <% if @blog.errors[:custom_css].any? %>
-        <div class="mt-1 text-xs text-red-500">
-          <%= @blog.errors[:custom_css].first %>
-        </div>
-      <% end %>
-    </div>
+      <div class="field-error"><%= @blog.errors[:custom_css].first if @blog.errors[:custom_css].any? %></div>
+    </fieldset>
   <% end %>
 
   <div class="mt-12 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4 gap-x-2">
