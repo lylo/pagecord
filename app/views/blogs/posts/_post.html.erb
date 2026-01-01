@@ -1,5 +1,5 @@
 <% cache_if(post.post?, post) do %>
-  <article>
+  <article class="<%= post.page? ? 'page' : 'post' %>">
     <%= render "post_title", post: post %>
 
     <%= render "post_content", post: post %>
