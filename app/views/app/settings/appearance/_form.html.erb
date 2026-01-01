@@ -114,13 +114,18 @@
     </div>
   <% end %>
 
-  <% if current_features.enabled? :custom_css %>
+  <% if @blog.user.subscribed? && current_features.enabled?(:custom_css) %>
     <fieldset class="mt-8" id="custom-css-section">
       <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
       <p class="mb-4">
         Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
-        You can use <code>@import</code> for Google Fonts and CSS custom properties (variables).
+        You can use <code>@import</code> for Google Fonts.
       </p>
+
+      <p class="mb-4 text-sm text-slate-500 italic">
+       Custom CSS is an advanced feature. Customer support for creating or debugging custom CSS is not possible - you're on your own with this one! Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+      </p>
+
       <%= form.text_area :custom_css,
           placeholder: ".blog { /* your custom styles here */ }",
           class: "autogrow w-full min-h-64 font-mono text-sm border border-slate-300 dark:border-slate-600 rounded-md p-3 focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100",
