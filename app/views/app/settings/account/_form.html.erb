@@ -124,13 +124,11 @@
 
   <%= form_with model: @sender_email_address, url: app_settings_sender_email_addresses_path, local: true do |form| %>
     <div class="sm:flex items-center gap-3">
-      <div>
+      <fieldset>
         <%= form.label :email, "Add sender email address", class: "sr-only" %>
         <%= form.email_field :email, required: true, placeholder: "sender@email.com", class: "w-full md:w-96 form-field" %>
-        <% if @sender_email_address && @sender_email_address.errors[:email].any? %>
-          <div class="text-red-600 text-sm mt-1"><%= @sender_email_address.errors[:email].join(", ") %></div>
-        <% end %>
-      </div>
+        <div class="field-error"><%= @sender_email_address.errors[:email].to_sentence if @sender_email_address&.errors&.[](:email)&.any? %></div>
+      </fieldset>
       <div class="mt-4 sm:mt-0 sm:ml-2">
         <%= form.submit "Add Sender Email", class: "btn-primary" %>
       </div>
