@@ -26,6 +26,23 @@
     field-sizing: content;
   }
 
+  /* Field error handling with :has() */
+  fieldset {
+    @apply border-0 p-0 m-0;
+  }
+
+  fieldset:has(.field-error:not(:empty)) input,
+  fieldset:has(.field-error:not(:empty)) textarea,
+  fieldset:has(.field-error:not(:empty)) select,
+  fieldset:has(.field-error:not(:empty)) trix-editor,
+  fieldset:has(.field-error:not(:empty)) lexxy-editor {
+    @apply !border-red-500;
+  }
+
+  .field-error:not(:empty) {
+    @apply mt-1 text-sm text-red-500;
+  }
+
   dialog::backdrop {
     backdrop-filter: blur(2px);
   }

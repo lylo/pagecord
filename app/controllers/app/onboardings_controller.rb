@@ -10,7 +10,11 @@ class App::OnboardingsController < AppController
         format.turbo_stream
       end
     else
-      head :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update("bio_error", partial: "bio_error"), status: :unprocessable_entity
+        end
+      end
     end
   end
 
