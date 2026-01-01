@@ -7,6 +7,14 @@
   box-sizing: border-box;
 }
 
+:root {
+  --font-size-base: 100%;
+}
+
+html {
+  font-size: var(--font-size-base);
+}
+
 /* Body layout - vertical flex container */
 body {
   margin: 0;
@@ -22,7 +30,7 @@ main {
   padding: 0 1em;
   display: flex;
   flex-grow: 1;
-  font-size: var(--font-size-standard);
+  font-size: 1rem;
 }
 
 /* Blog content container - applies width constraints and padding */
@@ -292,7 +300,7 @@ html, body {
 
 :where(.blog) {
   :where(footer) {
-    font-size: 0.875em;
+    font-size: 0.875rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -303,6 +311,7 @@ html, body {
     button {
       color: var(--color-text-light);
       background-color: inherit;
+      text-decoration: none;
 
       &:hover {
         color: var(--color-text-muted);
@@ -641,13 +650,6 @@ button {
 }
 
 /* Font size utilities - must be standalone for use on <main> element */
-.text-size-standard {
-  font-size: 16px;
-}
-
-.text-size-large {
-  font-size: var(--font-size-large);
-}
 
 /* ============================= */
 /* Layout - Flash Messages       */
@@ -702,7 +704,9 @@ button {
   padding: 0.25rem 0.5rem;
   margin-right: 0.5rem;
   margin-bottom: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 500;
+  text-decoration: none;
   background-color: var(--color-bg-subtle);
   color: var(--color-text-muted);
   border-radius: 0.375rem;
