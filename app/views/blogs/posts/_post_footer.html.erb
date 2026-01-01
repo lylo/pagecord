@@ -12,6 +12,7 @@
       <% if @user.blog.reply_by_email %>
         <%= link_to new_post_reply_path(post),
                   title: "Reply to this post via email",
+                  aria: { label: "Reply to this post via email" },
                   data: { turbo_frame: "_top" },
                   rel: "nofollow",
                   class: "reply-by-email" do %>
