@@ -99,8 +99,12 @@ html, body {
   background-color: var(--color-bg);
   color: var(--color-text);
 
-  :where(.lexxy-content) {
+  :where(article) {
     line-height: 1.75;
+  }
+
+  :where(.lexxy-content) {
+    line-height: inherit;
   }
 
   :where(header) {
