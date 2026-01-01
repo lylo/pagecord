@@ -28,7 +28,7 @@
 
   /* Field error handling with :has() */
   fieldset {
-    @apply border-0 p-0 m-0;
+    @apply border-0 p-0 m-0 min-w-0;
   }
 
   fieldset:has(.field-error:not(:empty)) input,
