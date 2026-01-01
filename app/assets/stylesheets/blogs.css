@@ -453,7 +453,7 @@ html, body {
   color: var(--color-text-heading);
   font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 1em;
+  margin: 0 0 1em 0;
 }
 
 .posts-titles .year-header.has-previous {
