@@ -42,53 +42,43 @@
       <%= form.label :slug, "Slug" %>
       </div>
 
-      <div class="mt-2">
+      <fieldset class="mt-2">
         <%= form.text_field :slug,
-            class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg #{'!border-red-500' if @page.errors[:slug].any?}",
+            class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
             placeholder: "custom-url-path" %>
-        <% if @page.errors[:slug].any? %>
-          <div class="mt-1 text-xs text-red-500">
-            <%= @page.errors[:slug].to_sentence %>
-          </div>
-        <% end %>
-      </div>
+        <div class="field-error"><%= @page.errors[:slug].to_sentence if @page.errors[:slug].any? %></div>
+      </fieldset>
     </div>
 
-    <%= form.text_field :title,
-          placeholder: "Page title",
-          class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 #{'!border-red-500' if @page.errors[:title].any?}",
-          autofocus: true,
-          data: { autosave_target: "title" }
-    %>
+    <fieldset>
+      <%= form.text_field :title,
+            placeholder: "Page title",
+            class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
+            autofocus: true,
+            data: { autosave_target: "title" }
+      %>
+      <div class="field-error"><%= @page.errors[:title].to_sentence if @page.errors[:title].any? %></div>
+    </fieldset>
 
-    <% if @page.errors[:title].any? %>
-      <div class="mt-1 text-xs text-red-500">
-        <%= @page.errors[:title].to_sentence %>
-      </div>
-    <% end %>
-
-    <% if current_features.enabled? :lexxy %>
-      <%= form.lexxy_rich_text_area :content,
-        placeholder: "Write your page content...",
-        class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @page.errors[:content].any?}",
-        spellcheck: true,
-        autocorrect: "on",
-        data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
-    <% else %>
-      <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
-        <%= form.rich_text_area :content,
+    <fieldset>
+      <% if current_features.enabled? :lexxy %>
+        <%= form.lexxy_rich_text_area :content,
           placeholder: "Write your page content...",
-          class: "autogrow trix-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @page.errors[:content].any?}",
+          class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
           spellcheck: true,
-        data: { controller: "trix", subscribed: Current.user.subscribed?, autosave_target: "content" } %>
-      </div>
-    <% end %>
-
-    <% if @page.errors[:content].any? %>
-      <div class="mt-1 text-xs text-red-500">
-        A body is required
-      </div>
-    <% end %>
+          autocorrect: "on",
+          data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
+      <% else %>
+        <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
+          <%= form.rich_text_area :content,
+            placeholder: "Write your page content...",
+            class: "autogrow trix-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
+            spellcheck: true,
+          data: { controller: "trix", subscribed: Current.user.subscribed?, autosave_target: "content" } %>
+        </div>
+      <% end %>
+      <div class="field-error"><%= @page.errors[:content].first if @page.errors[:content].any? %></div>
+    </fieldset>
 
     <% show_make_home_page = !@blog.has_custom_home_page? && @page.persisted? %>
     <% flex_class = show_make_home_page ? "flex-col" : "justify-between" %>
