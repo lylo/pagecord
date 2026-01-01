@@ -2,7 +2,7 @@
 # Uses the Sanitize gem to prevent XSS while allowing safe CSS features
 
 module CssSanitizer
-  MAX_CSS_SIZE = 10_000 # 10KB limit to prevent DoS
+  MAX_CSS_SIZE = 2_000 # 2KB limit to prevent DoS
 
   def self.sanitize_stylesheet(css)
     return "" if css.blank?

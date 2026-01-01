@@ -206,7 +206,7 @@ class BlogTest < ActiveSupport::TestCase
   end
 
   test "should reject CSS exceeding size limit" do
-    @blog.custom_css = "." + ("a" * 11_000) # Exceeds 10KB limit
+    @blog.custom_css = "." + ("a" * 2_500) # Exceeds 2KB limit
     assert_not @blog.valid?
     assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
   end
