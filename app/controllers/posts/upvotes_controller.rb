@@ -7,11 +7,8 @@ class Posts::UpvotesController < Blogs::BaseController
   before_action :load_post
 
   def create
-    existing_upvote = @post.upvotes.find_by(hash_id: @hash_id)
-    unless existing_upvote
-      @post.upvotes.create!(hash_id: @hash_id)
-    end
-    head :ok
+    @post.upvotes.find_or_create_by!(hash_id: @hash_id)
+    render partial: "blogs/posts/upvotes", locals: { post: @post, upvoted: true }
   end
 
 

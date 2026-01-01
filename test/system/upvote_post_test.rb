@@ -3,24 +3,21 @@ require "application_system_test_case"
 class UpvotePostTest < ApplicationSystemTestCase
   test "user can upvote a post" do
     blog = blogs(:joel)
+    blog.update!(show_upvotes: true)
 
-    post = blog.posts.published.first
-    initial_upvotes = post.upvotes.count
+    post = posts(:two)  # Use specific post with no fixture upvotes
+    assert_equal 0, post.upvotes.count
 
     use_subdomain(blog.subdomain)
-
     visit blog_post_path(post.slug)
 
-    within "turbo-frame##{dom_id(post, :upvotes)}" do
-      find("button[type=submit]").click
-    end
+    find("a.upvote").click
+    assert_selector "a.upvote[data-upvoted]"
+    assert_equal 1, post.upvotes.reload.count
 
-    assert initial_upvotes + 1, post.reload.upvotes.count
-
-    within "turbo-frame##{dom_id(post, :upvotes)}" do
-      find("button[type=submit]").click
-    end
-
-    assert initial_upvotes, post.reload.upvotes.count
+    # Second click is idempotent (same visitor can't upvote twice)
+    find("a.upvote").click
+    assert_selector "a.upvote[data-upvoted]"
+    assert_equal 1, post.upvotes.reload.count
   end
 end
