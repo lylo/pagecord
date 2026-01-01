@@ -1,8 +1,7 @@
-<%= button_to post_upvotes_path(post),
-              method: :post,
-              class: "upvote-button",
-              data: { controller: "upvote", action: "click->upvote#pulse" },
-              title: "Click to like this post" do %>
+<%= link_to post_upvotes_path(post),
+            class: "upvote",
+            data: { turbo_method: :post, controller: "upvote", action: "click->upvote#pulse" },
+            title: "Click to like this post" do %>
   <%= inline_svg_tag "icons/heart.svg",
         class: "icon cursor-pointer upvote-heart",
         data: { upvote_target: "heart" } %>

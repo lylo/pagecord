@@ -329,6 +329,7 @@ html, body {
 
       a {
         display: flex;
+        align-items: center;
       }
     }
   }
@@ -340,6 +341,7 @@ html, body {
   :where(.icon) {
     width: 1.5em;
     height: 1.5em;
+    display: block;
   }
 }
 
