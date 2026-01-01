@@ -13,7 +13,7 @@
         <% elsif post.first_image.present? %>
           <%= image_tag resized_image_url(post.first_image, width: 1600, height: 1200), alt: post.display_title %>
         <% else %>
-          <%= post.content.to_plain_text %>
+          <%= post.content.to_plain_text.truncate(324) %>
         <% end %>
       </div>
 
