@@ -1,13 +1,13 @@
-<div class="post-card">
-  <%= link_to post_path(post), class: "post-card-link", data: { turbo_frame: "_top" } do %>
+<div class="post-card h-entry">
+  <%= link_to post_path(post), class: "post-card-link u-url", data: { turbo_frame: "_top" } do %>
     <div class="post-card-content">
       <% if post.title.present? %>
-        <h2 class="post-card-title">
+        <h2 class="post-card-title p-name">
           <%= post.title %>
         </h2>
       <% end %>
 
-      <div class="post-card-summary">
+      <div class="post-card-summary p-summary">
         <% if post.has_text_content? %>
           <%= post.summary(limit: 324) %>
         <% elsif post.first_image.present? %>
@@ -18,7 +18,7 @@
       </div>
 
       <div class="post-card-meta <%= post.tag_list.present? ? 'has-tags' : 'no-tags' %>">
-        <time class="post-card-date" datetime="<%= post.published_at.iso8601 %>">
+        <time class="post-card-date dt-published" datetime="<%= post.published_at.iso8601 %>">
           <%= local_time post.published_at, format: published_at_date_format %>
         </time>
         <span class="post-card-badge">

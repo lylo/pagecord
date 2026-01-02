@@ -3,8 +3,10 @@
 <% end %>
 
 <footer>
-  <%= link_to post_path(post), class: "post-date", data: { turbo_frame: "_top" } do %>
-    <%= local_time post.published_at, format: published_at_date_format %>
+  <%= link_to post_path(post), class: "post-date u-url", data: { turbo_frame: "_top" } do %>
+    <time class="dt-published" datetime="<%= post.published_at.iso8601 %>">
+      <%= local_time post.published_at, format: published_at_date_format %>
+    </time>
   <% end %>
 
   <% if @user.subscribed? %>

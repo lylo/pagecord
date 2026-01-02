@@ -1,9 +1,9 @@
-<div class="titlebar">
+<div class="titlebar h-card p-author">
   <% if @blog.avatar&.attached? %>
     <div class="avatar-container">
       <div class="avatar">
-        <%= link_to blog_home_url(@blog), aria: { label: "#{@blog.title} Home" } do %>
-          <%= image_tag resized_image_url(@blog.avatar, width: 160, height: 160), alt: "#{@blog.title} Avatar" %>
+        <%= link_to blog_home_url(@blog), class: "u-url", aria: { label: "#{@blog.title} Home" } do %>
+          <%= image_tag resized_image_url(@blog.avatar, width: 160, height: 160), alt: "#{@blog.title} Avatar", class: "u-photo" %>
         <% end %>
       </div>
 

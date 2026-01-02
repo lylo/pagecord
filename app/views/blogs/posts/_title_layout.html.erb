@@ -1,5 +1,5 @@
 <%= turbo_frame_tag :posts do %>
-  <div class="posts-titles" data-turbo="false">
+  <div class="posts-titles h-feed" data-turbo="false">
     <% previous_year = params[:last_visible_year]&.to_i %>
     <% @posts.each do |post| %>
       <% if post.published_at.year != previous_year %>
@@ -8,9 +8,11 @@
         </h2>
         <% previous_year = post.published_at.year %>
       <% end %>
-      <div class="post-row">
-        <%= local_time post.published_at, format: :month_day %>
-        <%= link_to post.display_title, post_path(post), data: { turbo_prefetch: false } %>
+      <div class="post-row h-entry">
+        <time class="dt-published" datetime="<%= post.published_at.iso8601 %>">
+          <%= local_time post.published_at, format: :month_day %>
+        </time>
+        <%= link_to post.display_title, post_path(post), class: "p-name u-url", data: { turbo_prefetch: false } %>
       </div>
     <% end %>
   </div>
