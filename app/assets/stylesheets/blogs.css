@@ -191,7 +191,7 @@ html, body {
     margin-bottom: 1.5em;
     font-size: 0.875em;
     color: var(--color-text-muted);
-    word-break: break-words;
+    overflow-wrap: break-word;
 
     :where(a) {
       color: var(--color-accent);

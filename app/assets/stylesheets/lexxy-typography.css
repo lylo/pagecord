@@ -136,7 +136,7 @@
     padding: 1.5ch;
     border-radius: 0.5em;
     font-weight: normal;
-    word-break: break-words;
+    overflow-wrap: break-word;
     overflow-x: auto;
 
     ol, ul {
