@@ -14,7 +14,7 @@
     <div class="flex items-top gap-x-2 text-slate-400 dark:text-slate-400">
       <% if post.hidden? %>
         <div class="flex items-top">
-          <%= inline_svg_tag "icons/eye-slash.svg", class: "w-4 h-4", title: "Private post" %>
+          <%= inline_svg_tag "icons/eye-slash.svg", class: "w-4 h-4", title: "Private post", aria: { label: "Private post" }, role: "img" %>
         </div>
       <% end %>
 
@@ -27,13 +27,13 @@
 
       <% if post.draft? || post.pending? %>
         <div>
-          <%= link_to app_post_path(post), title: "Preview draft", target: "_blank", data: { turbo_frame: "_top" } do %>
+          <%= link_to app_post_path(post), title: "Preview draft", aria: { label: "Preview draft" }, target: "_blank", data: { turbo_frame: "_top" } do %>
             <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>
           <% end %>
         </div>
       <% elsif post.published? %>
         <div>
-          <%= link_to post_url(post), title: "View this post", target: "_blank", data: { turbo_frame: "_top" } do %>
+          <%= link_to post_url(post), title: "View this post", aria: { label: "View this post" }, target: "_blank", data: { turbo_frame: "_top" } do %>
             <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>
           <% end %>
         </div>
