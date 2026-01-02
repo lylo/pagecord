@@ -531,7 +531,7 @@ html, body {
 .post-card-summary {
   color: var(--color-text-muted);
   margin-bottom: 1rem;
-  word-break: break-words;
+  overflow-wrap: break-word;
   line-height: 1.5;
 }
 
