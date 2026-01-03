@@ -4,10 +4,10 @@
       🖋️ Drafts
     </div>
 
-    <% show_draft_years = @drafts.any? { |p| (p.published_at || p.updated_at).year != Time.current.year } %>
+    <% show_draft_years = @drafts.any? { |p| p.updated_at.year != Time.current.year } %>
     <% previous_year = nil %>
     <% @drafts.each do |post| %>
-      <% draft_year = (post.published_at || post.updated_at).year %>
+      <% draft_year = post.updated_at.year %>
       <% if show_draft_years && draft_year != previous_year %>
         <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100 <%= 'mt-8' unless previous_year.nil? %>">
           <%= draft_year %>
