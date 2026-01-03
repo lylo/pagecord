@@ -6,7 +6,7 @@ class App::PostsController < AppController
 
   def index
     posts_query = Current.user.blog.posts.published.order(published_at: :desc)
-    drafts_query = Current.user.blog.posts.draft.order(published_at: :desc)
+    drafts_query = Current.user.blog.posts.draft.order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
 
     @search_term = params[:search]
     if @search_term.present?
@@ -26,7 +26,7 @@ class App::PostsController < AppController
   end
 
   def new
-    @post = Current.user.blog.posts.build(published_at: Time.current)
+    @post = Current.user.blog.posts.build
   end
 
   def edit

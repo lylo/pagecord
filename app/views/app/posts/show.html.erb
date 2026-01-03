@@ -13,7 +13,7 @@
 
     <footer>
       <%= link_to app_post_path(@post), class: "post-date", data: { turbo_frame: "_top" } do %>
-        <%= local_time @post.published_at, format: published_at_date_format %>
+        <%= local_time @post.display_date, format: published_at_date_format %>
       <% end %>
     </footer>
   <% end %>
