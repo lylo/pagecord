@@ -334,10 +334,6 @@ html, body {
     }
   }
 
-  :where(.tag) {
-    font-size: 0.875em;
-  }
-
   :where(.icon) {
     width: 1.5em;
     height: 1.5em;
