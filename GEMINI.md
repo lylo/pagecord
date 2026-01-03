@@ -66,6 +66,7 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 - **Whitespace**: Remove trailing whitespace.
 - **Component Pattern**: Check existing implementations before creating new ones.
 - **Method Complexity**: Keep methods simple.
+- **No Line Numbers**: Never include line numbers (e.g., 1:, 2:) in code snippets or console queries provided to the user.
 
 ## Development Commands
 
