@@ -2,7 +2,7 @@
   <div class="my-8">
 
     <p class="mb-8">
-      <% if @posts.empty? && @search_term.blank? %>
+      <% if @posts.empty? && @drafts.empty? && @search_term.blank? %>
         <div class="sm:flex gap-4">
           <div class="sm:flex-1 sm:min-w-0">
             <p>
