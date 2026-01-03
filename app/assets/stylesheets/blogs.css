@@ -276,9 +276,9 @@ html, body {
       }
     }
 
-    :where(code),
-    :where(pre) {
-      background-color: var(--color-bg-subtle) !important;
+    code,
+    pre {
+      background-color: var(--color-bg-subtle);
     }
 
     :where(audio) {
