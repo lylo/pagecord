@@ -6,7 +6,7 @@ class App::PostsController < AppController
 
   def index
     posts_query = Current.user.blog.posts.published.order(published_at: :desc)
-    drafts_query = Current.user.blog.posts.draft.order(updated_at: :desc)
+    drafts_query = Current.user.blog.posts.draft.order(published_at: :desc)
 
     @search_term = params[:search]
     if @search_term.present?
