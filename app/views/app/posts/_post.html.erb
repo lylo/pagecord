@@ -1,6 +1,6 @@
 <div class="flex gap-x-2 mb-2 items-top">
-  <div class="text-slate-500 dark:text-slate-400 w-16 flex-shrink-0">
-    <%= post.published_at.to_date.to_formatted_s(:short) %>
+  <div class="text-slate-500 dark:text-slate-400 <%= local_assigns[:show_year] ? 'w-26' : 'w-16' %> flex-shrink-0">
+    <%= local_assigns[:show_year] ? post.published_at.strftime("%d %b %Y") : post.published_at.to_date.to_fs(:short) %>
   </div>
   <div class="flex w-full justify-between items-top">
     <div>

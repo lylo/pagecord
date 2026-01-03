@@ -4,17 +4,8 @@
       🖋️ Drafts
     </div>
 
-    <% show_draft_years = @drafts.any? { |p| p.updated_at.year != Time.current.year } %>
-    <% previous_year = nil %>
     <% @drafts.each do |post| %>
-      <% draft_year = post.updated_at.year %>
-      <% if show_draft_years && draft_year != previous_year %>
-        <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100 <%= 'mt-8' unless previous_year.nil? %>">
-          <%= draft_year %>
-        </div>
-        <% previous_year = draft_year %>
-      <% end %>
-      <%= render "post", post: post %>
+      <%= render "post", post: post, show_year: true %>
     <% end %>
 
     <div class="w-1/2 mx-auto border-b border-slate-200 dark:border-slate-700 my-8"></div>
