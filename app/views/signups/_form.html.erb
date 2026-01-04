@@ -82,5 +82,8 @@
 
   <div class="mt-8">
     <%= form.submit "Create account", class: "btn-primary cursor-pointer" %>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mt-3">
+      By creating an account, you agree to our <%= link_to "Terms", terms_path, class: "underline hover:text-slate-700 dark:hover:text-slate-300" %> and <%= link_to "Privacy Policy", privacy_path, class: "underline hover:text-slate-700 dark:hover:text-slate-300" %>.
+    </p>
   </div>
 <% end %>
