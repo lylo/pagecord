@@ -267,33 +267,30 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
   5. `Html::ExtractTags` - Extracts hashtags
   6. `Html::Sanitize` - Sanitizes HTML
 
-### Custom Tags (Pika/BearBlog Compatible)
+### Dynamic Variables for Pages
 - **Syntax**: Uses `{{ }}` syntax (similar to Pika and BearBlog)
-- **Legacy support**: Temporarily also supports `{% %}` syntax for backwards compatibility with existing production pages
-- **Available tags**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}`
-- **Posts tag options**:
+- **Available variables**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}`
+- **Posts variable options**:
   - `{{ posts }}` - Shows all posts
   - `{{ posts limit: 10 }}` - Shows 10 most recent posts
   - `{{ posts tag: ruby }}` - Shows posts tagged with "ruby" (quotes optional)
   - `{{ posts year: 2025 }}` - Shows posts from 2025
   - Can combine: `{{ posts limit: 5 tag: rails }}`
-- **Posts by year tag**:
+- **Posts by year variable**:
   - `{{ posts_by_year }}` - Groups all posts by year with headers
   - `{{ posts_by_year tag: ruby }}` - Filter by tag
-- **Tags tag**:
+- **Tags variable**:
   - `{{ tags }}` - Outputs tags as a `<ul>` list (default)
   - `{{ tags style: inline }}` - Outputs tags as comma-separated inline links
-- **Email subscription tag**:
+- **Email subscription variable**:
   - `{{ email_subscription }}` - Embeds email subscription form
 - **Implementation**:
-  - `CustomTagProcessor` service (`app/services/custom_tag_processor.rb`) - ~90 lines
-  - Simple, elegant interface: `processor.process(content)` returns rendered HTML
-  - Encapsulates all tag parsing, relation building, and partial rendering
-  - Helper (`process_custom_tags` in `posts_helper.rb`) is just 3 lines - creates processor and calls `process`
-  - No exposed internals - all implementation details are private
-- **Performance**: All tags use `.visible` scope and proper ordering to prevent N+1 queries
+  - `DynamicVariableProcessor` model (`app/models/dynamic_variable_processor.rb`)
+  - Simple interface: `processor.process(content)` returns rendered HTML
+  - Helper (`process_dynamic_variables` in `posts_helper.rb`) creates processor and calls `process`
+- **Performance**: All variables use `.visible` scope and proper ordering to prevent N+1 queries
 - **Usage**: Only processed in pages (is_page: true), not regular posts
-- **Error handling**: Unknown tags appear literally in output (graceful degradation)
+- **Error handling**: Unknown variables appear literally in output (graceful degradation)
 - **Testing**: Integration tests in `test/integration/custom_tags_rendering_test.rb` verify full rendering behavior
 - **Disable prefetch**: Add `data: { turbo_prefetch: false }` to links in archive pages to prevent excessive prefetching
 

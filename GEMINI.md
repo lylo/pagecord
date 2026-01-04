@@ -182,15 +182,15 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
     5. `Html::ExtractTags`
     6. `Html::Sanitize`
 
-### Custom Tags (Pika/BearBlog Compatible)
-- **Syntax**: `{{ }}` (legacy `{% %}` for backwards compatibility).
-- **Available Tags**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}`.
-    - `posts` tag options: `limit`, `tag`, `year`.
-    - `tags` tag options: `style: inline`.
-- **Implementation**: `CustomTagProcessor` service (`app/services/custom_tag_processor.rb`).
+### Dynamic Variables for Pages
+- **Syntax**: `{{ }}` (similar to Pika and BearBlog).
+- **Available Variables**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}`.
+    - `posts` options: `limit`, `tag`, `year`.
+    - `tags` options: `style: inline`.
+- **Implementation**: `DynamicVariableProcessor` model (`app/models/dynamic_variable_processor.rb`).
 - **Performance**: Uses `.visible` scope and ordering to prevent N+1.
 - **Usage**: Processed only in pages (`is_page: true`).
-- **Error Handling**: Unknown tags appear literally.
+- **Error Handling**: Unknown variables appear literally.
 - **Testing**: Integration tests in `test/integration/custom_tags_rendering_test.rb`.
 - **Disable prefetch**: Add `data: { turbo_prefetch: false }` to links in archive pages.
 
