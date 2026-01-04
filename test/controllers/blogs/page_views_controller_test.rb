@@ -1,6 +1,8 @@
 require "test_helper"
 
 class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
+  include AuthenticatedTest
+
   def setup
     @blog = blogs(:joel)
     @post = posts(:one)
@@ -64,6 +66,53 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
       post blog_page_views_path,
            params: { path: "/" }.to_json,
            headers: { "Content-Type" => "application/json", "User-Agent" => "Googlebot/2.1" }
+    end
+
+    assert_response :no_content
+  end
+
+  test "should not track visits from pagecord dashboard" do
+    assert_no_difference("PageView.count") do
+      post blog_page_views_path,
+           params: { path: "/", referrer: "https://pagecord.com/app/settings" }.to_json,
+           headers: json_headers
+    end
+
+    assert_response :no_content
+  end
+
+  test "should track visits from pagecord marketing site" do
+    assert_difference("PageView.count", 1) do
+      post blog_page_views_path,
+           params: { path: "/", referrer: "https://pagecord.com/" }.to_json,
+           headers: json_headers
+    end
+
+    assert_response :no_content
+  end
+
+  test "should not track visits from logged in blog owner" do
+    login_as(@blog.user)
+    host! "#{@blog.subdomain}.example.com"
+
+    assert_no_difference("PageView.count") do
+      post blog_page_views_path,
+           params: { path: "/" }.to_json,
+           headers: json_headers
+    end
+
+    assert_response :no_content
+  end
+
+  test "should track visits from logged in user who is not the blog owner" do
+    other_user = users(:vivian)
+    login_as(other_user)
+    host! "#{@blog.subdomain}.example.com"
+
+    assert_difference("PageView.count", 1) do
+      post blog_page_views_path,
+           params: { path: "/" }.to_json,
+           headers: json_headers
     end
 
     assert_response :no_content
