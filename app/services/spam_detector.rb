@@ -55,7 +55,7 @@ class SpamDetector
     end
 
     def recent_posts_content
-      posts = @blog.posts.published.limit(5)
+      posts = @blog.posts.published.limit(3)
       return "No posts yet." if posts.empty?
 
       posts.map do |post|

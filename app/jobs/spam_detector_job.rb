@@ -2,10 +2,15 @@ class SpamDetectorJob < ApplicationJob
   queue_as :default
 
   def perform
-    # Check blogs created in the last 14 days, excluding those already discarded
-    blogs = Blog.where("blogs.created_at >= ?", 14.days.ago).joins(:user).where(users: { discarded_at: nil })
+    # Check blogs created in the last 7 days, excluding those already discarded
+    blogs = Blog.where("blogs.created_at >= ?", 7.days.ago)
+                .joins(:user)
+                .where(users: { discarded_at: nil })
+                .includes(user: :subscription)
 
     blogs.find_each do |blog|
+      next if blog.user.subscribed?
+
       detector = SpamDetector.new(blog)
 
       if detector.detect
