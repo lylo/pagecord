@@ -80,7 +80,7 @@ class Blogs::PostsController < Blogs::BaseController
     end
 
     def etag_for(post)
-      post.is_page? ? [post, @blog.posts.maximum(:updated_at)] : post
+      post.is_page? ? [ post, @blog.posts.maximum(:updated_at) ] : post
     end
 
     def set_conditional_get_headers
