@@ -38,6 +38,9 @@ gem "mailpace-rails"
 gem "postmark-rails"
 gem "premailer-rails", "~> 1.12"
 
+# AI
+gem "ruby-openai", "~> 8.3"
+
 # everything else
 gem "aws-sdk-s3"
 gem "bcrypt", "~> 3.1.7"

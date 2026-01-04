@@ -1,0 +1,14 @@
+<p>A blog has been automatically marked as spam and the user has been discarded.</p>
+
+<div style="background-color: #F3F4F6; padding: 15px; border-radius: 5px; margin: 20px 0;">
+  <p>
+    <strong>Blog:</strong> <%= link_to @blog.subdomain, admin_user_url(@user) %>
+  </p>
+  <p>
+    <strong>Reason:</strong> <%= @reason %>
+  </p>
+</div>
+
+<p>
+  The user account has been marked as spam and discarded.
+</p>
