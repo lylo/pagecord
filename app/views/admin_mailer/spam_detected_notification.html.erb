@@ -1,0 +1,17 @@
+<p>A blog has been flagged for review.</p>
+
+<div style="background-color: #F3F4F6; padding: 15px; border-radius: 5px; margin: 20px 0;">
+  <p>
+    <strong>Blog:</strong> <%= link_to @blog.subdomain, admin_user_url(@user) %>
+  </p>
+  <p>
+    <strong>Classification:</strong> <%= @classification %>
+  </p>
+  <p>
+    <strong>Reason:</strong> <%= @reason %>
+  </p>
+</div>
+
+<p>
+  Please review and take action if necessary.
+</p>
