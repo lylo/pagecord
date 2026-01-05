@@ -34,7 +34,6 @@
   fieldset:has(.field-error:not(:empty)) input,
   fieldset:has(.field-error:not(:empty)) textarea,
   fieldset:has(.field-error:not(:empty)) select,
-  fieldset:has(.field-error:not(:empty)) trix-editor,
   fieldset:has(.field-error:not(:empty)) lexxy-editor {
     @apply !border-red-500;
   }
