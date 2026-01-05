@@ -1,17 +1,20 @@
 <%= form_with url: app_settings_appearance_path(@blog), model: @blog, data: { controller: "avatar" } do |form| %>
   <fieldset>
     <h3 class="font-bold text-lg mb-2">Bio</h3>
-      <div class="lexxy-minimal">
-        <%= form.lexxy_rich_text_area :bio,
-            placeholder: "add a bio to your profile if you like...",
-            class: "lexxy-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
-            spellcheck: true,
-            autocorrect: "on",
-            attachments: false,
-            autofocus: true,
-            data: { controller: "lexxy", subscribed: false } %>
-      </div>
-  </div>
+
+    <div class="lexxy-minimal">
+      <%= form.lexxy_rich_text_area :bio,
+          placeholder: "add a bio to your profile if you like...",
+          class: "lexxy-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
+          spellcheck: true,
+          autocorrect: "on",
+          attachments: false,
+          autofocus: true,
+          data: { controller: "lexxy", subscribed: false } %>
+    </div>
+
+    <div class="field-error"><%= @blog.errors[:bio].first if @blog.errors[:bio].any? %></div>
+  </fieldset>
 
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Title</h3>

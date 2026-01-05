@@ -101,8 +101,9 @@
         spellcheck: true,
         autocorrect: "on",
         data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
+
+      <div class="field-error"><%= @post.errors[:content].first if @post.errors[:content].any? %></div>
     </fieldset>
-    <div class="field-error"><%= @post.errors[:content].first if @post.errors[:content].any? %></div>
 
     <div class="flex items-center justify-between mt-8">
       <div>

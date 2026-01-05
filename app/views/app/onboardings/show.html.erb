@@ -55,13 +55,18 @@
             action: "turbo:submit-end->save-button#showMessage"
           } do |form| %>
 
-      <%= form.lexxy_rich_text_area :bio,
-        placeholder: "add a bio to your profile if you like...",
-        class: "lexxy-content min-h-[150px] prose border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
-        spellcheck: true,
-        autocorrect: "on",
-        attachments: false,
-        data: { controller: "autogrow", subscribed: false } %>
+      <fieldset>
+        <%= form.lexxy_rich_text_area :bio,
+          placeholder: "add a bio to your profile if you like...",
+          class: "lexxy-content min-h-[150px] prose border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
+          spellcheck: true,
+          autocorrect: "on",
+          attachments: false,
+          data: { controller: "autogrow", subscribed: false } %>
+
+        <div id="bio_error" class="field-error"><%= render "bio_error" if @blog.errors[:bio].any? %></div>
+      </fieldset>
+
       <%= form.submit "Save",
         data: { save_button_target: "button" },
         class: "mt-2 btn-primary"
