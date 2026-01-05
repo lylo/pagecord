@@ -97,6 +97,10 @@ class Post < ApplicationRecord
     published_at&.in_time_zone(timezone)
   end
 
+  def display_date_in_user_timezone
+    display_date.in_time_zone(timezone)
+  end
+
   def page?
     is_page
   end
