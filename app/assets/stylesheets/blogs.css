@@ -92,17 +92,23 @@ html, body {
 /* -------------------------------------------------------------------------- */
 
 :where(.blog) {
-    --lexxy-color-ink: var(--color-text);
-    --lexxy-color-ink-medium: var(--color-text-muted);
-    --lexxy-color-ink-light: var(--color-text-light);
-    --lexxy-color-ink-lighter: var(--color-text-disabled);
-    --lexxy-color-ink-lightest: var(--color-bg-sunken);
-    --lexxy-color-text: var(--color-text);
-    --lexxy-color-text-subtle: var(--color-text-muted);
-    --lexxy-color-link: var(--color-accent);
-    --lexxy-color-accent-dark: var(--color-accent);
-    --lexxy-color-accent-medium: var(--color-accent-hover);
-    --lexxy-color-code-bg: var(--color-bg-subtle);
+  --lexxy-color-ink: var(--color-text);
+  --lexxy-color-ink-medium: var(--color-text-muted);
+  --lexxy-color-ink-light: var(--color-text-light);
+  --lexxy-color-ink-lighter: var(--color-text-disabled);
+  --lexxy-color-ink-lightest: var(--color-bg-sunken);
+  --lexxy-color-text: var(--color-text);
+  --lexxy-color-text-subtle: var(--color-text-muted);
+  --lexxy-color-link: var(--color-accent);
+  --lexxy-color-accent-dark: var(--color-accent);
+  --lexxy-color-accent-medium: var(--color-accent-hover);
+  --lexxy-color-code-bg: var(--color-bg-subtle);
+
+
+  /* FIXME there should be a better way of doing this without !important */
+  .lexxy-content__table-cell--header {
+    background-color: var(--color-bg-subtle) !important;
+  }
 
   background-color: var(--color-bg);
   color: var(--color-text);

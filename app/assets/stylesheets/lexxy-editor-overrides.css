@@ -89,6 +89,11 @@ lexxy-toolbar {
     border: 1px solid var(--color-slate-400);
   }
 
+  /* FIXME Hack? */
+  .lexxy-content__table-cell--header {
+    background-color: var(--color-slate-800) !important;
+  }
+
   lexxy-toolbar {
     background: var(--color-slate-800);
   }
