@@ -1,5 +1,5 @@
 <% if post.title.present? %>
-  <h1 class="post-title">
-    <%= link_to post.title, post_url(post), class: "post-title-link", data: { turbo_frame: "_top" } %>
+  <h1 class="post-title p-name">
+    <%= link_to post.title, post_url(post), class: "post-title-link u-url", data: { turbo_frame: "_top" } %>
   </h1>
 <% end %>

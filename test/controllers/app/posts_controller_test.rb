@@ -280,6 +280,38 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "Draft Post"
   end
 
+  test "should sort drafts by published_at or updated_at" do
+    # Create a draft with an old published date (simulating an unpublished old post)
+    # This should appear last because 1.year.ago < Time.current
+    old_draft = @user.blog.posts.create!(
+      title: "Old Draft",
+      content: "Content",
+      status: :draft,
+      published_at: 1.year.ago,
+      created_at: 1.year.ago,
+      updated_at: Time.current # Recently edited, but published date is old
+    )
+
+    # Create a new draft (no published date)
+    # This should appear first because Time.current (updated_at) > 1.year.ago
+    new_draft = @user.blog.posts.create!(
+      title: "New Draft",
+      content: "Content",
+      status: :draft,
+      published_at: nil,
+      created_at: 1.hour.ago,
+      updated_at: 1.hour.ago
+    )
+
+    get app_posts_path
+
+    assert_response :success
+    assert_select "#draft_posts" do
+      # Verify order: New Draft (newer effective date) then Old Draft (older effective date)
+      assert_match(/New Draft.*Old Draft/m, @response.body)
+    end
+  end
+
   test "app area should be inaccessible on custom domain" do
     post = posts(:four)
     login_as post.blog.user
@@ -298,6 +330,19 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     get app_post_url(draft_post)
 
+    assert_response :success
+    assert_select "article"
+    assert_select ".lexxy-content"
+  end
+
+  test "should preview pending post with blog layout" do
+    future_dated_post = @user.blog.posts.create!(
+      title: "Future Preview",
+      content: "Future-dated post",
+      published_at: 1.week.from_now,
+    )
+
+    get app_post_url(future_dated_post)
     assert_response :success
     assert_select "article"
     assert_select ".lexxy-content"

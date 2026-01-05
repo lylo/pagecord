@@ -5,7 +5,7 @@
     </div>
 
     <% @drafts.each do |post| %>
-      <%= render "post", post: post %>
+      <%= render "post", post: post, show_year: true %>
     <% end %>
   </div>
 <% end %>

@@ -11,11 +11,12 @@
     %>
 
     <%= form.lexxy_rich_text_area :content,
-      placeholder: "Write your home page content...",
-      class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if home_page.errors[:content].any?}",
-      spellcheck: true,
-      autocorrect: "on",
-      data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
+        placeholder: "Write your home page content...",
+        class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if home_page.errors[:content].any?}",
+        spellcheck: true,
+        autocorrect: "on",
+        data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
+    <% end %>
 
     <% if home_page.errors[:content].any? %>
       <div class="mt-1 text-xs text-red-500">

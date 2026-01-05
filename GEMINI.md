@@ -10,6 +10,7 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 
 ### Ruby & Rails
 - **Idiomatic Ruby and Rails**: Follow standard Ruby conventions (`.map`, `.select`, `&:method_name`) and Rails patterns (fat models, skinny controllers, RESTful routes, concerns).
+- **Vanilla Rails**: No services, commands, or interactors - use private methods in controllers and rich domain models. See [Vanilla Rails is Plenty](https://dev.37signals.com/vanilla-rails-is-plenty/).
 - **Minimal & Elegant**: Prioritize clear, concise, and simple solutions. Avoid over-engineering.
 - **ActiveRecord**: Utilize scopes, associations, validations, and callbacks.
 - **Private Methods**: Indent private methods by two additional spaces after the `private` keyword.
@@ -40,6 +41,12 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 - **Blog Markup Architecture**: Public-facing blog views use semantic CSS classes, not Tailwind utilities. Layout uses `layouts/blog.html.erb`. `em` units for scalable blog content, `rem` for layout spacing.
 - **Logical Properties**: Prefer `margin-inline-start` over `margin-left` for RTL support.
 
+### SVG Icons
+- **Always use `inline_svg_tag`**: Never hardcode `<svg>` elements in views - use `inline_svg_tag "icons/name.svg"`.
+- **Icon location**: Store SVGs in `app/assets/images/icons/` (with `social/` subdirectory for social icons).
+- **currentColor**: All icons should use `fill="currentColor"` or `stroke="currentColor"` to inherit text color.
+- **Exceptions**: Dynamically generated SVGs (e.g., analytics charts) may use inline markup.
+
 ### Performance
 - **N+1 Queries**: Avoid by using `.includes()`, `.eager_load()`, or `.preload()`.
 - **Caching**: Utilize Rails fragment and Russian Doll caching.
@@ -59,6 +66,7 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 - **Whitespace**: Remove trailing whitespace.
 - **Component Pattern**: Check existing implementations before creating new ones.
 - **Method Complexity**: Keep methods simple.
+- **No Line Numbers**: Never include line numbers (e.g., 1:, 2:) in code snippets or console queries provided to the user.
 
 ## Development Commands
 
@@ -174,15 +182,15 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
     5. `Html::ExtractTags`
     6. `Html::Sanitize`
 
-### Custom Tags (Pika/BearBlog Compatible)
-- **Syntax**: `{{ }}` (legacy `{% %}` for backwards compatibility).
-- **Available Tags**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}`.
-    - `posts` tag options: `limit`, `tag`, `year`.
-    - `tags` tag options: `style: inline`.
-- **Implementation**: `CustomTagProcessor` service (`app/services/custom_tag_processor.rb`).
+### Dynamic Variables for Pages
+- **Syntax**: `{{ }}` (similar to Pika and BearBlog).
+- **Available Variables**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}`.
+    - `posts` options: `limit`, `tag`, `year`.
+    - `tags` options: `style: inline`.
+- **Implementation**: `DynamicVariableProcessor` model (`app/models/dynamic_variable_processor.rb`).
 - **Performance**: Uses `.visible` scope and ordering to prevent N+1.
 - **Usage**: Processed only in pages (`is_page: true`).
-- **Error Handling**: Unknown tags appear literally.
+- **Error Handling**: Unknown variables appear literally.
 - **Testing**: Integration tests in `test/integration/custom_tags_rendering_test.rb`.
 - **Disable prefetch**: Add `data: { turbo_prefetch: false }` to links in archive pages.
 

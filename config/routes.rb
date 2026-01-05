@@ -196,6 +196,8 @@ Rails.application.routes.draw do
     get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
 
+    get "/shuffle", to: "posts/shuffle#show"
+
     get "/@:name", to: redirect("/%{name}")
 
     get "/:name.rss", to: redirect(subdomain_redirect("/feed.xml")),

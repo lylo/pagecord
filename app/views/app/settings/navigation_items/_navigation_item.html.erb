@@ -1,7 +1,7 @@
 <div class="flex items-center gap-3 py-2 px-3 border-b border-slate-200 dark:border-slate-700 last:border-b-0 bg-white dark:bg-slate-800"
      data-id="<%= navigation_item.id %>"
      data-sortable-update-url="<%= app_settings_navigation_item_path(navigation_item) %>">
-  <div class="handle cursor-grab">
+  <div class="handle cursor-grab" title="Drag to reorder">
     <%= inline_svg_tag "icons/grip-dots.svg", class: "w-4 h-4" %>
   </div>
   <%= content_tag(:div, yield(:icon), class: "flex items-center gap-2") if content_for?(:icon) %>
@@ -15,6 +15,7 @@
       method: :delete,
       data: { turbo_confirm: "Remove this navigation item?" },
       title: "Delete this navigation item",
+      aria: { label: "Delete this navigation item" },
       class: "text-slate-400 hover:text-red-600 cursor-pointer" do %>
     <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
   <% end %>

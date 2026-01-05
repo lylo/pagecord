@@ -37,4 +37,10 @@ class Html::ImageUnfurlTest < ActiveSupport::TestCase
     html = unfurl.transform("<div><a href=\"https://example.com/image.jpg\">https://example.com/image.jpg</a></div>")
     assert_equal "<div><a href=\"https://example.com/image.jpg\">https://example.com/image.jpg</a></div>", html
   end
+
+  test "should not unfurl URLs without a host" do
+    unfurl = Html::ImageUnfurl.new
+    html = unfurl.transform("check out http:// or https://")
+    assert_equal "check out http:// or https://", html
+  end
 end

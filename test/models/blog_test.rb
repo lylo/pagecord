@@ -160,6 +160,13 @@ class BlogTest < ActiveSupport::TestCase
     assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
   end
 
+  test "should reject custom CSS with </style > whitespace bypass" do
+    # HTML5 parsers accept </style > (with whitespace before >) as valid end tag
+    @blog.custom_css = '.test:after { content: "</style ><script>alert(1)</script>"; }'
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
+  end
+
   test "should reject custom CSS with script tags" do
     @blog.custom_css = ".blog { color: red; }<script>alert(1)</script>"
     assert_not @blog.valid?
@@ -199,8 +206,38 @@ class BlogTest < ActiveSupport::TestCase
   end
 
   test "should reject CSS exceeding size limit" do
-    @blog.custom_css = "." + ("a" * 11_000) # Exceeds 10KB limit
+    @blog.custom_css = "." + ("a" * 2_500) # Exceeds 2KB limit
     assert_not @blog.valid?
     assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
+  end
+
+  test "should touch posts when reply_by_email changes" do
+    blog = blogs(:joel)
+    post = posts(:one)
+    page = posts(:about) # is_page: true
+
+    original_post_updated_at = post.updated_at
+    original_page_updated_at = page.updated_at
+
+    # Travel time to ensure update timestamp changes
+    travel 1.minute do
+      blog.update!(reply_by_email: !blog.reply_by_email)
+    end
+
+    assert_not_equal original_post_updated_at, post.reload.updated_at
+    assert_equal original_page_updated_at, page.reload.updated_at # Pages shouldn't be touched
+  end
+
+  test "should touch posts when show_upvotes changes" do
+    blog = blogs(:joel)
+    post = posts(:one)
+
+    original_updated_at = post.updated_at
+
+    travel 1.minute do
+      blog.update!(show_upvotes: !blog.show_upvotes)
+    end
+
+    assert_not_equal original_updated_at, post.reload.updated_at
   end
 end

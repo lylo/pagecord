@@ -109,11 +109,9 @@
               <% end %>
             </div>
 
-            <%= link_to nav_path_for_date(@view_type, previous_date(@date, @view_type)),
+<%= link_to nav_path_for_date(@view_type, previous_date(@date, @view_type)),
                 class: "p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400" do %>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-              </svg>
+              <%= inline_svg_tag "icons/chevron-left.svg", class: "w-4 h-4" %>
             <% end %>
 
             <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[120px] text-center">
@@ -123,9 +121,7 @@
             <% unless next_date(@date, @view_type) > Date.current %>
               <%= link_to nav_path_for_date(@view_type, next_date(@date, @view_type)),
                   class: "p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400" do %>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
+                <%= inline_svg_tag "icons/chevron-right.svg", class: "w-4 h-4" %>
               <% end %>
             <% else %>
               <div class="p-1 w-6 h-6"></div>

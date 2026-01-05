@@ -29,9 +29,7 @@
         <% if @view_type == "month" %>
           <%= link_to admin_analytics_path(view_type: @view_type, date: (@date - 1.month).strftime("%Y-%m")), 
               class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
+            <%= inline_svg_tag "icons/chevron-left.svg", class: "w-4 h-4" %>
           <% end %>
           
           <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[8rem] text-center">
@@ -40,16 +38,12 @@
           
           <%= link_to admin_analytics_path(view_type: @view_type, date: (@date + 1.month).strftime("%Y-%m")), 
               class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
+            <%= inline_svg_tag "icons/chevron-right.svg", class: "w-4 h-4" %>
           <% end %>
         <% else %>
           <%= link_to admin_analytics_path(view_type: @view_type, date: (@date - 1.year).strftime("%Y")), 
               class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
+            <%= inline_svg_tag "icons/chevron-left.svg", class: "w-4 h-4" %>
           <% end %>
           
           <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[8rem] text-center">
@@ -58,139 +52,43 @@
           
           <%= link_to admin_analytics_path(view_type: @view_type, date: (@date + 1.year).strftime("%Y")), 
               class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
+            <%= inline_svg_tag "icons/chevron-right.svg", class: "w-4 h-4" %>
           <% end %>
         <% end %>
       </div>
     </div>
   </div>
 
-  <!-- Top Posts Leaderboard -->
-  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
-    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
-      Top posts 
-      <div class="text-sm font-normal text-slate-600 dark:text-slate-400">
-        <%= @view_type == "month" ? @date.strftime("%B %Y") : @date.strftime("%Y") %>
-      </div>
-    </h3>
-    
-    <% if @top_posts.any? %>
-      <div class="space-y-3">
-        <% @top_posts.each_with_index do |post_data, index| %>
-          <div class="flex items-start justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
-            <div class="flex items-start space-x-3 flex-1 min-w-0">
-              <span class="text-sm font-mono text-slate-400 w-6 text-center flex-shrink-0 mt-0.5">
-                <%= index + 1 %>
-              </span>
-              <div class="flex flex-col min-w-0 flex-1">
-                <%= link_to post_data[:post].display_title, post_url(post_data[:post]), target: "_blank", class: "text-sm font-medium hover:underline truncate" %>
-                <span class="text-xs text-slate-500 dark:text-slate-400">
-                  <%= link_to blog_home_url(post_data[:post].blog), blog_home_url(post_data[:post].blog), target: "_blank", class: "hover:underline" %>
-                </span>
-              </div>
-            </div>
-            <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
-              <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
-                <% max_views = @top_posts.first[:count] %>
-                <% width = (post_data[:count].to_f / max_views * 100).round(1) %>
-                <div class="rounded-full h-2 transition-all duration-300" style="width: <%= width %>%; background-color: #56cda9"></div>
-              </div>
-              <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
-                <%= number_with_delimiter(post_data[:count].to_i) %>
-              </span>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="text-center py-8 text-slate-500 dark:text-slate-400">
-        No posts found
-      </div>
-    <% end %>
-  </div>
+  <%
+    date_subtitle = @view_type == "month" ? @date.strftime("%B %Y") : @date.strftime("%Y")
 
-  <!-- Top Blogs Leaderboard -->
-  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
-    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
-      Top blogs 
-      <div class="text-sm font-normal text-slate-600 dark:text-slate-400">
-        <%= @view_type == "month" ? @date.strftime("%B %Y") : @date.strftime("%Y") %>
-      </div>
-    </h3>
-    
-    <% if @top_blogs.any? %>
-      <div class="space-y-3">
-        <% @top_blogs.each_with_index do |blog_data, index| %>
-          <div class="flex items-start justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
-            <div class="flex items-start space-x-3 flex-1 min-w-0">
-              <span class="text-sm font-mono text-slate-400 w-6 text-center flex-shrink-0 mt-0.5">
-                <%= index + 1 %>
-              </span>
-              <div class="flex flex-col min-w-0 flex-1">
-                <%= link_to blog_data[:blog].display_name, blog_home_url(blog_data[:blog]), target: "_blank", class: "text-sm font-medium hover:underline truncate" %>
-                <span class="text-xs text-slate-500 dark:text-slate-400">
-                  <%= link_to blog_home_url(blog_data[:blog]), blog_home_url(blog_data[:blog]), target: "_blank", class: "hover:underline" %>
-                </span>
-              </div>
-            </div>
-            <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
-              <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
-                <% max_views = @top_blogs.first[:count] %>
-                <% width = (blog_data[:count].to_f / max_views * 100).round(1) %>
-                <div class="rounded-full h-2 transition-all duration-300" style="width: <%= width %>%; background-color: #56cda9"></div>
-              </div>
-              <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
-                <%= number_with_delimiter(blog_data[:count].to_i) %>
-              </span>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="text-center py-8 text-slate-500 dark:text-slate-400">
-        No blogs found
-      </div>
-    <% end %>
-  </div>
+    post_items = @top_posts.map do |data|
+      { name: data[:post].display_title, url: post_url(data[:post]),
+        subtitle: blog_home_url(data[:post].blog), subtitle_url: blog_home_url(data[:post].blog),
+        count: data[:count] }
+    end
 
-  <!-- Top Blogs by Email Subscribers -->
-  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
-    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Most email subscribers</h3>
-    
-    <% if @top_blogs_by_subscribers.any? %>
-      <div class="space-y-3">
-        <% @top_blogs_by_subscribers.each_with_index do |blog_data, index| %>
-          <div class="flex items-start justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
-            <div class="flex items-start space-x-3 flex-1 min-w-0">
-              <span class="text-sm font-mono text-slate-400 w-6 text-center flex-shrink-0 mt-0.5">
-                <%= index + 1 %>
-              </span>
-              <div class="flex flex-col min-w-0 flex-1">
-                <%= link_to blog_data[:blog].display_name, blog_home_url(blog_data[:blog]), target: "_blank", class: "text-sm font-medium hover:underline truncate" %>
-                <span class="text-xs text-slate-500 dark:text-slate-400">
-                  <%= link_to blog_home_url(blog_data[:blog]), blog_home_url(blog_data[:blog]), target: "_blank", class: "hover:underline" %>
-                </span>
-              </div>
-            </div>
-            <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
-              <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
-                <% max_subscribers = @top_blogs_by_subscribers.first[:count] %>
-                <% width = (blog_data[:count].to_f / max_subscribers * 100).round(1) %>
-                <div class="rounded-full h-2 transition-all duration-300" style="width: <%= width %>%; background-color: #56cda9"></div>
-              </div>
-              <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
-                <%= number_with_delimiter(blog_data[:count].to_i) %>
-              </span>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="text-center py-8 text-slate-500 dark:text-slate-400">
-        No blogs with email subscribers found
-      </div>
-    <% end %>
-  </div>
+    page_items = @top_pages.map do |data|
+      { name: data[:post].display_title, url: post_url(data[:post]),
+        subtitle: blog_home_url(data[:post].blog), subtitle_url: blog_home_url(data[:post].blog),
+        count: data[:count] }
+    end
+
+    blog_items = @top_blogs.map do |data|
+      { name: data[:blog].display_name, url: blog_home_url(data[:blog]),
+        subtitle: blog_home_url(data[:blog]), subtitle_url: blog_home_url(data[:blog]),
+        count: data[:count] }
+    end
+
+    subscriber_items = @top_blogs_by_subscribers.map do |data|
+      { name: data[:blog].display_name, url: blog_home_url(data[:blog]),
+        subtitle: blog_home_url(data[:blog]), subtitle_url: blog_home_url(data[:blog]),
+        count: data[:count] }
+    end
+  %>
+
+  <%= render "leaderboard", title: "Top posts", subtitle: date_subtitle, items: post_items, empty_message: "No posts found" %>
+  <%= render "leaderboard", title: "Top pages", subtitle: date_subtitle, items: page_items, empty_message: "No pages found" %>
+  <%= render "leaderboard", title: "Top blogs", subtitle: date_subtitle, items: blog_items, empty_message: "No blogs found" %>
+  <%= render "leaderboard", title: "Most email subscribers", items: subscriber_items, empty_message: "No blogs with email subscribers found" %>
 </div>

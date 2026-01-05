@@ -4,6 +4,12 @@ class IndexTest < ActionView::TestCase
   setup do
     @blog = blogs(:joel)
 
+    @current_year_post = @blog.posts.create!(
+      title: "Current Year Post",
+      published_at: Time.current,
+      content: "Test content"
+    )
+
     @old_post = @blog.posts.create!(
       title: "Older Post",
       published_at: 2.years.ago,

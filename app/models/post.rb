@@ -13,8 +13,8 @@ class Post < ApplicationRecord
   has_many :page_views, dependent: :destroy
   has_many :navigation_items, dependent: :destroy
 
-  before_create :set_published_at, :limit_content_size
-  before_save :set_text_summary
+  before_create :limit_content_size
+  before_save :set_text_summary, :set_published_at
 
   validate :content_present
   validate :title_present_for_pages
@@ -60,7 +60,7 @@ class Post < ApplicationRecord
   end
 
   def pending?
-    published_at > Time.current
+    published_at.present? && published_at > Time.current
   end
 
   def summary(limit: 64)
@@ -84,12 +84,17 @@ class Post < ApplicationRecord
     end
   end
 
+  # Returns the publication date, falling back to the last updated date for drafts.
+  def display_date
+    published_at || updated_at
+  end
+
   def timezone
     blog.user.timezone
   end
 
   def published_at_in_user_timezone
-    published_at.in_time_zone(timezone)
+    published_at&.in_time_zone(timezone)
   end
 
   def page?
@@ -129,6 +134,7 @@ class Post < ApplicationRecord
       # Remove image references, [Image], URLs, and custom tags like {{ tag_name }}
       text_content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
              .gsub(/\[Image\]/i, "").strip
+             .gsub(/https?:\/\/\S+/, "").strip
              .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "").strip # strip tags
              .gsub(/\s+/, " ").strip  # Normalize whitespace
     end
@@ -137,8 +143,13 @@ class Post < ApplicationRecord
       self.text_summary = text_content.truncate(512, separator: /\s/, omission: "")
     end
 
+    # Sets published_at to Time.current if the post is being published but no date was provided.
+    # This handles "Publish Now" behavior while allowing manual backdating/scheduling.
+    # Called via before_save callback.
     def set_published_at
-      self.published_at ||= created_at
+      if published? && published_at.blank?
+        self.published_at = Time.current
+      end
     end
 
     def limit_content_size

@@ -1,4 +1,11 @@
-class CustomTagProcessor
+class DynamicVariableProcessor
+  RENDERERS = {
+    "posts" => :render_posts_tag,
+    "posts_by_year" => :render_posts_by_year_tag,
+    "tags" => :render_tags_tag,
+    "email_subscription" => :render_email_subscription_tag
+  }.freeze
+
   attr_reader :blog, :view
 
   def initialize(blog:, view:)
@@ -36,15 +43,8 @@ class CustomTagProcessor
     end
 
     def render_tag(tag_name, params_string)
-      case tag_name
-      when "posts"
-        render_posts_tag(params_string)
-      when "posts_by_year"
-        render_posts_by_year_tag(params_string)
-      when "tags"
-        render_tags_tag(params_string)
-      when "email_subscription"
-        render_email_subscription_tag(params_string)
+      if (renderer = RENDERERS[tag_name])
+        send(renderer, params_string)
       else
         unknown_tag = "#{tag_name} #{params_string}".strip
         "{{ #{unknown_tag} }}"
