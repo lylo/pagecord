@@ -59,7 +59,7 @@ every :day, at: "5:00 am" do
 end
 
 every :day, at: "5:30 am" do
-  runner "SpamDetectorJob.perform_later"
+  runner "SpamDetectionJob.perform_later"
 end
 
 every 1.week, at: "6:00 am" do
