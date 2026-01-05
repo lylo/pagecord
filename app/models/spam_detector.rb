@@ -53,76 +53,76 @@ class SpamDetector
 
   private
 
-  def unknown!(reason)
-    @classification = "uncertain"
-    @reason = reason
-    @classification
-  end
-
-  def normalize_classification(value)
-    case value
-    when "spam", "not_spam", "uncertain"
-      value
-    else
-      "uncertain"
+    def unknown!(reason)
+      @classification = "uncertain"
+      @reason = reason
+      @classification
     end
-  end
 
-  def prompt
-    <<~PROMPT
-      You are an automated spam detection system for a personal blogging platform.
+    def normalize_classification(value)
+      case value
+      when "spam", "not_spam", "uncertain"
+        value
+      else
+        "uncertain"
+      end
+    end
 
-      The platform is commonly used by individuals experimenting with blogs.
-      Many legitimate users create test posts, leave bios empty, or publish unfinished content.
+    def prompt
+      <<~PROMPT
+        You are an automated spam detection system for a personal blogging platform.
 
-      Blog Title: #{@blog.title}
-      Blog Subdomain: #{@blog.subdomain}
-      Bio: #{@blog.bio.to_plain_text}
+        The platform is commonly used by individuals experimenting with blogs.
+        Many legitimate users create test posts, leave bios empty, or publish unfinished content.
 
-      Recent Posts:
-      #{recent_posts_content}
+        Blog Title: #{@blog.title}
+        Blog Subdomain: #{@blog.subdomain}
+        Bio: #{@blog.bio.to_plain_text}
 
-      Strong indicators of spam include:
-      - External commercial or promotional links in the bio
-      - Long or marketing-style bios
-      - Mentions of services such as pharmaceuticals, gambling, financial products, SEO, backlinks, or trades
-      - Only a single post that contains one or more external commercial link (not youtube or social media)
-      - Posts written like advertisements or SEO landing pages
-      - Keyword-stuffed titles, subdomains, or content
+        Recent Posts:
+        #{recent_posts_content}
 
-      Strong indicators of legitimate use include:
-      - Posts containing the word "test" in the title or body
-      - Minimal or default titles (e.g. just "@subdomain")
-      - Short, empty, or casual first-person bios
-      - Posts without any external links
-      - Placeholder or exploratory content ("Hello world", formatting tests)
+        Strong indicators of spam include:
+        - External commercial or promotional links in the bio
+        - Long or marketing-style bios
+        - Mentions of services such as pharmaceuticals, gambling, financial products, SEO, backlinks, or trades
+        - Only a single post that contains one or more external commercial link (not youtube or social media)
+        - Posts written like advertisements or SEO landing pages
+        - Keyword-stuffed titles, subdomains, or content
 
-      Guidance:
-      - No single signal is decisive; weigh multiple signals
-      - Be conservative when marking spam
-      - When signals are weak or mixed, return "uncertain"
-      - Prefer false negatives over false positives
+        Strong indicators of legitimate use include:
+        - Posts containing the word "test" in the title or body
+        - Minimal or default titles (e.g. just "@subdomain")
+        - Short, empty, or casual first-person bios
+        - Posts without any external links
+        - Placeholder or exploratory content ("Hello world", formatting tests)
 
-      Return valid JSON only, with no markdown or extra text:
+        Guidance:
+        - No single signal is decisive; weigh multiple signals
+        - Be conservative when marking spam
+        - When signals are weak or mixed, return "uncertain"
+        - Prefer false negatives over false positives
 
-      {
-        "classification": "spam" | "not_spam" | "uncertain",
-        "reason": "concise reason"
-      }
-    PROMPT
-  end
+        Return valid JSON only, with no markdown or extra text:
 
-  def recent_posts_content
-    posts = @blog.posts.published.limit(3)
+        {
+          "classification": "spam" | "not_spam" | "uncertain",
+          "reason": "concise reason"
+        }
+      PROMPT
+    end
 
-    return "No posts yet." if posts.empty?
+    def recent_posts_content
+      posts = @blog.posts.published.limit(3)
 
-    posts.map.with_index(1) do |post, i|
-      <<~POST
-        Post #{i}:
-        Title: #{post.title.presence || "(no title)"}
-        Summary: #{post.text_summary}
-      POST
-    end.join("\n")
-  end
+      return "No posts yet." if posts.empty?
+
+      posts.map.with_index(1) do |post, i|
+        <<~POST
+          Post #{i}:
+          Title: #{post.title.presence || "(no title)"}
+          Summary: #{post.text_summary}
+        POST
+      end.join("\n")
+    end
 end
