@@ -12,22 +12,17 @@ class SpamDetectorJob < ApplicationJob
       next if blog.user.subscribed?
 
       detector = SpamDetector.new(blog)
+      detector.detect
 
-      if detector.detect
-        handle_spam(blog, detector.reason)
+      if detector.spam? || detector.uncertain?
+        notify_admin(blog, detector.classification, detector.reason)
       end
     end
   end
 
   private
 
-    def handle_spam(blog, reason)
-      user = blog.user
-
-      # Discard user with spam flag
-      DestroyUserJob.perform_now(user.id, spam: true)
-
-      # Notify admin
-      AdminMailer.spam_detected_notification(user.id, reason).deliver_later
+    def notify_admin(blog, classification, reason)
+      AdminMailer.spam_detected_notification(blog.user.id, classification, reason).deliver_later
     end
 end
