@@ -70,42 +70,39 @@ class SpamDetector
 
     def prompt
       <<~PROMPT
-        You are an automated spam detection system for a personal blogging platform.
+        You are an expert spam detection system for a personal blogging platform.
+        Your goal is to identify blogs created by bots or content farms for SEO and backlink harvesting, while protecting legitimate new users.
 
-        The platform is commonly used by individuals experimenting with blogs.
-        Many legitimate users create test posts, leave bios empty, or publish unfinished content.
-
-        Blog Title: #{@blog.title}
-        Blog Subdomain: #{@blog.subdomain}
+        Blog Context:
+        Title: #{@blog.title}
+        Subdomain: #{@blog.subdomain}
         Bio (HTML): #{@blog.bio.to_s}
 
         Recent Posts (HTML):
         #{recent_posts_content}
 
-        Strong indicators of spam include:
-        - External commercial or promotional links in the bio (look for <a href="..."> tags)
-        - Long or marketing-style bios
-        - Mentions of services such as pharmaceuticals, gambling, financial products, SEO, backlinks, or trades
-        - Only a single post that contains one or more external commercial link (not youtube or social media)
-        - Posts written like advertisements or SEO landing pages
-        - Keyword-stuffed titles, subdomains, or content
-        - Hidden links or links with spammy anchor text
+        Strong Indicators of SEO/Backlink Spam:
+        - **Impersonal / Generic Content:** "Spun" articles, encyclopedia-style entries, or generic "how-to" guides lacking personal voice.
+        - **Keyword-Mashup Subdomains:** Random word combinations (e.g., "totosafereult") or specific "Toto" / gambling / verification / scam site keywords.
+        - **Commercial/SEO Focus:** Mentions of pharmaceuticals, gambling, financial products, SEO services, backlinks, or trades.
+        - **Suspicious Linking:**
+            - External commercial or promotional links in the Bio.
+            - Links with commercial anchor text in generic articles (e.g., linking "safety standards" to a betting site).
+            - Hidden links or links to unrelated domains.
+        - **Mismatched Context:** Title says "Sports" but content is vague business advice.
 
-        Strong indicators of legitimate use include:
-        - Posts containing the word "test" in the title or body
-        - Minimal or default titles (e.g. just "@subdomain")
-        - Short, empty, or casual first-person bios
-        - Posts without any external links
-        - Placeholder or exploratory content ("Hello world", formatting tests)
+        Strong Indicators of Legitimate Use:
+        - **Personal Voice:** First-person narrative ("I", "me", "my"), casual tone, personal anecdotes.
+        - **Exploratory Content:** "Hello world", "Test post", empty bios, or formatting experiments (common for new users).
+        - **Relevant Linking:** Links to non-commercial resources (GitHub, personal blogs, news) that fit the context.
+        - **Minimalism:** Default titles (e.g., "@subdomain") or short, casual bios.
 
         Guidance:
-        - No single signal is decisive; weigh multiple signals
-        - Be conservative when marking spam
-        - When signals are weak or mixed, return "uncertain"
-        - Prefer false negatives over false positives
+        - **Primary Signal:** Look for the *combination* of generic/spun content AND commercial/irrelevant links.
+        - **Be Conservative:** Many legitimate users create low-quality or empty test blogs. Do not flag them unless there is clear SEO intent.
+        - **Uncertainty:** If signals are mixed or weak (e.g., empty blog, simple test post), return "uncertain". Prefer false negatives over false positives.
 
-        Return valid JSON only, with no markdown or extra text:
-
+        Return valid JSON only:
         {
           "classification": "spam" | "not_spam" | "uncertain",
           "reason": "concise reason"
