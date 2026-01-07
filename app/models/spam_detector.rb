@@ -77,18 +77,19 @@ class SpamDetector
 
         Blog Title: #{@blog.title}
         Blog Subdomain: #{@blog.subdomain}
-        Bio: #{@blog.bio.to_plain_text}
+        Bio (HTML): #{@blog.bio.to_s}
 
-        Recent Posts:
+        Recent Posts (HTML):
         #{recent_posts_content}
 
         Strong indicators of spam include:
-        - External commercial or promotional links in the bio
+        - External commercial or promotional links in the bio (look for <a href="..."> tags)
         - Long or marketing-style bios
         - Mentions of services such as pharmaceuticals, gambling, financial products, SEO, backlinks, or trades
         - Only a single post that contains one or more external commercial link (not youtube or social media)
         - Posts written like advertisements or SEO landing pages
         - Keyword-stuffed titles, subdomains, or content
+        - Hidden links or links with spammy anchor text
 
         Strong indicators of legitimate use include:
         - Posts containing the word "test" in the title or body
@@ -121,7 +122,8 @@ class SpamDetector
         <<~POST
           Post #{i}:
           Title: #{post.title.presence || "(no title)"}
-          Summary: #{post.text_summary}
+          Content (HTML):
+          #{post.content.to_s}
         POST
       end.join("\n")
     end
