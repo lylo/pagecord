@@ -76,7 +76,7 @@ class SpamDetector
         Blog Context:
         Title: #{@blog.title}
         Subdomain: #{@blog.subdomain}
-        Bio (HTML): #{@blog.bio.to_s}
+        Bio (HTML): #{@blog.bio}
 
         Recent Posts (HTML):
         #{recent_posts_content}
@@ -120,7 +120,7 @@ class SpamDetector
           Post #{i}:
           Title: #{post.title.presence || "(no title)"}
           Content (HTML):
-          #{post.content.to_s}
+          #{post.content}
         POST
       end.join("\n")
     end
