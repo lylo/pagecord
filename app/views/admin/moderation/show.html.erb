@@ -1,0 +1,37 @@
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-300 dark:border-slate-700">
+  <div>
+    <span class="text-slate-500 dark:text-slate-400">Flags:</span> <%= @post.content_moderation&.flagged_categories&.join(", ").presence || "None" %>
+    <span class="mx-2 text-slate-300 dark:text-slate-600">|</span>
+    <span class="text-slate-500 dark:text-slate-400">Status:</span> <%= @post.discarded? ? "Discarded" : "Visible" %>
+    <span class="mx-2 text-slate-300 dark:text-slate-600">|</span>
+    <%= link_to "View on blog", blog_post_url(subdomain: @post.blog.subdomain, slug: @post.slug), target: "_blank", class: "hover:underline" %>
+  </div>
+  <div class="flex space-x-2">
+    <%= link_to "← Back", admin_moderation_index_path, class: "px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-gray-200 text-slate-800 dark:text-slate-100 rounded" %>
+    <% if @post.discarded? %>
+      <%= button_to "Restore", dismiss_admin_moderation_path(id: @post.id),
+          method: :post, class: "px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer",
+          data: { turbo_confirm: "Restore this post?" } %>
+    <% else %>
+      <%= button_to "Dismiss", dismiss_admin_moderation_path(id: @post.id),
+          method: :post, class: "px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-gray-200 text-slate-800 dark:text-slate-100 rounded cursor-pointer" %>
+      <%= button_to "Discard", discard_admin_moderation_path(id: @post.id),
+          method: :post, class: "px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer",
+          data: { turbo_confirm: "Discard this post?" } %>
+    <% end %>
+  </div>
+</div>
+
+<div class="mb-4 text-sm text-slate-500 dark:text-slate-400">
+  <%= link_to "@#{@post.blog.subdomain}", blog_home_url(@post.blog), target: "_blank", class: "hover:underline" %>
+  <span class="mx-2">·</span>
+  <%= @post.content_moderation&.moderated_at&.to_formatted_s(:long) %>
+</div>
+
+<% if @post.title.present? %>
+  <h2 class="text-2xl font-bold mb-4"><%= @post.title %></h2>
+<% end %>
+
+<div class="prose dark:prose-invert max-w-none">
+  <%= @post.content.body %>
+</div>

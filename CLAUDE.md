@@ -156,6 +156,12 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - **Email processing**: Uses ActionMailbox with PostsMailbox to create posts from emails
 
 ### Key Features
+- **Content Moderation**: Automated post moderation using OpenAI.
+    - **Models**: `ContentModeration` (stores results), `ContentModerator` (service class), `Post::Moderatable` (concern).
+    - **Flow**: `after_commit` on Post -> `ContentModerationJob` -> OpenAI API -> Flags/Cleans.
+    - **Actions**: Flagged posts are automatically discarded (soft-deleted) and admins are notified.
+    - **Admin**: `Admin::ModerationController` for reviewing flagged content.
+    - **Batch Processing**: `ContentModerationBatchJob` catches missed posts.
 - **Email-to-blog**: Primary posting method via email (ActionMailbox)
 - **Custom domains**: Premium feature using Hatchbox API
 - **Rich text**: Uses ActionText for post content

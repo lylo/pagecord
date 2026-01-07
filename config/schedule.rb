@@ -62,6 +62,10 @@ every :day, at: "5:30 am" do
   runner "SpamDetectionJob.perform_later"
 end
 
+every 1.hour do
+  runner "ContentModerationBatchJob.perform_later"
+end
+
 every 1.week, at: "6:00 am" do
   rake "posts:clear_old_raw_content"
 end

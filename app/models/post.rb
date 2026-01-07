@@ -1,5 +1,6 @@
 class Post < ApplicationRecord
-  include Draftable, Sluggable, Tokenable, Trimmable, Upvotable, Taggable, Post::Searchable
+  include Discard::Model
+  include Draftable, Sluggable, Tokenable, Trimmable, Upvotable, Taggable, Post::Searchable, Post::Moderatable
 
   belongs_to :blog, inverse_of: nil
 
@@ -23,7 +24,7 @@ class Post < ApplicationRecord
   scope :pages, -> { where(is_page: true) }
   scope :navigation_pages, -> { pages.where(show_in_navigation: true) }
   scope :released, -> { where("published_at <= ?", Time.current) }
-  scope :visible, -> { where.not(hidden: true).published.released }
+  scope :visible, -> { kept.where.not(hidden: true).published.released }
   scope :with_full_rich_text, -> {
       with_rich_text_content_and_embeds.includes(
         :rich_text_content,
@@ -123,24 +124,36 @@ class Post < ApplicationRecord
     end
   end
 
+  def content_image_attachments
+    return [] unless content.body.present?
+    content.body.attachments.select { |attachment| attachment.try(:image?) }
+  end
+
+  # Returns full plain text extracted from ActionText content.
+  # Used by content moderation. See also: text_summary (truncated version).
+  def plain_text_content
+    return "" unless content.body.present?
+
+    doc = Nokogiri::HTML::DocumentFragment.parse(content.to_s)
+    doc.css("figcaption").remove
+
+    doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
+      element.add_child(Nokogiri::XML::Text.new(" ", doc))
+    end
+
+    doc.text
+      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
+      .gsub(/\[Image\]/i, "")
+      .gsub(%r{https?://\S+}, "")
+      .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
+      .gsub(/\s+/, " ")
+      .strip
+  end
+
   private
 
     def text_content
-      doc = Nokogiri::HTML::DocumentFragment.parse(self.content.to_s)
-      doc.css("figcaption").remove  # don't want captions in the summary
-
-      # Add space inside block-level elements to preserve paragraph boundaries
-      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
-        element.add_child(Nokogiri::XML::Text.new(" ", doc))
-      end
-
-      text_content = doc.text
-      # Remove image references, [Image], URLs, and custom tags like {{ tag_name }}
-      text_content.gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "").strip
-             .gsub(/\[Image\]/i, "").strip
-             .gsub(/https?:\/\/\S+/, "").strip
-             .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "").strip # strip tags
-             .gsub(/\s+/, " ").strip  # Normalize whitespace
+      plain_text_content
     end
 
     def set_text_summary
@@ -168,9 +181,5 @@ class Post < ApplicationRecord
       else
         GenerateOpenGraphImageJob.perform_now(id)
       end
-    end
-
-    def content_image_attachments
-      content.body.attachments.select { |attachment| attachment.try(:image?) }
     end
 end

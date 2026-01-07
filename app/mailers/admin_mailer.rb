@@ -10,4 +10,14 @@ class AdminMailer < ApplicationMailer
       subject: "Spam Detection [#{classification}]: #{@blog.subdomain}"
     )
   end
+
+  def content_flagged_notification(post_id)
+    @post = Post.find(post_id)
+    @blog = @post.blog
+
+    mail(
+      to: "hello@pagecord.com",
+      subject: "Content Flagged: #{@blog.subdomain} - #{@post.display_title.truncate(50)}"
+    )
+  end
 end

@@ -26,7 +26,7 @@ class PostDigest < ApplicationRecord
 
     transaction do
       digest = create!(blog: blog)
-      new_posts.each { |post| puts "creating digest post for #{post.display_title}";digest.digest_posts.create!(post: post) }
+      new_posts.each { |post| digest.digest_posts.create!(post: post) }
       digest
     end
   end

@@ -1,0 +1,40 @@
+# Content moderations for testing the admin panel
+# Using innocuous flag categories for demonstration purposes
+
+flagged_spam:
+  post: three
+  status: flagged
+  flags:
+    spam: true
+    harassment: false
+    violence: false
+  moderated_at: <%= 2.hours.ago %>
+  fingerprint: <%= Digest::SHA256.hexdigest("fixture_spam") %>
+  model_version: omni-moderation-2024-09-26
+
+flagged_policy:
+  post: four
+  status: flagged
+  flags:
+    illicit: true
+    spam: false
+  moderated_at: <%= 1.hour.ago %>
+  fingerprint: <%= Digest::SHA256.hexdigest("fixture_policy") %>
+  model_version: omni-moderation-2024-09-26
+
+clean_post:
+  post: two
+  status: clean
+  flags:
+    spam: false
+    harassment: false
+    violence: false
+  moderated_at: <%= 3.hours.ago %>
+  fingerprint: <%= Digest::SHA256.hexdigest("fixture_clean") %>
+  model_version: omni-moderation-2024-09-26
+
+pending_moderation:
+  post: photography_and_tech
+  status: pending
+  flags: {}
+  model_version: omni-moderation-2024-09-26

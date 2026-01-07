@@ -147,6 +147,12 @@ Rails.application.routes.draw do
         post :restore
       end
     end
+    resources :moderation, only: [ :index, :show ] do
+      member do
+        post :dismiss
+        post :discard
+      end
+    end
   end
 
   constraints(->(request) { !DomainConstraints.default_domain?(request) }) do

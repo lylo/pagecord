@@ -5,7 +5,7 @@ class Blogs::PageViewsController < Blogs::BaseController
     return head :no_content if params[:referrer]&.match?(%r{pagecord\.com/app})
     return head :no_content if Current.user == @blog.user
 
-    post = @blog.all_posts.published.released.find_by(token: params[:post_token]) if params[:post_token].present?
+    post = @blog.all_posts.kept.published.released.find_by(token: params[:post_token]) if params[:post_token].present?
 
     PageView.track(blog: @blog, post: post, request: request, path: params[:path], referrer: params[:referrer])
 

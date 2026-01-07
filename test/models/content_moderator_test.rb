@@ -1,0 +1,131 @@
+require "test_helper"
+require "mocha/minitest"
+
+class ContentModeratorTest < ActiveSupport::TestCase
+  setup do
+    @original_token = ENV["OPENAI_ACCESS_TOKEN"]
+    ENV["OPENAI_ACCESS_TOKEN"] = "test_token"
+    @post = posts(:one)
+    @post.update!(text_summary: "This is test content for moderation")
+  end
+
+  teardown do
+    ENV["OPENAI_ACCESS_TOKEN"] = @original_token
+  end
+
+  test "moderate returns clean for safe content" do
+    mock_response = {
+      "results" => [
+        {
+          "categories" => { "sexual" => false, "violence" => false, "hate" => false },
+          "flagged" => false
+        }
+      ],
+      "model" => "omni-moderation-2024-09-26"
+    }
+
+    OpenAI::Client.any_instance.stubs(:moderations).returns(mock_response)
+
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :clean, moderator.result.status
+    assert moderator.clean?
+    refute moderator.flagged?
+    assert_equal "omni-moderation-2024-09-26", moderator.result.model_version
+  end
+
+  test "moderate returns flagged for unsafe content" do
+    mock_response = {
+      "results" => [
+        {
+          "categories" => { "sexual" => true, "violence" => false, "hate" => false },
+          "flagged" => true
+        }
+      ],
+      "model" => "omni-moderation-2024-09-26"
+    }
+
+    OpenAI::Client.any_instance.stubs(:moderations).returns(mock_response)
+
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :flagged, moderator.result.status
+    assert moderator.flagged?
+    refute moderator.clean?
+    assert_equal true, moderator.result.flags["sexual"]
+  end
+
+  test "moderate aggregates flags from multiple results" do
+    mock_response = {
+      "results" => [
+        { "categories" => { "sexual" => false, "violence" => true }, "flagged" => true },
+        { "categories" => { "sexual" => true, "violence" => false }, "flagged" => true }
+      ],
+      "model" => "omni-moderation-2024-09-26"
+    }
+
+    OpenAI::Client.any_instance.stubs(:moderations).returns(mock_response)
+
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :flagged, moderator.result.status
+    assert_equal true, moderator.result.flags["sexual"]
+    assert_equal true, moderator.result.flags["violence"]
+  end
+
+  test "moderate returns error on API failure" do
+    OpenAI::Client.any_instance.stubs(:moderations).raises(Faraday::Error.new("Connection failed"))
+
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :error, moderator.result.status
+    assert moderator.error?
+    assert_includes moderator.result.flags[:error], "API error"
+  end
+
+  test "moderate returns error on JSON parse error" do
+    OpenAI::Client.any_instance.stubs(:moderations).raises(JSON::ParserError.new("Invalid JSON"))
+
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :error, moderator.result.status
+    assert_equal "Failed to parse API response", moderator.result.flags[:error]
+  end
+
+  test "moderate returns error when missing access token" do
+    ENV["OPENAI_ACCESS_TOKEN"] = nil
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :error, moderator.result.status
+    assert_equal "Missing OpenAI access token", moderator.result.flags[:error]
+  end
+
+  test "moderate returns error when no content to moderate" do
+    @post.stubs(:moderation_text_payload).returns(nil)
+    @post.stubs(:moderation_image_payloads).returns([])
+
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :error, moderator.result.status
+    assert_equal "No content to moderate", moderator.result.flags[:error]
+  end
+
+  test "moderate returns error on empty API response" do
+    mock_response = { "results" => [] }
+
+    OpenAI::Client.any_instance.stubs(:moderations).returns(mock_response)
+
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :error, moderator.result.status
+    assert_equal "Empty response from API", moderator.result.flags[:error]
+  end
+end

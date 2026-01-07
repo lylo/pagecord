@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_12_19_084849) do
+ActiveRecord::Schema[8.2].define(version: 2026_01_06_180831) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -123,6 +123,19 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_19_084849) do
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
+  end
+
+  create_table "content_moderations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "fingerprint"
+    t.jsonb "flags", default: {}
+    t.string "model_version"
+    t.datetime "moderated_at"
+    t.bigint "post_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_content_moderations_on_post_id", unique: true
+    t.index ["status"], name: "index_content_moderations_on_status"
   end
 
   create_table "custom_domain_changes", force: :cascade do |t|
@@ -265,6 +278,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_19_084849) do
     t.bigint "blog_id", null: false
     t.string "canonical_url"
     t.datetime "created_at", null: false
+    t.datetime "discarded_at"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.datetime "published_at"
@@ -283,6 +297,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_19_084849) do
     t.index ["blog_id", "status", "published_at"], name: "index_posts_published_lookup", order: { published_at: :desc }, where: "(status = 1)"
     t.index ["blog_id", "status"], name: "index_posts_search_filter", where: "(status = ANY (ARRAY[0, 1]))"
     t.index ["blog_id"], name: "index_posts_on_blog_id_published_count_only", where: "((is_page = false) AND (status = 1))"
+    t.index ["discarded_at"], name: "index_posts_on_discarded_at"
     t.index ["hidden"], name: "index_posts_on_hidden"
     t.index ["is_page"], name: "index_posts_on_is_page"
     t.index ["published_at"], name: "index_posts_on_published_at"
@@ -367,6 +382,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_19_084849) do
   add_foreign_key "blog_exports", "blogs"
   add_foreign_key "blogs", "posts", column: "home_page_id", on_delete: :nullify
   add_foreign_key "blogs", "users"
+  add_foreign_key "content_moderations", "posts"
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"
   add_foreign_key "digest_posts", "posts"

@@ -1,0 +1,64 @@
+<div class="mb-6">
+  <div>
+    <%= pluralize(@pagy.count, "flagged post") %>. <%= pluralize(@pending_count, "post") %> pending moderation.
+  </div>
+</div>
+
+<% if @posts.any? %>
+  <div class="overflow-auto">
+    <table class="my-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
+      <thead>
+        <tr>
+          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Post</th>
+          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Blog</th>
+          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Flags</th>
+          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Status</th>
+          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Moderated</th>
+          <th class="py-4 sm:ps-4 text-end text-sm font-semibold text-slate-900 dark:text-slate-50">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
+        <% @posts.each do |post| %>
+          <tr>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">
+              <%= link_to post.display_title.truncate(40), admin_moderation_path(id: post.id), class: "hover:underline" %>
+            </td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+              <%= link_to "@#{post.blog.subdomain}", blog_home_url(post.blog), target: "_blank", class: "hover:underline" %>
+            </td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+              <%= post.content_moderation&.flagged_categories&.join(", ") %>
+            </td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+              <%= post.discarded? ? "Discarded" : "Visible" %>
+            </td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+              <%= post.content_moderation&.moderated_at&.to_formatted_s(:short) %>
+            </td>
+            <td class="whitespace-nowrap py-4 sm:ps-4 text-end text-sm">
+              <div class="flex justify-end space-x-2">
+                <% if post.discarded? %>
+                  <%= button_to "Restore", dismiss_admin_moderation_path(id: post.id),
+                      method: :post, class: "px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer",
+                      data: { turbo_confirm: "Restore this post?" } %>
+                <% else %>
+                  <%= button_to "Dismiss", dismiss_admin_moderation_path(id: post.id),
+                      method: :post, class: "px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded cursor-pointer" %>
+                  <%= button_to "Discard", discard_admin_moderation_path(id: post.id),
+                      method: :post, class: "px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer",
+                      data: { turbo_confirm: "Discard this post?" } %>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%= render "app/shared/pagy_nav" %>
+<% else %>
+  <div class="text-slate-500 dark:text-slate-400 py-8">
+    No flagged posts to review.
+  </div>
+<% end %>
