@@ -1,128 +1,150 @@
 class SpamDetector
-  attr_reader :classification, :reason
+  Result = Struct.new(:status, :reason, :model_version, keyword_init: true)
+
+  MODEL = "gpt-4o-mini"
+
+  attr_reader :result
 
   def initialize(blog)
     @blog = blog
-    @access_token =
-      ENV["OPENAI_ACCESS_TOKEN"] ||
-      Rails.application.credentials.dig(:openai_access_token)
-
+    @access_token = ENV["OPENAI_ACCESS_TOKEN"] ||
+                    Rails.application.credentials.dig(:openai_access_token)
     @client = OpenAI::Client.new(access_token: @access_token) if @access_token.present?
   end
 
   def detect
-    return unknown!("Missing OpenAI access token") if @client.nil?
+    return skip_result if should_skip?
+    return error_result("Missing OpenAI access token") if @client.nil?
 
     response = @client.chat(
       parameters: {
-        model: "gpt-4o-mini",
+        model: MODEL,
         temperature: 0.2,
         response_format: { type: "json_object" },
-        messages: [
-          { role: "user", content: prompt }
-        ]
+        messages: [{ role: "user", content: prompt }]
       }
     )
 
-    content = response.dig("choices", 0, "message", "content")
-    data = JSON.parse(content)
-
-    @classification = normalize_classification(data["classification"])
-    @reason = data["reason"].to_s.strip.presence || "No reason provided"
-
-    @classification
+    parse_response(response)
   rescue JSON::ParserError => e
-    Rails.logger.warn("SpamDetector JSON parse error: #{e.message}")
-    unknown!("Failed to parse AI response")
+    Rails.logger.warn("[SpamDetector] JSON parse error for blog #{@blog.id}: #{e.message}")
+    error_result("Failed to parse AI response")
   rescue StandardError => e
-    Rails.logger.error("SpamDetector error: #{e.class} – #{e.message}")
-    unknown!("Detection error")
+    Rails.logger.error("[SpamDetector] Error for blog #{@blog.id}: #{e.class} - #{e.message}")
+    error_result("Detection error")
   end
 
   def spam?
-    classification == "spam"
+    result&.status == :spam
   end
 
-  def not_spam?
-    classification == "not_spam"
+  def clean?
+    result&.status == :clean
   end
 
   def uncertain?
-    classification == "uncertain"
+    result&.status == :uncertain
+  end
+
+  def skipped?
+    result&.status == :skipped
+  end
+
+  def error?
+    result&.status == :error
+  end
+
+  def needs_review?
+    spam? || uncertain?
   end
 
   private
 
-    def unknown!(reason)
-      @classification = "uncertain"
-      @reason = reason
-      @classification
+    def should_skip?
+      @blog.bio.to_plain_text.blank? &&
+        @blog.posts.published.none? &&
+        @blog.pages.published.none? &&
+        @blog.navigation_items.none?
     end
 
-    def normalize_classification(value)
+    def skip_result
+      @result = Result.new(
+        status: :skipped,
+        reason: "Empty blog - no content to analyze",
+        model_version: nil
+      )
+    end
+
+    def error_result(reason)
+      @result = Result.new(
+        status: :error,
+        reason: reason,
+        model_version: nil
+      )
+    end
+
+    def parse_response(response)
+      content = response.dig("choices", 0, "message", "content")
+      data = JSON.parse(content)
+
+      status = normalize_status(data["classification"])
+      reason = data["reason"].to_s.strip.presence || "No reason provided"
+
+      @result = Result.new(
+        status: status,
+        reason: reason,
+        model_version: response.dig("model") || MODEL
+      )
+    end
+
+    def normalize_status(value)
       case value
-      when "spam", "not_spam", "uncertain"
-        value
-      else
-        "uncertain"
+      when "spam" then :spam
+      when "not_spam" then :clean
+      when "uncertain" then :uncertain
+      else :uncertain
       end
     end
 
     def prompt
       <<~PROMPT
-        You are an automated spam detection system for a personal blogging platform.
+        Analyze this blog for spam. This is a personal blogging platform where users post via email.
 
-        The platform is commonly used by individuals experimenting with blogs.
-        Many legitimate users create test posts, leave bios empty, or publish unfinished content.
+        Blog Title: #{@blog.title.presence || "(none)"}
+        Subdomain: #{@blog.subdomain}
+        Bio: #{bio_content}
+        Posts: #{recent_posts_content}
 
-        Blog Title: #{@blog.title}
-        Blog Subdomain: #{@blog.subdomain}
-        Bio: #{@blog.bio.to_plain_text}
+        SPAM (classify as "spam" only if multiple signals present):
+        - Bio has commercial/promotional links (gambling, pharma, SEO, financial services, backlinks)
+        - Posts read like advertisements or SEO landing pages
+        - Keyword stuffing in titles or content
+        - Single post with only commercial affiliate links
 
-        Recent Posts:
-        #{recent_posts_content}
+        NOT SPAM (classify as "not_spam"):
+        - Test posts, "hello world", formatting experiments
+        - Personal blogs linking to relevant content (recipes, tutorials, news, other blogs)
+        - Empty or minimal content (users exploring the platform)
+        - Short bios, even with a personal website link
+        - Links to YouTube, social media, or non-commercial content sites
 
-        Strong indicators of spam include:
-        - External commercial or promotional links in the bio
-        - Long or marketing-style bios
-        - Mentions of services such as pharmaceuticals, gambling, financial products, SEO, backlinks, or trades
-        - Only a single post that contains one or more external commercial link (not youtube or social media)
-        - Posts written like advertisements or SEO landing pages
-        - Keyword-stuffed titles, subdomains, or content
+        Only use "uncertain" when signals are genuinely ambiguous. Default to "not_spam" when in doubt.
 
-        Strong indicators of legitimate use include:
-        - Posts containing the word "test" in the title or body
-        - Minimal or default titles (e.g. just "@subdomain")
-        - Short, empty, or casual first-person bios
-        - Posts without any external links
-        - Placeholder or exploratory content ("Hello world", formatting tests)
-
-        Guidance:
-        - No single signal is decisive; weigh multiple signals
-        - Be conservative when marking spam
-        - When signals are weak or mixed, return "uncertain"
-        - Prefer false negatives over false positives
-
-        Return valid JSON only, with no markdown or extra text:
-
-        {
-          "classification": "spam" | "not_spam" | "uncertain",
-          "reason": "concise reason"
-        }
+        Return JSON only: {"classification": "spam" | "not_spam" | "uncertain", "reason": "brief explanation"}
       PROMPT
     end
 
-    def recent_posts_content
-      posts = @blog.posts.published.limit(3)
+    def bio_content
+      text = @blog.bio.to_plain_text.strip
+      text.presence || "(empty)"
+    end
 
-      return "No posts yet." if posts.empty?
+    def recent_posts_content
+      posts = @blog.posts.published.order(published_at: :desc).limit(3)
+      return "(no posts)" if posts.empty?
 
       posts.map.with_index(1) do |post, i|
-        <<~POST
-          Post #{i}:
-          Title: #{post.title.presence || "(no title)"}
-          Summary: #{post.text_summary}
-        POST
+        "#{i}. #{post.title.presence || "(no title)"}: #{post.text_summary.to_s.truncate(200)}"
       end.join("\n")
     end
 end

@@ -1,0 +1,37 @@
+<h1 style="font-size: 20px; margin-bottom: 15px;">Spam Detection Daily Digest</h1>
+
+<p>
+  <strong><%= @detections.count %></strong> blogs flagged for review
+  (<%= @spam_count %> spam, <%= @uncertain_count %> uncertain)
+</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+  <thead>
+    <tr style="background-color: #F3F4F6;">
+      <th style="padding: 10px; text-align: left; border-bottom: 1px solid #E5E7EB;">Blog</th>
+      <th style="padding: 10px; text-align: left; border-bottom: 1px solid #E5E7EB;">Status</th>
+      <th style="padding: 10px; text-align: left; border-bottom: 1px solid #E5E7EB;">Reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @detections.each do |detection| %>
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #E5E7EB;">
+          <%= link_to "@#{detection.blog.subdomain}", blog_home_url(detection.blog) %>
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #E5E7EB;">
+          <span style="padding: 2px 8px; border-radius: 4px; background-color: <%= detection.spam? ? '#FEE2E2' : '#FEF3C7' %>; color: <%= detection.spam? ? '#991B1B' : '#92400E' %>;">
+            <%= detection.status.titleize %>
+          </span>
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #E5E7EB;">
+          <%= detection.reason.to_s.truncate(100) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p>
+  <%= link_to "Review in Admin Panel", admin_moderation_url(tab: "spam") %>
+</p>

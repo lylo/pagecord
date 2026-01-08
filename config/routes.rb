@@ -151,6 +151,8 @@ Rails.application.routes.draw do
       member do
         post :dismiss
         post :discard
+        post :dismiss_spam
+        post :confirm_spam
       end
     end
   end

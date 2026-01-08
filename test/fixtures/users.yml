@@ -27,3 +27,13 @@ pagecord:
   email: olly@pagecord.com
   verified: true
   onboarding_state: completed
+
+spammer:
+  email: spammer@example.com
+  verified: true
+  onboarding_state: completed
+
+suspicious:
+  email: suspicious@example.com
+  verified: true
+  onboarding_state: completed

@@ -8,10 +8,19 @@ class SpamDetectionCheckJob < ApplicationJob
     detector = SpamDetector.new(blog)
     detector.detect
 
-    Rails.logger.info "[SpamDetection] #{blog.subdomain}: #{detector.classification} - #{detector.reason}"
+    Rails.logger.info "[SpamDetection] #{blog.subdomain}: #{detector.result.status} - #{detector.result.reason}"
 
-    return if detector.not_spam?
-
-    AdminMailer.spam_detected_notification(blog.user.id, detector.classification, detector.reason).deliver_later
+    save_detection_result!(blog, detector.result)
   end
+
+  private
+
+    def save_detection_result!(blog, result)
+      blog.spam_detections.create!(
+        status: result.status,
+        reason: result.reason,
+        detected_at: Time.current,
+        model_version: result.model_version
+      )
+    end
 end

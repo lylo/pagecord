@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_01_06_180831) do
+ActiveRecord::Schema[8.2].define(version: 2026_01_08_102350) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -329,6 +329,22 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_06_180831) do
     t.index ["token_digest"], name: "index_sender_email_addresses_on_token_digest", unique: true
   end
 
+  create_table "spam_detections", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "detected_at"
+    t.string "model_version"
+    t.text "reason"
+    t.boolean "reviewed", default: false, null: false
+    t.datetime "reviewed_at"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id", "detected_at"], name: "index_spam_detections_on_blog_id_and_detected_at", order: { detected_at: :desc }
+    t.index ["blog_id"], name: "index_spam_detections_on_blog_id"
+    t.index ["reviewed"], name: "index_spam_detections_on_reviewed"
+    t.index ["status"], name: "index_spam_detections_on_status"
+  end
+
   create_table "subscription_renewal_reminders", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "period", null: false
@@ -400,6 +416,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_06_180831) do
   add_foreign_key "post_replies", "posts"
   add_foreign_key "posts", "blogs"
   add_foreign_key "sender_email_addresses", "blogs"
+  add_foreign_key "spam_detections", "blogs"
   add_foreign_key "subscription_renewal_reminders", "subscriptions"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "upvotes", "posts"

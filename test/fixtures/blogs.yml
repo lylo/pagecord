@@ -41,3 +41,17 @@ pagecord:
   user: pagecord
   subdomain: blog
   delivery_email: pagecord_asj232j@post.pagecord.com
+
+spammer:
+  user: spammer
+  subdomain: best-deals-2024
+  title: Best Deals Online
+  delivery_email: spammer_xyz123@post.pagecord.com
+  <<: *default
+
+suspicious:
+  user: suspicious
+  subdomain: health-tips
+  title: Health Tips Blog
+  delivery_email: suspicious_abc456@post.pagecord.com
+  <<: *default
