@@ -18,7 +18,6 @@ class ContentModerationJob < ApplicationJob
 
     if moderator.flagged?
       Rails.logger.info "[ContentModeration] FLAGGED post #{post.id}: #{post.content_moderation.flagged_categories.join(', ')}"
-      post.discard!
       AdminMailer.content_flagged_notification(post.id).deliver_later
     else
       Rails.logger.info "[ContentModeration] Clean post #{post.id}"

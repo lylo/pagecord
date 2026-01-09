@@ -62,7 +62,7 @@ class ContentModerationJobTest < ActiveJob::TestCase
     assert_not_nil @post.content_moderation.fingerprint
   end
 
-  test "moderates post and creates flagged content_moderation and discards post" do
+  test "moderates post and creates flagged content_moderation without discarding" do
     result = ContentModerator::Result.new(
       status: :flagged,
       flags: { "sexual" => true },
@@ -77,7 +77,7 @@ class ContentModerationJobTest < ActiveJob::TestCase
     @post.reload
     assert_not_nil @post.content_moderation
     assert @post.content_moderation.flagged?
-    assert @post.discarded?
+    refute @post.discarded?
   end
 
   test "sends admin notification when post is flagged" do

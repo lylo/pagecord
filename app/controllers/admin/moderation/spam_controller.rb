@@ -29,8 +29,8 @@ class Admin::Moderation::SpamController < AdminController
     @spam_detection.mark_as_reviewed!
 
     user = @spam_detection.blog.user
-    DestroyUserJob.perform_now(user.id, spam: true)
+    DestroyUserJob.perform_later(user.id, spam: true)
 
-    redirect_to admin_moderation_spam_index_path, notice: "Spam confirmed and user discarded"
+    redirect_to admin_moderation_spam_index_path, notice: "Spam confirmed and user will be discarded"
   end
 end
