@@ -1,6 +1,6 @@
 class AdminMailerPreview < ActionMailer::Preview
   def spam_detection_digest
-    detections = SpamDetection.where(status: [:spam, :uncertain]).limit(5)
+    detections = SpamDetection.where(status: [ :spam, :uncertain ]).limit(5)
 
     if detections.empty?
       # Create preview data if none exists

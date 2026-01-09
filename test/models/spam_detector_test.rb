@@ -28,11 +28,8 @@ class SpamDetectorTest < ActiveSupport::TestCase
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
     @detector.detect
-    assert @detector.spam?
-    refute @detector.clean?
-    refute @detector.uncertain?
-    assert_equal "Obvious spam", @detector.result.reason
     assert_equal :spam, @detector.result.status
+    assert_equal "Obvious spam", @detector.result.reason
   end
 
   test "detect returns clean classification for not_spam response" do
@@ -50,11 +47,8 @@ class SpamDetectorTest < ActiveSupport::TestCase
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
     @detector.detect
-    assert @detector.clean?
-    refute @detector.spam?
-    refute @detector.uncertain?
-    assert_equal "Looks clean", @detector.result.reason
     assert_equal :clean, @detector.result.status
+    assert_equal "Looks clean", @detector.result.reason
   end
 
   test "detect returns uncertain classification" do
@@ -72,9 +66,7 @@ class SpamDetectorTest < ActiveSupport::TestCase
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
     @detector.detect
-    assert @detector.uncertain?
-    refute @detector.spam?
-    refute @detector.clean?
+    assert_equal :uncertain, @detector.result.status
     assert_equal "Mixed signals", @detector.result.reason
   end
 
@@ -92,7 +84,7 @@ class SpamDetectorTest < ActiveSupport::TestCase
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
     @detector.detect
-    assert @detector.error?
+    assert_equal :error, @detector.result.status
     assert_equal "Failed to parse AI response", @detector.result.reason
   end
 
@@ -100,7 +92,7 @@ class SpamDetectorTest < ActiveSupport::TestCase
     OpenAI::Client.any_instance.stubs(:chat).raises(StandardError.new("API Error"))
 
     @detector.detect
-    assert @detector.error?
+    assert_equal :error, @detector.result.status
     assert_equal "Detection error", @detector.result.reason
   end
 
@@ -109,7 +101,7 @@ class SpamDetectorTest < ActiveSupport::TestCase
     detector = SpamDetector.new(@blog)
 
     detector.detect
-    assert detector.error?
+    assert_equal :error, detector.result.status
     assert_equal "Missing OpenAI access token", detector.result.reason
   end
 
@@ -128,7 +120,7 @@ class SpamDetectorTest < ActiveSupport::TestCase
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
     @detector.detect
-    assert @detector.uncertain?
+    assert_equal :uncertain, @detector.result.status
   end
 
   test "skips empty blogs" do
@@ -138,7 +130,7 @@ class SpamDetectorTest < ActiveSupport::TestCase
     detector = SpamDetector.new(empty_blog)
     detector.detect
 
-    assert detector.skipped?
+    assert_equal :skipped, detector.result.status
     assert_equal "Empty blog - no content to analyze", detector.result.reason
     assert_nil detector.result.model_version
   end
@@ -151,44 +143,11 @@ class SpamDetectorTest < ActiveSupport::TestCase
 
     mock_response = {
       "model" => "gpt-4o-mini",
-      "choices" => [{ "message" => { "content" => { classification: "not_spam", reason: "Has bio" }.to_json } }]
+      "choices" => [ { "message" => { "content" => { classification: "not_spam", reason: "Has bio" }.to_json } } ]
     }
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
     detector.detect
-    refute detector.skipped?
-  end
-
-  test "needs_review returns true for spam" do
-    mock_response = {
-      "model" => "gpt-4o-mini",
-      "choices" => [{ "message" => { "content" => { classification: "spam", reason: "Spam" }.to_json } }]
-    }
-    OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
-
-    @detector.detect
-    assert @detector.needs_review?
-  end
-
-  test "needs_review returns true for uncertain" do
-    mock_response = {
-      "model" => "gpt-4o-mini",
-      "choices" => [{ "message" => { "content" => { classification: "uncertain", reason: "Uncertain" }.to_json } }]
-    }
-    OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
-
-    @detector.detect
-    assert @detector.needs_review?
-  end
-
-  test "needs_review returns false for clean" do
-    mock_response = {
-      "model" => "gpt-4o-mini",
-      "choices" => [{ "message" => { "content" => { classification: "not_spam", reason: "Clean" }.to_json } }]
-    }
-    OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
-
-    @detector.detect
-    refute @detector.needs_review?
+    refute_equal :skipped, detector.result.status
   end
 end

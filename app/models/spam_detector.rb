@@ -21,7 +21,7 @@ class SpamDetector
         model: MODEL,
         temperature: 0.2,
         response_format: { type: "json_object" },
-        messages: [{ role: "user", content: prompt }]
+        messages: [ { role: "user", content: prompt } ]
       }
     )
 

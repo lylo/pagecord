@@ -13,7 +13,7 @@ class CreateSpamDetections < ActiveRecord::Migration[8.2]
     end
 
     add_index :spam_detections, :status
-    add_index :spam_detections, [:blog_id, :detected_at], order: { detected_at: :desc }
+    add_index :spam_detections, [ :blog_id, :detected_at ], order: { detected_at: :desc }
     add_index :spam_detections, :reviewed
   end
 end
