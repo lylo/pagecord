@@ -79,34 +79,4 @@ class ContentModerationJobTest < ActiveJob::TestCase
     assert @post.content_moderation.flagged?
     refute @post.discarded?
   end
-
-  test "sends admin notification when post is flagged" do
-    result = ContentModerator::Result.new(
-      status: :flagged,
-      flags: { "sexual" => true },
-      model_version: "test"
-    )
-    ContentModerator.any_instance.stubs(:moderate)
-    ContentModerator.any_instance.stubs(:result).returns(result)
-    ContentModerator.any_instance.stubs(:flagged?).returns(true)
-
-    assert_enqueued_with(job: ActionMailer::MailDeliveryJob) do
-      ContentModerationJob.perform_now(@post.id)
-    end
-  end
-
-  test "does not send admin notification for clean posts" do
-    result = ContentModerator::Result.new(
-      status: :clean,
-      flags: {},
-      model_version: "test"
-    )
-    ContentModerator.any_instance.stubs(:moderate)
-    ContentModerator.any_instance.stubs(:result).returns(result)
-    ContentModerator.any_instance.stubs(:flagged?).returns(false)
-
-    assert_no_enqueued_jobs(only: ActionMailer::MailDeliveryJob) do
-      ContentModerationJob.perform_now(@post.id)
-    end
-  end
 end

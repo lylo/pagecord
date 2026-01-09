@@ -94,36 +94,4 @@ class Post::ModeratableTest < ActiveSupport::TestCase
     new_fingerprint = @post.moderation_fingerprint
     refute_equal original_fingerprint, new_fingerprint
   end
-
-  test "queues moderation on publish" do
-    @post.update!(status: :draft)
-    assert_enqueued_with(job: ContentModerationJob) do
-      @post.publish!
-    end
-  end
-
-  test "does not queue moderation for draft posts" do
-    @post.update!(status: :draft)
-    assert_no_enqueued_jobs(only: ContentModerationJob) do
-      @post.save!
-    end
-  end
-
-  test "does not queue moderation for hidden posts" do
-    @post.update!(hidden: true, status: :draft)
-    assert_no_enqueued_jobs(only: ContentModerationJob) do
-      @post.publish!
-    end
-  end
-
-  test "does not queue moderation for discarded posts" do
-    # Ensure post is already moderated to isolate the discard check
-    @post.create_content_moderation!(status: :clean, fingerprint: @post.moderation_fingerprint)
-    @post.discard!
-
-    # When a discarded post is saved, it should not queue moderation
-    assert_no_enqueued_jobs(only: ContentModerationJob) do
-      @post.update!(title: "Updated title")
-    end
-  end
 end

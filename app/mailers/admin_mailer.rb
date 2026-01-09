@@ -13,13 +13,12 @@ class AdminMailer < ApplicationMailer
     )
   end
 
-  def content_flagged_notification(post_id)
-    @post = Post.find(post_id)
-    @blog = @post.blog
+  def content_moderation_digest(count)
+    @count = count
 
     mail(
       to: "hello@pagecord.com",
-      subject: "Content Flagged: #{@blog.subdomain} - #{@post.display_title.truncate(50)}"
+      subject: "Content Moderation: #{@count} posts need review"
     )
   end
 end

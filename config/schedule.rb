@@ -70,6 +70,10 @@ every 1.hour do
   runner "ContentModerationBatchJob.perform_later"
 end
 
+every :day, at: "8:00 am" do
+  runner "ContentModerationDigestJob.perform_later"
+end
+
 every 1.week, at: "6:00 am" do
   rake "posts:clear_old_raw_content"
 end

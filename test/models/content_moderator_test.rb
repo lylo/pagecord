@@ -76,25 +76,11 @@ class ContentModeratorTest < ActiveSupport::TestCase
     assert_equal true, moderator.result.flags["violence"]
   end
 
-  test "moderate returns error on API failure" do
+  test "moderate raises on API failure" do
     OpenAI::Client.any_instance.stubs(:moderations).raises(Faraday::Error.new("Connection failed"))
 
     moderator = ContentModerator.new(@post)
-    moderator.moderate
-
-    assert_equal :error, moderator.result.status
-    assert moderator.error?
-    assert_includes moderator.result.flags[:error], "API error"
-  end
-
-  test "moderate returns error on JSON parse error" do
-    OpenAI::Client.any_instance.stubs(:moderations).raises(JSON::ParserError.new("Invalid JSON"))
-
-    moderator = ContentModerator.new(@post)
-    moderator.moderate
-
-    assert_equal :error, moderator.result.status
-    assert_equal "Failed to parse API response", moderator.result.flags[:error]
+    assert_raises(Faraday::Error) { moderator.moderate }
   end
 
   test "moderate returns error when missing access token" do

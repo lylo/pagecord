@@ -7,8 +7,6 @@ module Post::Moderatable
     scope :with_content_moderation, -> { includes(:content_moderation) }
     scope :moderation_flagged, -> { joins(:content_moderation).where(content_moderations: { status: :flagged }) }
     scope :moderation_pending, -> { left_joins(:content_moderation).where(content_moderations: { id: nil }).or(left_joins(:content_moderation).where(content_moderations: { status: [ :pending, :error ] })) }
-
-    after_commit :queue_moderation_on_publish, on: [ :create, :update ]
   end
 
   def moderation_text_payload
@@ -34,33 +32,19 @@ module Post::Moderatable
     return true if content_moderation.nil?
     return true if content_moderation.pending? || content_moderation.error?
     return true if content_moderation.fingerprint.blank?
-    content_moderation.fingerprint != compute_moderation_fingerprint
+    content_moderation.fingerprint != moderation_fingerprint
   end
 
   def moderation_fingerprint
-    compute_moderation_fingerprint
-  end
-
-  def queue_moderation_check(delay: 10.minutes)
-    ContentModerationJob.set(wait: delay).perform_later(id)
+    content_parts = [
+      title.to_s,
+      plain_text_content.to_s,
+      moderation_image_fingerprints.join(",")
+    ]
+    Digest::SHA256.hexdigest(content_parts.join("|"))
   end
 
   private
-
-    def queue_moderation_on_publish
-      return unless published? && !hidden? && !discarded?
-      return unless needs_moderation?
-      queue_moderation_check
-    end
-
-    def compute_moderation_fingerprint
-      content_parts = [
-        title.to_s,
-        plain_text_content.to_s,
-        moderation_image_fingerprints.join(",")
-      ]
-      Digest::SHA256.hexdigest(content_parts.join("|"))
-    end
 
     def moderation_image_fingerprints
       moderation_images.map do |attachment|

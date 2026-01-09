@@ -6,10 +6,10 @@ class ContentModeration < ApplicationRecord
   scope :needs_review, -> { where(status: [ :pending, :error ]) }
 
   def flagged_categories
-    flags.select { |_, v| v == true }.keys
+    flags.select { |_category, flagged| flagged }.keys
   end
 
   def has_flagged_content?
-    flags.values.any? { |v| v == true }
+    flags.values.any?
   end
 end

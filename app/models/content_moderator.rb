@@ -25,16 +25,6 @@ class ContentModerator
 
     response = call_moderation_api
     parse_response(response)
-  rescue Faraday::Error, Net::OpenTimeout => e
-    Rails.logger.error("[ContentModerator] API error for post #{@post.id}: #{e.class} - #{e.message}")
-    error_result("API error: #{e.message}")
-  rescue JSON::ParserError => e
-    Rails.logger.warn("[ContentModerator] JSON parse error for post #{@post.id}: #{e.message}")
-    error_result("Failed to parse API response")
-  rescue StandardError => e
-    Rails.logger.error("[ContentModerator] Unexpected error for post #{@post.id}: #{e.class} - #{e.message}")
-    Sentry.capture_exception(e, extra: { post_id: @post.id }) if defined?(Sentry)
-    error_result("Moderation error")
   end
 
   def flagged?
