@@ -36,7 +36,7 @@ class SpamDetectionTest < ActiveSupport::TestCase
     SpamDetection.create!(blog: blogs(:joel), status: :spam, reason: "Spam", detected_at: Time.current)
     SpamDetection.create!(blog: blogs(:elliot), status: :uncertain, reason: "Uncertain", detected_at: Time.current)
     SpamDetection.create!(blog: blogs(:vivian), status: :clean, reason: "Clean", detected_at: Time.current)
-    SpamDetection.create!(blog: blogs(:annie), status: :spam, reason: "Reviewed", detected_at: Time.current, reviewed: true)
+    SpamDetection.create!(blog: blogs(:annie), status: :spam, reason: "Reviewed", detected_at: Time.current, reviewed_at: Time.current)
 
     needs_review = SpamDetection.needs_review
 

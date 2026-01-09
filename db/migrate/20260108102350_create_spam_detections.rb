@@ -6,7 +6,6 @@ class CreateSpamDetections < ActiveRecord::Migration[8.2]
       t.text :reason
       t.datetime :detected_at
       t.string :model_version
-      t.boolean :reviewed, default: false, null: false
       t.datetime :reviewed_at
 
       t.timestamps
@@ -14,6 +13,5 @@ class CreateSpamDetections < ActiveRecord::Migration[8.2]
 
     add_index :spam_detections, :status
     add_index :spam_detections, [ :blog_id, :detected_at ], order: { detected_at: :desc }
-    add_index :spam_detections, :reviewed
   end
 end

@@ -40,7 +40,7 @@ class SpamDetectionDigestJobTest < ActiveSupport::TestCase
       status: :spam,
       reason: "Reviewed spam",
       detected_at: Time.current,
-      reviewed: true
+      reviewed_at: Time.current
     )
 
     assert_no_enqueued_emails do

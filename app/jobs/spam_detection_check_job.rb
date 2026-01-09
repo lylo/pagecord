@@ -22,7 +22,6 @@ class SpamDetectionCheckJob < ApplicationJob
         reason: result.reason,
         detected_at: Time.current,
         model_version: result.model_version,
-        reviewed: false,
         reviewed_at: nil
       )
     end

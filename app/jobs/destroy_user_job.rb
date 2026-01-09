@@ -23,7 +23,6 @@ class DestroyUserJob < ApplicationJob
         status: :spam,
         reason: "Manually marked as spam by admin",
         detected_at: Time.current,
-        reviewed: true,
         reviewed_at: Time.current
       )
     end

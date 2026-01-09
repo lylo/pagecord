@@ -335,13 +335,11 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_08_102350) do
     t.datetime "detected_at"
     t.string "model_version"
     t.text "reason"
-    t.boolean "reviewed", default: false, null: false
     t.datetime "reviewed_at"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id", "detected_at"], name: "index_spam_detections_on_blog_id_and_detected_at", order: { detected_at: :desc }
     t.index ["blog_id"], name: "index_spam_detections_on_blog_id"
-    t.index ["reviewed"], name: "index_spam_detections_on_reviewed"
     t.index ["status"], name: "index_spam_detections_on_status"
   end
 
