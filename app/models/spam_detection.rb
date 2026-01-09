@@ -3,7 +3,7 @@ class SpamDetection < ApplicationRecord
 
   enum :status, { clean: 0, spam: 1, uncertain: 2, error: 3, skipped: 4 }
 
-  scope :needs_review, -> { where(status: [:spam, :uncertain]).where(reviewed_at: nil) }
+  scope :needs_review, -> { where(status: [ :spam, :uncertain ]).where(reviewed_at: nil) }
   scope :recent, -> { order(detected_at: :desc) }
   scope :today, -> { where("detected_at >= ?", Time.current.beginning_of_day) }
 
