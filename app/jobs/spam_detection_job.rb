@@ -4,7 +4,7 @@ class SpamDetectionJob < ApplicationJob
   DELAY_BETWEEN_CHECKS = 5.seconds
 
   def perform
-    blogs = Blog.where("blogs.created_at >= ?", 7.days.ago)
+    blogs = Blog.where(blogs: { created_at: 7.days.ago..2.hours.ago })
                 .joins(:user)
                 .where(users: { discarded_at: nil })
                 .left_joins(:spam_detection)
