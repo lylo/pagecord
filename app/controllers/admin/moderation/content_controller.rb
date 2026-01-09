@@ -12,7 +12,6 @@ class Admin::Moderation::ContentController < AdminController
           .order("content_moderations.moderated_at DESC"),
       limit: 25
     )
-    @pending_count = Post.moderation_pending.count
   end
 
   def show
