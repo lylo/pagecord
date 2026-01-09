@@ -4,10 +4,8 @@ class ContentModerationJob < ApplicationJob
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
 
   def perform(post_id)
-    post = Post.find_by(id: post_id)
-    return unless post
-    return unless post.published? && !post.hidden? && !post.discarded?
-    return unless post.needs_moderation?
+    post = Post.visible.find_by(id: post_id)
+    return unless post&.needs_moderation?
 
     Rails.logger.info "[ContentModeration] Moderating post #{post.id} (#{post.blog.subdomain})"
 
