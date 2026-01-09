@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_01_08_102350) do
+ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -339,7 +339,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_08_102350) do
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id", "detected_at"], name: "index_spam_detections_on_blog_id_and_detected_at", order: { detected_at: :desc }
-    t.index ["blog_id"], name: "index_spam_detections_on_blog_id"
     t.index ["status"], name: "index_spam_detections_on_status"
   end
 
