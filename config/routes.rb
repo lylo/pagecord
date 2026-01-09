@@ -147,12 +147,21 @@ Rails.application.routes.draw do
         post :restore
       end
     end
-    resources :moderation, only: [ :index, :show ] do
-      member do
-        post :dismiss
-        post :discard
-        post :dismiss_spam
-        post :confirm_spam
+    namespace :moderation do
+      root to: redirect("/admin/moderation/content")
+
+      resources :content, only: [ :index, :show ] do
+        member do
+          post :dismiss
+          post :discard
+        end
+      end
+
+      resources :spam, only: [ :index, :show ] do
+        member do
+          post :dismiss
+          post :confirm
+        end
       end
     end
   end

@@ -11,15 +11,15 @@
   </div>
   <div class="flex space-x-2">
     <%= link_to "Back",
-        admin_moderation_index_path(tab: "spam"),
+        admin_moderation_spam_index_path,
         class: "px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded" %>
     <% unless @spam_detection.reviewed? %>
       <%= button_to "Mark Clean",
-          dismiss_spam_admin_moderation_path(id: @spam_detection.id),
+          dismiss_admin_moderation_spam_path(@spam_detection),
           method: :post,
           class: "px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer" %>
       <%= button_to "Confirm Spam",
-          confirm_spam_admin_moderation_path(id: @spam_detection.id),
+          confirm_admin_moderation_spam_path(@spam_detection),
           method: :post,
           class: "px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer" %>
     <% end %>

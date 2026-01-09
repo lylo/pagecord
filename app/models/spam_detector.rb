@@ -34,30 +34,6 @@ class SpamDetector
     error_result("Detection error")
   end
 
-  def spam?
-    result&.status == :spam
-  end
-
-  def clean?
-    result&.status == :clean
-  end
-
-  def uncertain?
-    result&.status == :uncertain
-  end
-
-  def skipped?
-    result&.status == :skipped
-  end
-
-  def error?
-    result&.status == :error
-  end
-
-  def needs_review?
-    spam? || uncertain?
-  end
-
   private
 
     def should_skip?

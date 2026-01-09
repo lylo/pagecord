@@ -7,15 +7,15 @@
     <%= link_to "View on blog", blog_post_url(subdomain: @post.blog.subdomain, slug: @post.slug), target: "_blank", class: "hover:underline" %>
   </div>
   <div class="flex space-x-2">
-    <%= link_to "← Back", admin_moderation_index_path, class: "px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-gray-200 text-slate-800 dark:text-slate-100 rounded" %>
+    <%= link_to "Back", admin_moderation_content_index_path, class: "px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-gray-200 text-slate-800 dark:text-slate-100 rounded" %>
     <% if @post.discarded? %>
-      <%= button_to "Restore", dismiss_admin_moderation_path(id: @post.id),
+      <%= button_to "Restore", dismiss_admin_moderation_content_path(@post),
           method: :post, class: "px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer",
           data: { turbo_confirm: "Restore this post?" } %>
     <% else %>
-      <%= button_to "Dismiss", dismiss_admin_moderation_path(id: @post.id),
+      <%= button_to "Dismiss", dismiss_admin_moderation_content_path(@post),
           method: :post, class: "px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-gray-200 text-slate-800 dark:text-slate-100 rounded cursor-pointer" %>
-      <%= button_to "Discard", discard_admin_moderation_path(id: @post.id),
+      <%= button_to "Discard", discard_admin_moderation_content_path(@post),
           method: :post, class: "px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer",
           data: { turbo_confirm: "Discard this post?" } %>
     <% end %>

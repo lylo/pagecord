@@ -1,3 +1,5 @@
+<%= render "admin/moderation/shared/tabs" %>
+
 <div class="mb-6">
   <div>
     <%= pluralize(@total_unreviewed, "blog") %> flagged for review.
@@ -21,7 +23,7 @@
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">
               <%= link_to "@#{detection.blog.subdomain}",
-                  admin_moderation_path(id: detection.id, type: "spam"),
+                  admin_moderation_spam_path(detection),
                   class: "hover:underline" %>
             </td>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm">
@@ -38,11 +40,11 @@
             <td class="whitespace-nowrap py-4 sm:ps-4 text-end text-sm">
               <div class="flex justify-end space-x-2">
                 <%= button_to "Mark Clean",
-                    dismiss_spam_admin_moderation_path(id: detection.id),
+                    dismiss_admin_moderation_spam_path(detection),
                     method: :post,
                     class: "px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer" %>
                 <%= button_to "Confirm Spam",
-                    confirm_spam_admin_moderation_path(id: detection.id),
+                    confirm_admin_moderation_spam_path(detection),
                     method: :post,
                     class: "px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer" %>
               </div>

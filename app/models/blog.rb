@@ -17,7 +17,7 @@ class Blog < ApplicationRecord
 
   has_many :exports, class_name: "Blog::Export", dependent: :destroy
   has_many :page_views, dependent: :destroy
-  has_many :spam_detections, dependent: :destroy
+  has_one :spam_detection, dependent: :destroy
 
   has_one_attached :avatar do |attachable|
     attachable.variant :thumb, resize_to_limit: [ 96, 96 ], format: :png

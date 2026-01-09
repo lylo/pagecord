@@ -7,9 +7,8 @@ class SpamDetectionJob < ApplicationJob
     blogs = Blog.where("blogs.created_at >= ?", 7.days.ago)
                 .joins(:user)
                 .where(users: { discarded_at: nil })
-                .includes(user: :subscription, spam_detections: [])
-                .reject { |blog| blog.user.subscribed? }
-                .reject { |blog| skip_blog?(blog) }
+                .includes(user: :subscription, spam_detection: [])
+                .reject { |blog| blog.user.subscribed? || skip_blog?(blog) }
 
     Rails.logger.info "[SpamDetection] Queuing #{blogs.size} blogs for checking"
 
@@ -25,12 +24,14 @@ class SpamDetectionJob < ApplicationJob
   private
 
     def skip_blog?(blog)
+      detection = blog.spam_detection
+      return false unless detection
+
       # Skip if blog has an unreviewed spam/uncertain detection
-      return true if blog.spam_detections.any?(&:needs_review?)
+      return true if detection.needs_review?
 
       # Skip if blog was checked in the last 7 days
-      recent_detection = blog.spam_detections.max_by(&:detected_at)
-      return true if recent_detection && recent_detection.detected_at > 7.days.ago
+      return true if detection.detected_at && detection.detected_at > 7.days.ago
 
       false
     end

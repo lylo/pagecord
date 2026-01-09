@@ -4,13 +4,13 @@ class SpamDetectionDigestJobTest < ActiveSupport::TestCase
   include ActionMailer::TestHelper
 
   setup do
-    @blog = blogs(:joel)
     # Clean up fixtures for isolated testing
     SpamDetection.delete_all
   end
 
   test "sends digest email when there are detections needing review" do
-    @blog.spam_detections.create!(
+    SpamDetection.create!(
+      blog: blogs(:joel),
       status: :spam,
       reason: "Spam detected",
       detected_at: Time.current
@@ -22,7 +22,8 @@ class SpamDetectionDigestJobTest < ActiveSupport::TestCase
   end
 
   test "does not send email when no detections need review" do
-    @blog.spam_detections.create!(
+    SpamDetection.create!(
+      blog: blogs(:joel),
       status: :clean,
       reason: "Clean",
       detected_at: Time.current
@@ -34,7 +35,8 @@ class SpamDetectionDigestJobTest < ActiveSupport::TestCase
   end
 
   test "does not send email when all detections are reviewed" do
-    @blog.spam_detections.create!(
+    SpamDetection.create!(
+      blog: blogs(:joel),
       status: :spam,
       reason: "Reviewed spam",
       detected_at: Time.current,
@@ -47,7 +49,8 @@ class SpamDetectionDigestJobTest < ActiveSupport::TestCase
   end
 
   test "does not send email for yesterday's detections" do
-    @blog.spam_detections.create!(
+    SpamDetection.create!(
+      blog: blogs(:joel),
       status: :spam,
       reason: "Yesterday",
       detected_at: 1.day.ago

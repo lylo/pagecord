@@ -7,6 +7,7 @@ class SpamDetectionCheckJobTest < ActiveSupport::TestCase
     @original_token = ENV["OPENAI_ACCESS_TOKEN"]
     ENV["OPENAI_ACCESS_TOKEN"] = "test_token"
     @blog = blogs(:joel)
+    SpamDetection.delete_all
   end
 
   teardown do
@@ -26,11 +27,11 @@ class SpamDetectionCheckJobTest < ActiveSupport::TestCase
     }
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
-    assert_difference "@blog.spam_detections.count", 1 do
+    assert_difference "SpamDetection.count", 1 do
       SpamDetectionCheckJob.perform_now(@blog.id)
     end
 
-    detection = @blog.spam_detections.last
+    detection = @blog.reload.spam_detection
     assert detection.spam?
     assert_equal "Spam content", detection.reason
     assert_equal "gpt-4o-mini", detection.model_version
@@ -52,7 +53,7 @@ class SpamDetectionCheckJobTest < ActiveSupport::TestCase
 
     SpamDetectionCheckJob.perform_now(@blog.id)
 
-    detection = @blog.spam_detections.last
+    detection = @blog.reload.spam_detection
     assert detection.clean?
   end
 
@@ -88,7 +89,31 @@ class SpamDetectionCheckJobTest < ActiveSupport::TestCase
       SpamDetectionCheckJob.perform_now(empty_blog.id)
     end
 
-    detection = empty_blog.spam_detections.last
+    detection = empty_blog.reload.spam_detection
     assert detection.skipped?
+  end
+
+  test "updates existing detection instead of creating new one" do
+    @blog.create_spam_detection!(status: :clean, reason: "Old", detected_at: 1.day.ago)
+
+    mock_response = {
+      "model" => "gpt-4o-mini",
+      "choices" => [
+        {
+          "message" => {
+            "content" => { classification: "spam", reason: "Now spam" }.to_json
+          }
+        }
+      ]
+    }
+    OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
+
+    assert_no_difference "SpamDetection.count" do
+      SpamDetectionCheckJob.perform_now(@blog.id)
+    end
+
+    detection = @blog.reload.spam_detection
+    assert detection.spam?
+    assert_equal "Now spam", detection.reason
   end
 end

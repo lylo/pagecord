@@ -66,18 +66,11 @@ class ContentModerator
       )
     end
 
+    # Build inputs array for OpenAI moderation API (text + images)
     def build_inputs
       inputs = []
-
-      if @post.moderation_text_payload.present?
-        inputs << { type: "text", text: @post.moderation_text_payload }
-      end
-
-      @post.moderation_image_payloads.each do |image_payload|
-        inputs << image_payload
-      end
-
-      inputs
+      inputs << { type: "text", text: @post.moderation_text_payload } if @post.moderation_text_payload.present?
+      inputs.concat(@post.moderation_image_payloads)
     end
 
     def parse_response(response)

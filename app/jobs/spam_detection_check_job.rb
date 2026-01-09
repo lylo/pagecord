@@ -16,11 +16,14 @@ class SpamDetectionCheckJob < ApplicationJob
   private
 
     def save_detection_result!(blog, result)
-      blog.spam_detections.create!(
+      detection = blog.spam_detection || blog.build_spam_detection
+      detection.update!(
         status: result.status,
         reason: result.reason,
         detected_at: Time.current,
-        model_version: result.model_version
+        model_version: result.model_version,
+        reviewed: false,
+        reviewed_at: nil
       )
     end
 end

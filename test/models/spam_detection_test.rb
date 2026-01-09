@@ -2,18 +2,19 @@ require "test_helper"
 
 class SpamDetectionTest < ActiveSupport::TestCase
   setup do
-    @blog = blogs(:joel)
     # Clean up fixtures for isolated testing
     SpamDetection.delete_all
   end
 
   test "belongs to blog" do
-    detection = SpamDetection.new(blog: @blog, status: :spam, reason: "Test")
-    assert_equal @blog, detection.blog
+    blog = blogs(:joel)
+    detection = SpamDetection.new(blog: blog, status: :spam, reason: "Test")
+    assert_equal blog, detection.blog
   end
 
   test "enum status values" do
-    detection = SpamDetection.new(blog: @blog, reason: "Test")
+    blog = blogs(:joel)
+    detection = SpamDetection.new(blog: blog, reason: "Test")
 
     detection.status = :clean
     assert detection.clean?
@@ -32,10 +33,10 @@ class SpamDetectionTest < ActiveSupport::TestCase
   end
 
   test "needs_review scope returns spam and uncertain that are not reviewed" do
-    @blog.spam_detections.create!(status: :spam, reason: "Spam", detected_at: Time.current)
-    @blog.spam_detections.create!(status: :uncertain, reason: "Uncertain", detected_at: Time.current)
-    @blog.spam_detections.create!(status: :clean, reason: "Clean", detected_at: Time.current)
-    @blog.spam_detections.create!(status: :spam, reason: "Reviewed", detected_at: Time.current, reviewed: true)
+    SpamDetection.create!(blog: blogs(:joel), status: :spam, reason: "Spam", detected_at: Time.current)
+    SpamDetection.create!(blog: blogs(:elliot), status: :uncertain, reason: "Uncertain", detected_at: Time.current)
+    SpamDetection.create!(blog: blogs(:vivian), status: :clean, reason: "Clean", detected_at: Time.current)
+    SpamDetection.create!(blog: blogs(:annie), status: :spam, reason: "Reviewed", detected_at: Time.current, reviewed: true)
 
     needs_review = SpamDetection.needs_review
 
@@ -45,18 +46,18 @@ class SpamDetectionTest < ActiveSupport::TestCase
   end
 
   test "recent scope orders by detected_at desc" do
-    old = @blog.spam_detections.create!(status: :spam, reason: "Old", detected_at: 2.days.ago)
-    new = @blog.spam_detections.create!(status: :spam, reason: "New", detected_at: 1.hour.ago)
+    old = SpamDetection.create!(blog: blogs(:joel), status: :spam, reason: "Old", detected_at: 2.days.ago)
+    new = SpamDetection.create!(blog: blogs(:elliot), status: :spam, reason: "New", detected_at: 1.hour.ago)
 
-    recent = @blog.spam_detections.recent
+    recent = SpamDetection.recent
 
     assert_equal new, recent.first
     assert_equal old, recent.last
   end
 
   test "today scope returns detections from today" do
-    @blog.spam_detections.create!(status: :spam, reason: "Today", detected_at: Time.current)
-    @blog.spam_detections.create!(status: :spam, reason: "Yesterday", detected_at: 1.day.ago)
+    SpamDetection.create!(blog: blogs(:joel), status: :spam, reason: "Today", detected_at: Time.current)
+    SpamDetection.create!(blog: blogs(:elliot), status: :spam, reason: "Yesterday", detected_at: 1.day.ago)
 
     today = SpamDetection.today
 
@@ -65,7 +66,7 @@ class SpamDetectionTest < ActiveSupport::TestCase
   end
 
   test "mark_as_reviewed updates reviewed and reviewed_at" do
-    detection = @blog.spam_detections.create!(status: :spam, reason: "Test", detected_at: Time.current)
+    detection = SpamDetection.create!(blog: blogs(:joel), status: :spam, reason: "Test", detected_at: Time.current)
 
     refute detection.reviewed?
     assert_nil detection.reviewed_at
@@ -74,5 +75,13 @@ class SpamDetectionTest < ActiveSupport::TestCase
 
     assert detection.reviewed?
     assert_not_nil detection.reviewed_at
+  end
+
+  test "blog has_one spam_detection" do
+    blog = blogs(:joel)
+    assert_nil blog.spam_detection
+
+    detection = blog.create_spam_detection!(status: :spam, reason: "Test", detected_at: Time.current)
+    assert_equal detection, blog.reload.spam_detection
   end
 end
