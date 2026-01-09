@@ -1,13 +1,14 @@
 <header>
-  <nav class="py-4 flex justify-between items-center text-slate-900 dark:text-slate-100 font-medium">
+  <nav class="py-4 flex flex-col sm:flex-row justify-between items-center text-slate-900 dark:text-slate-100 font-medium">
     <div>
       <%= link_to root_path, "aria-label": "Pagecord Home" do %>
         <%= inline_svg_tag "logo.svg", class: "w-38 sm:w-46 dark:text-slate-100 text-slate-900" %>
       <% end %>
     </div>
-    <div class="flex items-center space-x-4 me-2 text-sm sm:text-base">
+    <div class="flex items-center mt-4 sm:mt-0 space-x-4 me-2 text-sm sm:text-base">
       <%= link_to "Pricing", root_path(anchor: "pricing"), class: "home-link" %>
       <%= link_to "Features", root_path(anchor: "features"), class: "home-link" %>
+      <%= link_to "Updates", "https://blog.pagecord.com", class: "home-link" %>
       <%= link_to "Log In", login_path, class: "home-link" %>
     </div>
   </nav>
