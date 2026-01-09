@@ -1,12 +1,12 @@
 class App::PostsController < AppController
   include Pagy::Backend
-  include EditorPreparation  # Add this line
+  include EditorPreparation
 
   rescue_from Pagy::OverflowError, with: :redirect_to_first_page
 
   def index
-    posts_query = Current.user.blog.posts.published.order(published_at: :desc)
-    drafts_query = Current.user.blog.posts.draft.order(updated_at: :desc)
+    posts_query = Current.user.blog.posts.kept.published.order(published_at: :desc)
+    drafts_query = Current.user.blog.posts.kept.draft.order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
 
     @search_term = params[:search]
     if @search_term.present?
@@ -22,15 +22,15 @@ class App::PostsController < AppController
 
     @pagy, @posts = pagy(posts_query, limit: 25)
     @drafts = @pagy.page == 1 ? drafts_query.load : []
-    @total_posts_count = Current.user.blog.posts.published.count
+    @total_posts_count = Current.user.blog.posts.kept.published.count
   end
 
   def new
-    @post = Current.user.blog.posts.build(published_at: Time.current)
+    @post = Current.user.blog.posts.build
   end
 
   def edit
-    @post = Current.user.blog.posts.find_by!(token: params[:token])
+    @post = Current.user.blog.posts.kept.find_by!(token: params[:token])
 
     prepare_content_for_editor(@post)
 
@@ -38,7 +38,7 @@ class App::PostsController < AppController
   end
 
   def show
-    @post = Current.user.blog.all_posts.find_by!(token: params[:token])
+    @post = Current.user.blog.all_posts.kept.find_by!(token: params[:token])
     @blog = Current.user.blog
     @user = Current.user
 
@@ -56,7 +56,7 @@ class App::PostsController < AppController
   end
 
   def update
-    @post = Current.user.blog.posts.find_by!(token: params[:token])
+    @post = Current.user.blog.posts.kept.find_by!(token: params[:token])
 
     if @post.update(post_params)
       page = session.delete(:return_to_page)
@@ -70,7 +70,7 @@ class App::PostsController < AppController
   end
 
   def destroy
-    post = Current.user.blog.posts.find_by!(token: params[:token])
+    post = Current.user.blog.posts.kept.find_by!(token: params[:token])
     post.destroy!
 
     redirect_to app_posts_path, notice: "Post was successfully deleted"

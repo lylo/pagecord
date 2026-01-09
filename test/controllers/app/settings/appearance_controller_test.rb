@@ -141,8 +141,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     patch app_settings_appearance_url(@blog), params: { blog: { custom_css: malicious_css } }, as: :turbo_stream
 
     assert_response :unprocessable_entity
-    assert_select ".text-red-500", text: /contains invalid or potentially unsafe content/
-    assert_select "textarea.\\!border-red-500"
+    assert_select ".field-error", text: /contains invalid or potentially unsafe content/
   end
 
   test "should show validation error for invalid @import" do
@@ -152,8 +151,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     patch app_settings_appearance_url(@blog), params: { blog: { custom_css: invalid_css } }, as: :turbo_stream
 
     assert_response :unprocessable_entity
-    assert_select ".text-red-500", text: /contains invalid or potentially unsafe content/
-    assert_select "textarea.\\!border-red-500"
+    assert_select ".field-error", text: /contains invalid or potentially unsafe content/
   end
 
   test "should update custom theme colors" do

@@ -13,7 +13,7 @@ class Blogs::PostsController < Blogs::BaseController
     if request.format.html? && @blog.has_custom_home_page? && !filtered
       @post = @blog.home_page
       if @post&.published? && !@post.pending?
-        return if fresh_when @post, public: true, template: "blogs/posts/show"
+        return if fresh_when etag: etag_for(@post), public: true, template: "blogs/posts/show"
         return render :show
       end
     end
@@ -51,13 +51,14 @@ class Blogs::PostsController < Blogs::BaseController
   # Shows a single post or page by its slug.
   def show
     @post = @blog.all_posts
+      .kept
       .published
       .released
       .with_full_rich_text
       .includes(:upvotes)
       .find_by!(slug: blog_params[:slug])
 
-    fresh_when @post, public: true, template: "blogs/posts/show"
+    fresh_when etag: etag_for(@post), public: true, template: "blogs/posts/show"
   end
 
   # Handle unmatched routes on blog domains
@@ -77,6 +78,10 @@ class Blogs::PostsController < Blogs::BaseController
 
     def page_size
       @blog.title_layout? ? 100 : 15
+    end
+
+    def etag_for(post)
+      post.is_page? ? [ post, @blog.posts.maximum(:updated_at) ] : post
     end
 
     def set_conditional_get_headers

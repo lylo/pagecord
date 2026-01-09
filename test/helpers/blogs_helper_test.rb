@@ -50,4 +50,28 @@ class BlogsHelperTest < ActionView::TestCase
     blog.update! home_page: posts(:about)
     assert_equal "My blog", blog_title(blog)
   end
+
+  test "page_title falls back to updated_at when post has no title or published_at" do
+    blog = blogs(:joel)
+    post = posts(:joel_titleless)
+    post.update_columns(title: nil, published_at: nil)
+
+    @post = post
+    @blog = blog
+
+    assert_nothing_raised { page_title }
+    assert_includes page_title, blog_title(blog)
+    assert_includes page_title, post.display_date_in_user_timezone.to_formatted_s(:long)
+  end
+
+  test "page_title with post that has a title" do
+    blog = blogs(:joel)
+    post = posts(:one)
+    post.title = "My Post Title"
+
+    @post = post
+    @blog = blog
+
+    assert_equal "My Post Title - #{blog.display_name}", page_title
+  end
 end

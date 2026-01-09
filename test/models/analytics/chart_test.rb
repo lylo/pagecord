@@ -52,18 +52,19 @@ class Analytics::ChartTest < ActiveSupport::TestCase
     )
 
     # Create recent pageview (should be used since it's after cutoff)
+    recent_time = Time.current.beginning_of_month
     PageView.create!(
       blog: @blog,
       visitor_hash: "recent_visitor",
       user_agent: "Test Browser",
       is_unique: true,
-      viewed_at: 1.week.ago
+      viewed_at: recent_time
     )
 
     chart_data = @chart.chart_data("year", Date.current.beginning_of_year, nil)
 
-    # Should have data for recent month from pageviews
-    recent_month_data = chart_data.find { |month| month[:date].month == 1.week.ago.month }
-    assert_equal 1, recent_month_data[:unique_page_views]
+    # Should have data for current month from pageviews
+    current_month_data = chart_data.find { |month| month[:date].month == recent_time.month }
+    assert_equal 1, current_month_data[:unique_page_views]
   end
 end

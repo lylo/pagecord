@@ -10,28 +10,16 @@
           data: { autosave_target: "title" }
     %>
 
-    <% if current_features.enabled? :lexxy %>
+    <fieldset>
       <%= form.lexxy_rich_text_area :content,
-        placeholder: "Write your home page content...",
-        class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if home_page.errors[:content].any?}",
-        spellcheck: true,
-        autocorrect: "on",
-        data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
-    <% else %>
-      <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
-        <%= form.rich_text_area :content,
           placeholder: "Write your home page content...",
-          class: "trix-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if home_page.errors[:content].any?}",
+          class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
           spellcheck: true,
-        data: { controller: "autogrow trix", subscribed: Current.user.subscribed?, autosave_target: "content" } %>
-      </div>
-    <% end %>
+          autocorrect: "on",
+          data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
 
-    <% if home_page.errors[:content].any? %>
-      <div class="mt-1 text-xs text-red-500">
-        Content is required
-      </div>
-    <% end %>
+      <div class="field-error"><%= home_page.errors[:content].first if home_page.errors[:content].any? %></div>
+    </fieldset>
 
     <% show_unlink = home_page.persisted? %>
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-8">

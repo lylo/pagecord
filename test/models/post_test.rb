@@ -18,10 +18,16 @@ class PostTest < ActiveSupport::TestCase
     assert_not @post.valid?
   end
 
-  test "published at should be set on create if not provided" do
-    post = blogs(:joel).posts.create! title: "my new post", content: "this is my new post"
+  test "published at should be set on create for published posts" do
+    post = blogs(:joel).posts.create! title: "my new post", content: "this is my new post", status: :published
 
-    assert_equal post.created_at, post.published_at
+    assert post.published_at.present?
+  end
+
+  test "published at should not be set on create for draft posts" do
+    post = blogs(:joel).posts.create! title: "my new post", content: "this is my new post", status: :draft
+
+    assert post.published_at.nil?
   end
 
   test "published at should be set" do
@@ -127,7 +133,7 @@ class PostTest < ActiveSupport::TestCase
 
   test "pages should not trigger open graph image job" do
     blog = blogs(:joel)
-    assert_no_enqueued_jobs do
+    assert_no_enqueued_jobs(only: GenerateOpenGraphImageJob) do
       blog.posts.create!(title: "Test OpenGraph Page", content: "Page content", is_page: true)
     end
   end
@@ -152,6 +158,13 @@ class PostTest < ActiveSupport::TestCase
     assert post.respond_to?(:tags_string=)
     assert Post.respond_to?(:tagged_with)
     assert Post.respond_to?(:all_tags)
+  end
+
+  test "should honor manual published_at when updating a published post" do
+    post = posts(:one)
+    manual_date = 1.year.ago.beginning_of_day
+    post.update!(published_at: manual_date)
+    assert_equal manual_date, post.published_at
   end
 
   test "summary should return truncated text content" do

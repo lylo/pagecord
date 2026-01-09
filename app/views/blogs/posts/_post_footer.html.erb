@@ -3,8 +3,10 @@
 <% end %>
 
 <footer>
-  <%= link_to post_path(post), class: "post-date", data: { turbo_frame: "_top" } do %>
-    <%= local_time post.published_at, format: published_at_date_format %>
+  <%= link_to post_path(post), class: "post-date u-url", data: { turbo_frame: "_top" } do %>
+    <time class="dt-published" datetime="<%= post.published_at.iso8601 %>">
+      <%= local_time post.published_at, format: published_at_date_format %>
+    </time>
   <% end %>
 
   <% if @user.subscribed? %>
@@ -12,6 +14,7 @@
       <% if @user.blog.reply_by_email %>
         <%= link_to new_post_reply_path(post),
                   title: "Reply to this post via email",
+                  aria: { label: "Reply to this post via email" },
                   data: { turbo_frame: "_top" },
                   rel: "nofollow",
                   class: "reply-by-email" do %>
@@ -20,9 +23,7 @@
       <% end %>
 
       <% if @user.blog.show_upvotes? %>
-        <%= turbo_frame_tag dom_id(post, :upvotes) do %>
-          <%= render "upvotes", post: post %>
-        <% end %>
+        <%= render "upvotes", post: post %>
       <% end %>
     </div>
   <% end %>

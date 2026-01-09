@@ -6,30 +6,30 @@
 
   ul {
     list-style-position: outside;
-    list-style-type: disc !important;
+    list-style-type: disc;
     padding-inline-start: 1.625em;
     margin-inline-start: 1.25em;
 
     ul {
-      list-style-type: circle !important;
+      list-style-type: circle;
 
       ul {
-        list-style-type: square !important;
+        list-style-type: square;
       }
     }
   }
 
   ol {
     list-style-position: outside;
-    list-style-type: decimal !important;
+    list-style-type: decimal;
     padding-inline-start: 1.625em;
     margin-inline-start: 1.5em;
 
     ol {
-      list-style-type: lower-alpha !important;
+      list-style-type: lower-alpha;
 
       ol {
-        list-style-type: lower-roman !important;
+        list-style-type: lower-roman;
       }
     }
   }
@@ -38,7 +38,6 @@
     padding-inline-start: 0.375em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
-    line-height: 1.75;
   }
 
   a {
@@ -52,17 +51,17 @@
 
   h1, h2 {
     font-size: 1.5em;
-    line-height: 1.5em;
+    line-height: 1.5;
   }
 
   h3 {
     font-size: 1.25em;
-    line-height: 1.25em;
+    line-height: 1.5;
   }
 
   h4 {
     font-size: 1.125em;
-    line-height: 1.125em;
+    line-height: 1.5;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -137,7 +136,7 @@
     padding: 1.5ch;
     border-radius: 0.5em;
     font-weight: normal;
-    word-break: break-words;
+    overflow-wrap: break-word;
     overflow-x: auto;
 
     ol, ul {

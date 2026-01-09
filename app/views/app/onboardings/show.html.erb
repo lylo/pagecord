@@ -21,20 +21,22 @@
 
   <%= form_with url: app_onboarding_path, model: @blog,
         data: {
+          turbo_scroll: false,
           controller: "save-button",
-          action: "turbo:submit-start->save-button#showMessage"
+          action: "turbo:submit-end->save-button#showMessage"
         } do |form| %>
-    <%= form.text_field :title, placeholder: "Enter a new title...", class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+    <fieldset>
+      <%= form.text_field :title, placeholder: "Enter a new title...", class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+      <div class="field-error"><%= @blog.errors[:title].first if @blog.errors[:title].any? %></div>
+    </fieldset>
 
-    <div class="flex items-center gap-x-2">
-      <%= form.submit "Save",
-        data: {
-          save_button_target: "button",
-          save_button_message_value: "✅ Saved!"
-        },
-        class: "mt-2 btn-primary"
-      %>
-    </div>
+    <%= form.submit "Save",
+      data: {
+        save_button_target: "button",
+        save_button_message_value: "✅ Saved!"
+      },
+      class: "mt-2 btn-primary"
+    %>
   <% end %>
 
   <h2 class="text-xl sm:text-2xl">
@@ -45,34 +47,28 @@
     Your bio will appear at the top of your blog's home page. This is where you'll tell the world all about your blog!
     Emojis and links are recommended! 😊
 
-  <div class="trix-minimal lexxy-minimal">
+  <div class="lexxy-minimal">
     <%= form_with url: app_onboarding_path, model: @blog,
           data: {
+            turbo_scroll: false,
             controller: "save-button",
-            action: "turbo:submit-start->save-button#showMessage"
+            action: "turbo:submit-end->save-button#showMessage"
           } do |form| %>
 
-      <% if current_features.enabled? :lexxy %>
+      <fieldset>
         <%= form.lexxy_rich_text_area :bio,
           placeholder: "add a bio to your profile if you like...",
-          class: "lexxy-content min-h-[150px] prose border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
+          class: "lexxy-content min-h-[150px] border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
           spellcheck: true,
           autocorrect: "on",
           attachments: false,
           data: { controller: "autogrow", subscribed: false } %>
-      <% else %>
-        <%= form.rich_text_area :bio,
-          placeholder: "add a bio to your profile if you like...",
-          class: "trix-content min-h-[150px] border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
-          spellcheck: true,
-          attachments: false,
-          data: { controller: "trix autogrow", subscribed: false } %>
-      <% end %>
+
+        <div id="bio_error" class="field-error"><%= render "bio_error" if @blog.errors[:bio].any? %></div>
+      </fieldset>
+
       <%= form.submit "Save",
-        data: {
-          save_button_target: "button",
-          save_button_message_value: "✅ Saved!"
-        },
+        data: { save_button_target: "button" },
         class: "mt-2 btn-primary"
       %>
     <% end %>

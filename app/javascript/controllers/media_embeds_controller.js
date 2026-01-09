@@ -22,9 +22,22 @@ export default class extends Controller {
 
     for (const article of articles) {
       const links = Array.from(article.querySelectorAll('a'))
-        .filter(link => link.href === link.textContent.trim())
+        .filter(link => this.isBareLink(link))
 
       await Promise.all(links.map(link => this.processLink(link)))
+    }
+  }
+
+  isBareLink(link) {
+    const text = link.textContent.trim()
+    if (link.href === text) return true
+
+    try {
+      const hrefUrl = new URL(link.href)
+      const textUrl = new URL(text)
+      return hrefUrl.origin + hrefUrl.pathname === textUrl.origin + textUrl.pathname
+    } catch {
+      return false
     }
   }
 

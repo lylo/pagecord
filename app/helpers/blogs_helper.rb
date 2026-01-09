@@ -16,7 +16,7 @@ module BlogsHelper
       elsif @post.title&.present?
         "#{@post.title} - #{@post.blog.display_name}"
       else
-        "#{blog_title(@post.blog)} - #{@post.published_at_in_user_timezone.to_formatted_s(:long)}"
+        "#{blog_title(@post.blog)} - #{@post.display_date_in_user_timezone.to_formatted_s(:long)}"
       end
     elsif @blog
       blog_title(@blog)

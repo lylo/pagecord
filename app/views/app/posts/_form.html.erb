@@ -33,16 +33,12 @@
       <%= form.label :slug, "Slug" %>
       </div>
 
-      <div class="mt-2">
+      <fieldset class="mt-2">
         <%= form.text_field :slug,
-            class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg #{'!border-red-500' if @post.errors[:slug].any?}",
+            class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
             placeholder: "custom-url-path" %>
-        <% if @post.errors[:slug].any? %>
-          <div class="mt-1 text-xs text-red-500">
-            <%= @post.errors[:slug].to_sentence %>
-          </div>
-        <% end %>
-      </div>
+        <div class="field-error"><%= @post.errors[:slug].to_sentence if @post.errors[:slug].any? %></div>
+      </fieldset>
     </div>
 
     <div class="hidden mb-8" data-post-attributes-target="section" data-section="canonical-url">
@@ -98,28 +94,16 @@
       data: { autosave_target: "title" }
     %>
 
-    <% if current_features.enabled? :lexxy %>
+    <fieldset>
       <%= form.lexxy_rich_text_area :content,
         placeholder: "Craft your draft...",
-        class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @post.errors[:content].any?}",
+        class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
         spellcheck: true,
         autocorrect: "on",
         data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
-    <% else %>
-      <div class="trix-container <%= 'trix-no-attachments' unless Current.user.subscribed? %>">
-        <%= form.rich_text_area :content,
-          placeholder: "Craft your draft...",
-          class: "trix-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400 #{'!border-red-500' if @post.errors[:content].any?}",
-          spellcheck: true,
-          data: { controller: "autogrow trix", subscribed: Current.user.subscribed?, autosave_target: "content" }
-        %>
-        </div>
-    <% end %>
-    <% if @post.errors[:content].any? %>
-      <div class="mt-1 text-xs text-red-500">
-        A body is required
-      </div>
-    <% end %>
+
+      <div class="field-error"><%= @post.errors[:content].first if @post.errors[:content].any? %></div>
+    </fieldset>
 
     <div class="flex items-center justify-between mt-8">
       <div>

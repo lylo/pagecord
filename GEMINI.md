@@ -66,6 +66,7 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 - **Whitespace**: Remove trailing whitespace.
 - **Component Pattern**: Check existing implementations before creating new ones.
 - **Method Complexity**: Keep methods simple.
+- **No Line Numbers**: Never include line numbers (e.g., 1:, 2:) in code snippets or console queries provided to the user.
 
 ## Development Commands
 
@@ -113,6 +114,17 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 - **Email processing**: ActionMailbox with `PostsMailbox` for creating posts from emails.
 
 ### Key Features
+- **Content Moderation**: Automated post moderation using OpenAI.
+    - **Models**: `ContentModeration` (stores results), `ContentModerator` (service class), `Post::Moderatable` (concern).
+    - **Flow**: `ContentModerationBatchJob` (hourly) finds posts needing moderation -> `ContentModerationJob` -> OpenAI API -> Flags/Cleans.
+    - **Actions**: Flagged posts remain visible for admin review. Daily digest email with flagged post count.
+    - **Admin**: `Admin::Moderation::ContentController` for reviewing flagged content (dismiss or discard).
+- **Spam Detection**: New blog screening using GPT-4o-mini.
+    - **Models**: `SpamDetection` (stores results), `SpamDetector` (service class).
+    - **Flow**: `SpamDetectionJob` (daily) finds blogs 2 hours to 7 days old without existing check -> `SpamDetectionCheckJob` -> GPT-4o-mini -> Flags spam/uncertain.
+    - **Timing**: Waits 2+ hours after blog creation so spammers have time to reveal themselves.
+    - **Skips**: Subscribed users are not checked.
+    - **Admin**: `Admin::Moderation::SpamController` for reviewing spam detections (confirm discards user, dismiss clears flag).
 - **Email-to-blog**: Primary posting method via ActionMailbox.
 - **Custom Domains**: Premium feature using Hatchbox API.
 - **Rich Text**: ActionText for post content.
@@ -181,15 +193,15 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
     5. `Html::ExtractTags`
     6. `Html::Sanitize`
 
-### Custom Tags (Pika/BearBlog Compatible)
-- **Syntax**: `{{ }}` (legacy `{% %}` for backwards compatibility).
-- **Available Tags**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}`.
-    - `posts` tag options: `limit`, `tag`, `year`.
-    - `tags` tag options: `style: inline`.
-- **Implementation**: `CustomTagProcessor` service (`app/services/custom_tag_processor.rb`).
+### Dynamic Variables for Pages
+- **Syntax**: `{{ }}` (similar to Pika and BearBlog).
+- **Available Variables**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}`.
+    - `posts` options: `limit`, `tag`, `year`.
+    - `tags` options: `style: inline`.
+- **Implementation**: `DynamicVariableProcessor` model (`app/models/dynamic_variable_processor.rb`).
 - **Performance**: Uses `.visible` scope and ordering to prevent N+1.
 - **Usage**: Processed only in pages (`is_page: true`).
-- **Error Handling**: Unknown tags appear literally.
+- **Error Handling**: Unknown variables appear literally.
 - **Testing**: Integration tests in `test/integration/custom_tags_rendering_test.rb`.
 - **Disable prefetch**: Add `data: { turbo_prefetch: false }` to links in archive pages.
 

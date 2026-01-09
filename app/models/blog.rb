@@ -17,6 +17,7 @@ class Blog < ApplicationRecord
 
   has_many :exports, class_name: "Blog::Export", dependent: :destroy
   has_many :page_views, dependent: :destroy
+  has_one :spam_detection, dependent: :destroy
 
   has_one_attached :avatar do |attachable|
     attachable.variant :thumb, resize_to_limit: [ 96, 96 ], format: :png
@@ -26,6 +27,7 @@ class Blog < ApplicationRecord
   validate :bio_length
 
   before_validation :downcase_subdomain
+  after_update :touch_posts_if_settings_changed
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
@@ -62,6 +64,12 @@ class Blog < ApplicationRecord
 
       if Subdomain.reserved?(subdomain)
         errors.add(:subdomain, "is reserved")
+      end
+    end
+
+    def touch_posts_if_settings_changed
+      if saved_change_to_reply_by_email? || saved_change_to_show_upvotes?
+        posts.touch_all
       end
     end
 end

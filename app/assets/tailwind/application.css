@@ -39,12 +39,7 @@
 }
 
 @layer base {
-  trix-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    @apply bg-white dark:bg-slate-900;
-  }
+
 }
 
 hr {
@@ -79,5 +74,3 @@ a:not([href]), a:not([href]):hover { /* disabled links */
 .pagy label input {
   @apply bg-slate-100 border-none rounded-md;
 }
-
-@import "../stylesheets/actiontext.css";

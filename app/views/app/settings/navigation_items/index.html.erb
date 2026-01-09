@@ -55,62 +55,45 @@
         </div>
 
         <div data-navigation-form-target="customFields" class="space-y-4 <%= 'hidden' if selected_type != 'custom' %>">
-          <div>
+          <fieldset>
             <%= form.label :label, "Label", class: "block font-medium mb-2" %>
             <%= form.text_field :label,
                 placeholder: "e.g., Posts, Archive, Blog",
-                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 #{'!border-red-500' if @navigation_item&.errors&.[](:label)&.any?}" %>
-            <% if @navigation_item&.errors&.[](:label)&.any? %>
-              <div class="mt-1 text-xs text-red-500">
-                <%= @navigation_item.errors[:label].to_sentence %>
-              </div>
-            <% end %>
-          </div>
+                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200" %>
+            <div class="field-error"><%= @navigation_item.errors[:label].to_sentence if @navigation_item&.errors&.[](:label)&.any? %></div>
+          </fieldset>
 
-          <div>
+          <fieldset>
             <%= form.label :url, "URL", class: "block font-medium mb-2" %>
             <%= form.text_field :url,
                 placeholder: "e.g., /posts, /archive, https://example.com",
-                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 #{'!border-red-500' if @navigation_item&.errors&.[](:url)&.any?}" %>
-            <% if @navigation_item&.errors&.[](:url)&.any? %>
-              <div class="mt-1 text-xs text-red-500">
-                <%= @navigation_item.errors[:url].to_sentence %>
-              </div>
-            <% else %>
-              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Use relative paths (e.g., /posts) or full URLs (https://...)
-              </p>
-            <% end %>
-          </div>
+                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200" %>
+            <div class="field-error"><%= @navigation_item.errors[:url].to_sentence if @navigation_item&.errors&.[](:url)&.any? %></div>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              Use relative paths (e.g., /posts) or full URLs (https://...)
+            </p>
+          </fieldset>
         </div>
 
         <div data-navigation-form-target="socialFields" class="space-y-4 <%= 'hidden' if selected_type != 'social' %>">
-          <div>
+          <fieldset>
             <%= form.label :platform, "Platform", class: "block font-medium mb-2" %>
             <%= form.select :platform,
                 options_for_select(SocialNavigationItem::PLATFORMS, @navigation_item&.platform),
                 { include_blank: "Select platform..." },
-                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 #{'!border-red-500' if @navigation_item&.errors&.[](:platform)&.any?}",
+                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200",
                 data: { navigation_form_target: "platform", action: "change->navigation-form#handlePlatformChange" } %>
-            <% if @navigation_item&.errors&.[](:platform)&.any? %>
-              <div class="mt-1 text-xs text-red-500">
-                <%= @navigation_item.errors[:platform].to_sentence %>
-              </div>
-            <% end %>
-          </div>
+            <div class="field-error"><%= @navigation_item.errors[:platform].to_sentence if @navigation_item&.errors&.[](:platform)&.any? %></div>
+          </fieldset>
 
-          <div>
+          <fieldset>
             <%= form.label :url, "URL", class: "block font-medium mb-2" %>
             <%= form.text_field :url,
                 placeholder: "https://...",
-                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 #{'!border-red-500' if @navigation_item&.errors&.[](:url)&.any?}",
+                class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200",
                 data: { navigation_form_target: "url" } %>
-            <% if @navigation_item&.errors&.[](:url)&.any? %>
-              <div class="mt-1 text-xs text-red-500">
-                <%= @navigation_item.errors[:url].to_sentence %>
-              </div>
-            <% end %>
-          </div>
+            <div class="field-error"><%= @navigation_item.errors[:url].to_sentence if @navigation_item&.errors&.[](:url)&.any? %></div>
+          </fieldset>
         </div>
 
         <div>

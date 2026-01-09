@@ -1,36 +1,33 @@
 <%= form_with url: signups_path, model: @user, data: { controller: "timezone", turbo: "false" }, class: "mt-6 space-y-6" do |form| %>
-  <div>
+  <fieldset>
     <label class="block text-base font-semibold text-slate-700 dark:text-slate-200 mb-2.5">Choose your subdomain</label>
     <div class="flex items-center gap-1.5">
       <%= form.fields_for :blog do |blog_form| %>
         <%= blog_form.text_field :subdomain,
             placeholder: "subdomain",
             autofocus: true,
-            class: "px-3 py-2.5 form-field rounded-lg flex-shrink min-w-0 #{'!border-red-500' if @user.blog.errors[:subdomain].any?}",
+            class: "px-3 py-2.5 form-field rounded-lg flex-shrink min-w-0",
             maxlength: 20,
             required: true %>
       <% end %>
       <span class="font-medium text-slate-700 dark:text-slate-300 flex-shrink-0">.pagecord.com</span>
     </div>
-    <% if has_field_error?(@user.blog, :subdomain) %>
-      <%= field_error(@user.blog, :subdomain) %>
-    <% else %>
-      <p class="text-slate-500 dark:text-slate-400 text-sm mt-1.5">
-        This will be part of your blog's URL (subdomain.pagecord.com). Letters and numbers only.
-      </p>
-    <% end %>
-  </div>
+    <%= field_error(@user.blog, :subdomain) %>
+    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1.5">
+      This will be part of your blog's URL (subdomain.pagecord.com). Letters and numbers only.
+    </p>
+  </fieldset>
 
-  <div>
+  <fieldset>
     <label class="block text-base font-semibold text-slate-700 dark:text-slate-200 mb-2.5">Email address</label>
     <%= form.email_field :email,
         placeholder: "you@example.com",
         required: true,
-        class: "w-full sm:w-96 px-3 py-2.5 form-field rounded-lg #{'!border-red-500' if @user.errors[:email].any?}" %>
+        class: "w-full sm:w-96 px-3 py-2.5 form-field rounded-lg" %>
     <%= field_error(@user, :email) %>
     <%= render "/shared/spam_prevention" %>
     <%= form.hidden_field :timezone, data: { timezone_target: "timeZone" } %>
-  </div>
+  </fieldset>
 
   <details class="w-full sm:w-auto border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-slate-50 dark:bg-slate-800/50 group" <%= 'open' if @user.errors[:password].any? || @user.errors[:password_confirmation].any? %>>
     <summary class="flex items-center justify-between cursor-pointer list-none">
@@ -44,21 +41,21 @@
     </summary>
 
     <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div>
+      <fieldset>
         <label class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Password</label>
         <%= form.password_field :password,
-            class: "w-full px-3 py-2.5 form-field rounded-lg #{'!border-red-500' if @user.errors[:password].any?}",
+            class: "w-full px-3 py-2.5 form-field rounded-lg",
             placeholder: "Minimum 12 characters" %>
         <%= field_error(@user, :password) %>
-      </div>
+      </fieldset>
 
-      <div>
+      <fieldset>
         <label class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Confirm password</label>
         <%= form.password_field :password_confirmation,
-            class: "w-full px-3 py-2.5 form-field rounded-lg #{'!border-red-500' if @user.errors[:password_confirmation].any?}",
+            class: "w-full px-3 py-2.5 form-field rounded-lg",
             placeholder: "Re-enter your password" %>
         <%= field_error(@user, :password_confirmation) %>
-      </div>
+      </fieldset>
     </div>
   </details>
 
@@ -85,5 +82,8 @@
 
   <div class="mt-8">
     <%= form.submit "Create account", class: "btn-primary cursor-pointer" %>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mt-3">
+      By creating an account, you agree to our <%= link_to "Terms", terms_path, class: "underline hover:text-slate-700 dark:hover:text-slate-300" %> and <%= link_to "Privacy Policy", privacy_path, class: "underline hover:text-slate-700 dark:hover:text-slate-300" %>.
+    </p>
   </div>
 <% end %>

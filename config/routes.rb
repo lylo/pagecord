@@ -147,6 +147,23 @@ Rails.application.routes.draw do
         post :restore
       end
     end
+    namespace :moderation do
+      root to: redirect("/admin/moderation/content")
+
+      resources :content, only: [ :index, :show ] do
+        member do
+          post :dismiss
+          post :discard
+        end
+      end
+
+      resources :spam, only: [ :index, :show ] do
+        member do
+          post :dismiss
+          post :confirm
+        end
+      end
+    end
   end
 
   constraints(->(request) { !DomainConstraints.default_domain?(request) }) do

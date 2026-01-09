@@ -25,7 +25,7 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
     assert_match %r{src="images/[^/]+/test_image\.jpg"}, processed_html
   end
 
-  test "failed image download raises exception" do
+  test "failed image download does not raise exception" do
     @image_handler.stubs(:download_image)
       .with("http://example.com/test%20image.jpg", regexp_matches(/test_image\.jpg$/))
       .raises(StandardError, "Download failed")
@@ -33,8 +33,7 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
     Sentry.expects(:capture_exception)
       .with(instance_of(StandardError), has_entries(extra: has_entries(post_slug: @post.slug, image_src: "http://example.com/test%20image.jpg")))
 
-    # Should raise the exception instead of silently continuing
-    assert_raises(StandardError, "Download failed") do
+    assert_nothing_raised do
       @image_handler.process_images(@post.content.body.to_s)
     end
   end

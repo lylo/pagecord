@@ -1,23 +1,19 @@
-Rails.application.config.after_initialize do
-  # Add custom attributes to ActionText's allowed list
-  base_attributes = ActionText::ContentHelper.sanitizer.class.allowed_attributes
-  attachment_attributes = ActionText::Attachment::ATTRIBUTES
-  ActionText::ContentHelper.allowed_attributes = base_attributes + attachment_attributes + [
-    "data-lightbox-full-url",
-    "data-language",
-    "data-highlight-language",
-    "style",
-    "controls",
-    "poster",
-    "playsinline"
-  ]
+# Add custom tags and attributes to ActionText's allowed list
+# Prepend to sanitizer_allowed_tags to always include our custom tags
+# regardless of when Lexxy sets allowed_tags
+module ActionTextCustomTags
+  CUSTOM_TAGS = %w[s u mark].freeze
+  CUSTOM_ATTRIBUTES = %w[data-lightbox-full-url data-highlight-language playsinline].freeze
 
-  # Rails 8.2 changed ActionText to use HTML4 sanitizer instead of HTML5 sanitizer
-  # The HTML4 sanitizer doesn't include several tags we need in its defaults
-  # Add them directly to the sanitizer's class-level allowed_tags so ActionText picks them up
-  Rails::HTML4::SafeListSanitizer.allowed_tags.merge([ "s", "u", "video", "source", "audio", "mark" ])
+  def sanitizer_allowed_tags
+    super + CUSTOM_TAGS
+  end
 
-  # Allow var() CSS function for lexxy color highlighting
-  # Lexxy uses CSS variables like var(--highlight-bg-5) for text highlighting
-  Loofah::HTML5::SafeList::ALLOWED_CSS_FUNCTIONS.add("var")
+  def sanitizer_allowed_attributes
+    super + CUSTOM_ATTRIBUTES
+  end
+end
+
+ActiveSupport.on_load(:action_text_content) do
+  ActionText::ContentHelper.prepend(ActionTextCustomTags)
 end

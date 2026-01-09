@@ -4,6 +4,7 @@ class Admin::AnalyticsController < AdminController
     @date = parse_date(@view_type, params[:date])
 
     @top_posts = top_posts_with_view_counts
+    @top_pages = top_pages_with_view_counts
     @top_blogs = top_blogs_with_view_counts
     @top_blogs_by_subscribers = top_blogs_with_subscriber_counts
   end
@@ -46,24 +47,31 @@ class Admin::AnalyticsController < AdminController
       end
     end
 
-    def top_posts_with_view_counts
-      # Get all posts with their total view counts (PageViews + Rollups) for the selected period
+    def top_pages_with_view_counts
+      top_posts_with_view_counts(is_page: true)
+    end
+
+    def top_posts_with_view_counts(is_page: false)
+      # Get posts/pages with their total view counts (PageViews + Rollups) for the selected period
       post_view_counts = {}
       start_time, end_time = date_range_for_view_type
 
       # Add PageView counts for the period
       PageView.joins(:post)
-        .where(is_unique: true, viewed_at: start_time..end_time)
+        .where(posts: { is_page: is_page }, is_unique: true, viewed_at: start_time..end_time)
         .group("posts.id")
         .count
         .each { |post_id, count| post_view_counts[post_id] = count }
 
-      # Add Rollup counts for the period
+      # Get relevant post IDs for filtering rollups
+      relevant_post_ids = Post.where(is_page: is_page).pluck(:id).map(&:to_s)
+
+      # Add Rollup counts for the period (filtered to relevant posts)
       Rollup.where(name: "unique_views_by_blog_post", time: start_time..end_time)
         .group("dimensions->>'post_id'")
         .sum(:value)
         .each do |post_id_string, count|
-          next unless post_id_string
+          next unless post_id_string && relevant_post_ids.include?(post_id_string)
           post_id = post_id_string.to_i
           post_view_counts[post_id] = (post_view_counts[post_id] || 0) + count.to_i
         end

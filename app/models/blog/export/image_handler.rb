@@ -28,7 +28,6 @@ class Blog::Export::ImageHandler
       message = "Blog::Export::ImageHandler. Unable to process image #{src} for post #{@post.slug}: #{e.class} - #{e.message}"
       Rails.logger.error message
       Sentry.capture_exception(e, extra: { post_slug: @post.slug, image_src: src })
-      raise e  # Re-raise to fail the export
     end
 
     def sanitized_filename(url)

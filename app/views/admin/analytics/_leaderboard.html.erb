@@ -1,0 +1,42 @@
+<div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
+  <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+    <%= title %>
+    <% if defined?(subtitle) && subtitle %>
+      <div class="text-sm font-normal text-slate-600 dark:text-slate-400"><%= subtitle %></div>
+    <% end %>
+  </h3>
+
+  <% if items.any? %>
+    <div class="space-y-3">
+      <% max_count = items.first[:count] %>
+      <% items.each_with_index do |item, index| %>
+        <div class="flex items-start justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
+          <div class="flex items-start space-x-3 flex-1 min-w-0">
+            <span class="text-sm font-mono text-slate-400 w-6 text-center flex-shrink-0 mt-0.5">
+              <%= index + 1 %>
+            </span>
+            <div class="flex flex-col min-w-0 flex-1">
+              <%= link_to item[:name], item[:url], target: "_blank", class: "text-sm font-medium hover:underline truncate" %>
+              <span class="text-xs text-slate-500 dark:text-slate-400">
+                <%= link_to item[:subtitle], item[:subtitle_url], target: "_blank", class: "hover:underline" %>
+              </span>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
+            <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
+              <% width = (item[:count].to_f / max_count * 100).round(1) %>
+              <div class="rounded-full h-2 transition-all duration-300" style="width: <%= width %>%; background-color: #56cda9"></div>
+            </div>
+            <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
+              <%= number_with_delimiter(item[:count].to_i) %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-8 text-slate-500 dark:text-slate-400">
+      <%= empty_message %>
+    </div>
+  <% end %>
+</div>

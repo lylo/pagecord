@@ -23,7 +23,7 @@ module CssSanitizable
 
       # Use custom CSS sanitizer that handles XSS prevention,
       # @import whitelisting for Google Fonts, and CSS custom properties
-      sanitized = CssSanitizer.sanitize_stylesheet(custom_css)
+      sanitized = Css::Sanitizer.sanitize_stylesheet(custom_css)
 
       # Normalize for comparison (browsers may send \r\n)
       original_normalized = custom_css.gsub("\r\n", "\n").strip

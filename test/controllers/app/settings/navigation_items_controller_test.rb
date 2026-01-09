@@ -85,7 +85,7 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     end
 
     assert_response :unprocessable_entity
-    assert_select ".text-red-500", /can't be blank/
+    assert_select ".field-error", /can't be blank/
   end
 
   test "create social navigation with validation errors uses navigation_item params" do
@@ -100,7 +100,7 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     end
 
     assert_response :unprocessable_entity
-    assert_select ".text-red-500", /can't be blank/
+    assert_select ".field-error", /can't be blank/
   end
 
   test "create page navigation with validation errors uses navigation_item params" do

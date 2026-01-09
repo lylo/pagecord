@@ -2,7 +2,7 @@
   <div class="my-8">
 
     <p class="mb-8">
-      <% if @posts.empty? && @search_term.blank? %>
+      <% if @posts.empty? && @drafts.empty? && @search_term.blank? %>
         <div class="sm:flex gap-4">
           <div class="sm:flex-1 sm:min-w-0">
             <p>
@@ -24,7 +24,7 @@
 
         <div data-controller="search">
           <div class="flex items-center justify-end gap-2 mb-4">
-            <button data-action="click->search#toggle" class="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer" title="Search posts">
+            <button data-action="click->search#toggle" class="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer" title="Search posts" aria-label="Search posts">
 <%= inline_svg_tag "icons/search.svg", class: "w-5 h-5" %>
             </button>
 
@@ -37,7 +37,7 @@
                 <%= form.text_field :search, value: @search_term, placeholder: "Search posts...",
                     data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
                     class: "w-full px-4 py-2 pr-12 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400" %>
-<button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Close search">
+<button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Close search" aria-label="Close search">
                   <%= inline_svg_tag "icons/close.svg", class: "w-5 h-5" %>
                 </button>
               </div>
