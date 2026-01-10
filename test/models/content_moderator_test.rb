@@ -79,11 +79,25 @@ class ContentModeratorTest < ActiveSupport::TestCase
     assert_in_delta 0.9, moderator.result.scores["violence"], 0.001
   end
 
-  test "moderate raises on API failure" do
+  test "moderate returns error on API failure" do
     OpenAI::Client.any_instance.stubs(:moderations).raises(Faraday::Error.new("Connection failed"))
 
     moderator = ContentModerator.new(@post)
-    assert_raises(Faraday::Error) { moderator.moderate }
+    moderator.moderate
+
+    assert_equal :error, moderator.result.status
+    assert moderator.error?
+    assert_equal "Moderation API error", moderator.result.flags[:error]
+  end
+
+  test "moderate returns error on bad request" do
+    OpenAI::Client.any_instance.stubs(:moderations).raises(Faraday::BadRequestError.new("Invalid input"))
+
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :error, moderator.result.status
+    assert_equal "Invalid request to moderation API", moderator.result.flags[:error]
   end
 
   test "moderate returns error when missing access token" do

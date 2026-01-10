@@ -1,6 +1,8 @@
 module Post::Moderatable
   extend ActiveSupport::Concern
 
+  MAX_MODERATION_IMAGES = 3
+
   included do
     has_one :content_moderation, dependent: :destroy
 
@@ -53,11 +55,13 @@ module Post::Moderatable
       end.sort
     end
 
-    # Limit to 5 images to stay within OpenAI payload limits and manage memory.
     def moderation_images
       images = []
       images += content_image_attachments if content.body.present?
       images += attachments.select(&:image?)
-      images.uniq { |a| a.respond_to?(:blob) ? a.blob.id : a.id }.first(5)
+
+      images
+        .uniq { |a| a.respond_to?(:blob) ? a.blob.id : a.id }
+        .first(MAX_MODERATION_IMAGES)
     end
 end

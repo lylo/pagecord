@@ -27,6 +27,15 @@ class ContentModerator
 
     response = call_moderation_api
     parse_response(response)
+  rescue Faraday::BadRequestError => e
+    Rails.logger.error("[ContentModeration] Bad request for post #{@post.id}: #{e.message}")
+    error_result("Invalid request to moderation API")
+  rescue Faraday::Error => e
+    Rails.logger.error("[ContentModeration] API error for post #{@post.id}: #{e.class} - #{e.message}")
+    error_result("Moderation API error")
+  rescue StandardError => e
+    Rails.logger.error("[ContentModeration] Unexpected error for post #{@post.id}: #{e.class} - #{e.message}")
+    error_result("Unexpected error")
   end
 
   def flagged?
