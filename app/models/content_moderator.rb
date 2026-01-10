@@ -1,5 +1,7 @@
 class ContentModerator
-  Result = Struct.new(:status, :flags, :model_version, keyword_init: true)
+  Result = Struct.new(:status, :flags, :scores, :model_version, keyword_init: true)
+
+  SCORE_THRESHOLD = 0.8
 
   CATEGORIES = %w[
     sexual sexual/minors harassment harassment/threatening
@@ -67,33 +69,36 @@ class ContentModerator
       results = response.dig("results")
       return error_result("Empty response from API") if results.blank?
 
-      aggregated_flags = aggregate_flags(results)
-      flagged = aggregated_flags.values.any? { |v| v == true }
+      aggregated = aggregate_scores(results)
+      flagged = aggregated[:flags].values.any?
 
       @result = Result.new(
         status: flagged ? :flagged : :clean,
-        flags: aggregated_flags,
+        flags: aggregated[:flags],
+        scores: aggregated[:scores],
         model_version: response.dig("model") || MODEL
       )
     end
 
-    def aggregate_flags(results)
-      flags = CATEGORIES.to_h { |cat| [ cat, false ] }
+    def aggregate_scores(results)
+      scores = CATEGORIES.to_h { |cat| [ cat, 0.0 ] }
 
       results.each do |result|
-        categories = result.dig("categories") || {}
-        categories.each do |category, flagged_value|
-          flags[category] = true if flagged_value && CATEGORIES.include?(category)
+        category_scores = result.dig("category_scores") || {}
+        category_scores.each do |category, score|
+          scores[category] = [ scores[category], score ].max if CATEGORIES.include?(category)
         end
       end
 
-      flags
+      flags = scores.transform_values { |score| score >= SCORE_THRESHOLD }
+      { flags: flags, scores: scores }
     end
 
     def error_result(reason)
       @result = Result.new(
         status: :error,
         flags: { error: reason },
+        scores: {},
         model_version: nil
       )
     end

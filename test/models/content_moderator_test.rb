@@ -17,7 +17,7 @@ class ContentModeratorTest < ActiveSupport::TestCase
     mock_response = {
       "results" => [
         {
-          "categories" => { "sexual" => false, "violence" => false, "hate" => false },
+          "category_scores" => { "sexual" => 0.01, "violence" => 0.02, "hate" => 0.005 },
           "flagged" => false
         }
       ],
@@ -39,7 +39,7 @@ class ContentModeratorTest < ActiveSupport::TestCase
     mock_response = {
       "results" => [
         {
-          "categories" => { "sexual" => true, "violence" => false, "hate" => false },
+          "category_scores" => { "sexual" => 0.85, "violence" => 0.01, "hate" => 0.02 },
           "flagged" => true
         }
       ],
@@ -55,13 +55,14 @@ class ContentModeratorTest < ActiveSupport::TestCase
     assert moderator.flagged?
     refute moderator.clean?
     assert_equal true, moderator.result.flags["sexual"]
+    assert_in_delta 0.85, moderator.result.scores["sexual"], 0.001
   end
 
-  test "moderate aggregates flags from multiple results" do
+  test "moderate aggregates scores from multiple results taking max" do
     mock_response = {
       "results" => [
-        { "categories" => { "sexual" => false, "violence" => true }, "flagged" => true },
-        { "categories" => { "sexual" => true, "violence" => false }, "flagged" => true }
+        { "category_scores" => { "sexual" => 0.3, "violence" => 0.9 }, "flagged" => true },
+        { "category_scores" => { "sexual" => 0.85, "violence" => 0.1 }, "flagged" => true }
       ],
       "model" => "omni-moderation-2024-09-26"
     }
@@ -74,6 +75,8 @@ class ContentModeratorTest < ActiveSupport::TestCase
     assert_equal :flagged, moderator.result.status
     assert_equal true, moderator.result.flags["sexual"]
     assert_equal true, moderator.result.flags["violence"]
+    assert_in_delta 0.85, moderator.result.scores["sexual"], 0.001
+    assert_in_delta 0.9, moderator.result.scores["violence"], 0.001
   end
 
   test "moderate raises on API failure" do
@@ -113,5 +116,40 @@ class ContentModeratorTest < ActiveSupport::TestCase
 
     assert_equal :error, moderator.result.status
     assert_equal "Empty response from API", moderator.result.flags[:error]
+  end
+
+  test "score just below threshold returns clean" do
+    mock_response = {
+      "results" => [
+        { "category_scores" => { "violence" => 0.79 } }
+      ],
+      "model" => "omni-moderation-2024-09-26"
+    }
+
+    OpenAI::Client.any_instance.stubs(:moderations).returns(mock_response)
+
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :clean, moderator.result.status
+    assert_equal false, moderator.result.flags["violence"]
+    assert_in_delta 0.79, moderator.result.scores["violence"], 0.001
+  end
+
+  test "score at threshold returns flagged" do
+    mock_response = {
+      "results" => [
+        { "category_scores" => { "violence" => 0.80 } }
+      ],
+      "model" => "omni-moderation-2024-09-26"
+    }
+
+    OpenAI::Client.any_instance.stubs(:moderations).returns(mock_response)
+
+    moderator = ContentModerator.new(@post)
+    moderator.moderate
+
+    assert_equal :flagged, moderator.result.status
+    assert_equal true, moderator.result.flags["violence"]
   end
 end

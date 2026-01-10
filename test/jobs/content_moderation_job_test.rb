@@ -47,6 +47,7 @@ class ContentModerationJobTest < ActiveJob::TestCase
     result = ContentModerator::Result.new(
       status: :clean,
       flags: { "sexual" => false },
+      scores: { "sexual" => 0.01 },
       model_version: "test"
     )
     ContentModerator.any_instance.stubs(:moderate)
@@ -60,12 +61,14 @@ class ContentModerationJobTest < ActiveJob::TestCase
     assert @post.content_moderation.clean?
     assert_not_nil @post.content_moderation.moderated_at
     assert_not_nil @post.content_moderation.fingerprint
+    assert_equal({ "sexual" => 0.01 }, @post.content_moderation.category_scores)
   end
 
   test "moderates post and creates flagged content_moderation without discarding" do
     result = ContentModerator::Result.new(
       status: :flagged,
       flags: { "sexual" => true },
+      scores: { "sexual" => 0.85 },
       model_version: "test"
     )
     ContentModerator.any_instance.stubs(:moderate)
@@ -78,5 +81,6 @@ class ContentModerationJobTest < ActiveJob::TestCase
     assert_not_nil @post.content_moderation
     assert @post.content_moderation.flagged?
     refute @post.discarded?
+    assert_equal({ "sexual" => 0.85 }, @post.content_moderation.category_scores)
   end
 end

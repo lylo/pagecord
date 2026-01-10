@@ -148,7 +148,7 @@ Rails.application.routes.draw do
       end
     end
     namespace :moderation do
-      root to: redirect("/admin/moderation/content")
+      root to: redirect("/admin/moderation/spam")
 
       resources :content, only: [ :index, :show ] do
         member do

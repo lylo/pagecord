@@ -1,8 +1,16 @@
 <div class="flex gap-4 mb-6 border-b border-slate-200 dark:border-slate-700">
-  <%= link_to "Content",
-      admin_moderation_content_index_path,
-      class: "pb-2 text-sm font-medium #{controller_name == 'content' ? 'border-b-2 border-[#4fbd9c] text-slate-900 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}" %>
-  <%= link_to "Spam",
-      admin_moderation_spam_index_path,
-      class: "pb-2 text-sm font-medium #{controller_name == 'spam' ? 'border-b-2 border-[#4fbd9c] text-slate-900 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}" %>
+  <%= link_to admin_moderation_spam_index_path,
+      class: "pb-2 text-sm font-medium #{controller_name == 'spam' ? 'border-b-2 border-[#4fbd9c] text-slate-900 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}" do %>
+    Spam
+    <% if spam_detection_count > 0 %>
+      <span class="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300"><%= spam_detection_count %></span>
+    <% end %>
+  <% end %>
+  <%= link_to admin_moderation_content_index_path,
+      class: "pb-2 text-sm font-medium #{controller_name == 'content' ? 'border-b-2 border-[#4fbd9c] text-slate-900 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}" do %>
+    Content
+    <% if content_moderation_count > 0 %>
+      <span class="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300"><%= content_moderation_count %></span>
+    <% end %>
+  <% end %>
 </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
+ActiveRecord::Schema[8.2].define(version: 2026_01_10_110034) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -126,6 +126,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
   end
 
   create_table "content_moderations", force: :cascade do |t|
+    t.jsonb "category_scores", default: {}
     t.datetime "created_at", null: false
     t.string "fingerprint"
     t.jsonb "flags", default: {}

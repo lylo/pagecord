@@ -29,6 +29,7 @@ class ContentModerationJob < ApplicationJob
       moderation.update!(
         status: result.status,
         flags: result.flags,
+        category_scores: result.scores,
         moderated_at: Time.current,
         fingerprint: post.moderation_fingerprint,
         model_version: result.model_version
