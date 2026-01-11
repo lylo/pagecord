@@ -129,6 +129,7 @@
   img {
     border-radius: 0.5em;
     margin-inline: auto;
+    padding-block: 0.5em;
     max-width: 100%;
     display: block;
   }
