@@ -1,35 +1,32 @@
 /* ================================== */
 /* Lexxy Editor Specific Styles       */
 /* ================================== */
-lexxy-editor:focus-within {
-  border: 1px solid var(--color-slate-400);
-}
-
 lexxy-editor {
   --lexxy-color-accent-dark: #4fbd9c;
   --lexxy-color-accent-medium: #3da482; /* darker jade for hover */
+
+  &:focus-within {
+    border: 1px solid var(--color-slate-400);
+  }
 
   .lexxy-editor__content {
     line-height: 1.75;
   }
 
-  /* Placeholder color */
   &[placeholder]::before {
     color: var(--color-slate-600);
     font-style: italic;
     opacity: 0.5;
   }
 
-  /* Caption styling for editor */
-  .attachment__caption input,
-  .attachment__caption textarea {
+  .attachment__caption :is(input, textarea) {
     font-size: 0.875rem !important;
     padding: 0;
     color: var(--color-slate-500) !important;
   }
 
   a {
-    color: inherit; /* or color: #000; for explicit black */
+    color: inherit;
   }
 
   .lexxy-content__table-wrapper {
@@ -44,14 +41,13 @@ lexxy-toolbar {
   position: sticky;
   top: 0;
   z-index: 10;
-
-  background: var(--color-slate-100); /* same as buttons */
+  background: var(--color-slate-100);
   border-top-left-radius: calc(var(--lexxy-radius) + var(--lexxy-toolbar-gap));
   border-top-right-radius: calc(var(--lexxy-radius) + var(--lexxy-toolbar-gap));
-  border: none;                        /* remove any default border */
-  padding: 0.25rem;                    /* optional: space around buttons */
-  display: flex;                       /* keep buttons in a row */
-  gap: 0.25rem;                        /* spacing between buttons */
+  border: none;
+  padding: 0.25rem;
+  display: flex;
+  gap: 0.25rem;
 
   .lexxy-editor__toolbar-button {
     background: var(--color-slate-100);
@@ -59,7 +55,6 @@ lexxy-toolbar {
     border: none;
     block-size: 1.5lh;
 
-    /* SVG inherits button color */
     svg path {
       fill: currentColor;
     }
@@ -73,14 +68,13 @@ lexxy-toolbar {
     &:active:not([aria-disabled="true"]) {
       background: var(--color-slate-300);
     }
+
+    &[aria-pressed="true"] {
+      background-color: var(--color-slate-400);
+      color: var(--color-white);
+    }
   }
 
-  .lexxy-editor__toolbar-button[aria-pressed="true"] {
-    background-color: var(--color-slate-400);
-    color: var(--color-white);
-  }
-
-  /* Dropdown open state */
   .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button {
     background-color: var(--color-slate-300);
   }
@@ -130,7 +124,6 @@ lexxy-toolbar {
       &[aria-pressed="true"] {
         background-color: var(--color-slate-600);
         color: var(--color-white);
-
       }
     }
 
@@ -163,12 +156,7 @@ lexxy-toolbar {
 /* Minimal Toolbar Buttons Hidden      */
 /* ================================== */
 .lexxy-minimal lexxy-toolbar {
-  button[name="quote"],
-  button[name="code"],
-  button[name="upload"],
-  button[name="unordered-list"],
-  button[name="ordered-list"],
-  button[name="heading"] {
+  button:is([name="quote"], [name="code"], [name="upload"], [name="unordered-list"], [name="ordered-list"], [name="heading"]) {
     display: none;
   }
 }
