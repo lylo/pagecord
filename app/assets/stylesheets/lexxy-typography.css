@@ -1,6 +1,3 @@
-/* ================================== */
-/* Lexxy Content Typography & Layout  */
-/* ================================== */
 :where(.lexxy-content) {
   --lexxy-content-margin: 1.25rem;
 
@@ -36,8 +33,7 @@
 
   li {
     padding-inline-start: 0.375em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+    margin-block: 0.5em;
   }
 
   a {
@@ -67,10 +63,6 @@
   h1, h2, h3, h4, h5, h6 {
     text-wrap: wrap;
     hyphens: none;
-  }
-
-  /* Heading spacing - more space above, slightly less below for visual hierarchy */
-  h1, h2, h3, h4, h5, h6 {
     margin-block-end: calc(var(--lexxy-content-margin) * 0.75);
   }
 
@@ -86,37 +78,26 @@
     margin-block-start: calc(var(--lexxy-content-margin) * 1.25);
   }
 
-  /* No extra top margin on headings after images */
-  figure + h1, figure + h2, figure + h3, figure + h4, figure + h5, figure + h6,
-  action-text-attachment + h1, action-text-attachment + h2, action-text-attachment + h3,
-  action-text-attachment + h4, action-text-attachment + h5, action-text-attachment + h6 {
+  :is(figure, action-text-attachment) + :is(h1, h2, h3, h4, h5, h6) {
     margin-block-start: 0;
   }
 
   blockquote {
-    padding-top: 0.375em;
-    padding-bottom: 0.375em;
+    padding-block: 0.375em;
   }
 
   /* Legacy Trix content (pre-Lexxy posts use <div> instead of <p>) */
-  h1 {
-    margin: 0;
-  }
   div + blockquote,
-  div + pre,
-  blockquote + pre {
+  div + pre {
     margin: calc(var(--lexxy-content-margin) / 2) 0;
   }
   blockquote + pre {
     margin: 0;
   }
-  div + ul,
-  div + ol {
-    margin-top: var(--lexxy-content-margin);
-    margin-bottom: var(--lexxy-content-margin);
+  div + :is(ul, ol) {
+    margin-block: var(--lexxy-content-margin);
   }
 
-  /* ActionText attachment spacing */
   br + action-text-attachment {
     margin-top: 0;
   }
@@ -147,13 +128,11 @@
 
   img {
     border-radius: 0.5em;
-    margin-left: auto;
-    margin-right: auto;
+    margin-inline: auto;
     max-width: 100%;
     display: block;
   }
 
-  /* Full width images on mobile for better portrait image display */
   @media (max-width: 640px) {
     img {
       width: 100%;
@@ -169,8 +148,7 @@
     align-items: flex-start;
 
     img {
-      margin-top: 0;
-      margin-bottom: 0;
+      margin-block: 0;
       max-width: none;
       left: 0;
       transform: translateX(0);
