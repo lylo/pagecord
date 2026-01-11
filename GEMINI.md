@@ -114,6 +114,17 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 - **Email processing**: ActionMailbox with `PostsMailbox` for creating posts from emails.
 
 ### Key Features
+- **Content Moderation**: Automated post moderation using OpenAI.
+    - **Models**: `ContentModeration` (stores results), `ContentModerator` (service class), `Post::Moderatable` (concern).
+    - **Flow**: `ContentModerationBatchJob` (hourly) finds posts needing moderation -> `ContentModerationJob` -> OpenAI API -> Flags/Cleans.
+    - **Actions**: Flagged posts remain visible for admin review. Daily digest email with flagged post count.
+    - **Admin**: `Admin::Moderation::ContentController` for reviewing flagged content (dismiss or discard).
+- **Spam Detection**: New blog screening using GPT-4o-mini.
+    - **Models**: `SpamDetection` (stores results), `SpamDetector` (service class).
+    - **Flow**: `SpamDetectionJob` (daily) finds blogs 2 hours to 7 days old without existing check -> `SpamDetectionCheckJob` -> GPT-4o-mini -> Flags spam/uncertain.
+    - **Timing**: Waits 2+ hours after blog creation so spammers have time to reveal themselves.
+    - **Skips**: Subscribed users are not checked.
+    - **Admin**: `Admin::Moderation::SpamController` for reviewing spam detections (confirm discards user, dismiss clears flag).
 - **Email-to-blog**: Primary posting method via ActionMailbox.
 - **Custom Domains**: Premium feature using Hatchbox API.
 - **Rich Text**: ActionText for post content.

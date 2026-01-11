@@ -1,13 +1,14 @@
 <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 mb-8">
   <div class="container mx-auto px-4">
-    <div class="flex items-center justify-between py-4">
+    <div class="flex flex-col sm:flex-row justify-between gap-y-2 py-4">
       <%= link_to app_root_path do %>
         <%= inline_svg_tag "logo.svg", class: "w-[100px] inline-flex dark:text-slate-100 text-slate-900" %>
       <% end %>
 
-      <nav class="flex space-x-4">
+      <nav class="flex flex-wrap gap-x-4 mt-2 sm:mt-0">
         <%= link_to "Blogs", admin_blogs_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'blogs'}" %>
         <%= link_to "Posts", admin_posts_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'posts'}" %>
+        <%= link_to "Moderation", admin_moderation_root_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name.in?(%w[content spam])}" %>
         <%= link_to "Analytics", admin_analytics_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'analytics'}" %>
       </nav>
     </div>

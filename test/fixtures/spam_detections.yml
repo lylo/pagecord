@@ -1,0 +1,28 @@
+spam_blog_detection:
+  blog: spammer
+  status: 1  # spam
+  reason: "Multiple commercial links detected in bio and posts. Keyword stuffing in subdomain. Posts read like SEO landing pages."
+  detected_at: <%= 2.hours.ago %>
+  model_version: "gpt-4o-mini"
+
+uncertain_blog_detection:
+  blog: suspicious
+  status: 2  # uncertain
+  reason: "Mixed signals - contains health-related content with some external links. Could be legitimate health blog or affiliate spam."
+  detected_at: <%= 1.hour.ago %>
+  model_version: "gpt-4o-mini"
+
+clean_blog_detection:
+  blog: joel
+  status: 0  # clean
+  reason: "Personal blog with legitimate content. No spam indicators."
+  detected_at: <%= 3.hours.ago %>
+  reviewed_at: <%= 2.hours.ago %>
+  model_version: "gpt-4o-mini"
+
+older_spam_detection:
+  blog: elliot
+  status: 1  # spam
+  reason: "Promotional content detected with gambling links."
+  detected_at: <%= 1.day.ago %>
+  model_version: "gpt-4o-mini"

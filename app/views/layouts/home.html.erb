@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <title><%= content_for?(:title) ? content_for(:title) : "Pagecord: Blogging, simplified" %></title>
+    <title><%= content_for?(:title) ? content_for(:title) : "Pagecord: Blog Without The Slog." %></title>
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
@@ -14,12 +14,12 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="<%= request.original_url %>">
-    <meta property="og:title" content="Pagecord: Blogging, simplified">
+    <meta property="og:title" content="Pagecord: Blog Without The Slog.">
     <meta property="og:description" content="Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $29/year.">
     <meta property="og:image" content="<%= image_url "social/open-graph.webp" %>">
 
     <meta property="twitter:url" content="<%= request.original_url %>">
-    <meta property="twitter:title" content="Pagecord: Blogging, simplified">
+    <meta property="twitter:title" content="Pagecord: Blog Without The Slog.">
     <meta property="twitter:description" content="Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $29/year.">
     <meta property="twitter:image" content="<%= image_url "social/open-graph.webp" %>">
     <meta property="twitter:card" content="summary_large_image">

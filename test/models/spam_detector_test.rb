@@ -15,6 +15,7 @@ class SpamDetectorTest < ActiveSupport::TestCase
 
   test "detect returns spam classification" do
     mock_response = {
+      "model" => "gpt-4o-mini",
       "choices" => [
         {
           "message" => {
@@ -26,15 +27,14 @@ class SpamDetectorTest < ActiveSupport::TestCase
 
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
-    assert_equal "spam", @detector.detect
-    assert @detector.spam?
-    refute @detector.not_spam?
-    refute @detector.uncertain?
-    assert_equal "Obvious spam", @detector.reason
+    @detector.detect
+    assert_equal :spam, @detector.result.status
+    assert_equal "Obvious spam", @detector.result.reason
   end
 
-  test "detect returns not_spam classification" do
+  test "detect returns clean classification for not_spam response" do
     mock_response = {
+      "model" => "gpt-4o-mini",
       "choices" => [
         {
           "message" => {
@@ -46,15 +46,14 @@ class SpamDetectorTest < ActiveSupport::TestCase
 
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
-    assert_equal "not_spam", @detector.detect
-    assert @detector.not_spam?
-    refute @detector.spam?
-    refute @detector.uncertain?
-    assert_equal "Looks clean", @detector.reason
+    @detector.detect
+    assert_equal :clean, @detector.result.status
+    assert_equal "Looks clean", @detector.result.reason
   end
 
   test "detect returns uncertain classification" do
     mock_response = {
+      "model" => "gpt-4o-mini",
       "choices" => [
         {
           "message" => {
@@ -66,14 +65,12 @@ class SpamDetectorTest < ActiveSupport::TestCase
 
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
-    assert_equal "uncertain", @detector.detect
-    assert @detector.uncertain?
-    refute @detector.spam?
-    refute @detector.not_spam?
-    assert_equal "Mixed signals", @detector.reason
+    @detector.detect
+    assert_equal :uncertain, @detector.result.status
+    assert_equal "Mixed signals", @detector.result.reason
   end
 
-  test "detect returns uncertain on json error" do
+  test "detect returns error on json error" do
     mock_response = {
       "choices" => [
         {
@@ -86,30 +83,31 @@ class SpamDetectorTest < ActiveSupport::TestCase
 
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
-    assert_equal "uncertain", @detector.detect
-    assert @detector.uncertain?
-    assert_equal "Failed to parse AI response", @detector.reason
+    @detector.detect
+    assert_equal :error, @detector.result.status
+    assert_equal "Failed to parse AI response", @detector.result.reason
   end
 
-  test "detect returns uncertain on api error" do
+  test "detect returns error on api error" do
     OpenAI::Client.any_instance.stubs(:chat).raises(StandardError.new("API Error"))
 
-    assert_equal "uncertain", @detector.detect
-    assert @detector.uncertain?
-    assert_equal "Detection error", @detector.reason
+    @detector.detect
+    assert_equal :error, @detector.result.status
+    assert_equal "Detection error", @detector.result.reason
   end
 
-  test "detect returns uncertain when missing access token" do
+  test "detect returns error when missing access token" do
     ENV["OPENAI_ACCESS_TOKEN"] = nil
     detector = SpamDetector.new(@blog)
 
-    assert_equal "uncertain", detector.detect
-    assert detector.uncertain?
-    assert_equal "Missing OpenAI access token", detector.reason
+    detector.detect
+    assert_equal :error, detector.result.status
+    assert_equal "Missing OpenAI access token", detector.result.reason
   end
 
   test "normalizes unknown classification values to uncertain" do
     mock_response = {
+      "model" => "gpt-4o-mini",
       "choices" => [
         {
           "message" => {
@@ -121,7 +119,35 @@ class SpamDetectorTest < ActiveSupport::TestCase
 
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
-    assert_equal "uncertain", @detector.detect
-    assert @detector.uncertain?
+    @detector.detect
+    assert_equal :uncertain, @detector.result.status
+  end
+
+  test "skips empty blogs" do
+    empty_blog = Blog.new(subdomain: "empty", user: users(:joel))
+    empty_blog.save(validate: false)
+
+    detector = SpamDetector.new(empty_blog)
+    detector.detect
+
+    assert_equal :skipped, detector.result.status
+    assert_equal "Empty blog - no content to analyze", detector.result.reason
+    assert_nil detector.result.model_version
+  end
+
+  test "does not skip blog with bio" do
+    blog_with_bio = blogs(:joel)
+    blog_with_bio.bio = ActionText::Content.new("Test bio")
+
+    detector = SpamDetector.new(blog_with_bio)
+
+    mock_response = {
+      "model" => "gpt-4o-mini",
+      "choices" => [ { "message" => { "content" => { classification: "not_spam", reason: "Has bio" }.to_json } } ]
+    }
+    OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
+
+    detector.detect
+    refute_equal :skipped, detector.result.status
   end
 end

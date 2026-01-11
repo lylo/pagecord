@@ -1,5 +1,5 @@
 require "test_helper"
-require "minitest/autorun"
+require "mocha/minitest"
 
 class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
@@ -21,13 +21,12 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
   end
 
   test "should cancel subscription and schedule cancellation email" do
-    paddle_api_mock = Minitest::Mock.new
-    paddle_api_mock.expect :cancel_subscription, true, [ @user.subscription.paddle_subscription_id ]
+    mock_api = mock
+    mock_api.expects(:cancel_subscription).with(@user.subscription.paddle_subscription_id).returns(true)
+    PaddleApi.stubs(:new).returns(mock_api)
 
-    PaddleApi.stub :new, paddle_api_mock do
-      assert_enqueued_with(job: SendCancellationEmailJob, args: [ @user.id, { subscriber: true } ]) do
-        delete app_settings_subscription_url(@user.subscription)
-      end
+    assert_enqueued_with(job: SendCancellationEmailJob, args: [ @user.id, { subscriber: true } ]) do
+      delete app_settings_subscription_url(@user.subscription)
     end
 
     assert_redirected_to app_settings_path

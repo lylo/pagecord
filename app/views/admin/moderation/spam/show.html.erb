@@ -1,0 +1,71 @@
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-300 dark:border-slate-700">
+  <div>
+    <span class="text-slate-500 dark:text-slate-400">Status:</span>
+    <span class="px-2 py-1 rounded <%= @spam_detection.spam? ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800' %>">
+      <%= @spam_detection.status.titleize %>
+    </span>
+    <span class="mx-2 text-slate-300 dark:text-slate-600">|</span>
+    <%= link_to "View blog", blog_home_url(@blog), target: "_blank", class: "hover:underline" %>
+    <span class="mx-2 text-slate-300 dark:text-slate-600">|</span>
+    <%= link_to "User profile", admin_user_path(@blog.user), class: "hover:underline" %>
+  </div>
+  <div class="flex space-x-2">
+    <%= link_to "Back",
+        admin_moderation_spam_index_path,
+        class: "px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded" %>
+    <% unless @spam_detection.reviewed? %>
+      <%= button_to "Mark Clean",
+          dismiss_admin_moderation_spam_path(@spam_detection),
+          method: :post,
+          class: "px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer" %>
+      <%= button_to "Confirm Spam",
+          confirm_admin_moderation_spam_path(@spam_detection),
+          method: :post,
+          class: "px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="mb-4 text-sm text-slate-500 dark:text-slate-400">
+  <%= link_to "@#{@blog.subdomain}", blog_home_url(@blog), target: "_blank", class: "hover:underline" %>
+  <span class="mx-2">|</span>
+  Detected <%= @spam_detection.detected_at&.to_formatted_s(:long) %>
+</div>
+
+<div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg mb-6">
+  <h3 class="font-semibold mb-2 text-slate-900 dark:text-slate-50">Detection Reason</h3>
+  <p class="text-slate-600 dark:text-slate-300"><%= @spam_detection.reason %></p>
+</div>
+
+<h3 class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-50">Blog Content</h3>
+
+<div class="space-y-4">
+  <div>
+    <span class="font-medium text-slate-900 dark:text-slate-50">Title:</span>
+    <span class="text-slate-600 dark:text-slate-300"><%= @blog.title.presence || "(none)" %></span>
+  </div>
+
+  <div>
+    <span class="font-medium text-slate-900 dark:text-slate-50">Bio:</span>
+    <div class="prose dark:prose-invert max-w-none mt-2 text-slate-600 dark:text-slate-300">
+      <%= @blog.bio.to_plain_text.presence || "(empty)" %>
+    </div>
+  </div>
+
+  <div>
+    <span class="font-medium text-slate-900 dark:text-slate-50">Recent Posts:</span>
+    <% posts = @blog.posts.published.order(published_at: :desc).limit(5) %>
+    <% if posts.any? %>
+      <ul class="mt-2 space-y-2">
+        <% posts.each do |post| %>
+          <li class="border-l-2 border-slate-300 dark:border-slate-600 pl-3">
+            <div class="font-medium text-slate-900 dark:text-slate-50"><%= post.display_title %></div>
+            <div class="text-sm text-slate-500 dark:text-slate-400"><%= post.text_summary.to_s.truncate(150) %></div>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="text-slate-500 dark:text-slate-400 mt-2">(no posts)</p>
+    <% end %>
+  </div>
+</div>

@@ -133,7 +133,7 @@ class PostTest < ActiveSupport::TestCase
 
   test "pages should not trigger open graph image job" do
     blog = blogs(:joel)
-    assert_no_enqueued_jobs do
+    assert_no_enqueued_jobs(only: GenerateOpenGraphImageJob) do
       blog.posts.create!(title: "Test OpenGraph Page", content: "Page content", is_page: true)
     end
   end
