@@ -7,6 +7,7 @@ lexxy-editor:focus-within {
 
 lexxy-editor {
   --lexxy-color-accent-dark: #4fbd9c;
+  --lexxy-color-accent-medium: #3da482; /* darker jade for hover */
 
   .lexxy-editor__content {
     line-height: 1.75;
@@ -89,79 +90,72 @@ lexxy-toolbar {
 /* Dark Mode Overrides                */
 /* ================================== */
 @media (prefers-color-scheme: dark) {
-  lexxy-editor:focus-within {
-    border: 1px solid var(--color-slate-400);
+  lexxy-editor {
+    /* Flip Lexxy's ink scale for dark mode */
+    --lexxy-color-ink: var(--color-slate-200);
+    --lexxy-color-ink-medium: var(--color-slate-400);
+    --lexxy-color-ink-light: var(--color-slate-500);
+    --lexxy-color-ink-lighter: var(--color-slate-600);
+    --lexxy-color-ink-lightest: var(--color-slate-800);
+    --lexxy-color-ink-inverted: var(--color-slate-900);
+    --lexxy-color-canvas: var(--color-slate-900);
+    --lexxy-color-text-subtle: var(--color-slate-400);
+
+    /* Selected states for pressed buttons */
+    --lexxy-color-selected: var(--color-slate-700);
+    --lexxy-color-selected-hover: var(--color-slate-500);
+
+    &:focus-within {
+      border-color: var(--color-slate-400);
+    }
   }
 
+  /* Toolbar needs explicit overrides (light mode doesn't use Lexxy variables) */
   lexxy-toolbar {
     background: var(--color-slate-800);
-  }
 
-  .lexxy-content {
-    color: var(--color-slate-300);
-    background-color: var(--color-slate-900);
-    border-color: var(--color-slate-600);
+    .lexxy-editor__toolbar-button {
+      background: var(--color-slate-800);
+      color: var(--color-slate-200);
 
-    strong, b, i, em, a, h1, h2, h3, h4, h5, h6 {
-      color: #fff !important;
+      &:hover, &:focus {
+        background: var(--color-slate-700);
+        color: var(--color-white);
+      }
+
+      &:active:not([aria-disabled="true"]) {
+        background: var(--color-slate-600);
+      }
+
+      &[aria-pressed="true"] {
+        background-color: var(--color-slate-600);
+        color: var(--color-white);
+
+      }
     }
 
-    blockquote {
-      color: #fff;
-    }
-
-    li::marker {
-      color: #9ba1aa;
-    }
-
-    .attachment__caption,
-    .attachment__caption input,
-    .attachment__caption textarea {
-      background-color: transparent !important;
-      color: var(--color-slate-400) !important;
-    }
-
-    code, pre,
-    code[data-language] {
-      background-color: var(--color-slate-800) !important;
-      color: var(--color-slate-200) !important;
+    .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button {
+      background-color: var(--color-slate-600);
     }
   }
 
-  /* Toolbar buttons */
-  lexxy-toolbar .lexxy-editor__toolbar-button {
-    background: var(--color-slate-800);
-    color: var(--color-slate-200);
-    border-color: var(--color-slate-600);
-  }
+  /* Link dropdown (has .input/.btn classes that override Lexxy variables) */
+  lexxy-link-dropdown {
+    input[type="url"] {
+      background-color: var(--color-slate-800);
+      color: var(--color-slate-200);
+      border-color: var(--color-slate-600);
+    }
 
-  lexxy-toolbar .lexxy-editor__toolbar-button:hover,
-  lexxy-toolbar .lexxy-editor__toolbar-button:focus {
-    background: var(--color-slate-700);
-    color: var(--color-white);
-  }
+    button {
+      background-color: var(--color-slate-700);
+      color: var(--color-slate-200);
 
-  lexxy-toolbar .lexxy-editor__toolbar-button:active:not([aria-disabled="true"]) {
-    background: var(--color-slate-600);
-  }
-
-  lexxy-toolbar .lexxy-editor__toolbar-button[aria-pressed="true"] {
-    background-color: var(--color-slate-600);
-    color: var(--color-white);
-  }
-
-  /* Dropdown open state */
-  lexxy-toolbar .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button {
-    background-color: var(--color-slate-600);
-  }
-
-  lexxy-toolbar .lexxy-editor__toolbar-button svg path {
-    fill: currentColor;
-  }
-
-  /* Placeholder color */
-  lexxy-editor[placeholder]::before {
-    color: var(--color-slate-400);
+      &[type="submit"] {
+        background-color: var(--lexxy-color-accent-dark);
+        color: var(--color-white);
+      }
+    }
   }
 }
 
@@ -196,4 +190,12 @@ lexxy-highlight-dropdown button {
 lexxy-link-dropdown input[type="url"] {
   min-inline-size: 30ch;
   line-height: normal;
+}
+
+lexxy-link-dropdown button.btn[value="unlink"]:hover {
+  background-color: var(--color-slate-200) !important;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-slate-600) !important;
+  }
 }
