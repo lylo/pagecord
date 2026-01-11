@@ -191,11 +191,4 @@
   .attachment-gallery--3 img {
     width: 100%;
   }
-
-  figure {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    margin: 0;
-  }
 }

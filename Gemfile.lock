@@ -262,7 +262,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (0.1.26.beta)
+    lexxy (0.7.0.beta)
       rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
@@ -562,7 +562,7 @@ DEPENDENCIES
   jbuilder
   kredis (~> 1.7)
   letter_opener_web
-  lexxy (= 0.1.26.beta)
+  lexxy (= 0.7.0.beta)
   local_time
   mailpace-rails
   mocha
