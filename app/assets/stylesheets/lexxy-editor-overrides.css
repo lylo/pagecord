@@ -30,6 +30,10 @@ lexxy-editor {
   a {
     color: inherit; /* or color: #000; for explicit black */
   }
+
+  .lexxy-content__table-wrapper {
+    margin-block: 0 var(--lexxy-content-margin);
+  }
 }
 /* ================================== */
 /* Lexxy Toolbar Base Styles          */
