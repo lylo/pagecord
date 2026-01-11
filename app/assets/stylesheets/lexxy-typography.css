@@ -98,7 +98,7 @@
     padding-bottom: 0.375em;
   }
 
-  /* -- Adjustment for Trix-based content */
+  /* Legacy Trix content (pre-Lexxy posts use <div> instead of <p>) */
   h1 {
     margin: 0;
   }
@@ -116,18 +116,13 @@
     margin-bottom: var(--lexxy-content-margin);
   }
 
+  /* ActionText attachment spacing */
   br + action-text-attachment {
     margin-top: 0;
   }
 
   action-text-attachment + br {
-    display: none; /* or visibility:hidden; if you prefer */
-  }
-
-  /* -- End Adjustments */
-
-  code::before, code::after {
-    content: none;
+    display: none;
   }
 
   pre,
