@@ -5,7 +5,7 @@
         <%= inline_svg_tag "logo.svg", class: "w-[100px] inline-flex dark:text-slate-100 text-slate-900" %>
       <% end %>
 
-      <nav class="flex flex-wrap gap-x-4 gap-y-1">
+      <nav class="flex flex-wrap gap-x-4 mt-2 sm:mt-0">
         <%= link_to "Blogs", admin_blogs_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'blogs'}" %>
         <%= link_to "Posts", admin_posts_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'posts'}" %>
         <%= link_to "Moderation", admin_moderation_root_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name.in?(%w[content spam])}" %>
