@@ -164,7 +164,8 @@ GEM
     css_parser (1.21.1)
       addressable
     csv (3.3.5)
-    dalli (3.2.8)
+    dalli (4.0.0)
+      logger
     date (3.5.1)
     debug (1.11.1)
       irb (~> 1.10)
