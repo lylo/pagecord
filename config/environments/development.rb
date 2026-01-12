@@ -18,15 +18,24 @@ Rails.application.configure do
   config.server_timing = true
 
   # Set domain configuration for development
-  # Use APP_DOMAIN env var for ngrok/external access (e.g., APP_DOMAIN=abc.ngrok.io bin/dev)
-  external_domain = ENV["APP_DOMAIN"]
-  config.x.domain = external_domain || "lvh.me"
+  # - Default: localhost (Chrome/Firefox only, Safari doesn't support *.localhost)
+  # - APP_DOMAIN=lvh.me: Safari fallback (lvh.me resolves to 127.0.0.1)
+  # - APP_DOMAIN=abc.ngrok.io: External access via HTTPS
+  app_domain = ENV["APP_DOMAIN"]
+  config.x.domain = app_domain || "localhost"
   config.x.cloudflare_image_resizing = false
 
-  default_url_options = if external_domain
-    { host: external_domain, protocol: "https" }
+  case app_domain
+  when nil, "localhost"
+    default_url_options = { host: "localhost", port: "3000", protocol: "http" }
+    # localhost has no TLD, so set tld_length to 0 for subdomain extraction to work
+    config.action_dispatch.tld_length = 0
+  when "lvh.me"
+    # lvh.me is a DNS service that resolves to 127.0.0.1 (Safari fallback)
+    default_url_options = { host: "lvh.me", port: "3000", protocol: "http" }
   else
-    { host: "lvh.me", port: "3000", protocol: "http" }
+    # External domain (ngrok, etc.) - assumes HTTPS without port
+    default_url_options = { host: app_domain, protocol: "https" }
   end
   config.action_controller.default_url_options = default_url_options
 

@@ -9,7 +9,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   def use_subdomain(subdomain, path = "/")
     port = Capybara.current_session.server.port
-    Capybara.app_host = "http://#{subdomain}.lvh.me:#{port}"
+    Capybara.app_host = "http://#{subdomain}.localhost:#{port}"
   end
 
   teardown do

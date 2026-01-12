@@ -27,7 +27,7 @@ This will:
 - Build and run the Rails app
 - Set up the database automatically
 
-You can view the app at [http://localhost:3000](http://localhost:3000). It's configured to use `lvh.me`, so you can view individual blogs on their respective subdomains, e.g. [http://joel.lvh.me:3000](http://joel.lvh.me:3000).
+You can view the app at [http://localhost:3000](http://localhost:3000). You can view individual blogs on their respective subdomains, e.g. [http://joel.localhost:3000](http://joel.localhost:3000). Note: Safari doesn't support `*.localhost` subdomains - use `lvh.me` instead (e.g. [http://joel.lvh.me:3000](http://joel.lvh.me:3000)).
 
 ### Running commands in Docker
 

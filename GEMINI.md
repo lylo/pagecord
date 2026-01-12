@@ -171,8 +171,8 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 ## Development Notes
 
 ### Local Development
-- Uses `lvh.me` for local subdomain testing.
-- Supports `pagecord.com` and `blog.lvh.me:3000` patterns.
+- Uses `localhost` for local subdomain testing (e.g. `joel.localhost:3000`).
+- Note: Safari doesn't support `*.localhost` - use Chrome/Firefox for subdomain testing.
 - Redis must be running.
 
 ### Email Testing
