@@ -29,6 +29,7 @@ export default class extends Controller {
       autoCloseBrackets: true,
       lineWrapping: true,
       tabSize: 2,
+      viewportMargin: Infinity,
       extraKeys: { "Ctrl-Space": "autocomplete" }
     })
 
