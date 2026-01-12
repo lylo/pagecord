@@ -1,3 +1,11 @@
+<% if @blog.user.subscribed? && current_features.enabled?(:custom_css) %>
+  <% content_for :head do %>
+    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/hint/show-hint.css" rel="stylesheet" type="text/css"/>
+    <%= stylesheet_link_tag "css-editor" %>
+  <% end %>
+<% end %>
+
 <%= form_with url: app_settings_appearance_path(@blog), model: @blog, data: { controller: "avatar" } do |form| %>
   <fieldset>
     <h3 class="font-bold text-lg mb-2">Bio</h3>
@@ -103,7 +111,7 @@
   <% end %>
 
   <% if @blog.user.subscribed? && current_features.enabled?(:custom_css) %>
-    <fieldset class="mt-8" id="custom-css-section">
+    <fieldset class="mt-8" id="custom-css-section" data-controller="css-editor">
       <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
       <p class="mb-4">
         Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
@@ -115,9 +123,7 @@
       </p>
 
       <%= form.text_area :custom_css,
-          placeholder: ".blog { /* your custom styles here */ }",
-          class: "autogrow w-full min-h-64 font-mono text-sm border border-slate-300 dark:border-slate-600 rounded-md p-3 focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100",
-          spellcheck: false %>
+          data: { css_editor_target: "textarea" } %>
 
       <div class="field-error"><%= @blog.errors[:custom_css].first if @blog.errors[:custom_css].any? %></div>
     </fieldset>

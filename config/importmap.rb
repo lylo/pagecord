@@ -25,3 +25,11 @@ pin "@yaireo/tagify", to: "https://ga.jspm.io/npm:@yaireo/tagify@4.35.1/dist/tag
 pin "sortablejs", to: "https://ga.jspm.io/npm:sortablejs@1.15.6/modular/sortable.esm.js"
 pin "@rails/request.js", to: "https://ga.jspm.io/npm:@rails/request.js@0.0.8/src/index.js"
 pin "stimulus-sortable", to: "https://ga.jspm.io/npm:stimulus-sortable@4.1.1/dist/stimulus-sortable.mjs"
+
+# CodeMirror 5 for CSS editing
+pin "codemirror", to: "https://ga.jspm.io/npm:codemirror@5.65.18/lib/codemirror.js"
+pin "codemirror/mode/css/css", to: "https://ga.jspm.io/npm:codemirror@5.65.18/mode/css/css.js"
+pin "codemirror/addon/edit/matchbrackets", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/edit/matchbrackets.js"
+pin "codemirror/addon/edit/closebrackets", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/edit/closebrackets.js"
+pin "codemirror/addon/hint/show-hint", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/hint/show-hint.js"
+pin "codemirror/addon/hint/css-hint", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/hint/css-hint.js"

@@ -2,7 +2,7 @@
   <% if blog.avatar&.attached? %>
     <%= image_tag resized_image_url(blog.avatar, width: 160, height: 160), class: "object-cover rounded-full w-full h-full", alt: "#{blog.title} Avatar" %>
   <% else %>
-    <img class="object-cover rounded-full w-full h-full hidden" src="https://pbs.twimg.com/profile_images/1851287065062981632/t6ZpG7Pm_400x400.jpg">
+    <img class="object-cover rounded-full w-full h-full hidden" src="" alt="Avatar preview">
     <div class="avatar-placeholder">
       <%= inline_svg_tag "icons/person.svg", class: "w-16 h-16 text-slate-400 dark:text-slate-600" %>
     </div>
