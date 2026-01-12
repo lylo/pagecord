@@ -95,12 +95,13 @@
     %>
 
     <fieldset>
+      <% controllers = current_features.enabled?(:lexxy_ios) ? "lexxy ios-toolbar" : "lexxy" %>
       <%= form.lexxy_rich_text_area :content,
         placeholder: "Craft your draft...",
         class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
         spellcheck: true,
         autocorrect: "on",
-        data: { controller: "lexxy ios-toolbar", attachments: Current.user.subscribed?, autosave_target: "content" } %>
+        data: { controller: controllers, attachments: Current.user.subscribed?, autosave_target: "content" } %>
 
       <div class="field-error"><%= @post.errors[:content].first if @post.errors[:content].any? %></div>
     </fieldset>
