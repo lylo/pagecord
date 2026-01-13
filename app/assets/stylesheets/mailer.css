@@ -225,6 +225,29 @@ a {
   padding-bottom: 4rem !important;
 }
 
+.digest .post-content figure {
+  margin: 1.5em 0;
+  padding: 0;
+}
+
+.digest .post-content table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.digest .post-content table th,
+.digest .post-content table td {
+  border: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.digest .post-content table th,
+.digest .post-content table th p {
+  background-color: #f6f8fa;
+  font-weight: 600 !important;
+}
+
 .post-timestamp {
   font-size: 14px !important;
 }
