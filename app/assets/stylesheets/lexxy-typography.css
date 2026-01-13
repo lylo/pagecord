@@ -114,6 +114,7 @@
     font-weight: normal;
     overflow-wrap: break-word;
     overflow-x: auto;
+    line-height: 1.5;
 
     ol, ul {
       padding: 0;
