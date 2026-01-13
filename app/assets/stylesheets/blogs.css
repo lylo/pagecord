@@ -1,4 +1,31 @@
 /* ============================= */
+/* CSS Units: rem vs em          */
+/* ============================= */
+/*
+ * This file uses a hybrid approach for CSS units:
+ *
+ * rem (root em) - Used for spacing and layout
+ *   - Margins, padding, gaps between elements
+ *   - Fixed dimensions (widths, heights)
+ *   - Consistent and predictable across the page
+ *
+ * em (relative) - Used for values that should scale with font size
+ *   - Font sizes (scale relative to parent)
+ *   - Icon dimensions (scale with surrounding text)
+ *   - Letter spacing, line height
+ *   - List indentation (relative to text size)
+ *
+ * Why not em everywhere?
+ *   em values compound. If an element has font-size: 1.5em and
+ *   margin: 2em, the margin is 2x the element's font size (1.5),
+ *   resulting in 3x the base size. Using rem for spacing avoids
+ *   this compounding and keeps layout predictable.
+ *
+ * The baseline: <main> sets font-size: 1rem, which all em values
+ * ultimately reference through inheritance.
+ */
+
+/* ============================= */
 /* Layout - Page Structure       */
 /* ============================= */
 
@@ -159,8 +186,8 @@ html, body {
   }
 
   :where(.titlebar) {
-    margin-top: 1.25em;
-    margin-bottom: 1.25em;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -193,8 +220,8 @@ html, body {
     --lexxy-color-ink: var(--color-text-muted);
     --lexxy-content-margin: 1rem;
 
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
     font-size: 0.875em;
     color: var(--color-text-muted);
     overflow-wrap: break-word;
@@ -457,11 +484,11 @@ html, body {
   color: var(--color-text-heading);
   font-size: 1.125rem;
   font-weight: 600;
-  margin: 0 0 1em 0;
+  margin: 0 0 1rem 0;
 }
 
 .posts-titles .year-header.has-previous {
-  margin-top: 2em;
+  margin-top: 2rem;
 }
 
 .posts-titles .post-row {
@@ -922,7 +949,7 @@ ul.posts-list {
 }
 
 .posts-list h2 {
-  margin-bottom: 0.5em;
+  margin-bottom: 0.5rem;
 }
 
 .posts-list h2:not(:first-child) {
