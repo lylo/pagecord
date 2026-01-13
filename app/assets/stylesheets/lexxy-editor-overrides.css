@@ -156,7 +156,18 @@ lexxy-toolbar {
 /* Minimal Toolbar Buttons Hidden      */
 /* ================================== */
 .lexxy-minimal lexxy-toolbar {
-  button:is([name="quote"], [name="code"], [name="upload"], [name="unordered-list"], [name="ordered-list"], [name="heading"]) {
+  button:is(
+    [name="quote"],
+    [name="code"],
+    [name="upload"],
+    [name="unordered-list"],
+    [name="ordered-list"],
+    [name="heading"],
+    [name="highlight"],
+    [name="table"],
+    [name="divider"],
+    [name="strikethrough"]),
+  summary[name="highlight"] {
     display: none;
   }
 }
