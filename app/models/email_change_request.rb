@@ -15,7 +15,7 @@ class EmailChangeRequest < ApplicationRecord
 
     def new_email_not_taken
       if User.exists?(email: new_email)
-        errors.add(:new_email, "is already in use")
+        errors.add(:base, "Email is already in use")
       end
     end
 end

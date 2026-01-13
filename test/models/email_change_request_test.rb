@@ -72,7 +72,7 @@ class EmailChangeRequestTest < ActiveSupport::TestCase
     )
 
     assert_not request.valid?
-    assert_includes request.errors[:new_email], "is already in use"
+    assert_includes request.errors[:base], "Email is already in use"
   end
 
   test "allows new_email if not taken by any user" do

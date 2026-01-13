@@ -4,7 +4,7 @@ class App::Settings::EmailChangeRequestsController < AppController
     if @email_change_request.save
       send_email_change_request(@email_change_request)
     else
-      redirect_to app_settings_account_edit_path, alert: "Sorry, there was a problem with your request. Please try again"
+      redirect_to app_settings_account_edit_path, alert: @email_change_request.errors.full_messages.to_sentence
     end
   end
 
