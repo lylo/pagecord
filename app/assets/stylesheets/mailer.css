@@ -238,7 +238,7 @@ a {
 .digest .post-content table th,
 .digest .post-content table td {
   border: 1px solid #ddd;
-  padding: 0.5rem 0.75rem;
+  padding: 0 0.75rem;
   text-align: left;
 }
 
