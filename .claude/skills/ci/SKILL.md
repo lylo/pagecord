@@ -40,5 +40,14 @@ Run these commands in sequence, stopping on first failure:
 
 - Run all checks in sequence
 - Stop and report on first failure
-- Summarize results at the end
+- Summarize results at the end as a table:
+
+| Step | Status |
+|------|--------|
+| Brakeman (security) | ✅ Passed |
+| Rubocop (style) | ✅ Passed |
+| Importmap Audit (JS deps) | ✅ Passed |
+| Unit Tests | ✅ X tests passed |
+| System Tests | ✅ X tests passed |
+
 - If all pass, confirm the code is ready to push
