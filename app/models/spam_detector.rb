@@ -45,7 +45,7 @@ class SpamDetector
 
     def skip_result
       @result = Result.new(
-        status: :skipped,
+        status: :no_content,
         reason: "Empty blog - no content to analyze",
         model_version: nil
       )
