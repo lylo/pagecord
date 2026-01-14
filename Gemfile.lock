@@ -330,7 +330,9 @@ GEM
       racc (~> 1.4)
     openssl (4.0.0)
     ostruct (0.6.3)
-    pagy (9.4.0)
+    pagy (43.2.4)
+      json
+      yaml
     parallel (1.27.0)
     parser (3.3.10.0)
       ast (~> 2.4.1)
@@ -528,6 +530,7 @@ GEM
       chronic (>= 0.6.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yaml (0.4.0)
     zeitwerk (2.7.4)
 
 PLATFORMS
@@ -572,7 +575,7 @@ DEPENDENCIES
   nanoid (~> 2.0)
   openssl (~> 4.0)
   ostruct
-  pagy (~> 9.4)
+  pagy (~> 43.2)
   pg
   pg_query (>= 2)
   pg_search
