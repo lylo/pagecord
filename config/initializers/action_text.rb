@@ -3,7 +3,7 @@
 # regardless of when Lexxy sets allowed_tags
 module ActionTextCustomTags
   CUSTOM_TAGS = %w[s u mark].freeze
-  CUSTOM_ATTRIBUTES = %w[data-lightbox-full-url data-highlight-language playsinline].freeze
+  CUSTOM_ATTRIBUTES = %w[data-lightbox-full-url data-highlight-language playsinline id].freeze
 
   def sanitizer_allowed_tags
     super + CUSTOM_TAGS

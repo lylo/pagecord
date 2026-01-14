@@ -1,6 +1,6 @@
 class Post < ApplicationRecord
   include Discard::Model
-  include Draftable, Sluggable, Tokenable, Trimmable, Upvotable, Taggable, Post::Searchable, Post::Moderatable
+  include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable
 
   belongs_to :blog, inverse_of: nil
 
