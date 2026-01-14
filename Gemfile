@@ -2,6 +2,8 @@ source "https://rubygems.org"
 
 ruby file: ".ruby-version"
 
+gem "openssl", "~> 4.0"
+
 gem "rails", github: "rails/rails", branch: "main"
 
 gem "actionpack-page_caching"

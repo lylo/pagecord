@@ -328,6 +328,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.0-x86_64-linux-musl)
       racc (~> 1.4)
+    openssl (4.0.0)
     ostruct (0.6.3)
     pagy (9.4.0)
     parallel (1.27.0)
@@ -569,6 +570,7 @@ DEPENDENCIES
   mailpace-rails
   mocha
   nanoid (~> 2.0)
+  openssl (~> 4.0)
   ostruct
   pagy (~> 9.4)
   pg
