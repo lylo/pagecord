@@ -26,8 +26,7 @@ class AdminMailerPreview < ActionMailer::Preview
     AdminMailer.spam_detection_digest(detection_ids)
   end
 
-  def content_flagged_notification
-    post = Post.published.first
-    AdminMailer.content_flagged_notification(post.id)
+  def content_moderation_digest
+    AdminMailer.content_moderation_digest(5)
   end
 end
