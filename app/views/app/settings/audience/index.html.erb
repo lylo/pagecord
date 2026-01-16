@@ -9,6 +9,12 @@
       <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to enable audience features for your blog.
     <% end %>
   </div>
+<% elsif Current.user.on_trial? %>
+  <div class="mb-6">
+    <%= callout(:info) do %>
+      Email subscriptions are a subscriber-only feature. <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to enable email subscriptions for your blog.
+    <% end %>
+  </div>
 <% end %>
 
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
