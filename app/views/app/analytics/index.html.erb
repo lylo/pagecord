@@ -1,5 +1,7 @@
 <div class="relative space-y-6">
-  <div class="<%= 'pointer-events-none select-none opacity-30' unless Current.user.subscribed? %> space-y-6">
+  <%= trial_callout("Analytics") %>
+
+  <div class="<%= 'pointer-events-none select-none opacity-30' unless Current.user.subscribed? || Current.user.on_trial? %> space-y-6">
     <!-- View Type Navigation -->
     <div class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 space-y-3 md:space-y-0">
       <!-- Mobile: Stacked Layout, Desktop: Side by Side -->
@@ -144,5 +146,5 @@
     <%= render 'leaderboard' %>
   </div>
 
-  <%= render 'premium_overlay' unless Current.user.subscribed? %>
+  <%= render 'premium_overlay' unless Current.user.subscribed? || Current.user.on_trial? %>
 </div>

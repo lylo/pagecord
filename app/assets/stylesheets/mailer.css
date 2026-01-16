@@ -348,6 +348,13 @@ a {
   visibility: hidden;
   width: 0; }
 
+.callout {
+  background-color: #f0f9ff;
+  border: 1px solid #e0f2fe;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 15px 0; }
+
 .powered-by a {
   text-decoration: none; }
 

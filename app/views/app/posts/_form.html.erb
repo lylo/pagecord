@@ -3,6 +3,8 @@
 <div data-controller="post-attributes autosave"
     data-autosave-key-value="<%= is_new ? "draft-post-new" : "draft-post-#{@post.id}" %>">
 
+  <div class="mb-4"><%= trial_callout("Image uploads") %></div>
+
   <div class="flex items-center justify-end gap-x-2 text-slate-500 dark:text-slate-300 mb-4">
    <div data-controller="toggle">
       <%= link_to "#", class: "font-medium hover:text-black dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
@@ -101,7 +103,7 @@
         class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
         spellcheck: true,
         autocorrect: "on",
-        data: { controller: controllers, attachments: Current.user.subscribed?, autosave_target: "content" } %>
+        data: { controller: controllers, attachments: Current.user.subscribed? || Current.user.on_trial?, autosave_target: "content" } %>
 
       <div class="field-error"><%= @post.errors[:content].first if @post.errors[:content].any? %></div>
     </fieldset>

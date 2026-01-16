@@ -1,5 +1,20 @@
 <div class="mt-4 flex flex-col gap-y-4">
-<% if Current.user.subscribed? %>
+<% if Current.user.on_trial? %>
+  <%= callout(:info) do %>
+    You have <strong><%= pluralize(Current.user.trial_days_remaining, "day") %></strong> remaining of your 14-day free trial of Pagecord Premium!
+  <% end %>
+  <p class="mt-4">
+    Subscribe now to keep access to <b>image attachments</b>, <b>custom
+    domains</b>, <b>email subscribers</b>, <b>reply by email</b> and <b>Olly's awesome customer support</b>!
+  </p>
+  <p class="mt-4">
+    It's only <strong>$<%= localised_price %>/year!</strong>
+  </p>
+  <div class="mt-4">
+    <%= link_to "Subscribe Now!", "#", class: "paddle_button btn-primary", data: paddle_data %>
+    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+  </div>
+<% elsif Current.user.subscribed? %>
   <% if @subscription.complimentary? %>
     <p>You have a free Pagecord Premium subscription! 🎉</p>
 

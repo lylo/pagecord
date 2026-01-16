@@ -22,8 +22,12 @@ class App::Settings::AppearanceController < AppController
         :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark
       ]
 
+      if @blog.user.subscribed? || @blog.user.on_trial?
+        permitted_params << :avatar
+      end
+
       if @blog.user.subscribed?
-        permitted_params += [ :avatar, :show_branding ]
+        permitted_params << :show_branding
       end
 
       permitted_params << :custom_css if current_features.enabled?(:custom_css)

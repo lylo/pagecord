@@ -1,9 +1,9 @@
 class App::AnalyticsController < AppController
   def index
     @view_type = params[:view_type] || "month"
-    @date = Current.user.subscribed? ? summary.parse_date(@view_type, params[:date]) : Date.current
+    @date = Current.user.subscribed? || Current.user.on_trial? ? summary.parse_date(@view_type, params[:date]) : Date.current
 
-    if Current.user.subscribed?
+    if Current.user.subscribed? || Current.user.on_trial?
       @analytics_data = summary.analytics_data(@view_type, @date)
       @chart_data = chart.chart_data(@view_type, @date, @analytics_data)
       @path_popularity = leaderboard.post_popularity_data(@view_type, @date)

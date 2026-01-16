@@ -19,7 +19,7 @@
         </div>
       <% end %>
 
-      <% if @user.subscribed? && post.upvotes_count > 0 %>
+      <% if (@user.subscribed? || @user.on_trial?) && post.upvotes_count > 0 %>
         <div class="flex items-top gap-x-0.5">
           <span class="text-xs"><%= post.upvotes_count %></span>
           <span><%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %></span>
