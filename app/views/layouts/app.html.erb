@@ -28,7 +28,7 @@
 
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
     <header class="mb-4">
-      <% if Current.user.onboarding_complete? && (Current.user.on_trial? || !Current.user.subscribed?) %>
+      <% if Current.user.onboarding_complete? && !Current.user.subscribed? %>
         <%= render "/app/shared/premium_upsell_banner" %>
       <% end %>
     </header>

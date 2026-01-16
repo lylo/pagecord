@@ -236,6 +236,21 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - **Event logging**: All webhook events stored in `PaddleEvent` model for debugging
 - **Signature verification**: HMAC-SHA256 verification of webhook payloads
 
+### Free Trial System
+- **Duration**: 14 days from account creation (configured in `Subscribable::TRIAL_PERIOD_DAYS`)
+- **Concern**: `Subscribable` module in `app/models/concerns/subscribable.rb`
+- **Key methods**:
+  - `subscribed?` - Has active paid subscription (subscriber-only features)
+  - `on_trial?` - Within 14-day trial period and not subscribed
+  - `has_premium_access?` - Subscribed OR on trial (trial-eligible features)
+  - `on_free_plan?` - Not subscribed AND not on trial (no premium access)
+  - `trial_days_remaining` - Days left in trial (0 if not on trial)
+- **Feature tiers**:
+  - **Trial-eligible** (use `has_premium_access?`): Analytics, image uploads, avatar, reply by email, upvotes, custom domains
+  - **Subscriber-only** (use `subscribed?`): Email subscriptions, branding removal
+- **Trial ended email**: `FreeTrialMailer#trial_ended` sent via `SendTrialEndedEmailsJob` (daily at 5:15 AM)
+- **Helper**: `trial_callout(feature_name)` in AppHelper shows upgrade prompt during trial
+
 ### Background Processing
 - Sidekiq for async jobs
 - Jobs: email processing, image generation, subscription handling, analytics rollups

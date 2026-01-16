@@ -16,6 +16,10 @@ module Subscribable
     created_at > TRIAL_PERIOD_DAYS.days.ago && !subscribed?
   end
 
+  def has_premium_access?
+    subscribed? || on_trial?
+  end
+
   def trial_days_remaining
     return 0 unless on_trial?
     ((created_at + TRIAL_PERIOD_DAYS.days - Time.current) / 1.day).ceil

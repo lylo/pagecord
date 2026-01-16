@@ -132,6 +132,15 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 - **Subscriptions**: Paddle integration for payments.
 - **Multi-tenancy**: Blog subdomains (e.g., `joel.pagecord.com`).
 
+### Free Trial System
+- **Duration**: 14 days (`Subscribable::TRIAL_PERIOD_DAYS`)
+- **Concern**: `Subscribable` module (`app/models/concerns/subscribable.rb`)
+- **Methods**: `subscribed?`, `on_trial?`, `has_premium_access?`, `on_free_plan?`, `trial_days_remaining`
+- **Feature tiers**:
+  - Trial-eligible (`has_premium_access?`): Analytics, images, avatar, reply by email, upvotes, custom domains
+  - Subscriber-only (`subscribed?`): Email subscriptions, branding removal
+- **Trial ended email**: `SendTrialEndedEmailsJob` runs daily at 5:15 AM
+
 ### Domain Routing
 - Default domain (`pagecord.com`): Marketing, auth, app routes.
 - Custom/subdomain blogs: Blog-specific content, RSS feeds.

@@ -22,7 +22,7 @@ class App::Settings::AppearanceController < AppController
         :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark
       ]
 
-      if @blog.user.subscribed? || @blog.user.on_trial?
+      if @blog.user.has_premium_access?
         permitted_params << :avatar
       end
 

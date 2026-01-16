@@ -68,7 +68,7 @@
         class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
         spellcheck: true,
         autocorrect: "on",
-        data: { controller: "lexxy", attachments: Current.user.subscribed? || Current.user.on_trial?, autosave_target: "content" } %>
+        data: { controller: "lexxy", attachments: Current.user.has_premium_access?, autosave_target: "content" } %>
 
       <div class="field-error"><%= @page.errors[:content].first if @page.errors[:content].any? %></div>
     </fieldset>
