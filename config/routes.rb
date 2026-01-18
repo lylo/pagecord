@@ -142,7 +142,7 @@ Rails.application.routes.draw do
     resources :blogs, only: [ :index ]
     resources :analytics, only: [ :index ]
     resources :posts, only: [ :index ]
-    resources :users, only: [ :show, :destroy, :new, :create ] do
+    resources :users, only: [ :show, :destroy, :new, :create, :update ] do
       member do
         post :restore
       end
