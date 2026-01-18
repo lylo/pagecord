@@ -34,7 +34,7 @@ class App::PostsController < AppController
 
     prepare_content_for_editor(@post)
 
-    session[:return_to_page] = params[:page] if params[:page].present?
+    session[:return_to_page] = params[:page].presence
   end
 
   def show

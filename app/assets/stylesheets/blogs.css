@@ -146,6 +146,20 @@ html, body {
 
   :where(.lexxy-content) {
     line-height: inherit;
+
+    /* gives images rounded corners */
+    img {
+      border-radius: 0.5em;
+      max-width: 100%;
+      display: block;
+    }
+
+    /* increased margin around images in article content */
+    figure:has(img),
+    img:not(figure img),
+    .attachment {
+      margin-block: 1.5rem;
+    }
   }
 
   :where(header) {
