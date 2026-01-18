@@ -158,6 +158,9 @@ Rails.application.routes.draw do
       end
 
       resources :spam, only: [ :index, :show ] do
+        collection do
+          post :run_detection
+        end
         member do
           post :dismiss
           post :confirm
