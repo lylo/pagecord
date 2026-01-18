@@ -1,16 +1,33 @@
 <h2 class="mb-4 font-semibold text-xl text-slate-800 dark:text-slate-100">Audience Settings</h2>
 
+<% email_disabled = !Current.user.subscribed? %>
+<% features_disabled = Current.user.on_free_plan? %>
+
+<% if Current.user.on_free_plan? %>
+  <div class="mb-6">
+    <%= callout(:info) do %>
+      <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to enable audience features for your blog.
+    <% end %>
+  </div>
+<% elsif Current.user.on_trial? %>
+  <div class="mb-6">
+    <%= callout(:info) do %>
+      Email subscriptions are a subscriber-only feature. <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to enable email subscriptions for your blog.
+    <% end %>
+  </div>
+<% end %>
+
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
-  <% if @blog.email_subscriptions_enabled %>
+  <% if @blog.email_subscriptions_enabled && Current.user.subscribed? %>
     <p class="text-slate-600 dark:text-slate-400">
       Your blog has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
     </p>
   <% end %>
 
   <div data-controller="subscription-settings" class="mt-8">
-    <div class="flex gap-3">
+    <div class="flex gap-3 <%= 'opacity-50' if email_disabled %>">
       <div class="flex h-6 shrink-0 items-center">
-        <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300", data: { subscription_settings_target: "primary", action: "change->subscription-settings#toggleDependents" } } %>
+        <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:cursor-not-allowed", data: { subscription_settings_target: "primary", action: "change->subscription-settings#toggleDependents" } } %>
       </div>
       <div>
         <%= form.label :email_subscriptions_enabled, "Email subscriptions enabled", class: "text-slate-800 dark:text-slate-100" %>
@@ -20,10 +37,10 @@
       </div>
     </div>
 
-    <div class="mt-4 ml-8">
+    <div class="mt-4 ml-8 <%= 'opacity-50' if email_disabled %>">
       <div class="flex gap-3" data-subscription-settings-target="dependent">
         <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :show_subscription_in_header, { checked: @blog.show_subscription_in_header, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
+          <%= form.check_box :show_subscription_in_header, { checked: @blog.show_subscription_in_header, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
         </div>
         <div>
           <%= form.label :show_subscription_in_header, "Show subscription form in blog header", class: "text-slate-800 dark:text-slate-100" %>
@@ -35,7 +52,7 @@
 
       <div class="mt-4 flex gap-3" data-subscription-settings-target="dependent">
         <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :show_subscription_in_footer, { checked: @blog.show_subscription_in_footer, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
+          <%= form.check_box :show_subscription_in_footer, { checked: @blog.show_subscription_in_footer, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
         </div>
         <div>
           <%= form.label :show_subscription_in_footer, "Show subscription form in post footer", class: "text-slate-800 dark:text-slate-100" %>
@@ -48,24 +65,23 @@
   </div>
 
   <div class="mt-6">
-    <div class="flex gap-3">
+    <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
       <div class="flex h-6 shrink-0 items-center">
-        <%= form.check_box :reply_by_email, { checked: @blog.reply_by_email, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+        <%= form.check_box :reply_by_email, { checked: @blog.reply_by_email, disabled: features_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:cursor-not-allowed" } %>
       </div>
       <div>
         <%= form.label :reply_by_email, "Allow replies by email", class: "text-slate-800 dark:text-slate-100" %>
         <p class="text-slate-500 text-sm">
-          Allow readers to reply to your posts via a contact
-    form. You will receive an email with the reply. Your email address is not revealed.
+          Allow readers to reply to your posts via a contact form. You will receive an email with the reply. Your email address is not revealed.
         </p>
       </div>
     </div>
   </div>
 
   <div class="mt-6">
-    <div class="flex gap-3">
+    <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
       <div class="flex h-6 shrink-0 items-center">
-        <%= form.check_box :show_upvotes, { checked: @blog.show_upvotes, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+        <%= form.check_box :show_upvotes, { checked: @blog.show_upvotes, disabled: features_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:cursor-not-allowed" } %>
       </div>
       <div>
         <%= form.label :show_upvotes, "Show Post Likes ❤️", class: "text-slate-800 dark:text-slate-100" %>

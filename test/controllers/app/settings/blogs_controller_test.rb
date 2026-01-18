@@ -19,12 +19,13 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should not show custom domain if not subscribed" do
+  test "should show custom domain disabled if not subscribed" do
     login_as users(:vivian)
 
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 0, text: "Custom Domain" }
+    assert_select "h3", { count: 1, text: "Custom Domain" }
+    assert_select "input[name='blog[custom_domain]'][disabled]"
     assert_response :success
   end
 

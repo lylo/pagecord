@@ -42,9 +42,9 @@
     <%= render "layouts/favicons" %>
 
     <%= font_preload_links %>
-    <%= stylesheet_link_tag "blog-themes", "lexxy", "lexxy-variables", "lexxy-variable-overrides", "lexxy-typography", font_stylesheet, "blogs", "lightbox", "animations", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "blog-themes", "lexxy-content", "lexxy-variables", "lexxy-variable-overrides", "lexxy-typography", font_stylesheet, "blogs", "lightbox", "animations", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <%= javascript_importmap_tags "blog" %>
 
     <% if @blog.present? %>
       <% unless @blog.user.search_indexable? %>

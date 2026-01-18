@@ -3,37 +3,45 @@ joel:
   admin: true
   verified: true
   onboarding_state: completed
+  created_at: <%= 30.days.ago %>
 
 elliot:
   email: elliot@pagecord.com
   onboarding_state: account_created
+  created_at: <%= 30.days.ago %>
 
 vivian:
   email: vivian@pagecord.com
   verified: true
   onboarding_state: completed
+  created_at: <%= 30.days.ago %>
 
 annie:
   email: annie@pagecord.com
   verified: true
   onboarding_state: completed
+  created_at: <%= 30.days.ago %>
 
 saul:
   email: saul@pagecord.com
   verified: true
   onboarding_state: account_created
+  created_at: <%= 30.days.ago %>
 
 pagecord:
   email: olly@pagecord.com
   verified: true
   onboarding_state: completed
+  created_at: <%= 30.days.ago %>
 
 spammer:
   email: spammer@example.com
   verified: true
   onboarding_state: completed
+  created_at: <%= 30.days.ago %>
 
 suspicious:
   email: suspicious@example.com
   verified: true
   onboarding_state: completed
+  created_at: <%= 30.days.ago %>

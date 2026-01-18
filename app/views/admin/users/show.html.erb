@@ -39,6 +39,39 @@
     </div>
   </div>
 
+  <% unless @user.subscribed? %>
+  <div>
+    <h3 class="text-xl font-bold py-4">Free Trial</h3>
+    <div class="overflow-auto">
+      <table class="my-4 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
+        <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
+          <tr>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Status</td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+              <% if @user.on_trial? %>
+                <span class="text-green-600 font-semibold"><%= @user.trial_days_remaining %> days remaining</span>
+              <% elsif @user.trial_ends_at.present? %>
+                <span class="text-slate-500">Ended <%= @user.trial_ends_at.to_formatted_s(:long) %></span>
+              <% else %>
+                <span class="text-slate-500">No trial</span>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Trial Ends</td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+              <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "flex items-center gap-2", data: { turbo: false } do |f| %>
+                <%= f.date_field :trial_ends_at, class: "rounded border-slate-300 dark:border-slate-700 dark:bg-slate-800 text-sm" %>
+                <%= f.submit "Update", class: "px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 rounded text-sm cursor-pointer" %>
+              <% end %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <% end %>
+
   <% if @user.subscription %>
   <div>
     <h3 class="text-xl font-bold py-4">Subscription</h3>

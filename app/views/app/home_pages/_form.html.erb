@@ -1,6 +1,8 @@
 <div data-controller="post-attributes autosave"
     data-autosave-key-value="<%= home_page.persisted? ? "draft-homepage-#{home_page.id}" : "draft-homepage-new" %>">
 
+  <div class="mb-4"><%= trial_callout("Image uploads") %></div>
+
   <%= form_with(model: home_page, url: home_page.persisted? ? app_home_page_path : app_home_page_path, method: home_page.persisted? ? :patch : :post, html: { id: "homepage-form" }) do |form| %>
 
     <%= form.text_field :title,
@@ -16,7 +18,7 @@
           class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
           spellcheck: true,
           autocorrect: "on",
-          data: { controller: "lexxy", attachments: Current.user.subscribed?, autosave_target: "content" } %>
+          data: { controller: "lexxy", attachments: Current.user.has_premium_access?, autosave_target: "content" } %>
 
       <div class="field-error"><%= home_page.errors[:content].first if home_page.errors[:content].any? %></div>
     </fieldset>

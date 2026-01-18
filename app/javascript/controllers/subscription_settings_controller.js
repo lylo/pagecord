@@ -4,10 +4,16 @@ export default class extends Controller {
   static targets = ["primary", "dependent"]
 
   connect() {
-    this.toggleDependents()
+    // Skip if primary is disabled (server-side restriction)
+    if (!this.primaryTarget.disabled) {
+      this.toggleDependents()
+    }
   }
 
   toggleDependents() {
+    // Don't toggle if primary is disabled (server-side restriction)
+    if (this.primaryTarget.disabled) return
+
     const enabled = this.primaryTarget.checked
 
     this.dependentTargets.forEach(element => {

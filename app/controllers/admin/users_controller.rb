@@ -18,6 +18,15 @@ class Admin::UsersController < AdminController
     end
   end
 
+  def update
+    @user = User.find(params[:id])
+    if @user.update(user_params)
+      redirect_to admin_user_path(@user), notice: "User was successfully updated."
+    else
+      render :show, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     @user = User.find(params[:id])
 
@@ -45,7 +54,7 @@ class Admin::UsersController < AdminController
 
   private
 
-  def user_params
-    params.require(:user).permit(:email, blog_attributes: [ :subdomain ])
-  end
+    def user_params
+      params.require(:user).permit(:email, :trial_ends_at, blog_attributes: [ :subdomain ])
+    end
 end

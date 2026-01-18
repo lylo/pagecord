@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_01_10_110034) do
+ActiveRecord::Schema[8.2].define(version: 2026_01_18_133054) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -383,6 +383,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_10_110034) do
     t.string "onboarding_state", default: "account_created"
     t.string "password_digest"
     t.string "timezone", default: "UTC", null: false
+    t.date "trial_ends_at"
     t.datetime "updated_at", null: false
     t.boolean "verified", default: false
     t.index ["discarded_at"], name: "index_users_on_discarded_at"

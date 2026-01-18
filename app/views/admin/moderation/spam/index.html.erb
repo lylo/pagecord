@@ -1,9 +1,13 @@
 <%= render "admin/moderation/shared/tabs" %>
 
-<div class="mb-6">
+<div class="mb-6 flex items-center justify-between">
   <div>
     <%= pluralize(@total_unreviewed, "blog") %> flagged for review.
   </div>
+  <%= button_to "Run Detection",
+      run_detection_admin_moderation_spam_index_path,
+      method: :post,
+      class: "px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 rounded cursor-pointer" %>
 </div>
 
 <% if @spam_detections.any? %>

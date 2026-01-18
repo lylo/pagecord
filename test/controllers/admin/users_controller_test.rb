@@ -90,4 +90,17 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       }
     end
   end
+
+  test "should update user trial_ends_at" do
+    user = users(:vivian)
+    new_trial_date = 30.days.from_now.to_date
+
+    patch admin_user_url(user), params: {
+      user: { trial_ends_at: new_trial_date }
+    }
+
+    assert_redirected_to admin_user_path(user)
+    assert_equal "User was successfully updated.", flash[:notice]
+    assert_equal new_trial_date, user.reload.trial_ends_at
+  end
 end

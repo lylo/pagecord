@@ -33,4 +33,9 @@ class Admin::Moderation::SpamController < AdminController
 
     redirect_to admin_moderation_spam_index_path, notice: "Spam confirmed and user will be discarded"
   end
+
+  def run_detection
+    SpamDetectionJob.perform_later
+    redirect_to admin_moderation_spam_index_path, notice: "Spam detection job queued"
+  end
 end

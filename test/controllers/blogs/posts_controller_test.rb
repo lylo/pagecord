@@ -452,11 +452,13 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should initially prevent free blogs from being indexed" do
     @blog = blogs(:vivian)
+    @blog.user.update!(created_at: 1.day.ago)
     host_subdomain! @blog.subdomain
 
     get blog_posts_path
 
-    assert @blog.created_at.after?(1.week.ago)
+    assert @blog.user.created_at.after?(1.week.ago)
+    assert_not @blog.user.subscribed?
     assert_select 'meta[name="robots"][content="noindex, nofollow"]'
   end
 
