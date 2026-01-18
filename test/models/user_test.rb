@@ -53,7 +53,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "trial_days_remaining returns correct number of days" do
-    user = User.create!(email: "trial@example.com", created_at: 5.days.ago)
+    user = User.create!(email: "trial@example.com", trial_ends_at: 9.days.from_now.to_date)
     assert_equal 9, user.trial_days_remaining
   end
 
