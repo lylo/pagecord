@@ -87,8 +87,9 @@
           </fieldset>
 
           <fieldset>
-            <%= form.label :url, "URL", class: "block font-medium mb-2" %>
+            <%= form.label :url, "URL", class: "block font-medium mb-2", for: "navigation_item_social_url" %>
             <%= form.text_field :url,
+                id: "navigation_item_social_url",
                 placeholder: "https://...",
                 class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200",
                 data: { navigation_form_target: "url" } %>
