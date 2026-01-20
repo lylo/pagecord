@@ -2,7 +2,8 @@ module SpamPrevention
   extend ActiveSupport::Concern
 
   included do
-    rate_limit to: 1, within: 2.minutes, only: [ :create ], if: :spammer_detected?
+    rate_limit to: 5, within: 1.hour, only: [ :create ], name: "spam-prevention-hourly"
+    rate_limit to: 1, within: 2.minutes, only: [ :create ], if: :spammer_detected?, name: "spam-prevention-blocked"
 
     before_action :form_complete_time_check, :honeypot_check, :ip_reputation_check, only: [ :create ]
   end
@@ -21,8 +22,8 @@ module SpamPrevention
     return true unless Rails.env.production?
 
     unless IpReputation.valid?(request.remote_ip)
-      Rails.logger.warn "IP reputation check failed. Request blocked."
-      fail
+      # Soft fail: log but don't block (too many false positives from CDN IPs)
+      Rails.logger.warn "IP reputation check failed for #{request.remote_ip}. Logged but not blocked."
     end
   end
 
