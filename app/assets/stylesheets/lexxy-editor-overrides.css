@@ -132,6 +132,11 @@ lexxy-toolbar {
     }
   }
 
+  /* Highlight dropdown reset button */
+  lexxy-highlight-dropdown .lexxy-editor__toolbar-dropdown-reset {
+    color: var(--color-slate-200);
+  }
+
   /* Link dropdown (has .input/.btn classes that override Lexxy variables) */
   lexxy-link-dropdown {
     input[type="url"] {
