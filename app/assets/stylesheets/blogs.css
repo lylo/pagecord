@@ -458,7 +458,7 @@ html, body {
     }
   }
 
-  /* Email subscription form */
+  /* Email subscription form - inline on desktop, stacked on mobile */
   :where(.email-subscriber-form) {
     input[type="email"] {
       border-top-right-radius: 0;
@@ -470,6 +470,21 @@ html, body {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       padding: 0.25rem 0.75rem;
+    }
+
+    @media (max-width: 480px) {
+      input[type="email"],
+      input[type="submit"] {
+        border-radius: 0.375rem;
+      }
+
+      input[type="email"] {
+        border-right: 1px solid var(--color-input-border);
+      }
+
+      input[type="submit"] {
+        padding: 0.5rem 0.75rem;
+      }
     }
   }
 
@@ -632,10 +647,15 @@ button {
   display: flex;
   justify-content: center;
   font-size: 0.875em;
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
   margin-block: 0 var(--lexxy-content-margin);
+  width: 100%;
   max-width: 450px;
+}
+
+.email-subscriber-form turbo-frame {
+  display: block;
+  width: 100%;
 }
 
 /* Empty state messages */
@@ -812,7 +832,6 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
   text-align: center;
 }
@@ -824,7 +843,7 @@ button {
 .subscription-message {
   color: var(--color-text);
   text-align: center;
-  line-height: 1.5em;
+  line-height: 1.5;
 
   a {
     color: var(--color-accent);
@@ -838,6 +857,19 @@ button {
 @media (min-width: 640px) {
   .email-input {
     width: 16rem;
+  }
+}
+
+/* Mobile: stack email form vertically on very small screens */
+@media (max-width: 480px) {
+  .email-subscriber-form .form-fieldset {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .email-input {
+    width: 100%;
   }
 }
 
