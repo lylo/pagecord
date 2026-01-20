@@ -98,7 +98,7 @@
 
     <fieldset>
       <% controllers = current_features.enabled?(:lexxy_ios) ? "lexxy ios-toolbar" : "lexxy" %>
-      <%= form.lexxy_rich_text_area :content,
+      <%= form.rich_text_area :content,
         placeholder: "Craft your draft...",
         class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
         spellcheck: true,

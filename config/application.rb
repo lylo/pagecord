@@ -40,8 +40,5 @@ module Pagecord
 
     # ignore mismatches between HTTP_CLIENT_IP and HTTP_X_FORWARDED_FOR
     config.action_dispatch.ip_spoofing_check = false
-
-    # Required while hiding Lexxy behind a feature-switch
-    config.lexxy.override_action_text_defaults = false
   end
 end
