@@ -14,6 +14,7 @@
           <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Post</th>
           <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Blog</th>
           <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Flags</th>
+          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Score</th>
           <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Status</th>
           <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Moderated</th>
           <th class="py-4 sm:ps-4 text-end text-sm font-semibold text-slate-900 dark:text-slate-50">Actions</th>
@@ -30,6 +31,9 @@
             </td>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
               <%= post.content_moderation&.flagged_categories&.join(", ") %>
+            </td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+              <%= number_to_percentage(post.content_moderation.category_scores.values.max.to_f * 100, precision: 0) %>
             </td>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
               <%= post.discarded? ? "Discarded" : "Visible" %>

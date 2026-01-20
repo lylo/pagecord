@@ -58,6 +58,10 @@ every :day, at: "5:00 am" do
   rake "subscriptions:send_renewal_reminders"
 end
 
+every :day, at: "5:15 am" do
+  runner "SendTrialEndedEmailsJob.perform_later"
+end
+
 every :day, at: "5:30 am" do
   runner "SpamDetectionJob.perform_later"
 end

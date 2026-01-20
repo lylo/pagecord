@@ -25,12 +25,13 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should not show avatar section if not subscribed" do
+  test "should disable avatar section if not subscribed and not on trial" do
     login_as users(:vivian)
 
     get app_settings_appearance_index_url
 
-    assert_select "h3", { count: 0, text: "Avatar" }
+    assert_select "h3", { count: 1, text: "Avatar" }
+    assert_select ".opacity-50.pointer-events-none", count: 1
     assert_response :success
   end
 

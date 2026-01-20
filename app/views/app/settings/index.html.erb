@@ -34,16 +34,14 @@
       </div>
     <% end %>
 
-    <% if @user.subscribed? %>
-      <%= link_to app_settings_audience_index_path do %>
-        <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
-          <div class="mb-4">
-            <span class="text-4xl">📣</span>
-          </div>
-          <h3 class="mb-2 text-xl font-bold dark:text-white">Audience</h3>
-          <p class="text-slate-500 dark:text-slate-400">Manage email subscription and reply by email options</p>
+    <%= link_to app_settings_audience_index_path do %>
+      <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
+        <div class="mb-4">
+          <span class="text-4xl">📣</span>
         </div>
-      <% end %>
+        <h3 class="mb-2 text-xl font-bold dark:text-white">Audience</h3>
+        <p class="text-slate-500 dark:text-slate-400">Manage email subscription and reply by email options</p>
+      </div>
     <% end %>
 
     <%= link_to app_settings_exports_path do %>

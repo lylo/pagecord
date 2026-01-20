@@ -1,4 +1,4 @@
-<% if @blog.user.subscribed? && current_features.enabled?(:custom_css) %>
+<% if @blog.user.has_premium_access? && current_features.enabled?(:custom_css) %>
   <% content_for :head do %>
     <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css" rel="stylesheet" type="text/css"/>
     <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/hint/show-hint.css" rel="stylesheet" type="text/css"/>
@@ -67,8 +67,20 @@
     <%= render "layout_options", form: form %>
   </div>
 
-  <% if @blog.user.subscribed? %>
-    <h3 class="mt-8 font-bold text-lg mb-2">Avatar</h3>
+  <% avatar_disabled = @blog.user.on_free_plan? %>
+  <h3 class="mt-8 font-bold text-lg mb-2">Avatar</h3>
+
+  <% if avatar_disabled %>
+    <div class="mb-4">
+      <%= callout(:info) do %>
+        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add an avatar to your blog.
+      <% end %>
+    </div>
+  <% else %>
+    <div class="mb-4"><%= trial_callout("Avatar") %></div>
+  <% end %>
+
+  <div class="<%= 'opacity-50 pointer-events-none' if avatar_disabled %>">
     <p>
       <% if @blog.avatar&.attached? %>
         Click the image to select a new avatar, or click 'Remove' to delete the existing one.
@@ -91,26 +103,33 @@
     </div>
 
     <%= form.file_field :avatar, class: "hidden", accept: "image/jpeg, image/png, image/webp", data: { avatar_target: "input" } %>
-  <% end %>
+  </div>
 
-  <% if @blog.user.subscribed? %>
-    <h3 class="mt-8 font-bold text-lg mb-4">Branding</h3>
+  <% disabled = !@blog.user.subscribed? %>
+  <h3 class="mt-8 font-bold text-lg mb-4">Branding</h3>
 
-    <div class="flex gap-3">
-      <div class="flex h-6 shrink-0 items-center">
-        <%= form.check_box :show_branding, { checked: @blog.show_branding, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
-      </div>
-      <div>
-        <%= form.label :show_branding, "Show Pagecord branding", class: "text-slate-800 dark:text-slate-100" %>
-        <p class="text-slate-500 text-sm">
-          When checked, the Pagecord logo will be displayed at the bottom of each page on your blog. Please consider
-          keeping this on to help spread the word about Pagecord!
-        </p>
-      </div>
+  <% if disabled %>
+    <div class="mb-4">
+      <%= callout(:info) do %>
+        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to hide Pagecord branding from your blog.
+      <% end %>
     </div>
   <% end %>
 
-  <% if @blog.user.subscribed? && current_features.enabled?(:custom_css) %>
+  <div class="flex gap-3 <%= 'opacity-50' if disabled %>">
+    <div class="flex h-6 shrink-0 items-center">
+      <%= form.check_box :show_branding, { checked: @blog.show_branding, disabled: disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded #{disabled ? 'cursor-not-allowed' : 'focus:ring focus:ring-slate-300'}" } %>
+    </div>
+    <div>
+      <%= form.label :show_branding, "Show Pagecord branding", class: "text-slate-800 dark:text-slate-100" %>
+      <p class="text-slate-500 text-sm">
+        When checked, the Pagecord logo will be displayed at the bottom of each page on your blog. Please consider
+        keeping this on to help spread the word about Pagecord!
+      </p>
+    </div>
+  </div>
+
+  <% if @blog.user.has_premium_access? && current_features.enabled?(:custom_css) %>
     <fieldset class="mt-8" id="custom-css-section" data-controller="css-editor">
       <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
       <p class="mb-4">
