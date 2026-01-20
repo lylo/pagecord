@@ -72,7 +72,7 @@
       </style>
     <% end %>
 
-    <% if @blog.present? && current_features.enabled?(:custom_css) && @blog.custom_css.present? %>
+    <% if @blog.present? && @blog.user.has_premium_access? && @blog.custom_css.present? %>
       <style>
         <%= @blog.sanitized_custom_css %>
       </style>

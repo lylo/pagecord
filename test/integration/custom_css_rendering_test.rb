@@ -9,8 +9,8 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
     @blog = @user.blog
   end
 
-  test "renders custom css in head when feature is enabled and css is present" do
-    @blog.update(features: [ "custom_css" ], custom_css: ".blog { background: red; }")
+  test "renders custom css in head when user has premium access and css is present" do
+    @blog.update(custom_css: ".blog { background: red; }")
     post = posts(:one)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
@@ -19,18 +19,19 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
     assert_select "head style", text: /\.blog { background: red; }/
   end
 
-  test "does not render custom css when feature is disabled" do
-    @blog.update(features: [], custom_css: ".blog { background: red; }")
-    post = posts(:one)
+  test "does not render custom css when user does not have premium access" do
+    vivian = users(:vivian)
+    vivian.blog.update(custom_css: ".blog { background: red; }")
+    post = vivian.blog.posts.first
 
-    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+    get blog_post_url(subdomain: vivian.blog.subdomain, slug: post.slug)
 
     assert_response :success
     assert_select "head style", text: /\.blog { background: red; }/, count: 0
   end
 
   test "does not render style tag when custom_css is blank" do
-    @blog.update(features: [ "custom_css" ], custom_css: nil)
+    @blog.update(custom_css: nil)
     post = posts(:one)
 
     get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
@@ -45,7 +46,7 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders custom css on blog pages" do
-    @blog.update(features: [ "custom_css" ], custom_css: ".custom-style { color: blue; }")
+    @blog.update(custom_css: ".custom-style { color: blue; }")
     post = posts(:one)
     page = posts(:about)
 
@@ -62,7 +63,6 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
 
   test "prevents saving malicious CSS and shows validation error" do
     malicious_css = ".blog { color: red; }</style><script>alert('xss')</script><style>"
-    @blog.features = [ "custom_css" ]
     @blog.custom_css = malicious_css
 
     # Validation should prevent saving malicious CSS
@@ -77,7 +77,6 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
   test "preserves original CSS in attribute when validation fails" do
     # CSS with nested rules that the sanitizer doesn't understand
     nested_css = ".post { color: red; & h1 { color: blue; } }"
-    @blog.features = [ "custom_css" ]
     @blog.custom_css = nested_css
 
     # Validation should fail

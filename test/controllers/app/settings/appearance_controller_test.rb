@@ -95,9 +95,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_not non_subscribed_blog.reload.avatar.attached?
   end
 
-  test "should show custom css section if feature is enabled" do
-    @blog.update(features: [ "custom_css" ])
-
+  test "should show custom css section if user has premium access" do
     get app_settings_appearance_index_url
 
     assert_select "h3", { count: 1, text: "Custom CSS" }
@@ -105,8 +103,8 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should not show custom css section if feature is disabled" do
-    @blog.update(features: [])
+  test "should not show custom css section if user does not have premium access" do
+    login_as users(:vivian)
 
     get app_settings_appearance_index_url
 
@@ -115,8 +113,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should update custom_css if feature is enabled" do
-    @blog.update(features: [ "custom_css" ])
+  test "should update custom_css if user has premium access" do
     custom_css = ".blog { background: red; }"
 
     patch app_settings_appearance_url(@blog), params: { blog: { custom_css: custom_css } }, as: :turbo_stream
@@ -125,18 +122,18 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_equal custom_css, @blog.reload.custom_css
   end
 
-  test "should not update custom_css if feature is disabled" do
-    @blog.update(features: [])
+  test "should not update custom_css if user does not have premium access" do
+    login_as users(:vivian)
+    vivian_blog = users(:vivian).blog
     custom_css = ".blog { background: red; }"
 
-    patch app_settings_appearance_url(@blog), params: { blog: { custom_css: custom_css } }, as: :turbo_stream
+    patch app_settings_appearance_url(vivian_blog), params: { blog: { custom_css: custom_css } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
-    assert_nil @blog.reload.custom_css
+    assert_nil vivian_blog.reload.custom_css
   end
 
   test "should show validation error for malicious custom css" do
-    @blog.update(features: [ "custom_css" ])
     malicious_css = ".blog { color: red; }</style><script>alert(1)</script>"
 
     patch app_settings_appearance_url(@blog), params: { blog: { custom_css: malicious_css } }, as: :turbo_stream
@@ -146,7 +143,6 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show validation error for invalid @import" do
-    @blog.update(features: [ "custom_css" ])
     invalid_css = '@import url("https://evil.com/steal.css");'
 
     patch app_settings_appearance_url(@blog), params: { blog: { custom_css: invalid_css } }, as: :turbo_stream

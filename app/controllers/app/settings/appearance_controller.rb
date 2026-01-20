@@ -30,7 +30,7 @@ class App::Settings::AppearanceController < AppController
         permitted_params << :show_branding
       end
 
-      permitted_params << :custom_css if current_features.enabled?(:custom_css)
+      permitted_params << :custom_css if @blog.user.has_premium_access?
 
       params.require(:blog).permit(permitted_params)
     end

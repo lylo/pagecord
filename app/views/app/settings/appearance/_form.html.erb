@@ -1,4 +1,4 @@
-<% if @blog.user.has_premium_access? && current_features.enabled?(:custom_css) %>
+<% if @blog.user.has_premium_access? %>
   <% content_for :head do %>
     <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css" rel="stylesheet" type="text/css"/>
     <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/hint/show-hint.css" rel="stylesheet" type="text/css"/>
@@ -129,7 +129,7 @@
     </div>
   </div>
 
-  <% if @blog.user.has_premium_access? && current_features.enabled?(:custom_css) %>
+  <% if @blog.user.has_premium_access? %>
     <fieldset class="mt-8" id="custom-css-section" data-controller="css-editor">
       <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
       <p class="mb-4">
