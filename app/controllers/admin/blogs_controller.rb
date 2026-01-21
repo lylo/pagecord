@@ -18,7 +18,7 @@ class Admin::BlogsController < AdminController
     if params[:status].present?
       case params[:status]
       when "paid"
-        blogs = blogs.where("subscriptions.plan = ? AND subscriptions.cancelled_at IS NULL AND subscriptions.next_billed_at > ?", "annual", Time.current)
+        blogs = blogs.where("(subscriptions.plan = ? AND subscriptions.cancelled_at IS NULL AND subscriptions.next_billed_at > ?) OR subscriptions.plan = ?", "annual", Time.current, "lifetime")
       when "comped"
         blogs = blogs.where("subscriptions.plan = ?", "complimentary")
       end

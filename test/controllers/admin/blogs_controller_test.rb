@@ -64,6 +64,7 @@ class Admin::BlogsControllerTest < ActionDispatch::IntegrationTest
     # Should show only users with active paid subscriptions
     paid_count = Subscription.active_paid.count
     assert_select "div", text: /Showing paid subscribers \(#{paid_count} results?\)/
+    assert_select "td", text: /elliot/ # lifetime user
     assert_select "a[href='#{admin_blogs_path}']", text: "Clear filters"
   end
 

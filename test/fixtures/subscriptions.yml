@@ -21,3 +21,11 @@ three:
   paddle_price_id: pri_01hvp39rnddapkfaq555asdasd
   unit_price: 2000
   next_billed_at: <%= 1.year.from_now %>
+
+four:
+  user: elliot
+  plan: lifetime
+  paddle_subscription_id: sub_lifetime_test
+  paddle_price_id: pri_lifetime_test
+  unit_price: 24900
+  next_billed_at: null

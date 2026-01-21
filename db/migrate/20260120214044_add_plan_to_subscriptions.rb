@@ -1,6 +1,5 @@
 class AddPlanToSubscriptions < ActiveRecord::Migration[8.2]
   def change
-    remove_column :users, :lifetime, :boolean, default: false, null: false
     add_column :subscriptions, :plan, :string
 
     reversible do |dir|
