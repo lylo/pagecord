@@ -69,7 +69,7 @@ class Admin::BlogsControllerTest < ActionDispatch::IntegrationTest
 
   test "should filter by comped status" do
     # Make joel's subscription comped
-    users(:joel).subscription.update!(complimentary: true)
+    users(:joel).subscription.update!(plan: "complimentary")
 
     get admin_blogs_path, params: { status: "comped" }
     assert_response :success

@@ -1,0 +1,172 @@
+{
+  "data": {
+    "id": "txn_01kfftj2vb5q01s9fr3h9m0vmk",
+    "items": [
+      {
+        "price": {
+          "id": "pri_01kfet10xfw583xhgarh3hgghd",
+          "name": "Lifetime Subscription",
+          "type": "standard",
+          "status": "active",
+          "quantity": {
+            "maximum": 999999,
+            "minimum": 1
+          },
+          "tax_mode": "internal",
+          "created_at": "2026-01-20T22:57:22.863557Z",
+          "product_id": "pro_01hx903xn4qs52rv8a8z5mzvzr",
+          "unit_price": {
+            "amount": "24900",
+            "currency_code": "USD"
+          },
+          "updated_at": "2026-01-20T23:09:24.103267Z",
+          "custom_data": null,
+          "description": "Pagecord Lifetime 2026",
+          "trial_period": null,
+          "billing_cycle": null,
+          "unit_price_overrides": []
+        },
+        "price_id": "pri_01kfet10xfw583xhgarh3hgghd",
+        "quantity": 1,
+        "proration": null
+      }
+    ],
+    "origin": "web",
+    "status": "completed",
+    "details": {
+      "totals": {
+        "fee": "1295",
+        "tax": "4150",
+        "total": "24900",
+        "credit": "0",
+        "balance": "0",
+        "discount": "0",
+        "earnings": "19455",
+        "subtotal": "20750",
+        "grand_total": "24900",
+        "currency_code": "USD",
+        "credit_to_balance": "0"
+      },
+      "line_items": [
+        {
+          "id": "txnitm_01kfftj928z917gghaqnb5e81d",
+          "totals": {
+            "tax": "4150",
+            "total": "24900",
+            "discount": "0",
+            "subtotal": "20750"
+          },
+          "item_id": null,
+          "product": {
+            "id": "pro_01hx903xn4qs52rv8a8z5mzvzr",
+            "name": "Pagecord Premium",
+            "type": "standard",
+            "status": "active",
+            "image_url": "https://pagecord-media.s3.eu-west-2.amazonaws.com/icon.png",
+            "created_at": "2024-05-07T07:43:31.492Z",
+            "updated_at": "2024-05-07T07:44:22.83Z",
+            "custom_data": null,
+            "description": "",
+            "tax_category": "saas",
+            "consents_required": []
+          },
+          "price_id": "pri_01kfet10xfw583xhgarh3hgghd",
+          "quantity": 1,
+          "tax_rate": "0.2",
+          "unit_totals": {
+            "tax": "4150",
+            "total": "24900",
+            "discount": "0",
+            "subtotal": "20750"
+          },
+          "is_tax_exempt": false,
+          "revised_tax_exempted": false
+        }
+      ],
+      "payout_totals": {
+        "fee": "1295",
+        "tax": "4150",
+        "total": "24900",
+        "credit": "0",
+        "balance": "0",
+        "discount": "0",
+        "earnings": "19455",
+        "fee_rate": "0.05",
+        "subtotal": "20750",
+        "grand_total": "24900",
+        "currency_code": "USD",
+        "exchange_rate": "1",
+        "credit_to_balance": "0"
+      },
+      "tax_rates_used": [
+        {
+          "totals": {
+            "tax": "4150",
+            "total": "24900",
+            "discount": "0",
+            "subtotal": "20750"
+          },
+          "tax_rate": "0.2"
+        }
+      ],
+      "adjusted_totals": {
+        "fee": "1295",
+        "tax": "4150",
+        "total": "24900",
+        "earnings": "19455",
+        "subtotal": "20750",
+        "grand_total": "24900",
+        "retained_fee": "0",
+        "currency_code": "USD"
+      }
+    },
+    "checkout": {
+      "url": "https://dev.pagecord.com/app/account?_ptxn=txn_01kfftj2vb5q01s9fr3h9m0vmk"
+    },
+    "payments": [
+      {
+        "amount": "24900",
+        "status": "captured",
+        "created_at": "2026-01-21T08:26:15.166974Z",
+        "error_code": null,
+        "captured_at": "2026-01-21T08:26:17.244468Z",
+        "method_details": {
+          "card": {
+            "type": "visa",
+            "last4": "4242",
+            "expiry_year": 2029,
+            "expiry_month": 1,
+            "cardholder_name": "Test User"
+          },
+          "type": "card"
+        },
+        "payment_method_id": "paymtd_01kfftjn6afxz0wfajy4e99kp9",
+        "payment_attempt_id": "2470c1c5-53ec-4642-b174-0c9f3be48b0a",
+        "stored_payment_method_id": "11bd9f1f-8d16-48e9-9dd8-e8f9fe7b5cc6"
+      }
+    ],
+    "billed_at": "2026-01-21T08:26:17.531162Z",
+    "address_id": "add_01kfftj8btbdnzwtv2pn7sqrv4",
+    "created_at": "2026-01-21T08:25:56.363257Z",
+    "invoice_id": "inv_01kfftjqv7b844wdnek1g5zkgy",
+    "revised_at": null,
+    "updated_at": "2026-01-21T08:26:19.528735588Z",
+    "business_id": null,
+    "custom_data": {
+      "lifetime": true
+    },
+    "customer_id": "ctm_01jd5w577s24a1mdej289y5tax",
+    "discount_id": null,
+    "receipt_data": null,
+    "currency_code": "USD",
+    "billing_period": null,
+    "invoice_number": "7098-10016",
+    "billing_details": null,
+    "collection_mode": "automatic",
+    "subscription_id": null
+  },
+  "event_id": "evt_01kfftjsgdef8vex26kdncx0pk",
+  "event_type": "transaction.completed",
+  "occurred_at": "2026-01-21T08:26:19.533296Z",
+  "notification_id": "ntf_01kfftjsy03vt4b9ggts74yncc"
+}

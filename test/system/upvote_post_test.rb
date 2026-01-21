@@ -11,6 +11,8 @@ class UpvotePostTest < ApplicationSystemTestCase
     use_subdomain(blog.subdomain)
     visit blog_post_path(post.slug)
 
+    # Wait for Turbo to be ready before clicking
+    assert_selector "a.upvote[data-turbo-method]"
     find("a.upvote").click
     assert_selector ".upvote-heart[style*='fill']"  # JS sets fill color immediately
     sleep 0.5  # Allow request to complete

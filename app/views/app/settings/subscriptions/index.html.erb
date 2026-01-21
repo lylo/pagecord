@@ -7,19 +7,41 @@
     Subscribe now to keep access to <b>image attachments</b>, <b>custom
     domains</b>, <b>custom CSS</b>, <b>email subscribers</b>, <b>reply by email</b> and <b>Olly's awesome customer support</b>!
   </p>
-  <p class="mt-4">
-    It's only <strong>$<%= localised_price %>/year!</strong>
-  </p>
+
+  <div class="mt-4 flex flex-col sm:flex-row sm:justify-center gap-3">
+    <div class="flex-1 sm:max-w-xs p-4 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg text-center">
+      <p class="font-medium">Annual</p>
+      <p class="text-2xl font-bold">$<%= localised_price %><span class="text-sm font-normal text-slate-500 dark:text-slate-400">/year</span></p>
+      <div class="mt-3">
+        <%= link_to "Subscribe", "#", class: "paddle_button btn-primary block w-full text-center", data: paddle_annual_data %>
+      </div>
+    </div>
+    <% if lifetime_enabled? %>
+      <div class="flex-1 sm:max-w-xs p-4 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg text-center">
+        <p class="font-medium">Lifetime</p>
+        <p class="text-2xl font-bold">$<%= localised_price(:lifetime) %><span class="text-sm font-normal text-slate-500 dark:text-slate-400"> once</span></p>
+        <div class="mt-3">
+          <%= link_to "Get Lifetime", "#", class: "paddle_button btn-primary block w-full text-center", data: paddle_lifetime_data %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
   <div class="mt-4">
-    <%= link_to "Subscribe Now!", "#", class: "paddle_button btn-primary", data: paddle_data %>
-    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+    <%= link_to "Back", app_settings_path, class: "btn-secondary" %>
   </div>
 <% elsif Current.user.subscribed? %>
-  <% if @subscription.complimentary? %>
+  <% if @subscription.lifetime? %>
+    <p>You have a lifetime Pagecord Premium subscription! 🎉</p>
+
+    <div>
+      <%= link_to "Back", app_settings_path, class: "btn-primary" %>
+    </div>
+  <% elsif @subscription.complimentary? %>
     <p>You have a free Pagecord Premium subscription! 🎉</p>
 
     <div>
-      <%= link_to "← Back", app_settings_path, class: "btn-primary" %>
+      <%= link_to "Back", app_settings_path, class: "btn-primary" %>
     </div>
   <% elsif @subscription.cancelled? %>
     <p>
@@ -27,7 +49,7 @@
       <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
     </p>
     <div class="mt-4">
-    <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_data %>
+    <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_annual_data %>
     </div>
   <% elsif @subscription.lapsed? %>
     <p>
@@ -38,7 +60,7 @@
     </p>
 
     <div class="mt-4">
-      <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_data %>
+      <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_annual_data %>
     </div>
   <% else %>
     <p>
@@ -50,12 +72,22 @@
       <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
     </p>
 
-    <div class="mt-2 flex justify-between" data-controller="paddle">
+    <div class="mt-4 flex flex-wrap gap-2" data-controller="paddle">
       <%= link_to "Update Card Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "btn-primary" %>
       <%= link_to "Cancel Subscription", cancel_confirm_app_settings_subscriptions_path, class: "btn-danger" %>
     </div>
 
-    <div class="mt-8 flex items-center gap-x-2 pt-4 border-t border-t-slate-200 dark:border-slate-600">
+    <% if lifetime_enabled? %>
+      <div class="mt-6 p-4 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <p class="font-medium">Switch to Lifetime</p>
+          <p class="text-sm text-slate-600 dark:text-slate-400">Pay <strong>$<%= localised_price(:lifetime) %></strong> once and never worry about renewals.</p>
+        </div>
+        <%= link_to "Upgrade", "#", class: "paddle_button btn-primary block sm:inline-block text-center", data: paddle_lifetime_data %>
+      </div>
+    <% end %>
+
+    <div class="mt-4">
       <%= link_to "Back", app_settings_path, class: "btn-secondary" %>
     </div>
   <% end %>
@@ -68,13 +100,26 @@
     domains</b>, <b>custom CSS</b>, <b>email subscribers</b>, <b>reply by email</b> and <b>human customer support</b>! 💖
   </p>
 
-
-  <p class="mt-4">
-    It's only <strong>$<%= localised_price %>/year!</strong> What are you waiting for? 😊
-  </p>
+  <div class="mt-4 flex flex-col sm:flex-row sm:justify-center gap-3">
+    <div class="flex-1 sm:max-w-xs p-4 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg text-center">
+      <p class="font-medium">Annual</p>
+      <p class="text-2xl font-bold">$<%= localised_price %><span class="text-sm font-normal text-slate-500 dark:text-slate-400">/year</span></p>
+      <div class="mt-3">
+        <%= link_to "Subscribe", "#", class: "paddle_button btn-primary block w-full text-center", data: paddle_annual_data %>
+      </div>
+    </div>
+    <% if lifetime_enabled? %>
+      <div class="flex-1 sm:max-w-xs p-4 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg text-center">
+        <p class="font-medium">Lifetime</p>
+        <p class="text-2xl font-bold">$<%= localised_price(:lifetime) %><span class="text-sm font-normal text-slate-500 dark:text-slate-400"> once</span></p>
+        <div class="mt-3">
+          <%= link_to "Get Lifetime", "#", class: "paddle_button btn-primary block w-full text-center", data: paddle_lifetime_data %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 
   <div class="mt-4">
-    <%= link_to "Upgrade Today!", "#", class: "paddle_button btn-primary", data: paddle_data %>
-    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+    <%= link_to "Back", app_settings_path, class: "btn-secondary" %>
   </div>
 <% end %>

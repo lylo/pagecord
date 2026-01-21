@@ -1,4 +1,5 @@
 require "test_helper"
+require "mocha/minitest"
 
 class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
   test "should handle subscription.created event" do
@@ -86,7 +87,6 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
 
   test "should update next billing date and unit price on transaction.completed event" do
     subscription = subscriptions(:one)
-    original_unit_price = subscription.unit_price
 
     payload = payload_for("transaction.completed", subscription.user)
     json_payload = payload.to_json
@@ -143,6 +143,86 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal 3000, user.subscription.reload.unit_price
+  end
+
+  test "should create lifetime subscription for new user" do
+    user = users(:vivian)
+    assert_nil user.subscription
+
+    payload = payload_for("transaction.completed.lifetime", user)
+    json_payload = payload.to_json
+
+    assert_difference "Subscription.count", 1 do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    assert_response :success
+    assert user.reload.subscribed?
+    assert user.subscription.lifetime?
+    assert_equal 24900, user.subscription.unit_price
+    assert_equal "ctm_01jd5w577s24a1mdej289y5tax", user.subscription.paddle_customer_id
+    assert_nil user.subscription.cancelled_at
+  end
+
+  test "should upgrade existing annual subscriber to lifetime and cancel paddle subscription" do
+    subscription = subscriptions(:one)
+    user = subscription.user
+    original_paddle_subscription_id = subscription.paddle_subscription_id
+
+    assert user.subscribed?
+    assert subscription.annual?
+
+    payload = payload_for("transaction.completed.lifetime", user)
+    payload["data"]["customer_id"] = subscription.paddle_customer_id || "ctm_01hvnxx8katrjdh3xjph09mef7"
+    json_payload = payload.to_json
+
+    # Mock the PaddleApi call to cancel the existing subscription
+    PaddleApi.any_instance.expects(:cancel_subscription).with(original_paddle_subscription_id, immediately: true).once
+
+    assert_no_difference "Subscription.count" do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    assert_response :success
+    assert subscription.reload.lifetime?
+    assert_equal 24900, subscription.unit_price
+    assert_nil subscription.cancelled_at
+  end
+
+  test "should clear cancelled_at when upgrading cancelled subscription to lifetime" do
+    subscription = subscriptions(:one)
+    subscription.update!(cancelled_at: 1.week.ago)
+    user = subscription.user
+
+    assert subscription.cancelled?
+
+    payload = payload_for("transaction.completed.lifetime", user)
+    payload["data"]["customer_id"] = subscription.paddle_customer_id || "ctm_01hvnxx8katrjdh3xjph09mef7"
+    json_payload = payload.to_json
+
+    PaddleApi.any_instance.expects(:cancel_subscription).once
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert subscription.reload.lifetime?
+    assert_not subscription.cancelled?
+    assert_nil subscription.cancelled_at
   end
 
   private

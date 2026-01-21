@@ -1,12 +1,13 @@
 module PricingHelper
-  def localised_price
+  DISCOUNTED_COUNTRIES = %w[IN BR CN].freeze
+
+  def localised_price(plan = :annual)
     country = request.headers["CF-IPCountry"]
 
-    price = case country
-    when "IN", "BR" then 19
-    else Subscription.price
+    if DISCOUNTED_COUNTRIES.include?(country)
+      plan.to_sym == :lifetime ? 199 : 19
+    else
+      Subscription.price(plan)
     end
-
-    price
   end
 end

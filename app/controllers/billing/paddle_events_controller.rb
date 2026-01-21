@@ -62,7 +62,7 @@ module Billing
       end
 
       def subscription_created
-        @subscription = @user.subscription || Subscription.create!(user: @user)
+        @subscription = @user.subscription || Subscription.create!(user: @user, plan: "annual")
 
         Rails.logger.info "New subscription #{@user.id} (subscription id: #{@subscription.id})"
         if @subscription.cancelled?
@@ -70,7 +70,7 @@ module Billing
 
           # this is a re-activation of an existing subscription. delete and recreate
           @subscription.destroy!
-          @subscription = Subscription.create!(user: @user)
+          @subscription = Subscription.create!(user: @user, plan: "annual")
           Rails.logger.info "New subscription #{@subscription.id} created for @#{@user.id}"
         end
 
@@ -124,13 +124,14 @@ module Billing
 
         return if data.origin == "subscription_payment_method_change"
 
-        billing_period_ends_at = if data.billing_period.present?
-          data.billing_period.ends_at
-        else
-          nil
+        if data.custom_data&.lifetime
+          handle_lifetime_purchase
+          return
         end
 
-        unless billing_period_ends_at.present?
+        billing_period_ends_at = data.billing_period&.ends_at
+
+        unless billing_period_ends_at
           Rails.logger.error "No next_billed_at in transaction_completed event"
           raise "No next_billed_at in transaction_completed event for #{@user.id} (#{@user.blog.subdomain})"
         end
@@ -147,6 +148,29 @@ module Billing
           Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}, unit_price: #{actual_unit_price}"
         else
           raise "Subscription not found for transaction_completed event for #{@user.id} (#{@user.blog.subdomain})"
+        end
+      end
+
+      def handle_lifetime_purchase
+        Rails.logger.info "Lifetime purchase for user #{@user.id}"
+
+        existing_paddle_subscription_id = @subscription&.paddle_subscription_id
+
+        # Create or update subscription to lifetime plan
+        subscription = @subscription || Subscription.create!(user: @user, plan: "lifetime")
+        subscription.update!(
+          plan: "lifetime",
+          paddle_customer_id: data.customer_id,
+          unit_price: transaction_unit_price,
+          cancelled_at: nil
+        )
+
+        Rails.logger.info "Subscription #{subscription.id} upgraded to lifetime"
+
+        # Cancel existing Paddle subscription if there was one
+        if existing_paddle_subscription_id.present?
+          Rails.logger.info "Cancelling existing Paddle subscription #{existing_paddle_subscription_id}"
+          PaddleApi.new.cancel_subscription(existing_paddle_subscription_id, immediately: true)
         end
       end
 

@@ -5,8 +5,9 @@ class PaddleApi
     get "subscriptions/#{id}"
   end
 
-  def cancel_subscription(id)
-    post "subscriptions/#{id}/cancel", { effective_from: "next_billing_period" }.to_json
+  def cancel_subscription(id, immediately: false)
+    effective_from = immediately ? "immediately" : "next_billing_period"
+    post "subscriptions/#{id}/cancel", { effective_from: effective_from }.to_json
   end
 
   def get_update_payment_method_transaction(subscription_id)

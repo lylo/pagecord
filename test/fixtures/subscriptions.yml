@@ -1,5 +1,6 @@
 one:
   user: joel
+  plan: annual
   paddle_subscription_id: sub_01hvrk1481njzb874tn7wyrksv
   paddle_price_id: pri_01hvp39rnddapkfaqqd3tvje8n
   unit_price: 2000
@@ -7,6 +8,7 @@ one:
 
 two:
   user: annie
+  plan: annual
   paddle_subscription_id: sub_01hvrk1481njzb874tn7wasda
   paddle_price_id: pri_01hvp39rnddapkfaqqd3tvasdasd
   unit_price: 2000
@@ -14,6 +16,7 @@ two:
 
 three:
   user: pagecord
+  plan: annual
   paddle_subscription_id: sub_01hvrk555874tn7wasda
   paddle_price_id: pri_01hvp39rnddapkfaq555asdasd
   unit_price: 2000

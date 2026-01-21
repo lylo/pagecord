@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_01_18_133054) do
+ActiveRecord::Schema[8.2].define(version: 2026_01_21_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -360,6 +360,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_18_133054) do
     t.string "paddle_customer_id"
     t.string "paddle_price_id"
     t.string "paddle_subscription_id"
+    t.string "plan", null: false
     t.integer "unit_price"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false

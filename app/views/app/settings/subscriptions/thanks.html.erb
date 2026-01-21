@@ -1,10 +1,20 @@
 <h2 class="font-bold text-lg">Thank you for subscribing! ✨</h2>
 
-<p class="mt-4">
-  You Pagecord Premium subscription is now active 🎉
-</p>
-
-<p class="mt-4">
-  You can manage your subscription from your
-  <a href="<%= app_settings_subscriptions_path %>" class="font-medium underline">Billing</a> page at any time.
+<% if params[:plan] == "lifetime" %>
+  <p class="mt-4">
+    You now have lifetime access to Pagecord Premium 🎉
   </p>
+
+  <p class="mt-4">
+    No recurring payments, no renewals - you're all set forever!
+  </p>
+<% else %>
+  <p class="mt-4">
+    Your Pagecord Premium subscription is now active 🎉
+  </p>
+
+  <p class="mt-4">
+    You can manage your subscription from your
+    <a href="<%= app_settings_subscriptions_path %>" class="font-medium underline">Billing</a> page at any time.
+  </p>
+<% end %>

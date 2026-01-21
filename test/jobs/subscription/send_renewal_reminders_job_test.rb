@@ -30,7 +30,7 @@ class Subscription::SendRenewalRemindersJobTest < ActiveJob::TestCase
 
   test "does not send renewal reminder for complimentary subscription" do
     @subscription.update!(
-      complimentary: true,
+      plan: "complimentary",
       next_billed_at: 2.weeks.from_now
     )
 

@@ -64,4 +64,28 @@ class SubscriptionTest < ActiveSupport::TestCase
     @subscription.next_billed_at = 1.month.ago
     assert_not @subscription.active?
   end
+
+  test "lifetime subscription is always active" do
+    @subscription.plan = "lifetime"
+    @subscription.next_billed_at = nil
+    assert @subscription.active?
+    assert @subscription.lifetime?
+    assert_not @subscription.lapsed?
+  end
+
+  test "complimentary subscription is always active" do
+    @subscription.plan = "complimentary"
+    @subscription.next_billed_at = nil
+    assert @subscription.active?
+    assert @subscription.complimentary?
+    assert_not @subscription.lapsed?
+  end
+
+  test "annual subscription can lapse" do
+    @subscription.plan = "annual"
+    @subscription.next_billed_at = 1.month.ago
+    assert_not @subscription.active?
+    assert @subscription.annual?
+    assert @subscription.lapsed?
+  end
 end
