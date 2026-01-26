@@ -1,5 +1,5 @@
 class Admin::PostsController < AdminController
-  include Pagy::Backend
+  include Pagy::Method
 
   def index
     @pagy, @posts = pagy(

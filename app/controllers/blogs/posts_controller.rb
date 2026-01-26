@@ -1,11 +1,10 @@
 class Blogs::PostsController < Blogs::BaseController
-  include Pagy::Backend, RequestHash, PostsHelper
+  include Pagy::Method, RequestHash, PostsHelper
 
   rate_limit to: 60, within: 1.minute
 
   skip_forgery_protection only: :not_found
-  rescue_from Pagy::OverflowError, with: :redirect_to_last_page
-  rescue_from Pagy::VariableError, with: :redirect_to_first_page
+  rescue_from Pagy::RangeError, with: :redirect_to_last_page
 
   def index
     # FIXME this filtered check can be removed after cache has been reset
@@ -70,10 +69,6 @@ class Blogs::PostsController < Blogs::BaseController
 
     def redirect_to_last_page(exception)
       redirect_to url_for(page: exception.pagy.last, host: request.host)
-    end
-
-    def redirect_to_first_page
-      redirect_to url_for(page: 1, host: request.host)
     end
 
     def page_size

@@ -1,5 +1,5 @@
 class Admin::BlogsController < AdminController
-  include Pagy::Backend
+  include Pagy::Method
 
   def index
     @total_users = Blog.count

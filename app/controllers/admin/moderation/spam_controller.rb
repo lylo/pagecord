@@ -1,5 +1,5 @@
 class Admin::Moderation::SpamController < AdminController
-  include Pagy::Backend
+  include Pagy::Method
 
   def index
     @pagy, @spam_detections = pagy(
