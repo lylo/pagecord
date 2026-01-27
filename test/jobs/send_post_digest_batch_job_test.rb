@@ -12,7 +12,7 @@ class SendPostDigestBatchJobTest < ActiveJob::TestCase
     digest = PostDigest.generate_for(@blog)
 
     mock_client = mock("postmark_client")
-    mock_client.expects(:deliver_messages).returns([{ error_code: 0, message: "OK" }])
+    mock_client.expects(:deliver_messages).returns([ { error_code: 0, message: "OK" } ])
     Postmark::ApiClient.stubs(:new).returns(mock_client)
 
     assert_difference "PostDigestDelivery.count", 1 do
@@ -37,7 +37,7 @@ class SendPostDigestBatchJobTest < ActiveJob::TestCase
     digest = PostDigest.generate_for(@blog)
 
     mock_client = mock("postmark_client")
-    mock_client.expects(:deliver_messages).returns([{ error_code: 406, message: "Inactive recipient" }])
+    mock_client.expects(:deliver_messages).returns([ { error_code: 406, message: "Inactive recipient" } ])
     Postmark::ApiClient.stubs(:new).returns(mock_client)
 
     assert_no_difference "PostDigestDelivery.count" do

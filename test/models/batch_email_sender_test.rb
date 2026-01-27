@@ -19,10 +19,10 @@ class BatchEmailSenderTest < ActiveSupport::TestCase
     digest = post_digests(:one)
 
     message = PostDigestMailer.with(digest: digest, subscriber: subscriber).weekly_digest
-    messages_with_subscribers = [[message, subscriber]]
+    messages_with_subscribers = [ [ message, subscriber ] ]
 
     mock_client = mock("postmark_client")
-    mock_client.expects(:deliver_messages).returns([{ error_code: 0, message: "OK" }])
+    mock_client.expects(:deliver_messages).returns([ { error_code: 0, message: "OK" } ])
     Postmark::ApiClient.stubs(:new).returns(mock_client)
 
     results = sender.send_batch(messages_with_subscribers)
@@ -38,10 +38,10 @@ class BatchEmailSenderTest < ActiveSupport::TestCase
     digest = post_digests(:one)
 
     message = PostDigestMailer.with(digest: digest, subscriber: subscriber).weekly_digest
-    messages_with_subscribers = [[message, subscriber]]
+    messages_with_subscribers = [ [ message, subscriber ] ]
 
     mock_client = mock("postmark_client")
-    mock_client.expects(:deliver_messages).returns([{ error_code: 406, message: "Inactive recipient" }])
+    mock_client.expects(:deliver_messages).returns([ { error_code: 406, message: "Inactive recipient" } ])
     Postmark::ApiClient.stubs(:new).returns(mock_client)
 
     results = sender.send_batch(messages_with_subscribers)
