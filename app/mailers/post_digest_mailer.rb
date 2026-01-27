@@ -10,10 +10,8 @@ class PostDigestMailer < PostmarkMailer
   helper_method :without_action_text_image_wrapper, :strip_video_tags
 
   def weekly_digest
-    digest = params[:digest]
-    @digest = digest
-
-    @posts = digest.posts.with_rich_text_content.order(published_at: :desc)
+    @digest = params[:digest]
+    @posts = @digest.posts.with_rich_text_content.order(published_at: :desc)
     @subscriber = params[:subscriber]
 
     one_click_url = email_subscriber_one_click_unsubscribe_url_for(@subscriber)

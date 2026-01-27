@@ -10,11 +10,9 @@ class PostmarkBatchSender
   def send_batch(messages_with_subscribers)
     client = Postmark::ApiClient.new(@api_token)
     messages = messages_with_subscribers.map(&:first)
+    subscribers = messages_with_subscribers.map(&:last)
 
-    results = client.deliver_messages(messages)
-
-    results.each_with_index.map do |result, index|
-      subscriber = messages_with_subscribers[index].last
+    client.deliver_messages(messages).zip(subscribers).map do |result, subscriber|
       Result.new(
         subscriber: subscriber,
         success: result[:error_code] == 0,
