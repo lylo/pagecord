@@ -2,8 +2,6 @@ class PostDigestMailer < PostmarkMailer
   include PostsHelper
   include RoutingHelper
 
-  BROADCAST_FROM_DOMAIN = "newsletters.pagecord.com"
-
   layout "mailer_digest"
 
   helper :routing
@@ -34,6 +32,6 @@ class PostDigestMailer < PostmarkMailer
   private
 
     def sender_address_for(blog)
-      "#{blog.display_name} <digest@#{BROADCAST_FROM_DOMAIN}>"
+      "#{blog.display_name} <digest@newsletters.pagecord.com>"
     end
 end
