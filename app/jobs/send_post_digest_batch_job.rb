@@ -7,12 +7,12 @@ class SendPostDigestBatchJob < ApplicationJob
 
   def perform(post_digest_id)
     digest = PostDigest.find(post_digest_id)
-    sender = BatchEmailSender.new(provider: :postmark)
+    sender = PostmarkBatchSender.new
 
     pending_subscribers = digest.blog.email_subscribers.confirmed
       .where.not(id: digest.deliveries.select(:email_subscriber_id))
 
-    pending_subscribers.find_in_batches(batch_size: BatchEmailSender::BATCH_SIZE) do |subscribers|
+    pending_subscribers.find_in_batches(batch_size: PostmarkBatchSender::BATCH_SIZE) do |subscribers|
       messages_with_subscribers = subscribers.map do |subscriber|
         [ build_email(digest, subscriber), subscriber ]
       end

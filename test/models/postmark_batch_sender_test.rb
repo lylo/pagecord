@@ -1,20 +1,13 @@
 require "test_helper"
 require "mocha/minitest"
 
-class BatchEmailSenderTest < ActiveSupport::TestCase
+class PostmarkBatchSenderTest < ActiveSupport::TestCase
   test "BATCH_SIZE is 50" do
-    assert_equal 50, BatchEmailSender::BATCH_SIZE
-  end
-
-  test "raises error for unknown provider" do
-    assert_raises(ArgumentError) do
-      sender = BatchEmailSender.new(provider: :unknown)
-      sender.send_batch([])
-    end
+    assert_equal 50, PostmarkBatchSender::BATCH_SIZE
   end
 
   test "send_batch returns results for each message" do
-    sender = BatchEmailSender.new(provider: :postmark)
+    sender = PostmarkBatchSender.new
     subscriber = email_subscribers(:one)
     digest = post_digests(:one)
 
@@ -33,7 +26,7 @@ class BatchEmailSenderTest < ActiveSupport::TestCase
   end
 
   test "send_batch handles failed deliveries" do
-    sender = BatchEmailSender.new(provider: :postmark)
+    sender = PostmarkBatchSender.new
     subscriber = email_subscribers(:one)
     digest = post_digests(:one)
 
