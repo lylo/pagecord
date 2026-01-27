@@ -382,22 +382,22 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to blog_posts_path(page: 1)
   end
 
-  test "should redirect malformed page parameter to page 1" do
+  test "should handle malformed page parameter gracefully" do
     get blog_posts_path(page: "\"><h1>Cortex</h1>2")
 
-    assert_redirected_to blog_posts_path(page: 1)
+    assert_response :success
   end
 
-  test "should redirect negative page parameter to page 1" do
+  test "should handle negative page parameter gracefully" do
     get blog_posts_path(page: -5)
 
-    assert_redirected_to blog_posts_path(page: 1)
+    assert_response :success
   end
 
-  test "should redirect zero page parameter to page 1" do
+  test "should handle zero page parameter gracefully" do
     get blog_posts_path(page: 0)
 
-    assert_redirected_to blog_posts_path(page: 1)
+    assert_response :success
   end
 
   test "should set the canonical_url to the page URL by default" do

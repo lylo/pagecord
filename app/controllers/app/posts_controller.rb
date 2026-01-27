@@ -1,8 +1,8 @@
 class App::PostsController < AppController
-  include Pagy::Backend
+  include Pagy::Method
   include EditorPreparation
 
-  rescue_from Pagy::OverflowError, with: :redirect_to_first_page
+  rescue_from Pagy::RangeError, with: :redirect_to_first_page
 
   def index
     posts_query = Current.user.blog.posts.kept.published.order(published_at: :desc)
