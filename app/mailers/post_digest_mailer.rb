@@ -20,6 +20,7 @@ class PostDigestMailer < PostmarkMailer
     headers["List-Unsubscribe"] = "<#{one_click_url}>"
     headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
     headers["X-PM-Message-Stream"] = "broadcast"
+    headers["X-PM-Metadata-SubscriberToken"] = @subscriber.token
 
     I18n.with_locale(@subscriber.blog.locale) do
       mail(

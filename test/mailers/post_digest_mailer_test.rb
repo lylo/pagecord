@@ -15,8 +15,14 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_equal [ "digest@newsletters.pagecord.com" ], email.from
     assert_equal "\"#{blog.display_name}\" <digest@newsletters.pagecord.com>", email.header["from"].to_s
     assert_equal [ email_subscriber.email ], email.to
-    # Just check that the subject contains the blog name
     assert_match blog.display_name, email.subject
+  end
+
+  test "digest email includes subscriber token header for bounce tracking" do
+    email_subscriber = email_subscribers(:one)
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: post_digests(:one)).weekly_digest
+
+    assert_equal email_subscriber.token, email.header["X-PM-Metadata-SubscriberToken"].to_s
   end
 
   test "digest email with custom blog domain" do

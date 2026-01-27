@@ -1,4 +1,6 @@
 class SendPostDigestBatchJob < ApplicationJob
+  queue_as :newsletters
+
   retry_on Postmark::UnexpectedHttpResponseError, wait: :polynomially_longer, attempts: 5
   retry_on Postmark::TimeoutError, wait: :polynomially_longer, attempts: 5
   retry_on Net::OpenTimeout, Net::ReadTimeout, wait: :polynomially_longer, attempts: 5
@@ -12,9 +14,7 @@ class SendPostDigestBatchJob < ApplicationJob
 
     pending_subscribers.find_in_batches(batch_size: BatchEmailSender::BATCH_SIZE) do |subscribers|
       messages_with_subscribers = subscribers.map do |subscriber|
-        message = PostDigestMailer.with(digest: digest, subscriber: subscriber).weekly_digest
-        Premailer::Rails::Hook.delivering_email(message)
-        [ message, subscriber ]
+        [ build_email(digest, subscriber), subscriber ]
       end
 
       results = sender.send_batch(messages_with_subscribers)
@@ -28,4 +28,12 @@ class SendPostDigestBatchJob < ApplicationJob
       end
     end
   end
+
+  private
+
+    def build_email(digest, subscriber)
+      message = PostDigestMailer.with(digest: digest, subscriber: subscriber).weekly_digest
+      Premailer::Rails::Hook.delivering_email(message)
+      message
+    end
 end
