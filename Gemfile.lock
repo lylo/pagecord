@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 2b4feede1b6ead327b40c3415749de58af896e05
+  revision: 49bb5ebeadfb8806900668347e83a6fed25c1452
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -372,7 +372,7 @@ GEM
       net-smtp
       premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
-    prism (1.8.0)
+    prism (1.9.0)
     propshaft (1.3.1)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
