@@ -32,6 +32,15 @@ lexxy-editor {
   .lexxy-content__table-wrapper {
     margin-block: 0 var(--lexxy-content-margin);
   }
+
+  .horizontal-divider {
+    padding-block: 0.5em;
+
+    hr {
+      inline-size: 100%;
+      border-color: var(--color-slate-300);
+    }
+  }
 }
 /* ================================== */
 /* Lexxy Toolbar Base Styles          */
@@ -101,6 +110,10 @@ lexxy-toolbar {
 
     &:focus-within {
       border-color: var(--color-slate-400);
+    }
+
+    .horizontal-divider hr {
+      border-color: var(--color-slate-600);
     }
   }
 
