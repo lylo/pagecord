@@ -31,25 +31,10 @@ class PostDigest < ApplicationRecord
     end
   end
 
-  # Deliver a digest email to each subscriber in a background job,
-  # spreading delivery over a random window based on the number of
-  # emails to send to avoid mail server overload.
   def deliver
     return if delivered_at?
 
-    total_subs = blog.email_subscribers.confirmed.count
-    random_window = [ total_subs * 0.5.seconds, 30.minutes ].min
-
-    blog.email_subscribers.confirmed.find_each(batch_size: 100).with_index do |subscriber, index|
-      bump = index * 0.5.seconds
-      delay = bump + rand(random_window)
-
-      Rails.logger.info "Scheduling digest delivery for blog #{blog.subdomain} and subscriber #{subscriber.id} with delay #{delay} seconds"
-
-      SendPostDigestEmailJob.set(wait: delay).perform_later(self.id, subscriber.id)
-    end
-
-    update!(delivered_at: Time.current)
+    PostDigest::DeliveryJob.perform_later(id)
   end
 
   def subject

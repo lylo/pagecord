@@ -125,6 +125,23 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
     - **Timing**: Waits 2+ hours after blog creation so spammers have time to reveal themselves.
     - **Skips**: Subscribed users are not checked.
     - **Admin**: `Admin::Moderation::SpamController` for reviewing spam detections (confirm discards user, dismiss clears flag).
+- **Post Digest Emails**: Weekly digest emails sent to blog subscribers with new posts.
+    - **Models**:
+      - `PostDigest` - Represents a digest (belongs to blog, has many posts via `DigestPost`, has many deliveries)
+      - `DigestPost` - Join table linking digests to posts
+      - `PostDigestDelivery` - Tracks which subscribers received a digest
+      - `EmailSubscriber` - Blog subscribers (must be confirmed to receive digests)
+    - **Delivery classes** (namespaced under `PostDigest::`):
+      - `PostDigest::DeliveryJob` - Background job that triggers delivery
+      - `PostDigest::PostmarkDelivery` - Handles batch sending via Postmark API (50 emails per batch)
+    - **Flow**:
+      1. `GeneratePostDigestsJob` (weekly) calls `PostDigest.generate_for(blog)` for each eligible blog
+      2. `PostDigest.generate_for` finds new posts since last digest, creates digest with associated posts
+      3. `PostDigest#deliver` enqueues `PostDigest::DeliveryJob` and marks digest as delivered
+      4. `PostDigest::PostmarkDelivery#deliver_all` sends emails in batches, creates delivery records
+    - **Eligibility**: Blog must have `email_subscriptions_enabled` and user must be `subscribed?`
+    - **Resumable**: If delivery fails partway, pending subscribers are calculated by excluding those with existing deliveries
+    - **Mailer**: `PostDigestMailer#weekly_digest` renders the email with Premailer CSS inlining
 - **Email-to-blog**: Primary posting method via ActionMailbox.
 - **Custom Domains**: Premium feature using Hatchbox API.
 - **Rich Text**: ActionText for post content.

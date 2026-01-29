@@ -47,7 +47,7 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_nil PostDigest.generate_for(user.blog)
   end
 
-  test "should create deliveries for confirmed email subscribers" do
+  test "should enqueue batch job for confirmed email subscribers" do
     create_new_post
 
     @blog.email_subscribers.create!(email: "newsub@example.com", confirmed_at: Time.current)
@@ -55,22 +55,20 @@ class PostDigestTest < ActiveSupport::TestCase
 
     digest = PostDigest.generate_for(@blog)
 
-    assert_performed_jobs 2, only: SendPostDigestEmailJob do
-      assert_difference "PostDigestDelivery.count", 2 do
-        digest.deliver
-      end
+    assert_enqueued_jobs 1, only: PostDigest::DeliveryJob do
+      digest.deliver
     end
 
-    assert digest.delivered_at?
+    refute digest.delivered_at?, "delivered_at should only be set after job completes"
   end
 
-  test "should only register deliveries once" do
+  test "should not enqueue job if already delivered" do
     create_new_post
 
     digest = PostDigest.generate_for(@blog)
-    digest.deliver
+    digest.update!(delivered_at: Time.current)
 
-    assert_no_difference "PostDigestDelivery.count" do
+    assert_no_enqueued_jobs only: PostDigest::DeliveryJob do
       digest.deliver
     end
   end
