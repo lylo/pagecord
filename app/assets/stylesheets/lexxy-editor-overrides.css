@@ -49,11 +49,11 @@ lexxy-toolbar {
   display: flex;
   gap: 0.25rem;
 
-  .lexxy-editor__toolbar-button {
+  .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
     background: var(--color-slate-100);
     color: var(--color-slate-800);
     border: none;
-    block-size: 1.5lh;
+    block-size: 1.75lh;
 
     svg path {
       fill: currentColor;
@@ -75,7 +75,7 @@ lexxy-toolbar {
     }
   }
 
-  .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button {
+  .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
     background-color: var(--color-slate-300);
   }
 }
@@ -108,7 +108,7 @@ lexxy-toolbar {
   lexxy-toolbar {
     background: var(--color-slate-800);
 
-    .lexxy-editor__toolbar-button {
+    .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
       background: var(--color-slate-800);
       color: var(--color-slate-200);
 
@@ -127,7 +127,7 @@ lexxy-toolbar {
       }
     }
 
-    .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button {
+    .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
       background-color: var(--color-slate-600);
     }
   }
@@ -137,24 +137,6 @@ lexxy-toolbar {
     color: var(--color-slate-200);
   }
 
-  /* Link dropdown (has .input/.btn classes that override Lexxy variables) */
-  lexxy-link-dropdown {
-    input[type="url"] {
-      background-color: var(--color-slate-800);
-      color: var(--color-slate-200);
-      border-color: var(--color-slate-600);
-    }
-
-    button {
-      background-color: var(--color-slate-700);
-      color: var(--color-slate-200);
-
-      &[type="submit"] {
-        background-color: var(--lexxy-color-accent-dark);
-        color: var(--color-white);
-      }
-    }
-  }
 }
 
 /* ================================== */
@@ -191,15 +173,59 @@ lexxy-highlight-dropdown button {
   line-height: normal;
 }
 
-lexxy-link-dropdown input[type="url"] {
-  min-inline-size: 30ch;
-  line-height: normal;
-}
+lexxy-link-dropdown {
+  form {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+  }
 
-lexxy-link-dropdown button.btn[value="unlink"]:hover {
-  background-color: var(--color-slate-200) !important;
+  input.input {
+    min-inline-size: 30ch;
+    line-height: normal;
 
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--color-slate-600) !important;
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--color-slate-800);
+      color: var(--color-slate-200);
+      border-color: var(--color-slate-600);
+    }
+  }
+
+  .lexxy-editor__toolbar-dropdown-actions {
+    display: flex;
+    gap: 0.5ch;
+  }
+
+  /* Shared styles for link/unlink buttons */
+  button.lexxy-editor__toolbar-button:is([value="link"], [value="unlink"]) {
+    aspect-ratio: auto;
+    padding-inline: 1ch;
+  }
+
+  button.lexxy-editor__toolbar-button[value="unlink"] {
+    background-color: var(--color-slate-200);
+    color: var(--color-slate-800);
+
+    &:hover {
+      background-color: var(--color-slate-300);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--color-slate-700);
+      color: var(--color-slate-200);
+
+      &:hover {
+        background-color: var(--color-slate-600);
+      }
+    }
+  }
+
+  button.lexxy-editor__toolbar-button[value="link"] {
+    background-color: var(--lexxy-color-accent-dark);
+    color: var(--color-white);
+
+    &:hover {
+      background-color: var(--lexxy-color-accent-medium);
+    }
   }
 }
