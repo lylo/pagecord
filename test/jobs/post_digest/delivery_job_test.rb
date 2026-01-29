@@ -1,7 +1,7 @@
 require "test_helper"
 require "mocha/minitest"
 
-class SendPostDigestBatchJobTest < ActiveJob::TestCase
+class PostDigest::DeliveryJobTest < ActiveJob::TestCase
   setup do
     @blog = blogs(:joel)
     @subscriber = email_subscribers(:one)
@@ -16,7 +16,7 @@ class SendPostDigestBatchJobTest < ActiveJob::TestCase
     Postmark::ApiClient.stubs(:new).returns(mock_client)
 
     assert_difference "PostDigestDelivery.count", 1 do
-      SendPostDigestBatchJob.perform_now(digest.id)
+      PostDigest::DeliveryJob.perform_now(digest.id)
     end
 
     assert digest.deliveries.exists?(email_subscriber: @subscriber)
@@ -28,7 +28,7 @@ class SendPostDigestBatchJobTest < ActiveJob::TestCase
     digest.deliveries.create!(email_subscriber: @subscriber, delivered_at: Time.current)
 
     assert_no_difference "PostDigestDelivery.count" do
-      SendPostDigestBatchJob.perform_now(digest.id)
+      PostDigest::DeliveryJob.perform_now(digest.id)
     end
   end
 
@@ -41,7 +41,7 @@ class SendPostDigestBatchJobTest < ActiveJob::TestCase
     Postmark::ApiClient.stubs(:new).returns(mock_client)
 
     assert_no_difference "PostDigestDelivery.count" do
-      SendPostDigestBatchJob.perform_now(digest.id)
+      PostDigest::DeliveryJob.perform_now(digest.id)
     end
   end
 
@@ -62,7 +62,7 @@ class SendPostDigestBatchJobTest < ActiveJob::TestCase
     Postmark::ApiClient.stubs(:new).returns(mock_client)
 
     assert_difference "PostDigestDelivery.count", 3 do
-      SendPostDigestBatchJob.perform_now(digest.id)
+      PostDigest::DeliveryJob.perform_now(digest.id)
     end
   end
 end

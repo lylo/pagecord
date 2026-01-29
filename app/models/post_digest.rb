@@ -34,7 +34,7 @@ class PostDigest < ApplicationRecord
   def deliver
     return if delivered_at?
 
-    SendPostDigestBatchJob.perform_later(id)
+    PostDigest::DeliveryJob.perform_later(id)
     update!(delivered_at: Time.current)
   end
 

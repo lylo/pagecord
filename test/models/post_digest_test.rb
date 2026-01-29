@@ -55,7 +55,7 @@ class PostDigestTest < ActiveSupport::TestCase
 
     digest = PostDigest.generate_for(@blog)
 
-    assert_enqueued_jobs 1, only: SendPostDigestBatchJob do
+    assert_enqueued_jobs 1, only: PostDigest::DeliveryJob do
       digest.deliver
     end
 
