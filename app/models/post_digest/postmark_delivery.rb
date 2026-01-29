@@ -10,6 +10,7 @@ class PostDigest::PostmarkDelivery
     pending_subscribers.find_in_batches(batch_size: BATCH_SIZE) do |subscribers|
       deliver_batch(subscribers)
     end
+    @digest.update!(delivered_at: Time.current)
   end
 
   private

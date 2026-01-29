@@ -35,7 +35,6 @@ class PostDigest < ApplicationRecord
     return if delivered_at?
 
     PostDigest::DeliveryJob.perform_later(id)
-    update!(delivered_at: Time.current)
   end
 
   def subject

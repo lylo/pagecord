@@ -6,7 +6,7 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
     assert_equal 50, PostDigest::PostmarkDelivery::BATCH_SIZE
   end
 
-  test "deliver_all creates delivery records for each subscriber" do
+  test "deliver_all creates delivery records and marks digest as delivered" do
     blog = blogs(:joel)
     subscriber = email_subscribers(:one)
     post = blog.posts.create!(title: "New Post", content: "Content")
@@ -18,14 +18,17 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
 
     delivery = PostDigest::PostmarkDelivery.new(digest)
 
+    refute digest.delivered_at?
+
     assert_difference "PostDigestDelivery.count", 1 do
       delivery.deliver_all
     end
 
     assert digest.deliveries.exists?(email_subscriber: subscriber)
+    assert digest.reload.delivered_at?
   end
 
-  test "deliver_all handles failed deliveries without creating records" do
+  test "deliver_all handles failed deliveries without creating records but still marks delivered" do
     blog = blogs(:joel)
     subscriber = email_subscribers(:one)
     post = blog.posts.create!(title: "New Post", content: "Content")
@@ -40,6 +43,8 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
     assert_no_difference "PostDigestDelivery.count" do
       delivery.deliver_all
     end
+
+    assert digest.reload.delivered_at?
   end
 
   test "deliver_all skips subscribers who already received the digest" do
@@ -57,5 +62,7 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
     assert_no_difference "PostDigestDelivery.count" do
       delivery.deliver_all
     end
+
+    assert digest.reload.delivered_at?
   end
 end

@@ -59,16 +59,16 @@ class PostDigestTest < ActiveSupport::TestCase
       digest.deliver
     end
 
-    assert digest.delivered_at?
+    refute digest.delivered_at?, "delivered_at should only be set after job completes"
   end
 
-  test "should only register deliveries once" do
+  test "should not enqueue job if already delivered" do
     create_new_post
 
     digest = PostDigest.generate_for(@blog)
-    digest.deliver
+    digest.update!(delivered_at: Time.current)
 
-    assert_no_difference "PostDigestDelivery.count" do
+    assert_no_enqueued_jobs only: PostDigest::DeliveryJob do
       digest.deliver
     end
   end
