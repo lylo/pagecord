@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 2b4feede1b6ead327b40c3415749de58af896e05
+  revision: 3ad79fcede4f9b620f03b9fd76507d9fb3c07e95
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -114,7 +114,7 @@ GEM
       rack (>= 2.0.0)
     ast (2.4.3)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1209.0)
+    aws-partitions (1.1210.0)
     aws-sdk-core (3.241.4)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -126,7 +126,7 @@ GEM
     aws-sdk-kms (1.121.0)
       aws-sdk-core (~> 3, >= 3.241.4)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.212.0)
+    aws-sdk-s3 (1.213.0)
       aws-sdk-core (~> 3, >= 3.241.4)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -164,7 +164,7 @@ GEM
     css_parser (1.21.1)
       addressable
     csv (3.3.5)
-    dalli (4.1.0)
+    dalli (4.2.0)
       logger
     date (3.5.1)
     debug (1.11.1)
@@ -264,7 +264,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (0.7.2.beta)
+    lexxy (0.7.3.beta)
       rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
@@ -288,7 +288,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0113)
+    mime-types-data (3.2026.0127)
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
@@ -345,7 +345,7 @@ GEM
     pg (1.6.3-x86_64-darwin)
     pg (1.6.3-x86_64-linux)
     pg (1.6.3-x86_64-linux-musl)
-    pg_query (6.2.1)
+    pg_query (6.2.2)
       google-protobuf (>= 3.25.3)
     pg_search (2.3.7)
       activerecord (>= 6.1)
@@ -372,7 +372,7 @@ GEM
       net-smtp
       premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
-    prism (1.8.0)
+    prism (1.9.0)
     propshaft (1.3.1)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
@@ -429,7 +429,7 @@ GEM
     rollups (0.5.0)
       activesupport (>= 7.1)
       groupdate (>= 6.1)
-    rubocop (1.82.1)
+    rubocop (1.84.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -437,7 +437,7 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.48.0, < 2.0)
+      rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.49.0)
@@ -505,7 +505,7 @@ GEM
     thor (1.5.0)
     timeout (0.6.0)
     tsort (0.2.0)
-    turbo-rails (2.0.21)
+    turbo-rails (2.0.22)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
     tzinfo (2.0.6)
@@ -569,7 +569,7 @@ DEPENDENCIES
   jbuilder
   kredis (~> 1.7)
   letter_opener_web
-  lexxy (= 0.7.2.beta)
+  lexxy
   local_time
   mailpace-rails
   mocha
