@@ -1,5 +1,5 @@
 class ContentModerationJob < ApplicationJob
-  queue_as :default
+  queue_as :low
 
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
 

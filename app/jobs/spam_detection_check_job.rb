@@ -1,5 +1,5 @@
 class SpamDetectionCheckJob < ApplicationJob
-  queue_as :default
+  queue_as :low
 
   def perform(blog_id)
     blog = Blog.find_by(id: blog_id)

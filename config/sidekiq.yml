@@ -3,6 +3,7 @@
 :queues:
   - default
   - newsletters
+  - low
 :production:
   :concurrency: 10
   :redis:

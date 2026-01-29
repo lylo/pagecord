@@ -1,7 +1,7 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch("DATABASE_POOL") { ENV.fetch("RAILS_MAX_THREADS") { 5 }.to_i + 10 } %>
+  pool: <%= ENV.fetch("DATABASE_POOL") { 25 } %>
 
 development:
   <<: *default
