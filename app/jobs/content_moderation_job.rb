@@ -2,6 +2,7 @@ class ContentModerationJob < ApplicationJob
   queue_as :low
 
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
+  discard_on ActiveRecord::RecordNotUnique
 
   def perform(post_id)
     post = Post.moderatable.find_by(id: post_id)
@@ -14,11 +15,7 @@ class ContentModerationJob < ApplicationJob
 
     save_moderation_result!(post, moderator.result)
 
-    if moderator.flagged?
-      Rails.logger.info "[ContentModeration] FLAGGED #{post.blog.subdomain}/#{post.slug}: #{post.content_moderation.flagged_categories.join(', ')}"
-    else
-      Rails.logger.info "[ContentModeration] Clean #{post.blog.subdomain}/#{post.slug}"
-    end
+    log_result(moderator, post)
   end
 
   private
@@ -34,5 +31,17 @@ class ContentModerationJob < ApplicationJob
         fingerprint: post.moderation_fingerprint,
         model_version: result.model_version
       )
+    end
+
+    def log_result(moderator, post)
+      slug = "#{post.blog.subdomain}/#{post.slug}"
+
+      if moderator.error?
+        Rails.logger.warn "[ContentModeration] Error #{slug}: #{moderator.result.flags[:error]}"
+      elsif moderator.flagged?
+        Rails.logger.info "[ContentModeration] FLAGGED #{slug}: #{post.content_moderation.flagged_categories.join(', ')}"
+      else
+        Rails.logger.info "[ContentModeration] Clean #{slug}"
+      end
     end
 end
