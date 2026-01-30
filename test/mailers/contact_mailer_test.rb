@@ -18,8 +18,8 @@ class ContactMailerTest < ActionMailer::TestCase
       email.deliver_now
     end
 
-    assert_equal [@blog.user.email], email.to
-    assert_equal ["jane@example.com"], email.reply_to
+    assert_equal [ @blog.user.email ], email.to
+    assert_equal [ "jane@example.com" ], email.reply_to
     assert_includes email.subject, "Jane Doe"
   end
 
