@@ -45,20 +45,16 @@
     font-weight: 600;
   }
 
-  h1, h2 {
-    font-size: 1.5em;
+  h1, h2, h3, h4, h5, h6 {
     line-height: 1.5;
   }
 
-  h3 {
-    font-size: 1.25em;
-    line-height: 1.5;
-  }
-
-  h4 {
-    font-size: 1.125em;
-    line-height: 1.5;
-  }
+  h1 { font-size: 1.75em; }
+  h2 { font-size: 1.6em; }
+  h3 { font-size: 1.25em; }
+  h4 { font-size: 1em; }
+  h5 { font-size: 0.875em; }
+  h6 { font-size: 0.75em; }
 
   h1, h2, h3, h4, h5, h6 {
     text-wrap: wrap;
