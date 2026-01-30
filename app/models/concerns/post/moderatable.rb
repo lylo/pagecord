@@ -1,7 +1,7 @@
 module Post::Moderatable
   extend ActiveSupport::Concern
 
-  MAX_MODERATION_IMAGES = 3
+  MAX_MODERATION_IMAGES = 5
   MODERATION_DELAY = 5.minutes
 
   included do

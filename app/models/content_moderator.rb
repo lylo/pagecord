@@ -58,33 +58,35 @@ class ContentModerator
       @post.moderation_text_payload.present? || @post.moderation_image_payloads.any?
     end
 
+    # OpenAI moderation API only allows 1 image per request, so we make
+    # separate calls for text and each image, then aggregate results
     def call_moderation_api
-      inputs = build_inputs
-      log_moderation_inputs(inputs)
+      all_results = []
 
+      if @post.moderation_text_payload.present?
+        text_size = @post.moderation_text_payload.bytesize
+        Rails.logger.info("[ContentModeration] Moderating text for post #{@post.id}: #{text_size}b")
+        response = moderate_input({ type: "text", text: @post.moderation_text_payload })
+        all_results.concat(response.dig("results") || [])
+      end
+
+      @post.moderation_image_payloads.each_with_index do |image_payload, index|
+        image_size = image_payload.dig(:image_url, :url).bytesize
+        Rails.logger.info("[ContentModeration] Moderating image #{index + 1} for post #{@post.id}: #{image_size}b")
+        response = moderate_input(image_payload)
+        all_results.concat(response.dig("results") || [])
+      end
+
+      { "results" => all_results, "model" => MODEL }
+    end
+
+    def moderate_input(input)
       @client.moderations(
         parameters: {
           model: MODEL,
-          input: inputs
+          input: [ input ]
         }
       )
-    end
-
-    def log_moderation_inputs(inputs)
-      text_input = inputs.find { |i| i[:type] == "text" }
-      image_inputs = inputs.select { |i| i[:type] == "image_url" }
-
-      text_size = text_input ? text_input[:text].bytesize : 0
-      image_sizes = image_inputs.map { |i| i.dig(:image_url, :url).bytesize }
-
-      Rails.logger.info("[ContentModeration] Inputs for post #{@post.id}: text=#{text_size}b, images=#{image_sizes.map { |s| "#{s}b" }.join(', ')}")
-    end
-
-    # Build inputs array for OpenAI moderation API (text + images)
-    def build_inputs
-      inputs = []
-      inputs << { type: "text", text: @post.moderation_text_payload } if @post.moderation_text_payload.present?
-      inputs.concat(@post.moderation_image_payloads)
     end
 
     def parse_response(response)
