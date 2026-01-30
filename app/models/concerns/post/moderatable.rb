@@ -2,7 +2,6 @@ module Post::Moderatable
   extend ActiveSupport::Concern
 
   MAX_MODERATION_IMAGES = 5
-  MODERATION_DELAY = 5.minutes
 
   included do
     has_one :content_moderation, dependent: :destroy
@@ -11,16 +10,6 @@ module Post::Moderatable
     scope :moderation_flagged, -> { joins(:content_moderation).where(content_moderations: { status: :flagged }) }
     scope :moderation_pending, -> { left_joins(:content_moderation).where(content_moderations: { id: nil }).or(left_joins(:content_moderation).where(content_moderations: { status: [ :pending, :error ] })) }
     scope :moderatable, -> { kept.published }
-
-    after_commit :schedule_content_moderation, on: [ :create, :update ], if: :should_schedule_moderation?
-  end
-
-  def should_schedule_moderation?
-    !Rails.env.development? && kept? && published? && needs_moderation?
-  end
-
-  def schedule_content_moderation
-    ContentModerationJob.set(wait: MODERATION_DELAY).perform_later(id)
   end
 
   def moderation_text_payload

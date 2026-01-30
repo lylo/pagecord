@@ -4,7 +4,6 @@ class ContentModerationBatchJob < ApplicationJob
   DELAY_BETWEEN_POSTS = 1.second
   MAX_POSTS_PER_RUN = 100
 
-  # Daily fallback job to catch any posts that slipped through event-driven moderation
   def perform
     posts = Post.moderatable
                 .moderation_pending
