@@ -28,10 +28,12 @@ class ContentModerator
     response = call_moderation_api
     parse_response(response)
   rescue Faraday::BadRequestError => e
-    Rails.logger.error("[ContentModeration] Bad request for post #{@post.id}: #{e.message}")
-    error_result("Invalid request to moderation API")
+    body = e.response&.dig(:body) || "no response body"
+    Rails.logger.error("[ContentModeration] Bad request for post #{@post.id}: #{body}")
+    error_result("Invalid request to moderation API: #{body}")
   rescue Faraday::Error => e
-    Rails.logger.error("[ContentModeration] API error for post #{@post.id}: #{e.class} - #{e.message}")
+    body = e.response&.dig(:body) rescue nil
+    Rails.logger.error("[ContentModeration] API error for post #{@post.id}: #{e.class} - #{e.message} - #{body}")
     error_result("Moderation API error")
   rescue StandardError => e
     Rails.logger.error("[ContentModeration] Unexpected error for post #{@post.id}: #{e.class} - #{e.message}")
@@ -58,6 +60,7 @@ class ContentModerator
 
     def call_moderation_api
       inputs = build_inputs
+      log_moderation_inputs(inputs)
 
       @client.moderations(
         parameters: {
@@ -65,6 +68,16 @@ class ContentModerator
           input: inputs
         }
       )
+    end
+
+    def log_moderation_inputs(inputs)
+      text_input = inputs.find { |i| i[:type] == "text" }
+      image_inputs = inputs.select { |i| i[:type] == "image_url" }
+
+      text_size = text_input ? text_input[:text].bytesize : 0
+      image_sizes = image_inputs.map { |i| i.dig(:image_url, :url).bytesize }
+
+      Rails.logger.info("[ContentModeration] Inputs for post #{@post.id}: text=#{text_size}b, images=#{image_sizes.map { |s| "#{s}b" }.join(', ')}")
     end
 
     # Build inputs array for OpenAI moderation API (text + images)
