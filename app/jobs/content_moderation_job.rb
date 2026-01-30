@@ -6,16 +6,21 @@ class ContentModerationJob < ApplicationJob
 
   def perform(post_id)
     post = Post.moderatable.find_by(id: post_id)
-    return unless post&.needs_moderation?
+    return unless post
 
-    Rails.logger.info "[ContentModeration] Moderating #{post.blog.subdomain}/#{post.slug}"
+    # Lock to prevent duplicate work when multiple jobs queued for same post
+    post.with_lock do
+      return unless post.needs_moderation?
 
-    moderator = ContentModerator.new(post)
-    moderator.moderate
+      Rails.logger.info "[ContentModeration] Moderating #{post.blog.subdomain}/#{post.slug}"
 
-    save_moderation_result!(post, moderator.result)
+      moderator = ContentModerator.new(post)
+      moderator.moderate
 
-    log_result(moderator, post)
+      save_moderation_result!(post, moderator.result)
+
+      log_result(moderator, post)
+    end
   end
 
   private
