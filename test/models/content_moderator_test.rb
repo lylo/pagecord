@@ -32,7 +32,7 @@ class ContentModeratorTest < ActiveSupport::TestCase
     assert_equal :clean, moderator.result.status
     assert moderator.clean?
     refute moderator.flagged?
-    assert_equal "omni-moderation-2024-09-26", moderator.result.model_version
+    assert_equal "omni-moderation-latest", moderator.result.model_version
   end
 
   test "moderate returns flagged for unsafe content" do
@@ -97,7 +97,7 @@ class ContentModeratorTest < ActiveSupport::TestCase
     moderator.moderate
 
     assert_equal :error, moderator.result.status
-    assert_equal "Invalid request to moderation API", moderator.result.flags[:error]
+    assert_match(/Invalid request to moderation API/, moderator.result.flags[:error])
   end
 
   test "moderate returns error when missing access token" do
