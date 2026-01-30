@@ -7,7 +7,7 @@ class ContentModerationJob < ApplicationJob
     post = Post.moderatable.find_by(id: post_id)
     return unless post&.needs_moderation?
 
-    Rails.logger.info "[ContentModeration] Moderating post #{post.id} (#{post.blog.subdomain})"
+    Rails.logger.info "[ContentModeration] Moderating #{post.blog.subdomain}/#{post.slug}"
 
     moderator = ContentModerator.new(post)
     moderator.moderate
@@ -15,9 +15,9 @@ class ContentModerationJob < ApplicationJob
     save_moderation_result!(post, moderator.result)
 
     if moderator.flagged?
-      Rails.logger.info "[ContentModeration] FLAGGED post #{post.id}: #{post.content_moderation.flagged_categories.join(', ')}"
+      Rails.logger.info "[ContentModeration] FLAGGED #{post.blog.subdomain}/#{post.slug}: #{post.content_moderation.flagged_categories.join(', ')}"
     else
-      Rails.logger.info "[ContentModeration] Clean post #{post.id}"
+      Rails.logger.info "[ContentModeration] Clean #{post.blog.subdomain}/#{post.slug}"
     end
   end
 
