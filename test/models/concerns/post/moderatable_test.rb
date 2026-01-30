@@ -94,4 +94,102 @@ class Post::ModeratableTest < ActiveSupport::TestCase
     new_fingerprint = @post.moderation_fingerprint
     refute_equal original_fingerprint, new_fingerprint
   end
+
+  # Moderatable scope tests
+  test "moderatable scope includes published posts" do
+    @post.update!(status: :published, hidden: false)
+    assert_includes Post.moderatable, @post
+  end
+
+  test "moderatable scope includes scheduled posts" do
+    @post.update!(status: :published, hidden: false, published_at: 1.day.from_now)
+    assert_includes Post.moderatable, @post
+  end
+
+  test "moderatable scope excludes draft posts" do
+    @post.update!(status: :draft)
+    refute_includes Post.moderatable, @post
+  end
+
+  test "moderatable scope includes hidden posts" do
+    @post.update!(hidden: true)
+    assert_includes Post.moderatable, @post
+  end
+
+  test "moderatable scope excludes discarded posts" do
+    @post.discard!
+    refute_includes Post.moderatable, @post
+  end
+
+  # Event-driven moderation tests
+  test "should_schedule_moderation? returns true for published posts needing moderation" do
+    @post.update!(status: :published, hidden: false)
+    @post.content_moderation&.destroy
+    @post.reload
+    assert @post.should_schedule_moderation?
+  end
+
+  test "should_schedule_moderation? returns false for draft posts" do
+    @post.update!(status: :draft)
+    refute @post.should_schedule_moderation?
+  end
+
+  test "should_schedule_moderation? returns true for hidden posts" do
+    @post.update!(hidden: true)
+    @post.content_moderation&.destroy
+    @post.reload
+    assert @post.should_schedule_moderation?
+  end
+
+  test "should_schedule_moderation? returns false for discarded posts" do
+    @post.discard!
+    refute @post.should_schedule_moderation?
+  end
+
+  test "should_schedule_moderation? returns false when moderation not needed" do
+    fingerprint = @post.moderation_fingerprint
+    @post.create_content_moderation!(status: :clean, fingerprint: fingerprint)
+    refute @post.should_schedule_moderation?
+  end
+
+  test "schedules moderation job on create for published post" do
+    blog = blogs(:joel)
+    assert_enqueued_with(job: ContentModerationJob) do
+      Post.create!(
+        blog: blog,
+        status: :published,
+        content: "<p>New post content</p>"
+      )
+    end
+  end
+
+  test "schedules moderation job on update when content changes" do
+    @post.update!(status: :published, hidden: false)
+    @post.content_moderation&.destroy
+    @post.reload
+
+    assert_enqueued_with(job: ContentModerationJob) do
+      @post.update!(title: "Updated title")
+    end
+  end
+
+  test "does not schedule moderation job for draft posts" do
+    blog = blogs(:joel)
+    assert_no_enqueued_jobs(only: ContentModerationJob) do
+      Post.create!(
+        blog: blog,
+        status: :draft,
+        content: "<p>Draft content</p>"
+      )
+    end
+  end
+
+  test "does not schedule moderation job when moderation not needed" do
+    fingerprint = @post.moderation_fingerprint
+    @post.create_content_moderation!(status: :clean, fingerprint: fingerprint)
+
+    assert_no_enqueued_jobs(only: ContentModerationJob) do
+      @post.update!(updated_at: Time.current)
+    end
+  end
 end

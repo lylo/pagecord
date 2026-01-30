@@ -70,7 +70,7 @@ every :day, at: "7:00 am" do
   runner "SpamDetectionDigestJob.perform_later"
 end
 
-every "15 */2 * * *" do  # Every 2 hours at minute 15
+every :day, at: "3:00 am" do  # Daily fallback for event-driven moderation
   runner "ContentModerationBatchJob.perform_later"
 end
 

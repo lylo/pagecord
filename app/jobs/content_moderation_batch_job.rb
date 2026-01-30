@@ -3,13 +3,10 @@ class ContentModerationBatchJob < ApplicationJob
 
   DELAY_BETWEEN_POSTS = 1.second
   MAX_POSTS_PER_RUN = 100
-  LOOKBACK_PERIOD = 2.hours
 
+  # Daily fallback job to catch any posts that slipped through event-driven moderation
   def perform
-    posts = Post.kept
-                .published
-                .where(hidden: false)
-                .where("posts.updated_at >= ?", LOOKBACK_PERIOD.ago)
+    posts = Post.moderatable
                 .moderation_pending
                 .includes(:blog)
                 .limit(MAX_POSTS_PER_RUN)
