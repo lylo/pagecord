@@ -16,7 +16,7 @@ module Post::Moderatable
   end
 
   def should_schedule_moderation?
-    kept? && published? && needs_moderation?
+    !Rails.env.development? && kept? && published? && needs_moderation?
   end
 
   def schedule_content_moderation
