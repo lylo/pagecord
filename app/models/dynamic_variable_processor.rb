@@ -3,7 +3,8 @@ class DynamicVariableProcessor
     "posts" => :render_posts_tag,
     "posts_by_year" => :render_posts_by_year_tag,
     "tags" => :render_tags_tag,
-    "email_subscription" => :render_email_subscription_tag
+    "email_subscription" => :render_email_subscription_tag,
+    "contact_form" => :render_contact_form_tag
   }.freeze
 
   attr_reader :blog, :view
@@ -85,6 +86,12 @@ class DynamicVariableProcessor
 
     def render_email_subscription_tag(params_string)
       view.render(partial: "blogs/email_subscriber_form", locals: {})
+    end
+
+    def render_contact_form_tag(params_string)
+      return "" unless blog.contactable?
+
+      view.render(partial: "blogs/contact_messages/form", locals: {})
     end
 
     def parse_params(params_string)

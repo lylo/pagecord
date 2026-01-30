@@ -1,0 +1,15 @@
+pt:
+  contact_form:
+    form:
+      name_label: "Seu Nome"
+      email_label: "Seu E-mail"
+      message_label: "Mensagem"
+      submit_button: "Enviar Mensagem"
+    success_message: "Mensagem enviada!"
+    error_message: "Houve um problema ao enviar sua mensagem."
+    mailer:
+      subject: "Nova mensagem de %{name}"
+      intro: "Voce recebeu uma mensagem pelo formulario de contato do %{blog_name}."
+      from_label: "De"
+      footer: "Responda a este e-mail para responder %{name}."
+      footer_text: "Para responder %{name}, e so responder este e-mail."
