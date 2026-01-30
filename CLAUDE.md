@@ -158,9 +158,11 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 ### Key Features
 - **Content Moderation**: Automated post moderation using OpenAI.
     - **Models**: `ContentModeration` (stores results), `ContentModerator` (service class), `Post::Moderatable` (concern).
-    - **Flow**: `ContentModerationBatchJob` (hourly) finds posts needing moderation -> `ContentModerationJob` -> OpenAI API -> Flags/Cleans.
+    - **Flow**: Event-driven via `after_commit` on post create/update (5-minute delay). `ContentModerationBatchJob` runs daily as fallback.
+    - **API**: OpenAI moderation API allows 1 image per request, so `ContentModerator` makes separate calls for text and each image (up to 5), then aggregates results.
     - **Actions**: Flagged posts remain visible for admin review. Daily digest email with flagged post count.
     - **Admin**: `Admin::Moderation::ContentController` for reviewing flagged content (dismiss or discard).
+    - **Dev**: Moderation scheduling disabled in development environment.
 - **Spam Detection**: New blog screening using GPT-4o-mini.
     - **Models**: `SpamDetection` (stores results), `SpamDetector` (service class).
     - **Flow**: `SpamDetectionJob` (daily) finds blogs 2 hours to 7 days old without existing check -> `SpamDetectionCheckJob` -> GPT-4o-mini -> Flags spam/uncertain.

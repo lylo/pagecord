@@ -64,15 +64,15 @@ class ContentModerator
       all_results = []
 
       if @post.moderation_text_payload.present?
-        text_size = @post.moderation_text_payload.bytesize
-        Rails.logger.info("[ContentModeration] Moderating text for post #{@post.id}: #{text_size}b")
+        text_kb = (@post.moderation_text_payload.bytesize / 1024.0).round(1)
+        Rails.logger.info("[ContentModeration] Moderating text for post #{@post.id}: #{text_kb}KB")
         response = moderate_input({ type: "text", text: @post.moderation_text_payload })
         all_results.concat(response.dig("results") || [])
       end
 
       @post.moderation_image_payloads.each_with_index do |image_payload, index|
-        image_size = image_payload.dig(:image_url, :url).bytesize
-        Rails.logger.info("[ContentModeration] Moderating image #{index + 1} for post #{@post.id}: #{image_size}b")
+        image_kb = (image_payload.dig(:image_url, :url).bytesize / 1024.0).round(1)
+        Rails.logger.info("[ContentModeration] Moderating image #{index + 1} for post #{@post.id}: #{image_kb}KB")
         response = moderate_input(image_payload)
         all_results.concat(response.dig("results") || [])
       end
