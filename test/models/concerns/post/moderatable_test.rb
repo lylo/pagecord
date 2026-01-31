@@ -121,7 +121,6 @@ class Post::ModeratableTest < ActiveSupport::TestCase
     refute_includes Post.moderatable, @post
   end
 
-  # Event-driven moderation tests
   test "should_schedule_moderation? returns true for published posts needing moderation" do
     @post.update!(status: :published, hidden: false)
     @post.content_moderation&.destroy
