@@ -120,5 +120,4 @@ class Post::ModeratableTest < ActiveSupport::TestCase
     @post.discard!
     refute_includes Post.moderatable, @post
   end
-
 end
