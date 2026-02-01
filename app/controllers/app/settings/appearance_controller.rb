@@ -31,6 +31,7 @@ class App::Settings::AppearanceController < AppController
       end
 
       permitted_params << :custom_css if @blog.user.has_premium_access?
+      permitted_params << :custom_head_js if @blog.user.subscribed?
 
       params.require(:blog).permit(permitted_params)
     end

@@ -26,6 +26,7 @@ pin "stimulus-sortable", to: "https://ga.jspm.io/npm:stimulus-sortable@4.1.1/dis
 # CodeMirror 5 for CSS editing (app only)
 pin "codemirror", to: "https://ga.jspm.io/npm:codemirror@5.65.18/lib/codemirror.js", preload: "application"
 pin "codemirror/mode/css/css", to: "https://ga.jspm.io/npm:codemirror@5.65.18/mode/css/css.js", preload: "application"
+pin "codemirror/mode/javascript/javascript", to: "https://ga.jspm.io/npm:codemirror@5.65.18/mode/javascript/javascript.js", preload: "application"
 pin "codemirror/addon/edit/matchbrackets", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/edit/matchbrackets.js", preload: "application"
 pin "codemirror/addon/edit/closebrackets", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/edit/closebrackets.js", preload: "application"
 pin "codemirror/addon/hint/show-hint", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/hint/show-hint.js", preload: "application"
