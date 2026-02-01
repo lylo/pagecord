@@ -158,6 +158,19 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
   - Subscriber-only (`subscribed?`): Email subscriptions, branding removal
 - **Trial ended email**: `SendTrialEndedEmailsJob` runs daily at 5:15 AM
 
+### Billing & Subscriptions (Paddle)
+- **Payment provider**: Paddle (handles payments, tax, invoicing)
+- **Controller**: `Billing::PaddleEventsController` receives webhooks
+- **Model**: `Subscription` with `plan` enum (`monthly`, `annual`, `complimentary`)
+- **Feature flag**: `MONTHLY_ENABLED=true` enables monthly plan in UI
+- **Price IDs**: `SubscriptionsHelper::PRICE_IDS` hash (keyed by plan and environment)
+- **Plan switching**:
+  - Monthly → Annual: Allowed with prorated billing via `PaddleApi#update_subscription_items`
+  - Annual → Monthly: Not supported (must cancel, lapse, resubscribe)
+- **Resume**: Cancelled subscriptions resumed via `PaddleApi#resume_subscription`
+- **Webhook events**: `subscription.created`, `subscription.updated`, `subscription.canceled`, `transaction.completed`
+- **Payment failures**: Handled automatically by Paddle Retain (no manual intervention needed)
+
 ### Domain Routing
 - Default domain (`pagecord.com`): Marketing, auth, app routes.
 - Custom/subdomain blogs: Blog-specific content, RSS feeds.

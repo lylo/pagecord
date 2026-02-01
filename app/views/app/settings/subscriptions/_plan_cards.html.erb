@@ -1,0 +1,23 @@
+<div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="border border-slate-200 dark:border-slate-600 rounded-lg p-4">
+    <h3 class="font-semibold text-lg">Monthly</h3>
+    <p class="text-2xl font-bold mt-2">$<%= localised_price(:monthly) %><span class="text-sm font-normal text-slate-500">/month</span></p>
+    <% if local_assigns[:show_subtitles] %>
+      <p class="text-sm text-slate-500 mt-1">Billed monthly</p>
+    <% end %>
+    <div class="mt-4">
+      <%= link_to monthly_label, "#", class: "paddle_button btn-secondary w-full text-center", data: paddle_monthly_data %>
+    </div>
+  </div>
+  <div class="border-2 border-[#4fbd9c] rounded-lg p-4 relative">
+    <span class="absolute -top-3 left-4 bg-[#4fbd9c] text-white text-xs font-semibold px-2 py-1 rounded">Best Value</span>
+    <h3 class="font-semibold text-lg">Annual</h3>
+    <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500">/year</span></p>
+    <% if local_assigns[:show_subtitles] %>
+      <p class="text-sm text-slate-500 mt-1">Save 40% vs monthly</p>
+    <% end %>
+    <div class="mt-4">
+      <%= link_to annual_label, "#", class: "paddle_button btn-primary w-full text-center", data: paddle_annual_data %>
+    </div>
+  </div>
+</div>

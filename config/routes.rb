@@ -125,6 +125,8 @@ Rails.application.routes.draw do
       resources :subscriptions, only: [ :index, :destroy ] do
         get :thanks, on: :collection
         get :cancel_confirm, on: :collection
+        post :change_plan, on: :collection
+        post :resume, on: :collection
       end
     end
 

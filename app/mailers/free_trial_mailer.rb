@@ -8,6 +8,8 @@ class FreeTrialMailer < MailpaceMailer
     @user = params[:user]
     @blog = @user.blog
     @price = Subscription.price
+    @monthly_price = Subscription.price(:monthly)
+    @monthly_enabled = ENV["MONTHLY_ENABLED"] == "true"
 
     mail to: @user.email, subject: "Your Pagecord free trial has ended"
   end
