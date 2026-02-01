@@ -325,4 +325,32 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # The inline code should contain literal {{ posts }}
     assert_select "code", text: /{{ posts }}/
   end
+
+  test "renders contact_form tag for premium user" do
+    assert @user.has_premium_access?
+
+    page = @blog.pages.create!(title: "Contact", content: "{{ contact_form }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".contact-form"
+    assert_select "form[action='#{contact_messages_path}']"
+  end
+
+  test "contact_form tag renders nothing for non-premium user" do
+    @user.subscription.destroy
+    @user.update!(created_at: 30.days.ago)
+
+    assert_not @user.reload.has_premium_access?
+
+    page = @blog.pages.create!(title: "Contact", content: "{{ contact_form }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".contact-form", count: 0
+    # Should not show the literal tag either
+    assert_not_includes response.body, "{{ contact_form }}"
+  end
 end

@@ -1,0 +1,32 @@
+<div class="form contact-form">
+  <%= form_with model: Blog::ContactMessage.new,
+            url: contact_messages_path,
+            method: :post,
+            scope: :contact_message,
+            data: { turbo: false },
+            class: "form-container" do |form| %>
+
+    <%= render "/shared/spam_prevention" %>
+
+    <div class="form-row">
+      <div class="form-field">
+        <%= form.label :name, t('contact_form.form.name_label') %>
+        <%= form.text_field :name, required: true %>
+      </div>
+
+      <div class="form-field">
+        <%= form.label :email, t('contact_form.form.email_label') %>
+        <%= form.email_field :email, required: true %>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <%= form.label :message, t('contact_form.form.message_label') %>
+      <%= form.text_area :message, rows: 6, required: true %>
+    </div>
+
+    <div class="form-actions">
+      <%= form.submit t('contact_form.form.submit_button'), class: "button" %>
+    </div>
+  <% end %>
+</div>
