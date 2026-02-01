@@ -98,7 +98,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
   test "should show custom css section if user has premium access" do
     get app_settings_appearance_index_url
 
-    assert_select "h3", { count: 1, text: "Custom CSS" }
+    assert_select "h4", { count: 1, text: "Custom CSS" }
     assert_select "textarea#blog_custom_css"
     assert_response :success
   end
@@ -108,7 +108,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
 
     get app_settings_appearance_index_url
 
-    assert_select "h3", { count: 0, text: "Custom CSS" }
+    assert_select "h4", { count: 0, text: "Custom CSS" }
     assert_select "textarea#blog_custom_css", false
     assert_response :success
   end

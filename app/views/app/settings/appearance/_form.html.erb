@@ -2,7 +2,7 @@
   <% content_for :head do %>
     <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css" rel="stylesheet" type="text/css"/>
     <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/hint/show-hint.css" rel="stylesheet" type="text/css"/>
-    <%= stylesheet_link_tag "css-editor" %>
+    <%= stylesheet_link_tag "css-editor", "html-editor" %>
   <% end %>
 <% end %>
 
@@ -130,22 +130,53 @@
   </div>
 
   <% if @blog.user.has_premium_access? %>
-    <fieldset class="mt-8" id="custom-css-section" data-controller="css-editor">
-      <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
-      <p class="mb-4">
-        Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
-        You can use <code>@import</code> for Google Fonts or Bunny Fonts.
-      </p>
-
+    <div class="mt-8">
+      <h3 class="font-bold text-lg mb-2">Advanced</h3>
       <p class="mb-4 text-sm text-slate-500 italic">
-       Custom CSS is an advanced feature. Customer support for creating or debugging custom CSS is not possible - you're on your own with this one! Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+        These are advanced features.
+        Customer support for creating or debugging custom code is not possible - you're on your own here!
       </p>
 
-      <%= form.text_area :custom_css,
-          data: { css_editor_target: "textarea" } %>
+      <fieldset id="custom-css-section" data-controller="css-editor">
+        <h4 class="font-medium mb-2">Custom CSS</h4>
+        <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">
+          Add custom CSS to style your blog. This will be inserted into the &lt;head&gt; of your blog pages.
+          You can use <code>@import</code> for Google Fonts or Bunny Fonts.
+        </p>
 
-      <div class="field-error"><%= @blog.errors[:custom_css].first if @blog.errors[:custom_css].any? %></div>
-    </fieldset>
+        <%= form.text_area :custom_css,
+            data: { css_editor_target: "textarea" } %>
+
+        <div class="field-error"><%= @blog.errors[:custom_css].first if @blog.errors[:custom_css].any? %></div>
+      </fieldset>
+
+      <% if current_features.enabled?(:custom_html) %>
+        <% custom_html_disabled = !@blog.user.subscribed? %>
+        <fieldset class="mt-6" id="custom-head-html-section" data-controller="html-editor">
+          <h4 class="font-medium mb-2">Custom Head HTML</h4>
+
+          <% if custom_html_disabled %>
+            <div class="mb-4">
+              <%= callout(:info) do %>
+                <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add custom HTML to your blog.
+              <% end %>
+            </div>
+          <% end %>
+
+          <div class="<%= 'opacity-50 pointer-events-none' if custom_html_disabled %>">
+            <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">
+              Add custom HTML to your blog's &lt;head&gt;. You can include &lt;script&gt; tags for
+              analytics (Plausible, Fathom, etc.), &lt;meta&gt; tags, &lt;link&gt; tags, or other elements.
+            </p>
+
+            <%= form.text_area :custom_head_html,
+                data: { html_editor_target: "textarea" } %>
+
+            <div class="field-error"><%= @blog.errors[:custom_head_html].first if @blog.errors[:custom_head_html].any? %></div>
+          </div>
+        </fieldset>
+      <% end %>
+    </div>
   <% end %>
 
   <div class="mt-12 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4 gap-x-2">

@@ -77,6 +77,10 @@
         <%= @blog.sanitized_custom_css %>
       </style>
     <% end %>
+
+    <% if @blog.present? && @blog.user.subscribed? && current_features.enabled?(:custom_html) && @blog.custom_head_html.present? %>
+      <%= @blog.custom_head_html.html_safe %>
+    <% end %>
   </head>
 
   <body class="<%= font_class %>" <%= theme_data_attribute %>>

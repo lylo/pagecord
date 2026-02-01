@@ -23,11 +23,17 @@ pin "sortablejs", to: "https://ga.jspm.io/npm:sortablejs@1.15.6/modular/sortable
 pin "@rails/request.js", to: "https://ga.jspm.io/npm:@rails/request.js@0.0.8/src/index.js", preload: "application"
 pin "stimulus-sortable", to: "https://ga.jspm.io/npm:stimulus-sortable@4.1.1/dist/stimulus-sortable.mjs", preload: "application"
 
-# CodeMirror 5 for CSS editing (app only)
+# CodeMirror 5 for CSS/HTML editing (app only)
 pin "codemirror", to: "https://ga.jspm.io/npm:codemirror@5.65.18/lib/codemirror.js", preload: "application"
 pin "codemirror/mode/css/css", to: "https://ga.jspm.io/npm:codemirror@5.65.18/mode/css/css.js", preload: "application"
+pin "codemirror/mode/javascript/javascript", to: "https://ga.jspm.io/npm:codemirror@5.65.18/mode/javascript/javascript.js", preload: "application"
+pin "codemirror/mode/xml/xml", to: "https://ga.jspm.io/npm:codemirror@5.65.18/mode/xml/xml.js", preload: "application"
+pin "codemirror/mode/htmlmixed/htmlmixed", to: "https://ga.jspm.io/npm:codemirror@5.65.18/mode/htmlmixed/htmlmixed.js", preload: "application"
 pin "codemirror/addon/edit/matchbrackets", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/edit/matchbrackets.js", preload: "application"
 pin "codemirror/addon/edit/closebrackets", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/edit/closebrackets.js", preload: "application"
+pin "codemirror/addon/edit/matchtags", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/edit/matchtags.js", preload: "application"
+pin "codemirror/addon/edit/closetag", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/edit/closetag.js", preload: "application"
+pin "codemirror/addon/fold/xml-fold", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/fold/xml-fold.js", preload: "application"
 pin "codemirror/addon/hint/show-hint", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/hint/show-hint.js", preload: "application"
 pin "codemirror/addon/hint/css-hint", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/hint/css-hint.js", preload: "application"
 
