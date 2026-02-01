@@ -117,4 +117,19 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
 
     assert_redirected_to app_settings_subscriptions_path
   end
+
+  test "should handle failed resume" do
+    @user.subscription.update!(cancelled_at: Time.current)
+    mock_response = mock
+    mock_response.stubs(:success?).returns(false)
+    mock_api = mock
+    mock_api.expects(:resume_subscription).returns(mock_response)
+    PaddleApi.stubs(:new).returns(mock_api)
+
+    post resume_app_settings_subscriptions_path
+
+    assert_redirected_to app_settings_subscriptions_path
+    assert_equal "Unable to resume subscription. Please try again.", flash[:alert]
+    assert @user.subscription.reload.cancelled?
+  end
 end
