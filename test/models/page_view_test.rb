@@ -192,4 +192,79 @@ class PageViewTest < ActiveSupport::TestCase
     assert_nil view.query_string
     assert view.is_unique?  # Should still track uniqueness correctly
   end
+
+  test "should store referrer_domain when tracking" do
+    blog = blogs(:joel)
+    post = posts(:one)
+
+    mock_request = OpenStruct.new(
+      remote_ip: "10.0.0.1",
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      headers: { "CF-IPCountry" => "US" }
+    )
+
+    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test", referrer: "https://www.google.com/search?q=test")
+
+    assert_equal "google.com", view.referrer_domain
+  end
+
+  test "should store nil referrer_domain for direct traffic" do
+    blog = blogs(:joel)
+    post = posts(:one)
+
+    mock_request = OpenStruct.new(
+      remote_ip: "10.0.0.2",
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      headers: { "CF-IPCountry" => "US" }
+    )
+
+    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test", referrer: nil)
+
+    assert_nil view.referrer_domain
+  end
+
+  test "should store country from CF-IPCountry header" do
+    blog = blogs(:joel)
+    post = posts(:one)
+
+    mock_request = OpenStruct.new(
+      remote_ip: "10.0.0.3",
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      headers: { "CF-IPCountry" => "DE" }
+    )
+
+    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test")
+
+    assert_equal "DE", view.country
+  end
+
+  test "should store nil country when CF-IPCountry is XX" do
+    blog = blogs(:joel)
+    post = posts(:one)
+
+    mock_request = OpenStruct.new(
+      remote_ip: "10.0.0.4",
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      headers: { "CF-IPCountry" => "XX" }
+    )
+
+    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test")
+
+    assert_nil view.country
+  end
+
+  test "should store nil country when CF-IPCountry header is missing" do
+    blog = blogs(:joel)
+    post = posts(:one)
+
+    mock_request = OpenStruct.new(
+      remote_ip: "10.0.0.5",
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      headers: {}
+    )
+
+    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test")
+
+    assert_nil view.country
+  end
 end

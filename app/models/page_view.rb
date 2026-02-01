@@ -45,6 +45,13 @@ class PageView < ApplicationRecord
 
     return if existing_view
 
+    # Extract referrer domain
+    referrer_domain = Referrer.new(referrer).domain
+
+    # Extract country from Cloudflare header (nil or "XX" means unknown)
+    country_code = request.headers["CF-IPCountry"]
+    country = (country_code.present? && country_code != "XX") ? country_code : nil
+
     create!(
       blog: blog,
       post: post,
@@ -53,6 +60,8 @@ class PageView < ApplicationRecord
       visitor_hash: visitor_hash,
       user_agent: user_agent,
       referrer: referrer,
+      referrer_domain: referrer_domain,
+      country: country,
       is_unique: true,
       viewed_at: Time.current
     )

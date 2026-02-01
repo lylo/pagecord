@@ -64,7 +64,9 @@ class RollupAndCleanupPageViewsJobTest < ActiveJob::TestCase
 
     assert_equal 1, deleted_count, "Old view should be deleted even when no rollups exist"
     assert_equal [ recent_view.id ], PageView.pluck(:id), "Recent view should remain"
-    assert_equal 3, Rollup.count, "New rollups should be created (unique views only)"
+    # 5 rollup types: unique_views, unique_views_by_blog, unique_views_by_blog_post,
+    # unique_views_by_blog_referrer, unique_views_by_blog_country
+    assert_equal 5, Rollup.count, "New rollups should be created (unique views only)"
   end
 
   test "handles empty dataset gracefully" do

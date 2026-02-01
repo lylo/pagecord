@@ -144,6 +144,10 @@
     <%= render 'chart' %>
 
     <%= render 'leaderboard' %>
+
+    <%= render 'referrers' if current_features.enabled?(:analytics_referrers) %>
+
+    <%= render 'countries' if current_features.enabled?(:analytics_countries) %>
   </div>
 
   <%= render 'premium_overlay' unless Current.user.has_premium_access? %>
