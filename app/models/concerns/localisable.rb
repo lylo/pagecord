@@ -4,7 +4,10 @@ module Localisable
   SUPPORTED_LOCALES = %w[en es fr de pt].freeze
 
   included do
-    validates :locale, inclusion: { in: SUPPORTED_LOCALES, message: "%{value} is not a supported locale" }
+    class_attribute :locale_optional, default: false
+
+    validates :locale, inclusion: { in: SUPPORTED_LOCALES, message: "%{value} is not a supported locale" }, allow_nil: true
+    validates :locale, presence: true, unless: -> { self.class.locale_optional }
   end
 
   class_methods do
@@ -16,6 +19,10 @@ module Localisable
         [ "Deutsch", "de" ],
         [ "Português", "pt" ]
       ]
+    end
+
+    def locale_name(code)
+      available_locales.find { |_, c| c == code }&.first
     end
   end
 end
