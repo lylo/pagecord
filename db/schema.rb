@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_01_18_133054) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_01_193618) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -86,11 +86,10 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_18_133054) do
 
   create_table "blogs", force: :cascade do |t|
     t.boolean "allow_search_indexing", default: true, null: false
-    t.string "analytics_id"
-    t.string "analytics_service"
     t.datetime "created_at", null: false
     t.text "custom_css"
     t.string "custom_domain"
+    t.text "custom_head_html"
     t.string "custom_theme_accent_dark"
     t.string "custom_theme_accent_light"
     t.string "custom_theme_bg_dark"
@@ -282,6 +281,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_18_133054) do
     t.datetime "discarded_at"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
+    t.string "locale"
     t.datetime "published_at"
     t.text "raw_content"
     t.boolean "show_in_navigation", default: true, null: false
@@ -301,6 +301,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_18_133054) do
     t.index ["discarded_at"], name: "index_posts_on_discarded_at"
     t.index ["hidden"], name: "index_posts_on_hidden"
     t.index ["is_page"], name: "index_posts_on_is_page"
+    t.index ["locale"], name: "index_posts_on_locale"
     t.index ["published_at"], name: "index_posts_on_published_at"
     t.index ["status"], name: "index_posts_on_status"
     t.index ["tag_list"], name: "index_posts_on_tag_list", using: :gin

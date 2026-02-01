@@ -1,0 +1,16 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Scripting",
+      "fingerprint": "5db2d195a8668e75bf3083090dcdfdec68a8cea4b4680ea28fb9b0e21f77207e",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/layouts/blog.html.erb",
+      "line": 82,
+      "code": "Current.user.blog.custom_head_html",
+      "note": "Intentional: subscribers can add custom HTML (script tags, meta tags, etc.) to their own blog's head for analytics, integrations, etc. This only affects their own blog, not the main app."
+    }
+  ],
+  "updated": "2026-02-01",
+  "brakeman_version": "8.0.1"
+}
