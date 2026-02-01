@@ -81,7 +81,7 @@ class App::PostsController < AppController
     def post_params
       status = params[:button] == "save_draft" ? :draft : :published
 
-      params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden).merge(status: status)
+      params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale).merge(status: status)
     end
 
     def redirect_to_first_page

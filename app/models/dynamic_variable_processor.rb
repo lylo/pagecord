@@ -62,6 +62,8 @@ class DynamicVariableProcessor
         relation = relation.where(published_at: start_date..end_date)
       end
 
+      relation = filter_by_language(relation, params[:lang]) if params[:lang]
+
       posts = params[:limit] ? relation.limit(params[:limit]) : relation.all
       view.render(partial: "blogs/custom_tags/posts", locals: { posts: posts, limit: params[:limit] })
     end
@@ -70,6 +72,7 @@ class DynamicVariableProcessor
       params = parse_params(params_string)
       relation = blog.posts.visible.order(published_at: :desc)
       relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
+      relation = filter_by_language(relation, params[:lang]) if params[:lang]
 
       posts = relation.all
 
@@ -85,6 +88,15 @@ class DynamicVariableProcessor
 
     def render_email_subscription_tag(params_string)
       view.render(partial: "blogs/email_subscriber_form", locals: {})
+    end
+
+    def filter_by_language(relation, lang)
+      locale = lang.to_s.downcase.split("-").first
+      if blog.locale == locale
+        relation.where(locale: [ locale, nil ])
+      else
+        relation.where(locale: locale)
+      end
     end
 
     def parse_params(params_string)
