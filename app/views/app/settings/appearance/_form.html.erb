@@ -148,6 +148,25 @@
     </fieldset>
   <% end %>
 
+  <% if @blog.user.subscribed? %>
+    <fieldset class="mt-8" id="custom-js-section" data-controller="js-editor">
+      <h3 class="font-bold text-lg mb-2">Analytics</h3>
+      <p class="mb-4">
+        Add third-party analytics to your blog. Paste the JavaScript code from your analytics provider
+        (e.g. Plausible, Fathom, Simple Analytics). Don't include &lt;script&gt; tags.
+      </p>
+
+      <p class="mb-4 text-sm text-slate-500 italic">
+        This is for advanced users who prefer their own analytics provider over the built-in Pagecord analytics.
+      </p>
+
+      <%= form.text_area :custom_head_js,
+          data: { js_editor_target: "textarea" } %>
+
+      <div class="field-error"><%= @blog.errors[:custom_head_js].first if @blog.errors[:custom_head_js].any? %></div>
+    </fieldset>
+  <% end %>
+
   <div class="mt-12 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4 gap-x-2">
     <%= form.submit "Update", class: "btn-primary" %>
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
