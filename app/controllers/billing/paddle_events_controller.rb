@@ -62,7 +62,8 @@ module Billing
       end
 
       def subscription_created
-        @subscription = @user.subscription || Subscription.create!(user: @user)
+        plan = detect_plan
+        @subscription = @user.subscription || Subscription.create!(user: @user, plan: plan)
 
         Rails.logger.info "New subscription #{@user.id} (subscription id: #{@subscription.id})"
         if @subscription.cancelled?
@@ -70,7 +71,7 @@ module Billing
 
           # this is a re-activation of an existing subscription. delete and recreate
           @subscription.destroy!
-          @subscription = Subscription.create!(user: @user)
+          @subscription = Subscription.create!(user: @user, plan: plan)
           Rails.logger.info "New subscription #{@subscription.id} created for @#{@user.id}"
         end
 
@@ -79,7 +80,8 @@ module Billing
           paddle_customer_id: data.customer_id,
           paddle_price_id: data.items[0].price.id,
           unit_price: base_unit_price,
-          next_billed_at: Time.parse(data.next_billed_at)
+          next_billed_at: Time.parse(data.next_billed_at),
+          plan: plan
         )
       end
 
@@ -98,10 +100,14 @@ module Billing
           next_billed_at = Time.parse(data.next_billed_at)
         end
 
-        Rails.logger.info "Subscription next billed at updated to #{next_billed_at}"
+        new_price_id = data.items[0].price.id
+        new_plan = Subscription.plan_from_price_id(new_price_id)
+
+        Rails.logger.info "Subscription next billed at updated to #{next_billed_at}, plan: #{new_plan}"
         @subscription.update!(
-          paddle_price_id: data.items[0].price.id,
-          next_billed_at: next_billed_at
+          paddle_price_id: new_price_id,
+          next_billed_at: next_billed_at,
+          plan: new_plan
         )
 
         # this webhook is also called when a subscription is cancelled, with the
@@ -139,10 +145,23 @@ module Billing
           next_billed_at = Time.parse(billing_period_ends_at)
           actual_unit_price = transaction_unit_price
 
-          @subscription.update!(
+          updates = {
             next_billed_at: next_billed_at,
             unit_price: actual_unit_price
-          )
+          }
+
+          # Plan change: find the new plan item (quantity > 0)
+          if data.origin == "subscription_update"
+            new_item = data.items.find { |item| item.quantity.to_i > 0 }
+            if new_item
+              new_price_id = new_item.price.id
+              updates[:paddle_price_id] = new_price_id
+              updates[:plan] = Subscription.plan_from_price_id(new_price_id)
+              Rails.logger.info "Plan changed to #{updates[:plan]} (price_id: #{new_price_id})"
+            end
+          end
+
+          @subscription.update!(updates)
 
           Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}, unit_price: #{actual_unit_price}"
         else
@@ -156,6 +175,21 @@ module Billing
 
       def base_unit_price
         data.items[0].price.unit_price.amount.to_i
+      end
+
+      def detect_plan
+        # First check if plan is specified in custom_data (from checkout)
+        if data.custom_data&.plan.present?
+          return data.custom_data.plan
+        end
+
+        # Fall back to detecting from billing cycle
+        billing_cycle = data.billing_cycle || data.items[0]&.price&.billing_cycle
+        if billing_cycle&.interval == "month" && billing_cycle&.frequency == 1
+          "monthly"
+        else
+          "annual"
+        end
       end
 
       def transaction_unit_price

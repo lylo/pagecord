@@ -238,14 +238,26 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 ### Billing & Subscriptions (Paddle)
 - **Payment provider**: Paddle (handles payments, tax, invoicing)
 - **Controller**: `Billing::PaddleEventsController` receives webhooks from Paddle
-- **Model**: `Subscription` stores paddle_subscription_id, paddle_customer_id, paddle_price_id, unit_price, next_billed_at, cancelled_at
+- **Model**: `Subscription` stores paddle_subscription_id, paddle_customer_id, paddle_price_id, unit_price, next_billed_at, cancelled_at, plan
+- **Plans**: `plan` column enum with values: `monthly`, `annual`, `complimentary`
+- **Feature flag**: `MONTHLY_ENABLED=true` enables monthly plan option in UI
+- **Price IDs**: Stored in `SubscriptionsHelper::PRICE_IDS` hash (keyed by plan and environment)
 - **Webhook events handled**:
-  - `subscription.created` - Creates/updates subscription record
-  - `subscription.updated` - Updates billing info, handles scheduled cancellations
+  - `subscription.created` - Creates/updates subscription record with plan detection
+  - `subscription.updated` - Updates billing info, plan, handles scheduled cancellations
   - `subscription.canceled` - Marks subscription as cancelled
   - `subscription.past_due` - Logged only (Paddle handles recovery)
-  - `transaction.completed` - Updates next_billed_at and unit_price
+  - `transaction.completed` - Updates next_billed_at, unit_price, and plan (for plan changes)
   - `transaction.payment_failed` - Logged only (Paddle Retain handles recovery)
+- **Plan switching**:
+  - Monthly → Annual: Allowed via `change_plan` action, uses `PaddleApi#update_subscription_items` with prorated billing
+  - Annual → Monthly: Not supported in UI (users must cancel, let subscription lapse, then resubscribe)
+- **Resume subscription**: Cancelled subscriptions can be resumed via `PaddleApi#resume_subscription` (sets `scheduled_change: null`)
+- **Subscription states in UI**:
+  - Active monthly: Shows current plan card + "Switch to Annual" upgrade option
+  - Active annual: Shows billing summary only (no downgrade option)
+  - Cancelled: Shows "Resume Subscription" button
+  - Lapsed: Shows both plan cards to resubscribe via Paddle checkout
 - **Payment failure handling**: Paddle Retain automatically:
   - Retries failed payments up to 7 times over 30 days
   - Sends up to 4 recovery emails to customers (white-labeled)

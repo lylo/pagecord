@@ -1,0 +1,108 @@
+{
+  "data": {
+    "id": "txn_01kgcep4ne4ybc5tqzngpn1y3e",
+    "items": [
+      {
+        "price": {
+          "id": "pri_01jxfe5399nzanxj57bbqk28t4",
+          "name": "Pagecord Premium Annual",
+          "type": "standard",
+          "status": "active",
+          "unit_price": {
+            "amount": "2900",
+            "currency_code": "USD"
+          },
+          "billing_cycle": {
+            "interval": "year",
+            "frequency": 1
+          }
+        },
+        "price_id": "pri_01jxfe5399nzanxj57bbqk28t4",
+        "quantity": 1,
+        "proration": null
+      },
+      {
+        "price": {
+          "id": "pri_01kgccx380dyd8sv1c5mr7qgh4",
+          "name": "Pagecord Premium Monthly",
+          "type": "standard",
+          "status": "active",
+          "unit_price": {
+            "amount": "400",
+            "currency_code": "USD"
+          },
+          "billing_cycle": {
+            "interval": "month",
+            "frequency": 1
+          }
+        },
+        "price_id": "pri_01kgccx380dyd8sv1c5mr7qgh4",
+        "quantity": -1,
+        "proration": {
+          "rate": "0.99936",
+          "billing_period": {
+            "ends_at": "2026-03-01T10:50:15.843123Z",
+            "starts_at": "2026-02-01T11:16:24.481Z"
+          }
+        }
+      }
+    ],
+    "origin": "subscription_update",
+    "status": "completed",
+    "details": {
+      "totals": {
+        "total": "2500",
+        "currency_code": "USD"
+      },
+      "line_items": [
+        {
+          "id": "txnitm_01kgcep4p6d00d5222mrpmxd71",
+          "totals": {
+            "total": "2900"
+          },
+          "price_id": "pri_01jxfe5399nzanxj57bbqk28t4",
+          "quantity": 1,
+          "unit_totals": {
+            "total": "2900"
+          }
+        },
+        {
+          "id": "txnitm_01kgcep4pgaecj7tdxsgh83qbz",
+          "totals": {
+            "total": "-400"
+          },
+          "price_id": "pri_01kgccx380dyd8sv1c5mr7qgh4",
+          "quantity": -1,
+          "unit_totals": {
+            "total": "400"
+          }
+        }
+      ]
+    },
+    "payments": [
+      {
+        "amount": "2500",
+        "status": "captured"
+      }
+    ],
+    "billed_at": "2026-02-01T11:16:24.878177Z",
+    "created_at": "2026-02-01T11:16:24.948301Z",
+    "updated_at": "2026-02-01T11:16:29.901081178Z",
+    "custom_data": {
+      "plan": "monthly",
+      "user_id": 918740832,
+      "blog_subdomain": "olly"
+    },
+    "customer_id": "ctm_01kfftttjknezsfycs2krvv13n",
+    "currency_code": "USD",
+    "billing_period": {
+      "ends_at": "2027-02-01T11:16:24.469Z",
+      "starts_at": "2026-02-01T11:16:24.469Z"
+    },
+    "subscription_id": "sub_01kgcd69d47j1mpe1a1xvkfw5g"
+  },
+  "event_id": "evt_01kgcep9jn0m8s8bvtkeq954mv",
+  "event_type": "transaction.completed",
+  "occurred_at": "2026-02-01T11:16:29.909843Z",
+  "notification_id": "ntf_01kgcepa4ass0bjmxvjdmn0xr7"
+}

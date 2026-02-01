@@ -3,11 +3,21 @@ class Subscription < ApplicationRecord
 
   has_many :renewal_reminders, class_name: "Subscription::RenewalReminder", dependent: :destroy
 
-  scope :comped, -> { where(complimentary: true) }
-  scope :active_paid, -> { where(complimentary: false).where(cancelled_at: nil).where("next_billed_at > ?", Time.current) }
+  enum :plan, { monthly: "monthly", annual: "annual", complimentary: "complimentary" }
 
-  def self.price
-    "29"
+  scope :comped, -> { where(plan: :complimentary) }
+  scope :active_paid, -> {
+    where(plan: [ :annual, :monthly ])
+      .where(cancelled_at: nil)
+      .where("next_billed_at > ?", Time.current)
+  }
+
+  def self.price(plan = :annual)
+    plan.to_sym == :monthly ? "4" : "29"
+  end
+
+  def self.plan_from_price_id(price_id)
+    SubscriptionsHelper::PRICE_IDS[:monthly].values.include?(price_id) ? "monthly" : "annual"
   end
 
   def active?
