@@ -15,6 +15,7 @@ If you spot anything missing that needs a guide, please [drop me an email](mailt
 New to Pagecord? Start here. These guides will help you set up your blog and publish your first post in no time.
 
 - [Getting Started with Pagecord](getting-started-with-pagecord.md)
+- [Importing your blog](importing-your-blog.md)
 
 ## Writing & Publishing
 

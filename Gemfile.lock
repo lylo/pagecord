@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 3ad79fcede4f9b620f03b9fd76507d9fb3c07e95
+  revision: 73867abc079188ddb2dea25bc317efbc79288eb2
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -264,7 +264,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (0.7.3.beta)
+    lexxy (0.7.4.beta)
       rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
@@ -285,10 +285,6 @@ GEM
       httparty (>= 0.18.1)
     marcel (1.1.0)
     matrix (0.4.3)
-    mime-types (3.7.0)
-      logger
-      mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0127)
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
@@ -352,10 +348,6 @@ GEM
       activesupport (>= 6.1)
     pghero (3.7.0)
       activerecord (>= 7.1)
-    playwright-ruby-client (1.57.1)
-      base64
-      concurrent-ruby (>= 1.1.6)
-      mime-types (>= 3.0)
     postmark (1.25.1)
       json
     postmark-rails (0.22.1)
@@ -581,7 +573,6 @@ DEPENDENCIES
   pg_query (>= 2)
   pg_search
   pghero
-  playwright-ruby-client
   postmark-rails
   premailer-rails (~> 1.12)
   propshaft

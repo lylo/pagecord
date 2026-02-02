@@ -359,12 +359,12 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_212308) do
 
   create_table "subscriptions", force: :cascade do |t|
     t.datetime "cancelled_at"
-    t.boolean "complimentary", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "next_billed_at"
     t.string "paddle_customer_id"
     t.string "paddle_price_id"
     t.string "paddle_subscription_id"
+    t.string "plan", null: false
     t.integer "unit_price"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
