@@ -8,20 +8,10 @@
     domains</b>, <b>custom CSS</b>, <b>email subscribers</b>, <b>reply by email</b> and <b>Olly's awesome customer support</b>!
   </p>
 
-  <% if monthly_enabled? %>
-    <%= render "plan_cards", monthly_label: "Subscribe Monthly", annual_label: "Subscribe Annually", show_subtitles: true %>
-    <div class="mt-4">
-      <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
-    </div>
-  <% else %>
-    <p class="mt-4">
-      It's only <strong>$<%= localised_price %>/year!</strong>
-    </p>
-    <div class="mt-4">
-      <%= link_to "Subscribe Now!", "#", class: "paddle_button btn-primary", data: paddle_data %>
-      <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
-    </div>
-  <% end %>
+  <%= render "plan_cards", monthly_label: "Subscribe Monthly", annual_label: "Subscribe Annually", show_subtitles: true %>
+  <div class="mt-4">
+    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+  </div>
 <% elsif Current.user.subscribed? %>
   <% if @subscription.complimentary? %>
     <p>You have a free Pagecord Premium subscription! 🎉</p>
@@ -47,19 +37,13 @@
     </p>
     <p class="mt-2 text-sm text-slate-500">You'll be billed immediately when you restart.</p>
 
-    <% if monthly_enabled? %>
-      <%= render "plan_cards", monthly_label: "Restart Monthly", annual_label: "Restart Annually" %>
-    <% else %>
-      <div class="mt-4">
-        <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_data %>
-      </div>
-    <% end %>
+    <%= render "plan_cards", monthly_label: "Restart Monthly", annual_label: "Restart Annually" %>
   <% else %>
     <p>
       💳 You are currently subscribed to Pagecord Premium. Thank you! 💖
     </p>
 
-    <% if monthly_enabled? && @subscription.monthly? %>
+    <% if @subscription.monthly? %>
       <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="border-2 border-[#4fbd9c] rounded-lg p-4 relative">
           <span class="absolute -top-3 left-4 bg-[#4fbd9c] text-white text-xs font-semibold px-2 py-1 rounded">Current Plan</span>
@@ -102,18 +86,8 @@
     domains</b>, <b>custom CSS</b>, <b>email subscribers</b>, <b>reply by email</b> and <b>human customer support</b>! 💖
   </p>
 
-  <% if monthly_enabled? %>
-    <%= render "plan_cards", monthly_label: "Subscribe Monthly", annual_label: "Subscribe Annually", show_subtitles: true %>
-    <div class="mt-4">
-      <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
-    </div>
-  <% else %>
-    <p class="mt-4">
-      It's only <strong>$<%= localised_price %>/year!</strong> What are you waiting for? 😊
-    </p>
-    <div class="mt-4">
-      <%= link_to "Upgrade Today!", "#", class: "paddle_button btn-primary", data: paddle_data %>
-      <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
-    </div>
-  <% end %>
+  <%= render "plan_cards", monthly_label: "Subscribe Monthly", annual_label: "Subscribe Annually", show_subtitles: true %>
+  <div class="mt-4">
+    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+  </div>
 <% end %>

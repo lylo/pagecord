@@ -240,7 +240,6 @@ RollupAndCleanupPageViewsJob.perform_now                         # Manually run 
 - **Controller**: `Billing::PaddleEventsController` receives webhooks from Paddle
 - **Model**: `Subscription` stores paddle_subscription_id, paddle_customer_id, paddle_price_id, unit_price, next_billed_at, cancelled_at, plan
 - **Plans**: `plan` column enum with values: `monthly`, `annual`, `complimentary`
-- **Feature flag**: `MONTHLY_ENABLED=true` enables monthly plan option in UI
 - **Price IDs**: Stored in `SubscriptionsHelper::PRICE_IDS` hash (keyed by plan and environment)
 - **Webhook events handled**:
   - `subscription.created` - Creates/updates subscription record with plan detection

@@ -26,10 +26,6 @@ module SubscriptionsHelper
     data.to_json.html_safe
   end
 
-  def monthly_enabled?
-    ENV["MONTHLY_ENABLED"] == "true"
-  end
-
   def paddle_annual_data
     paddle_checkout_data(:annual)
   end

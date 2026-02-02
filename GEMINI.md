@@ -162,7 +162,6 @@ Pagecord is a blogging application with features like email-to-blog posting, cus
 - **Payment provider**: Paddle (handles payments, tax, invoicing)
 - **Controller**: `Billing::PaddleEventsController` receives webhooks
 - **Model**: `Subscription` with `plan` enum (`monthly`, `annual`, `complimentary`)
-- **Feature flag**: `MONTHLY_ENABLED=true` enables monthly plan in UI
 - **Price IDs**: `SubscriptionsHelper::PRICE_IDS` hash (keyed by plan and environment)
 - **Plan switching**:
   - Monthly → Annual: Allowed with prorated billing via `PaddleApi#update_subscription_items`

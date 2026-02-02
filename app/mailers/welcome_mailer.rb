@@ -9,7 +9,6 @@ class WelcomeMailer < MailpaceMailer
     @blog = @user.blog
     @price = params[:price] || Subscription.price
     @monthly_price = Subscription.price(:monthly)
-    @monthly_enabled = ENV["MONTHLY_ENABLED"] == "true"
 
     mail to: @user.email, subject: "Welcome to Pagecord!"
   end
