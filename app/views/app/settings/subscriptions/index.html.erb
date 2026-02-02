@@ -16,7 +16,7 @@
   <% if @subscription.complimentary? %>
     <p>You have a free Pagecord Premium subscription! 🎉</p>
 
-    <div>
+    <div class="mt-4">
       <%= link_to "← Back", app_settings_path, class: "btn-primary" %>
     </div>
   <% elsif @subscription.cancelled? %>
@@ -73,7 +73,7 @@
       <%= link_to "Cancel Subscription", cancel_confirm_app_settings_subscriptions_path, class: "btn-danger" %>
     </div>
 
-    <div class="mt-8 flex items-center gap-x-2 pt-4 border-t border-t-slate-200 dark:border-slate-600">
+    <div class="flex items-center gap-x-2 pt-4 border-t border-t-slate-200 dark:border-slate-600">
       <%= link_to "Back", app_settings_path, class: "btn-secondary" %>
     </div>
   <% end %>
