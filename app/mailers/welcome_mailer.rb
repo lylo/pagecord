@@ -8,6 +8,7 @@ class WelcomeMailer < MailpaceMailer
     @user = params[:user]
     @blog = @user.blog
     @price = params[:price] || Subscription.price
+    @monthly_price = Subscription.price(:monthly)
 
     mail to: @user.email, subject: "Welcome to Pagecord!"
   end

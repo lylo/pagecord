@@ -7,18 +7,16 @@
     Subscribe now to keep access to <b>image attachments</b>, <b>custom
     domains</b>, <b>custom CSS</b>, <b>email subscribers</b>, <b>reply by email</b> and <b>Olly's awesome customer support</b>!
   </p>
-  <p class="mt-4">
-    It's only <strong>$<%= localised_price %>/year!</strong>
-  </p>
+
+  <%= render "plan_cards", monthly_label: "Subscribe Monthly", annual_label: "Subscribe Annually", show_subtitles: true %>
   <div class="mt-4">
-    <%= link_to "Subscribe Now!", "#", class: "paddle_button btn-primary", data: paddle_data %>
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
   </div>
 <% elsif Current.user.subscribed? %>
   <% if @subscription.complimentary? %>
     <p>You have a free Pagecord Premium subscription! 🎉</p>
 
-    <div>
+    <div class="mt-4">
       <%= link_to "← Back", app_settings_path, class: "btn-primary" %>
     </div>
   <% elsif @subscription.cancelled? %>
@@ -26,8 +24,9 @@
       Your Pagecord Premium subscription has been scheduled for cancellation on
       <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
     </p>
+    <p class="mt-2">Changed your mind?</p>
     <div class="mt-4">
-    <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_data %>
+      <%= button_to "Resume Subscription", resume_app_settings_subscriptions_path, class: "btn-primary" %>
     </div>
   <% elsif @subscription.lapsed? %>
     <p>
@@ -36,26 +35,45 @@
     <p class="mt-2">
       Renew now to continue enjoying premium features like image attachments, custom domains, and more!
     </p>
+    <p class="mt-2 text-sm text-slate-500">You'll be billed immediately when you restart.</p>
 
-    <div class="mt-4">
-      <%= button_to "Restart your subscription", "#", class: "paddle_button btn-primary", data: paddle_data %>
-    </div>
+    <%= render "plan_cards", monthly_label: "Restart Monthly", annual_label: "Restart Annually" %>
   <% else %>
     <p>
       💳 You are currently subscribed to Pagecord Premium. Thank you! 💖
     </p>
-    <p>
-      Your next payment of
-      <strong>$<%= @subscription.unit_price / 100 %></strong> will be taken on
-      <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
-    </p>
 
-    <div class="mt-2 flex justify-between" data-controller="paddle">
+    <% if @subscription.monthly? %>
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="border-2 border-[#4fbd9c] rounded-lg p-4 relative">
+          <span class="absolute -top-3 left-4 bg-[#4fbd9c] text-white text-xs font-semibold px-2 py-1 rounded">Current Plan</span>
+          <h3 class="font-semibold text-lg">Monthly</h3>
+          <p class="text-2xl font-bold mt-2">$<%= @subscription.unit_price / 100 %><span class="text-sm font-normal text-slate-500">/month</span></p>
+          <p class="text-sm text-slate-500 mt-1">Next payment <%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></p>
+        </div>
+        <div class="border border-slate-200 dark:border-slate-600 rounded-lg p-4">
+          <h3 class="font-semibold text-lg">Annual</h3>
+          <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500">/year</span></p>
+          <p class="text-sm text-slate-500 mt-1">Save 40% vs monthly</p>
+          <div class="mt-4">
+            <%= button_to "Switch to Annual", change_plan_app_settings_subscriptions_path(plan: "annual"), class: "btn-primary w-full text-center", data: { turbo_confirm: "Switch to annual billing? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <p class="mt-2">
+        Your next payment of
+        <strong>$<%= @subscription.unit_price / 100 %></strong> will be taken on
+        <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
+      </p>
+    <% end %>
+
+    <div class="mt-6 flex justify-between" data-controller="paddle">
       <%= link_to "Update Card Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "btn-primary" %>
       <%= link_to "Cancel Subscription", cancel_confirm_app_settings_subscriptions_path, class: "btn-danger" %>
     </div>
 
-    <div class="mt-8 flex items-center gap-x-2 pt-4 border-t border-t-slate-200 dark:border-slate-600">
+    <div class="flex items-center gap-x-2 pt-4 border-t border-t-slate-200 dark:border-slate-600">
       <%= link_to "Back", app_settings_path, class: "btn-secondary" %>
     </div>
   <% end %>
@@ -68,13 +86,8 @@
     domains</b>, <b>custom CSS</b>, <b>email subscribers</b>, <b>reply by email</b> and <b>human customer support</b>! 💖
   </p>
 
-
-  <p class="mt-4">
-    It's only <strong>$<%= localised_price %>/year!</strong> What are you waiting for? 😊
-  </p>
-
+  <%= render "plan_cards", monthly_label: "Subscribe Monthly", annual_label: "Subscribe Annually", show_subtitles: true %>
   <div class="mt-4">
-    <%= link_to "Upgrade Today!", "#", class: "paddle_button btn-primary", data: paddle_data %>
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
   </div>
 <% end %>

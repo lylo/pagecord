@@ -4,7 +4,8 @@ class SubscriptionTest < ActiveSupport::TestCase
   def setup
     @subscription = Subscription.new(
       cancelled_at: nil,
-      next_billed_at: 1.month.from_now
+      next_billed_at: 1.month.from_now,
+      plan: :annual
     )
   end
 
@@ -16,8 +17,13 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_not users(:vivian).subscribed?
   end
 
-  test "should be priced at $29" do
+  test "should be priced at $29 for annual" do
     assert_equal "29", Subscription.price
+    assert_equal "29", Subscription.price(:annual)
+  end
+
+  test "should be priced at $4 for monthly" do
+    assert_equal "4", Subscription.price(:monthly)
   end
 
   test "active? should return true if not cancelled and not lapsed" do
@@ -63,5 +69,46 @@ class SubscriptionTest < ActiveSupport::TestCase
     @subscription.cancelled_at = Time.current
     @subscription.next_billed_at = 1.month.ago
     assert_not @subscription.active?
+  end
+
+  test "plan enum should have monthly, annual, and complimentary values" do
+    assert_equal({ "monthly" => "monthly", "annual" => "annual", "complimentary" => "complimentary" }, Subscription.plans)
+  end
+
+  test "monthly? should return true for monthly subscription" do
+    @subscription.plan = :monthly
+    assert @subscription.monthly?
+  end
+
+  test "annual? should return true for annual subscription" do
+    @subscription.plan = :annual
+    assert @subscription.annual?
+  end
+
+  test "complimentary? should return true for complimentary subscription" do
+    @subscription.plan = :complimentary
+    assert @subscription.complimentary?
+  end
+
+  test "active_paid scope should include annual subscriptions" do
+    subscription = subscriptions(:one)
+    assert_includes Subscription.active_paid, subscription
+  end
+
+  test "active_paid scope should include monthly subscriptions" do
+    subscription = subscriptions(:monthly_subscription)
+    assert_includes Subscription.active_paid, subscription
+  end
+
+  test "active_paid scope should not include complimentary subscriptions" do
+    subscription = subscriptions(:one)
+    subscription.update!(plan: :complimentary)
+    assert_not_includes Subscription.active_paid, subscription
+  end
+
+  test "comped scope should return complimentary subscriptions" do
+    subscription = subscriptions(:one)
+    subscription.update!(plan: :complimentary)
+    assert_includes Subscription.comped, subscription
   end
 end
