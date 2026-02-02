@@ -237,6 +237,7 @@ html, body {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     font-size: 0.875em;
+    line-height: 1.25rem;
     color: var(--color-text-muted);
     overflow-wrap: break-word;
 
