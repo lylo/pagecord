@@ -121,4 +121,94 @@ class Analytics::CountriesTest < ActiveSupport::TestCase
     assert_equal "GB", data.second[:code]
     assert_equal 1, data.second[:count]
   end
+
+  test "returns country data from rollups when data is old" do
+    # Create rollups for 3 months ago
+    old_date = 3.months.ago.beginning_of_month
+
+    Rollup.create!(
+      name: "unique_views_by_blog_country",
+      time: old_date,
+      interval: "day",
+      value: 15.0,
+      dimensions: { "blog_id" => @blog.id.to_s, "country" => "US" }
+    )
+
+    Rollup.create!(
+      name: "unique_views_by_blog_country",
+      time: old_date,
+      interval: "day",
+      value: 8.0,
+      dimensions: { "blog_id" => @blog.id.to_s, "country" => "GB" }
+    )
+
+    # Query for that old month - should use rollups
+    data = @countries.country_data("month", old_date.to_date)
+
+    assert_equal 2, data.length
+
+    us = data.find { |c| c[:code] == "US" }
+    assert_equal 15, us[:count]
+    assert_equal "United States", us[:name]
+
+    gb = data.find { |c| c[:code] == "GB" }
+    assert_equal 8, gb[:count]
+    assert_equal "United Kingdom", gb[:name]
+  end
+
+  test "excludes nil country from rollups" do
+    old_date = 3.months.ago.beginning_of_month
+
+    Rollup.create!(
+      name: "unique_views_by_blog_country",
+      time: old_date,
+      interval: "day",
+      value: 5.0,
+      dimensions: { "blog_id" => @blog.id.to_s, "country" => "US" }
+    )
+
+    Rollup.create!(
+      name: "unique_views_by_blog_country",
+      time: old_date,
+      interval: "day",
+      value: 10.0,
+      dimensions: { "blog_id" => @blog.id.to_s, "country" => nil }
+    )
+
+    data = @countries.country_data("month", old_date.to_date)
+
+    assert_equal 1, data.length
+    assert_equal "US", data.first[:code]
+  end
+
+  test "combines rollup and pageview data for mixed time ranges" do
+    # Create a rollup at the beginning of the year (will be in rollup range)
+    # cutoff_time is prev_month.beginning_of_month, so Jan 1 data is before cutoff if we're in Feb+
+    year_start = Date.current.beginning_of_year
+
+    Rollup.create!(
+      name: "unique_views_by_blog_country",
+      time: year_start.to_time,
+      interval: "day",
+      value: 20.0,
+      dimensions: { "blog_id" => @blog.id.to_s, "country" => "US" }
+    )
+
+    # Create pageview for current month (will be in pageview range)
+    PageView.create!(
+      blog: @blog,
+      visitor_hash: "recent_visitor",
+      user_agent: "Test Browser",
+      country: "US",
+      is_unique: true,
+      viewed_at: Time.current
+    )
+
+    # Query for the full year - should combine both sources
+    data = @countries.country_data("year", Date.current)
+
+    us = data.find { |c| c[:code] == "US" }
+    assert_not_nil us, "Expected US in results"
+    assert_equal 21, us[:count], "Expected combined count from rollup (20) + pageview (1)"
+  end
 end

@@ -78,4 +78,60 @@ class RollupAndCleanupPageViewsJobTest < ActiveJob::TestCase
     assert_equal 0, PageView.count
     assert_equal 0, Rollup.count
   end
+
+  test "creates rollups with correct referrer_domain dimensions" do
+    old_date = 3.months.ago
+
+    create_page_view(visitor_hash: "v1", referrer_domain: "google.com", is_unique: true, viewed_at: old_date)
+    create_page_view(visitor_hash: "v2", referrer_domain: "google.com", is_unique: true, viewed_at: old_date)
+    create_page_view(visitor_hash: "v3", referrer_domain: "x.com", is_unique: true, viewed_at: old_date)
+    create_page_view(visitor_hash: "v4", referrer_domain: nil, is_unique: true, viewed_at: old_date)
+
+    @job.perform
+
+    referrer_rollups = Rollup.where(name: "unique_views_by_blog_referrer")
+    assert referrer_rollups.exists?, "Expected referrer rollups to exist"
+
+    google_rollup = referrer_rollups.find_by("dimensions->>'referrer_domain' = ?", "google.com")
+    assert_not_nil google_rollup, "Expected google.com rollup"
+    assert_equal 2.0, google_rollup.value
+    assert_equal @blog.id, google_rollup.dimensions["blog_id"]
+
+    x_rollup = referrer_rollups.find_by("dimensions->>'referrer_domain' = ?", "x.com")
+    assert_not_nil x_rollup, "Expected x.com rollup"
+    assert_equal 1.0, x_rollup.value
+
+    # Direct traffic (nil referrer) should also be rolled up
+    direct_rollup = referrer_rollups.where("dimensions->>'referrer_domain' IS NULL").first
+    assert_not_nil direct_rollup, "Expected direct traffic rollup"
+    assert_equal 1.0, direct_rollup.value
+  end
+
+  test "creates rollups with correct country dimensions" do
+    old_date = 3.months.ago
+
+    create_page_view(visitor_hash: "v1", country: "US", is_unique: true, viewed_at: old_date)
+    create_page_view(visitor_hash: "v2", country: "US", is_unique: true, viewed_at: old_date)
+    create_page_view(visitor_hash: "v3", country: "GB", is_unique: true, viewed_at: old_date)
+    create_page_view(visitor_hash: "v4", country: nil, is_unique: true, viewed_at: old_date)
+
+    @job.perform
+
+    country_rollups = Rollup.where(name: "unique_views_by_blog_country")
+    assert country_rollups.exists?, "Expected country rollups to exist"
+
+    us_rollup = country_rollups.find_by("dimensions->>'country' = ?", "US")
+    assert_not_nil us_rollup, "Expected US rollup"
+    assert_equal 2.0, us_rollup.value
+    assert_equal @blog.id, us_rollup.dimensions["blog_id"]
+
+    gb_rollup = country_rollups.find_by("dimensions->>'country' = ?", "GB")
+    assert_not_nil gb_rollup, "Expected GB rollup"
+    assert_equal 1.0, gb_rollup.value
+
+    # Nil country should also be rolled up
+    nil_country_rollup = country_rollups.where("dimensions->>'country' IS NULL").first
+    assert_not_nil nil_country_rollup, "Expected nil country rollup"
+    assert_equal 1.0, nil_country_rollup.value
+  end
 end

@@ -120,4 +120,87 @@ class Analytics::ReferrersTest < ActiveSupport::TestCase
     assert_equal "x.com", data.second[:domain]
     assert_equal 1, data.second[:count]
   end
+
+  test "returns referrer data from rollups when data is old" do
+    # Create rollups for 3 months ago
+    old_date = 3.months.ago.beginning_of_month
+
+    Rollup.create!(
+      name: "unique_views_by_blog_referrer",
+      time: old_date,
+      interval: "day",
+      value: 5.0,
+      dimensions: { "blog_id" => @blog.id.to_s, "referrer_domain" => "google.com" }
+    )
+
+    Rollup.create!(
+      name: "unique_views_by_blog_referrer",
+      time: old_date,
+      interval: "day",
+      value: 2.0,
+      dimensions: { "blog_id" => @blog.id.to_s, "referrer_domain" => "x.com" }
+    )
+
+    # Query for that old month - should use rollups
+    data = @referrers.referrer_data("month", old_date.to_date)
+
+    assert_equal 2, data.length
+
+    google = data.find { |r| r[:domain] == "google.com" }
+    assert_equal 5, google[:count]
+    assert_equal "Google", google[:friendly_name]
+
+    x = data.find { |r| r[:domain] == "x.com" }
+    assert_equal 2, x[:count]
+  end
+
+  test "returns direct traffic from rollups with nil domain" do
+    old_date = 3.months.ago.beginning_of_month
+
+    Rollup.create!(
+      name: "unique_views_by_blog_referrer",
+      time: old_date,
+      interval: "day",
+      value: 10.0,
+      dimensions: { "blog_id" => @blog.id.to_s, "referrer_domain" => nil }
+    )
+
+    data = @referrers.referrer_data("month", old_date.to_date)
+
+    assert_equal 1, data.length
+    assert_nil data.first[:domain]
+    assert_equal "Direct", data.first[:friendly_name]
+    assert_equal 10, data.first[:count]
+  end
+
+  test "combines rollup and pageview data for mixed time ranges" do
+    # Create a rollup at the beginning of the year (will be in rollup range)
+    # cutoff_time is prev_month.beginning_of_month, so Jan 1 data is before cutoff if we're in Feb+
+    year_start = Date.current.beginning_of_year
+
+    Rollup.create!(
+      name: "unique_views_by_blog_referrer",
+      time: year_start.to_time,
+      interval: "day",
+      value: 10.0,
+      dimensions: { "blog_id" => @blog.id.to_s, "referrer_domain" => "google.com" }
+    )
+
+    # Create pageview for current month (will be in pageview range)
+    PageView.create!(
+      blog: @blog,
+      visitor_hash: "recent_visitor",
+      user_agent: "Test Browser",
+      referrer_domain: "google.com",
+      is_unique: true,
+      viewed_at: Time.current
+    )
+
+    # Query for the full year - should combine both sources
+    data = @referrers.referrer_data("year", Date.current)
+
+    google = data.find { |r| r[:domain] == "google.com" }
+    assert_not_nil google, "Expected google.com in results"
+    assert_equal 11, google[:count], "Expected combined count from rollup (10) + pageview (1)"
+  end
 end
