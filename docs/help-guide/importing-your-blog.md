@@ -22,9 +22,8 @@ As long as there's a decent export from your system, we can probably import it.
 
 ## Recommendations
 
-- **Keep your old blog live** until the import is complete (we may need to reference it)
+- **Keep your old blog live** until the import is complete (we typically need to grab images from it)
 - **Let us know** if you have any posts you don't want imported
-- **Check your export** includes everything before sending
 
 ## Ready to switch?
 
