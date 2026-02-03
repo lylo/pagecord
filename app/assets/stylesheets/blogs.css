@@ -1062,10 +1062,6 @@ ul.posts-list {
   height: 100%;
 }
 
-/* GitHub gist embed */
-.gist-embed-container {
-  margin-block: 0 var(--lexxy-content-margin);
-}
 
 /* General iframe styling */
 :where(.blog) {

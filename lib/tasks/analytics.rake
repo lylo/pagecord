@@ -188,6 +188,21 @@ namespace :analytics do
     puts "📊 Blog now has #{total_views} unique page views"
     puts "📅 Data spans: #{start_date.strftime('%B %d, %Y')} to #{end_date.strftime('%B %d, %Y')}"
 
+    # Generate upvotes for posts
+    puts "👍 Generating upvotes for posts..."
+    upvotes_created = 0
+    blog.posts.published.each do |post|
+      # 70% of posts get some upvotes
+      next if rand > 0.7
+
+      upvote_count = (rand(1..15) * scale_factor).round
+      upvote_count.times do |i|
+        Upvote.create!(post: post, hash_id: "sample_#{post.id}_#{i}")
+        upvotes_created += 1
+      end
+    end
+    puts "👍 Generated #{upvotes_created} upvotes across #{blog.posts.where('upvotes_count > 0').count} posts"
+
     # Optional rollup generation
     if ENV["ROLLUP"] == "true"
       puts "📈 Running rollup job to generate historical data..."
