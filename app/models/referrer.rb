@@ -5,6 +5,7 @@ class Referrer
     "t.co" => "x.com",
     "go.bsky.app" => "bsky.app",
     "old.reddit.com" => "reddit.com",
+    "com.reddit.frontpage" => "reddit.com",
     "google.co.uk" => "google.com",
     "google.de" => "google.com",
     "google.fr" => "google.com",
