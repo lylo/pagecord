@@ -89,7 +89,7 @@
     trending_items = @trending_posts.map do |data|
       { name: data[:post].display_title, url: post_url(data[:post]),
         subtitle: blog_home_url(data[:post].blog), subtitle_url: blog_home_url(data[:post].blog),
-        meta: "#{time_ago_in_words(data[:post].published_at)} ago · #{data[:views]} views · #{data[:upvotes]} upvotes",
+        meta: "#{time_ago_in_words(data[:post].published_at)} ago · #{number_with_delimiter(data[:views])} views · #{data[:upvotes]} upvotes",
         count: data[:score].round(1) }
     end
   %>
