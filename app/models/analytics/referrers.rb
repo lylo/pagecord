@@ -53,7 +53,7 @@ class Analytics::Referrers < Analytics::Base
     end
 
     def own_domains
-      domains = ["#{blog.subdomain}.#{Rails.application.config.x.domain}"]
+      domains = [ "#{blog.subdomain}.#{Rails.application.config.x.domain}" ]
       domains << blog.custom_domain if blog.custom_domain.present?
       domains
     end
