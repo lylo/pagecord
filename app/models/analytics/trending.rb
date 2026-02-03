@@ -1,12 +1,11 @@
 class Analytics::Trending
-  WINDOW_DAYS = 14
-  VIEW_WEIGHT = 1.0
-  UPVOTE_WEIGHT = 10.0
-  DECAY_RATE = 0.05
+  VIEW_WINDOW_DAYS = 14
+  NEW_BOOST_DAYS = 14
+  AGE_PENALTY_FACTOR = 0.1
 
   def top_posts(limit: 10)
     view_counts = PageView
-      .where(viewed_at: WINDOW_DAYS.days.ago.beginning_of_day..Time.current.end_of_day, is_unique: true)
+      .where(viewed_at: VIEW_WINDOW_DAYS.days.ago.beginning_of_day..Time.current.end_of_day, is_unique: true)
       .where.not(post_id: nil)
       .group(:post_id)
       .count
@@ -26,8 +25,12 @@ class Analytics::Trending
       views = view_counts[post.id] || 0
       upvotes = post.upvotes_count
       days_old = (Date.current - post.published_at.to_date).to_i
-      multiplier = Math.exp(-DECAY_RATE * days_old)
-      score = ((views * VIEW_WEIGHT) + (upvotes * UPVOTE_WEIGHT)) * multiplier
+
+      engagement = views + (Math.sqrt(upvotes) * 10)
+      boost_multiplier = 1 + ([ NEW_BOOST_DAYS - days_old, 0 ].max / NEW_BOOST_DAYS.to_f)
+      age_penalty = days_old * AGE_PENALTY_FACTOR
+
+      score = (engagement * boost_multiplier) - age_penalty
 
       { post: post, score: score, views: views, upvotes: upvotes }
     end
