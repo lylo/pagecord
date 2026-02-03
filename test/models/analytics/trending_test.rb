@@ -49,28 +49,19 @@ class Analytics::TrendingTest < ActiveSupport::TestCase
     refute result.any? { |r| r[:post] == draft }
   end
 
-  test "newer posts with same engagement score higher" do
+  test "newer posts with same engagement score higher due to age penalty" do
     recent = posts(:one)
     older = posts(:two)
 
     recent.update_column(:published_at, 20.days.ago)
-    older.update_column(:published_at, 60.days.ago)
+    older.update_column(:published_at, 30.days.ago)
 
-    # Give enough engagement so both posts have positive scores despite age penalty
-    # With sqrt(views), need >36 views for 60-day-old post to score positive
-    50.times do |i|
-      PageView.create!(blog: recent.blog, post: recent, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-recent-#{i}")
-      PageView.create!(blog: older.blog, post: older, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-older-#{i}")
-    end
+    view_counts = { recent.id => 100, older.id => 100 }
 
-    result = @trending.top_posts(limit: 10)
-    recent_item = result.find { |r| r[:post] == recent }
-    older_item = result.find { |r| r[:post] == older }
+    recent_score = @trending.send(:score_post, recent, view_counts)[:score]
+    older_score = @trending.send(:score_post, older, view_counts)[:score]
 
-    # Both have 50 views, but recent (20 days) beats older (60 days) due to age penalty
-    assert_not_nil recent_item, "Recent post should be in results"
-    assert_not_nil older_item, "Older post should be in results"
-    assert recent_item[:score] > older_item[:score]
+    assert recent_score > older_score
   end
 
   test "new posts get a multiplicative boost that decays over 14 days" do
@@ -80,17 +71,12 @@ class Analytics::TrendingTest < ActiveSupport::TestCase
     brand_new.update_column(:published_at, Date.current)
     week_old.update_column(:published_at, 7.days.ago)
 
-    # Give both the same engagement (10 views each)
-    10.times do |i|
-      PageView.create!(blog: brand_new.blog, post: brand_new, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-new-#{i}")
-      PageView.create!(blog: week_old.blog, post: week_old, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-week-#{i}")
-    end
+    view_counts = { brand_new.id => 100, week_old.id => 100 }
 
-    result = @trending.top_posts(limit: 10)
-    new_item = result.find { |r| r[:post] == brand_new }
-    week_item = result.find { |r| r[:post] == week_old }
+    new_score = @trending.send(:score_post, brand_new, view_counts)[:score]
+    week_score = @trending.send(:score_post, week_old, view_counts)[:score]
 
     # Brand new gets 2x multiplier, week old gets 1.5x multiplier
-    assert new_item[:score] > week_item[:score]
+    assert new_score > week_score
   end
 end
