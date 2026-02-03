@@ -173,6 +173,63 @@ class Analytics::ReferrersTest < ActiveSupport::TestCase
     assert_equal 10, data.first[:count]
   end
 
+  test "excludes self-referrals from blog's own domains" do
+    # Self-referral from subdomain (joel.example.com in test env)
+    PageView.create!(
+      blog: @blog,
+      visitor_hash: "self_visitor1",
+      user_agent: "Test Browser",
+      referrer: "https://joel.example.com/some-post",
+      referrer_domain: "joel.example.com",
+      is_unique: true,
+      viewed_at: Time.current
+    )
+
+    # External referral
+    PageView.create!(
+      blog: @blog,
+      visitor_hash: "external_visitor",
+      user_agent: "Test Browser",
+      referrer: "https://google.com/search",
+      referrer_domain: "google.com",
+      is_unique: true,
+      viewed_at: Time.current
+    )
+
+    data = @referrers.referrer_data("day", Date.current)
+
+    # Should only include external referrer, not self-referral
+    assert_equal 1, data.length
+    assert_equal "google.com", data.first[:domain]
+  end
+
+  test "excludes self-referrals from custom domain" do
+    @blog.update!(custom_domain: "myblog.com")
+
+    PageView.create!(
+      blog: @blog,
+      visitor_hash: "self_visitor",
+      user_agent: "Test Browser",
+      referrer_domain: "myblog.com",
+      is_unique: true,
+      viewed_at: Time.current
+    )
+
+    PageView.create!(
+      blog: @blog,
+      visitor_hash: "external_visitor",
+      user_agent: "Test Browser",
+      referrer_domain: "x.com",
+      is_unique: true,
+      viewed_at: Time.current
+    )
+
+    data = @referrers.referrer_data("day", Date.current)
+
+    assert_equal 1, data.length
+    assert_equal "x.com", data.first[:domain]
+  end
+
   test "combines rollup and pageview data for mixed time ranges" do
     # Create a rollup at the beginning of the year (will be in rollup range)
     # cutoff_time is prev_month.beginning_of_month, so Jan 1 data is before cutoff if we're in Feb+

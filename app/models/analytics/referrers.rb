@@ -11,6 +11,7 @@ class Analytics::Referrers < Analytics::Base
       combine_rollup_and_pageview_data(start_time, end_time)
     end
 
+    data = exclude_self_referrals(data)
     add_referrer_metadata(data.first(limit))
   end
 
@@ -45,6 +46,16 @@ class Analytics::Referrers < Analytics::Base
 
       combined_data.sort_by { |_, count| -count }
                    .map { |domain, count| { domain: domain, count: count } }
+    end
+
+    def exclude_self_referrals(data)
+      data.reject { |item| own_domains.include?(item[:domain]) }
+    end
+
+    def own_domains
+      domains = ["#{blog.subdomain}.#{Rails.application.config.x.domain}"]
+      domains << blog.custom_domain if blog.custom_domain.present?
+      domains
     end
 
     def add_referrer_metadata(data)
