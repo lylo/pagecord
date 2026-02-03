@@ -67,17 +67,7 @@ class Referrer
   end
 
   def domain
-    return nil if url.blank?
-
-    uri = URI.parse(url)
-    host = uri.host&.downcase
-    return nil if host.blank?
-
-    # Remove www. prefix and normalize aliases
-    normalized = host.sub(/\Awww\./, "")
-    DOMAIN_ALIASES.fetch(normalized, normalized)
-  rescue URI::InvalidURIError
-    nil
+    @domain ||= parse_domain
   end
 
   def friendly_name
@@ -112,4 +102,20 @@ class Referrer
     source = KNOWN_SOURCES[domain]
     source && source[:icon]&.start_with?("social/")
   end
+
+  private
+
+    def parse_domain
+      return nil if url.blank?
+
+      uri = URI.parse(url)
+      host = uri.host&.downcase
+      return nil if host.blank?
+
+      # Remove www. prefix and normalize aliases
+      normalized = host.sub(/\Awww\./, "")
+      DOMAIN_ALIASES.fetch(normalized, normalized)
+    rescue URI::InvalidURIError
+      nil
+    end
 end

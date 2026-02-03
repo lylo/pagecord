@@ -24,7 +24,7 @@ class Analytics::Base
   protected
 
     def cutoff_time
-      if Rollup.exists?
+      @cutoff_time ||= if Rollup.exists?
         Date.current.prev_month.beginning_of_month.beginning_of_day
       else
         Date.new(1900, 1, 1)

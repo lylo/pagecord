@@ -49,7 +49,8 @@ class Analytics::Referrers < Analytics::Base
     end
 
     def exclude_self_referrals(data)
-      data.reject { |item| own_domains.include?(item[:domain]) }
+      excluded = own_domains
+      data.reject { |item| excluded.include?(item[:domain]) }
     end
 
     def own_domains
