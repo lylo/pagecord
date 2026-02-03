@@ -57,7 +57,8 @@ class Analytics::TrendingTest < ActiveSupport::TestCase
     older.update_column(:published_at, 60.days.ago)
 
     # Give enough engagement so both posts have positive scores despite age penalty
-    10.times do |i|
+    # With sqrt(views), need >36 views for 60-day-old post to score positive
+    50.times do |i|
       PageView.create!(blog: recent.blog, post: recent, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-recent-#{i}")
       PageView.create!(blog: older.blog, post: older, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-older-#{i}")
     end
@@ -66,7 +67,7 @@ class Analytics::TrendingTest < ActiveSupport::TestCase
     recent_item = result.find { |r| r[:post] == recent }
     older_item = result.find { |r| r[:post] == older }
 
-    # Both have 10 views, but recent (20 days) beats older (60 days) due to age penalty
+    # Both have 50 views, but recent (20 days) beats older (60 days) due to age penalty
     assert_not_nil recent_item, "Recent post should be in results"
     assert_not_nil older_item, "Older post should be in results"
     assert recent_item[:score] > older_item[:score]

@@ -23,17 +23,18 @@ class Analytics::Trending
 
     # Score = (engagement × boost) - age_penalty
     #
-    # - engagement: views + (√upvotes × 10) — sqrt dampens viral outliers
+    # - engagement: √views + (√upvotes × 10) — sqrt dampens viral outliers
     # - boost: 2× for brand new posts, decaying to 1× over 14 days
     # - age_penalty: -0.1 per day, so newer posts with equal engagement rank higher
     #
+    # Views are the primary signal (all blogs have them), upvotes are a bonus.
     # Zero engagement = zero score (won't appear in results).
     def score_post(post, view_counts)
       views = view_counts[post.id] || 0
       upvotes = post.upvotes_count
       days_old = (Date.current - post.published_at.to_date).to_i
 
-      engagement = views + (Math.sqrt(upvotes) * 10)
+      engagement = Math.sqrt(views) + (Math.sqrt(upvotes) * 10)
       boost_multiplier = 1 + ([ NEW_BOOST_DAYS - days_old, 0 ].max / NEW_BOOST_DAYS.to_f)
       age_penalty = days_old * AGE_PENALTY_FACTOR
 
