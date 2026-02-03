@@ -4,6 +4,7 @@ one:
   paddle_price_id: pri_01hvp39rnddapkfaqqd3tvje8n
   unit_price: 2000
   next_billed_at: <%= 1.year.from_now %>
+  plan: annual
 
 two:
   user: annie
@@ -11,6 +12,7 @@ two:
   paddle_price_id: pri_01hvp39rnddapkfaqqd3tvasdasd
   unit_price: 2000
   next_billed_at: <%= 1.year.from_now %>
+  plan: annual
 
 three:
   user: pagecord
@@ -18,3 +20,12 @@ three:
   paddle_price_id: pri_01hvp39rnddapkfaq555asdasd
   unit_price: 2000
   next_billed_at: <%= 1.year.from_now %>
+  plan: annual
+
+monthly_subscription:
+  user: saul
+  paddle_subscription_id: sub_monthly_01
+  paddle_price_id: pri_monthly_01
+  unit_price: 400
+  next_billed_at: <%= 1.month.from_now %>
+  plan: monthly

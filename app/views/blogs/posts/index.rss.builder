@@ -1,4 +1,4 @@
-cache([ @blog, @posts.maximum(:updated_at), @posts.count, @current_tag ]) do
+cache([ @blog, @posts.map(&:id), @current_tag ]) do
   xml.instruct! :xml, version: "1.0"
   xml.rss version: "2.0" do
     xml.channel do

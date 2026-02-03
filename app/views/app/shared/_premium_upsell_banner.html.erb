@@ -5,13 +5,18 @@
       <%= link_to "Subscribe now", app_settings_subscriptions_path, class: "underline", data: { turbo: false } %> to keep all features.
     </div>
   </div>
-<% else %>
-  <div class="flex flex-col sm:flex-row items-center text-center justify-center gap-2 p-2 bg-slate-800 dark:bg-slate-700 text-sm text-white font-medium">
-    <div>
-      <%= link_to "Upgrade to premium", app_settings_subscriptions_path, class: "underline", data: { turbo: false } %> and access all the features for only $<%= localised_price %>/year!
+<% elsif show_upgrade_banner? %>
+  <%= turbo_frame_tag "upgrade_banner" do %>
+    <div class="relative flex flex-col sm:flex-row items-center text-center justify-center gap-2 p-2 pr-10 bg-slate-800 dark:bg-slate-700 text-sm text-white font-medium">
+      <div>
+        <%= link_to "Upgrade to premium", app_settings_subscriptions_path, class: "underline", data: { turbo: false } %> and access all the features for only $<%= localised_price %>/year!
+      </div>
+      <div>
+        Or <%= link_to "buy me a coffee", "https://buymeacoffee.com/heyolly", class: "underline" %>
+      </div>
+      <%= button_to app_upgrade_banner_path, method: :delete, class: "absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:opacity-70", form: { class: "flex" } do %>
+        <%= inline_svg_tag "icons/close.svg", class: "w-4 h-4" %>
+      <% end %>
     </div>
-    <div>
-      Or <%= link_to "buy me a coffee", "https://buymeacoffee.com/heyolly", class: "underline" %>
-    </div>
-  </div>
+  <% end %>
 <% end %>
