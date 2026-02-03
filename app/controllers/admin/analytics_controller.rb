@@ -7,6 +7,7 @@ class Admin::AnalyticsController < AdminController
     @top_pages = top_pages_with_view_counts
     @top_blogs = top_blogs_with_view_counts
     @top_blogs_by_subscribers = top_blogs_with_subscriber_counts
+    @trending_posts = Analytics::Trending.new.top_posts(limit: 10)
   end
 
   private

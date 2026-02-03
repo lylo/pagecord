@@ -85,10 +85,18 @@
         subtitle: blog_home_url(data[:blog]), subtitle_url: blog_home_url(data[:blog]),
         count: data[:count] }
     end
+
+    trending_items = @trending_posts.map do |data|
+      { name: data[:post].display_title, url: post_url(data[:post]),
+        subtitle: blog_home_url(data[:post].blog), subtitle_url: blog_home_url(data[:post].blog),
+        meta: "#{time_ago_in_words(data[:post].published_at)} ago · #{data[:views]} views · #{data[:upvotes]} upvotes",
+        count: data[:score].round(1) }
+    end
   %>
 
   <%= render "leaderboard", title: "Top posts", subtitle: date_subtitle, items: post_items, empty_message: "No posts found" %>
   <%= render "leaderboard", title: "Top pages", subtitle: date_subtitle, items: page_items, empty_message: "No pages found" %>
   <%= render "leaderboard", title: "Top blogs", subtitle: date_subtitle, items: blog_items, empty_message: "No blogs found" %>
   <%= render "leaderboard", title: "Most email subscribers", items: subscriber_items, empty_message: "No blogs with email subscribers found" %>
+  <%= render "leaderboard", title: "Trending", subtitle: "Last 14 days", items: trending_items, empty_message: "No trending posts found" %>
 </div>
