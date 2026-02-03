@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 73867abc079188ddb2dea25bc317efbc79288eb2
+  revision: 5daaeb456cd82e0af6e4aa17e9941f10547f62c8
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -247,7 +247,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.18.0)
+    json (2.18.1)
     kredis (1.8.0)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
