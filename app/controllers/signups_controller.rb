@@ -15,13 +15,11 @@ class SignupsController < ApplicationController
   end
 
   def create
-    if ENV["TURNSTILE_ENABLED"]
-      unless valid_turnstile_token?(params["cf-turnstile-response"])
-        flash.now[:error] = "Please complete the security check"
-        @user = User.new
-        @user.build_blog
-        render :new and return
-      end
+    if turnstile_enabled? && !valid_turnstile_token?(params["cf-turnstile-response"])
+      flash.now[:error] = "Please complete the security check"
+      @user = User.new
+      @user.build_blog
+      render :new and return
     end
 
     @user = User.new(user_params)
@@ -57,25 +55,6 @@ class SignupsController < ApplicationController
       params[:timezone] = active_support_time_zone_from_iana(params[:timezone]) if params[:timezone].present?
 
       params
-    end
-
-    def valid_turnstile_token?(token)
-      return true if Rails.env.test?
-      return false if token.blank?
-
-      response = HTTParty.post(
-        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-        body: {
-          secret: ENV["TURNSTILE_SECRET_KEY"],
-          response: token,
-          remoteip: request.remote_ip
-        }
-      )
-
-      response.parsed_response["success"] == true
-    rescue HTTParty::Error => e
-      Rails.logger.error "Turnstile verification failed: #{e.message}"
-      false
     end
 
     def signup_from_allowed_timezone

@@ -2,10 +2,16 @@ class Blogs::ContactMessagesController < Blogs::BaseController
   include SpamPrevention
 
   skip_before_action :authenticate, :ip_reputation_check
+  before_action :turnstile_check, only: [ :create ]
 
   def create
     unless @blog.contactable?
       head :unprocessable_entity
+      return
+    end
+
+    if turnstile_failed?
+      redirect_to blog_posts_path, alert: "Please complete the security check"
       return
     end
 
@@ -20,6 +26,10 @@ class Blogs::ContactMessagesController < Blogs::BaseController
   end
 
   private
+
+    def minimum_form_completion_time
+      10.seconds
+    end
 
     def contact_message_params
       params.require(:contact_message).permit(:name, :email, :message)
