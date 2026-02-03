@@ -21,6 +21,13 @@ class Analytics::Trending
 
   private
 
+    # Score = (engagement × boost) - age_penalty
+    #
+    # - engagement: views + (√upvotes × 10) — sqrt dampens viral outliers
+    # - boost: 2× for brand new posts, decaying to 1× over 14 days
+    # - age_penalty: -0.1 per day, so newer posts with equal engagement rank higher
+    #
+    # Zero engagement = zero score (won't appear in results).
     def score_post(post, view_counts)
       views = view_counts[post.id] || 0
       upvotes = post.upvotes_count
