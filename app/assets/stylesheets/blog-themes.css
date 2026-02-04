@@ -89,7 +89,7 @@
     --color-bg-sunken: color-mix(in srgb, var(--theme-bg) 80%, black 20%);
 
     /* Text mixings stay similar but heading gets brighter */
-    --color-text-heading: color-mix(in srgb, var(--theme-text) 100%, white 5%);
+    --color-text-heading: color-mix(in srgb, var(--theme-text) 80%, white 20%);
 
     /* Accent gets slightly lighter on hover in dark mode */
     --color-accent-hover: color-mix(in srgb, var(--theme-accent) 70%, white 30%);
