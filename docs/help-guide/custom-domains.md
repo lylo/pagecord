@@ -53,7 +53,9 @@ Pagecord will verify your DNS and set up SSL automatically. This can take a few 
 
 ## Cloudflare users
 
-If you're using Cloudflare, set SSL/TLS mode to **Full (Strict)** or disable the proxy (turn off the orange cloud).
+If you're using Cloudflare, set your DNS records to **DNS only** (gray cloud icon), not Proxied (orange cloud). This is the recommended setup because Pagecord already provides CDN and SSL through Cloudflare.
+
+If you prefer to keep Cloudflare's proxy enabled, set your SSL/TLS mode to **Full (Strict)** to avoid certificate errors.
 
 ## Removing a custom domain
 
