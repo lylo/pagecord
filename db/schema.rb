@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_01_101810) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_01_212308) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -209,16 +209,20 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_101810) do
 
   create_table "page_views", force: :cascade do |t|
     t.bigint "blog_id", null: false
+    t.string "country", limit: 2
     t.datetime "created_at", null: false
     t.boolean "is_unique", default: false
     t.string "path"
     t.bigint "post_id"
     t.text "query_string"
     t.text "referrer"
+    t.string "referrer_domain"
     t.datetime "updated_at", null: false
     t.text "user_agent"
     t.datetime "viewed_at", null: false
     t.string "visitor_hash", null: false
+    t.index ["blog_id", "country", "viewed_at"], name: "index_page_views_on_blog_country_viewed_at"
+    t.index ["blog_id", "referrer_domain", "viewed_at"], name: "index_page_views_on_blog_referrer_domain_viewed_at"
     t.index ["blog_id", "viewed_at"], name: "index_page_views_on_blog_id_and_viewed_at"
     t.index ["post_id"], name: "index_page_views_on_post_id"
     t.index ["viewed_at"], name: "index_page_views_on_viewed_at"
