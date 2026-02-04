@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:30:29+00:00
 ---
 
-# Customising your blog
-
 Make your blog your own. All appearance settings are in **Settings** → **Appearance**.
 
 ## Bio

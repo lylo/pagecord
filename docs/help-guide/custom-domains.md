@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:38:15+00:00
 ---
 
-# Custom domains
-
 Premium feature. Use your own domain name instead of yourname.pagecord.com.
 
 ## Step 1: Configure your DNS

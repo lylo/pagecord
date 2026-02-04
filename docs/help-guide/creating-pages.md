@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:15:17+00:00
 ---
 
-# Creating Pages
-
 Pages are for content that lives outside your blog feed. Use them for an About page, Archive, Contact, or a custom home page.
 
 ## Pages vs posts

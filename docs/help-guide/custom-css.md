@@ -1,4 +1,7 @@
-# Customizing Your Blog with CSS
+---
+title: "Custom CSS"
+published: true
+---
 
 Custom CSS is an advanced feature that gives you finer control over the look and feel of your blog. You can change fonts, colors, adjust spacing, hide elements and more.
 

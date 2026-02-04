@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-17T16:36:48+00:00
 ---
 
-# Dynamic Variables for Pages
-
 Pages in Pagecord support dynamic variables that let you automatically display lists of posts, tags, and other content. These variables are processed when the page is rendered, so your content stays up-to-date without manual editing.
 
 ## Basic Syntax

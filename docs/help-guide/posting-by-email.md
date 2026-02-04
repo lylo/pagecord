@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:01:57+00:00
 ---
 
-# Posting by email
-
 Pagecord was built around email. You can publish posts directly from your inbox – it's an effortless way to blog!
 
 ## Your unique delivery email address

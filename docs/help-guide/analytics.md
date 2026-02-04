@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:39:14+00:00
 ---
 
-# Analytics
-
 Premium feature. See which of your posts are pages are most popular with privacy-focused analytics.
 
 ## Viewing your analytics

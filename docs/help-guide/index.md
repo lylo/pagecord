@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-17T15:51:52+00:00
 ---
 
-# The Pagecord Help Guide
-
 This is your go-to help guide to all things Pagecord.
 
 If you spot anything missing that needs a guide, please [drop me an email](mailto:hello@pagecord.com?subject=Help%20Guide%20Improvement).
