@@ -1,7 +1,7 @@
 desc "Run the CI pipeline locally (brakeman, rubocop, importmap audit, tests)"
 task ci: :environment do
   steps = [
-    { name: "Brakeman", cmd: "bundle exec brakeman --quiet --no-pager" },
+    { name: "Brakeman", cmd: "bundle exec brakeman --quiet --no-pager --ensure-latest" },
     { name: "Rubocop", cmd: "bundle exec rubocop" },
     { name: "Importmap Audit", cmd: "bin/importmap audit" },
     { name: "Unit Tests", cmd: "bin/rails test" },

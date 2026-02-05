@@ -13,7 +13,7 @@ Run these commands in sequence, stopping on first failure:
 
 1. **Brakeman** (security scan)
    ```bash
-   bundle exec brakeman --quiet --no-pager
+   bundle exec brakeman --quiet --no-pager --ensure-latest
    ```
 
 2. **Rubocop** (style check)
