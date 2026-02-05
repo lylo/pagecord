@@ -119,6 +119,68 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_equal expected_subject, digest.subject
   end
 
+  test "send_individual creates an individual digest with one post" do
+    post = create_new_post
+
+    digest = PostDigest.send_individual(post)
+
+    assert_not_nil digest
+    assert digest.individual?
+    assert_equal 1, digest.posts.count
+    assert_includes digest.posts, post
+  end
+
+  test "send_individual returns nil if post already individually sent" do
+    post = create_new_post
+    digest = PostDigest.create!(blog: @blog, kind: :individual, delivered_at: Time.current)
+    digest.digest_posts.create!(post: post)
+
+    assert_nil PostDigest.send_individual(post)
+  end
+
+  test "generate_for returns nil if blog is in individual mode" do
+    @blog.update!(email_delivery_mode: :individual)
+    create_new_post
+
+    assert_nil PostDigest.generate_for(@blog)
+  end
+
+  test "generate_for excludes posts with exclude_from_digest true" do
+    create_new_post(exclude_from_digest: true)
+
+    assert_nil PostDigest.generate_for(@blog)
+  end
+
+  test "generate_for excludes posts already in an individual digest" do
+    post = create_new_post
+    digest = PostDigest.create!(blog: @blog, kind: :individual)
+    digest.digest_posts.create!(post: post)
+
+    assert_nil PostDigest.generate_for(@blog)
+  end
+
+  test "subject returns post title for individual kind" do
+    post = create_new_post(title: "My Great Post")
+    digest = PostDigest.create!(blog: @blog, kind: :individual)
+    digest.digest_posts.create!(post: post)
+
+    assert_equal "My Great Post", digest.subject
+  end
+
+  test "subject returns fallback for individual kind without title" do
+    post = create_new_post(title: nil)
+    digest = PostDigest.create!(blog: @blog, kind: :individual)
+    digest.digest_posts.create!(post: post)
+
+    expected = I18n.t(
+      "email_subscribers.mailers.individual.default_subject",
+      blog_name: @blog.display_name,
+      date: I18n.l(digest.created_at.to_date, format: :post_date)
+    )
+
+    assert_equal expected, digest.subject
+  end
+
   private
 
     def create_new_post(options = {})

@@ -1,0 +1,10 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "858f2ad86627f174de70c9f4c1c558fcb27bd1dc580dfbf95452567dc5482fa2",
+      "note": "ActionText content rendered in email digest partial — html_safe is intentional"
+    }
+  ],
+  "updated": "2026-02-05",
+  "brakeman_version": "8.0.1"
+}

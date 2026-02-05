@@ -1,5 +1,13 @@
 <div class="digest">
-  <%= render partial: "post", collection: @posts %>
+  <% if @post.title %>
+    <h2>
+      <%= link_to @post.title, post_url(@post) %>
+    </h2>
+  <% end %>
+
+  <div class="post-content">
+    <%= strip_video_tags(without_action_text_image_wrapper(@post.content.to_s)).html_safe %>
+  </div>
 
   <hr>
 

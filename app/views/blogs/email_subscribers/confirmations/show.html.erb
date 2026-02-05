@@ -2,7 +2,7 @@
 
 <div class="confirmation-card confirmation-page">
   <div class="confirmation-text">
-    <%= t('email_subscribers.confirmations.success_message', blog_name: @blog.display_name) %>
+    <%= t("email_subscribers.confirmations.success_message.#{@blog.email_delivery_mode}", blog_name: @blog.display_name) %>
   </div>
   <div class="confirmation-link">
     <%= link_to t('email_subscribers.confirmations.unsubscribe_link'), email_subscriber_unsubscribe_path(@subscriber.token), data: { turbo: false }, class: "font-medium" %>

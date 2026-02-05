@@ -1,13 +1,17 @@
 fr:
   email_subscribers:
     form:
-      subscribe_description: "Abonne-toi pour recevoir un résumé hebdomadaire des articles dans ta boîte de réception"
+      subscribe_description:
+        digest: "Abonne-toi pour recevoir un résumé hebdomadaire des articles dans ta boîte de réception"
+        individual: "Abonne-toi pour recevoir les nouveaux articles par email"
       email_placeholder: "Entre ton email..."
       submit_button: "S'abonner"
     create:
       success_message: "Merci de t'être abonné. Sauf si tu es déjà abonné, un email de confirmation est en route vers %{email}"
     confirmations:
-      success_message: "Ton abonnement à %{blog_name} est confirmé. Tu recevras un résumé hebdomadaire par email lorsque de nouveaux articles seront publiés."
+      success_message:
+        digest: "Ton abonnement à %{blog_name} est confirmé. Tu recevras un résumé hebdomadaire par email lorsque de nouveaux articles seront publiés."
+        individual: "Ton abonnement à %{blog_name} est confirmé. Tu recevras un email lorsque de nouveaux articles seront publiés."
       unsubscribe_link: "Se désabonner"
     unsubscribes:
       success_message: "Tu n'es plus abonné à %{blog_name} 👋"
@@ -15,6 +19,10 @@ fr:
       unsubscribe_button: "Se désabonner"
       not_found: "Aucun abonnement email trouvé"
     mailers:
+      shared:
+        footer: "Tu es abonné pour recevoir de nouveaux articles de %{blog_name}."
+        unsubscribe_link: "Se désabonner"
+        unsubscribe_text: "Désabonne-toi en cliquant sur le lien ci-dessous :"
       confirmation:
         subject: "Confirme ton abonnement à %{blog_name}"
         message: "Confirme ton abonnement à %{blog_name}. Si tu n'avais pas l'intention de t'abonner, tu peux ignorer cet email."
@@ -23,6 +31,8 @@ fr:
         subject: "Nouveaux articles de %{blog_name} - %{date}"
         footer: "Tu es abonné pour recevoir de nouveaux articles de %{blog_name}."
         unsubscribe_link: "Se désabonner"
+      individual:
+        default_subject: "Nouvel article de %{blog_name} — %{date}"
   posts:
     read_more: "Lire la suite"
   replies:

@@ -82,7 +82,9 @@ Rails.application.routes.draw do
   namespace :app do
     resource :upgrade_banner, only: [ :destroy ]
     resources :analytics, only: [ :index ]
-    resources :posts, param: :token
+    resources :posts, param: :token do
+      resource :broadcast, only: [ :create ], controller: "posts/broadcasts"
+    end
     resources :pages, except: [ :show ], param: :token do
       member do
         post :set_as_home_page
