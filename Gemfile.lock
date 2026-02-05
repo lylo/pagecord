@@ -247,7 +247,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.18.0)
+    json (2.18.1)
     kredis (1.8.0)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -327,7 +327,7 @@ GEM
       racc (~> 1.4)
     openssl (4.0.0)
     ostruct (0.6.3)
-    pagy (43.2.8)
+    pagy (43.2.9)
       json
       yaml
     parallel (1.27.0)
@@ -568,7 +568,7 @@ DEPENDENCIES
   nanoid (~> 2.0)
   openssl (~> 4.0)
   ostruct
-  pagy (~> 43.0)
+  pagy (~> 43.2)
   pg
   pg_query (>= 2)
   pg_search
