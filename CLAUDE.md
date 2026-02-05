@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Overview
+
+This is a Ruby on Rails application. Primary languages: Ruby, CSS, YAML, JavaScript. Always follow Rails conventions. Run `bin/rails test` after changes to model/controller logic. Run Brakeman checks when modifying security-related code.
+
+## Task Completion
+
+When a request mentions multiple targets (e.g., "update both X and Y"), address ALL of them before reporting completion. Create a checklist and verify each item is done.
+
+## UI Development
+
+For UI/visual work: after making changes, consider timing and state management carefully. Check what data is available at render time vs. after background jobs complete. Never assume async data is immediately available after a redirect.
+
 ## Code Style & Conventions
 
 **IMPORTANT**: When writing code for this project, always follow these principles:
