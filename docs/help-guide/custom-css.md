@@ -1,5 +1,5 @@
 ---
-title: "Custom CSS"
+title: "Using Custom CSS for advanced customisation"
 published: true
 ---
 

@@ -48,10 +48,10 @@ namespace :help do
   end
 
   def parse_front_matter(content)
-    return [{}, content] unless content.start_with?("---")
+    return [ {}, content ] unless content.start_with?("---")
 
     parts = content.split("---", 3)
-    front_matter = YAML.safe_load(parts[1], permitted_classes: [Time, Date]) || {}
-    [front_matter, parts[2].to_s.strip]
+    front_matter = YAML.safe_load(parts[1], permitted_classes: [ Time, Date ]) || {}
+    [ front_matter, parts[2].to_s.strip ]
   end
 end

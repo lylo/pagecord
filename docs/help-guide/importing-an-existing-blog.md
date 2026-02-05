@@ -1,5 +1,5 @@
 ---
-title: "Importing your blog"
+title: "Importing an existing blog"
 published: true
 published_at: 2026-02-02T12:00:00+00:00
 ---
