@@ -1,0 +1,19 @@
+<svg viewBox="0 0 600 250" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="inkDistress">
+      <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="5" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
+    </filter>
+  </defs>
+
+  <g filter="url(#inkDistress)" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <circle cx="120" cy="125" r="95" stroke-width="3" stroke-dasharray="12 2 40 1 15 3" />
+    <circle cx="120" cy="125" r="85" stroke-width="1.5" stroke-dasharray="5 5 30 2" />
+
+    <path d="M 220 70  C 270 20, 320 120, 370 70 C 420 20, 470 120, 520 70" stroke-dasharray="15 3 25 2" />
+    <path d="M 220 100 C 270 50, 320 150, 370 100 C 420 50, 470 150, 520 100" stroke-dasharray="10 5 20 1" />
+    <path d="M 220 130 C 270 80, 320 180, 370 130 C 420 80, 470 180, 520 130" stroke-dasharray="30 2 10 4" />
+    <path d="M 220 160 C 270 110, 320 210, 370 160 C 420 110, 470 210, 520 160" stroke-dasharray="20 4 15 2" />
+    <path d="M 220 190 C 270 140, 320 240, 370 190 C 420 140, 470 240, 520 190" stroke-dasharray="5 5 25 1" />
+  </g>
+</svg>

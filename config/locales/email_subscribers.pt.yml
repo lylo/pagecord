@@ -1,13 +1,17 @@
 pt:
   email_subscribers:
     form:
-      subscribe_description: "Assine para receber um resumo semanal das postagens no seu e-mail"
+      subscribe_description:
+        digest: "Assine para receber um resumo semanal das postagens no seu e-mail"
+        individual: "Assine para receber novas postagens por e-mail"
       email_placeholder: "Digite seu e-mail..."
       submit_button: "Assinar"
     create:
       success_message: "Valeu! Se você já não era assinante, um e-mail de confirmação foi enviado para %{email}"
     confirmations:
-      success_message: "Sua assinatura no %{blog_name} está confirmada. Você vai receber um e-mail semanal com as novas postagens publicadas"
+      success_message:
+        digest: "Sua assinatura no %{blog_name} está confirmada. Você vai receber um e-mail semanal com as novas postagens publicadas"
+        individual: "Sua assinatura no %{blog_name} está confirmada. Você vai receber um e-mail quando novas postagens forem publicadas."
       unsubscribe_link: "Cancelar assinatura"
     unsubscribes:
       success_message: "Você cancelou a assinatura de %{blog_name} 👋"
@@ -15,6 +19,10 @@ pt:
       unsubscribe_button: "Cancelar assinatura"
       not_found: "Assinatura de e-mail não encontrada"
     mailers:
+      shared:
+        footer: "Você está inscrito para receber as novas postagens do %{blog_name}."
+        unsubscribe_link: "Cancelar assinatura"
+        unsubscribe_text: "Cancele sua assinatura clicando no link abaixo:"
       confirmation:
         subject: "Confirme sua assinatura em %{blog_name}"
         message: "Por favor, confirme sua assinatura no %{blog_name}. Se você não queria assinar, pode ignorar este e-mail."
@@ -23,6 +31,8 @@ pt:
         subject: "Novas postagens do %{blog_name} - %{date}"
         footer: "Você está inscrito para receber as novas postagens do %{blog_name}."
         unsubscribe_link: "Cancelar assinatura"
+      individual:
+        default_subject: "Nova postagem do %{blog_name} — %{date}"
   posts:
     read_more: "Leia mais"
   replies:

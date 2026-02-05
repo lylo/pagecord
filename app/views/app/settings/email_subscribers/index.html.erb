@@ -2,9 +2,6 @@
 <p>
   Your Pagecord has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
 </p>
-<p class="mt-4">
-  Once a week your email subscribers will receive a digest of your latest posts (if you've published any).
-</p>
 
 <div class="mt-4">
   <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
@@ -12,6 +9,23 @@
       <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
       <%= form.label :email_subscriptions_enabled, "Email Subscriptions Enabled", class: "ml-2" %>
     </div>
+
+    <div class="mt-6">
+      <p class="font-medium text-sm text-slate-700 dark:text-slate-300 mb-3">Delivery Mode</p>
+      <div class="flex gap-3">
+        <label class="flex-1 cursor-pointer rounded-lg border p-4 has-[:checked]:border-[#4fbd9c] has-[:checked]:bg-emerald-50 dark:has-[:checked]:bg-emerald-900/20 border-slate-200 dark:border-slate-700 transition-colors">
+          <%= form.radio_button :email_delivery_mode, "digest", class: "sr-only" %>
+          <span class="block font-medium text-sm text-slate-800 dark:text-slate-200">Weekly Digest</span>
+          <span class="block text-xs text-slate-500 dark:text-slate-400 mt-1">Subscribers receive a weekly roundup of your latest posts.</span>
+        </label>
+        <label class="flex-1 cursor-pointer rounded-lg border p-4 has-[:checked]:border-[#4fbd9c] has-[:checked]:bg-emerald-50 dark:has-[:checked]:bg-emerald-900/20 border-slate-200 dark:border-slate-700 transition-colors">
+          <%= form.radio_button :email_delivery_mode, "individual", class: "sr-only" %>
+          <span class="block font-medium text-sm text-slate-800 dark:text-slate-200">Individual</span>
+          <span class="block text-xs text-slate-500 dark:text-slate-400 mt-1">You choose which posts to send, one at a time.</span>
+        </label>
+      </div>
+    </div>
+
     <div class="mt-4">
       <%= form.submit "Update", class: "btn btn-primary" %>
     </div>

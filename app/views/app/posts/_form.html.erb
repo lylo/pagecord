@@ -5,6 +5,8 @@
 
   <div class="mb-4"><%= trial_callout("Image uploads") %></div>
 
+  <%= render "email_banner" %>
+
   <div class="flex items-center justify-end gap-x-2 text-slate-500 dark:text-slate-300 mb-4">
    <div data-controller="toggle">
       <%= link_to "#", class: "font-medium hover:text-black dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>

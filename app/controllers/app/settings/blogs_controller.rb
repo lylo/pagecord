@@ -35,7 +35,7 @@ class App::Settings::BlogsController < AppController
       ]
 
       if @blog.user.subscribed?
-        permitted_params += [ :custom_domain, :email_subscriptions_enabled, :show_subscription_in_header, :show_subscription_in_footer ]
+        permitted_params += [ :custom_domain, :email_subscriptions_enabled, :email_delivery_mode, :show_subscription_in_header, :show_subscription_in_footer ]
       end
 
       if @blog.user.has_premium_access?

@@ -32,12 +32,27 @@
       <div>
         <%= form.label :email_subscriptions_enabled, "Email subscriptions enabled", class: "text-slate-800 dark:text-slate-100" %>
         <p class="text-slate-500 text-sm">
-          Allow readers to subscribe to your blog via email. When enabled, subscribers will receive an email digest of your latest posts every Tuesday morning.
+          Allow readers to subscribe to your blog via email. Choose whether subscribers receive a weekly digest or individual posts as you publish them.
         </p>
       </div>
     </div>
 
     <div class="mt-4 ml-8 <%= 'opacity-50' if email_disabled %>">
+      <div class="mb-4" data-subscription-settings-target="dependent">
+        <div class="flex gap-3">
+          <label class="flex-1 cursor-pointer rounded-lg border p-4 has-[:checked]:border-[#4fbd9c] has-[:checked]:bg-emerald-50 dark:has-[:checked]:bg-emerald-900/20 border-slate-200 dark:border-slate-700 transition-colors">
+            <%= form.radio_button :email_delivery_mode, "digest", disabled: email_disabled, class: "sr-only" %>
+            <span class="block font-medium text-sm text-slate-800 dark:text-slate-200">Weekly Digest</span>
+            <span class="block text-xs text-slate-500 dark:text-slate-400 mt-1">Subscribers receive a weekly roundup of your latest posts.</span>
+          </label>
+          <label class="flex-1 cursor-pointer rounded-lg border p-4 has-[:checked]:border-[#4fbd9c] has-[:checked]:bg-emerald-50 dark:has-[:checked]:bg-emerald-900/20 border-slate-200 dark:border-slate-700 transition-colors">
+            <%= form.radio_button :email_delivery_mode, "individual", disabled: email_disabled, class: "sr-only" %>
+            <span class="block font-medium text-sm text-slate-800 dark:text-slate-200">Individual</span>
+            <span class="block text-xs text-slate-500 dark:text-slate-400 mt-1">You choose which posts to send, one at a time.</span>
+          </label>
+        </div>
+      </div>
+
       <div class="flex gap-3" data-subscription-settings-target="dependent">
         <div class="flex h-6 shrink-0 items-center">
           <%= form.check_box :show_subscription_in_header, { checked: @blog.show_subscription_in_header, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>

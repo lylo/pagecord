@@ -1,13 +1,17 @@
 en:
   email_subscribers:
     form:
-      subscribe_description: "Subscribe to get a weekly digest of posts in your inbox"
+      subscribe_description:
+        digest: "Subscribe to get a weekly digest of posts in your inbox"
+        individual: "Subscribe to get new posts via email"
       email_placeholder: "Enter your email..."
       submit_button: "Subscribe"
     create:
       success_message: "Thanks for subscribing. Unless you're already subscribed, a confirmation email is on its way to %{email}"
     confirmations:
-      success_message: "Your subscription to %{blog_name} is confirmed. You'll receive a weekly email digest when new posts are published."
+      success_message:
+        digest: "Your subscription to %{blog_name} is confirmed. You'll receive a weekly email digest when new posts are published."
+        individual: "Your subscription to %{blog_name} is confirmed. You'll receive an email when new posts are published."
       unsubscribe_link: "Unsubscribe"
     unsubscribes:
       success_message: "You're now unsubscribed from %{blog_name} 👋"
@@ -15,6 +19,10 @@ en:
       unsubscribe_button: "Unsubscribe"
       not_found: "No email subscription found"
     mailers:
+      shared:
+        footer: "You're subscribed to receive new posts from %{blog_name}."
+        unsubscribe_link: "Unsubscribe"
+        unsubscribe_text: "Unsubscribe by clicking the link below:"
       confirmation:
         subject: "Confirm your subscription to %{blog_name}"
         message: "Please confirm your subscription to %{blog_name}. If you didn't intend to subscribe, you can ignore this email."
@@ -23,6 +31,8 @@ en:
         subject: "New posts from %{blog_name} - %{date}"
         footer: "You're subscribed to receive new posts from %{blog_name}."
         unsubscribe_link: "Unsubscribe"
+      individual:
+        default_subject: "New post from %{blog_name} — %{date}"
   posts:
     read_more: "Read more"
   replies:

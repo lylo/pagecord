@@ -1,0 +1,36 @@
+<% if @post.persisted? && @post.published? && !@post.is_page? && @blog.email_subscriptions_enabled? && Current.user.subscribed? && @blog.email_subscribers.confirmed.exists? %>
+  <div class="rounded-lg border p-4 text-sm mb-4 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+    <% if @blog.digest? %>
+      <div class="flex items-center gap-2">
+        <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" %>
+        <span>This post will be included in the next weekly digest.</span>
+      </div>
+    <% elsif @blog.individual? %>
+      <% if @post.individually_sent? %>
+        <% digest = @post.post_digests.individual.first %>
+        <div class="relative">
+          <div class="absolute -right-4 -top-8 -bottom-8 w-60 flex items-center justify-end pointer-events-none">
+            <%= inline_svg_tag "icons/stamp.svg", class: "w-56 text-[#4fbd9c]/30 dark:text-[#4fbd9c]/25 rotate-[-5deg]" %>
+          </div>
+          <div class="relative flex items-center gap-2">
+            <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-[#4fbd9c] shrink-0" %>
+            <% count = digest.delivered_at? ? digest.deliveries.count : @blog.email_subscribers.confirmed.count %>
+            <span>Emailed to <%= pluralize(count, "subscriber") %> on <%= l(digest.created_at.in_time_zone(Current.user.timezone).to_date, format: :post_date) %>.</span>
+          </div>
+        </div>
+      <% elsif @post.individually_sendable? %>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" %>
+            <span>Send this post to your <%= pluralize(@blog.email_subscribers.confirmed.count, "subscriber") %>.</span>
+          </div>
+          <%= button_to "Send to subscribers",
+            app_post_broadcast_path(@post),
+            method: :post,
+            class: "btn-primary text-xs !py-1.5 !px-3",
+            data: { turbo_confirm: "Send this post to all your email subscribers?" } %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

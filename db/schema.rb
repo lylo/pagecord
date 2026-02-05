@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_01_212308) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_05_105642) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -99,6 +99,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_212308) do
     t.string "custom_theme_text_light"
     t.string "delivery_email"
     t.datetime "discarded_at"
+    t.integer "email_delivery_mode", default: 0, null: false
     t.boolean "email_subscriptions_enabled", default: true, null: false
     t.string "features", default: [], array: true
     t.string "fediverse_author_attribution"
@@ -123,6 +124,16 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_212308) do
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
+  end
+
+  create_table "contact_messages", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.text "message", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_contact_messages_on_blog_id"
   end
 
   create_table "content_moderations", force: :cascade do |t|
@@ -263,6 +274,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_212308) do
     t.bigint "blog_id", null: false
     t.datetime "created_at", null: false
     t.datetime "delivered_at"
+    t.integer "kind", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id"], name: "index_post_digests_on_blog_id"
   end
@@ -284,6 +296,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_212308) do
     t.string "canonical_url"
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
+    t.boolean "exclude_from_digest", default: false, null: false
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.datetime "published_at"
@@ -401,6 +414,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_212308) do
   add_foreign_key "blog_exports", "blogs"
   add_foreign_key "blogs", "posts", column: "home_page_id", on_delete: :nullify
   add_foreign_key "blogs", "users"
+  add_foreign_key "contact_messages", "blogs"
   add_foreign_key "content_moderations", "posts"
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"

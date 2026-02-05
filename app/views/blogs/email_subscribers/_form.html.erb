@@ -1,7 +1,7 @@
 <%= form_with url: email_subscribers_path, model: [EmailSubscriber.new], local: true,
       class: "email-form-container" do |form| %>
   <div class="subscription-description">
-    <%= t('email_subscribers.form.subscribe_description') %>
+    <%= t("email_subscribers.form.subscribe_description.#{@blog.email_delivery_mode}") %>
   </div>
 
   <fieldset class="form-fieldset">
