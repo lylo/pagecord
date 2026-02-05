@@ -4,11 +4,24 @@
       <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="5" result="noise" />
       <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
     </filter>
+    <path id="textArcTop" d="M 120,200 A 75,75 0 1,1 120,50 A 75,75 0 1,1 120,200" fill="none" />
+    <path id="textArcBottom" d="M 45,125 A 75,75 0 0,0 195,125" fill="none" />
   </defs>
 
   <g filter="url(#inkDistress)" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
     <circle cx="120" cy="125" r="95" stroke-width="3" stroke-dasharray="12 2 40 1 15 3" />
     <circle cx="120" cy="125" r="85" stroke-width="1.5" stroke-dasharray="5 5 30 2" />
+
+    <text fill="currentColor" stroke="none" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" letter-spacing="10">
+      <textPath href="#textArcTop" startOffset="50%" text-anchor="middle" dominant-baseline="hanging">PAGECORD</textPath>
+    </text>
+    <text fill="currentColor" stroke="none" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" letter-spacing="10">
+      <textPath href="#textArcBottom" startOffset="50%" text-anchor="middle">MMXXVI</textPath>
+    </text>
+
+    <!-- Envelope -->
+    <rect x="100" y="112" width="40" height="28" rx="2" stroke-width="2" />
+    <path d="M 100,112 L 120,129 L 140,112" stroke-width="2" fill="none" />
 
     <path d="M 220 70  C 270 20, 320 120, 370 70 C 420 20, 470 120, 520 70" stroke-dasharray="15 3 25 2" />
     <path d="M 220 100 C 270 50, 320 150, 370 100 C 420 50, 470 150, 520 100" stroke-dasharray="10 5 20 1" />
