@@ -109,7 +109,7 @@ GEM
       actionpack (>= 4.0.0)
     addressable (2.8.8)
       public_suffix (>= 2.0.2, < 8.0)
-    appsignal (4.8.1)
+    appsignal (4.8.2)
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
