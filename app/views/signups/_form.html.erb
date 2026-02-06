@@ -2,7 +2,7 @@
   <fieldset>
     <label class="block text-base font-semibold text-slate-700 dark:text-slate-200 mb-2.5">Choose your subdomain</label>
     <div class="flex items-center gap-1.5">
-      <%= form.fields_for :blog do |blog_form| %>
+      <%= form.fields_for :blogs do |blog_form| %>
         <%= blog_form.text_field :subdomain,
             placeholder: "subdomain",
             autofocus: true,
@@ -12,7 +12,7 @@
       <% end %>
       <span class="font-medium text-slate-700 dark:text-slate-300 flex-shrink-0">.pagecord.com</span>
     </div>
-    <%= field_error(@user.blog, :subdomain) %>
+    <%= field_error(@user.blogs.first, :subdomain) %>
     <p class="text-slate-500 dark:text-slate-400 text-sm mt-1.5">
       This will be part of your blog's URL (subdomain.pagecord.com). Letters and numbers only.
     </p>

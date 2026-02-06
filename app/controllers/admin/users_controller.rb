@@ -5,7 +5,7 @@ class Admin::UsersController < AdminController
 
   def new
     @user = User.new
-    @user.build_blog
+    @user.blogs.build
   end
 
   def create
@@ -55,6 +55,6 @@ class Admin::UsersController < AdminController
   private
 
     def user_params
-      params.require(:user).permit(:email, :trial_ends_at, blog_attributes: [ :subdomain ])
+      params.require(:user).permit(:email, :trial_ends_at, blogs_attributes: [ :subdomain ])
     end
 end

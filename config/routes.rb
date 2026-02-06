@@ -132,6 +132,9 @@ Rails.application.routes.draw do
     end
 
     resources :blogs do
+      member do
+        post :switch
+      end
       resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
     end
 

@@ -1,5 +1,5 @@
 <h2 class="text-2xl font-bold pt-4 mb-8">
-  <%= link_to @user.blog.display_name, blog_home_url(@user.blog), class: "hover:underline" %>
+  <%= @user.email %>
 </h2>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -128,46 +128,50 @@
   </div>
   <% end %>
 
+  <% @user.blogs.order(:created_at).each do |blog| %>
   <div>
-    <h3 class="text-xl font-bold py-4">Blog</h3>
+    <h3 class="text-xl font-bold py-4">
+      <%= link_to blog.display_name, blog_home_url(blog), class: "hover:underline", target: "_blank" %>
+    </h3>
     <div class="overflow-auto">
       <table class="my-4 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
         <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Subdomain</td>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
-              <%= link_to @user.blog.subdomain, blog_home_url(@user.blog), class: "text-blue-600 hover:underline", target: "_blank" %>
+              <%= link_to blog.subdomain, blog_home_url(blog), class: "text-blue-600 hover:underline", target: "_blank" %>
             </td>
           </tr>
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Posts</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.blog.posts.count %></td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.posts.count %></td>
           </tr>
-          <% if @user.blog.email_subscriptions_enabled? %>
+          <% if blog.email_subscriptions_enabled? %>
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Subscribers</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.blog.email_subscribers.confirmed.count %></td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.email_subscribers.confirmed.count %></td>
           </tr>
           <% end %>
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Custom Domain</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.blog.custom_domain.presence || 'None' %></td>
+            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.custom_domain.presence || 'None' %></td>
           </tr>
           <tr>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Theme</td>
             <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
-              <%= @user.blog.theme %> | <%= @user.blog.width %> | <%= @user.blog.font %>
+              <%= blog.theme %> | <%= blog.width %> | <%= blog.font %>
           </td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+  <% end %>
 </div>
 
   <div class="flex flex-col sm:flex-row justify-between mt-16 py-4">
   <div>
-  <%= link_to "← Back to Blogs", admin_blogs_path, class: "px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded" %>
+  <%= link_to "← Back to Accounts", admin_blogs_path, class: "px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded" %>
   </div>
 
   <% if @user != Current.user %>
@@ -198,5 +202,3 @@
     <% end %>
   <% end %>
 </div>
-
-
