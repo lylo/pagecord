@@ -64,6 +64,14 @@ Shows posts matching any of the tags
 {{ posts | year: 2025 }}
 ```
 
+#### **Sort order**
+
+By default, posts are shown newest first. Use `sort: asc` to show oldest first — useful for chronological archives.
+
+```javascript
+{{ posts | sort: asc }}
+```
+
 #### **Combine parameters**
 
 ```javascript
@@ -84,6 +92,14 @@ Display posts grouped by year with headers — perfect for archive pages.
 
 ```javascript
 {{ posts_by_year | tag: photography }}
+```
+
+#### **Sort order**
+
+Show years in chronological order (oldest first) instead of the default newest first.
+
+```javascript
+{{ posts_by_year | sort: asc }}
 ```
 
 ### Tags
