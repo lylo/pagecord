@@ -86,6 +86,10 @@ every 1.month, at: "1:30 am" do  # 1:30 AM on the 1st of every month
   runner "RollupAndCleanupPageViewsJob.perform_later"
 end
 
+every 1.month, at: "2:00 am" do
+  runner "SendUnengagedFollowUpEmailsJob.perform_later"
+end
+
 # every hour on a Tuesday
 every "0 * * * 2" do
   rake "post_digests:deliver"
