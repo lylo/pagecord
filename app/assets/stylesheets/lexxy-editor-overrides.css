@@ -104,6 +104,9 @@ lexxy-toolbar {
     --lexxy-color-canvas: var(--color-slate-900);
     --lexxy-color-text-subtle: var(--color-slate-400);
 
+    /* Table header */
+    --lexxy-color-table-header-bg: var(--color-slate-800);
+
     /* Selected states for pressed buttons */
     --lexxy-color-selected: var(--color-slate-700);
     --lexxy-color-selected-hover: var(--color-slate-500);
