@@ -1,0 +1,13 @@
+de:
+  email_form:
+    form:
+      name_label: "Dein Name"
+      email_label: "Deine E-Mail"
+      message_label: "Nachricht"
+      submit_button: "Senden"
+    success_message: "Nachricht gesendet!"
+    error_message: "Beim Senden deiner Nachricht ist ein Problem aufgetreten."
+    mailer:
+      from_label: "Von"
+      footer: "Antworte auf diese E-Mail, um %{name} zu antworten."
+      footer_text: "Um %{name} zu antworten, antworte einfach auf diese E-Mail."

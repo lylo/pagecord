@@ -27,15 +27,7 @@ fr:
     read_more: "Lire la suite"
   replies:
     form:
-      name_label: "Ton Nom"
-      email_label: "Ton Email"
       subject_label: "Sujet"
-      message_label: "Message"
-      submit_button: "Envoyer la Réponse"
       cancel_link: "Annuler"
-    success_message: "Réponse envoyée avec succès !"
     mailer:
       intro: "Super ! Quelqu'un a répondu à ton article"
-      from_label: "De"
-      footer: "Réponds à cet email pour contacter %{name}."
-      footer_text: "Pour contacter %{name}, réponds simplement à cet email."

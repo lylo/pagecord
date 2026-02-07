@@ -1,0 +1,34 @@
+<div class="form contact-form">
+  <%= form_with model: Blog::ContactMessage.new,
+            url: contact_messages_path,
+            method: :post,
+            scope: :contact_message,
+            data: { turbo: false },
+            class: "form-container" do |form| %>
+
+    <%= render "/shared/spam_prevention" %>
+
+    <div class="form-row">
+      <div class="form-field">
+        <%= form.label :name, t('email_form.form.name_label') %>
+        <%= form.text_field :name, required: true %>
+      </div>
+
+      <div class="form-field">
+        <%= form.label :email, t('email_form.form.email_label') %>
+        <%= form.email_field :email, required: true, pattern: ".+@.+\\..+" %>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <%= form.label :message, t('email_form.form.message_label') %>
+      <%= form.text_area :message, rows: 6, required: true %>
+    </div>
+
+    <%= render "/shared/turnstile" %>
+
+    <div class="form-actions">
+      <%= form.submit t('email_form.form.submit_button'), class: "button" %>
+    </div>
+  <% end %>
+</div>

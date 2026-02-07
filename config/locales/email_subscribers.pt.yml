@@ -27,15 +27,7 @@ pt:
     read_more: "Leia mais"
   replies:
     form:
-      name_label: "Seu nome"
-      email_label: "Seu e-mail"
       subject_label: "Assunto"
-      message_label: "Mensagem"
-      submit_button: "Enviar resposta"
       cancel_link: "Cancelar"
-    success_message: "Resposta enviada com sucesso!"
     mailer:
       intro: "Oba! Alguém respondeu ao seu post"
-      from_label: "De"
-      footer: "Responda a este e-mail para responder %{name}."
-      footer_text: "Pra responder %{name}, é só responder este e-mail."
