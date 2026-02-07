@@ -1,12 +1,12 @@
 require "test_helper"
 require "mocha/minitest"
 
-class SpamDetectorTest < ActiveSupport::TestCase
+class BlogSpamDetectorTest < ActiveSupport::TestCase
   setup do
     @original_token = ENV["OPENAI_ACCESS_TOKEN"]
     ENV["OPENAI_ACCESS_TOKEN"] = "test_token"
     @blog = blogs(:joel)
-    @detector = SpamDetector.new(@blog)
+    @detector = BlogSpamDetector.new(@blog)
   end
 
   teardown do
@@ -98,7 +98,7 @@ class SpamDetectorTest < ActiveSupport::TestCase
 
   test "detect returns error when missing access token" do
     ENV["OPENAI_ACCESS_TOKEN"] = nil
-    detector = SpamDetector.new(@blog)
+    detector = BlogSpamDetector.new(@blog)
 
     detector.detect
     assert_equal :error, detector.result.status
@@ -127,7 +127,7 @@ class SpamDetectorTest < ActiveSupport::TestCase
     empty_blog = Blog.new(subdomain: "empty", user: users(:joel))
     empty_blog.save(validate: false)
 
-    detector = SpamDetector.new(empty_blog)
+    detector = BlogSpamDetector.new(empty_blog)
     detector.detect
 
     assert_equal :no_content, detector.result.status
@@ -139,7 +139,7 @@ class SpamDetectorTest < ActiveSupport::TestCase
     blog_with_bio = blogs(:joel)
     blog_with_bio.bio = ActionText::Content.new("Test bio")
 
-    detector = SpamDetector.new(blog_with_bio)
+    detector = BlogSpamDetector.new(blog_with_bio)
 
     mock_response = {
       "model" => "gpt-4o-mini",
