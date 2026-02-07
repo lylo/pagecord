@@ -1,6 +1,8 @@
 class Posts::RepliesController < Blogs::BaseController
   include SpamPrevention
 
+  rate_limit to: 3, within: 1.hour, only: [ :create ]
+
   skip_before_action :authenticate, :ip_reputation_check
 
   before_action :load_post

@@ -1,6 +1,7 @@
 class SignupsController < ApplicationController
   include SpamPrevention, TimezoneTranslation
 
+  rate_limit to: 3, within: 1.hour, only: [ :create ]
   rate_limit to: 20, within: 1.minute, only: [ :new ]
 
   layout "sessions"
@@ -39,7 +40,6 @@ class SignupsController < ApplicationController
   private
 
     def fail
-      @spammer_detected = true
       flash[:error] = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."
       redirect_to new_signup_path
     end

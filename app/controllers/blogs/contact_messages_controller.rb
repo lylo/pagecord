@@ -1,17 +1,13 @@
 class Blogs::ContactMessagesController < Blogs::BaseController
   include SpamPrevention
 
+  rate_limit to: 2, within: 1.hour, only: [ :create ]
+
   skip_before_action :authenticate, :ip_reputation_check
-  before_action :turnstile_check, only: [ :create ]
 
   def create
     unless @blog.contactable?
       head :unprocessable_entity
-      return
-    end
-
-    if turnstile_failed?
-      redirect_to blog_posts_path, alert: "Please complete the security check"
       return
     end
 

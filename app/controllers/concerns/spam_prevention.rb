@@ -4,9 +4,6 @@ module SpamPrevention
   DEFAULT_MINIMUM_FORM_COMPLETION_TIME = 3.seconds
 
   included do
-    rate_limit to: 5, within: 1.hour, only: [ :create ], name: "spam-prevention-hourly"
-    rate_limit to: 1, within: 2.minutes, only: [ :create ], if: :spammer_detected?, name: "spam-prevention-blocked"
-
     before_action :form_complete_time_check, :honeypot_check, :ip_reputation_check, only: [ :create ]
   end
 
@@ -84,13 +81,6 @@ module SpamPrevention
   end
 
   def fail
-    @spammer_detected = true
     head :forbidden
   end
-
-  private
-
-    def spammer_detected?
-      @spammer_detected == true
-    end
 end

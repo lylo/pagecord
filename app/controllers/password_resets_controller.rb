@@ -1,6 +1,8 @@
 class PasswordResetsController < ApplicationController
   include SpamPrevention
 
+  rate_limit to: 3, within: 1.hour, only: [ :create ]
+
   skip_before_action :authenticate, :domain_check
   before_action :find_access_request, only: [ :edit, :update ]
 
@@ -37,7 +39,6 @@ class PasswordResetsController < ApplicationController
   private
 
     def fail
-      @spammer_detected = true
       redirect_to new_password_reset_path, alert: "Something went wrong, please try again or contact support if the problem persists"
     end
 
