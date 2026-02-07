@@ -1,0 +1,36 @@
+<!-- Visitor Locations -->
+<div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
+  <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Visitor Locations</h3>
+
+  <% if @country_data.any? %>
+    <div class="space-y-3">
+        <% @country_data.each_with_index do |country, index| %>
+          <div class="flex items-center justify-between py-2 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
+            <div class="flex items-center space-x-3 flex-1 min-w-0">
+              <span class="text-sm text-slate-400 w-6 text-center flex-shrink-0">
+                <%= index + 1 %>
+              </span>
+              <span class="text-lg flex-shrink-0" title="<%= country[:name] %>"><%= country[:flag] %></span>
+              <span class="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+                <%= country[:name] %>
+              </span>
+            </div>
+            <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
+              <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
+                <% max_visits = @country_data.first[:count] %>
+                <% width = (country[:count].to_f / max_visits * 100).round(1) %>
+                <div class="bg-[#4fbd9c] rounded-full h-2 transition-all duration-300" style="width: <%= width %>%"></div>
+              </div>
+              <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
+                <%= format_number(country[:count]) %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-8 text-slate-500 dark:text-slate-400">
+      No location data found for this time period
+    </div>
+  <% end %>
+</div>

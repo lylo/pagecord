@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:33:46+00:00
 ---
 
-# Email subscriptions
-
 Premium feature. Let readers subscribe to your blog and receive your posts by email.
 
 ## Enabling email subscriptions

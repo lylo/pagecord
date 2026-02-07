@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:55:55+00:00
 ---
 
-# RSS feeds
-
 Every Pagecord blog has an RSS feed that readers can subscribe to using their favourite RSS reader.
 
 ## Your feed URL

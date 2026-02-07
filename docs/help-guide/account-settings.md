@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:39:43+00:00
 ---
 
-# Account Settings
-
 Manage your Pagecord account. Go to **Settings** → **My Account**.
 
 ## Changing your email address

@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-17T16:45:24+00:00
 ---
 
-# Getting Started with Pagecord
-
 ## Your blog URL
 
 Initially your blog lives on a subdomain at `yourusername.pagecord.com`. You can share this link right away — no setup required.

@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:38:15+00:00
 ---
 
-# Custom domains
-
 Premium feature. Use your own domain name instead of yourname.pagecord.com.
 
 ## Step 1: Configure your DNS
@@ -53,7 +51,9 @@ Pagecord will verify your DNS and set up SSL automatically. This can take a few 
 
 ## Cloudflare users
 
-If you're using Cloudflare, set SSL/TLS mode to **Full (Strict)** or disable the proxy (turn off the orange cloud).
+If you're using Cloudflare with the proxy enabled (orange cloud), set your SSL/TLS mode to **Full (Strict)** to avoid certificate errors.
+
+Alternatively, you can set your DNS records to **DNS only** (gray cloud) for a simpler setup since Pagecord already provides CDN and SSL.
 
 ## Removing a custom domain
 

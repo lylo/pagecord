@@ -118,16 +118,43 @@ namespace :analytics do
           static_paths.sample  # 20% other static pages
         end
 
-        # Generate realistic referrers
-        referrers = [
-          nil,  # Direct traffic
-          "https://www.google.com",
-          "https://twitter.com",
-          "https://news.ycombinator.com",
-          "https://reddit.com",
-          "https://linkedin.com"
+        # Generate realistic referrers with weighted distribution
+        referrer_options = [
+          { url: nil, weight: 35 },  # Direct traffic (most common)
+          { url: "https://www.google.com/search?q=blog", weight: 25 },
+          { url: "https://x.com/user/status/123", weight: 10 },
+          { url: "https://news.ycombinator.com/item?id=123", weight: 8 },
+          { url: "https://www.reddit.com/r/programming", weight: 7 },
+          { url: "https://www.linkedin.com/feed", weight: 5 },
+          { url: "https://www.google.co.uk/search?q=blog", weight: 3 },
+          { url: "https://duckduckgo.com/?q=blog", weight: 2 },
+          { url: "https://bsky.app/profile/user", weight: 2 },
+          { url: "https://github.com/user/repo", weight: 2 },
+          { url: "https://www.bing.com/search?q=blog", weight: 1 }
         ]
+        weighted_referrers = referrer_options.flat_map { |r| [ r[:url] ] * r[:weight] }
+        selected_referrer = weighted_referrers.sample
 
+        # Generate country codes with realistic distribution (weighted toward US/UK/DE)
+        country_options = [
+          { code: "US", weight: 40 },
+          { code: "GB", weight: 15 },
+          { code: "DE", weight: 10 },
+          { code: "CA", weight: 8 },
+          { code: "FR", weight: 5 },
+          { code: "AU", weight: 5 },
+          { code: "NL", weight: 4 },
+          { code: "SE", weight: 3 },
+          { code: "JP", weight: 3 },
+          { code: "IN", weight: 3 },
+          { code: "BR", weight: 2 },
+          { code: "ES", weight: 2 }
+        ]
+        weighted_countries = country_options.flat_map { |c| [ c[:code] ] * c[:weight] }
+        selected_country = weighted_countries.sample
+
+        # Extract referrer domain
+        referrer_domain = Referrer.new(selected_referrer).domain
 
         # Find the corresponding post if it's a post path
         post = nil
@@ -142,7 +169,9 @@ namespace :analytics do
           path: selected_path,
           visitor_hash: visitor_hash,
           user_agent: "Mozilla/5.0 (#{[ 'Windows NT 10.0', 'Macintosh', 'X11; Linux x86_64' ].sample}) Seed Browser",
-          referrer: referrers.sample,
+          referrer: selected_referrer,
+          referrer_domain: referrer_domain,
+          country: selected_country,
           is_unique: true,
           viewed_at: view_time
         )

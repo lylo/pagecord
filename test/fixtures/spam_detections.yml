@@ -1,12 +1,12 @@
 spam_blog_detection:
-  blog: spammer
+  blog: vivian
   status: 1  # spam
   reason: "Multiple commercial links detected in bio and posts. Keyword stuffing in subdomain. Posts read like SEO landing pages."
   detected_at: <%= 2.hours.ago %>
   model_version: "gpt-4o-mini"
 
 uncertain_blog_detection:
-  blog: suspicious
+  blog: saul
   status: 2  # uncertain
   reason: "Mixed signals - contains health-related content with some external links. Could be legitimate health blog or affiliate spam."
   detected_at: <%= 1.hour.ago %>

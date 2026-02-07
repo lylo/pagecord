@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:41:20+00:00
 ---
 
-# Exporting your blog
-
 Download a copy of all your posts and pages.
 
 ## Creating an export

@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:40:41+00:00
 ---
 
-# Billing
-
 Manage your Pagecord subscription. Go to **Settings** → **Billing**.
 
 ## Subscribing to Premium

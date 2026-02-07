@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T11:49:59+00:00
 ---
 
-# Writing posts
-
 Everything you need to know about creating and formatting posts in Pagecord.
 
 ## The editor

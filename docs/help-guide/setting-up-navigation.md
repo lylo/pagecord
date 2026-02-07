@@ -4,8 +4,6 @@ published: true
 published_at: 2025-12-18T16:15:50+00:00
 ---
 
-# Setting up navigation
-
 Add links to your blog's header so readers can find their way around.
 
 ## Adding navigation items
