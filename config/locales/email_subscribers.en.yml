@@ -27,15 +27,7 @@ en:
     read_more: "Read more"
   replies:
     form:
-      name_label: "Your Name"
-      email_label: "Your Email"
       subject_label: "Subject"
-      message_label: "Message"
-      submit_button: "Send Reply"
       cancel_link: "Cancel"
-    success_message: "Reply sent successfully!"
     mailer:
       intro: "Yay! Somebody replied to your post"
-      from_label: "From"
-      footer: "Reply to this email to respond to %{name}."
-      footer_text: "To respond to %{name}, simply reply to this email."

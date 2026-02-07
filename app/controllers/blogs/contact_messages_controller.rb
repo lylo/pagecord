@@ -19,9 +19,9 @@ class Blogs::ContactMessagesController < Blogs::BaseController
 
     if @contact_message.save
       SendContactMessageJob.perform_later(@contact_message.id)
-      redirect_to blog_posts_path, notice: I18n.t("contact_form.success_message")
+      redirect_to blog_posts_path, notice: I18n.t("email_form.success_message")
     else
-      redirect_to blog_posts_path, alert: I18n.t("contact_form.error_message")
+      redirect_to blog_posts_path, alert: I18n.t("email_form.error_message")
     end
   end
 

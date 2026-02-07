@@ -1,15 +1,5 @@
 es:
   contact_form:
-    form:
-      name_label: "Tu Nombre"
-      email_label: "Tu Email"
-      message_label: "Mensaje"
-      submit_button: "Enviar Mensaje"
-    success_message: "Mensaje enviado!"
-    error_message: "Hubo un problema al enviar tu mensaje."
     mailer:
       subject: "Nuevo mensaje de %{name}"
       intro: "Recibiste un mensaje a traves de tu formulario de contacto de %{blog_name}."
-      from_label: "De"
-      footer: "Responde a este email para contestar a %{name}."
-      footer_text: "Para responder a %{name}, simplemente responde a este email."

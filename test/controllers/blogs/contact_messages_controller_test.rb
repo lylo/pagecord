@@ -19,7 +19,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to blog_posts_path
-    assert_equal I18n.t("contact_form.success_message"), flash[:notice]
+    assert_equal I18n.t("email_form.success_message"), flash[:notice]
     assert_enqueued_jobs 1, only: SendContactMessageJob
   end
 
@@ -75,6 +75,6 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to blog_posts_path
-    assert_equal I18n.t("contact_form.error_message"), flash[:alert]
+    assert_equal I18n.t("email_form.error_message"), flash[:alert]
   end
 end

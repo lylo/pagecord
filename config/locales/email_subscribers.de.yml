@@ -27,15 +27,7 @@ de:
     read_more: "Weiterlesen"
   replies:
     form:
-      name_label: "Dein Name"
-      email_label: "Deine E-Mail"
       subject_label: "Betreff"
-      message_label: "Nachricht"
-      submit_button: "Antwort senden"
       cancel_link: "Abbrechen"
-    success_message: "Antwort erfolgreich gesendet!"
     mailer:
       intro: "Toll! Jemand hat auf deinen Beitrag geantwortet"
-      from_label: "Von"
-      footer: "Antworte auf diese E-Mail, um %{name} zu antworten."
-      footer_text: "Um %{name} zu antworten, antworte einfach auf diese E-Mail."

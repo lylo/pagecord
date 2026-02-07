@@ -17,7 +17,7 @@
 
   <div class="form-row">
     <div class="form-field">
-      <%= form.label :name, t('replies.form.name_label') %>
+      <%= form.label :name, t('email_form.form.name_label') %>
       <%= form.text_field :name, required: true, autofocus: true %>
       <% if @reply.errors[:name].any? %>
         <span class="form-error"><%= @reply.errors.full_messages_for(:name).first %></span>
@@ -25,7 +25,7 @@
     </div>
 
     <div class="form-field">
-      <%= form.label :email, t('replies.form.email_label') %>
+      <%= form.label :email, t('email_form.form.email_label') %>
       <%= form.email_field :email, required: true %>
       <% if @reply.errors[:email].any? %>
         <span class="form-error"><%= @reply.errors.full_messages_for(:email).first %></span>
@@ -42,7 +42,7 @@
   </div>
 
   <div class="form-field">
-    <%= form.label :message, t('replies.form.message_label') %>
+    <%= form.label :message, t('email_form.form.message_label') %>
     <%= form.text_area :message, rows: 6, required: true %>
     <% if @reply.errors[:message].any? %>
       <span class="form-error"><%= @reply.errors.full_messages_for(:message).first %></span>
@@ -50,7 +50,7 @@
   </div>
 
   <div class="form-actions">
-    <%= form.submit t('replies.form.submit_button'), class: "button" %>
+    <%= form.submit t('email_form.form.submit_button'), class: "button" %>
     <%= link_to t('replies.form.cancel_link'), post_path(@post), class: "button btn-cancel" %>
   </div>
 <% end %>
