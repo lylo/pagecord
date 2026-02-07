@@ -1,4 +1,4 @@
-class SpamDetector
+class BlogSpamDetector
   Result = Struct.new(:status, :reason, :model_version, keyword_init: true)
 
   MODEL = "gpt-4o-mini"
@@ -27,10 +27,10 @@ class SpamDetector
 
     parse_response(response)
   rescue JSON::ParserError => e
-    Rails.logger.warn("[SpamDetector] JSON parse error for blog #{@blog.id}: #{e.message}")
+    Rails.logger.warn("[BlogSpamDetector] JSON parse error for blog #{@blog.id}: #{e.message}")
     error_result("Failed to parse AI response")
   rescue StandardError => e
-    Rails.logger.error("[SpamDetector] Error for blog #{@blog.id}: #{e.class} - #{e.message}")
+    Rails.logger.error("[BlogSpamDetector] Error for blog #{@blog.id}: #{e.class} - #{e.message}")
     error_result("Detection error")
   end
 

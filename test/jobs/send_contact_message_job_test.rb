@@ -1,9 +1,11 @@
 require "test_helper"
+require "mocha/minitest"
 
 class SendContactMessageJobTest < ActiveJob::TestCase
   include ActionMailer::TestHelper
 
   setup do
+    @original_detection = ENV["EMAIL_SPAM_DETECTION"]
     @blog = blogs(:joel)
     @contact_message = Blog::ContactMessage.create!(
       blog: @blog,
@@ -11,6 +13,10 @@ class SendContactMessageJobTest < ActiveJob::TestCase
       email: "sender@example.com",
       message: "Hello, this is a test message."
     )
+  end
+
+  teardown do
+    ENV["EMAIL_SPAM_DETECTION"] = @original_detection
   end
 
   test "sends email and deletes contact message" do
@@ -30,6 +36,36 @@ class SendContactMessageJobTest < ActiveJob::TestCase
       assert_emails 0 do
         SendContactMessageJob.perform_now(@contact_message.id)
       end
+    end
+  end
+
+  test "blocks spam and destroys message without sending" do
+    ENV["EMAIL_SPAM_DETECTION"] = "true"
+    MessageSpamDetector.any_instance.stubs(:detect).returns(nil)
+    MessageSpamDetector.any_instance.stubs(:spam?).returns(true)
+
+    assert_difference "Blog::ContactMessage.count", -1 do
+      assert_emails 0 do
+        SendContactMessageJob.perform_now(@contact_message.id)
+      end
+    end
+  end
+
+  test "sends email on detection error (fail-open)" do
+    ENV["EMAIL_SPAM_DETECTION"] = "true"
+    MessageSpamDetector.any_instance.stubs(:detect).returns(nil)
+    MessageSpamDetector.any_instance.stubs(:spam?).returns(false)
+
+    assert_emails 1 do
+      SendContactMessageJob.perform_now(@contact_message.id)
+    end
+  end
+
+  test "skips spam check when EMAIL_SPAM_DETECTION is not set" do
+    ENV["EMAIL_SPAM_DETECTION"] = nil
+
+    assert_emails 1 do
+      SendContactMessageJob.perform_now(@contact_message.id)
     end
   end
 end

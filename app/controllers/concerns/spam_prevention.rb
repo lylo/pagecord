@@ -47,10 +47,7 @@ module SpamPrevention
 
   def turnstile_check
     return true unless turnstile_enabled?
-
-    unless valid_turnstile_token?(params["cf-turnstile-response"])
-      @turnstile_failed = true
-    end
+    fail unless valid_turnstile_token?(params["cf-turnstile-response"])
   end
 
   def valid_turnstile_token?(token)
@@ -73,11 +70,7 @@ module SpamPrevention
   end
 
   def turnstile_enabled?
-    ENV["TURNSTILE_ENABLED"].present?
-  end
-
-  def turnstile_failed?
-    @turnstile_failed == true
+    ENV["TURNSTILE_ENABLED"].present? && default_domain_request?
   end
 
   def fail

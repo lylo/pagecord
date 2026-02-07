@@ -3,6 +3,8 @@ class Blogs::ContactMessagesController < Blogs::BaseController
 
   rate_limit to: 2, within: 1.hour, only: [ :create ]
 
+  before_action :turnstile_check, only: [ :create ]
+
   skip_before_action :authenticate, :ip_reputation_check
 
   def create

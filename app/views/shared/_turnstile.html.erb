@@ -1,4 +1,4 @@
-<% if ENV["TURNSTILE_ENABLED"] %>
+<% if ENV["TURNSTILE_ENABLED"] && default_domain_request? %>
 <div class="turnstile-widget">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <div class="cf-turnstile"

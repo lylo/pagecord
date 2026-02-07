@@ -49,6 +49,8 @@
     <% end %>
   </div>
 
+  <%= render "/shared/turnstile" %>
+
   <div class="form-actions">
     <%= form.submit t('email_form.form.submit_button'), class: "button" %>
     <%= link_to t('replies.form.cancel_link'), post_path(@post), class: "button btn-cancel" %>

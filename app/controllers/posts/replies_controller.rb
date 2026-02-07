@@ -3,6 +3,8 @@ class Posts::RepliesController < Blogs::BaseController
 
   rate_limit to: 3, within: 1.hour, only: [ :create ]
 
+  before_action :turnstile_check, only: [ :create ]
+
   skip_before_action :authenticate, :ip_reputation_check
 
   before_action :load_post
