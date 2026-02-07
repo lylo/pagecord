@@ -1,9 +1,13 @@
 class Blog < ApplicationRecord
+  include Discard::Model
   include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, StorageTrackable
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
-  belongs_to :user, inverse_of: :blog
+  belongs_to :user, inverse_of: :blogs
+
+  MAX_BLOGS_FREE = 1
+  MAX_BLOGS_PAID = 3
 
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
@@ -25,6 +29,7 @@ class Blog < ApplicationRecord
 
   has_rich_text :bio
   validate :bio_length
+  validate :within_blog_limit, on: :create
 
   before_validation :downcase_subdomain
   after_update :touch_posts_if_settings_changed
@@ -46,6 +51,13 @@ class Blog < ApplicationRecord
   end
 
   private
+
+    def within_blog_limit
+      limit = user&.subscribed? ? MAX_BLOGS_PAID : MAX_BLOGS_FREE
+      if user && user.blogs.count >= limit
+        errors.add(:base, "You've reached your blog limit (#{limit})")
+      end
+    end
 
     def bio_length
       if bio.to_plain_text.length > 500

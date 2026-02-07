@@ -9,7 +9,7 @@
 
   <% if @user.has_premium_access? %>
     <div class="post-actions">
-      <% if @user.blog.reply_by_email %>
+      <% if @blog.reply_by_email %>
         <%= link_to new_post_reply_path(post),
                   title: "Reply to this post via email",
                   aria: { label: "Reply to this post via email" },
@@ -20,7 +20,7 @@
         <% end %>
       <% end %>
 
-      <% if @user.blog.show_upvotes? %>
+      <% if @blog.show_upvotes? %>
         <%= render "upvotes", post: post %>
       <% end %>
     </div>

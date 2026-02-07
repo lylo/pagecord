@@ -2,28 +2,27 @@ class Admin::BlogsController < AdminController
   include Pagy::Method
 
   def index
-    @total_users = Blog.count
+    @total_users = User.count
 
-    blogs = Blog.select("blogs.*, COUNT(posts.id) AS posts_count")
-                .left_outer_joins(:posts)
-                .joins(:user)
-                .left_outer_joins(user: :subscription)
-                .group("blogs.id")
+    users = User.left_outer_joins(:subscription)
+                .includes(:blogs)
                 .order(created_at: :desc)
 
     if params[:search].present?
-      blogs = blogs.where("blogs.subdomain ILIKE ? OR users.email ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
+      users = users.joins(:blogs)
+                   .where("blogs.subdomain ILIKE ? OR users.email ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
+                   .distinct
     end
 
     if params[:status].present?
       case params[:status]
       when "paid"
-        blogs = blogs.where("subscriptions.plan IN (?) AND subscriptions.cancelled_at IS NULL AND subscriptions.next_billed_at > ?", [ "annual", "monthly" ], Time.current)
+        users = users.where("subscriptions.plan IN (?) AND subscriptions.cancelled_at IS NULL AND subscriptions.next_billed_at > ?", [ "annual", "monthly" ], Time.current)
       when "comped"
-        blogs = blogs.where("subscriptions.plan = ?", "complimentary")
+        users = users.where("subscriptions.plan = ?", "complimentary")
       end
     end
 
-    @pagy, @blogs = pagy(blogs, limit: 15)
+    @pagy, @users = pagy(users, limit: 15)
   end
 end

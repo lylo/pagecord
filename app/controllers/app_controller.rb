@@ -12,8 +12,14 @@ class AppController < ApplicationController
 
     def load_user
       @user = Current.user
-      @blog = @user.blog
+      @blog = resolve_current_blog
       Current.blog = @blog
+    end
+
+    def resolve_current_blog
+      if session[:current_blog_id]
+        @user.blogs.find_by(id: session[:current_blog_id])
+      end || @user.blogs.order(:created_at).first
     end
 
     def onboarding_check

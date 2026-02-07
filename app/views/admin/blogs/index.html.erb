@@ -1,6 +1,6 @@
 <div class="mb-6 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4">
   <div class="flex flex-wrap items-center gap-x-1 gap-y-2">
-    <span><%= link_to "#{pluralize(number_with_delimiter(@total_users), "user")} in total", admin_blogs_path, class: "underline font-medium" %>.</span>
+    <span><%= link_to "#{pluralize(number_with_delimiter(@total_users), "account")} in total", admin_blogs_path, class: "underline font-medium" %>.</span>
     <span><%= link_to pluralize(number_with_delimiter(Subscription.active_paid.count), "paid subscription"), admin_blogs_path(status: "paid"), class: "underline font-medium" %>,</span>
     <span><%= link_to "#{number_with_delimiter(Subscription.comped.count)} comped", admin_blogs_path(status: "comped"), class: "underline font-medium" %>.</span>
   </div>
@@ -59,51 +59,55 @@
   <table class="my-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
     <thead>
       <tr>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Name</th>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Posts</th>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Email</th>
+        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Account</th>
+        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Blogs</th>
         <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Verified</th>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Discarded</th>
         <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Status</th>
         <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Marketing</th>
         <th class="py-4 sm:ps-4 text-end text-sm font-semibold text-slate-900 dark:text-slate-50">Created</th>
       </tr>
     </thead>
     <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
-    <% @blogs.each do |blog| %>
+    <% @users.each do |user| %>
       <tr>
         <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">
           <div class="flex flex-col gap-y-1">
-            <%= link_to blog.subdomain, admin_user_path(blog.user), data: { turbo_frame: "_top" } %>
-            <%= link_to blog_home_url(blog), blog_home_url(blog), class: "text-xs hover:underline font-light text-slate-500 dark:text-slate-400", target: "_blank" %>
+            <%= link_to user.email, admin_user_path(user), data: { turbo_frame: "_top" } %>
           </div>
         </td>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= number_with_delimiter blog.posts_count %></td>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><!--email_off--><%= blog.user.email %><!--/email_off--></td>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.user.verified %></td>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.user.discarded_at&.to_formatted_s :short %></td>
+        <td class="py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+          <div class="flex flex-col gap-y-1">
+            <% user.blogs.each do |blog| %>
+              <div class="flex items-center gap-x-2">
+                <%= link_to blog.subdomain, blog_home_url(blog), class: "hover:underline", target: "_blank" %>
+                <span class="text-xs text-slate-400"><%= pluralize(blog.posts.count, "post") %></span>
+              </div>
+            <% end %>
+          </div>
+        </td>
+        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= user.verified %></td>
         <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
-          <% if blog.user.discarded_at %>
+          <% if user.discarded_at %>
             Cancelled
-          <% elsif blog.user.subscribed? %>
-            <% if blog.user.subscription.complimentary? %>
+          <% elsif user.subscribed? %>
+            <% if user.subscription.complimentary? %>
               Comped
             <% else %>
               Premium
             <% end %>
           <% else %>
             Free
-            <% if blog.user.subscribed? && blog.user.lapsed? %>
+            <% if user.subscribed? && user.lapsed? %>
              (Lapsed)
             <% end %>
           <% end %>
         </td>
         <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400 text-center">
-          <% if blog.user.marketing_consent? %>
+          <% if user.marketing_consent? %>
             ✅
           <% end %>
         </td>
-        <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400 text-end"><%= blog.created_at.to_formatted_s :long %></td>
+        <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400 text-end"><%= user.created_at.to_formatted_s :long %></td>
       </tr>
     <% end %>
     </tbody>

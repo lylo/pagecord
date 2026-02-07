@@ -1,0 +1,40 @@
+<div class="max-w-lg">
+  <h1 class="text-2xl font-bold mb-6">Create a new blog</h1>
+
+  <%= form_with model: @blog, url: app_blogs_path, class: "space-y-6" do |form| %>
+    <% if @blog.errors.any? %>
+      <div class="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 p-4 rounded-lg text-sm">
+        <% @blog.errors.full_messages.each do |message| %>
+          <p><%= message %></p>
+        <% end %>
+      </div>
+    <% end %>
+
+    <fieldset>
+      <%= form.label :subdomain, "Subdomain", class: "block text-sm font-medium mb-1" %>
+      <div class="flex items-center gap-1.5">
+        <%= form.text_field :subdomain,
+            placeholder: "subdomain",
+            autofocus: true,
+            class: "px-3 py-2 form-field rounded-lg flex-shrink min-w-0",
+            maxlength: 20,
+            required: true %>
+        <span class="font-medium text-slate-700 dark:text-slate-300 flex-shrink-0">.pagecord.com</span>
+      </div>
+      <p class="text-slate-500 text-sm mt-1">Letters and numbers only.</p>
+    </fieldset>
+
+    <fieldset>
+      <%= form.label :title, "Title (optional)", class: "block text-sm font-medium mb-1" %>
+      <%= form.text_field :title,
+          placeholder: "My Blog",
+          class: "w-full px-3 py-2 form-field rounded-lg" %>
+      <p class="text-slate-500 text-sm mt-1">A display name for your blog. Leave blank to use @subdomain.</p>
+    </fieldset>
+
+    <div class="flex items-center gap-4">
+      <%= form.submit "Create blog", class: "btn-primary cursor-pointer" %>
+      <%= link_to "Cancel", app_blogs_path, class: "text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300" %>
+    </div>
+  <% end %>
+</div>

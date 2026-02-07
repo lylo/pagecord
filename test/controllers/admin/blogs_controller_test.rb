@@ -105,7 +105,7 @@ class Admin::BlogsControllerTest < ActionDispatch::IntegrationTest
     get admin_blogs_path, params: { status: "paid" }
     assert_response :success
 
-    assert_select "a[href='#{admin_blogs_path}']", text: /users? in total/
+    assert_select "a[href='#{admin_blogs_path}']", text: /accounts? in total/
   end
 
   test "should require admin access" do

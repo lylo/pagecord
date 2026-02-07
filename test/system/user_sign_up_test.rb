@@ -4,7 +4,7 @@ class SignUpTest < ApplicationSystemTestCase
   test "sign up and verify email" do
     visit new_signup_path
 
-    fill_in "user[blog_attributes][subdomain]", with: "testuser"
+    fill_in "user[blogs_attributes][0][subdomain]", with: "testuser"
     fill_in "user[email]", with: "test@example.com"
     sleep 5 # anti-bot protection
     click_on "Create account"
@@ -17,7 +17,7 @@ class SignUpTest < ApplicationSystemTestCase
   end
 
   test "verifying signup email" do
-    user = User.create!(email: "test@example.com", blog: blog = Blog.new(subdomain: "testuser"))
+    user = User.create!(email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ])
     user.access_requests.create!
 
     visit verify_access_request_url(token: user.access_requests.last.token_digest)

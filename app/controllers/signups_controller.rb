@@ -11,7 +11,7 @@ class SignupsController < ApplicationController
 
   def new
     @user = User.new(marketing_consent: true)
-    @user.build_blog
+    @user.blogs.build
   end
 
   def create
@@ -19,7 +19,7 @@ class SignupsController < ApplicationController
       unless valid_turnstile_token?(params["cf-turnstile-response"])
         flash.now[:error] = "Please complete the security check"
         @user = User.new
-        @user.build_blog
+        @user.blogs.build
         render :new and return
       end
     end
@@ -27,7 +27,7 @@ class SignupsController < ApplicationController
     @user = User.new(user_params)
 
     # New users should get Lexxy if configured
-    @user.blog.features = [ "lexxy" ] if ENV["LEXXY_FOR_NEW_USERS"]
+    @user.blogs.first.features = [ "lexxy" ] if ENV["LEXXY_FOR_NEW_USERS"]
 
     if signup_from_allowed_timezone && @user.save
       AccountVerificationMailer.with(user: @user).verify.deliver_later
@@ -48,7 +48,7 @@ class SignupsController < ApplicationController
 
     def user_params
       @user_params ||= begin
-        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation, blog_attributes: [ :subdomain ])
+        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation, blogs_attributes: [ :subdomain ])
         translate_timezone_param(raw_params)
       end
     end

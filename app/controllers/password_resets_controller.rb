@@ -7,11 +7,11 @@ class PasswordResetsController < ApplicationController
   layout "sessions"
 
   def new
-    @user = User.new(blog: Blog.new)
+    @user = User.new.tap { |u| u.blogs.build }
   end
 
   def create
-    user = User.kept.joins(:blog).find_by(
+    user = User.kept.joins(:blogs).find_by(
       blogs: { subdomain: user_params[:subdomain] },
       email: user_params[:email]
     )

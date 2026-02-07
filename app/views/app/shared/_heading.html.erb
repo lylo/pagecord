@@ -1,13 +1,28 @@
-<div class="flex justify-end mb-4 font-bold text-lg">
-  <%= turbo_frame_tag "heading_blog_title" do %>
-    <%= link_to blog_home_url(@blog), data: { turbo: false } do %>
-      <div class="blog-title">
-        <% if @blog.custom_title? %>
-          <%= @blog.title %>
-        <% else %>
-          @<%= persisted_value(@blog, :subdomain) %>
+<div class="flex justify-end mb-4">
+  <div class="relative" data-controller="blog-switcher">
+    <button data-action="click->blog-switcher#toggle" class="flex items-center gap-2 cursor-pointer">
+      <%= render "app/shared/blog_avatar", blog: @blog, size: "md" %>
+    </button>
+
+    <div data-blog-switcher-target="menu" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 z-50">
+      <div class="py-2">
+        <% Current.user.blogs.order(:created_at).each do |blog| %>
+          <%= button_to switch_app_blog_path(blog), method: :post, class: "w-full flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 #{blog.id == @blog.id ? 'bg-slate-50 dark:bg-slate-700/50' : ''}" do %>
+            <%= render "app/shared/blog_avatar", blog: blog, size: "sm" %>
+            <span class="text-sm font-medium truncate"><%= blog.display_name %></span>
+            <% if blog.id == @blog.id %>
+              <span class="ml-auto text-xs text-slate-400">Current</span>
+            <% end %>
+          <% end %>
         <% end %>
+
+        <div class="border-t border-slate-200 dark:border-slate-700 mt-2 pt-2 px-4 pb-2 flex items-center justify-between">
+          <%= link_to blog_home_url(@blog), target: "_blank", class: "text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 inline-flex items-center gap-1" do %>
+            View <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-3.5 h-3.5" %>
+          <% end %>
+          <%= link_to "Manage blogs", app_blogs_path, class: "text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300" %>
+        </div>
       </div>
-    <% end %>
-  <% end %>
+    </div>
+  </div>
 </div>

@@ -5,8 +5,8 @@ class App::PostsController < AppController
   rescue_from Pagy::RangeError, with: :redirect_to_first_page
 
   def index
-    posts_query = Current.user.blog.posts.kept.published.order(published_at: :desc)
-    drafts_query = Current.user.blog.posts.kept.draft.order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
+    posts_query = @blog.posts.kept.published.order(published_at: :desc)
+    drafts_query = @blog.posts.kept.draft.order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
 
     @search_term = params[:search]
     if @search_term.present?
@@ -22,15 +22,15 @@ class App::PostsController < AppController
 
     @pagy, @posts = pagy(posts_query, limit: 25)
     @drafts = @pagy.page == 1 ? drafts_query.load : []
-    @total_posts_count = Current.user.blog.posts.kept.published.count
+    @total_posts_count = @blog.posts.kept.published.count
   end
 
   def new
-    @post = Current.user.blog.posts.build
+    @post = @blog.posts.build
   end
 
   def edit
-    @post = Current.user.blog.posts.kept.find_by!(token: params[:token])
+    @post = @blog.posts.kept.find_by!(token: params[:token])
 
     prepare_content_for_editor(@post)
 
@@ -38,15 +38,15 @@ class App::PostsController < AppController
   end
 
   def show
-    @post = Current.user.blog.all_posts.kept.find_by!(token: params[:token])
-    @blog = Current.user.blog
+    @post = @blog.all_posts.kept.find_by!(token: params[:token])
+    @blog = @blog
     @user = Current.user
 
     render layout: "blog"
   end
 
   def create
-    post = Current.user.blog.posts.build(post_params)
+    post = @blog.posts.build(post_params)
     if post.save
       redirect_to app_posts_path, notice: "Post was successfully created"
     else
@@ -56,7 +56,7 @@ class App::PostsController < AppController
   end
 
   def update
-    @post = Current.user.blog.posts.kept.find_by!(token: params[:token])
+    @post = @blog.posts.kept.find_by!(token: params[:token])
 
     if @post.update(post_params)
       page = session.delete(:return_to_page)
@@ -70,7 +70,7 @@ class App::PostsController < AppController
   end
 
   def destroy
-    post = Current.user.blog.posts.kept.find_by!(token: params[:token])
+    post = @blog.posts.kept.find_by!(token: params[:token])
     post.destroy!
 
     redirect_to app_posts_path, notice: "Post was successfully deleted"
