@@ -26,7 +26,7 @@
 
     <div class="form-field">
       <%= form.label :email, t('email_form.form.email_label') %>
-      <%= form.email_field :email, required: true %>
+      <%= form.email_field :email, required: true, pattern: ".+@.+\\..+" %>
       <% if @reply.errors[:email].any? %>
         <span class="form-error"><%= @reply.errors.full_messages_for(:email).first %></span>
       <% end %>
