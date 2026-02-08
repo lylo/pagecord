@@ -1,0 +1,30 @@
+<div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
+  <div class="my-8">
+    <%= render "app/shared/callout" do %>
+      Deleted pages are kept for 30 days before being permanently removed.
+      <%= link_to "Back to pages", app_pages_path, class: "font-medium underline" %>
+    <% end %>
+
+    <% if @trashed_pages.empty? %>
+      <p class="text-slate-500 dark:text-slate-400">
+        Your trash is empty.
+      </p>
+    <% else %>
+      <% @trashed_pages.each do |page| %>
+        <div class="flex gap-x-2 py-2 px-3 -mx-3 items-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+          <div class="text-slate-500 dark:text-slate-400 w-26 flex-shrink-0">
+            <%= page.discarded_at.to_date.strftime("%d %b %Y") %>
+          </div>
+          <div class="flex w-full justify-between items-center">
+            <div class="font-medium pe-2 [overflow-wrap:anywhere]">
+              <%= page.display_title %>
+            </div>
+            <%= button_to app_pages_trash_path(page), method: :delete, title: "Restore #{page.display_title}", class: "text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 underline cursor-pointer flex-shrink-0" do %>
+              Restore
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
