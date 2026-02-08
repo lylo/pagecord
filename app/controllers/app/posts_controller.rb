@@ -71,7 +71,7 @@ class App::PostsController < AppController
 
   def destroy
     post = Current.user.blog.posts.kept.find_by!(token: params[:token])
-    post.destroy!
+    post.discard!
 
     redirect_to app_posts_path, notice: "Post was successfully deleted"
   end
