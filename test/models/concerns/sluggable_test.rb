@@ -80,6 +80,16 @@ class SluggableTest < ActiveSupport::TestCase
     assert_equal original_slug, post.slug
   end
 
+  test "should preserve custom slug when creating a new post" do
+    post = @blog.posts.create!(title: "A New Post", content: "Content", slug: "my-custom-slug")
+    assert_equal "my-custom-slug", post.slug
+  end
+
+  test "should preserve custom slug when creating a new draft post" do
+    post = @blog.posts.create!(title: "A New Post", content: "Content", slug: "my-custom-slug", status: :draft)
+    assert_equal "my-custom-slug", post.slug
+  end
+
   test "should handle duplicate slugs by appending a unique identifier" do
     post1 = @blog.posts.create!(title: "Duplicate", content: "Content 1")
     post2 = @blog.posts.create!(title: "Duplicate", content: "Content 2")
