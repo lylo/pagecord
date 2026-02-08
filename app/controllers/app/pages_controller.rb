@@ -38,6 +38,7 @@ class App::PagesController < AppController
   def destroy
     @page = Current.user.blog.pages.kept.find_by!(token: params[:token])
     @page.discard!
+    Current.user.blog.update!(home_page_id: nil) if @page.home_page?
     redirect_to app_pages_path, notice: "Page was successfully deleted."
   end
 
