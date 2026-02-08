@@ -1,0 +1,13 @@
+<div class="flex gap-x-2 py-2 px-3 -mx-3 items-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+  <div class="text-slate-500 dark:text-slate-400 w-26 flex-shrink-0">
+    <%= item.discarded_at.to_date.strftime("%d %b %Y") %>
+  </div>
+  <div class="flex w-full justify-between items-center">
+    <div class="font-medium pe-2 [overflow-wrap:anywhere]">
+      <%= item.display_title %>
+    </div>
+    <%= button_to restore_path, method: :delete, title: "Restore #{item.display_title}", class: "text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 underline cursor-pointer flex-shrink-0" do %>
+      Restore
+    <% end %>
+  </div>
+</div>

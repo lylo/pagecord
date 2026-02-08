@@ -1,0 +1,8 @@
+<% if trashed_count > 0 %>
+  <div class="mt-8 pt-4 border-t border-slate-200 dark:border-slate-700">
+    <%= link_to trash_path, class: "inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300" do %>
+      <%= inline_svg_tag "icons/trash.svg", class: "w-3.5 h-3.5" %>
+      <%= pluralize trashed_count, "deleted #{item_type}" %>
+    <% end %>
+  </div>
+<% end %>

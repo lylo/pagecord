@@ -11,19 +11,7 @@
       </p>
     <% else %>
       <% @trashed_posts.each do |post| %>
-        <div class="flex gap-x-2 py-2 px-3 -mx-3 items-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-          <div class="text-slate-500 dark:text-slate-400 w-26 flex-shrink-0">
-            <%= post.discarded_at.to_date.strftime("%d %b %Y") %>
-          </div>
-          <div class="flex w-full justify-between items-center">
-            <div class="font-medium pe-2 [overflow-wrap:anywhere]">
-              <%= post.display_title %>
-            </div>
-            <%= button_to app_posts_trash_path(post), method: :delete, title: "Restore #{post.display_title}", class: "text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 underline cursor-pointer flex-shrink-0" do %>
-              Restore
-            <% end %>
-          </div>
-        </div>
+        <%= render "app/shared/trash_item", item: post, restore_path: app_posts_trash_path(post) %>
       <% end %>
     <% end %>
   </div>
