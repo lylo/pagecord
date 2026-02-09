@@ -3,14 +3,9 @@ class IpReputation
   # Providers should implement a `self.valid?(ip)` method.
   #
   # Available providers:
-  # - IpReputation::ApiVoid
   # - IpReputation::GetIpIntel
   #
   # The default provider is GetIpIntel.
-  # To change the provider, set `IpReputation.provider`.
-  #
-  # Example:
-  #   IpReputation.provider = IpReputation::ApiVoid
   #
   class << self
     attr_writer :provider
