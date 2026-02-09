@@ -89,17 +89,14 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
   end
 
-  test "should alert Sentry if user not found" do
-    scope = mock
-    scope.expects(:set_tags).with(from: "missing@pagecord.com", recipient: users(:joel).blog.delivery_email)
-    Sentry.expects(:with_scope).yields(scope)
-    Sentry.expects(:capture_message).with("User not found")
-
-    receive_inbound_email_from_mail \
-    to: users(:joel).blog.delivery_email,
-    from: "missing@pagecord.com",
-    subject: "Hello world!",
-    body: "Hello?"
+  test "should silently drop email if user not found" do
+    assert_no_difference -> { Post.count } do
+      receive_inbound_email_from_mail \
+      to: users(:joel).blog.delivery_email,
+      from: "missing@pagecord.com",
+      subject: "Hello world!",
+      body: "Hello?"
+    end
   end
 
   test "should correctly store email with blank subject, non-blank plain text body" do
@@ -445,12 +442,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     user.blog.sender_email_addresses.create!(email: sender_email)
 
-    scope = mock
-    scope.expects(:set_tags).with(from: sender_email, recipient: user.blog.delivery_email)
-    Sentry.expects(:with_scope).yields(scope)
-    Sentry.expects(:capture_message).with("User not found")
-
-    assert_difference -> { user.blog.posts.count }, 0 do
+    assert_no_difference -> { user.blog.posts.count } do
       receive_inbound_email_from_mail \
         to: user.blog.delivery_email,
         from: sender_email,
@@ -464,12 +456,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     user = users(:joel)
     sender_email = "nonexistent@example.com"
 
-    scope = mock
-    scope.expects(:set_tags).with(from: sender_email, recipient: user.blog.delivery_email)
-    Sentry.expects(:with_scope).yields(scope)
-    Sentry.expects(:capture_message).with("User not found")
-
-    assert_difference -> { user.blog.posts.count }, 0 do
+    assert_no_difference -> { user.blog.posts.count } do
       receive_inbound_email_from_mail \
         to: user.blog.delivery_email,
         from: sender_email,
