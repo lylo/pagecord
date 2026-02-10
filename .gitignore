@@ -33,6 +33,7 @@
 /public/assets
 /public/*.html
 !/public/maintenance.html
+!/public/error.html
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
