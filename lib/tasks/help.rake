@@ -26,11 +26,13 @@ namespace :help do
       else
         Post.find_or_initialize_by(blog: blog, slug: slug, is_page: true)
       end
+      existing_content_html = page.content.body&.to_html
       page.assign_attributes(
         title: title,
         content: html,
         status: front_matter["published"] ? "published" : "draft"
       )
+      content_changed = ActionText::Content.new(html).to_html != existing_content_html
 
       if page.new_record?
         puts "CREATE: #{slug}"
@@ -38,8 +40,17 @@ namespace :help do
           page.save!
           blog.update!(home_page: page) if slug == "index"
         end
-      elsif page.changed?
-        puts "UPDATE: #{slug}"
+      elsif page.changed? || content_changed
+        reasons = []
+        reasons << "attributes: #{page.changes.keys.join(', ')}" if page.changed?
+        if content_changed
+          new_html = ActionText::Content.new(html).to_html
+          reasons << "content changed"
+          reasons << "  new (first 200): #{new_html[0..200].inspect}"
+          reasons << "  old (first 200): #{existing_content_html&.[](0..200).inspect}"
+        end
+        puts "UPDATE: #{slug} (#{reasons.first})"
+        reasons[1..].each { |r| puts "  #{r}" } if ENV["DEBUG"]
         page.save! unless dry_run
       else
         puts "unchanged: #{slug}"
