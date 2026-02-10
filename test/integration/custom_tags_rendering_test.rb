@@ -312,6 +312,50 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select ".posts-list"
   end
 
+  test "renders posts tag with sort asc" do
+    @blog.posts.create!(title: "Oldest Post", content: "Content", status: :published, published_at: 3.days.ago)
+    @blog.posts.create!(title: "Newest Post", content: "Content", status: :published, published_at: 1.day.ago)
+
+    page = @blog.pages.create!(title: "Sorted Posts", content: "{{ posts | sort: asc }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    # Oldest post should appear before newest post
+    oldest_pos = response.body.index("Oldest Post")
+    newest_pos = response.body.index("Newest Post")
+    assert oldest_pos < newest_pos, "Expected oldest post to appear before newest post with sort: asc"
+  end
+
+  test "renders posts_by_year tag with sort asc" do
+    @blog.posts.create!(title: "2022 Post", content: "Content", status: :published, published_at: Date.new(2022, 6, 15))
+    @blog.posts.create!(title: "2024 Post", content: "Content", status: :published, published_at: Date.new(2024, 3, 20))
+
+    page = @blog.pages.create!(title: "Archive Asc", content: "{{ posts_by_year | sort: asc }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    # 2022 year group should appear before 2024 year group
+    year_2022_pos = response.body.index("2022")
+    year_2024_pos = response.body.index("2024")
+    assert year_2022_pos < year_2024_pos, "Expected 2022 to appear before 2024 with sort: asc"
+  end
+
+  test "renders posts tag with sort asc and tag filter" do
+    @blog.posts.create!(title: "Old Photo", content: "Content", status: :published, published_at: 10.days.ago, tag_list: [ "photography" ])
+    @blog.posts.create!(title: "New Photo", content: "Content", status: :published, published_at: 1.day.ago, tag_list: [ "photography" ])
+
+    page = @blog.pages.create!(title: "Sorted Photography", content: "{{ posts | sort: asc | tag: photography }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    old_pos = response.body.index("Old Photo")
+    new_pos = response.body.index("New Photo")
+    assert old_pos < new_pos, "Expected oldest photo post to appear before newest with sort: asc"
+  end
+
   test "does not process custom tags inside inline code" do
     page = @blog.pages.create!(
       title: "Inline Code Example",

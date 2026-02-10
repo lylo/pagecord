@@ -53,7 +53,8 @@ class DynamicVariableProcessor
 
     def render_posts_tag(params_string)
       params = parse_params(params_string)
-      relation = blog.posts.visible.order(published_at: :desc)
+      order_direction = params[:sort] == "asc" ? :asc : :desc
+      relation = blog.posts.visible.order(published_at: order_direction)
       relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
 
       if params[:year]
@@ -68,7 +69,8 @@ class DynamicVariableProcessor
 
     def render_posts_by_year_tag(params_string)
       params = parse_params(params_string)
-      relation = blog.posts.visible.order(published_at: :desc)
+      order_direction = params[:sort] == "asc" ? :asc : :desc
+      relation = blog.posts.visible.order(published_at: order_direction)
       relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
 
       posts = relation.all
