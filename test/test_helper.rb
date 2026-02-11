@@ -24,5 +24,9 @@ module ActiveSupport
     def flattened_html(html)
       html.gsub(/\s+/, " ").strip
     end
+
+    def signed_rendered_at(time = 6.seconds.ago)
+      Rails.application.message_verifier(:spam_prevention).generate(time.to_i)
+    end
   end
 end

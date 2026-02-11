@@ -1,2 +1,2 @@
-<%= hidden_field_tag :rendered_at, Time.current.to_i %>
+<%= hidden_field_tag :rendered_at, Rails.application.message_verifier(:spam_prevention).generate(Time.current.to_i) %>
 <%= text_field_tag :email_confirmation, nil, class: "hidden" %>

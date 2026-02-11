@@ -28,11 +28,14 @@ module SpamPrevention
   end
 
   def form_complete_time_check
-    if params[:rendered_at].blank?
+    timestamp = Rails.application.message_verifier(:spam_prevention).verified(params[:rendered_at])
+
+    unless timestamp
+      Rails.logger.warn "Invalid or missing form token. Request blocked."
       fail
+      return
     end
 
-    timestamp = params[:rendered_at].to_i
     form_complete_time = Time.current.to_i - timestamp
 
     if form_complete_time < 3.seconds
