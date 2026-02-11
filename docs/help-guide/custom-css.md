@@ -223,6 +223,28 @@ article footer .post-actions {
 }
 ```
 
+### Full-width images
+
+By default, images display at their natural size. To make all images stretch to fill the full width of your posts:
+
+```css
+article img {
+  width: 100%;
+  height: auto;
+  max-block-size: none;
+}
+```
+
+### Left-align images
+
+Images are centered by default. To left-align them instead:
+
+```css
+article img {
+  margin-inline-start: 0;
+}
+```
+
 ### Adding a background image to your blog
 
 You can set a background image so that it fits the viewport and scales nicely. It can be unreliable to rely on a 3rd party URL for the image, so I would recommend creating page on your Pagecord blog and upload your background image of choice to it. View the page, then copy the link to the image and then reference that image in your CSS.
