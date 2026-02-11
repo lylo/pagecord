@@ -3,8 +3,8 @@
 module Taggable
   extend ActiveSupport::Concern
 
-  # Valid tag format: letters, numbers, and hyphens only
-  VALID_TAG_FORMAT = /\A[a-zA-Z0-9-]+\z/
+  # Valid tag format: letters (including unicode), numbers, and hyphens
+  VALID_TAG_FORMAT = /\A[\p{L}\p{N}-]+\z/
 
   included do
     validates :tag_list, presence: true, allow_blank: true

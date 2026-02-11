@@ -23,9 +23,9 @@ export default class extends Controller {
         tagData.value = tagData.value.toLowerCase()
       },
 
-      // Validate tags (alphanumeric and hyphens only)
+      // Validate tags (letters including unicode, numbers, and hyphens)
       validate: (tagData) => {
-        return /^[a-zA-Z0-9-]+$/.test(tagData.value)
+        return /^[\p{L}\p{N}-]+$/u.test(tagData.value)
       },
 
       // Maximum number of tags
