@@ -62,6 +62,8 @@ module Css
             border-block border-block-start border-block-end
             inset-inline inset-inline-start inset-inline-end
             inset-block inset-block-start inset-block-end
+            inline-size min-inline-size max-inline-size
+            block-size min-block-size max-block-size
           ]
         end
 

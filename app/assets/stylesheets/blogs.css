@@ -160,6 +160,10 @@ html, body {
     .attachment {
       margin-block: 1.5rem;
     }
+
+    .attachment--preview {
+      inline-size: auto;
+    }
   }
 
   :where(header) {
