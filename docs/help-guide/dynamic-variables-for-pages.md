@@ -128,6 +128,16 @@ Embed an email subscription form for readers to subscribe to your blog (premium 
 
 _Note: This only appears if you have email subscriptions enabled in your blog settings._
 
+### Contact Form
+
+Embed a contact form so readers can send you a message directly from your blog.
+
+```javascript
+{{ contact_form }}
+```
+
+_Note: This is a premium feature and only appears for subscribers and users on a free trial._
+
 ## Examples
 
 ### Simple Archive Page

@@ -1,6 +1,8 @@
 class Blogs::EmailSubscribersController < Blogs::BaseController
   include SpamPrevention
 
+  rate_limit to: 3, within: 1.hour, only: [ :create ]
+
   before_action :requires_user_subscription
 
   def create
@@ -23,7 +25,6 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
   private
 
     def fail
-      @spammer_detected = true
       @message = "There's an issue with your subscription. If you're using a VPN, try subscribing without it. Contact support if the problem persists."
 
       respond_to do |format|

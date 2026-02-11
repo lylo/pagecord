@@ -37,7 +37,7 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
     assert_enqueued_jobs 1, only: SendPostReplyJob
     assert_redirected_to blog_post_path(@post.slug)
     follow_redirect!
-    assert_equal "Reply sent successfully!", flash[:notice]
+    assert_equal I18n.t("email_form.success_message"), flash[:notice]
   end
 
   test "should not create reply with invalid data" do

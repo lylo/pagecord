@@ -4,7 +4,7 @@
 
 <div style="background-color: #F3F4F6; padding: 15px; border-radius: 5px; margin: 20px 0;">
   <p>
-    <strong><%= t('replies.mailer.from_label') %>:</strong>
+    <strong><%= t('email_form.mailer.from_label') %>:</strong>
     <%= @reply.name %> &lt;<%= @reply.email %>&gt;
   </p>
 
@@ -14,14 +14,14 @@
   </p>
 
   <p>
-    <strong><%= t('replies.form.message_label') %>:</strong>
+    <strong><%= t('email_form.form.message_label') %>:</strong>
   </p>
 
   <div>
-    <%= simple_format(@reply.message) %>
+    <%= auto_link(simple_format(@reply.message)) %>
   </div>
 </div>
 
 <p>
-  <%= t('replies.mailer.footer', name: @reply.name) %>
+  <%= t('email_form.mailer.footer', name: @reply.name) %>
 </p>

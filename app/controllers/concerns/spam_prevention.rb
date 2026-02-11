@@ -1,11 +1,15 @@
 module SpamPrevention
   extend ActiveSupport::Concern
 
-  included do
-    rate_limit to: 5, within: 1.hour, only: [ :create ], name: "spam-prevention-hourly"
-    rate_limit to: 1, within: 2.minutes, only: [ :create ], if: :spammer_detected?, name: "spam-prevention-blocked"
+  DEFAULT_MINIMUM_FORM_COMPLETION_TIME = 3.seconds
 
+  included do
     before_action :form_complete_time_check, :honeypot_check, :ip_reputation_check, only: [ :create ]
+  end
+
+  # Override in controllers that need stricter timing (e.g., contact forms)
+  def minimum_form_completion_time
+    DEFAULT_MINIMUM_FORM_COMPLETION_TIME
   end
 
   def honeypot_check
@@ -35,20 +39,41 @@ module SpamPrevention
     timestamp = params[:rendered_at].to_i
     form_complete_time = Time.current.to_i - timestamp
 
-    if form_complete_time < 3.seconds
+    if form_complete_time < minimum_form_completion_time
       Rails.logger.warn "Form completed too quickly. Request blocked."
       fail
     end
   end
 
-  def fail
-    @spammer_detected = true
-    head :forbidden
+  def turnstile_check
+    return true unless turnstile_enabled?
+    fail unless valid_turnstile_token?(params["cf-turnstile-response"])
   end
 
-  private
+  def valid_turnstile_token?(token)
+    return true if Rails.env.test?
+    return false if token.blank?
 
-    def spammer_detected?
-      @spammer_detected == true
-    end
+    response = HTTParty.post(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      body: {
+        secret: ENV["TURNSTILE_SECRET_KEY"],
+        response: token,
+        remoteip: request.remote_ip
+      }
+    )
+
+    response.parsed_response["success"] == true
+  rescue HTTParty::Error => e
+    Rails.logger.error "Turnstile verification failed: #{e.message}"
+    false
+  end
+
+  def turnstile_enabled?
+    ENV["TURNSTILE_ENABLED"].present? && default_domain_request?
+  end
+
+  def fail
+    head :forbidden
+  end
 end

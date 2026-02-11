@@ -1,0 +1,22 @@
+<p>
+  <%= t('contact_form.mailer.intro', blog_name: @blog.display_name) %>
+</p>
+
+<div style="background-color: #F3F4F6; padding: 15px; border-radius: 5px; margin: 20px 0;">
+  <p>
+    <strong><%= t('email_form.mailer.from_label') %>:</strong>
+    <%= @contact_message.name %> &lt;<%= @contact_message.email %>&gt;
+  </p>
+
+  <p>
+    <strong><%= t('email_form.form.message_label') %>:</strong>
+  </p>
+
+  <div>
+    <%= auto_link(simple_format(@contact_message.message)) %>
+  </div>
+</div>
+
+<p>
+  <%= t('email_form.mailer.footer', name: @contact_message.name) %>
+</p>
