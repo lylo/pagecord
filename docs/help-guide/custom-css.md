@@ -46,7 +46,7 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ │ │ .post-title                                  │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
-│ │ │ │ .lexxy-content (The post body text)           │ │ │ │
+│ │ │ │ .lexxy-content (The post body text)          │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ <footer> (Date, tags, and actions)           │ │ │ │
@@ -67,16 +67,6 @@ Head to `Settings > Appearance` and scroll to the "Custom CSS" section. Paste yo
 ## Examples
 
 Here are some examples of CSS snippets you can use to customise your blog.
-
-### Centering the Top Navigation
-
-By default, the navigation links are aligned to the right. This will move them to the center.
-
-```css
-nav {
-  justify-content: center;
-}
-```
 
 ### Changing the font
 
@@ -110,6 +100,16 @@ h1, h2, h3, h4, h5 {
 }
 ```
 
+### Centering the Top Navigation
+
+By default, the navigation links are aligned to the right. This will move them to the center.
+
+```css
+nav {
+  justify-content: center;
+}
+```
+
 ### Stacking the Avatar and Title in the centre
 
 If you want your avatar to appear above your blog title and both to be centered:
@@ -118,6 +118,16 @@ If you want your avatar to appear above your blog title and both to be centered:
 .avatar-container {
   flex-direction: column;
   align-items: center;
+}
+```
+
+### Centering the Bio
+
+Center the bio text below the title:
+
+```css
+.bio {
+  text-align: center;
 }
 ```
 
@@ -137,16 +147,6 @@ If you have an avatar uploaded but want to hide it from your blog header (it wil
 .blog-title {
   font-weight: 200;
   text-transform: uppercase;
-}
-```
-
-### Centering the Bio
-
-Center the bio text below the title:
-
-```css
-.bio {
-  text-align: center;
 }
 ```
 
@@ -176,6 +176,12 @@ header hr::before {
 By default, the navigation appears above the title. You can use CSS `order` to rearrange the header elements, for example to show the title first:
 
 ```css
+/* set the header to use flexbox layout and stack items vertically */
+header {
+  display: flex;
+  flex-direction: column;
+}
+
 header > nav {
   order: 2;
 }
