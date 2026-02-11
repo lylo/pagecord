@@ -1,0 +1,41 @@
+ja:
+  email_subscribers:
+    form:
+      subscribe_description: "登録して、毎週の投稿の要約をメールボックスで受け取ろう。"
+      email_placeholder: "メールアドレスを入力して..."
+      submit_button: "登録する"
+    create:
+      success_message: "ご登録ありがとうございます。既に登録済みでない場合、確認メールが %{email} 宛てに送信されます。"
+    confirmations:
+      success_message: "%{blog_name}への登録が完了しました。新しい投稿が掲載されると、週に1回のメールダイジェストが配信されます。"
+      unsubscribe_link: "登録を解除する"
+    unsubscribes:
+      success_message: "%{blog_name} の登録を解除しました 👋"
+      confirm_message: "%{blog_name} の登録を解除するには、以下のリンクをクリックして。"
+      unsubscribe_button: "登録を解除する"
+      not_found: "メールの登録が見つかりませんでした。"
+  mailers:
+    confirmation:
+      subject: "%{blog_name}への登録を確認してください。"
+      message: "%{blog_name}への登録を確認してください。 登録するつもりがない場合は、このメールを無視してください。"
+      button: "登録を確認する"
+    weekly_digest:
+      subject: "%{blog_name}からの新しいブログ記事 - %{date}"
+      footer: "%{blog_name}からの新しいブログ記事を受け取るために登録しました。"
+      unsubscribe_link: "登録を解除する"
+  posts:
+    read_more: "記事の続きを読む"
+  replies:
+    form:
+      name_label: "あなたの名前"
+      email_label: "あなたのメールアドレス"
+      subject_label: "件名"
+      message_label: "本文"
+      submit_button: "返事を送信"
+      cancel_link: "返事をキャンセル"
+    success_message: "返事が正常に送信されました!"
+    mailer:
+      intro: "やった！誰かがあなたの投稿に返信しました"
+      from_label: "から"
+      footer: "%{name} 様への返事は、このメールに返事して。"
+      footer_text: "%{name} 宛てに返事を送るには、このメールに返事して。"
