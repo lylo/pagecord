@@ -86,6 +86,14 @@ Posts are saved as drafts automatically in your browser as you write, but you sh
 
 A slug is the end part of the URL that looks like `/my-first-post`. This is set automatically when you create a post, but you can change it by selecting **Change Slug** from the drop-down menu when editing (or creating) a post.
 
+## Setting the language for a post
+
+By default, posts use the language set on your blog. If you write a post in a different language, you can override this per post.
+
+Select **Set Language** from the drop-down menu (or press **L**) to choose a language for that post. To revert to the blog default, select the blank "Use blog default" option.
+
+The post language is used for the `lang` attribute in your HTML and helps browsers and screen readers render text correctly.
+
 ## Deleting posts
 
 To delete a post, select **Delete Post** from the drop-down menu.

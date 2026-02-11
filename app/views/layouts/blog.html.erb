@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<%= @blog&.locale || I18n.default_locale %>">
+<html lang="<%= @post&.effective_locale || @blog&.locale || I18n.default_locale %>">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">

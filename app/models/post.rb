@@ -1,6 +1,8 @@
 class Post < ApplicationRecord
   include Discard::Model
-  include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable
+  include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable
+
+  self.locale_optional = true
 
   belongs_to :blog, inverse_of: nil
 
@@ -112,6 +114,10 @@ class Post < ApplicationRecord
 
   def home_page?
     (blog.home_page_id.present? && blog.home_page_id == id) || is_home_page
+  end
+
+  def effective_locale
+    locale || blog.locale
   end
 
   def first_image

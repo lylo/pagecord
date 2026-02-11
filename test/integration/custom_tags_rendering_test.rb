@@ -369,4 +369,75 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # The inline code should contain literal {{ posts }}
     assert_select "code", text: /{{ posts }}/
   end
+
+  # Language filter tests
+  test "renders posts tag with lang filter - explicit locale match" do
+    @blog.update!(locale: "en")
+    @blog.posts.create!(title: "English Post", content: "Content", status: :published, locale: "en")
+    @blog.posts.create!(title: "Spanish Post", content: "Content", status: :published, locale: "es")
+
+    page = @blog.pages.create!(title: "English Posts", content: "{{ posts | lang: en }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /English Post/
+    assert_select "body", text: /Spanish Post/, count: 0
+  end
+
+  test "renders posts tag with lang filter - includes inherited posts when matching blog locale" do
+    @blog.update!(locale: "en")
+    @blog.posts.create!(title: "Explicit English", content: "Content", status: :published, locale: "en")
+    @blog.posts.create!(title: "Inherited English", content: "Content", status: :published, locale: nil)
+    @blog.posts.create!(title: "Spanish Post", content: "Content", status: :published, locale: "es")
+
+    page = @blog.pages.create!(title: "English Posts", content: "{{ posts | lang: en }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /Explicit English/
+    assert_select "body", text: /Inherited English/
+    assert_select "body", text: /Spanish Post/, count: 0
+  end
+
+  test "renders posts tag with lang filter - excludes inherited posts when not matching blog locale" do
+    @blog.update!(locale: "en")
+    @blog.posts.create!(title: "Explicit Spanish", content: "Content", status: :published, locale: "es")
+    @blog.posts.create!(title: "Inherited English", content: "Content", status: :published, locale: nil)
+
+    page = @blog.pages.create!(title: "Spanish Posts", content: "{{ posts | lang: es }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /Explicit Spanish/
+    assert_select "body", text: /Inherited English/, count: 0
+  end
+
+  test "renders posts_by_year tag with lang filter" do
+    @blog.update!(locale: "en")
+    @blog.posts.create!(title: "2024 English Post", content: "Content", status: :published, locale: "en", published_at: Date.new(2024, 6, 15))
+    @blog.posts.create!(title: "2024 Spanish Post", content: "Content", status: :published, locale: "es", published_at: Date.new(2024, 6, 15))
+
+    page = @blog.pages.create!(title: "English Archive", content: "{{ posts_by_year | lang: en }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /2024 English Post/
+    assert_select "body", text: /2024 Spanish Post/, count: 0
+  end
+
+  test "lang filter normalizes regional variants" do
+    @blog.update!(locale: "pt")
+    @blog.posts.create!(title: "Portuguese Post", content: "Content", status: :published, locale: "pt")
+
+    page = @blog.pages.create!(title: "Portuguese Posts", content: "{{ posts | lang: pt-BR }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /Portuguese Post/
+  end
 end
