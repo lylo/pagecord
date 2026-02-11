@@ -3,6 +3,7 @@ class Blogs::BaseController < ApplicationController
 
   skip_before_action :domain_check
   before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale, :reject_malicious_params
+  after_action :set_edge_cache_headers
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_blog_not_found
 
@@ -82,6 +83,16 @@ class Blogs::BaseController < ApplicationController
         # Reject null bytes and CRLF characters to prevent injection attacks
         raise ActiveRecord::RecordNotFound if value.match?(/[\x00\r\n]/)
       end
+    end
+
+    # Allow Cloudflare to serve public blog pages from the edge for 60 seconds
+    # without hitting the origin. Only applies to GET responses already marked
+    # as public by fresh_when/stale? (posts, sitemaps, RSS).
+    def set_edge_cache_headers
+      return unless request.get?
+      return unless response.cache_control[:public]
+
+      response.cache_control[:s_maxage] = 60
     end
 
     def render_blog_not_found
