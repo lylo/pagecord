@@ -15,6 +15,10 @@ class Strava extends MediaSite {
       },
 
       (id) => {
+        const wrapper = document.createElement("div")
+        wrapper.style.display = "flex"
+        wrapper.style.justifyContent = "center"
+
         const div = document.createElement("div")
         div.className = "strava-embed-placeholder"
         div.dataset.embedType = "activity"
@@ -25,8 +29,9 @@ class Strava extends MediaSite {
         const script = document.createElement('script')
         script.src = "https://strava-embeds.com/embed.js"
 
-        div.appendChild(script)
-        return div
+        wrapper.appendChild(div)
+        wrapper.appendChild(script)
+        return wrapper
       }
     )
   }

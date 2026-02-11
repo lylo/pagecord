@@ -25,6 +25,8 @@ class Spotify extends MediaSite {
         iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         iframe.loading = "lazy"
         iframe.style.borderRadius = "12px"
+        iframe.style.maxWidth = "660px"
+        iframe.style.marginInline = "auto"
         return iframe
       }
     )

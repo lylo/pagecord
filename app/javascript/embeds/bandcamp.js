@@ -32,6 +32,8 @@ class Bandcamp extends MediaSite {
         iframe.height = "120"
         iframe.seamless = true
         iframe.style.border = "0"
+        iframe.style.maxWidth = "660px"
+        iframe.style.marginInline = "auto"
         return iframe
       }
     )
