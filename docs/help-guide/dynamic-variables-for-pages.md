@@ -34,7 +34,7 @@ Display a list of your posts with dates and links.
 
 #### **Basic usage**
 
-```js
+```javascript
 {{ posts }}
 ```
 
