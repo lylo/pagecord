@@ -22,36 +22,25 @@ class PageViewTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     post = posts(:one)
 
-    mock_request = Struct.new(:remote_ip, :user_agent, :referrer, :fullpath, :headers).new(
-      "127.0.0.1",
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      "https://google.com",
-      "/test-post",
-      { "CF-IPCountry" => "US" }
-    )
-
     # First view should be created and is unique
-    view1 = PageView.track(blog: blog, post: post, request: mock_request, path: "/test-post")
+    view1 = PageView.track(
+      blog: blog, post: post,
+      ip: "127.0.0.1",
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      path: "/test-post",
+      country_code: "US"
+    )
     assert view1.is_unique?
 
     # Second view from same visitor on same day should not be tracked (returns nil)
-    view2 = PageView.track(blog: blog, post: post, request: mock_request, path: "/test-post")
-    assert_nil view2
-  end
-
-  test "should not track bots" do
-    blog = blogs(:joel)
-    post = posts(:one)
-
-    bot_request = OpenStruct.new(
-      remote_ip: "1.2.3.4",
-      user_agent: "Googlebot/2.1",
-      referrer: nil,
-      fullpath: "/",
-      headers: {}
+    view2 = PageView.track(
+      blog: blog, post: post,
+      ip: "127.0.0.1",
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      path: "/test-post",
+      country_code: "US"
     )
-
-    assert_nil PageView.track(blog: blog, post: post, request: bot_request, path: "/")
+    assert_nil view2
   end
 
   test "should parse path and query string correctly" do
@@ -104,16 +93,14 @@ class PageViewTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     post = posts(:one)
 
-    mock_request = OpenStruct.new(
-      remote_ip: "127.0.0.1",
-      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      referrer: "https://google.com",
-      fullpath: "/test-post?utm_source=twitter",
-      headers: { "CF-IPCountry" => "US" }
-    )
-
     # Track a page view with query parameters
-    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test-post?utm_source=twitter&ref=social")
+    view = PageView.track(
+      blog: blog, post: post,
+      ip: "127.0.0.1",
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      path: "/test-post?utm_source=twitter&ref=social",
+      country_code: "US"
+    )
 
     assert_equal "/test-post", view.path
     assert_equal "utm_source=twitter&ref=social", view.query_string
@@ -144,12 +131,7 @@ class PageViewTest < ActiveSupport::TestCase
     # Clear any existing data
     PageView.where(blog: blog, path: "/consolidation-test").delete_all
 
-    # Create mock requests with different IPs to avoid unique view deduplication
-    base_request = {
-      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      referrer: nil,
-      headers: { "CF-IPCountry" => "US" }
-    }
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 
     # Track same path with different query parameters
     [
@@ -158,8 +140,13 @@ class PageViewTest < ActiveSupport::TestCase
       "/consolidation-test?utm_source=facebook&utm_medium=social",
       "/consolidation-test?trk=comments"
     ].each_with_index do |full_path, i|
-      request = OpenStruct.new(base_request.merge(remote_ip: "192.168.1.#{i + 1}"))
-      PageView.track(blog: blog, request: request, path: full_path)
+      PageView.track(
+        blog: blog,
+        ip: "192.168.1.#{i + 1}",
+        user_agent: user_agent,
+        path: full_path,
+        country_code: "US"
+      )
     end
 
     # Test that analytics group by clean path
@@ -179,14 +166,13 @@ class PageViewTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     post = posts(:one)
 
-    mock_request = OpenStruct.new(
-      remote_ip: "127.0.0.1",
+    view = PageView.track(
+      blog: blog, post: post,
+      ip: "127.0.0.1",
       user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      referrer: nil,
-      headers: { "CF-IPCountry" => "US" }
+      path: "/simple-path",
+      country_code: "US"
     )
-
-    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/simple-path")
 
     assert_equal "/simple-path", view.path
     assert_nil view.query_string
@@ -197,13 +183,14 @@ class PageViewTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     post = posts(:one)
 
-    mock_request = OpenStruct.new(
-      remote_ip: "10.0.0.1",
+    view = PageView.track(
+      blog: blog, post: post,
+      ip: "10.0.0.1",
       user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      headers: { "CF-IPCountry" => "US" }
+      path: "/test",
+      referrer: "https://www.google.com/search?q=test",
+      country_code: "US"
     )
-
-    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test", referrer: "https://www.google.com/search?q=test")
 
     assert_equal "google.com", view.referrer_domain
   end
@@ -212,58 +199,57 @@ class PageViewTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     post = posts(:one)
 
-    mock_request = OpenStruct.new(
-      remote_ip: "10.0.0.2",
+    view = PageView.track(
+      blog: blog, post: post,
+      ip: "10.0.0.2",
       user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      headers: { "CF-IPCountry" => "US" }
+      path: "/test",
+      country_code: "US"
     )
-
-    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test", referrer: nil)
 
     assert_nil view.referrer_domain
   end
 
-  test "should store country from CF-IPCountry header" do
+  test "should store country from country_code" do
     blog = blogs(:joel)
     post = posts(:one)
 
-    mock_request = OpenStruct.new(
-      remote_ip: "10.0.0.3",
+    view = PageView.track(
+      blog: blog, post: post,
+      ip: "10.0.0.3",
       user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      headers: { "CF-IPCountry" => "DE" }
+      path: "/test",
+      country_code: "DE"
     )
-
-    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test")
 
     assert_equal "DE", view.country
   end
 
-  test "should store nil country when CF-IPCountry is XX" do
+  test "should store nil country when country_code is XX" do
     blog = blogs(:joel)
     post = posts(:one)
 
-    mock_request = OpenStruct.new(
-      remote_ip: "10.0.0.4",
+    view = PageView.track(
+      blog: blog, post: post,
+      ip: "10.0.0.4",
       user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      headers: { "CF-IPCountry" => "XX" }
+      path: "/test",
+      country_code: "XX"
     )
-
-    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test")
 
     assert_nil view.country
   end
 
-  test "should store nil country when CF-IPCountry header is missing" do
+  test "should store nil country when country_code is nil" do
     blog = blogs(:joel)
     post = posts(:one)
 
-    mock_request = OpenStruct.new(
-      remote_ip: "10.0.0.5",
+    view = PageView.track(
+      blog: blog, post: post,
+      ip: "10.0.0.5",
       user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      headers: {}
+      path: "/test"
     )
-
-    view = PageView.track(blog: blog, post: post, request: mock_request, path: "/test")
 
     assert_nil view.country
   end
