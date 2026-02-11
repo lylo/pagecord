@@ -90,7 +90,7 @@ class Blogs::BaseController < ApplicationController
     # as public by fresh_when/stale? (posts, sitemaps, RSS). Blog owners
     # always see fresh content so edits are reflected immediately.
     def set_edge_cache_headers
-      return unless request.get?
+      return unless request.get? || request.head?
       return unless response.cache_control[:public]
       return if Current.user == @blog&.user
 
