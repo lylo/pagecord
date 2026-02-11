@@ -171,6 +171,32 @@ header hr::before {
 }
 ```
 
+### Reordering the header elements
+
+By default, the navigation appears above the title. You can use CSS `order` to rearrange the header elements, for example to show the title first:
+
+```css
+header > nav {
+  order: 2;
+}
+
+header > .titlebar {
+  order: 1;
+}
+
+header > .bio {
+  order: 3;
+}
+
+header > .email-subscriber-form {
+  order: 4;
+}
+
+header > hr {
+  order: 5;
+}
+```
+
 ### Add text to the reply by email button
 
 You can add text next to the reply by email icon like this:

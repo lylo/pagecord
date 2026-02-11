@@ -91,7 +91,6 @@ footer.blog-footer {
 
 footer.blog-footer #brand svg {
   width: 110px;
-  margin-top: 2rem;
   display: inline-flex;
   color: var(--color-text-heading);
 }
