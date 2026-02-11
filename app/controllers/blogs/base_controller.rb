@@ -87,10 +87,12 @@ class Blogs::BaseController < ApplicationController
 
     # Allow Cloudflare to serve public blog pages from the edge for 60 seconds
     # without hitting the origin. Only applies to GET responses already marked
-    # as public by fresh_when/stale? (posts, sitemaps, RSS).
+    # as public by fresh_when/stale? (posts, sitemaps, RSS). Blog owners
+    # always see fresh content so edits are reflected immediately.
     def set_edge_cache_headers
       return unless request.get?
       return unless response.cache_control[:public]
+      return if Current.user == @blog&.user
 
       response.cache_control[:s_maxage] = 60
     end
