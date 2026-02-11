@@ -1,5 +1,6 @@
 class Blogs::PageViewsController < Blogs::BaseController
   skip_forgery_protection
+  rate_limit to: 30, within: 1.minute, only: :create
 
   def create
     return head :no_content if params[:referrer]&.match?(%r{pagecord\.com/app})
