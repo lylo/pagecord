@@ -90,16 +90,14 @@ class Blogs::BaseController < ApplicationController
     # as public by fresh_when/stale? (posts, sitemaps, RSS). Blog owners
     # always see fresh content so edits are reflected immediately.
     #
-    # We also skip the session cookie (so Cloudflare doesn't refuse to cache
-    # due to Set-Cookie) and reset Vary to just Accept (removing Sec-Fetch-Site
-    # which would fragment the edge cache unnecessarily).
+    # We skip the session cookie so Cloudflare doesn't refuse to cache
+    # responses that include Set-Cookie.
     def set_edge_cache_headers
       return unless request.get? || request.head?
       return unless response.cache_control[:public]
       return if Current.user == @blog&.user
 
-      response.headers["Cache-Control"] = "#{response.headers['Cache-Control']}, s-maxage=60"
-      response.headers["Vary"] = "Accept"
+      response.headers["Cache-Control"] = "public, s-maxage=60"
       request.session_options[:skip] = true
     end
 
