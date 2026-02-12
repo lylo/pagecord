@@ -12,7 +12,7 @@ class PasswordAuthenticationTest < ActionDispatch::IntegrationTest
         timezone: "UTC",
         blog_attributes: { subdomain: "newuser" }
       },
-      rendered_at: 6.seconds.ago.to_i
+      rendered_at: signed_rendered_at
     }
 
     user = User.find_by(email: "newuser@example.com")

@@ -79,7 +79,7 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
           form_token: encryptor.encrypt_and_sign({
             post_id: post.id
           }),
-          rendered_at: 10.seconds.ago.to_i
+          rendered_at: signed_rendered_at(10.seconds.ago)
       }
     end
 
