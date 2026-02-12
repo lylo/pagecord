@@ -64,6 +64,9 @@ main {
 .blog-container {
   margin-inline: auto;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 /* Content width modifiers (applied via content_width_class helper) */
@@ -86,6 +89,7 @@ footer.blog-footer {
   flex-direction: column;
   text-align: center;
   padding: 2rem;
+  margin-top: auto;
   color: var(--color-text-light);
 }
 
@@ -350,7 +354,7 @@ html, body {
 /* -------------------------------------------------------------------------- */
 
 :where(.blog) {
-  :where(footer) {
+  :where(article) :where(footer) {
     font-size: 0.875rem;
     display: flex;
     align-items: center;
