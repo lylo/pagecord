@@ -64,7 +64,7 @@ class DynamicVariableProcessor
       end
 
       posts = params[:limit] ? relation.limit(params[:limit]) : relation.all
-      view.render(partial: "blogs/custom_tags/posts", locals: { posts: posts, limit: params[:limit] })
+      view.render(partial: "blogs/custom_tags/posts", locals: { posts: posts })
     end
 
     def render_posts_by_year_tag(params_string)
