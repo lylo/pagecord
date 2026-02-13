@@ -4,7 +4,7 @@ published: true
 published_at: 2026-02-13T12:00:00+00:00
 ---
 
-If you need some specific help with Pagecord that you can't find in the [Help Guide](index.md), these are the best ways to get in touch.
+If you need some specific help with Pagecord that you can't find in the [Help Guide](/), these are the best ways to get in touch.
 
 ## GitHub Issues (Recommended)
 
