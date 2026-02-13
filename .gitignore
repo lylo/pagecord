@@ -47,3 +47,4 @@
 /tmp/emails/*.eml
 
 node_modules
+.claude.json

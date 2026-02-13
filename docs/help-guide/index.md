@@ -6,7 +6,9 @@ published_at: 2025-12-17T15:51:52+00:00
 
 This is your go-to help guide to all things Pagecord.
 
-If you spot anything missing that needs a guide, please [drop me an email](mailto:hello@pagecord.com?subject=Help%20Guide%20Improvement).
+## Need Support?
+
+If you need specific help or have a question, visit the [Support](support.md) page.
 
 ## Getting Started
 
@@ -69,3 +71,4 @@ Manage your subscription, update your settings, or export your content.
 - [Account settings](account-settings.md)
 - [Billing](billing.md)
 - [Exporting your blog](exporting-your-blog.md)
+

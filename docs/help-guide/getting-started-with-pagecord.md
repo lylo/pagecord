@@ -52,5 +52,5 @@ Now that you've published your first post, here are some things to explore:
 
 ## Need Help?
 
-If you get stuck or have questions, [send a support email](mailto:hello@pagecord.com). I'm always happy to help.
+If you get stuck or have questions, check out the [Support](support.md) page for the best ways to get in touch.
 

@@ -2,17 +2,17 @@
 
 <p>Thanks so much for signing up to Pagecord!</p>
 
-<p>Your blog is now live at <a href="<%= blog_home_url(@blog) %>"><%= blog_home_url(@blog) %></a>. Log in to create your first post, or create it by sending an email from <strong><%= @user.email %></strong> to to <strong><%= @blog.delivery_email %></strong>.</p>
-
-<p>You can customise the look and feel of your blog in the settings area. You can also create a custom home page and even embed your latest posts and tags in the page. See the <a href="https://help.pagecord.com">Pagecord Help Guide</a> for all the details!</p>
+<p>Your blog is now live at <a href="<%= blog_home_url(@blog) %>"><%= blog_home_url(@blog) %></a>. Log in to create your first post, or try creating one by sending an email from <strong><%= @user.email %></strong> to <strong><%= @blog.delivery_email %></strong>.</p>
 
 <div class="callout">
-  <strong>You have 14 days of free access to all Premium features!</strong> This includes custom domains, blog analytics, image uploads, custom CSS, email subscriptions and reply by email. Give them a try!
+  <strong>You have 14 days of free access to all Premium features!</strong> This includes custom domains, blog analytics, image uploads and custom CSS. Give them a try!
 </div>
 
-<p>After your trial, you can continue using Pagecord for free, or upgrade for only $<%= @price %>/year or $<%= @monthly_price %>/month to keep all the premium features. I think it's the best deal out there and it helps keep Pagecord running!</p>
+<p>You can customise the look and feel of your blog in the <strong>Settings > Appearance</strong> area. You can also create a custom home page and even embed your latest posts and tags in it. See the <a href="https://help.pagecord.com">Pagecord Help Guide</a> to read about all the features!</p>
 
-<p>If you have any questions, feedback or ideas, please drop me an email at <a href="mailto:hello@pagecord.com">hello@pagecord.com</a>. I'd love to know what you think of Pagecord, and I'm always happy to help!</p>
+<p>After your trial you can continue using Pagecord for free, or you can upgrade for only $<%= @price %>/year or $<%= @monthly_price %>/month to keep all the premium features. I think it's the best deal out there and it helps keep Pagecord running!!</p>
+
+<p>I'd love to know what you think of Pagecord. You can let me know by replying to this email!</p>
 
 <%= image_tag "signature.jpg", style: "margin-top: 8px; text-align: left; width:120px;" %>
 
