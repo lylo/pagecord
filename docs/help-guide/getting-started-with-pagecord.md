@@ -41,14 +41,18 @@ Pagecord doesn't require titles. Some posts are better without them — a quick 
 
 If you do want a title, just add it in the title field when writing in the app, or use the subject line when posting by email.
 
+## Changing the language
+
+You can change the language of your blog's interface elements (like email subscription forms) in **Settings → Blog Settings**.
+
 ## What's Next?
 
 Now that you've published your first post, here are some things to explore:
 
-- **Customize your blog** — Choose a theme that fits your style
-- **Set up your navigation** — Add links to your menu
-- **Create an About page** — Tell readers who you are
-- **Post by email** — Learn the tricks for email posting
+- **[Customise your blog](customising-your-blog.md)** — Choose a theme that fits your style
+- **[Set up your navigation](setting-up-navigation.md)** — Add links to your menu
+- **[Create an About page](creating-pages.md)** — Tell readers who you are
+- **[Post by email](posting-by-email.md)** — Learn the tricks for email posting
 
 ## Need Help?
 
