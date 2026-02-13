@@ -15,7 +15,7 @@ If you need specific help or have a question, visit the [Support](support.md) pa
 New to Pagecord? Start here. These guides will help you set up your blog and publish your first post in no time.
 
 - [Getting Started with Pagecord](getting-started-with-pagecord.md)
-- [Importing your blog](importing-your-blog.md)
+- [Importing your blog](importing-an-existing-blog.md)
 
 ## Writing & Publishing
 
