@@ -109,7 +109,7 @@ GEM
       actionpack (>= 4.0.0)
     addressable (2.8.8)
       public_suffix (>= 2.0.2, < 8.0)
-    appsignal (4.8.2)
+    appsignal (4.8.3)
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
@@ -376,7 +376,7 @@ GEM
     puma (7.2.0)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.2.4)
+    rack (3.2.5)
     rack-attack (6.8.0)
       rack (>= 1.0, < 4)
     rack-session (2.1.1)
