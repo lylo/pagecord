@@ -327,8 +327,9 @@ GEM
       racc (~> 1.4)
     openssl (4.0.0)
     ostruct (0.6.3)
-    pagy (43.2.9)
+    pagy (43.2.10)
       json
+      uri
       yaml
     parallel (1.27.0)
     parser (3.3.10.1)
@@ -568,7 +569,7 @@ DEPENDENCIES
   nanoid (~> 2.0)
   openssl (~> 4.0)
   ostruct
-  pagy (~> 43.0)
+  pagy (~> 43.2)
   pg
   pg_query (>= 2)
   pg_search
