@@ -5,7 +5,7 @@ module SpamPrevention
     rate_limit to: 5, within: 1.hour, only: [ :create ], name: "spam-prevention-hourly"
     rate_limit to: 1, within: 2.minutes, only: [ :create ], if: :spammer_detected?, name: "spam-prevention-blocked"
 
-    before_action :form_complete_time_check, :honeypot_check, :ip_reputation_check, only: [ :create ]
+    before_action :form_complete_time_check, :honeypot_check, :ip_reputation_check, :suspicious_email_check, only: [ :create ]
   end
 
   def honeypot_check
@@ -40,6 +40,17 @@ module SpamPrevention
 
     if form_complete_time < 3.seconds
       Rails.logger.warn "Form completed too quickly. Request blocked."
+      fail
+    end
+  end
+
+  def suspicious_email_check
+    email = params.dig(:email_subscriber, :email) || params.dig(:signup, :email) || params[:email]
+    return unless email.present?
+
+    local, domain = email.to_s.split("@", 2)
+    if domain&.downcase == "gmail.com" && local.count(".") >= 3
+      Rails.logger.warn "Dotted Gmail address blocked: #{email}"
       fail
     end
   end

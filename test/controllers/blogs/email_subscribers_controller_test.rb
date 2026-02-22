@@ -51,6 +51,31 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "should not add email subscriber with suspicious dotted gmail address" do
+    assert_no_difference("EmailSubscriber.count") do
+      post email_subscribers_url(subdomain: @blog.subdomain), params: {
+        blog_subdomain: @blog.subdomain,
+        email_subscriber: { email: "fo.va.suk.er.ew2.84@gmail.com" },
+        rendered_at: signed_rendered_at
+      }, as: :turbo_stream
+    end
+
+    assert_response :success
+    assert_includes @response.body, "There's an issue with your subscription"
+  end
+
+  test "should allow gmail address with fewer than 3 dots" do
+    assert_difference("EmailSubscriber.count", 1) do
+      post email_subscribers_url(subdomain: @blog.subdomain), params: {
+        blog_subdomain: @blog.subdomain,
+        email_subscriber: { email: "first.last@gmail.com" },
+        rendered_at: signed_rendered_at
+      }, as: :turbo_stream
+    end
+
+    assert_response :success
+  end
+
   test "should handle HTML request and redirect to blog home" do
     assert_difference("EmailSubscriber.count", 1) do
       post email_subscribers_url(subdomain: @blog.subdomain), params: {
