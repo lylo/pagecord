@@ -52,24 +52,12 @@ class PostDigest < ApplicationRecord
 
   def subject
     I18n.with_locale(blog.locale) do
-      if individual?
-        post = posts.first
-        if post&.title.present?
-          post.title
-        else
-          I18n.t(
-            "email_subscribers.mailers.individual.default_subject",
-            blog_name: blog.display_name,
-            date: I18n.l(created_at.to_date, format: :post_date)
-          )
-        end
-      else
-        I18n.t(
-          "email_subscribers.mailers.weekly_digest.subject",
-          blog_name: blog.display_name,
-          date: I18n.l(created_at.to_date, format: :post_date)
-        )
-      end
+      return posts.first.title if individual? && posts.first&.title.present?
+
+      key = individual? ? "individual.default_subject" : "weekly_digest.subject"
+      I18n.t("email_subscribers.mailers.#{key}",
+        blog_name: blog.display_name,
+        date: I18n.l(created_at.to_date, format: :post_date))
     end
   end
 
