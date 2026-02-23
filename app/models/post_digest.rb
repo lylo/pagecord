@@ -11,7 +11,7 @@ class PostDigest < ApplicationRecord
   scope :delivered, -> { where.not(delivered_at: nil) }
   scope :undelivered, -> { where(delivered_at: nil) }
 
-  def self.generate_for(blog)
+  def self.generate_weekly_digest_for(blog)
     return nil unless blog.user.subscribed? && blog.email_subscriptions_enabled?
     return nil unless blog.digest?
 
@@ -34,7 +34,7 @@ class PostDigest < ApplicationRecord
     end
   end
 
-  def self.send_individual(post)
+  def self.generate_individual_for(post)
     return nil if post.individually_sent?
 
     transaction do

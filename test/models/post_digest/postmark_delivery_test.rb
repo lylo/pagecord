@@ -10,7 +10,7 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     subscriber = email_subscribers(:one)
     post = blog.posts.create!(title: "New Post", content: "Content")
-    digest = PostDigest.generate_for(blog)
+    digest = PostDigest.generate_weekly_digest_for(blog)
 
     mock_client = mock("postmark_client")
     mock_client.expects(:deliver_messages).returns([ { error_code: 0, message: "OK" } ])
@@ -32,7 +32,7 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     subscriber = email_subscribers(:one)
     post = blog.posts.create!(title: "New Post", content: "Content")
-    digest = PostDigest.generate_for(blog)
+    digest = PostDigest.generate_weekly_digest_for(blog)
 
     mock_client = mock("postmark_client")
     mock_client.expects(:deliver_messages).returns([ { error_code: 406, message: "Inactive recipient" } ])
@@ -51,7 +51,7 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     subscriber = email_subscribers(:one)
     post = blog.posts.create!(title: "New Post", content: "Content")
-    digest = PostDigest.generate_for(blog)
+    digest = PostDigest.generate_weekly_digest_for(blog)
     digest.deliveries.create!(email_subscriber: subscriber, delivered_at: Time.current)
 
     mock_client = mock("postmark_client")

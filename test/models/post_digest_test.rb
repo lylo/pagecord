@@ -8,13 +8,13 @@ class PostDigestTest < ActiveSupport::TestCase
   end
 
   test "should not create digest if no new posts since last digest" do
-    assert_nil PostDigest.generate_for(@blog)
+    assert_nil PostDigest.generate_weekly_digest_for(@blog)
   end
 
   test "should create new digest with posts since last digest" do
     new_post = create_new_post
 
-    digest = PostDigest.generate_for(@blog)
+    digest = PostDigest.generate_weekly_digest_for(@blog)
 
     assert_not_nil digest
     assert_equal 1, digest.posts.count
@@ -25,26 +25,26 @@ class PostDigestTest < ActiveSupport::TestCase
     post = create_new_post(published_at: 2.weeks.ago)
 
     assert post.published?
-    assert_nil PostDigest.generate_for(@blog)
+    assert_nil PostDigest.generate_weekly_digest_for(@blog)
   end
 
   test "should not include draft posts" do
     post = create_new_post(status: :draft)
 
     assert post.draft?
-    assert_nil PostDigest.generate_for(@blog)
+    assert_nil PostDigest.generate_weekly_digest_for(@blog)
   end
 
   test "should not create digest if email_subscriptions_enabled is false" do
     @blog.update!(email_subscriptions_enabled: false)
 
-    assert_nil PostDigest.generate_for(@blog)
+    assert_nil PostDigest.generate_weekly_digest_for(@blog)
   end
 
   test "should not create digest if user is not subscribed" do
     user = users(:vivian)
 
-    assert_nil PostDigest.generate_for(user.blog)
+    assert_nil PostDigest.generate_weekly_digest_for(user.blog)
   end
 
   test "should enqueue batch job for confirmed email subscribers" do
@@ -53,7 +53,7 @@ class PostDigestTest < ActiveSupport::TestCase
     @blog.email_subscribers.create!(email: "newsub@example.com", confirmed_at: Time.current)
     assert_equal 2, @blog.email_subscribers.confirmed.count
 
-    digest = PostDigest.generate_for(@blog)
+    digest = PostDigest.generate_weekly_digest_for(@blog)
 
     assert_enqueued_jobs 1, only: PostDigest::DeliveryJob do
       digest.deliver
@@ -65,7 +65,7 @@ class PostDigestTest < ActiveSupport::TestCase
   test "should not enqueue job if already delivered" do
     create_new_post
 
-    digest = PostDigest.generate_for(@blog)
+    digest = PostDigest.generate_weekly_digest_for(@blog)
     digest.update!(delivered_at: Time.current)
 
     assert_no_enqueued_jobs only: PostDigest::DeliveryJob do
@@ -77,7 +77,7 @@ class PostDigestTest < ActiveSupport::TestCase
     hidden_post = create_new_post(hidden: true)
 
     assert hidden_post.hidden?
-    assert_nil PostDigest.generate_for(@blog)
+    assert_nil PostDigest.generate_weekly_digest_for(@blog)
   end
 
   test "masked_id should generate consistent masked ID" do
@@ -119,10 +119,10 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_equal expected_subject, digest.subject
   end
 
-  test "send_individual creates an individual digest with one post" do
+  test "generate_individual_for creates an individual digest with one post" do
     post = create_new_post
 
-    digest = PostDigest.send_individual(post)
+    digest = PostDigest.generate_individual_for(post)
 
     assert_not_nil digest
     assert digest.individual?
@@ -130,38 +130,38 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_includes digest.posts, post
   end
 
-  test "send_individual returns nil if post already individually sent" do
+  test "generate_individual_for returns nil if post already individually sent" do
     post = create_new_post
     digest = PostDigest.create!(blog: @blog, kind: :individual, delivered_at: Time.current)
     digest.digest_posts.create!(post: post)
 
-    assert_nil PostDigest.send_individual(post)
+    assert_nil PostDigest.generate_individual_for(post)
   end
 
-  test "generate_for returns nil if blog is in individual mode" do
+  test "generate_weekly_digest_forreturns nil if blog is in individual mode" do
     @blog.update!(email_delivery_mode: :individual)
     create_new_post
 
-    assert_nil PostDigest.generate_for(@blog)
+    assert_nil PostDigest.generate_weekly_digest_for(@blog)
   end
 
-  test "generate_for excludes posts already in an individual digest" do
+  test "generate_weekly_digest_forexcludes posts already in an individual digest" do
     post = create_new_post
     digest = PostDigest.create!(blog: @blog, kind: :individual)
     digest.digest_posts.create!(post: post)
 
-    assert_nil PostDigest.generate_for(@blog)
+    assert_nil PostDigest.generate_weekly_digest_for(@blog)
   end
 
-  test "generate_for excludes individually sent posts after switching to digest mode" do
+  test "generate_weekly_digest_forexcludes individually sent posts after switching to digest mode" do
     @blog.update!(email_delivery_mode: :individual)
     sent_post = create_new_post(title: "Already Sent")
-    PostDigest.send_individual(sent_post)
+    PostDigest.generate_individual_for(sent_post)
 
     @blog.update!(email_delivery_mode: :digest)
     new_post = create_new_post(title: "Fresh Post")
 
-    digest = PostDigest.generate_for(@blog)
+    digest = PostDigest.generate_weekly_digest_for(@blog)
 
     assert_not_nil digest
     assert_includes digest.posts, new_post

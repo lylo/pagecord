@@ -15,7 +15,7 @@ module Post::Emailable
   end
 
   def send_to_subscribers!
-    digest = PostDigest.send_individual(self)
+    digest = PostDigest.generate_individual_for(self)
     digest&.deliver
   end
 end
