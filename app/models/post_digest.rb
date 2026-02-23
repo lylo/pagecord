@@ -20,7 +20,6 @@ class PostDigest < ApplicationRecord
     since_date = last_digest&.created_at || 1.week.ago
 
     new_posts = blog.posts.visible
-      .where(exclude_from_digest: false)
       .where.not(id: DigestPost.select(:post_id))
       .where("published_at > ?", since_date)
 

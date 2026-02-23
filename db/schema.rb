@@ -23,9 +23,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "token_digest"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index [ "expires_at" ], name: "index_access_requests_on_expires_at"
-    t.index [ "token_digest" ], name: "index_access_requests_on_token_digest", unique: true
-    t.index [ "user_id" ], name: "index_access_requests_on_user_id"
+    t.index ["expires_at"], name: "index_access_requests_on_expires_at"
+    t.index ["token_digest"], name: "index_access_requests_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_access_requests_on_user_id"
   end
 
   create_table "action_mailbox_inbound_emails", force: :cascade do |t|
@@ -34,7 +34,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "message_id", null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.index [ "message_id", "message_checksum" ], name: "index_action_mailbox_inbound_emails_uniqueness", unique: true
+    t.index ["message_id", "message_checksum"], name: "index_action_mailbox_inbound_emails_uniqueness", unique: true
   end
 
   create_table "action_text_rich_texts", force: :cascade do |t|
@@ -44,8 +44,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.bigint "record_id", null: false
     t.string "record_type", null: false
     t.datetime "updated_at", null: false
-    t.index [ "body" ], name: "index_action_text_rich_texts_on_body_trigram", opclass: :gin_trgm_ops, using: :gin
-    t.index [ "record_type", "record_id", "name" ], name: "index_action_text_rich_texts_uniqueness", unique: true
+    t.index ["body"], name: "index_action_text_rich_texts_on_body_trigram", opclass: :gin_trgm_ops, using: :gin
+    t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
   end
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -54,8 +54,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "name", null: false
     t.bigint "record_id", null: false
     t.string "record_type", null: false
-    t.index [ "blob_id" ], name: "index_active_storage_attachments_on_blob_id"
-    t.index [ "record_type", "record_id", "name", "blob_id" ], name: "index_active_storage_attachments_uniqueness", unique: true
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -67,13 +67,13 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "key", null: false
     t.text "metadata"
     t.string "service_name", null: false
-    t.index [ "key" ], name: "index_active_storage_blobs_on_key", unique: true
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
   create_table "active_storage_variant_records", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
-    t.index [ "blob_id", "variation_digest" ], name: "index_active_storage_variant_records_uniqueness", unique: true
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
   create_table "blog_exports", force: :cascade do |t|
@@ -120,20 +120,10 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
-    t.index [ "custom_domain" ], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
-    t.index [ "home_page_id" ], name: "index_blogs_on_home_page_id"
-    t.index [ "subdomain" ], name: "index_blogs_on_subdomain", unique: true
-    t.index [ "user_id" ], name: "index_blogs_on_user_id"
-  end
-
-  create_table "contact_messages", force: :cascade do |t|
-    t.bigint "blog_id", null: false
-    t.datetime "created_at", null: false
-    t.string "email", null: false
-    t.text "message", null: false
-    t.string "name", null: false
-    t.datetime "updated_at", null: false
-    t.index [ "blog_id" ], name: "index_contact_messages_on_blog_id"
+    t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
+    t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
+    t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
+    t.index ["user_id"], name: "index_blogs_on_user_id"
   end
 
   create_table "content_moderations", force: :cascade do |t|
@@ -146,8 +136,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.bigint "post_id", null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.index [ "post_id" ], name: "index_content_moderations_on_post_id", unique: true
-    t.index [ "status" ], name: "index_content_moderations_on_status"
+    t.index ["post_id"], name: "index_content_moderations_on_post_id", unique: true
+    t.index ["status"], name: "index_content_moderations_on_status"
   end
 
   create_table "custom_domain_changes", force: :cascade do |t|
@@ -162,8 +152,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.bigint "post_digest_id", null: false
     t.bigint "post_id", null: false
     t.datetime "updated_at", null: false
-    t.index [ "post_digest_id" ], name: "index_digest_posts_on_post_digest_id"
-    t.index [ "post_id" ], name: "index_digest_posts_on_post_id"
+    t.index ["post_digest_id"], name: "index_digest_posts_on_post_digest_id"
+    t.index ["post_id"], name: "index_digest_posts_on_post_id"
   end
 
   create_table "email_change_requests", force: :cascade do |t|
@@ -174,9 +164,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "token_digest"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index [ "expires_at" ], name: "index_email_change_requests_on_expires_at"
-    t.index [ "token_digest" ], name: "index_email_change_requests_on_token_digest", unique: true
-    t.index [ "user_id" ], name: "index_email_change_requests_on_user_id"
+    t.index ["expires_at"], name: "index_email_change_requests_on_expires_at"
+    t.index ["token_digest"], name: "index_email_change_requests_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_email_change_requests_on_user_id"
   end
 
   create_table "email_subscribers", force: :cascade do |t|
@@ -186,7 +176,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "email", null: false
     t.string "token", null: false
     t.datetime "updated_at", null: false
-    t.index [ "blog_id", "email" ], name: "index_email_subscribers_on_blog_id_and_email", unique: true
+    t.index ["blog_id", "email"], name: "index_email_subscribers_on_blog_id_and_email", unique: true
   end
 
   create_table "navigation_items", force: :cascade do |t|
@@ -199,8 +189,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "type", null: false
     t.datetime "updated_at", null: false
     t.string "url"
-    t.index [ "blog_id", "position" ], name: "index_navigation_items_on_blog_id_and_position"
-    t.index [ "post_id" ], name: "index_navigation_items_on_post_id"
+    t.index ["blog_id", "position"], name: "index_navigation_items_on_blog_id_and_position"
+    t.index ["post_id"], name: "index_navigation_items_on_post_id"
   end
 
   create_table "open_graph_images", force: :cascade do |t|
@@ -215,7 +205,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.jsonb "payload"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index [ "user_id" ], name: "index_paddle_events_on_user_id"
+    t.index ["user_id"], name: "index_paddle_events_on_user_id"
   end
 
   create_table "page_views", force: :cascade do |t|
@@ -232,12 +222,12 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.text "user_agent"
     t.datetime "viewed_at", null: false
     t.string "visitor_hash", null: false
-    t.index [ "blog_id", "country", "viewed_at" ], name: "index_page_views_on_blog_country_viewed_at"
-    t.index [ "blog_id", "referrer_domain", "viewed_at" ], name: "index_page_views_on_blog_referrer_domain_viewed_at"
-    t.index [ "blog_id", "viewed_at" ], name: "index_page_views_on_blog_id_and_viewed_at"
-    t.index [ "post_id" ], name: "index_page_views_on_post_id"
-    t.index [ "viewed_at" ], name: "index_page_views_on_viewed_at"
-    t.index [ "visitor_hash", "post_id", "viewed_at" ], name: "index_page_views_on_visitor_hash_and_post_id_and_viewed_at"
+    t.index ["blog_id", "country", "viewed_at"], name: "index_page_views_on_blog_country_viewed_at"
+    t.index ["blog_id", "referrer_domain", "viewed_at"], name: "index_page_views_on_blog_referrer_domain_viewed_at"
+    t.index ["blog_id", "viewed_at"], name: "index_page_views_on_blog_id_and_viewed_at"
+    t.index ["post_id"], name: "index_page_views_on_post_id"
+    t.index ["viewed_at"], name: "index_page_views_on_viewed_at"
+    t.index ["visitor_hash", "post_id", "viewed_at"], name: "index_page_views_on_visitor_hash_and_post_id_and_viewed_at"
   end
 
   create_table "pghero_query_stats", force: :cascade do |t|
@@ -248,7 +238,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.bigint "query_hash"
     t.float "total_time"
     t.text "user"
-    t.index [ "database", "captured_at" ], name: "index_pghero_query_stats_on_database_and_captured_at"
+    t.index ["database", "captured_at"], name: "index_pghero_query_stats_on_database_and_captured_at"
   end
 
   create_table "pghero_space_stats", force: :cascade do |t|
@@ -257,7 +247,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.text "relation"
     t.text "schema"
     t.bigint "size"
-    t.index [ "database", "captured_at" ], name: "index_pghero_space_stats_on_database_and_captured_at"
+    t.index ["database", "captured_at"], name: "index_pghero_space_stats_on_database_and_captured_at"
   end
 
   create_table "post_digest_deliveries", force: :cascade do |t|
@@ -266,8 +256,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.bigint "email_subscriber_id", null: false
     t.bigint "post_digest_id", null: false
     t.datetime "updated_at", null: false
-    t.index [ "email_subscriber_id" ], name: "index_post_digest_deliveries_on_email_subscriber_id"
-    t.index [ "post_digest_id" ], name: "index_post_digest_deliveries_on_post_digest_id"
+    t.index ["email_subscriber_id"], name: "index_post_digest_deliveries_on_email_subscriber_id"
+    t.index ["post_digest_id"], name: "index_post_digest_deliveries_on_post_digest_id"
   end
 
   create_table "post_digests", force: :cascade do |t|
@@ -276,7 +266,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.datetime "delivered_at"
     t.integer "kind", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.index [ "blog_id" ], name: "index_post_digests_on_blog_id"
+    t.index ["blog_id"], name: "index_post_digests_on_blog_id"
   end
 
   create_table "post_replies", force: :cascade do |t|
@@ -288,7 +278,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.bigint "post_id", null: false
     t.string "subject", null: false
     t.datetime "updated_at", null: false
-    t.index [ "post_id" ], name: "index_post_replies_on_post_id"
+    t.index ["post_id"], name: "index_post_replies_on_post_id"
   end
 
   create_table "posts", force: :cascade do |t|
@@ -296,7 +286,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "canonical_url"
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
-    t.boolean "exclude_from_digest", default: false, null: false
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.string "locale"
@@ -311,20 +300,20 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.integer "upvotes_count", default: 0, null: false
-    t.index [ "blog_id", "is_page" ], name: "index_posts_on_blog_id_and_is_page"
-    t.index [ "blog_id", "slug" ], name: "index_posts_on_blog_id_and_slug", unique: true
-    t.index [ "blog_id", "status", "published_at" ], name: "index_posts_published_lookup", order: { published_at: :desc }, where: "(status = 1)"
-    t.index [ "blog_id", "status" ], name: "index_posts_search_filter", where: "(status = ANY (ARRAY[0, 1]))"
-    t.index [ "blog_id" ], name: "index_posts_on_blog_id_published_count_only", where: "((is_page = false) AND (status = 1))"
-    t.index [ "discarded_at" ], name: "index_posts_on_discarded_at"
-    t.index [ "hidden" ], name: "index_posts_on_hidden"
-    t.index [ "is_page" ], name: "index_posts_on_is_page"
-    t.index [ "locale" ], name: "index_posts_on_locale"
-    t.index [ "published_at" ], name: "index_posts_on_published_at"
-    t.index [ "status" ], name: "index_posts_on_status"
-    t.index [ "tag_list" ], name: "index_posts_on_tag_list", using: :gin
-    t.index [ "title" ], name: "index_posts_on_title_trigram", opclass: :gin_trgm_ops, using: :gin
-    t.index [ "token" ], name: "index_posts_on_token", unique: true
+    t.index ["blog_id", "is_page"], name: "index_posts_on_blog_id_and_is_page"
+    t.index ["blog_id", "slug"], name: "index_posts_on_blog_id_and_slug", unique: true
+    t.index ["blog_id", "status", "published_at"], name: "index_posts_published_lookup", order: { published_at: :desc }, where: "(status = 1)"
+    t.index ["blog_id", "status"], name: "index_posts_search_filter", where: "(status = ANY (ARRAY[0, 1]))"
+    t.index ["blog_id"], name: "index_posts_on_blog_id_published_count_only", where: "((is_page = false) AND (status = 1))"
+    t.index ["discarded_at"], name: "index_posts_on_discarded_at"
+    t.index ["hidden"], name: "index_posts_on_hidden"
+    t.index ["is_page"], name: "index_posts_on_is_page"
+    t.index ["locale"], name: "index_posts_on_locale"
+    t.index ["published_at"], name: "index_posts_on_published_at"
+    t.index ["status"], name: "index_posts_on_status"
+    t.index ["tag_list"], name: "index_posts_on_tag_list", using: :gin
+    t.index ["title"], name: "index_posts_on_title_trigram", opclass: :gin_trgm_ops, using: :gin
+    t.index ["token"], name: "index_posts_on_token", unique: true
   end
 
   create_table "rollups", force: :cascade do |t|
@@ -333,7 +322,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "name", null: false
     t.datetime "time", null: false
     t.float "value"
-    t.index [ "name", "interval", "time", "dimensions" ], name: "index_rollups_on_name_and_interval_and_time_and_dimensions", unique: true
+    t.index ["name", "interval", "time", "dimensions"], name: "index_rollups_on_name_and_interval_and_time_and_dimensions", unique: true
   end
 
   create_table "sender_email_addresses", force: :cascade do |t|
@@ -344,9 +333,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.datetime "expires_at"
     t.string "token_digest"
     t.datetime "updated_at", null: false
-    t.index [ "blog_id", "email" ], name: "index_sender_email_addresses_on_blog_id_and_email", unique: true
-    t.index [ "expires_at" ], name: "index_sender_email_addresses_on_expires_at"
-    t.index [ "token_digest" ], name: "index_sender_email_addresses_on_token_digest", unique: true
+    t.index ["blog_id", "email"], name: "index_sender_email_addresses_on_blog_id_and_email", unique: true
+    t.index ["expires_at"], name: "index_sender_email_addresses_on_expires_at"
+    t.index ["token_digest"], name: "index_sender_email_addresses_on_token_digest", unique: true
   end
 
   create_table "spam_detections", force: :cascade do |t|
@@ -358,8 +347,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.datetime "reviewed_at"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.index [ "blog_id", "detected_at" ], name: "index_spam_detections_on_blog_id_and_detected_at", order: { detected_at: :desc }
-    t.index [ "status" ], name: "index_spam_detections_on_status"
+    t.index ["blog_id", "detected_at"], name: "index_spam_detections_on_blog_id_and_detected_at", order: { detected_at: :desc }
+    t.index ["status"], name: "index_spam_detections_on_status"
   end
 
   create_table "subscription_renewal_reminders", force: :cascade do |t|
@@ -368,7 +357,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.datetime "sent_at", null: false
     t.bigint "subscription_id", null: false
     t.datetime "updated_at", null: false
-    t.index [ "subscription_id", "period" ], name: "idx_on_subscription_id_period_ee77f6799e", unique: true
+    t.index ["subscription_id", "period"], name: "idx_on_subscription_id_period_ee77f6799e", unique: true
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -382,7 +371,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.integer "unit_price"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index [ "user_id" ], name: "index_subscriptions_on_user_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
   create_table "unengaged_follow_ups", force: :cascade do |t|
@@ -390,7 +379,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.datetime "sent_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index [ "user_id" ], name: "index_unengaged_follow_ups_on_user_id", unique: true
+    t.index ["user_id"], name: "index_unengaged_follow_ups_on_user_id", unique: true
   end
 
   create_table "upvotes", force: :cascade do |t|
@@ -398,7 +387,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "hash_id", null: false
     t.bigint "post_id", null: false
     t.datetime "updated_at", null: false
-    t.index [ "post_id", "hash_id" ], name: "index_upvotes_on_post_id_and_hash_id", unique: true
+    t.index ["post_id", "hash_id"], name: "index_upvotes_on_post_id_and_hash_id", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -413,9 +402,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.date "trial_ends_at"
     t.datetime "updated_at", null: false
     t.boolean "verified", default: false
-    t.index [ "discarded_at" ], name: "index_users_on_discarded_at"
-    t.index [ "email" ], name: "index_users_on_email", unique: true
-    t.index [ "password_digest" ], name: "index_users_on_password_digest"
+    t.index ["discarded_at"], name: "index_users_on_discarded_at"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["password_digest"], name: "index_users_on_password_digest"
   end
 
   add_foreign_key "access_requests", "users"
@@ -424,7 +413,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
   add_foreign_key "blog_exports", "blogs"
   add_foreign_key "blogs", "posts", column: "home_page_id", on_delete: :nullify
   add_foreign_key "blogs", "users"
-  add_foreign_key "contact_messages", "blogs"
   add_foreign_key "content_moderations", "posts"
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"

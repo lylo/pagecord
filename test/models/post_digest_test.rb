@@ -145,12 +145,6 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_nil PostDigest.generate_for(@blog)
   end
 
-  test "generate_for excludes posts with exclude_from_digest true" do
-    create_new_post(exclude_from_digest: true)
-
-    assert_nil PostDigest.generate_for(@blog)
-  end
-
   test "generate_for excludes posts already in an individual digest" do
     post = create_new_post
     digest = PostDigest.create!(blog: @blog, kind: :individual)
