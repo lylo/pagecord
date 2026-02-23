@@ -8,6 +8,7 @@ module Post::Emailable
   def individually_sendable?
     !is_page? && published? && kept? && !hidden? &&
       !individually_sent? &&
+      blog.individual? &&
       blog.email_subscriptions_enabled? &&
       blog.user.subscribed? &&
       blog.email_subscribers.confirmed.exists?
