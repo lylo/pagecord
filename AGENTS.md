@@ -96,7 +96,11 @@ Docker: prefix commands with `docker-compose exec web`
 - Referrer tracking with domain normalization, search/social classification via `Referrer` model
 
 ### Email Features
-- **Post digests**: Weekly emails (Tuesdays) to confirmed EmailSubscribers. `PostDigest` → `PostDigest::DeliveryJob` → `PostDigest::PostmarkDelivery` (batches of 50). Requires `email_subscriptions_enabled` + `subscribed?`. Custom sender addresses via `SenderEmailAddress` (max 3 per blog, requires verification).
+- **Post digests**: Emails to confirmed EmailSubscribers. Two delivery modes (`Blog#email_delivery_mode` enum):
+  - **Digest** (default): Weekly batch emails (Tuesdays) via `PostDigestScheduler`. `PostDigest.generate_for` finds new posts since last digest.
+  - **Individual**: User manually sends single posts from the post editor via `App::Posts::BroadcastsController`. `PostDigest.send_individual` creates a one-post digest. `Post::Emailable` concern provides `individually_sendable?`/`send_to_subscribers!`.
+  - Both modes reuse the same infrastructure: `PostDigest` (with `kind` enum: `weekly_digest`/`individual`) → `PostDigest::DeliveryJob` → `PostDigest::PostmarkDelivery` (batches of 50). Posts sent individually are excluded from future weekly digests via `DigestPost` join records.
+  - Requires `email_subscriptions_enabled` + `subscribed?`. Custom sender addresses via `SenderEmailAddress` (max 3 per blog, requires verification).
 - **Reply by email**: `Post::Reply` model. Replies forwarded to blog owner via `ReplyMailer`. Digest replies handled by `DigestReplyMailer`.
 - **Blog export**: HTML or Markdown ZIP via `BlogExportJob`. Auto-cleanup after 7 days. Rate limited to 5/day.
 
