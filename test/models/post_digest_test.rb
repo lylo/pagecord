@@ -153,6 +153,21 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_nil PostDigest.generate_for(@blog)
   end
 
+  test "generate_for excludes individually sent posts after switching to digest mode" do
+    @blog.update!(email_delivery_mode: :individual)
+    sent_post = create_new_post(title: "Already Sent")
+    PostDigest.send_individual(sent_post)
+
+    @blog.update!(email_delivery_mode: :digest)
+    new_post = create_new_post(title: "Fresh Post")
+
+    digest = PostDigest.generate_for(@blog)
+
+    assert_not_nil digest
+    assert_includes digest.posts, new_post
+    assert_not_includes digest.posts, sent_post
+  end
+
   test "subject returns post title for individual kind" do
     post = create_new_post(title: "My Great Post")
     digest = PostDigest.create!(blog: @blog, kind: :individual)
