@@ -112,7 +112,6 @@ Rails.application.routes.draw do
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
       resources :navigation_items, only: [ :index, :create, :update, :destroy ]
-      resources :email_subscribers, only: [ :index ]
       resources :email_change_requests, only: [ :create, :destroy ] do
         member do
           post :resend
