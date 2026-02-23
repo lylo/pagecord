@@ -5,6 +5,7 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
 
   def create
     @subscriber = @blog.email_subscribers.new(email_subscriber_params)
+    @subscriber.country = request.headers["CF-IPCountry"]
     default_message = I18n.t("email_subscribers.create.success_message", email: @subscriber.email)
 
     if @blog.email_subscribers.find_by(email: @subscriber.email)
