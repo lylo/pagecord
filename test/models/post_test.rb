@@ -356,6 +356,13 @@ class PostTest < ActiveSupport::TestCase
     end
   end
 
+  test "locale should normalize blank string to nil" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Test post", locale: "")
+
+    assert_nil post.locale
+  end
+
   test "locale should reject invalid locales" do
     blog = blogs(:joel)
     post = blog.posts.build(content: "Test post", locale: "invalid")
