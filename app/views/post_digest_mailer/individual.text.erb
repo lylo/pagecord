@@ -1,7 +1,3 @@
-<% if @post.title %>
-## <%= @post.title %>
-<% end %>
-
 <%= @post.content.to_plain_text %>
 
 <%= post_url(@post) %>
