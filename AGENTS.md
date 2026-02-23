@@ -43,7 +43,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 ## Git Commits
 
-- No footers ("Generated with Claude Code", "Co-Authored-By", etc.)
+- **NEVER** add "Co-Authored-By", "Generated with Claude Code", or any AI attribution to commit messages, PR descriptions, or code comments. This is a hard rule — no exceptions.
 - Ask for human review before committing generated code
 
 ## Tooling

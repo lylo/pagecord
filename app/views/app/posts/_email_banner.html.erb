@@ -6,7 +6,7 @@
         <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" %>
         <span>This post will be included in the next weekly digest.</span>
       </div>
-    <% elsif @blog.individual? %>
+    <% elsif @blog.individual? && current_features.enabled?(:individual_email_delivery) %>
       <% if @post.individually_sent? %>
         <% digest = @post.post_digests.individual.first %>
         <div class="relative">

@@ -2,7 +2,7 @@ class App::Posts::BroadcastsController < AppController
   def create
     @post = Current.user.blog.posts.kept.find_by!(token: params[:post_token])
 
-    if @post.individually_sendable?
+    if current_features.enabled?(:individual_email_delivery) && @post.individually_sendable?
       @post.send_to_subscribers!
       redirect_to edit_app_post_path(@post), notice: "Sent to subscribers."
     else
