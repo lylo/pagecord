@@ -11,39 +11,30 @@ class PostDigestMailer < PostmarkMailer
     @digest = params[:digest]
     @posts = @digest.posts.with_rich_text_content.order(published_at: :desc)
     @subscriber = params[:subscriber]
-
-    set_broadcast_headers(@digest, @subscriber)
-
-    I18n.with_locale(@subscriber.blog.locale) do
-      mail(
-        to: @subscriber.email,
-        from: sender_address_for(@subscriber.blog),
-        reply_to: "digest-reply-#{@digest.masked_id}@post.pagecord.com",
-        subject: @digest.subject,
-        message_stream: "broadcast"
-      )
-    end
+    deliver_broadcast
   end
 
   def individual
     @digest = params[:digest]
     @post = @digest.posts.with_rich_text_content.first
     @subscriber = params[:subscriber]
-
-    set_broadcast_headers(@digest, @subscriber)
-
-    I18n.with_locale(@subscriber.blog.locale) do
-      mail(
-        to: @subscriber.email,
-        from: sender_address_for(@subscriber.blog),
-        reply_to: "digest-reply-#{@digest.masked_id}@post.pagecord.com",
-        subject: @digest.subject,
-        message_stream: "broadcast"
-      )
-    end
+    deliver_broadcast
   end
 
   private
+
+    def deliver_broadcast
+      set_broadcast_headers(@digest, @subscriber)
+      I18n.with_locale(@subscriber.blog.locale) do
+        mail(
+          to: @subscriber.email,
+          from: sender_address_for(@subscriber.blog),
+          reply_to: "digest-reply-#{@digest.masked_id}@post.pagecord.com",
+          subject: @digest.subject,
+          message_stream: "broadcast"
+        )
+      end
+    end
 
     def set_broadcast_headers(digest, subscriber)
       one_click_url = email_subscriber_one_click_unsubscribe_url_for(subscriber)
