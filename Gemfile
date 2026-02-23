@@ -20,7 +20,7 @@ gem "turbo-rails"
 gem "puma", ">= 5.0"
 
 # database / caching
-gem "dalli"
+gem "dalli", "~> 4.0"
 gem "kredis", "~> 1.7"
 gem "pg"
 gem "redis", ">= 4.0.1"

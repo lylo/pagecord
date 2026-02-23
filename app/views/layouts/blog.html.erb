@@ -85,15 +85,15 @@
         <%= render "blogs/flash" %>
 
         <%= yield %>
+
+        <% if @blog&.show_branding? %>
+          <footer class="blog-footer">
+            <%= link_to "https://pagecord.com", id: "brand", aria: { label: "Pagecord Home" } do %>
+              <%= inline_svg_tag "logo-black.svg" %>
+            <% end %>
+          </footer>
+        <% end %>
       </div>
     </main>
-
-    <footer class="blog-footer">
-      <% if @blog&.show_branding? %>
-        <%= link_to "https://pagecord.com", id: "brand", aria: { label: "Pagecord Home" } do %>
-          <%= inline_svg_tag "logo-black.svg" %>
-        <% end %>
-      <% end %>
-    </footer>
   </body>
 </html>

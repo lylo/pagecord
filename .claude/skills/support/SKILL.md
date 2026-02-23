@@ -77,6 +77,8 @@ A ready-to-send email reply to the customer. Keep it:
 - Specific to their issue
 - Action-oriented when possible
 
+**Formatting**: Output the draft response as plain text, NOT as a blockquote (no `>` prefixes). This makes it easy to copy and paste.
+
 ## Tips
 
 - Check help.pagecord.com first for common questions - we may already have a help article

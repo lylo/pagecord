@@ -1,18 +1,22 @@
 class Blogs::PageViewsController < Blogs::BaseController
   skip_forgery_protection
+  rate_limit to: 30, within: 1.minute, only: :create
 
   def create
     return head :no_content if params[:referrer]&.match?(%r{pagecord\.com/app})
     return head :no_content if Current.user == @blog.user
+    return head :no_content if PageView.bot_user_agent?(request.user_agent)
 
-    post = @blog.all_posts.kept.published.released.find_by(token: params[:post_token]) if params[:post_token].present?
+    TrackPageViewJob.perform_later(
+      @blog.id,
+      params[:post_token],
+      request.remote_ip,
+      request.user_agent,
+      params[:path],
+      params[:referrer],
+      request.headers["CF-IPCountry"]
+    )
 
-    PageView.track(blog: @blog, post: post, request: request, path: params[:path], referrer: params[:referrer])
-
-    head :no_content
-  rescue => e
-    Rails.logger.error "Analytics error: #{e.message}\n#{e.backtrace.take(5).join("\n")}"
-    Sentry.capture_message("Analytics error: #{e.message}")
     head :no_content
   end
 end

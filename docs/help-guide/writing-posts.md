@@ -94,7 +94,19 @@ Select **Set Language** from the drop-down menu (or press **L**) to choose a lan
 
 The post language is used for the `lang` attribute in your HTML and helps browsers and screen readers render text correctly.
 
+## Hidden posts
+
+You can hide a post from your blog feed while keeping it accessible via its direct link. This is useful for posts you want to share privately or keep as a reference without showing them on your blog.
+
+To hide a post, select **Post Visibility** from the drop-down menu and check "Hide this post on my blog".
+
+## Canonical URLs
+
+If you're cross-posting content from another site, you can set a canonical URL to tell search engines where the original version lives. This helps avoid duplicate content issues.
+
+To set a canonical URL, select **Canonical URL** from the drop-down menu when editing a post.
+
 ## Deleting posts
 
-To delete a post, select **Delete Post** from the drop-down menu.
+To delete a post, select **Delete Post** from the drop-down menu. Deleted posts are moved to the trash and kept for 30 days, so you can restore them if you change your mind.
 
