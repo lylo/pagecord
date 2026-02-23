@@ -76,6 +76,23 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should save country from CF-IPCountry header" do
+    post email_subscribers_url(subdomain: @blog.subdomain),
+      params: { blog_subdomain: @blog.subdomain, email_subscriber: { email: "geo@example.com" }, rendered_at: signed_rendered_at },
+      headers: { "CF-IPCountry" => "DE" },
+      as: :turbo_stream
+
+    assert_equal "DE", EmailSubscriber.find_by(email: "geo@example.com").country
+  end
+
+  test "should leave country nil when CF-IPCountry header is missing" do
+    post email_subscribers_url(subdomain: @blog.subdomain),
+      params: { blog_subdomain: @blog.subdomain, email_subscriber: { email: "nogeo@example.com" }, rendered_at: signed_rendered_at },
+      as: :turbo_stream
+
+    assert_nil EmailSubscriber.find_by(email: "nogeo@example.com").country
+  end
+
   test "should handle HTML request and redirect to blog home" do
     assert_difference("EmailSubscriber.count", 1) do
       post email_subscribers_url(subdomain: @blog.subdomain), params: {

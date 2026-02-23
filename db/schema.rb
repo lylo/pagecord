@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -99,6 +99,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.string "custom_theme_text_light"
     t.string "delivery_email"
     t.datetime "discarded_at"
+    t.integer "email_delivery_mode", default: 0, null: false
     t.boolean "email_subscriptions_enabled", default: true, null: false
     t.string "features", default: [], array: true
     t.string "fediverse_author_attribution"
@@ -171,6 +172,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
   create_table "email_subscribers", force: :cascade do |t|
     t.bigint "blog_id", null: false
     t.datetime "confirmed_at"
+    t.string "country"
     t.datetime "created_at", null: false
     t.string "email", null: false
     t.string "token", null: false
@@ -263,6 +265,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_171020) do
     t.bigint "blog_id", null: false
     t.datetime "created_at", null: false
     t.datetime "delivered_at"
+    t.integer "kind", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id"], name: "index_post_digests_on_blog_id"
   end
