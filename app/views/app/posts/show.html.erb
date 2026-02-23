@@ -4,17 +4,17 @@
   <article>
     <%= render "blogs/posts/post_title", post: @post %>
     <%= render "blogs/posts/post_content", post: @post %>
-  </article>
 
-  <% if @post.post? %>
-    <% if @post.tag_list.present? %>
-      <%= render "blogs/posts/tags", post: @post %>
-    <% end %>
-
-    <footer>
-      <%= link_to app_post_path(@post), class: "post-date", data: { turbo_frame: "_top" } do %>
-        <%= local_time @post.display_date, format: published_at_date_format %>
+    <% if @post.post? %>
+      <% if @post.tag_list.present? %>
+        <%= render "blogs/posts/tags", post: @post %>
       <% end %>
-    </footer>
-  <% end %>
+
+      <footer>
+        <%= link_to app_post_path(@post), class: "post-date", data: { turbo_frame: "_top" } do %>
+          <%= local_time @post.display_date, format: published_at_date_format %>
+        <% end %>
+      </footer>
+    <% end %>
+  </article>
 </div>
