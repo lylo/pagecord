@@ -42,6 +42,8 @@ class Tidal extends MediaSite {
           iframe.height = "120" // tracks - compact player
         }
 
+        iframe.style.maxWidth = "660px"
+        iframe.style.marginInline = "auto"
         return iframe
       }
     )

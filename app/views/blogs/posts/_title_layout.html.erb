@@ -16,7 +16,7 @@
   </div>
 
   <% if @pagy.next %>
-    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, last_visible_year: previous_year, host: request.host), loading: :lazy %>
+    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, last_visible_year: previous_year, tag: params[:tag], host: request.host), loading: :lazy %>
   <% end %>
 <% end %>
 

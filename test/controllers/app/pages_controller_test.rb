@@ -91,11 +91,12 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert @page.draft?
   end
 
-  test "should destroy page" do
-    assert_difference("@blog.pages.count", -1) do
-      delete app_page_path(@page)
+  test "should discard page" do
+    page_to_discard = @blog.pages.first
+    assert_no_difference("@blog.pages.count") do
+      delete app_page_path(page_to_discard)
     end
-
+    assert page_to_discard.reload.discarded?
     assert_redirected_to app_pages_path
   end
 

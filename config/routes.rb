@@ -82,8 +82,15 @@ Rails.application.routes.draw do
   namespace :app do
     resource :upgrade_banner, only: [ :destroy ]
     resources :analytics, only: [ :index ]
+    namespace :posts do
+      resources :trash, only: [ :index, :destroy ], param: :token
+    end
     resources :posts, param: :token do
       resource :broadcast, only: [ :create ], controller: "posts/broadcasts"
+    end
+
+    namespace :pages do
+      resources :trash, only: [ :index, :destroy ], param: :token
     end
     resources :pages, except: [ :show ], param: :token do
       member do

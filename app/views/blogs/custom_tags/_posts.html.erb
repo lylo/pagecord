@@ -1,4 +1,4 @@
-<%- date_format = local_assigns[:limit] ? :post_date_short : :post_date -%>
+<%- date_format = :post_date -%>
 <ul class="posts-list"><%- posts.each do |post| -%>
 <li><%= local_time post.published_at, format: date_format %> <%= link_to post.display_title, post_path(post), data: { turbo_prefetch: false } %></li><%- end -%>
 </ul>

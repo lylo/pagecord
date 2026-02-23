@@ -91,6 +91,18 @@
       </div>
     </div>
 
+    <div class="<%= 'hidden' unless @post.locale.present? %> mb-8" data-post-attributes-target="section" data-section="locale">
+      <div class="mt-4 font-bold">
+        <%= form.label :locale, "Post Language" %>
+      </div>
+      <div class="mt-2">
+        <%= form.select :locale,
+            Post.available_locales,
+            { include_blank: "Use blog default (#{Post.locale_name(@post.blog.locale)})" },
+            class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
+      </div>
+    </div>
+
     <%= form.text_field :title,
       placeholder: "Optional post title",
       class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
@@ -99,13 +111,12 @@
     %>
 
     <fieldset>
-      <% controllers = current_features.enabled?(:lexxy_ios) ? "lexxy ios-toolbar" : "lexxy" %>
       <%= form.rich_text_area :content,
         placeholder: "Craft your draft...",
         class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
         spellcheck: true,
         autocorrect: "on",
-        data: { controller: controllers, attachments: Current.user.has_premium_access?, autosave_target: "content" } %>
+        data: { controller: "lexxy ios-toolbar", attachments: Current.user.has_premium_access?, autosave_target: "content" } %>
 
       <div class="field-error"><%= @post.errors[:content].first if @post.errors[:content].any? %></div>
     </fieldset>
