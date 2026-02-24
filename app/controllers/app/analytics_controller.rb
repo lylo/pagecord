@@ -7,14 +7,14 @@ class App::AnalyticsController < AppController
       @analytics_data = summary.analytics_data(@view_type, @date)
       @chart_data = chart.chart_data(@view_type, @date, @analytics_data)
       @path_popularity = leaderboard.post_popularity_data(@view_type, @date)
-      @referrer_data = referrers.referrer_data(@view_type, @date) if referrers_enabled?
+      @referrer_data = referrers.referrer_data(@view_type, @date)
       @country_data = countries.country_data(@view_type, @date) if countries_enabled?
     else
       # Demo data for non-premium users
       @analytics_data = demo_analytics_data
       @chart_data = demo_chart_data
       @path_popularity = demo_path_popularity_data
-      @referrer_data = demo_referrer_data if referrers_enabled?
+      @referrer_data = demo_referrer_data
       @country_data = demo_country_data if countries_enabled?
     end
   end
@@ -43,10 +43,6 @@ class App::AnalyticsController < AppController
 
     def user_timezone
       Current.user.timezone || "UTC"
-    end
-
-    def referrers_enabled?
-      current_features.enabled?(:analytics_referrers)
     end
 
     def countries_enabled?
