@@ -78,6 +78,10 @@
     margin-block-start: 0;
   }
 
+  .lexxy-content__table-wrapper {
+    margin-block: calc(var(--lexxy-content-margin) * 1.5);
+  }
+
   blockquote {
     padding-block: 0.375em;
   }
