@@ -215,6 +215,7 @@ Rails.application.routes.draw do
   constraints(DomainConstraints.method(:default_domain?)) do
     get "/sitemap.xml", to: "public#sitemap", as: :public_sitemap, format: :xml
     get "/robots.txt", to: "public#robots", as: :robots, format: :text
+    get "/llms.txt", to: "public/llms#show", as: :llms_txt, format: :text
     get "/terms", to: "public#terms", as: :terms
     get "/privacy", to: "public#privacy", as: :privacy
     get "/faq", to: "public#faq", as: :faq

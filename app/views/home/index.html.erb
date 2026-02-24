@@ -1,3 +1,43 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Pagecord",
+  "url": "https://pagecord.com",
+  "description": "A minimalist blogging platform for independent writers. Post by email or use the rich text editor. Create your home page and blog in seconds.",
+  "applicationCategory": "BloggingApplication",
+  "operatingSystem": "Any (web-based)",
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Classic",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    {
+      "@type": "Offer",
+      "name": "Premium (Annual)",
+      "price": "<%= Subscription.price(:annual) %>",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "billingDuration": "P1Y"
+      }
+    },
+    {
+      "@type": "Offer",
+      "name": "Premium (Monthly)",
+      "price": "<%= Subscription.price(:monthly) %>",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "billingDuration": "P1M"
+      }
+    }
+  ]
+}
+</script>
+
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight">
   Blog Without The Slog
