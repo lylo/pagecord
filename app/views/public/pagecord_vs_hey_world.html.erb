@@ -2,6 +2,10 @@
   Pagecord vs HEY World: Email-to-blog without the $99/year HEY requirement
 <% end %>
 
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Better HEY World Alternative") %>
+<% end %>
+
 <%= content_for :meta_description do %>
   HEY World locks you into HEY email ($99/year). Pagecord works with any email provider—Gmail, Fastmail, whatever you've got. Free forever or $29/year. More features, more flexibility.
 <% end %>

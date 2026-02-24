@@ -2,6 +2,10 @@
   Pagecord vs Medium: Your readers won't hit a paywall. No popups. You own your content.
 <% end %>
 
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Better Medium Alternative") %>
+<% end %>
+
 <%= content_for :meta_description do %>
   Medium puts your writing behind a paywall and bombards readers with popups. Pagecord is free to read, zero popups, and you own your domain. Free forever or $29/year.
 <% end %>

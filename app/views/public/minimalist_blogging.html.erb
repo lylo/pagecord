@@ -2,6 +2,10 @@
   Minimalist Blogging Platform: Write, Publish, Done. No clutter, no distractions.
 <% end %>
 
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "Minimalist Blogging for People Who Actually Want to Write") %>
+<% end %>
+
 <%= content_for :meta_description do %>
   Pagecord is a minimalist blogging platform that gets out of your way. No complex dashboards, no plugins, no themes to configure. Just write and publish. Free forever or $29/year for premium.
 <% end %>

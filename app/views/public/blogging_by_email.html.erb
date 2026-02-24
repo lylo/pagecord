@@ -2,6 +2,10 @@
   Blogging By Email
 <% end %>
 
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "Blogging by Email – The Best Way to Blog") %>
+<% end %>
+
 <div class="prose mb-4 sm:mb-8 px-4">
   <h1 class="">Blogging by email – the best way to blog</h1>
 
