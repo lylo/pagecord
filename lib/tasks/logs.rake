@@ -137,30 +137,37 @@ namespace :logs do
     end
   end
 
-  desc "Incident report for a specific hour: rake \"logs:report[2026-02-23,21]\""
+  desc "Report for a date or specific hour: rake \"logs:report[2026-02-23]\" or rake \"logs:report[2026-02-23,21]\""
   task :report, [ :date, :hour ] do |_t, args|
     date = args[:date]
     hour = args[:hour]
 
-    unless date && hour
-      puts "#{LogDisplay::RED}Usage: rake \"logs:report[2026-02-23,21]\"#{LogDisplay::RESET}"
+    unless date
+      puts "#{LogDisplay::RED}Usage: rake \"logs:report[2026-02-23]\" or rake \"logs:report[2026-02-23,21]\"#{LogDisplay::RESET}"
       exit 1
     end
 
-    hour_i = hour.to_i
-    puts "#{LogDisplay::BOLD}Analysing #{date} #{hour.rjust(2, "0")}:00–#{hour.rjust(2, "0")}:59 ...#{LogDisplay::RESET}"
+    whole_day = hour.nil?
 
-    minute_counts = Hash.new(0)
-    endpoints     = Hash.new(0)
-    ips           = Hash.new(0)
-    agents        = Hash.new(0)
-    hosts         = Hash.new(0)
+    if whole_day
+      puts "#{LogDisplay::BOLD}Analysing #{date} (full day) ...#{LogDisplay::RESET}"
+    else
+      puts "#{LogDisplay::BOLD}Analysing #{date} #{hour.rjust(2, "0")}:00\u2013#{hour.rjust(2, "0")}:59 ...#{LogDisplay::RESET}"
+    end
 
-    LogParser.each_entry_for_hour(date, hour_i) do |e|
+    time_counts = Hash.new(0)
+    endpoints   = Hash.new(0)
+    ips         = Hash.new(0)
+    agents      = Hash.new(0)
+    hosts       = Hash.new(0)
+
+    entries = whole_day ? LogParser.each_entry_for_date(date) : LogParser.each_entry_for_hour(date, hour.to_i)
+
+    entries.each do |e|
       case e.line_type
       when :started
-        min_key = e.timestamp.strftime("%H:%M")
-        minute_counts[min_key] += 1
+        bucket = whole_day ? e.timestamp.strftime("%H:00") : e.timestamp.strftime("%H:%M")
+        time_counts[bucket] += 1
         ips[e.ip] += 1
         agents[e.user_agent] += 1
         hosts[e.host] += 1
@@ -169,27 +176,37 @@ namespace :logs do
       end
     end
 
-    if minute_counts.empty?
-      puts "#{LogDisplay::YELLOW}No requests found for that hour.#{LogDisplay::RESET}"
+    if time_counts.empty?
+      period = whole_day ? "that day" : "that hour"
+      puts "#{LogDisplay::YELLOW}No requests found for #{period}.#{LogDisplay::RESET}"
       exit 0
     end
 
-    # 1. Requests per minute
-    all_minutes = (0..59).map { |m| format("%02d:%02d", hour_i, m) }
-    minute_rows = all_minutes.map { |m| [ m, minute_counts[m].to_s ] }
-    # Skip minutes with zero if there are many — but show all for full picture
-    peak_minute_count = minute_counts.values.max || 0
-    minute_median = minute_counts.values.sort[minute_counts.values.size / 2] || 0
-    minute_threshold = [ minute_median * 3, 1 ].max
+    # 1. Requests per time bucket
+    if whole_day
+      all_buckets = (0..23).map { |h| format("%02d:00", h) }
+      bucket_label = "Hour"
+      table_title = "1. Requests per hour"
+    else
+      hour_i = hour.to_i
+      all_buckets = (0..59).map { |m| format("%02d:%02d", hour_i, m) }
+      bucket_label = "Minute"
+      table_title = "1. Requests per minute"
+    end
+
+    time_rows = all_buckets.map { |b| [ b, time_counts[b].to_s ] }
+    peak_count = time_counts.values.max || 0
+    time_median = time_counts.values.sort[time_counts.values.size / 2] || 0
+    time_threshold = [ time_median * 3, 1 ].max
 
     puts LogDisplay.table(
-      title: "1. Requests per minute (peak: #{peak_minute_count})",
+      title: "#{table_title} (peak: #{peak_count})",
       columns: [
-        { label: "Minute", width: 8, align: :left },
+        { label: bucket_label, width: 8, align: :left },
         { label: "Requests", width: 10, align: :right }
       ],
-      rows: minute_rows,
-      highlight: ->(row) { row[1].to_i > minute_threshold }
+      rows: time_rows,
+      highlight: ->(row) { row[1].to_i > time_threshold }
     )
 
     # 2. Top 20 endpoints
@@ -236,8 +253,9 @@ namespace :logs do
       rows: top_hosts.map { |h, c| [ h, c.to_s ] }
     )
 
-    total = minute_counts.values.sum
-    puts "#{LogDisplay::BOLD}Total requests in hour: #{total}#{LogDisplay::RESET}"
+    total = time_counts.values.sum
+    period = whole_day ? "day" : "hour"
+    puts "#{LogDisplay::BOLD}Total requests in #{period}: #{total}#{LogDisplay::RESET}"
   end
 
   desc "Live tail of production.log with per-minute request counter"

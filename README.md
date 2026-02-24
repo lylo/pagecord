@@ -104,7 +104,10 @@ Rake tasks for analysing production logs on the server. No external gems require
 # Per-hour request overview — highlights anomalous traffic spikes
 rake logs:overview
 
-# Full incident report for a specific hour (5 tables: requests/min, endpoints, IPs, user agents, hosts)
+# Full report for a day (5 tables: requests/hour, endpoints, IPs, user agents, hosts)
+rake "logs:report[2026-02-23]"
+
+# Drill into a specific hour (requests/minute instead of per-hour)
 rake "logs:report[2026-02-23,21]"
 
 # Live tail with per-minute request counter (alerts at >500 req/min)

@@ -54,6 +54,16 @@ class LogParser
     end
   end
 
+  def self.each_entry_for_date(date_str, &block)
+    return enum_for(:each_entry_for_date, date_str) unless block_given?
+
+    each_entry do |entry|
+      next unless entry.timestamp
+      next unless entry.timestamp.strftime("%Y-%m-%d") == date_str
+      yield entry
+    end
+  end
+
   def self.discover_log_files
     dir = File.join(Dir.pwd, "log")
     return [] unless Dir.exist?(dir)
