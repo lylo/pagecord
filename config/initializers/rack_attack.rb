@@ -11,13 +11,16 @@ class Rack::Attack
 
   # --- Throttles ---
 
+  GENERAL_LIMIT = Rails.env.test? ? 5 : 300
+  POST_LIMIT = Rails.env.test? ? 3 : 30
+
   # Blanket throttle: 300 req/min per IP
-  throttle("req/ip", limit: 300, period: 1.minute) do |req|
+  throttle("req/ip", limit: GENERAL_LIMIT, period: 1.minute) do |req|
     req.env["HTTP_X_FORWARDED_FOR"]&.split(",")&.first&.strip || req.ip
   end
 
   # POST throttle: 30 req/min per IP
-  throttle("req/ip/post", limit: 30, period: 1.minute) do |req|
+  throttle("req/ip/post", limit: POST_LIMIT, period: 1.minute) do |req|
     if req.post?
       req.env["HTTP_X_FORWARDED_FOR"]&.split(",")&.first&.strip || req.ip
     end
