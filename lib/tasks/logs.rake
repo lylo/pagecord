@@ -102,10 +102,8 @@ namespace :logs do
 
     hourly = Hash.new(0)
 
-    LogParser.each_entry(*files) do |e|
-      next unless e.line_type == :started && e.timestamp
-      key = e.timestamp.strftime("%Y-%m-%d %H:00")
-      hourly[key] += 1
+    LogParser.each_hour_bucket do |bucket|
+      hourly[bucket] += 1
     end
 
     if hourly.empty?
