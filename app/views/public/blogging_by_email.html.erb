@@ -1,5 +1,5 @@
 <%= content_for :title do %>
-  Blogging By Email
+  Blogging By Email: Compose in your email client. Hit send. You're published.
 <% end %>
 
 <%= content_for :meta_description do %>
@@ -10,20 +10,23 @@
   <%= dynamic_og_image_for_landing_page(title: "Blogging by Email – The Best Way to Blog") %>
 <% end %>
 
-<div class="prose mb-4 sm:mb-8 px-4">
-  <h1 class="">Blogging by email – the best way to blog</h1>
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
+    Blogging by Email – The Best Way to Blog
+  </h1>
 
-  <p>
-    Pagecord is uniquely optimised for blogging by email. It really is the most effortless way to blog!
-  </p>
+  <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+    <p class="mt-8 md:mt-12">
+      Pagecord is uniquely optimised for blogging by email. It really is the most effortless way to blog!
+    </p>
+    <p>
+      Compose posts in your favourite email client and click send. Pagecord does the rest.
+    </p>
+  </div>
 
-  <p>
-     Compose posts in your favourite email client and click send. Pagecord does the rest.
-  </p>
+  <%= image_tag "public/blogging-by-email.jpg", class: "rounded-lg my-8", alt: "Screenshot of blogging via Gmail" %>
 
-  <%= image_tag "public/blogging-by-email.jpg", class: "rounded-lg py-8", alt: "Screenshot of blogging via Gmail" %>
-
-  <h2 class="text-3xl text-center">
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">
     Any email provider. Any device.
   </h2>
 </div>
@@ -36,19 +39,20 @@
   <%= image_tag "public/protonmail.webp", class: "h-10 sm:h-16 rounded-md", alt: "Proton Mail logo" %>
 </div>
 
-<div class="prose mb-4 sm:mb-8 px-4">
-  <p>
-    Pagecord works with ANY email provider. On any device. Whether you use Gmail, Yahoo, Outlook, HEY or
-    run your own mail server, Pagecord has you covered.
-  </p>
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+    <p>
+      Pagecord works with ANY email provider. On any device. Whether you use Gmail, Yahoo, Outlook, HEY or
+      run your own mail server, Pagecord has you covered.
+    </p>
+    <p>
+      If this sounds like your kind of thing, sign up for FREE and get your own Pagecord blog today!
+    </p>
+  </div>
 
-  <p>
-    If this sounds like your kind of thing, sign up for FREE and get your own Pagecord blog today!
-  </p>
-
-  <div class="my-8 text-center not-prose">
+  <div class="my-8 text-center">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-semibold p-4 rounded-lg shadow-sm text-white bg-pagecord-accent">Sign up for FREE!</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
     <% end %>
   </div>
 </div>
