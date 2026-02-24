@@ -77,7 +77,8 @@ A ready-to-send email reply to the customer. Keep it:
 - Specific to their issue
 - Action-oriented when possible
 
-**Formatting**: Output the draft response as plain text, NOT as a blockquote (no `>` prefixes). This makes it easy to copy and paste.
+**Formatting**: Output the draft response as plain text with no markdown formatting – no blockquotes, no bullet points, no indentation. Just plain paragraphs separated by blank lines, ready to copy and paste directly into an email client.
+**Punctuation**: Always use en-dashes (–), never em-dashes (—).
 
 ## Tips
 
