@@ -1,16 +1,17 @@
 require_relative "../log_parser"
 
 module LogDisplay
-  RESET  = "\e[0m"
-  BOLD   = "\e[1m"
-  DIM    = "\e[2m"
-  RED    = "\e[31m"
-  GREEN  = "\e[32m"
-  YELLOW = "\e[33m"
-  CYAN   = "\e[36m"
-  WHITE  = "\e[37m"
-  BG_ROW = "\e[48;5;236m"
-
+  unless defined?(RESET)
+    RESET  = "\e[0m"
+    BOLD   = "\e[1m"
+    DIM    = "\e[2m"
+    RED    = "\e[31m"
+    GREEN  = "\e[32m"
+    YELLOW = "\e[33m"
+    CYAN   = "\e[36m"
+    WHITE  = "\e[37m"
+    BG_ROW = "\e[48;5;236m"
+  end
   def self.terminal_width
     width = ENV["COLUMNS"]&.to_i
     if width.nil? || width < 40
