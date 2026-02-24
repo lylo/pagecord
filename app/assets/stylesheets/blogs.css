@@ -312,7 +312,7 @@ html, body {
 
     h1.post-title {
       font-size: 1.875rem;
-      line-height: 2.25rem;
+      line-height: 2.5rem;
       margin-top: 0;
       margin-bottom: 2rem;
       color: var(--color-text-heading);
