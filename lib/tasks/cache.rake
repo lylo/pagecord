@@ -8,6 +8,10 @@ namespace :cache do
     ActionController::Base.new.expire_page("/pagecord-vs-hey-world")
     ActionController::Base.new.expire_page("/pagecord-vs-wordpress")
     ActionController::Base.new.expire_page("/pagecord-vs-substack")
+    ActionController::Base.new.expire_page("/pagecord-vs-medium")
+    ActionController::Base.new.expire_page("/pagecord-vs-about-me")
+    ActionController::Base.new.expire_page("/blogging-by-email")
+    ActionController::Base.new.expire_page("/minimalist-blogging")
   end
 
   desc "Show readable cache statistics"
