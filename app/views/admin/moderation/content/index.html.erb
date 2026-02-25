@@ -1,57 +1,61 @@
 <%= render "admin/moderation/shared/tabs" %>
 
 <div class="mb-6">
-  <div>
+  <div class="text-sm text-slate-500 dark:text-slate-400">
     <%= pluralize(@pagy.count, "flagged post") %> to review.
   </div>
 </div>
 
 <% if @posts.any? %>
-  <div class="overflow-auto">
-    <table class="my-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
       <thead>
-        <tr>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Post</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Blog</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Flags</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Score</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Status</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Moderated</th>
-          <th class="py-4 sm:ps-4 text-end text-sm font-semibold text-slate-900 dark:text-slate-50">Actions</th>
+        <tr class="bg-slate-50 dark:bg-slate-700/50">
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Post</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Blog</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Flags</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Score</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Status</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Moderated</th>
+          <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Actions</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
+      <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
         <% @posts.each do |post| %>
           <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">
-              <%= link_to post.display_title.truncate(40), admin_moderation_content_path(post), class: "hover:underline" %>
+            <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50">
+              <%= link_to post.display_title.truncate(40), admin_moderation_content_path(post), class: "font-medium underline" %>
             </td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
               <%= link_to "@#{post.blog.subdomain}", blog_home_url(post.blog), target: "_blank", class: "hover:underline" %>
             </td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
               <%= post.content_moderation&.flagged_categories&.join(", ") %>
             </td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
               <%= number_to_percentage(post.content_moderation.category_scores.values.max.to_f * 100, precision: 0) %>
             </td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
-              <%= post.discarded? ? "Discarded" : "Visible" %>
+            <td class="whitespace-nowrap py-3 px-6 text-sm">
+              <% if post.discarded? %>
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Discarded</span>
+              <% else %>
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Visible</span>
+              <% end %>
             </td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
               <%= post.content_moderation&.moderated_at&.to_formatted_s(:short) %>
             </td>
-            <td class="whitespace-nowrap py-4 sm:ps-4 text-end text-sm">
+            <td class="whitespace-nowrap py-3 px-6 text-end text-sm">
               <div class="flex justify-end space-x-2">
                 <% if post.discarded? %>
                   <%= button_to "Restore", dismiss_admin_moderation_content_path(post),
-                      method: :post, class: "px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer",
+                      method: :post, class: "btn-primary py-1",
                       data: { turbo_confirm: "Restore this post?" } %>
                 <% else %>
                   <%= button_to "Dismiss", dismiss_admin_moderation_content_path(post),
-                      method: :post, class: "px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded cursor-pointer" %>
+                      method: :post, class: "btn-secondary py-1" %>
                   <%= button_to "Discard", discard_admin_moderation_content_path(post),
-                      method: :post, class: "px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer",
+                      method: :post, class: "btn-danger py-1",
                       data: { turbo_confirm: "Discard this post?" } %>
                 <% end %>
               </div>

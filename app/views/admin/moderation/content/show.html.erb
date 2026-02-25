@@ -1,45 +1,57 @@
-<div class="mb-6 flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-300 dark:border-slate-700">
-  <div>
-    <span class="text-slate-500 dark:text-slate-400">Flags:</span>
-    <% if @post.content_moderation&.flagged_categories&.any? %>
-      <% @post.content_moderation.flagged_categories.each_with_index do |cat, i| %>
-        <span class="font-medium"><%= cat %></span>
-        <span class="text-slate-400">(<%= (@post.content_moderation.category_scores[cat].to_f * 100).round %>%)</span><%= ", " unless i == @post.content_moderation.flagged_categories.length - 1 %>
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-6">
+  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4">
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <%= link_to blog_home_url(@post.blog), target: "_blank", class: "font-semibold text-slate-900 dark:text-slate-50 hover:underline" do %>
+          @<%= @post.blog.subdomain %>
+        <% end %>
+        <% if @post.content_moderation&.flagged_categories&.any? %>
+          <% @post.content_moderation.flagged_categories.each do |cat| %>
+            <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+              <%= cat %> · <%= (@post.content_moderation.category_scores[cat].to_f * 100).round %>%
+            </span>
+          <% end %>
+        <% end %>
+        <% if @post.discarded? %>
+          <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Discarded</span>
+        <% else %>
+          <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Visible</span>
+        <% end %>
+      </div>
+      <% if @post.content_moderation&.moderated_at %>
+        <span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap"><%= @post.content_moderation.moderated_at.to_formatted_s(:long) %></span>
       <% end %>
-    <% else %>
-      None
-    <% end %>
-    <span class="mx-2 text-slate-300 dark:text-slate-600">|</span>
-    <span class="text-slate-500 dark:text-slate-400">Status:</span> <%= @post.discarded? ? "Discarded" : "Visible" %>
-    <span class="mx-2 text-slate-300 dark:text-slate-600">|</span>
-    <%= link_to "View on blog", blog_post_url(subdomain: @post.blog.subdomain, slug: @post.slug), target: "_blank", class: "hover:underline" %>
+    </div>
   </div>
-  <div class="flex space-x-2">
-    <%= link_to "Back", admin_moderation_content_index_path, class: "px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-gray-200 text-slate-800 dark:text-slate-100 rounded" %>
+
+  <div class="p-6">
+    <% if @post.title.present? %>
+      <h2 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-4">
+        <%= link_to blog_post_url(subdomain: @post.blog.subdomain, slug: @post.slug), target: "_blank", class: "inline-flex items-center gap-1.5 hover:underline" do %>
+          <%= @post.title %>
+          <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4 text-slate-400" %>
+        <% end %>
+      </h2>
+    <% end %>
+    <div class="prose dark:prose-invert max-w-none">
+      <%= @post.content.body %>
+    </div>
+  </div>
+</div>
+
+<div class="flex items-center justify-between">
+  <%= link_to "← Back", admin_moderation_content_index_path, class: "btn-optional py-1.5" %>
+  <div class="flex gap-2">
     <% if @post.discarded? %>
       <%= button_to "Restore", dismiss_admin_moderation_content_path(@post),
-          method: :post, class: "px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer",
+          method: :post, class: "btn-primary py-1.5",
           data: { turbo_confirm: "Restore this post?" } %>
     <% else %>
       <%= button_to "Dismiss", dismiss_admin_moderation_content_path(@post),
-          method: :post, class: "px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-gray-200 text-slate-800 dark:text-slate-100 rounded cursor-pointer" %>
+          method: :post, class: "btn-secondary py-1.5" %>
       <%= button_to "Discard", discard_admin_moderation_content_path(@post),
-          method: :post, class: "px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer",
+          method: :post, class: "btn-danger py-1.5",
           data: { turbo_confirm: "Discard this post?" } %>
     <% end %>
   </div>
-</div>
-
-<div class="mb-4 text-sm text-slate-500 dark:text-slate-400">
-  <%= link_to "@#{@post.blog.subdomain}", blog_home_url(@post.blog), target: "_blank", class: "hover:underline" %>
-  <span class="mx-2">·</span>
-  <%= @post.content_moderation&.moderated_at&.to_formatted_s(:long) %>
-</div>
-
-<% if @post.title.present? %>
-  <h2 class="text-2xl font-bold mb-4"><%= @post.title %></h2>
-<% end %>
-
-<div class="prose dark:prose-invert max-w-none">
-  <%= @post.content.body %>
 </div>
