@@ -37,6 +37,7 @@ class Post < ApplicationRecord
       )
     }
   after_create :detect_open_graph_image
+  after_commit :purge_blog_cache, on: [ :create, :update, :destroy ]
 
   def content_present
     has_content = content.body.present? && content.body.to_plain_text.strip.present?
@@ -187,5 +188,12 @@ class Post < ApplicationRecord
       else
         GenerateOpenGraphImageJob.perform_now(id)
       end
+    end
+
+    def purge_blog_cache
+      return unless Rails.env.production?
+      return unless published? || status_previously_changed?
+
+      PurgeCloudflareCacheJob.perform_later(blog_id)
     end
 end

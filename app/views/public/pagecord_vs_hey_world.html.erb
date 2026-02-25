@@ -1,5 +1,9 @@
 <%= content_for :title do %>
-  Pagecord vs HEY World: Email-to-blog without the $99/year HEY requirement
+  Pagecord vs HEY World: Email-to-blog without the $99/year fee
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Better HEY World Alternative") %>
 <% end %>
 
 <%= content_for :meta_description do %>

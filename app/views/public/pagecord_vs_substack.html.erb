@@ -1,5 +1,9 @@
 <%= content_for :title do %>
-  Pagecord vs Substack: No revenue share. No $50 domain fee. Free forever or $29/year.
+  Pagecord vs Substack: No revenue share. No $50 domain fee.
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Better Substack Alternative") %>
 <% end %>
 
 <%= content_for :meta_description do %>

@@ -1,5 +1,9 @@
 <%= content_for :title do %>
-  Pagecord vs Medium: Your readers won't hit a paywall. No popups. You own your content.
+  Pagecord vs Medium: No paywalls. No popups. You own your content.
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Better Medium Alternative") %>
 <% end %>
 
 <%= content_for :meta_description do %>

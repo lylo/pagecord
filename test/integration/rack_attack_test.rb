@@ -11,8 +11,8 @@ class RackAttackTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "throttles requests exceeding 300 req/min per IP" do
-    300.times do
+  test "throttles requests exceeding the general limit per IP" do
+    Rack::Attack::GENERAL_LIMIT.times do
       get "/", headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.1" }
     end
 
@@ -21,8 +21,8 @@ class RackAttackTest < ActionDispatch::IntegrationTest
     assert_equal "Rate limit exceeded\n", response.body
   end
 
-  test "throttles POST requests exceeding 30 req/min per IP" do
-    30.times do
+  test "throttles POST requests exceeding the POST limit per IP" do
+    Rack::Attack::POST_LIMIT.times do
       post "/", headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.2" }
     end
 
@@ -31,7 +31,7 @@ class RackAttackTest < ActionDispatch::IntegrationTest
   end
 
   test "tracks different IPs independently" do
-    30.times do
+    Rack::Attack::POST_LIMIT.times do
       post "/", headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.3" }
     end
 
@@ -41,7 +41,7 @@ class RackAttackTest < ActionDispatch::IntegrationTest
   end
 
   test "safelists localhost requests" do
-    301.times do
+    (Rack::Attack::GENERAL_LIMIT + 1).times do
       get "/", headers: { "HTTP_X_FORWARDED_FOR" => "127.0.0.1" }
     end
 
@@ -49,7 +49,7 @@ class RackAttackTest < ActionDispatch::IntegrationTest
   end
 
   test "safelists IPv6 localhost requests" do
-    301.times do
+    (Rack::Attack::GENERAL_LIMIT + 1).times do
       get "/", headers: { "HTTP_X_FORWARDED_FOR" => "::1" }
     end
 

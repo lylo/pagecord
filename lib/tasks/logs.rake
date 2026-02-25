@@ -257,6 +257,141 @@ namespace :logs do
     puts "#{LogDisplay::BOLD}Total requests in #{period}: #{total}#{LogDisplay::RESET}"
   end
 
+  desc "Traffic report for a specific blog: rake \"logs:blog[joel]\" or rake \"logs:blog[joel,2026-02-23]\" or rake \"logs:blog[joel,2026-02-23,21]\""
+  task :blog, [ :identifier, :date, :hour ] do |_t, args|
+    identifier = args[:identifier]
+    date = args[:date]
+    hour = args[:hour]
+
+    unless identifier
+      puts "#{LogDisplay::RED}Usage: rake \"logs:blog[identifier]\" or rake \"logs:blog[identifier,2026-02-23]\" or rake \"logs:blog[identifier,2026-02-23,21]\"#{LogDisplay::RESET}"
+      exit 1
+    end
+
+    hostname = identifier.include?(".") ? identifier : "#{identifier}.pagecord.com"
+
+    if date && hour
+      puts "#{LogDisplay::BOLD}Analysing #{hostname} — #{date} #{hour.rjust(2, "0")}:00\u2013#{hour.rjust(2, "0")}:59 ...#{LogDisplay::RESET}"
+      entries = LogParser.each_entry_for_hour(date, hour.to_i)
+    elsif date
+      puts "#{LogDisplay::BOLD}Analysing #{hostname} — #{date} (full day) ...#{LogDisplay::RESET}"
+      entries = LogParser.each_entry_for_date(date)
+    else
+      puts "#{LogDisplay::BOLD}Analysing #{hostname} — all available logs ...#{LogDisplay::RESET}"
+      entries = LogParser.each_entry
+    end
+
+    time_counts = Hash.new(0)
+    endpoints   = Hash.new(0)
+    ips         = Hash.new(0)
+    agents      = Hash.new(0)
+    hosts       = Hash.new(0)
+
+    entries.each do |e|
+      next unless e.host == hostname
+
+      case e.line_type
+      when :started
+        bucket = if hour
+          e.timestamp.strftime("%H:%M")
+        elsif date
+          e.timestamp.strftime("%H:00")
+        else
+          e.timestamp.strftime("%Y-%m-%d")
+        end
+        time_counts[bucket] += 1
+        ips[e.ip] += 1
+        agents[e.user_agent] += 1
+        hosts[e.host] += 1
+      when :processing
+        endpoints[e.detail] += 1
+      end
+    end
+
+    if time_counts.empty?
+      puts "#{LogDisplay::YELLOW}No requests found for #{hostname}.#{LogDisplay::RESET}"
+      exit 0
+    end
+
+    # 1. Requests per time bucket
+    if hour
+      hour_i = hour.to_i
+      all_buckets = (0..59).map { |m| format("%02d:%02d", hour_i, m) }
+      bucket_label = "Minute"
+      table_title = "1. Requests per minute"
+    elsif date
+      all_buckets = (0..23).map { |h| format("%02d:00", h) }
+      bucket_label = "Hour"
+      table_title = "1. Requests per hour"
+    else
+      all_buckets = time_counts.keys.sort
+      bucket_label = "Date"
+      table_title = "1. Requests per day"
+    end
+
+    time_rows = all_buckets.map { |b| [ b, time_counts[b].to_s ] }
+    peak_count = time_counts.values.max || 0
+    time_median = time_counts.values.sort[time_counts.values.size / 2] || 0
+    time_threshold = [ time_median * 3, 1 ].max
+
+    puts LogDisplay.table(
+      title: "#{table_title} (peak: #{peak_count})",
+      columns: [
+        { label: bucket_label, width: 12, align: :left },
+        { label: "Requests", width: 10, align: :right }
+      ],
+      rows: time_rows,
+      highlight: ->(row) { row[1].to_i > time_threshold }
+    )
+
+    # 2. Top 20 endpoints
+    top_endpoints = endpoints.sort_by { |_, c| -c }.first(20)
+    puts LogDisplay.table(
+      title: "2. Top endpoints (controller#action)",
+      columns: [
+        { label: "Endpoint", width: 60, align: :left },
+        { label: "Requests", width: 10, align: :right }
+      ],
+      rows: top_endpoints.map { |ep, c| [ ep, c.to_s ] }
+    )
+
+    # 3. Top 20 IPs
+    top_ips = ips.sort_by { |_, c| -c }.first(20)
+    puts LogDisplay.table(
+      title: "3. Top IPs",
+      columns: [
+        { label: "IP", width: 40, align: :left },
+        { label: "Requests", width: 10, align: :right }
+      ],
+      rows: top_ips.map { |ip, c| [ ip, c.to_s ] }
+    )
+
+    # 4. Top 20 user agents
+    top_agents = agents.sort_by { |_, c| -c }.first(20)
+    puts LogDisplay.table(
+      title: "4. Top user agents",
+      columns: [
+        { label: "User Agent", width: 80, align: :left },
+        { label: "Requests", width: 10, align: :right }
+      ],
+      rows: top_agents.map { |ua, c| [ ua, c.to_s ] }
+    )
+
+    # 5. Top 20 hosts
+    top_hosts = hosts.sort_by { |_, c| -c }.first(20)
+    puts LogDisplay.table(
+      title: "5. Top hosts",
+      columns: [
+        { label: "Host", width: 50, align: :left },
+        { label: "Requests", width: 10, align: :right }
+      ],
+      rows: top_hosts.map { |h, c| [ h, c.to_s ] }
+    )
+
+    total = time_counts.values.sum
+    puts "#{LogDisplay::BOLD}Total requests for #{hostname}: #{total}#{LogDisplay::RESET}"
+  end
+
   desc "Live tail of production.log with per-minute request counter"
   task :watch do
     log_path = File.join(Dir.pwd, "log", "production.log")

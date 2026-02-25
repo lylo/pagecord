@@ -1,5 +1,9 @@
 <%= content_for :title do %>
-  Pagecord vs WordPress: Zero setup. No plugins. No maintenance. Just write.
+  Pagecord vs WordPress: No plugins. No maintenance. Just write.
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Better WordPress Alternative") %>
 <% end %>
 
 <%= content_for :meta_description do %>

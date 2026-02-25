@@ -1,5 +1,78 @@
 <% content_for :title, "Pagecord FAQ" %>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does Pagecord mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There's a blog post for that! Read 'What is the meaning of pagecord?' at https://blog.pagecord.com/what-is-the-meaning-of-pagecord"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Pagecord work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Create an account by choosing a subdomain for your blog and supplying your email address. Once you verify your email, you'll receive a secret email address. Emails sent to this secret address from the email address you give us will appear as posts on your Pagecord page. If you prefer, you can log in to your account and create posts directly in the app."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I own the content that I post?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. As long as what you post is your own work, you own it. Pagecord does not claim ownership of any content you post."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Pagecord support RSS?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Just append /feed.xml to any blog's domain, e.g. https://blog.pagecord.com/feed.xml"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I import my blog from another platform?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, but it's not self-serve. Contact support and we'll look into it for you. We've already done this from WordPress, Ghost, static sites and others. A premium subscription is required to proceed with an import."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is your refund policy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For annual subscriptions, we'll refund your money if you've been a subscriber for less than a month. No questions asked. Monthly subscriptions are non-refundable."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I change my subscription plan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Monthly subscribers can upgrade to annual at any time from the billing settings page. You'll be charged a prorated amount for the remaining time on your monthly plan. To switch from annual to monthly, let your annual subscription run out and then resubscribe on the monthly plan."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is my data stored?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pagecord is hosted on servers run by Hetzner, in their Nuremberg, Germany data centre. Blog posts are stored in a database there. Images are stored in Cloudflare's R2 Object Storage in their Western Europe data centre. Pagecord traffic is proxied through Cloudflare for additional security and performance."
+      }
+    }
+  ]
+}
+</script>
+
 <div class="prose dark:prose-invert mb-12 px-4">
   <h1 class="source-serif font-semibold tracking-tight text-4xl">Frequently asked questions</h1>
 

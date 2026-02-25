@@ -11,6 +11,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 ## Code Style
 
 - Double quotes for strings, not single quotes
+- Use en-dashes (–), never em-dashes (—)
 - Remove trailing whitespace
 - Private methods indented one additional level (2 spaces) after `private`
 - Prefer ternary operators over case statements for 2-option logic
