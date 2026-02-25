@@ -1,114 +1,115 @@
-<div class="mb-6 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4">
-  <div class="flex flex-wrap items-center gap-x-1 gap-y-2">
-    <span><%= link_to "#{pluralize(number_with_delimiter(@total_users), "user")} in total", admin_blogs_path, class: "underline font-medium" %>.</span>
-    <span><%= link_to pluralize(number_with_delimiter(Subscription.active_paid.count), "paid subscription"), admin_blogs_path(status: "paid"), class: "underline font-medium" %>,</span>
-    <span><%= link_to "#{number_with_delimiter(Subscription.comped.count)} comped", admin_blogs_path(status: "comped"), class: "underline font-medium" %>.</span>
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-6">
+  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-3 flex items-center justify-between">
+    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Overview</h3>
+    <%= link_to new_admin_user_path, class: "w-6 h-6 rounded-full border border-slate-300 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors", title: "Create new user" do %>
+      <%= inline_svg_tag "icons/plus.svg", class: "w-4 h-4" %>
+    <% end %>
   </div>
-
-<%= link_to new_admin_user_path, class: "btn-primary text-sm whitespace-nowrap" do %>
-    <%= inline_svg_tag "icons/plus.svg", class: "w-4 h-4 mr-1 inline-block" %>
-    Create New User
-  <% end %>
-</div>
-
-<%= form_with url: admin_blogs_path, method: :get, data: { turbo_frame: "stats-content", controller: "search", search_target: "form" }, local: true, class: "mb-4" do |form| %>
-  <div class="max-w-md">
-    <div class="relative">
-      <%= form.text_field :search, placeholder: "Search by subdomain or email...", value: params[:search],
-          class: "w-full px-3 py-2 pr-10 border border-slate-300 dark:border-slate-600 rounded-md text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
-          data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
-          autofocus: true %>
-<button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Clear search">
-        <%= inline_svg_tag "icons/close.svg", class: "w-4 h-4" %>
-      </button>
+  <div class="px-6 py-5">
+    <div class="flex items-center gap-8 mb-4">
+      <%= link_to admin_blogs_path, class: "group" do %>
+        <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(@total_users) %></span>
+        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Users</span>
+      <% end %>
+      <span class="text-slate-200 dark:text-slate-700">|</span>
+      <%= link_to admin_blogs_path(status: "paid"), class: "group" do %>
+        <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Subscription.active_paid.count) %></span>
+        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Paid</span>
+      <% end %>
+      <span class="text-slate-200 dark:text-slate-700">|</span>
+      <%= link_to admin_blogs_path(status: "comped"), class: "group" do %>
+        <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Subscription.comped.count) %></span>
+        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Comped</span>
+      <% end %>
     </div>
-    <%= form.hidden_field :status, value: params[:status] %>
+
+    <%= form_with url: admin_blogs_path, method: :get, data: { turbo_frame: "stats-content", controller: "search", search_target: "form" }, local: true do |form| %>
+      <div class="relative">
+        <%= form.text_field :search, placeholder: "Search by subdomain or email...", value: params[:search],
+            class: "form-field w-full px-3 py-2 pr-10 text-sm",
+            data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
+            autofocus: true %>
+        <button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Clear search">
+          <%= inline_svg_tag "icons/close.svg", class: "w-4 h-4" %>
+        </button>
+      </div>
+      <%= form.hidden_field :status, value: params[:status] %>
+    <% end %>
   </div>
-<% end %>
+</div>
 
 <%= turbo_frame_tag "stats-content" do %>
   <% if params[:search].present? || params[:status].present? %>
-    <div class="mb-4 text-sm text-slate-600 dark:text-slate-400">
-      <% if params[:search].present? && params[:status].present? %>
-        <% status_label = case params[:status]
-             when "paid" then "paid subscribers"
-             when "comped" then "comped users"
-           end %>
-        <% if @pagy.count == 0 %>
-          No <%= status_label %> found for "<strong><%= params[:search] %></strong>"
-        <% else %>
-          <%= pluralize @pagy.count, "result" %> found in <%= status_label %> for "<strong><%= params[:search] %></strong>"
+    <div class="bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 rounded-xl px-6 py-3 mb-4 flex items-center gap-3">
+      <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @pagy.count %></span>
+      <span class="text-sm text-slate-500 dark:text-slate-400"><%= "result".pluralize(@pagy.count) %> for</span>
+      <% if params[:status].present? %>
+        <% status_label = case params[:status] when "paid" then "Paid" when "comped" then "Comped" end %>
+        <%= link_to admin_blogs_path, class: "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-colors" do %>
+          <%= status_label %>
+          <%= inline_svg_tag "icons/close.svg", class: "w-3.5 h-3.5 text-slate-400" %>
         <% end %>
-      <% elsif params[:search].present? %>
-        <% if @pagy.count == 0 %>
-          No results found for "<strong><%= params[:search] %></strong>"
-        <% else %>
-          <%= pluralize @pagy.count, "result" %> found for "<strong><%= params[:search] %></strong>"
-        <% end %>
-      <% elsif params[:status].present? %>
-        <% status_label = case params[:status]
-             when "paid" then "Showing paid subscribers"
-             when "comped" then "Showing comped users"
-           end %>
-        <strong><%= status_label %></strong> (<%= pluralize @pagy.count, "result" %>)
       <% end %>
-      <%= link_to "Clear filters", admin_blogs_path, class: "ml-2 btn-secondary underline text-sm" %>
+      <% if params[:search].present? %>
+        <%= link_to admin_blogs_path, class: "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-colors" do %>
+          "<%= params[:search] %>"
+          <%= inline_svg_tag "icons/close.svg", class: "w-3.5 h-3.5 text-slate-400" %>
+        <% end %>
+      <% end %>
     </div>
   <% end %>
-<div class="overflow-auto">
-  <table class="my-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
-    <thead>
-      <tr>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Name</th>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Posts</th>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Email</th>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Verified</th>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Discarded</th>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Status</th>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Marketing</th>
-        <th class="py-4 sm:ps-4 text-end text-sm font-semibold text-slate-900 dark:text-slate-50">Created</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
-    <% @blogs.each do |blog| %>
-      <tr>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">
-          <div class="flex flex-col gap-y-1">
-            <%= link_to blog.subdomain, admin_user_path(blog.user), data: { turbo_frame: "_top" } %>
-            <%= link_to blog_home_url(blog), blog_home_url(blog), class: "text-xs hover:underline font-light text-slate-500 dark:text-slate-400", target: "_blank" %>
-          </div>
-        </td>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= number_with_delimiter blog.posts_count %></td>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><!--email_off--><%= blog.user.email %><!--/email_off--></td>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.user.verified %></td>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= blog.user.discarded_at&.to_formatted_s :short %></td>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
-          <% if blog.user.discarded_at %>
-            Cancelled
-          <% elsif blog.user.subscribed? %>
-            <% if blog.user.subscription.complimentary? %>
-              Comped
-            <% else %>
-              Premium
-            <% end %>
-          <% else %>
-            Free
-            <% if blog.user.subscribed? && blog.user.lapsed? %>
-             (Lapsed)
-            <% end %>
-          <% end %>
-        </td>
-        <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400 text-center">
-          <% if blog.user.marketing_consent? %>
-            ✅
-          <% end %>
-        </td>
-        <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400 text-end"><%= blog.created_at.to_formatted_s :long %></td>
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
-</div>
 
-<%= render "app/shared/pagy_nav" %>
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+      <thead>
+        <tr class="bg-slate-50 dark:bg-slate-700/50">
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Name</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Posts</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Email</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Verified</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Status</th>
+          <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Created</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+      <% @blogs.each do |blog| %>
+        <tr>
+          <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50">
+            <div class="leading-tight">
+              <%= link_to blog.subdomain, admin_user_path(blog.user), class: "font-medium underline", data: { turbo_frame: "_top" } %>
+              <div class="text-xs text-slate-400 dark:text-slate-500 font-normal mt-1">
+                <%= link_to blog_home_url(blog), blog_home_url(blog), class: "hover:underline", target: "_blank" %>
+              </div>
+            </div>
+          </td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400"><%= number_with_delimiter blog.posts_count %></td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400"><!--email_off--><%= blog.user.email %><!--/email_off--></td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400"><%= blog.user.verified? ? '✅' : '❌' %></td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm">
+            <% if blog.user.discarded_at %>
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Cancelled</span>
+            <% elsif blog.user.subscribed? %>
+              <% if blog.user.subscription.complimentary? %>
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Comped</span>
+              <% else %>
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Premium</span>
+              <% end %>
+            <% else %>
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">Free</span>
+              <% if blog.user.subscribed? && blog.user.lapsed? %>
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">Lapsed</span>
+              <% end %>
+            <% end %>
+          </td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end">
+            <span class="hidden sm:inline"><%= blog.created_at.strftime("%-d %b %Y %H:%M") %></span>
+            <span class="sm:hidden"><%= blog.created_at.strftime("%-d %b %Y") %></span>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%= render "app/shared/pagy_nav" %>
 <% end %>

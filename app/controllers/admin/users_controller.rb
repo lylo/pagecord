@@ -55,6 +55,10 @@ class Admin::UsersController < AdminController
   private
 
     def user_params
-      params.require(:user).permit(:email, :trial_ends_at, blog_attributes: [ :subdomain ])
+      permitted = params.require(:user).permit(:email, :trial_ends_at, blog_attributes: [ :id, :subdomain, features: [] ])
+      if permitted.dig(:blog_attributes, :features)
+        permitted[:blog_attributes][:features] = permitted[:blog_attributes][:features].reject(&:blank?)
+      end
+      permitted
     end
 end
