@@ -1,4 +1,4 @@
-<% if show_email_banner?(@post, @blog) && current_features.enabled?(:individual_email_delivery) %>
+<% if show_email_banner?(@post, @blog) %>
   <% subscriber_count = @blog.email_subscribers.confirmed.count %>
   <% if @post.individually_sent? %>
     <% digest = @post.post_digests.individual.first %>
