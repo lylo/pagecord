@@ -12,7 +12,23 @@ Premium feature. Let readers subscribe to your blog and receive your posts by em
 2. Check **Email subscriptions enabled**
 3. Click **Update**
 
-When enabled, subscribers receive an email digest of your latest posts every Tuesday morning (in your blog's configured time zone).
+## Delivery modes
+
+There are two ways to deliver posts to your subscribers:
+
+### Weekly Digest (default)
+
+Subscribers receive a roundup of your latest posts every Tuesday morning (in your blog's configured time zone). This happens automatically – you don't need to do anything.
+
+### Individual
+
+You choose which posts to send, one at a time, whenever you like. When individual mode is enabled, published posts show a banner in the post editor with a **Send to subscribers** button. After sending, the banner updates to show the delivery date and subscriber count.
+
+Posts you send individually are automatically excluded from future weekly digests, so subscribers never receive the same post twice.
+
+### Switching modes
+
+To change your delivery mode, go to **Settings** → **Audience** and pick between **Weekly Digest** and **Individual** under the email subscriptions checkbox. You can switch at any time. If you switch from individual back to weekly digest, the next Tuesday digest will include any posts that haven't been sent yet.
 
 ## Displaying the subscription form
 
