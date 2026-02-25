@@ -1,6 +1,7 @@
 class Blogs::EmailSubscribersController < Blogs::BaseController
   include SpamPrevention
 
+  skip_forgery_protection # Cached pages have no session cookie for CSRF verification
   before_action :requires_user_subscription
 
   def create
