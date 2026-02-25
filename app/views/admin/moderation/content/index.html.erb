@@ -1,16 +1,17 @@
 <%= render "admin/moderation/shared/tabs" %>
 
-<div class="mb-6">
-  <div class="text-sm text-slate-500 dark:text-slate-400">
-    <%= pluralize(@pagy.count, "flagged post") %> to review.
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4">
+    <div class="flex items-center gap-3">
+      <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @pagy.count %></span>
+      <span class="text-sm text-slate-500 dark:text-slate-400">flagged <%= "post".pluralize(@pagy.count) %> to review</span>
+    </div>
   </div>
-</div>
 
-<% if @posts.any? %>
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+  <% if @posts.any? %>
     <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
       <thead>
-        <tr class="bg-slate-50 dark:bg-slate-700/50">
+        <tr>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Post</th>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Blog</th>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Flags</th>
@@ -64,7 +65,7 @@
         <% end %>
       </tbody>
     </table>
-  </div>
 
-  <%= render "app/shared/pagy_nav" %>
-<% end %>
+    <%= render "app/shared/pagy_nav" %>
+  <% end %>
+</div>

@@ -22,7 +22,7 @@
       <% if @user.discarded? %>
         <div class="flex justify-between gap-4">
           <dt class="font-medium text-slate-900 dark:text-slate-50">Cancelled</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= @user.discarded_at %></dd>
+          <dd class="text-slate-500 dark:text-slate-400"><%= @user.discarded_at.to_formatted_s(:long) %></dd>
         </div>
       <% end %>
       <div class="flex justify-between gap-4">

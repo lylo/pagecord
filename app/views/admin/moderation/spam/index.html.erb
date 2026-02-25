@@ -1,20 +1,21 @@
 <%= render "admin/moderation/shared/tabs" %>
 
-<div class="mb-6 flex items-center justify-between">
-  <div class="text-sm text-slate-500 dark:text-slate-400">
-    <%= pluralize(@total_unreviewed, "blog") %> flagged for review.
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @total_unreviewed %></span>
+      <span class="text-sm text-slate-500 dark:text-slate-400"><%= "blog".pluralize(@total_unreviewed) %> flagged for review</span>
+    </div>
+    <%= button_to "Run Detection",
+        run_detection_admin_moderation_spam_index_path,
+        method: :post,
+        class: "btn-secondary py-1.5" %>
   </div>
-  <%= button_to "Run Detection",
-      run_detection_admin_moderation_spam_index_path,
-      method: :post,
-      class: "btn-secondary py-1.5" %>
-</div>
 
-<% if @spam_detections.any? %>
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+  <% if @spam_detections.any? %>
     <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
       <thead>
-        <tr class="bg-slate-50 dark:bg-slate-700/50">
+        <tr>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Blog</th>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Status</th>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Reason</th>
@@ -57,8 +58,7 @@
         <% end %>
       </tbody>
     </table>
-  </div>
 
-  <%= render "app/shared/pagy_nav" %>
-
-<% end %>
+    <%= render "app/shared/pagy_nav" %>
+  <% end %>
+</div>
