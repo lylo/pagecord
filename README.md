@@ -112,6 +112,18 @@ rake "logs:report[2026-02-23,21]"
 
 # Live tail with per-minute request counter (alerts at >500 req/min)
 rake logs:watch
+
+# Traffic report for a specific blog (all available logs)
+rake "logs:blog[joel]"
+
+# Scoped to a specific date
+rake "logs:blog[joel,2026-02-23]"
+
+# Scoped to a specific hour
+rake "logs:blog[joel,2026-02-23,21]"
+
+# Works with custom domains too
+rake "logs:blog[example.com]"
 ```
 
 ## More info
