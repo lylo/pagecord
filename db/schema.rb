@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_25_122058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -88,6 +88,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.boolean "allow_search_indexing", default: true, null: false
     t.string "analytics_id"
     t.string "analytics_service"
+    t.string "cloudflare_custom_hostname_id"
     t.datetime "created_at", null: false
     t.text "custom_css"
     t.string "custom_domain"
@@ -120,6 +121,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
+    t.index ["cloudflare_custom_hostname_id"], name: "index_blogs_on_cloudflare_custom_hostname_id", unique: true, where: "(cloudflare_custom_hostname_id IS NOT NULL)"
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true

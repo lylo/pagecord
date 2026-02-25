@@ -36,13 +36,13 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "newdomain.com", @blog.reload.custom_domain
   end
 
-  test "should call hatchbox when adding custom domain" do
+  test "should enqueue job when adding custom domain" do
     assert_performed_jobs 1 do
       patch app_settings_blog_url(@blog), params: { blog: { custom_domain: "newdomain.com" } }, as: :turbo_stream
     end
   end
 
-  test "should call hatchbox when removing custom domain" do
+  test "should enqueue job when removing custom domain" do
     user = users(:annie)
     login_as user
 
@@ -51,19 +51,19 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "should not call hatchbox if nil custom domain is changed to empty string" do
+  test "should not enqueue job if nil custom domain is changed to empty string" do
     assert_performed_jobs 0 do
       patch app_settings_blog_url(@blog), params: { blog: { custom_domain: "" } }, as: :turbo_stream
     end
   end
 
-  test "should not call hatchbox if custom domain is changed to same value" do
+  test "should not enqueue job if custom domain is changed to same value" do
     assert_performed_jobs 0 do
       patch app_settings_blog_url(blogs(:annie)), params: { blog: { custom_domain: blogs(:annie).custom_domain } }, as: :turbo_stream
     end
   end
 
-  test "should call hatchbox when changing custom domain" do
+  test "should enqueue job when changing custom domain" do
     @blog.update!(custom_domain: "olddomain.com")
 
     assert_enqueued_jobs 2 do

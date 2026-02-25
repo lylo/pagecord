@@ -10,6 +10,16 @@
       <p>
         Your Pagecord is now available at <code><mark class="bg-slate-100 dark:bg-slate-700 dark:text-slate-100 px-1"><%= @blog.custom_domain %></mark></code>
       </p>
+      <% if @custom_hostname_status %>
+        <% ssl_status = @custom_hostname_status.dig("ssl", "status") %>
+        <% if ssl_status == "active" %>
+          <p class="mt-1 text-sm text-green-600 dark:text-green-400">SSL active</p>
+        <% elsif %w[pending_validation initializing pending_issuance pending_deployment].include?(ssl_status) %>
+          <p class="mt-1 text-sm text-amber-600 dark:text-amber-400">SSL pending &mdash; may take a few minutes</p>
+        <% else %>
+          <p class="mt-1 text-sm text-red-600 dark:text-red-400">SSL verification failed &mdash; check your DNS</p>
+        <% end %>
+      <% end %>
     <% else %>
       <p>
         To set up a custom domain, enter it below and click Update. You'll need to configure your DNS first. See <a href="https://pagecord.com/faq#dns" class="font-medium underline">the FAQ</a> for details on how to do that.
