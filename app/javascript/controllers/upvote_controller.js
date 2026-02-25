@@ -14,7 +14,12 @@ export default class extends Controller {
     }
   }
 
-  pulse() {
+  pulse(event) {
+    if (this.upvoted) {
+      event.preventDefault()
+      return
+    }
+
     this.fill()
     this.heartTarget.classList.add("animate-pulse-grow")
     setTimeout(() => {
@@ -23,6 +28,7 @@ export default class extends Controller {
   }
 
   fill() {
+    this.upvoted = true
     this.heartTarget.style.fill = "#ef4444"
     this.heartTarget.style.stroke = "#ef4444"
   }
