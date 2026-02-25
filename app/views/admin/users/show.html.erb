@@ -160,7 +160,7 @@
           <% all_features.each do |feature| %>
             <label class="flex gap-3 items-start cursor-pointer">
               <div class="flex h-6 shrink-0 items-center">
-                <%= bf.check_box :features, { multiple: true, checked: @user.blog.features.include?(feature), class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" }, feature, nil %>
+                <%= bf.check_box :features, { multiple: true, checked: @user.blog.features.include?(feature), class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0", onchange: "this.form.requestSubmit()" }, feature, nil %>
               </div>
               <div>
                 <span class="text-sm text-slate-800 dark:text-slate-100"><%= feature %></span>
@@ -170,9 +170,6 @@
               </div>
             </label>
           <% end %>
-        </div>
-        <div class="mt-4">
-          <%= f.submit "Update Features", class: "btn-secondary py-1.5" %>
         </div>
       <% end %>
     <% end %>
