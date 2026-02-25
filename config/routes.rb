@@ -205,6 +205,7 @@ Rails.application.routes.draw do
 
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create ], module: :posts
+      get "upvotes/status", to: "posts/upvotes/status#show", as: :upvotes_status
       resources :replies, only: [ :new, :create ], module: :posts
     end
 

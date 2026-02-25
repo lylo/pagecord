@@ -20,5 +20,9 @@ class UpvotePostTest < ApplicationSystemTestCase
     find("a.upvote").click
     sleep 0.5
     assert_equal 1, post.upvotes.reload.count
+
+    # Upvote state persists after page refresh
+    visit blog_post_path(post.slug)
+    assert_selector ".upvote-heart[style*='fill']"
   end
 end
