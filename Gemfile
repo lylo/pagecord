@@ -44,6 +44,9 @@ gem "ruby-openai", "~> 8.3"
 
 # everything else
 gem "aws-sdk-s3"
+gem "aws-sdk-sesv2"
+gem "aws-sdk-sns"
+gem "aws-sdk-sqs"
 gem "bcrypt", "~> 3.1.7"
 gem "discard", "~> 1.2"
 gem "redcarpet"

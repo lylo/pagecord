@@ -94,6 +94,10 @@ every 1.month, at: "2:00 am" do
   runner "SendUnengagedFollowUpEmailsJob.perform_later"
 end
 
+every 5.minutes do
+  runner "Email::ProcessBouncesJob.perform_later"
+end
+
 # every hour on a Tuesday
 every "0 * * * 2" do
   rake "post_digests:deliver"

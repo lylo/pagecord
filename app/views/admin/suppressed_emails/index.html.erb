@@ -1,0 +1,75 @@
+<%= render "admin/shared/header" %>
+
+<div class="container mx-auto px-4">
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+    <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @total_count %></span>
+        <span class="text-sm text-slate-500 dark:text-slate-400">suppressed <%= "email".pluralize(@total_count) %></span>
+      </div>
+    </div>
+
+    <div class="border-b border-slate-200 dark:border-slate-700 px-6 py-2 flex gap-4">
+      <%= link_to "All (#{@total_count})",
+          admin_suppressed_emails_path,
+          class: "text-sm font-medium #{params[:reason].blank? ? 'text-blue-600 dark:text-blue-400 underline' : 'text-slate-500 dark:text-slate-400 hover:underline'}" %>
+      <%= link_to "Bounces (#{@bounce_count})",
+          admin_suppressed_emails_path(reason: "bounce"),
+          class: "text-sm font-medium #{params[:reason] == 'bounce' ? 'text-blue-600 dark:text-blue-400 underline' : 'text-slate-500 dark:text-slate-400 hover:underline'}" %>
+      <%= link_to "Complaints (#{@complaint_count})",
+          admin_suppressed_emails_path(reason: "complaint"),
+          class: "text-sm font-medium #{params[:reason] == 'complaint' ? 'text-blue-600 dark:text-blue-400 underline' : 'text-slate-500 dark:text-slate-400 hover:underline'}" %>
+    </div>
+
+    <% if @suppressions.any? %>
+      <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+        <thead>
+          <tr>
+            <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Email</th>
+            <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Reason</th>
+            <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Bounce Type</th>
+            <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Diagnostic</th>
+            <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Suppressed</th>
+            <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+          <% @suppressions.each do |suppression| %>
+            <tr>
+              <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50">
+                <%= suppression.email %>
+              </td>
+              <td class="whitespace-nowrap py-3 px-6 text-sm">
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium <%= suppression.reason == 'bounce' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' %>">
+                  <%= suppression.reason.titleize %>
+                </span>
+              </td>
+              <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
+                <%= suppression.bounce_type || "—" %>
+              </td>
+              <td class="py-3 px-6 text-sm text-slate-500 dark:text-slate-400 max-w-md truncate">
+                <%= suppression.diagnostic_code.to_s.truncate(60) %>
+              </td>
+              <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
+                <%= suppression.suppressed_at.to_formatted_s(:short) %>
+              </td>
+              <td class="whitespace-nowrap py-3 px-6 text-end text-sm">
+                <%= button_to "Unsuppress",
+                    admin_suppressed_email_path(suppression),
+                    method: :delete,
+                    class: "btn-secondary py-1",
+                    data: { turbo_confirm: "Unsuppress #{suppression.email}?" } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <%= render "app/shared/pagy_nav" %>
+    <% else %>
+      <div class="px-6 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+        No suppressed emails found.
+      </div>
+    <% end %>
+  </div>
+</div>

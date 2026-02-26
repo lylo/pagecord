@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_26_101549) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -88,6 +88,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.boolean "allow_search_indexing", default: true, null: false
     t.string "analytics_id"
     t.string "analytics_service"
+    t.string "cloudflare_custom_hostname_id"
     t.datetime "created_at", null: false
     t.text "custom_css"
     t.string "custom_domain"
@@ -120,6 +121,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
+    t.index ["cloudflare_custom_hostname_id"], name: "index_blogs_on_cloudflare_custom_hostname_id", unique: true, where: "(cloudflare_custom_hostname_id IS NOT NULL)"
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
@@ -169,6 +171,17 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.index ["user_id"], name: "index_email_change_requests_on_user_id"
   end
 
+  create_table "email_events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "message_id", null: false
+    t.bigint "post_digest_delivery_id", null: false
+    t.string "provider", null: false
+    t.string "status", default: "sent"
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_email_events_on_message_id", unique: true
+    t.index ["post_digest_delivery_id"], name: "index_email_events_on_post_digest_delivery_id"
+  end
+
   create_table "email_subscribers", force: :cascade do |t|
     t.bigint "blog_id", null: false
     t.datetime "confirmed_at"
@@ -178,6 +191,17 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id", "email"], name: "index_email_subscribers_on_blog_id_and_email", unique: true
+  end
+
+  create_table "email_suppressions", force: :cascade do |t|
+    t.string "bounce_type"
+    t.datetime "created_at", null: false
+    t.string "diagnostic_code"
+    t.string "email", null: false
+    t.string "reason", null: false
+    t.datetime "suppressed_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_email_suppressions_on_email", unique: true
   end
 
   create_table "navigation_items", force: :cascade do |t|
@@ -419,6 +443,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
   add_foreign_key "digest_posts", "post_digests"
   add_foreign_key "digest_posts", "posts"
   add_foreign_key "email_change_requests", "users"
+  add_foreign_key "email_events", "post_digest_deliveries"
   add_foreign_key "email_subscribers", "blogs"
   add_foreign_key "navigation_items", "blogs"
   add_foreign_key "navigation_items", "posts"

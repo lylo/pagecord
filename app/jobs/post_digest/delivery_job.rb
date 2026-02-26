@@ -3,6 +3,7 @@ class PostDigest::DeliveryJob < ApplicationJob
 
   retry_on Postmark::UnexpectedHttpResponseError, wait: :polynomially_longer, attempts: 5
   retry_on Postmark::TimeoutError, wait: :polynomially_longer, attempts: 5
+  retry_on Aws::SESV2::Errors::ServiceError, wait: :polynomially_longer, attempts: 5
   retry_on Net::OpenTimeout, Net::ReadTimeout, wait: :polynomially_longer, attempts: 5
 
   def perform(post_digest_id)
@@ -10,12 +11,18 @@ class PostDigest::DeliveryJob < ApplicationJob
 
     if !Rails.env.production?
       deliver_via_mailer(digest)
+    elsif ses_enabled?(digest.blog)
+      PostDigest::SesDelivery.deliver_with_failover(digest)
     else
       PostDigest::PostmarkDelivery.new(digest).deliver_all
     end
   end
 
   private
+
+    def ses_enabled?(blog)
+      Rails.features.for(blog: blog).enabled?(:ses_newsletter_delivery)
+    end
 
     def deliver_via_mailer(digest)
       action = digest.individual? ? :individual : :weekly_digest

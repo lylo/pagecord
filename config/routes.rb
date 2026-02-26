@@ -153,6 +153,7 @@ Rails.application.routes.draw do
     resources :blogs, only: [ :index ]
     resources :analytics, only: [ :index ]
     resources :posts, only: [ :index ]
+    resources :suppressed_emails, only: [ :index, :destroy ]
     resources :users, only: [ :show, :destroy, :new, :create, :update ] do
       member do
         post :restore

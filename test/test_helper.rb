@@ -10,6 +10,7 @@ module ActiveSupport
     parallelize(workers: :number_of_processors)
 
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
+    set_fixture_class email_suppressions: Email::Suppression, email_events: Email::Event
     fixtures :all
 
     # Ensure consistent locale for all tests

@@ -9,6 +9,7 @@
         <%= link_to "Blogs", admin_blogs_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'blogs'}" %>
         <%= link_to "Posts", admin_posts_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'posts'}" %>
         <%= link_to "Moderation", admin_moderation_root_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name.in?(%w[content spam])}" %>
+        <%= link_to "Emails", admin_suppressed_emails_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'suppressed_emails'}" %>
         <%= link_to "Analytics", admin_analytics_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'analytics'}" %>
       </nav>
     </div>

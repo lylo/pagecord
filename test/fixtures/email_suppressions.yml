@@ -1,0 +1,15 @@
+bounced:
+  email: bounced@example.com
+  reason: bounce
+  bounce_type: Permanent
+  diagnostic_code: "smtp;550 5.1.1 The email account does not exist"
+  suppressed_at: <%= 1.day.ago %>
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>
+
+complained:
+  email: complained@example.com
+  reason: complaint
+  suppressed_at: <%= 2.days.ago %>
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 2.days.ago %>
