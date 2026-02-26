@@ -1,34 +1,45 @@
 /* ================================== */
 /* Lexxy Editor Specific Styles       */
 /* ================================== */
-lexxy-editor:focus-within {
-  border: 1px solid var(--color-slate-400);
-}
-
 lexxy-editor {
   --lexxy-color-accent-dark: #4fbd9c;
+  --lexxy-color-accent-medium: #3da482; /* darker jade for hover */
+
+  &:focus-within {
+    border: 1px solid var(--color-slate-400);
+  }
 
   .lexxy-editor__content {
     line-height: 1.75;
   }
 
-  /* Placeholder color */
   &[placeholder]::before {
     color: var(--color-slate-600);
     font-style: italic;
     opacity: 0.5;
   }
 
-  /* Caption styling for editor */
-  .attachment__caption input,
-  .attachment__caption textarea {
+  .attachment__caption :is(input, textarea) {
     font-size: 0.875rem !important;
     padding: 0;
     color: var(--color-slate-500) !important;
   }
 
   a {
-    color: inherit; /* or color: #000; for explicit black */
+    color: inherit;
+  }
+
+  .lexxy-content__table-wrapper {
+    margin-block: 0 var(--lexxy-content-margin);
+  }
+
+  .horizontal-divider {
+    padding-block: 0.5em;
+
+    hr {
+      inline-size: 100%;
+      border-color: var(--color-slate-300);
+    }
   }
 }
 /* ================================== */
@@ -39,22 +50,20 @@ lexxy-toolbar {
   position: sticky;
   top: 0;
   z-index: 10;
-
-  background: var(--color-slate-100); /* same as buttons */
+  background: var(--color-slate-100);
   border-top-left-radius: calc(var(--lexxy-radius) + var(--lexxy-toolbar-gap));
   border-top-right-radius: calc(var(--lexxy-radius) + var(--lexxy-toolbar-gap));
-  border: none;                        /* remove any default border */
-  padding: 0.25rem;                    /* optional: space around buttons */
-  display: flex;                       /* keep buttons in a row */
-  gap: 0.25rem;                        /* spacing between buttons */
+  border: none;
+  padding: 0.25rem;
+  display: flex;
+  gap: 0.25rem;
 
-  .lexxy-editor__toolbar-button {
+  .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
     background: var(--color-slate-100);
     color: var(--color-slate-800);
     border: none;
-    block-size: 1.5lh;
+    block-size: 1.75lh;
 
-    /* SVG inherits button color */
     svg path {
       fill: currentColor;
     }
@@ -68,15 +77,14 @@ lexxy-toolbar {
     &:active:not([aria-disabled="true"]) {
       background: var(--color-slate-300);
     }
+
+    &[aria-pressed="true"] {
+      background-color: var(--color-slate-400);
+      color: var(--color-white);
+    }
   }
 
-  .lexxy-editor__toolbar-button[aria-pressed="true"] {
-    background-color: var(--color-slate-400);
-    color: var(--color-white);
-  }
-
-  /* Dropdown open state */
-  .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button {
+  .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
     background-color: var(--color-slate-300);
   }
 }
@@ -85,92 +93,84 @@ lexxy-toolbar {
 /* Dark Mode Overrides                */
 /* ================================== */
 @media (prefers-color-scheme: dark) {
-  lexxy-editor:focus-within {
-    border: 1px solid var(--color-slate-400);
+  lexxy-editor {
+    /* Flip Lexxy's ink scale for dark mode */
+    --lexxy-color-ink: var(--color-slate-200);
+    --lexxy-color-ink-medium: var(--color-slate-400);
+    --lexxy-color-ink-light: var(--color-slate-500);
+    --lexxy-color-ink-lighter: var(--color-slate-600);
+    --lexxy-color-ink-lightest: var(--color-slate-800);
+    --lexxy-color-ink-inverted: var(--color-slate-900);
+    --lexxy-color-canvas: var(--color-slate-900);
+    --lexxy-color-text-subtle: var(--color-slate-400);
+
+    /* Table header */
+    --lexxy-color-table-header-bg: var(--color-slate-800);
+
+    /* Selected states for pressed buttons */
+    --lexxy-color-selected: var(--color-slate-700);
+    --lexxy-color-selected-hover: var(--color-slate-500);
+
+    &:focus-within {
+      border-color: var(--color-slate-400);
+    }
+
+    .horizontal-divider hr {
+      border-color: var(--color-slate-600);
+    }
   }
 
+  /* Toolbar needs explicit overrides (light mode doesn't use Lexxy variables) */
   lexxy-toolbar {
     background: var(--color-slate-800);
-  }
 
-  .lexxy-content {
-    color: var(--color-slate-300);
-    background-color: var(--color-slate-900);
-    border-color: var(--color-slate-600);
+    .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
+      background: var(--color-slate-800);
+      color: var(--color-slate-200);
 
-    strong, b, i, em, a, h1, h2, h3, h4, h5, h6 {
-      color: #fff !important;
+      &:hover, &:focus {
+        background: var(--color-slate-700);
+        color: var(--color-white);
+      }
+
+      &:active:not([aria-disabled="true"]) {
+        background: var(--color-slate-600);
+      }
+
+      &[aria-pressed="true"] {
+        background-color: var(--color-slate-600);
+        color: var(--color-white);
+      }
     }
 
-    blockquote {
-      color: #fff;
-    }
-
-    li::marker {
-      color: #9ba1aa;
-    }
-
-    .attachment__caption,
-    .attachment__caption input,
-    .attachment__caption textarea {
-      background-color: transparent !important;
-      color: var(--color-slate-400) !important;
-    }
-
-    code, pre,
-    code[data-language] {
-      background-color: var(--color-slate-800) !important;
-      color: var(--color-slate-200) !important;
+    .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
+      background-color: var(--color-slate-600);
     }
   }
 
-  /* Toolbar buttons */
-  lexxy-toolbar .lexxy-editor__toolbar-button {
-    background: var(--color-slate-800);
+  /* Highlight dropdown reset button */
+  lexxy-highlight-dropdown .lexxy-editor__toolbar-dropdown-reset {
     color: var(--color-slate-200);
-    border-color: var(--color-slate-600);
   }
 
-  lexxy-toolbar .lexxy-editor__toolbar-button:hover,
-  lexxy-toolbar .lexxy-editor__toolbar-button:focus {
-    background: var(--color-slate-700);
-    color: var(--color-white);
-  }
-
-  lexxy-toolbar .lexxy-editor__toolbar-button:active:not([aria-disabled="true"]) {
-    background: var(--color-slate-600);
-  }
-
-  lexxy-toolbar .lexxy-editor__toolbar-button[aria-pressed="true"] {
-    background-color: var(--color-slate-600);
-    color: var(--color-white);
-  }
-
-  /* Dropdown open state */
-  lexxy-toolbar .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button {
-    background-color: var(--color-slate-600);
-  }
-
-  lexxy-toolbar .lexxy-editor__toolbar-button svg path {
-    fill: currentColor;
-  }
-
-  /* Placeholder color */
-  lexxy-editor[placeholder]::before {
-    color: var(--color-slate-400);
-  }
 }
 
 /* ================================== */
 /* Minimal Toolbar Buttons Hidden      */
 /* ================================== */
 .lexxy-minimal lexxy-toolbar {
-  button[name="quote"],
-  button[name="code"],
-  button[name="upload"],
-  button[name="unordered-list"],
-  button[name="ordered-list"],
-  button[name="heading"] {
+  button:is(
+    [name="quote"],
+    [name="code"],
+    [name="upload"],
+    [name="unordered-list"],
+    [name="ordered-list"],
+    [name="heading"],
+    [name="highlight"],
+    [name="table"],
+    [name="divider"],
+    [name="strikethrough"]),
+  summary[name="highlight"] {
     display: none;
   }
 }
@@ -189,7 +189,59 @@ lexxy-highlight-dropdown button {
   line-height: normal;
 }
 
-lexxy-link-dropdown input[type="url"] {
-  min-inline-size: 30ch;
-  line-height: normal;
+lexxy-link-dropdown {
+  form {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+  }
+
+  input.input {
+    min-inline-size: 30ch;
+    line-height: normal;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--color-slate-800);
+      color: var(--color-slate-200);
+      border-color: var(--color-slate-600);
+    }
+  }
+
+  .lexxy-editor__toolbar-dropdown-actions {
+    display: flex;
+    gap: 0.5ch;
+  }
+
+  /* Shared styles for link/unlink buttons */
+  button.lexxy-editor__toolbar-button:is([value="link"], [value="unlink"]) {
+    aspect-ratio: auto;
+    padding-inline: 1ch;
+  }
+
+  button.lexxy-editor__toolbar-button[value="unlink"] {
+    background-color: var(--color-slate-200);
+    color: var(--color-slate-800);
+
+    &:hover {
+      background-color: var(--color-slate-300);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--color-slate-700);
+      color: var(--color-slate-200);
+
+      &:hover {
+        background-color: var(--color-slate-600);
+      }
+    }
+  }
+
+  button.lexxy-editor__toolbar-button[value="link"] {
+    background-color: var(--lexxy-color-accent-dark);
+    color: var(--color-white);
+
+    &:hover {
+      background-color: var(--lexxy-color-accent-medium);
+    }
+  }
 }

@@ -85,11 +85,13 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert @user.blog.posts.last.draft?
   end
 
-  test "should destroy post" do
-    assert_difference("@user.blog.posts.count", -1) do
-      delete app_post_url(@user.blog.posts.first)
+  test "should discard post" do
+    post_to_discard = @user.blog.posts.first
+    assert_no_difference("@user.blog.posts.count") do
+      delete app_post_url(post_to_discard)
     end
-    assert_redirected_to app_posts_url
+    assert post_to_discard.reload.discarded?
+    assert_redirected_to app_posts_path
   end
 
   test "should show edit post page for published post" do

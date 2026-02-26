@@ -24,6 +24,12 @@ module App::PostsHelper
     end
   end
 
+  def show_email_banner?(post, blog)
+    post.persisted? && post.published? && !post.is_page? &&
+      Current.user.subscribed? && blog.email_subscriptions_enabled? &&
+      blog.individual?
+  end
+
   private
 
     def infer_model_name(post)

@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_one :blog, dependent: :destroy, inverse_of: :user
   has_many :access_requests, dependent: :destroy
   has_many :email_change_requests, dependent: :destroy
+  has_one :unengaged_follow_up, dependent: :destroy
 
   accepts_nested_attributes_for :blog
 

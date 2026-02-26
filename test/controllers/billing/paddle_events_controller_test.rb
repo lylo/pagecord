@@ -145,6 +145,79 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 3000, user.subscription.reload.unit_price
   end
 
+  test "should set annual plan on subscription.created with annual custom_data" do
+    user = users(:vivian)
+    payload = payload_for("subscription.created", user)
+    payload["data"]["custom_data"]["plan"] = "annual"
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert user.subscription.reload.annual?
+  end
+
+  test "should set monthly plan on subscription.created with monthly custom_data" do
+    user = users(:vivian)
+    payload = payload_for("subscription.created.monthly", user)
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert user.subscription.reload.monthly?
+  end
+
+  test "should detect monthly plan from billing cycle when no custom_data plan" do
+    user = users(:vivian)
+    payload = payload_for("subscription.created", user)
+    # Remove the plan from custom_data
+    payload["data"]["custom_data"].delete("plan")
+    # The billing_cycle is already month/1 in the fixture
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    # Should fall back to monthly detection based on billing_cycle
+    assert user.subscription.reload.monthly?
+  end
+
+  test "should update plan on transaction.completed with subscription_update origin" do
+    subscription = subscriptions(:monthly_subscription)
+    assert subscription.monthly?
+
+    payload = payload_for("transaction.completed.plan_change", subscription.user)
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    subscription.reload
+    assert subscription.annual?, "Expected subscription to be annual after plan change"
+    assert_equal SubscriptionsHelper.price_id(:annual), subscription.paddle_price_id
+  end
+
   private
 
     def payload_for(event_type, user)

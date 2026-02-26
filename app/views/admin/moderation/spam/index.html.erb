@@ -1,60 +1,64 @@
 <%= render "admin/moderation/shared/tabs" %>
 
-<div class="mb-6">
-  <div>
-    <%= pluralize(@total_unreviewed, "blog") %> flagged for review.
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @total_unreviewed %></span>
+      <span class="text-sm text-slate-500 dark:text-slate-400"><%= "blog".pluralize(@total_unreviewed) %> flagged for review</span>
+    </div>
+    <%= button_to "Run Detection",
+        run_detection_admin_moderation_spam_index_path,
+        method: :post,
+        class: "btn-secondary py-1.5" %>
   </div>
-</div>
 
-<% if @spam_detections.any? %>
-  <div class="overflow-auto">
-    <table class="my-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
+  <% if @spam_detections.any? %>
+    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
       <thead>
         <tr>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Blog</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Status</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Reason</th>
-          <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Detected</th>
-          <th class="py-4 sm:ps-4 text-end text-sm font-semibold text-slate-900 dark:text-slate-50">Actions</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Blog</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Status</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Reason</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Detected</th>
+          <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Actions</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
+      <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
         <% @spam_detections.each do |detection| %>
           <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">
+            <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50">
               <%= link_to "@#{detection.blog.subdomain}",
                   admin_moderation_spam_path(detection),
-                  class: "hover:underline" %>
+                  class: "font-medium underline" %>
             </td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm">
-              <span class="px-2 py-1 rounded <%= detection.spam? ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800' %>">
+            <td class="whitespace-nowrap py-3 px-6 text-sm">
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium <%= detection.spam? ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' %>">
                 <%= detection.status.titleize %>
               </span>
             </td>
-            <td class="py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400 max-w-md truncate">
+            <td class="py-3 px-6 text-sm text-slate-500 dark:text-slate-400 max-w-md truncate">
               <%= detection.reason.to_s.truncate(80) %>
             </td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
+            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
               <%= detection.detected_at&.to_formatted_s(:short) %>
             </td>
-            <td class="whitespace-nowrap py-4 sm:ps-4 text-end text-sm">
+            <td class="whitespace-nowrap py-3 px-6 text-end text-sm">
               <div class="flex justify-end space-x-2">
                 <%= button_to "Mark Clean",
                     dismiss_admin_moderation_spam_path(detection),
                     method: :post,
-                    class: "px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer" %>
+                    class: "btn-primary py-1" %>
                 <%= button_to "Confirm Spam",
                     confirm_admin_moderation_spam_path(detection),
                     method: :post,
-                    class: "px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer" %>
+                    class: "btn-danger py-1" %>
               </div>
             </td>
           </tr>
         <% end %>
       </tbody>
     </table>
-  </div>
 
-  <%= render "app/shared/pagy_nav" %>
-
-<% end %>
+    <%= render "app/shared/pagy_nav" %>
+  <% end %>
+</div>

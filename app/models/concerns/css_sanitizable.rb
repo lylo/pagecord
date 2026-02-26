@@ -21,6 +21,13 @@ module CssSanitizable
     def custom_css_safety
       return unless custom_css.present?
 
+      # Check size limit first for a clearer error message
+      max_size = Css::Sanitizer::MAX_CSS_SIZE
+      if custom_css.bytesize > max_size
+        errors.add(:custom_css, "is too large (maximum is #{max_size / 1024}KB)")
+        return
+      end
+
       # Use custom CSS sanitizer that handles XSS prevention,
       # @import whitelisting for Google Fonts, and CSS custom properties
       sanitized = Css::Sanitizer.sanitize_stylesheet(custom_css)

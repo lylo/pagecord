@@ -1,5 +1,9 @@
 <%= content_for :title do %>
-  Minimalist Blogging Platform: Write, Publish, Done. No clutter, no distractions.
+  Minimalist Blogging Platform: Write, Publish, Done.
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "Minimalist Blogging for People Who Actually Want to Write") %>
 <% end %>
 
 <%= content_for :meta_description do %>

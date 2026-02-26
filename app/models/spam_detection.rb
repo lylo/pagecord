@@ -1,7 +1,7 @@
 class SpamDetection < ApplicationRecord
   belongs_to :blog
 
-  enum :status, { clean: 0, spam: 1, uncertain: 2, error: 3, skipped: 4 }
+  enum :status, { clean: 0, spam: 1, uncertain: 2, error: 3, no_content: 4 }
 
   scope :needs_review, -> { where(status: [ :spam, :uncertain ]).where(reviewed_at: nil) }
   scope :recent, -> { order(detected_at: :desc) }

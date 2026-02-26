@@ -1,16 +1,24 @@
+<% if @blog.user.has_premium_access? %>
+  <% content_for :head do %>
+    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/hint/show-hint.css" rel="stylesheet" type="text/css"/>
+    <%= stylesheet_link_tag "css-editor" %>
+  <% end %>
+<% end %>
+
 <%= form_with url: app_settings_appearance_path(@blog), model: @blog, data: { controller: "avatar" } do |form| %>
   <fieldset>
     <h3 class="font-bold text-lg mb-2">Bio</h3>
 
     <div class="lexxy-minimal">
-      <%= form.lexxy_rich_text_area :bio,
+      <%= form.rich_text_area :bio,
           placeholder: "add a bio to your profile if you like...",
           class: "lexxy-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
           spellcheck: true,
           autocorrect: "on",
           attachments: false,
           autofocus: true,
-          data: { controller: "lexxy", subscribed: false } %>
+          data: { controller: "lexxy ios-toolbar", subscribed: false } %>
     </div>
 
     <div class="field-error"><%= @blog.errors[:bio].first if @blog.errors[:bio].any? %></div>
@@ -59,8 +67,20 @@
     <%= render "layout_options", form: form %>
   </div>
 
-  <% if @blog.user.subscribed? %>
-    <h3 class="mt-8 font-bold text-lg mb-2">Avatar</h3>
+  <% avatar_disabled = @blog.user.on_free_plan? %>
+  <h3 class="mt-8 font-bold text-lg mb-2">Avatar</h3>
+
+  <% if avatar_disabled %>
+    <div class="mb-4">
+      <%= callout(:info) do %>
+        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add an avatar to your blog.
+      <% end %>
+    </div>
+  <% else %>
+    <div class="mb-4"><%= trial_callout("Avatar") %></div>
+  <% end %>
+
+  <div class="<%= 'opacity-50 pointer-events-none' if avatar_disabled %>">
     <p>
       <% if @blog.avatar&.attached? %>
         Click the image to select a new avatar, or click 'Remove' to delete the existing one.
@@ -83,31 +103,38 @@
     </div>
 
     <%= form.file_field :avatar, class: "hidden", accept: "image/jpeg, image/png, image/webp", data: { avatar_target: "input" } %>
-  <% end %>
+  </div>
 
-  <% if @blog.user.subscribed? %>
-    <h3 class="mt-8 font-bold text-lg mb-4">Branding</h3>
+  <% disabled = !@blog.user.subscribed? %>
+  <h3 class="mt-8 font-bold text-lg mb-4">Branding</h3>
 
-    <div class="flex gap-3">
-      <div class="flex h-6 shrink-0 items-center">
-        <%= form.check_box :show_branding, { checked: @blog.show_branding, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
-      </div>
-      <div>
-        <%= form.label :show_branding, "Show Pagecord branding", class: "text-slate-800 dark:text-slate-100" %>
-        <p class="text-slate-500 text-sm">
-          When checked, the Pagecord logo will be displayed at the bottom of each page on your blog. Please consider
-          keeping this on to help spread the word about Pagecord!
-        </p>
-      </div>
+  <% if disabled %>
+    <div class="mb-4">
+      <%= callout(:info) do %>
+        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to hide Pagecord branding from your blog.
+      <% end %>
     </div>
   <% end %>
 
-  <% if @blog.user.subscribed? && current_features.enabled?(:custom_css) %>
-    <fieldset class="mt-8" id="custom-css-section">
+  <div class="flex gap-3 <%= 'opacity-50' if disabled %>">
+    <div class="flex h-6 shrink-0 items-center">
+      <%= form.check_box :show_branding, { checked: @blog.show_branding, disabled: disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded #{disabled ? 'cursor-not-allowed' : 'focus:ring focus:ring-slate-300'}" } %>
+    </div>
+    <div>
+      <%= form.label :show_branding, "Show Pagecord branding", class: "text-slate-800 dark:text-slate-100" %>
+      <p class="text-slate-500 text-sm">
+        When checked, the Pagecord logo will be displayed at the bottom of each page on your blog. Please consider
+        keeping this on to help spread the word about Pagecord!
+      </p>
+    </div>
+  </div>
+
+  <% if @blog.user.has_premium_access? %>
+    <fieldset class="mt-8" id="custom-css-section" data-controller="css-editor">
       <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
       <p class="mb-4">
         Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
-        You can use <code>@import</code> for Google Fonts.
+        You can use <code>@import</code> for Google Fonts or Bunny Fonts.
       </p>
 
       <p class="mb-4 text-sm text-slate-500 italic">
@@ -115,9 +142,7 @@
       </p>
 
       <%= form.text_area :custom_css,
-          placeholder: ".blog { /* your custom styles here */ }",
-          class: "autogrow w-full min-h-64 font-mono text-sm border border-slate-300 dark:border-slate-600 rounded-md p-3 focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100",
-          spellcheck: false %>
+          data: { css_editor_target: "textarea" } %>
 
       <div class="field-error"><%= @blog.errors[:custom_css].first if @blog.errors[:custom_css].any? %></div>
     </fieldset>

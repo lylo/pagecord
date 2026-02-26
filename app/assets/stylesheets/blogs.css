@@ -1,4 +1,31 @@
 /* ============================= */
+/* CSS Units: rem vs em          */
+/* ============================= */
+/*
+ * This file uses a hybrid approach for CSS units:
+ *
+ * rem (root em) - Used for spacing and layout
+ *   - Margins, padding, gaps between elements
+ *   - Fixed dimensions (widths, heights)
+ *   - Consistent and predictable across the page
+ *
+ * em (relative) - Used for values that should scale with font size
+ *   - Font sizes (scale relative to parent)
+ *   - Icon dimensions (scale with surrounding text)
+ *   - Letter spacing, line height
+ *   - List indentation (relative to text size)
+ *
+ * Why not em everywhere?
+ *   em values compound. If an element has font-size: 1.5em and
+ *   margin: 2em, the margin is 2x the element's font size (1.5),
+ *   resulting in 3x the base size. Using rem for spacing avoids
+ *   this compounding and keeps layout predictable.
+ *
+ * The baseline: <main> sets font-size: 1rem, which all em values
+ * ultimately reference through inheritance.
+ */
+
+/* ============================= */
 /* Layout - Page Structure       */
 /* ============================= */
 
@@ -37,6 +64,9 @@ main {
 .blog-container {
   margin-inline: auto;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 /* Content width modifiers (applied via content_width_class helper) */
@@ -59,12 +89,12 @@ footer.blog-footer {
   flex-direction: column;
   text-align: center;
   padding: 2rem;
+  margin-top: auto;
   color: var(--color-text-light);
 }
 
 footer.blog-footer #brand svg {
   width: 110px;
-  margin-top: 2rem;
   display: inline-flex;
   color: var(--color-text-heading);
 }
@@ -92,17 +122,23 @@ html, body {
 /* -------------------------------------------------------------------------- */
 
 :where(.blog) {
-    --lexxy-color-ink: var(--color-text);
-    --lexxy-color-ink-medium: var(--color-text-muted);
-    --lexxy-color-ink-light: var(--color-text-light);
-    --lexxy-color-ink-lighter: var(--color-text-disabled);
-    --lexxy-color-ink-lightest: var(--color-bg-sunken);
-    --lexxy-color-text: var(--color-text);
-    --lexxy-color-text-subtle: var(--color-text-muted);
-    --lexxy-color-link: var(--color-accent);
-    --lexxy-color-accent-dark: var(--color-accent);
-    --lexxy-color-accent-medium: var(--color-accent-hover);
-    --lexxy-color-code-bg: var(--color-bg-subtle);
+  --lexxy-color-ink: var(--color-text);
+  --lexxy-color-ink-medium: var(--color-text-muted);
+  --lexxy-color-ink-light: var(--color-text-light);
+  --lexxy-color-ink-lighter: var(--color-text-disabled);
+  --lexxy-color-ink-lightest: var(--color-bg-sunken);
+  --lexxy-color-text: var(--color-text);
+  --lexxy-color-text-subtle: var(--color-text-muted);
+  --lexxy-color-link: var(--color-accent);
+  --lexxy-color-accent-dark: var(--color-accent);
+  --lexxy-color-accent-medium: var(--color-accent-hover);
+  --lexxy-color-code-bg: var(--color-bg-subtle);
+
+
+  /* FIXME there should be a better way of doing this without !important */
+  .lexxy-content__table-cell--header {
+    background-color: var(--color-bg-subtle) !important;
+  }
 
   background-color: var(--color-bg);
   color: var(--color-text);
@@ -113,6 +149,24 @@ html, body {
 
   :where(.lexxy-content) {
     line-height: inherit;
+
+    /* gives images rounded corners */
+    img {
+      border-radius: 0.5em;
+      max-width: 100%;
+      display: block;
+    }
+
+    /* increased margin around images in article content */
+    figure:has(img),
+    img:not(figure img),
+    .attachment {
+      margin-block: 1.5rem;
+    }
+
+    .attachment--preview {
+      inline-size: auto;
+    }
   }
 
   :where(header) {
@@ -153,8 +207,8 @@ html, body {
   }
 
   :where(.titlebar) {
-    margin-top: 1.25em;
-    margin-bottom: 1.25em;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -187,9 +241,10 @@ html, body {
     --lexxy-color-ink: var(--color-text-muted);
     --lexxy-content-margin: 1rem;
 
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
     font-size: 0.875em;
+    line-height: 1.25rem;
     color: var(--color-text-muted);
     overflow-wrap: break-word;
 
@@ -257,7 +312,7 @@ html, body {
 
     h1.post-title {
       font-size: 1.875rem;
-      line-height: 2.25rem;
+      line-height: 2.5rem;
       margin-top: 0;
       margin-bottom: 2rem;
       color: var(--color-text-heading);
@@ -299,7 +354,7 @@ html, body {
 /* -------------------------------------------------------------------------- */
 
 :where(.blog) {
-  :where(footer) {
+  :where(article) :where(footer) {
     font-size: 0.875rem;
     display: flex;
     align-items: center;
@@ -411,7 +466,7 @@ html, body {
     }
   }
 
-  /* Email subscription form */
+  /* Email subscription form - inline on desktop, stacked on mobile */
   :where(.email-subscriber-form) {
     input[type="email"] {
       border-top-right-radius: 0;
@@ -423,6 +478,21 @@ html, body {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       padding: 0.25rem 0.75rem;
+    }
+
+    @media (max-width: 480px) {
+      input[type="email"],
+      input[type="submit"] {
+        border-radius: 0.375rem;
+      }
+
+      input[type="email"] {
+        border-right: 1px solid var(--color-input-border);
+      }
+
+      input[type="submit"] {
+        padding: 0.5rem 0.75rem;
+      }
     }
   }
 
@@ -451,11 +521,11 @@ html, body {
   color: var(--color-text-heading);
   font-size: 1.125rem;
   font-weight: 600;
-  margin: 0 0 1em 0;
+  margin: 0 0 1rem 0;
 }
 
 .posts-titles .year-header.has-previous {
-  margin-top: 2em;
+  margin-top: 2rem;
 }
 
 .posts-titles .post-row {
@@ -585,10 +655,15 @@ button {
   display: flex;
   justify-content: center;
   font-size: 0.875em;
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
   margin-block: 0 var(--lexxy-content-margin);
+  width: 100%;
   max-width: 450px;
+}
+
+.email-subscriber-form turbo-frame {
+  display: block;
+  width: 100%;
 }
 
 /* Empty state messages */
@@ -765,7 +840,6 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
   text-align: center;
 }
@@ -777,7 +851,7 @@ button {
 .subscription-message {
   color: var(--color-text);
   text-align: center;
-  line-height: 1.5em;
+  line-height: 1.5;
 
   a {
     color: var(--color-accent);
@@ -791,6 +865,19 @@ button {
 @media (min-width: 640px) {
   .email-input {
     width: 16rem;
+  }
+}
+
+/* Mobile: stack email form vertically on very small screens */
+@media (max-width: 480px) {
+  .email-subscriber-form .form-fieldset {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .email-input {
+    width: 100%;
   }
 }
 
@@ -916,7 +1003,7 @@ ul.posts-list {
 }
 
 .posts-list h2 {
-  margin-bottom: 0.5em;
+  margin-bottom: 0.5rem;
 }
 
 .posts-list h2:not(:first-child) {
@@ -982,10 +1069,6 @@ ul.posts-list {
   height: 100%;
 }
 
-/* GitHub gist embed */
-.gist-embed-container {
-  margin-block: 0 var(--lexxy-content-margin);
-}
 
 /* General iframe styling */
 :where(.blog) {

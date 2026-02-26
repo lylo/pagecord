@@ -173,6 +173,29 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
   end
 
+  test "should use blog bio as RSS channel description when present" do
+    @blog.update!(bio: "A blog about Ruby and Rails")
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+    doc = Nokogiri::XML(@response.body)
+    description = doc.xpath("//channel/description").text
+    assert_equal "A blog about Ruby and Rails", description
+  end
+
+  test "should fall back to default RSS channel description when bio is blank" do
+    @blog.bio = nil
+    @blog.save!
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+    doc = Nokogiri::XML(@response.body)
+    description = doc.xpath("//channel/description").text
+    assert_equal "Latest posts from #{@blog.display_name}", description
+  end
+
   test "should exclude hidden posts from RSS feed" do
     # Create a hidden post
     hidden_post = @blog.posts.create!(
@@ -382,22 +405,22 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to blog_posts_path(page: 1)
   end
 
-  test "should redirect malformed page parameter to page 1" do
+  test "should handle malformed page parameter gracefully" do
     get blog_posts_path(page: "\"><h1>Cortex</h1>2")
 
-    assert_redirected_to blog_posts_path(page: 1)
+    assert_response :success
   end
 
-  test "should redirect negative page parameter to page 1" do
+  test "should handle negative page parameter gracefully" do
     get blog_posts_path(page: -5)
 
-    assert_redirected_to blog_posts_path(page: 1)
+    assert_response :success
   end
 
-  test "should redirect zero page parameter to page 1" do
+  test "should handle zero page parameter gracefully" do
     get blog_posts_path(page: 0)
 
-    assert_redirected_to blog_posts_path(page: 1)
+    assert_response :success
   end
 
   test "should set the canonical_url to the page URL by default" do
@@ -452,11 +475,13 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should initially prevent free blogs from being indexed" do
     @blog = blogs(:vivian)
+    @blog.user.update!(created_at: 1.day.ago)
     host_subdomain! @blog.subdomain
 
     get blog_posts_path
 
-    assert @blog.created_at.after?(1.week.ago)
+    assert @blog.user.created_at.after?(1.week.ago)
+    assert_not @blog.user.subscribed?
     assert_select 'meta[name="robots"][content="noindex, nofollow"]'
   end
 

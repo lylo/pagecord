@@ -18,10 +18,26 @@ Rails.application.configure do
   config.server_timing = true
 
   # Set domain configuration for development
-  config.x.domain = ENV.fetch("APP_DOMAIN", "lvh.me")
+  # - Default: localhost (Chrome/Firefox only, Safari doesn't support *.localhost)
+  # - APP_DOMAIN=lvh.me: Safari fallback (lvh.me resolves to 127.0.0.1)
+  # - APP_DOMAIN=abc.ngrok.io: External access via HTTPS
+  app_domain = ENV["APP_DOMAIN"]
+  config.x.domain = app_domain || "localhost"
   config.x.cloudflare_image_resizing = false
 
-  config.action_controller.default_url_options = { host: "lvh.me", port: "3000", protocol: "http" }
+  case app_domain
+  when nil, "localhost"
+    default_url_options = { host: "localhost", port: "3000", protocol: "http" }
+    # localhost has no TLD, so set tld_length to 0 for subdomain extraction to work
+    config.action_dispatch.tld_length = 0
+  when "lvh.me"
+    # lvh.me is a DNS service that resolves to 127.0.0.1 (Safari fallback)
+    default_url_options = { host: "lvh.me", port: "3000", protocol: "http" }
+  else
+    # External domain (ngrok, etc.) - assumes HTTPS without port
+    default_url_options = { host: app_domain, protocol: "https" }
+  end
+  config.action_controller.default_url_options = default_url_options
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
@@ -45,8 +61,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :letter_opener_web
   config.action_mailer.perform_deliveries = true
 
-  # Use different settings based on whether we're using puma-dev or regular Rails server
-  config.action_mailer.default_url_options = { host: "lvh.me", port: "3000" }
+  config.action_mailer.default_url_options = default_url_options
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false

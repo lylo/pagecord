@@ -1,6 +1,8 @@
 class Post < ApplicationRecord
   include Discard::Model
-  include Draftable, Sluggable, Tokenable, Trimmable, Upvotable, Taggable, Post::Searchable, Post::Moderatable
+  include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable, Post::Emailable
+
+  self.locale_optional = true
 
   belongs_to :blog, inverse_of: nil
 
@@ -35,6 +37,7 @@ class Post < ApplicationRecord
       )
     }
   after_create :detect_open_graph_image
+  after_commit :purge_blog_cache, on: [ :create, :update, :destroy ]
 
   def content_present
     has_content = content.body.present? && content.body.to_plain_text.strip.present?
@@ -114,6 +117,10 @@ class Post < ApplicationRecord
     (blog.home_page_id.present? && blog.home_page_id == id) || is_home_page
   end
 
+  def effective_locale
+    locale || blog.locale
+  end
+
   def first_image
     @first_image ||= begin
       if content_image_attachments.any?
@@ -181,5 +188,12 @@ class Post < ApplicationRecord
       else
         GenerateOpenGraphImageJob.perform_now(id)
       end
+    end
+
+    def purge_blog_cache
+      return unless Rails.env.production?
+      return unless published? || status_previously_changed?
+
+      PurgeCloudflareCacheJob.perform_later(blog_id)
     end
 end

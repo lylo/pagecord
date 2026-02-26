@@ -18,9 +18,7 @@
       </div>
 
       <div class="post-card-meta <%= post.tag_list.present? ? 'has-tags' : 'no-tags' %>">
-        <time class="post-card-date dt-published" datetime="<%= post.published_at.iso8601 %>">
-          <%= local_time post.published_at, format: published_at_date_format %>
-        </time>
+        <%= local_time post.published_at, format: published_at_date_format, class: "post-card-date dt-published" %>
         <span class="post-card-badge">
           <%= t('posts.read_more') %>
         </span>

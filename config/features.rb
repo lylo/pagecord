@@ -1,7 +1,9 @@
 env "FEATURE"
 
+feature :analytics_countries do |blog: nil|
+  blog&.features.include?("analytics_countries")
+end
 
-
-feature :custom_css do |blog: nil|
-  blog&.features.include?("custom_css")
+feature :individual_email_delivery do |blog: nil|
+  blog&.features.include?("individual_email_delivery")
 end

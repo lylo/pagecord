@@ -1,12 +1,15 @@
 module Post::Moderatable
   extend ActiveSupport::Concern
 
+  MAX_MODERATION_IMAGES = 5
+
   included do
     has_one :content_moderation, dependent: :destroy
 
     scope :with_content_moderation, -> { includes(:content_moderation) }
     scope :moderation_flagged, -> { joins(:content_moderation).where(content_moderations: { status: :flagged }) }
     scope :moderation_pending, -> { left_joins(:content_moderation).where(content_moderations: { id: nil }).or(left_joins(:content_moderation).where(content_moderations: { status: [ :pending, :error ] })) }
+    scope :moderatable, -> { kept.published }
   end
 
   def moderation_text_payload
@@ -53,11 +56,13 @@ module Post::Moderatable
       end.sort
     end
 
-    # Limit to 5 images to stay within OpenAI payload limits and manage memory.
     def moderation_images
       images = []
       images += content_image_attachments if content.body.present?
       images += attachments.select(&:image?)
-      images.uniq { |a| a.respond_to?(:blob) ? a.blob.id : a.id }.first(5)
+
+      images
+        .uniq { |a| a.respond_to?(:blob) ? a.blob.id : a.id }
+        .first(MAX_MODERATION_IMAGES)
     end
 end

@@ -1,5 +1,5 @@
 class Admin::Moderation::SpamController < AdminController
-  include Pagy::Backend
+  include Pagy::Method
 
   def index
     @pagy, @spam_detections = pagy(
@@ -32,5 +32,10 @@ class Admin::Moderation::SpamController < AdminController
     DestroyUserJob.perform_later(user.id, spam: true)
 
     redirect_to admin_moderation_spam_index_path, notice: "Spam confirmed and user will be discarded"
+  end
+
+  def run_detection
+    SpamDetectionJob.perform_later
+    redirect_to admin_moderation_spam_index_path, notice: "Spam detection job queued"
   end
 end

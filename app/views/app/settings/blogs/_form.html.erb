@@ -1,8 +1,12 @@
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
-  <% if @blog.user.subscribed? %>
+  <% disabled = !@blog.user.subscribed? %>
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
-    <% if @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? %>
+    <% if disabled %>
+      <%= callout(:info) do %>
+        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to use your own domain for your blog.
+      <% end %>
+    <% elsif @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? %>
       <p>
         Your Pagecord is now available at <code><mark class="bg-slate-100 dark:bg-slate-700 dark:text-slate-100 px-1"><%= @blog.custom_domain %></mark></code>
       </p>
@@ -13,17 +17,16 @@
     <% end %>
 
     <fieldset>
-      <%= styled_text_field(form, :custom_domain, placeholder: "yourdomain.com", class: "mt-4 md:w-96") %>
+      <%= styled_text_field(form, :custom_domain, placeholder: "yourdomain.com", class: "mt-4 md:w-96", disabled: disabled) %>
       <%= field_error(@blog, :custom_domain) %>
     </fieldset>
 
-    <% if @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? %>
+    <% if @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? && !disabled %>
       <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm">
         To remove your custom domain, clear the box above and click Update. Don't forget to remove the records from your DNS!
       </p>
     <% end %>
   </div>
-  <% end %>
 
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Language</h3>
@@ -109,17 +112,10 @@
       Your current blog subdomain is <strong><%= persisted_value(@blog, :subdomain) %></strong> which means your blog is available at <span class="bg-slate-200 dark:bg-slate-700">https://<%= persisted_value(@blog, :subdomain) %>.pagecord.com</span>.
     </p>
 
-    <div class="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-      <div class="flex items-start">
-        <div class="flex-shrink-0">
-<%= inline_svg_tag "icons/alert-triangle.svg", class: "h-5 w-5 text-yellow-600 dark:text-yellow-500" %>
-        </div>
-        <div class="ml-3">
-          <p class="text-sm text-yellow-800 dark:text-yellow-200">
-            <strong>Warning:</strong> Changing your blog subdomain changes the URL of your blog, so any links to your old blog URL will no longer work!
-          </p>
-        </div>
-      </div>
+    <div class="mb-4">
+      <%= callout(:warning) do %>
+        <strong>Warning:</strong> Changing your blog subdomain changes the URL of your blog, so any links to your old blog URL will no longer work!
+      <% end %>
     </div>
 
     <fieldset>

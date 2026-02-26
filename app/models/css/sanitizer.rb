@@ -3,7 +3,7 @@
 
 module Css
   module Sanitizer
-    MAX_CSS_SIZE = 2_000 # 2KB limit to prevent DoS
+    MAX_CSS_SIZE = 4096 # 4KB limit to prevent DoS
 
     ALLOWED_FONT_HOSTS = %w[
       fonts.googleapis.com
@@ -62,6 +62,8 @@ module Css
             border-block border-block-start border-block-end
             inset-inline inset-inline-start inset-inline-end
             inset-block inset-block-start inset-block-end
+            inline-size min-inline-size max-inline-size
+            block-size min-block-size max-block-size
           ]
         end
 

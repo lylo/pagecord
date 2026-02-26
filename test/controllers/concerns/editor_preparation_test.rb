@@ -52,7 +52,7 @@ class EditorPreparationTest < ActiveSupport::TestCase
     prepare_content_for_editor(post)
 
     result = post.content.body.to_html
-    assert_includes result, "<h2>Main Heading</h2>"
+    assert_includes result, "<h2 id=\"main-heading\">Main Heading</h2>"
     assert_not_includes result, "<h1>"
   end
 

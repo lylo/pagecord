@@ -1,26 +1,11 @@
 <div class="digest">
-  <% @posts.each do |post| %>
-    <div class="post">
-      <% if post.title %>
-        <h2>
-          <%= link_to post.title, post_url(post) %>
-        </h2>
-      <% end %>
-
-      <div class="post-content">
-        <%= strip_video_tags(without_action_text_image_wrapper(post.content.to_s)).html_safe %>
-      </div>
-      <p class="post-timestamp">
-         <%= link_to l(post.published_at_in_user_timezone.to_date, format: :post_date), post_url(post) %>
-      </p>
-    </div>
-  <% end %>
+  <%= render partial: "post", collection: @posts %>
 
   <hr>
 
   <p class="digest-footer">
-    <%= t('email_subscribers.mailers.weekly_digest.footer', blog_name: @subscriber.blog.display_name) %>
+    <%= t('email_subscribers.mailers.shared.footer', blog_name: @subscriber.blog.display_name) %>
     <br><br>
-    <%= link_to t('email_subscribers.mailers.weekly_digest.unsubscribe_link'), email_subscriber_unsubscribe_url_for(@subscriber) %>
+    <%= link_to t('email_subscribers.mailers.shared.unsubscribe_link'), email_subscriber_unsubscribe_url_for(@subscriber) %>
   </p>
 </div>

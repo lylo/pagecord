@@ -56,15 +56,15 @@ hr {
 }
 
 .pagy a:hover {
-  @apply bg-slate-300 dark:bg-slate-500 dark:text-slate-100;
+  @apply bg-slate-300 dark:bg-slate-600 dark:text-slate-100;
 }
 
-a:not([href]), a:not([href]):hover { /* disabled links */
+.pagy a:not([href]):not([aria-current]) { /* disabled links (gaps, prev/next at boundaries) */
   @apply text-slate-300 bg-slate-100 dark:bg-slate-800 dark:text-slate-700 cursor-default;
 }
 
-.pagy a.current {
-  @apply text-white bg-slate-400 dark:bg-slate-500;
+.pagy a[aria-current="page"] { /* current page */
+  @apply text-white bg-slate-400 dark:bg-slate-500 cursor-default;
 }
 
 .pagy label {

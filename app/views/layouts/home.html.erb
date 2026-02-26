@@ -11,24 +11,28 @@
 
     <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $29/year." %>">
 
+    <% og_title = (content_for?(:title) ? content_for(:title) : "Pagecord: Blog Without The Slog.").strip %>
+    <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $29/year.").strip %>
+    <% og_image = (content_for?(:og_image) ? content_for(:og_image) : image_url("social/open-graph.webp")).strip %>
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="<%= request.original_url %>">
-    <meta property="og:title" content="Pagecord: Blog Without The Slog.">
-    <meta property="og:description" content="Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $29/year.">
-    <meta property="og:image" content="<%= image_url "social/open-graph.webp" %>">
+    <meta property="og:title" content="<%= og_title %>">
+    <meta property="og:description" content="<%= og_description %>">
+    <meta property="og:image" content="<%= og_image %>">
 
     <meta property="twitter:url" content="<%= request.original_url %>">
-    <meta property="twitter:title" content="Pagecord: Blog Without The Slog.">
-    <meta property="twitter:description" content="Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $29/year.">
-    <meta property="twitter:image" content="<%= image_url "social/open-graph.webp" %>">
+    <meta property="twitter:title" content="<%= og_title %>">
+    <meta property="twitter:description" content="<%= og_description %>">
+    <meta property="twitter:image" content="<%= og_image %>">
     <meta property="twitter:card" content="summary_large_image">
 
-    <link rel="canonical" href="https://pagecord.com/">
+    <link rel="canonical" href="<%= request.original_url %>">
 
     <%= stylesheet_link_tag "tailwind", "inter", "source-serif-4", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <%= javascript_importmap_tags "home" %>
 
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script type="text/javascript">

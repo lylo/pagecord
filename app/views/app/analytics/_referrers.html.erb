@@ -1,0 +1,39 @@
+<!-- Traffic Sources -->
+<div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
+  <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Traffic Sources</h3>
+
+  <% if @referrer_data.any? %>
+    <div class="space-y-3">
+      <% @referrer_data.each_with_index do |referrer, index| %>
+        <div class="flex items-center justify-between py-2 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
+          <div class="flex items-center space-x-3 flex-1 min-w-0">
+            <span class="text-sm text-slate-400 w-6 text-center flex-shrink-0">
+              <%= index + 1 %>
+            </span>
+            <div class="w-5 h-5 flex-shrink-0 text-slate-500 dark:text-slate-400">
+              <%= inline_svg_tag referrer[:icon_path], class: "w-5 h-5" %>
+            </div>
+            <span class="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+              <%= referrer[:friendly_name] %>
+            </span>
+          </div>
+          <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
+            <!-- Hide progress bar on mobile, show on desktop -->
+            <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
+              <% max_visits = @referrer_data.first[:count] %>
+              <% width = (referrer[:count].to_f / max_visits * 100).round(1) %>
+              <div class="bg-[#4fbd9c] rounded-full h-2 transition-all duration-300" style="width: <%= width %>%"></div>
+            </div>
+            <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
+              <%= format_number(referrer[:count]) %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-8 text-slate-500 dark:text-slate-400">
+      No referrer data found for this time period
+    </div>
+  <% end %>
+</div>

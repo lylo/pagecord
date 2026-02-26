@@ -4,13 +4,14 @@
     <meta charset="utf-8">
     <title><%= content_for?(:title) ? content_for(:title) : "Pagecord" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Pagecord is a minimalist blogging platform. Post by email or rich text editor. Free forever." %>">
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "inter", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <%= javascript_importmap_tags "home" %>
   </head>
 
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">

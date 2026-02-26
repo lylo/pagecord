@@ -1,16 +1,15 @@
 class ContentModerationBatchJob < ApplicationJob
   queue_as :default
 
+  LOOKBACK = 24.hours
   DELAY_BETWEEN_POSTS = 1.second
   MAX_POSTS_PER_RUN = 100
-  LOOKBACK_PERIOD = 2.hours
 
   def perform
-    posts = Post.kept
-                .published
-                .where(hidden: false)
-                .where("posts.updated_at >= ?", LOOKBACK_PERIOD.ago)
+    cutoff = LOOKBACK.ago
+    posts = Post.moderatable
                 .moderation_pending
+                .where("posts.created_at > :cutoff OR posts.updated_at > :cutoff", cutoff: cutoff)
                 .includes(:blog)
                 .limit(MAX_POSTS_PER_RUN)
 

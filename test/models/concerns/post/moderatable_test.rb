@@ -94,4 +94,30 @@ class Post::ModeratableTest < ActiveSupport::TestCase
     new_fingerprint = @post.moderation_fingerprint
     refute_equal original_fingerprint, new_fingerprint
   end
+
+  # Moderatable scope tests
+  test "moderatable scope includes published posts" do
+    @post.update!(status: :published, hidden: false)
+    assert_includes Post.moderatable, @post
+  end
+
+  test "moderatable scope includes scheduled posts" do
+    @post.update!(status: :published, hidden: false, published_at: 1.day.from_now)
+    assert_includes Post.moderatable, @post
+  end
+
+  test "moderatable scope excludes draft posts" do
+    @post.update!(status: :draft)
+    refute_includes Post.moderatable, @post
+  end
+
+  test "moderatable scope includes hidden posts" do
+    @post.update!(hidden: true)
+    assert_includes Post.moderatable, @post
+  end
+
+  test "moderatable scope excludes discarded posts" do
+    @post.discard!
+    refute_includes Post.moderatable, @post
+  end
 end

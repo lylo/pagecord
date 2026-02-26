@@ -1,6 +1,4 @@
 module PostsHelper
-  include Pagy::Frontend
-
   def without_action_text_image_wrapper(html)
     doc = Nokogiri::HTML::DocumentFragment.parse(html)
     doc.css("action-text-attachment").each do |attachment|

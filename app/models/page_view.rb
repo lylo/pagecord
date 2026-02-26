@@ -24,11 +24,7 @@ class PageView < ApplicationRecord
     bot_patterns.any? { |pattern| user_agent.match?(pattern) }
   end
 
-  def self.track(blog:, post: nil, request:, path: nil, referrer: nil)
-    return if bot_user_agent?(request.user_agent)
-
-    ip = request.remote_ip
-    user_agent = request.user_agent
+  def self.track(blog:, post: nil, ip:, user_agent:, path: nil, referrer: nil, country_code: nil)
     today = Date.current
 
     visitor_hash = generate_visitor_hash(ip, user_agent, today)
@@ -45,6 +41,12 @@ class PageView < ApplicationRecord
 
     return if existing_view
 
+    # Extract referrer domain
+    referrer_domain = Referrer.new(referrer).domain
+
+    # Normalize country (nil or "XX" means unknown)
+    country = (country_code.present? && country_code != "XX") ? country_code : nil
+
     create!(
       blog: blog,
       post: post,
@@ -53,6 +55,8 @@ class PageView < ApplicationRecord
       visitor_hash: visitor_hash,
       user_agent: user_agent,
       referrer: referrer,
+      referrer_domain: referrer_domain,
+      country: country,
       is_unique: true,
       viewed_at: Time.current
     )

@@ -1,6 +1,7 @@
 require "application_system_test_case"
 
 class AnalyticsTest < ApplicationSystemTestCase
+  include ActiveJob::TestHelper
   def setup
     @blog = blogs(:joel)
     @post = posts(:one)
@@ -22,10 +23,12 @@ class AnalyticsTest < ApplicationSystemTestCase
 
   test "individual post page tracks analytics with post token" do
     assert_difference("PageView.count", 1) do
-      visit blog_post_path(@post.slug)
+      perform_enqueued_jobs do
+        visit blog_post_path(@post.slug)
 
-      # Wait for the page view request to complete
-      sleep 0.2
+        # Wait for the page view request to complete
+        sleep 1
+      end
     end
 
     # Check that pageview controller has post token

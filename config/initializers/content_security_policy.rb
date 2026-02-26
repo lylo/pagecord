@@ -10,6 +10,7 @@ Rails.application.configure do
 
     # Images
     policy.img_src :self, :data, :https,
+                   "http://localhost:3000",
                    "http://lvh.me:3000",
                    "https://storage.pagecord.com",
                    "https://githubusercontent.com",

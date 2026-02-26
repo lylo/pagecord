@@ -123,14 +123,14 @@ class SpamDetectorTest < ActiveSupport::TestCase
     assert_equal :uncertain, @detector.result.status
   end
 
-  test "skips empty blogs" do
+  test "returns blank status for empty blogs" do
     empty_blog = Blog.new(subdomain: "empty", user: users(:joel))
     empty_blog.save(validate: false)
 
     detector = SpamDetector.new(empty_blog)
     detector.detect
 
-    assert_equal :skipped, detector.result.status
+    assert_equal :no_content, detector.result.status
     assert_equal "Empty blog - no content to analyze", detector.result.reason
     assert_nil detector.result.model_version
   end
@@ -148,6 +148,6 @@ class SpamDetectorTest < ActiveSupport::TestCase
     OpenAI::Client.any_instance.stubs(:chat).returns(mock_response)
 
     detector.detect
-    refute_equal :skipped, detector.result.status
+    refute_equal :no_content, detector.result.status
   end
 end

@@ -1,5 +1,5 @@
 class SpamDetectionCheckJob < ApplicationJob
-  queue_as :default
+  queue_as :low
 
   def perform(blog_id)
     blog = Blog.find_by(id: blog_id)
@@ -10,7 +10,7 @@ class SpamDetectionCheckJob < ApplicationJob
 
     Rails.logger.info "[SpamDetection] #{blog.subdomain}: #{detector.result.status} - #{detector.result.reason}"
 
-    save_detection_result!(blog, detector.result)
+    save_detection_result!(blog, detector.result) unless detector.result.status == :no_content
   end
 
   private

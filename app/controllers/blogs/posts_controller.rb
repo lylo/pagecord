@@ -1,11 +1,10 @@
 class Blogs::PostsController < Blogs::BaseController
-  include Pagy::Backend, RequestHash, PostsHelper
+  include Pagy::Method, RequestHash, PostsHelper
 
   rate_limit to: 60, within: 1.minute
 
   skip_forgery_protection only: :not_found
-  rescue_from Pagy::OverflowError, with: :redirect_to_last_page
-  rescue_from Pagy::VariableError, with: :redirect_to_first_page
+  rescue_from Pagy::RangeError, with: :redirect_to_last_page
 
   def index
     # FIXME this filtered check can be removed after cache has been reset
@@ -13,7 +12,8 @@ class Blogs::PostsController < Blogs::BaseController
     if request.format.html? && @blog.has_custom_home_page? && !filtered
       @post = @blog.home_page
       if @post&.published? && !@post.pending?
-        return if fresh_when etag: etag_for(@post), public: true, template: "blogs/posts/show"
+        set_blog_cache_headers
+        return if fresh_when etag: etag_for(@post), last_modified: @post.updated_at, public: true, template: "blogs/posts/show"
         return render :show
       end
     end
@@ -58,7 +58,8 @@ class Blogs::PostsController < Blogs::BaseController
       .includes(:upvotes)
       .find_by!(slug: blog_params[:slug])
 
-    fresh_when etag: etag_for(@post), public: true, template: "blogs/posts/show"
+    set_blog_cache_headers
+    fresh_when etag: etag_for(@post), last_modified: @post.updated_at, public: true, template: "blogs/posts/show"
   end
 
   # Handle unmatched routes on blog domains
@@ -72,10 +73,6 @@ class Blogs::PostsController < Blogs::BaseController
       redirect_to url_for(page: exception.pagy.last, host: request.host)
     end
 
-    def redirect_to_first_page
-      redirect_to url_for(page: 1, host: request.host)
-    end
-
     def page_size
       @blog.title_layout? ? 100 : 15
     end
@@ -85,14 +82,25 @@ class Blogs::PostsController < Blogs::BaseController
     end
 
     def set_conditional_get_headers
-      if stale?(
+      set_blog_cache_headers
+
+      stale?(
         etag: [ @posts.map(&:id), @blog.id, @pagy.page ],
         last_modified: @posts.maximum(:updated_at),
         public: true
       )
-        true
-      else
-        false
-      end
+    end
+
+    # Enable Cloudflare edge caching for *.pagecord.com blog pages. Sets a
+    # 12-hour edge TTL with tag-based purging (on post save / blog settings
+    # change). Skips the session cookie so Cloudflare doesn't BYPASS the cache.
+    # Custom domains are not edge-cached (they route through Caddy, not Cloudflare).
+    # No-op unless Cloudflare credentials are configured.
+    def set_blog_cache_headers
+      return unless Rails.env.production? && ENV["CLOUDFLARE_ZONE_ID"].present? && ENV["CLOUDFLARE_API_TOKEN"].present?
+
+      response.headers["Cache-Tag"] = @blog.subdomain
+      request.session_options[:skip] = true
+      expires_in 0, public: true, "s-maxage": 12.hours.to_i, "stale-while-revalidate": 1.hour.to_i
     end
 end

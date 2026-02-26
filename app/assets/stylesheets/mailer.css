@@ -95,8 +95,7 @@ h4 {
   font-family: sans-serif;
   font-weight: 400;
   line-height: 1.4;
-  margin: 0;
-  margin-bottom: 30px; }
+  margin: 1.75rem 0 0.75rem 0; }
 
 h1 {
   font-size: 35px;
@@ -225,6 +224,29 @@ a {
   padding-bottom: 4rem !important;
 }
 
+.digest .post-content figure {
+  margin: 1.5em 0;
+  padding: 0;
+}
+
+.digest .post-content table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.digest .post-content table th,
+.digest .post-content table td {
+  border: 1px solid #ddd;
+  padding: 0 0.75rem;
+  text-align: left;
+}
+
+.digest .post-content table th,
+.digest .post-content table th p {
+  background-color: #f6f8fa;
+  font-weight: 600 !important;
+}
+
 .post-timestamp {
   font-size: 14px !important;
 }
@@ -324,6 +346,13 @@ a {
   mso-hide: all;
   visibility: hidden;
   width: 0; }
+
+.callout {
+  background-color: #f0f9ff;
+  border: 1px solid #e0f2fe;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 15px 0; }
 
 .powered-by a {
   text-decoration: none; }

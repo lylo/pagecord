@@ -81,16 +81,15 @@ class SpamDetectionCheckJobTest < ActiveSupport::TestCase
     end
   end
 
-  test "saves skipped result for empty blog" do
+  test "does not save result for blank blog" do
     empty_blog = Blog.new(subdomain: "emptyblog#{SecureRandom.hex(4)}", user: users(:joel))
     empty_blog.save(validate: false)
 
-    assert_difference "SpamDetection.count", 1 do
+    assert_no_difference "SpamDetection.count" do
       SpamDetectionCheckJob.perform_now(empty_blog.id)
     end
 
-    detection = empty_blog.reload.spam_detection
-    assert detection.skipped?
+    assert_nil empty_blog.reload.spam_detection
   end
 
   test "updates existing detection instead of creating new one" do

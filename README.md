@@ -27,7 +27,7 @@ This will:
 - Build and run the Rails app
 - Set up the database automatically
 
-You can view the app at [http://localhost:3000](http://localhost:3000). It's configured to use `lvh.me`, so you can view individual blogs on their respective subdomains, e.g. [http://joel.lvh.me:3000](http://joel.lvh.me:3000).
+You can view the app at [http://localhost:3000](http://localhost:3000). You can view individual blogs on their respective subdomains, e.g. [http://joel.localhost:3000](http://joel.localhost:3000). Note: Safari doesn't support `*.localhost` subdomains - use `lvh.me` instead (e.g. [http://joel.lvh.me:3000](http://joel.lvh.me:3000)).
 
 ### Running commands in Docker
 
@@ -94,6 +94,36 @@ If you're interested in setting up your own OG image worker, you can configure i
 ```bash
 OG_WORKER_URL=https://your-worker-url.com/og
 OG_SIGNING_SECRET=your-secret-key
+```
+
+## Log Analysis
+
+Rake tasks for analysing production logs on the server. No external gems required.
+
+```bash
+# Per-hour request overview — highlights anomalous traffic spikes
+rake logs:overview
+
+# Full report for a day (5 tables: requests/hour, endpoints, IPs, user agents, hosts)
+rake "logs:report[2026-02-23]"
+
+# Drill into a specific hour (requests/minute instead of per-hour)
+rake "logs:report[2026-02-23,21]"
+
+# Live tail with per-minute request counter (alerts at >500 req/min)
+rake logs:watch
+
+# Traffic report for a specific blog (all available logs)
+rake "logs:blog[joel]"
+
+# Scoped to a specific date
+rake "logs:blog[joel,2026-02-23]"
+
+# Scoped to a specific hour
+rake "logs:blog[joel,2026-02-23,21]"
+
+# Works with custom domains too
+rake "logs:blog[example.com]"
 ```
 
 ## More info

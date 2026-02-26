@@ -9,16 +9,14 @@
         <% previous_year = post.published_at.year %>
       <% end %>
       <div class="post-row h-entry">
-        <time class="dt-published" datetime="<%= post.published_at.iso8601 %>">
-          <%= local_time post.published_at, format: :month_day %>
-        </time>
+        <%= local_time post.published_at, format: :month_day, class: "dt-published" %>
         <%= link_to post.display_title, post_path(post), class: "p-name u-url", data: { turbo_prefetch: false } %>
       </div>
     <% end %>
   </div>
 
   <% if @pagy.next %>
-    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, last_visible_year: previous_year, host: request.host), loading: :lazy %>
+    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, last_visible_year: previous_year, tag: params[:tag], host: request.host), loading: :lazy %>
   <% end %>
 <% end %>
 

@@ -1,5 +1,7 @@
 class ContentModerator
-  Result = Struct.new(:status, :flags, :model_version, keyword_init: true)
+  Result = Struct.new(:status, :flags, :scores, :model_version, keyword_init: true)
+
+  SCORE_THRESHOLD = 0.8
 
   CATEGORIES = %w[
     sexual sexual/minors harassment harassment/threatening
@@ -25,6 +27,17 @@ class ContentModerator
 
     response = call_moderation_api
     parse_response(response)
+  rescue Faraday::BadRequestError => e
+    body = e.response&.dig(:body) || "no response body"
+    Rails.logger.error("[ContentModeration] Bad request for post #{@post.id}: #{body}")
+    error_result("Invalid request to moderation API: #{body}")
+  rescue Faraday::Error => e
+    body = e.response&.dig(:body) rescue nil
+    Rails.logger.error("[ContentModeration] API error for post #{@post.id}: #{e.class} - #{e.message} - #{body}")
+    error_result("Moderation API error")
+  rescue StandardError => e
+    Rails.logger.error("[ContentModeration] Unexpected error for post #{@post.id}: #{e.class} - #{e.message}")
+    error_result("Unexpected error")
   end
 
   def flagged?
@@ -45,55 +58,71 @@ class ContentModerator
       @post.moderation_text_payload.present? || @post.moderation_image_payloads.any?
     end
 
+    # OpenAI moderation API only allows 1 image per request, so we make
+    # separate calls for text and each image, then aggregate results
     def call_moderation_api
-      inputs = build_inputs
+      all_results = []
 
+      if @post.moderation_text_payload.present?
+        text_kb = (@post.moderation_text_payload.bytesize / 1024.0).round(1)
+        Rails.logger.info("[ContentModeration] Moderating text for post #{@post.id}: #{text_kb}KB")
+        response = moderate_input({ type: "text", text: @post.moderation_text_payload })
+        all_results.concat(response.dig("results") || [])
+      end
+
+      @post.moderation_image_payloads.each_with_index do |image_payload, index|
+        image_kb = (image_payload.dig(:image_url, :url).bytesize / 1024.0).round(1)
+        Rails.logger.info("[ContentModeration] Moderating image #{index + 1} for post #{@post.id}: #{image_kb}KB")
+        response = moderate_input(image_payload)
+        all_results.concat(response.dig("results") || [])
+      end
+
+      { "results" => all_results, "model" => MODEL }
+    end
+
+    def moderate_input(input)
       @client.moderations(
         parameters: {
           model: MODEL,
-          input: inputs
+          input: [ input ]
         }
       )
-    end
-
-    # Build inputs array for OpenAI moderation API (text + images)
-    def build_inputs
-      inputs = []
-      inputs << { type: "text", text: @post.moderation_text_payload } if @post.moderation_text_payload.present?
-      inputs.concat(@post.moderation_image_payloads)
     end
 
     def parse_response(response)
       results = response.dig("results")
       return error_result("Empty response from API") if results.blank?
 
-      aggregated_flags = aggregate_flags(results)
-      flagged = aggregated_flags.values.any? { |v| v == true }
+      aggregated = aggregate_scores(results)
+      flagged = aggregated[:flags].values.any?
 
       @result = Result.new(
         status: flagged ? :flagged : :clean,
-        flags: aggregated_flags,
+        flags: aggregated[:flags],
+        scores: aggregated[:scores],
         model_version: response.dig("model") || MODEL
       )
     end
 
-    def aggregate_flags(results)
-      flags = CATEGORIES.to_h { |cat| [ cat, false ] }
+    def aggregate_scores(results)
+      scores = CATEGORIES.to_h { |cat| [ cat, 0.0 ] }
 
       results.each do |result|
-        categories = result.dig("categories") || {}
-        categories.each do |category, flagged_value|
-          flags[category] = true if flagged_value && CATEGORIES.include?(category)
+        category_scores = result.dig("category_scores") || {}
+        category_scores.each do |category, score|
+          scores[category] = [ scores[category], score ].max if CATEGORIES.include?(category)
         end
       end
 
-      flags
+      flags = scores.transform_values { |score| score >= SCORE_THRESHOLD }
+      { flags: flags, scores: scores }
     end
 
     def error_result(reason)
       @result = Result.new(
         status: :error,
         flags: { error: reason },
+        scores: {},
         model_version: nil
       )
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -99,6 +99,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
     t.string "custom_theme_text_light"
     t.string "delivery_email"
     t.datetime "discarded_at"
+    t.integer "email_delivery_mode", default: 0, null: false
     t.boolean "email_subscriptions_enabled", default: true, null: false
     t.string "features", default: [], array: true
     t.string "fediverse_author_attribution"
@@ -126,6 +127,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
   end
 
   create_table "content_moderations", force: :cascade do |t|
+    t.jsonb "category_scores", default: {}
     t.datetime "created_at", null: false
     t.string "fingerprint"
     t.jsonb "flags", default: {}
@@ -170,6 +172,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
   create_table "email_subscribers", force: :cascade do |t|
     t.bigint "blog_id", null: false
     t.datetime "confirmed_at"
+    t.string "country"
     t.datetime "created_at", null: false
     t.string "email", null: false
     t.string "token", null: false
@@ -208,16 +211,20 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
 
   create_table "page_views", force: :cascade do |t|
     t.bigint "blog_id", null: false
+    t.string "country", limit: 2
     t.datetime "created_at", null: false
     t.boolean "is_unique", default: false
     t.string "path"
     t.bigint "post_id"
     t.text "query_string"
     t.text "referrer"
+    t.string "referrer_domain"
     t.datetime "updated_at", null: false
     t.text "user_agent"
     t.datetime "viewed_at", null: false
     t.string "visitor_hash", null: false
+    t.index ["blog_id", "country", "viewed_at"], name: "index_page_views_on_blog_country_viewed_at"
+    t.index ["blog_id", "referrer_domain", "viewed_at"], name: "index_page_views_on_blog_referrer_domain_viewed_at"
     t.index ["blog_id", "viewed_at"], name: "index_page_views_on_blog_id_and_viewed_at"
     t.index ["post_id"], name: "index_page_views_on_post_id"
     t.index ["viewed_at"], name: "index_page_views_on_viewed_at"
@@ -258,6 +265,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
     t.bigint "blog_id", null: false
     t.datetime "created_at", null: false
     t.datetime "delivered_at"
+    t.integer "kind", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id"], name: "index_post_digests_on_blog_id"
   end
@@ -281,6 +289,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
     t.datetime "discarded_at"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
+    t.string "locale"
     t.datetime "published_at"
     t.text "raw_content"
     t.boolean "show_in_navigation", default: true, null: false
@@ -300,6 +309,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
     t.index ["discarded_at"], name: "index_posts_on_discarded_at"
     t.index ["hidden"], name: "index_posts_on_hidden"
     t.index ["is_page"], name: "index_posts_on_is_page"
+    t.index ["locale"], name: "index_posts_on_locale"
     t.index ["published_at"], name: "index_posts_on_published_at"
     t.index ["status"], name: "index_posts_on_status"
     t.index ["tag_list"], name: "index_posts_on_tag_list", using: :gin
@@ -353,16 +363,24 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
 
   create_table "subscriptions", force: :cascade do |t|
     t.datetime "cancelled_at"
-    t.boolean "complimentary", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "next_billed_at"
     t.string "paddle_customer_id"
     t.string "paddle_price_id"
     t.string "paddle_subscription_id"
+    t.string "plan", null: false
     t.integer "unit_price"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
+  create_table "unengaged_follow_ups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "sent_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_unengaged_follow_ups_on_user_id", unique: true
   end
 
   create_table "upvotes", force: :cascade do |t|
@@ -382,6 +400,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
     t.string "onboarding_state", default: "account_created"
     t.string "password_digest"
     t.string "timezone", default: "UTC", null: false
+    t.date "trial_ends_at"
     t.datetime "updated_at", null: false
     t.boolean "verified", default: false
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -416,5 +435,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_09_142142) do
   add_foreign_key "spam_detections", "blogs"
   add_foreign_key "subscription_renewal_reminders", "subscriptions"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "unengaged_follow_ups", "users"
   add_foreign_key "upvotes", "posts"
 end

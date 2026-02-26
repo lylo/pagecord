@@ -2,13 +2,15 @@ source "https://rubygems.org"
 
 ruby file: ".ruby-version"
 
+gem "openssl", "~> 4.0"
+
 gem "rails", github: "rails/rails", branch: "main"
 
 gem "actionpack-page_caching"
 gem "image_processing", "~> 1.2"
 gem "importmap-rails"
 gem "jbuilder"
-gem "lexxy", "0.1.24.beta"
+gem "lexxy"
 gem "ruby-vips"
 gem "propshaft"
 gem "stimulus-rails"
@@ -16,7 +18,6 @@ gem "tailwindcss-rails"
 gem "turbo-rails"
 
 gem "puma", ">= 5.0"
-gem "playwright-ruby-client"
 
 # database / caching
 gem "dalli"
@@ -55,7 +56,7 @@ gem "httparty"
 gem "inline_svg"
 gem "local_time"
 gem "ostruct"
-gem "pagy", "~> 9.4"
+gem "pagy", "~> 43.0"
 gem "nanoid", "~> 2.0"
 gem "rack-attack"
 gem "rails_autolink"

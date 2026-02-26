@@ -3,139 +3,188 @@
 </h2>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  <div>
-    <h3 class="text-xl font-bold py-4">User Details</h3>
-    <div class="overflow-auto">
-      <table class="my-4 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
-        <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Email</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.email %></td>
-          </tr>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Created At</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.created_at.to_formatted_s(:long) %></td>
-          </tr>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Verified</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.verified? ? 'Yes' : 'No' %></td>
-          </tr>
-          <% if @user.discarded? %>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Cancelled</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.discarded_at %></td>
-          </tr>
-          <% end %>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Marketing</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.marketing_consent? ? '✅' : '❌' %></td>
-          </tr>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Timezone</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.timezone %></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <%# ---- User Details ---- %>
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">User Details</h3>
+    <dl class="space-y-3 text-sm p-6">
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Email</dt>
+        <dd class="text-slate-500 dark:text-slate-400 text-right truncate"><%= @user.email %></dd>
+      </div>
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Created At</dt>
+        <dd class="text-slate-500 dark:text-slate-400"><%= @user.created_at.to_formatted_s(:long) %></dd>
+      </div>
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Verified</dt>
+        <dd class="text-slate-500 dark:text-slate-400"><%= @user.verified? ? 'Yes' : 'No' %></dd>
+      </div>
+      <% if @user.discarded? %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Cancelled</dt>
+          <dd class="text-slate-500 dark:text-slate-400"><%= @user.discarded_at.to_formatted_s(:long) %></dd>
+        </div>
+      <% end %>
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Marketing</dt>
+        <dd class="text-slate-500 dark:text-slate-400"><%= @user.marketing_consent? ? '✅' : '❌' %></dd>
+      </div>
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Timezone</dt>
+        <dd class="text-slate-500 dark:text-slate-400"><%= @user.timezone %></dd>
+      </div>
+    </dl>
   </div>
 
-  <% if @user.subscription %>
-  <div>
-    <h3 class="text-xl font-bold py-4">Subscription</h3>
-    <div class="overflow-auto">
-      <table class="my-4 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
-        <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Status</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
-              <% if @user.subscription.active? %>
-                <span title="<%= @user.subscription.paddle_subscription_id %>" class="text-green-600 font-semibold">Active</span>
-              <% elsif @user.subscription.cancelled? %>
-                <span class="text-yellow-600 font-semibold">Cancelled</span>
-              <% elsif @user.subscription.lapsed? %>
-                <span class="text-red-600 font-semibold">Lapsed</span>
-              <% end %>
-            </td>
-          </tr>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Type</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.subscription.complimentary? ? 'Complimentary' : 'Paid' %></td>
-          </tr>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Created</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.subscription.created_at.to_formatted_s(:long) %></td>
-          </tr>
-          <% if @user.subscription.unit_price %>
-            <tr>
-              <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Price</td>
-              <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= number_to_currency(@user.subscription.unit_price / 100) %></td>
-            </tr>
+  <%# ---- Free Trial ---- %>
+  <% unless @user.subscribed? %>
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Free Trial</h3>
+    <dl class="space-y-3 text-sm p-6">
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Status</dt>
+        <dd>
+          <% if @user.on_trial? %>
+            <span class="text-green-600 font-semibold"><%= @user.trial_days_remaining %> days remaining</span>
+          <% elsif @user.trial_ends_at.present? %>
+            <span class="text-slate-500">Ended <%= @user.trial_ends_at.to_formatted_s(:long) %></span>
+          <% else %>
+            <span class="text-slate-500">No trial</span>
           <% end %>
-          <% if @user.subscription.next_billed_at %>
-            <tr>
-              <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Next Billing</td>
-              <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.subscription.next_billed_at.strftime('%B %d, %Y') %></td>
-            </tr>
-          <% end %>
-          <% if @user.subscription.cancelled_at %>
-            <tr>
-              <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Cancelled On</td>
-              <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.subscription.cancelled_at.strftime('%B %d, %Y') %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+        </dd>
       </div>
+      <div>
+        <dt class="font-medium text-slate-900 dark:text-slate-50 mb-2">Trial Ends</dt>
+        <dd>
+          <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "flex items-center gap-2", data: { turbo: false } do |f| %>
+            <%= f.date_field :trial_ends_at, class: "form-field rounded-lg text-sm px-3 py-1.5 dark:[color-scheme:dark]" %>
+            <%= f.submit "Update", class: "btn-secondary py-1.5" %>
+          <% end %>
+        </dd>
+      </div>
+    </dl>
   </div>
   <% end %>
 
-  <div>
-    <h3 class="text-xl font-bold py-4">Blog</h3>
-    <div class="overflow-auto">
-      <table class="my-4 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
-        <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Subdomain</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
-              <%= link_to @user.blog.subdomain, blog_home_url(@user.blog), class: "text-blue-600 hover:underline", target: "_blank" %>
-            </td>
-          </tr>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Posts</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.blog.posts.count %></td>
-          </tr>
-          <% if @user.blog.email_subscriptions_enabled? %>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Subscribers</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.blog.email_subscribers.confirmed.count %></td>
-          </tr>
+  <%# ---- Subscription ---- %>
+  <% if @user.subscription %>
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Subscription</h3>
+    <dl class="space-y-3 text-sm p-6">
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Status</dt>
+        <dd>
+          <% if @user.subscription.active? %>
+            <span title="<%= @user.subscription.paddle_subscription_id %>" class="text-green-600 font-semibold">Active</span>
+          <% elsif @user.subscription.cancelled? %>
+            <span class="text-yellow-600 font-semibold">Cancelled</span>
+          <% elsif @user.subscription.lapsed? %>
+            <span class="text-red-600 font-semibold">Lapsed</span>
           <% end %>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Custom Domain</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400"><%= @user.blog.custom_domain.presence || 'None' %></td>
-          </tr>
-          <tr>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">Theme</td>
-            <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400">
-              <%= @user.blog.theme %> | <%= @user.blog.width %> | <%= @user.blog.font %>
-          </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+        </dd>
+      </div>
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Type</dt>
+        <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.complimentary? ? 'Complimentary' : 'Paid' %></dd>
+      </div>
+      <% if @user.subscription.paddle_subscription_id.present? %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Paddle ID</dt>
+          <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.paddle_subscription_id %></dd>
+        </div>
+      <% end %>
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Created</dt>
+        <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.created_at.to_formatted_s(:long) %></dd>
+      </div>
+      <% if @user.subscription.unit_price %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Price</dt>
+          <dd class="text-slate-500 dark:text-slate-400"><%= number_to_currency(@user.subscription.unit_price / 100) %></dd>
+        </div>
+      <% end %>
+      <% if @user.subscription.next_billed_at %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Next Billing</dt>
+          <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.next_billed_at.strftime('%B %d, %Y') %></dd>
+        </div>
+      <% end %>
+      <% if @user.subscription.cancelled_at %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Cancelled On</dt>
+          <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.cancelled_at.strftime('%B %d, %Y') %></dd>
+        </div>
+      <% end %>
+    </dl>
+  </div>
+  <% end %>
+
+  <%# ---- Blog ---- %>
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Blog</h3>
+    <dl class="space-y-3 text-sm p-6">
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Subdomain</dt>
+        <dd><%= link_to @user.blog.subdomain, blog_home_url(@user.blog), class: "font-medium underline", target: "_blank" %></dd>
+      </div>
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Posts</dt>
+        <dd class="text-slate-500 dark:text-slate-400"><%= @user.blog.posts.count %></dd>
+      </div>
+      <% if @user.blog.email_subscriptions_enabled? %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Subscribers</dt>
+          <dd class="text-slate-500 dark:text-slate-400"><%= @user.blog.email_subscribers.confirmed.count %></dd>
+        </div>
+      <% end %>
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Custom Domain</dt>
+        <dd class="text-slate-500 dark:text-slate-400"><%= @user.blog.custom_domain.presence || 'None' %></dd>
+      </div>
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Theme</dt>
+        <dd class="text-slate-500 dark:text-slate-400"><%= @user.blog.theme %> · <%= @user.blog.width %> · <%= @user.blog.font %></dd>
+      </div>
+    </dl>
+  </div>
+
+  <%# ---- Features ---- %>
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Features</h3>
+    <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "p-6", data: { turbo: false } do |f| %>
+      <%= f.fields_for :blog do |bf| %>
+        <%= bf.hidden_field :id %>
+        <%= bf.hidden_field :features, value: "", multiple: true %>
+        <% all_features = (Rails.features.names.map(&:to_s) | @user.blog.features).sort %>
+        <div class="space-y-3">
+          <% all_features.each do |feature| %>
+            <label class="flex gap-3 items-start cursor-pointer">
+              <div class="flex h-6 shrink-0 items-center">
+                <%= bf.check_box :features, { multiple: true, checked: @user.blog.features.include?(feature), class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0", onchange: "this.form.requestSubmit()" }, feature, nil %>
+              </div>
+              <div>
+                <span class="text-sm text-slate-800 dark:text-slate-100"><%= feature %></span>
+                <% unless Rails.features.names.map(&:to_s).include?(feature) %>
+                  <span class="text-xs text-yellow-600 dark:text-yellow-400">(legacy)</span>
+                <% end %>
+              </div>
+            </label>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
   </div>
 </div>
 
-  <div class="flex flex-col sm:flex-row justify-between mt-16 py-4">
+<div class="flex flex-col sm:flex-row justify-between mt-16 py-4">
   <div>
-  <%= link_to "← Back to Blogs", admin_blogs_path, class: "px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded" %>
+    <%= link_to "← Back to Blogs", admin_blogs_path, class: "btn-optional" %>
   </div>
 
   <% if @user != Current.user %>
     <% if @user.discarded? %>
       <div class="flex mt-8 sm:mt-0 space-x-4 items-center">
-        <%= button_to restore_admin_user_path(@user),
-            class: "px-4 py-2 bg-green-100 hover:bg-green-200 text-green-800 rounded cursor-pointer" do %>
+        <%= button_to restore_admin_user_path(@user), class: "btn-primary" do %>
           Restore
         <% end %>
       </div>
@@ -143,7 +192,7 @@
       <div class="flex mt-8 sm:mt-0 justify-end space-x-4 items-center">
         <% unless @user.subscribed? %>
           <%= button_to admin_user_path(@user), method: :delete,
-              class: "px-4 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded cursor-pointer",
+              class: "btn-danger",
               data: { turbo_confirm: "Are you sure you want to mark this account as spam? This will cancel the account and remove it from all mailing lists." } do %>
             <%= hidden_field_tag :spam, true %>
             Mark as Spam
@@ -151,7 +200,7 @@
         <% end %>
 
         <%= button_to admin_user_path(@user), method: :delete,
-            class: "px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded cursor-pointer",
+            class: "btn-danger",
             data: { turbo_confirm: "Are you sure you want to cancel this account?" } do %>
           Cancel Account
         <% end %>
@@ -159,5 +208,3 @@
     <% end %>
   <% end %>
 </div>
-
-

@@ -19,6 +19,9 @@
               <%= link_to item[:name], item[:url], target: "_blank", class: "text-sm font-medium hover:underline truncate" %>
               <span class="text-xs text-slate-500 dark:text-slate-400">
                 <%= link_to item[:subtitle], item[:subtitle_url], target: "_blank", class: "hover:underline" %>
+                <% if item[:meta] %>
+                  <span class="ml-1">&middot; <%= item[:meta] %></span>
+                <% end %>
               </span>
             </div>
           </div>

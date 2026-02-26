@@ -1,24 +1,21 @@
 class ContentModerationJob < ApplicationJob
-  queue_as :default
+  queue_as :low
 
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
+  discard_on ActiveRecord::RecordNotUnique
 
   def perform(post_id)
-    post = Post.visible.find_by(id: post_id)
+    post = Post.moderatable.find_by(id: post_id)
     return unless post&.needs_moderation?
 
-    Rails.logger.info "[ContentModeration] Moderating post #{post.id} (#{post.blog.subdomain})"
+    Rails.logger.info "[ContentModeration] Moderating #{post.blog.subdomain}/#{post.slug}"
 
     moderator = ContentModerator.new(post)
     moderator.moderate
 
     save_moderation_result!(post, moderator.result)
 
-    if moderator.flagged?
-      Rails.logger.info "[ContentModeration] FLAGGED post #{post.id}: #{post.content_moderation.flagged_categories.join(', ')}"
-    else
-      Rails.logger.info "[ContentModeration] Clean post #{post.id}"
-    end
+    log_result(moderator, post)
   end
 
   private
@@ -29,9 +26,22 @@ class ContentModerationJob < ApplicationJob
       moderation.update!(
         status: result.status,
         flags: result.flags,
+        category_scores: result.scores,
         moderated_at: Time.current,
         fingerprint: post.moderation_fingerprint,
         model_version: result.model_version
       )
+    end
+
+    def log_result(moderator, post)
+      slug = "#{post.blog.subdomain}/#{post.slug}"
+
+      if moderator.error?
+        Rails.logger.warn "[ContentModeration] Error #{slug}: #{moderator.result.flags[:error]}"
+      elsif moderator.flagged?
+        Rails.logger.info "[ContentModeration] FLAGGED #{slug}: #{post.content_moderation.flagged_categories.join(', ')}"
+      else
+        Rails.logger.info "[ContentModeration] Clean #{slug}"
+      end
     end
 end

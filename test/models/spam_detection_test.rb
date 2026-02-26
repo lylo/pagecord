@@ -28,8 +28,8 @@ class SpamDetectionTest < ActiveSupport::TestCase
     detection.status = :error
     assert detection.error?
 
-    detection.status = :skipped
-    assert detection.skipped?
+    detection.status = :no_content
+    assert detection.no_content?
   end
 
   test "needs_review scope returns spam and uncertain that are not reviewed" do

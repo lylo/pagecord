@@ -34,14 +34,14 @@ class App::Settings::BlogsController < AppController
         :locale
       ]
 
-      permitted_params << [
-        :custom_domain,
-        :email_subscriptions_enabled,
-        :show_subscription_in_header,
-        :show_subscription_in_footer,
-        :reply_by_email,
-        :show_upvotes
-      ] if @blog.user.subscribed?
+      if @blog.user.subscribed?
+        permitted_params += [ :custom_domain, :email_subscriptions_enabled, :show_subscription_in_header, :show_subscription_in_footer ]
+        permitted_params << :email_delivery_mode if current_features.enabled?(:individual_email_delivery)
+      end
+
+      if @blog.user.has_premium_access?
+        permitted_params += [ :reply_by_email, :show_upvotes ]
+      end
 
       params.require(:blog).permit(permitted_params)
     end

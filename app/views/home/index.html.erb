@@ -1,3 +1,43 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Pagecord",
+  "url": "https://pagecord.com",
+  "description": "A minimalist blogging platform for independent writers. Post by email or use the rich text editor. Create your home page and blog in seconds.",
+  "applicationCategory": "BloggingApplication",
+  "operatingSystem": "Any (web-based)",
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Classic",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    {
+      "@type": "Offer",
+      "name": "Premium (Annual)",
+      "price": "<%= Subscription.price(:annual) %>",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "billingDuration": "P1Y"
+      }
+    },
+    {
+      "@type": "Offer",
+      "name": "Premium (Monthly)",
+      "price": "<%= Subscription.price(:monthly) %>",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "billingDuration": "P1M"
+      }
+    }
+  ]
+}
+</script>
+
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight">
   Blog Without The Slog
@@ -10,13 +50,13 @@
 
     <p>Pagecord is independent, open source, and built to last. Own your corner of the web.</span></p>
 
-    <p>Classic sites are <strong>free forever</strong>. Premium is only $<%= localised_price %>/year.</p>
+    <p>Classic sites are <strong>free forever</strong>. Premium is only $<%= localised_price %>/year or $<%= localised_price(:monthly) %>/month.</p>
 
     <div class="text-center mt-2 mb-4 md:text-xl">
       <%= link_to new_signup_path do %>
         <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start writing for free</div>
       <% end %>
-      <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Trusted by 500+ independent bloggers</p>
+      <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Trusted by 700+ independent bloggers</p>
     </div>
 
     <p>
@@ -26,6 +66,25 @@
 </div>
 
 <%= render "public/screenshots" %>
+
+<!-- Video Section -->
+<div id="walkthrough" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Watch a Pagecord walkthrough</h2>
+  <p class="md:text-xl leading-relaxed mb-8">
+    Join Pagecord creator Olly for a 20-minute tour of everything Pagecord can do.
+  </p>
+  <div class="relative rounded-xl overflow-hidden shadow-lg" style="padding-bottom: 56.25%;">
+    <iframe
+      src="https://www.youtube.com/embed/8vVm7e7HxMQ?si=P1e5GTRsu-nN8wTr"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+      class="absolute inset-0 w-full h-full">
+    </iframe>
+  </div>
+</div>
 
 <!-- Testimonials Section -->
 <div id="testimonials" class="relative w-full px-4 md:px-6 lg:px-8 my-12 py-8">
@@ -164,7 +223,7 @@
   <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Pricing</h2>
 
   <p class="md:text-xl leading-relaxed mt-5 mb-8">
-    The blogging basics are <strong>free forever</strong>. Upgrade any time to get all the features for only <strong>$<%= localised_price %> per year</strong>. It's the best deal out there.
+    The blogging basics are <strong>free forever</strong>. Upgrade any time to get all the features for only <strong>$<%= localised_price %>/year</strong> or <strong>$<%= localised_price(:monthly) %>/month</strong>.
   </p>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -223,7 +282,7 @@
       <div class="text-center">
         <h3 class="text-2xl font-semibold mb-2">Premium</h3>
         <div class="text-4xl font-bold text-pagecord-accent dark:text-pagecord-accent mb-1">
-          $<%= localised_price %><span class="text-lg font-normal text-slate-600 dark:text-slate-400"> / year</span>
+          $<%= localised_price %><span class="text-lg font-normal text-slate-600 dark:text-slate-400"> /year or $<%= localised_price(:monthly) %>/mo</span>
         </div>
         <p class="text-slate-600 dark:text-slate-400 mb-6">All the features for an unbeatable price!</p>
 
@@ -262,6 +321,10 @@
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           Dynamic open graph images
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Custom CSS
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
@@ -538,6 +601,15 @@
 
         <tr>
           <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Custom CSS</div>
+            <div class="hidden sm:block">Add your own CSS to customise the look of your blog beyond the built-in themes 🎨</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+
+        <tr>
+          <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Warm fuzzy feels</div>
             <div class="hidden sm:block">Feel great about supporting an independent business 😊</div>
           </td>
@@ -564,7 +636,7 @@
     <%= link_to new_signup_path do %>
       <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start writing for free</div>
     <% end %>
-    <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Trusted by 500+ independent bloggers</p>
+    <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Trusted by 700+ independent bloggers</p>
   </div>
 
   <h2 class="source-serif font-semibold my-8 text-center text-3xl md:text-4xl tracking-tight">Look under the hood 🤓</h2>
