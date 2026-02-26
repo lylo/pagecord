@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: e905b2e3cda49e17f20ee65ef2b851b035f813a2
+  revision: 0bd4abb696a8517d22a1c7444781134e0f222b6e
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -164,7 +164,7 @@ GEM
     css_parser (1.21.1)
       addressable
     csv (3.3.5)
-    dalli (5.0.1)
+    dalli (5.0.2)
       logger
     date (3.5.1)
     debug (1.11.1)
@@ -329,7 +329,7 @@ GEM
       racc (~> 1.4)
     openssl (4.0.1)
     ostruct (0.6.3)
-    pagy (43.3.0)
+    pagy (43.3.1)
       json
       uri
       yaml
@@ -472,10 +472,10 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    sentry-rails (6.3.1)
+    sentry-rails (6.4.0)
       railties (>= 5.2.0)
-      sentry-ruby (~> 6.3.1)
-    sentry-ruby (6.3.1)
+      sentry-ruby (~> 6.4.0)
+    sentry-ruby (6.4.0)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
       logger
