@@ -91,11 +91,11 @@ class Blogs::PostsController < Blogs::BaseController
       )
     end
 
-    # Enable Cloudflare edge caching for *.pagecord.com blog pages. Sets a
-    # 12-hour edge TTL with tag-based purging (on post save / blog settings
-    # change). Skips the session cookie so Cloudflare doesn't BYPASS the cache.
-    # Custom domains are not edge-cached (they route through Caddy, not Cloudflare).
-    # No-op unless Cloudflare credentials are configured.
+    # Enable Cloudflare edge caching for blog pages. Sets a 12-hour edge TTL
+    # with tag-based purging (on post save / blog settings change). Skips the
+    # session cookie so Cloudflare doesn't BYPASS the cache. Works for both
+    # *.pagecord.com subdomains and custom domains routed via Cloudflare for SaaS
+    # (DNS → domains.pagecord.com). No-op unless Cloudflare credentials are configured.
     def set_blog_cache_headers
       return unless Rails.env.production? && ENV["CLOUDFLARE_ZONE_ID"].present? && ENV["CLOUDFLARE_API_TOKEN"].present?
 

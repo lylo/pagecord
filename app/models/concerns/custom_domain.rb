@@ -67,7 +67,7 @@ module CustomDomain
   private
 
     def restricted_domain
-      restricted_domains = %w[pagecord.com proxy.pagecord.com]
+      restricted_domains = %w[pagecord.com proxy.pagecord.com domains.pagecord.com]
 
       if restricted_domains.include?(custom_domain)
         errors.add(:custom_domain, "is restricted")

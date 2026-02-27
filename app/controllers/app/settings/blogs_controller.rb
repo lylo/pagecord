@@ -1,18 +1,19 @@
 class App::Settings::BlogsController < AppController
   def index
+    if @blog.custom_domain.present? && @blog.cloudflare_custom_hostname_id.present?
+      @custom_hostname_status = CloudflareSaasApi.new(@blog).status
+    end
   end
 
   def update
-    on_demand_tls = ENV["ON_DEMAND_TLS"].present?
-
     if @blog.update(blog_params)
       if @blog.domain_changed?
         if @blog.custom_domain_previously_was.present?
-          RemoveCustomDomainJob.perform_later(@blog.id, @blog.custom_domain_previously_was) unless on_demand_tls
+          RemoveCustomDomainJob.perform_later(@blog.id, @blog.custom_domain_previously_was)
         end
 
         if @blog.custom_domain.present?
-          AddCustomDomainJob.perform_later(@blog.id, @blog.custom_domain) unless on_demand_tls
+          AddCustomDomainJob.perform_later(@blog.id, @blog.custom_domain)
         end
       end
 

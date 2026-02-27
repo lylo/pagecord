@@ -6,7 +6,7 @@ class RemoveCustomDomainJob < ApplicationJob
       Rails.logger.info "Removing custom domain #{domain} for blog #{blog.id}"
 
       if Rails.env.production?
-        HatchboxDomainApi.new(blog).remove_domain(domain)
+        CloudflareSaasApi.new(blog).remove_domain(domain)
       end
     end
   end
