@@ -62,6 +62,15 @@ class SendUnengagedFollowUpEmailsJobTest < ActiveSupport::TestCase
     end
   end
 
+  test "skips unverified users" do
+    user = users(:unengaged)
+    user.update!(created_at: 2.months.ago, verified: false)
+
+    assert_no_enqueued_emails do
+      SendUnengagedFollowUpEmailsJob.perform_now
+    end
+  end
+
   test "skips already-sent users" do
     user = users(:unengaged)
     user.update!(created_at: 2.months.ago)
