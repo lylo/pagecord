@@ -1,6 +1,10 @@
 module Post::Emailable
   extend ActiveSupport::Concern
 
+  def emailed?
+    post_digests.any? { |digest| digest.delivered_at.present? }
+  end
+
   def individually_sent?
     post_digests.individual.exists?
   end

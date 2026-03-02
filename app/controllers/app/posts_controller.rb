@@ -5,8 +5,8 @@ class App::PostsController < AppController
   rescue_from Pagy::RangeError, with: :redirect_to_first_page
 
   def index
-    posts_query = Current.user.blog.posts.kept.published.order(published_at: :desc)
-    drafts_query = Current.user.blog.posts.kept.draft.order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
+    posts_query = Current.user.blog.posts.kept.published.includes(:post_digests).order(published_at: :desc)
+    drafts_query = Current.user.blog.posts.kept.draft.includes(:post_digests).order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
 
     @search_term = params[:search]
     if @search_term.present?
