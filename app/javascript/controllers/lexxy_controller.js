@@ -21,15 +21,20 @@ export default class extends Controller {
 
         editor.addEventListener("lexxy:file-accept", (e) => {
           const { type, size } = e.detail.file
-          const maxMB = maxFileSizes[type]
+          const supportedType = type in maxFileSizes
 
-          if (!maxMB) {
+          if (!supportedType) {
             e.preventDefault()
             alert("Unsupported attachment type, sorry!")
-          } else if (size > maxMB * 1024 * 1024) {
+            return
+          }
+
+          const limitMB = maxFileSizes[type]
+
+          if (size > limitMB * 1024 * 1024) {
             e.preventDefault()
             const category = type.startsWith("video/") ? "Videos" : type.startsWith("audio/") ? "Audio files" : "Images"
-            alert(`This file is too large. ${category} are limited to ${maxMB}MB.`)
+            alert(`This file is too large. ${category} are limited to ${limitMB}MB.`)
           }
         })
       }
