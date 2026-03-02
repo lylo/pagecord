@@ -16,8 +16,7 @@ export default class extends Controller {
           "image/jpeg": 10, "image/jpg": 10, "image/png": 10,
           "image/gif": 10, "image/webp": 10,
           "video/mp4": 50, "video/quicktime": 50,
-          "audio/mpeg": 20, "audio/wav": 20,
-          "application/pdf": 20
+          "audio/mpeg": 20, "audio/wav": 20
         }
 
         editor.addEventListener("lexxy:file-accept", (e) => {
@@ -34,7 +33,7 @@ export default class extends Controller {
 
           if (size > limitMB * 1024 * 1024) {
             e.preventDefault()
-            const category = type.startsWith("video/") ? "Videos" : type.startsWith("audio/") ? "Audio files" : type === "application/pdf" ? "PDFs" : "Images"
+            const category = type.startsWith("video/") ? "Videos" : type.startsWith("audio/") ? "Audio files" : "Images"
             alert(`This file is too large. ${category} are limited to ${limitMB}MB.`)
           }
         })

@@ -13,8 +13,7 @@ Rails.configuration.to_prepare do
         "video/mp4" => 50.megabytes,
         "video/quicktime" => 50.megabytes,
         "audio/mpeg" => 20.megabytes,
-        "audio/wav" => 20.megabytes,
-        "application/pdf" => 20.megabytes
+        "audio/wav" => 20.megabytes
       }.freeze
 
       def validate_upload
