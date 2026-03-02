@@ -12,22 +12,23 @@ export default class extends Controller {
           alert("Attachments are only available for paying customers")
         })
       } else {
-        editor.addEventListener("lexxy:file-accept", (e) => {
-          console.log("File accepted:", e.detail.file)
-          const exceedsMaxFileSize = e.detail.file.size > (1024 * 1024 * 20) // 20MB
-          const acceptedFileType = [
-            "image/jpeg", "image/jpg", "image/png",
-            "image/gif", "image/webp", "video/mp4",
-            "video/quicktime", "audio/mpeg", "audio/wav"
-          ].includes(e.detail.file.type)
+        const maxFileSizes = {
+          "image/jpeg": 10, "image/jpg": 10, "image/png": 10,
+          "image/gif": 10, "image/webp": 10,
+          "video/mp4": 50, "video/quicktime": 50,
+          "audio/mpeg": 20, "audio/wav": 20
+        }
 
-          if (exceedsMaxFileSize || !acceptedFileType) {
+        editor.addEventListener("lexxy:file-accept", (e) => {
+          const { type, size } = e.detail.file
+          const maxMB = maxFileSizes[type]
+
+          if (!maxMB) {
             e.preventDefault()
-            if (exceedsMaxFileSize) {
-              alert("Attachments are limited to 20MB in size right now, sorry.")
-            } else {
-              alert("Unsupported attachment type, sorry!")
-            }
+            alert("Unsupported attachment type, sorry!")
+          } else if (size > maxMB * 1024 * 1024) {
+            e.preventDefault()
+            alert(`This file is too large. ${type.startsWith("video/") ? "Videos" : "Images"} are limited to ${maxMB}MB.`)
           }
         })
       }
