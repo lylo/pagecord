@@ -28,7 +28,8 @@ export default class extends Controller {
             alert("Unsupported attachment type, sorry!")
           } else if (size > maxMB * 1024 * 1024) {
             e.preventDefault()
-            alert(`This file is too large. ${type.startsWith("video/") ? "Videos" : "Images"} are limited to ${maxMB}MB.`)
+            const category = type.startsWith("video/") ? "Videos" : type.startsWith("audio/") ? "Audio files" : "Images"
+            alert(`This file is too large. ${category} are limited to ${maxMB}MB.`)
           }
         })
       }
