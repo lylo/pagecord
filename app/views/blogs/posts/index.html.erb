@@ -18,12 +18,12 @@
 <% else %>
   <% if @current_tag.present? %>
     <div class="tag-filter-notice">
-      <div class="tag-filter-notice-text">
-        Showing posts tagged with "<strong><%= @current_tag %></strong>"
-      </div>
-      <div class="tag-filter-notice-actions">
-        <%= link_to "Show all posts", blog_posts_list_path, class: "tag-filter-clear-link" %>
-      </div>
+      <p>Tagged with "<strong><%= @current_tag %></strong>"</p>
+      <p class="tag-filter-notice-links">
+        <%= link_to "Show all posts", blog_posts_list_path, class: "tag-filter-notice-link tag-filter-clear" %>
+        <span>&middot;</span>
+        <%= link_to "RSS feed for this tag", rss_feed_url(@blog, tag: @current_tag), class: "tag-filter-notice-link tag-filter-rss" %>
+      </p>
     </div>
   <% end %>
 
