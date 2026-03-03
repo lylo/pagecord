@@ -8,7 +8,7 @@ module EditorPreparation
     # Try and normalize content HTML for the editor (Lexxy).
     # This ensures that Lexxy copes better with legacy Trix-created HTML.
     def prepare_content_for_editor(post)
-      original_content = post.content.body&.to_html
+      original_content = post.content.body&.to_s
       return if original_content.blank?
 
       cleaned_content = original_content

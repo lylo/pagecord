@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/basecamp/lexxy.git
-  revision: 9fd89130d43acb55c91a6a18bf5391fc8738ffea
-  branch: image-gallery
+  revision: 7a82b473c23fe6bf86fa143534762fbc04145f6a
+  branch: main
   specs:
     lexxy (0.7.6.beta)
       rails (>= 8.0.2)
