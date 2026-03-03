@@ -21,6 +21,20 @@ class PostDigestMailer < PostmarkMailer
     deliver_broadcast
   end
 
+  def test_individual
+    @post = params[:post]
+    @test = true
+    blog = @post.blog
+
+    subject = @post.title.presence || blog.display_name
+    mail(
+      to: params[:email],
+      from: sender_address_for(blog),
+      subject: "[Test] #{subject}",
+      template_name: "individual"
+    )
+  end
+
   private
 
     def deliver_broadcast

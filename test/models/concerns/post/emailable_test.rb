@@ -9,6 +9,24 @@ class Post::EmailableTest < ActiveSupport::TestCase
     @post = @blog.posts.create!(title: "Test Post", content: "Test content")
   end
 
+  test "emailed? returns false with no digests" do
+    assert_not @post.emailed?
+  end
+
+  test "emailed? returns true with a delivered digest" do
+    digest = PostDigest.create!(blog: @blog, kind: :individual, delivered_at: Time.current)
+    digest.digest_posts.create!(post: @post)
+
+    assert @post.emailed?
+  end
+
+  test "emailed? returns false when digest exists but not yet delivered" do
+    digest = PostDigest.create!(blog: @blog, kind: :individual)
+    digest.digest_posts.create!(post: @post)
+
+    assert_not @post.emailed?
+  end
+
   test "individually_sent? returns false when post has not been sent" do
     assert_not @post.individually_sent?
   end

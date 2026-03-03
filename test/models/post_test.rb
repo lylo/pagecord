@@ -131,13 +131,6 @@ class PostTest < ActiveSupport::TestCase
     assert_not post.is_page
   end
 
-  test "pages should not trigger open graph image job" do
-    blog = blogs(:joel)
-    assert_no_enqueued_jobs(only: GenerateOpenGraphImageJob) do
-      blog.posts.create!(title: "Test OpenGraph Page", content: "Page content", is_page: true)
-    end
-  end
-
   test "fixture pages should be correctly configured" do
     about_page = posts(:about)
     assert about_page.page?

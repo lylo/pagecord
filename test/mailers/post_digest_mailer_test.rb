@@ -93,4 +93,36 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_equal email_subscriber.token, email.header["X-PM-Metadata-SubscriberToken"].to_s
     assert_equal "broadcast", email.header["X-PM-Message-Stream"].to_s
   end
+
+  test "test_individual sends to specified email with test subject prefix" do
+    post = posts(:one)
+
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_emails 1 do
+      email.deliver_now
+    end
+
+    assert_equal [ "test@example.com" ], email.to
+    assert_equal "[Test] #{post.title}", email.subject
+    assert_equal [ "digest@newsletters.pagecord.com" ], email.from
+  end
+
+  test "test_individual has no broadcast headers" do
+    post = posts(:one)
+
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_nil email.header["X-PM-Metadata-SubscriberToken"].presence
+    assert_nil email.header["X-PM-Message-Stream"].presence
+    assert_nil email.header["List-Unsubscribe"].presence
+  end
+
+  test "test_individual omits unsubscribe footer" do
+    post = posts(:one)
+
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_no_match "Unsubscribe", email.body.encoded
+  end
 end

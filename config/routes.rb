@@ -86,7 +86,9 @@ Rails.application.routes.draw do
       resources :trash, only: [ :index, :destroy ], param: :token
     end
     resources :posts, param: :token do
-      resource :broadcast, only: [ :create ], controller: "posts/broadcasts"
+      resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
+        post :test
+      end
     end
 
     namespace :pages do
@@ -228,6 +230,7 @@ Rails.application.routes.draw do
     get "/pagecord-vs-substack", to: "public#pagecord_vs_substack"
     get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
+    get "/blog-with-newsletter", to: "public#blog_with_newsletter"
 
     get "/shuffle", to: "posts/shuffle#show"
 

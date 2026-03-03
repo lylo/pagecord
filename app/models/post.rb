@@ -9,7 +9,6 @@ class Post < ApplicationRecord
   has_rich_text :content
   has_many_attached :attachments, dependent: :destroy
 
-  has_one :open_graph_image, dependent: :destroy
   has_many :digest_posts, dependent: :destroy
   has_many :post_digests, through: :digest_posts
   has_many :replies, class_name: "Post::Reply", dependent: :destroy
@@ -36,7 +35,6 @@ class Post < ApplicationRecord
         ]
       )
     }
-  after_create :detect_open_graph_image
   after_commit :purge_blog_cache, on: [ :create, :update, :destroy ]
 
   def content_present
@@ -179,14 +177,6 @@ class Post < ApplicationRecord
     def limit_content_size
       if content && content.body.to_html.bytesize > 64.kilobytes
         self.content = content.body.to_html.byteslice(0, 64.kilobytes)
-      end
-    end
-
-    def detect_open_graph_image
-      if Rails.env.production?
-        GenerateOpenGraphImageJob.perform_later(id)
-      else
-        GenerateOpenGraphImageJob.perform_now(id)
       end
     end
 

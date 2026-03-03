@@ -21,7 +21,7 @@
       <div class="flex flex-col sm:flex-row gap-y-2 sm:gap-x-4">
         <fieldset class="w-full flex border border-slate-200 dark:border-slate-700 rounded-lg items-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
           <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
-            <%= form.radio_button :format, 'html', 
+            <%= form.radio_button :format, 'html',
               checked: true,
               class: "peer w-4 h-4 border-slate-300 checked:border-sky-600 dark:checked:border-gray-600 ring-offset-0 ring-0 text-sky-600 dark:focus:ring-gray-800 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 cursor-pointer",
               id: "format_html" %>
@@ -39,7 +39,10 @@
         </fieldset>
       </div>
     </div>
-    <%= form.submit "💾 Generate New Export", class: "btn-primary" %>
+
+    <%= form.submit "💾 Generate New Export", class: "mt-4 btn-primary" %>
+
+    <p class="text-sm italic text-slate-500 dark:text-slate-400">Note: Videos are not currently included in exports</p>
   <% end %>
 </div>
 

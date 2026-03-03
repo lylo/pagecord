@@ -4,9 +4,7 @@ module OpenGraphHelper
   end
 
   def open_graph_image
-    if @post && @post.open_graph_image.present?
-      @post.open_graph_image.url
-    elsif @post && @post.first_image.present?
+    if @post && @post.first_image.present?
       resized_image_url @post.first_image, width: 1200, height: 630, crop: true
     elsif @post
       dynamic_og_image_for_post(@post)
