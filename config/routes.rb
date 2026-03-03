@@ -86,7 +86,9 @@ Rails.application.routes.draw do
       resources :trash, only: [ :index, :destroy ], param: :token
     end
     resources :posts, param: :token do
-      resource :broadcast, only: [ :create ], controller: "posts/broadcasts"
+      resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
+        post :test
+      end
     end
 
     namespace :pages do
