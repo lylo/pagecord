@@ -718,9 +718,9 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path(tag: "rails")
 
     assert_response :success
-    assert_select "p", text: /Tagged with "rails"/
+    assert_select "p", text: /Posts tagged with "rails"/
     assert_select "a.tag-filter-clear[href='#{blog_posts_list_path}']", text: "Show all posts"
-    assert_select "a.tag-filter-rss", text: "RSS feed for this tag"
+    assert_select "a.tag-filter-rss", text: "RSS feed for rails posts"
   end
 
   test "should show no posts message when tag has no matches" do
