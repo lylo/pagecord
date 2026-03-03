@@ -341,9 +341,10 @@ html, body {
       max-width: 500px;
     }
 
-    :where(hr) {
+    hr {
       border: none;
       border-top: 1px solid var(--color-border);
+      inline-size: 100%;
       margin-block: var(--lexxy-content-margin);
     }
   }
