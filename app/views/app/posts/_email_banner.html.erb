@@ -11,7 +11,6 @@
           <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-[#4fbd9c] shrink-0" %>
           <% count = digest.delivered_at? ? digest.deliveries.count : subscriber_count %>
           <span>Emailed to <%= pluralize(count, "subscriber") %> on <%= l(digest.created_at.in_time_zone(Current.user.timezone).to_date, format: :post_date) %>.</span>
-          <%= link_to "Send a test email", test_app_post_broadcast_path(@post), data: { turbo_method: :post, turbo_confirm: "Send a test email to #{Current.user.email}?" }, class: "text-xs underline" %>
         </div>
       </div>
     </div>

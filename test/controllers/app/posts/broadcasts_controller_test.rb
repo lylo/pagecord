@@ -73,16 +73,16 @@ class App::Posts::BroadcastsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Test email sent to #{@user.email}.", flash[:notice]
   end
 
-  test "test works even after post already sent" do
+  test "test rejects if post already sent" do
     digest = PostDigest.create!(blog: @blog, kind: :individual, delivered_at: Time.current)
     digest.digest_posts.create!(post: @post)
 
-    assert_enqueued_emails 1 do
+    assert_no_enqueued_emails do
       post test_app_post_broadcast_path(@post)
     end
 
     assert_redirected_to edit_app_post_path(@post)
-    assert_match "Test email sent to", flash[:notice]
+    assert_equal "Cannot send a test for this post.", flash[:alert]
   end
 
   test "test rejects draft posts" do
