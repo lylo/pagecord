@@ -23,6 +23,7 @@ es:
         footer: "Estás suscrito para recibir nuevos artículos de %{blog_name}."
         unsubscribe_link: "Cancelar suscripción"
         unsubscribe_text: "Cancela tu suscripción haciendo clic en el enlace de abajo:"
+        view_online: "Ver este artículo en línea"
       confirmation:
         subject: "Confirma tu suscripción a %{blog_name}"
         message: "Por favor confirma tu suscripción a %{blog_name}. Si no tenías intención de suscribirte, puedes ignorar este correo."

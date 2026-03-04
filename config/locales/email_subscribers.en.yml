@@ -23,6 +23,7 @@ en:
         footer: "You're subscribed to receive new posts from %{blog_name}."
         unsubscribe_link: "Unsubscribe"
         unsubscribe_text: "Unsubscribe by clicking the link below:"
+        view_online: "View this post online"
       confirmation:
         subject: "Confirm your subscription to %{blog_name}"
         message: "Please confirm your subscription to %{blog_name}. If you didn't intend to subscribe, you can ignore this email."
