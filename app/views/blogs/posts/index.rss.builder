@@ -2,7 +2,7 @@ cache([ @blog, @posts.map(&:id), @current_tag ]) do
   xml.instruct! :xml, version: "1.0"
   xml.rss version: "2.0" do
     xml.channel do
-      xml.title "#{@blog.display_name}"
+      xml.title @current_tag.present? ? "#{@blog.display_name} - #{@current_tag}" : @blog.display_name
       xml.description @blog.bio.to_plain_text.presence || "Latest posts from #{@blog.display_name}"
       xml.link blog_home_url(@blog)
 

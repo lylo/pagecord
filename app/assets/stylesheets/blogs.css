@@ -689,29 +689,37 @@ button {
 /* Tag filter notice */
 .tag-filter-notice {
   margin-bottom: 1.5rem;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
   background-color: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
 }
 
-.tag-filter-notice-text {
+.tag-filter-notice p {
+  margin: 0;
+}
+
+.tag-filter-notice strong {
   color: var(--color-text);
 }
 
-.tag-filter-notice-actions {
-  margin-top: 0.5rem;
+.tag-filter-notice-links {
+  margin-top: 0.5rem !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.tag-filter-clear-link {
-  color: var(--color-accent);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.tag-filter-clear-link:hover {
-  color: var(--color-accent-hover);
+.tag-filter-notice-link {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
   text-decoration: underline;
+}
+
+.tag-filter-notice-link:hover {
+  color: var(--color-accent);
 }
 
 /* ============================= */

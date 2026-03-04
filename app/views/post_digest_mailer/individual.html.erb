@@ -7,8 +7,10 @@
     <hr>
 
     <p class="digest-footer">
-      <%= t('email_subscribers.mailers.shared.footer', blog_name: @subscriber.blog.display_name) %>
+      <%= link_to t('email_subscribers.mailers.shared.view_online'), post_url(@post) %>
       <br><br>
+      <%= t('email_subscribers.mailers.shared.footer', blog_name: @subscriber.blog.display_name) %>
+      <br>
       <%= link_to t('email_subscribers.mailers.shared.unsubscribe_link'), email_subscriber_unsubscribe_url_for(@subscriber) %>
     </p>
   <% end %>
