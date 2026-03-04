@@ -170,7 +170,7 @@ html, body {
 
     .attachment-gallery .attachment {
       margin-block: 0;
-      gap: var(--lexxy-attachment-gap);
+      gap: calc(var(--lexxy-attachment-gap) / 2);
     }
 
     .attachment--preview {
