@@ -158,10 +158,19 @@ html, body {
     }
 
     /* increased margin around images in article content */
-    figure:has(img),
-    img:not(figure img),
-    .attachment {
+    figure:has(img):not(.attachment-gallery *),
+    img:not(figure img, .attachment-gallery *),
+    .attachment:not(.attachment-gallery *) {
       margin-block: 1.5rem;
+    }
+
+    .attachment-gallery {
+      margin-block: 1.5rem;
+    }
+
+    .attachment-gallery .attachment {
+      margin-block: 0;
+      gap: var(--lexxy-attachment-gap);
     }
 
     .attachment--preview {
