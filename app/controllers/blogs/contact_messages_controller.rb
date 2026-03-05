@@ -1,7 +1,7 @@
 class Blogs::ContactMessagesController < Blogs::BaseController
   include SpamPrevention
 
-  rate_limit to: 2, within: 1.hour, only: [ :create ]
+  rate_limit to: 20, within: 1.hour, only: [ :create ]
 
   before_action :turnstile_check, only: [ :create ]
 
