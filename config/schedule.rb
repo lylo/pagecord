@@ -82,6 +82,10 @@ every 1.week, at: "6:00 am" do
   rake "posts:clear_old_raw_content"
 end
 
+every :day, at: "3:30 am" do
+  runner "Posts::EmptyTrashJob.perform_later"
+end
+
 every 1.month, at: "1:30 am" do  # 1:30 AM on the 1st of every month
   runner "RollupAndCleanupPageViewsJob.perform_later"
 end

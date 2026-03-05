@@ -6,6 +6,7 @@ class Posts::RepliesController < Blogs::BaseController
   before_action :turnstile_check, only: [ :create ]
 
   skip_before_action :authenticate, :ip_reputation_check
+  skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
   before_action :load_post
   before_action :verify, only: [ :create ]

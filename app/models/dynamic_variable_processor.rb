@@ -54,7 +54,8 @@ class DynamicVariableProcessor
 
     def render_posts_tag(params_string)
       params = parse_params(params_string)
-      relation = blog.posts.visible.order(published_at: :desc)
+      order_direction = params[:sort] == "asc" ? :asc : :desc
+      relation = blog.posts.visible.order(published_at: order_direction)
       relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
 
       if params[:year]
@@ -63,14 +64,18 @@ class DynamicVariableProcessor
         relation = relation.where(published_at: start_date..end_date)
       end
 
+      relation = filter_by_language(relation, params[:lang]) if params[:lang]
+
       posts = params[:limit] ? relation.limit(params[:limit]) : relation.all
-      view.render(partial: "blogs/custom_tags/posts", locals: { posts: posts, limit: params[:limit] })
+      view.render(partial: "blogs/custom_tags/posts", locals: { posts: posts })
     end
 
     def render_posts_by_year_tag(params_string)
       params = parse_params(params_string)
-      relation = blog.posts.visible.order(published_at: :desc)
+      order_direction = params[:sort] == "asc" ? :asc : :desc
+      relation = blog.posts.visible.order(published_at: order_direction)
       relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
+      relation = filter_by_language(relation, params[:lang]) if params[:lang]
 
       posts = relation.all
 
@@ -92,6 +97,15 @@ class DynamicVariableProcessor
       return "" unless blog.contactable?
 
       view.render(partial: "blogs/contact_messages/form", locals: {})
+    end
+
+    def filter_by_language(relation, lang)
+      locale = lang.to_s.downcase.split("-").first
+      if blog.locale == locale
+        relation.where(locale: [ locale, nil ])
+      else
+        relation.where(locale: locale)
+      end
     end
 
     def parse_params(params_string)

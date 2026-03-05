@@ -42,6 +42,14 @@
         <% end %>
       </div>
 
+      <div class="p-1">
+        <%= link_to "#", class: "flex justify-between items-center rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+          data: { action: "click->post-attributes#toggle", toggle_target: "locale" } do %>
+          <span class="ms-1">Set Language</span>
+          <span class="hidden md:inline text-xs text-gray-400 dark:text-gray-500">L</span>
+        <% end %>
+      </div>
+
       <% if @post.persisted? %>
         <hr class="mx-2 mt-2 dark:border-gray-600">
 

@@ -5,7 +5,6 @@
     <div class="flex gap-x-4 justify-center items-center">
       <%= link_to "FAQ", faq_path, class: "hover:text-slate-600 dark:hover:text-slate-300" %>
       <%= link_to "Help", "https://help.pagecord.com", class: "hover:text-slate-600 dark:hover:text-slate-300" %>
-      <%= mail_to "hello@pagecord.com", "Contact", class: "hover:text-slate-600 dark:hover:text-slate-300" %>
       <%= link_to "Terms", terms_path, class: "hover:text-slate-600 dark:hover:text-slate-300" %>
       <%= link_to "Privacy", privacy_path, class: "hover:text-slate-600 dark:hover:text-slate-300" %>
       <%= link_to "https://github.com/lylo/pagecord" do %>
@@ -13,6 +12,9 @@
       <% end %>
       <%= link_to "https://bsky.app/profile/pagecord.com" do %>
         <%= inline_svg_tag "icons/social/bluesky.svg", class: "w-4 h-4 hover:text-[#1185fe]", title: "Follow Pagecord on Bluesky" %>
+      <% end %>
+      <%= link_to "https://x.com/pagecord_" do %>
+        <%= inline_svg_tag "icons/social/x.svg", class: "w-4 h-4 hover:text-slate-900 dark:hover:text-slate-100", title: "Follow Pagecord on X" %>
       <% end %>
     </div>
   </div>

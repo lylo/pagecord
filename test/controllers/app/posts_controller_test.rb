@@ -85,11 +85,13 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert @user.blog.posts.last.draft?
   end
 
-  test "should destroy post" do
-    assert_difference("@user.blog.posts.count", -1) do
-      delete app_post_url(@user.blog.posts.first)
+  test "should discard post" do
+    post_to_discard = @user.blog.posts.first
+    assert_no_difference("@user.blog.posts.count") do
+      delete app_post_url(post_to_discard)
     end
-    assert_redirected_to app_posts_url
+    assert post_to_discard.reload.discarded?
+    assert_redirected_to app_posts_path
   end
 
   test "should show edit post page for published post" do
@@ -310,6 +312,26 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       # Verify order: New Draft (newer effective date) then Old Draft (older effective date)
       assert_match(/New Draft.*Old Draft/m, @response.body)
     end
+  end
+
+  test "should show emailed icon for posts in delivered digests" do
+    post = @user.blog.posts.create!(title: "Emailed Post", content: "Content")
+    digest = PostDigest.create!(blog: @user.blog, kind: :individual, delivered_at: Time.current)
+    digest.digest_posts.create!(post: post)
+
+    get app_posts_url
+
+    assert_response :success
+    assert_select "svg title", text: "Emailed to subscribers"
+  end
+
+  test "should show private icon for hidden posts" do
+    @user.blog.posts.create!(title: "Hidden Post", content: "Content", hidden: true)
+
+    get app_posts_url
+
+    assert_response :success
+    assert_select "svg title", text: "Private post"
   end
 
   test "app area should be inaccessible on custom domain" do

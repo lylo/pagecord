@@ -91,6 +91,39 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "should add a feature to blog" do
+    user = users(:vivian)
+
+    patch admin_user_url(user), params: {
+      user: { blog_attributes: { id: user.blog.id, features: [ "", "analytics_countries" ] } }
+    }
+
+    assert_redirected_to admin_user_path(user)
+    assert_includes user.blog.reload.features, "analytics_countries"
+  end
+
+  test "should remove all features from blog" do
+    user = users(:vivian)
+    user.blog.update!(features: [ "analytics_countries" ])
+
+    patch admin_user_url(user), params: {
+      user: { blog_attributes: { id: user.blog.id, features: [ "" ] } }
+    }
+
+    assert_redirected_to admin_user_path(user)
+    assert_empty user.blog.reload.features
+  end
+
+  test "should render features section on show page" do
+    user = users(:vivian)
+
+    get admin_user_url(user)
+
+    assert_response :success
+    assert_select "h3", text: "Features"
+    assert_select "input[type=checkbox][value=analytics_countries]"
+  end
+
   test "should update user trial_ends_at" do
     user = users(:vivian)
     new_trial_date = 30.days.from_now.to_date

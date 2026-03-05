@@ -8,14 +8,16 @@ class ContentModerationJob < ApplicationJob
     post = Post.moderatable.find_by(id: post_id)
     return unless post&.needs_moderation?
 
-    Rails.logger.info "[ContentModeration] Moderating #{post.blog.subdomain}/#{post.slug}"
+    with_sentry_context(user: post.blog.user, blog: post.blog) do
+      Rails.logger.info "[ContentModeration] Moderating #{post.blog.subdomain}/#{post.slug}"
 
-    moderator = ContentModerator.new(post)
-    moderator.moderate
+      moderator = ContentModerator.new(post)
+      moderator.moderate
 
-    save_moderation_result!(post, moderator.result)
+      save_moderation_result!(post, moderator.result)
 
-    log_result(moderator, post)
+      log_result(moderator, post)
+    end
   end
 
   private

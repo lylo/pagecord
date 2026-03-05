@@ -64,6 +64,9 @@ main {
 .blog-container {
   margin-inline: auto;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 /* Content width modifiers (applied via content_width_class helper) */
@@ -86,12 +89,12 @@ footer.blog-footer {
   flex-direction: column;
   text-align: center;
   padding: 2rem;
+  margin-top: auto;
   color: var(--color-text-light);
 }
 
 footer.blog-footer #brand svg {
   width: 110px;
-  margin-top: 2rem;
   display: inline-flex;
   color: var(--color-text-heading);
 }
@@ -155,10 +158,23 @@ html, body {
     }
 
     /* increased margin around images in article content */
-    figure:has(img),
-    img:not(figure img),
-    .attachment {
+    figure:has(img):not(.attachment-gallery *),
+    img:not(figure img, .attachment-gallery *),
+    .attachment:not(.attachment-gallery *) {
       margin-block: 1.5rem;
+    }
+
+    .attachment-gallery {
+      margin-block: 1.5rem;
+    }
+
+    .attachment-gallery .attachment {
+      margin-block: 0;
+      gap: calc(var(--lexxy-attachment-gap) / 2);
+    }
+
+    .attachment--preview {
+      inline-size: auto;
     }
   }
 
@@ -305,7 +321,7 @@ html, body {
 
     h1.post-title {
       font-size: 1.875rem;
-      line-height: 2.25rem;
+      line-height: 2.5rem;
       margin-top: 0;
       margin-bottom: 2rem;
       color: var(--color-text-heading);
@@ -316,7 +332,6 @@ html, body {
       text-align: center;
       padding-left: 1rem;
       padding-right: 1rem;
-      margin-top: 0.5rem;
 
       @media (min-width: 640px) {
         padding-left: 2rem;
@@ -335,9 +350,10 @@ html, body {
       max-width: 500px;
     }
 
-    :where(hr) {
+    hr {
       border: none;
       border-top: 1px solid var(--color-border);
+      inline-size: 100%;
       margin-block: var(--lexxy-content-margin);
     }
   }
@@ -347,7 +363,7 @@ html, body {
 /* -------------------------------------------------------------------------- */
 
 :where(.blog) {
-  :where(footer) {
+  :where(article) :where(footer) {
     font-size: 0.875rem;
     display: flex;
     align-items: center;
@@ -673,29 +689,37 @@ button {
 /* Tag filter notice */
 .tag-filter-notice {
   margin-bottom: 1.5rem;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
   background-color: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
 }
 
-.tag-filter-notice-text {
+.tag-filter-notice p {
+  margin: 0;
+}
+
+.tag-filter-notice strong {
   color: var(--color-text);
 }
 
-.tag-filter-notice-actions {
-  margin-top: 0.5rem;
+.tag-filter-notice-links {
+  margin-top: 0.5rem !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.tag-filter-clear-link {
-  color: var(--color-accent);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.tag-filter-clear-link:hover {
-  color: var(--color-accent-hover);
+.tag-filter-notice-link {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
   text-decoration: underline;
+}
+
+.tag-filter-notice-link:hover {
+  color: var(--color-accent);
 }
 
 /* ============================= */

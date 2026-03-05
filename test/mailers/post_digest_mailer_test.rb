@@ -35,4 +35,94 @@ class PostDigestMailerTest < ActionMailer::TestCase
 
     assert_match "custom.example.com", email.body.encoded
   end
+
+  test "individual email renders correctly with post title as subject" do
+    blog = blogs(:joel)
+    email_subscriber = email_subscribers(:one)
+    post = posts(:one)
+
+    digest = PostDigest.create!(blog: blog, kind: :individual)
+    digest.digest_posts.create!(post: post)
+
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: digest).individual
+
+    assert_emails 1 do
+      email.deliver_now
+    end
+
+    assert_equal [ "digest@newsletters.pagecord.com" ], email.from
+    assert_equal [ email_subscriber.email ], email.to
+    assert_equal post.title, email.subject
+  end
+
+  test "individual email uses fallback subject when post has no title" do
+    blog = blogs(:joel)
+    email_subscriber = email_subscribers(:one)
+    post = posts(:joel_titleless)
+
+    digest = PostDigest.create!(blog: blog, kind: :individual)
+    digest.digest_posts.create!(post: post)
+
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: digest).individual
+
+    assert_match blog.display_name, email.subject
+  end
+
+  test "individual email includes unsubscribe footer" do
+    blog = blogs(:joel)
+    email_subscriber = email_subscribers(:one)
+    post = posts(:one)
+
+    digest = PostDigest.create!(blog: blog, kind: :individual)
+    digest.digest_posts.create!(post: post)
+
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: digest).individual
+
+    assert_match "Unsubscribe", email.body.encoded
+  end
+
+  test "individual email includes broadcast headers" do
+    email_subscriber = email_subscribers(:one)
+    post = posts(:one)
+
+    digest = PostDigest.create!(blog: blogs(:joel), kind: :individual)
+    digest.digest_posts.create!(post: post)
+
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: digest).individual
+
+    assert_equal email_subscriber.token, email.header["X-PM-Metadata-SubscriberToken"].to_s
+    assert_equal "broadcast", email.header["X-PM-Message-Stream"].to_s
+  end
+
+  test "test_individual sends to specified email with test subject prefix" do
+    post = posts(:one)
+
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_emails 1 do
+      email.deliver_now
+    end
+
+    assert_equal [ "test@example.com" ], email.to
+    assert_equal "[Test] #{post.title}", email.subject
+    assert_equal [ "digest@newsletters.pagecord.com" ], email.from
+  end
+
+  test "test_individual has no broadcast headers" do
+    post = posts(:one)
+
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_nil email.header["X-PM-Metadata-SubscriberToken"].presence
+    assert_nil email.header["X-PM-Message-Stream"].presence
+    assert_nil email.header["List-Unsubscribe"].presence
+  end
+
+  test "test_individual omits unsubscribe footer" do
+    post = posts(:one)
+
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_no_match "Unsubscribe", email.body.encoded
+  end
 end

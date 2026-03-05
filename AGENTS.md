@@ -11,6 +11,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 ## Code Style
 
 - Double quotes for strings, not single quotes
+- Use en-dashes (–), never em-dashes (—)
 - Remove trailing whitespace
 - Private methods indented one additional level (2 spaces) after `private`
 - Prefer ternary operators over case statements for 2-option logic
@@ -43,7 +44,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 ## Git Commits
 
-- No footers ("Generated with Claude Code", "Co-Authored-By", etc.)
+- **NEVER** add "Co-Authored-By", "Generated with Claude Code", or any AI attribution to commit messages, PR descriptions, or code comments. This is a hard rule — no exceptions.
 - Ask for human review before committing generated code
 
 ## Tooling
@@ -85,7 +86,7 @@ Docker: prefix commands with `docker-compose exec web`
 ### Content Pipeline
 - **Email-to-blog**: ActionMailbox → PostsMailbox → MailParser (HTML pipeline: body extraction → monospace detection → image unfurl → inline attachments → tag extraction → sanitize)
 - **Content moderation**: OpenAI API via `ContentModerator`. `ContentModerationBatchJob` runs every 10 min. Flagged posts stay visible for admin review. Daily digest to admin via `ContentModerationDigestJob`.
-- **Spam detection**: GPT-4o-mini via `SpamDetector`. Checks blogs 2h–7d old. Skips subscribers. Admin confirms (discards user) or dismisses. Daily digest via `SpamDetectionDigestJob`. IP reputation checks via `IpReputation` (ApiVoid, GetIpIntel providers).
+- **Spam detection**: GPT-4o-mini via `SpamDetector`. Checks blogs 2h–7d old. Skips subscribers. Admin confirms (discards user) or dismisses. Daily digest via `SpamDetectionDigestJob`. IP reputation checks via `IpReputation` (GetIpIntel provider).
 - **Dynamic variables**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}` — processed in pages only (`is_page: true`) via `DynamicVariableProcessor`
 - **OG images**: Auto-generated from first post image via `GenerateOpenGraphImageJob`
 
@@ -96,7 +97,11 @@ Docker: prefix commands with `docker-compose exec web`
 - Referrer tracking with domain normalization, search/social classification via `Referrer` model
 
 ### Email Features
-- **Post digests**: Weekly emails (Tuesdays) to confirmed EmailSubscribers. `PostDigest` → `PostDigest::DeliveryJob` → `PostDigest::PostmarkDelivery` (batches of 50). Requires `email_subscriptions_enabled` + `subscribed?`. Custom sender addresses via `SenderEmailAddress` (max 3 per blog, requires verification).
+- **Post digests**: Emails to confirmed EmailSubscribers. Two delivery modes (`Blog#email_delivery_mode` enum):
+  - **Digest** (default): Weekly batch emails (Tuesdays) via `PostDigestScheduler`. `PostDigest.generate_weekly_digest_for` finds new posts since last digest.
+  - **Individual**: User manually sends single posts from the post editor via `App::Posts::BroadcastsController`. `PostDigest.generate_individual_for` creates a one-post digest. `Post::Emailable` concern provides `individually_sendable?`/`send_to_subscribers!`.
+  - Both modes reuse the same infrastructure: `PostDigest` (with `kind` enum: `weekly_digest`/`individual`) → `PostDigest::DeliveryJob` → `PostDigest::PostmarkDelivery` (batches of 50). Posts sent individually are excluded from future weekly digests via `DigestPost` join records.
+  - Requires `email_subscriptions_enabled` + `subscribed?`. Custom sender addresses via `SenderEmailAddress` (max 3 per blog, requires verification).
 - **Reply by email**: `Post::Reply` model. Replies forwarded to blog owner via `ReplyMailer`. Digest replies handled by `DigestReplyMailer`.
 - **Blog export**: HTML or Markdown ZIP via `BlogExportJob`. Auto-cleanup after 7 days. Rate limited to 5/day.
 

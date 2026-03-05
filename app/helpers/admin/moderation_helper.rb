@@ -1,6 +1,6 @@
 module Admin::ModerationHelper
   def content_moderation_count
-    @content_moderation_count ||= Post.with_discarded
+    @content_moderation_count ||= Post.kept
                                       .moderation_flagged
                                       .published
                                       .joins(blog: :user)

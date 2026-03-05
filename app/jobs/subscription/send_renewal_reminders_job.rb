@@ -3,13 +3,15 @@ class Subscription::SendRenewalRemindersJob < ApplicationJob
 
   def perform
     subscriptions_renewing_in_two_weeks.find_each do |subscription|
-      period = Subscription::RenewalReminder.period_for(subscription.next_billed_at)
+      with_sentry_context(user: subscription.user, blog: subscription.user.blog) do
+        period = Subscription::RenewalReminder.period_for(subscription.next_billed_at)
 
-      next if subscription.renewal_reminders.exists?(period: period)
+        next if subscription.renewal_reminders.exists?(period: period)
 
-      subscription.transaction do
-        subscription.renewal_reminders.create!(period: period, sent_at: Time.current)
-        Subscription::RenewalReminderMailer.reminder(subscription).deliver_later
+        subscription.transaction do
+          subscription.renewal_reminders.create!(period: period, sent_at: Time.current)
+          Subscription::RenewalReminderMailer.reminder(subscription).deliver_later
+        end
       end
     end
   end
@@ -17,6 +19,6 @@ class Subscription::SendRenewalRemindersJob < ApplicationJob
   private
 
     def subscriptions_renewing_in_two_weeks
-      Subscription.active_paid.where("next_billed_at <= ?", 2.weeks.from_now)
+      Subscription.active_paid.includes(user: :blog).where("next_billed_at <= ?", 2.weeks.from_now)
     end
 end

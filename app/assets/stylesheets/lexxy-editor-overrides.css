@@ -34,6 +34,7 @@ lexxy-editor {
   }
 
   .horizontal-divider {
+    margin-block: var(--lexxy-content-margin);
     padding-block: 0.5em;
 
     hr {
@@ -103,6 +104,9 @@ lexxy-toolbar {
     --lexxy-color-ink-inverted: var(--color-slate-900);
     --lexxy-color-canvas: var(--color-slate-900);
     --lexxy-color-text-subtle: var(--color-slate-400);
+
+    /* Table header */
+    --lexxy-color-table-header-bg: var(--color-slate-800);
 
     /* Selected states for pressed buttons */
     --lexxy-color-selected: var(--color-slate-700);

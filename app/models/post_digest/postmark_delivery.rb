@@ -26,7 +26,8 @@ class PostDigest::PostmarkDelivery
     end
 
     def build_email(subscriber)
-      message = PostDigestMailer.with(digest: @digest, subscriber: subscriber).weekly_digest
+      action = @digest.individual? ? :individual : :weekly_digest
+      message = PostDigestMailer.with(digest: @digest, subscriber: subscriber).public_send(action)
       Premailer::Rails::Hook.delivering_email(message)
       message
     end

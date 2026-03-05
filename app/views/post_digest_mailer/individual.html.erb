@@ -1,0 +1,17 @@
+<div class="digest">
+  <div class="post-content">
+    <%= strip_video_tags(without_action_text_image_wrapper(@post.content.to_s)).html_safe %>
+  </div>
+
+  <% unless @test %>
+    <hr>
+
+    <p class="digest-footer">
+      <%= link_to t('email_subscribers.mailers.shared.view_online'), post_url(@post) %>
+      <br><br>
+      <%= t('email_subscribers.mailers.shared.footer', blog_name: @subscriber.blog.display_name) %>
+      <br>
+      <%= link_to t('email_subscribers.mailers.shared.unsubscribe_link'), email_subscriber_unsubscribe_url_for(@subscriber) %>
+    </p>
+  <% end %>
+</div>

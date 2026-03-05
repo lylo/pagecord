@@ -3,15 +3,17 @@ class DestroyUserJob < ApplicationJob
 
   def perform(user_id, options = {})
     user = User.find(user_id)
-    user.discard!
+    with_sentry_context(user: user, blog: user.blog) do
+      user.discard!
 
-    if user.subscription
-      PaddleApi.new.cancel_subscription(user.subscription.paddle_subscription_id)
-    end
+      if user.subscription
+        PaddleApi.new.cancel_subscription(user.subscription.paddle_subscription_id)
+      end
 
-    if options[:spam]
-      create_spam_detection(user.blog)
-      MarketingAutomation::DeleteContactJob.perform_later(user_id)
+      if options[:spam]
+        create_spam_detection(user.blog)
+        MarketingAutomation::DeleteContactJob.perform_later(user_id)
+      end
     end
   end
 

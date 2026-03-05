@@ -1,5 +1,9 @@
 <%= content_for :title do %>
-  Pagecord vs about.me: Personal landing page + blog. Free forever or $29/year.
+  Pagecord vs about.me: Personal landing page + blog. Free forever.
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Better about.me Alternative") %>
 <% end %>
 
 <%= content_for :meta_description do %>

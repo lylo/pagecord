@@ -1,5 +1,13 @@
 <%= content_for :title do %>
-  Blogging By Email
+  Blog By Email: Write and publish from your inbox with Pagecord
+<% end %>
+
+<%= content_for :meta_description do %>
+  Blog by sending an email. Pagecord works with Gmail, Outlook, Fastmail, or any email provider. Compose in your favourite email client, hit send, and you're published. Free forever.
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "Blogging by Email – The Best Way to Blog") %>
 <% end %>
 
 <div class="prose mb-4 sm:mb-8 px-4">

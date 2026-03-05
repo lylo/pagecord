@@ -212,6 +212,16 @@ class TaggableTest < ActiveSupport::TestCase
     assert_equal all_tags, all_tags.sort # Should be sorted
   end
 
+  test "should allow unicode characters in tags" do
+    @post.tag_list = [ "programação", "café", "über-cool", "日本語" ]
+    assert @post.valid?
+  end
+
+  test "should parse and normalize unicode tags" do
+    @post.tags_string = "Programação, CAFÉ, über"
+    assert_equal [ "café", "programação", "über" ], @post.tag_list
+  end
+
   test "should clear tags when tags_string is empty" do
     @post.tags_string = "rails, javascript, ruby"
     assert_equal [ "javascript", "rails", "ruby" ], @post.tag_list

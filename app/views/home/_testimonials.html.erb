@@ -1,0 +1,128 @@
+<div id="testimonials" class="relative w-full px-4 md:px-6 lg:px-8 my-12 py-8">
+  <h2 class="source-serif text-center font-semibold mb-8 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">What people are saying</h2>
+
+  <div class="relative -mx-4 md:-mx-6 lg:-mx-8 testimonials-fade-edges"
+       data-controller="testimonials-carousel"
+       data-action="mouseenter->testimonials-carousel#pause mouseleave->testimonials-carousel#resume">
+    <div class="relative overflow-auto pb-4"
+         data-action="scroll->testimonials-carousel#scroll">
+      <div class="flex gap-6 pl-4 md:pl-6 lg:pl-8" data-testimonials-carousel-target="slider">
+
+        <!-- Testimonial 1 -->
+        <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-md border border-slate-200 dark:border-slate-700">
+          <div class="flex items-start mb-4">
+<%= inline_svg_tag "icons/quote.svg", class: "w-10 h-10 text-pagecord-accent opacity-50" %>
+          </div>
+          <p class="text-lg mb-6 leading-relaxed">
+            "Pagecord has two big attractions. One is rediscovering blogging by email, but a bigger win is the source availability.
+            It does what I need, very nicely."
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4fbd9c] to-[#3da688] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+              RD
+            </div>
+            <div class="ml-3">
+              <p class="font-semibold">Richard Dallaway</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://richard.dallaway.com" class="hover:underline">richard.dallaway.com</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial  -->
+        <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-md border border-slate-200 dark:border-slate-700">
+          <div class="flex items-start mb-4">
+<%= inline_svg_tag "icons/quote.svg", class: "w-10 h-10 text-pagecord-accent opacity-50" %>
+          </div>
+          <p class="text-lg mb-6 leading-relaxed">
+            "Pagecord has everything I'm looking for. Open source, privacy-respecting, with many customization options. Pricing is competitive, and Olly has always answered my questions promptly. I only wish more people knew about Pagecord. It's that good."
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4fbd9c] to-[#3da688] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+              E
+            </div>
+            <div class="ml-3">
+              <p class="font-semibold">Eetu</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://moonwriting.blog" class="hover:underline">moonwriting.blog</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-md border border-slate-200 dark:border-slate-700">
+          <div class="flex items-start mb-4">
+<%= inline_svg_tag "icons/quote.svg", class: "w-10 h-10 text-pagecord-accent opacity-50" %>
+          </div>
+          <p class="text-lg mb-6 leading-relaxed">
+            "It's simple, it's niche, it's elegant. The most important thing is the words and it takes away all the excuses that distract us from the real purpose of a blog, which is to learn about ourselves."
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4fbd9c] to-[#3da688] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+              E
+            </div>
+            <div class="ml-3">
+              <p class="font-semibold">e6on</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://e6on.pagecord.com" class="hover:underline">e6on.pagecord.com</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 4 -->
+        <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-md border border-slate-200 dark:border-slate-700">
+          <div class="flex items-start mb-4">
+<%= inline_svg_tag "icons/quote.svg", class: "w-10 h-10 text-pagecord-accent opacity-50" %>
+          </div>
+          <p class="text-lg mb-6 leading-relaxed">
+            "I was drawn to Pagecord because it allows me to post simply by sending an email. I was blown away by the other great features. It's simple, fast, and affordable, perfect for a personal blog."
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4fbd9c] to-[#3da688] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+              E
+            </div>
+            <div class="ml-3">
+              <p class="font-semibold">Eric</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://focustivity.blog" class="hover:underline">focustivity.blog</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 5 -->
+        <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-md border border-slate-200 dark:border-slate-700">
+          <div class="flex items-start mb-4">
+<%= inline_svg_tag "icons/quote.svg", class: "w-10 h-10 text-pagecord-accent opacity-50" %>
+          </div>
+          <p class="text-lg mb-6 leading-relaxed">
+            "The ability to post by email was such a relief. Write, send, publish. Frictionless! Pagecord keeps getting better with well-designed and executed features. As well as great support!"
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4fbd9c] to-[#3da688] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+              C
+            </div>
+            <div class="ml-3">
+              <p class="font-semibold">Chad</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://blog.chadmoore.net/" class="hover:underline">blog.chadmoore.net</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 6 -->
+        <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-md border border-slate-200 dark:border-slate-700">
+          <div class="flex items-start mb-4">
+<%= inline_svg_tag "icons/quote.svg", class: "w-10 h-10 text-pagecord-accent opacity-50" %>
+          </div>
+          <p class="text-lg mb-6 leading-relaxed">
+            "I think Pagecord is the perfect place to host your own blog, especially if you want to keep things simple without getting lost in the forest of modern publishing platforms or newsletter engines."
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4fbd9c] to-[#3da688] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+              G
+            </div>
+            <div class="ml-3">
+              <p class="font-semibold">Greg</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://iamgregb.io/" class="hover:underline">iamgregb.io</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

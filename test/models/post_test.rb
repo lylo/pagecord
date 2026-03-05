@@ -131,13 +131,6 @@ class PostTest < ActiveSupport::TestCase
     assert_not post.is_page
   end
 
-  test "pages should not trigger open graph image job" do
-    blog = blogs(:joel)
-    assert_no_enqueued_jobs(only: GenerateOpenGraphImageJob) do
-      blog.posts.create!(title: "Test OpenGraph Page", content: "Page content", is_page: true)
-    end
-  end
-
   test "fixture pages should be correctly configured" do
     about_page = posts(:about)
     assert about_page.page?
@@ -338,5 +331,51 @@ class PostTest < ActiveSupport::TestCase
 
     assert_equal "First block. Second block.", post.text_summary
     assert_includes post.text_summary, "block. Second"
+  end
+
+  # Locale tests
+  test "locale should be nil by default" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Test post")
+
+    assert_nil post.locale
+  end
+
+  test "locale should accept valid locales" do
+    blog = blogs(:joel)
+    Localisable::SUPPORTED_LOCALES.each do |locale|
+      post = blog.posts.build(content: "Test post", locale: locale)
+      assert post.valid?, "Expected locale '#{locale}' to be valid"
+    end
+  end
+
+  test "locale should normalize blank string to nil" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Test post", locale: "")
+
+    assert_nil post.locale
+  end
+
+  test "locale should reject invalid locales" do
+    blog = blogs(:joel)
+    post = blog.posts.build(content: "Test post", locale: "invalid")
+    assert_not post.valid?
+    assert_includes post.errors[:locale], "invalid is not a supported locale"
+  end
+
+  test "effective_locale should return post locale when set" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Test post", locale: "es")
+
+    assert_equal "es", post.effective_locale
+  end
+
+  test "effective_locale should return blog locale when post locale is nil" do
+    blog = blogs(:joel)
+    blog.update!(locale: "fr")
+    post = blog.posts.create!(content: "Test post")
+
+    assert_nil post.locale
+    assert_equal "fr", post.effective_locale
   end
 end

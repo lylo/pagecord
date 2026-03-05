@@ -29,6 +29,7 @@ class AppleMusic extends MediaSite {
         iframe.style.borderRadius = "12px"
         iframe.style.border = "0"
         iframe.style.maxWidth = "660px"
+        iframe.style.marginInline = "auto"
         return iframe
       }
     )

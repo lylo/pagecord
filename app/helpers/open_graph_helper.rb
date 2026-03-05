@@ -4,15 +4,39 @@ module OpenGraphHelper
   end
 
   def open_graph_image
-    if @post && @post.open_graph_image.present?
-      @post.open_graph_image.url
-    elsif @post && @post.first_image.present?
+    if @post && @post.first_image.present?
       resized_image_url @post.first_image, width: 1200, height: 630, crop: true
     elsif @post
       dynamic_og_image_for_post(@post)
     elsif @blog
       dynamic_og_image_for_blog(@blog)
     end
+  end
+
+  def dynamic_og_image_for_landing_page(title:, subtitle: "pagecord.com")
+    worker_url = ENV["OG_WORKER_URL"]
+    return nil unless worker_url.present?
+
+    avatar = if Rails.env.production?
+      "https://pagecord.com/pagecord-mark-96.png"
+    else
+      "#{request.protocol}#{request.host_with_port}/pagecord-mark-96.png"
+    end
+
+    params = {
+      title: title,
+      blogTitle: subtitle,
+      avatar: avatar,
+      bgColor: "#ffffff",
+      textColor: "#0f172a",
+      accentColor: "#6366f1"
+    }
+
+    if (signing_secret = ENV["OG_SIGNING_SECRET"]).present?
+      params[:signature] = generate_og_signature(params, signing_secret)
+    end
+
+    "#{worker_url}?#{params.to_query}"
   end
 
   private

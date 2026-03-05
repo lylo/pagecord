@@ -31,7 +31,7 @@ module Sluggable
     end
 
     def should_regenerate_slug?
-      title_changed? && (new_record? || draft?)
+      title_changed? && !slug_changed? && (new_record? || draft?)
     end
 
     def generate_slug

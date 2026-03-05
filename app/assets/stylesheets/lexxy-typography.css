@@ -78,6 +78,10 @@
     margin-block-start: 0;
   }
 
+  .lexxy-content__table-wrapper {
+    margin-block: calc(var(--lexxy-content-margin) * 1.5);
+  }
+
   blockquote {
     padding-block: 0.375em;
   }
@@ -129,27 +133,5 @@
       height: auto;
       max-block-size: none;
     }
-  }
-
-  .attachment-gallery {
-    display: flex;
-    gap: 0.5em;
-    justify-content: center;
-    align-items: flex-start;
-
-    img {
-      margin-block: 0;
-      max-width: none;
-      left: 0;
-      transform: translateX(0);
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-    }
-  }
-
-  .attachment-gallery--2 img,
-  .attachment-gallery--3 img {
-    width: 100%;
   }
 }

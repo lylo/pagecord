@@ -28,6 +28,7 @@ class Blog < ApplicationRecord
 
   before_validation :downcase_subdomain
   after_update :touch_posts_if_settings_changed
+  after_commit :purge_cloudflare_cache, on: :update
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
@@ -71,5 +72,10 @@ class Blog < ApplicationRecord
       if saved_change_to_reply_by_email? || saved_change_to_show_upvotes?
         posts.touch_all
       end
+    end
+
+    def purge_cloudflare_cache
+      return unless Rails.env.production?
+      PurgeCloudflareCacheJob.perform_later(id)
     end
 end

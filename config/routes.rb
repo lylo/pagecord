@@ -82,7 +82,18 @@ Rails.application.routes.draw do
   namespace :app do
     resource :upgrade_banner, only: [ :destroy ]
     resources :analytics, only: [ :index ]
-    resources :posts, param: :token
+    namespace :posts do
+      resources :trash, only: [ :index, :destroy ], param: :token
+    end
+    resources :posts, param: :token do
+      resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
+        post :test
+      end
+    end
+
+    namespace :pages do
+      resources :trash, only: [ :index, :destroy ], param: :token
+    end
     resources :pages, except: [ :show ], param: :token do
       member do
         post :set_as_home_page
@@ -103,7 +114,6 @@ Rails.application.routes.draw do
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
       resources :navigation_items, only: [ :index, :create, :update, :destroy ]
-      resources :email_subscribers, only: [ :index ]
       resources :email_change_requests, only: [ :create, :destroy ] do
         member do
           post :resend
@@ -199,6 +209,7 @@ Rails.application.routes.draw do
 
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create ], module: :posts
+      get "upvotes/status", to: "posts/upvotes/status#show", as: :upvotes_status
       resources :replies, only: [ :new, :create ], module: :posts
     end
 
@@ -209,6 +220,7 @@ Rails.application.routes.draw do
   constraints(DomainConstraints.method(:default_domain?)) do
     get "/sitemap.xml", to: "public#sitemap", as: :public_sitemap, format: :xml
     get "/robots.txt", to: "public#robots", as: :robots, format: :text
+    get "/llms.txt", to: "public/llms#show", as: :llms_txt, format: :text
     get "/terms", to: "public#terms", as: :terms
     get "/privacy", to: "public#privacy", as: :privacy
     get "/faq", to: "public#faq", as: :faq
@@ -219,6 +231,7 @@ Rails.application.routes.draw do
     get "/pagecord-vs-substack", to: "public#pagecord_vs_substack"
     get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
+    get "/blog-with-newsletter", to: "public#blog_with_newsletter"
 
     get "/shuffle", to: "posts/shuffle#show"
 

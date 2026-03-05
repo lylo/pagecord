@@ -173,6 +173,29 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
   end
 
+  test "should use blog bio as RSS channel description when present" do
+    @blog.update!(bio: "A blog about Ruby and Rails")
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+    doc = Nokogiri::XML(@response.body)
+    description = doc.xpath("//channel/description").text
+    assert_equal "A blog about Ruby and Rails", description
+  end
+
+  test "should fall back to default RSS channel description when bio is blank" do
+    @blog.bio = nil
+    @blog.save!
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+    doc = Nokogiri::XML(@response.body)
+    description = doc.xpath("//channel/description").text
+    assert_equal "Latest posts from #{@blog.display_name}", description
+  end
+
   test "should exclude hidden posts from RSS feed" do
     # Create a hidden post
     hidden_post = @blog.posts.create!(
@@ -695,8 +718,9 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path(tag: "rails")
 
     assert_response :success
-    assert_select "div", text: /Showing posts tagged with "rails"/
-    assert_select "a[href='#{blog_posts_list_path}']", text: "Show all posts"
+    assert_select "p", text: /Posts tagged with "rails"/
+    assert_select "a.tag-filter-clear[href='#{blog_posts_list_path}']", text: "Show all posts"
+    assert_select "a.tag-filter-rss", text: "RSS feed for rails posts"
   end
 
   test "should show no posts message when tag has no matches" do

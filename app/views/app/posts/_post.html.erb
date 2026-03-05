@@ -1,43 +1,40 @@
-<div class="flex gap-x-2 mb-2 items-top">
+<div class="flex gap-x-2 mb-2">
   <div class="text-slate-500 dark:text-slate-400 <%= local_assigns[:show_year] ? 'w-26' : 'w-16' %> flex-shrink-0">
     <% date = post.display_date.to_date %>
     <%= local_assigns[:show_year] ? date.strftime("%d %b %Y") : date.to_fs(:short) %>
   </div>
-  <div class="flex w-full justify-between items-top">
-    <div>
+  <div class="flex w-full items-start justify-between gap-x-2">
+    <div class="flex flex-wrap items-baseline gap-x-2 min-w-0">
       <%= link_to edit_app_post_path(post, page: params[:page]), title: "Click to edit this post", data: { turbo_frame: "_top", turbo_prefetch: false } do %>
-        <div class="font-medium pe-2 hover:underline [overflow-wrap:anywhere]">
-          <%= post.display_title %>
-        </div>
+        <span class="font-medium hover:underline [overflow-wrap:anywhere]"><%= post.display_title %></span>
       <% end %>
-      <%= render "tags", post: post %>
+      <% if post.tag_list.present? %>
+        <% post.tag_list.each do |tag| %>
+          <span class="hidden text-sm text-slate-400 dark:text-slate-500 sm:inline">#<%= tag %></span>
+        <% end %>
+      <% end %>
     </div>
-    <div class="flex items-top gap-x-2 text-slate-400 dark:text-slate-400">
+    <div class="flex gap-x-2 pt-1 text-slate-400 dark:text-slate-400">
       <% if post.hidden? %>
-        <div class="flex items-top">
-          <%= inline_svg_tag "icons/eye-slash.svg", class: "w-4 h-4", title: "Private post", aria: { label: "Private post" }, role: "img" %>
-        </div>
+        <%= inline_svg_tag "icons/eye-slash.svg", class: "w-4 h-4", title: "Private post", aria: { label: "Private post" }, role: "img" %>
       <% end %>
-
       <% if @user.has_premium_access? && post.upvotes_count > 0 %>
-        <div class="flex items-top gap-x-0.5">
+        <span class="flex gap-x-0.5">
           <span class="text-xs"><%= post.upvotes_count %></span>
-          <span><%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %></span>
-          </div>
+          <%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %>
+        </span>
       <% end %>
-
+      <% if post.emailed? %>
+        <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4", title: "Emailed to subscribers", aria: { label: "Emailed to subscribers" }, role: "img" %>
+      <% end %>
       <% if post.draft? || post.pending? %>
-        <div>
-          <%= link_to app_post_path(post), title: "Preview draft", aria: { label: "Preview draft" }, target: "_blank", data: { turbo_frame: "_top" } do %>
-            <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>
-          <% end %>
-        </div>
+        <%= link_to app_post_path(post), title: "Preview draft", aria: { label: "Preview draft" }, target: "_blank", data: { turbo_frame: "_top" } do %>
+          <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>
+        <% end %>
       <% elsif post.published? %>
-        <div>
-          <%= link_to post_url(post), title: "View this post", aria: { label: "View this post" }, target: "_blank", data: { turbo_frame: "_top" } do %>
-            <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>
-          <% end %>
-        </div>
+        <%= link_to post_url(post), title: "View this post", aria: { label: "View this post" }, target: "_blank", data: { turbo_frame: "_top" } do %>
+          <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>
+        <% end %>
       <% end %>
     </div>
   </div>

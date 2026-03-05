@@ -2,19 +2,21 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["input", "container", "form"]
+  static values = { url: String }
 
   connect() {
     this.timeout = null
     this.boundKeydown = this.handleKeydown.bind(this)
     document.addEventListener("keydown", this.boundKeydown)
 
-    // Optional: Enter key triggers immediate search
-    this.inputTarget.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        clearTimeout(this.timeout)
-        this.submitSearch()
-      }
-    })
+    if (this.hasInputTarget) {
+      this.inputTarget.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          clearTimeout(this.timeout)
+          this.submitSearch()
+        }
+      })
+    }
   }
 
   disconnect() {
@@ -29,7 +31,9 @@ export default class extends Controller {
       if (this.hasContainerTarget) {
         this.containerTarget.classList.add("hidden")
       }
-      this.inputTarget.value = ""
+      if (this.hasInputTarget) {
+        this.inputTarget.value = ""
+      }
       this.clearSearch()
     }
   }
@@ -40,10 +44,10 @@ export default class extends Controller {
       const query = this.inputTarget.value.trim()
       if (query.length === 0) {
         this.clearSearch()
-      } else if (query.length >= 2) {  // optional minimum length
+      } else if (query.length >= 2) {
         this.submitSearch()
       }
-    }, 300)  // debounce time in ms
+    }, 300)
   }
 
   submitSearch() {
@@ -53,8 +57,11 @@ export default class extends Controller {
   }
 
   clearSearch() {
-    // Reset to the unfiltered page
-    window.location.href = this.formTarget.action
+    if (this.hasFormTarget) {
+      window.location.href = this.formTarget.action
+    } else if (this.hasUrlValue) {
+      window.location.href = this.urlValue
+    }
   }
 
   handleKeydown(event) {
@@ -62,7 +69,7 @@ export default class extends Controller {
       event.preventDefault()
       if (this.hasContainerTarget && this.containerTarget.classList.contains("hidden")) {
         this.toggle()
-      } else {
+      } else if (this.hasInputTarget) {
         this.inputTarget.focus()
         this.inputTarget.select()
       }
@@ -70,8 +77,10 @@ export default class extends Controller {
 
     if (event.key === "Escape") {
       event.preventDefault()
-      if (this.inputTarget.value) {
+      if (this.hasInputTarget && this.inputTarget.value) {
         this.inputTarget.value = ""
+        this.clearSearch()
+      } else if (window.location.search) {
         this.clearSearch()
       } else if (this.hasContainerTarget) {
         this.containerTarget.classList.add("hidden")
