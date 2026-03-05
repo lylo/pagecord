@@ -90,13 +90,13 @@ class DynamicVariableProcessor
     end
 
     def render_email_subscription_tag(params_string)
-      view.render(partial: "blogs/email_subscriber_form", locals: {})
+      view.render(partial: "blogs/email_subscriber_form")
     end
 
     def render_contact_form_tag(params_string)
       return "" unless blog.contactable?
 
-      view.render(partial: "blogs/contact_messages/form", locals: {})
+      view.render(partial: "blogs/contact_messages/form")
     end
 
     def filter_by_language(relation, lang)

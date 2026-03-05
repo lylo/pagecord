@@ -10,8 +10,8 @@ class MessageSpamDetector
   end
 
   def detect
-    return skip_result unless ENV["EMAIL_SPAM_DETECTION"].present?
-    return error_result("Missing CleanTalk auth key") unless ENV["CLEANTALK_AUTH_KEY"].present?
+    return skip_result unless ENV["EMAIL_SPAM_DETECTION"]
+    return error_result("Missing CleanTalk auth key") unless ENV["CLEANTALK_AUTH_KEY"]
 
     response = CleanTalk.check_message(
       email: @email,

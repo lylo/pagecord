@@ -8,10 +8,7 @@ class Blogs::ContactMessagesController < Blogs::BaseController
   skip_before_action :authenticate, :ip_reputation_check
 
   def create
-    unless @blog.contactable?
-      head :unprocessable_entity
-      return
-    end
+    return head(:unprocessable_entity) unless @blog.contactable?
 
     @contact_message = @blog.contact_messages.new(contact_message_params)
 

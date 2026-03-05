@@ -7,3 +7,7 @@ end
 feature :individual_email_delivery do |blog: nil|
   blog&.features.include?("individual_email_delivery")
 end
+
+feature :contact_form do |blog: nil|
+  blog&.features.include?("contact_form")
+end

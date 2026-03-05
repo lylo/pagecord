@@ -372,6 +372,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
 
   test "renders contact_form tag for premium user" do
     assert @user.has_premium_access?
+    @blog.update!(features: [ "contact_form" ])
 
     page = @blog.pages.create!(title: "Contact", content: "{{ contact_form }}", status: :published)
 

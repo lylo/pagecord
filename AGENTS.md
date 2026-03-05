@@ -112,6 +112,12 @@ Docker: prefix commands with `docker-compose exec web`
 - **Renewal reminders**: `Subscription::SendRenewalRemindersJob` emails annual subscribers 2 weeks before renewal
 - **Cancellation**: `SendCancellationEmailJob` sends appropriate email (subscriber vs free account). User destruction via `DestroyUserJob`.
 
+### Feature Toggles
+- Per-blog feature flags stored in the blog's `features` array column (e.g. `["contact_form", "analytics_countries"]`)
+- Defined in `config/features.rb` using `feature :name do |blog:| ... end`
+- In controllers/views: `current_features.enabled?(:feature_name)` (via `Rails.features.for(blog: @blog)`)
+- In models/concerns: check `features.include?("feature_name")` directly on the blog instance
+
 ### Key Concerns
 - **Subscribable**: Trial management (14 days), `has_premium_access?` vs `subscribed?`
 - **Themeable**: 7 preset themes + custom, fonts, page widths, hex color validation

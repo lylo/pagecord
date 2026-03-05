@@ -44,15 +44,11 @@ class Posts::RepliesController < Blogs::BaseController
     end
 
     def verify
-      begin
-        token_data = encryptor.decrypt_and_verify(params[:form_token])
-        if token_data["post_id"] != @post.id
-          raise "Form token / post_id mismatch"
-        end
-      rescue => e
-        Rails.logger.warn("Reply spam check failed: #{e.message}")
-        head :unprocessable_entity and return
-      end
+      token_data = encryptor.decrypt_and_verify(params[:form_token])
+      raise "Form token / post_id mismatch" if token_data["post_id"] != @post.id
+    rescue => e
+      Rails.logger.warn("Reply spam check failed: #{e.message}")
+      head :unprocessable_entity
     end
 
     def encryptor

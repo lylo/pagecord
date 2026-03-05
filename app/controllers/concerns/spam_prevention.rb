@@ -13,7 +13,7 @@ module SpamPrevention
   end
 
   def honeypot_check
-    unless params[:email_confirmation].blank?
+    if params[:email_confirmation].present?
       Rails.logger.warn "Honeypot field completed. Request blocked."
       fail
     end
@@ -34,15 +34,12 @@ module SpamPrevention
   def form_complete_time_check
     timestamp = Rails.application.message_verifier(:spam_prevention).verified(params[:rendered_at])
 
-    unless timestamp
+    if timestamp.nil?
       Rails.logger.warn "Invalid or missing form token. Request blocked."
-      fail
-      return
+      return fail
     end
 
-    form_complete_time = Time.current.to_i - timestamp
-
-    if form_complete_time < minimum_form_completion_time
+    if (Time.current.to_i - timestamp) < minimum_form_completion_time
       Rails.logger.warn "Form completed too quickly. Request blocked."
       fail
     end
@@ -50,9 +47,9 @@ module SpamPrevention
 
   def suspicious_email_check
     email = params.dig(:email_subscriber, :email) || params.dig(:signup, :email) || params[:email]
-    return unless email.present?
+    return if email.blank?
 
-    local, domain = email.to_s.split("@", 2)
+    local, domain = email.split("@", 2)
     if domain&.downcase == "gmail.com" && local.count(".") >= 3
       Rails.logger.warn "Dotted Gmail address blocked: #{email}"
       fail
