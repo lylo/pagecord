@@ -7,6 +7,7 @@ es:
       submit_button: "Enviar"
     success_message: "Mensaje enviado!"
     error_message: "Hubo un problema al enviar tu mensaje."
+    rate_limit_message: "Has enviado demasiados mensajes, demasiado rápido. Por favor, inténtalo más tarde."
     mailer:
       from_label: "De"
       footer: "Responde a este email para contestar a %{name}."

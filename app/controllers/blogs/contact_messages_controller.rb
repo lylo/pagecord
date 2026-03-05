@@ -1,7 +1,7 @@
 class Blogs::ContactMessagesController < Blogs::BaseController
   include SpamPrevention
 
-  rate_limit to: 20, within: 1.hour, only: [ :create ]
+  rate_limit to: 5, within: 1.hour, only: [ :create ], with: :rate_limit_reached
 
   before_action :turnstile_check, only: [ :create ]
 
@@ -28,8 +28,17 @@ class Blogs::ContactMessagesController < Blogs::BaseController
 
   private
 
+    def rate_limit_reached
+      @message = I18n.t("email_form.rate_limit_message")
+
+      respond_to do |format|
+        format.turbo_stream { render :create }
+        format.html { redirect_to blog_posts_path, alert: @message }
+      end
+    end
+
     def minimum_form_completion_time
-      10.seconds
+      7.seconds
     end
 
     def contact_message_params
