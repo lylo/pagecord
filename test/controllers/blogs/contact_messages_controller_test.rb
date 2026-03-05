@@ -16,11 +16,11 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
         params: {
           contact_message: { name: "Test User", email: "test@example.com", message: "Hello!" },
           rendered_at: signed_rendered_at(10.seconds.ago)
-        }
+        },
+        as: :turbo_stream
     end
 
-    assert_redirected_to blog_posts_path
-    assert_equal I18n.t("email_form.success_message"), flash[:notice]
+    assert_response :success
     assert_enqueued_jobs 1, only: SendContactMessageJob
   end
 
@@ -66,16 +66,16 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
-  test "should redirect with error for invalid message" do
+  test "should show error for invalid message" do
     assert_no_difference "Blog::ContactMessage.count" do
       post contact_messages_url,
         params: {
           contact_message: { name: "", email: "invalid", message: "" },
           rendered_at: signed_rendered_at(10.seconds.ago)
-        }
+        },
+        as: :turbo_stream
     end
 
-    assert_redirected_to blog_posts_path
-    assert_equal I18n.t("email_form.error_message"), flash[:alert]
+    assert_response :success
   end
 end

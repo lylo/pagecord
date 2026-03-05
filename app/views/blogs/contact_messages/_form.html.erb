@@ -1,9 +1,8 @@
-<div class="form contact-form">
+<div class="form contact-form" id="contact_form">
   <%= form_with model: Blog::ContactMessage.new,
             url: contact_messages_path,
             method: :post,
             scope: :contact_message,
-            data: { turbo: false },
             class: "form-container" do |form| %>
 
     <%= render "/shared/spam_prevention" %>
