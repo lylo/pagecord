@@ -289,6 +289,7 @@ GEM
       httparty (>= 0.18.1)
     marcel (1.1.0)
     matrix (0.4.3)
+    maxminddb (0.1.22)
     mcp (0.8.0)
       json-schema (>= 4.1)
     mini_magick (5.3.1)
@@ -573,6 +574,7 @@ DEPENDENCIES
   lexxy
   local_time
   mailpace-rails
+  maxminddb
   mocha
   nanoid (~> 2.0)
   openssl (~> 4.0)

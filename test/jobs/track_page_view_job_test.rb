@@ -1,4 +1,5 @@
 require "test_helper"
+require "mocha/minitest"
 
 class TrackPageViewJobTest < ActiveJob::TestCase
   test "should create a page view" do
@@ -23,6 +24,42 @@ class TrackPageViewJobTest < ActiveJob::TestCase
     assert_equal "/test-path", view.path
     assert_equal "google.com", view.referrer_domain
     assert_equal "US", view.country
+  end
+
+  test "should fall back to GeoIP lookup when country_code is blank" do
+    blog = blogs(:joel)
+
+    GeoIp.stubs(:lookup).with("10.0.0.102").returns("DE")
+
+    assert_difference "PageView.count", 1 do
+      TrackPageViewJob.perform_now(
+        blog.id,
+        nil,
+        "10.0.0.102",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "/",
+        nil,
+        nil
+      )
+    end
+
+    assert_equal "DE", PageView.last.country
+  end
+
+  test "should not call GeoIP lookup when country_code is present" do
+    blog = blogs(:joel)
+
+    GeoIp.stubs(:lookup).never
+
+    TrackPageViewJob.perform_now(
+      blog.id,
+      nil,
+      "10.0.0.103",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      "/",
+      nil,
+      "US"
+    )
   end
 
   test "should handle missing blog gracefully" do
