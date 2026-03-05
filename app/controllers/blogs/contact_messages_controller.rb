@@ -6,6 +6,7 @@ class Blogs::ContactMessagesController < Blogs::BaseController
   before_action :turnstile_check, only: [ :create ]
 
   skip_before_action :authenticate, :ip_reputation_check
+  skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
   def create
     return head(:unprocessable_entity) unless @blog.contactable?
