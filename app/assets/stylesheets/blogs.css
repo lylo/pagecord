@@ -158,10 +158,19 @@ html, body {
     }
 
     /* increased margin around images in article content */
-    figure:has(img),
-    img:not(figure img),
-    .attachment {
+    figure:has(img):not(.attachment-gallery *),
+    img:not(figure img, .attachment-gallery *),
+    .attachment:not(.attachment-gallery *) {
       margin-block: 1.5rem;
+    }
+
+    .attachment-gallery {
+      margin-block: 1.5rem;
+    }
+
+    .attachment-gallery .attachment {
+      margin-block: 0;
+      gap: calc(var(--lexxy-attachment-gap) / 2);
     }
 
     .attachment--preview {
@@ -323,7 +332,6 @@ html, body {
       text-align: center;
       padding-left: 1rem;
       padding-right: 1rem;
-      margin-top: 0.5rem;
 
       @media (min-width: 640px) {
         padding-left: 2rem;
@@ -342,9 +350,10 @@ html, body {
       max-width: 500px;
     }
 
-    :where(hr) {
+    hr {
       border: none;
       border-top: 1px solid var(--color-border);
+      inline-size: 100%;
       margin-block: var(--lexxy-content-margin);
     }
   }
