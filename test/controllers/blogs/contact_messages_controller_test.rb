@@ -14,7 +14,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
       post contact_messages_url,
         params: {
           contact_message: { name: "Test User", email: "test@example.com", message: "Hello!" },
-          rendered_at: 10.seconds.ago.to_i
+          rendered_at: signed_rendered_at(10.seconds.ago)
         }
     end
 
@@ -33,7 +33,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
       post contact_messages_url,
         params: {
           contact_message: { name: "Test User", email: "test@example.com", message: "Hello!" },
-          rendered_at: 10.seconds.ago.to_i
+          rendered_at: signed_rendered_at(10.seconds.ago)
         }
     end
 
@@ -46,7 +46,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
         params: {
           contact_message: { name: "Test User", email: "test@example.com", message: "Hello!" },
           email_confirmation: "spam@example.com",
-          rendered_at: 10.seconds.ago.to_i
+          rendered_at: signed_rendered_at(10.seconds.ago)
         }
     end
 
@@ -58,7 +58,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
       post contact_messages_url,
         params: {
           contact_message: { name: "Test User", email: "test@example.com", message: "Hello!" },
-          rendered_at: Time.current.to_i
+          rendered_at: signed_rendered_at(Time.current)
         }
     end
 
@@ -70,7 +70,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
       post contact_messages_url,
         params: {
           contact_message: { name: "", email: "invalid", message: "" },
-          rendered_at: 10.seconds.ago.to_i
+          rendered_at: signed_rendered_at(10.seconds.ago)
         }
     end
 
