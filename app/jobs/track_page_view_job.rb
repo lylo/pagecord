@@ -5,6 +5,8 @@ class TrackPageViewJob < ApplicationJob
     blog = Blog.find_by(id: blog_id)
     return unless blog
 
+    country_code = GeoIp.lookup(ip) if country_code.blank?
+
     post = blog.all_posts.kept.published.released.find_by(token: post_token) if post_token.present?
 
     PageView.track(blog: blog, post: post, ip: ip, user_agent: user_agent, path: path, referrer: referrer, country_code: country_code)
