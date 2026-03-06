@@ -65,6 +65,12 @@ Let readers subscribe to your blog using an RSS reader.
 
 - [RSS feeds](rss-feeds.md)
 
+## API
+
+Manage your blog programmatically. Create posts, upload images, and automate your workflow with the Pagecord API.
+
+- [API](api.md)
+
 ## Account & Billing
 
 Manage your subscription, update your settings, or export your content.

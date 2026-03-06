@@ -17,6 +17,16 @@ module DomainConstraints
       request.host == default_host || request.host == "www.#{default_host}"
     end
   end
+
+  def self.api_domain?(request)
+    if Rails.env.test?
+      request.host == "api.example.com"
+    elsif Rails.env.production?
+      request.host == "api.#{Rails.application.config.x.domain}"
+    else
+      true
+    end
+  end
 end
 
 
@@ -123,6 +133,7 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :api, only: [ :show, :create, :destroy ], controller: "api"
       resources :exports
 
       resources :sender_email_addresses, only: [ :create, :destroy ] do
@@ -179,6 +190,15 @@ Rails.application.routes.draw do
           post :confirm
         end
       end
+    end
+  end
+
+  constraints(DomainConstraints.method(:api_domain?)) do
+    scope module: :api do
+      resources :posts, only: [ :index, :show, :create, :update, :destroy ], param: :token
+      resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
+      resource :home_page, only: [ :show, :create, :update, :destroy ]
+      resources :attachments, only: [ :create ]
     end
   end
 
