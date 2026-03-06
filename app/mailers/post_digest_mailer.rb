@@ -2,7 +2,7 @@ class PostDigestMailer < PostmarkMailer
   include PostsHelper
   include RoutingHelper
 
-  layout "mailer_digest"
+  layout "mailer_minimal"
 
   helper :routing
   helper_method :without_action_text_image_wrapper, :strip_video_tags
