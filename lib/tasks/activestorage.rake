@@ -98,6 +98,34 @@ namespace :activestorage do
       puts "\nDone. Downloaded: #{downloaded}, Errors: #{errors}"
       puts "Files saved to: #{output_dir}"
     end
+
+    desc "Purge unattached blobs (dry run by default, CONFIRM=true to execute)"
+    task purge: :environment do
+      orphans = ActiveStorage::Blob.unattached.order(:id)
+      count = orphans.count
+
+      if count == 0
+        puts "No unattached blobs to purge."
+        next
+      end
+
+      total_bytes = orphans.sum(:byte_size)
+      puts "#{count} unattached blobs, #{ActiveSupport::NumberHelper.number_to_human_size(total_bytes)}"
+
+      unless ENV["CONFIRM"] == "true"
+        puts "Dry run. Set CONFIRM=true to purge."
+        next
+      end
+
+      purged = 0
+      orphans.find_each do |blob|
+        blob.purge
+        purged += 1
+        print "."
+      end
+
+      puts "\nPurged #{purged} blobs."
+    end
   end
 
   namespace :actiontext do
