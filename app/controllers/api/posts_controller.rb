@@ -1,6 +1,8 @@
 class Api::PostsController < Api::BaseController
   include Pagy::Method
 
+  before_action :set_post, only: %i[show update destroy]
+
   def index
     posts = Current.blog.posts.kept
 
@@ -23,8 +25,6 @@ class Api::PostsController < Api::BaseController
       pagination: pagination_json(@pagy)
     }
   end
-
-  before_action :set_post, only: %i[show update destroy]
 
   def show
     render json: post_json(@post)
@@ -63,20 +63,17 @@ class Api::PostsController < Api::BaseController
       permitted = params.permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale, :status, :content_format)
 
       if permitted.delete(:content_format) == "markdown" && permitted[:content].present?
-        markdown = Redcarpet::Markdown.new(
-          Redcarpet::Render::HTML,
-          autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true
-        )
-        permitted[:content] = markdown.render(permitted[:content])
+        attributes, html = Post::Markdown.render(permitted[:content])
+        attributes.each { |key, value| permitted[key] ||= value }
+        permitted[:content] = html
       end
 
       permitted
     end
 
     def post_json(post)
-      post.as_json(only: %i[token title slug status published_at canonical_url tag_list hidden locale created_at updated_at]).merge(
-        content: post.content.to_s
-      )
+      fields = %i[token title slug status published_at canonical_url tag_list hidden locale created_at updated_at]
+      post.as_json(only: fields).merge(content: post.content.to_s)
     end
 
     def pagination_json(pagy)

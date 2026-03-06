@@ -169,6 +169,49 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_includes json["content"], "<strong>world</strong>"
   end
 
+  test "create extracts front matter from markdown" do
+    post "/api/posts", params: {
+      content: "---\ntitle: From Front Matter\nslug: fm-slug\ntags:\n  - ruby\n  - rails\nstatus: published\n---\nHello **world**",
+      content_format: "markdown"
+    }, headers: auth_header
+
+    assert_response :created
+    json = JSON.parse(response.body)
+    assert_equal "From Front Matter", json["title"]
+    assert_equal "fm-slug", json["slug"]
+    assert_includes json["tag_list"], "ruby"
+    assert_includes json["tag_list"], "rails"
+    assert_equal "published", json["status"]
+    assert_includes json["content"], "<strong>world</strong>"
+    assert_not_includes json["content"], "---"
+    assert_not_includes json["content"], "front matter"
+  end
+
+  test "create prefers explicit params over front matter" do
+    post "/api/posts", params: {
+      title: "Explicit Title",
+      content: "---\ntitle: FM Title\nstatus: published\n---\nBody",
+      content_format: "markdown",
+      status: "draft"
+    }, headers: auth_header
+
+    assert_response :created
+    json = JSON.parse(response.body)
+    assert_equal "Explicit Title", json["title"]
+    assert_equal "draft", json["status"]
+  end
+
+  test "create handles front matter date field" do
+    post "/api/posts", params: {
+      content: "---\ntitle: Dated Post\ndate: '2024-06-15'\nstatus: published\n---\nBody",
+      content_format: "markdown"
+    }, headers: auth_header
+
+    assert_response :created
+    json = JSON.parse(response.body)
+    assert_equal "2024-06-15", Time.parse(json["published_at"]).strftime("%Y-%m-%d")
+  end
+
   test "create leaves html untouched without content_format" do
     post "/api/posts", params: {
       title: "HTML Post", content: "<p>Hello <strong>world</strong></p>", status: "published"
