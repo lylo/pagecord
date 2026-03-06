@@ -4,7 +4,7 @@ class Api::AttachmentsController < Api::BaseController
 
     return render json: { error: "No file provided" }, status: :unprocessable_entity unless file
 
-    max_size = UPLOAD_LIMITS[file.content_type]
+    max_size = UploadLimits::CONTENT_TYPES[file.content_type]
 
     unless max_size
       return render json: { error: "Unsupported content type: #{file.content_type}" }, status: :unprocessable_entity

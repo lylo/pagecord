@@ -64,7 +64,7 @@ class Api::PostsController < Api::BaseController
 
       if permitted.delete(:content_format) == "markdown" && permitted[:content].present?
         markdown = Redcarpet::Markdown.new(
-          Redcarpet::Render::HTML.new(hard_wrap: true),
+          Redcarpet::Render::HTML,
           autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true
         )
         permitted[:content] = markdown.render(permitted[:content])
