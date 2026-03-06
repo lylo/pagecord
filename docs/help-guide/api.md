@@ -20,7 +20,7 @@ All API requests require a Bearer token in the `Authorization` header:
 
 ```
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-  https://yourblog.pagecord.com/api/posts
+  https://api.pagecord.com/posts
 ```
 
 Invalid or missing tokens return `401 Unauthorized`. A revoked or expired premium subscription returns `403 Forbidden`.
@@ -34,7 +34,7 @@ The API allows 60 requests per minute per blog. Exceeding this returns `429 Too 
 ### List posts
 
 ```
-GET /api/posts
+GET /posts
 ```
 
 Returns published posts by default, newest first. Filter with query parameters:
@@ -49,13 +49,13 @@ Paginated results include a `Link` header with the URL for the next page (follow
 ### Get a post
 
 ```
-GET /api/posts/:token
+GET /posts/:token
 ```
 
 ### Create a post
 
 ```
-POST /api/posts
+POST /posts
 ```
 
 Parameters:
@@ -74,7 +74,7 @@ Parameters:
 ### Update a post
 
 ```
-PATCH /api/posts/:token
+PATCH /posts/:token
 ```
 
 Accepts the same parameters as create.
@@ -82,7 +82,7 @@ Accepts the same parameters as create.
 ### Delete a post
 
 ```
-DELETE /api/posts/:token
+DELETE /posts/:token
 ```
 
 Moves the post to trash (soft delete). Returns `204 No Content`.
@@ -92,7 +92,7 @@ Moves the post to trash (soft delete). Returns `204 No Content`.
 ### List pages
 
 ```
-GET /api/pages
+GET /pages
 ```
 
 Returns published pages by default, newest first. Accepts the same filter parameters as posts (`status`, `published_after`, `published_before`, `page`). Pagination works the same way via `Link` and `X-Total-Count` headers.
@@ -100,13 +100,13 @@ Returns published pages by default, newest first. Accepts the same filter parame
 ### Get a page
 
 ```
-GET /api/pages/:token
+GET /pages/:token
 ```
 
 ### Create a page
 
 ```
-POST /api/pages
+POST /pages
 ```
 
 Accepts the same parameters as posts, plus:
@@ -116,13 +116,13 @@ Accepts the same parameters as posts, plus:
 ### Update a page
 
 ```
-PATCH /api/pages/:token
+PATCH /pages/:token
 ```
 
 ### Delete a page
 
 ```
-DELETE /api/pages/:token
+DELETE /pages/:token
 ```
 
 Moves the page to trash (soft delete). Returns `204 No Content`. If the page is the current home page, the home page is unlinked first.
@@ -134,7 +134,7 @@ A blog can have a single home page – a special page that replaces the default 
 ### Get the home page
 
 ```
-GET /api/home_page
+GET /home_page
 ```
 
 Returns `404` if no home page is set.
@@ -142,7 +142,7 @@ Returns `404` if no home page is set.
 ### Create a home page
 
 ```
-POST /api/home_page
+POST /home_page
 ```
 
 Accepts the same parameters as posts. Returns `422` if a home page already exists.
@@ -150,13 +150,13 @@ Accepts the same parameters as posts. Returns `422` if a home page already exist
 ### Update the home page
 
 ```
-PATCH /api/home_page
+PATCH /home_page
 ```
 
 ### Remove the home page
 
 ```
-DELETE /api/home_page
+DELETE /home_page
 ```
 
 Unlinks the home page from the blog but keeps the underlying page. Returns `204 No Content`.
@@ -168,7 +168,7 @@ Upload images, videos, or audio files to use in your posts.
 ### Upload a file
 
 ```
-POST /api/attachments
+POST /attachments
 ```
 
 Send a `multipart/form-data` request with a `file` field:
@@ -176,7 +176,7 @@ Send a `multipart/form-data` request with a `file` field:
 ```
 curl -H "Authorization: Bearer YOUR_API_KEY" \
   -F "file=@photo.jpg" \
-  https://yourblog.pagecord.com/api/attachments
+  https://api.pagecord.com/attachments
 ```
 
 Returns `201 Created` with:
@@ -193,7 +193,7 @@ Returns `201 Created` with:
 Use the returned `attachable_sgid` in your post content with an Action Text attachment tag:
 
 ```
-POST /api/posts
+POST /posts
   title=My Post
   content=<p>Check this out:</p><action-text-attachment sgid="BAh7..."></action-text-attachment>
 ```

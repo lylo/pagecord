@@ -2,6 +2,8 @@ require "test_helper"
 
 class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
   setup do
+    host! "api.example.com"
+
     @blog = blogs(:joel)
     @user = users(:joel)
     @user.update!(trial_ends_at: 30.days.from_now)
@@ -16,7 +18,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
     page = posts(:about)
     @blog.update!(home_page_id: page.id)
 
-    get "/api/home_page", headers: auth_header
+    get "/home_page", headers: auth_header
 
     assert_response :success
     json = JSON.parse(response.body)
@@ -28,7 +30,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
   test "show returns 404 when no home page is set" do
     @blog.update!(home_page_id: nil)
 
-    get "/api/home_page", headers: auth_header
+    get "/home_page", headers: auth_header
     assert_response :not_found
   end
 
@@ -36,7 +38,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
 
   test "create makes a new home page" do
     assert_difference "Post.count" do
-      post "/api/home_page", params: {
+      post "/home_page", params: {
         title: "Welcome", content: "<p>Welcome home</p>", status: "published"
       }, headers: auth_header
     end
@@ -54,7 +56,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create converts markdown" do
-    post "/api/home_page", params: {
+    post "/home_page", params: {
       content: "# Welcome\nHello **world**", content_format: "markdown", status: "published"
     }, headers: auth_header
 
@@ -67,7 +69,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
     @blog.update!(home_page_id: posts(:about).id)
 
     assert_no_difference "Post.count" do
-      post "/api/home_page", params: {
+      post "/home_page", params: {
         title: "Another", content: "<p>Nope</p>", status: "published"
       }, headers: auth_header
     end
@@ -77,7 +79,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create returns 422 with invalid params" do
-    post "/api/home_page", params: { title: "" }, headers: auth_header
+    post "/home_page", params: { title: "" }, headers: auth_header
     assert_response :unprocessable_entity
   end
 
@@ -87,7 +89,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
     page = posts(:about)
     @blog.update!(home_page_id: page.id)
 
-    patch "/api/home_page", params: { title: "Updated Home" }, headers: auth_header
+    patch "/home_page", params: { title: "Updated Home" }, headers: auth_header
 
     assert_response :success
     json = JSON.parse(response.body)
@@ -98,7 +100,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
   test "update returns 404 when no home page is set" do
     @blog.update!(home_page_id: nil)
 
-    patch "/api/home_page", params: { title: "Nope" }, headers: auth_header
+    patch "/home_page", params: { title: "Nope" }, headers: auth_header
     assert_response :not_found
   end
 
@@ -108,7 +110,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
     page = posts(:about)
     @blog.update!(home_page_id: page.id)
 
-    delete "/api/home_page", headers: auth_header
+    delete "/home_page", headers: auth_header
 
     assert_response :no_content
     assert_nil @blog.reload.home_page_id
@@ -120,7 +122,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
     page.update_columns(title: "")
     @blog.update!(home_page_id: page.id)
 
-    delete "/api/home_page", headers: auth_header
+    delete "/home_page", headers: auth_header
 
     assert_response :no_content
     assert_equal "Home Page", page.reload.title
@@ -129,7 +131,7 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
   test "destroy returns 404 when no home page is set" do
     @blog.update!(home_page_id: nil)
 
-    delete "/api/home_page", headers: auth_header
+    delete "/home_page", headers: auth_header
     assert_response :not_found
   end
 

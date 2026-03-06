@@ -2,6 +2,8 @@ require "test_helper"
 
 class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   setup do
+    host! "api.example.com"
+
     @blog = blogs(:joel)
     @user = users(:joel)
     @user.update!(trial_ends_at: 30.days.from_now)
@@ -16,7 +18,7 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   # -- Index --
 
   test "index returns published and released pages by default" do
-    get "/api/pages", headers: auth_header
+    get "/pages", headers: auth_header
 
     assert_response :success
     pages = JSON.parse(response.body)
@@ -26,7 +28,7 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index with status=draft returns only drafts" do
-    get "/api/pages", params: { status: "draft" }, headers: auth_header
+    get "/pages", params: { status: "draft" }, headers: auth_header
 
     assert_response :success
     pages = JSON.parse(response.body)
@@ -35,14 +37,14 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index includes pagination headers" do
-    get "/api/pages", headers: auth_header
+    get "/pages", headers: auth_header
 
     assert response.headers["X-Total-Count"].present?
     assert response.headers["link"].present?
   end
 
   test "index does not include posts" do
-    get "/api/pages", headers: auth_header
+    get "/pages", headers: auth_header
 
     pages = JSON.parse(response.body)
     titles = pages.map { |p| p["title"] }
@@ -52,7 +54,7 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   # -- Show --
 
   test "show returns a page" do
-    get "/api/pages/#{@page.token}", headers: auth_header
+    get "/pages/#{@page.token}", headers: auth_header
 
     assert_response :success
     json = JSON.parse(response.body)
@@ -64,20 +66,20 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   test "show includes is_home_page field" do
     @blog.update!(home_page_id: @page.id)
 
-    get "/api/pages/#{@page.token}", headers: auth_header
+    get "/pages/#{@page.token}", headers: auth_header
 
     json = JSON.parse(response.body)
     assert_equal true, json["is_home_page"]
   end
 
   test "show returns 404 for unknown token" do
-    get "/api/pages/nonexistent", headers: auth_header
+    get "/pages/nonexistent", headers: auth_header
     assert_response :not_found
   end
 
   test "show does not return another blog's page" do
     other_page = posts(:non_nav_page) # elliot's page
-    get "/api/pages/#{other_page.token}", headers: auth_header
+    get "/pages/#{other_page.token}", headers: auth_header
     assert_response :not_found
   end
 
@@ -85,7 +87,7 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
 
   test "create makes a new page" do
     assert_difference "Post.count" do
-      post "/api/pages", params: {
+      post "/pages", params: {
         title: "New Page", content: "Page content", slug: "new-page", status: "published"
       }, headers: auth_header
     end
@@ -98,7 +100,7 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create converts markdown to html when content_format is markdown" do
-    post "/api/pages", params: {
+    post "/pages", params: {
       title: "MD Page", content: "Hello **world**", content_format: "markdown", status: "published"
     }, headers: auth_header
 
@@ -108,7 +110,7 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create extracts front matter from markdown" do
-    post "/api/pages", params: {
+    post "/pages", params: {
       content: "---\ntitle: From Front Matter\nslug: fm-page\nstatus: published\n---\nPage **body**",
       content_format: "markdown"
     }, headers: auth_header
@@ -121,14 +123,14 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create returns 422 with invalid params" do
-    post "/api/pages", params: { title: "" }, headers: auth_header
+    post "/pages", params: { title: "" }, headers: auth_header
     assert_response :unprocessable_entity
   end
 
   # -- Update --
 
   test "update changes page attributes" do
-    patch "/api/pages/#{@page.token}", params: { title: "Updated Page" }, headers: auth_header
+    patch "/pages/#{@page.token}", params: { title: "Updated Page" }, headers: auth_header
 
     assert_response :success
     json = JSON.parse(response.body)
@@ -137,14 +139,14 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update returns 404 for unknown token" do
-    patch "/api/pages/nonexistent", params: { title: "Nope" }, headers: auth_header
+    patch "/pages/nonexistent", params: { title: "Nope" }, headers: auth_header
     assert_response :not_found
   end
 
   # -- Destroy --
 
   test "destroy discards a page" do
-    delete "/api/pages/#{@page.token}", headers: auth_header
+    delete "/pages/#{@page.token}", headers: auth_header
 
     assert_response :no_content
     assert @page.reload.discarded?
@@ -153,14 +155,14 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   test "destroy clears home_page_id if destroying the home page" do
     @blog.update!(home_page_id: @page.id)
 
-    delete "/api/pages/#{@page.token}", headers: auth_header
+    delete "/pages/#{@page.token}", headers: auth_header
 
     assert_response :no_content
     assert_nil @blog.reload.home_page_id
   end
 
   test "destroy returns 404 for unknown token" do
-    delete "/api/pages/nonexistent", headers: auth_header
+    delete "/pages/nonexistent", headers: auth_header
     assert_response :not_found
   end
 

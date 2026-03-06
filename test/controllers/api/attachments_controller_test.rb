@@ -2,6 +2,8 @@ require "test_helper"
 
 class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    host! "api.example.com"
+
     @blog = blogs(:joel)
     @user = users(:joel)
     @user.update!(trial_ends_at: 30.days.from_now)
@@ -13,7 +15,7 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
   test "upload returns 201 with attachable_sgid and url" do
     file = fixture_file_upload("space.jpg", "image/jpeg")
 
-    post "/api/attachments", params: { file: file }, headers: auth_header
+    post "/attachments", params: { file: file }, headers: auth_header
 
     assert_response :created
     json = JSON.parse(response.body)
@@ -25,14 +27,14 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
     file = fixture_file_upload("space.jpg", "image/jpeg")
 
     assert_difference -> { ActiveStorage::Blob.count } do
-      post "/api/attachments", params: { file: file }, headers: auth_header
+      post "/attachments", params: { file: file }, headers: auth_header
     end
   end
 
   test "rejects unsupported content type" do
     file = fixture_file_upload("space.jpg", "text/plain")
 
-    post "/api/attachments", params: { file: file }, headers: auth_header
+    post "/attachments", params: { file: file }, headers: auth_header
 
     assert_response :unprocessable_entity
     json = JSON.parse(response.body)
@@ -43,7 +45,7 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
     file = fixture_file_upload("space.jpg", "image/jpeg")
     ActionDispatch::Http::UploadedFile.any_instance.stubs(:size).returns(11.megabytes)
 
-    post "/api/attachments", params: { file: file }, headers: auth_header
+    post "/attachments", params: { file: file }, headers: auth_header
 
     assert_response :unprocessable_entity
     json = JSON.parse(response.body)
@@ -51,7 +53,7 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "returns 422 without file param" do
-    post "/api/attachments", headers: auth_header
+    post "/attachments", headers: auth_header
 
     assert_response :unprocessable_entity
     json = JSON.parse(response.body)
@@ -59,7 +61,7 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "returns unauthorized without token" do
-    post "/api/attachments"
+    post "/attachments"
     assert_response :unauthorized
   end
 
@@ -68,7 +70,7 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
     @user.update!(trial_ends_at: nil)
 
     file = fixture_file_upload("space.jpg", "image/jpeg")
-    post "/api/attachments", params: { file: file }, headers: auth_header
+    post "/attachments", params: { file: file }, headers: auth_header
 
     assert_response :forbidden
   end
