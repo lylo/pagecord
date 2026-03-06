@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_03_03_102452) do
+ActiveRecord::Schema[8.2].define(version: 2026_03_06_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -294,9 +294,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_03_102452) do
     t.boolean "is_page", default: false, null: false
     t.string "locale"
     t.datetime "published_at"
-    t.text "raw_content"
     t.boolean "show_in_navigation", default: true, null: false
     t.string "slug"
+    t.integer "source", default: 0, null: false
     t.integer "status", default: 1, null: false
     t.string "tag_list", default: [], array: true
     t.text "text_summary"
