@@ -156,4 +156,28 @@ namespace :activestorage do
       puts "Total: #{zombies.size} zombies, #{ActiveSupport::NumberHelper.number_to_human_size(total_bytes)} at risk"
     end
   end
+
+  desc "Storage usage by blog"
+  task blogs: :environment do
+    blogs = Blog.all.filter_map { |b|
+      count = b.attachment_count
+      next if count == 0
+      [ b.subdomain, count, b.attachment_storage_bytes ]
+    }.sort_by { |_, _, bytes| -bytes }
+
+    if blogs.empty?
+      puts "No blogs with attachments."
+      next
+    end
+
+    puts "%-30s %7s  %s" % [ "Blog", "Files", "Storage" ]
+    puts "-" * 55
+
+    blogs.each do |subdomain, count, bytes|
+      puts "%-30s %7d  %s" % [ subdomain, count, ActiveSupport::NumberHelper.number_to_human_size(bytes) ]
+    end
+
+    puts "-" * 55
+    puts "%-30s %7d  %s" % [ "Total", blogs.sum { |_, c, _| c }, ActiveSupport::NumberHelper.number_to_human_size(blogs.sum { |_, _, b| b }) ]
+  end
 end
