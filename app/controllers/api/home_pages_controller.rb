@@ -6,7 +6,7 @@ class Api::HomePagesController < Api::BaseController
   end
 
   def create
-    page = Current.blog.pages.build(home_page_params)
+    page = Current.blog.pages.build(home_page_params.merge(source: :api))
 
     if page.save
       Current.blog.update!(home_page_id: page.id)

@@ -2,7 +2,7 @@ class Post < ApplicationRecord
   include Discard::Model
   include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable, Post::Emailable
 
-  enum :source, [ :editor, :email ]
+  enum :source, [ :editor, :email, :api ]
 
   self.locale_optional = true
 

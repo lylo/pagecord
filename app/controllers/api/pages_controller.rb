@@ -29,7 +29,7 @@ class Api::PagesController < Api::BaseController
   end
 
   def create
-    page = Current.blog.pages.build(page_params)
+    page = Current.blog.pages.build(page_params.merge(source: :api))
 
     if page.save
       render json: page_json(page), status: :created

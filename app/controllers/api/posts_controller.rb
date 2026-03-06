@@ -29,7 +29,7 @@ class Api::PostsController < Api::BaseController
   end
 
   def create
-    post = Current.blog.posts.build(post_params)
+    post = Current.blog.posts.build(post_params.merge(source: :api))
 
     if post.save
       render json: post_json(post), status: :created
