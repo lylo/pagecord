@@ -11,3 +11,7 @@ end
 feature :contact_form do |blog: nil|
   blog&.features.include?("contact_form")
 end
+
+feature :api do |blog: nil|
+  blog&.features.include?("api")
+end
