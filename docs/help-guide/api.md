@@ -44,7 +44,7 @@ Returns published posts by default, newest first. Filter with query parameters:
 - `published_before` — ISO 8601 timestamp
 - `page` — page number for pagination
 
-Response includes a `pagination` object with `page`, `pages`, and `count`.
+Paginated results include a `Link` header with the URL for the next page (following [RFC 5988](https://tools.ietf.org/html/rfc5988)) and an `X-Total-Count` header with the total number of records. When the `Link` header is absent, you're on the last page.
 
 ### Get a post
 
@@ -86,6 +86,80 @@ DELETE /api/posts/:token
 ```
 
 Moves the post to trash (soft delete). Returns `204 No Content`.
+
+## Pages
+
+### List pages
+
+```
+GET /api/pages
+```
+
+Returns published pages by default, newest first. Accepts the same filter parameters as posts (`status`, `published_after`, `published_before`, `page`). Pagination works the same way via `Link` and `X-Total-Count` headers.
+
+### Get a page
+
+```
+GET /api/pages/:token
+```
+
+### Create a page
+
+```
+POST /api/pages
+```
+
+Accepts the same parameters as posts, plus:
+
+- `show_in_navigation` — `true` to show in the blog navigation
+
+### Update a page
+
+```
+PATCH /api/pages/:token
+```
+
+### Delete a page
+
+```
+DELETE /api/pages/:token
+```
+
+Moves the page to trash (soft delete). Returns `204 No Content`. If the page is the current home page, the home page is unlinked first.
+
+## Home page
+
+A blog can have a single home page – a special page that replaces the default post feed.
+
+### Get the home page
+
+```
+GET /api/home_page
+```
+
+Returns `404` if no home page is set.
+
+### Create a home page
+
+```
+POST /api/home_page
+```
+
+Accepts the same parameters as posts. Returns `422` if a home page already exists.
+
+### Update the home page
+
+```
+PATCH /api/home_page
+```
+
+### Remove the home page
+
+```
+DELETE /api/home_page
+```
+
+Unlinks the home page from the blog but keeps the underlying page. Returns `204 No Content`.
 
 ## Attachments
 

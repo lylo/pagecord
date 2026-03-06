@@ -73,7 +73,7 @@ Docker: prefix commands with `docker-compose exec web`
 - **Auth**: Passwordless login via AccessRequest tokens (1-day expiry). EmailChangeRequest for email updates. Both use Verifiable concern.
 - **Routing**: Constraint-based — pagecord.com for app/auth, subdomains and custom domains for blog content
 - **Storage**: ActiveStorage on Cloudflare R2. Soft deletion with Discard gem. StorageTrackable concern tracks attachment bytes/count per blog.
-- **API**: `Api::BaseController` (token auth via `Blog.find_by_api_key`, premium check, `:api` feature flag, 60 req/min rate limit). Controllers: `Api::PostsController` (CRUD, `content_format=markdown` converts via Redcarpet), `Api::AttachmentsController` (file upload → standalone blob → attachable_sgid adopted by Action Text). Upload limits shared via `UploadLimits::CONTENT_TYPES` (`app/models/upload_limits.rb`).
+- **API**: `Api::BaseController` (token auth via `Blog.find_by_api_key`, premium check, `:api` feature flag, 60 req/min rate limit, `wrap_parameters false`, RFC 5988 `Link` + `X-Total-Count` pagination headers). Controllers: `Api::PostsController` (CRUD), `Api::PagesController` (CRUD), `Api::HomePagesController` (CRUD, singular resource), `Api::AttachmentsController` (file upload → standalone blob → attachable_sgid adopted by Action Text). `content_format=markdown` converts via Redcarpet with front matter support. Upload limits shared via `UploadLimits::CONTENT_TYPES` (`app/models/upload_limits.rb`).
 - **Background**: Sidekiq + Redis. Cron via `whenever` gem (see `config/schedule.rb`)
 - **External services**: Postmark + Mailpace (email, dual provider), Sentry (errors), AppSignal (observability), Hatchbox (hosting/custom domains), Paddle (billing)
 

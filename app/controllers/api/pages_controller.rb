@@ -19,11 +19,9 @@ class Api::PagesController < Api::BaseController
     pages = pages.where("published_at <= ?", params[:published_before]) if params[:published_before]
 
     @pagy, @pages = pagy(pages.order(published_at: :desc))
+    set_pagination_headers(@pagy)
 
-    render json: {
-      pages: @pages.map { |page| page_json(page) },
-      pagination: pagination_json(@pagy)
-    }
+    render json: @pages.map { |page| page_json(page) }
   end
 
   def show
@@ -61,7 +59,7 @@ class Api::PagesController < Api::BaseController
     end
 
     def page_params
-      permitted = params.permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale, :status, :content_format, :show_in_navigation)
+      permitted = params.except(:token).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale, :status, :content_format, :show_in_navigation)
 
       if permitted.delete(:content_format) == "markdown" && permitted[:content].present?
         attributes, html = Post::Markdown.render(permitted[:content])
@@ -79,9 +77,5 @@ class Api::PagesController < Api::BaseController
         is_page: true,
         is_home_page: Current.blog.home_page_id == page.id
       )
-    end
-
-    def pagination_json(pagy)
-      { page: pagy.page, pages: pagy.pages, count: pagy.count }
     end
 end

@@ -19,36 +19,33 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     get "/api/pages", headers: auth_header
 
     assert_response :success
-    json = JSON.parse(response.body)
-    assert json["pages"].all? { |p| p["status"] == "published" }
-    assert json["pages"].all? { |p| p["is_page"] == true }
-    assert json["pages"].none? { |p| p["title"] == "Draft Page" }
+    pages = JSON.parse(response.body)
+    assert pages.all? { |p| p["status"] == "published" }
+    assert pages.all? { |p| p["is_page"] == true }
+    assert pages.none? { |p| p["title"] == "Draft Page" }
   end
 
   test "index with status=draft returns only drafts" do
     get "/api/pages", params: { status: "draft" }, headers: auth_header
 
     assert_response :success
-    json = JSON.parse(response.body)
-    assert json["pages"].all? { |p| p["status"] == "draft" }
-    assert json["pages"].any? { |p| p["title"] == "Draft Page" }
+    pages = JSON.parse(response.body)
+    assert pages.all? { |p| p["status"] == "draft" }
+    assert pages.any? { |p| p["title"] == "Draft Page" }
   end
 
-  test "index includes pagination" do
+  test "index includes pagination headers" do
     get "/api/pages", headers: auth_header
 
-    json = JSON.parse(response.body)
-    assert json.key?("pagination")
-    assert json["pagination"].key?("page")
-    assert json["pagination"].key?("pages")
-    assert json["pagination"].key?("count")
+    assert response.headers["X-Total-Count"].present?
+    assert response.headers["link"].present?
   end
 
   test "index does not include posts" do
     get "/api/pages", headers: auth_header
 
-    json = JSON.parse(response.body)
-    titles = json["pages"].map { |p| p["title"] }
+    pages = JSON.parse(response.body)
+    titles = pages.map { |p| p["title"] }
     assert_not_includes titles, "The Art of Street Photography"
   end
 

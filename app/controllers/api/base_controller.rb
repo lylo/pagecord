@@ -1,6 +1,8 @@
 class Api::BaseController < ActionController::API
   include ActionController::HttpAuthentication::Token::ControllerMethods
 
+  wrap_parameters false
+
   before_action :authenticate
   before_action :require_premium
   before_action :require_api_enabled
@@ -35,5 +37,10 @@ class Api::BaseController < ActionController::API
 
     def rate_limit_reached
       render json: { error: "Rate limit exceeded" }, status: :too_many_requests
+    end
+
+    def set_pagination_headers(pagy)
+      headers = pagy.headers_hash(headers_map: { page: nil, limit: nil, count: "X-Total-Count", pages: nil })
+      response.headers.merge!(headers)
     end
 end

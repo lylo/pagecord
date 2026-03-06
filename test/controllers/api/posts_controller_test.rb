@@ -38,35 +38,35 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     get "/api/posts", headers: auth_header
 
     assert_response :success
-    json = JSON.parse(response.body)
-    statuses = json["posts"].map { |p| p["status"] }
+    posts = JSON.parse(response.body)
+    statuses = posts.map { |p| p["status"] }
     assert statuses.all? { |s| s == "published" }, "Expected only published posts"
-    assert json["posts"].none? { |p| p["title"] == "Draft post" }
+    assert posts.none? { |p| p["title"] == "Draft post" }
   end
 
   test "index with status=draft returns only drafts" do
     get "/api/posts", params: { status: "draft" }, headers: auth_header
 
     assert_response :success
-    json = JSON.parse(response.body)
-    assert json["posts"].all? { |p| p["status"] == "draft" }
-    assert json["posts"].any? { |p| p["title"] == "Draft post" }
+    posts = JSON.parse(response.body)
+    assert posts.all? { |p| p["status"] == "draft" }
+    assert posts.any? { |p| p["title"] == "Draft post" }
   end
 
   test "index with status=published returns published posts" do
     get "/api/posts", params: { status: "published" }, headers: auth_header
 
     assert_response :success
-    json = JSON.parse(response.body)
-    assert json["posts"].all? { |p| p["status"] == "published" }
+    posts = JSON.parse(response.body)
+    assert posts.all? { |p| p["status"] == "published" }
   end
 
   test "index with published_after filters posts" do
     get "/api/posts", params: { published_after: 1.day.ago.iso8601 }, headers: auth_header
 
     assert_response :success
-    json = JSON.parse(response.body)
-    json["posts"].each do |p|
+    posts = JSON.parse(response.body)
+    posts.each do |p|
       assert Time.parse(p["published_at"]) >= 1.day.ago
     end
   end
@@ -75,8 +75,8 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     get "/api/posts", params: { published_before: 2.days.ago.iso8601 }, headers: auth_header
 
     assert_response :success
-    json = JSON.parse(response.body)
-    json["posts"].each do |p|
+    posts = JSON.parse(response.body)
+    posts.each do |p|
       assert Time.parse(p["published_at"]) <= 2.days.ago
     end
   end
@@ -91,23 +91,20 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     }, headers: auth_header
 
     assert_response :success
-    json = JSON.parse(response.body)
-    assert json["posts"].any?, "Expected some posts in range"
-    json["posts"].each do |p|
+    posts = JSON.parse(response.body)
+    assert posts.any?, "Expected some posts in range"
+    posts.each do |p|
       t = Time.parse(p["published_at"])
       assert t >= after_time, "Post published_at #{t} is before #{after_time}"
       assert t <= before_time, "Post published_at #{t} is after #{before_time}"
     end
   end
 
-  test "index includes pagination" do
+  test "index includes pagination headers" do
     get "/api/posts", headers: auth_header
 
-    json = JSON.parse(response.body)
-    assert json.key?("pagination")
-    assert json["pagination"].key?("page")
-    assert json["pagination"].key?("pages")
-    assert json["pagination"].key?("count")
+    assert response.headers["X-Total-Count"].present?
+    assert response.headers["link"].present?
   end
 
   # -- Show --

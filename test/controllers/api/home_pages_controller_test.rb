@@ -63,6 +63,19 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
     assert_includes json["content"], "<strong>world</strong>"
   end
 
+  test "create returns 422 when home page already exists" do
+    @blog.update!(home_page_id: posts(:about).id)
+
+    assert_no_difference "Post.count" do
+      post "/api/home_page", params: {
+        title: "Another", content: "<p>Nope</p>", status: "published"
+      }, headers: auth_header
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes JSON.parse(response.body)["errors"], "Home page already exists"
+  end
+
   test "create returns 422 with invalid params" do
     post "/api/home_page", params: { title: "" }, headers: auth_header
     assert_response :unprocessable_entity

@@ -48,7 +48,7 @@ class Api::HomePagesController < Api::BaseController
         permitted[:content] = html
       end
 
-      permitted.merge(is_page: true, show_in_navigation: false)
+      permitted.merge(is_page: true, is_home_page: true, show_in_navigation: false)
     end
 
     def page_json(page)
