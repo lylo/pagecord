@@ -123,6 +123,7 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :api, only: [ :show, :create, :destroy ], controller: "api"
       resources :exports
 
       resources :sender_email_addresses, only: [ :create, :destroy ] do
@@ -180,6 +181,11 @@ Rails.application.routes.draw do
         end
       end
     end
+  end
+
+  namespace :api do
+    resources :posts, only: [ :index, :show, :create, :update, :destroy ], param: :token
+    resources :attachments, only: [ :create ]
   end
 
   constraints(->(request) { !DomainConstraints.default_domain?(request) }) do

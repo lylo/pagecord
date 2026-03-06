@@ -88,6 +88,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_06_120000) do
     t.boolean "allow_search_indexing", default: true, null: false
     t.string "analytics_id"
     t.string "analytics_service"
+    t.string "api_key_digest"
+    t.string "api_key_hint"
     t.datetime "created_at", null: false
     t.text "custom_css"
     t.string "custom_domain"
@@ -120,6 +122,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_06_120000) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
+    t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
