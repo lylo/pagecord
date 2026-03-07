@@ -96,13 +96,13 @@ By default, posts are shown newest first. Use `sort: asc` to show oldest first â
 {{ posts | title: false }}
 ```
 
-#### **Only posts sent as newsletter**
+#### **Only posts sent in a newsletter**
 
 ```javascript
 {{ posts | emailed: true }}
 ```
 
-#### **Only posts not sent as newsletter**
+#### **Only posts not sent in a newsletter**
 
 ```javascript
 {{ posts | emailed: false }}
