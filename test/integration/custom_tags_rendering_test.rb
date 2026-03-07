@@ -164,11 +164,8 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # Page should process the custom tag in the content
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
     assert_response :success
-    assert_select ".lexxy-content", text: /Test Post/
-    # Make sure custom tag is not in the actual content area
-    doc = Nokogiri::HTML(response.body)
-    content_div = doc.at_css(".lexxy-content")
-    assert_not_includes content_div.text, "{{ posts }}"
+    assert_select "body", text: /Test Post/
+    assert_not_includes response.body, "{{ posts }}"
   end
 
   test "renders posts tag with year filter" do
@@ -193,6 +190,88 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # Should show only 1 photography post (the most recent)
     assert_select "body", text: /The Art of Street Photography/
     assert_select "body", text: /The Beauty of Landscape Photography/, count: 0
+  end
+
+  test "renders page content before and after a custom tag" do
+    page = @blog.pages.create!(
+      title: "Mixed Content",
+      content: "<p>Intro text</p>{{ posts | limit: 1 }}<p>Outro text</p>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".lexxy-content", text: /Intro text/
+    assert_select ".lexxy-content", text: /Outro text/
+    assert_select ".posts-list"
+  end
+
+  test "renders posts tag with card style and preserves lazy pagination filters" do
+    21.times do |i|
+      @blog.posts.create!(
+        title: "Card Review #{i + 1}",
+        content: "Content",
+        status: :published,
+        published_at: Time.zone.local(2025, 2, i + 1, 12),
+        tag_list: [ "card-review" ]
+      )
+    end
+
+    page = @blog.pages.create!(
+      title: "Card Posts",
+      content: "{{ posts | style: card | tag: card-review }}",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".post-card", count: 20
+
+    lazy_frame_src = Nokogiri::HTML(response.body).css("turbo-frame[src]").map { _1["src"] }.find { _1.include?("style=card") }
+    assert lazy_frame_src.present?
+    assert_includes lazy_frame_src, "page=2"
+    assert_includes lazy_frame_src, "tag=card-review"
+  end
+
+  test "renders posts tag with stream style and preserves year and sort in lazy pagination" do
+    11.times do |i|
+      @blog.posts.create!(
+        title: "Stream Review #{i + 1}",
+        content: "Content",
+        status: :published,
+        published_at: Time.zone.local(2025, 1, i + 1, 12),
+        tag_list: [ "stream-review" ]
+      )
+    end
+
+    @blog.posts.create!(
+      title: "Stream Review 2024",
+      content: "Content",
+      status: :published,
+      published_at: Time.zone.local(2024, 12, 31, 12),
+      tag_list: [ "stream-review" ]
+    )
+
+    page = @blog.pages.create!(
+      title: "Stream Posts",
+      content: "{{ posts | style: stream | tag: stream-review | year: 2025 | sort: asc }}",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".post-stream-item", count: 10
+    assert_select "body", text: /Stream Review 2024/, count: 0
+
+    lazy_frame_src = Nokogiri::HTML(response.body).css("turbo-frame[src]").map { _1["src"] }.find { _1.include?("style=stream") }
+    assert lazy_frame_src.present?
+    assert_includes lazy_frame_src, "page=2"
+    assert_includes lazy_frame_src, "tag=stream-review"
+    assert_includes lazy_frame_src, "year=2025"
+    assert_includes lazy_frame_src, "sort=asc"
   end
 
   test "renders posts_by_year tag" do
