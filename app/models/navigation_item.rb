@@ -7,7 +7,7 @@ class NavigationItem < ApplicationRecord
   before_create :set_position
   after_destroy :compact_positions
 
-  scope :ordered, -> { order(:position, :id) }
+  scope :ordered, -> { includes(:post).order(:position, :id) }
   scope :social, -> { where(type: "SocialNavigationItem") }
 
   def link_url
