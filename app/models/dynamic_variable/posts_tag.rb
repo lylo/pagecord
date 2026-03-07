@@ -1,6 +1,4 @@
 class DynamicVariable::PostsTag
-  include DynamicVariable::Params
-
   STYLES = %w[card stream].freeze
   PAGE_SIZES = { "card" => 20, "stream" => 10 }.freeze
 
@@ -17,8 +15,8 @@ class DynamicVariable::PostsTag
   def initialize(blog:, view:, params_string:)
     @blog = blog
     @view = view
-    @params = parse_params(params_string)
-    @style = @params[:style].to_s
+    @post_list_params = DynamicVariable::PostListParams.new(blog: @blog, params_string: params_string)
+    @style = @post_list_params.style
   end
 
   def render
@@ -32,7 +30,7 @@ class DynamicVariable::PostsTag
   private
 
     def render_title_list
-      posts = @params[:limit] ? filtered_relation.limit(@params[:limit]) : filtered_relation.all
+      posts = @post_list_params.limit ? filtered_relation.limit(@post_list_params.limit) : filtered_relation.all
       @view.render(partial: "blogs/custom_tags/posts", locals: { posts: posts })
     end
 
@@ -45,36 +43,11 @@ class DynamicVariable::PostsTag
 
       @view.render(partial: "blogs/custom_tags/posts_#{@style}",
         locals: { posts: posts, has_next: has_next, frame_id: frame_id,
-                  filter_params: filter_query_params })
+                  filter_params: @post_list_params.query_params })
     end
 
     def filtered_relation
       @blog.posts.visible
-        .filtered_for_dynamic_variable(**filter_args)
-    end
-
-    def filter_args
-      {}.tap do |args|
-        args[:tag] = @params[:tag] if @params[:tag]
-        args[:without_tag] = @params[:without_tag] if @params[:without_tag]
-        args[:title] = @params[:title] if @params.key?(:title)
-        args[:emailed] = @params[:emailed] if @params.key?(:emailed)
-        args[:lang] = @params[:lang] if @params[:lang]
-        args[:year] = @params[:year] if @params[:year]
-        args[:sort] = @params[:sort] if @params[:sort]
-        args[:blog_locale] = @blog.locale if @params[:lang]
-      end
-    end
-
-    def filter_query_params
-      {}.tap do |qp|
-        qp[:tag] = Array(@params[:tag]).join(",") if @params[:tag]
-        qp[:without_tag] = Array(@params[:without_tag]).join(",") if @params[:without_tag]
-        qp[:title] = @params[:title].to_s if @params.key?(:title)
-        qp[:emailed] = @params[:emailed].to_s if @params.key?(:emailed)
-        qp[:lang] = @params[:lang] if @params[:lang]
-        qp[:year] = @params[:year] if @params[:year]
-        qp[:sort] = @params[:sort] if @params[:sort]
-      end
+        .filtered_for_dynamic_variable(**@post_list_params.filter_args)
     end
 end
