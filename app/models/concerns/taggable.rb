@@ -19,11 +19,7 @@ module Taggable
 
   # Parse comma or space-separated string into tag_list array
   def tags_string=(value)
-    if value.blank?
-      self.tag_list = [] # Clear tags if the input is blank
-    else
-      self.tag_list = parse_tags(value)
-    end
+    self.tag_list = value.blank? ? [] : parse_tags(value)
   end
 
   # Get all unique tags across all posts (class method when included)
@@ -38,6 +34,10 @@ module Taggable
 
     def tagged_with_any(*tags)
       where("tag_list && ARRAY[?]::varchar[]", Array(tags).flatten)
+    end
+
+    def tagged_without_any(*tags)
+      where.not("tag_list && ARRAY[?]::varchar[]", Array(tags).flatten)
     end
   end
 
@@ -55,7 +55,7 @@ module Taggable
   end
 
   def normalize_tags
-    self.tag_list = tag_list.map(&:strip).map(&:downcase).uniq.sort if tag_list.present?
+    self.tag_list = tag_list.map { |tag| tag.strip.downcase }.uniq.sort if tag_list.present?
   end
 
   def validate_tag_format

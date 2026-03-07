@@ -54,9 +54,7 @@ class DynamicVariableProcessor
 
     def render_posts_tag(params_string)
       params = parse_params(params_string)
-      order_direction = params[:sort] == "asc" ? :asc : :desc
-      relation = blog.posts.visible.order(published_at: order_direction)
-      relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
+      relation = filtered_posts(params)
 
       if params[:year]
         start_date = Date.new(params[:year], 1, 1)
@@ -64,22 +62,27 @@ class DynamicVariableProcessor
         relation = relation.where(published_at: start_date..end_date)
       end
 
-      relation = filter_by_language(relation, params[:lang]) if params[:lang]
-
       posts = params[:limit] ? relation.limit(params[:limit]) : relation.all
       view.render(partial: "blogs/custom_tags/posts", locals: { posts: posts })
     end
 
     def render_posts_by_year_tag(params_string)
       params = parse_params(params_string)
+      posts = filtered_posts(params).all
+      view.render(partial: "blogs/custom_tags/posts_by_year", locals: { posts: posts })
+    end
+
+    def filtered_posts(params)
       order_direction = params[:sort] == "asc" ? :asc : :desc
       relation = blog.posts.visible.order(published_at: order_direction)
       relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
+      relation = relation.tagged_without_any(*Array(params[:without_tag])) if params[:without_tag]
+      relation = relation.where.not(title: [ nil, "" ]) if params[:title] == true
+      relation = relation.where(title: [ nil, "" ]) if params[:title] == false
+      relation = relation.emailed if params[:emailed] == true
+      relation = relation.not_emailed if params[:emailed] == false
       relation = filter_by_language(relation, params[:lang]) if params[:lang]
-
-      posts = relation.all
-
-      view.render(partial: "blogs/custom_tags/posts_by_year", locals: { posts: posts })
+      relation
     end
 
     def render_tags_tag(params_string)
@@ -112,24 +115,19 @@ class DynamicVariableProcessor
       params = {}
       return params if params_string.blank?
 
-      # Split by pipe, each part is a parameter
       params_string.split("|").each do |param|
         param = param.strip
         next if param.blank?
 
-        # Split on first colon to get key and value
         key, value = param.split(":", 2).map(&:strip)
         next if key.blank? || value.blank?
 
-        # Remove quotes if present
         value = value[1..-2] if value.start_with?('"', "'") && value.end_with?('"', "'")
 
-        # Handle comma-separated values (only for 'tag' parameter)
-        if key == "tag" && value.include?(",")
+        if key.in?(%w[tag without_tag]) && value.include?(",")
           value = value.split(",").map(&:strip)
         end
 
-        # Convert to appropriate type
         params[key.to_sym] = if value.is_a?(Array)
           value
         elsif value =~ /^\d+$/
