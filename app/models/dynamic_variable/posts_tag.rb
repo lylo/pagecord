@@ -4,6 +4,16 @@ class DynamicVariable::PostsTag
   STYLES = %w[card stream].freeze
   PAGE_SIZES = { "card" => 20, "stream" => 10 }.freeze
 
+  class << self
+    def valid_style?(style)
+      style.to_s.in?(STYLES)
+    end
+
+    def page_size_for(style)
+      PAGE_SIZES.fetch(style.to_s)
+    end
+  end
+
   def initialize(blog:, view:, params_string:)
     @blog = blog
     @view = view
@@ -22,20 +32,12 @@ class DynamicVariable::PostsTag
   private
 
     def render_title_list
-      relation = filtered_relation
-
-      if @params[:year]
-        start_date = Date.new(@params[:year], 1, 1)
-        end_date = Date.new(@params[:year], 12, 31).end_of_day
-        relation = relation.where(published_at: start_date..end_date)
-      end
-
-      posts = @params[:limit] ? relation.limit(@params[:limit]) : relation.all
+      posts = @params[:limit] ? filtered_relation.limit(@params[:limit]) : filtered_relation.all
       @view.render(partial: "blogs/custom_tags/posts", locals: { posts: posts })
     end
 
     def render_paginated
-      page_size = PAGE_SIZES[@style]
+      page_size = self.class.page_size_for(@style)
       posts = filtered_relation.limit(page_size + 1).to_a
       has_next = posts.size > page_size
       posts = posts.first(page_size) if has_next
@@ -47,10 +49,8 @@ class DynamicVariable::PostsTag
     end
 
     def filtered_relation
-      order_direction = @params[:sort] == "asc" ? :asc : :desc
       @blog.posts.visible
-        .apply_filters(**filter_args)
-        .order(published_at: order_direction)
+        .filtered_for_dynamic_variable(**filter_args)
     end
 
     def filter_args
@@ -60,6 +60,8 @@ class DynamicVariable::PostsTag
         args[:title] = @params[:title] if @params.key?(:title)
         args[:emailed] = @params[:emailed] if @params.key?(:emailed)
         args[:lang] = @params[:lang] if @params[:lang]
+        args[:year] = @params[:year] if @params[:year]
+        args[:sort] = @params[:sort] if @params[:sort]
         args[:blog_locale] = @blog.locale if @params[:lang]
       end
     end
@@ -71,6 +73,8 @@ class DynamicVariable::PostsTag
         qp[:title] = @params[:title].to_s if @params.key?(:title)
         qp[:emailed] = @params[:emailed].to_s if @params.key?(:emailed)
         qp[:lang] = @params[:lang] if @params[:lang]
+        qp[:year] = @params[:year] if @params[:year]
+        qp[:sort] = @params[:sort] if @params[:sort]
       end
     end
 end

@@ -1,6 +1,8 @@
 class Blogs::EmbeddedPostsController < Blogs::BaseController
   include Pagy::Method
 
+  rate_limit to: 60, within: 1.minute
+
   def self._prefixes
     super + [ "blogs/posts" ]
   end
@@ -8,10 +10,15 @@ class Blogs::EmbeddedPostsController < Blogs::BaseController
   rescue_from Pagy::RangeError, with: :head_gone
 
   def index
-    @style = params[:style]
-    relation = @blog.posts.visible.apply_filters(**filter_params).order(published_at: :desc)
-    @pagy, @posts = pagy(relation, limit: DynamicVariable::PostsTag::PAGE_SIZES.fetch(@style, 20))
-    @frame_id = params[:frame_id]
+    @style = params[:style].to_s
+    raise ActiveRecord::RecordNotFound unless DynamicVariable::PostsTag.valid_style?(@style)
+
+    relation = @blog.posts.visible
+      .filtered_for_dynamic_variable(**filter_params)
+      .for_blog_render
+
+    @pagy, @posts = pagy(relation, limit: DynamicVariable::PostsTag.page_size_for(@style))
+    @frame_id = params[:frame_id].presence || SecureRandom.hex(4)
     set_blog_cache_headers
     render layout: false
   end
@@ -20,13 +27,19 @@ class Blogs::EmbeddedPostsController < Blogs::BaseController
 
     def filter_params
       {}.tap do |fp|
-        fp[:tag] = params[:tag].split(",").map(&:strip) if params[:tag]
-        fp[:without_tag] = params[:without_tag].split(",").map(&:strip) if params[:without_tag]
-        fp[:title] = params[:title] if params[:title]
-        fp[:emailed] = params[:emailed] if params[:emailed]
-        fp[:lang] = params[:lang] if params[:lang]
+        fp[:tag] = split_list_param(params[:tag]) if params[:tag].present?
+        fp[:without_tag] = split_list_param(params[:without_tag]) if params[:without_tag].present?
+        fp[:title] = params[:title] if params[:title].present?
+        fp[:emailed] = params[:emailed] if params[:emailed].present?
+        fp[:lang] = params[:lang] if params[:lang].present?
+        fp[:year] = params[:year] if params[:year].present?
+        fp[:sort] = params[:sort] if params[:sort].present?
         fp[:blog_locale] = @blog.locale if params[:lang]
       end
+    end
+
+    def split_list_param(value)
+      value.to_s.split(",").map(&:strip).reject(&:blank?)
     end
 
     def head_gone

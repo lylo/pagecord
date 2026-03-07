@@ -37,6 +37,7 @@ class Post < ApplicationRecord
         ]
       )
     }
+  scope :for_blog_render, -> { with_full_rich_text.with_attached_attachments.includes(:upvotes) }
   after_commit :purge_blog_cache, on: [ :create, :update, :destroy ]
 
   def content_present

@@ -23,9 +23,8 @@ class Blogs::PostsController < Blogs::BaseController
 
   def posts_list
     base_scope = @blog.posts.visible
-      .with_full_rich_text
-      .includes(:upvotes)
-      .order(published_at: :desc, id: :desc)
+      .for_blog_render
+      .ordered_by_published
 
     # Filter by tag if specified
     if params[:tag].present?
@@ -54,8 +53,7 @@ class Blogs::PostsController < Blogs::BaseController
       .kept
       .published
       .released
-      .with_full_rich_text
-      .includes(:upvotes)
+      .for_blog_render
       .find_by!(slug: blog_params[:slug])
 
     set_blog_cache_headers
