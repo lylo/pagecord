@@ -1,0 +1,10 @@
+<%= turbo_frame_tag "embedded-posts-#{frame_id}" do %>
+  <div class="h-feed" data-controller="media-embeds lightbox">
+    <%= render partial: "blogs/posts/stream_post", collection: posts, as: :post %>
+  </div>
+  <% if has_next %>
+    <%= turbo_frame_tag "embedded-posts-#{frame_id}",
+        src: blog_embedded_posts_path(page: 2, style: "stream", frame_id: frame_id, **filter_params),
+        loading: :lazy %>
+  <% end %>
+<% end %>

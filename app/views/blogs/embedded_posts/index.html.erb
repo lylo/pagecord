@@ -1,0 +1,10 @@
+<%= turbo_frame_tag "embedded-posts-#{@frame_id}" do %>
+  <%= render partial: "blogs/posts/#{@style}_post", collection: @posts, as: :post %>
+
+  <% if @pagy.next %>
+    <%= turbo_frame_tag "embedded-posts-#{@frame_id}",
+        src: blog_embedded_posts_path(page: @pagy.next, style: @style, frame_id: @frame_id,
+              **request.query_parameters.except("page", "frame_id", "style")),
+        loading: :lazy %>
+  <% end %>
+<% end %>

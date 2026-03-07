@@ -1,6 +1,6 @@
 class Post < ApplicationRecord
   include Discard::Model
-  include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable, Post::Emailable
+  include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable, Post::Emailable, Post::Filterable
 
   enum :source, [ :editor, :email ]
 

@@ -193,6 +193,8 @@ Rails.application.routes.draw do
 
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 
+    get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
+
     namespace :api do
       post "embeds/bandcamp", to: "embeds#bandcamp"
     end

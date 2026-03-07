@@ -108,6 +108,30 @@ By default, posts are shown newest first. Use `sort: asc` to show oldest first â
 {{ posts | emailed: false }}
 ```
 
+#### **Display as cards**
+
+Render posts as cards (the same layout as the "cards" blog style) with automatic lazy-loading pagination.
+
+```javascript
+{{ posts | style: card }}
+```
+
+#### **Display as stream**
+
+Render posts as a full-content stream (the same layout as the "stream" blog style) with automatic lazy-loading pagination.
+
+```javascript
+{{ posts | style: stream }}
+```
+
+#### **Style with filters**
+
+You can combine `style` with any other filter parameter.
+
+```javascript
+{{ posts | style: card | tag: photography }}
+```
+
 #### **Combine parameters**
 
 ```javascript
