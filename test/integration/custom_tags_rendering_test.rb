@@ -165,10 +165,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
     assert_response :success
     assert_select "body", text: /Test Post/
-    # Make sure custom tag is not in the actual content area
-    doc = Nokogiri::HTML(response.body)
-    content_div = doc.at_css(".lexxy-content")
-    assert_not_includes content_div.text, "{{ posts }}"
+    assert_not_includes response.body, "{{ posts }}"
   end
 
   test "renders posts tag with year filter" do
@@ -193,6 +190,21 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # Should show only 1 photography post (the most recent)
     assert_select "body", text: /The Art of Street Photography/
     assert_select "body", text: /The Beauty of Landscape Photography/, count: 0
+  end
+
+  test "renders page content before and after a custom tag" do
+    page = @blog.pages.create!(
+      title: "Mixed Content",
+      content: "<p>Intro text</p>{{ posts | limit: 1 }}<p>Outro text</p>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".lexxy-content", text: /Intro text/
+    assert_select ".lexxy-content", text: /Outro text/
+    assert_select ".posts-list"
   end
 
   test "renders posts tag with card style and preserves lazy pagination filters" do

@@ -7,9 +7,6 @@ class DynamicVariableProcessor
     "contact_form"       => DynamicVariable::ContactFormTag
   }.freeze
 
-  LEXXY_CONTENT_OPEN = '<div class="lexxy-content e-content" data-controller="syntax-highlight">'
-  LEXXY_CONTENT_CLOSE = "</div>"
-
   def initialize(blog:, view:)
     @blog = blog
     @view = view
@@ -22,11 +19,17 @@ class DynamicVariableProcessor
       "___CODE_BLOCK_#{code_blocks.length - 1}___"
     end
 
-    processed = protected_content.gsub(tag_pattern) do
-      tag_name = $1
-      params_string = $2.strip
-      render_tag(tag_name, params_string)
+    result = +""
+    remaining_content = protected_content
+
+    while (match = remaining_content.match(tag_pattern))
+      result << wrap_content(match.pre_match)
+      result << render_tag(match[1], match[2].strip)
+      remaining_content = match.post_match
     end
+
+    result << wrap_content(remaining_content)
+    processed = result.presence || wrap_content("")
 
     code_blocks.each_with_index do |block, i|
       processed = processed.sub("___CODE_BLOCK_#{i}___", block)
@@ -43,11 +46,16 @@ class DynamicVariableProcessor
 
     def render_tag(tag_name, params_string)
       if (tag_class = TAGS[tag_name])
-        output = tag_class.new(blog: @blog, view: @view, params_string: params_string).render
-        "#{LEXXY_CONTENT_CLOSE}#{output}#{LEXXY_CONTENT_OPEN}"
+        tag_class.new(blog: @blog, view: @view, params_string: params_string).render
       else
         unknown_tag = "#{tag_name} #{params_string}".strip
-        "{{ #{unknown_tag} }}"
+        wrap_content("{{ #{unknown_tag} }}")
       end
+    end
+
+    def wrap_content(content)
+      return "" if content.blank?
+
+      @view.render(partial: "blogs/posts/page_content", locals: { content: content })
     end
 end
