@@ -27,6 +27,36 @@ class Post::EmailableTest < ActiveSupport::TestCase
     assert_not @post.emailed?
   end
 
+  test "emailed scope returns posts with delivered digests" do
+    emailed_post = @blog.posts.create!(title: "Emailed", content: "Content")
+    not_emailed_post = @blog.posts.create!(title: "Not emailed", content: "Content")
+
+    digest = PostDigest.create!(blog: @blog, kind: :individual, delivered_at: Time.current)
+    digest.digest_posts.create!(post: emailed_post)
+
+    assert_includes Post.emailed, emailed_post
+    assert_not_includes Post.emailed, not_emailed_post
+  end
+
+  test "not_emailed scope returns posts without delivered digests" do
+    emailed_post = @blog.posts.create!(title: "Emailed", content: "Content")
+    not_emailed_post = @blog.posts.create!(title: "Not emailed", content: "Content")
+
+    digest = PostDigest.create!(blog: @blog, kind: :individual, delivered_at: Time.current)
+    digest.digest_posts.create!(post: emailed_post)
+
+    assert_not_includes Post.not_emailed, emailed_post
+    assert_includes Post.not_emailed, not_emailed_post
+  end
+
+  test "not_emailed scope includes posts with undelivered digests" do
+    post = @blog.posts.create!(title: "Pending", content: "Content")
+    digest = PostDigest.create!(blog: @blog, kind: :individual, delivered_at: nil)
+    digest.digest_posts.create!(post: post)
+
+    assert_includes Post.not_emailed, post
+  end
+
   test "individually_sent? returns false when post has not been sent" do
     assert_not @post.individually_sent?
   end
