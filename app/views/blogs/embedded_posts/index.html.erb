@@ -1,5 +1,9 @@
 <%= turbo_frame_tag "embedded-posts-#{@frame_id}" do %>
-  <%= render partial: "blogs/posts/#{@style}_post", collection: @posts, as: :post %>
+  <% if @style == "card" %>
+    <%= render partial: "blogs/posts/card_post", collection: @posts, as: :post %>
+  <% else %>
+    <%= render partial: "blogs/posts/stream_post", collection: @posts, as: :post %>
+  <% end %>
 
   <% if @pagy.next %>
     <%= turbo_frame_tag "embedded-posts-#{@frame_id}",
