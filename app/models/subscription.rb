@@ -22,8 +22,17 @@ class Subscription < ApplicationRecord
 
   def extend_to(date)
     new_date = Time.zone.parse(date.to_s)
-    PaddleApi.new.patch("subscriptions/#{paddle_subscription_id}", { next_billed_at: new_date.iso8601 }.to_json)
-    update!(next_billed_at: new_date)
+    response = PaddleApi.new.patch("subscriptions/#{paddle_subscription_id}", {
+      next_billed_at: new_date.iso8601,
+      proration_billing_mode: "do_not_bill"
+    }.to_json)
+    parsed = JSON.parse(response.body)
+
+    if response.success?
+      update!(next_billed_at: new_date)
+    else
+      raise "Paddle error: #{parsed.dig("error", "detail") || parsed}"
+    end
   end
 
   def active?

@@ -12,8 +12,9 @@ class Admin::SubscriptionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:annie)
     new_date = 6.months.from_now.to_date.to_s
 
+    mock_response = stub(success?: true, body: { data: {} }.to_json)
     mock_api = mock
-    mock_api.expects(:patch)
+    mock_api.expects(:patch).returns(mock_response)
     PaddleApi.stubs(:new).returns(mock_api)
 
     patch admin_user_subscription_url(user), params: { next_billed_at: new_date }
