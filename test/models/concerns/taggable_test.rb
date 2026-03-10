@@ -162,6 +162,34 @@ class TaggableTest < ActiveSupport::TestCase
     assert_not_includes rails_only, post4
   end
 
+  test "should exclude posts tagged with any of the specified tags" do
+    post1 = Post.create!(
+      title: "Rails Post",
+      content: ActionText::RichText.new(body: "About Rails"),
+      blog: @blog,
+      tag_list: [ "rails", "ruby" ]
+    )
+
+    post2 = Post.create!(
+      title: "JavaScript Post",
+      content: ActionText::RichText.new(body: "About JavaScript"),
+      blog: @blog,
+      tag_list: [ "javascript", "web" ]
+    )
+
+    post3 = Post.create!(
+      title: "Python Post",
+      content: ActionText::RichText.new(body: "About Python"),
+      blog: @blog,
+      tag_list: [ "python", "django" ]
+    )
+
+    excluded = Post.tagged_without_any("rails", "javascript")
+    assert_not_includes excluded, post1
+    assert_not_includes excluded, post2
+    assert_includes excluded, post3
+  end
+
   test "should find posts tagged with any of the specified tags" do
     post1 = Post.create!(
       title: "Rails Post",

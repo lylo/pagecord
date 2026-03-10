@@ -72,6 +72,42 @@ By default, posts are shown newest first. Use `sort: asc` to show oldest first â
 {{ posts | sort: asc }}
 ```
 
+#### **Exclude posts with a tag**
+
+```javascript
+{{ posts | without_tag: personal }}
+```
+
+#### **Exclude posts with multiple tags**
+
+```javascript
+{{ posts | without_tag: personal, draft }}
+```
+
+#### **Only posts with a title**
+
+```javascript
+{{ posts | title: true }}
+```
+
+#### **Only posts without a title**
+
+```javascript
+{{ posts | title: false }}
+```
+
+#### **Only posts sent in a newsletter**
+
+```javascript
+{{ posts | emailed: true }}
+```
+
+#### **Only posts not sent in a newsletter**
+
+```javascript
+{{ posts | emailed: false }}
+```
+
 #### **Combine parameters**
 
 ```javascript
@@ -92,6 +128,24 @@ Display posts grouped by year with headers â€” perfect for archive pages.
 
 ```javascript
 {{ posts_by_year | tag: photography }}
+```
+
+#### **Exclude posts with a tag**
+
+```javascript
+{{ posts_by_year | without_tag: personal }}
+```
+
+#### **Only posts with a title**
+
+```javascript
+{{ posts_by_year | title: true }}
+```
+
+#### **Only posts sent as newsletter**
+
+```javascript
+{{ posts_by_year | emailed: true }}
 ```
 
 #### **Sort order**
@@ -176,7 +230,7 @@ Browse posts by topic:
 
 ## Tips
 
-- Dynamic variables only work in **pages** , not blog posts
+- Dynamic variables only work in **pages**, not blog posts
 - If a variable isn't recognized, it will appear as-is in your content
 - The posts list automatically excludes unpublished and scheduled posts
 - Tags are sorted alphabetically
