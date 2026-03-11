@@ -718,9 +718,9 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path(tag: "rails")
 
     assert_response :success
-    assert_select "p", text: /Posts tagged with "rails"/
+    assert_select "p", text: /Posts tagged with/
     assert_select "a.tag-filter-clear[href='#{blog_posts_list_path}']", text: "Show all posts"
-    assert_select "a.tag-filter-rss", text: "RSS feed for rails posts"
+    assert_select "a.tag-filter-rss", text: "RSS feed for these posts"
   end
 
   test "should show no posts message when tag has no matches" do
@@ -729,8 +729,80 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path(tag: "nonexistent")
 
     assert_response :success
-    assert_select "p", text: /No posts found with the tag "nonexistent"/
+    assert_select "p", text: /No posts found/
     assert_select "a[href='#{blog_posts_path}']", text: "View all posts"
+  end
+
+  test "should filter posts by multiple comma-separated tags using OR" do
+    @blog.posts.create!(content: "Full stack post", tags_string: "rails, javascript")
+    @blog.posts.create!(content: "Rails only post", tags_string: "rails")
+    @blog.posts.create!(content: "Python post", tags_string: "python")
+
+    get blog_posts_path(tag: "rails,javascript")
+
+    assert_response :success
+    assert_includes @response.body, "Full stack post"
+    assert_includes @response.body, "Rails only post"
+    assert_not_includes @response.body, "Python post"
+  end
+
+  test "should filter RSS feed by multiple comma-separated tags using OR" do
+    @blog.posts.create!(content: "Full stack post", tags_string: "rails, javascript")
+    @blog.posts.create!(content: "Rails only post", tags_string: "rails")
+    @blog.posts.create!(content: "Python post", tags_string: "python")
+
+    get blog_feed_xml_path(tag: "rails,javascript")
+
+    assert_response :success
+    assert_includes @response.body, "Full stack post"
+    assert_includes @response.body, "Rails only post"
+    assert_not_includes @response.body, "Python post"
+  end
+
+  test "should filter posts with title=true" do
+    @blog.posts.create!(title: "My Titled Post", content: "has a title")
+    @blog.posts.create!(content: "no title here")
+
+    get blog_posts_path(title: "true")
+
+    assert_response :success
+    assert_includes @response.body, "My Titled Post"
+    assert_not_includes @response.body, "no title here"
+  end
+
+  test "should filter posts with title=false" do
+    @blog.posts.create!(title: "My Titled Post", content: "has a title")
+    @blog.posts.create!(content: "no title here")
+
+    get blog_posts_path(title: "false")
+
+    assert_response :success
+    assert_not_includes @response.body, "My Titled Post"
+    assert_includes @response.body, "no title here"
+  end
+
+  test "should filter RSS feed with title=true" do
+    @blog.posts.create!(title: "Titled Post", content: "has a title")
+    @blog.posts.create!(content: "untitled post")
+
+    get blog_feed_xml_path(title: "true")
+
+    assert_response :success
+    assert_includes @response.body, "Titled Post"
+    assert_not_includes @response.body, "untitled post"
+  end
+
+  test "should combine tag and title filters" do
+    @blog.posts.create!(title: "Rails Guide", content: "titled rails", tags_string: "rails")
+    @blog.posts.create!(content: "untitled rails", tags_string: "rails")
+    @blog.posts.create!(title: "Python Guide", content: "titled python", tags_string: "python")
+
+    get blog_posts_path(tag: "rails", title: "true")
+
+    assert_response :success
+    assert_includes @response.body, "Rails Guide"
+    assert_not_includes @response.body, "untitled rails"
+    assert_not_includes @response.body, "Python Guide"
   end
 
   test "should use correct page size for different layouts" do
