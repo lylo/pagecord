@@ -5,11 +5,9 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
     host! "api.example.com"
 
     @blog = blogs(:joel)
+    @blog.update!(features: [ "api" ])
     @user = users(:joel)
     @user.update!(trial_ends_at: 30.days.from_now)
-
-    @api_key = SecureRandom.hex(20)
-    @blog.update!(api_key_digest: Digest::SHA256.hexdigest(@api_key), features: [ "api" ])
   end
 
   test "upload returns 201 with attachable_sgid and url" do
@@ -77,7 +75,7 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
 
   private
 
-    def auth_header(token = @api_key)
+    def auth_header(token = "test_api_key_for_fixtures")
       { "Authorization" => "Bearer #{token}" }
     end
 end
