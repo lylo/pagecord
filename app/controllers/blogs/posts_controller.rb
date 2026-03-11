@@ -63,6 +63,8 @@ class Blogs::PostsController < Blogs::BaseController
       .includes(:upvotes)
       .find_by!(slug: blog_params[:slug])
 
+    return if flash.any? # Don't cache responses with flash — session skip prevents flash clearing
+
     set_blog_cache_headers
     fresh_when etag: etag_for(@post), last_modified: @post.updated_at, public: true, template: "blogs/posts/show"
   end
