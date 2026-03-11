@@ -40,20 +40,15 @@ class Api::HomePagesController < Api::BaseController
     end
 
     def home_page_params
-      permitted = params.permit(:title, :content, :slug, :published_at, :canonical_url, :tags, :hidden, :locale, :status, :content_format)
-      permitted[:tags_string] = permitted.delete(:tags) if permitted.key?(:tags)
-
-      if permitted.delete(:content_format) == "markdown" && permitted[:content].present?
-        attributes, html = Post::Markdown.render(permitted[:content])
-        attributes.each { |key, value| permitted[key] ||= value }
-        permitted[:content] = html
-      end
-
-      permitted.merge(is_page: true, is_home_page: true, show_in_navigation: false)
+      permitted_content_params(
+        :title, :content, :slug, :published_at, :canonical_url,
+        :tags, :hidden, :locale, :status, :content_format,
+        except_token: false
+      ).merge(is_page: true, is_home_page: true, show_in_navigation: false)
     end
 
     def page_json(page)
-      fields = %i[token title slug status published_at canonical_url tag_list hidden locale show_in_navigation created_at updated_at]
+      fields = %i[token title slug status published_at canonical_url tag_list hidden locale created_at updated_at]
       page.as_json(only: fields).merge(
         content: page.content.body.to_html,
         is_page: true,

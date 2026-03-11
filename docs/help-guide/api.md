@@ -111,9 +111,8 @@ GET /pages/:token
 POST /pages
 ```
 
-Accepts the same parameters as posts, plus:
+Accepts the same parameters as posts.
 
-- `show_in_navigation` — `true` to show in the blog navigation
 
 ### Update a page
 
@@ -147,7 +146,7 @@ Returns `404` if no home page is set.
 POST /home_page
 ```
 
-Accepts the same parameters as posts. Creates a new page and sets it as the home page. If a home page already exists it will be replaced.
+Accepts the same parameters as posts. Creates a new page and sets it as the home page. If a home page already exists, the API returns `422 Unprocessable Entity`.
 
 ### Update the home page
 

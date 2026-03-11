@@ -1,5 +1,8 @@
 class Api::BaseController < ActionController::API
+  class BadRequestError < StandardError; end
+
   include ActionController::HttpAuthentication::Token::ControllerMethods
+  include Html::AttachmentPreview
 
   wrap_parameters false
 
@@ -11,7 +14,7 @@ class Api::BaseController < ActionController::API
     render json: { error: "Not found" }, status: :not_found
   end
 
-  rescue_from ArgumentError do |e|
+  rescue_from BadRequestError do |e|
     render json: { error: e.message }, status: :bad_request
   end
 
@@ -51,7 +54,102 @@ class Api::BaseController < ActionController::API
       render json: { error: "Rate limit exceeded" }, status: :too_many_requests
     end
 
+    # Normalizes API-submitted attachment tags into the same Action Text HTML shape
+    # produced by MailParser and the editor.
+    #
+    # Two things happen here:
+    # 1. Replace bare SGID tags with full blob-backed attachment HTML, preserving
+    #    attributes the client may have set, such as caption/presentation.
+    # 2. Remove paragraph wrappers that Markdown introduces around standalone
+    #    attachments. If we leave <action-text-attachment> inside a <p>, Action Text
+    #    later injects a <figure> into invalid paragraph HTML and the browser reparses
+    #    it, which breaks the wrapper on the rendered blog post.
+    def enrich_attachments(html)
+      enriched_html = ActionText::Fragment.wrap(html).replace(ActionText::Attachment.tag_name) do |node|
+        blob = ActiveStorage::Blob.from_attachable_sgid(node["sgid"].presence || raise(BadRequestError, "Attachment sgid is required"))
+
+        ActionText::Fragment.wrap(
+          attachment_preview_node(
+            blob,
+            Rails.application.routes.url_helpers.rails_blob_url(blob, only_path: true),
+            attributes: attachment_preview_attributes_from(node)
+          )
+        ).to_html.then { |attachment_html| Nokogiri::HTML::DocumentFragment.parse(attachment_html).children.first }
+      rescue ActiveRecord::RecordNotFound, ActiveSupport::MessageVerifier::InvalidSignature
+        raise BadRequestError, "Attachment sgid must reference an ActiveStorage::Blob"
+      end.to_html
+
+      unwrap_attachment_paragraphs(enriched_html)
+    end
+
+    def permitted_content_params(*attributes, except_token: true)
+      permitted = permitted_params(*attributes, except_token: except_token)
+      permitted[:tags_string] = permitted.delete(:tags) if permitted.key?(:tags)
+
+      render_markdown_content(permitted)
+      validate_status_param(permitted)
+      enrich_attachment_content(permitted)
+
+      permitted
+    end
+
     def set_pagination_headers(pagy)
       response.headers.merge!(pagy.headers_hash(headers_map: { page: nil, limit: nil, count: "X-Total-Count", pages: nil }))
+    end
+
+    def attachment_preview_attributes_from(node)
+      {}.tap do |attributes|
+        attributes[:caption] = node["caption"] if node["caption"].present?
+        attributes[:presentation] = node["presentation"] if node["presentation"].present?
+      end
+    end
+
+    # Markdown renders standalone attachment tags as <p><action-text-attachment>...</p>.
+    # Unwrap those paragraphs so the stored HTML matches editor-created content.
+    def unwrap_attachment_paragraphs(html)
+      doc = Nokogiri::HTML::DocumentFragment.parse(html)
+
+      doc.css("p").each do |paragraph|
+        children = paragraph.children.reject { |child| child.text? && child.text.strip.empty? }
+        next if children.empty?
+        next unless children.all? { |child| child.element? && child.name == ActionText::Attachment.tag_name }
+
+        paragraph.replace(Nokogiri::HTML::DocumentFragment.parse(children.map(&:to_html).join))
+      end
+
+      doc.to_html
+    end
+
+    def permitted_params(*attributes, except_token: true)
+      source_params = except_token ? params.except(:token) : params
+      source_params.permit(*attributes)
+    end
+
+    def render_markdown_content(permitted)
+      return unless permitted.delete(:content_format) == "markdown"
+      return unless permitted[:content].present?
+
+      attributes, html = Post::Markdown.render(permitted[:content])
+      attributes.each { |key, value| permitted[key] ||= value }
+      permitted[:content] = html
+    end
+
+    def enrich_attachment_content(permitted)
+      return unless permitted[:content]&.include?("<action-text-attachment")
+
+      permitted[:content] = enrich_attachments(permitted[:content])
+    end
+
+    def validate_status_param(permitted)
+      return unless permitted[:status].present?
+      return if Post.statuses.key?(permitted[:status])
+
+      raise BadRequestError, "'#{permitted[:status]}' is not a valid status"
+    end
+
+    def parse_iso8601_timestamp(value)
+      Time.iso8601(value)
+    rescue ArgumentError
+      raise BadRequestError, "Invalid timestamp"
     end
 end

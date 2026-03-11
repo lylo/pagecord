@@ -15,8 +15,8 @@ class Api::PostsController < Api::BaseController
       posts = posts.published.released
     end
 
-    posts = posts.where("published_at >= ?", Time.iso8601(params[:published_after])) if params[:published_after]
-    posts = posts.where("published_at <= ?", Time.iso8601(params[:published_before])) if params[:published_before]
+    posts = posts.where("published_at >= ?", parse_iso8601_timestamp(params[:published_after])) if params[:published_after]
+    posts = posts.where("published_at <= ?", parse_iso8601_timestamp(params[:published_before])) if params[:published_before]
 
     @pagy, @posts = pagy(posts.order(published_at: :desc))
     set_pagination_headers(@pagy)
@@ -58,16 +58,7 @@ class Api::PostsController < Api::BaseController
     end
 
     def post_params
-      permitted = params.except(:token).permit(:title, :content, :slug, :published_at, :canonical_url, :tags, :hidden, :locale, :status, :content_format)
-      permitted[:tags_string] = permitted.delete(:tags) if permitted.key?(:tags)
-
-      if permitted.delete(:content_format) == "markdown" && permitted[:content].present?
-        attributes, html = Post::Markdown.render(permitted[:content])
-        attributes.each { |key, value| permitted[key] ||= value }
-        permitted[:content] = html
-      end
-
-      permitted
+      permitted_content_params(:title, :content, :slug, :published_at, :canonical_url, :tags, :hidden, :locale, :status, :content_format)
     end
 
     def post_json(post)

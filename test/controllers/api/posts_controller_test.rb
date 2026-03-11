@@ -32,6 +32,15 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
+  test "returns forbidden when api feature is disabled" do
+    @blog.update!(features: [])
+
+    get "/posts", headers: auth_header
+
+    assert_response :forbidden
+    assert_equal "API access is not enabled for this blog", JSON.parse(response.body)["error"]
+  end
+
   # -- Index --
 
   test "index returns published and released posts by default" do
@@ -275,6 +284,16 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
   end
 
+  test "create returns 400 for invalid status from markdown front matter" do
+    post "/posts", params: {
+      content: "---\nstatus: bogus\n---\nBody",
+      content_format: "markdown"
+    }, headers: auth_header
+
+    assert_response :bad_request
+    assert_equal "'bogus' is not a valid status", JSON.parse(response.body)["error"]
+  end
+
   test "create returns 422 with invalid params" do
     post "/posts", params: { title: "" }, headers: auth_header
     assert_response :unprocessable_entity
@@ -283,7 +302,7 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert json.key?("errors")
   end
 
-  test "create with attachment returns stored html not rendered html" do
+  test "create with attachment enriches bare sgid with blob attributes" do
     blob = ActiveStorage::Blob.create_and_upload!(
       io: file_fixture("space.jpg").open,
       filename: "space.jpg",
@@ -292,7 +311,8 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
 
     post "/posts", params: {
       title: "With Image",
-      content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      content: %(Hello\n\n<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment> \n\nAfter),
+      content_format: "markdown",
       status: "published"
     }, headers: auth_header
 
@@ -300,8 +320,23 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
     assert_includes json["content"], "action-text-attachment"
     assert_includes json["content"], "sgid="
+    assert_includes json["content"], 'url="/rails/active_storage/blobs/redirect/'
+    assert_includes json["content"], 'content-type="image/jpeg"'
+    assert_includes json["content"], 'filename="space.jpg"'
+    assert_not_includes json["content"], "<p><action-text-attachment"
     assert_not_includes json["content"], "<figure"
     assert_not_includes json["content"], "<img"
+  end
+
+  test "create with invalid attachment sgid returns bad request" do
+    post "/posts", params: {
+      title: "Bad Image",
+      content: %(<action-text-attachment sgid="not-a-valid-sgid"></action-text-attachment>),
+      status: "published"
+    }, headers: auth_header
+
+    assert_response :bad_request
+    assert_equal "Attachment sgid must reference an ActiveStorage::Blob", JSON.parse(response.body)["error"]
   end
 
   # -- Update --
@@ -322,6 +357,27 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
     assert_equal "published", json["status"]
     assert_equal "published", @draft.reload.status
+  end
+
+  test "update with attachment enriches bare sgid with blob attributes" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+
+    patch "/posts/#{@post.token}", params: {
+      content: %(Hello again\n\n<action-text-attachment sgid="#{blob.attachable_sgid}" caption="A caption" presentation="gallery"></action-text-attachment>\n\nAfter),
+      content_format: "markdown"
+    }, headers: auth_header
+
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_includes json["content"], 'url="/rails/active_storage/blobs/redirect/'
+    assert_includes json["content"], 'caption="A caption"'
+    assert_includes json["content"], 'presentation="gallery"'
+    assert_not_includes json["content"], "<p><action-text-attachment"
+    assert_not_includes json["content"], "<figure"
   end
 
   test "update returns 422 with invalid params" do

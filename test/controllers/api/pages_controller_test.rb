@@ -69,6 +69,7 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal @page.title, json["title"]
     assert_equal @page.token, json["token"]
     assert_equal true, json["is_page"]
+    assert_not json.key?("show_in_navigation")
   end
 
   test "show includes is_home_page field" do
@@ -104,6 +105,7 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
     assert_equal "New Page", json["title"]
     assert_equal true, json["is_page"]
+    assert_not json.key?("show_in_navigation")
     assert Post.find_by(token: json["token"]).is_page?
   end
 
@@ -141,6 +143,28 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
   test "create returns 422 with invalid params" do
     post "/pages", params: { title: "" }, headers: auth_header
     assert_response :unprocessable_entity
+  end
+
+  test "create with attachment enriches bare sgid with blob attributes" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+
+    post "/pages", params: {
+      title: "Image Page",
+      content: %(<p>Hello</p><p><action-text-attachment sgid="#{blob.attachable_sgid}" caption="Page caption"></action-text-attachment></p>),
+      status: "published"
+    }, headers: auth_header
+
+    assert_response :created
+    json = JSON.parse(response.body)
+    assert_includes json["content"], 'url="/rails/active_storage/blobs/redirect/'
+    assert_includes json["content"], 'caption="Page caption"'
+    assert_includes json["content"], 'filename="space.jpg"'
+    assert_not_includes json["content"], "<p><action-text-attachment"
+    assert_not_includes json["content"], "<figure"
   end
 
   # -- Update --

@@ -15,8 +15,8 @@ class Api::PagesController < Api::BaseController
       pages = pages.published.released
     end
 
-    pages = pages.where("published_at >= ?", Time.iso8601(params[:published_after])) if params[:published_after]
-    pages = pages.where("published_at <= ?", Time.iso8601(params[:published_before])) if params[:published_before]
+    pages = pages.where("published_at >= ?", parse_iso8601_timestamp(params[:published_after])) if params[:published_after]
+    pages = pages.where("published_at <= ?", parse_iso8601_timestamp(params[:published_before])) if params[:published_before]
 
     @pagy, @pages = pagy(pages.order(published_at: :desc))
     set_pagination_headers(@pagy)
@@ -59,20 +59,14 @@ class Api::PagesController < Api::BaseController
     end
 
     def page_params
-      permitted = params.except(:token).permit(:title, :content, :slug, :published_at, :canonical_url, :tags, :hidden, :locale, :status, :content_format, :show_in_navigation)
-      permitted[:tags_string] = permitted.delete(:tags) if permitted.key?(:tags)
-
-      if permitted.delete(:content_format) == "markdown" && permitted[:content].present?
-        attributes, html = Post::Markdown.render(permitted[:content])
-        attributes.each { |key, value| permitted[key] ||= value }
-        permitted[:content] = html
-      end
-
-      permitted.merge(is_page: true)
+      permitted_content_params(
+        :title, :content, :slug, :published_at, :canonical_url,
+        :tags, :hidden, :locale, :status, :content_format
+      ).merge(is_page: true)
     end
 
     def page_json(page)
-      fields = %i[token title slug status published_at canonical_url tag_list hidden locale show_in_navigation created_at updated_at]
+      fields = %i[token title slug status published_at canonical_url tag_list hidden locale created_at updated_at]
       page.as_json(only: fields).merge(
         content: page.content.body.to_html,
         is_page: true,
