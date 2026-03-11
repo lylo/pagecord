@@ -23,7 +23,6 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal page.title, json["title"]
     assert_equal true, json["is_page"]
     assert_equal true, json["is_home_page"]
-    assert_not json.key?("show_in_navigation")
   end
 
   test "show returns 404 when no home page is set" do
@@ -47,11 +46,8 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Welcome", json["title"]
     assert_equal true, json["is_page"]
     assert_equal true, json["is_home_page"]
-    assert_not json.key?("show_in_navigation")
-
     created = Post.find_by(token: json["token"])
     assert created.is_page?
-    assert_equal false, created.show_in_navigation
     assert_equal @blog.reload.home_page_id, created.id
   end
 

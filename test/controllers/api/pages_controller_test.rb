@@ -69,7 +69,6 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal @page.title, json["title"]
     assert_equal @page.token, json["token"]
     assert_equal true, json["is_page"]
-    assert_not json.key?("show_in_navigation")
   end
 
   test "show includes is_home_page field" do
@@ -105,7 +104,6 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
     assert_equal "New Page", json["title"]
     assert_equal true, json["is_page"]
-    assert_not json.key?("show_in_navigation")
     assert Post.find_by(token: json["token"]).is_page?
   end
 

@@ -44,7 +44,7 @@ class Api::HomePagesController < Api::BaseController
         :title, :content, :slug, :published_at, :canonical_url,
         :tags, :hidden, :locale, :status, :content_format,
         except_token: false
-      ).merge(is_page: true, is_home_page: true, show_in_navigation: false)
+      ).merge(is_page: true, is_home_page: true)
     end
 
     def page_json(page)
