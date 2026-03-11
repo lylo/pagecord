@@ -55,7 +55,7 @@ class Api::HomePagesController < Api::BaseController
     def page_json(page)
       fields = %i[token title slug status published_at canonical_url tag_list hidden locale show_in_navigation created_at updated_at]
       page.as_json(only: fields).merge(
-        content: page.content.to_s,
+        content: page.content.body.to_html,
         is_page: true,
         is_home_page: true
       )

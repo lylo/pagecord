@@ -72,6 +72,6 @@ class Api::PostsController < Api::BaseController
 
     def post_json(post)
       fields = %i[token title slug status published_at canonical_url tag_list hidden locale created_at updated_at]
-      post.as_json(only: fields).merge(content: post.content.to_s)
+      post.as_json(only: fields).merge(content: post.content.body.to_html)
     end
 end

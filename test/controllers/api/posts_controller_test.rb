@@ -283,6 +283,27 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert json.key?("errors")
   end
 
+  test "create with attachment returns stored html not rendered html" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+
+    post "/posts", params: {
+      title: "With Image",
+      content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      status: "published"
+    }, headers: auth_header
+
+    assert_response :created
+    json = JSON.parse(response.body)
+    assert_includes json["content"], "action-text-attachment"
+    assert_includes json["content"], "sgid="
+    assert_not_includes json["content"], "<figure"
+    assert_not_includes json["content"], "<img"
+  end
+
   # -- Update --
 
   test "update changes post attributes" do
