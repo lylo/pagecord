@@ -69,7 +69,7 @@ Parameters:
 - `status` — `published` or `draft`
 - `published_at` — ISO 8601 timestamp
 - `canonical_url` — canonical URL for the post
-- `tags_string` — comma-separated tags
+- `tags` — comma-separated tags
 - `hidden` — `true` to hide from the feed
 - `locale` — post language code
 

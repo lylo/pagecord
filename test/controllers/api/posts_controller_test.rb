@@ -159,6 +159,16 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "published", json["status"]
   end
 
+  test "create with tags" do
+    post "/posts", params: {
+      title: "Tagged", content: "Hello", tags: "ruby, rails", status: "published"
+    }, headers: auth_header
+
+    assert_response :created
+    json = JSON.parse(response.body)
+    assert_equal %w[rails ruby], json["tag_list"]
+  end
+
   test "create makes a draft post" do
     assert_difference "Post.count" do
       post "/posts", params: {

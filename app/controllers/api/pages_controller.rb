@@ -59,7 +59,8 @@ class Api::PagesController < Api::BaseController
     end
 
     def page_params
-      permitted = params.except(:token).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale, :status, :content_format, :show_in_navigation)
+      permitted = params.except(:token).permit(:title, :content, :slug, :published_at, :canonical_url, :tags, :hidden, :locale, :status, :content_format, :show_in_navigation)
+      permitted[:tags_string] = permitted.delete(:tags) if permitted.key?(:tags)
 
       if permitted.delete(:content_format) == "markdown" && permitted[:content].present?
         attributes, html = Post::Markdown.render(permitted[:content])
