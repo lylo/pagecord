@@ -186,7 +186,7 @@ GEM
       multipart-post (~> 2.0)
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
-    fastimage (2.4.0)
+    fastimage (2.4.1)
     feature_toggles (1.2.1)
     ffi (1.17.3-aarch64-linux-gnu)
     ffi (1.17.3-aarch64-linux-musl)
