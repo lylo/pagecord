@@ -51,6 +51,16 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes titles, "The Art of Street Photography"
   end
 
+  test "index returns 400 for invalid published_after timestamp" do
+    get "/pages", params: { published_after: "not-a-date" }, headers: auth_header
+    assert_response :bad_request
+  end
+
+  test "index returns 400 for out-of-range page" do
+    get "/pages", params: { page: 999 }, headers: auth_header
+    assert_response :bad_request
+  end
+
   # -- Show --
 
   test "show returns a page" do
@@ -120,6 +130,14 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "From Front Matter", json["title"]
     assert_equal "fm-page", json["slug"]
     assert_includes json["content"], "<strong>body</strong>"
+  end
+
+  test "create returns 400 for invalid status" do
+    post "/pages", params: {
+      title: "Bad Status", content: "Body", status: "bogus"
+    }, headers: auth_header
+
+    assert_response :bad_request
   end
 
   test "create returns 422 with invalid params" do

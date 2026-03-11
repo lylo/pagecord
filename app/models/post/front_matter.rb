@@ -1,4 +1,6 @@
 class Post::FrontMatter
+  class InvalidError < StandardError; end
+
   MAPPING = {
     "title" => :title, "slug" => :slug, "published_at" => :published_at, "date" => :published_at,
     "canonical_url" => :canonical_url, "locale" => :locale, "status" => :status,
@@ -17,5 +19,7 @@ class Post::FrontMatter
     end
 
     attributes
+  rescue Psych::SyntaxError => e
+    raise InvalidError, e.message
   end
 end

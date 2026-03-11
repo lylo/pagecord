@@ -109,6 +109,21 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert response.headers["link"].present?
   end
 
+  test "index returns 400 for invalid published_after timestamp" do
+    get "/posts", params: { published_after: "not-a-date" }, headers: auth_header
+    assert_response :bad_request
+  end
+
+  test "index returns 400 for invalid published_before timestamp" do
+    get "/posts", params: { published_before: "garbage" }, headers: auth_header
+    assert_response :bad_request
+  end
+
+  test "index returns 400 for out-of-range page" do
+    get "/posts", params: { page: 999 }, headers: auth_header
+    assert_response :bad_request
+  end
+
   # -- Show --
 
   test "show returns a post" do
@@ -211,6 +226,19 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "2024-06-15", Time.parse(json["published_at"]).strftime("%Y-%m-%d")
   end
 
+  test "create returns 422 with malformed front matter in markdown" do
+    post "/posts", params: {
+      title: "Broken FM",
+      content: "---\ntitle: [invalid\nyaml: :\n---\nBody text",
+      content_format: "markdown",
+      status: "published"
+    }, headers: auth_header
+
+    assert_response :unprocessable_entity
+    json = JSON.parse(response.body)
+    assert_match /Invalid front matter/, json["error"]
+  end
+
   test "create leaves html untouched without content_format" do
     post "/posts", params: {
       title: "HTML Post", content: "<p>Hello <strong>world</strong></p>", status: "published"
@@ -229,6 +257,14 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     json = JSON.parse(response.body)
     assert_includes json["content"], "<strong>content</strong>"
+  end
+
+  test "create returns 400 for invalid status" do
+    post "/posts", params: {
+      title: "Bad Status", content: "Body", status: "bogus"
+    }, headers: auth_header
+
+    assert_response :bad_request
   end
 
   test "create returns 422 with invalid params" do

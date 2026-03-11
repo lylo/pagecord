@@ -60,4 +60,10 @@ class Post::FrontMatterTest < ActiveSupport::TestCase
     attrs = Post::FrontMatter.parse("")
     assert_equal({}, attrs)
   end
+
+  test "raises InvalidError for malformed yaml" do
+    assert_raises(Post::FrontMatter::InvalidError) do
+      Post::FrontMatter.parse("title: [invalid\nyaml: :")
+    end
+  end
 end

@@ -15,8 +15,8 @@ class Api::PostsController < Api::BaseController
       posts = posts.published.released
     end
 
-    posts = posts.where("published_at >= ?", params[:published_after]) if params[:published_after]
-    posts = posts.where("published_at <= ?", params[:published_before]) if params[:published_before]
+    posts = posts.where("published_at >= ?", Time.iso8601(params[:published_after])) if params[:published_after]
+    posts = posts.where("published_at <= ?", Time.iso8601(params[:published_before])) if params[:published_before]
 
     @pagy, @posts = pagy(posts.order(published_at: :desc))
     set_pagination_headers(@pagy)

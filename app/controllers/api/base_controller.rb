@@ -11,6 +11,18 @@ class Api::BaseController < ActionController::API
     render json: { error: "Not found" }, status: :not_found
   end
 
+  rescue_from ArgumentError do |e|
+    render json: { error: e.message }, status: :bad_request
+  end
+
+  rescue_from Post::FrontMatter::InvalidError do |e|
+    render json: { error: "Invalid front matter: #{e.message}" }, status: :unprocessable_entity
+  end
+
+  rescue_from Pagy::RangeError do
+    render json: { error: "Page out of range" }, status: :bad_request
+  end
+
   rate_limit to: 60, within: 1.minute, by: -> { Current.blog&.id || request.remote_ip }, with: :rate_limit_reached
 
   private
@@ -40,7 +52,6 @@ class Api::BaseController < ActionController::API
     end
 
     def set_pagination_headers(pagy)
-      headers = pagy.headers_hash(headers_map: { page: nil, limit: nil, count: "X-Total-Count", pages: nil })
-      response.headers.merge!(headers)
+      response.headers.merge!(pagy.headers_hash(headers_map: { page: nil, limit: nil, count: "X-Total-Count", pages: nil }))
     end
 end

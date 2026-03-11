@@ -24,7 +24,7 @@ module DomainConstraints
     elsif Rails.env.production?
       request.host == "api.#{Rails.application.config.x.domain}"
     else
-      true
+      request.host.start_with?("api.")
     end
   end
 end
