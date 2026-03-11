@@ -1,5 +1,4 @@
 class App::PagesController < AppController
-  include EditorPreparation
   def index
     home_page_id = Current.user.blog.home_page_id
     @pages = Current.user.blog.pages.kept.published.order(:title).sort_by { |p| p.id == home_page_id ? 0 : 1 }
@@ -22,7 +21,6 @@ class App::PagesController < AppController
 
   def edit
     @page = Current.user.blog.pages.kept.find_by!(token: params[:token])
-    prepare_content_for_editor(@page)
   end
 
   def update

@@ -170,6 +170,7 @@ Rails.application.routes.draw do
       member do
         post :restore
       end
+      resource :subscription, only: [ :update ]
     end
     namespace :moderation do
       root to: redirect("/admin/moderation/spam")

@@ -115,6 +115,17 @@
           <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.cancelled_at.strftime('%B %d, %Y') %></dd>
         </div>
       <% end %>
+      <% if @user.subscription.paddle_subscription_id.present? %>
+        <div>
+          <dt class="font-medium text-slate-900 dark:text-slate-50 mb-2">Extend Billing Date</dt>
+          <dd>
+            <%= form_with url: admin_user_subscription_path(@user), method: :patch, class: "flex items-center gap-2", data: { turbo: false } do |f| %>
+              <%= f.date_field :next_billed_at, value: @user.subscription.next_billed_at&.to_date, class: "form-field rounded-lg text-sm px-3 py-1.5 dark:[color-scheme:dark]" %>
+              <%= f.submit "Update", class: "btn-secondary py-1.5" %>
+            <% end %>
+          </dd>
+        </div>
+      <% end %>
     </dl>
   </div>
   <% end %>

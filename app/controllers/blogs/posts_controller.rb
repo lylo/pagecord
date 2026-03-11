@@ -8,7 +8,7 @@ class Blogs::PostsController < Blogs::BaseController
 
   def index
     # FIXME this filtered check can be removed after cache has been reset
-    filtered = params[:tag].present?
+    filtered = params[:tag].present? || params[:title].present?
     if request.format.html? && @blog.has_custom_home_page? && !filtered
       @post = @blog.home_page
       if @post&.published? && !@post.pending?
@@ -27,10 +27,15 @@ class Blogs::PostsController < Blogs::BaseController
       .includes(:upvotes)
       .order(published_at: :desc, id: :desc)
 
-    # Filter by tag if specified
     if params[:tag].present?
-      base_scope = base_scope.tagged_with(params[:tag])
-      @current_tag = params[:tag]
+      @current_tags = params[:tag].split(",").map(&:strip)
+      base_scope = base_scope.tagged_with_any(@current_tags)
+    end
+
+    if params[:title] == "true"
+      base_scope = base_scope.where.not(title: [ nil, "" ])
+    elsif params[:title] == "false"
+      base_scope = base_scope.where(title: [ nil, "" ])
     end
 
     @pagy, @posts = pagy(base_scope, limit: page_size)

@@ -20,6 +20,21 @@ class Subscription < ApplicationRecord
     SubscriptionsHelper::PRICE_IDS[:monthly].values.include?(price_id) ? "monthly" : "annual"
   end
 
+  def extend_to(date)
+    new_date = Time.zone.parse(date.to_s)
+    response = PaddleApi.new.patch("subscriptions/#{paddle_subscription_id}", {
+      next_billed_at: new_date.iso8601,
+      proration_billing_mode: "do_not_bill"
+    }.to_json)
+    parsed = JSON.parse(response.body)
+
+    if response.success?
+      update!(next_billed_at: new_date)
+    else
+      raise "Paddle error: #{parsed.dig("error", "detail") || parsed}"
+    end
+  end
+
   def active?
     complimentary? || !lapsed?
   end

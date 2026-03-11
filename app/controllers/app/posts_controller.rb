@@ -1,6 +1,5 @@
 class App::PostsController < AppController
   include Pagy::Method
-  include EditorPreparation
 
   rescue_from Pagy::RangeError, with: :redirect_to_first_page
 
@@ -32,8 +31,6 @@ class App::PostsController < AppController
   def edit
     @post = Current.user.blog.posts.kept.find_by!(token: params[:token])
 
-    prepare_content_for_editor(@post)
-
     session[:return_to_page] = params[:page].presence
   end
 
@@ -64,7 +61,6 @@ class App::PostsController < AppController
 
       redirect_to app_posts_path(options), notice: "Post was successfully updated"
     else
-      prepare_content_for_editor(@post)
       render :edit, status: :unprocessable_entity
     end
   end
