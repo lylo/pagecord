@@ -96,35 +96,6 @@ class PostTest < ActiveSupport::TestCase
     assert_not_includes blog.posts, page
   end
 
-  test "should filter navigation pages" do
-    blog = blogs(:joel)
-    visible_page = blog.posts.create!(
-      title: "Test Navigation Page",
-      content: "Navigation page content",
-      is_page: true,
-      show_in_navigation: true,
-      status: :published,
-      published_at: 1.day.ago
-    )
-    non_nav_page = blog.posts.create!(
-      title: "Hidden Page",
-      content: "Hidden content",
-      is_page: true,
-      show_in_navigation: false,
-      status: :published,
-      published_at: 1.day.ago
-    )
-
-    assert_includes blog.pages.navigation_pages.visible, visible_page
-    assert_not_includes blog.pages.navigation_pages.visible, non_nav_page
-  end
-
-  test "show_in_navigation defaults to true" do
-    blog = blogs(:joel)
-    page = blog.posts.build(is_page: true)
-    assert page.show_in_navigation
-  end
-
   test "is_page defaults to false" do
     blog = blogs(:joel)
     post = blog.posts.build
@@ -134,13 +105,11 @@ class PostTest < ActiveSupport::TestCase
   test "fixture pages should be correctly configured" do
     about_page = posts(:about)
     assert about_page.page?
-    assert about_page.show_in_navigation?
     assert_equal "about", about_page.slug
     assert_equal blogs(:joel), about_page.blog
 
     draft_page = posts(:draft_page)
     assert draft_page.page?
-    assert_not draft_page.show_in_navigation?
     assert draft_page.draft?
   end
 

@@ -134,8 +134,7 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
       title: title,
       published_at: published_at,
       tag_list: tag_list,
-      is_page: is_page,
-      show_in_navigation: false
+      is_page: is_page
     )
 
     # Step 1: Extract the <article> as basis of post
@@ -303,8 +302,7 @@ def import_from_json(path, blog, dry_run = false, as_pages = false)
       title: title,
       published_at: published_at,
       tag_list: tag_list,
-      is_page: is_page,
-      show_in_navigation: false
+      is_page: is_page
     )
 
     # Process images in HTML content
