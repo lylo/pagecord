@@ -98,11 +98,11 @@
     margin-block: var(--lexxy-content-margin);
   }
 
-  br + action-text-attachment {
+  br + :is(action-text-attachment, .attachment) {
     margin-top: 0;
   }
 
-  action-text-attachment + br {
+  :is(action-text-attachment, .attachment) + br {
     display: none;
   }
 

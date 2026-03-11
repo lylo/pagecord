@@ -1,7 +1,6 @@
-<% content = Html::StripActionTextAttachments.new.transform(@post.content.to_s) %>
 <div class="digest">
   <div class="post-content">
-    <%= strip_video_tags(content).html_safe %>
+    <%= render_digest_post_content(@post) %>
   </div>
 
   <% unless @test %>

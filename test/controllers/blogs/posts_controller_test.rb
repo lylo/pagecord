@@ -103,6 +103,39 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal post, assigns(:post)
   end
 
+  test "should render image attachments without action text wrappers on post show" do
+    post = create_content_with_attachment(
+      blog: @blog,
+      title: "Image Post",
+      caption: "Post caption"
+    )
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_includes @response.body, "<figure"
+    assert_includes @response.body, "<img"
+    assert_includes @response.body, "Post caption"
+    assert_not_includes @response.body, "action-text-attachment"
+  end
+
+  test "should render image attachments without action text wrappers on page show" do
+    page = create_content_with_attachment(
+      blog: @blog,
+      title: "Image Page",
+      caption: "Page caption",
+      is_page: true
+    )
+
+    get blog_post_path(page.slug)
+
+    assert_response :success
+    assert_includes @response.body, "<figure"
+    assert_includes @response.body, "<img"
+    assert_includes @response.body, "Page caption"
+    assert_not_includes @response.body, "action-text-attachment"
+  end
+
   test "should include no-follow meta tag for hidden posts" do
     post = @blog.posts.create!(
       title: "Hidden Post",
@@ -991,5 +1024,21 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     def host_subdomain!(name)
       host! "#{name}.#{Rails.application.config.x.domain}"
+    end
+
+    def create_content_with_attachment(blog:, title:, caption:, is_page: false)
+      blob = ActiveStorage::Blob.create_and_upload!(
+        io: file_fixture("space.jpg").open,
+        filename: "space.jpg",
+        content_type: "image/jpeg"
+      )
+
+      blog.posts.create!(
+        title: title,
+        content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}" caption="#{caption}"></action-text-attachment>),
+        is_page: is_page,
+        status: :published,
+        published_at: 30.minutes.ago
+      )
     end
 end

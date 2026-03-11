@@ -34,6 +34,19 @@ module PostsHelper
     :post_date
   end
 
+  def render_post_content(post)
+    content = process_dynamic_variables(post)
+    content = Html::StripActionTextAttachments.new.transform(content)
+
+    safe_auto_link(content, sanitize: false).html_safe
+  end
+
+  def render_digest_post_content(post)
+    content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
+
+    strip_video_tags(content).html_safe
+  end
+
   def process_dynamic_variables(post)
     return post.content.to_s unless post.is_page?
 
