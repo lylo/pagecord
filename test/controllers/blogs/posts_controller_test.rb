@@ -250,6 +250,34 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_includes cdata_content, "<p>This is my first post.</p>"
   end
 
+  test "should render image attachments without action text wrappers in RSS feed" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+    @blog.posts.create!(
+      title: "Image Feed Post",
+      content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}" caption="RSS caption"></action-text-attachment>),
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+
+    xml = Nokogiri::XML(@response.body)
+    item = xml.xpath("//item[title='Image Feed Post']").first
+    assert_not_nil item, "Image Feed Post should be in RSS feed"
+
+    cdata_content = item.xpath("description").first.children.find { |node| node.cdata? }.content
+    assert_includes cdata_content, "<figure"
+    assert_includes cdata_content, "<img"
+    assert_includes cdata_content, "RSS caption"
+    assert_not_includes cdata_content, "action-text-attachment"
+  end
+
   test "should map RSS feed aliases to index" do
     get "/feed.xml"
 

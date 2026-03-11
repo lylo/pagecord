@@ -1,13 +1,4 @@
 module PostsHelper
-  def without_action_text_image_wrapper(html)
-    doc = Nokogiri::HTML::DocumentFragment.parse(html)
-    doc.css("action-text-attachment").each do |attachment|
-      figure = attachment.at_css("figure")
-      attachment.replace(figure) if figure
-    end
-    doc.to_html
-  end
-
   def strip_video_tags(html)
     doc = Nokogiri::HTML::DocumentFragment.parse(html)
     doc.css("figure").each do |figure|
