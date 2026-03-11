@@ -51,6 +51,6 @@ class App::PagesController < AppController
     def page_params
       status = params[:button] == "save_draft" ? :draft : :published
 
-      params.require(:post).permit(:title, :content, :slug, :show_in_navigation).merge(is_page: true, status: status)
+      params.require(:post).permit(:title, :content, :slug).merge(is_page: true, status: status)
     end
 end

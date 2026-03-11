@@ -25,7 +25,6 @@ class Post < ApplicationRecord
 
   scope :posts, -> { where(is_page: false) }
   scope :pages, -> { where(is_page: true) }
-  scope :navigation_pages, -> { pages.where(show_in_navigation: true) }
   scope :released, -> { where("published_at <= ?", Time.current) }
   scope :visible, -> { kept.where.not(hidden: true).published.released }
   scope :with_full_rich_text, -> {

@@ -28,7 +28,6 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
     home_page = @blog.reload.home_page
     assert_equal "Welcome", home_page.title
     assert_equal true, home_page.is_page
-    assert_equal false, home_page.show_in_navigation
     assert_equal "published", home_page.status
   end
 
