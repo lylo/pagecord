@@ -54,16 +54,18 @@ class Api::BaseController < ActionController::API
       render json: { error: "Rate limit exceeded" }, status: :too_many_requests
     end
 
-    # Normalizes API-submitted attachment tags into the same Action Text HTML shape
-    # produced by MailParser and the editor.
+    # Normalizes API-submitted attachments into canonical Action Text storage HTML.
     #
-    # Two things happen here:
-    # 1. Replace bare SGID tags with full blob-backed attachment HTML, preserving
-    #    attributes the client may have set, such as caption/presentation.
-    # 2. Remove paragraph wrappers that Markdown introduces around standalone
-    #    attachments. If we leave <action-text-attachment> inside a <p>, Action Text
-    #    later injects a <figure> into invalid paragraph HTML and the browser reparses
-    #    it, which breaks the wrapper on the rendered blog post.
+    # This keeps API-created content aligned with editor-created content by:
+    # 1. Expanding bare SGID attachment tags into full blob-backed
+    #    <action-text-attachment> nodes, preserving client-supplied attributes
+    #    like caption and presentation.
+    # 2. Removing Markdown-added <p> wrappers around standalone attachments, since
+    #    canonical Action Text content stores those nodes at block level.
+    #
+    # We intentionally store <action-text-attachment> here. Public rendering, RSS,
+    # and email may unwrap those wrappers later for display, but the API should
+    # persist canonical Action Text markup.
     def enrich_attachments(html)
       enriched_html = ActionText::Fragment.wrap(html).replace(ActionText::Attachment.tag_name) do |node|
         blob = ActiveStorage::Blob.from_attachable_sgid(node["sgid"].presence || raise(BadRequestError, "Attachment sgid is required"))
