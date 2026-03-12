@@ -101,6 +101,95 @@ namespace :activestorage do
       puts "Files saved to: #{output_dir}"
     end
 
+    desc "Analyze why blobs are orphaned (traces back to post/blog/export)"
+    task analyze: :environment do
+      age = (ENV.fetch("DAYS", 30).to_i).days.ago
+
+      # 1. Dangling attachments — attachment record exists but parent is gone
+      dangling = ActiveStorage::Attachment.where.not(
+        record_type: "ActionText::RichText"
+      ).left_joins(:blob).where("active_storage_blobs.created_at < ?", age).select do |att|
+        !att.record_type.constantize.exists?(att.record_id)
+      end
+
+      dangling_at = ActiveStorage::Attachment.where(
+        record_type: "ActionText::RichText"
+      ).left_joins(:blob).where("active_storage_blobs.created_at < ?", age).select do |att|
+        rich_text = ActionText::RichText.find_by(id: att.record_id)
+        if rich_text.nil?
+          true
+        else
+          !rich_text.record_type.constantize.exists?(rich_text.record_id)
+        end
+      end
+
+      all_dangling = dangling + dangling_at
+
+      puts "Orphan Analysis (blobs older than #{ENV.fetch("DAYS", 30)} days)"
+      puts "=" * 100
+
+      if all_dangling.any?
+        puts ""
+        puts "DANGLING ATTACHMENTS (attachment record exists, parent deleted)"
+        puts "These are safe to purge — the owning record no longer exists."
+        puts ""
+        puts "%-8s %-22s %-8s %-10s %-25s %10s  %s" % [ "Blob ID", "Record Type", "Rec ID", "Status", "Filename", "Size", "Created" ]
+        puts "-" * 100
+
+        dangling_bytes = 0
+        all_dangling.each do |att|
+          blob = att.blob
+          next unless blob
+
+          status = if att.record_type == "ActionText::RichText"
+            rt = ActionText::RichText.find_by(id: att.record_id)
+            rt.nil? ? "no rich_text" : "no #{rt.record_type.underscore}"
+          else
+            "no #{att.record_type.underscore}"
+          end
+
+          dangling_bytes += blob.byte_size
+          puts "%-8d %-22s %-8d %-10s %-25s %10s  %s" % [
+            blob.id,
+            att.record_type.truncate(20),
+            att.record_id,
+            status.truncate(10),
+            blob.filename.to_s.truncate(23),
+            ActiveSupport::NumberHelper.number_to_human_size(blob.byte_size),
+            blob.created_at.strftime("%Y-%m-%d")
+          ]
+        end
+
+        puts "-" * 100
+        puts "Subtotal: #{all_dangling.size} blobs, #{ActiveSupport::NumberHelper.number_to_human_size(dangling_bytes)}"
+      else
+        puts ""
+        puts "No dangling attachments found."
+      end
+
+      # 2. Fully unattached blobs — no attachment record at all
+      unattached = ActiveStorage::Blob.unattached.where("active_storage_blobs.created_at < ?", age).order(created_at: :desc)
+      unattached_count = unattached.count
+
+      puts ""
+      if unattached_count > 0
+        puts "UNATTACHED BLOBS (no attachment record — likely failed or abandoned uploads)"
+        puts ""
+
+        by_type = unattached.group(:content_type).order("count_all DESC").count
+        by_type.each do |type, count|
+          bytes = unattached.where(content_type: type).sum(:byte_size)
+          puts "  %-30s %5d  %s" % [ type, count, ActiveSupport::NumberHelper.number_to_human_size(bytes) ]
+        end
+
+        total_bytes = unattached.sum(:byte_size)
+        puts ""
+        puts "Subtotal: #{unattached_count} blobs, #{ActiveSupport::NumberHelper.number_to_human_size(total_bytes)}"
+      else
+        puts "No unattached blobs found."
+      end
+    end
+
     desc "Purge unattached blobs older than DAYS days (default 30, CONFIRM=true to execute)"
     task purge: :environment do
       age = (ENV.fetch("DAYS", 30).to_i).days.ago
