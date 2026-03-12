@@ -176,9 +176,9 @@ namespace :activestorage do
         puts "UNATTACHED BLOBS (no attachment record — likely failed or abandoned uploads)"
         puts ""
 
-        by_type = unattached.group(:content_type).order("count_all DESC").count
+        by_type = unattached.reorder("").group(:content_type).order("count_all DESC").count
         by_type.each do |type, count|
-          bytes = unattached.where(content_type: type).sum(:byte_size)
+          bytes = unattached.reorder("").where(content_type: type).sum(:byte_size)
           puts "  %-30s %5d  %s" % [ type, count, ActiveSupport::NumberHelper.number_to_human_size(bytes) ]
         end
 
