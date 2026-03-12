@@ -31,13 +31,14 @@ namespace :activestorage do
     end
   end
 
-  desc "List unattached blobs (purge candidates)"
+  desc "List unattached blobs older than DAYS days (default 30)"
   task orphans: :environment do
-    orphans = ActiveStorage::Blob.unattached.order(created_at: :desc)
+    age = (ENV.fetch("DAYS", 30).to_i).days.ago
+    orphans = ActiveStorage::Blob.unattached.where("active_storage_blobs.created_at < ?", age).order(created_at: :desc)
     count = orphans.count
 
     if count == 0
-      puts "No unattached blobs found."
+      puts "No unattached blobs older than #{ENV.fetch("DAYS", 30)} days found."
       next
     end
 
@@ -61,16 +62,17 @@ namespace :activestorage do
   end
 
   namespace :orphans do
-    desc "Download unattached blobs to local directory (OUTPUT_DIR env var)"
+    desc "Download unattached blobs older than DAYS days (default 30) to OUTPUT_DIR"
     task download: :environment do
       output_dir = ENV.fetch("OUTPUT_DIR", Rails.root.join("tmp/orphaned_blobs").to_s)
       FileUtils.mkdir_p(output_dir)
 
-      orphans = ActiveStorage::Blob.unattached.order(:id)
+      age = (ENV.fetch("DAYS", 30).to_i).days.ago
+      orphans = ActiveStorage::Blob.unattached.where("active_storage_blobs.created_at < ?", age).order(:id)
       count = orphans.count
 
       if count == 0
-        puts "No unattached blobs to download."
+        puts "No unattached blobs older than #{ENV.fetch("DAYS", 30)} days to download."
         next
       end
 
@@ -99,13 +101,14 @@ namespace :activestorage do
       puts "Files saved to: #{output_dir}"
     end
 
-    desc "Purge unattached blobs (dry run by default, CONFIRM=true to execute)"
+    desc "Purge unattached blobs older than DAYS days (default 30, CONFIRM=true to execute)"
     task purge: :environment do
-      orphans = ActiveStorage::Blob.unattached.order(:id)
+      age = (ENV.fetch("DAYS", 30).to_i).days.ago
+      orphans = ActiveStorage::Blob.unattached.where("active_storage_blobs.created_at < ?", age).order(:id)
       count = orphans.count
 
       if count == 0
-        puts "No unattached blobs to purge."
+        puts "No unattached blobs older than #{ENV.fetch("DAYS", 30)} days to purge."
         next
       end
 
