@@ -30,6 +30,7 @@ class App::PostsController < AppController
 
   def edit
     @post = Current.user.blog.posts.kept.find_by!(token: params[:token])
+    sanitize_content_for_editor(@post)
 
     session[:return_to_page] = params[:page].presence
   end
@@ -73,6 +74,13 @@ class App::PostsController < AppController
   end
 
   private
+
+    def sanitize_content_for_editor(post)
+      body = post.content.body&.to_s
+      return if body.blank?
+
+      post.content = Html::StripWhitespaceNodes.new.transform(body)
+    end
 
     def post_params
       status = params[:button] == "save_draft" ? :draft : :published

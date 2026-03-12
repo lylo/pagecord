@@ -73,13 +73,14 @@ Docker: prefix commands with `docker-compose exec web`
 - **Auth**: Passwordless login via AccessRequest tokens (1-day expiry). EmailChangeRequest for email updates. Both use Verifiable concern.
 - **Routing**: Constraint-based — pagecord.com for app/auth, subdomains and custom domains for blog content
 - **Storage**: ActiveStorage on Cloudflare R2. Soft deletion with Discard gem. StorageTrackable concern tracks attachment bytes/count per blog.
+- **API**: `Api::BaseController` handles token auth via `Blog.find_by_api_key`, premium check, `:api` feature flag, 60 req/min rate limit, `wrap_parameters false`, RFC 5988 `Link` + `X-Total-Count` pagination headers, and shared param handling via `permitted_content_params`. Controllers: `Api::PostsController` (CRUD), `Api::PagesController` (CRUD), `Api::HomePagesController` (CRUD, singular resource, second create returns `422`), `Api::AttachmentsController` (file upload → standalone blob → `attachable_sgid`). `content` is always stored as HTML; `content_format=markdown` first renders via Redcarpet with front matter support, then attachment enrichment runs on the resulting HTML. API rich text attachments are blob-only and canonicalized with the same `ActionText::Attachment.from_attachable(..., url: ...)` path used by MailParser via `Html::AttachmentPreview`. Upload limits live in `UploadLimits::CONTENT_TYPES` (`app/models/upload_limits.rb`).
 - **Background**: Sidekiq + Redis. Cron via `whenever` gem (see `config/schedule.rb`)
 - **External services**: Postmark + Mailpace (email, dual provider), Sentry (errors), AppSignal (observability), Hatchbox (hosting/custom domains), Paddle (billing)
 
 ### Billing & Access
 - **Payments**: Paddle webhooks (`Billing::PaddleEventsController`) → Subscription model. Plans: monthly, annual, complimentary
 - **Trial**: 14-day free trial. `has_premium_access?` = subscribed OR on trial. `subscribed?` = paid only.
-- Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains
+- Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains, API access
 - Subscriber-only features: email subscriptions, branding removal
 - Payment failures handled automatically by Paddle Retain — don't email customers about failed payments
 
@@ -129,6 +130,7 @@ Docker: prefix commands with `docker-compose exec web`
 ## Key Gotchas
 
 - **ActionText before_save**: Read from `content.to_s` directly — ActionText changes aren't persisted until callback completes
+- **API Markdown attachments**: Redcarpet wraps standalone raw `<action-text-attachment>` tags in `<p>` tags. `Api::BaseController#enrich_attachments` must unwrap attachment-only paragraphs after Markdown conversion or rendered blog HTML loses the outer `<action-text-attachment>` wrapper.
 - **Safari**: Doesn't support `*.localhost` — use Chrome/Firefox for subdomain testing
 - **Blog views**: No Tailwind, use semantic CSS. Check `lexxy-typography.css`, `components.css`, `themes/*.css`
 - **Post text_summary**: Cached plain text column updated via before_save. Use `display_title`, `summary(limit:)` — don't parse ActionText in loops

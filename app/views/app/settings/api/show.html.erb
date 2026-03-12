@@ -1,0 +1,81 @@
+<h3 class="mb-2 font-bold text-xl">API</h3>
+
+<p class="text-slate-800 dark:text-slate-200">
+  Create and manage posts, upload images, and automate your blog with the Pagecord API.
+  Use it with scripts, Shortcuts, Obsidian, or any tool that can make HTTP requests.
+</p>
+
+<% if @blog.user.on_free_plan? %>
+  <div class="mt-6">
+    <%= callout(:info) do %>
+      <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to access the API.
+    <% end %>
+  </div>
+<% else %>
+  <% if @blog.user.on_trial? %>
+    <div class="mt-6"><%= trial_callout("API") %></div>
+  <% end %>
+
+  <% if @api_key.present? %>
+    <div class="mt-6" data-controller="clipboard">
+      <%= callout(:info) do %>
+        <p class="font-medium mb-2">Your new API key:</p>
+        <div class="flex items-center gap-2">
+          <code data-clipboard-target="source" class="flex-1 break-all text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded px-3 py-2 font-mono text-slate-800 dark:text-slate-200 select-all"><%= @api_key %></code>
+          <button type="button" data-action="clipboard#copy" data-clipboard-target="button" class="btn-secondary w-20 justify-center">Copy</button>
+        </div>
+        <p class="mt-2 text-sm">
+          Save this key now &ndash; you won't be able to see it again.
+        </p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="mt-6">
+    <% if @blog.api_key? %>
+      <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-xl my-6">
+        Your API key ending in <code class="text-sm text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono">...<%= @blog.api_key_hint %></code> is active.
+      </div>
+      <div class="flex gap-2">
+        <%= button_to app_settings_api_path, method: :post, class: "btn-primary", data: { turbo_confirm: "This will replace your current API key. Continue?" } do %>
+          Regenerate Key
+        <% end %>
+        <%= button_to app_settings_api_path, method: :delete, class: "btn-danger", data: { turbo_confirm: "Revoke your API key? Any integrations using it will stop working." } do %>
+          Revoke Key
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-slate-800 dark:text-slate-200 mb-4">
+        Generate an API key to get started. You can revoke or regenerate it at any time.
+      </p>
+      <%= button_to "Generate API Key", app_settings_api_path, method: :post, class: "btn-primary" %>
+    <% end %>
+  </div>
+
+  <div class="mt-8 border-t border-slate-200 dark:border-slate-600 pt-6">
+    <h4 class="font-bold text-lg mb-2">Quick start</h4>
+    <p class="text-slate-800 dark:text-slate-200 mb-3">
+      Authenticate all requests with a Bearer token in the <code class="text-sm bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">Authorization</code> header:
+    </p>
+
+    <pre class="text-sm bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg p-4 overflow-x-auto"><code># List your posts
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  https://api.pagecord.com/posts
+
+# Create a post
+curl -X POST https://api.pagecord.com/posts \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d "title=Hello World" \
+  -d "content=&lt;p&gt;My first API post&lt;/p&gt;" \
+  -d "status=published"
+
+# Upload an image
+curl -X POST https://api.pagecord.com/attachments \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "file=@photo.jpg"</code></pre>
+
+    <p class="mt-4 text-slate-800 dark:text-slate-200">
+      Read the full <%= link_to "API documentation", "https://help.pagecord.com/api", class: "underline", target: "_blank" %> for all available endpoints.
+    </p>
+  </div>
+<% end %>

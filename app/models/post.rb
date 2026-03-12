@@ -2,7 +2,7 @@ class Post < ApplicationRecord
   include Discard::Model
   include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable, Post::Emailable
 
-  enum :source, [ :editor, :email ]
+  enum :source, [ :editor, :email, :api ]
 
   self.locale_optional = true
 
@@ -22,6 +22,7 @@ class Post < ApplicationRecord
 
   validate :content_present
   validate :title_present_for_pages
+  validate :one_home_page, on: :create
 
   scope :posts, -> { where(is_page: false) }
   scope :pages, -> { where(is_page: true) }
@@ -55,6 +56,12 @@ class Post < ApplicationRecord
   def title_present_for_pages
     if page? && title.blank? && !home_page?
       errors.add(:title, "can't be blank")
+    end
+  end
+
+  def one_home_page
+    if is_home_page && blog&.has_custom_home_page?
+      errors.add(:base, "Home page already exists")
     end
   end
 

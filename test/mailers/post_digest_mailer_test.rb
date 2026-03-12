@@ -36,6 +36,23 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_match "custom.example.com", email.body.encoded
   end
 
+  test "digest email unwraps image attachments" do
+    email_subscriber = email_subscribers(:one)
+    post = create_post_with_attachment(
+      blog: blogs(:joel),
+      title: "Digest image post",
+      caption: "Digest caption"
+    )
+    post_digests(:one).digest_posts.create!(post: post)
+
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: post_digests(:one)).weekly_digest
+
+    assert_includes email.body.encoded, "<figure"
+    assert_includes email.body.encoded, "<img"
+    assert_includes email.body.encoded, "Digest caption"
+    assert_not_includes email.body.encoded, "action-text-attachment"
+  end
+
   test "individual email renders correctly with post title as subject" do
     blog = blogs(:joel)
     email_subscriber = email_subscribers(:one)
@@ -66,6 +83,26 @@ class PostDigestMailerTest < ActionMailer::TestCase
     email = PostDigestMailer.with(subscriber: email_subscriber, digest: digest).individual
 
     assert_match blog.display_name, email.subject
+  end
+
+  test "individual email unwraps image attachments" do
+    blog = blogs(:joel)
+    email_subscriber = email_subscribers(:one)
+    post = create_post_with_attachment(
+      blog: blog,
+      title: "Individual image post",
+      caption: "Individual caption"
+    )
+
+    digest = PostDigest.create!(blog: blog, kind: :individual)
+    digest.digest_posts.create!(post: post)
+
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: digest).individual
+
+    assert_includes email.body.encoded, "<figure"
+    assert_includes email.body.encoded, "<img"
+    assert_includes email.body.encoded, "Individual caption"
+    assert_not_includes email.body.encoded, "action-text-attachment"
   end
 
   test "individual email includes unsubscribe footer" do
@@ -125,4 +162,21 @@ class PostDigestMailerTest < ActionMailer::TestCase
 
     assert_no_match "Unsubscribe", email.body.encoded
   end
+
+  private
+
+    def create_post_with_attachment(blog:, title:, caption:)
+      blob = ActiveStorage::Blob.create_and_upload!(
+        io: file_fixture("space.jpg").open,
+        filename: "space.jpg",
+        content_type: "image/jpeg"
+      )
+
+      blog.posts.create!(
+        title: title,
+        content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}" caption="#{caption}"></action-text-attachment>),
+        status: :published,
+        published_at: 30.minutes.ago
+      )
+    end
 end

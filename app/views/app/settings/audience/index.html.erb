@@ -19,7 +19,7 @@
 
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
   <% if @blog.email_subscriptions_enabled && Current.user.subscribed? %>
-    <p class="text-slate-600 dark:text-slate-400">
+    <p class="text-slate-800 dark:text-slate-200">
       Your blog has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
     </p>
   <% end %>

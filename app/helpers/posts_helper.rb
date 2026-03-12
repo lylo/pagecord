@@ -1,13 +1,4 @@
 module PostsHelper
-  def without_action_text_image_wrapper(html)
-    doc = Nokogiri::HTML::DocumentFragment.parse(html)
-    doc.css("action-text-attachment").each do |attachment|
-      figure = attachment.at_css("figure")
-      attachment.replace(figure) if figure
-    end
-    doc.to_html
-  end
-
   def strip_video_tags(html)
     doc = Nokogiri::HTML::DocumentFragment.parse(html)
     doc.css("figure").each do |figure|
@@ -41,6 +32,19 @@ module PostsHelper
 
   def published_at_date_format
     :post_date
+  end
+
+  def render_post_content(post)
+    content = process_dynamic_variables(post)
+    content = Html::StripActionTextAttachments.new.transform(content)
+
+    safe_auto_link(content, sanitize: false).html_safe
+  end
+
+  def render_digest_post_content(post)
+    content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
+
+    strip_video_tags(content).html_safe
   end
 
   def process_dynamic_variables(post)
