@@ -39,7 +39,7 @@ class Api::PagesController < Api::BaseController
   end
 
   def update
-    if @page.update(page_params)
+    if @page.update(unchanged_content_skipped(page_params, @page))
       render json: page_json(@page)
     else
       render json: { errors: @page.errors.full_messages }, status: :unprocessable_entity

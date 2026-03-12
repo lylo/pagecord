@@ -84,6 +84,15 @@ class Api::BaseController < ActionController::API
       unwrap_attachment_paragraphs(enriched_html)
     end
 
+    def unchanged_content_skipped(params, record)
+      if params[:content] && record.content.body.present?
+        if ActionText::Content.new(params[:content]).to_html == record.content.body.to_html
+          return params.except(:content)
+        end
+      end
+      params
+    end
+
     def permitted_content_params(*attributes, except_token: true)
       permitted = permitted_params(*attributes, except_token: except_token)
       permitted[:tags_string] = permitted.delete(:tags) if permitted.key?(:tags)

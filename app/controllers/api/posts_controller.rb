@@ -39,7 +39,7 @@ class Api::PostsController < Api::BaseController
   end
 
   def update
-    if @post.update(post_params)
+    if @post.update(unchanged_content_skipped(post_params, @post))
       render json: post_json(@post)
     else
       render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity

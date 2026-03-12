@@ -17,7 +17,7 @@ class Api::HomePagesController < Api::BaseController
   end
 
   def update
-    if @home_page.update(home_page_params)
+    if @home_page.update(unchanged_content_skipped(home_page_params, @home_page))
       render json: page_json(@home_page)
     else
       render json: { errors: @home_page.errors.full_messages }, status: :unprocessable_entity

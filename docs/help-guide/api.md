@@ -201,6 +201,12 @@ POST /posts
 
 The image will render inline in your post, just like images added through the editor.
 
+### Reusing attachments across updates
+
+Each `attachable_sgid` is stable — upload the file once, then reuse the same sgid every time you update the post. Re-uploading an unchanged image creates a new blob and **permanently deletes** the old one.
+
+The `content` field returned by `GET`, `POST`, and `PATCH` responses contains the stored HTML with sgids. Extract and cache these for future updates. Only call `POST /attachments` when you have a genuinely new file to attach.
+
 ### Supported file types and size limits
 
 | Type | Formats | Max size |

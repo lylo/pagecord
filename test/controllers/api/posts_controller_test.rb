@@ -380,6 +380,33 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes json["content"], "<figure"
   end
 
+  test "update with identical content skips attachment churn" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+
+    post "/posts", params: {
+      title: "Image Post",
+      content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      status: "published"
+    }, headers: auth_header
+
+    created_post = Post.find_by(title: "Image Post")
+    stored_html = created_post.content.body.to_html
+
+    assert_no_difference "ActiveStorage::Attachment.count" do
+      patch "/posts/#{created_post.token}", params: {
+        title: "Image Post Updated",
+        content: stored_html
+      }, headers: auth_header
+    end
+
+    assert_response :success
+    assert_equal "Image Post Updated", created_post.reload.title
+  end
+
   test "update returns 422 with invalid params" do
     other = posts(:two)
     patch "/posts/#{@post.token}", params: { slug: other.slug }, headers: auth_header
