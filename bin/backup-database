@@ -31,6 +31,22 @@ rclone move $BACKUP_FOLDER $BUCKET/ 2>/dev/null
 
 echo "Cleaning up old backups..."
 
+# Retention policy:
+#   0-7 days:    keep everything
+#   7-30 days:   keep 1 per day
+#   30-730 days: keep 1 per month
+#   >730 days:   delete all
+#
+# How the awk trick works:
+#   Directories are named YYYY.MM.DD.HH.MM.SS and sorted newest-first.
+#   seen[day]++ is a post-increment used as an awk pattern (condition).
+#   First time a day appears: seen is 0 (falsy) → don't print → KEEP.
+#   Every subsequent time: seen is ≥1 (truthy) → print → piped to rclone purge.
+#   Result: the latest backup per day (or month) survives, the rest are deleted.
+#
+# We filter by directory name rather than rclone's --min-age/--max-age because
+# R2 directories are virtual prefixes with no real timestamps.
+
 CUTOFF_7D=$(date -d '7 days ago' '+%Y.%m.%d')
 CUTOFF_30D=$(date -d '30 days ago' '+%Y.%m.%d')
 CUTOFF_730D=$(date -d '730 days ago' '+%Y.%m.%d')
