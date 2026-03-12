@@ -135,8 +135,8 @@ html, body {
   --lexxy-color-code-bg: var(--color-bg-subtle);
 
 
-  /* FIXME there should be a better way of doing this without !important */
-  .lexxy-content__table-cell--header {
+  .lexxy-content__table-cell--header,
+  th {
     background-color: var(--color-bg-subtle) !important;
   }
 
