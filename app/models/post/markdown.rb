@@ -29,8 +29,14 @@ class Post::Markdown
 
   def markdown
     Redcarpet::Markdown.new(
-      Redcarpet::Render::HTML,
+      Renderer,
       autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true
     )
+  end
+
+  class Renderer < Redcarpet::Render::HTML
+    def block_code(code, language)
+      %(<pre data-language="#{ERB::Util.html_escape(language.presence || "plain")}">#{ERB::Util.html_escape(code)}</pre>)
+    end
   end
 end
