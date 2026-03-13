@@ -1,6 +1,4 @@
 class App::HomePagesController < AppController
-  include EditorPreparation
-
   def new
     @home_page = Current.user.blog.pages.build
   end
@@ -19,7 +17,6 @@ class App::HomePagesController < AppController
   def edit
     @home_page = Current.user.blog.home_page
     redirect_to new_app_home_page_path and return unless @home_page
-    prepare_content_for_editor(@home_page)
   end
 
   def update
@@ -50,7 +47,7 @@ class App::HomePagesController < AppController
       status = params[:button] == "save_draft" ? :draft : :published
 
       params.require(:post).permit(:title, :content, :slug).merge(
-          is_page: true, status: status, is_home_page: true, show_in_navigation: false
+          is_page: true, status: status, is_home_page: true
         )
     end
 end

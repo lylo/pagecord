@@ -1,5 +1,4 @@
 class App::PagesController < AppController
-  include EditorPreparation
   def index
     home_page_id = Current.user.blog.home_page_id
     @pages = Current.user.blog.pages.kept.published.order(:title).sort_by { |p| p.id == home_page_id ? 0 : 1 }
@@ -22,7 +21,6 @@ class App::PagesController < AppController
 
   def edit
     @page = Current.user.blog.pages.kept.find_by!(token: params[:token])
-    prepare_content_for_editor(@page)
   end
 
   def update
@@ -53,6 +51,6 @@ class App::PagesController < AppController
     def page_params
       status = params[:button] == "save_draft" ? :draft : :published
 
-      params.require(:post).permit(:title, :content, :slug, :show_in_navigation).merge(is_page: true, status: status)
+      params.require(:post).permit(:title, :content, :slug).merge(is_page: true, status: status)
     end
 end

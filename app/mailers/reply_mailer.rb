@@ -1,4 +1,5 @@
 class ReplyMailer < MailpaceMailer
+  layout "mailer_minimal"
   helper :routing
 
   def new_reply

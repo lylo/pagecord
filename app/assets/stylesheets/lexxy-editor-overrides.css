@@ -34,6 +34,7 @@ lexxy-editor {
   }
 
   .horizontal-divider {
+    margin-block: var(--lexxy-content-margin);
     padding-block: 0.5em;
 
     hr {

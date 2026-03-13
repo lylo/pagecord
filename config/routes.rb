@@ -17,6 +17,16 @@ module DomainConstraints
       request.host == default_host || request.host == "www.#{default_host}"
     end
   end
+
+  def self.api_domain?(request)
+    if Rails.env.test?
+      request.host == "api.example.com"
+    elsif Rails.env.production?
+      request.host == "api.#{Rails.application.config.x.domain}"
+    else
+      request.host.start_with?("api.")
+    end
+  end
 end
 
 
@@ -85,7 +95,11 @@ Rails.application.routes.draw do
     namespace :posts do
       resources :trash, only: [ :index, :destroy ], param: :token
     end
-    resources :posts, param: :token
+    resources :posts, param: :token do
+      resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
+        post :test
+      end
+    end
 
     namespace :pages do
       resources :trash, only: [ :index, :destroy ], param: :token
@@ -110,7 +124,6 @@ Rails.application.routes.draw do
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
       resources :navigation_items, only: [ :index, :create, :update, :destroy ]
-      resources :email_subscribers, only: [ :index ]
       resources :email_change_requests, only: [ :create, :destroy ] do
         member do
           post :resend
@@ -120,6 +133,7 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :api, only: [ :show, :create, :destroy ], controller: "api"
       resources :exports
 
       resources :sender_email_addresses, only: [ :create, :destroy ] do
@@ -156,6 +170,7 @@ Rails.application.routes.draw do
       member do
         post :restore
       end
+      resource :subscription, only: [ :update ]
     end
     namespace :moderation do
       root to: redirect("/admin/moderation/spam")
@@ -179,6 +194,15 @@ Rails.application.routes.draw do
     end
   end
 
+  constraints(DomainConstraints.method(:api_domain?)) do
+    scope module: :api do
+      resources :posts, only: [ :index, :show, :create, :update, :destroy ], param: :token
+      resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
+      resource :home_page, only: [ :show, :create, :update, :destroy ]
+      resources :attachments, only: [ :create ]
+    end
+  end
+
   constraints(->(request) { !DomainConstraints.default_domain?(request) }) do
     get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
@@ -197,6 +221,7 @@ Rails.application.routes.draw do
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
     resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
+    resources :contact_messages, controller: "blogs/contact_messages", only: [ :create ]
 
     get "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#show", as: :email_subscriber_confirmation
     get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
@@ -205,6 +230,7 @@ Rails.application.routes.draw do
 
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create ], module: :posts
+      get "upvotes/status", to: "posts/upvotes/status#show", as: :upvotes_status
       resources :replies, only: [ :new, :create ], module: :posts
     end
 
@@ -215,6 +241,7 @@ Rails.application.routes.draw do
   constraints(DomainConstraints.method(:default_domain?)) do
     get "/sitemap.xml", to: "public#sitemap", as: :public_sitemap, format: :xml
     get "/robots.txt", to: "public#robots", as: :robots, format: :text
+    get "/llms.txt", to: "public/llms#show", as: :llms_txt, format: :text
     get "/terms", to: "public#terms", as: :terms
     get "/privacy", to: "public#privacy", as: :privacy
     get "/faq", to: "public#faq", as: :faq
@@ -225,6 +252,7 @@ Rails.application.routes.draw do
     get "/pagecord-vs-substack", to: "public#pagecord_vs_substack"
     get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
+    get "/blog-with-newsletter", to: "public#blog_with_newsletter"
 
     get "/shuffle", to: "posts/shuffle#show"
 

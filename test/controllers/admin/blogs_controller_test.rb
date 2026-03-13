@@ -61,10 +61,9 @@ class Admin::BlogsControllerTest < ActionDispatch::IntegrationTest
     get admin_blogs_path, params: { status: "paid" }
     assert_response :success
 
-    # Should show only users with active paid subscriptions
-    paid_count = Subscription.active_paid.count
-    assert_select "div", text: /Showing paid subscribers \(#{paid_count} results?\)/
-    assert_select "a[href='#{admin_blogs_path}']", text: "Clear filters"
+    # Should show filter pill and result count
+    assert_select "span", text: "Paid"
+    assert_select "div", text: /results?/
   end
 
   test "should filter by comped status" do
@@ -74,8 +73,8 @@ class Admin::BlogsControllerTest < ActionDispatch::IntegrationTest
     get admin_blogs_path, params: { status: "comped" }
     assert_response :success
 
-    # Should show only comped users (joel now)
-    assert_select "div", text: /Showing comped users \(1 result\)/
+    # Should show comped filter pill
+    assert_select "span", text: "Comped"
     assert_select "td", text: /joel/
   end
 
@@ -83,7 +82,8 @@ class Admin::BlogsControllerTest < ActionDispatch::IntegrationTest
     get admin_blogs_path, params: { search: "joel", status: "paid" }
     assert_response :success
 
-    assert_select "div", text: /found in paid subscribers for/
+    assert_select "a", text: /Paid/
+    assert_select "div", text: /results?/
   end
 
   test "should preserve status filter when searching" do
@@ -105,7 +105,7 @@ class Admin::BlogsControllerTest < ActionDispatch::IntegrationTest
     get admin_blogs_path, params: { status: "paid" }
     assert_response :success
 
-    assert_select "a[href='#{admin_blogs_path}']", text: /users? in total/
+    assert_select "a[href='#{admin_blogs_path}']", text: /Users/
   end
 
   test "should require admin access" do
@@ -128,6 +128,7 @@ class Admin::BlogsControllerTest < ActionDispatch::IntegrationTest
     get admin_blogs_path, params: { search: "nonexistent", status: "paid" }
     assert_response :success
 
-    assert_select "div", text: /No paid subscribers found for/
+    assert_select "span", text: "Paid"
+    assert_select "div", text: /0 results/
   end
 end

@@ -1,7 +1,7 @@
 module Html
   class LexxyCleaner
     BLOCK_ELEMENTS = %w[
-      figure action-text-attachment blockquote pre ul ol table hr
+      div figure action-text-attachment blockquote pre ul ol table hr
       h1 h2 h3 h4 h5 h6 p img video audio
     ].freeze
 
@@ -26,7 +26,7 @@ module Html
     def flatten_divs(node)
       node.children.each { |child| flatten_divs(child) }
 
-      if node.element? && node.name == "div"
+      if node.element? && node.name == "div" && !node.classes.include?("attachment-gallery")
         if paragraph_like?(node)
           convert_to_paragraph(node)
         else

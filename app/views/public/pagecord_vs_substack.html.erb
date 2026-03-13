@@ -2,6 +2,10 @@
   Pagecord vs Substack: No revenue share. No $50 domain fee. Free forever or $39/year.
 <% end %>
 
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Better Substack Alternative") %>
+<% end %>
+
 <%= content_for :meta_description do %>
   Substack charges $50 for custom domains and takes 10% of your revenue. Pagecord is free forever (Classic) or $39/year (Premium) with custom domains included. Email-to-blog publishing, open source, built to last.
 <% end %>
@@ -109,6 +113,11 @@
         </tr>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Custom CSS</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Embeddable contact form</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
         </tr>

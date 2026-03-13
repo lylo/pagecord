@@ -15,6 +15,7 @@ Click **Analytics** in your dashboard to see your page views.
 - **Page views** — Total views for the selected period
 - **Chart** — Visual breakdown of views over time
 - **Top posts** — Your most-viewed content
+- **Traffic sources** — Where your visitors are coming from
 
 ## Time periods
 
@@ -25,6 +26,14 @@ Switch between different views:
 - **Year** — Month-by-month breakdown
 
 Use the arrows to navigate to previous periods, or click **Today** to jump back to the current period. Click the date icon to select a specific day to view.
+
+## Traffic sources
+
+The traffic sources list shows where your visitors are coming from, ranked by popularity. This includes search engines, social media, and external sites linking to your posts.
+
+Direct traffic includes both typed URLs and visits from sources that don't pass referrer data, such as email clients, certain apps, and privacy-focused browsers.
+
+Traffic source data is available from January 2026 onwards.
 
 ## Privacy-focused
 

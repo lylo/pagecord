@@ -1,13 +1,17 @@
 de:
   email_subscribers:
     form:
-      subscribe_description: "Abonniere den Newsletter, um wöchentlich eine Zusammenfassung der Beiträge in deinem Posteingang zu erhalten"
+      subscribe_description:
+        digest: "Abonniere den Newsletter, um wöchentlich eine Zusammenfassung der Beiträge in deinem Posteingang zu erhalten"
+        individual: "Abonniere, um neue Beiträge per E-Mail zu erhalten"
       email_placeholder: "E-Mail eingeben..."
       submit_button: "Abonnieren"
     create:
       success_message: "Danke fürs Abonnieren. Eine Bestätigungs-E-Mail ist unterwegs an %{email}"
     confirmations:
-      success_message: "Dein Abonnement bei %{blog_name} ist bestätigt. Du erhältst eine wöchentliche E-Mail-Zusammenfassung, wenn neue Beiträge veröffentlicht werden."
+      success_message:
+        digest: "Dein Abonnement bei %{blog_name} ist bestätigt. Du erhältst eine wöchentliche E-Mail-Zusammenfassung, wenn neue Beiträge veröffentlicht werden."
+        individual: "Dein Abonnement bei %{blog_name} ist bestätigt. Du erhältst eine E-Mail, wenn neue Beiträge veröffentlicht werden."
       unsubscribe_link: "Abmelden"
     unsubscribes:
       success_message: "Du bist nun von %{blog_name} abgemeldet 👋"
@@ -15,6 +19,11 @@ de:
       unsubscribe_button: "Abmelden"
       not_found: "Kein E-Mail-Abonnement gefunden"
     mailers:
+      shared:
+        footer: "Du hast den Newsletter abonniert, um neue Beiträge von %{blog_name} zu erhalten."
+        unsubscribe_link: "Abmelden"
+        unsubscribe_text: "Zum Abmelden klicke auf den folgenden Link:"
+        view_online: "Diesen Beitrag online ansehen"
       confirmation:
         subject: "Bestätige dein Abonnement bei %{blog_name}"
         message: "Bitte bestätige dein Abonnement bei %{blog_name}. Wenn du dich nicht anmelden wolltest, kannst du diese E-Mail ignorieren."
@@ -23,19 +32,13 @@ de:
         subject: "Neue Beiträge von %{blog_name} - %{date}"
         footer: "Du hast den Newsletter abonniert, um neue Beiträge von %{blog_name} zu erhalten."
         unsubscribe_link: "Abmelden"
+      individual:
+        default_subject: "Neuer Beitrag von %{blog_name} — %{date}"
   posts:
     read_more: "Weiterlesen"
   replies:
     form:
-      name_label: "Dein Name"
-      email_label: "Deine E-Mail"
       subject_label: "Betreff"
-      message_label: "Nachricht"
-      submit_button: "Antwort senden"
       cancel_link: "Abbrechen"
-    success_message: "Antwort erfolgreich gesendet!"
     mailer:
       intro: "Toll! Jemand hat auf deinen Beitrag geantwortet"
-      from_label: "Von"
-      footer: "Antworte auf diese E-Mail, um %{name} zu antworten."
-      footer_text: "Um %{name} zu antworten, antworte einfach auf diese E-Mail."

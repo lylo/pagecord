@@ -134,6 +134,7 @@ class MailParserTest < ActiveSupport::TestCase
       "Attachment should be embedded as action-text-attachment in the content"
 
     # Verify attachment attributes are present
+    assert_includes parser.body, 'url="/rails/active_storage/blobs/redirect/'
     assert_includes parser.body, 'content-type="image/jpeg"'
     assert_includes parser.body, 'filename="attachment.jpg"'
 

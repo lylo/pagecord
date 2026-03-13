@@ -1,0 +1,10 @@
+<% if post.title %>
+## <%= post.title %>
+<% end %>
+
+<%= post.content.to_plain_text %>
+
+
+-- <%= l(post.published_at_in_user_timezone.to_date, format: :post_date) %>
+<%= post_url(post) %>
+

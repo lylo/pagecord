@@ -78,10 +78,6 @@ every :day, at: "8:00 am" do
   runner "ContentModerationDigestJob.perform_later"
 end
 
-every 1.week, at: "6:00 am" do
-  rake "posts:clear_old_raw_content"
-end
-
 every :day, at: "3:30 am" do
   runner "Posts::EmptyTrashJob.perform_later"
 end

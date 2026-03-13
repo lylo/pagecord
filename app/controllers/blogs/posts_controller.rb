@@ -8,11 +8,12 @@ class Blogs::PostsController < Blogs::BaseController
 
   def index
     # FIXME this filtered check can be removed after cache has been reset
-    filtered = params[:tag].present?
+    filtered = params[:tag].present? || params[:title].present?
     if request.format.html? && @blog.has_custom_home_page? && !filtered
       @post = @blog.home_page
       if @post&.published? && !@post.pending?
-        return if fresh_when etag: etag_for(@post), public: true, template: "blogs/posts/show"
+        set_blog_cache_headers
+        return if fresh_when etag: etag_for(@post), last_modified: [ @post.updated_at, @blog.updated_at ].max, public: true, template: "blogs/posts/show"
         return render :show
       end
     end
@@ -26,10 +27,15 @@ class Blogs::PostsController < Blogs::BaseController
       .includes(:upvotes)
       .order(published_at: :desc, id: :desc)
 
-    # Filter by tag if specified
     if params[:tag].present?
-      base_scope = base_scope.tagged_with(params[:tag])
-      @current_tag = params[:tag]
+      @current_tags = params[:tag].split(",").map(&:strip)
+      base_scope = base_scope.tagged_with_any(@current_tags)
+    end
+
+    if params[:title] == "true"
+      base_scope = base_scope.where.not(title: [ nil, "" ])
+    elsif params[:title] == "false"
+      base_scope = base_scope.where(title: [ nil, "" ])
     end
 
     @pagy, @posts = pagy(base_scope, limit: page_size)
@@ -57,7 +63,10 @@ class Blogs::PostsController < Blogs::BaseController
       .includes(:upvotes)
       .find_by!(slug: blog_params[:slug])
 
-    fresh_when etag: etag_for(@post), public: true, template: "blogs/posts/show"
+    return if flash.any? # Don't cache responses with flash — session skip prevents flash clearing
+
+    set_blog_cache_headers
+    fresh_when etag: etag_for(@post), last_modified: [ @post.updated_at, @blog.updated_at ].max, public: true, template: "blogs/posts/show"
   end
 
   # Handle unmatched routes on blog domains
@@ -76,18 +85,29 @@ class Blogs::PostsController < Blogs::BaseController
     end
 
     def etag_for(post)
-      post.is_page? ? [ post, @blog.posts.maximum(:updated_at) ] : post
+      post.is_page? ? [ post, @blog.posts.maximum(:updated_at), @blog.updated_at ] : [ post, @blog.updated_at ]
     end
 
     def set_conditional_get_headers
-      if stale?(
-        etag: [ @posts.map(&:id), @blog.id, @pagy.page ],
-        last_modified: @posts.maximum(:updated_at),
+      set_blog_cache_headers
+
+      stale?(
+        etag: [ @posts.map(&:id), @blog.id, @blog.updated_at, @pagy.page ],
+        last_modified: [ @posts.maximum(:updated_at), @blog.updated_at ].compact.max,
         public: true
       )
-        true
-      else
-        false
-      end
+    end
+
+    # Enable Cloudflare edge caching for *.pagecord.com blog pages. Sets a
+    # 12-hour edge TTL with tag-based purging (on post save / blog settings
+    # change). Skips the session cookie so Cloudflare doesn't BYPASS the cache.
+    # Custom domains are not edge-cached (they route through Caddy, not Cloudflare).
+    # No-op unless Cloudflare credentials are configured.
+    def set_blog_cache_headers
+      return unless Rails.env.production? && ENV["CLOUDFLARE_ZONE_ID"].present? && ENV["CLOUDFLARE_API_TOKEN"].present?
+
+      response.headers["Cache-Tag"] = @blog.subdomain
+      request.session_options[:skip] = true
+      expires_in 0, public: true, "s-maxage": 12.hours.to_i, "stale-while-revalidate": 1.hour.to_i
     end
 end

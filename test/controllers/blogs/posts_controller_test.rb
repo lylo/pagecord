@@ -103,6 +103,39 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal post, assigns(:post)
   end
 
+  test "should render image attachments without action text wrappers on post show" do
+    post = create_content_with_attachment(
+      blog: @blog,
+      title: "Image Post",
+      caption: "Post caption"
+    )
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_includes @response.body, "<figure"
+    assert_includes @response.body, "<img"
+    assert_includes @response.body, "Post caption"
+    assert_not_includes @response.body, "action-text-attachment"
+  end
+
+  test "should render image attachments without action text wrappers on page show" do
+    page = create_content_with_attachment(
+      blog: @blog,
+      title: "Image Page",
+      caption: "Page caption",
+      is_page: true
+    )
+
+    get blog_post_path(page.slug)
+
+    assert_response :success
+    assert_includes @response.body, "<figure"
+    assert_includes @response.body, "<img"
+    assert_includes @response.body, "Page caption"
+    assert_not_includes @response.body, "action-text-attachment"
+  end
+
   test "should include no-follow meta tag for hidden posts" do
     post = @blog.posts.create!(
       title: "Hidden Post",
@@ -248,6 +281,34 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     cdata_content = xml.xpath("//item/description").first.children.find { |n| n.cdata? }.content
 
     assert_includes cdata_content, "<p>This is my first post.</p>"
+  end
+
+  test "should render image attachments without action text wrappers in RSS feed" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+    @blog.posts.create!(
+      title: "Image Feed Post",
+      content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}" caption="RSS caption"></action-text-attachment>),
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+
+    xml = Nokogiri::XML(@response.body)
+    item = xml.xpath("//item[title='Image Feed Post']").first
+    assert_not_nil item, "Image Feed Post should be in RSS feed"
+
+    cdata_content = item.xpath("description").first.children.find { |node| node.cdata? }.content
+    assert_includes cdata_content, "<figure"
+    assert_includes cdata_content, "<img"
+    assert_includes cdata_content, "RSS caption"
+    assert_not_includes cdata_content, "action-text-attachment"
   end
 
   test "should map RSS feed aliases to index" do
@@ -718,8 +779,9 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path(tag: "rails")
 
     assert_response :success
-    assert_select "div", text: /Showing posts tagged with "rails"/
-    assert_select "a[href='#{blog_posts_list_path}']", text: "Show all posts"
+    assert_select "p", text: /Posts tagged with/
+    assert_select "a.tag-filter-clear[href='#{blog_posts_list_path}']", text: "Show all posts"
+    assert_select "a.tag-filter-rss", text: "RSS feed for these posts"
   end
 
   test "should show no posts message when tag has no matches" do
@@ -728,8 +790,80 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path(tag: "nonexistent")
 
     assert_response :success
-    assert_select "p", text: /No posts found with the tag "nonexistent"/
+    assert_select "p", text: /No posts found/
     assert_select "a[href='#{blog_posts_path}']", text: "View all posts"
+  end
+
+  test "should filter posts by multiple comma-separated tags using OR" do
+    @blog.posts.create!(content: "Full stack post", tags_string: "rails, javascript")
+    @blog.posts.create!(content: "Rails only post", tags_string: "rails")
+    @blog.posts.create!(content: "Python post", tags_string: "python")
+
+    get blog_posts_path(tag: "rails,javascript")
+
+    assert_response :success
+    assert_includes @response.body, "Full stack post"
+    assert_includes @response.body, "Rails only post"
+    assert_not_includes @response.body, "Python post"
+  end
+
+  test "should filter RSS feed by multiple comma-separated tags using OR" do
+    @blog.posts.create!(content: "Full stack post", tags_string: "rails, javascript")
+    @blog.posts.create!(content: "Rails only post", tags_string: "rails")
+    @blog.posts.create!(content: "Python post", tags_string: "python")
+
+    get blog_feed_xml_path(tag: "rails,javascript")
+
+    assert_response :success
+    assert_includes @response.body, "Full stack post"
+    assert_includes @response.body, "Rails only post"
+    assert_not_includes @response.body, "Python post"
+  end
+
+  test "should filter posts with title=true" do
+    @blog.posts.create!(title: "My Titled Post", content: "has a title")
+    @blog.posts.create!(content: "no title here")
+
+    get blog_posts_path(title: "true")
+
+    assert_response :success
+    assert_includes @response.body, "My Titled Post"
+    assert_not_includes @response.body, "no title here"
+  end
+
+  test "should filter posts with title=false" do
+    @blog.posts.create!(title: "My Titled Post", content: "has a title")
+    @blog.posts.create!(content: "no title here")
+
+    get blog_posts_path(title: "false")
+
+    assert_response :success
+    assert_not_includes @response.body, "My Titled Post"
+    assert_includes @response.body, "no title here"
+  end
+
+  test "should filter RSS feed with title=true" do
+    @blog.posts.create!(title: "Titled Post", content: "has a title")
+    @blog.posts.create!(content: "untitled post")
+
+    get blog_feed_xml_path(title: "true")
+
+    assert_response :success
+    assert_includes @response.body, "Titled Post"
+    assert_not_includes @response.body, "untitled post"
+  end
+
+  test "should combine tag and title filters" do
+    @blog.posts.create!(title: "Rails Guide", content: "titled rails", tags_string: "rails")
+    @blog.posts.create!(content: "untitled rails", tags_string: "rails")
+    @blog.posts.create!(title: "Python Guide", content: "titled python", tags_string: "python")
+
+    get blog_posts_path(tag: "rails", title: "true")
+
+    assert_response :success
+    assert_includes @response.body, "Rails Guide"
+    assert_not_includes @response.body, "untitled rails"
+    assert_not_includes @response.body, "Python Guide"
   end
 
   test "should use correct page size for different layouts" do
@@ -890,5 +1024,21 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     def host_subdomain!(name)
       host! "#{name}.#{Rails.application.config.x.domain}"
+    end
+
+    def create_content_with_attachment(blog:, title:, caption:, is_page: false)
+      blob = ActiveStorage::Blob.create_and_upload!(
+        io: file_fixture("space.jpg").open,
+        filename: "space.jpg",
+        content_type: "image/jpeg"
+      )
+
+      blog.posts.create!(
+        title: title,
+        content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}" caption="#{caption}"></action-text-attachment>),
+        is_page: is_page,
+        status: :published,
+        published_at: 30.minutes.ago
+      )
     end
 end
