@@ -252,10 +252,6 @@ GEM
     json-schema (6.2.0)
       addressable (~> 2.8)
       bigdecimal (>= 3.1, < 5)
-    kredis (1.8.0)
-      activemodel (>= 6.0.0)
-      activesupport (>= 6.0.0)
-      redis (>= 4.2, < 6)
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -569,7 +565,6 @@ DEPENDENCIES
   importmap-rails
   inline_svg
   jbuilder
-  kredis (~> 1.7)
   letter_opener_web
   lexxy
   local_time
