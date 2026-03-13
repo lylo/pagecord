@@ -2,10 +2,6 @@ require "active_support/core_ext/integer/time"
 require "appsignal"
 
 Rails.application.configure do
-  # AppSignal 4.8 eagerly installs hooks on Rails main, which triggers
-  # premature framework load warnings during deploy boot.
-  config.appsignal.start_at = :after_initialize
-
   # Prepare the ingress controller used to receive mail
   # config.action_mailbox.ingress = :relay
 
