@@ -37,7 +37,7 @@ class Post < ApplicationRecord
         ]
       )
     }
-  after_commit :purge_blog_cache, on: [ :create, :update, :destroy ]
+  after_commit :touch_blog, on: [ :create, :update, :destroy ]
 
   def content_present
     has_content = content.body.present? && content.body.to_plain_text.strip.present?
@@ -188,10 +188,8 @@ class Post < ApplicationRecord
       end
     end
 
-    def purge_blog_cache
-      return unless Rails.env.production?
+    def touch_blog
       return unless published? || status_previously_changed?
-
-      PurgeCloudflareCacheJob.perform_later(blog_id)
+      blog.touch unless blog.destroyed?
     end
 end

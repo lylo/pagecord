@@ -28,6 +28,7 @@ class NavigationItem < ApplicationRecord
     end
 
     update_column(:position, new_position)
+    blog.touch
   end
 
   private
