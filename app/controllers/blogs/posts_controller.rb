@@ -92,8 +92,8 @@ class Blogs::PostsController < Blogs::BaseController
       set_blog_cache_headers
 
       stale?(
-        etag: [ @posts.map(&:id), @blog.id, @pagy.page ],
-        last_modified: @posts.maximum(:updated_at),
+        etag: [ @posts.map(&:id), @blog.id, @blog.updated_at, @pagy.page ],
+        last_modified: [ @posts.maximum(:updated_at), @blog.updated_at ].compact.max,
         public: true
       )
     end

@@ -1,5 +1,5 @@
 class NavigationItem < ApplicationRecord
-  belongs_to :blog
+  belongs_to :blog, touch: true
   belongs_to :post, optional: true
 
   validates :label, presence: true
