@@ -13,7 +13,7 @@ class Subscription < ApplicationRecord
   }
 
   def self.price(plan = :annual)
-    plan.to_sym == :monthly ? "4" : "29"
+    plan.to_sym == :monthly ? "4" : "39"
   end
 
   def self.plan_from_price_id(price_id)

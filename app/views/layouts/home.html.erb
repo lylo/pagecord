@@ -9,10 +9,10 @@
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
-    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $29/year." %>">
+    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $39/year." %>">
 
     <% og_title = (content_for?(:title) ? content_for(:title) : "Pagecord: Blog Without The Slog.").strip %>
-    <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $29/year.").strip %>
+    <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $39/year.").strip %>
     <% og_image = (content_for?(:og_image) ? content_for(:og_image) : image_url("social/open-graph.webp")).strip %>
 
     <!-- Open Graph / Facebook -->
