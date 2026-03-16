@@ -35,7 +35,7 @@ class AppController < ApplicationController
       return if body.blank?
 
       body = Html::StripWhitespaceNodes.new.transform(body)
-      body = Html::StripGalleryAttachmentChildren.new.transform(body)
+      body = Html::StripAttachmentChildren.new.transform(body)
       record.content = body
     end
 end
