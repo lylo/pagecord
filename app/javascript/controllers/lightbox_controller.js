@@ -3,11 +3,13 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
 
   connect() {
-    // Disable lightbox on mobile devices
-    if (this.isMobile()) return;
+    const mobile = this.isMobile()
 
     // Find all images in article content and make them clickable
     this.element.querySelectorAll('article img').forEach(img => {
+      // On mobile, only enable lightbox for gallery images
+      if (mobile && !img.closest('.attachment-gallery')) return
+
       img.style.cursor = 'zoom-in'
       img.addEventListener('click', this.openLightbox.bind(this, img))
     })
