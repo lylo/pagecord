@@ -7,9 +7,7 @@ class Blogs::PostsController < Blogs::BaseController
   rescue_from Pagy::RangeError, with: :redirect_to_last_page
 
   def index
-    # FIXME this filtered check can be removed after cache has been reset
-    filtered = params[:tag].present? || params[:title].present?
-    if request.format.html? && @blog.has_custom_home_page? && !filtered
+    if request.format.html? && @blog.has_custom_home_page? && !filtered?
       @post = @blog.home_page
       if @post&.published? && !@post.pending?
         set_blog_cache_headers
@@ -22,23 +20,18 @@ class Blogs::PostsController < Blogs::BaseController
   end
 
   def posts_list
-    base_scope = @blog.posts.visible
+    @current_tags = params[:tag].split(",").map(&:strip) if params[:tag].present?
+    @current_lang = params[:lang].to_s.downcase.split("-").first if params[:lang].present?
+
+    scope = @blog.posts.visible
       .with_full_rich_text
       .includes(:upvotes)
       .order(published_at: :desc, id: :desc)
+    scope = scope.tagged_with_any(@current_tags) if @current_tags
+    scope = scope.titled(params[:title]) if params[:title].present?
+    scope = scope.for_locale(@current_lang, @blog.locale) if @current_lang
 
-    if params[:tag].present?
-      @current_tags = params[:tag].split(",").map(&:strip)
-      base_scope = base_scope.tagged_with_any(@current_tags)
-    end
-
-    if params[:title] == "true"
-      base_scope = base_scope.where.not(title: [ nil, "" ])
-    elsif params[:title] == "false"
-      base_scope = base_scope.where(title: [ nil, "" ])
-    end
-
-    @pagy, @posts = pagy(base_scope, limit: page_size)
+    @pagy, @posts = pagy(scope, limit: page_size)
 
     respond_to do |format|
       format.html do

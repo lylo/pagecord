@@ -23,10 +23,15 @@ module PostsHelper
     item.link_url
   end
 
+  def filtered?
+    params[:tag].present? || params[:title].present? || params[:lang].present?
+  end
+
   def filter_description
     parts = []
     parts << "tagged with <strong>#{h @current_tags.join(", ")}</strong>" if @current_tags.present?
     parts << (params[:title] == "true" ? "with titles" : "without titles") if params[:title].present?
+    parts << "in <strong>#{h Post.locale_name(@current_lang)}</strong>" if @current_lang.present?
     safe_join([ "Posts ", parts.join(", ").html_safe ])
   end
 

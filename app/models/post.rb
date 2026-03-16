@@ -28,6 +28,10 @@ class Post < ApplicationRecord
   scope :pages, -> { where(is_page: true) }
   scope :released, -> { where("published_at <= ?", Time.current) }
   scope :visible, -> { kept.where.not(hidden: true).published.released }
+  scope :titled, ->(flag) { flag == "true" ? where.not(title: [ nil, "" ]) : where(title: [ nil, "" ]) }
+  scope :for_locale, ->(locale, blog_locale) {
+    blog_locale == locale ? where(locale: [ locale, nil ]) : where(locale: locale)
+  }
   scope :with_full_rich_text, -> {
       with_rich_text_content_and_embeds.includes(
         :rich_text_content,

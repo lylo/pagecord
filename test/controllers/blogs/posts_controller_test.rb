@@ -820,6 +820,32 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "Python post"
   end
 
+  test "should filter RSS feed by language" do
+    @blog.posts.create!(content: "English post", locale: "en")
+    @blog.posts.create!(content: "Spanish post", locale: "es")
+    @blog.posts.create!(content: "Inherited locale post", locale: nil)
+
+    get blog_feed_xml_path(lang: "en")
+
+    assert_response :success
+    assert_includes @response.body, "English post"
+    assert_includes @response.body, "Inherited locale post"
+    assert_not_includes @response.body, "Spanish post"
+  end
+
+  test "should filter RSS feed by non-blog language" do
+    @blog.posts.create!(content: "English post", locale: "en")
+    @blog.posts.create!(content: "Spanish post", locale: "es")
+    @blog.posts.create!(content: "Inherited locale post", locale: nil)
+
+    get blog_feed_xml_path(lang: "es")
+
+    assert_response :success
+    assert_includes @response.body, "Spanish post"
+    assert_not_includes @response.body, "English post"
+    assert_not_includes @response.body, "Inherited locale post"
+  end
+
   test "should filter posts with title=true" do
     @blog.posts.create!(title: "My Titled Post", content: "has a title")
     @blog.posts.create!(content: "no title here")
