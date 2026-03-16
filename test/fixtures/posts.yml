@@ -113,3 +113,11 @@ non_nav_page:
   slug: hidden-page
   is_page: true
   <<: *default
+
+trix_post:
+  title: Trix Format Post
+  blog: joel
+  published_at: <%= 5.days.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: trix-format-post
+  <<: *default
