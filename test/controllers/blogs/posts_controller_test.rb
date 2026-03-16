@@ -1020,6 +1020,37 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_template "blogs/posts/index"
   end
 
+  # Cache header tests
+
+  test "should set cache headers on default domain in production" do
+    Rails.stubs(:env).returns(ActiveSupport::EnvironmentInquirer.new("production"))
+    ENV.stubs(:[]).with("CLOUDFLARE_ZONE_ID").returns("zone123")
+    ENV.stubs(:[]).with("CLOUDFLARE_API_TOKEN").returns("token123")
+    ENV.stubs(:[]).with(Not(equals("CLOUDFLARE_ZONE_ID") | equals("CLOUDFLARE_API_TOKEN"))).returns(nil)
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_equal @blog.subdomain, @response.headers["Cache-Tag"]
+    assert_includes @response.headers["Cache-Control"], "s-maxage="
+  end
+
+  test "should not set cache headers on custom domain in production" do
+    @blog = blogs(:annie)
+    host! @blog.custom_domain
+
+    Rails.stubs(:env).returns(ActiveSupport::EnvironmentInquirer.new("production"))
+    ENV.stubs(:[]).with("CLOUDFLARE_ZONE_ID").returns("zone123")
+    ENV.stubs(:[]).with("CLOUDFLARE_API_TOKEN").returns("token123")
+    ENV.stubs(:[]).with(Not(equals("CLOUDFLARE_ZONE_ID") | equals("CLOUDFLARE_API_TOKEN"))).returns(nil)
+
+    get "/"
+
+    assert_response :success
+    assert_nil @response.headers["Cache-Tag"]
+    assert_not_includes(@response.headers["Cache-Control"] || "", "s-maxage")
+  end
+
   private
 
     def host_subdomain!(name)

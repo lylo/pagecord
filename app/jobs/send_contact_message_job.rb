@@ -19,10 +19,13 @@ class SendContactMessageJob < ApplicationJob
   private
 
     def spam?(contact_message)
+      blog = contact_message.blog
+      host = blog.custom_domain.presence || "#{blog.subdomain}.#{Rails.application.config.x.domain}"
       detector = MessageSpamDetector.new(
         name: contact_message.name,
         email: contact_message.email,
-        message: contact_message.message
+        message: contact_message.message,
+        page_url: "https://#{host}"
       )
       detector.detect
 

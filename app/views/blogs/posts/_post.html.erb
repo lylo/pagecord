@@ -1,4 +1,4 @@
-<% cache_if(post.post?, post) do %>
+<% cache_if(post.post?, [post, @blog.updated_at]) do %>
   <article class="<%= post.page? ? 'page' : 'post' %> h-entry">
     <%= render "post_title", post: post %>
 

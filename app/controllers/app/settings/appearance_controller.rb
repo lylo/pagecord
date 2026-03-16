@@ -4,8 +4,6 @@ class App::Settings::AppearanceController < AppController
 
   def update
     if @blog.update(appearance_params)
-      @blog.posts.touch_all # cache busting
-
       redirect_to app_settings_path, notice: "Appearance settings updated"
     else
       render :index, status: :unprocessable_entity

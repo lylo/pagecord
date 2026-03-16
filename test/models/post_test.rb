@@ -347,4 +347,53 @@ class PostTest < ActiveSupport::TestCase
     assert_nil post.locale
     assert_equal "fr", post.effective_locale
   end
+
+  # touch_blog callback tests
+
+  test "should touch blog when published post is created" do
+    blog = blogs(:joel)
+    original_updated_at = blog.updated_at
+
+    travel 1.minute do
+      blog.posts.create!(content: "New post", status: :published)
+    end
+
+    assert_not_equal original_updated_at, blog.reload.updated_at
+  end
+
+  test "should touch blog when published post is updated" do
+    blog = blogs(:joel)
+    post = posts(:one)
+    original_updated_at = blog.updated_at
+
+    travel 1.minute do
+      post.update!(title: "Updated title")
+    end
+
+    assert_not_equal original_updated_at, blog.reload.updated_at
+  end
+
+  test "should touch blog when published post is destroyed" do
+    blog = blogs(:joel)
+    post = posts(:one)
+    original_updated_at = blog.updated_at
+
+    travel 1.minute do
+      post.destroy!
+    end
+
+    assert_not_equal original_updated_at, blog.reload.updated_at
+  end
+
+  test "should touch blog when post status changes to published" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Draft post", status: :draft)
+    original_updated_at = blog.reload.updated_at
+
+    travel 1.minute do
+      post.update!(status: :published)
+    end
+
+    assert_not_equal original_updated_at, blog.reload.updated_at
+  end
 end
