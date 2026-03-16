@@ -17,6 +17,7 @@ class App::HomePagesController < AppController
   def edit
     @home_page = Current.user.blog.home_page
     redirect_to new_app_home_page_path and return unless @home_page
+    sanitize_content_for_editor(@home_page)
   end
 
   def update
