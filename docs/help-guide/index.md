@@ -42,10 +42,11 @@ Make your blog your own. Choose a theme, tweak colours, change layouts, add cust
 
 ## Email
 
-Pagecord was built around email. Premium subscribers can enable people to subscribe to their blog via email, and enable the Reply by Email feature.
+Pagecord was built around email. Premium subscribers can enable people to subscribe to their blog via email, and enable the Reply by Email and Contact Form features.
 
 - [Email subscriptions](email-subscriptions.md)
 - [Reply by email](reply-by-email.md)
+- [Contact form](contact-form.md)
 
 ## Custom Domains
 
