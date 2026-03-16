@@ -6,6 +6,6 @@ module Blog::Contactable
   end
 
   def contactable?
-    Rails.features.for(blog: self).enabled?(:contact_form) && user.has_premium_access?
+    user.has_premium_access?
   end
 end
