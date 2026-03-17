@@ -21,7 +21,6 @@ class App::PagesController < AppController
 
   def edit
     @page = Current.user.blog.pages.kept.find_by!(token: params[:token])
-    sanitize_content_for_editor(@page)
   end
 
   def update

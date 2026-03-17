@@ -30,7 +30,6 @@ class App::PostsController < AppController
 
   def edit
     @post = Current.user.blog.posts.kept.find_by!(token: params[:token])
-    sanitize_content_for_editor(@post)
 
     session[:return_to_page] = params[:page].presence
   end

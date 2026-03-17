@@ -29,12 +29,4 @@ class AppController < ApplicationController
     def render_app_not_found
       render "errors/not_found", status: 404
     end
-
-    def sanitize_content_for_editor(record)
-      body = record.content.body&.to_s
-      return if body.blank?
-
-      body = Html::StripAttachmentChildren.new.transform(body)
-      record.content = body
-    end
 end
