@@ -19,8 +19,10 @@ Then:
 ```bash
 git clone https://github.com/lylo/pagecord.git
 cd pagecord
-docker-compose up
+docker compose up
 ```
+
+> **Note**: After pulling new changes or modifying the `Gemfile`/`Dockerfile`, run `docker compose up --build` to rebuild the image.
 
 This will:
 - Start PostgreSQL, Redis, and Memcached containers
@@ -33,17 +35,17 @@ You can view the app at [http://localhost:3000](http://localhost:3000). You can 
 
 ```bash
 # Rails console
-docker-compose exec web bin/rails console
+docker compose exec web bin/rails console
 
 # Run tests
-docker-compose exec web bin/rails test
-docker-compose exec web bin/rails test:system
+docker compose exec web bin/rails test
+docker compose exec web bin/rails test:system
 
 # Run migrations
-docker-compose exec web bin/rails db:migrate
+docker compose exec web bin/rails db:migrate
 
 # Process emails (debug)
-docker-compose exec web bash -c "DIR=tmp/emails rake email:load"
+docker compose exec web bash -c "DIR=tmp/emails rake email:load"
 ```
 
 ### Native Development (Alternative)
