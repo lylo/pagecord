@@ -516,6 +516,132 @@ html, body {
   }
 }
 
+.contact-form,
+.reply-form {
+  width: 100%;
+  max-width: var(--content-width-standard);
+  margin-inline: auto;
+}
+
+.email-subscriber-form {
+  display: flex;
+  justify-content: center;
+  font-size: 0.875em;
+  margin-inline: auto;
+  margin-block: 0 var(--lexxy-content-margin);
+  width: 100%;
+  max-width: 450px;
+}
+
+.email-subscriber-form turbo-frame {
+  display: block;
+  width: 100%;
+}
+
+.form-fieldset {
+  display: flex;
+  border: none;
+}
+
+.email-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.subscription-description {
+  color: var(--color-text);
+}
+
+.subscription-message {
+  color: var(--color-text);
+  text-align: center;
+  line-height: 1.5;
+
+  a {
+    color: var(--color-accent);
+  }
+}
+
+.email-input {
+  width: 12rem;
+}
+
+@media (min-width: 640px) {
+  .email-input {
+    width: 16rem;
+  }
+}
+
+/* Mobile: stack email form vertically on very small screens */
+@media (max-width: 480px) {
+  .email-subscriber-form .form-fieldset {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .email-input {
+    width: 100%;
+  }
+}
+
+.form-container {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .form-container {
+    padding: 1rem;
+  }
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .form-row {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .form-row .form-field {
+    flex: 1;
+  }
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.form-field input,
+.form-field textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
 /* ============================= */
 /* Layout - Post Lists           */
 /* ============================= */
@@ -650,7 +776,7 @@ html, body {
 }
 
 /* ============================= */
-/* Layout - Forms & UI           */
+/* UI Components                 */
 /* ============================= */
 
 button {
@@ -658,21 +784,6 @@ button {
   display: flex;
   cursor: pointer;
   padding: 0;
-}
-
-.email-subscriber-form {
-  display: flex;
-  justify-content: center;
-  font-size: 0.875em;
-  margin-inline: auto;
-  margin-block: 0 var(--lexxy-content-margin);
-  width: 100%;
-  max-width: 450px;
-}
-
-.email-subscriber-form turbo-frame {
-  display: block;
-  width: 100%;
 }
 
 /* Empty state messages */
@@ -845,115 +956,6 @@ button {
 }
 
 /* ============================= */
-/* Layout - Form Fieldsets       */
-/* ============================= */
-
-.form-fieldset {
-  display: flex;
-  border: none;
-}
-
-.email-form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  text-align: center;
-}
-
-.subscription-description {
-  color: var(--color-text);
-}
-
-.subscription-message {
-  color: var(--color-text);
-  text-align: center;
-  line-height: 1.5;
-
-  a {
-    color: var(--color-accent);
-  }
-}
-
-.email-input {
-  width: 12rem;
-}
-
-@media (min-width: 640px) {
-  .email-input {
-    width: 16rem;
-  }
-}
-
-/* Mobile: stack email form vertically on very small screens */
-@media (max-width: 480px) {
-  .email-subscriber-form .form-fieldset {
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-  }
-
-  .email-input {
-    width: 100%;
-  }
-}
-
-/* Generic form layout styles - shared by all forms */
-.form-container {
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-@media (min-width: 640px) {
-  .form-container {
-    padding: 1rem;
-  }
-}
-
-.form-row {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .form-row {
-    flex-direction: row;
-    gap: 1rem;
-  }
-
-  .form-row .form-field {
-    flex: 1;
-  }
-}
-
-.form-field label {
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-.form-field input,
-.form-field textarea {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.form-error {
-  color: #ef4444;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-/* ============================= */
 /* Utility - Display             */
 /* ============================= */
 
@@ -1097,4 +1099,3 @@ ul.posts-list {
     border: none;
   }
 }
-
