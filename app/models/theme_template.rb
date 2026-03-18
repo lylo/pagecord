@@ -35,6 +35,22 @@ class ThemeTemplate < ApplicationRecord
     name.present? && Rails.root.join("app/assets/images", screenshot_asset).exist?
   end
 
+  def reorder(new_position)
+    old_position = position
+
+    update_column(:position, -1)
+
+    if new_position > old_position
+      ThemeTemplate.where("position > ? AND position <= ?", old_position, new_position)
+                   .update_all("position = position - 1")
+    elsif new_position < old_position
+      ThemeTemplate.where("position >= ? AND position < ?", new_position, old_position)
+                   .update_all("position = position + 1")
+    end
+
+    update_column(:position, new_position)
+  end
+
   def appearance_attributes
     attrs = { custom_css: custom_css }
     attrs[:theme] = theme if theme.present?

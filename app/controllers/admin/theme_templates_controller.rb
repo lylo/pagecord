@@ -26,6 +26,11 @@ class Admin::ThemeTemplatesController < AdminController
   end
 
   def update
+    if params[:theme_template]&.key?(:position)
+      @template.reorder(params[:theme_template][:position].to_i)
+      return head :ok
+    end
+
     if @template.update(template_params)
       redirect_to admin_theme_templates_path, notice: "Template updated"
     else

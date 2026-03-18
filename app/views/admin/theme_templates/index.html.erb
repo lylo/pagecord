@@ -3,31 +3,24 @@
   <%= link_to "New Template", new_admin_theme_template_path, class: "btn-primary" %>
 </div>
 
-<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-  <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-    <thead class="bg-slate-50 dark:bg-slate-700/50">
-      <tr>
-        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Pos</th>
-        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Name</th>
-        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Theme</th>
-        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Font</th>
-        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Active</th>
-        <th class="px-6 py-3"></th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-      <% @templates.each do |template| %>
-        <tr>
-          <td class="px-6 py-4 text-sm text-slate-500"><%= template.position %></td>
-          <td class="px-6 py-4 font-medium"><%= template.name %></td>
-          <td class="px-6 py-4 text-sm text-slate-500"><%= template.theme.presence || "–" %></td>
-          <td class="px-6 py-4 text-sm text-slate-500"><%= template.font.presence || "–" %></td>
-          <td class="px-6 py-4 text-sm"><%= template.active? ? "Yes" : "No" %></td>
-          <td class="px-6 py-4 text-sm text-right">
-            <%= link_to "Edit", edit_admin_theme_template_path(template), class: "text-sky-600 hover:underline" %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+     data-controller="sortable"
+     data-sortable-resource-name-value="theme_template"
+     data-sortable-handle-value=".handle"
+     data-sortable-animation-value="150">
+  <% @templates.each do |template| %>
+    <div class="flex items-center gap-3 py-3 px-4 border-b border-slate-200 dark:border-slate-700 last:border-b-0"
+         data-id="<%= template.id %>"
+         data-sortable-update-url="<%= admin_theme_template_path(template) %>">
+      <div class="handle cursor-grab" title="Drag to reorder">
+        <%= inline_svg_tag "icons/grip-dots.svg", class: "w-4 h-4 text-slate-400" %>
+      </div>
+      <div class="flex-1">
+        <%= link_to template.name, edit_admin_theme_template_path(template), class: "font-medium hover:underline" %>
+      </div>
+      <span class="text-sm text-slate-500"><%= template.theme.presence || "–" %></span>
+      <span class="text-sm text-slate-500"><%= template.font.presence || "–" %></span>
+      <span class="text-sm <%= template.active? ? 'text-green-600' : 'text-slate-400' %>"><%= template.active? ? "Active" : "Inactive" %></span>
+    </div>
+  <% end %>
 </div>
