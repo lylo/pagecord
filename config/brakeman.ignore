@@ -1,10 +1,10 @@
 {
   "ignored_warnings": [
     {
-      "fingerprint": "858f2ad86627f174de70c9f4c1c558fcb27bd1dc580dfbf95452567dc5482fa2",
-      "note": "ActionText content rendered in email digest partial — html_safe is intentional"
+      "fingerprint": "47600cdefbc08d707ca143178deb60d608f173ccfd8c43ec8db633acd641912c",
+      "note": "Admin-only template author URL — entered by admin, not user input"
     }
   ],
-  "updated": "2026-02-05",
-  "brakeman_version": "8.0.1"
+  "updated": "2026-03-18",
+  "brakeman_version": "8.0.4"
 }
