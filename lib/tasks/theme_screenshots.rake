@@ -14,8 +14,8 @@ namespace :theme_templates do
 
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument("--headless=new")
-    options.add_argument("--window-size=1200,900")
-    options.add_argument("--force-device-scale-factor=2")
+    options.add_argument("--window-size=1280,800")
+    options.add_argument("--force-device-scale-factor=1")
     options.add_argument("--hide-scrollbars")
 
     driver = Selenium::WebDriver.for(:chrome, options: options)
@@ -35,9 +35,8 @@ namespace :theme_templates do
       driver.save_screenshot(png_path.to_s)
       blog.update_columns(original_attrs)
 
-      # Convert to webp if cwebp is available
       if system("which cwebp > /dev/null 2>&1")
-        system("cwebp -q 90 #{png_path} -o #{webp_path} > /dev/null 2>&1")
+        system("cwebp -q 80 -resize 640 0 #{png_path} -o #{webp_path} > /dev/null 2>&1")
         File.delete(png_path)
       else
         puts "warning: cwebp not found, keeping PNG"
