@@ -4,9 +4,18 @@ class App::Settings::AppearanceController < AppController
 
   def update
     if @blog.update(appearance_params)
-      redirect_to app_settings_path, notice: "Appearance settings updated"
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to app_settings_path, notice: "Appearance settings updated" }
+      end
     else
-      render :index, status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update("css-error", partial: "css_error"),
+                 status: :unprocessable_entity
+        end
+        format.html { render :index, status: :unprocessable_entity }
+      end
     end
   end
 

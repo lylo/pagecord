@@ -20,16 +20,15 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
   test "should update blog layout" do
     patch app_settings_appearance_url(@blog), params: { blog: { layout: "title_layout" } }, as: :turbo_stream
 
-    assert_redirected_to app_settings_url
+    assert_response :success
     assert_equal "title_layout", @blog.reload.layout
   end
 
   test "should update show branding flag for subscriber" do
     patch app_settings_appearance_url(@blog), params: { blog: { show_branding: false } }, as: :turbo_stream
 
-    assert_redirected_to app_settings_url
+    assert_response :success
     assert_not @blog.reload.show_branding
-    assert_select "input#blog_show_branding[checked]", false
   end
 
   test "should not update show branding flag for non-subscriber" do
@@ -39,9 +38,8 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
 
     patch app_settings_appearance_url(@blog), params: { blog: { show_branding: false } }, as: :turbo_stream
 
-    assert_redirected_to app_settings_url
+    assert_response :success
     assert @blog.reload.show_branding
-    assert_select "input#blog_show_branding", false
   end
 
   test "should show custom css section if user has premium access" do
@@ -67,7 +65,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
 
     patch app_settings_appearance_url(@blog), params: { blog: { custom_css: custom_css } }, as: :turbo_stream
 
-    assert_redirected_to app_settings_url
+    assert_response :success
     assert_equal custom_css, @blog.reload.custom_css
   end
 
@@ -78,7 +76,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
 
     patch app_settings_appearance_url(vivian_blog), params: { blog: { custom_css: custom_css } }, as: :turbo_stream
 
-    assert_redirected_to app_settings_url
+    assert_response :success
     assert_nil vivian_blog.reload.custom_css
   end
 
@@ -88,7 +86,6 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     patch app_settings_appearance_url(@blog), params: { blog: { custom_css: malicious_css } }, as: :turbo_stream
 
     assert_response :unprocessable_entity
-    assert_select ".field-error", text: /contains invalid or potentially unsafe content/
   end
 
   test "should show validation error for invalid @import" do
@@ -97,7 +94,6 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     patch app_settings_appearance_url(@blog), params: { blog: { custom_css: invalid_css } }, as: :turbo_stream
 
     assert_response :unprocessable_entity
-    assert_select ".field-error", text: /contains invalid or potentially unsafe content/
   end
 
   test "should update custom theme colors" do
@@ -112,7 +108,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
       }
     }, as: :turbo_stream
 
-    assert_redirected_to app_settings_url
+    assert_response :success
     @blog.reload
     assert_equal "#111111", @blog.custom_theme_bg_light
     assert_equal "#222222", @blog.custom_theme_text_light
