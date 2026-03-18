@@ -71,3 +71,48 @@ minimal_mono:
   theme: "base"
   position: 1
   active: true
+
+archibald:
+  name: "Archibald"
+  description: "A refined monospace theme with accent-underlined links and reordered header"
+  custom_css: |
+    /* Archibald – refined monospace with accent links */
+
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap');
+    body { font-family: "Roboto Mono", monospace; }
+
+    /* Header: reorder to title, nav, bio */
+    header { display: flex; flex-direction: column; }
+    header > .titlebar { order: 1; }
+    header > nav { order: 2; justify-content: flex-start; margin-bottom: 1.75em; gap: 1rem; }
+    header > .bio { order: 3; }
+    header > .email-subscriber-form { order: 4; }
+    header > hr { order: 5; }
+
+    /* Links: accent underline, highlight on hover */
+    nav a, .lexxy-content a, .posts-titles a, .posts-list a, .subscription-message a {
+      color: var(--lexxy-color-ink);
+      border-bottom: 3px solid var(--color-accent);
+      text-decoration: none;
+      font-weight: normal;
+    }
+    nav a:hover, .lexxy-content a:hover, .posts-titles a:hover, .posts-list a:hover, .subscription-message a:hover {
+      background-color: var(--color-accent);
+      color: var(--color-bg);
+      text-decoration: none;
+    }
+
+    /* Dotted borders */
+    header hr, footer.blog-footer { border-top: 3px dotted var(--color-text); }
+
+    /* Post lists */
+    .posts-list a { width: fit-content; }
+
+    /* Spacing */
+    article, .email-subscriber-form { margin-bottom: 2em; }
+  theme: "mint"
+  font: "mono"
+  width: "standard"
+  layout: 1
+  position: 2
+  active: true

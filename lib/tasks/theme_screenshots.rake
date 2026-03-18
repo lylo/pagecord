@@ -1,5 +1,5 @@
 namespace :theme_templates do
-  desc "Generate screenshots for all active theme templates. Pass the URL of a blog with content."
+  desc "Generate screenshots for active theme templates. Set OVERWRITE=true to regenerate existing."
   task :screenshots, [ :blog_url ] => :environment do |_t, args|
     require "selenium-webdriver"
 
@@ -20,13 +20,23 @@ namespace :theme_templates do
 
     driver = Selenium::WebDriver.for(:chrome, options: options)
 
+    overwrite = ENV["OVERWRITE"] == "true"
+
     templates.each do |template|
+      webp_path = output_dir.join("#{template.name.parameterize}.webp")
+
+      if webp_path.exist? && !overwrite
+        puts "#{template.name}... skipped (exists, set OVERWRITE=true to regenerate)"
+        next
+      end
+
       print "#{template.name}... "
 
-      original_attrs = blog.attributes.slice(*template.appearance_attributes.keys.map(&:to_s))
-      blog.update_columns(template.appearance_attributes.stringify_keys)
+      screenshot_attrs = template.appearance_attributes.merge(width: "standard")
+      original_attrs = blog.attributes.slice(*screenshot_attrs.keys.map(&:to_s))
+      blog.update_columns(screenshot_attrs.stringify_keys)
 
-      driver.navigate.to(blog_url)
+      driver.navigate.to("#{blog_url}?t=#{Time.now.to_i}")
       sleep 2
 
       png_path = output_dir.join("#{template.name.parameterize}.png")
