@@ -82,4 +82,4 @@ The Theme Garden is a curated collection of CSS templates that you can preview a
 
 If you already have Custom CSS, you'll be asked to confirm before applying a template (since it replaces your existing CSS).
 
-Have a CSS design you'd like to share with the community? [Email it to us](mailto:hello@pagecord.com) and we may add it to the garden.
+Have a CSS design you'd like to share with the community? [Email us](mailto:hello@pagecord.com) and we may add it to the garden.
