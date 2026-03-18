@@ -507,6 +507,7 @@ footer.blog-footer #brand svg {
   width: 100%;
   max-width: var(--content-width-standard);
   margin-inline: auto;
+  margin-block: var(--lexxy-content-margin);
 }
 
 .email-subscriber-form {
