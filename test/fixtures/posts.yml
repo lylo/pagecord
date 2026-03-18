@@ -114,6 +114,15 @@ non_nav_page:
   is_page: true
   <<: *default
 
+dynamic_variable_test:
+  title: Dynamic variable test
+  blog: joel
+  published_at: <%= 1.week.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: dynamic-variable-test
+  is_page: true
+  <<: *default
+
 trix_post:
   title: Trix Format Post
   blog: joel
