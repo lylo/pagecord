@@ -1,25 +1,80 @@
 minimal_mono:
   name: "Minimal Mono"
   description: "A clean monospace journal theme"
-  custom_css: ".blog { font-size: 0.75rem; }"
+  custom_css: |
+    /* 12px monospace journal */
+    .blog { font-size: 0.75rem; line-height: 1.25rem; }
+
+    h1, h2, h3, h4, h5, h6 { font-weight: 400; }
+    h1, h2, h3, h4, h5, h6,
+    .blog-title, .bio, nav,
+    h1.post-title, article footer,
+    .post-card-date, .post-card-summary,
+    .post-card-title, .tag-link, .tag-filter-notice, .tag-filter-notice-links, .tag-filter-notice-link,
+    .email-subscriber-form { font-size: inherit; }
+
+    /* Minimal header */
+    .avatar { display: none; }
+    header hr { display: none; }
+    nav { justify-content: flex-start; }
+    .bio { text-align: left; }
+
+    /* Strip card chrome */
+    .post-card-content {
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+    }
+    .post-card:hover .post-card-content { box-shadow: none; transform: none; }
+
+    /* Date above title */
+    .post-card-meta { order: -1; margin: 0; }
+    .post-card-meta.has-tags,
+    .post-card-meta.no-tags { margin-top: 0; }
+    .post-card-badge { display: none; }
+    .post-card-date { opacity: 1; }
+
+    /* Title as dotted link */
+    .post-card-title {
+      color: var(--color-text);
+      letter-spacing: 0;
+      margin-bottom: 0;
+      text-decoration: underline dotted var(--color-text-muted);
+      text-underline-offset: 0.125em;
+    }
+    .post-card:hover .post-card-title { text-decoration-color: var(--color-text); }
+    .post-card-summary { margin-bottom: 0; }
+
+    /* Show page */
+    article.post { display: flex; flex-direction: column; }
+    article.post footer { display: contents; }
+    article.post .post-date { order: -1; }
+    article.post .post-actions { margin-top: 1rem; margin-bottom: 1rem; }
+    h1.post-title { line-height: inherit; margin-bottom: 0.5rem; }
+    .tags-container { margin-top: 0.5rem; }
+    .email-form-container { gap: 0.25rem; }
+    .form-container { padding: 0; }
+
+    /* Markdown-style heading markers */
+    .lexxy-content h1::before { content: "# "; color: var(--color-text-muted); font-weight: inherit; }
+    .lexxy-content h2::before { content: "## "; color: var(--color-text-muted); font-weight: inherit; }
+    .lexxy-content h3::before { content: "### "; color: var(--color-text-muted); font-weight: inherit; }
+    .lexxy-content h4::before { content: "#### "; color: var(--color-text-muted); font-weight: inherit; }
+
+    /* Content */
+    article img { border-radius: 0; }
+    figcaption, .lexxy-content figcaption { text-align: left; }
+
+    /* Dotted links */
+    .bio a, .lexxy-content a { text-decoration: underline dotted var(--color-text-muted); text-underline-offset: 0.125em; }
+    .bio a:hover, .lexxy-content a:hover { text-decoration-color: var(--color-text); }
   font: "mono"
   width: "narrow"
-  layout: 1
+  layout: 0
+  theme: "base"
   position: 1
   active: true
-
-bold_serif:
-  name: "Bold Serif"
-  description: "A dramatic serif theme"
-  custom_css: ".blog { font-weight: bold; }"
-  theme: "coral"
-  font: "serif"
-  position: 2
-  active: true
-
-inactive_template:
-  name: "Inactive Template"
-  description: "This one is hidden"
-  custom_css: ".blog { display: none; }"
-  position: 99
-  active: false
