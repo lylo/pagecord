@@ -5,6 +5,8 @@ published: true
 
 Custom CSS is an advanced feature that gives you finer control over the look and feel of your blog. You can change fonts, colors, adjust spacing, hide elements and more.
 
+**New to Custom CSS?** Try the [Theme Garden](/app/settings/theme_garden) first – it has curated CSS templates you can preview and apply with one click, no coding required.
+
 ### A Quick Note
 
 Pagecord is small business. It's not possible to offer customer support with writing or debugging custom CSS — you're on your own with this one!
