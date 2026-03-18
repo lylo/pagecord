@@ -3,6 +3,6 @@ class App::Blogs::AvatarsController < AppController
     @blog.avatar.purge
     @blog.touch
 
-    redirect_to app_settings_appearance_index_path, notice: "Avatar removed"
+    redirect_to app_settings_about_index_path, notice: "Avatar removed"
   end
 end

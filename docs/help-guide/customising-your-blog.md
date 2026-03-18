@@ -4,15 +4,19 @@ published: true
 published_at: 2025-12-18T16:30:29+00:00
 ---
 
-Make your blog your own. All appearance settings are in **Settings** → **Appearance**.
+Make your blog your own. Your bio, title and avatar are in **Settings** → **About**. Theme, layout, and style options are in **Settings** → **Appearance**.
 
 ## Bio
 
-Add a short bio that appears on your blog's home page. This is a great place to introduce yourself to readers.
+Add a short bio that appears on your blog's home page. This is a great place to introduce yourself or describe what your blog is about.
 
 ## Title
 
 By default, your blog title is your username (e.g. @joel). You can change it to anything you like.
+
+## Avatar
+
+Premium feature. Upload an image that appears next to your blog title.
 
 ## Colour scheme
 
@@ -53,10 +57,6 @@ Choose how posts appear on your home page:
 - **Stream** — Full post content in a vertical feed
 - **List of Titles** — Compact list with dates and titles
 - **Cards** — Grid of cards with excerpts
-
-## Avatar
-
-Premium feature. Upload an image that appears next to your blog title.
 
 ## Branding
 

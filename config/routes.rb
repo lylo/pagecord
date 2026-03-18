@@ -119,6 +119,7 @@ Rails.application.routes.draw do
     end
 
     namespace :settings do
+      resources :about, only: [ :index, :update ]
       resources :audience, only: [ :index ]
       resources :users, only: [ :update, :destroy ]
       resources :blogs, only: [ :index, :update ]

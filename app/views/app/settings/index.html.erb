@@ -4,13 +4,23 @@
   <% end %>
 
   <div class="mt-8 grid sm:grid-cols-2 gap-4">
+    <%= link_to app_settings_about_index_path do %>
+      <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
+        <div class="mb-4">
+          <span class="text-4xl">💬</span>
+        </div>
+        <h3 class="mb-2 text-xl font-bold dark:text-white">About</h3>
+        <p class="text-slate-500 dark:text-slate-400">Edit your bio, blog title and avatar</p>
+      </div>
+    <% end %>
+
     <%= link_to app_settings_appearance_index_path do %>
       <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
         <div class="mb-4">
           <span class="text-4xl">🎨</span>
         </div>
         <h3 class="mb-2 text-xl font-bold dark:text-white">Appearance</h3>
-        <p class="text-slate-500 dark:text-slate-400">Edit your bio, blog title, avatar, theme and layout</p>
+        <p class="text-slate-500 dark:text-slate-400">Customise your blog's theme, layout and style</p>
       </div>
     <% end %>
 
