@@ -4,21 +4,29 @@ published: true
 published_at: 2025-12-18T16:30:29+00:00
 ---
 
-Make your blog your own. Your bio, title and avatar are in **Settings** → **About**. Theme, layout, and style options are in **Settings** → **Appearance**.
+Make your blog your own. Identity settings live in **Settings** → **About**, and visual design options are in **Settings** → **Appearance**.
 
-## Bio
+## About
+
+Found in **Settings** → **About**. These settings control how your blog introduces itself to readers.
+
+### Bio
 
 Add a short bio that appears on your blog's home page. This is a great place to introduce yourself or describe what your blog is about.
 
-## Title
+### Title
 
 By default, your blog title is your username (e.g. @joel). You can change it to anything you like.
 
-## Avatar
+### Avatar
 
 Premium feature. Upload an image that appears next to your blog title.
 
-## Colour scheme
+## Appearance
+
+Found in **Settings** → **Appearance**. These settings control how your blog looks. Most changes apply immediately making it easy to see the results. Note that Custom colours and Custom CSS have their own Save buttons.
+
+### Colour scheme
 
 Choose from several pre-made themes:
 
@@ -34,7 +42,7 @@ Or choose **Custom** to pick your own colours for background, text, and accent �
 
 All themes automatically support dark mode based on your reader's system preference.
 
-## Font
+### Font
 
 Choose between three font styles:
 
@@ -42,7 +50,7 @@ Choose between three font styles:
 - **Serif** — Classic, traditional serif
 - **Mono** — Monospaced, typewriter-style
 
-## Content width
+### Content width
 
 Control how wide your content appears:
 
@@ -50,7 +58,7 @@ Control how wide your content appears:
 - **Standard** — Balanced width
 - **Wide** — More room for images and content
 
-## Layout
+### Layout
 
 Choose how posts appear on your home page:
 
@@ -58,7 +66,6 @@ Choose how posts appear on your home page:
 - **List of Titles** — Compact list with dates and titles
 - **Cards** — Grid of cards with excerpts
 
-## Branding
+### Branding
 
 Premium feature. Choose whether to hide the Pagecord logo at the bottom of your blog (please consider keeping it to spread the good word about Pagecord!)
-
