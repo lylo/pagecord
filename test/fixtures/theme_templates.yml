@@ -2,54 +2,41 @@ minimal_mono:
   name: "Minimal Mono"
   description: "A clean monospace journal theme"
   custom_css: |
-    /* 12px monospace journal */
-    .blog { font-size: 0.75rem; line-height: 1.25rem; }
+    /* Minimal Mono – 12px monospace journal */
 
+    .blog { font-size: 0.75rem; line-height: 1.25rem; }
     h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     h1, h2, h3, h4, h5, h6,
     .blog-title, .bio, nav,
     h1.post-title, article footer,
-    .post-card-date, .post-card-summary,
-    .post-card-title, .tag-link, .tag-filter-notice, .tag-filter-notice-links, .tag-filter-notice-link,
-    .email-subscriber-form { font-size: inherit; }
+    .post-card-date, .post-card-summary, .post-card-title,
+    .tag-link, .tag-filter-notice, .tag-filter-notice-links, .tag-filter-notice-link,
+    .email-subscriber-form, figcaption, .lexxy-content figcaption { font-size: 0.75rem; }
 
-    /* Minimal header */
-    .avatar { display: none; }
-    header hr { display: none; }
+    /* Header */
+    .avatar, header hr, .post-card-badge { display: none; }
     nav { justify-content: flex-start; }
     .bio { text-align: left; }
 
-    /* Strip card chrome */
+    /* Cards */
     .post-card-content {
-      border: none;
-      box-shadow: none;
-      border-radius: 0;
-      padding: 0;
-      background: transparent;
-      display: flex;
-      flex-direction: column;
+      border: none; box-shadow: none; border-radius: 0;
+      padding: 0; background: transparent;
+      display: flex; flex-direction: column;
     }
     .post-card:hover .post-card-content { box-shadow: none; transform: none; }
-
-    /* Date above title */
     .post-card-meta { order: -1; margin: 0; }
-    .post-card-meta.has-tags,
-    .post-card-meta.no-tags { margin-top: 0; }
-    .post-card-badge { display: none; }
+    .post-card-meta.has-tags, .post-card-meta.no-tags { margin-top: 0; }
     .post-card-date { opacity: 1; }
-
-    /* Title as dotted link */
     .post-card-title {
-      color: var(--color-text);
-      letter-spacing: 0;
-      margin-bottom: 0;
+      color: var(--color-text); letter-spacing: 0; margin-bottom: 0;
       text-decoration: underline dotted var(--color-text-muted);
       text-underline-offset: 0.125em;
     }
     .post-card:hover .post-card-title { text-decoration-color: var(--color-text); }
     .post-card-summary { margin-bottom: 0; }
 
-    /* Show page */
+    /* Post */
     article.post { display: flex; flex-direction: column; }
     article.post footer { display: contents; }
     article.post .post-date { order: -1; }
@@ -59,18 +46,24 @@ minimal_mono:
     .email-form-container { gap: 0.25rem; }
     .form-container { padding: 0; }
 
-    /* Markdown-style heading markers */
-    .lexxy-content h1::before { content: "# "; color: var(--color-text-muted); font-weight: inherit; }
-    .lexxy-content h2::before { content: "## "; color: var(--color-text-muted); font-weight: inherit; }
-    .lexxy-content h3::before { content: "### "; color: var(--color-text-muted); font-weight: inherit; }
-    .lexxy-content h4::before { content: "#### "; color: var(--color-text-muted); font-weight: inherit; }
+    /* Heading markers */
+    .lexxy-content h1::before,
+    .lexxy-content h2::before,
+    .lexxy-content h3::before,
+    .lexxy-content h4::before { color: var(--color-text-muted); font-weight: inherit; }
+    .lexxy-content h1::before { content: "# "; }
+    .lexxy-content h2::before { content: "## "; }
+    .lexxy-content h3::before { content: "### "; }
+    .lexxy-content h4::before { content: "#### "; }
 
     /* Content */
     article img { border-radius: 0; }
-    figcaption, .lexxy-content figcaption { text-align: left; }
 
-    /* Dotted links */
-    .bio a, .lexxy-content a { text-decoration: underline dotted var(--color-text-muted); text-underline-offset: 0.125em; }
+    /* Links */
+    .bio a, .lexxy-content a {
+      text-decoration: underline dotted var(--color-text-muted);
+      text-underline-offset: 0.125em;
+    }
     .bio a:hover, .lexxy-content a:hover { text-decoration-color: var(--color-text); }
   font: "mono"
   width: "narrow"

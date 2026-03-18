@@ -1,7 +1,6 @@
-<h2 class="text-2xl font-bold mb-2">Theme Garden</h2>
-<p class="text-slate-500 dark:text-slate-400 mb-8">
-  Browse curated CSS templates and apply them to your blog with one click.
-  Have a theme you'd like to share? <a href="mailto:hello@pagecord.com" class="underline">Send it to us</a>.
+<h2 class="text-2xl font-bold mb-2">🪴 Theme Garden</h2>
+<p class="mb-8">
+  Browse our curated selection of theme templates and apply them to your blog with one click.
 </p>
 
 <% unless @blog.user.has_premium_access? %>
@@ -16,8 +15,8 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <% @templates.each do |template| %>
       <div class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-        <% if template.screenshot.attached? %>
-          <%= image_tag resized_image_url(template.screenshot, width: 600, height: 400), class: "w-full h-48 object-cover object-top", alt: template.name %>
+        <% if template.screenshot? %>
+          <%= image_tag template.screenshot_asset, class: "w-full h-48 object-cover object-top", alt: template.name %>
         <% else %>
           <div class="w-full h-48 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
             <span class="text-slate-400 dark:text-slate-600 text-sm">No preview</span>

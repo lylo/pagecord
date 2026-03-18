@@ -1,8 +1,6 @@
 class ThemeTemplate < ApplicationRecord
   include CssSanitizable
 
-  has_one_attached :screenshot
-
   enum :layout, { stream_layout: 0, title_layout: 1, cards_layout: 2 }
 
   validates :name, presence: true, uniqueness: true
@@ -27,6 +25,14 @@ class ThemeTemplate < ApplicationRecord
         accent: custom_theme_accent_dark.presence || "#ffffff"
       }
     }
+  end
+
+  def screenshot_asset
+    "theme_templates/#{name.parameterize}.webp"
+  end
+
+  def screenshot?
+    name.present? && Rails.root.join("app/assets/images", screenshot_asset).exist?
   end
 
   def appearance_attributes
