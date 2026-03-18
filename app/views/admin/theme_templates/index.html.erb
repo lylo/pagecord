@@ -1,0 +1,33 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Theme Templates</h1>
+  <%= link_to "New Template", new_admin_theme_template_path, class: "btn-primary" %>
+</div>
+
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+  <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+    <thead class="bg-slate-50 dark:bg-slate-700/50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Pos</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Name</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Theme</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Font</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Active</th>
+        <th class="px-6 py-3"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+      <% @templates.each do |template| %>
+        <tr>
+          <td class="px-6 py-4 text-sm text-slate-500"><%= template.position %></td>
+          <td class="px-6 py-4 font-medium"><%= template.name %></td>
+          <td class="px-6 py-4 text-sm text-slate-500"><%= template.theme.presence || "–" %></td>
+          <td class="px-6 py-4 text-sm text-slate-500"><%= template.font.presence || "–" %></td>
+          <td class="px-6 py-4 text-sm"><%= template.active? ? "Yes" : "No" %></td>
+          <td class="px-6 py-4 text-sm text-right">
+            <%= link_to "Edit", edit_admin_theme_template_path(template), class: "text-sky-600 hover:underline" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -124,6 +124,12 @@ Rails.application.routes.draw do
       resources :users, only: [ :update, :destroy ]
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
+      resources :theme_garden, only: [ :index ], controller: "theme_garden" do
+        member do
+          get :preview
+          post :apply
+        end
+      end
       resources :navigation_items, only: [ :index, :create, :update, :destroy ]
       resources :email_change_requests, only: [ :create, :destroy ] do
         member do
@@ -164,6 +170,7 @@ Rails.application.routes.draw do
 
   get "/admin", to: "admin#index", as: :admin
   namespace :admin do
+    resources :theme_templates
     resources :blogs, only: [ :index ]
     resources :analytics, only: [ :index ]
     resources :posts, only: [ :index ]

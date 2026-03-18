@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_03_16_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_03_18_152527) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -378,6 +378,30 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_16_120000) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
+  create_table "theme_templates", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "author_name"
+    t.string "author_url"
+    t.datetime "created_at", null: false
+    t.text "custom_css", null: false
+    t.string "custom_theme_accent_dark"
+    t.string "custom_theme_accent_light"
+    t.string "custom_theme_bg_dark"
+    t.string "custom_theme_bg_light"
+    t.string "custom_theme_text_dark"
+    t.string "custom_theme_text_light"
+    t.text "description"
+    t.string "font"
+    t.integer "layout"
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.string "theme"
+    t.datetime "updated_at", null: false
+    t.string "width"
+    t.index ["active"], name: "index_theme_templates_on_active"
+    t.index ["position"], name: "index_theme_templates_on_position"
   end
 
   create_table "unengaged_follow_ups", force: :cascade do |t|

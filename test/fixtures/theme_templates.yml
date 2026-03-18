@@ -1,0 +1,25 @@
+minimal_mono:
+  name: "Minimal Mono"
+  description: "A clean monospace journal theme"
+  custom_css: ".blog { font-size: 0.75rem; }"
+  font: "mono"
+  width: "narrow"
+  layout: 1
+  position: 1
+  active: true
+
+bold_serif:
+  name: "Bold Serif"
+  description: "A dramatic serif theme"
+  custom_css: ".blog { font-weight: bold; }"
+  theme: "coral"
+  font: "serif"
+  position: 2
+  active: true
+
+inactive_template:
+  name: "Inactive Template"
+  description: "This one is hidden"
+  custom_css: ".blog { display: none; }"
+  position: 99
+  active: false
