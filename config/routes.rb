@@ -170,7 +170,11 @@ Rails.application.routes.draw do
 
   get "/admin", to: "admin#index", as: :admin
   namespace :admin do
-    resources :theme_templates
+    resources :theme_templates do
+      member do
+        delete :remove_screenshot
+      end
+    end
     resources :blogs, only: [ :index ]
     resources :analytics, only: [ :index ]
     resources :posts, only: [ :index ]

@@ -38,67 +38,109 @@
     <div class="field-error"><%= template.errors[:custom_css].first if template.errors[:custom_css].any? %></div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div>
-      <%= form.label :theme, "Colour Scheme", class: "block text-sm font-medium mb-1" %>
-      <%= form.select :theme, [["Don't change", ""]] + Themeable::THEMES.map { |t| [t.capitalize, t] }, {}, class: "form-field w-full" %>
+  <% has_overrides = template.theme.present? || template.font.present? || template.width.present? || template.layout.present? %>
+  <div data-controller="admin-theme-form">
+    <div class="flex items-center gap-3 mb-4">
+      <input type="checkbox" id="override_appearance"
+        class="form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300"
+        data-action="change->admin-theme-form#toggle"
+        <%= "checked" if has_overrides %>>
+      <label for="override_appearance" class="text-sm font-medium">Override appearance settings</label>
+      <span class="text-xs text-slate-500">Colour scheme, font, width, and layout</span>
     </div>
 
-    <div>
-      <%= form.label :font, class: "block text-sm font-medium mb-1" %>
-      <%= form.select :font, [["Don't change", ""]] + Themeable::FONTS.map { |f| [f.capitalize, f] }, {}, class: "form-field w-full" %>
-    </div>
-
-    <div>
-      <%= form.label :width, class: "block text-sm font-medium mb-1" %>
-      <%= form.select :width, [["Don't change", ""]] + Themeable::PAGE_WIDTHS.map { |w| [w.capitalize, w] }, {}, class: "form-field w-full" %>
-    </div>
-  </div>
-
-  <div>
-    <%= form.label :layout, class: "block text-sm font-medium mb-1" %>
-    <%= form.select :layout, [["Don't change", ""]] + ThemeTemplate.layouts.keys.map { |l| [l.titleize.sub(" Layout", ""), l] }, {}, class: "form-field w-full" %>
-  </div>
-
-  <fieldset class="border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-    <legend class="text-sm font-medium px-2">Custom Theme Colours (only used when theme is "Custom")</legend>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
-      <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-5">
-        <h4 class="text-base font-medium text-slate-800 dark:text-slate-200 mb-4">Light Mode</h4>
-        <div class="space-y-3">
-          <div>
-            <%= form.label :custom_theme_bg_light, "Background", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
-            <%= form.color_field :custom_theme_bg_light, value: template.custom_theme_colors[:light][:bg], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
+    <div data-admin-theme-form-target="overrideFields" class="<%= 'hidden' unless has_overrides %>">
+      <h3 class="text-sm font-medium mb-2">Colour Scheme</h3>
+      <%= form.hidden_field :theme, value: "" %>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-6">
+        <% Themeable::THEMES.each do |theme_name| %>
+          <div class="theme-option relative">
+            <%= form.radio_button :theme, theme_name,
+              checked: template.theme == theme_name,
+              class: "sr-only peer",
+              id: "theme_#{theme_name}",
+              data: { action: "admin-theme-form#toggle" } %>
+            <label for="theme_<%= theme_name %>"
+              class="flex flex-col rounded-lg border-2 border-transparent p-3 cursor-pointer
+                     peer-checked:border-sky-500 dark:peer-checked:border-sky-600
+                     hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              data-theme="<%= theme_name %>">
+              <div class="w-full h-12 rounded-md shadow-sm mb-2" style="background-color: var(--color-bg);">
+                <div class="w-full h-3 rounded-t-md" style="background-color: var(--color-bg-subtle);"></div>
+                <div class="px-2 py-1">
+                  <div class="w-3/4 h-1.5 rounded-sm mt-2" style="background-color: var(--color-accent);"></div>
+                  <div class="w-full h-1 rounded-sm mt-1.5" style="background-color: var(--color-text-muted);"></div>
+                  <div class="w-5/6 h-1 rounded-sm mt-1" style="background-color: var(--color-text-light);"></div>
+                </div>
+              </div>
+              <div class="text-center text-sm capitalize font-medium text-slate-700 dark:text-slate-300">
+                <%= theme_name == "base" ? "Monochrome" : theme_name %>
+              </div>
+            </label>
           </div>
-          <div>
-            <%= form.label :custom_theme_text_light, "Text", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
-            <%= form.color_field :custom_theme_text_light, value: template.custom_theme_colors[:light][:text], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
+        <% end %>
+      </div>
+
+      <div data-admin-theme-form-target="customColourFields" class="mb-6 <%= 'hidden' unless template.theme == 'custom' %>">
+        <fieldset class="border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+          <legend class="text-sm font-medium px-2">Custom Theme Colours</legend>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+            <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-5">
+              <h4 class="text-base font-medium text-slate-800 dark:text-slate-200 mb-4">Light Mode</h4>
+              <div class="space-y-3">
+                <div>
+                  <%= form.label :custom_theme_bg_light, "Background", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+                  <%= form.color_field :custom_theme_bg_light, value: template.custom_theme_colors[:light][:bg], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
+                </div>
+                <div>
+                  <%= form.label :custom_theme_text_light, "Text", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+                  <%= form.color_field :custom_theme_text_light, value: template.custom_theme_colors[:light][:text], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
+                </div>
+                <div>
+                  <%= form.label :custom_theme_accent_light, "Accent", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+                  <%= form.color_field :custom_theme_accent_light, value: template.custom_theme_colors[:light][:accent], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
+                </div>
+              </div>
+            </div>
+            <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-5">
+              <h4 class="text-base font-medium text-slate-800 dark:text-slate-200 mb-4">Dark Mode</h4>
+              <div class="space-y-3">
+                <div>
+                  <%= form.label :custom_theme_bg_dark, "Background", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+                  <%= form.color_field :custom_theme_bg_dark, value: template.custom_theme_colors[:dark][:bg], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
+                </div>
+                <div>
+                  <%= form.label :custom_theme_text_dark, "Text", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+                  <%= form.color_field :custom_theme_text_dark, value: template.custom_theme_colors[:dark][:text], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
+                </div>
+                <div>
+                  <%= form.label :custom_theme_accent_dark, "Accent", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
+                  <%= form.color_field :custom_theme_accent_dark, value: template.custom_theme_colors[:dark][:accent], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <%= form.label :custom_theme_accent_light, "Accent", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
-            <%= form.color_field :custom_theme_accent_light, value: template.custom_theme_colors[:light][:accent], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
-          </div>
+        </fieldset>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <%= form.label :font, class: "block text-sm font-medium mb-1" %>
+          <%= form.select :font, [["Don't change", ""]] + Themeable::FONTS.map { |f| [f.capitalize, f] }, {}, class: "form-field w-full" %>
+        </div>
+
+        <div>
+          <%= form.label :width, class: "block text-sm font-medium mb-1" %>
+          <%= form.select :width, [["Don't change", ""]] + Themeable::PAGE_WIDTHS.map { |w| [w.capitalize, w] }, {}, class: "form-field w-full" %>
+        </div>
+
+        <div>
+          <%= form.label :layout, class: "block text-sm font-medium mb-1" %>
+          <%= form.select :layout, [["Don't change", ""]] + ThemeTemplate.layouts.keys.map { |l| [l.titleize.sub(" Layout", ""), l] }, {}, class: "form-field w-full" %>
         </div>
       </div>
-      <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-5">
-        <h4 class="text-base font-medium text-slate-800 dark:text-slate-200 mb-4">Dark Mode</h4>
-        <div class="space-y-3">
-          <div>
-            <%= form.label :custom_theme_bg_dark, "Background", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
-            <%= form.color_field :custom_theme_bg_dark, value: template.custom_theme_colors[:dark][:bg], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
-          </div>
-          <div>
-            <%= form.label :custom_theme_text_dark, "Text", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
-            <%= form.color_field :custom_theme_text_dark, value: template.custom_theme_colors[:dark][:text], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
-          </div>
-          <div>
-            <%= form.label :custom_theme_accent_dark, "Accent", class: "block text-sm text-slate-700 dark:text-slate-300 mb-1.5" %>
-            <%= form.color_field :custom_theme_accent_dark, value: template.custom_theme_colors[:dark][:accent], class: "color-picker-full block w-full h-11 rounded-md cursor-pointer border border-slate-300 dark:border-slate-600" %>
-          </div>
-        </div>
-      </div>
     </div>
-  </fieldset>
+  </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <div>
@@ -114,12 +156,21 @@
 
   <div>
     <%= form.label :screenshot, class: "block text-sm font-medium mb-1" %>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Recommended size: 600 x 400px. JPG, PNG or WebP.</p>
+
     <% if template.screenshot.attached? %>
-      <div class="mb-2">
-        <%= image_tag template.screenshot, class: "h-32 rounded border border-slate-200 dark:border-slate-700" %>
+      <div class="mb-3">
+        <%= image_tag template.screenshot, class: "h-48 rounded-lg border border-slate-200 dark:border-slate-700 object-cover" %>
+      </div>
+      <div class="flex items-center gap-4 mb-3">
+        <%= link_to remove_screenshot_admin_theme_template_path(template), data: { turbo_method: :delete, turbo_confirm: "Remove this screenshot?" }, class: "flex items-center text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 hover:dark:text-slate-200" do %>
+          <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 me-1" %>
+          Remove screenshot
+        <% end %>
       </div>
     <% end %>
-    <%= form.file_field :screenshot, accept: "image/jpeg, image/png, image/webp", class: "text-sm" %>
+
+    <%= form.file_field :screenshot, accept: "image/jpeg, image/png, image/webp", class: "text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border file:border-slate-300 dark:file:border-slate-600 file:text-sm file:font-medium file:bg-white dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-300 hover:file:bg-slate-50 dark:hover:file:bg-slate-700 file:cursor-pointer" %>
   </div>
 
   <div class="flex items-center gap-3">

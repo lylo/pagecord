@@ -38,6 +38,11 @@ class Admin::ThemeTemplatesController < AdminController
     redirect_to admin_theme_templates_path, notice: "Template deleted"
   end
 
+  def remove_screenshot
+    @template.screenshot.purge
+    redirect_to edit_admin_theme_template_path(@template), notice: "Screenshot removed"
+  end
+
   private
 
     def set_template
@@ -45,11 +50,19 @@ class Admin::ThemeTemplatesController < AdminController
     end
 
     def template_params
-      params.require(:theme_template).permit(
+      permitted = params.require(:theme_template).permit(
         :name, :description, :custom_css, :theme, :font, :width, :layout,
         :custom_theme_bg_light, :custom_theme_text_light, :custom_theme_accent_light,
         :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark,
         :author_name, :author_url, :position, :active, :screenshot
       )
+
+      unless permitted[:theme] == "custom"
+        colour_fields = %w[custom_theme_bg_light custom_theme_text_light custom_theme_accent_light
+                           custom_theme_bg_dark custom_theme_text_dark custom_theme_accent_dark]
+        colour_fields.each { |f| permitted[f] = nil }
+      end
+
+      permitted
     end
 end
