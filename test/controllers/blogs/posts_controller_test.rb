@@ -1005,6 +1005,68 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_template "blogs/posts/index"
   end
 
+  # data-tags attribute tests
+
+  test "stream layout should include data-tags on tagged posts" do
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "div.post-stream-item[data-tags='photography']", minimum: 1
+  end
+
+  test "stream layout should not include data-tags on untagged posts" do
+    get blog_posts_path
+
+    assert_response :success
+    # embeds fixture has no tags
+    assert_select "div.post-stream-item[data-tags]", count: @blog.posts.visible.select { |p| p.tag_list.present? }.count
+  end
+
+  test "cards layout should include data-tags on tagged posts" do
+    @blog.cards_layout!
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "div.post-card[data-tags='photography']", minimum: 1
+  end
+
+  test "title layout should include data-tags on tagged posts" do
+    @blog.title_layout!
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "div.post-row[data-tags='photography']", minimum: 1
+  end
+
+  test "show page should include data-tags on tagged post" do
+    post = posts(:one) # has tag_list: [photography]
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "div[data-tags='photography']"
+  end
+
+  test "show page should not include data-tags on untagged post" do
+    post = posts(:embeds) # no tags
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "div[data-tags]", count: 0
+  end
+
+  test "data-tags should include multiple tags space-separated" do
+    post = posts(:photography_and_tech) # tag_list: [photography, technology]
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "div[data-tags='photography technology']"
+  end
+
   # Cache header tests
 
   test "should set cache headers on default domain in production" do

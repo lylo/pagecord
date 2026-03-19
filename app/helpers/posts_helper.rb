@@ -35,6 +35,10 @@ module PostsHelper
     safe_join([ "Posts ", parts.join(", ").html_safe ])
   end
 
+  def post_tag_data(post)
+    { tags: post.tag_list.join(" ") } if post.tag_list.present?
+  end
+
   def published_at_date_format
     :post_date
   end
