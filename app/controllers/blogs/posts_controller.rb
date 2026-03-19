@@ -28,6 +28,7 @@ class Blogs::PostsController < Blogs::BaseController
       .includes(:upvotes)
       .order(published_at: :desc, id: :desc)
     scope = scope.tagged_with_any(@current_tags) if @current_tags
+    scope = scope.tagged_without_any(params[:without_tag].split(",").map(&:strip)) if params[:without_tag].present?
     scope = scope.titled(params[:title]) if params[:title].present?
     scope = scope.for_locale(@current_lang, @blog.locale) if @current_lang
 

@@ -36,6 +36,18 @@ You can filter by multiple tags (posts matching any of the tags will be included
 https://yourusername.pagecord.com/feed.xml?tag=ruby,rails
 ```
 
+### Exclude by tag
+
+```javascript
+https://yourusername.pagecord.com/feed.xml?without_tag=personal
+```
+
+You can exclude multiple tags (posts matching any of the tags will be excluded):
+
+```javascript
+https://yourusername.pagecord.com/feed.xml?without_tag=personal,draft
+```
+
 ### Filter by language
 
 ```javascript
@@ -56,5 +68,5 @@ https://yourusername.pagecord.com/feed.xml?tag=ruby&lang=en
 
 To follow a Pagecord blog, add the feed URL to an RSS reader.
 
-Check out [Feedgrab](https://feedgrab.net), a free RSS reader from the create of Pagecord! ✨
+Check out [Feedgrab](https://feedgrab.net), a free RSS reader from the creator of Pagecord! ✨
 
