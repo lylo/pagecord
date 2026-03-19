@@ -22,7 +22,7 @@ https://yourdomain.com/feed.xml
 
 ## Filtered feeds
 
-You can filter your RSS feed by tag or language using query parameters. This is useful for readers who only want to follow specific topics or languages on your blog.
+You can filter your RSS feed using query parameters. This is useful for readers who only want to follow specific topics or languages on your blog.
 
 ### Filter by tag
 
@@ -48,6 +48,20 @@ You can exclude multiple tags (posts matching any of the tags will be excluded):
 https://yourusername.pagecord.com/feed.xml?without_tag=personal,draft
 ```
 
+### Filter by title
+
+Only include posts that have a title:
+
+```javascript
+https://yourusername.pagecord.com/feed.xml?title=true
+```
+
+Or only posts without a title:
+
+```javascript
+https://yourusername.pagecord.com/feed.xml?title=false
+```
+
 ### Filter by language
 
 ```javascript
@@ -55,6 +69,8 @@ https://yourusername.pagecord.com/feed.xml?lang=es
 ```
 
 Supported language codes: `en`, `es`, `fr`, `de`, `pt`.
+
+Posts without an explicit language set inherit your blog's default language, so if your blog is set to English, `?lang=en` will include those posts too.
 
 ### Combining filters
 
