@@ -106,6 +106,36 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "should create page with tags" do
+    assert_difference("@blog.pages.count") do
+      post app_pages_path, params: {
+        post: {
+          title: "Tagged Page",
+          content: "Page with tags",
+          tags_string: "recipe, vegan"
+        }
+      }
+    end
+
+    page = @blog.pages.last
+    assert_equal [ "recipe", "vegan" ], page.tag_list
+    assert_redirected_to app_pages_path
+  end
+
+  test "should update page tags" do
+    patch app_page_path(@page), params: {
+      post: {
+        title: @page.title,
+        content: @page.content.to_s,
+        tags_string: "updated-tag"
+      }
+    }
+
+    @page.reload
+    assert_equal [ "updated-tag" ], @page.tag_list
+    assert_redirected_to app_pages_path
+  end
+
   test "should not create page without title" do
     assert_no_difference("@blog.pages.count") do
       post app_pages_path, params: {

@@ -23,6 +23,14 @@
               <% end %>
             </div>
 
+            <div class="p-1">
+              <%= link_to "#", class: "flex justify-between items-center rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+                data: { action: "click->post-attributes#toggle", toggle_target: "tags" } do %>
+                <span class="ms-1">Add Tags</span>
+                <span class="hidden md:inline text-xs text-gray-400 dark:text-gray-500">T</span>
+              <% end %>
+            </div>
+
             <% if @page.persisted? %>
               <hr class="mx-2 mt-2 dark:border-gray-600">
 
@@ -58,6 +66,24 @@
             placeholder: "custom-url-path" %>
         <div class="field-error"><%= @page.errors[:slug].to_sentence if @page.errors[:slug].any? %></div>
       </fieldset>
+    </div>
+
+    <div class="<%= 'hidden' unless @page.tag_list.present? %> mb-8" data-post-attributes-target="section" data-section="tags">
+      <div class="mt-4 font-bold">
+        <%= form.label :tags_string, "Tags" %>
+      </div>
+
+      <div class="mt-2" data-controller="tags-input">
+        <%= form.text_field :tags_string,
+            class: "w-full",
+            data: {
+              tags_input_target: "input"
+            } %>
+
+        <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          Type a tag and press enter to add it. Use letters, numbers, and hyphens only.
+        </div>
+      </div>
     </div>
 
     <fieldset>
