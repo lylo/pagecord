@@ -122,6 +122,15 @@ trix_post:
   slug: trix-format-post
   <<: *default
 
+joel_hidden:
+  title: A Hidden Thought
+  blog: joel
+  published_at: <%= 1.day.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: a-hidden-thought
+  hidden: true
+  <<: *default
+
 joel_spanish:
   title: Mi primera entrada
   blog: joel

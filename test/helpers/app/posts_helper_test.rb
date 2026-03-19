@@ -23,29 +23,24 @@ class App::PostsHelperTest < ActionView::TestCase
   end
 
   test "publish_button_text for existing draft post" do
-    post = @blog.posts.create!(content: "Test", status: :draft)
-    assert_equal "Publish Post", publish_button_text(post)
+    assert_equal "Publish Post", publish_button_text(posts(:joel_draft))
   end
 
   test "publish_button_text for existing draft page" do
-    page = @blog.pages.create!(title: "Draft Page", content: "Test", status: :draft)
-    assert_equal "Publish Page", publish_button_text(page)
+    assert_equal "Publish Page", publish_button_text(posts(:draft_page))
   end
 
   test "publish_button_text for existing published post" do
-    post = @blog.posts.create!(content: "Test", status: :published)
-    assert_equal "Update Post", publish_button_text(post)
+    assert_equal "Update Post", publish_button_text(posts(:one))
   end
 
   test "publish_button_text for existing published page" do
-    page = @blog.pages.create!(title: "Published Page", content: "Test", status: :published)
-    assert_equal "Update Page", publish_button_text(page)
+    assert_equal "Update Page", publish_button_text(posts(:about))
   end
 
   test "publish_button_text for existing published home page with model_name override" do
-    home_page = @blog.pages.create!(title: "Home", content: "Test", status: :published)
-    @blog.update!(home_page_id: home_page.id)
-    assert_equal "Update Home Page", publish_button_text(home_page, model_name: "Home Page")
+    @blog.update!(home_page_id: posts(:about).id)
+    assert_equal "Update Home Page", publish_button_text(posts(:about), model_name: "Home Page")
   end
 
   # draft_button_text tests
@@ -66,28 +61,23 @@ class App::PostsHelperTest < ActionView::TestCase
   end
 
   test "draft_button_text for existing draft post" do
-    post = @blog.posts.create!(content: "Test", status: :draft)
-    assert_equal "Update Draft", draft_button_text(post)
+    assert_equal "Update Draft", draft_button_text(posts(:joel_draft))
   end
 
   test "draft_button_text for existing draft page" do
-    page = @blog.pages.create!(title: "Draft Page", content: "Test", status: :draft)
-    assert_equal "Update Draft", draft_button_text(page)
+    assert_equal "Update Draft", draft_button_text(posts(:draft_page))
   end
 
   test "draft_button_text for existing published post" do
-    post = @blog.posts.create!(content: "Test", status: :published)
-    assert_equal "Unpublish", draft_button_text(post)
+    assert_equal "Unpublish", draft_button_text(posts(:one))
   end
 
   test "draft_button_text for existing published page" do
-    page = @blog.pages.create!(title: "Published Page", content: "Test", status: :published)
-    assert_equal "Unpublish", draft_button_text(page)
+    assert_equal "Unpublish", draft_button_text(posts(:about))
   end
 
   test "draft_button_text for existing published home page with model_name override" do
-    home_page = @blog.pages.create!(title: "Home", content: "Test", status: :published)
-    @blog.update!(home_page_id: home_page.id)
-    assert_equal "Unpublish", draft_button_text(home_page, model_name: "Home Page")
+    @blog.update!(home_page_id: posts(:about).id)
+    assert_equal "Unpublish", draft_button_text(posts(:about), model_name: "Home Page")
   end
 end

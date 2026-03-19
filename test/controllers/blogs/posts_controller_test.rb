@@ -86,9 +86,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
       email_subscriptions_enabled: true,
       show_subscription_in_footer: true
     )
-    page = @blog.pages.create!(title: "Test Page", content: "Content", status: "published")
 
-    get blog_post_path(page.slug)
+    get blog_post_path(posts(:about).slug)
 
     assert_response :success
     assert_select "turbo-frame#email_subscriber_form", count: 0
@@ -137,14 +136,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should include no-follow meta tag for hidden posts" do
-    post = @blog.posts.create!(
-      title: "Hidden Post",
-      content: "This is hidden content",
-      hidden: true,
-      status: "published"
-    )
-
-    get blog_post_path(post.slug)
+    get blog_post_path(posts(:joel_hidden).slug)
 
     assert_response :success
     assert_select 'meta[name="robots"][content="noindex, nofollow"]'
@@ -903,13 +895,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not show draft posts" do
-    post = @blog.posts.create!(
-      title: "Draft Post",
-      content: "This is draft content",
-      status: "draft"
-    )
-
-    get blog_post_path(post.slug)
+    get blog_post_path(posts(:joel_draft).slug)
     assert_response :not_found
   end
 
@@ -981,7 +967,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   # Home page tests
 
   test "should show home page instead of posts index when home page is set" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
+    page = posts(:about)
     @blog.update!(home_page_id: page.id)
 
     get blog_posts_path
@@ -1000,8 +986,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should still show RSS feed when home page is set" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
-    @blog.update!(home_page_id: page.id)
+    @blog.update!(home_page_id: posts(:about).id)
 
     get rss_feed_path(@blog)
 
@@ -1011,8 +996,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show posts index when home page is draft" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :draft)
-    @blog.update!(home_page_id: page.id)
+    @blog.update!(home_page_id: posts(:draft_page).id)
 
     get blog_posts_path
 
