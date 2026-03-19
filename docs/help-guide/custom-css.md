@@ -255,6 +255,16 @@ article footer .post-actions {
 }
 ```
 
+### Styling posts by tag
+
+Posts with tags include a `data-tags` attribute on their wrapper element. You can use this to style posts differently based on their tags:
+
+```css
+[data-tags~="photo"] {
+  border-left: 3px solid #f4a435;
+}
+```
+
 ### Full-width images
 
 By default, images display at their natural size. To make all images stretch to fill the full width of your posts:
