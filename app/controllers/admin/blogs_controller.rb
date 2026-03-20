@@ -12,7 +12,7 @@ class Admin::BlogsController < AdminController
                 .order(created_at: :desc)
 
     if params[:search].present?
-      blogs = blogs.where("blogs.subdomain ILIKE ? OR users.email ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
+      blogs = blogs.where("blogs.subdomain ILIKE ? OR users.email ILIKE ? OR subscriptions.paddle_customer_id ILIKE ? OR subscriptions.paddle_subscription_id ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
     end
 
     if params[:status].present?
@@ -21,6 +21,8 @@ class Admin::BlogsController < AdminController
         blogs = blogs.where("subscriptions.plan IN (?) AND subscriptions.cancelled_at IS NULL AND subscriptions.next_billed_at > ?", [ "annual", "monthly" ], Time.current)
       when "comped"
         blogs = blogs.where("subscriptions.plan = ?", "complimentary")
+      when "cancelled"
+        blogs = blogs.where.not(subscriptions: { cancelled_at: nil })
       end
     end
 
