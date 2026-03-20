@@ -8,7 +8,7 @@ Pagecord is a web app that uses [Rails](https://rubyonrails.org) 8 and associate
 
 ## Database
 
-Currently the database is Postgres which runs on a Hetzner server, thanks to Hatchbox. It's not a managed service, but it is backed up to Cloudflare R2 every 30 mins. Could be better, obvs.
+Currently the database is Postgres which runs on a Hetzner server, thanks to Hatchbox. It's not a managed service, but WAL files are continuously replicated to Cloudflare R2 via WAL-G, enabling point-in-time recovery.
 
 ## Background Jobs
 
@@ -30,13 +30,13 @@ Ideally I would run a separate server and create a reverse proxy using Caddy, de
 
 ### DNS & Edge Caching
 
-DNS for Pagecord is managed by [Cloudflare](https://cloudflare.com). Cloudflare also provides edge caching for `*.pagecord.com` blog pages (free plan, tag-based purging). Custom domains route through Caddy and are not edge-cached by Cloudflare.
+DNS for Pagecord is managed by [Cloudflare](https://cloudflare.com). Cloudflare sits in front of the app, providing edge caching for `*.pagecord.com` blog pages. Custom domains route through Caddy and are not edge-cached by Cloudflare.
 
 ### Email
 
-Inbound emails are managed by [Resend](https://resend.com). The Pagecord app uses ActionMailbox to receive and process the emails.
+Inbound emails are handled by [Postmark](https://postmarkapp.com) via ActionMailbox.
 
-Transactional emails are sent via [Postmark](https://postmarkapp.com) and [Mailpace](https://mailpace.com) (dual provider).
+Transactional emails are sent via a mixture of [Postmark](https://postmarkapp.com) and [Mailpace](https://mailpace.com).
 
 ### Observability
 
