@@ -652,8 +652,10 @@ footer.blog-footer #brand svg {
 
 .posts-titles .post-row {
   display: flex;
+  align-items: baseline;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
 }
 
 .post-row time {
