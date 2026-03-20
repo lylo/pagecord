@@ -10,7 +10,7 @@ class Admin::BlogsController < AdminController
                 .joins(:user)
                 .left_outer_joins(user: :subscription)
                 .group("blogs.id")
-                .order("#{@date_column[:sql]} DESC NULLS LAST")
+                .order("#{@date_column[:sql]} #{@date_column[:order] == :asc ? "ASC" : "DESC"} NULLS LAST")
 
     if params[:search].present?
       blogs = blogs.where("blogs.subdomain ILIKE ? OR users.email ILIKE ? OR subscriptions.paddle_customer_id ILIKE ? OR subscriptions.paddle_subscription_id ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
