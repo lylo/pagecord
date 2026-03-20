@@ -32,7 +32,7 @@ namespace :theme_templates do
 
       print "#{template.name}... "
 
-      screenshot_attrs = template.appearance_attributes.merge(width: "standard")
+      screenshot_attrs = { width: "standard" }.merge(template.appearance_attributes)
       original_attrs = blog.attributes.slice(*screenshot_attrs.keys.map(&:to_s))
       blog.update_columns(screenshot_attrs.stringify_keys)
 

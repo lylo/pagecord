@@ -116,3 +116,82 @@ archibald:
   layout: 1
   position: 2
   active: true
+
+hestia:
+  name: "Hestia"
+  description: "A warm, card-style theme with stone tones and dusty rose accents"
+  custom_css: |
+    .post-title a { font-weight: 700; }
+    main a { font-weight: 500; }
+    .bio { margin-top: -.5rem; }
+    ul { margin-left: .25rem; }
+    ol { margin-left: .5rem; }
+
+    hr {
+      border: 1px solid var(--color-text-light);
+      opacity: .1;
+    }
+
+    blockquote {
+      color: var(--color-text);
+      opacity: .7;
+    }
+
+    article img {
+      width: 100%;
+      height: auto;
+      max-block-size: none;
+    }
+
+    .attachment-gallery {
+      margin-inline: -10px;
+    }
+
+    .attachment-gallery img {
+      aspect-ratio: 1/1;
+      object-fit: cover;
+    }
+
+    .tag-filter-notice {
+      margin-top: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .post.h-entry {
+      padding: 25px 25px 1px 25px;
+      background-color: var(--color-bg-subtle);
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      margin-bottom: 0;
+    }
+
+    .post.h-entry:not(:has(.post-title)) {
+      padding-top: 8px;
+    }
+
+    article img:not(figure img, .attachment-gallery *),
+    .attachment:not(.attachment-gallery *) {
+      padding-top: 8px;
+    }
+
+    .tag.tag-link {
+      background: var(--color-bg-elevated);
+      color: var(--color-text-muted);
+    }
+
+    .tag.tag-link:hover { color: var(--color-text); }
+
+    .post .blog-footer { margin-top: 4em; }
+    .page .blog-footer { margin-top: 2em; }
+  theme: "custom"
+  font: "sans"
+  width: "narrow"
+  layout: 0
+  position: 3
+  active: true
+  custom_theme_bg_light: "#faf8f5"
+  custom_theme_bg_dark: "#1a1816"
+  custom_theme_text_light: "#3a342e"
+  custom_theme_text_dark: "#d4cfc8"
+  custom_theme_accent_light: "#b5546a"
+  custom_theme_accent_dark: "#d4748a"
