@@ -147,6 +147,12 @@ lexxy-toolbar {
     .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
       background-color: var(--color-slate-600);
     }
+
+    .lexxy-editor__toolbar-dropdown-list button {
+      color: var(--color-slate-200);
+
+      svg path { fill: currentColor; }
+    }
   }
 
   /* Highlight dropdown reset button */
