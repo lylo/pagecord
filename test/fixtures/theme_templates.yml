@@ -195,3 +195,126 @@ hestia:
   custom_theme_text_dark: "#d4cfc8"
   custom_theme_accent_light: "#b5546a"
   custom_theme_accent_dark: "#d4748a"
+
+mozake:
+  name: "Mozake"
+  description: "A stripped-back theme inspired by the earliest web pages"
+  custom_css: |
+    /* Mozake – plain HTML, circa 1991 */
+
+    body { font-family: "Times New Roman", Times, serif; }
+    .lexxy-content { --lexxy-content-margin: 0.75rem; }
+
+    /* Header */
+    header { margin-bottom: 1rem; }
+    .avatar { display: none; }
+    .titlebar { display: block; }
+    .blog-title { font-size: revert; font-weight: revert; }
+    .bio { font: revert; color: revert; }
+    nav { justify-content: flex-start; font-size: 1em; }
+
+    /* Links */
+    a, .posts-titles a, .post-title-link,
+    .empty-state a, .tag-filter-notice-link {
+      color: revert;
+      text-decoration: revert;
+      font-weight: revert;
+    }
+
+    /* Typography */
+    article { line-height: revert; }
+    .lexxy-content h1, .lexxy-content h2, .lexxy-content h3,
+    .lexxy-content h4, .lexxy-content h5, .lexxy-content h6 {
+      font-size: revert; font-weight: revert; line-height: revert;
+      margin-block: revert;
+    }
+    h1.post-title { font-size: revert; font-weight: bold; line-height: revert; margin-bottom: 1rem; }
+    hr { border: revert; margin-block: 1em; }
+
+    /* Post footer */
+    article footer { display: block; font-size: revert; }
+    .icon { width: 1em; height: 1em; }
+
+    /* Title layout */
+    .year-header { font-size: revert; font-weight: bold; }
+    .post-row time { color: revert; }
+
+    /* Tags */
+    .tag-link {
+      background: none; padding: 0; border-radius: 0;
+      font-size: revert; color: revert;
+    }
+    .tag-link::before { content: "#"; }
+
+    /* Images */
+    article img, .post-card-summary img { border-radius: 0; }
+
+    /* Code */
+    .lexxy-content pre { background: transparent; border-radius: 0; }
+    .lexxy-content code { background: transparent; }
+
+    /* Post cards */
+    .post-card-content {
+      border: none; box-shadow: none; border-radius: 0;
+      padding: 0; background: transparent;
+    }
+    .post-card:hover .post-card-content { box-shadow: none; transform: none; }
+    .post-card-link { color: revert; text-decoration: none; }
+    .post-card-title { font-size: revert; font-weight: revert; line-height: revert; text-decoration: underline; color: inherit; }
+    .post-card-badge { display: none; }
+    .post-card-date { opacity: 1; font-size: revert; color: var(--color-text); }
+    .post-card-summary { color: var(--color-text); }
+
+    /* Stream layout */
+    .post-stream-item { margin-bottom: 2em; }
+
+    /* Forms – old-school browser defaults */
+    .form { padding: 0; background: transparent; border-radius: 0; }
+    .form-container { padding: 0; }
+    .contact-form, .reply-form { max-width: 80ch; margin-inline: auto; }
+
+    .blog input[type="text"],
+    .blog input[type="email"],
+    .blog textarea {
+      border: revert;
+      border-radius: 0;
+      background: revert;
+      padding: revert;
+    }
+
+    .blog input[type="submit"] {
+      all: revert;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* Email form */
+    .email-subscriber-form {
+      margin: 0; font: revert;
+      display: block;
+    }
+    .email-form-container { display: block; text-align: revert; }
+    .email-form-container fieldset { margin: 0.5em 0; padding: 0; }
+
+    /* Footer – text link instead of logo */
+    footer.blog-footer {
+      margin-top: 2em; padding: 0; display: block;
+    }
+    footer.blog-footer #brand svg { display: none; }
+    footer.blog-footer #brand::after { content: "Pagecord"; margin-bottom: 1em; display: block; }
+
+    /* Misc */
+    .tag-filter-notice { background: transparent; border: none; border-radius: 0; padding: 0; font-size: revert; color: revert; }
+    .tag-filter-notice-link { font-size: revert; }
+  font: "serif"
+  width: "standard"
+  layout: 0
+  theme: "custom"
+  position: 4
+  active: true
+  custom_theme_bg_light: "#ffffff"
+  custom_theme_bg_dark: "#ffffff"
+  custom_theme_text_light: "#000000"
+  custom_theme_text_dark: "#000000"
+  custom_theme_accent_light: "#0000EE"
+  custom_theme_accent_dark: "#0000EE"
