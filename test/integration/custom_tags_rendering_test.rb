@@ -38,6 +38,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts tag with limit parameter" do
+    @blog.posts.visible.each { |p| p.update!(status: :draft) }
     3.times do |i|
       @blog.posts.create!(title: "Post #{i}", content: "Content", status: :published, published_at: (i + 1).minutes.ago)
     end
@@ -47,9 +48,25 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
+    assert_select "turbo-frame li", count: 2
     assert_select "body", text: /Post 0/
     assert_select "body", text: /Post 1/
     assert_select "body", text: /Post 2/, count: 0
+  end
+
+  test "renders posts tag with card style and limit" do
+    @blog.posts.visible.each { |p| p.update!(status: :draft) }
+    3.times do |i|
+      @blog.posts.create!(title: "Card #{i}", content: "Content", status: :published, published_at: (i + 1).minutes.ago)
+    end
+
+    page = @blog.pages.create!(title: "One Card", content: "{{ posts | style: card | limit: 1 }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".post-card", count: 1
+    assert_select ".post-card-title", text: "Card 0"
   end
 
   test "renders posts tag with tag filter" do
@@ -79,7 +96,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
-    assert_select "span.tags-inline"
+    assert_select "p.tags-inline"
     assert_select "body", text: /photography/
     assert_select "body", text: /technology/
     # Should not render as a list when inline

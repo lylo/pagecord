@@ -22,8 +22,9 @@ class DynamicVariable::PostsTag
 
   def render
     limit = @post_list_params.limit&.clamp(1, page_size) || page_size
-    posts = filtered_relation.limit(limit + 1).to_a
-    has_next = !@post_list_params.limit && posts.size > limit
+    paginate = @post_list_params.limit.nil?
+    posts = filtered_relation.limit(paginate ? limit + 1 : limit).to_a
+    has_next = paginate && posts.size > limit
     posts = posts.first(limit) if has_next
 
     @view.render(partial: "blogs/custom_tags/posts_#{@style}",
