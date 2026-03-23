@@ -1,6 +1,7 @@
 class DynamicVariable::PostsTag
-  STYLES = %w[card stream].freeze
-  PAGE_SIZES = { "card" => 20, "stream" => 10 }.freeze
+  STYLES = %w[card stream titles].freeze
+  PAGE_SIZES = { "card" => 20, "stream" => 10, "titles" => 100 }.freeze
+  DEFAULT_STYLE = "titles"
 
   class << self
     def valid_style?(style)
@@ -16,33 +17,23 @@ class DynamicVariable::PostsTag
     @blog = blog
     @view = view
     @post_list_params = DynamicVariable::PostListParams.new(blog: @blog, params_string: params_string)
-    @style = @post_list_params.style
+    @style = @post_list_params.style.presence || DEFAULT_STYLE
   end
 
   def render
-    if @style.in?(STYLES)
-      render_paginated
-    else
-      render_title_list
-    end
+    render_posts
   end
 
   private
 
-    def render_title_list
-      posts = @post_list_params.limit ? filtered_relation.limit(@post_list_params.limit) : filtered_relation.all
-      @view.render(partial: "blogs/custom_tags/posts", locals: { posts: posts })
-    end
-
-    def render_paginated
-      page_size = self.class.page_size_for(@style)
+    def render_posts
+      page_size = @post_list_params.limit&.clamp(1, self.class.page_size_for(@style)) || self.class.page_size_for(@style)
       posts = filtered_relation.limit(page_size + 1).to_a
-      has_next = posts.size > page_size
-      posts = posts.first(page_size) if has_next
-      frame_id = SecureRandom.hex(4)
+      has_next = !@post_list_params.limit && posts.size > page_size
+      posts = posts.first(page_size) if posts.size > page_size
 
       @view.render(partial: "blogs/custom_tags/posts_#{@style}",
-        locals: { posts: posts, has_next: has_next, frame_id: frame_id,
+        locals: { posts: posts, has_next: has_next, frame_id: SecureRandom.hex(4),
                   filter_params: @post_list_params.query_params })
     end
 

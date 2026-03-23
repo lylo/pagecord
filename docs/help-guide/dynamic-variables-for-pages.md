@@ -124,6 +124,14 @@ Render posts as a full-content stream (the same layout as the "stream" blog styl
 {{ posts | style: stream }}
 ```
 
+#### **Display as titles**
+
+Render posts as a date-and-title list (the same layout as the "titles" blog style) with automatic lazy-loading pagination. This is the default when no style or limit is specified.
+
+```javascript
+{{ posts | style: titles }}
+```
+
 #### **Style with filters**
 
 You can combine `style` with any other filter parameter.
@@ -132,7 +140,9 @@ You can combine `style` with any other filter parameter.
 {{ posts | style: card | tag: photography }}
 ```
 
-#### **Combine parameters**
+#### **Limit without pagination**
+
+Use `limit` to show a fixed number of posts without pagination.
 
 ```javascript
 {{ posts | limit: 5 | tag: photography }}
