@@ -263,6 +263,24 @@ a {
   padding-bottom: 0.75rem;
 }
 
+.post-content .attachment-gallery {
+  margin: 1.5em 0;
+  overflow: hidden;
+}
+
+.post-content .attachment-gallery figure {
+  float: left;
+  width: 33%;
+  padding: 0 0.25em;
+  margin: 0 0 0.5em 0;
+  box-sizing: border-box;
+}
+
+.post-content .attachment-gallery.attachment-gallery--2 figure,
+.post-content .attachment-gallery.attachment-gallery--4 figure {
+  width: 50%;
+}
+
 .post-content figcaption {
   color: #888;
   font-size: 14px;

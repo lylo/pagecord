@@ -1,0 +1,14 @@
+fr:
+  email_form:
+    form:
+      name_label: "Ton Nom"
+      email_label: "Ton Email"
+      message_label: "Message"
+      submit_button: "Envoyer"
+    success_message: "Message envoye !"
+    error_message: "Un probleme est survenu lors de l'envoi de ton message."
+    rate_limit_message: "Tu as envoyé trop de messages, trop vite. Réessaie plus tard."
+    mailer:
+      from_label: "De"
+      footer: "Reponds a cet email pour contacter %{name}."
+      footer_text: "Pour contacter %{name}, reponds simplement a cet email."

@@ -1,5 +1,5 @@
 /* CodeMirror CSS Editor overrides */
-[data-controller="css-editor"] .CodeMirror {
+[data-controller~="css-editor"] .CodeMirror {
   height: auto;
   min-height: 10rem;
   border: 1px solid #cbd5e1;
@@ -8,54 +8,54 @@
   font-size: 0.875rem;
 }
 
-[data-controller="css-editor"] .CodeMirror-focused {
+[data-controller~="css-editor"] .CodeMirror-focused {
   border-color: #64748b;
 }
 
 @media (prefers-color-scheme: dark) {
-  [data-controller="css-editor"] .CodeMirror {
+  [data-controller~="css-editor"] .CodeMirror {
     border-color: #475569;
     background: #1e293b;
     color: #e2e8f0;
   }
 
-  [data-controller="css-editor"] .CodeMirror-focused {
+  [data-controller~="css-editor"] .CodeMirror-focused {
     border-color: #94a3b8;
   }
 
-  [data-controller="css-editor"] .CodeMirror .CodeMirror-gutters {
+  [data-controller~="css-editor"] .CodeMirror .CodeMirror-gutters {
     background: #1e293b;
     border-right-color: #334155;
   }
 
-  [data-controller="css-editor"] .CodeMirror .CodeMirror-linenumber {
+  [data-controller~="css-editor"] .CodeMirror .CodeMirror-linenumber {
     color: #64748b;
   }
 
-  [data-controller="css-editor"] .CodeMirror .CodeMirror-cursor {
+  [data-controller~="css-editor"] .CodeMirror .CodeMirror-cursor {
     border-left-color: #e2e8f0;
   }
 
-  [data-controller="css-editor"] .CodeMirror .CodeMirror-selected {
+  [data-controller~="css-editor"] .CodeMirror .CodeMirror-selected {
     background: #334155;
   }
 
-  [data-controller="css-editor"] .CodeMirror-focused .CodeMirror-selected {
+  [data-controller~="css-editor"] .CodeMirror-focused .CodeMirror-selected {
     background: #475569;
   }
 
   /* CSS syntax highlighting for dark mode */
-  [data-controller="css-editor"] .CodeMirror .cm-keyword { color: #c678dd; }
-  [data-controller="css-editor"] .CodeMirror .cm-atom { color: #d19a66; }
-  [data-controller="css-editor"] .CodeMirror .cm-number { color: #d19a66; }
-  [data-controller="css-editor"] .CodeMirror .cm-def { color: #61afef; }
-  [data-controller="css-editor"] .CodeMirror .cm-variable { color: #e06c75; }
-  [data-controller="css-editor"] .CodeMirror .cm-property { color: #56b6c2; }
-  [data-controller="css-editor"] .CodeMirror .cm-operator { color: #abb2bf; }
-  [data-controller="css-editor"] .CodeMirror .cm-comment { color: #5c6370; }
-  [data-controller="css-editor"] .CodeMirror .cm-string { color: #98c379; }
-  [data-controller="css-editor"] .CodeMirror .cm-tag { color: #e06c75; }
-  [data-controller="css-editor"] .CodeMirror .cm-attribute { color: #d19a66; }
-  [data-controller="css-editor"] .CodeMirror .cm-qualifier { color: #d19a66; }
-  [data-controller="css-editor"] .CodeMirror .cm-builtin { color: #e06c75; }
+  [data-controller~="css-editor"] .CodeMirror .cm-keyword { color: #c678dd; }
+  [data-controller~="css-editor"] .CodeMirror .cm-atom { color: #d19a66; }
+  [data-controller~="css-editor"] .CodeMirror .cm-number { color: #d19a66; }
+  [data-controller~="css-editor"] .CodeMirror .cm-def { color: #61afef; }
+  [data-controller~="css-editor"] .CodeMirror .cm-variable { color: #e06c75; }
+  [data-controller~="css-editor"] .CodeMirror .cm-property { color: #56b6c2; }
+  [data-controller~="css-editor"] .CodeMirror .cm-operator { color: #abb2bf; }
+  [data-controller~="css-editor"] .CodeMirror .cm-comment { color: #5c6370; }
+  [data-controller~="css-editor"] .CodeMirror .cm-string { color: #98c379; }
+  [data-controller~="css-editor"] .CodeMirror .cm-tag { color: #e06c75; }
+  [data-controller~="css-editor"] .CodeMirror .cm-attribute { color: #d19a66; }
+  [data-controller~="css-editor"] .CodeMirror .cm-qualifier { color: #d19a66; }
+  [data-controller~="css-editor"] .CodeMirror .cm-builtin { color: #e06c75; }
 }

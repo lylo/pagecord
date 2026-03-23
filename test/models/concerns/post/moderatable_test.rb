@@ -2,7 +2,6 @@ require "test_helper"
 require "mocha/minitest"
 
 class Post::ModeratableTest < ActiveSupport::TestCase
-  include ActiveJob::TestHelper
   setup do
     @post = posts(:one)
     @post.update!(text_summary: "Test content for moderation")

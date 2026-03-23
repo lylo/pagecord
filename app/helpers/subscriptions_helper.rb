@@ -6,7 +6,7 @@ module SubscriptionsHelper
       test: "pri_01kgccx380dyd8sv1c5mr7qgh4"
     },
     annual: {
-      production: "pri_01jxfed0p4kpnbxy75pgzzkz78",
+      production: "pri_01kj7dvn8xc1yee6ppwzda5ykk",
       development: "pri_01jxfe5399nzanxj57bbqk28t4",
       test: "pri_01jxfe5399nzanxj57bbqk28t4"
     }

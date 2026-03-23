@@ -21,11 +21,11 @@ class FreeTrialMailerTest < ActionMailer::TestCase
     assert_match(/\$#{Subscription.price}\/year/, email.text_part.body.to_s)
   end
 
-  test "trial_ended email contains blog URL" do
+  test "trial_ended email contains pricing link" do
     user = users(:vivian)
     email = FreeTrialMailer.with(user: user).trial_ended
 
-    assert_match(user.blog.subdomain, email.html_part.body.to_s)
-    assert_match(user.blog.subdomain, email.text_part.body.to_s)
+    assert_match(/pagecord\.com\/pricing/, email.html_part.body.to_s)
+    assert_match(/pagecord\.com\/pricing/, email.text_part.body.to_s)
   end
 end

@@ -5,6 +5,7 @@ class Blogs::BaseController < ApplicationController
   before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale, :reject_malicious_params
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_blog_not_found
+  rescue_from ActionController::TooManyRequests, with: :render_too_many_requests
 
   protected
 
@@ -89,5 +90,9 @@ class Blogs::BaseController < ApplicationController
         format.html { render "blogs/errors/not_found", status: 404 }
         format.any { head :not_found }
       end
+    end
+
+    def render_too_many_requests
+      render "blogs/errors/too_many_requests", status: :too_many_requests
     end
 end

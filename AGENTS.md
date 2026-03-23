@@ -73,13 +73,15 @@ Docker: prefix commands with `docker-compose exec web`
 - **Auth**: Passwordless login via AccessRequest tokens (1-day expiry). EmailChangeRequest for email updates. Both use Verifiable concern.
 - **Routing**: Constraint-based — pagecord.com for app/auth, subdomains and custom domains for blog content
 - **Storage**: ActiveStorage on Cloudflare R2. Soft deletion with Discard gem. StorageTrackable concern tracks attachment bytes/count per blog.
+- **API**: `Api::BaseController` handles token auth via `Blog.find_by_api_key`, premium check, `:api` feature flag, 60 req/min rate limit, `wrap_parameters false`, RFC 5988 `Link` + `X-Total-Count` pagination headers, and shared param handling via `permitted_content_params`. Controllers: `Api::PostsController` (CRUD), `Api::PagesController` (CRUD), `Api::HomePagesController` (CRUD, singular resource, second create returns `422`), `Api::AttachmentsController` (file upload → standalone blob → `attachable_sgid`). `content` is always stored as HTML; `content_format=markdown` first renders via Redcarpet with front matter support, then attachment enrichment runs on the resulting HTML. API rich text attachments are blob-only and canonicalized with the same `ActionText::Attachment.from_attachable(..., url: ...)` path used by MailParser via `Html::AttachmentPreview`. Upload limits live in `UploadLimits::CONTENT_TYPES` (`app/models/upload_limits.rb`).
+- **Caching**: `blog.updated_at` is the single invalidation boundary. Everything that changes visitor-visible state touches the blog. Post fragment caches key on `[post, @blog.updated_at]`. ETags use `@blog.updated_at`. Blog `after_commit :purge_cloudflare_cache` fires `PurgeCloudflareCacheJob` (tag-based purge by subdomain). Edge caching (`s-maxage`, `Cache-Tag`, session skip) only applies to `*.pagecord.com` — custom domains route through Caddy, not Cloudflare. Upvotes don't invalidate caches (display is handled client-side via Stimulus).
 - **Background**: Sidekiq + Redis. Cron via `whenever` gem (see `config/schedule.rb`)
 - **External services**: Postmark + Mailpace (email, dual provider), Sentry (errors), AppSignal (observability), Hatchbox (hosting/custom domains), Paddle (billing)
 
 ### Billing & Access
 - **Payments**: Paddle webhooks (`Billing::PaddleEventsController`) → Subscription model. Plans: monthly, annual, complimentary
 - **Trial**: 14-day free trial. `has_premium_access?` = subscribed OR on trial. `subscribed?` = paid only.
-- Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains
+- Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains, API access
 - Subscriber-only features: email subscriptions, branding removal
 - Payment failures handled automatically by Paddle Retain — don't email customers about failed payments
 
@@ -112,6 +114,12 @@ Docker: prefix commands with `docker-compose exec web`
 - **Renewal reminders**: `Subscription::SendRenewalRemindersJob` emails annual subscribers 2 weeks before renewal
 - **Cancellation**: `SendCancellationEmailJob` sends appropriate email (subscriber vs free account). User destruction via `DestroyUserJob`.
 
+### Feature Toggles
+- Per-blog feature flags stored in the blog's `features` array column (e.g. `["contact_form", "analytics_countries"]`)
+- Defined in `config/features.rb` using `feature :name do |blog:| ... end`
+- In controllers/views: `current_features.enabled?(:feature_name)` (via `Rails.features.for(blog: @blog)`)
+- In models/concerns: check `features.include?("feature_name")` directly on the blog instance
+
 ### Key Concerns
 - **Subscribable**: Trial management (14 days), `has_premium_access?` vs `subscribed?`
 - **Themeable**: 7 preset themes + custom, fonts, page widths, hex color validation
@@ -123,6 +131,7 @@ Docker: prefix commands with `docker-compose exec web`
 ## Key Gotchas
 
 - **ActionText before_save**: Read from `content.to_s` directly — ActionText changes aren't persisted until callback completes
+- **API Markdown attachments**: Redcarpet wraps standalone raw `<action-text-attachment>` tags in `<p>` tags. `Api::BaseController#enrich_attachments` must unwrap attachment-only paragraphs after Markdown conversion or rendered blog HTML loses the outer `<action-text-attachment>` wrapper.
 - **Safari**: Doesn't support `*.localhost` — use Chrome/Firefox for subdomain testing
 - **Blog views**: No Tailwind, use semantic CSS. Check `lexxy-typography.css`, `components.css`, `themes/*.css`
 - **Post text_summary**: Cached plain text column updated via before_save. Use `display_title`, `summary(limit:)` — don't parse ActionText in loops

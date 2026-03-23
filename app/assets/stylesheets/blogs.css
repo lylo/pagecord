@@ -26,7 +26,7 @@
  */
 
 /* ============================= */
-/* Layout - Page Structure       */
+/* Page Primitives               */
 /* ============================= */
 
 /* Universal box-sizing to include padding in width calculations */
@@ -82,6 +82,12 @@ main {
   max-width: var(--content-width-wide);
 }
 
+/* Base theme colours */
+html, body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
 /* Footer - centered with padding */
 footer.blog-footer {
   width: 100%;
@@ -99,27 +105,17 @@ footer.blog-footer #brand svg {
   color: var(--color-text-heading);
 }
 
-/* ================================== */
-/* Blog Components (Pure CSS)        */
-/* ================================== */
-
-/* Apply base theme styles to html and body */
-html, body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
-}
-
 /* ============================= */
-/* Links - Remove default underline except in article content */
+/* Links                         */
 /* ============================= */
 
 :where(a) {
   text-decoration: none;
 }
 
-
-/* Header
-/* -------------------------------------------------------------------------- */
+/* ============================= */
+/* Header                        */
+/* ============================= */
 
 :where(.blog) {
   --lexxy-color-ink: var(--color-text);
@@ -135,8 +131,8 @@ html, body {
   --lexxy-color-code-bg: var(--color-bg-subtle);
 
 
-  /* FIXME there should be a better way of doing this without !important */
-  .lexxy-content__table-cell--header {
+  .lexxy-content__table-cell--header,
+  th {
     background-color: var(--color-bg-subtle) !important;
   }
 
@@ -158,14 +154,24 @@ html, body {
     }
 
     /* increased margin around images in article content */
-    figure:has(img),
-    img:not(figure img),
-    .attachment {
+    figure:has(img):not(.attachment-gallery *),
+    img:not(figure img, .attachment-gallery *),
+    .attachment:not(.attachment-gallery *) {
       margin-block: 1.5rem;
+    }
+
+    .attachment-gallery {
+      margin-block: 1.5rem;
+    }
+
+    .attachment-gallery .attachment {
+      margin-block: 0;
+      gap: calc(var(--lexxy-attachment-gap) / 2);
     }
 
     .attachment--preview {
       inline-size: auto;
+      padding-inline: 0;
     }
   }
 
@@ -276,8 +282,9 @@ html, body {
   }
 }
 
-/* Article
-/* -------------------------------------------------------------------------- */
+/* ============================= */
+/* Article                       */
+/* ============================= */
 
 :where(.blog) {
   :where(article) {
@@ -310,7 +317,7 @@ html, body {
       color: var(--color-text-light);
     }
 
-    h1.post-title {
+    :where(h1.post-title) {
       font-size: 1.875rem;
       line-height: 2.5rem;
       margin-top: 0;
@@ -321,13 +328,10 @@ html, body {
 
     figcaption.attachment__caption {
       text-align: center;
-      padding-left: 1rem;
-      padding-right: 1rem;
-      margin-top: 0.5rem;
+      padding-inline: 1rem;
 
       @media (min-width: 640px) {
-        padding-left: 2rem;
-        padding-right: 2rem;
+        padding-inline: 2rem;
       }
     }
 
@@ -342,16 +346,18 @@ html, body {
       max-width: 500px;
     }
 
-    :where(hr) {
+    hr {
       border: none;
       border-top: 1px solid var(--color-border);
+      inline-size: 100%;
       margin-block: var(--lexxy-content-margin);
     }
   }
 }
 
-/* Post footer
-/* -------------------------------------------------------------------------- */
+/* ============================= */
+/* Post Footer                   */
+/* ============================= */
 
 :where(.blog) {
   :where(article) :where(footer) {
@@ -396,9 +402,9 @@ html, body {
   }
 }
 
-
-/* Forms
-/* -------------------------------------------------------------------------- */
+/* ============================= */
+/* Forms                         */
+/* ============================= */
 
 :where(.blog) {
   :where(.form) {
@@ -495,20 +501,137 @@ html, body {
       }
     }
   }
+}
 
-  /* Confirmation card */
-  :where(.confirmation-card) {
-    background-color: var(--color-bg-subtle);
-    text-align: center;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
+.contact-form,
+.reply-form {
+  width: 100%;
+  max-width: var(--content-width-standard);
+  margin-inline: auto;
+  margin-block: var(--lexxy-content-margin);
+}
+
+.email-subscriber-form {
+  display: flex;
+  justify-content: center;
+  font-size: 0.875em;
+  margin-inline: auto;
+  margin-block: 0 var(--lexxy-content-margin);
+  width: 100%;
+  max-width: 450px;
+}
+
+.email-subscriber-form turbo-frame {
+  display: block;
+  width: 100%;
+}
+
+.form-fieldset {
+  display: flex;
+  border: none;
+}
+
+.email-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.subscription-description {
+  color: var(--color-text);
+}
+
+.subscription-message {
+  color: var(--color-text);
+  text-align: center;
+  line-height: 1.5;
+
+  a {
+    color: var(--color-accent);
   }
 }
 
+.email-input {
+  width: 12rem;
+}
+
+@media (min-width: 640px) {
+  .email-input {
+    width: 16rem;
+  }
+}
+
+/* Mobile: stack email form vertically on very small screens */
+@media (max-width: 480px) {
+  .email-subscriber-form .form-fieldset {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .email-input {
+    width: 100%;
+  }
+}
+
+.form-container {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .form-container {
+    padding: 1rem;
+  }
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .form-row {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .form-row .form-field {
+    flex: 1;
+  }
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.form-field input,
+.form-field textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
 /* ============================= */
-/* Layout - Post Lists           */
+/* Post Lists                    */
 /* ============================= */
 
 /* Stream layout - spaced posts */
@@ -530,8 +653,10 @@ html, body {
 
 .posts-titles .post-row {
   display: flex;
+  align-items: baseline;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
 }
 
 .post-row time {
@@ -641,133 +766,13 @@ html, body {
 }
 
 /* ============================= */
-/* Layout - Forms & UI           */
-/* ============================= */
-
-button {
-  border: none;
-  display: flex;
-  cursor: pointer;
-  padding: 0;
-}
-
-.email-subscriber-form {
-  display: flex;
-  justify-content: center;
-  font-size: 0.875em;
-  margin-inline: auto;
-  margin-block: 0 var(--lexxy-content-margin);
-  width: 100%;
-  max-width: 450px;
-}
-
-.email-subscriber-form turbo-frame {
-  display: block;
-  width: 100%;
-}
-
-/* Empty state messages */
-.empty-state {
-  text-align: center;
-}
-
-.empty-state a {
-  color: var(--color-accent);
-  font-weight: 500;
-  text-decoration: underline;
-}
-
-/* Tag filter notice */
-.tag-filter-notice {
-  margin-bottom: 1.5rem;
-  padding: 0.75rem;
-  background-color: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-}
-
-.tag-filter-notice-text {
-  color: var(--color-text);
-}
-
-.tag-filter-notice-actions {
-  margin-top: 0.5rem;
-}
-
-.tag-filter-clear-link {
-  color: var(--color-accent);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.tag-filter-clear-link:hover {
-  color: var(--color-accent-hover);
-  text-decoration: underline;
-}
-
-/* ============================= */
-/* Typography - Utility Classes  */
-/* ============================= */
-
-/* Font family classes (applied dynamically) */
-.font-sans {
-   --font-body: var(--font-sans);
-}
-
-.font-serif {
-   --font-body: var(--font-serif);
-}
-
-.font-mono {
-  --font-body: var(--font-mono);
-}
-
-/* Font size utilities - must be standalone for use on <main> element */
-
-/* ============================= */
-/* Layout - Flash Messages       */
-/* ============================= */
-
-/* Note: Flash container uses .hidden class for initial display: none */
-
-.flash-wrapper {
-  position: absolute;
-  width: 100%;
-  top: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  z-index: 10;
-}
-
-.flash-message {
-  max-width: 300px;
-  padding: 0.5rem 1rem;
-  margin-inline: auto;
-  border-radius: 0.375rem;
-  background-color: var(--color-bg-subtle);
-  box-shadow: 0 4px 6px -1px var(--color-shadow);
-}
-
-@media (min-width: 640px) {
-  .flash-message {
-    max-width: 400px;
-  }
-}
-
-.flash-message-text {
-  color: var(--color-text);
-  text-align: center;
-}
-
-/* ============================= */
-/* Layout - Tags                 */
+/* Tags                          */
 /* ============================= */
 
 .tags-container {
   display: flex;
   flex-wrap: wrap;
+  gap: 0.5rem;
   margin-top: 2rem;
 }
 
@@ -775,8 +780,6 @@ button {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.5rem;
-  margin-right: 0.5rem;
-  margin-bottom: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
@@ -791,8 +794,19 @@ button {
 }
 
 /* ============================= */
-/* Layout - Confirmation Pages   */
+/* Confirmation                  */
 /* ============================= */
+
+:where(.blog) {
+  :where(.confirmation-card) {
+    background-color: var(--color-bg-subtle);
+    text-align: center;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+  }
+}
 
 .confirmation-page {
   margin-top: 3rem;
@@ -828,145 +842,8 @@ button {
 }
 
 /* ============================= */
-/* Layout - Form Fieldsets       */
+/* Custom Tag Components         */
 /* ============================= */
-
-.form-fieldset {
-  display: flex;
-  border: none;
-}
-
-.email-form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  text-align: center;
-}
-
-.subscription-description {
-  color: var(--color-text);
-}
-
-.subscription-message {
-  color: var(--color-text);
-  text-align: center;
-  line-height: 1.5;
-
-  a {
-    color: var(--color-accent);
-  }
-}
-
-.email-input {
-  width: 12rem;
-}
-
-@media (min-width: 640px) {
-  .email-input {
-    width: 16rem;
-  }
-}
-
-/* Mobile: stack email form vertically on very small screens */
-@media (max-width: 480px) {
-  .email-subscriber-form .form-fieldset {
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-  }
-
-  .email-input {
-    width: 100%;
-  }
-}
-
-/* Generic form layout styles - shared by all forms */
-.form-container {
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-@media (min-width: 640px) {
-  .form-container {
-    padding: 1rem;
-  }
-}
-
-.form-row {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .form-row {
-    flex-direction: row;
-    gap: 1rem;
-  }
-
-  .form-row .form-field {
-    flex: 1;
-  }
-}
-
-.form-field label {
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-.form-field input,
-.form-field textarea {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.form-error {
-  color: #ef4444;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-/* ============================= */
-/* Utility - Display             */
-/* ============================= */
-
-.hidden {
-  display: none;
-}
-
-.pointer-events-none {
-  pointer-events: none;
-}
-
-dialog::backdrop {
-  backdrop-filter: blur(2px);
-}
-
-dialog[open] {
-  animation: modal-open 150ms ease-out;
-}
-
-@keyframes modal-open {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 
 /* Posts list component (for custom tags in page content) */
 ul.posts-list {
@@ -1032,23 +909,6 @@ ul.posts-list {
 }
 
 /* ============================= */
-/* Animations                    */
-/* ============================= */
-
-@keyframes pulseGrow {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.4);
-  }
-}
-
-.animate-pulse-grow {
-  animation: pulseGrow 500ms ease-in-out;
-}
-
-/* ============================= */
 /* Media Embeds                  */
 /* ============================= */
 
@@ -1069,7 +929,6 @@ ul.posts-list {
   height: 100%;
 }
 
-
 /* General iframe styling */
 :where(.blog) {
   :where(iframe) {
@@ -1081,3 +940,143 @@ ul.posts-list {
   }
 }
 
+/* ============================= */
+/* UI Components                 */
+/* ============================= */
+
+:where(.blog) button {
+  border: none;
+  display: flex;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Empty state messages */
+.empty-state {
+  text-align: center;
+}
+
+.empty-state a {
+  color: var(--color-accent);
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+/* Tag filter notice */
+.tag-filter-notice {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+.tag-filter-notice p {
+  margin: 0;
+}
+
+.tag-filter-notice strong {
+  color: var(--color-text);
+}
+
+.tag-filter-notice-links {
+  margin-top: 0.5rem !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tag-filter-notice-link {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  text-decoration: underline;
+}
+
+.tag-filter-notice-link:hover {
+  color: var(--color-accent);
+}
+
+/* ============================= */
+/* Typography                    */
+/* ============================= */
+
+/* Font family classes (applied dynamically) */
+.font-sans {
+   --font-body: var(--font-sans);
+}
+
+.font-serif {
+   --font-body: var(--font-serif);
+}
+
+.font-mono {
+  --font-body: var(--font-mono);
+}
+
+/* ============================= */
+/* Flash Messages                */
+/* ============================= */
+
+/* Note: Flash container uses .hidden class for initial display: none */
+
+.flash-wrapper {
+  position: absolute;
+  width: 100%;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}
+
+.flash-message {
+  max-width: 300px;
+  padding: 0.5rem 1rem;
+  margin-inline: auto;
+  border-radius: 0.375rem;
+  background-color: var(--color-bg-subtle);
+  box-shadow: 0 4px 6px -1px var(--color-shadow);
+}
+
+@media (min-width: 640px) {
+  .flash-message {
+    max-width: 400px;
+  }
+}
+
+.flash-message-text {
+  color: var(--color-text);
+  text-align: center;
+}
+
+/* ============================= */
+/* Utilities                     */
+/* ============================= */
+
+.hidden {
+  display: none;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+/* ============================= */
+/* Animations                    */
+/* ============================= */
+
+@keyframes pulseGrow {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+}
+
+.animate-pulse-grow {
+  animation: pulseGrow 500ms ease-in-out;
+}

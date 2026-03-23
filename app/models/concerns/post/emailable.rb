@@ -1,6 +1,15 @@
 module Post::Emailable
   extend ActiveSupport::Concern
 
+  included do
+    scope :emailed, -> { where(id: delivered_digest_post_ids) }
+    scope :not_emailed, -> { where.not(id: delivered_digest_post_ids) }
+
+    def self.delivered_digest_post_ids
+      DigestPost.joins(:post_digest).where.not(post_digests: { delivered_at: nil }).select(:post_id)
+    end
+  end
+
   def emailed?
     post_digests.any? { |digest| digest.delivered_at.present? }
   end

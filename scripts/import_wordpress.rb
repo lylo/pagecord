@@ -116,8 +116,7 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
       tag_list: tag_list,
       is_page: is_page,
       status: is_draft ? :draft : :published,
-      hidden: is_private,
-      show_in_navigation: false
+      hidden: is_private
     )
 
     # Parse and clean HTML content

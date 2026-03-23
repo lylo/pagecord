@@ -53,7 +53,15 @@ end
 
 ### Adding images
 
-Drag and drop images directly into the editor, or click the picture button in the toolbar.
+Drag and drop images directly into the editor, or click the attachment icon (paperclip) in the toolbar.
+
+### Image galleries
+
+To create a gallery, click the paperclip icon in the toolbar and select multiple images at once. You can also drag multiple photos straight into the editor. Either way, they'll be arranged in a grid automatically.
+
+If you have two or four images, they display in a 2-column grid. For three or more, they'll be arranged in a 3-column grid. Larger galleries wrap onto new rows, always with a maximum of three images per row. Aspect ratios are preserved throughout, so your photos won't get cropped or stretched.
+
+Want to add more images to an existing gallery? Just drag a new photo over an existing one and it will be added to the gallery group.
 
 ## Post Titles
 

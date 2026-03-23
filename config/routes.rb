@@ -17,6 +17,16 @@ module DomainConstraints
       request.host == default_host || request.host == "www.#{default_host}"
     end
   end
+
+  def self.api_domain?(request)
+    if Rails.env.test?
+      request.host == "api.example.com"
+    elsif Rails.env.production?
+      request.host == "api.#{Rails.application.config.x.domain}"
+    else
+      request.host.start_with?("api.")
+    end
+  end
 end
 
 
@@ -109,6 +119,7 @@ Rails.application.routes.draw do
     end
 
     namespace :settings do
+      resources :about, only: [ :index, :update ]
       resources :audience, only: [ :index ]
       resources :users, only: [ :update, :destroy ]
       resources :blogs, only: [ :index, :update ]
@@ -123,6 +134,7 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :api, only: [ :show, :create, :destroy ], controller: "api"
       resources :exports
 
       resources :sender_email_addresses, only: [ :create, :destroy ] do
@@ -159,6 +171,8 @@ Rails.application.routes.draw do
       member do
         post :restore
       end
+      resource :subscription, only: [ :update ]
+      resource :verification_email, only: [ :create ]
     end
     namespace :moderation do
       root to: redirect("/admin/moderation/spam")
@@ -182,6 +196,15 @@ Rails.application.routes.draw do
     end
   end
 
+  constraints(DomainConstraints.method(:api_domain?)) do
+    scope module: :api do
+      resources :posts, only: [ :index, :show, :create, :update, :destroy ], param: :token
+      resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
+      resource :home_page, only: [ :show, :create, :update, :destroy ]
+      resources :attachments, only: [ :create ]
+    end
+  end
+
   constraints(->(request) { !DomainConstraints.default_domain?(request) }) do
     get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
@@ -200,6 +223,7 @@ Rails.application.routes.draw do
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
     resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
+    resources :contact_messages, controller: "blogs/contact_messages", only: [ :create ]
 
     get "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#show", as: :email_subscriber_confirmation
     get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe

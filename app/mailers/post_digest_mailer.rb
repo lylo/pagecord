@@ -2,10 +2,10 @@ class PostDigestMailer < PostmarkMailer
   include PostsHelper
   include RoutingHelper
 
-  layout "mailer_digest"
+  layout "mailer_minimal"
 
   helper :routing
-  helper_method :without_action_text_image_wrapper, :strip_video_tags
+  helper_method :render_digest_post_content, :strip_video_tags
 
   def weekly_digest
     @digest = params[:digest]

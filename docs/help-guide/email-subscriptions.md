@@ -33,6 +33,5 @@ Go to **Settings** → **Audience** to see how many confirmed subscribers you ha
 
 The current limits are:
 
-- Premium accounts include 100 email subscribers
+- Premium accounts include 250 email subscribers
 - Pro accounts ($99/year) include 2,000 subscribers
-
