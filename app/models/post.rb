@@ -18,7 +18,7 @@ class Post < ApplicationRecord
   has_many :navigation_items, dependent: :destroy
 
   before_create :limit_content_size
-  before_save :set_text_summary, :set_published_at
+  before_save :set_excerpt, :set_text_summary, :set_published_at
 
   validate :content_present
   validate :title_present_for_pages
@@ -87,15 +87,7 @@ class Post < ApplicationRecord
   end
 
   def has_excerpt_break?
-    return false unless content.body.present?
-    ExcerptBreak.new(content.to_s).present?
-  end
-
-  def excerpt_summary(limit: 324)
-    return summary(limit: limit) unless has_excerpt_break?
-    text = ExcerptBreak.new(content.to_s).excerpt_plain_text
-    return summary(limit: limit) if text.blank?
-    text.truncate(limit, separator: /\s/)
+    excerpt.present?
   end
 
   def display_title
@@ -162,32 +154,38 @@ class Post < ApplicationRecord
   # Used by content moderation. See also: text_summary (truncated version).
   def plain_text_content
     return "" unless content.body.present?
-
-    doc = Nokogiri::HTML::DocumentFragment.parse(content.to_s)
-    doc.css("figcaption").remove
-
-    doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
-      element.add_child(Nokogiri::XML::Text.new(" ", doc))
-    end
-
-    doc.text
-      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
-      .gsub(/\[Image\]/i, "")
-      .gsub(%r{https?://\S+}, "")
-      .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
-      .gsub(/<!--\s*more\s*-->/i, "")
-      .gsub(/\s+/, " ")
-      .strip
+    extract_plain_text(content.to_s)
   end
 
   private
 
-    def text_content
-      plain_text_content
+    def set_excerpt
+      self.excerpt = ExcerptBreak.extract(content.to_s) if content.body.present?
     end
 
     def set_text_summary
-      self.text_summary = text_content.truncate(512, separator: /\s/, omission: "")
+      source = excerpt.presence || content.to_s
+      self.text_summary = extract_plain_text(source).truncate(512, separator: /\s/, omission: "")
+    end
+
+    def extract_plain_text(html)
+      return "" if html.blank?
+
+      doc = Nokogiri::HTML::DocumentFragment.parse(html)
+      doc.css("figcaption").remove
+
+      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
+        element.add_child(Nokogiri::XML::Text.new(" ", doc))
+      end
+
+      doc.text
+        .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
+        .gsub(/\[Image\]/i, "")
+        .gsub(%r{https?://\S+}, "")
+        .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
+        .gsub(/<!--\s*more\s*-->/i, "")
+        .gsub(/\s+/, " ")
+        .strip
     end
 
     # Sets published_at to Time.current if the post is being published but no date was provided.

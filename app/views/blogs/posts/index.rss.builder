@@ -13,7 +13,7 @@ cache([ @blog, @posts.map(&:id), @current_tags, params[:without_tag], params[:ti
         link = post_url(post)
         publication_time = post.published_at_in_user_timezone
         rendered_content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
-        rendered_content = ExcerptBreak.new(rendered_content).strip if post.has_excerpt_break?
+        rendered_content = ExcerptBreak.strip(rendered_content) if post.has_excerpt_break?
 
         xml.item do
           if post.title.blank?

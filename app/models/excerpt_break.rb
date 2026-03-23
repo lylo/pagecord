@@ -1,7 +1,25 @@
 class ExcerptBreak
-  MARKER_PATTERN = /\{\{\s*(?:more|excerpt)\s*\}\}/i
+  MARKER = /\{\{\s*(?:more|excerpt)\s*\}\}/i
   WP_COMMENT = /<!--\s*more\s*-->/i
   WP_ESCAPED = /&lt;!--\s*more\s*--&gt;/i
+
+  STRIP_PATTERNS = [
+    /<p>\s*\{\{\s*(?:more|excerpt)\s*\}\}\s*<\/p>/i,
+    /<!--\s*more\s*-->/i,
+    /<p>\s*&lt;!--\s*more\s*--&gt;\s*<\/p>/i
+  ]
+
+  # Returns HTML before the first marker, or nil if no marker found.
+  # Used once on save to pre-compute the excerpt column.
+  def self.extract(html)
+    new(html).excerpt
+  end
+
+  # Removes the marker paragraph from HTML. Simple regex, no Nokogiri.
+  # Used at render time for full post view, RSS, email.
+  def self.strip(html)
+    STRIP_PATTERNS.reduce(html) { |content, pattern| content.gsub(pattern, "") }
+  end
 
   def initialize(html)
     @html = html
@@ -9,42 +27,17 @@ class ExcerptBreak
 
   def present?
     protected = protect_code_blocks(@html)
-    protected.match?(MARKER_PATTERN) || protected.match?(WP_COMMENT) || protected.match?(WP_ESCAPED)
+    protected.match?(MARKER) || protected.match?(WP_COMMENT) || protected.match?(WP_ESCAPED)
   end
 
   def excerpt
     doc = Nokogiri::HTML::DocumentFragment.parse(@html)
     marker = find_marker_node(doc)
-    return @html unless marker
+    return nil unless marker
 
     block = block_ancestor(marker, doc)
     remove_from(block)
     doc.to_html
-  end
-
-  def strip
-    doc = Nokogiri::HTML::DocumentFragment.parse(@html)
-    marker = find_marker_node(doc)
-    return @html unless marker
-
-    block = block_ancestor(marker, doc)
-    block.remove
-    doc.to_html
-  end
-
-  def excerpt_plain_text
-    doc = Nokogiri::HTML::DocumentFragment.parse(@html)
-    marker = find_marker_node(doc)
-    return "" unless marker
-
-    block = block_ancestor(marker, doc)
-    remove_from(block)
-
-    doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |el|
-      el.add_child(Nokogiri::XML::Text.new(" ", doc))
-    end
-
-    doc.text.gsub(/\s+/, " ").strip
   end
 
   private
@@ -53,17 +46,8 @@ class ExcerptBreak
       doc.traverse do |node|
         next if inside_code_block?(node)
 
-        if node.text? && node.text.match?(MARKER_PATTERN)
-          return node
-        end
-
-        if node.comment? && node.text.match?(/\s*more\s*/i)
-          return node
-        end
-
-        if node.text? && node.text.match?(WP_ESCAPED)
-          return node
-        end
+        return node if node.text? && (node.text.match?(MARKER) || node.text.match?(WP_COMMENT))
+        return node if node.comment? && node.text.match?(/\s*more\s*/i)
       end
 
       nil
