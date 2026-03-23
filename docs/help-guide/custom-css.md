@@ -70,7 +70,7 @@ Here are some examples of CSS snippets you can use to customise your blog.
 
 ### Changing the font
 
-Pagecord has three lovely default fonts: Sans-Serif (Inter), Serif (Source Sans Pro), and Monospace (IBM Plex Mono). If you'd like to use a different font, you can import it from [Google Fonts](https://fonts.google.com/) or [Bunny Fonts](https://fonts.bunny.net/) (the only providers supported). Here's an example of using the "Lato" font from Google Fonts which is a solid alternative sans-serif choice:
+Pagecord has three lovely default fonts: Sans-Serif (Inter), Serif (Lora), and Monospace (IBM Plex Mono). If you'd like to use a different font, you can import it from [Google Fonts](https://fonts.google.com/) or [Bunny Fonts](https://fonts.bunny.net/) (the only providers supported). Here's an example of using the "Lato" font from Google Fonts which is a solid alternative sans-serif choice:
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
@@ -96,7 +96,7 @@ You might like sans-serif fonts for your body text and a serif font for headings
 
 ```css
 h1, h2, h3, h4, h5 {
-  font-family: SourceSerif4Variable, serif;
+  font-family: "Lora Variable", serif;
 }
 ```
 
