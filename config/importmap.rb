@@ -18,18 +18,18 @@ pin "lexxy", to: "lexxy.min.js", preload: "application"
 pin "@rails/actiontext", to: "actiontext.esm.js", preload: "application"
 pin "@rails/activestorage", to: "activestorage.esm.js", preload: "application"
 pin "local-time", preload: "application"
-pin "@yaireo/tagify", to: "https://ga.jspm.io/npm:@yaireo/tagify@4.35.1/dist/tagify.esm.js", preload: "application"
-pin "sortablejs", to: "https://ga.jspm.io/npm:sortablejs@1.15.7/modular/sortable.esm.js", preload: "application"
-pin "@rails/request.js", to: "https://ga.jspm.io/npm:@rails/request.js@0.0.8/src/index.js", preload: "application"
-pin "stimulus-sortable", to: "https://ga.jspm.io/npm:stimulus-sortable@4.1.1/dist/stimulus-sortable.mjs", preload: "application"
+pin "@yaireo/tagify", to: "@yaireo--tagify.js", preload: "application"
+pin "sortablejs", to: "sortablejs.js", preload: "application"
+pin "@rails/request.js", to: "@rails--request.js", preload: "application"
+pin "stimulus-sortable", to: "stimulus-sortable.js", preload: "application"
 
 # CodeMirror 5 for CSS editing (app only)
-pin "codemirror", to: "https://ga.jspm.io/npm:codemirror@5.65.18/lib/codemirror.js", preload: "application"
-pin "codemirror/mode/css/css", to: "https://ga.jspm.io/npm:codemirror@5.65.18/mode/css/css.js", preload: "application"
-pin "codemirror/addon/edit/matchbrackets", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/edit/matchbrackets.js", preload: "application"
-pin "codemirror/addon/edit/closebrackets", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/edit/closebrackets.js", preload: "application"
-pin "codemirror/addon/hint/show-hint", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/hint/show-hint.js", preload: "application"
-pin "codemirror/addon/hint/css-hint", to: "https://ga.jspm.io/npm:codemirror@5.65.18/addon/hint/css-hint.js", preload: "application"
+pin "codemirror", to: "codemirror/codemirror.js", preload: "application"
+pin "codemirror/mode/css/css", to: "codemirror/css.js", preload: "application"
+pin "codemirror/addon/edit/matchbrackets", to: "codemirror/matchbrackets.js", preload: "application"
+pin "codemirror/addon/edit/closebrackets", to: "codemirror/closebrackets.js", preload: "application"
+pin "codemirror/addon/hint/show-hint", to: "codemirror/show-hint.js", preload: "application"
+pin "codemirror/addon/hint/css-hint", to: "codemirror/css-hint.js", preload: "application"
 
 # Media embed handlers - lazy loaded (used by blogs and app)
 pin "apple_music", to: "embeds/apple_music.js", preload: false
