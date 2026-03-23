@@ -316,7 +316,7 @@ footer.blog-footer #brand svg {
       color: var(--color-text-light);
     }
 
-    h1.post-title {
+    :where(h1.post-title) {
       font-size: 1.875rem;
       line-height: 2.5rem;
       margin-top: 0;
