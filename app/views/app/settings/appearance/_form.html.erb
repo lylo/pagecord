@@ -6,109 +6,69 @@
   <% end %>
 <% end %>
 
-<%= form_with url: app_settings_appearance_path(@blog), model: @blog, data: { controller: "avatar" } do |form| %>
-  <fieldset>
-    <h3 class="font-bold text-lg mb-2">Bio</h3>
+<div data-controller="theme-selector">
+  <h3 class="font-bold text-lg mb-2">Colour Scheme</h3>
+  <p>
+    Choose a colour scheme for your blog.
+  </p>
 
-    <div class="lexxy-minimal">
-      <%= form.rich_text_area :bio,
-          placeholder: "add a bio to your profile if you like...",
-          class: "lexxy-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
-          spellcheck: true,
-          autocorrect: "on",
-          attachments: false,
-          autofocus: true,
-          data: { controller: "lexxy ios-toolbar", subscribed: false } %>
-    </div>
-
-    <div class="field-error"><%= @blog.errors[:bio].first if @blog.errors[:bio].any? %></div>
-  </fieldset>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Title</h3>
-    <p>
-      If you'd prefer a different title than <strong>@<%= @blog.subdomain %></strong> on your Pagecord,
-      enter it below.
-    </p>
-
-    <%= styled_text_field(form, :title, class: "mt-4 w-full") %>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Colour Scheme</h3>
-    <p>
-      Choose a colour scheme for your blog.
-    </p>
-    <%= render "theme_colour", form: form %>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Font</h3>
-    <p>
-      Choose a font for your blog.
-    </p>
-    <%= render "theme_font", form: form %>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Content Width</h3>
-    <p class="mb-4">
-      Choose how wide your blog content should be displayed.
-    </p>
-    <%= render "layout_width", form: form %>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Layout</h3>
-    <p>
-      Choose how your posts are displayed on your blog's home page: as a full-content stream, a list of titles, or cards with excerpts.
-    </p>
-
-    <%= render "layout_options", form: form %>
-  </div>
-
-  <% avatar_disabled = @blog.user.on_free_plan? %>
-  <h3 class="mt-8 font-bold text-lg mb-2">Avatar</h3>
-
-  <% if avatar_disabled %>
-    <div class="mb-4">
-      <%= callout(:info) do %>
-        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add an avatar to your blog.
-      <% end %>
-    </div>
-  <% else %>
-    <div class="mb-4"><%= trial_callout("Avatar") %></div>
+  <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+        data: { controller: "radio-button-auto-submit" } do |form| %>
+    <%= render "theme_presets", form: form %>
   <% end %>
 
-  <div class="<%= 'opacity-50 pointer-events-none' if avatar_disabled %>">
-    <p>
-      <% if @blog.avatar&.attached? %>
-        Click the image to select a new avatar, or click 'Remove' to delete the existing one.
-      <% else %>
-        If you'd like to include an avatar image on your home page, click the icon to select then
-        click the Update button below.
-      <% end %>
-    </p>
-
-    <div class="mt-4 text-start flex flex-col" id="blog-avatar">
-      <a href="#" data-action="click->avatar#open" title="Update your avatar">
-        <%= render "avatar", blog: @blog %>
-      </a>
-      <% if @blog.avatar&.attached? %>
-        <%= link_to app_blog_avatar_path(@blog), data: { turbo_method: :delete }, class: "flex items-center text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 hover:dark:text-slate-200 p-0 mt-1" do %>
-          <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 me-1 " %>
-          Remove
-        <% end %>
-      <% end %>
-    </div>
-
-    <%= form.file_field :avatar, class: "hidden", accept: "image/jpeg, image/png, image/webp", data: { avatar_target: "input" } %>
+  <div data-theme-selector-target="customThemeFields" class="<%= 'hidden' unless @blog.custom_theme? %>">
+    <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+          data: {
+            controller: "save-button",
+            action: "turbo:submit-end->save-button#showMessage"
+          } do |form| %>
+      <%= render "theme_custom_colours", form: form %>
+      <div class="mt-4">
+        <%= form.submit "Save custom colours", data: { save_button_target: "button" }, class: "btn-primary" %>
+      </div>
+    <% end %>
   </div>
+</div>
 
-  <% disabled = !@blog.user.subscribed? %>
-  <h3 class="mt-8 font-bold text-lg mb-4">Branding</h3>
+<div class="mt-8">
+  <h3 class="font-bold text-lg mb-2">Font</h3>
+  <p>
+    Choose a font for your blog.
+  </p>
+  <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+        data: { controller: "radio-button-auto-submit" } do |form| %>
+    <%= render "theme_font", form: form %>
+  <% end %>
+</div>
 
-  <% if disabled %>
+<div class="mt-8">
+  <h3 class="font-bold text-lg mb-2">Content Width</h3>
+  <p class="mb-4">
+    Choose how wide your blog content should be displayed.
+  </p>
+  <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+        data: { controller: "radio-button-auto-submit" } do |form| %>
+    <%= render "layout_width", form: form %>
+  <% end %>
+</div>
+
+<div class="mt-8">
+  <h3 class="font-bold text-lg mb-2">Layout</h3>
+  <p>
+    Choose how your posts are displayed on your blog's home page: as a full-content stream, a list of titles, or cards with excerpts.
+  </p>
+  <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+        data: { controller: "radio-button-auto-submit" } do |form| %>
+    <%= render "layout_options", form: form %>
+  <% end %>
+</div>
+
+<% branding_disabled = !@blog.user.subscribed? %>
+<div class="mt-8">
+  <h3 class="font-bold text-lg mb-4">Branding</h3>
+
+  <% if branding_disabled %>
     <div class="mb-4">
       <%= callout(:info) do %>
         <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to hide Pagecord branding from your blog.
@@ -116,40 +76,52 @@
     </div>
   <% end %>
 
-  <div class="flex gap-3 <%= 'opacity-50' if disabled %>">
-    <div class="flex h-6 shrink-0 items-center">
-      <%= form.check_box :show_branding, { checked: @blog.show_branding, disabled: disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded #{disabled ? 'cursor-not-allowed' : 'focus:ring focus:ring-slate-300'}" } %>
+  <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+        data: { controller: "checkbox-auto-submit" } do |form| %>
+    <div class="flex gap-3 <%= 'opacity-50' if branding_disabled %>">
+      <div class="flex h-6 shrink-0 items-center">
+        <%= form.check_box :show_branding, { checked: @blog.show_branding, disabled: branding_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded #{branding_disabled ? 'cursor-not-allowed' : 'focus:ring focus:ring-slate-300'}" } %>
+      </div>
+      <div>
+        <%= form.label :show_branding, "Show Pagecord branding", class: "text-slate-800 dark:text-slate-100" %>
+        <p class="text-slate-500 text-sm">
+          When checked, the Pagecord logo will be displayed at the bottom of each page on your blog. Please consider
+          keeping this on to help spread the word about Pagecord!
+        </p>
+      </div>
     </div>
-    <div>
-      <%= form.label :show_branding, "Show Pagecord branding", class: "text-slate-800 dark:text-slate-100" %>
-      <p class="text-slate-500 text-sm">
-        When checked, the Pagecord logo will be displayed at the bottom of each page on your blog. Please consider
-        keeping this on to help spread the word about Pagecord!
-      </p>
-    </div>
-  </div>
+  <% end %>
+</div>
 
-  <% if @blog.user.has_premium_access? %>
-    <fieldset class="mt-8" id="custom-css-section" data-controller="css-editor">
-      <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
-      <p class="mb-4">
-        Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
-        You can use <code>@import</code> for Google Fonts or Bunny Fonts.
-      </p>
+<% if @blog.user.has_premium_access? %>
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
+    <p class="mb-4">
+      Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
+      You can use <code>@import</code> for Google Fonts or Bunny Fonts.
+    </p>
 
-      <p class="mb-4 text-sm text-slate-500 italic">
-       Custom CSS is an advanced feature. Customer support for creating or debugging custom CSS is not possible - you're on your own with this one! Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
-      </p>
+    <p class="mb-4 text-sm text-slate-500 italic">
+     Custom CSS is an advanced feature. Customer support for creating or debugging custom CSS is not possible - you're on your own with this one! Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+    </p>
 
+    <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+          data: {
+            controller: "save-button css-editor",
+            action: "turbo:submit-end->save-button#showMessage"
+          } do |form| %>
       <%= form.text_area :custom_css,
           data: { css_editor_target: "textarea" } %>
 
-      <div class="field-error"><%= @blog.errors[:custom_css].first if @blog.errors[:custom_css].any? %></div>
-    </fieldset>
-  <% end %>
+      <div id="css-error" class="field-error"><%= @blog.errors[:custom_css].first if @blog.errors[:custom_css].any? %></div>
 
-  <div class="mt-12 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4 gap-x-2">
-    <%= form.submit "Update", class: "btn-primary" %>
-    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+      <div class="mt-4">
+        <%= form.submit "Save Custom CSS", data: { save_button_target: "button" }, class: "btn-primary" %>
+      </div>
+    <% end %>
   </div>
 <% end %>
+
+<div class="mt-12 border-t border-t-slate-200 dark:border-slate-600 pt-4">
+  <%= link_to "Back to Settings", app_settings_path, class: "btn-secondary" %>
+</div>

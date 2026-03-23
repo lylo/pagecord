@@ -1,9 +1,7 @@
-<% processed_content = safe_auto_link(process_dynamic_variables(post), sanitize: false).html_safe %>
-
 <% if post.is_page? %>
-  <%= processed_content %>
+  <%= render_post_content(post) %>
 <% else %>
   <div class="lexxy-content e-content" data-controller="syntax-highlight">
-    <%= processed_content %>
+    <%= render_post_content(post) %>
   </div>
 <% end %>

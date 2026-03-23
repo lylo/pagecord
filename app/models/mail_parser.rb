@@ -242,8 +242,7 @@ class MailParser
     def process_attachment(attachment)
       preview_html = attachment_preview_node(
         attachment[:blob],
-        attachment[:url],
-        attachment[:original]
+        attachment[:url]
       )
       preview_html || ""
     end

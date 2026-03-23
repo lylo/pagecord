@@ -3,10 +3,11 @@ class MessageSpamDetector
 
   attr_reader :result
 
-  def initialize(name:, email:, message:)
+  def initialize(name:, email:, message:, page_url: nil)
     @name = name
     @email = email
     @message = message
+    @page_url = page_url
   end
 
   def detect
@@ -16,7 +17,8 @@ class MessageSpamDetector
     response = CleanTalk.check_message(
       email: @email,
       nickname: @name,
-      message: @message
+      message: @message,
+      page_url: @page_url
     )
 
     parse_response(response)

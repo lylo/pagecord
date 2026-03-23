@@ -4,7 +4,7 @@
 
 <%= render "blogs/header", hide_email_form: true, hide_bio: true %>
 
-<div class="form">
+<div class="form reply-form">
 <%= form_with model: [@post, @reply],
           url: post_replies_path(@post),
           method: :post,

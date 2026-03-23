@@ -78,7 +78,8 @@
     margin-block-start: 0;
   }
 
-  .lexxy-content__table-wrapper {
+  .lexxy-content__table-wrapper,
+  & > table {
     margin-block: calc(var(--lexxy-content-margin) * 1.5);
   }
 
@@ -98,11 +99,11 @@
     margin-block: var(--lexxy-content-margin);
   }
 
-  br + action-text-attachment {
+  br + :is(action-text-attachment, .attachment) {
     margin-top: 0;
   }
 
-  action-text-attachment + br {
+  :is(action-text-attachment, .attachment) + br {
     display: none;
   }
 

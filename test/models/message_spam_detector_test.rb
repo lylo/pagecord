@@ -62,6 +62,25 @@ class MessageSpamDetectorTest < ActiveSupport::TestCase
     refute @detector.spam?
   end
 
+  test "passes page_url to CleanTalk" do
+    detector = MessageSpamDetector.new(
+      name: "Test User",
+      email: "test@example.com",
+      message: "Hello!",
+      page_url: "https://olly.world/hello"
+    )
+
+    CleanTalk.expects(:check_message).with(
+      email: "test@example.com",
+      nickname: "Test User",
+      message: "Hello!",
+      page_url: "https://olly.world/hello"
+    ).returns({ "allow" => 1, "comment" => "Clean" })
+
+    detector.detect
+    assert_equal :not_spam, detector.result.status
+  end
+
   test "skips detection when EMAIL_SPAM_DETECTION is not set" do
     ENV["EMAIL_SPAM_DETECTION"] = nil
 

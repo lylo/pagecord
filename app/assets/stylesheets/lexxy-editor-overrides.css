@@ -147,6 +147,12 @@ lexxy-toolbar {
     .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
       background-color: var(--color-slate-600);
     }
+
+    .lexxy-editor__toolbar-dropdown-list button {
+      color: var(--color-slate-200);
+
+      svg path { fill: currentColor; }
+    }
   }
 
   /* Highlight dropdown reset button */
@@ -156,22 +162,17 @@ lexxy-toolbar {
 
 }
 
+/* Tailwind's border-box on ::after makes the 0.3ch chevron collapse into a dot */
+lexxy-toolbar .lexxy-editor__toolbar-dropdown--chevron summary::after {
+  box-sizing: content-box;
+}
+
 /* ================================== */
 /* Minimal Toolbar Buttons Hidden      */
 /* ================================== */
 .lexxy-minimal lexxy-toolbar {
-  button:is(
-    [name="quote"],
-    [name="code"],
-    [name="upload"],
-    [name="unordered-list"],
-    [name="ordered-list"],
-    [name="heading"],
-    [name="highlight"],
-    [name="table"],
-    [name="divider"],
-    [name="strikethrough"]),
-  summary[name="highlight"] {
+  button:is([name="quote"], [name="code"], [name="table"], [name="divider"], [name="image"], [name="file"]),
+  details:has(summary:is([name="format"], [name="lists"], [name="highlight"])) {
     display: none;
   }
 }

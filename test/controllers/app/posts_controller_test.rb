@@ -344,13 +344,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should preview draft post with blog layout" do
-    draft_post = @user.blog.posts.create!(
-      title: "Draft Preview",
-      content: "Draft content for preview",
-      status: :draft
-    )
-
-    get app_post_url(draft_post)
+    get app_post_url(posts(:vivian_draft))
 
     assert_response :success
     assert_select "article"

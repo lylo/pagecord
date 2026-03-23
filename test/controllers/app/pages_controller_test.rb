@@ -27,15 +27,13 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
       post app_pages_path, params: {
         post: {
           title: "New Page",
-          content: "Page content",
-          show_in_navigation: true
+          content: "Page content"
         }
       }
     end
 
     page = @blog.pages.last
     assert page.page?
-    assert page.show_in_navigation?
     assert_redirected_to app_pages_path
   end
 
@@ -44,8 +42,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
       post app_pages_path, params: {
         post: {
           title: "Test Draft Page",
-          content: "Draft content",
-          show_in_navigation: false
+          content: "Draft content"
         },
         button: "save_draft"
       }
@@ -54,7 +51,6 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     page = @blog.pages.last
     assert page.page?
     assert page.draft?
-    assert_not page.show_in_navigation?
   end
 
   test "should get edit" do
@@ -66,14 +62,12 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     patch app_page_path(@page), params: {
       post: {
         title: "Updated About",
-        content: "Updated content",
-        show_in_navigation: false
+        content: "Updated content"
       }
     }
 
     @page.reload
     assert_equal "Updated About", @page.title
-    assert_not @page.show_in_navigation?
     assert_redirected_to app_pages_path
   end
 

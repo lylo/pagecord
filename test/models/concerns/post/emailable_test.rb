@@ -6,7 +6,7 @@ class Post::EmailableTest < ActiveSupport::TestCase
   setup do
     @blog = blogs(:joel)
     @blog.update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)
-    @post = @blog.posts.create!(title: "Test Post", content: "Test content")
+    @post = posts(:photography_and_tech)
   end
 
   test "emailed? returns false with no digests" do

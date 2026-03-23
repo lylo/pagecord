@@ -1,6 +1,6 @@
 <div class="digest">
   <div class="post-content">
-    <%= strip_video_tags(without_action_text_image_wrapper(@post.content.to_s)).html_safe %>
+    <%= render_digest_post_content(@post) %>
   </div>
 
   <% unless @test %>

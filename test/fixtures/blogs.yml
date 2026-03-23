@@ -10,6 +10,8 @@ joel:
   delivery_email: joel_gf35jsue@post.pagecord.com
   <<: *default
   reply_by_email: true
+  api_key_digest: <%= Digest::SHA256.hexdigest("test_api_key_for_fixtures") %>
+  api_key_hint: ures
 
 elliot:
   user: elliot

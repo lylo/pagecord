@@ -264,14 +264,13 @@ a {
 }
 
 .post-content .attachment-gallery {
-  display: flex;
-  flex-wrap: wrap;
   margin: 1.5em 0;
+  overflow: hidden;
 }
 
 .post-content .attachment-gallery figure {
-  flex: 1 0 33%;
-  max-width: 33%;
+  float: left;
+  width: 33%;
   padding: 0 0.25em;
   margin: 0 0 0.5em 0;
   box-sizing: border-box;
@@ -279,8 +278,7 @@ a {
 
 .post-content .attachment-gallery.attachment-gallery--2 figure,
 .post-content .attachment-gallery.attachment-gallery--4 figure {
-  flex-basis: 50%;
-  max-width: 50%;
+  width: 50%;
 }
 
 .post-content figcaption {

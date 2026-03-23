@@ -20,10 +20,13 @@ class SendPostReplyJob < ApplicationJob
   private
 
     def spam?(reply)
+      blog = reply.post.blog
+      host = blog.custom_domain.presence || "#{blog.subdomain}.#{Rails.application.config.x.domain}"
       detector = MessageSpamDetector.new(
         name: reply.name,
         email: reply.email,
-        message: reply.message
+        message: reply.message,
+        page_url: "https://#{host}/#{reply.post.slug}"
       )
       detector.detect
 

@@ -112,6 +112,23 @@ photography_and_tech:
     <p>Exploring how modern technology is transforming the art of photography.</p>
     <p>From mirrorless cameras to AI-powered editing tools, the intersection of photography and technology continues to evolve.</p>
 
+joel_hidden:
+  record: joel_hidden (Post)
+  name: content
+  body: |
+    <p>This is a hidden post that only the author can see.</p>
+
+joel_spanish:
+  record: joel_spanish (Post)
+  name: content
+  body: |
+    <p>Esta es mi primera entrada en español.</p>
+
+trix_post:
+  record: trix_post (Post)
+  name: content
+  body: "<div>First paragraph.</div>\n<div><br></div>\n<div>Second paragraph.</div>"
+
 embeds:
   record: embeds (Post)
   name: content
