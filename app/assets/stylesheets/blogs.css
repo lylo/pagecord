@@ -899,12 +899,14 @@ ul.posts-list {
   padding: 0;
 }
 
-.tag-list a {
+.tag-list a,
+.tags-inline a {
   font-weight: 500;
   text-decoration: none;
 }
 
-.tag-list a:hover {
+.tag-list a:hover,
+.tags-inline a:hover {
   text-decoration: underline;
 }
 
