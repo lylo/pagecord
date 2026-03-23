@@ -21,20 +21,20 @@ class DynamicVariable::PostsTag
   end
 
   def render
-    render_posts
+    limit = @post_list_params.limit&.clamp(1, page_size) || page_size
+    posts = filtered_relation.limit(limit + 1).to_a
+    has_next = !@post_list_params.limit && posts.size > limit
+    posts = posts.first(limit) if has_next
+
+    @view.render(partial: "blogs/custom_tags/posts_#{@style}",
+      locals: { posts: posts, has_next: has_next, frame_id: SecureRandom.hex(4),
+                filter_params: @post_list_params.query_params })
   end
 
   private
 
-    def render_posts
-      page_size = @post_list_params.limit&.clamp(1, self.class.page_size_for(@style)) || self.class.page_size_for(@style)
-      posts = filtered_relation.limit(page_size + 1).to_a
-      has_next = !@post_list_params.limit && posts.size > page_size
-      posts = posts.first(page_size) if posts.size > page_size
-
-      @view.render(partial: "blogs/custom_tags/posts_#{@style}",
-        locals: { posts: posts, has_next: has_next, frame_id: SecureRandom.hex(4),
-                  filter_params: @post_list_params.query_params })
+    def page_size
+      self.class.page_size_for(@style)
     end
 
     def filtered_relation

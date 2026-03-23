@@ -29,12 +29,4 @@ class Blogs::EmbeddedPostsController < Blogs::BaseController
     def head_gone
       head :gone
     end
-
-    def set_blog_cache_headers
-      return unless Rails.env.production? && ENV["CLOUDFLARE_ZONE_ID"].present? && ENV["CLOUDFLARE_API_TOKEN"].present?
-
-      response.headers["Cache-Tag"] = @blog.subdomain
-      request.session_options[:skip] = true
-      expires_in 0, public: true, "s-maxage": 12.hours.to_i, "stale-while-revalidate": 1.hour.to_i
-    end
 end
