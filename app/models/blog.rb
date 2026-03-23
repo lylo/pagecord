@@ -69,7 +69,7 @@ class Blog < ApplicationRecord
 
     def purge_cloudflare_cache
       return unless Rails.env.production?
-      return unless Rails.cache.write("cf_purge:#{id}", true, expires_in: 30.seconds, unless_exist: true)
+      return unless Rails.cache.write("cf_purge:#{id}", true, expires_in: 5.seconds, unless_exist: true)
       PurgeCloudflareCacheJob.perform_later(id)
     end
 end
