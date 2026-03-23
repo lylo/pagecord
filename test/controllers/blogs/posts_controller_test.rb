@@ -36,6 +36,36 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".cards_layout", count: 1
   end
 
+  test "stream layout should render excerpt with read more when excerpt break is present" do
+    @blog.posts.create!(
+      title: "Excerpted Stream Post",
+      content: "<p>Stream teaser text.</p><p>{{ more }}</p><p>Stream hidden text.</p>",
+      status: :published
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_includes @response.body, "Stream teaser text."
+    assert_not_includes @response.body, "Stream hidden text."
+    assert_select ".excerpt-read-more a", text: I18n.t("posts.read_more"), minimum: 1
+  end
+
+  test "cards layout should use excerpt summary when excerpt break is present" do
+    @blog.cards_layout!
+    @blog.posts.create!(
+      title: "Excerpted Card Post",
+      content: "<p>Card teaser text.</p><p>{{ more }}</p><p>Card hidden text.</p>",
+      status: :published
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_includes @response.body, "Card teaser text."
+    assert_not_includes @response.body, "Card hidden text."
+  end
+
   test "should show email subscription form on index" do
     get blog_posts_path
 
@@ -100,6 +130,21 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal post, assigns(:post)
+  end
+
+  test "show should render full content without excerpt marker" do
+    post = @blog.posts.create!(
+      title: "Excerpted Show Post",
+      content: "<p>Show teaser text.</p><p>{{ more }}</p><p>Show full text.</p>",
+      status: :published
+    )
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_includes @response.body, "Show teaser text."
+    assert_includes @response.body, "Show full text."
+    assert_not_includes @response.body, "{{ more }}"
   end
 
   test "should render image attachments without action text wrappers on post show" do
@@ -273,6 +318,26 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     cdata_content = xml.xpath("//item/description").first.children.find { |n| n.cdata? }.content
 
     assert_includes cdata_content, "<p>This is my first post.</p>"
+  end
+
+  test "should strip excerpt marker from RSS feed while keeping full content" do
+    @blog.posts.create!(
+      title: "Excerpted RSS Post",
+      content: "<p>RSS teaser text.</p><p>{{ more }}</p><p>RSS full text.</p>",
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+
+    xml = Nokogiri::XML(@response.body)
+    cdata_content = xml.xpath("//item[title='Excerpted RSS Post']/description").first.children.find { |n| n.cdata? }.content
+
+    assert_includes cdata_content, "RSS teaser text."
+    assert_includes cdata_content, "RSS full text."
+    assert_not_includes cdata_content, "{{ more }}"
   end
 
   test "should render image attachments without action text wrappers in RSS feed" do

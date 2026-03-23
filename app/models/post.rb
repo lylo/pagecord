@@ -82,6 +82,12 @@ class Post < ApplicationRecord
     text_summary.truncate(limit, separator: /\s/)
   end
 
+  def excerpt_summary(limit: 64)
+    return summary(limit:) unless has_excerpt_break?
+
+    extract_plain_text(excerpt).truncate(limit, separator: /\s/)
+  end
+
   def has_text_content?
     text_summary.present?
   end
@@ -164,8 +170,7 @@ class Post < ApplicationRecord
     end
 
     def set_text_summary
-      source = excerpt.presence || content.to_s
-      self.text_summary = extract_plain_text(source).truncate(512, separator: /\s/, omission: "")
+      self.text_summary = extract_plain_text(content.to_s).truncate(512, separator: /\s/, omission: "")
     end
 
     def extract_plain_text(html)
