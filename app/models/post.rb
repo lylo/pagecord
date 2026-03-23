@@ -86,6 +86,18 @@ class Post < ApplicationRecord
     text_summary.present?
   end
 
+  def has_excerpt_break?
+    return false unless content.body.present?
+    ExcerptBreak.new(content.to_s).present?
+  end
+
+  def excerpt_summary(limit: 324)
+    return summary(limit: limit) unless has_excerpt_break?
+    text = ExcerptBreak.new(content.to_s).excerpt_plain_text
+    return summary(limit: limit) if text.blank?
+    text.truncate(limit, separator: /\s/)
+  end
+
   def display_title
     @display_title ||= if title.present?
       title.truncate(100).strip
@@ -163,6 +175,7 @@ class Post < ApplicationRecord
       .gsub(/\[Image\]/i, "")
       .gsub(%r{https?://\S+}, "")
       .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
+      .gsub(/<!--\s*more\s*-->/i, "")
       .gsub(/\s+/, " ")
       .strip
   end

@@ -44,15 +44,19 @@ module PostsHelper
   end
 
   def render_post_content(post)
-    content = process_dynamic_variables(post)
-    content = Html::StripActionTextAttachments.new.transform(content)
+    content = processed_content(post)
+    content = ExcerptBreak.new(content).strip if post.has_excerpt_break?
+    content.html_safe
+  end
 
-    safe_auto_link(content, sanitize: false).html_safe
+  def render_post_excerpt(post)
+    content = processed_content(post)
+    ExcerptBreak.new(content).excerpt.html_safe
   end
 
   def render_digest_post_content(post)
     content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
-
+    content = ExcerptBreak.new(content).strip if post.has_excerpt_break?
     strip_video_tags(content).html_safe
   end
 
@@ -64,6 +68,14 @@ module PostsHelper
   rescue => e
     Rails.logger.error("Dynamic variable error: #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}")
     post.content.to_s
+  end
+
+  private
+
+  def processed_content(post)
+    content = process_dynamic_variables(post)
+    content = Html::StripActionTextAttachments.new.transform(content)
+    safe_auto_link(content, sanitize: false)
   end
 
   def safe_auto_link(content, options = {})

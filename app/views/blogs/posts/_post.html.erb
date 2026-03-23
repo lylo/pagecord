@@ -1,8 +1,8 @@
-<% cache_if(post.post?, [post, @blog.updated_at]) do %>
+<% cache_if(post.post?, [post, @blog.updated_at, local_assigns[:excerpt]]) do %>
   <article class="<%= post.page? ? 'page' : 'post' %> h-entry">
     <%= render "post_title", post: post %>
 
-    <%= render "post_content", post: post %>
+    <%= render "post_content", post: post, excerpt: local_assigns[:excerpt] %>
 
     <%= render "post_footer", post: post if post.post? %>
   </article>
