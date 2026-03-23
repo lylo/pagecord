@@ -1,82 +1,57 @@
 class ExcerptBreak
-  MARKER = /\{\{\s*(?:more|excerpt)\s*\}\}/i
-  WP_COMMENT = /<!--\s*more\s*-->/i
-  WP_ESCAPED = /&lt;!--\s*more\s*--&gt;/i
+  MARKER_BLOCK = /\A\s*\{\{\s*(?:more|excerpt)\s*\}\}\s*\z/i
+  WP_COMMENT_BLOCK = /\A\s*<!--\s*more\s*-->\s*\z/i
 
-  STRIP_PATTERNS = [
-    /<p>\s*\{\{\s*(?:more|excerpt)\s*\}\}\s*<\/p>/i,
-    /<!--\s*more\s*-->/i,
-    /<p>\s*&lt;!--\s*more\s*--&gt;\s*<\/p>/i
-  ]
+  class << self
+    # Returns HTML before the first marker, or nil if no marker found.
+    # Used on save to pre-compute the excerpt column.
+    def extract(html)
+      doc = parse(html)
+      block = find_marker_block(doc)
+      return nil unless block
 
-  # Returns HTML before the first marker, or nil if no marker found.
-  # Used once on save to pre-compute the excerpt column.
-  def self.extract(html)
-    new(html).excerpt
-  end
+      remove_from(block)
+      doc.to_html
+    end
 
-  # Removes the marker paragraph from HTML. Simple regex, no Nokogiri.
-  # Used at render time for full post view, RSS, email.
-  def self.strip(html)
-    STRIP_PATTERNS.reduce(html) { |content, pattern| content.gsub(pattern, "") }
-  end
+    # Removes the marker block from HTML, keeps all other content.
+    # Used at render time for full post view, RSS, email.
+    def strip(html)
+      doc = parse(html)
+      block = find_marker_block(doc)
+      return html unless block
 
-  def initialize(html)
-    @html = html
-  end
+      block.remove
+      doc.to_html
+    end
 
-  def present?
-    protected = protect_code_blocks(@html)
-    protected.match?(MARKER) || protected.match?(WP_COMMENT) || protected.match?(WP_ESCAPED)
-  end
+    private
 
-  def excerpt
-    doc = Nokogiri::HTML::DocumentFragment.parse(@html)
-    marker = find_marker_node(doc)
-    return nil unless marker
-
-    block = block_ancestor(marker, doc)
-    remove_from(block)
-    doc.to_html
-  end
-
-  private
-
-    def find_marker_node(doc)
-      doc.traverse do |node|
-        next if inside_code_block?(node)
-
-        return node if node.text? && (node.text.match?(MARKER) || node.text.match?(WP_COMMENT))
-        return node if node.comment? && node.text.match?(/\s*more\s*/i)
+      def parse(html)
+        Nokogiri::HTML::DocumentFragment.parse(html)
       end
 
-      nil
-    end
-
-    def inside_code_block?(node)
-      ancestor = node.parent
-      while ancestor
-        return true if ancestor.element? && ancestor.name.in?(%w[pre code])
-        ancestor = ancestor.parent
+      # Only matches markers in top-level blocks — the marker must be the sole
+      # content of a direct child element (e.g. <p>{{ more }}</p>), or a top-level
+      # HTML comment (<!--more-->). Markers nested inside lists, blockquotes,
+      # tables etc. are ignored.
+      def find_marker_block(doc)
+        doc.children.each do |child|
+          if child.element? && !child.at_css("*")
+            return child if child.text.match?(MARKER_BLOCK) || child.text.match?(WP_COMMENT_BLOCK)
+          elsif child.comment? && child.text.strip.match?(/\Amore\z/i)
+            return child
+          end
+        end
+        nil
       end
-      false
-    end
 
-    def block_ancestor(node, doc)
-      current = node
-      current = current.parent while current.parent && current.parent != doc
-      current
-    end
-
-    def remove_from(node)
-      while node
-        next_node = node.next_sibling
-        node.remove
-        node = next_node
+      def remove_from(node)
+        while node
+          next_node = node.next_sibling
+          node.remove
+          node = next_node
+        end
       end
-    end
-
-    def protect_code_blocks(html)
-      html.gsub(%r{<(pre|code)[^>]*>.*?</\1>}m, "")
-    end
+  end
 end

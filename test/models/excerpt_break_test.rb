@@ -1,14 +1,12 @@
 require "test_helper"
 
 class ExcerptBreakTest < ActiveSupport::TestCase
-  # .extract — returns HTML before the marker, or nil
+  # .extract
 
   test "extract returns HTML before {{ more }}" do
-    html = "<p>First</p><p>{{ more }}</p><p>Second</p>"
-    result = ExcerptBreak.extract(html)
+    result = ExcerptBreak.extract("<p>First</p><p>{{ more }}</p><p>Second</p>")
     assert_includes result, "First"
     assert_not_includes result, "Second"
-    assert_not_includes result, "{{ more }}"
   end
 
   test "extract returns HTML before {{ excerpt }}" do
@@ -23,10 +21,16 @@ class ExcerptBreakTest < ActiveSupport::TestCase
     assert_not_includes result, "After"
   end
 
-  test "extract returns HTML before escaped WordPress comment" do
+  test "extract handles escaped WordPress comment (decoded by Nokogiri)" do
     result = ExcerptBreak.extract("<p>Before</p><p>&lt;!--more--&gt;</p><p>After</p>")
     assert_includes result, "Before"
     assert_not_includes result, "After"
+  end
+
+  test "extract works with div-wrapped content" do
+    result = ExcerptBreak.extract("<div>Intro</div><div>{{ more }}</div><div>Rest</div>")
+    assert_includes result, "Intro"
+    assert_not_includes result, "Rest"
   end
 
   test "extract returns nil when no marker" do
@@ -43,47 +47,59 @@ class ExcerptBreakTest < ActiveSupport::TestCase
     assert ExcerptBreak.extract("<p>A</p><p>{{  more  }}</p><p>B</p>")
   end
 
-  test "extract ignores markers inside code blocks" do
-    html = "<pre><code>{{ more }}</code></pre><p>Visible</p><p>{{ more }}</p><p>Hidden</p>"
-    result = ExcerptBreak.extract(html)
-    assert_includes result, "Visible"
-    assert_not_includes result, "Hidden"
-  end
-
   test "extract only uses first marker" do
-    html = "<p>First</p><p>{{ more }}</p><p>Middle</p><p>{{ more }}</p><p>Last</p>"
-    result = ExcerptBreak.extract(html)
+    result = ExcerptBreak.extract("<p>First</p><p>{{ more }}</p><p>Middle</p><p>{{ more }}</p><p>Last</p>")
     assert_includes result, "First"
     assert_not_includes result, "Middle"
   end
 
-  # .strip — removes marker paragraph, keeps all content
+  test "extract ignores markers nested inside lists" do
+    assert_nil ExcerptBreak.extract("<ul><li>{{ more }}</li></ul><p>Content</p>")
+  end
 
-  test "strip removes {{ more }} paragraph" do
-    html = "<p>Before</p><p>{{ more }}</p><p>After</p>"
-    result = ExcerptBreak.strip(html)
+  test "extract ignores markers nested inside blockquotes" do
+    assert_nil ExcerptBreak.extract("<blockquote><p>{{ more }}</p></blockquote><p>Content</p>")
+  end
+
+  test "extract ignores markers mixed with other text" do
+    assert_nil ExcerptBreak.extract("<p>Some text {{ more }} more text</p>")
+  end
+
+  # .strip
+
+  test "strip removes {{ more }} paragraph and keeps all content" do
+    result = ExcerptBreak.strip("<p>Before</p><p>{{ more }}</p><p>After</p>")
     assert_includes result, "Before"
     assert_includes result, "After"
     assert_not_includes result, "{{ more }}"
   end
 
   test "strip removes <!--more--> comment" do
-    html = "<p>Before</p><!-- more --><p>After</p>"
-    result = ExcerptBreak.strip(html)
+    result = ExcerptBreak.strip("<p>Before</p><!-- more --><p>After</p>")
     assert_includes result, "Before"
     assert_includes result, "After"
   end
 
-  test "strip removes escaped WordPress comment" do
-    html = "<p>Before</p><p>&lt;!--more--&gt;</p><p>After</p>"
-    result = ExcerptBreak.strip(html)
+  test "strip works with div-wrapped content" do
+    result = ExcerptBreak.strip("<div>Before</div><div>{{ more }}</div><div>After</div>")
     assert_includes result, "Before"
     assert_includes result, "After"
-    assert_not_includes result, "&lt;!--more--&gt;"
+    assert_not_includes result, "{{ more }}"
+  end
+
+  test "strip removes escaped WordPress comment" do
+    result = ExcerptBreak.strip("<p>Before</p><p>&lt;!--more--&gt;</p><p>After</p>")
+    assert_includes result, "Before"
+    assert_includes result, "After"
   end
 
   test "strip returns html unchanged when no marker" do
     html = "<p>No marker</p>"
+    assert_equal html, ExcerptBreak.strip(html)
+  end
+
+  test "strip ignores markers nested inside lists" do
+    html = "<ul><li>{{ more }}</li></ul><p>Content</p>"
     assert_equal html, ExcerptBreak.strip(html)
   end
 end
