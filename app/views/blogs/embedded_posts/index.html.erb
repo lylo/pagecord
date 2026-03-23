@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "embedded-posts-#{@frame_id}" do %>
   <% if @style == "card" %>
     <%= render partial: "blogs/posts/card_post", collection: @posts, as: :post %>
-  <% elsif @style == "titles" %>
+  <% elsif @style == "title" %>
     <ul class="posts-list">
       <%= render partial: "blogs/posts/title_post", collection: @posts, as: :post %>
     </ul>

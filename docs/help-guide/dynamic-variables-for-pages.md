@@ -124,12 +124,12 @@ Render posts as a full-content stream (the same layout as the "stream" blog styl
 {{ posts | style: stream }}
 ```
 
-#### **Display as titles**
+#### **Display as title**
 
-Render posts as a date-and-title list (the same layout as the "titles" blog style) with automatic lazy-loading pagination. This is the default when no style or limit is specified.
+Render posts as a date-and-title list (the same layout as the "title" blog style) with automatic lazy-loading pagination. This is the default when no style or limit is specified.
 
 ```javascript
-{{ posts | style: titles }}
+{{ posts | style: title }}
 ```
 
 #### **Style with filters**

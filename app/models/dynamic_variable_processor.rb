@@ -51,6 +51,8 @@ class DynamicVariableProcessor
         unknown_tag = "#{tag_name} #{params_string}".strip
         wrap_content("{{ #{unknown_tag} }}")
       end
+    rescue
+      ""
     end
 
     def wrap_content(content)

@@ -1,7 +1,7 @@
 class DynamicVariable::PostsTag
-  STYLES = %w[card stream titles].freeze
-  PAGE_SIZES = { "card" => 20, "stream" => 10, "titles" => 100 }.freeze
-  DEFAULT_STYLE = "titles"
+  STYLES = %w[card stream title].freeze
+  PAGE_SIZES = { "card" => 20, "stream" => 10, "title" => 100 }.freeze
+  DEFAULT_STYLE = "title"
 
   class << self
     def valid_style?(style)
@@ -17,7 +17,8 @@ class DynamicVariable::PostsTag
     @blog = blog
     @view = view
     @post_list_params = DynamicVariable::PostListParams.new(blog: @blog, params_string: params_string)
-    @style = @post_list_params.style.presence || DEFAULT_STYLE
+    style = @post_list_params.style.presence
+    @style = style&.in?(STYLES) ? style : DEFAULT_STYLE
   end
 
   def render

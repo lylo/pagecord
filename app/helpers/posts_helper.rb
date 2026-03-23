@@ -61,8 +61,7 @@ module PostsHelper
 
     processor = DynamicVariableProcessor.new(blog: post.blog, view: self)
     processor.process(post.content.to_s)
-  rescue => e
-    Rails.logger.error("Dynamic variable error: #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}")
+  rescue
     post.content.to_s
   end
 

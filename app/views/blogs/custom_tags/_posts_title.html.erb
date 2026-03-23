@@ -4,7 +4,7 @@
   </ul>
   <% if has_next %>
     <%= turbo_frame_tag "embedded-posts-#{frame_id}",
-        src: blog_embedded_posts_path(page: 2, style: "titles", frame_id: frame_id, **filter_params),
+        src: blog_embedded_posts_path(page: 2, style: "title", frame_id: frame_id, **filter_params),
         loading: :lazy %>
   <% end %>
 <% end %>
