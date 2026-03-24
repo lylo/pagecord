@@ -176,19 +176,29 @@ Display a list of all tags used in your posts.
 
 Display the date the page was last updated. This is handy for pages that evolve over time, such as a Now page or a reading log.
 
-#### **Date only**
-
 ```javascript
 {{ updated_at }}
 ```
 
-#### **Date and time**
+By default, the date is shown in your blog's locale format. Use the `format` parameter for a specific style:
+
+| Format | Example |
+|--------|---------|
+| _(default)_ | 12 Sep 2026 _(locale-specific)_ |
+| `datetime` | 12 Sep 2026 14:30 _(locale-specific + time)_ |
+| `long` | 12 September 2026 _(English only)_ |
+| `long_datetime` | 12 September 2026 14:30 _(English only)_ |
+| `dd_mm_yyyy` | 12/09/2026 |
+| `mm_dd_yyyy` | 09/12/2026 |
+| `yyyy_mm_dd` | 2026-09-12 |
 
 ```javascript
 {{ updated_at format: datetime }}
 ```
 
-The date is shown in your blog's locale format. You can style it with the CSS class `updated-at`.
+Note: `long` and `long_datetime` always display month names in English. For non-English blogs, use the default or a numeric format.
+
+You can style the output with the CSS class `updated-at`.
 
 ### Email Subscription
 

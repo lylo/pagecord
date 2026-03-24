@@ -104,12 +104,20 @@ class DynamicVariableProcessor
       view.render(partial: "blogs/contact_messages/form")
     end
 
+    UPDATED_AT_FORMATS = {
+      "long"          => "%d %B %Y",
+      "long_datetime" => "%d %B %Y %H:%M",
+      "dd_mm_yyyy"    => "%d/%m/%Y",
+      "mm_dd_yyyy"    => "%m/%d/%Y",
+      "yyyy_mm_dd"    => "%Y-%m-%d"
+    }.freeze
+
     def render_updated_at_tag(params_string)
       params = parse_params(params_string)
       format = if params[:format] == "datetime"
         "#{I18n.t("date.formats.post_date", locale: @blog.locale)} %H:%M"
       else
-        :post_date
+        UPDATED_AT_FORMATS[params[:format]] || :post_date
       end
       view.local_time(@post.updated_at, format: format, class: "updated-at")
     end

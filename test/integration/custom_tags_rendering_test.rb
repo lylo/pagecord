@@ -365,13 +365,15 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select "time.updated-at"
   end
 
-  test "renders updated_at tag with datetime format" do
-    page = @blog.pages.create!(title: "Updated", content: "{{ updated_at format: datetime }}", status: :published)
+  test "renders updated_at tag with named formats" do
+    %w[datetime long long_datetime dd_mm_yyyy mm_dd_yyyy yyyy_mm_dd].each do |fmt|
+      page = @blog.pages.create!(title: "Updated #{fmt}", content: "{{ updated_at format: #{fmt} }}", status: :published)
 
-    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+      get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
-    assert_response :success
-    assert_select "time.updated-at"
+      assert_response :success
+      assert_select "time.updated-at", minimum: 1
+    end
   end
 
   test "does not process updated_at tag in regular posts" do
