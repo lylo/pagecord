@@ -356,6 +356,33 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert old_pos < new_pos, "Expected oldest photo post to appear before newest with sort: asc"
   end
 
+  test "renders updated_at tag" do
+    page = @blog.pages.create!(title: "Updated", content: "Last updated: {{ updated_at }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "time.updated-at"
+  end
+
+  test "renders updated_at tag with datetime format" do
+    page = @blog.pages.create!(title: "Updated", content: "{{ updated_at format: datetime }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "time.updated-at"
+  end
+
+  test "does not process updated_at tag in regular posts" do
+    post = @blog.posts.create!(title: "A Post", content: "{{ updated_at }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_response :success
+    assert_includes response.body, "{{ updated_at }}"
+  end
+
   test "does not process custom tags inside inline code" do
     page = @blog.pages.create!(
       title: "Inline Code Example",

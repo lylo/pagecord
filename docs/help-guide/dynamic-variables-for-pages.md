@@ -172,6 +172,24 @@ Display a list of all tags used in your posts.
 {{ tags | style: inline }}
 ```
 
+### Last Updated Date
+
+Display the date the page was last updated. This is handy for pages that evolve over time, such as a Now page or a reading log.
+
+#### **Date only**
+
+```javascript
+{{ updated_at }}
+```
+
+#### **Date and time**
+
+```javascript
+{{ updated_at format: datetime }}
+```
+
+The date is shown in your blog's locale format. You can style it with the CSS class `updated-at`.
+
 ### Email Subscription
 
 Embed an email subscription form for readers to subscribe to your blog (premium customers only).

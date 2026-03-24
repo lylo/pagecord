@@ -59,7 +59,7 @@ module PostsHelper
   def process_dynamic_variables(post)
     return post.content.to_s unless post.is_page?
 
-    processor = DynamicVariableProcessor.new(blog: post.blog, view: self)
+    processor = DynamicVariableProcessor.new(post: post, view: self)
     processor.process(post.content.to_s)
   rescue => e
     Rails.logger.error("Dynamic variable error: #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}")
