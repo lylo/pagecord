@@ -14,9 +14,9 @@
     </div>
 
     <% if @drafts.any? || @pages.any? %>
-      <div class="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900/60">
+      <div class="overflow-hidden sm:rounded-lg sm:border sm:border-slate-200 sm:bg-white dark:sm:border-slate-700 dark:sm:bg-slate-900/60">
         <% if @drafts.any? %>
-          <div class="p-4 sm:p-5" id="draft_pages">
+          <div class="px-0 py-4 sm:p-5" id="draft_pages">
             <div class="mb-3 flex items-center gap-2">
               <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">🖋️ Drafts</div>
               <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
@@ -54,11 +54,11 @@
         <% end %>
 
         <% if @drafts.any? && @pages.any? %>
-          <div class="border-t border-slate-200 dark:border-slate-700"></div>
+          <div class="border-t border-slate-200 dark:border-slate-700 sm:border-t"></div>
         <% end %>
 
         <% if @pages.any? %>
-          <div class="p-4 sm:p-5">
+          <div class="px-0 py-4 sm:p-5">
             <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
               <div class="flex items-center gap-2">
                 <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">📄 Pages</div>
