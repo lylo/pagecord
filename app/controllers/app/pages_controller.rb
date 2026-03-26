@@ -1,7 +1,9 @@
 class App::PagesController < AppController
   def index
+    persist_sort_preference if params[:sort].present?
+
     home_page_id = Current.user.blog.home_page_id
-    @sort = params[:sort] == "updated" ? "updated" : "alpha"
+    @sort = selected_sort
     secondary_order = @sort == "updated" ? "updated_at DESC, LOWER(title)" : "LOWER(title), updated_at DESC"
     @pages = Current.user.blog.pages.kept.published
       .order(Arel.sql("CASE WHEN id = #{home_page_id.to_i} THEN 0 ELSE 1 END, #{secondary_order}"))
@@ -50,6 +52,21 @@ class App::PagesController < AppController
   end
 
   private
+
+    def selected_sort
+      params[:sort] == "updated" || cookies.encrypted[:pages_sort] == "updated" ? "updated" : "alpha"
+    end
+
+    def persist_sort_preference
+      if params[:sort] == "updated"
+        cookies.encrypted[:pages_sort] = {
+          value: "updated",
+          expires: 1.year.from_now
+        }
+      else
+        cookies.delete(:pages_sort)
+      end
+    end
 
     def page_params
       status = params[:button] == "save_draft" ? :draft : :published
