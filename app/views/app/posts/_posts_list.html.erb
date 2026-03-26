@@ -1,32 +1,56 @@
-<% if @drafts.any? %>
-  <div class="mb-8" id="draft_posts">
-    <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100">
-      🖋️ Drafts
-    </div>
-
-    <% @drafts.each do |post| %>
-      <%= render "post", post: post, show_year: true %>
-    <% end %>
-  </div>
-<% end %>
-
 <% if @search_term.present? && @posts.empty? && @drafts.empty? %>
-  <div class="text-center">
-    <p>
+  <div class="rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900/60">
+    <p class="text-center">
       No posts found for "<%= @search_term %>"
     </p>
   </div>
-<% else %>
-  <% previous_year = nil %>
-  <% @posts.each do |post| %>
-    <% if post.published_at.year != previous_year %>
-      <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100 <%= 'mt-8' unless previous_year.nil? %>">
-        <%= post.published_at.year %>
+<% elsif @drafts.any? || @posts.any? %>
+  <div class="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900/60">
+    <% if @drafts.any? %>
+      <div class="p-4 sm:p-5" id="draft_posts">
+        <div class="mb-4 flex items-center gap-2">
+          <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            🖋️ Drafts
+          </div>
+          <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+            <%= @drafts.size %>
+          </span>
+        </div>
 
-        <% previous_year = post.published_at.year %>
+        <% @drafts.each do |post| %>
+          <%= render "post", post: post, show_year: true %>
+        <% end %>
       </div>
     <% end %>
 
-    <%= render "post", post: post %>
-  <% end %>
+    <% if @drafts.any? && @posts.any? %>
+      <div class="border-t border-slate-200 dark:border-slate-700"></div>
+    <% end %>
+
+    <% if @posts.any? %>
+      <div class="p-4 sm:p-5">
+        <div class="mb-4 flex items-center gap-2">
+          <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            <%= @search_term.present? ? "🔎 Results" : "📝 Published" %>
+          </div>
+          <span class="inline-flex items-center rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+            <%= @search_term.present? ? @search_results_count : @total_posts_count %>
+          </span>
+        </div>
+
+        <% previous_year = nil %>
+        <% @posts.each do |post| %>
+          <% if post.published_at.year != previous_year %>
+            <div class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100 <%= 'mt-8' unless previous_year.nil? %>">
+              <%= post.published_at.year %>
+
+              <% previous_year = post.published_at.year %>
+            </div>
+          <% end %>
+
+          <%= render "post", post: post %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 <% end %>
