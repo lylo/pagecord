@@ -73,5 +73,4 @@ class DynamicVariableProcessor
 
       @view.local_time(@post.updated_at, format: format, class: "updated-at")
     end
-
 end
