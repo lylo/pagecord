@@ -29,7 +29,7 @@
 
     <% if @posts.any? %>
       <div class="p-4 sm:p-5">
-        <div class="mb-3 flex items-center gap-2">
+        <div class="mb-3 flex items-center gap-2 pt-1">
           <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">
             <%= @search_term.present? ? "🔎 Results" : "📝 Published" %>
           </div>
