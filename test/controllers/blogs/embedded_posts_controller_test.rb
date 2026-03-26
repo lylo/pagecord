@@ -34,6 +34,7 @@ class Blogs::EmbeddedPostsControllerTest < ActionDispatch::IntegrationTest
     get blog_embedded_posts_path(
       style: "stream",
       frame_id: "posts",
+      page_frame_id: "embedded-posts-posts-page-2",
       page: 2,
       tag: "embedded-review",
       year: 2025,
@@ -41,7 +42,8 @@ class Blogs::EmbeddedPostsControllerTest < ActionDispatch::IntegrationTest
     )
 
     assert_response :success
-    assert_select "turbo-frame#embedded-posts-posts"
+    assert_select "turbo-frame#embedded-posts-posts-page-2"
+    assert_select "turbo-stream[action='append'][target='embedded-posts-posts']"
     assert_select "body", text: /Embedded Review 11/
     assert_select "body", text: /Embedded Review 12/
     assert_select "body", text: /Embedded Review 10/, count: 0

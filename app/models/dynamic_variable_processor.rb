@@ -31,17 +31,9 @@ class DynamicVariableProcessor
       "___CODE_BLOCK_#{code_blocks.length - 1}___"
     end
 
-    result = +""
-    remaining_content = protected_content
-
-    while (match = remaining_content.match(tag_pattern))
-      result << wrap_content(match.pre_match)
-      result << render_tag(match[1], match[2].strip)
-      remaining_content = match.post_match
+    processed = protected_content.gsub(tag_pattern) do
+      render_tag($1, $2.strip)
     end
-
-    result << wrap_content(remaining_content)
-    processed = result.presence || wrap_content("")
 
     code_blocks.each_with_index do |block, i|
       processed = processed.sub("___CODE_BLOCK_#{i}___", block)
@@ -61,9 +53,13 @@ class DynamicVariableProcessor
         tag_handler.is_a?(Symbol) ? send(tag_handler, params_string) : tag_handler.new(blog: @blog, view: @view, params_string: params_string).render
       else
         unknown_tag = "#{tag_name} #{params_string}".strip
-        wrap_content("{{ #{unknown_tag} }}")
+        "{{ #{unknown_tag} }}"
       end
-    rescue
+    rescue StandardError => e
+      Rails.logger.error(
+        "[DynamicVariableProcessor] Failed to render #{tag_name} " \
+        "for post #{@post.id}: #{e.class} - #{e.message}"
+      )
       ""
     end
 
@@ -78,9 +74,4 @@ class DynamicVariableProcessor
       @view.local_time(@post.updated_at, format: format, class: "updated-at")
     end
 
-    def wrap_content(content)
-      return "" if content.blank?
-
-      @view.render(partial: "blogs/posts/page_content", locals: { content: content })
-    end
 end

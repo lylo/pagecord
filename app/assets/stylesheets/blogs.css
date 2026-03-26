@@ -304,11 +304,6 @@ footer.blog-footer #brand svg {
       &:hover {
         color: var(--color-accent-hover);
       }
-
-      &.post-title-link {
-        color: inherit;
-        text-decoration: none;
-      }
     }
 
     :where(blockquote) {
@@ -320,13 +315,23 @@ footer.blog-footer #brand svg {
       color: var(--color-text-light);
     }
 
-    :where(h1.post-title) {
+    h1.post-title {
       font-size: 1.875rem;
       line-height: 2.5rem;
       margin-top: 0;
       margin-bottom: 2rem;
       color: var(--color-text-heading);
       font-weight: 800;
+    }
+
+    h1.post-title > a.post-title-link {
+      color: inherit;
+      text-decoration: none;
+      font-weight: inherit;
+    }
+
+    h1.post-title > a.post-title-link:hover {
+      color: inherit;
     }
 
     figcaption.attachment__caption {

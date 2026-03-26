@@ -1,7 +1,3 @@
-<% if post.is_page? %>
+<div class="lexxy-content e-content" data-controller="syntax-highlight">
   <%= render_post_content(post) %>
-<% else %>
-  <div class="lexxy-content e-content" data-controller="syntax-highlight">
-    <%= render_post_content(post) %>
-  </div>
-<% end %>
+</div>

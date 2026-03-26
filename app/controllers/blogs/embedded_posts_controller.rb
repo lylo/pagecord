@@ -20,6 +20,9 @@ class Blogs::EmbeddedPostsController < Blogs::BaseController
 
     @pagy, @posts = pagy(relation, limit: DynamicVariable::PostsTag.page_size_for(@style))
     @frame_id = params[:frame_id].presence || SecureRandom.hex(4)
+    @container_id = "embedded-posts-#{@frame_id}"
+    @page_frame_id = params[:page_frame_id].presence || "#{@container_id}-page-#{@pagy.page}"
+    @next_page_frame_id = "#{@container_id}-page-#{@pagy.next}" if @pagy.next
     set_blog_cache_headers
     render layout: false
   end

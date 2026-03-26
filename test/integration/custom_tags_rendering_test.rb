@@ -48,7 +48,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
-    assert_select "turbo-frame li", count: 2
+    assert_select ".posts-list li", count: 2
     assert_select "body", text: /Post 0/
     assert_select "body", text: /Post 1/
     assert_select "body", text: /Post 2/, count: 0
@@ -96,11 +96,27 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
-    assert_select "p.tags-inline"
+    assert_select "span.tags-inline"
     assert_select "body", text: /photography/
     assert_select "body", text: /technology/
     # Should not render as a list when inline
     assert_select "ul.tag-list", count: 0
+  end
+
+  test "renders inline tags within surrounding text" do
+    page = @blog.pages.create!(
+      title: "Tags Inline Sentence",
+      content: "Before {{ tags | style: inline }} after",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "article.page > .lexxy-content", count: 1
+    assert_select "article.page > .lexxy-content", text: /Before/
+    assert_select "article.page > .lexxy-content", text: /after/
+    assert_select "article.page > .lexxy-content span.tags-inline", count: 1
   end
 
   test "tag_list only shows tags from visible posts" do
@@ -219,6 +235,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
+    assert_select "article.page > .lexxy-content", count: 1
     assert_select ".lexxy-content", text: /Intro text/
     assert_select ".lexxy-content", text: /Outro text/
     assert_select ".posts-list"
@@ -458,6 +475,9 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
+    assert_select "article.page > .lexxy-content", count: 1
+    assert_select "article.page > .lexxy-content", text: /Last updated:/
+    assert_select "article.page > .lexxy-content time.updated-at", count: 1
     assert_select "time.updated-at"
   end
 
