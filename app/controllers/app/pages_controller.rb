@@ -1,7 +1,10 @@
 class App::PagesController < AppController
   def index
     home_page_id = Current.user.blog.home_page_id
-    @pages = Current.user.blog.pages.kept.published.order(:title).sort_by { |p| p.id == home_page_id ? 0 : 1 }
+    @sort = params[:sort] == "updated" ? "updated" : "alpha"
+    secondary_order = @sort == "updated" ? "updated_at DESC, LOWER(title)" : "LOWER(title), updated_at DESC"
+    @pages = Current.user.blog.pages.kept.published
+      .order(Arel.sql("CASE WHEN id = #{home_page_id.to_i} THEN 0 ELSE 1 END, #{secondary_order}"))
     @drafts = Current.user.blog.pages.kept.draft.order(:title)
   end
 
