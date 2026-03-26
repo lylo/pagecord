@@ -33,6 +33,19 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **Logical properties**: Prefer `margin-inline-start` over `margin-left` for RTL support
 - Primary button color: `bg-[#4fbd9c]` (`btn-primary` class)
 
+## Design System
+
+- **Panels**: Prefer `rounded-lg` panels with light borders (`border-slate-200` / `dark:border-slate-700`) for app UI containers. Avoid heavier radii and unnecessary shadows unless an existing screen already uses them.
+- **Soft callouts**: For blank slates and top-of-page helper panels, prefer a soft surface like `bg-slate-50 dark:bg-slate-800` with roomier padding (`p-6`) rather than the older generic callout look.
+- **List panels**: For index-style screens, prefer a single bordered panel that can contain multiple sections (for example Drafts + Published) with dividers, rather than several unrelated floating blocks.
+- **Count pills**: Count badges should stay friendly and compact: `rounded-full`, slate-filled, small padding (`px-2 py-0.5`), and low visual drama.
+- **Text hierarchy**:
+  - Headings and primary labels: `text-slate-900 dark:text-slate-100`
+  - Standard supporting copy in blank slates, trash views, and helper text: `text-slate-600 dark:text-slate-300`
+  - Stronger helper/callout copy when the panel is body-led rather than heading-led (for example the Settings intro panel): `text-slate-800 dark:text-slate-200`
+  - Meta text, dates, counts, and secondary controls: `text-slate-500 dark:text-slate-400`
+- **Consistency rule**: New app-facing UI should generally follow the same panel language now used on Pages, Posts, and Trash screens before inventing a new treatment.
+
 ## Testing
 
 - Minitest with fixtures. Follow Rails conventions for file location.
