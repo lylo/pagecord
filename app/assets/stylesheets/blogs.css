@@ -171,6 +171,9 @@ footer.blog-footer #brand svg {
 
     .attachment--preview {
       inline-size: auto;
+    }
+
+    .attachment--preview:not(.attachment-gallery *) {
       padding-inline: 0;
     }
   }

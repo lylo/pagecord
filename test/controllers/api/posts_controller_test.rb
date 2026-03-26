@@ -71,22 +71,24 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index with published_after filters posts" do
-    get "/posts", params: { published_after: 1.day.ago.iso8601 }, headers: auth_header
+    published_after = 1.day.ago
+    get "/posts", params: { published_after: published_after.iso8601 }, headers: auth_header
 
     assert_response :success
     posts = JSON.parse(response.body)
     posts.each do |p|
-      assert Time.parse(p["published_at"]) >= 1.day.ago
+      assert Time.parse(p["published_at"]) >= published_after
     end
   end
 
   test "index with published_before filters posts" do
-    get "/posts", params: { published_before: 2.days.ago.iso8601 }, headers: auth_header
+    published_before = 2.days.ago
+    get "/posts", params: { published_before: published_before.iso8601 }, headers: auth_header
 
     assert_response :success
     posts = JSON.parse(response.body)
     posts.each do |p|
-      assert Time.parse(p["published_at"]) <= 2.days.ago
+      assert Time.parse(p["published_at"]) <= published_before
     end
   end
 
