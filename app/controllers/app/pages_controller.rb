@@ -2,11 +2,8 @@ class App::PagesController < AppController
   def index
     persist_sort_preference if params[:sort].present?
 
-    home_page_id = Current.user.blog.home_page_id
     @sort = selected_sort
-    secondary_order = @sort == "updated" ? "updated_at DESC, LOWER(title)" : "LOWER(title), updated_at DESC"
-    @pages = Current.user.blog.pages.kept.published
-      .order(Arel.sql("CASE WHEN id = #{home_page_id.to_i} THEN 0 ELSE 1 END, #{secondary_order}"))
+    @pages = Current.user.blog.pages.kept.published.order(pages_order)
     @drafts = Current.user.blog.pages.kept.draft.order(:title)
   end
 
@@ -55,6 +52,10 @@ class App::PagesController < AppController
 
     def selected_sort
       params[:sort] == "updated" || cookies.encrypted[:pages_sort] == "updated" ? "updated" : "alpha"
+    end
+
+    def pages_order
+      @sort == "updated" ? Arel.sql("updated_at DESC, LOWER(title)") : Arel.sql("CASE WHEN id = #{Current.user.blog.home_page_id.to_i} THEN 0 ELSE 1 END, LOWER(title), updated_at DESC")
     end
 
     def persist_sort_preference

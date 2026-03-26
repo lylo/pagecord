@@ -5,7 +5,7 @@
       You'll see your posts here once you start posting ✨
     </p>
     <p class="mt-4 break-words leading-7 text-slate-600 dark:text-slate-300">
-      To publish a new post, send an email from <span class="bg-yellow-100 rounded px-1 dark:bg-slate-700"><%= @blog.user.email %></span> to <%= mail_to @blog.delivery_email, class: "font-semibold underline" %> or click the New Post button.
+      To publish a new post, send an email from <%= @blog.user.email %> to <%= mail_to @blog.delivery_email, class: "font-semibold underline" %> or click the New Post button.
     </p>
   </div>
 
