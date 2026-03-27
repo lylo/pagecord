@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 4df808965b4a1e42cbd4a3ad0764d30a18a5e1b1
+  revision: b1b2df434f863306a8c60889fe3740537143cf0a
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -103,7 +103,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    action_text-trix (2.1.17)
+    action_text-trix (2.1.18)
       railties
     actionpack-page_caching (1.2.4)
       actionpack (>= 4.0.0)
@@ -248,7 +248,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.19.2)
+    json (2.19.3)
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -261,7 +261,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (0.9.0.beta)
+    lexxy (0.9.1.beta)
       rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
