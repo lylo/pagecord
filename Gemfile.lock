@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: b1b2df434f863306a8c60889fe3740537143cf0a
+  revision: 706b9daab37664710de20cca273eb9ffa5361ec3
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -134,7 +134,7 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.3.0)
     bcrypt (3.1.22)
-    bigdecimal (4.0.1)
+    bigdecimal (4.1.0)
     bindex (0.8.1)
     bootsnap (1.23.0)
       msgpack (~> 1.2)
