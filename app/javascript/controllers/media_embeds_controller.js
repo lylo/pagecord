@@ -19,14 +19,9 @@ export default class extends Controller {
   }
 
   async replaceMediaLinks() {
-    const articles = document.querySelectorAll('article')
-
-    for (const article of articles) {
-      const links = Array.from(article.querySelectorAll('a'))
-        .filter(link => this.isBareLink(link))
-
-      await Promise.all(links.map(link => this.processLink(link)))
-    }
+    const articles = Array.from(this.element.querySelectorAll('article'))
+    const links = articles.flatMap(a => Array.from(a.querySelectorAll('a')).filter(l => this.isBareLink(l)))
+    await Promise.all(links.map(link => this.processLink(link)))
   }
 
   isBareLink(link) {
