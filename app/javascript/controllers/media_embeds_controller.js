@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import AppleMusic from "apple_music"
 import Bandcamp from "bandcamp"
+import Bluesky from "bluesky"
 import Checkvist from "checkvist"
 import GitHub from "github"
 import Image from "image"
@@ -13,7 +14,7 @@ import YouTube from "youtube"
 // Connects to data-controller="media-embed"
 export default class extends Controller {
   connect() {
-    this.mediaSites = [new AppleMusic(), new Spotify(), new YouTube(), new Bandcamp(), new Strava(), new GitHub(), new Image(), new Transistor(), new Checkvist(), new Tidal()]
+    this.mediaSites = [new AppleMusic(), new Spotify(), new YouTube(), new Bandcamp(), new Bluesky(), new Strava(), new GitHub(), new Image(), new Transistor(), new Checkvist(), new Tidal()]
     this.replaceMediaLinks()
   }
 
