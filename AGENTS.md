@@ -141,6 +141,34 @@ Docker: prefix commands with `docker-compose exec web`
 - **Verifiable**: Token-based verification with 24h expiry (used by email addresses, change requests)
 - **CssSanitizable**: Custom CSS validation (4KB limit)
 
+### Media Embeds
+
+Client-side system that replaces bare links (URL = link text) with rich embeds on post/stream views.
+
+- **Controller**: `app/javascript/controllers/media_embeds_controller.js` — on connect, collects all bare links across all `<article>` elements and processes them in parallel via `Promise.all`
+- **Base class**: `app/javascript/embeds/media_site.js` — takes `(regex, getEmbedUrl, createEmbedIframe)`. `transform(url)` calls both in sequence
+- **All modules lazy-loaded** via importmap (`preload: false`) — no cost on pages without the controller
+- **Bare link detection**: `isBareLink()` checks `link.href === link.textContent` or that origin+pathname match (ignores query string differences)
+
+Supported services and notable implementation details:
+
+| Module | URLs matched | Notes |
+|---|---|---|
+| `youtube.js` | youtube.com/watch, /live, /shorts, youtu.be | Wrapped in `video-embed-container` div for responsive CSS |
+| `spotify.js` | open.spotify.com | Height 152px (tracks) or 450px (albums) |
+| `apple_music.js` | music.apple.com | Height 175px (tracks) or 450px (playlists) |
+| `tidal.js` | tidal.com | Height varies by type (track/album/playlist) |
+| `bandcamp.js` | *.bandcamp.com | Requires backend proxy — see below |
+| `transistor.js` | transistorfm.com | Height 180px (episodes) or 390px (shows) |
+| `strava.js` | strava.com/activities | Injects strava-embeds.com script rather than an iframe src |
+| `github.js` | gist.github.com | Uses `srcdoc` with an inline script — no cross-origin iframe |
+| `bluesky.js` | bsky.app/profile/*/post/* | Resolves handle → DID via `public.api.bsky.app` if needed; auto-resizes via `postMessage` from `embed.bsky.app` |
+| `image.js` | Direct image URLs | jpg/png/gif/webp/svg/bmp/ico |
+
+**Bandcamp backend proxy**: Bandcamp has no predictable embed URL format — the iframe src is only discoverable by fetching the Bandcamp page and reading its `og:video` meta tag. CORS prevents doing this client-side, so `bandcamp.js` POSTs to `Api::EmbedsController#bandcamp` (`app/controllers/api/embeds_controller.rb`), which uses `Nokogiri` + `open-uri` to fetch the page server-side and return the embed URL. The request includes a CSRF token. If the `og:video` tag is absent or the fetch fails, the embed is silently skipped.
+
+CSP `frame-src` in `config/initializers/content_security_policy.rb` must be updated when adding new embed domains.
+
 ## Key Gotchas
 
 - **ActionText before_save**: Read from `content.to_s` directly — ActionText changes aren't persisted until callback completes
