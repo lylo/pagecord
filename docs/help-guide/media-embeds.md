@@ -25,13 +25,11 @@ Pagecord can automatically turn links into rich embeds. Paste a supported URL on
 
 Paste the URL on its own line, with no other text around it. The URL can be a plain link or a hyperlink, as long as the visible text is the URL itself. When a reader views your post, the link is replaced with the embed automatically.
 
-For example, pasting this on its own line:
+For example, pasting this on its own line will display a Spotify player:
 
 ```
 https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT
 ```
-
-…will display a Spotify player.
 
 ## Embeds in the editor
 
