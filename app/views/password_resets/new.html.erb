@@ -22,10 +22,11 @@
         required: true,
         class: "w-full sm:w-96 px-3 py-2.5 form-field rounded-lg" %>
     <%= render "/shared/spam_prevention" %>
-    <%= render "/shared/turnstile" %>
   </div>
 
-  <div class="mt-8 flex items-center gap-4">
+  <%= render "/shared/turnstile" %>
+
+  <div class="flex items-center gap-4">
     <%= form.submit "Send reset link", class: "btn-primary" %>
     <%= link_to "Cancel", login_path(mode: :password), class: "text-sm font-medium underline" %>
   </div>
