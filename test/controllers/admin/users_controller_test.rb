@@ -121,7 +121,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h3", text: "Features"
-    assert_select "input[type=checkbox][value=individual_email_delivery]"
+    assert_select "input[type=checkbox][value=analytics_countries]"
   end
 
   test "should update user trial_ends_at" do
