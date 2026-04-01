@@ -167,6 +167,12 @@ Rails.application.routes.draw do
     resources :blogs, only: [ :index ]
     resources :analytics, only: [ :index ]
     resources :posts, only: [ :index ]
+    resources :suppressions, only: [ :index ] do
+      collection do
+        delete :destroy
+        delete :destroy_all
+      end
+    end
     resources :users, only: [ :show, :destroy, :new, :create, :update ] do
       member do
         post :restore

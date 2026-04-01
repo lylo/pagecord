@@ -1,0 +1,81 @@
+<% if @error %>
+  <div class="mb-4 px-4 py-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm"><%= @error %></div>
+<% end %>
+
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @suppressions.size %></span>
+      <span class="text-sm text-slate-500 dark:text-slate-400">
+        suppressed <%= "address".pluralize(@suppressions.size) %> in Postmark
+        <% if @affected_subscriber_ids.any? %>
+          &middot; <%= @affected_subscriber_ids.size %> local <%= "subscriber".pluralize(@affected_subscriber_ids.size) %>
+        <% end %>
+      </span>
+    </div>
+    <%= button_to "Delete All",
+        destroy_all_admin_suppressions_path,
+        method: :delete,
+        disabled: @affected_subscriber_ids.empty?,
+        data: { turbo_confirm: "Delete #{@affected_subscriber_ids.size} suppressed #{"subscriber".pluralize(@affected_subscriber_ids.size)}? This cannot be undone." },
+        class: "btn-danger py-1.5 disabled:opacity-50 disabled:cursor-not-allowed" %>
+  </div>
+
+  <% if @suppressions.any? %>
+    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+      <thead>
+        <tr>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Email</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Reason</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Suppressed</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Subscribed to</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+        <% @suppressions.each do |s| %>
+          <tr>
+            <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50">
+              <!--email_off--><%= s[:email] %><!--/email_off-->
+            </td>
+            <td class="whitespace-nowrap py-3 px-6 text-sm">
+              <%
+                badge_class = case s[:reason]
+                when "HardBounce"        then "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                when "SpamComplaint"     then "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"
+                when "ManualSuppression" then "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                else                          "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                end
+              %>
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium <%= badge_class %>">
+                <%= s[:reason] %>
+              </span>
+            </td>
+            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
+              <%= s[:suppressed_at]&.to_date&.strftime("%-d %b %Y") %>
+            </td>
+            <td class="py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
+              <% if s[:subscribers].any? %>
+                <%= safe_join(s[:subscribers].map { |sub| link_to "@#{sub.blog.subdomain}", admin_user_path(sub.blog.user), class: "underline" }, ", ") %>
+              <% else %>
+                <span class="italic">not in DB</span>
+              <% end %>
+            </td>
+            <td class="whitespace-nowrap py-3 px-6 text-end">
+              <% if s[:subscribers].any? %>
+                <%= button_to "Delete",
+                    admin_suppressions_path,
+                    method: :delete,
+                    params: { email: s[:email] },
+                    data: { turbo_confirm: "Delete all #{s[:subscribers].size} #{"subscription".pluralize(s[:subscribers].size)} for #{s[:email]}? This cannot be undone." },
+                    class: "btn-danger py-1" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="px-6 py-8 text-sm text-slate-500 dark:text-slate-400 text-center">No suppressions found.</p>
+  <% end %>
+</div>

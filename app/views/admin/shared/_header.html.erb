@@ -5,11 +5,20 @@
         <%= inline_svg_tag "logo.svg", class: "w-[100px] inline-flex dark:text-slate-100 text-slate-900" %>
       <% end %>
 
-      <nav class="flex flex-wrap gap-x-4 mt-2 sm:mt-0">
+      <nav class="flex flex-wrap items-center gap-x-4 mt-2 sm:mt-0">
         <%= link_to "Blogs", admin_blogs_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'blogs'}" %>
         <%= link_to "Posts", admin_posts_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'posts'}" %>
         <%= link_to "Moderation", admin_moderation_root_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name.in?(%w[content spam])}" %>
         <%= link_to "Analytics", admin_analytics_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'analytics'}" %>
+
+        <details class="relative">
+          <summary class="text-sm font-semibold cursor-pointer list-none text-slate-900 dark:text-slate-100 hover:underline select-none #{'home-link' if controller_name == 'suppressions'}">More ▾</summary>
+          <div class="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg py-1 z-10">
+            <%= link_to "Suppressions", admin_suppressions_path,
+                class: "block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 #{'font-semibold' if controller_name == 'suppressions'}",
+                onclick: "this.closest('details').removeAttribute('open')" %>
+          </div>
+        </details>
       </nav>
     </div>
   </div>
