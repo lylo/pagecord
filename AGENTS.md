@@ -114,7 +114,7 @@ Docker: prefix commands with `docker-compose exec web`
 ### Email Features
 - **Post digests**: Emails to confirmed EmailSubscribers. Two delivery modes (`Blog#email_delivery_mode` enum):
   - **Digest** (default): Weekly batch emails (Tuesdays) via `PostDigestScheduler`. `PostDigest.generate_weekly_digest_for` finds new posts since last digest.
-  - **Individual**: User manually sends single posts from the post editor via `App::Posts::BroadcastsController`. `PostDigest.generate_individual_for` creates a one-post digest. `Post::Emailable` concern provides `individually_sendable?`/`send_to_subscribers!`.
+  - **Individual**: User manually sends single posts from the post editor via `App::Posts::BroadcastsController`. `PostDigest.generate_individual_for` creates a one-post digest. `Post::Emailable` concern provides `individually_sendable?`/`send_to_subscribers!`. Available to all subscribed users (no feature flag).
   - Both modes reuse the same infrastructure: `PostDigest` (with `kind` enum: `weekly_digest`/`individual`) → `PostDigest::DeliveryJob` → `PostDigest::PostmarkDelivery` (batches of 50). Posts sent individually are excluded from future weekly digests via `DigestPost` join records.
   - Requires `email_subscriptions_enabled` + `subscribed?`. Custom sender addresses via `SenderEmailAddress` (max 3 per blog, requires verification).
 - **Reply by email**: `Post::Reply` model. Replies forwarded to blog owner via `ReplyMailer`. Digest replies handled by `DigestReplyMailer`.
