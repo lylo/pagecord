@@ -24,6 +24,8 @@ Subscribers receive a roundup of your latest posts every Tuesday morning (in you
 
 You choose which posts to send, one at a time, whenever you like. When individual mode is enabled, published posts show a banner in the post editor with a **Send to subscribers** button. After sending, the banner updates to show the delivery date and subscriber count.
 
+Before sending for real, you can use **Send a test email** to preview the email in your own inbox first.
+
 Posts you send individually are automatically excluded from future weekly digests, so subscribers never receive the same post twice.
 
 ### Switching modes
