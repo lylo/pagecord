@@ -23,6 +23,7 @@ en:
         footer: "You're subscribed to receive new posts from %{blog_name}."
         unsubscribe_link: "Unsubscribe"
         unsubscribe_text: "Unsubscribe by clicking the link below:"
+        view_online: "View this post online"
       confirmation:
         subject: "Confirm your subscription to %{blog_name}"
         message: "Please confirm your subscription to %{blog_name}. If you didn't intend to subscribe, you can ignore this email."
@@ -37,15 +38,7 @@ en:
     read_more: "Read more"
   replies:
     form:
-      name_label: "Your Name"
-      email_label: "Your Email"
       subject_label: "Subject"
-      message_label: "Message"
-      submit_button: "Send Reply"
       cancel_link: "Cancel"
-    success_message: "Reply sent successfully!"
     mailer:
       intro: "Yay! Somebody replied to your post"
-      from_label: "From"
-      footer: "Reply to this email to respond to %{name}."
-      footer_text: "To respond to %{name}, simply reply to this email."

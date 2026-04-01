@@ -17,6 +17,27 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should sort pages by recently updated when requested" do
+    @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
+    posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
+
+    get app_pages_path(sort: "updated")
+
+    assert_response :success
+    assert_operator response.body.index("Fresh Notes"), :<, response.body.index("Archive Page")
+  end
+
+  test "should sort pages by remembered cookie preference" do
+    @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
+    posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
+
+    get app_pages_path(sort: "updated")
+    get app_pages_path
+
+    assert_response :success
+    assert_operator response.body.index("Fresh Notes"), :<, response.body.index("Archive Page")
+  end
+
   test "should get new" do
     get new_app_page_path
     assert_response :success
@@ -27,15 +48,13 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
       post app_pages_path, params: {
         post: {
           title: "New Page",
-          content: "Page content",
-          show_in_navigation: true
+          content: "Page content"
         }
       }
     end
 
     page = @blog.pages.last
     assert page.page?
-    assert page.show_in_navigation?
     assert_redirected_to app_pages_path
   end
 
@@ -44,8 +63,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
       post app_pages_path, params: {
         post: {
           title: "Test Draft Page",
-          content: "Draft content",
-          show_in_navigation: false
+          content: "Draft content"
         },
         button: "save_draft"
       }
@@ -54,7 +72,6 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     page = @blog.pages.last
     assert page.page?
     assert page.draft?
-    assert_not page.show_in_navigation?
   end
 
   test "should get edit" do
@@ -66,14 +83,12 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     patch app_page_path(@page), params: {
       post: {
         title: "Updated About",
-        content: "Updated content",
-        show_in_navigation: false
+        content: "Updated content"
       }
     }
 
     @page.reload
     assert_equal "Updated About", @page.title
-    assert_not @page.show_in_navigation?
     assert_redirected_to app_pages_path
   end
 

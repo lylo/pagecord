@@ -21,7 +21,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get root_path, headers: { "CF-IPCountry" => "BR" }
 
     assert_response :success
-    assert_select "body", text: /\$19/
+    assert_select "body", text: /\$25/
   end
 
   test "should render localized price for India" do
@@ -29,7 +29,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get root_path, headers: { "CF-IPCountry" => "IN" }
 
     assert_response :success
-    assert_select "body", text: /\$19/
+    assert_select "body", text: /\$25/
   end
 
   test "should render default price for other countries" do
@@ -37,7 +37,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get root_path, headers: { "CF-IPCountry" => "US" }
 
     assert_response :success
-    assert_select "body", text: /\$29/
+    assert_select "body", text: /\$39/
   end
 
   test "should render default price when no country header" do
@@ -45,6 +45,6 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    assert_select "body", text: /\$29/
+    assert_select "body", text: /\$39/
   end
 end

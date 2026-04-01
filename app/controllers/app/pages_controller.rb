@@ -1,8 +1,9 @@
 class App::PagesController < AppController
-  include EditorPreparation
   def index
-    home_page_id = Current.user.blog.home_page_id
-    @pages = Current.user.blog.pages.kept.published.order(:title).sort_by { |p| p.id == home_page_id ? 0 : 1 }
+    persist_sort_preference if params[:sort].present?
+
+    @sort = selected_sort
+    @pages = Current.user.blog.pages.kept.published.order(pages_order)
     @drafts = Current.user.blog.pages.kept.draft.order(:title)
   end
 
@@ -22,7 +23,6 @@ class App::PagesController < AppController
 
   def edit
     @page = Current.user.blog.pages.kept.find_by!(token: params[:token])
-    prepare_content_for_editor(@page)
   end
 
   def update
@@ -50,9 +50,28 @@ class App::PagesController < AppController
 
   private
 
+    def selected_sort
+      params[:sort] == "updated" || cookies.encrypted[:pages_sort] == "updated" ? "updated" : "alpha"
+    end
+
+    def pages_order
+      @sort == "updated" ? Arel.sql("updated_at DESC, LOWER(title)") : Arel.sql("CASE WHEN id = #{Current.user.blog.home_page_id.to_i} THEN 0 ELSE 1 END, LOWER(title), updated_at DESC")
+    end
+
+    def persist_sort_preference
+      if params[:sort] == "updated"
+        cookies.encrypted[:pages_sort] = {
+          value: "updated",
+          expires: 1.year.from_now
+        }
+      else
+        cookies.delete(:pages_sort)
+      end
+    end
+
     def page_params
       status = params[:button] == "save_draft" ? :draft : :published
 
-      params.require(:post).permit(:title, :content, :slug, :show_in_navigation).merge(is_page: true, status: status)
+      params.require(:post).permit(:title, :content, :slug).merge(is_page: true, status: status)
     end
 end

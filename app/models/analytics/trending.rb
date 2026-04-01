@@ -16,6 +16,7 @@ class Analytics::Trending
       .map { |post| score_post(post, view_counts) }
       .select { |item| item[:score] > 0 }
       .sort_by { |item| -item[:score] }
+      .uniq { |item| item[:post].blog_id }
       .first(limit)
   end
 

@@ -2,10 +2,10 @@ class PostDigestMailer < PostmarkMailer
   include PostsHelper
   include RoutingHelper
 
-  layout "mailer_digest"
+  layout "mailer_minimal"
 
   helper :routing
-  helper_method :without_action_text_image_wrapper, :strip_video_tags
+  helper_method :render_digest_post_content, :strip_video_tags
 
   def weekly_digest
     @digest = params[:digest]
@@ -19,6 +19,20 @@ class PostDigestMailer < PostmarkMailer
     @post = @digest.posts.with_rich_text_content.first
     @subscriber = params[:subscriber]
     deliver_broadcast
+  end
+
+  def test_individual
+    @post = params[:post]
+    @test = true
+    blog = @post.blog
+
+    subject = @post.title.presence || blog.display_name
+    mail(
+      to: params[:email],
+      from: sender_address_for(blog),
+      subject: "[Test] #{subject}",
+      template_name: "individual"
+    )
   end
 
   private

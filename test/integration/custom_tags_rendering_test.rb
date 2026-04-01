@@ -356,6 +356,35 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert old_pos < new_pos, "Expected oldest photo post to appear before newest with sort: asc"
   end
 
+  test "renders updated_at tag" do
+    page = @blog.pages.create!(title: "Updated", content: "Last updated: {{ updated_at }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "time.updated-at"
+  end
+
+  test "renders updated_at tag with named formats" do
+    %w[datetime long long_datetime dd_mm_yyyy mm_dd_yyyy yyyy_mm_dd].each do |fmt|
+      page = @blog.pages.create!(title: "Updated #{fmt}", content: "{{ updated_at format: #{fmt} }}", status: :published)
+
+      get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+      assert_response :success
+      assert_select "time.updated-at", minimum: 1
+    end
+  end
+
+  test "does not process updated_at tag in regular posts" do
+    post = @blog.posts.create!(title: "A Post", content: "{{ updated_at }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_response :success
+    assert_includes response.body, "{{ updated_at }}"
+  end
+
   test "does not process custom tags inside inline code" do
     page = @blog.pages.create!(
       title: "Inline Code Example",
@@ -368,6 +397,35 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     # The inline code should contain literal {{ posts }}
     assert_select "code", text: /{{ posts }}/
+  end
+
+  test "renders contact_form tag for premium user" do
+    assert @user.has_premium_access?
+    @blog.update!(features: [ "contact_form" ])
+
+    page = @blog.pages.create!(title: "Contact", content: "{{ contact_form }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".contact-form"
+    assert_select "form[action='#{contact_messages_path}']"
+  end
+
+  test "contact_form tag renders nothing for non-premium user" do
+    @user.subscription.destroy
+    @user.update!(created_at: 30.days.ago)
+
+    assert_not @user.reload.has_premium_access?
+
+    page = @blog.pages.create!(title: "Contact", content: "{{ contact_form }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".contact-form", count: 0
+    # Should not show the literal tag either
+    assert_not_includes response.body, "{{ contact_form }}"
   end
 
   # Language filter tests

@@ -147,7 +147,7 @@
 
     <%= render 'referrers' %>
 
-    <%= render 'countries' if current_features.enabled?(:analytics_countries) %>
+    <%= render 'countries' %>
   </div>
 
   <%= render 'premium_overlay' unless Current.user.has_premium_access? %>

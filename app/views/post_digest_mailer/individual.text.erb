@@ -2,6 +2,7 @@
 
 <%= post_url(@post) %>
 
+<% unless @test %>
 ----------
 
 <%= t('email_subscribers.mailers.shared.footer', blog_name: @subscriber.blog.display_name) %>
@@ -9,3 +10,4 @@
 <%= t('email_subscribers.mailers.shared.unsubscribe_text') %>
 
 <%= email_subscriber_unsubscribe_url_for(@subscriber) %>
+<% end %>

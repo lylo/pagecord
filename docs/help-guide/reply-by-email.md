@@ -19,4 +19,5 @@ Once enabled, a reply link appears at the bottom of each post.
 
 - Replies go directly to the email address that you subscribed to Pagecord with
 - You can reply back normally from your email client to continue the conversation
+- Replies are automatically scanned for spam and deleted if they are flagged
 

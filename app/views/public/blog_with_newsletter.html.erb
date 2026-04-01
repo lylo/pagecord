@@ -1,0 +1,57 @@
+<%= content_for :title do %>
+  Create a blog with a built-in email newsletter
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "You Don't Need a Newsletter Tool. You Need a Blog That Emails.") %>
+<% end %>
+
+<%= content_for :meta_description do %>
+  Skip the newsletter platform. Pagecord is a blogging app with built-in email subscriptions. Publish your posts to your subscribers, manually or as an automatic weekly digest. No templates, no campaigns, no fuss.
+<% end %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
+    You Don't Need a Newsletter Tool. You Need a Blog That Emails.
+  </h1>
+
+  <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4 mt-8 md:mt-12">
+    <p>
+      Newsletter platforms make writing online complicated. Campaigns, template editors, audience segments, drip sequences, landing page funnels. Great for a business, PITA for a single person.
+    </p>
+    <p>
+      What if you just wrote a blog post and the people who subscribed got it in their inbox? No campaign to set up. No template to design. No separate "newsletter version" of what you already wrote.
+    </p>
+    <p>
+      Pagecord is the answer. A blogging app with built-in email subscriptions. Write a post, publish it, and your subscribers get it by email. Your writing, shared with people who care.
+    </p>
+  </div>
+
+  <div class="text-center mt-8 mb-4 md:text-xl">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start Your Blog Today</div>
+    <% end %>
+  </div>
+</div>
+
+<%= render "screenshots" %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+
+  <h2 class="source-serif text-center font-semibold my-8 mt-12 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">Good Writing Deserves a Home</h2>
+
+  <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+    <p>
+      With a newsletter platform, your writing takes a backseat. With Pagecord, your writing is driving up front. Get a beautiful website with your own domain, and create your own space on the web. Use the email newsletter to make it easy for your readers to follow along.
+    </p>
+    <p>
+      Pagecord is open source. The classic plan is free forever. Premium is $<%= localised_price %>/year and includes email subscriptions, custom domains, analytics, and more!
+    </p>
+  </div>
+
+  <div class="my-8 text-center">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
+    <% end %>
+  </div>
+</div>

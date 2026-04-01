@@ -28,7 +28,6 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
     home_page = @blog.reload.home_page
     assert_equal "Welcome", home_page.title
     assert_equal true, home_page.is_page
-    assert_equal false, home_page.show_in_navigation
     assert_equal "published", home_page.status
   end
 
@@ -71,7 +70,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
   # Update action
 
   test "should update home page" do
-    page = @blog.pages.create!(title: "Old Title", content: "Old content", status: :published)
+    page = posts(:about)
     @blog.update!(home_page_id: page.id)
 
     patch app_home_page_url, params: { post: { title: "New Title", content: "New content" } }
@@ -95,7 +94,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
   # Destroy action
 
   test "should remove home page" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome content", status: :published)
+    page = posts(:about)
     @blog.update!(home_page_id: page.id)
 
     delete app_home_page_url
@@ -118,12 +117,12 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not change title on home page with title when removing" do
-    page = @blog.pages.create!(title: "My Homepage", content: "Welcome content", status: :published)
+    page = posts(:contact)
     @blog.update!(home_page_id: page.id)
 
     delete app_home_page_url
 
     assert_nil @blog.reload.home_page_id
-    assert_equal "My Homepage", page.reload.title
+    assert_equal "Contact", page.reload.title
   end
 end

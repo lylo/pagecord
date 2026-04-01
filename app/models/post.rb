@@ -2,6 +2,8 @@ class Post < ApplicationRecord
   include Discard::Model
   include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable, Post::Emailable
 
+  enum :source, [ :editor, :email, :api ]
+
   self.locale_optional = true
 
   belongs_to :blog, inverse_of: nil
@@ -9,7 +11,6 @@ class Post < ApplicationRecord
   has_rich_text :content
   has_many_attached :attachments, dependent: :destroy
 
-  has_one :open_graph_image, dependent: :destroy
   has_many :digest_posts, dependent: :destroy
   has_many :post_digests, through: :digest_posts
   has_many :replies, class_name: "Post::Reply", dependent: :destroy
@@ -21,12 +22,16 @@ class Post < ApplicationRecord
 
   validate :content_present
   validate :title_present_for_pages
+  validate :one_home_page, on: :create
 
   scope :posts, -> { where(is_page: false) }
   scope :pages, -> { where(is_page: true) }
-  scope :navigation_pages, -> { pages.where(show_in_navigation: true) }
   scope :released, -> { where("published_at <= ?", Time.current) }
   scope :visible, -> { kept.where.not(hidden: true).published.released }
+  scope :titled, ->(flag) { flag == "true" ? where.not(title: [ nil, "" ]) : where(title: [ nil, "" ]) }
+  scope :for_locale, ->(locale, blog_locale) {
+    blog_locale == locale ? where(locale: [ locale, nil ]) : where(locale: locale)
+  }
   scope :with_full_rich_text, -> {
       with_rich_text_content_and_embeds.includes(
         :rich_text_content,
@@ -36,8 +41,7 @@ class Post < ApplicationRecord
         ]
       )
     }
-  after_create :detect_open_graph_image
-  after_commit :purge_blog_cache, on: [ :create, :update, :destroy ]
+  after_commit :touch_blog, on: [ :create, :update, :destroy ]
 
   def content_present
     has_content = content.body.present? && content.body.to_plain_text.strip.present?
@@ -56,6 +60,12 @@ class Post < ApplicationRecord
   def title_present_for_pages
     if page? && title.blank? && !home_page?
       errors.add(:title, "can't be blank")
+    end
+  end
+
+  def one_home_page
+    if is_home_page && blog&.has_custom_home_page?
+      errors.add(:base, "Home page already exists")
     end
   end
 
@@ -182,18 +192,8 @@ class Post < ApplicationRecord
       end
     end
 
-    def detect_open_graph_image
-      if Rails.env.production?
-        GenerateOpenGraphImageJob.perform_later(id)
-      else
-        GenerateOpenGraphImageJob.perform_now(id)
-      end
-    end
-
-    def purge_blog_cache
-      return unless Rails.env.production?
+    def touch_blog
       return unless published? || status_previously_changed?
-
-      PurgeCloudflareCacheJob.perform_later(blog_id)
+      blog.touch unless blog.destroyed?
     end
 end

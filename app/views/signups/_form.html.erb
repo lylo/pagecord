@@ -59,18 +59,7 @@
     </div>
   </details>
 
-  <% if ENV["TURNSTILE_ENABLED"] && !Rails.env.development? %>
-  <div class="turnstile-widget">
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    <div class="cf-turnstile"
-      data-sitekey="<%= ENV["TURNSTILE_SITE_KEY"] %>"
-      <% if Rails.env.test? %>
-      data-action="test"
-      <% end %>
-      data-theme="light">
-    </div>
-  </div>
-  <% end %>
+  <%= render "/shared/turnstile" %>
 
   <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700">
     <%= form.checkbox :marketing_consent,

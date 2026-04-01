@@ -3,17 +3,17 @@
     <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Overview</h3>
   </div>
   <div class="px-6 py-5">
-    <div class="flex items-center gap-8">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-8">
       <%= link_to admin_posts_path, class: "group" do %>
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Post.visible.joins(blog: :user).where(users: { discarded_at: nil }).count) %></span>
         <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Posts</span>
       <% end %>
-      <span class="text-slate-200 dark:text-slate-700">|</span>
+      <span class="hidden sm:inline text-slate-200 dark:text-slate-700">|</span>
       <%= link_to admin_posts_path(period: "today"), class: "group" do %>
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Post.visible.where("published_at >= ?", Date.current.beginning_of_day).count) %></span>
         <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Today</span>
       <% end %>
-      <span class="text-slate-200 dark:text-slate-700">|</span>
+      <span class="hidden sm:inline text-slate-200 dark:text-slate-700">|</span>
       <%= link_to admin_posts_path(period: "week"), class: "group" do %>
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Post.visible.where("published_at >= ?", 7.days.ago.beginning_of_day).count) %></span>
         <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">This week</span>

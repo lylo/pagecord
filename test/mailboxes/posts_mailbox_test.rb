@@ -18,7 +18,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     assert_equal "Hello world!", user.blog.posts.last.title
     assert_equal "<p>Hello?</p>", user.blog.posts.last.content.to_s.strip
-    assert_not_nil user.blog.posts.last.raw_content
+    assert_equal "email", user.blog.posts.last.source
   end
 
   test "should receive valid HTML mail from HEY" do

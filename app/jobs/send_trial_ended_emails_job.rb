@@ -2,15 +2,18 @@ class SendTrialEndedEmailsJob < ApplicationJob
   queue_as :default
 
   def perform
-    users = User.where(trial_ends_at: Date.yesterday)
-                .where(discarded_at: nil)
-                .left_joins(:subscription)
-                .where(subscriptions: { id: nil })
+    users = User.kept
+                .includes(:blog)
+                .where(verified: true)
+                .where(trial_ends_at: Date.yesterday)
+                .where.missing(:subscription)
 
     Rails.logger.info "[SendTrialEndedEmails] Sending trial ended emails to #{users.count} users"
 
     users.find_each do |user|
-      FreeTrialMailer.with(user: user).trial_ended.deliver_later
+      with_sentry_context(user: user, blog: user.blog) do
+        FreeTrialMailer.with(user: user).trial_ended.deliver_later
+      end
     end
   end
 end

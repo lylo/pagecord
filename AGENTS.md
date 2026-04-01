@@ -33,6 +33,19 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **Logical properties**: Prefer `margin-inline-start` over `margin-left` for RTL support
 - Primary button color: `bg-[#4fbd9c]` (`btn-primary` class)
 
+## Design System
+
+- **Panels**: Prefer `rounded-lg` panels with light borders (`border-slate-200` / `dark:border-slate-700`) for app UI containers. Avoid heavier radii and unnecessary shadows unless an existing screen already uses them.
+- **Soft callouts**: For blank slates and top-of-page helper panels, prefer a soft surface like `bg-slate-50 dark:bg-slate-800` with roomier padding (`p-6`) rather than the older generic callout look.
+- **List panels**: For index-style screens, prefer a single bordered panel that can contain multiple sections (for example Drafts + Published) with dividers, rather than several unrelated floating blocks.
+- **Count pills**: Count badges should stay friendly and compact: `rounded-full`, slate-filled, small padding (`px-2 py-0.5`), and low visual drama.
+- **Text hierarchy**:
+  - Headings and primary labels: `text-slate-900 dark:text-slate-100`
+  - Standard supporting copy in blank slates, trash views, and helper text: `text-slate-600 dark:text-slate-300`
+  - Stronger helper/callout copy when the panel is body-led rather than heading-led (for example the Settings intro panel): `text-slate-800 dark:text-slate-200`
+  - Meta text, dates, counts, and secondary controls: `text-slate-500 dark:text-slate-400`
+- **Consistency rule**: New app-facing UI should generally follow the same panel language now used on Pages, Posts, and Trash screens before inventing a new treatment.
+
 ## Testing
 
 - Minitest with fixtures. Follow Rails conventions for file location.
@@ -73,13 +86,15 @@ Docker: prefix commands with `docker-compose exec web`
 - **Auth**: Passwordless login via AccessRequest tokens (1-day expiry). EmailChangeRequest for email updates. Both use Verifiable concern.
 - **Routing**: Constraint-based — pagecord.com for app/auth, subdomains and custom domains for blog content
 - **Storage**: ActiveStorage on Cloudflare R2. Soft deletion with Discard gem. StorageTrackable concern tracks attachment bytes/count per blog.
+- **API**: `Api::BaseController` handles token auth via `Blog.find_by_api_key`, premium check, `:api` feature flag, 60 req/min rate limit, `wrap_parameters false`, RFC 5988 `Link` + `X-Total-Count` pagination headers, and shared param handling via `permitted_content_params`. Controllers: `Api::PostsController` (CRUD), `Api::PagesController` (CRUD), `Api::HomePagesController` (CRUD, singular resource, second create returns `422`), `Api::AttachmentsController` (file upload → standalone blob → `attachable_sgid`). `content` is always stored as HTML; `content_format=markdown` first renders via Redcarpet with front matter support, then attachment enrichment runs on the resulting HTML. API rich text attachments are blob-only and canonicalized with the same `ActionText::Attachment.from_attachable(..., url: ...)` path used by MailParser via `Html::AttachmentPreview`. Upload limits live in `UploadLimits::CONTENT_TYPES` (`app/models/upload_limits.rb`).
+- **Caching**: `blog.updated_at` is the single invalidation boundary. Everything that changes visitor-visible state touches the blog. Post fragment caches key on `[post, @blog.updated_at]`. ETags use `@blog.updated_at`. Blog `after_commit :purge_cloudflare_cache` fires `PurgeCloudflareCacheJob` (tag-based purge by subdomain). Edge caching (`s-maxage`, `Cache-Tag`, session skip) only applies to `*.pagecord.com` — custom domains route through Caddy, not Cloudflare. Upvotes don't invalidate caches (display is handled client-side via Stimulus).
 - **Background**: Sidekiq + Redis. Cron via `whenever` gem (see `config/schedule.rb`)
 - **External services**: Postmark + Mailpace (email, dual provider), Sentry (errors), AppSignal (observability), Hatchbox (hosting/custom domains), Paddle (billing)
 
 ### Billing & Access
 - **Payments**: Paddle webhooks (`Billing::PaddleEventsController`) → Subscription model. Plans: monthly, annual, complimentary
 - **Trial**: 14-day free trial. `has_premium_access?` = subscribed OR on trial. `subscribed?` = paid only.
-- Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains
+- Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains, API access
 - Subscriber-only features: email subscriptions, branding removal
 - Payment failures handled automatically by Paddle Retain — don't email customers about failed payments
 
@@ -112,6 +127,12 @@ Docker: prefix commands with `docker-compose exec web`
 - **Renewal reminders**: `Subscription::SendRenewalRemindersJob` emails annual subscribers 2 weeks before renewal
 - **Cancellation**: `SendCancellationEmailJob` sends appropriate email (subscriber vs free account). User destruction via `DestroyUserJob`.
 
+### Feature Toggles
+- Per-blog feature flags stored in the blog's `features` array column (e.g. `["contact_form", "analytics_countries"]`)
+- Defined in `config/features.rb` using `feature :name do |blog:| ... end`
+- In controllers/views: `current_features.enabled?(:feature_name)` (via `Rails.features.for(blog: @blog)`)
+- In models/concerns: check `features.include?("feature_name")` directly on the blog instance
+
 ### Key Concerns
 - **Subscribable**: Trial management (14 days), `has_premium_access?` vs `subscribed?`
 - **Themeable**: 7 preset themes + custom, fonts, page widths, hex color validation
@@ -120,9 +141,38 @@ Docker: prefix commands with `docker-compose exec web`
 - **Verifiable**: Token-based verification with 24h expiry (used by email addresses, change requests)
 - **CssSanitizable**: Custom CSS validation (4KB limit)
 
+### Media Embeds
+
+Client-side system that replaces bare links (URL = link text) with rich embeds on post/stream views.
+
+- **Controller**: `app/javascript/controllers/media_embeds_controller.js` — on connect, collects all bare links across all `<article>` elements and processes them in parallel via `Promise.all`
+- **Base class**: `app/javascript/embeds/media_site.js` — takes `(regex, getEmbedUrl, createEmbedIframe)`. `transform(url)` calls both in sequence
+- **All modules lazy-loaded** via importmap (`preload: false`) — no cost on pages without the controller
+- **Bare link detection**: `isBareLink()` checks `link.href === link.textContent` or that origin+pathname match (ignores query string differences)
+
+Supported services and notable implementation details:
+
+| Module | URLs matched | Notes |
+|---|---|---|
+| `youtube.js` | youtube.com/watch, /live, /shorts, youtu.be | Wrapped in `video-embed-container` div for responsive CSS |
+| `spotify.js` | open.spotify.com | Height 152px (tracks) or 450px (albums) |
+| `apple_music.js` | music.apple.com | Height 175px (tracks) or 450px (playlists) |
+| `tidal.js` | tidal.com | Height varies by type (track/album/playlist) |
+| `bandcamp.js` | *.bandcamp.com | Requires backend proxy — see below |
+| `transistor.js` | transistorfm.com | Height 180px (episodes) or 390px (shows) |
+| `strava.js` | strava.com/activities | Injects strava-embeds.com script rather than an iframe src |
+| `github.js` | gist.github.com | Uses `srcdoc` with an inline script — no cross-origin iframe |
+| `bluesky.js` | bsky.app/profile/*/post/* | Resolves handle → DID via `public.api.bsky.app` if needed; auto-resizes via `postMessage` from `embed.bsky.app` |
+| `image.js` | Direct image URLs | jpg/png/gif/webp/svg/bmp/ico |
+
+**Bandcamp backend proxy**: Bandcamp has no predictable embed URL format — the iframe src is only discoverable by fetching the Bandcamp page and reading its `og:video` meta tag. CORS prevents doing this client-side, so `bandcamp.js` POSTs to `Api::EmbedsController#bandcamp` (`app/controllers/api/embeds_controller.rb`), which uses `Nokogiri` + `open-uri` to fetch the page server-side and return the embed URL. The request includes a CSRF token. If the `og:video` tag is absent or the fetch fails, the embed is silently skipped.
+
+CSP `frame-src` in `config/initializers/content_security_policy.rb` must be updated when adding new embed domains.
+
 ## Key Gotchas
 
 - **ActionText before_save**: Read from `content.to_s` directly — ActionText changes aren't persisted until callback completes
+- **API Markdown attachments**: Redcarpet wraps standalone raw `<action-text-attachment>` tags in `<p>` tags. `Api::BaseController#enrich_attachments` must unwrap attachment-only paragraphs after Markdown conversion or rendered blog HTML loses the outer `<action-text-attachment>` wrapper.
 - **Safari**: Doesn't support `*.localhost` — use Chrome/Firefox for subdomain testing
 - **Blog views**: No Tailwind, use semantic CSS. Check `lexxy-typography.css`, `components.css`, `themes/*.css`
 - **Post text_summary**: Cached plain text column updated via before_save. Use `display_title`, `summary(limit:)` — don't parse ActionText in loops

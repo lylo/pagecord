@@ -31,7 +31,7 @@ class PostsMailbox < ApplicationMailbox
           blog.posts.create!(
             title: title,
             content: content,
-            raw_content: mail.raw_source,
+            source: :email,
             attachments: parser.attachments,
             tag_list: parser.tags,
             published_at: mail.date)

@@ -314,6 +314,26 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "should show emailed icon for posts in delivered digests" do
+    post = @user.blog.posts.create!(title: "Emailed Post", content: "Content")
+    digest = PostDigest.create!(blog: @user.blog, kind: :individual, delivered_at: Time.current)
+    digest.digest_posts.create!(post: post)
+
+    get app_posts_url
+
+    assert_response :success
+    assert_select "svg title", text: "Emailed to subscribers"
+  end
+
+  test "should show private icon for hidden posts" do
+    @user.blog.posts.create!(title: "Hidden Post", content: "Content", hidden: true)
+
+    get app_posts_url
+
+    assert_response :success
+    assert_select "svg title", text: "Private post"
+  end
+
   test "app area should be inaccessible on custom domain" do
     post = posts(:four)
     login_as post.blog.user
@@ -324,13 +344,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should preview draft post with blog layout" do
-    draft_post = @user.blog.posts.create!(
-      title: "Draft Preview",
-      content: "Draft content for preview",
-      status: :draft
-    )
-
-    get app_post_url(draft_post)
+    get app_post_url(posts(:vivian_draft))
 
     assert_response :success
     assert_select "article"
