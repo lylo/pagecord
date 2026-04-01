@@ -25,14 +25,14 @@ class Admin::SuppressionsControllerTest < ActionDispatch::IntegrationTest
     assert_select "td", text: /joel/ # subscriber's blog
   end
 
-  test "index shows not in DB for suppressions with no matching subscriber" do
+  test "index omits suppressions with no matching local subscriber" do
     Postmark::ApiClient.any_instance.stubs(:dump_suppressions).returns([
       { email_address: "nobody@example.com", suppression_reason: "HardBounce", created_at: 1.day.ago }
     ])
 
     get admin_suppressions_url
     assert_response :success
-    assert_select "span", text: /not in DB/
+    assert_select "p", text: /No suppressed subscribers found/
   end
 
   test "index shows error message on invalid API key" do

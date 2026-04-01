@@ -11,13 +11,15 @@ class Admin::SuppressionsController < AdminController
     subscribers = EmailSubscriber.includes(:blog).where(email: suppressed_emails)
     subscribers_by_email = subscribers.group_by { |s| s.email.downcase }
 
-    @suppressions = suppressions.map do |s|
+    @suppressions = suppressions.filter_map do |s|
       email = s[:email_address].downcase
+      subs = subscribers_by_email[email]
+      next unless subs&.any?
       {
         email: s[:email_address],
         reason: s[:suppression_reason],
         suppressed_at: s[:created_at],
-        subscribers: subscribers_by_email[email] || []
+        subscribers: subs
       }
     end.sort_by { |s| s[:suppressed_at] }.reverse
 
