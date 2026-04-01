@@ -32,6 +32,10 @@ Posts you send individually are automatically excluded from future weekly digest
 
 To change your delivery mode, go to **Settings** → **Audience** and pick between **Weekly Digest** and **Individual** under the email subscriptions checkbox. You can switch at any time. If you switch from individual back to weekly digest, the next Tuesday digest will include any posts that haven't been sent yet.
 
+## Email subject lines
+
+Individual emails use the post title as the subject line, or "New post from [your blog title] — [date]" if the post has no title. Weekly digest emails always use "New posts from [your blog title]".
+
 ## Displaying the subscription form
 
 You can show the subscription form in two places:
