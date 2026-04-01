@@ -15,7 +15,7 @@ class App::Posts::BroadcastsController < AppController
   def test
     @post = Current.user.blog.posts.kept.find_by!(token: params[:post_token])
 
-    if current_features.enabled?(:individual_email_delivery) && @post.individually_sendable?
+    if @post.individually_sendable?
       PostDigestMailer.with(post: @post, email: Current.user.email).test_individual.deliver_later
       redirect_to edit_app_post_path(@post), notice: "Test email sent to #{Current.user.email}."
     else
