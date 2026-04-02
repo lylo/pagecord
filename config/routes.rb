@@ -236,6 +236,8 @@ Rails.application.routes.draw do
     post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
     post "/email_subscribers/:token/one_click_unsubscribe", to: "blogs/email_subscribers/unsubscribes#one_click", as: :email_subscriber_one_click_unsubscribe
 
+    get "/upvotes/statuses", to: "posts/upvotes/statuses#show", as: :upvotes_statuses
+
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create ], module: :posts
       get "upvotes/status", to: "posts/upvotes/status#show", as: :upvotes_status
