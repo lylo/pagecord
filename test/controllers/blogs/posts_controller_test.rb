@@ -382,6 +382,26 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should set canonical_url to custom domain on blog home" do
+    @blog = blogs(:annie)
+    host! @blog.custom_domain
+
+    get "/"
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.custom_domain}/"
+  end
+
+  test "should set canonical_url to custom domain on posts list" do
+    @blog = blogs(:annie)
+    host! @blog.custom_domain
+
+    get "/posts"
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.custom_domain}/posts"
+  end
+
   test "should get show on custom domain" do
     @blog = blogs(:annie)
     host! @blog.custom_domain
@@ -493,6 +513,27 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "link[rel=canonical][href=?]", "https://myblog.net"
+  end
+
+  test "should set the canonical_url to the blog home without query params" do
+    get blog_posts_path(ref: "example.com")
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/"
+  end
+
+  test "should set the canonical_url to /posts on the posts list page" do
+    get blog_posts_list_path
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/posts"
+  end
+
+  test "should set the canonical_url to /posts without tag query params" do
+    get blog_posts_list_path(tag: "nerd")
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/posts"
   end
 
   test "should redirect trailing slash on post URL to non-trailing slash version" do
@@ -975,6 +1016,15 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal page, assigns(:post)
     assert_template "blogs/posts/show"
+  end
+
+  test "should set canonical_url to root when custom home page is rendered" do
+    page = posts(:about)
+    @blog.update!(home_page_id: page.id)
+
+    get blog_posts_path
+
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/"
   end
 
   test "should show posts index when home page is not set" do
