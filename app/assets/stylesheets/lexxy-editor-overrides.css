@@ -29,6 +29,12 @@ lexxy-editor {
     color: inherit;
   }
 
+  /* Flip <em> to upright inside italic blockquotes so emphasis is visible.
+     Workaround for https://github.com/basecamp/lexxy/issues/XXX */
+  blockquote em.lexxy-content__italic {
+    font-style: normal;
+  }
+
   .lexxy-content__table-wrapper {
     margin-block: 0 var(--lexxy-content-margin);
   }

@@ -167,6 +167,12 @@ Rails.application.routes.draw do
     resources :blogs, only: [ :index ]
     resources :analytics, only: [ :index ]
     resources :posts, only: [ :index ]
+    resources :suppressions, only: [ :index ] do
+      collection do
+        delete :destroy
+        delete :destroy_all
+      end
+    end
     resources :users, only: [ :show, :destroy, :new, :create, :update ] do
       member do
         post :restore
@@ -229,6 +235,8 @@ Rails.application.routes.draw do
     get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
     post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
     post "/email_subscribers/:token/one_click_unsubscribe", to: "blogs/email_subscribers/unsubscribes#one_click", as: :email_subscriber_one_click_unsubscribe
+
+    get "/upvotes/statuses", to: "posts/upvotes/statuses#show", as: :upvotes_statuses
 
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create ], module: :posts

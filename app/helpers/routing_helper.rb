@@ -46,9 +46,9 @@ module RoutingHelper
   private
 
     def route_for_blog(blog, route_name, type, options = {})
-      route_options = options.merge(host: host(blog))
+      route_options = options.symbolize_keys.merge(host: host(blog))
 
-      send("#{route_name}_#{type}", route_options)
+      public_send("#{route_name}_#{type}", **route_options)
     end
 
     def host(blog)

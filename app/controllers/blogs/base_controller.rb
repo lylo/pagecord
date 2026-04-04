@@ -93,6 +93,10 @@ class Blogs::BaseController < ApplicationController
     end
 
     def render_too_many_requests
-      render "blogs/errors/too_many_requests", status: :too_many_requests
+      if request.format.html?
+        render "blogs/errors/too_many_requests", status: :too_many_requests
+      else
+        head :too_many_requests
+      end
     end
 end

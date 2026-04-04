@@ -22,6 +22,7 @@ New to Pagecord? Start here. These guides will help you set up your blog and pub
 Learn how to create posts, format your content, add images, schedule posts for later, and organise with tags.
 
 - [Writing posts](writing-posts.md)
+- [Media embeds](media-embeds.md)
 - [Posting by email](posting-by-email.md)
 
 ## Pages & Navigation

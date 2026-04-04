@@ -1,6 +1,9 @@
 class Blogs::PostsController < Blogs::BaseController
   include Pagy::Method, RequestHash, PostsHelper
 
+  STREAM_PAGE_SIZE = 15
+  TITLE_PAGE_SIZE = 100
+
   rate_limit to: 60, within: 1.minute
 
   skip_forgery_protection only: :not_found
@@ -75,7 +78,7 @@ class Blogs::PostsController < Blogs::BaseController
     end
 
     def page_size
-      @blog.title_layout? ? 100 : 15
+      @blog.title_layout? ? TITLE_PAGE_SIZE : STREAM_PAGE_SIZE
     end
 
     def set_conditional_get_headers

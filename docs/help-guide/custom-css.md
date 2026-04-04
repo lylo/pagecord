@@ -265,6 +265,19 @@ Posts with tags include a `data-tags` attribute on their wrapper element. You ca
 }
 ```
 
+### Non-italic blockquotes
+
+Blockquotes are styled in italics by default. If you prefer upright text, use this snippet. The second rule ensures that any emphasised text inside the quote still appears italic:
+
+```css
+blockquote {
+  font-style: normal;
+}
+blockquote em {
+  font-style: italic;
+}
+```
+
 ### Full-width images
 
 By default, images display at their natural size. To make all images stretch to fill the full width of your posts:

@@ -33,6 +33,19 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **Logical properties**: Prefer `margin-inline-start` over `margin-left` for RTL support
 - Primary button color: `bg-[#4fbd9c]` (`btn-primary` class)
 
+## Design System
+
+- **Panels**: Prefer `rounded-lg` panels with light borders (`border-slate-200` / `dark:border-slate-700`) for app UI containers. Avoid heavier radii and unnecessary shadows unless an existing screen already uses them.
+- **Soft callouts**: For blank slates and top-of-page helper panels, prefer a soft surface like `bg-slate-50 dark:bg-slate-800` with roomier padding (`p-6`) rather than the older generic callout look.
+- **List panels**: For index-style screens, prefer a single bordered panel that can contain multiple sections (for example Drafts + Published) with dividers, rather than several unrelated floating blocks.
+- **Count pills**: Count badges should stay friendly and compact: `rounded-full`, slate-filled, small padding (`px-2 py-0.5`), and low visual drama.
+- **Text hierarchy**:
+  - Headings and primary labels: `text-slate-900 dark:text-slate-100`
+  - Standard supporting copy in blank slates, trash views, and helper text: `text-slate-600 dark:text-slate-300`
+  - Stronger helper/callout copy when the panel is body-led rather than heading-led (for example the Settings intro panel): `text-slate-800 dark:text-slate-200`
+  - Meta text, dates, counts, and secondary controls: `text-slate-500 dark:text-slate-400`
+- **Consistency rule**: New app-facing UI should generally follow the same panel language now used on Pages, Posts, and Trash screens before inventing a new treatment.
+
 ## Testing
 
 - Minitest with fixtures. Follow Rails conventions for file location.
@@ -101,8 +114,7 @@ Docker: prefix commands with `docker-compose exec web`
 ### Email Features
 - **Post digests**: Emails to confirmed EmailSubscribers. Two delivery modes (`Blog#email_delivery_mode` enum):
   - **Digest** (default): Weekly batch emails (Tuesdays) via `PostDigestScheduler`. `PostDigest.generate_weekly_digest_for` finds new posts since last digest.
-  - **Individual**: User manually sends single posts from the post editor via `App::Posts::BroadcastsController`. `PostDigest.generate_individual_for` creates a one-post digest. `Post::Emailable` concern provides `individually_sendable?`/`send_to_subscribers!`.
-  - Both modes reuse the same infrastructure: `PostDigest` (with `kind` enum: `weekly_digest`/`individual`) → `PostDigest::DeliveryJob` → `PostDigest::PostmarkDelivery` (batches of 50). Posts sent individually are excluded from future weekly digests via `DigestPost` join records.
+  - **Individual**: User manually sends single posts from the post editor via `App::Posts::BroadcastsController`. `PostDigest.generate_individual_for` creates a one-post digest. `Post::Emailable` concern provides `individually_sendable?`/`send_to_subscribers!`.  - Both modes reuse the same infrastructure: `PostDigest` (with `kind` enum: `weekly_digest`/`individual`) → `PostDigest::DeliveryJob` → `PostDigest::PostmarkDelivery` (batches of 50). Posts sent individually are excluded from future weekly digests via `DigestPost` join records.
   - Requires `email_subscriptions_enabled` + `subscribed?`. Custom sender addresses via `SenderEmailAddress` (max 3 per blog, requires verification).
 - **Reply by email**: `Post::Reply` model. Replies forwarded to blog owner via `ReplyMailer`. Digest replies handled by `DigestReplyMailer`.
 - **Blog export**: HTML or Markdown ZIP via `BlogExportJob`. Auto-cleanup after 7 days. Rate limited to 5/day.
@@ -127,6 +139,34 @@ Docker: prefix commands with `docker-compose exec web`
 - **Taggable**: Tag management with validation, normalization, querying
 - **Verifiable**: Token-based verification with 24h expiry (used by email addresses, change requests)
 - **CssSanitizable**: Custom CSS validation (4KB limit)
+
+### Media Embeds
+
+Client-side system that replaces bare links (URL = link text) with rich embeds on post/stream views.
+
+- **Controller**: `app/javascript/controllers/media_embeds_controller.js` — on connect, collects all bare links across all `<article>` elements and processes them in parallel via `Promise.all`
+- **Base class**: `app/javascript/embeds/media_site.js` — takes `(regex, getEmbedUrl, createEmbedIframe)`. `transform(url)` calls both in sequence
+- **All modules lazy-loaded** via importmap (`preload: false`) — no cost on pages without the controller
+- **Bare link detection**: `isBareLink()` checks `link.href === link.textContent` or that origin+pathname match (ignores query string differences)
+
+Supported services and notable implementation details:
+
+| Module | URLs matched | Notes |
+|---|---|---|
+| `youtube.js` | youtube.com/watch, /live, /shorts, youtu.be | Wrapped in `video-embed-container` div for responsive CSS |
+| `spotify.js` | open.spotify.com | Height 152px (tracks) or 450px (albums) |
+| `apple_music.js` | music.apple.com | Height 175px (tracks) or 450px (playlists) |
+| `tidal.js` | tidal.com | Height varies by type (track/album/playlist) |
+| `bandcamp.js` | *.bandcamp.com | Requires backend proxy — see below |
+| `transistor.js` | transistorfm.com | Height 180px (episodes) or 390px (shows) |
+| `strava.js` | strava.com/activities | Injects strava-embeds.com script rather than an iframe src |
+| `github.js` | gist.github.com | Uses `srcdoc` with an inline script — no cross-origin iframe |
+| `bluesky.js` | bsky.app/profile/*/post/* | Resolves handle → DID via `public.api.bsky.app` if needed; auto-resizes via `postMessage` from `embed.bsky.app` |
+| `image.js` | Direct image URLs | jpg/png/gif/webp/svg/bmp/ico |
+
+**Bandcamp backend proxy**: Bandcamp has no predictable embed URL format — the iframe src is only discoverable by fetching the Bandcamp page and reading its `og:video` meta tag. CORS prevents doing this client-side, so `bandcamp.js` POSTs to `Api::EmbedsController#bandcamp` (`app/controllers/api/embeds_controller.rb`), which uses `Nokogiri` + `open-uri` to fetch the page server-side and return the embed URL. The request includes a CSRF token. If the `og:video` tag is absent or the fetch fails, the embed is silently skipped.
+
+CSP `frame-src` in `config/initializers/content_security_policy.rb` must be updated when adding new embed domains.
 
 ## Key Gotchas
 

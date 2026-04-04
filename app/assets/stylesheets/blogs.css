@@ -40,6 +40,7 @@
 
 html {
   font-size: var(--font-size-base);
+  scrollbar-gutter: stable;
 }
 
 /* Body layout - vertical flex container */
@@ -314,6 +315,10 @@ footer.blog-footer #brand svg {
     :where(blockquote) {
       color: var(--color-text-muted);
       border-left-color: var(--color-border);
+
+      em {
+        font-style: normal;
+      }
     }
 
     li::marker {

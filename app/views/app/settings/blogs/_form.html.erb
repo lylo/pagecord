@@ -1,5 +1,13 @@
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
   <% disabled = !@blog.user.subscribed? %>
+  <div>
+    <h3 class="font-bold text-lg mb-2">Post by Email</h3>
+    <p>
+      Send an email from <%= @blog.user.email %> to
+      <%= mail_to @blog.delivery_email, class: "font-semibold underline" %> to publish a new post on this blog.
+    </p>
+  </div>
+
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
     <% if disabled %>
