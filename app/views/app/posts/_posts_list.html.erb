@@ -8,7 +8,7 @@
   <div class="overflow-hidden sm:rounded-lg sm:border sm:border-slate-200 sm:bg-white dark:sm:border-slate-700 dark:sm:bg-slate-900/60">
     <% if @drafts.any? %>
       <div class="px-0 py-4 sm:p-5" id="draft_posts">
-        <div class="mb-3 flex items-center gap-2">
+        <div class="mb-4 flex items-center gap-2">
           <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">
             🖋️ Drafts
           </div>
@@ -29,7 +29,7 @@
 
     <% if @posts.any? %>
       <div class="px-0 py-4 sm:p-5">
-        <div class="mb-3 flex items-center gap-2 pt-1">
+        <div class="mb-4 flex items-center gap-2 pt-1">
           <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">
             <%= @search_term.present? ? "🔎 Results" : "📝 Published" %>
           </div>

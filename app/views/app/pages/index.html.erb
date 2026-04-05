@@ -17,7 +17,7 @@
       <div class="overflow-hidden sm:rounded-lg sm:border sm:border-slate-200 sm:bg-white dark:sm:border-slate-700 dark:sm:bg-slate-900/60">
         <% if @drafts.any? %>
           <div class="px-0 py-4 sm:p-5" id="draft_pages">
-            <div class="mb-3 flex items-center gap-2">
+            <div class="mb-4 flex items-center gap-2">
               <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">🖋️ Drafts</div>
               <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                 <%= @drafts.size %>
@@ -59,7 +59,7 @@
 
         <% if @pages.any? %>
           <div class="px-0 py-4 sm:p-5">
-            <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div class="flex items-center gap-2">
                 <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">📄 Pages</div>
                 <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
@@ -67,11 +67,11 @@
                 </span>
               </div>
 
-              <div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-sm dark:border-slate-700 dark:bg-slate-800/80">
+              <div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-sm dark:border-slate-700 dark:bg-slate-800">
                 <%= link_to app_pages_path(sort: "alpha"),
                       title: "Sort alphabetically",
                       aria: { current: (@sort == "alpha" ? "page" : nil) },
-                      class: @sort == "alpha" ? "inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1 font-medium text-slate-900 dark:bg-slate-700 dark:text-slate-50" : "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-slate-500 transition-colors hover:bg-white hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200" do %>
+                      class: @sort == "alpha" ? "inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1 font-medium text-slate-900 dark:bg-slate-700 dark:text-slate-50" : "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-slate-500 transition-colors hover:bg-white hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-slate-50" do %>
                   <%= inline_svg_tag "icons/bars-arrow-down.svg", class: "h-4 w-4 shrink-0" %>
                   <span>A–Z</span>
                 <% end %>
@@ -79,7 +79,7 @@
                 <%= link_to app_pages_path(sort: "updated"),
                       title: "Sort by recently updated",
                       aria: { current: (@sort == "updated" ? "page" : nil) },
-                      class: @sort == "updated" ? "inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1 font-medium text-slate-900 dark:bg-slate-700 dark:text-slate-50" : "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-slate-500 transition-colors hover:bg-white hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200" do %>
+                      class: @sort == "updated" ? "inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1 font-medium text-slate-900 dark:bg-slate-700 dark:text-slate-50" : "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-slate-500 transition-colors hover:bg-white hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-slate-50" do %>
                   <%= inline_svg_tag "icons/clock.svg", class: "h-4 w-4 shrink-0" %>
                   <span>Recent</span>
                 <% end %>
