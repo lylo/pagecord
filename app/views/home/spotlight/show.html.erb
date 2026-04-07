@@ -14,6 +14,8 @@
       class: "px-4 py-2 rounded-full transition-colors #{@tab == "trending" ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}" %>
     <%= link_to "Recent", spotlight_path(tab: "recent"),
       class: "px-4 py-2 rounded-full transition-colors #{@tab == "recent" ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}" %>
+    <%= link_to "Shuffle", shuffle_path,
+      class: "px-4 py-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors", target: "_blank", rel: "noopener" %>
   </nav>
 
   <div class="mt-8">
