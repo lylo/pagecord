@@ -11,6 +11,9 @@ class Analytics::Trending
       .count
 
     Post.visible.posts
+      .joins(blog: :user)
+      .where(blogs: { allow_search_indexing: true })
+      .where(users: { discarded_at: nil })
       .where("published_at > ?", 30.days.ago)
       .includes(:blog)
       .map { |post| score_post(post, view_counts) }
