@@ -1,7 +1,4 @@
 class Home::SpotlightController < ApplicationController
-  CACHE_DURATION = 15.minutes
-  ELIGIBILITY_DELAY = 15.minutes
-
   include RoutingHelper
   layout "home"
   before_action -> { redirect_to root_path unless Current.user&.admin? } # TODO: remove before launch
@@ -15,9 +12,9 @@ class Home::SpotlightController < ApplicationController
   private
 
     def recent_posts
-      Rails.cache.fetch("public_spotlight_recent_posts", expires_in: CACHE_DURATION) do
+      Rails.cache.fetch("public_spotlight_recent_posts", expires_in: 15.minutes) do
         spotlight_posts_scope
-          .where("published_at <= ?", spotlight_cutoff_time)
+          .where(published_at: ..15.minutes.ago)
           .order(published_at: :desc)
           .limit(20)
           .includes(:blog)
@@ -25,10 +22,10 @@ class Home::SpotlightController < ApplicationController
     end
 
     def trending_posts
-      Rails.cache.fetch("public_spotlight_trending_posts", expires_in: CACHE_DURATION) do
+      Rails.cache.fetch("public_spotlight_trending_posts", expires_in: 15.minutes) do
         # Delay Spotlight eligibility briefly so new posts have a short privacy buffer.
         Analytics::Trending.new.top_posts(limit: 100)
-          .select { |item| item[:post].published_at <= spotlight_cutoff_time }
+          .select { |item| item[:post].published_at <= 15.minutes.ago }
           .first(20)
       end
     end
@@ -38,9 +35,5 @@ class Home::SpotlightController < ApplicationController
         .joins(blog: :user)
         .where(blogs: { allow_search_indexing: true })
         .where(users: { discarded_at: nil })
-    end
-
-    def spotlight_cutoff_time
-      ELIGIBILITY_DELAY.ago
     end
 end

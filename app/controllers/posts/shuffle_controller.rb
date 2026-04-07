@@ -1,6 +1,4 @@
 class Posts::ShuffleController < ApplicationController
-  ELIGIBILITY_DELAY = 2.hours
-
   include RoutingHelper
 
   def show
@@ -18,8 +16,7 @@ class Posts::ShuffleController < ApplicationController
         .joins(blog: :user)
         .where(blogs: { allow_search_indexing: true })
         .where(users: { discarded_at: nil })
-        .where("posts.published_at > ?", 1.month.ago)
-        .where("posts.published_at <= ?", ELIGIBILITY_DELAY.ago)
+        .where(posts: { published_at: 1.month.ago..2.hours.ago })
         .order("RANDOM()")
         .first
     end
