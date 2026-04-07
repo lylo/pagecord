@@ -1,21 +1,19 @@
-<% content_for(:title, "Trending — Pagecord") %>
-<% content_for(:meta_description, "Discover trending and recent posts from independent bloggers on Pagecord.") %>
+<% content_for(:title, "Spotlight – Pagecord") %>
+<% content_for(:meta_description, "Spotlight surfaces trending and recent posts from independent bloggers on Pagecord.") %>
 
 <div class="md:mt-4 mb-8 mx-auto max-w-2xl w-full px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-5xl tracking-tight">
-    Trending
+    Spotlight
   </h1>
   <p class="mt-4 text-center text-slate-600 dark:text-slate-400">
-    What people are reading and writing on Pagecord
+    A look at what people are reading and writing on Pagecord
   </p>
 
   <nav class="mt-8 flex justify-center gap-1 text-sm font-medium">
-    <%= link_to "Trending", trending_path,
+    <%= link_to "Trending", spotlight_path,
       class: "px-4 py-2 rounded-full transition-colors #{@tab == "trending" ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}" %>
-    <%= link_to "Recently", trending_path(tab: "recent"),
+    <%= link_to "Recent", spotlight_path(tab: "recent"),
       class: "px-4 py-2 rounded-full transition-colors #{@tab == "recent" ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}" %>
-    <%= link_to "Random", shuffle_path,
-      class: "px-4 py-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" %>
   </nav>
 
   <div class="mt-8">

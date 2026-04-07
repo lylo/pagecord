@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Home::TrendingControllerTest < ActionDispatch::IntegrationTest
+class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
   setup do
@@ -9,22 +9,22 @@ class Home::TrendingControllerTest < ActionDispatch::IntegrationTest
     login_as @admin
   end
 
-  test "should show trending page" do
-    get trending_path
+  test "should show spotlight page" do
+    get spotlight_path
 
     assert_response :success
-    assert_select "h1", "Trending"
+    assert_select "h1", "Spotlight"
   end
 
   test "should show recent tab" do
-    get trending_path(tab: "recent")
+    get spotlight_path(tab: "recent")
 
     assert_response :success
-    assert_select "h1", "Trending"
+    assert_select "h1", "Spotlight"
   end
 
   test "defaults to trending tab" do
-    get trending_path
+    get spotlight_path
 
     assert_response :success
     assert_select "nav a.bg-slate-900", "Trending"
@@ -34,7 +34,7 @@ class Home::TrendingControllerTest < ActionDispatch::IntegrationTest
     blog = blogs(:joel)
     blog.update!(allow_search_indexing: false)
 
-    get trending_path(tab: "recent")
+    get spotlight_path(tab: "recent")
 
     assert_response :success
     assert_no_match blog.subdomain, response.body
@@ -44,7 +44,7 @@ class Home::TrendingControllerTest < ActionDispatch::IntegrationTest
     user = users(:elliot)
     user.discard!
 
-    get trending_path(tab: "recent")
+    get spotlight_path(tab: "recent")
 
     assert_response :success
     assert_no_match user.blog.subdomain, response.body
@@ -54,7 +54,7 @@ class Home::TrendingControllerTest < ActionDispatch::IntegrationTest
     non_admin = users(:joel)
     non_admin.update!(admin: false)
 
-    get trending_path
+    get spotlight_path
 
     assert_redirected_to root_path
   end
@@ -63,7 +63,7 @@ class Home::TrendingControllerTest < ActionDispatch::IntegrationTest
     reset!
     host! Rails.application.config.x.domain
 
-    get trending_path
+    get spotlight_path
 
     assert_redirected_to root_path
   end
