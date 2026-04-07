@@ -11,7 +11,7 @@ class Analytics::Trending
       .count
 
     Post.visible.posts
-      .where("published_at > ?", 90.days.ago)
+      .where("published_at > ?", 30.days.ago)
       .includes(:blog)
       .map { |post| score_post(post, view_counts) }
       .select { |item| item[:score] > 0 }
