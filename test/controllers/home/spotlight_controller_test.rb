@@ -80,6 +80,16 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "uses display_title for titleless posts" do
+    post = posts(:one)
+    post.update_columns(title: nil, text_summary: "Title from summary")
+
+    get spotlight_path(tab: "recent")
+
+    assert_response :success
+    assert_match "Title from summary", response.body
+  end
+
   test "redirects non-admin users" do
     non_admin = users(:joel)
     non_admin.update!(admin: false)

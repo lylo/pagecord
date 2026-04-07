@@ -27,7 +27,7 @@
             </span>
             <div class="min-w-0 flex-1">
               <div>
-                <a href="<%= post_url(post) %>" class="font-medium text-slate-900 dark:text-slate-100 hover:text-[#4fbd9c] transition-colors" target="_blank"><%= post.title.presence || "Untitled" %></a>
+                <a href="<%= post_url(post) %>" class="font-medium text-slate-900 dark:text-slate-100 hover:text-[#4fbd9c] transition-colors" target="_blank"><%= post.display_title %></a>
                 <a href="<%= blog_home_url(post.blog) %>" class="text-slate-400 dark:text-slate-500 hover:text-[#4fbd9c] transition-colors" target="_blank">(<%= blog_home_url(post.blog) %>)</a>
               </div>
               <time datetime="<%= post.published_at.iso8601 %>" class="text-sm text-slate-400 dark:text-slate-500">
