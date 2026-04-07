@@ -1,5 +1,6 @@
 class Analytics::Trending
   VIEW_WINDOW_DAYS = 14
+  POST_WINDOW_DAYS = 14
   NEW_BOOST_DAYS = 14
   AGE_PENALTY_FACTOR = 0.1
 
@@ -14,7 +15,7 @@ class Analytics::Trending
       .joins(blog: :user)
       .where(blogs: { allow_search_indexing: true })
       .where(users: { discarded_at: nil })
-      .where("published_at > ?", 30.days.ago)
+      .where("published_at > ?", POST_WINDOW_DAYS.days.ago)
       .includes(:blog)
       .map { |post| score_post(post, view_counts) }
       .select { |item| item[:score] > 0 }
