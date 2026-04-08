@@ -1,0 +1,52 @@
+<% content_for(:title, "Spotlight – Pagecord") %>
+<% content_for(:meta_description, "Spotlight surfaces trending and recent posts from independent bloggers on Pagecord.") %>
+
+<div class="md:mt-4 mb-8 mx-auto max-w-2xl w-full ps-2 pe-4 sm:px-4">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-5xl tracking-tight">
+    Spotlight
+  </h1>
+  <p class="mt-4 text-center text-slate-600 dark:text-slate-400">
+    A look at what people are reading and writing on Pagecord
+  </p>
+
+  <nav class="mt-8 flex justify-center gap-1 text-sm font-medium">
+    <%= link_to "Trending", spotlight_path,
+      class: "px-4 py-2 rounded-full transition-colors #{@tab == "trending" ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}" %>
+    <%= link_to "Recent", spotlight_path(tab: "recent"),
+      class: "px-4 py-2 rounded-full transition-colors #{@tab == "recent" ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}" %>
+    <%= link_to "Shuffle", shuffle_path,
+      class: "px-4 py-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors", target: "_blank", rel: "noopener" %>
+  </nav>
+
+  <div class="mt-8">
+    <% items = @tab == "trending" ? @posts.map { |item| item[:post] } : @posts %>
+    <% if items.any? %>
+      <ol class="divide-y divide-slate-100 dark:divide-slate-800">
+        <% items.each_with_index do |post, index| %>
+          <li class="py-4 flex gap-4 items-start">
+            <span class="text-lg font-semibold text-slate-300 dark:text-slate-700 w-8 text-right tabular-nums flex-shrink-0">
+              <%= index + 1 %>
+            </span>
+            <div class="min-w-0 flex-1">
+              <div>
+                <a href="<%= post_url(post) %>" class="font-medium text-slate-900 dark:text-slate-100 hover:text-[#4fbd9c] transition-colors" target="_blank"><%= post.display_title %></a>
+                <a href="<%= blog_home_url(post.blog) %>" class="text-slate-400 dark:text-slate-500 hover:text-[#4fbd9c] transition-colors" target="_blank">(<%= blog_home_url(post.blog) %>)</a>
+              </div>
+              <time datetime="<%= post.published_at.iso8601 %>" class="text-sm text-slate-400 dark:text-slate-500">
+                Published <%= time_ago_in_words(post.published_at) %> ago
+              </time>
+            </div>
+          </li>
+        <% end %>
+      </ol>
+    <% else %>
+      <p class="text-center py-12 text-slate-500 dark:text-slate-400">No posts to show right now. Check back soon!</p>
+    <% end %>
+  </div>
+
+  <div class="mt-12 text-center space-y-4">
+    <%= link_to new_signup_path, class: "inline-flex font-medium px-6 py-3 rounded-xl shadow-sm btn-primary text-lg" do %>
+      Start writing for free
+    <% end %>
+  </div>
+</div>
