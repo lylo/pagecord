@@ -14,6 +14,8 @@ class App::PagesController < AppController
   def create
     @page = Current.user.blog.pages.build(page_params)
 
+    return render_stale_form_context unless context_blog_id_matches_current_blog?
+
     if @page.save
       redirect_to app_pages_path, notice: "Page was successfully created."
     else
