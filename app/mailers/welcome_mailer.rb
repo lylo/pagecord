@@ -18,9 +18,9 @@ class WelcomeMailer < MailpaceMailer
   def onboarding_follow_up
     @user = params[:user]
     @blog = @user.blog
-    @preheader_text = "Start with a theme, an About page, or a short first post."
+    @preheader_text = "It only takes a minute to make your blog feel like yours."
 
-    mail to: @user.email, subject: "Need a hand setting up your Pagecord?"
+    mail to: @user.email, subject: "Your Pagecord is waiting — make it yours"
   end
 
   # Sent to users who completed onboarding 1+ month ago but never published a post.
@@ -28,8 +28,8 @@ class WelcomeMailer < MailpaceMailer
   def no_content_follow_up
     @user = params[:user]
     @blog = @user.blog
-    @preheader_text = "Create a Home or About page, or publish your first post to get started!"
+    @preheader_text = "Don't overthink it — an About page, a short post, anything at all."
 
-    mail to: @user.email, subject: "Your Pagecord is ready. Time to create a page or publish a post!"
+    mail to: @user.email, subject: "Your Pagecord could use a first post"
   end
 end

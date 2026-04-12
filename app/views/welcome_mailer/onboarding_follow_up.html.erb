@@ -1,16 +1,14 @@
 <p>Hi there</p>
 
-<p>You signed up for Pagecord in <%= @blog.created_at.strftime("%B") %>, but it looks like you haven't had a chance to set things up yet.</p>
+<p>You signed up for Pagecord in <%= @blog.created_at.strftime("%B") %> but it looks like you haven't had a chance to make it your own yet.</p>
 
-<p>A good place to start is:</p>
+<p>It only takes a minute to get started. You can:</p>
 
 <ul>
-  <li>pick a colour scheme and typeface</li>
-  <li>add custom CSS if you want to take things further</li>
-  <li>create a home page, About page, or Now page</li>
+  <li>Pick a colour scheme and typeface</li>
+  <li>Create a Home page, an About page, or any page you like</li>
+  <li>Take full control of the design with custom CSS</li>
 </ul>
-
-<p>You don't need to finish everything in one go. Even a small bit of setup makes the blog feel much more like your own.</p>
 
 <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="padding-top:5px; padding-bottom:5px;">
   <tbody>
@@ -20,7 +18,7 @@
           <tbody>
             <tr>
               <td>
-                <%= link_to "Start setting up your blog", app_onboarding_url %>
+                <%= link_to "Log in to get started", app_onboarding_url %>
               </td>
             </tr>
           </tbody>
@@ -30,9 +28,7 @@
   </tbody>
 </table>
 
-<p>If you'd prefer, you can ignore all that and just publish something small. A few sentences is enough.</p>
-
-<p>Reply to this email if you want a hand. I'm happy to help.</p>
+<p>If you've decided Pagecord isn't for you, I'd love to know what's missing or could be improved. If you have a minute, reply to this email to share your thoughts.</p>
 
 <%= image_tag "signature.jpg", style: "margin-top: 8px; text-align: left; width:120px;" %>
 
