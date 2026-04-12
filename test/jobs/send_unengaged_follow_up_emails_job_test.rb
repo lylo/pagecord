@@ -37,8 +37,7 @@ class SendUnengagedFollowUpEmailsJobTest < ActiveSupport::TestCase
 
   test "skips users with pages" do
     user = users(:elliot) # has a page (non_nav_page), no subscription
-    user.update!(onboarding_state: "completed")
-    user.update!(created_at: 2.months.ago)
+    user.update!(onboarding_state: "completed", verified: true, created_at: 2.months.ago)
 
     assert_no_enqueued_emails do
       SendUnengagedFollowUpEmailsJob.perform_now
