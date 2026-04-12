@@ -12,14 +12,13 @@ class SendUnengagedFollowUpEmailsJob < ApplicationJob
 
     users.find_each.with_index do |user, i|
       with_sentry_context(user: user, blog: user.blog) do
-        if user.onboarding_state == "account_created"
-          send_follow_up(user, :onboarding_follow_up, i)
-          next
-        end
-
         next if user.blog.all_posts.exists?
 
-        send_follow_up(user, :no_content_follow_up, i)
+        if user.onboarding_state == "account_created"
+          send_follow_up(user, :onboarding_follow_up, i)
+        else
+          send_follow_up(user, :no_content_follow_up, i)
+        end
       end
     end
   end

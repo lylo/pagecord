@@ -26,6 +26,17 @@ class SendUnengagedFollowUpEmailsJobTest < ActiveSupport::TestCase
     assert user.reload.unengaged_follow_up.present?
   end
 
+  test "skips account_created user who has posts" do
+    user = users(:saul)
+    user.update!(created_at: 2.months.ago, verified: true)
+    user.subscription.destroy!
+    user.blog.posts.create!(title: "Posted via email", content: "Hello", published_at: 1.week.ago)
+
+    assert_no_enqueued_emails do
+      SendUnengagedFollowUpEmailsJob.perform_now
+    end
+  end
+
   test "skips users with posts" do
     user = users(:vivian) # has posts, no subscription
     user.update!(created_at: 2.months.ago)
