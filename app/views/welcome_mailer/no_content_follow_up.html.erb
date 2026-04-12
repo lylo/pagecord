@@ -1,0 +1,39 @@
+<p>Hi there</p>
+
+<p>Your Pagecord is set up, but you haven't added your first page or post yet.</p>
+
+<p>Don't overthink it. A good first step could be:</p>
+
+<ul>
+  <li>an About page</li>
+  <li>a Now page</li>
+  <li>a short post with a photo, link, or quick update</li>
+</ul>
+
+<p>Once there's one thing on the site, the rest usually gets much easier.</p>
+
+<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="padding-top:5px; padding-bottom:5px;">
+  <tbody>
+    <tr>
+      <td align="center">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td>
+                <%= link_to "Create your first post", new_app_post_url %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If a page feels easier than a post, <%= link_to "make that instead", new_app_page_url %>.</p>
+
+<p>And if you want help deciding what to publish first, just reply to this email.</p>
+
+<%= image_tag "signature.jpg", style: "margin-top: 8px; text-align: left; width:120px;" %>
+
+<p>Olly – creator of Pagecord</p>

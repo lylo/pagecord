@@ -3,11 +3,23 @@ require "test_helper"
 class SendUnengagedFollowUpEmailsJobTest < ActiveSupport::TestCase
   include ActionMailer::TestHelper
 
-  test "sends email to eligible free-plan user with no content" do
+  test "sends onboarding follow up to eligible account created user" do
+    user = users(:saul)
+    user.update!(created_at: 2.months.ago, verified: true)
+    user.subscription.destroy!
+
+    assert_enqueued_email_with WelcomeMailer, :onboarding_follow_up, params: { user: user } do
+      SendUnengagedFollowUpEmailsJob.perform_now
+    end
+
+    assert user.reload.unengaged_follow_up.present?
+  end
+
+  test "sends no content follow up to eligible onboarded user with no content" do
     user = users(:unengaged)
     user.update!(created_at: 2.months.ago)
 
-    assert_enqueued_email_with WelcomeMailer, :unengaged_follow_up, params: { user: user } do
+    assert_enqueued_email_with WelcomeMailer, :no_content_follow_up, params: { user: user } do
       SendUnengagedFollowUpEmailsJob.perform_now
     end
 
@@ -25,6 +37,7 @@ class SendUnengagedFollowUpEmailsJobTest < ActiveSupport::TestCase
 
   test "skips users with pages" do
     user = users(:elliot) # has a page (non_nav_page), no subscription
+    user.update!(onboarding_state: "completed")
     user.update!(created_at: 2.months.ago)
 
     assert_no_enqueued_emails do
