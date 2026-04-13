@@ -43,7 +43,7 @@ class Post::MarkdownTest < ActiveSupport::TestCase
   test "renders fenced code blocks" do
     text = "```ruby\nputs 'hi'\n```"
     _attrs, html = Post::Markdown.render(text)
-    assert_includes html, %(<pre data-language="ruby">)
+    assert_includes html, %(<pre><code data-language="ruby">)
   end
 
   test "renders tables" do
