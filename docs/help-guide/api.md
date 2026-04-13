@@ -12,7 +12,7 @@ The API is a Premium feature.
 
 1. Go to **Settings > API** in your dashboard
 2. Click **Generate API Key**
-3. Copy the key and store it somewhere safe — you won't be able to see it again
+3. Copy the key and store it somewhere safe – you won't be able to see it again
 
 You can regenerate or revoke your key at any time from the same page.
 
@@ -41,10 +41,10 @@ GET /posts
 
 Returns published posts by default, newest first. Filter with query parameters:
 
-- `status` — `published` or `draft` (omit for published only)
-- `published_after` — ISO 8601 timestamp (e.g. `2026-03-11T00:00:00Z`). Returns `400` if malformed.
-- `published_before` — ISO 8601 timestamp. Returns `400` if malformed.
-- `page` — page number for pagination. Returns `400` if out of range.
+- `status` – `published` or `draft` (omit for published only)
+- `published_after` – ISO 8601 timestamp (e.g. `2026-03-11T00:00:00Z`). Returns `400` if malformed.
+- `published_before` – ISO 8601 timestamp. Returns `400` if malformed.
+- `page` – page number for pagination. Returns `400` if out of range.
 
 Paginated results include a `Link` header with the URL for the next page (following [RFC 5988](https://tools.ietf.org/html/rfc5988)) and an `X-Total-Count` header with the total number of records. When the `Link` header is absent, you're on the last page.
 
@@ -62,16 +62,16 @@ POST /posts
 
 Parameters:
 
-- `title` — post title
-- `content` — post body (HTML by default, supports Action Text attachments)
-- `content_format` — set to `markdown` to send Markdown instead of HTML (see [Markdown & front matter](#markdown-front-matter))
-- `slug` — URL slug (auto-generated if omitted)
-- `status` — `published` or `draft`
-- `published_at` — ISO 8601 timestamp
-- `canonical_url` — canonical URL for the post
-- `tags` — comma-separated tags
-- `hidden` — `true` to hide from the feed
-- `locale` — post language code
+- `title` – post title
+- `content` – post body (HTML by default, supports Action Text attachments)
+- `content_format` – set to `markdown` to send Markdown instead of HTML (see [Markdown & front matter](#markdown-front-matter))
+- `slug` – URL slug (auto-generated if omitted)
+- `status` – `published` or `draft`
+- `published_at` – ISO 8601 timestamp
+- `canonical_url` – canonical URL for the post
+- `tags` – comma-separated tags
+- `hidden` – `true` to hide from the feed
+- `locale` – post language code
 
 ### Update a post
 
@@ -194,16 +194,20 @@ Returns `201 Created` with:
 Use the returned `attachable_sgid` in your post content with an Action Text attachment tag:
 
 ```
-POST /posts
-  title=My Post
-  content=<p>Check this out:</p><action-text-attachment sgid="BAh7..."></action-text-attachment>
+curl -X POST https://api.pagecord.com/posts \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "My Post",
+    "content": "<p>Check this out:</p><action-text-attachment sgid=\"BAh7...\"></action-text-attachment>"
+  }'
 ```
 
 The image will render inline in your post, just like images added through the editor.
 
 ### Reusing attachments across updates
 
-Each `attachable_sgid` is stable — upload the file once, then reuse the same sgid every time you update the post. Re-uploading an unchanged image creates a new blob and **permanently deletes** the old one.
+Each `attachable_sgid` is stable – upload the file once, then reuse the same sgid every time you update the post. Re-uploading an unchanged image creates a new blob and **permanently deletes** the old one.
 
 The `content` field returned by `GET`, `POST`, and `PATCH` responses contains the stored HTML with sgids. Extract and cache these for future updates. Only call `POST /attachments` when you have a genuinely new file to attach.
 
@@ -224,19 +228,13 @@ Set `content_format` to `markdown` on any create or update endpoint to send Mark
 You can also include YAML front matter to set post attributes inline:
 
 ```
-POST /posts
-  content_format=markdown
-  content=
----
-title: My Post
-slug: my-post
-status: published
-tags:
-  - ruby
-  - rails
-published_at: '2026-03-11'
----
-Hello **world**
+curl -X POST https://api.pagecord.com/posts \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content_format": "markdown",
+    "content": "---\ntitle: My Post\nslug: my-post\nstatus: published\ntags: [ruby, rails]\npublished_at: 2026-03-11\n---\nHello **world**"
+  }'
 ```
 
 Supported front matter fields: `title`, `slug`, `status`, `published_at` (or `date`), `canonical_url`, `locale`, `hidden`, `tags`.
@@ -255,9 +253,9 @@ All errors return a JSON object with an `error` or `errors` key:
 
 | Status | Meaning |
 |--------|---------|
-| 400 | Bad request — invalid timestamp, out-of-range page, or invalid status value |
+| 400 | Bad request – invalid timestamp, out-of-range page, or invalid status value |
 | 401 | Missing or invalid API key |
 | 403 | Premium subscription required |
 | 404 | Resource not found |
-| 422 | Validation failed — includes invalid front matter |
+| 422 | Validation failed – includes invalid front matter |
 | 429 | Rate limit exceeded |
