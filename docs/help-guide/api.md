@@ -4,7 +4,9 @@ published: true
 published_at: 2026-03-06T12:00:00+00:00
 ---
 
-Premium feature. Manage your blog posts programmatically using the Pagecord API. Useful for publishing from scripts, [Obsidian](obsidian.md), Shortcuts, LLMs, or any tool that can make HTTP requests.
+Manage your blog posts programmatically using the Pagecord API. Useful for publishing from scripts, [Obsidian](obsidian.md), Shortcuts, LLMs, or any tool that can make HTTP requests.
+
+The API is a Premium feature.
 
 ## Getting an API key
 
@@ -62,7 +64,7 @@ Parameters:
 
 - `title` — post title
 - `content` — post body (HTML by default, supports Action Text attachments)
-- `content_format` — set to `markdown` to send Markdown instead of HTML (see [Markdown & front matter](#markdown--front-matter))
+- `content_format` — set to `markdown` to send Markdown instead of HTML (see [Markdown & front matter](#markdown-front-matter))
 - `slug` — URL slug (auto-generated if omitted)
 - `status` — `published` or `draft`
 - `published_at` — ISO 8601 timestamp
