@@ -36,7 +36,7 @@ class Post::Markdown
 
   class Renderer < Redcarpet::Render::HTML
     def block_code(code, language)
-      %(<pre><code data-language="#{ERB::Util.html_escape(language.presence || "plain")}">#{ERB::Util.html_escape(code.chomp)}</code></pre>)
+      %(<pre data-language="#{ERB::Util.html_escape(language.presence || "plain")}">#{ERB::Util.html_escape(code.chomp)}</pre>)
     end
   end
 end
