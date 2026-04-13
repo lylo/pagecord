@@ -4,7 +4,7 @@ published: true
 published_at: 2026-03-06T12:00:00+00:00
 ---
 
-Premium feature. Manage your blog posts programmatically using the Pagecord API. Useful for publishing from scripts, Obsidian, Shortcuts, LLMs, or any tool that can make HTTP requests.
+Premium feature. Manage your blog posts programmatically using the Pagecord API. Useful for publishing from scripts, [Obsidian](obsidian.md), Shortcuts, LLMs, or any tool that can make HTTP requests.
 
 ## Getting an API key
 
