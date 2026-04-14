@@ -1,0 +1,44 @@
+id:
+  email_subscribers:
+    form:
+      subscribe_description:
+        digest: "Berlangganan untuk mendapatkan ringkasan pos mingguan di kotak masukmu"
+        individual: "Berlangganan untuk mendapatkan pos baru melalui email"
+      email_placeholder: "Masukkan emailmu..."
+      submit_button: "Berlangganan"
+    create:
+      success_message: "Terima kasih sudah berlangganan. Email konfirmasi sudah terkirim ke %{email}"
+    confirmations:
+      success_message:
+        digest: "Langgananmu pada %{blog_name} sudah terkonfirmasi. Kamu akan menerima email ringkasan mingguan saat ada pos baru yang dipublikasikan."
+        individual: "Langgananmu pada %{blog_name} sudah terkonfirmasi. Kamu akan menerima email saat ada pos baru yang dipublikasikan."
+      unsubscribe_link: "Batalkan langganan"
+    unsubscribes:
+      success_message: "Kamu sudah membatalkan langgananmu dari %{blog_name} 👋"
+      confirm_message: "Untuk membatalkan langganan dari %{blog_name}, ketuk tautan di bawah ini."
+      unsubscribe_button: "Batalkan langganan"
+      not_found: "Tidak ada langganan email yang ditemukan"
+    mailers:
+      shared:
+        footer: "Kamu telah berlangganan untuk menerima pos baru dari %{blog_name}."
+        unsubscribe_link: "Batalkan langganan"
+        unsubscribe_text: "Batalkan langganan dengan mengetuk tautan di bawah ini::"
+        view_online: "Tampilkan pos ini secara online"
+      confirmation:
+        subject: "Konfirmasikan langgananmu pada %{blog_name}"
+        message: "Mohon konfirmasi langgananmu pada %{blog_name}. Jika kamu tidak berniat untuk berlangganan, kamu dapat mengabaikan email ini."
+        button: "Berlangganan"
+      weekly_digest:
+        subject: "Pos baru dari %{blog_name} - %{date}"
+        footer: "Kamu telah berlangganan untuk menerima pos baru dari %{blog_name}."
+        unsubscribe_link: "Batalkan langganan"
+      individual:
+        default_subject: "Pos baru dari %{blog_name} — %{date}"
+  posts:
+    read_more: "Baca selengkapnya"
+  replies:
+    form:
+      subject_label: "Subyek"
+      cancel_link: "Batal"
+    mailer:
+      intro: "Asyik! Seseorang menanggapi posmu"

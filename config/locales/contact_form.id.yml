@@ -1,0 +1,5 @@
+id:
+  contact_form:
+    mailer:
+      subject: "Pesan baru dari %{name}"
+      intro: "Kamu menerima pesan melalui formulir kontak di %{blog_name} milikmu."

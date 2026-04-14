@@ -1,0 +1,6 @@
+id:
+  date:
+    formats:
+      post_date: "%d %b %Y"
+      post_date_short: "%d %b"
+      month_day: "%d %b"
