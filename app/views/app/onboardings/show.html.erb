@@ -78,7 +78,7 @@
     Pick a colour scheme 🎨
   </h2>
   <p>
-    The default is the classic Pagecord minimal monochrome.
+    The default is the classic Pagecord minimal monochrome. Or, <%= link_to "browse the Theme Garden", app_settings_theme_garden_index_path, class: "font-semibold underline" %> for ready-made designs with curated colours, fonts and layouts.
   </p>
 
   <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
