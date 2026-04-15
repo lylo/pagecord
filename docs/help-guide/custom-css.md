@@ -31,9 +31,10 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ .titlebar                                    │ │ │ │
-│ │ │ │ ┌──────────────┐ ┌────────────────────────┐ │ │ │ │
-│ │ │ │ │ .avatar      │ │ .blog-title            │ │ │ │ │
-│ │ │ │ └──────────────┘ └────────────────────────┘ │ │ │ │
+│ │ │ │ ┌──────────────────────────────────────────┐ │ │ │ │
+│ │ │ │ │ .avatar-container (when avatar present)  │ │ │ │ │
+│ │ │ │ │ [ .avatar ] [ .blog-title ]              │ │ │ │ │
+│ │ │ │ └──────────────────────────────────────────┘ │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ .bio (Your profile description)              │ │ │ │
@@ -110,7 +111,7 @@ nav {
   justify-content: center;
 }
 
-.titlebar {
+.titlebar, .avatar-container {
   flex-direction: column;
   align-items: center;
 }
@@ -119,6 +120,8 @@ nav {
   text-align: center;
 }
 ```
+
+This targets both `.titlebar` and `.avatar-container` so it works whether or not you have an avatar.
 
 Or pick and choose from the individual options below.
 
@@ -134,10 +137,19 @@ nav {
 
 ### Centering the Title and Avatar
 
-Center the title (and avatar, if you have one):
+If you have an avatar, target `.avatar-container` to stack and center both:
 
 ```css
-.titlebar {
+.avatar-container {
+  flex-direction: column;
+  align-items: center;
+}
+```
+
+If you don't have an avatar (or want it to work either way), include `.titlebar` too:
+
+```css
+.titlebar, .avatar-container {
   flex-direction: column;
   align-items: center;
 }
