@@ -512,6 +512,7 @@ broadside:
       font-size: 0.65em;
       letter-spacing: 0.08em;
       font-weight: 600;
+      color: var(--color-accent);
     }
   theme: custom
   font: sans
