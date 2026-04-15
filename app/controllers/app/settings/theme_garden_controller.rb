@@ -8,7 +8,7 @@ class App::Settings::ThemeGardenController < AppController
   def preview
     @blog.assign_attributes(@template.appearance_attributes)
     @posts = @blog.posts.visible.with_full_rich_text.includes(:upvotes).order(published_at: :desc).limit(5)
-    @pagy = OpenStruct.new(next: nil)
+    @pagy = Data.define(:next).new(next: nil)
     @user = @blog.user
     with_blog_view_context do
       render template: "app/settings/theme_garden/preview", layout: "blog"

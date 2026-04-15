@@ -18,45 +18,43 @@ namespace :theme_templates do
     options.add_argument("--force-device-scale-factor=1")
     options.add_argument("--hide-scrollbars")
 
-    driver = Selenium::WebDriver.for(:chrome, options: options)
+    have_cwebp = system("which cwebp > /dev/null 2>&1")
+    abort "cwebp not found — install with: brew install webp" unless have_cwebp
 
+    driver = Selenium::WebDriver.for(:chrome, options: options)
     overwrite = ENV["OVERWRITE"] == "true"
 
-    templates.each do |template|
-      webp_path = output_dir.join("#{template.name.parameterize}.webp")
+    begin
+      templates.each do |template|
+        slug = template.name.parameterize
+        webp_path = output_dir.join("#{slug}.webp")
 
-      if webp_path.exist? && !overwrite
-        puts "#{template.name}... skipped (exists, set OVERWRITE=true to regenerate)"
-        next
-      end
+        if webp_path.exist? && !overwrite
+          puts "#{template.name}... skipped (exists, set OVERWRITE=true to regenerate)"
+          next
+        end
 
-      print "#{template.name}... "
+        print "#{template.name}... "
 
-      screenshot_attrs = { width: "standard" }.merge(template.appearance_attributes)
-      original_attrs = blog.attributes.slice(*screenshot_attrs.keys.map(&:to_s))
-      blog.update_columns(screenshot_attrs.stringify_keys)
+        screenshot_attrs = { width: "standard" }.merge(template.appearance_attributes)
+        original_attrs = blog.attributes.slice(*screenshot_attrs.keys.map(&:to_s))
+        blog.update_columns(screenshot_attrs.stringify_keys)
 
-      driver.navigate.to("#{blog_url}?t=#{Time.now.to_i}")
-      sleep 2
+        driver.navigate.to("#{blog_url}?t=#{Time.now.to_i}")
+        sleep 2
 
-      png_path = output_dir.join("#{template.name.parameterize}.png")
-      webp_path = output_dir.join("#{template.name.parameterize}.webp")
+        png_path = output_dir.join("#{slug}.png")
+        driver.save_screenshot(png_path.to_s)
+        blog.update_columns(original_attrs)
 
-      driver.save_screenshot(png_path.to_s)
-      blog.update_columns(original_attrs)
-
-      if system("which cwebp > /dev/null 2>&1")
-        system("cwebp -q 80 -resize 640 0 #{png_path} -o #{webp_path} > /dev/null 2>&1")
+        system("cwebp", "-q", "80", "-resize", "640", "0", png_path.to_s, "-o", webp_path.to_s, out: File::NULL, err: File::NULL)
         File.delete(png_path)
-      else
-        puts "warning: cwebp not found, keeping PNG"
-        next
+        puts "done"
       end
-
-      puts "done"
+    ensure
+      driver.quit
     end
 
-    driver.quit
     puts "\nScreenshots saved to #{output_dir}"
   end
 end

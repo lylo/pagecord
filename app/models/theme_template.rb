@@ -1,7 +1,7 @@
 class ThemeTemplate < ApplicationRecord
   include CssSanitizable
 
-  enum :layout, { stream_layout: 0, title_layout: 1, cards_layout: 2 }
+  enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
   validates :name, presence: true, uniqueness: true
   validates :custom_css, presence: true
@@ -36,37 +36,33 @@ class ThemeTemplate < ApplicationRecord
   end
 
   def reorder(new_position)
-    old_position = position
+    transaction do
+      old_position = position
+      update_column(:position, -1)
 
-    update_column(:position, -1)
+      if new_position > old_position
+        ThemeTemplate.where("position > ? AND position <= ?", old_position, new_position)
+                     .update_all("position = position - 1")
+      elsif new_position < old_position
+        ThemeTemplate.where("position >= ? AND position < ?", new_position, old_position)
+                     .update_all("position = position + 1")
+      end
 
-    if new_position > old_position
-      ThemeTemplate.where("position > ? AND position <= ?", old_position, new_position)
-                   .update_all("position = position - 1")
-    elsif new_position < old_position
-      ThemeTemplate.where("position >= ? AND position < ?", new_position, old_position)
-                   .update_all("position = position + 1")
+      update_column(:position, new_position)
     end
-
-    update_column(:position, new_position)
   end
 
   def appearance_attributes
-    attrs = { custom_css: custom_css }
-    attrs[:theme] = theme if theme.present?
-    attrs[:font] = font if font.present?
-    attrs[:width] = width if width.present?
-    attrs[:layout] = layout if layout.present?
-
-    if theme == "custom"
-      attrs[:custom_theme_bg_light] = custom_theme_bg_light if custom_theme_bg_light.present?
-      attrs[:custom_theme_text_light] = custom_theme_text_light if custom_theme_text_light.present?
-      attrs[:custom_theme_accent_light] = custom_theme_accent_light if custom_theme_accent_light.present?
-      attrs[:custom_theme_bg_dark] = custom_theme_bg_dark if custom_theme_bg_dark.present?
-      attrs[:custom_theme_text_dark] = custom_theme_text_dark if custom_theme_text_dark.present?
-      attrs[:custom_theme_accent_dark] = custom_theme_accent_dark if custom_theme_accent_dark.present?
-    end
-
-    attrs
+    {
+      custom_css:,
+      theme: theme.presence,
+      font: font.presence,
+      width: width.presence,
+      layout: layout.presence,
+      **(theme == "custom" ? {
+        custom_theme_bg_light:, custom_theme_text_light:, custom_theme_accent_light:,
+        custom_theme_bg_dark:, custom_theme_text_dark:, custom_theme_accent_dark:
+      } : {})
+    }.compact_blank
   end
 end
