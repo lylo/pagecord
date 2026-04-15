@@ -1,6 +1,6 @@
 <h3 class="mb-2 font-bold text-xl">API</h3>
 
-<p class="text-slate-800 dark:text-slate-200">
+<p>
   Create and manage posts, upload images, and automate your blog with the Pagecord API.
   Use it with scripts, Shortcuts, Obsidian, or any tool that can make HTTP requests.
 </p>
@@ -45,7 +45,7 @@
         <% end %>
       </div>
     <% else %>
-      <p class="text-slate-800 dark:text-slate-200 mb-4">
+      <p class="mb-4">
         Generate an API key to get started. You can revoke or regenerate it at any time.
       </p>
       <%= button_to "Generate API Key", app_settings_api_path, method: :post, class: "btn-primary" %>
@@ -54,7 +54,7 @@
 
   <div class="mt-8 border-t border-slate-200 dark:border-slate-600 pt-6">
     <h4 class="font-bold text-lg mb-2">Quick start</h4>
-    <p class="text-slate-800 dark:text-slate-200 mb-3">
+    <p class="mb-3">
       Authenticate all requests with a Bearer token in the <code class="text-sm bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">Authorization</code> header:
     </p>
 
@@ -74,7 +74,7 @@ curl -X POST https://api.pagecord.com/attachments \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -F "file=@photo.jpg"</code></pre>
 
-    <p class="mt-4 text-slate-800 dark:text-slate-200">
+    <p class="mt-4">
       Read the full <%= link_to "API documentation", "https://help.pagecord.com/api", class: "underline", target: "_blank" %> for all available endpoints.
     </p>
   </div>

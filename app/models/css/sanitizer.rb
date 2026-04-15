@@ -3,7 +3,7 @@
 
 module Css
   module Sanitizer
-    MAX_CSS_SIZE = 8192 # 8KB limit to prevent DoS
+    MAX_CSS_SIZE = 16384 # 16KB limit to prevent DoS
 
     ALLOWED_FONT_HOSTS = %w[
       fonts.googleapis.com
@@ -37,9 +37,10 @@ module Css
           ::Sanitize::Config.freeze_config(
             ::Sanitize::Config::RELAXED.merge(
               css: base_css_config.merge(
-                at_rules: [ "import" ],
+                at_rules: %w[import layer],
                 import_url_validator: ->(url) { allowed_font_url?(url) },
-                properties: base_css_config[:properties] + custom_properties + logical_properties
+                at_rules_with_styles: (base_css_config[:at_rules_with_styles] || []) + %w[layer],
+                properties: base_css_config[:properties] + custom_properties + logical_properties + extra_properties
               )
             )
           )
@@ -50,6 +51,13 @@ module Css
           uri.scheme == "https" && ALLOWED_FONT_HOSTS.include?(uri.host)
         rescue URI::InvalidURIError
           false
+        end
+
+        def extra_properties
+          %w[
+            scroll-behavior
+            -moz-osx-font-smoothing
+          ]
         end
 
         def logical_properties

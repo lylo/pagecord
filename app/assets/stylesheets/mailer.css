@@ -156,15 +156,30 @@ a {
   margin-bottom: 0 !important;
 }
 
-.digest h2 {
+.digest .post-title {
   font-weight: 700;
   font-size: 24px !important;
   margin-bottom: 1.4rem !important;
 }
 
-.digest h2 a {
+.digest .post-title a {
   font-weight: 700;
   font-size: 24px !important;
+}
+
+.digest .post-content h2 {
+  font-weight: 700;
+  font-size: 20px !important;
+}
+
+.digest .post-content h3 {
+  font-weight: 700;
+  font-size: 18px !important;
+}
+
+.digest .post-content h4 {
+  font-weight: 700;
+  font-size: 16px !important;
 }
 
 .digest a {
@@ -202,7 +217,7 @@ a {
 }
 
 .digest .post-content {
-  padding-bottom: 1.5rem !important;
+  padding-bottom: 0.5rem !important;
 }
 
 .digest .post-content a {

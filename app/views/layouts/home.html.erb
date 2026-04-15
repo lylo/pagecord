@@ -28,7 +28,7 @@
     <meta property="twitter:image" content="<%= og_image %>">
     <meta property="twitter:card" content="summary_large_image">
 
-    <link rel="canonical" href="<%= request.original_url %>">
+    <link rel="canonical" href="<%= canonical_url %>">
 
     <%= stylesheet_link_tag "tailwind", "inter", "source-serif-4", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -59,7 +59,7 @@
     </div>
 
     <main class="flex flex-grow text-slate-950 dark:text-slate-50">
-      <div class="mx-auto mt-8">
+      <div class="mx-auto mt-8 w-full">
         <%= yield %>
       </div>
     </main>

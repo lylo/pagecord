@@ -33,6 +33,10 @@ if Rails.env.production?
       true
     end
 
+    # Remove ActionController::BadRequest from sentry-rails' default IGNORE_DEFAULT
+    # so unhandled bad requests (not caught by BotErrorFilter) get reported
+    config.excluded_exceptions -= [ "ActionController::BadRequest" ]
+
     # Surpress errors that should result in Sentry noise
     config.excluded_exceptions += [
       "ActiveRecord::RecordNotFound",

@@ -8,8 +8,8 @@ class App::Posts::BroadcastsControllerTest < ActionDispatch::IntegrationTest
     @user = users(:joel)
     login_as @user
     @blog = @user.blog
-    @blog.update!(email_subscriptions_enabled: true, email_delivery_mode: :individual, features: [ "individual_email_delivery" ])
-    @post = @blog.posts.published.posts.first
+    @blog.update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)
+    @post = @blog.posts.visible.posts.first
   end
 
   test "create sends post to subscribers and redirects" do

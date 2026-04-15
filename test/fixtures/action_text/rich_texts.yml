@@ -140,6 +140,18 @@ dynamic_variable_test:
 
     <p>By evening the rain had stopped and the streets were glossy and reflective. Lamplight pooled in the puddles and somewhere a dog was barking at nothing in particular.</p>
 
+joel_hidden:
+  record: joel_hidden (Post)
+  name: content
+  body: |
+    <p>This is a hidden post that only the author can see.</p>
+
+joel_spanish:
+  record: joel_spanish (Post)
+  name: content
+  body: |
+    <p>Esta es mi primera entrada en español.</p>
+
 trix_post:
   record: trix_post (Post)
   name: content

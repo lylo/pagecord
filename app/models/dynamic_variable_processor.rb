@@ -4,13 +4,15 @@ class DynamicVariableProcessor
     "posts_by_year" => :render_posts_by_year_tag,
     "tags" => :render_tags_tag,
     "email_subscription" => :render_email_subscription_tag,
-    "contact_form" => :render_contact_form_tag
+    "contact_form" => :render_contact_form_tag,
+    "updated_at" => :render_updated_at_tag
   }.freeze
 
   attr_reader :blog, :view
 
-  def initialize(blog:, view:)
-    @blog = blog
+  def initialize(view:, post:)
+    @post = post
+    @blog = post.blog
     @view = view
   end
 
@@ -100,6 +102,24 @@ class DynamicVariableProcessor
       return "" unless blog.contactable?
 
       view.render(partial: "blogs/contact_messages/form")
+    end
+
+    UPDATED_AT_FORMATS = {
+      "long"          => "%d %B %Y",
+      "long_datetime" => "%d %B %Y %H:%M",
+      "dd_mm_yyyy"    => "%d/%m/%Y",
+      "mm_dd_yyyy"    => "%m/%d/%Y",
+      "yyyy_mm_dd"    => "%Y-%m-%d"
+    }.freeze
+
+    def render_updated_at_tag(params_string)
+      params = parse_params(params_string)
+      format = if params[:format] == "datetime"
+        "#{I18n.t("date.formats.post_date", locale: @blog.locale)} %H:%M"
+      else
+        UPDATED_AT_FORMATS[params[:format]] || :post_date
+      end
+      view.local_time(@post.updated_at, format: format, class: "updated-at")
     end
 
     def filter_by_language(relation, lang)

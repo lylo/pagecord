@@ -40,6 +40,7 @@
 
 html {
   font-size: var(--font-size-base);
+  scrollbar-gutter: stable;
 }
 
 /* Body layout - vertical flex container */
@@ -171,6 +172,10 @@ footer.blog-footer #brand svg {
 
     .attachment--preview {
       inline-size: auto;
+    }
+
+    .attachment--preview:not(.attachment-gallery *) {
+      padding-inline: 0;
     }
   }
 
@@ -310,13 +315,17 @@ footer.blog-footer #brand svg {
     :where(blockquote) {
       color: var(--color-text-muted);
       border-left-color: var(--color-border);
+
+      em {
+        font-style: normal;
+      }
     }
 
     li::marker {
       color: var(--color-text-light);
     }
 
-    h1.post-title {
+    :where(h1.post-title) {
       font-size: 1.875rem;
       line-height: 2.5rem;
       margin-top: 0;
@@ -652,8 +661,10 @@ footer.blog-footer #brand svg {
 
 .posts-titles .post-row {
   display: flex;
+  align-items: baseline;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
 }
 
 .post-row time {

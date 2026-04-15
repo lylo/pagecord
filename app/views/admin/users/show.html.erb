@@ -17,7 +17,16 @@
       </div>
       <div class="flex justify-between gap-4">
         <dt class="font-medium text-slate-900 dark:text-slate-50">Verified</dt>
-        <dd class="text-slate-500 dark:text-slate-400"><%= @user.verified? ? 'Yes' : 'No' %></dd>
+        <dd class="text-slate-500 dark:text-slate-400">
+          <% if @user.verified? %>
+            Yes
+          <% else %>
+            <span class="flex items-center gap-2">
+              No
+              <%= button_to "Resend verification", admin_user_verification_email_path(@user), method: :post, class: "btn-secondary text-xs py-0.5 px-2" %>
+            </span>
+          <% end %>
+        </dd>
       </div>
       <% if @user.discarded? %>
         <div class="flex justify-between gap-4">

@@ -16,6 +16,15 @@ class AppController < ApplicationController
       Current.blog = @blog
     end
 
+    def context_blog_id_matches_current_blog?
+      params[:context_blog_id].to_s == Current.user.blog.id.to_s
+    end
+
+    def render_stale_form_context
+      flash.now[:alert] = "Your browser session changed while you were editing. Please reopen this form from the correct account and try again."
+      render :new, status: :unprocessable_entity
+    end
+
     def onboarding_check
       unless @user&.onboarding_complete?
         redirect_to app_onboarding_path

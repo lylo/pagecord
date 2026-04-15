@@ -4,6 +4,7 @@ class PasswordResetsController < ApplicationController
   rate_limit to: 3, within: 1.hour, only: [ :create ]
 
   skip_before_action :authenticate, :domain_check
+  before_action :turnstile_check, only: [ :create ]
   before_action :find_access_request, only: [ :edit, :update ]
 
   layout "sessions"

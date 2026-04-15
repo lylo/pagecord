@@ -6,7 +6,15 @@ export default class extends Controller {
 
   connect() {
     this.baseDraft = this.currentDraft()
-    this.restore()
+
+    if (this.isExistingRecord && this.hasContentTarget && !this.baseDraft.content) {
+      customElements.whenDefined(this.contentTarget.localName).then(() => {
+        this.baseDraft = this.currentDraft()
+        this.restore()
+      })
+    } else {
+      this.restore()
+    }
 
     if (this.hasTitleTarget) {
       this.titleTarget.addEventListener("input", () => this.save())
@@ -79,7 +87,7 @@ export default class extends Controller {
   }
 
   get isExistingRecord() {
-    return !this.keyValue.endsWith("new")
+    return !this.keyValue.match(/-new(?:-|$)/)
   }
 
   // Existing-post drafts are only safe to restore if they were captured from the

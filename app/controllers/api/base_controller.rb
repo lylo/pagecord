@@ -8,7 +8,6 @@ class Api::BaseController < ActionController::API
 
   before_action :authenticate
   before_action :require_premium
-  before_action :require_api_enabled
 
   rescue_from ActiveRecord::RecordNotFound do
     render json: { error: "Not found" }, status: :not_found
@@ -41,12 +40,6 @@ class Api::BaseController < ActionController::API
     def require_premium
       unless Current.blog.user.has_premium_access?
         render json: { error: "API access requires a premium subscription" }, status: :forbidden
-      end
-    end
-
-    def require_api_enabled
-      unless Current.blog.features.include?("api")
-        render json: { error: "API access is not enabled for this blog" }, status: :forbidden
       end
     end
 

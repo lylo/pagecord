@@ -19,7 +19,7 @@
 
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
   <% if @blog.email_subscriptions_enabled && Current.user.subscribed? %>
-    <p class="text-slate-800 dark:text-slate-200">
+    <p>
       Your blog has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
     </p>
   <% end %>
@@ -38,8 +38,7 @@
     </div>
 
     <div class="mt-4 ml-8 <%= 'opacity-50' if email_disabled %>">
-      <% if current_features.enabled?(:individual_email_delivery) %>
-        <div class="mb-4" data-subscription-settings-target="dependent">
+      <div class="mb-4" data-subscription-settings-target="dependent">
           <div class="flex gap-3">
             <label class="flex-1 cursor-pointer rounded-lg border p-4 has-[:checked]:border-[#4fbd9c] has-[:checked]:bg-emerald-50 dark:has-[:checked]:bg-emerald-900/20 border-slate-200 dark:border-slate-700 transition-colors">
               <%= form.radio_button :email_delivery_mode, "digest", disabled: email_disabled, class: "sr-only" %>
@@ -53,7 +52,6 @@
             </label>
           </div>
         </div>
-      <% end %>
 
       <div class="flex gap-3" data-subscription-settings-target="dependent">
         <div class="flex h-6 shrink-0 items-center">

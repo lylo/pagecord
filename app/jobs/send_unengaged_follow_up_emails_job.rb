@@ -14,11 +14,21 @@ class SendUnengagedFollowUpEmailsJob < ApplicationJob
       with_sentry_context(user: user, blog: user.blog) do
         next if user.blog.all_posts.exists?
 
-        user.transaction do
-          user.create_unengaged_follow_up!(sent_at: Time.current)
-          WelcomeMailer.with(user: user).unengaged_follow_up.deliver_later(wait: i.seconds)
+        if user.onboarding_state == "account_created"
+          send_follow_up(user, :onboarding_follow_up, i)
+        else
+          send_follow_up(user, :no_content_follow_up, i)
         end
       end
     end
   end
+
+  private
+
+    def send_follow_up(user, mailer_action, delay)
+      user.transaction do
+        user.create_unengaged_follow_up!(sent_at: Time.current)
+        WelcomeMailer.with(user: user).public_send(mailer_action).deliver_later(wait: delay.seconds)
+      end
+    end
 end

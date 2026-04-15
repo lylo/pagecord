@@ -17,6 +17,27 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should sort pages by recently updated when requested" do
+    @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
+    posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
+
+    get app_pages_path(sort: "updated")
+
+    assert_response :success
+    assert_operator response.body.index("Fresh Notes"), :<, response.body.index("Archive Page")
+  end
+
+  test "should sort pages by remembered cookie preference" do
+    @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
+    posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
+
+    get app_pages_path(sort: "updated")
+    get app_pages_path
+
+    assert_response :success
+    assert_operator response.body.index("Fresh Notes"), :<, response.body.index("Archive Page")
+  end
+
   test "should get new" do
     get new_app_page_path
     assert_response :success
@@ -25,6 +46,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should create page" do
     assert_difference("@blog.pages.count") do
       post app_pages_path, params: {
+        context_blog_id: @blog.id,
         post: {
           title: "New Page",
           content: "Page content"
@@ -40,6 +62,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should create draft page" do
     assert_difference("@blog.pages.count") do
       post app_pages_path, params: {
+        context_blog_id: @blog.id,
         post: {
           title: "Test Draft Page",
           content: "Draft content"
@@ -56,6 +79,22 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should get edit" do
     get edit_app_page_path(@page)
     assert_response :success
+  end
+
+  test "should not create page when form blog context does not match session blog" do
+    assert_no_difference("@blog.pages.count") do
+      post app_pages_path, params: {
+        context_blog_id: users(:elliot).blog.id,
+        post: {
+          title: "New Page",
+          content: "Page content"
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Your browser session changed while you were editing."
+    assert_includes response.body, "New Page"
   end
 
   test "should update page" do
@@ -109,6 +148,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should not create page without title" do
     assert_no_difference("@blog.pages.count") do
       post app_pages_path, params: {
+        context_blog_id: @blog.id,
         post: {
           content: "Content without title"
         }
@@ -121,6 +161,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should not create page without content" do
     assert_no_difference("@blog.pages.count") do
       post app_pages_path, params: {
+        context_blog_id: @blog.id,
         post: {
           title: "Title without content"
         }

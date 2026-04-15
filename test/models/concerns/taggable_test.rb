@@ -5,11 +5,7 @@ require "test_helper"
 class TaggableTest < ActiveSupport::TestCase
   def setup
     @blog = blogs(:joel)
-    @post = Post.create!(
-      title: "Test Post",
-      content: ActionText::RichText.new(body: "Test content"),
-      blog: @blog
-    )
+    @post = posts(:one)
   end
 
   test "should parse comma-separated tags" do

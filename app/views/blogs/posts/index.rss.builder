@@ -1,4 +1,4 @@
-cache([ @blog, @posts.map(&:id), @current_tags, params[:title], @current_lang ]) do
+cache([ @blog, @posts.map(&:id), @current_tags, params[:without_tag], params[:title], @current_lang ]) do
   xml.instruct! :xml, version: "1.0"
   xml.rss version: "2.0" do
     xml.channel do

@@ -1,6 +1,4 @@
 class App::Settings::ApiController < AppController
-  before_action :require_api_feature
-
   def show
   end
 
@@ -13,10 +11,4 @@ class App::Settings::ApiController < AppController
     @blog.revoke_api_key!
     redirect_to app_settings_api_path
   end
-
-  private
-
-    def require_api_feature
-      redirect_to app_settings_path unless current_features.enabled?(:api)
-    end
 end

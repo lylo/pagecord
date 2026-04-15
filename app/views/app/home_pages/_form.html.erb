@@ -1,9 +1,10 @@
 <div data-controller="post-attributes autosave"
-    data-autosave-key-value="<%= home_page.persisted? ? "draft-homepage-#{home_page.id}" : "draft-homepage-new" %>">
+    data-autosave-key-value="<%= home_page.persisted? ? "draft-homepage-#{home_page.id}" : "draft-homepage-new-#{Current.user.blog.id}" %>">
 
   <div class="mb-4"><%= trial_callout("Image uploads") %></div>
 
   <%= form_with(model: home_page, url: home_page.persisted? ? app_home_page_path : app_home_page_path, method: home_page.persisted? ? :patch : :post, html: { id: "homepage-form" }) do |form| %>
+    <%= hidden_field_tag :context_blog_id, Current.user.blog.id unless home_page.persisted? %>
 
     <%= form.text_field :title,
           placeholder: "Home page title (optional)",

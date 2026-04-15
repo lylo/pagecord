@@ -1,0 +1,5 @@
+nl:
+  contact_form:
+    mailer:
+      subject: "Nieuw bericht van %{name}"
+      intro: "Je hebt een bericht ontvangen via het contactformulier van %{blog_name}."

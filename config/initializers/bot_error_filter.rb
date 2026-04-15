@@ -21,7 +21,7 @@ class BotErrorFilter
   rescue *HANDLED_ERRORS
     [ 400, { "Content-Type" => "text/plain" }, [ "Bad Request\n" ] ]
   rescue ActionController::BadRequest => e
-    raise unless HANDLED_ERRORS.any? { |error_class| e.cause.is_a?(error_class) }
+    raise unless HANDLED_ERRORS.any? { |error_class| e.cause.is_a?(error_class) } || e.message.include?("Invalid encoding")
     [ 400, { "Content-Type" => "text/plain" }, [ "Bad Request\n" ] ]
   end
 

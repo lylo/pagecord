@@ -35,6 +35,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should publish post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
         post: { title: "New Post", content: "New content" }
       }
     end
@@ -48,6 +49,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should create hidden post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
         post: { title: "Hidden Post", content: "Hidden content", hidden: true }
       }
     end
@@ -62,6 +64,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should create public post when hidden is false" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
         post: { title: "Public Post", content: "Public content", hidden: false }
       }
     end
@@ -76,6 +79,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should save draft post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
         post: { title: "New Post", content: "New content" },
         button: "save_draft"
       }
@@ -92,6 +96,31 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     end
     assert post_to_discard.reload.discarded?
     assert_redirected_to app_posts_path
+  end
+
+  test "should not create post when form blog context does not match session blog" do
+    assert_no_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        context_blog_id: users(:joel).blog.id,
+        post: { title: "New Post", content: "New content" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Your browser session changed while you were editing."
+    assert_includes response.body, "New Post"
+  end
+
+  test "should not create post when form blog context is missing" do
+    assert_no_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        post: { title: "New Post", content: "New content" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Your browser session changed while you were editing."
+    assert_includes response.body, "New Post"
   end
 
   test "should show edit post page for published post" do
@@ -152,6 +181,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should create post with tags" do
     assert_difference("Post.count") do
       post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
         post: {
           title: "Post with Tags",
           content: "Content about Rails and JavaScript",
@@ -184,6 +214,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should preserve tags on validation errors" do
     post app_posts_url, params: {
+      context_blog_id: @user.blog.id,
       post: {
         title: "Invalid Post",
         content: "", # Invalid - content is required
@@ -344,13 +375,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should preview draft post with blog layout" do
-    draft_post = @user.blog.posts.create!(
-      title: "Draft Preview",
-      content: "Draft content for preview",
-      status: :draft
-    )
-
-    get app_post_url(draft_post)
+    get app_post_url(posts(:vivian_draft))
 
     assert_response :success
     assert_select "article"

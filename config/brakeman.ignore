@@ -3,8 +3,12 @@
     {
       "fingerprint": "47600cdefbc08d707ca143178deb60d608f173ccfd8c43ec8db633acd641912c",
       "note": "Admin-only template author URL — entered by admin, not user input"
+    },
+    {
+      "fingerprint": "0dfbc3bb7da613a4ed55ba90c2b83268e8cb2f4a9cc7885ec66d19738d49c2b2",
+      "note": "SQL values are hardcoded in AdminHelper#blogs_date_column, not user input"
     }
   ],
-  "updated": "2026-03-18",
+  "updated": "2026-04-15",
   "brakeman_version": "8.0.4"
 }
