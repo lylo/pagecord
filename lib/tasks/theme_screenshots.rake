@@ -40,16 +40,19 @@ namespace :theme_templates do
         original_attrs = blog.attributes.slice(*screenshot_attrs.keys.map(&:to_s))
         blog.update_columns(screenshot_attrs.stringify_keys)
 
-        driver.navigate.to("#{blog_url}?t=#{Time.now.to_i}")
-        sleep 2
+        begin
+          driver.navigate.to("#{blog_url}?t=#{Time.now.to_i}")
+          sleep 2
 
-        png_path = output_dir.join("#{slug}.png")
-        driver.save_screenshot(png_path.to_s)
-        blog.update_columns(original_attrs)
+          png_path = output_dir.join("#{slug}.png")
+          driver.save_screenshot(png_path.to_s)
 
-        system("cwebp", "-q", "80", "-resize", "640", "0", png_path.to_s, "-o", webp_path.to_s, out: File::NULL, err: File::NULL)
-        File.delete(png_path)
-        puts "done"
+          system("cwebp", "-q", "80", "-resize", "640", "0", png_path.to_s, "-o", webp_path.to_s, out: File::NULL, err: File::NULL)
+          File.delete(png_path)
+          puts "done"
+        ensure
+          blog.update_columns(original_attrs)
+        end
       end
     ensure
       driver.quit

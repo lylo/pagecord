@@ -1,31 +1,15 @@
 class ThemeTemplate < ApplicationRecord
-  include CssSanitizable
+  include CssSanitizable, Themeable
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
   validates :name, presence: true, uniqueness: true
   validates :custom_css, presence: true
-  validates :theme, inclusion: { in: Themeable::THEMES }, allow_blank: true
-  validates :font, inclusion: { in: Themeable::FONTS }, allow_blank: true
-  validates :width, inclusion: { in: Themeable::PAGE_WIDTHS }, allow_blank: true
+
+  before_validation :clear_custom_theme_colors, unless: :custom_theme?
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(position: :asc, name: :asc) }
-
-  def custom_theme_colors
-    {
-      light: {
-        bg: custom_theme_bg_light.presence || "#ffffff",
-        text: custom_theme_text_light.presence || "#334155",
-        accent: custom_theme_accent_light.presence || "#334155"
-      },
-      dark: {
-        bg: custom_theme_bg_dark.presence || "#0f172a",
-        text: custom_theme_text_dark.presence || "#cbd5e1",
-        accent: custom_theme_accent_dark.presence || "#ffffff"
-      }
-    }
-  end
 
   def screenshot_asset
     "theme_templates/#{name.parameterize}.webp"
@@ -65,4 +49,13 @@ class ThemeTemplate < ApplicationRecord
       } : {})
     }.compact_blank
   end
+
+  private
+
+    def clear_custom_theme_colors
+      assign_attributes(
+        custom_theme_bg_light: nil, custom_theme_text_light: nil, custom_theme_accent_light: nil,
+        custom_theme_bg_dark: nil,  custom_theme_text_dark: nil,  custom_theme_accent_dark: nil
+      )
+    end
 end

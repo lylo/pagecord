@@ -17,8 +17,11 @@ class App::Settings::ThemeGardenController < AppController
   end
 
   def apply
-    @blog.update!(@template.appearance_attributes)
-    redirect_to app_settings_appearance_index_path, notice: "\"#{@template.name}\" template applied"
+    if @blog.update(@template.appearance_attributes)
+      redirect_to app_settings_appearance_index_path, notice: "\"#{@template.name}\" template applied"
+    else
+      redirect_to app_settings_theme_garden_index_path, alert: "Could not apply template"
+    end
   end
 
   private

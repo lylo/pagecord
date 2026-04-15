@@ -60,19 +60,11 @@ class Admin::ThemeTemplatesController < AdminController
     end
 
     def template_params
-      permitted = params.require(:theme_template).permit(
+      params.require(:theme_template).permit(
         :name, :description, :custom_css, :theme, :font, :width, :layout,
         :custom_theme_bg_light, :custom_theme_text_light, :custom_theme_accent_light,
         :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark,
         :author_name, :author_url, :position, :active
       )
-
-      unless permitted[:theme] == "custom"
-        colour_fields = %w[custom_theme_bg_light custom_theme_text_light custom_theme_accent_light
-                           custom_theme_bg_dark custom_theme_text_dark custom_theme_accent_dark]
-        colour_fields.each { |f| permitted[f] = nil }
-      end
-
-      permitted
     end
 end

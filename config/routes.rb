@@ -124,7 +124,7 @@ Rails.application.routes.draw do
       resources :users, only: [ :update, :destroy ]
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
-      resources :theme_garden, only: [ :index ], controller: "theme_garden" do
+      resources :theme_garden, only: [ :index ] do
         member do
           get :preview
           post :apply
