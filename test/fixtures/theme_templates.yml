@@ -1,6 +1,7 @@
+---
 minimal_mono:
-  name: "Minimal Mono"
-  description: "A clean monospace journal theme"
+  name: Minimal Mono
+  description: A clean monospace journal theme
   custom_css: |
     /* Minimal Mono – 12px monospace journal */
 
@@ -65,16 +66,16 @@ minimal_mono:
       text-underline-offset: 0.125em;
     }
     .bio a:hover, .lexxy-content a:hover { text-decoration-color: var(--color-text); }
-  font: "mono"
-  width: "narrow"
-  layout: 0
-  theme: "base"
-  position: 1
+  theme: base
+  font: mono
+  width: narrow
+  layout: stream_layout
+  position: 0
   active: true
-
 archibald:
-  name: "Archibald"
-  description: "A refined monospace theme with accent-underlined links and reordered header"
+  name: Archibald
+  description: A refined monospace theme with accent-underlined links and reordered
+    header
   custom_css: |
     /* Archibald – refined monospace with accent links */
 
@@ -110,16 +111,15 @@ archibald:
 
     /* Spacing */
     article, .email-subscriber-form { margin-bottom: 2em; }
-  theme: "mint"
-  font: "mono"
-  width: "standard"
-  layout: 1
-  position: 2
+  theme: mint
+  font: mono
+  width: standard
+  layout: title_layout
+  position: 1
   active: true
-
 hestia:
-  name: "Hestia"
-  description: "A warm, card-style theme with stone tones and dusty rose accents"
+  name: Hestia
+  description: A warm, card-style theme with stone tones and dusty rose accents
   custom_css: |
     .post-title a { font-weight: 700; }
     main a { font-weight: 500; }
@@ -183,22 +183,41 @@ hestia:
 
     .post .blog-footer { margin-top: 4em; }
     .page .blog-footer { margin-top: 2em; }
-  theme: "custom"
-  font: "sans"
-  width: "narrow"
-  layout: 0
+  theme: custom
+  font: sans
+  width: narrow
+  layout: stream_layout
+  custom_theme_bg_light: "#faf8f5"
+  custom_theme_text_light: "#3a342e"
+  custom_theme_accent_light: "#b5546a"
+  custom_theme_bg_dark: "#1a1816"
+  custom_theme_text_dark: "#d4cfc8"
+  custom_theme_accent_dark: "#d4748a"
+  position: 2
+  active: true
+folly:
+  name: Folly
+  custom_css: "nav {\n  justify-content: center;\n}\n\n.avatar-container {\n  flex-direction:
+    column;\n  align-items: center;\n}\n\n.bio {\n  text-align: center;\n}\n\nheader
+    hr {\n\tborder: none;\n  text-align: center;\n  background: linear-gradient(var(--color-border),
+    var(--color-border)) center / 40% 1px no-repeat;\n  margin: 2rem 0;\n}\n\nheader
+    hr::before {\n\tcontent: \"✿\";\n  color: var(--color-text-muted);\n  background:
+    var(--color-bg);\n  padding: 0 0.5em;\n  font-size: 0.75em;\n}\n"
+  theme: custom
+  font: serif
+  width: standard
+  layout: stream_layout
+  custom_theme_bg_light: "#fbf8f4"
+  custom_theme_text_light: "#334155"
+  custom_theme_accent_light: "#c8526a"
+  custom_theme_bg_dark: "#353536"
+  custom_theme_text_dark: "#cbd5e1"
+  custom_theme_accent_dark: "#df6d83"
   position: 3
   active: true
-  custom_theme_bg_light: "#faf8f5"
-  custom_theme_bg_dark: "#1a1816"
-  custom_theme_text_light: "#3a342e"
-  custom_theme_text_dark: "#d4cfc8"
-  custom_theme_accent_light: "#b5546a"
-  custom_theme_accent_dark: "#d4748a"
-
 mozake:
-  name: "Mozake"
-  description: "A stripped-back theme inspired by the earliest web pages"
+  name: Mozake
+  description: A stripped-back theme inspired by the earliest web pages
   custom_css: |
     /* Mozake – plain HTML, circa 1991 */
 
@@ -306,15 +325,15 @@ mozake:
     /* Misc */
     .tag-filter-notice { background: transparent; border: none; border-radius: 0; padding: 0; font-size: revert; color: revert; }
     .tag-filter-notice-link { font-size: revert; }
-  font: "serif"
-  width: "standard"
-  layout: 0
-  theme: "custom"
+  theme: custom
+  font: serif
+  width: standard
+  layout: stream_layout
+  custom_theme_bg_light: "#ffffff"
+  custom_theme_text_light: "#000000"
+  custom_theme_accent_light: "#0000EE"
+  custom_theme_bg_dark: "#ffffff"
+  custom_theme_text_dark: "#000000"
+  custom_theme_accent_dark: "#0000EE"
   position: 4
   active: true
-  custom_theme_bg_light: "#ffffff"
-  custom_theme_bg_dark: "#ffffff"
-  custom_theme_text_light: "#000000"
-  custom_theme_text_dark: "#000000"
-  custom_theme_accent_light: "#0000EE"
-  custom_theme_accent_dark: "#0000EE"
