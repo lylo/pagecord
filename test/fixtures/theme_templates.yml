@@ -197,7 +197,7 @@ hestia:
   active: true
 folly:
   name: Folly
-  custom_css: "nav {\n  justify-content: center;\n}\n\n.avatar-container {\n  flex-direction:
+  custom_css: "nav {\n  justify-content: center;\n}\n\n.titlebar, .avatar-container {\n  flex-direction:
     column;\n  align-items: center;\n}\n\n.bio {\n  text-align: center;\n}\n\nheader
     hr {\n\tborder: none;\n  text-align: center;\n  background: linear-gradient(var(--color-border),
     var(--color-border)) center / 40% 1px no-repeat;\n  margin: 2rem 0;\n}\n\nheader
