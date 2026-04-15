@@ -8,7 +8,6 @@ class AccountVerificationMailer < MailpaceMailer
 
   def login
     @user = params[:user]
-    @blog = @user.blog
     @access_request = @user.access_requests.create!
 
     mail(to: @user.email, subject: "Log into your Pagecord account")
