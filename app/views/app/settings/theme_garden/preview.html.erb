@@ -1,25 +1,8 @@
 <%= render "blogs/header" %>
 
 <% if @posts.any? %>
-  <div class="h-feed" data-controller="media-embeds lightbox">
-    <% @posts.each do |post| %>
-      <div class="post-stream-item">
-        <article class="post h-entry">
-          <%= render "blogs/posts/post_title", post: post %>
-          <%= render "blogs/posts/post_content", post: post %>
-
-          <% if post.tag_list.present? %>
-            <%= render "blogs/posts/tags", post: post %>
-          <% end %>
-
-          <footer>
-            <%= link_to "#", class: "post-date" do %>
-              <%= local_time post.display_date, format: published_at_date_format %>
-            <% end %>
-          </footer>
-        </article>
-      </div>
-    <% end %>
+  <div class="<%= @blog.layout %>">
+    <%= render @blog.layout %>
   </div>
 <% else %>
   <div class="empty-state">

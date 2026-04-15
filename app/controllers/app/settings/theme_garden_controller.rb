@@ -8,7 +8,11 @@ class App::Settings::ThemeGardenController < AppController
   def preview
     @blog.assign_attributes(@template.appearance_attributes)
     @posts = @blog.posts.visible.with_full_rich_text.includes(:upvotes).order(published_at: :desc).limit(5)
-    render layout: "blog"
+    @pagy = OpenStruct.new(next: nil)
+    @user = @blog.user
+    with_blog_view_context do
+      render template: "app/settings/theme_garden/preview", layout: "blog"
+    end
   end
 
   def apply
@@ -25,5 +29,13 @@ class App::Settings::ThemeGardenController < AppController
 
     def set_template
       @template = ThemeTemplate.active.find(params[:id])
+    end
+
+    def with_blog_view_context
+      original = lookup_context.prefixes.dup
+      lookup_context.prefixes.unshift("blogs/posts", "blogs")
+      yield
+    ensure
+      lookup_context.prefixes.replace(original)
     end
 end
