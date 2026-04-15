@@ -9,8 +9,7 @@
 <div data-controller="theme-selector">
   <h3 class="font-bold text-lg mb-2">Colour Scheme</h3>
   <p>
-    Choose a colour scheme for your blog.
-    Or <%= link_to "browse the Theme Garden", app_settings_theme_garden_index_path, class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300" %> for curated CSS templates.
+    Choose a colour scheme for your blog, or <%= link_to "pick a ready-made design", app_settings_theme_garden_index_path, class: "font-semibold underline" %> from the Theme Garden.
   </p>
 
   <%= form_with url: app_settings_appearance_path(@blog), model: @blog,

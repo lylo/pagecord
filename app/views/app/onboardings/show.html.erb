@@ -8,7 +8,8 @@
   </p>
 
   <p>
-    To help you get started, we're going to set a few things up. You don't need to decide now &ndash; you can change any of this in your Settings area at any time!
+    To help you get started, we're going to set a few things up. You don't need to decide now &ndash; you can
+    change any of this later in your Settings!
   </p>
 
   <h2 class="text-xl sm:text-2xl">
@@ -44,8 +45,9 @@
   </h2>
 
   <p>
-    Your bio will appear at the top of your blog's home page. This is where you'll tell the world all about your blog!
-    Emojis and links are recommended! 😊
+    Your bio will appear at the top of your blog's home page. This is where you'll tell the world all about your blog! It's entirely optional,
+    and you can always add one later.
+  </p>
 
   <div class="lexxy-minimal">
     <%= form_with url: app_onboarding_path, model: @blog,
@@ -75,10 +77,17 @@
   </div>
 
   <h2 class="text-xl sm:text-2xl">
+    Select a ready-made design 🖼️
+  </h2>
+  <p>
+    The quickest way to pimp your site is to <%= link_to "browse the Theme Garden", app_settings_theme_garden_index_path, class: "font-semibold underline" %>. This lets you get started with a ready-made design. Alternatively, just select your favourite colour scheme, font and layout below. You can always revisit the Theme Garden later in Appearance Settings!
+  </p>
+
+  <h2 class="text-xl sm:text-2xl">
     Pick a colour scheme 🎨
   </h2>
   <p>
-    The default is the classic Pagecord minimal monochrome. Or, <%= link_to "browse the Theme Garden", app_settings_theme_garden_index_path, class: "font-semibold underline" %> for ready-made designs with curated colours, fonts and layouts.
+    The default is the classic Pagecord minimal monochrome.
   </p>
 
   <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
