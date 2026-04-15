@@ -36,7 +36,7 @@ DNS for Pagecord is managed by [Cloudflare](https://cloudflare.com). Cloudflare 
 
 Inbound emails are handled by [Postmark](https://postmarkapp.com) via ActionMailbox.
 
-Transactional emails are sent via a mixture of [Postmark](https://postmarkapp.com) and [Mailpace](https://mailpace.com).
+Transactional emails are sent via [Cloudflare Email](https://developers.cloudflare.com/email-routing/), [Postmark](https://postmarkapp.com), and [Mailpace](https://mailpace.com). Each has its own base mailer class (`CloudflareMailer`, `PostmarkMailer`, `MailpaceMailer`).
 
 ### Observability
 
