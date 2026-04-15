@@ -1,3 +1,7 @@
+<% content_for :head do %>
+  <base href="<%= blog_home_url(@blog) %>">
+<% end %>
+
 <%= render "blogs/header" %>
 
 <% if @posts.any? %>
