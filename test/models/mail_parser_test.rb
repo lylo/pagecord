@@ -242,6 +242,14 @@ class MailParserTest < ActiveSupport::TestCase
     assert_not parser.has_attachments?
   end
 
+  test "should reject attachments with unsupported content types" do
+    mail = Mail.read(fixture_path("unsupported_audio_attachment.eml"))
+    parser = MailParser.new(mail)
+
+    assert_not parser.has_attachments?, "Should reject unsupported audio/mp4 content type"
+    assert_equal 0, parser.attachments.size
+  end
+
   private
 
     def create_mail(subject:, body:, content_type: "text/plain", from: "test@example.com", to: "recipient@example.com")

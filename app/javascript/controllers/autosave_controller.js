@@ -87,7 +87,7 @@ export default class extends Controller {
   }
 
   get isExistingRecord() {
-    return !this.keyValue.endsWith("new")
+    return !this.keyValue.match(/-new(?:-|$)/)
   }
 
   // Existing-post drafts are only safe to restore if they were captured from the

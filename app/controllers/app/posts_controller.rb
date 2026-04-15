@@ -44,11 +44,13 @@ class App::PostsController < AppController
   end
 
   def create
-    post = Current.user.blog.posts.build(post_params)
-    if post.save
+    @post = Current.user.blog.posts.build(post_params)
+
+    return render_stale_form_context unless context_blog_id_matches_current_blog?
+
+    if @post.save
       redirect_to app_posts_path, notice: "Post was successfully created"
     else
-      @post = post
       render :new, status: :unprocessable_entity
     end
   end

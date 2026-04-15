@@ -50,6 +50,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 - Minitest with fixtures. Follow Rails conventions for file location.
 - Focused tests for business logic — don't over-test
+- UI review checklist: verify loading/sending/sent/error states, async redirects and background-job timing, and subscriber/count reads after async work completes. Run relevant system tests when they exist.
 - **System test gotchas**:
   - Flash messages are initially hidden; use `assert page.has_content?("Text", wait: 2)` not `assert_text`
   - Allow `sleep 1` after form submissions for async operations

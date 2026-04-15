@@ -1,0 +1,14 @@
+nl:
+  email_form:
+    form:
+      name_label: "Je naam"
+      email_label: "Je e-mailadres"
+      message_label: "Bericht"
+      submit_button: "Versturen"
+    success_message: "Bericht verzonden!"
+    error_message: "Er is een probleem opgetreden bij het verzenden van je bericht."
+    rate_limit_message: "Je hebt te veel berichten in korte tijd verzonden. Probeer het later opnieuw."
+    mailer:
+      from_label: "Van"
+      footer: "Reageer op deze e-mail om %{name} te antwoorden."
+      footer_text: "Om %{name} te antwoorden, stuur gewoon een reply op deze e-mail."

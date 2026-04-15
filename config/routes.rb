@@ -264,6 +264,7 @@ Rails.application.routes.draw do
     get "/blogging-by-email", to: "public#blogging_by_email"
     get "/blog-with-newsletter", to: "public#blog_with_newsletter"
 
+    get "/spotlight", to: "home/spotlight#show"
     get "/shuffle", to: "posts/shuffle#show"
 
     get "/@:name", to: redirect("/%{name}")

@@ -1,12 +1,36 @@
 <p>Hi there 👋</p>
 
-<p>Thanks so much for signing up to Pagecord! Your blog is now live at <a href="<%= blog_home_url(@blog) %>"><%= blog_home_url(@blog) %></a>.</p>
+<p>Thanks for signing up to Pagecord. Your blog is live at <a href="<%= blog_home_url(@blog) %>"><%= blog_home_url(@blog) %></a>.</p>
 
-<p>You've got 14 days of free access to all premium features – custom domains, analytics, image uploads and more. Have a play around!</p>
+<p>To get started, try customising your site to make it your own. You can:</p>
 
-<p>Check out the <a href="https://help.pagecord.com">Help Guide</a> if you want to explore everything Pagecord can do.</p>
+<ul>
+  <li>Pick your colour scheme and typeface</li>
+  <li>Create a Home page, an About page, or any page you like</li>
+  <li>Take full control of the design with custom CSS</li>
+</ul>
 
-<p>I'd love to know what you think – just reply to this email!</p>
+<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="padding-top:5px; padding-bottom:5px;">
+  <tbody>
+    <tr>
+      <td align="center">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td>
+                <%= link_to "Log in to get started", app_onboarding_url %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>One more thing — you can also publish posts by emailing <strong><%= @blog.delivery_email %></strong> directly from <strong><%= @user.email %></strong>. No login needed!</p>
+
+<p>If you get stuck or have any questions, check out <a href="https://help.pagecord.com">the Help Guide</a> — or just reply to this email. I read every one.</p>
 
 <%= image_tag "signature.jpg", style: "margin-top: 8px; text-align: left; width:120px;" %>
 

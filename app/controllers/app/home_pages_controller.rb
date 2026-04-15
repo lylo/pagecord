@@ -6,6 +6,8 @@ class App::HomePagesController < AppController
   def create
     @home_page = Current.user.blog.pages.build(home_page_params)
 
+    return render_stale_form_context unless context_blog_id_matches_current_blog?
+
     if @home_page.save
       Current.user.blog.update!(home_page_id: @home_page.id)
       redirect_to app_pages_path, notice: "Home page created!"

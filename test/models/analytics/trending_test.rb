@@ -49,6 +49,16 @@ class Analytics::TrendingTest < ActiveSupport::TestCase
     refute result.any? { |r| r[:post] == draft }
   end
 
+  test "excludes posts older than 14 days" do
+    post = posts(:three)
+    post.update_columns(published_at: 15.days.ago, upvotes_count: 25)
+    PageView.create!(blog: post.blog, post: post, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-old")
+
+    result = @trending.top_posts(limit: 10)
+
+    refute result.any? { |r| r[:post] == post }
+  end
+
   test "newer posts with same engagement score higher due to age penalty" do
     recent = posts(:one)
     older = posts(:two)

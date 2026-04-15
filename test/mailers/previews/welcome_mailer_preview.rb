@@ -1,13 +1,13 @@
 class WelcomeMailerPreview < ActionMailer::Preview
   def welcome_email
-    @user = User.first
-    @blog = @user.blog
-    WelcomeMailer.with(user: @user, blog: @blog, price: "39").welcome_email
+    WelcomeMailer.with(user: User.first).welcome_email
   end
 
-  def unengaged_follow_up
-    @user = User.first
-    @blog = @user.blog
-    WelcomeMailer.with(user: @user, blog: @blog).unengaged_follow_up
+  def onboarding_follow_up
+    WelcomeMailer.with(user: User.find_by(onboarding_state: "account_created") || User.first).onboarding_follow_up
+  end
+
+  def no_content_follow_up
+    WelcomeMailer.with(user: User.find_by(onboarding_state: "account_created") || User.first).no_content_follow_up
   end
 end
