@@ -23,21 +23,13 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
     assert_select "h3", text: "Minimal Mono"
   end
 
-  test "should show subscribe callout for free users" do
+  test "should show apply buttons for free users" do
     login_as users(:vivian)
 
     get app_settings_theme_garden_index_url
 
     assert_response :success
-    assert_select "a", text: "Subscribe"
-  end
-
-  test "should not show apply buttons for free users" do
-    login_as users(:vivian)
-
-    get app_settings_theme_garden_index_url
-
-    assert_select "button", { count: 0, text: "Apply" }
+    assert_select "button", text: "Apply"
   end
 
   test "preview should render blog layout with template styling" do
@@ -58,11 +50,11 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
     assert_equal "base", @blog.theme
   end
 
-  test "apply should reject non-premium users" do
+  test "apply should work for free users" do
     login_as users(:vivian)
 
     post apply_app_settings_theme_garden_url(@template)
 
-    assert_redirected_to app_settings_theme_garden_index_path
+    assert_redirected_to app_settings_appearance_index_path
   end
 end

@@ -16,11 +16,6 @@ class App::Settings::ThemeGardenController < AppController
   end
 
   def apply
-    unless @blog.user.has_premium_access?
-      redirect_to app_settings_theme_garden_index_path, alert: "A premium subscription is required to apply templates."
-      return
-    end
-
     @blog.update!(@template.appearance_attributes)
     redirect_to app_settings_appearance_index_path, notice: "\"#{@template.name}\" template applied"
   end
