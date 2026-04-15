@@ -220,13 +220,6 @@ footer.blog-footer #brand svg {
     margin-top: 1.25rem;
     margin-bottom: 1.25rem;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  :where(.avatar-container) {
-    display: flex;
-    width: 100%;
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;

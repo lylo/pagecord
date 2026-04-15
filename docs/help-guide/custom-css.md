@@ -31,10 +31,9 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ .titlebar                                    │ │ │ │
-│ │ │ │ ┌──────────────────┐ ┌─────────────────────┐ │ │ │ │
-│ │ │ │ │ .avatar-container│ │ .blog-title         │ │ │ │ │
-│ │ │ │ │ [ .avatar ]      │ │                     │ │ │ │ │
-│ │ │ │ └──────────────────┘ └─────────────────────┘ │ │ │ │
+│ │ │ │ ┌──────────────┐ ┌────────────────────────┐ │ │ │ │
+│ │ │ │ │ .avatar      │ │ .blog-title            │ │ │ │ │
+│ │ │ │ └──────────────┘ └────────────────────────┘ │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ .bio (Your profile description)              │ │ │ │
@@ -102,6 +101,27 @@ h1, h2, h3, h4, h5 {
 }
 ```
 
+### Centering the Header
+
+Center the navigation, title, avatar, and bio:
+
+```css
+nav {
+  justify-content: center;
+}
+
+.titlebar {
+  flex-direction: column;
+  align-items: center;
+}
+
+.bio {
+  text-align: center;
+}
+```
+
+Or pick and choose from the individual options below.
+
 ### Centering the Top Navigation
 
 By default, the navigation links are aligned to the right. This will move them to the center.
@@ -112,12 +132,12 @@ nav {
 }
 ```
 
-### Stacking the Avatar and Title in the centre
+### Centering the Title and Avatar
 
-If you want your avatar to appear above your blog title and both to be centered:
+Center the title (and avatar, if you have one):
 
 ```css
-.avatar-container {
+.titlebar {
   flex-direction: column;
   align-items: center;
 }
