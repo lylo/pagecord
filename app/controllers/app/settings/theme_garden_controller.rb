@@ -1,4 +1,5 @@
 class App::Settings::ThemeGardenController < AppController
+  skip_before_action :onboarding_check
   before_action :set_template, only: [ :preview, :apply ]
 
   def index
