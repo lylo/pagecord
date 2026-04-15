@@ -1,8 +1,8 @@
 class Subdomain
-  RESERVED = %w[ about admin app api careers community contact dev discover
-                 domains faq feed guide images jobs login og pagecord privacy
-                 pricing rails rss shuffle sidekiq signup staging support terms
-                 test ]
+  RESERVED = %w[ about admin app api careers cfmail community contact dev discover
+                 domains faq feed guide images jobs login mailer og pagecord
+                 post privacy pricing proxy rails rss shuffle sidekiq signup
+                 staging storage support terms test www ]
 
   FORMAT_REGEX = /\A[a-zA-Z0-9]+\z/
   MIN_LENGTH = 3
