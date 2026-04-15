@@ -1,76 +1,216 @@
 ---
-minimal_mono:
-  name: Minimal Mono
-  description: A clean monospace journal theme
+cardashian:
+  name: Cardashian
+  description: A vivid card gallery with accent borders and modern sans typography
   custom_css: |
-    /* Minimal Mono – 12px monospace journal */
+    /* Cardashian – vivid card gallery */
 
-    .blog { font-size: 0.75rem; line-height: 1.25rem; }
-    h1, h2, h3, h4, h5, h6 { font-weight: 400; }
-    h1, h2, h3, h4, h5, h6,
-    .blog-title, .bio, nav,
-    h1.post-title, article footer,
-    .post-card-date, .post-card-summary, .post-card-title,
-    .tag-link, .tag-filter-notice, .tag-filter-notice-links, .tag-filter-notice-link,
-    .email-subscriber-form, figcaption, .lexxy-content figcaption { font-size: 0.75rem; }
+    @import url('https://fonts.bunny.net/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+    body { font-family: "Outfit", sans-serif; }
 
-    /* Header */
-    .avatar, header hr, .post-card-badge { display: none; }
-    nav { justify-content: flex-start; }
-    .bio { text-align: left; }
+    /* Header: avatar + title grouped left */
+    .avatar {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
+    .avatar img {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 0.375rem;
+      border: 2px solid var(--color-accent);
+      box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-accent) 20%, transparent);
+    }
+    .avatar-container { align-items: center; gap: 0.75rem; justify-content: flex-start; }
+    .blog-title a { font-weight: 700; letter-spacing: -0.02em; }
+    .bio { text-align: left; margin-top: 1rem; margin-bottom: 1rem; }
 
-    /* Cards */
+    nav {
+      justify-content: flex-start;
+      gap: 0.5rem;
+    }
+    nav a {
+      font-weight: 500;
+      font-size: 0.95em;
+      background: var(--color-bg-subtle);
+      padding: 0.25em 0.75em;
+      border-radius: 9999px;
+      color: var(--color-text-muted);
+    }
+    nav a:hover {
+      background: var(--color-accent);
+      color: var(--color-bg);
+    }
+
+    header hr {
+      border: none;
+      height: 2px;
+      background: linear-gradient(to right, var(--color-accent), transparent);
+      margin: 1.5rem 0;
+    }
+
+    /* Cards – accent left border */
     .post-card-content {
-      border: none; box-shadow: none; border-radius: 0;
-      padding: 0; background: transparent;
-      display: flex; flex-direction: column;
+      border: none;
+      border-left: 3px solid var(--color-accent);
+      border-radius: 0 0.5rem 0.5rem 0;
+      background: var(--color-bg-subtle);
     }
-    .post-card:hover .post-card-content { box-shadow: none; transform: none; }
-    .post-card-meta { order: -1; margin: 0; }
-    .post-card-meta.has-tags, .post-card-meta.no-tags { margin-top: 0; }
-    .post-card-date { opacity: 1; }
+
+    .post-card:hover .post-card-content {
+      box-shadow: 0 8px 24px -4px color-mix(in oklch, var(--color-accent) 20%, transparent);
+      transform: translateY(-2px);
+      border-left-width: 4px;
+    }
+
     .post-card-title {
-      color: var(--color-text); letter-spacing: 0; margin-bottom: 0;
-      text-decoration: underline dotted var(--color-text-muted);
-      text-underline-offset: 0.125em;
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
-    .post-card:hover .post-card-title { text-decoration-color: var(--color-text); }
-    .post-card-summary { margin-bottom: 0; }
 
-    /* Post */
-    article.post { display: flex; flex-direction: column; }
-    article.post footer { display: contents; }
-    article.post .post-date { order: -1; }
-    article.post .post-actions { margin-top: 1rem; margin-bottom: 1rem; }
-    h1.post-title { line-height: inherit; margin-bottom: 0.5rem; }
-    .tags-container { margin-top: 0.5rem; }
-    .email-form-container { gap: 0.25rem; }
-    .form-container { padding: 0; }
+    .post-card-badge {
+      background: var(--color-accent);
+      color: var(--color-bg);
+      font-weight: 600;
+      font-size: 0.7em;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-color: transparent;
+    }
 
-    /* Heading markers */
-    .lexxy-content h1::before,
-    .lexxy-content h2::before,
-    .lexxy-content h3::before,
-    .lexxy-content h4::before { color: var(--color-text-muted); font-weight: inherit; }
-    .lexxy-content h1::before { content: "# "; }
-    .lexxy-content h2::before { content: "## "; }
-    .lexxy-content h3::before { content: "### "; }
-    .lexxy-content h4::before { content: "#### "; }
+    .post-card-date { font-variant-numeric: tabular-nums; }
 
-    /* Content */
-    article img { border-radius: 0; }
+    .post-card-summary img { border-radius: 0.375rem; }
+
+    /* Single post */
+    h1.post-title {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .post-title a { text-decoration: none; }
 
     /* Links */
-    .bio a, .lexxy-content a {
-      text-decoration: underline dotted var(--color-text-muted);
-      text-underline-offset: 0.125em;
+    .lexxy-content a {
+      font-weight: 500;
+      text-decoration-color: var(--color-accent-muted);
+      text-underline-offset: 0.15em;
     }
-    .bio a:hover, .lexxy-content a:hover { text-decoration-color: var(--color-text); }
-  theme: base
-  font: mono
-  width: narrow
-  layout: stream_layout
+    .lexxy-content a:hover { text-decoration-color: var(--color-accent); }
+
+    /* Images */
+    article img { border-radius: 0.375rem; }
+
+    /* Tags */
+    .tag-link { font-weight: 500; }
+  theme: custom
+  font: sans
+  width: standard
+  layout: cards_layout
+  custom_theme_bg_light: "#f9f8f6"
+  custom_theme_text_light: "#1a1718"
+  custom_theme_accent_light: "#7c3aed"
+  custom_theme_bg_dark: "#1a1718"
+  custom_theme_text_dark: "#e8e6e3"
+  custom_theme_accent_dark: "#a78bfa"
   position: 0
+  active: true
+broadside:
+  name: Broadside
+  description: Bold poster-style typography with oversized year headers and strong
+    accents
+  custom_css: |
+    /* Broadside – poster-style editorial */
+
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+    body { font-family: "Space Grotesk", sans-serif; }
+
+    /* Header: title left, avatar right */
+    .titlebar { margin-top: 2rem; margin-bottom: 0.5rem; }
+    .avatar-container { flex-direction: row-reverse; align-items: center; }
+    .avatar img { border-radius: 0.25rem; }
+    .blog-title {
+      font-size: 2.5em;
+      line-height: 1;
+    }
+    .blog-title a { font-weight: 700; letter-spacing: -0.04em; }
+
+    nav {
+      justify-content: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+    nav a {
+      text-transform: uppercase;
+      font-size: 0.85em;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      padding: 0.2em 0;
+      border-bottom: 2px solid transparent;
+    }
+    nav a:hover { border-bottom-color: var(--color-accent); }
+
+    .bio { text-align: left; margin-top: 0.75rem; }
+
+    header hr {
+      border: none;
+      height: 3px;
+      background: var(--color-text);
+      margin: 1.25rem 0;
+    }
+
+    /* Year headers – the signature element */
+    .year-header {
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--color-accent);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .year-header.has-previous { margin-top: 2.5rem; }
+
+    /* Post rows */
+    .post-row {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .post-row a {
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .post-row a:hover { color: var(--color-accent); }
+    .post-row time { font-variant-numeric: tabular-nums; }
+
+    /* Single post */
+    h1.post-title {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .post-title a { text-decoration: none; }
+
+    /* Links */
+    .lexxy-content a { font-weight: 500; }
+
+    /* Tags */
+    .tag-link {
+      text-transform: uppercase;
+      font-size: 0.65em;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      color: var(--color-accent);
+    }
+  theme: custom
+  font: sans
+  width: standard
+  layout: title_layout
+  custom_theme_bg_light: "#efebed"
+  custom_theme_text_light: "#2d0a5e"
+  custom_theme_accent_light: "#f03124"
+  custom_theme_bg_dark: "#150830"
+  custom_theme_text_dark: "#ede8ee"
+  custom_theme_accent_dark: "#ff4535"
+  position: 1
   active: true
 archibald:
   name: Archibald
@@ -115,7 +255,7 @@ archibald:
   font: mono
   width: standard
   layout: title_layout
-  position: 1
+  position: 2
   active: true
 hestia:
   name: Hestia
@@ -193,16 +333,107 @@ hestia:
   custom_theme_bg_dark: "#1a1816"
   custom_theme_text_dark: "#d4cfc8"
   custom_theme_accent_dark: "#d4748a"
-  position: 2
+  position: 3
+  active: true
+novella:
+  name: Novella
+  description: A literary editorial theme with golden accents and drop caps
+  custom_css: |
+    /* Novella – literary editorial */
+
+    @import url('https://fonts.bunny.net/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&display=swap');
+    body { font-family: "Newsreader", serif; }
+    :root { --font-size-base: 110%; }
+
+    /* Header: centered masthead */
+    header { display: flex; flex-direction: column; align-items: center; }
+    header > .titlebar { order: 1; }
+    header > .bio { order: 2; }
+    header > nav { order: 3; }
+    header > .email-subscriber-form { order: 4; }
+    header > hr { order: 5; width: 100%; }
+
+    .titlebar { justify-content: center; }
+    .avatar-container {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+    }
+    .avatar img { border-radius: 0.5rem; }
+    .blog-title {
+      font-family: var(--font-sans), sans-serif;
+      font-size: 0.95em;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    .blog-title a { font-weight: 600; }
+    .bio { text-align: center; font-style: italic; opacity: 0.8; margin-top: 0.5rem; }
+    nav { justify-content: center; gap: 1.25rem; font-size: 0.9em; }
+    nav a { font-weight: 400; }
+
+    /* Divider */
+    header hr {
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--color-border), transparent);
+      margin: 1.75rem 0;
+    }
+
+    /* Stream posts */
+    .post-stream-item {
+      padding-bottom: 2rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .post-stream-item:last-of-type { border-bottom: none; }
+
+    h1.post-title { font-weight: 500; letter-spacing: -0.02em; }
+    .post-title a { text-decoration: none; }
+
+    /* Drop cap on first paragraph of posts (not bio) */
+    article.post .e-content > p:first-child::first-letter {
+      font-size: 3.2em;
+      float: left;
+      line-height: 1;
+      padding-right: 0.05em;
+      margin-top: 0.05em;
+      font-weight: 600;
+      color: var(--color-accent);
+    }
+
+    /* Links */
+    .lexxy-content a {
+      text-decoration-color: var(--color-accent-muted);
+      text-underline-offset: 0.15em;
+    }
+    .lexxy-content a:hover { text-decoration-color: var(--color-accent); }
+
+    /* Images */
+    article img { border-radius: 0.25rem; }
+
+    /* Post footer */
+    article footer { font-style: italic; }
+  theme: custom
+  font: serif
+  width: narrow
+  layout: stream_layout
+  custom_theme_bg_light: "#f0f4f1"
+  custom_theme_text_light: "#1a2e22"
+  custom_theme_accent_light: "#b8860b"
+  custom_theme_bg_dark: "#141f18"
+  custom_theme_text_dark: "#d0d8d2"
+  custom_theme_accent_dark: "#d4a840"
+  position: 4
   active: true
 folly:
   name: Folly
-  custom_css: "nav {\n  justify-content: center;\n}\n\n.titlebar, .avatar-container {\n  flex-direction:
-    column;\n  align-items: center;\n}\n\n.bio {\n  text-align: center;\n}\n\nheader
-    hr {\n\tborder: none;\n  text-align: center;\n  background: linear-gradient(var(--color-border),
-    var(--color-border)) center / 40% 1px no-repeat;\n  margin: 2rem 0;\n}\n\nheader
-    hr::before {\n\tcontent: \"✿\";\n  color: var(--color-text-muted);\n  background:
-    var(--color-bg);\n  padding: 0 0.5em;\n  font-size: 0.75em;\n}\n"
+  custom_css: "nav {\n  justify-content: center;\n}\n\n.titlebar, .avatar-container
+    {\n  flex-direction: column;\n  align-items: center;\n}\n\n.bio {\n  text-align:
+    center;\n}\n\nheader hr {\n\tborder: none;\n  text-align: center;\n  background:
+    linear-gradient(var(--color-border), var(--color-border)) center / 40% 1px no-repeat;\n
+    \ margin: 2rem 0;\n}\n\nheader hr::before {\n\tcontent: \"✿\";\n  color: var(--color-text-muted);\n
+    \ background: var(--color-bg);\n  padding: 0 0.5em;\n  font-size: 0.75em;\n}\n"
   theme: custom
   font: serif
   width: standard
@@ -213,7 +444,7 @@ folly:
   custom_theme_bg_dark: "#353536"
   custom_theme_text_dark: "#cbd5e1"
   custom_theme_accent_dark: "#df6d83"
-  position: 3
+  position: 5
   active: true
 mozake:
   name: Mozake
@@ -335,308 +566,78 @@ mozake:
   custom_theme_bg_dark: "#ffffff"
   custom_theme_text_dark: "#000000"
   custom_theme_accent_dark: "#0000EE"
-  position: 4
-  active: true
-novella:
-  name: Novella
-  description: A literary editorial theme with golden accents and drop caps
-  custom_css: |
-    /* Novella – literary editorial */
-
-    @import url('https://fonts.bunny.net/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&display=swap');
-    body { font-family: "Newsreader", serif; }
-    :root { --font-size-base: 110%; }
-
-    /* Header: centered masthead */
-    header { display: flex; flex-direction: column; align-items: center; }
-    header > .titlebar { order: 1; }
-    header > .bio { order: 2; }
-    header > nav { order: 3; }
-    header > .email-subscriber-form { order: 4; }
-    header > hr { order: 5; width: 100%; }
-
-    .titlebar { justify-content: center; }
-    .avatar-container {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 0.75rem;
-    }
-    .avatar img { border-radius: 0.5rem; }
-    .blog-title {
-      font-family: var(--font-sans), sans-serif;
-      font-size: 0.95em;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-    }
-    .blog-title a { font-weight: 600; }
-    .bio { text-align: center; font-style: italic; opacity: 0.8; margin-top: 0.5rem; }
-    nav { justify-content: center; gap: 1.25rem; font-size: 0.9em; }
-    nav a { font-weight: 400; }
-
-    /* Divider */
-    header hr {
-      border: none;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--color-border), transparent);
-      margin: 1.75rem 0;
-    }
-
-    /* Stream posts */
-    .post-stream-item {
-      padding-bottom: 2rem;
-      margin-bottom: 2rem;
-      border-bottom: 1px solid var(--color-border);
-    }
-    .post-stream-item:last-of-type { border-bottom: none; }
-
-    h1.post-title { font-weight: 500; letter-spacing: -0.02em; }
-    .post-title a { text-decoration: none; }
-
-    /* Drop cap on first paragraph of posts (not bio) */
-    article.post .e-content > p:first-child::first-letter {
-      font-size: 3.2em;
-      float: left;
-      line-height: 1;
-      padding-right: 0.05em;
-      margin-top: 0.05em;
-      font-weight: 600;
-      color: var(--color-accent);
-    }
-
-    /* Links */
-    .lexxy-content a {
-      text-decoration-color: var(--color-accent-muted);
-      text-underline-offset: 0.15em;
-    }
-    .lexxy-content a:hover { text-decoration-color: var(--color-accent); }
-
-    /* Images */
-    article img { border-radius: 0.25rem; }
-
-    /* Post footer */
-    article footer { font-style: italic; }
-  theme: custom
-  font: serif
-  width: narrow
-  layout: stream_layout
-  custom_theme_bg_light: "#f0f4f1"
-  custom_theme_text_light: "#1a2e22"
-  custom_theme_accent_light: "#b8860b"
-  custom_theme_bg_dark: "#141f18"
-  custom_theme_text_dark: "#d0d8d2"
-  custom_theme_accent_dark: "#d4a840"
-  position: 5
-  active: true
-broadside:
-  name: Broadside
-  description: Bold poster-style typography with oversized year headers and strong accents
-  custom_css: |
-    /* Broadside – poster-style editorial */
-
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-    body { font-family: "Space Grotesk", sans-serif; }
-
-    /* Header: title left, avatar right */
-    .titlebar { margin-top: 2rem; margin-bottom: 0.5rem; }
-    .avatar-container { flex-direction: row-reverse; align-items: center; }
-    .avatar img { border-radius: 0.25rem; }
-    .blog-title {
-      font-size: 2.5em;
-      line-height: 1;
-    }
-    .blog-title a { font-weight: 700; letter-spacing: -0.04em; }
-
-    nav {
-      justify-content: flex-start;
-      gap: 0.5rem;
-      margin-bottom: 0.25rem;
-    }
-    nav a {
-      text-transform: uppercase;
-      font-size: 0.85em;
-      letter-spacing: 0.08em;
-      font-weight: 500;
-      padding: 0.2em 0;
-      border-bottom: 2px solid transparent;
-    }
-    nav a:hover { border-bottom-color: var(--color-accent); }
-
-    .bio { text-align: left; margin-top: 0.75rem; }
-
-    header hr {
-      border: none;
-      height: 3px;
-      background: var(--color-text);
-      margin: 1.25rem 0;
-    }
-
-    /* Year headers – the signature element */
-    .year-header {
-      font-size: 3.5rem;
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      color: var(--color-accent);
-      line-height: 1;
-      margin-bottom: 0.5rem;
-    }
-    .year-header.has-previous { margin-top: 2.5rem; }
-
-    /* Post rows */
-    .post-row {
-      padding: 0.6rem 0;
-      border-bottom: 1px solid var(--color-border);
-    }
-    .post-row a {
-      font-weight: 500;
-      text-decoration: none;
-    }
-    .post-row a:hover { color: var(--color-accent); }
-    .post-row time { font-variant-numeric: tabular-nums; }
-
-    /* Single post */
-    h1.post-title {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-    }
-    .post-title a { text-decoration: none; }
-
-    /* Links */
-    .lexxy-content a { font-weight: 500; }
-
-    /* Tags */
-    .tag-link {
-      text-transform: uppercase;
-      font-size: 0.65em;
-      letter-spacing: 0.08em;
-      font-weight: 600;
-      color: var(--color-accent);
-    }
-  theme: custom
-  font: sans
-  width: standard
-  layout: title_layout
-  custom_theme_bg_light: "#efebed"
-  custom_theme_text_light: "#2d0a5e"
-  custom_theme_accent_light: "#f03124"
-  custom_theme_bg_dark: "#150830"
-  custom_theme_text_dark: "#ede8ee"
-  custom_theme_accent_dark: "#ff4535"
   position: 6
   active: true
-cardashian:
-  name: Cardashian
-  description: A vivid card gallery with accent borders and modern sans typography
+minimal_mono:
+  name: Minimal Mono
+  description: A clean monospace journal theme
   custom_css: |
-    /* Cardashian – vivid card gallery */
+    /* Minimal Mono – 12px monospace journal */
 
-    @import url('https://fonts.bunny.net/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-    body { font-family: "Outfit", sans-serif; }
+    .blog { font-size: 0.75rem; line-height: 1.25rem; }
+    h1, h2, h3, h4, h5, h6 { font-weight: 400; }
+    h1, h2, h3, h4, h5, h6,
+    .blog-title, .bio, nav,
+    h1.post-title, article footer,
+    .post-card-date, .post-card-summary, .post-card-title,
+    .tag-link, .tag-filter-notice, .tag-filter-notice-links, .tag-filter-notice-link,
+    .email-subscriber-form, figcaption, .lexxy-content figcaption { font-size: 0.75rem; }
 
-    /* Header: avatar + title grouped left */
-    .avatar {
-      width: 3.5rem;
-      height: 3.5rem;
-    }
-    .avatar img {
-      width: 3.5rem;
-      height: 3.5rem;
-      border-radius: 0.375rem;
-      border: 2px solid var(--color-accent);
-      box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-accent) 20%, transparent);
-    }
-    .avatar-container { align-items: center; gap: 0.75rem; justify-content: flex-start; }
-    .blog-title a { font-weight: 700; letter-spacing: -0.02em; }
-    .bio { text-align: left; margin-top: 1rem; margin-bottom: 1rem; }
+    /* Header */
+    .avatar, header hr, .post-card-badge { display: none; }
+    nav { justify-content: flex-start; }
+    .bio { text-align: left; }
 
-    nav {
-      justify-content: flex-start;
-      gap: 0.5rem;
-    }
-    nav a {
-      font-weight: 500;
-      font-size: 0.95em;
-      background: var(--color-bg-subtle);
-      padding: 0.25em 0.75em;
-      border-radius: 9999px;
-      color: var(--color-text-muted);
-    }
-    nav a:hover {
-      background: var(--color-accent);
-      color: var(--color-bg);
-    }
-
-    header hr {
-      border: none;
-      height: 2px;
-      background: linear-gradient(to right, var(--color-accent), transparent);
-      margin: 1.5rem 0;
-    }
-
-    /* Cards – accent left border */
+    /* Cards */
     .post-card-content {
-      border: none;
-      border-left: 3px solid var(--color-accent);
-      border-radius: 0 0.5rem 0.5rem 0;
-      background: var(--color-bg-subtle);
+      border: none; box-shadow: none; border-radius: 0;
+      padding: 0; background: transparent;
+      display: flex; flex-direction: column;
     }
-
-    .post-card:hover .post-card-content {
-      box-shadow: 0 8px 24px -4px color-mix(in oklch, var(--color-accent) 20%, transparent);
-      transform: translateY(-2px);
-      border-left-width: 4px;
-    }
-
+    .post-card:hover .post-card-content { box-shadow: none; transform: none; }
+    .post-card-meta { order: -1; margin: 0; }
+    .post-card-meta.has-tags, .post-card-meta.no-tags { margin-top: 0; }
+    .post-card-date { opacity: 1; }
     .post-card-title {
-      font-weight: 700;
-      letter-spacing: -0.02em;
+      color: var(--color-text); letter-spacing: 0; margin-bottom: 0;
+      text-decoration: underline dotted var(--color-text-muted);
+      text-underline-offset: 0.125em;
     }
+    .post-card:hover .post-card-title { text-decoration-color: var(--color-text); }
+    .post-card-summary { margin-bottom: 0; }
 
-    .post-card-badge {
-      background: var(--color-accent);
-      color: var(--color-bg);
-      font-weight: 600;
-      font-size: 0.7em;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-color: transparent;
-    }
+    /* Post */
+    article.post { display: flex; flex-direction: column; }
+    article.post footer { display: contents; }
+    article.post .post-date { order: -1; }
+    article.post .post-actions { margin-top: 1rem; margin-bottom: 1rem; }
+    h1.post-title { line-height: inherit; margin-bottom: 0.5rem; }
+    .tags-container { margin-top: 0.5rem; }
+    .email-form-container { gap: 0.25rem; }
+    .form-container { padding: 0; }
 
-    .post-card-date { font-variant-numeric: tabular-nums; }
+    /* Heading markers */
+    .lexxy-content h1::before,
+    .lexxy-content h2::before,
+    .lexxy-content h3::before,
+    .lexxy-content h4::before { color: var(--color-text-muted); font-weight: inherit; }
+    .lexxy-content h1::before { content: "# "; }
+    .lexxy-content h2::before { content: "## "; }
+    .lexxy-content h3::before { content: "### "; }
+    .lexxy-content h4::before { content: "#### "; }
 
-    .post-card-summary img { border-radius: 0.375rem; }
-
-    /* Single post */
-    h1.post-title {
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-    .post-title a { text-decoration: none; }
+    /* Content */
+    article img { border-radius: 0; }
 
     /* Links */
-    .lexxy-content a {
-      font-weight: 500;
-      text-decoration-color: var(--color-accent-muted);
-      text-underline-offset: 0.15em;
+    .bio a, .lexxy-content a {
+      text-decoration: underline dotted var(--color-text-muted);
+      text-underline-offset: 0.125em;
     }
-    .lexxy-content a:hover { text-decoration-color: var(--color-accent); }
-
-    /* Images */
-    article img { border-radius: 0.375rem; }
-
-    /* Tags */
-    .tag-link { font-weight: 500; }
-  theme: custom
-  font: sans
-  width: standard
-  layout: cards_layout
-  custom_theme_bg_light: "#f9f8f6"
-  custom_theme_text_light: "#1a1718"
-  custom_theme_accent_light: "#7c3aed"
-  custom_theme_bg_dark: "#1a1718"
-  custom_theme_text_dark: "#e8e6e3"
-  custom_theme_accent_dark: "#a78bfa"
+    .bio a:hover, .lexxy-content a:hover { text-decoration-color: var(--color-text); }
+  theme: base
+  font: mono
+  width: narrow
+  layout: stream_layout
   position: 7
   active: true
