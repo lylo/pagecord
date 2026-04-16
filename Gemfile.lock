@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 27fb2a9192b2492791528fc7c3afb53736696bc5
+  revision: c6e58906fc45d4b56767a3cbe062bfcc02be482a
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -173,7 +173,7 @@ GEM
     discard (1.4.0)
       activerecord (>= 4.2, < 9.0)
     drb (2.2.3)
-    erb (6.0.2)
+    erb (6.0.3)
     erubi (1.13.1)
     event_stream_parser (1.0.0)
     faker (3.6.1)
@@ -286,7 +286,7 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (6.0.3)
+    minitest (6.0.4)
       drb (~> 2.0)
       prism (~> 1.5)
     mocha (3.1.0)
@@ -402,7 +402,7 @@ GEM
       activesupport (> 3.1)
       railties (> 3.1)
     rainbow (3.1.1)
-    rake (13.3.1)
+    rake (13.4.2)
     rdoc (7.2.0)
       erb
       psych (>= 4.0.0)
