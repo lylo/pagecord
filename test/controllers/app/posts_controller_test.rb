@@ -165,7 +165,10 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update post with open graph image" do
-    post = @user.blog.posts.first
+    user = users(:joel)
+    user.blog.update!(features: [ "open_graph_image" ])
+    login_as user
+    post = user.blog.posts.first
     image = fixture_file_upload("avatar.png", "image/png")
 
     patch app_post_url(post), params: { post: { title: post.title, content: post.content.to_s, open_graph_image: image } }
@@ -175,7 +178,10 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update post with open_graph_image_suppressed" do
-    post = @user.blog.posts.first
+    user = users(:joel)
+    user.blog.update!(features: [ "open_graph_image" ])
+    login_as user
+    post = user.blog.posts.first
 
     patch app_post_url(post), params: { post: { title: post.title, content: post.content.to_s, open_graph_image_suppressed: true } }
 
