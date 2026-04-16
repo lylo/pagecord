@@ -150,3 +150,12 @@ joel_spanish:
   <<: *default
 
 
+
+annie_home_page:
+  title: Welcome
+  blog: annie
+  published_at: <%= 1.day.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: home
+  is_page: true
+  <<: *default

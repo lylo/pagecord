@@ -209,6 +209,25 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Home page set!", flash[:notice]
   end
 
+  test "should update page with open graph image" do
+    @blog.update!(features: [ "open_graph_image" ])
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    patch app_page_path(@page), params: { post: { open_graph_image: image } }
+
+    assert_redirected_to app_pages_path
+    assert @page.reload.open_graph_image.attached?
+  end
+
+  test "should update page with open_graph_image_suppressed" do
+    @blog.update!(features: [ "open_graph_image" ])
+
+    patch app_page_path(@page), params: { post: { open_graph_image_suppressed: true } }
+
+    assert_redirected_to app_pages_path
+    assert @page.reload.open_graph_image_suppressed?
+  end
+
   test "should preview draft page with blog layout" do
     get app_post_path(@draft_page)
 

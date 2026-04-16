@@ -109,11 +109,8 @@ Rails.application.routes.draw do
       member do
         post :set_as_home_page
       end
-      resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
     end
-    resource :home_page, only: [ :new, :create, :edit, :update, :destroy ] do
-      resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
-    end
+    resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
     resources :settings, only: [ :index ]
 
     resource :onboarding, only: [ :show, :update ], path: "onboarding" do

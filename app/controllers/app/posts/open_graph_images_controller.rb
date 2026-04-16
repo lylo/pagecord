@@ -3,11 +3,10 @@ class App::Posts::OpenGraphImagesController < AppController
   before_action :require_premium
 
   def destroy
-    token = params[:post_token] || params[:page_token]
-    post = token ? Current.user.blog.all_posts.kept.find_by!(token: token) : Current.user.blog.home_page
+    post = Current.user.blog.all_posts.kept.find_by!(token: params[:post_token])
     post.open_graph_image.purge
 
-    path = if post.home_page?
+    redirect_path = if post.home_page?
       edit_app_home_page_path
     elsif post.page?
       edit_app_page_path(post)
@@ -15,7 +14,7 @@ class App::Posts::OpenGraphImagesController < AppController
       edit_app_post_path(post)
     end
 
-    redirect_to path, notice: "Open Graph image removed"
+    redirect_to redirect_path, notice: "Open Graph image removed"
   end
 
   private

@@ -58,7 +58,7 @@
   <%= form_with(model: @page, url: @page.persisted? ? app_page_path(@page) : app_pages_path, html: { id: "page-form" }) do |form| %>
     <%= hidden_field_tag :context_blog_id, Current.user.blog.id if is_new %>
 
-    <%= render "app/posts/open_graph_image_section", record: @page, form: form, delete_path: app_page_open_graph_image_path(@page) if @page.persisted? %>
+    <%= render "app/posts/open_graph_image_section", record: @page, form: form %>
 
     <div class="<%= 'hidden' unless @page.errors[:slug].any? %> mb-8" data-post-attributes-target="section" data-section="slug">
       <div class="mt-4 font-bold">

@@ -171,7 +171,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     post = user.blog.posts.first
     image = fixture_file_upload("avatar.png", "image/png")
 
-    patch app_post_url(post), params: { post: { title: post.title, content: post.content.to_s, open_graph_image: image } }
+    patch app_post_url(post), params: { post: { open_graph_image: image } }
 
     assert_redirected_to app_posts_url
     assert post.reload.open_graph_image.attached?
@@ -183,7 +183,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     login_as user
     post = user.blog.posts.first
 
-    patch app_post_url(post), params: { post: { title: post.title, content: post.content.to_s, open_graph_image_suppressed: true } }
+    patch app_post_url(post), params: { post: { open_graph_image_suppressed: true } }
 
     assert_redirected_to app_posts_url
     assert post.reload.open_graph_image_suppressed?

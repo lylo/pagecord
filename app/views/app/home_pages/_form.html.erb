@@ -27,7 +27,7 @@
   <%= form_with(model: home_page, url: home_page.persisted? ? app_home_page_path : app_home_page_path, method: home_page.persisted? ? :patch : :post, html: { id: "homepage-form" }) do |form| %>
     <%= hidden_field_tag :context_blog_id, Current.user.blog.id unless home_page.persisted? %>
 
-    <%= render "app/posts/open_graph_image_section", record: home_page, form: form, delete_path: app_home_page_open_graph_image_path if home_page.persisted? %>
+    <%= render "app/posts/open_graph_image_section", record: home_page, form: form %>
 
     <%= form.text_field :title,
           placeholder: "Home page title (optional)",

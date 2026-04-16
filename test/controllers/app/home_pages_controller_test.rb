@@ -147,4 +147,29 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
     assert_nil @blog.reload.home_page_id
     assert_equal "Contact", page.reload.title
   end
+
+  test "should update home page with open graph image" do
+    user = users(:annie)
+    user.blog.update!(features: [ "open_graph_image" ])
+    login_as user
+    home_page = user.blog.home_page
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    patch app_home_page_url, params: { post: { open_graph_image: image } }
+
+    assert_redirected_to app_pages_path
+    assert home_page.reload.open_graph_image.attached?
+  end
+
+  test "should update home page with open_graph_image_suppressed" do
+    user = users(:annie)
+    user.blog.update!(features: [ "open_graph_image" ])
+    login_as user
+    home_page = user.blog.home_page
+
+    patch app_home_page_url, params: { post: { open_graph_image_suppressed: true } }
+
+    assert_redirected_to app_pages_path
+    assert home_page.reload.open_graph_image_suppressed?
+  end
 end

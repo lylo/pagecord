@@ -93,7 +93,7 @@
       </div>
     </div>
 
-    <%= render "app/posts/open_graph_image_section", record: @post, form: form, delete_path: app_post_open_graph_image_path(@post) if @post.persisted? %>
+    <%= render "app/posts/open_graph_image_section", record: @post, form: form %>
 
     <div class="<%= 'hidden' unless @post.locale.present? %> mb-8" data-post-attributes-target="section" data-section="locale">
       <div class="mt-4 font-bold">
