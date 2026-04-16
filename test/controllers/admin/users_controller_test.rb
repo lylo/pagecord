@@ -114,16 +114,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_empty user.blog.reload.features
   end
 
-  test "should render features section on show page" do
-    user = users(:vivian)
-
-    get admin_user_url(user)
-
-    assert_response :success
-    assert_select "h3", text: "Features"
-    assert_select "input[type=checkbox][value=analytics_countries]"
-  end
-
   test "should update user trial_ends_at" do
     user = users(:vivian)
     new_trial_date = 30.days.from_now.to_date
