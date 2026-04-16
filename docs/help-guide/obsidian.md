@@ -11,8 +11,11 @@ Publish notes from [Obsidian](https://obsidian.md) to your Pagecord blog using t
 The plugin is pending review in the Obsidian community directory. For now, install it manually:
 
 ```
-git clone https://github.com/lylo/obsidian-pagecord.git
+git clone https://github.com/pagecord/obsidian-pagecord.git
 cd obsidian-pagecord
+npm install
+npm run build
+
 mkdir -p /path/to/your/vault/.obsidian/plugins/obsidian-pagecord
 cp main.js manifest.json /path/to/your/vault/.obsidian/plugins/obsidian-pagecord/
 ```
