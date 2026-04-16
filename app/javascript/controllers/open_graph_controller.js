@@ -8,15 +8,37 @@ export default class extends Controller {
     this.inputTarget.click()
   }
 
+  dragover(event) {
+    event.preventDefault()
+    if (this.hasUploadAreaTarget) this.uploadAreaTarget.dataset.dragover = true
+  }
+
+  dragleave() {
+    if (this.hasUploadAreaTarget) delete this.uploadAreaTarget.dataset.dragover
+  }
+
+  drop(event) {
+    event.preventDefault()
+    this.dragleave()
+    const file = event.dataTransfer.files[0]
+    if (file) this.#handleFile(file)
+  }
+
   handleFileSelect(event) {
     const file = event.target.files[0]
-    if (!file) return
+    if (file) this.#handleFile(file)
+  }
 
+  #handleFile(file) {
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"]
     if (!allowedTypes.includes(file.type)) {
       alert("Please select a JPEG, PNG, or WebP image.")
       return
     }
+
+    const dt = new DataTransfer()
+    dt.items.add(file)
+    this.inputTarget.files = dt.files
 
     const reader = new FileReader()
     reader.onload = (e) => {

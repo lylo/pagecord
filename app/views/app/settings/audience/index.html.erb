@@ -27,7 +27,7 @@
   <div data-controller="subscription-settings" class="mt-8">
     <div class="flex gap-3 <%= 'opacity-50' if email_disabled %>">
       <div class="flex h-6 shrink-0 items-center">
-        <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:cursor-not-allowed", data: { subscription_settings_target: "primary", action: "change->subscription-settings#toggleDependents" } } %>
+        <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:cursor-not-allowed", data: { subscription_settings_target: "primary", action: "change->subscription-settings#toggleDependents" } } %>
       </div>
       <div>
         <%= form.label :email_subscriptions_enabled, "Email subscriptions enabled", class: "text-slate-800 dark:text-slate-100" %>
@@ -55,7 +55,7 @@
 
       <div class="flex gap-3" data-subscription-settings-target="dependent">
         <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :show_subscription_in_header, { checked: @blog.show_subscription_in_header, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
+          <%= form.check_box :show_subscription_in_header, { checked: @blog.show_subscription_in_header, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
         </div>
         <div>
           <%= form.label :show_subscription_in_header, "Show subscription form in blog header", class: "text-slate-800 dark:text-slate-100" %>
@@ -67,7 +67,7 @@
 
       <div class="mt-4 flex gap-3" data-subscription-settings-target="dependent">
         <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :show_subscription_in_footer, { checked: @blog.show_subscription_in_footer, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
+          <%= form.check_box :show_subscription_in_footer, { checked: @blog.show_subscription_in_footer, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
         </div>
         <div>
           <%= form.label :show_subscription_in_footer, "Show subscription form in post footer", class: "text-slate-800 dark:text-slate-100" %>
@@ -82,7 +82,7 @@
   <div class="mt-6">
     <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
       <div class="flex h-6 shrink-0 items-center">
-        <%= form.check_box :reply_by_email, { checked: @blog.reply_by_email, disabled: features_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:cursor-not-allowed" } %>
+        <%= form.check_box :reply_by_email, { checked: @blog.reply_by_email, disabled: features_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:cursor-not-allowed" } %>
       </div>
       <div>
         <%= form.label :reply_by_email, "Allow replies by email", class: "text-slate-800 dark:text-slate-100" %>
@@ -96,7 +96,7 @@
   <div class="mt-6">
     <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
       <div class="flex h-6 shrink-0 items-center">
-        <%= form.check_box :show_upvotes, { checked: @blog.show_upvotes, disabled: features_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300 disabled:cursor-not-allowed" } %>
+        <%= form.check_box :show_upvotes, { checked: @blog.show_upvotes, disabled: features_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:cursor-not-allowed" } %>
       </div>
       <div>
         <%= form.label :show_upvotes, "Show Post Likes ❤️", class: "text-slate-800 dark:text-slate-100" %>
