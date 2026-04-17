@@ -99,6 +99,7 @@ Rails.application.routes.draw do
       resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
         post :test
       end
+      resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
     end
 
     namespace :pages do

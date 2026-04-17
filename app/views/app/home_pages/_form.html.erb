@@ -3,8 +3,31 @@
 
   <div class="mb-4"><%= trial_callout("Image uploads") %></div>
 
+  <% if current_features.enabled?(:open_graph_image) && Current.user.has_premium_access? %>
+  <div class="flex justify-end mb-4" data-controller="toggle">
+    <%= link_to "#", class: "ms-3 font-medium text-slate-500 hover:text-black dark:text-slate-300 dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
+      <%= inline_svg_tag "icons/ellipsis-horizontal-circle.svg", class: "w-7 h-7" %>
+    <% end %>
+    <div class="relative hidden" data-toggle-target="element">
+      <div class="absolute end-0 w-56 rounded-md border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-lg z-100" role="menu">
+        <div class="py-2 px-1">
+          <div class="p-1">
+            <%= link_to "#", class: "flex justify-between items-center rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+              data: { action: "click->post-attributes#toggle", toggle_target: "og-image" } do %>
+              <span class="ms-1">Open Graph Image</span>
+              <span class="hidden md:inline text-xs text-gray-400 dark:text-gray-500">G</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% end %>
+
   <%= form_with(model: home_page, url: home_page.persisted? ? app_home_page_path : app_home_page_path, method: home_page.persisted? ? :patch : :post, html: { id: "homepage-form" }) do |form| %>
     <%= hidden_field_tag :context_blog_id, Current.user.blog.id unless home_page.persisted? %>
+
+    <%= render "app/posts/open_graph_image_section", record: home_page, form: form %>
 
     <%= form.text_field :title,
           placeholder: "Home page title (optional)",

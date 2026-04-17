@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_03_18_172003) do
+ActiveRecord::Schema[8.2].define(version: 2026_04_16_114406) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -293,9 +293,11 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_18_172003) do
     t.string "canonical_url"
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
+    t.text "excerpt"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.string "locale"
+    t.boolean "open_graph_image_suppressed", default: false, null: false
     t.datetime "published_at"
     t.string "slug"
     t.integer "source", default: 0, null: false

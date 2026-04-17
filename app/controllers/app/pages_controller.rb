@@ -73,7 +73,8 @@ class App::PagesController < AppController
 
     def page_params
       status = params[:button] == "save_draft" ? :draft : :published
-
-      params.require(:post).permit(:title, :content, :slug).merge(is_page: true, status: status)
+      permitted = [ :title, :content, :slug ]
+      permitted += [ :open_graph_image, :open_graph_image_suppressed ] if current_features.enabled?(:open_graph_image) && Current.user.has_premium_access?
+      params.require(:post).permit(*permitted).merge(is_page: true, status: status)
     end
 end

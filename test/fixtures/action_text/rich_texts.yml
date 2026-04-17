@@ -194,3 +194,8 @@ embeds:
     <h3>Strava</h3>
     <p><a href="https://www.strava.com/activities/2307958367">https://www.strava.com/activities/2307958367</a></p>
 
+
+annie_home_page:
+  record: annie_home_page (Post)
+  name: content
+  body: <p>Welcome to my blog.</p>

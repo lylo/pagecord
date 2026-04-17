@@ -80,7 +80,7 @@
         data: { controller: "checkbox-auto-submit" } do |form| %>
     <div class="flex gap-3 <%= 'opacity-50' if branding_disabled %>">
       <div class="flex h-6 shrink-0 items-center">
-        <%= form.check_box :show_branding, { checked: @blog.show_branding, disabled: branding_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded #{branding_disabled ? 'cursor-not-allowed' : 'focus:ring focus:ring-slate-300'}" } %>
+        <%= form.check_box :show_branding, { checked: @blog.show_branding, disabled: branding_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded #{branding_disabled ? 'cursor-not-allowed' : 'focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0'}" } %>
       </div>
       <div>
         <%= form.label :show_branding, "Show Pagecord branding", class: "text-slate-800 dark:text-slate-100" %>

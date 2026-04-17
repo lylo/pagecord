@@ -64,10 +64,10 @@
 
       <div class="mt-4 flex gap-3">
         <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :hidden, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" %>
+          <%= form.check_box :hidden, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" %>
         </div>
         <div>
-          <%= form.label :hidden, "Hide this post on my blog", class: "text-slate-800 dark:text-slate-100" %>
+          <%= form.label :hidden, "Hide this post on my blog", class: "text-sm text-slate-800 dark:text-slate-100" %>
           <p class="text-slate-500 text-sm">
             When checked, this post will not be visible on your blog, but it can accessed via it's link.
           </p>
@@ -92,6 +92,8 @@
         </div>
       </div>
     </div>
+
+    <%= render "app/posts/open_graph_image_section", record: @post, form: form %>
 
     <div class="<%= 'hidden' unless @post.locale.present? %> mb-8" data-post-attributes-target="section" data-section="locale">
       <div class="mt-4 font-bold">
