@@ -15,9 +15,11 @@ class Home::SpotlightController < ApplicationController
       Rails.cache.fetch("public_spotlight_recent_posts", expires_in: 15.minutes) do
         spotlight_posts_scope
           .where(published_at: ..15.minutes.ago)
+          .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
           .order(published_at: :desc)
           .limit(20)
           .includes(:blog)
+          .to_a
       end
     end
 

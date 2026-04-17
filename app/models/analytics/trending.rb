@@ -15,6 +15,7 @@ class Analytics::Trending
       .where(blogs: { allow_search_indexing: true })
       .where(users: { discarded_at: nil })
       .where(published_at: 14.days.ago..)
+      .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
       .includes(:blog)
       .map { |post| score_post(post, view_counts) }
       .select { |item| item[:score] > 0 }
