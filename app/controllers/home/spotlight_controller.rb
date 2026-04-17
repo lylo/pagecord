@@ -1,7 +1,6 @@
 class Home::SpotlightController < ApplicationController
   include RoutingHelper
   layout "home"
-  before_action -> { redirect_to root_path unless Current.user&.admin? } # TODO: remove before launch
 
   def show
     @tab = params[:tab] == "recent" ? "recent" : "trending"

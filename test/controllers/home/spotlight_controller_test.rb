@@ -5,9 +5,6 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     Rails.cache.clear
-    host! Rails.application.config.x.domain
-    @admin = users(:joel)
-    login_as @admin
   end
 
   teardown do
@@ -88,23 +85,5 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_match "Title from summary", response.body
-  end
-
-  test "redirects non-admin users" do
-    non_admin = users(:joel)
-    non_admin.update!(admin: false)
-
-    get spotlight_path
-
-    assert_redirected_to root_path
-  end
-
-  test "redirects logged-out users" do
-    reset!
-    host! Rails.application.config.x.domain
-
-    get spotlight_path
-
-    assert_redirected_to root_path
   end
 end
