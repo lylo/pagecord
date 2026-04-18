@@ -12,9 +12,13 @@ class Home::SpotlightController < ApplicationController
 
     def recent_posts
       Rails.cache.fetch("public_spotlight_recent_posts", expires_in: 15.minutes) do
-        spotlight_posts_scope
+        latest_per_blog = spotlight_posts_scope
           .where(published_at: ..15.minutes.ago)
           .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
+          .select("DISTINCT ON (posts.blog_id) posts.*")
+          .order("posts.blog_id, posts.published_at DESC")
+
+        Post.from(latest_per_blog, :posts)
           .order(published_at: :desc)
           .limit(20)
           .includes(:blog)
