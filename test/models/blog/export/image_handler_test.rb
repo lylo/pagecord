@@ -38,6 +38,17 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
     end
   end
 
+  test "SSL errors are not retried" do
+    ssl_error = OpenSSL::SSL::SSLError.new("certificate verify failed (hostname mismatch)")
+
+    URI.stubs(:open).raises(ssl_error)
+    Sentry.expects(:capture_exception).with(instance_of(OpenSSL::SSL::SSLError), has_entries(extra: has_entries(post_slug: @post.slug)))
+
+    assert_nothing_raised do
+      @image_handler.process_images(@post.content.body.to_s)
+    end
+  end
+
   test "extracts original URL from Cloudflare CDN image URLs" do
     cloudflare_url = "https://pagecord.com/cdn-cgi/image/width=1600,height=1200,format=webp,quality=90/https://storage.pagecord.com/78v1ct1yskcl66bzrl5zf8bz2rpw"
     original_url = "https://storage.pagecord.com/78v1ct1yskcl66bzrl5zf8bz2rpw"
