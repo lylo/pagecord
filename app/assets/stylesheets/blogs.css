@@ -163,11 +163,23 @@ footer.blog-footer #brand svg {
 
     .attachment-gallery {
       margin-block: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
     }
 
-    .attachment-gallery .attachment {
+    .attachment-gallery--2,
+    .attachment-gallery--4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .attachment-gallery .attachment,
+    .attachment-gallery.attachment-gallery--2 .attachment,
+    .attachment-gallery.attachment-gallery--4 .attachment {
       margin-block: 0;
       gap: calc(var(--lexxy-attachment-gap) / 2);
+      inline-size: 100%;
+      padding: 0;
     }
 
     .attachment--preview {
