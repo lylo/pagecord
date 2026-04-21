@@ -334,6 +334,32 @@ article img {
 }
 ```
 
+### Galleries: fewer columns on mobile
+
+By default, image galleries render in 2 or 3 columns depending on how many images you've added. On narrow screens this can feel cramped. Change the layout below a chosen breakpoint.
+
+**One image per row on mobile:**
+
+```css
+@media (max-width: 600px) {
+  .attachment-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+**Two images per row on mobile:**
+
+```css
+@media (max-width: 600px) {
+  .attachment-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+```
+
+Adjust `600px` to your preferred breakpoint.
+
 ### Adding a background image to your blog
 
 You can set a background image so that it fits the viewport and scales nicely. It can be unreliable to rely on a 3rd party URL for the image, so I would recommend creating page on your Pagecord blog and upload your background image of choice to it. View the page, then copy the link to the image and then reference that image in your CSS.
