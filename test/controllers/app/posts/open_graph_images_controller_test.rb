@@ -6,7 +6,6 @@ class App::Posts::OpenGraphImagesControllerTest < ActionDispatch::IntegrationTes
   setup do
     @user = users(:joel)
     @post = posts(:one)
-    @user.blog.update!(features: [ "open_graph_image" ])
     login_as @user
   end
 
@@ -57,7 +56,6 @@ class App::Posts::OpenGraphImagesControllerTest < ActionDispatch::IntegrationTes
 
   test "should destroy open graph image on home page and redirect to home page edit" do
     annie = users(:annie)
-    annie.blog.update!(features: [ "open_graph_image" ])
     login_as annie
     home_page = posts(:annie_home_page)
     home_page.open_graph_image.attach(

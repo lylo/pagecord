@@ -1,5 +1,4 @@
 class App::Posts::OpenGraphImagesController < AppController
-  before_action :require_feature
   before_action :require_premium
 
   def destroy
@@ -18,10 +17,6 @@ class App::Posts::OpenGraphImagesController < AppController
   end
 
   private
-
-    def require_feature
-      render_app_not_found unless current_features.enabled?(:open_graph_image)
-    end
 
     def require_premium
       render_app_not_found unless Current.user.has_premium_access?

@@ -81,7 +81,7 @@ class App::PostsController < AppController
     def post_params
       status = params[:button] == "save_draft" ? :draft : :published
       permitted = [ :title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale ]
-      permitted += [ :open_graph_image, :open_graph_image_suppressed ] if current_features.enabled?(:open_graph_image) && Current.user.has_premium_access?
+      permitted += [ :open_graph_image, :open_graph_image_suppressed ] if Current.user.has_premium_access?
       params.require(:post).permit(*permitted).merge(status: status)
     end
 

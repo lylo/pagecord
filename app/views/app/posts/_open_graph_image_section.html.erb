@@ -1,4 +1,4 @@
-<% if current_features.enabled?(:open_graph_image) && Current.user.has_premium_access? %>
+<% if Current.user.has_premium_access? %>
 <div class="<%= 'hidden' unless record.open_graph_image.attached? || record.open_graph_image_suppressed? %> mb-8" data-post-attributes-target="section" data-section="og-image">
   <div class="mt-4 font-bold">Open Graph Image</div>
 

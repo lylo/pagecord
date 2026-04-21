@@ -210,7 +210,6 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update page with open graph image" do
-    @blog.update!(features: [ "open_graph_image" ])
     image = fixture_file_upload("avatar.png", "image/png")
 
     patch app_page_path(@page), params: { post: { open_graph_image: image } }
@@ -220,8 +219,6 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update page with open_graph_image_suppressed" do
-    @blog.update!(features: [ "open_graph_image" ])
-
     patch app_page_path(@page), params: { post: { open_graph_image_suppressed: true } }
 
     assert_redirected_to app_pages_path
