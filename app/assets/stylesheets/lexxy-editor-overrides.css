@@ -198,6 +198,9 @@ lexxy-highlight-dropdown button {
 }
 
 lexxy-link-dropdown {
+  max-inline-size: 48ch;
+  margin-inline: auto;
+
   form {
     display: flex;
     align-items: center;
@@ -223,6 +226,7 @@ lexxy-link-dropdown {
   /* Shared styles for link/unlink buttons */
   button.lexxy-editor__toolbar-button:is([value="link"], [value="unlink"]) {
     aspect-ratio: auto;
+    block-size: 1.75lh;
     padding-inline: 1ch;
   }
 
