@@ -43,6 +43,12 @@ module RoutingHelper
     email_subscriber_one_click_unsubscribe_url(email_subscriber.token, host: host(email_subscriber.blog))
   end
 
+  def micropub_endpoint_url
+    options = Rails.application.config.action_controller.default_url_options
+    port    = options[:port] ? ":#{options[:port]}" : ""
+    "#{options[:protocol] || 'https'}://api.#{Rails.application.config.x.domain}#{port}/micropub"
+  end
+
   private
 
     def route_for_blog(blog, route_name, type, options = {})

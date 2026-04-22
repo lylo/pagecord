@@ -218,6 +218,9 @@ Rails.application.routes.draw do
       resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
       resource :home_page, only: [ :show, :create, :update, :destroy ]
       resources :attachments, only: [ :create ]
+      post "/micropub",       to: "micropub#create"
+      get  "/micropub",       to: "micropub#query"
+      post "/micropub/media", to: "micropub/media#create"
     end
   end
 
