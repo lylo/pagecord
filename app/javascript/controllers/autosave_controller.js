@@ -5,58 +5,56 @@ export default class extends Controller {
   static values = { key: String }
 
   connect() {
-    this.restore()
+    this.baseDraft = this.currentDraft()
+
+    if (this.isExistingRecord && this.hasContentTarget && !this.baseDraft.content) {
+      customElements.whenDefined(this.contentTarget.localName).then(() => {
+        this.baseDraft = this.currentDraft()
+        this.restore()
+      })
+    } else {
+      this.restore()
+    }
 
     if (this.hasTitleTarget) {
-      this.titleTarget.addEventListener("input", () => {
-        this.save()
-      })
+      this.titleTarget.addEventListener("input", () => this.save())
     }
 
     if (this.hasContentTarget) {
-      this.contentTarget.addEventListener("lexxy:change", () => {
-        this.save()
-      })
+      this.contentTarget.addEventListener("lexxy:change", () => this.save())
     }
 
     this.element.addEventListener("submit", () => this.clear())
   }
 
   save() {
-    const data = {
-      title: this.titleTarget?.value,
-      content: this.contentTarget?.value
-    }
-
-    localStorage.setItem(this.keyValue, JSON.stringify(data))
+    localStorage.setItem(this.keyValue, JSON.stringify({
+      ...this.currentDraft(),
+      base: this.baseDraft
+    }))
   }
 
   restore() {
-    const raw = localStorage.getItem(this.keyValue)
-    if (!raw) return
+    const draft = this.readDraft()
+    if (!draft) return
 
-    try {
-      const { title, content } = JSON.parse(raw)
-
-      if (title && this.hasTitleTarget && !this.titleTarget.value.trim()) {
-        this.titleTarget.value = title
-      }
-
-      if (content && this.hasContentTarget) {
-        this.contentTarget.value = content
-      }
-    } catch {
+    if (this.isExistingRecord && !this.canRestoreExistingDraft(draft)) {
       this.clear()
+      return
+    }
+
+    if (draft.title && this.hasTitleTarget) {
+      this.titleTarget.value = draft.title
+    }
+
+    if (draft.content && this.hasContentTarget) {
+      this.contentTarget.value = draft.content
     }
   }
 
   cancel(event) {
-    const isEdit = this.keyValue.startsWith("draft-post-") && !this.keyValue.endsWith("new")
-    const hasDraft = !!localStorage.getItem(this.keyValue)
-
-    if (isEdit && hasDraft) {
-      const confirmed = confirm("You have unsaved changes. Are you sure you want to lose them?")
-      if (!confirmed) {
+    if (this.isExistingRecord && this.readDraft()) {
+      if (!confirm("You have unsaved changes. Are you sure you want to lose them?")) {
         event.preventDefault()
         return
       }
@@ -67,6 +65,37 @@ export default class extends Controller {
 
   clear() {
     localStorage.removeItem(this.keyValue)
+  }
+
+  currentDraft() {
+    return {
+      title: this.titleTarget?.value || "",
+      content: this.contentTarget?.value || ""
+    }
+  }
+
+  readDraft() {
+    const raw = localStorage.getItem(this.keyValue)
+    if (!raw) return null
+
+    try {
+      return JSON.parse(raw)
+    } catch {
+      this.clear()
+      return null
+    }
+  }
+
+  get isExistingRecord() {
+    return !this.keyValue.match(/-new(?:-|$)/)
+  }
+
+  // Existing-post drafts are only safe to restore if they were captured from the
+  // same saved post state that's being edited now.
+  canRestoreExistingDraft(draft) {
+    return draft.base &&
+      draft.base.title === this.baseDraft.title &&
+      draft.base.content === this.baseDraft.content
   }
 
 }

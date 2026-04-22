@@ -22,6 +22,7 @@ New to Pagecord? Start here. These guides will help you set up your blog and pub
 Learn how to create posts, format your content, add images, schedule posts for later, and organise with tags.
 
 - [Writing posts](writing-posts.md)
+- [Media embeds](media-embeds.md)
 - [Posting by email](posting-by-email.md)
 
 ## Pages & Navigation
@@ -42,10 +43,11 @@ Make your blog your own. Choose a theme, tweak colours, change layouts, add cust
 
 ## Email
 
-Pagecord was built around email. Premium subscribers can enable people to subscribe to their blog via email, and enable the Reply by Email feature.
+Pagecord was built around email. Premium subscribers can enable people to subscribe to their blog via email, and enable the Reply by Email and Contact Form features.
 
 - [Email subscriptions](email-subscriptions.md)
 - [Reply by email](reply-by-email.md)
+- [Contact form](contact-form.md)
 
 ## Custom Domains
 
@@ -64,6 +66,13 @@ See who's reading your blog. Pagecord provides privacy-focused analytics with no
 Let readers subscribe to your blog using an RSS reader.
 
 - [RSS feeds](rss-feeds.md)
+
+## API & Integrations
+
+Use the Pagecord API to manage your blog programmatically, or publish directly from tools like Obsidian.
+
+- [API](api.md)
+- [Publishing from Obsidian](obsidian.md)
 
 ## Account & Billing
 

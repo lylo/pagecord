@@ -1,16 +1,37 @@
 import { Controller } from "@hotwired/stimulus"
 
+let pending = new Map()
+let scheduled = false
+
+function fetchBatchStatuses() {
+  const batch = pending
+  pending = new Map()
+  scheduled = false
+
+  const params = new URLSearchParams()
+  for (const token of batch.keys()) params.append("tokens[]", token)
+
+  fetch(`/upvotes/statuses?${params}`)
+    .then(response => response.json())
+    .then(statuses => {
+      batch.forEach((callback, token) => {
+        if (statuses[token]) callback()
+      })
+    })
+}
+
 export default class extends Controller {
   static targets = ["heart"]
-  static values = { url: String }
+  static values = { token: String }
 
   connect() {
-    if (this.hasUrlValue) {
-      fetch(this.urlValue)
-        .then(response => response.json())
-        .then(({ upvoted }) => {
-          if (upvoted) this.fill()
-        })
+    if (this.hasTokenValue) {
+      pending.set(this.tokenValue, () => this.fill())
+
+      if (!scheduled) {
+        scheduled = true
+        queueMicrotask(fetchBatchStatuses)
+      }
     }
   }
 

@@ -29,11 +29,18 @@ lexxy-editor {
     color: inherit;
   }
 
+  /* Flip <em> to upright inside italic blockquotes so emphasis is visible.
+     Workaround for https://github.com/basecamp/lexxy/issues/XXX */
+  blockquote em.lexxy-content__italic {
+    font-style: normal;
+  }
+
   .lexxy-content__table-wrapper {
     margin-block: 0 var(--lexxy-content-margin);
   }
 
   .horizontal-divider {
+    margin-block: var(--lexxy-content-margin);
     padding-block: 0.5em;
 
     hr {
@@ -146,6 +153,12 @@ lexxy-toolbar {
     .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
       background-color: var(--color-slate-600);
     }
+
+    .lexxy-editor__toolbar-dropdown-list button {
+      color: var(--color-slate-200);
+
+      svg path { fill: currentColor; }
+    }
   }
 
   /* Highlight dropdown reset button */
@@ -155,22 +168,17 @@ lexxy-toolbar {
 
 }
 
+/* Tailwind's border-box on ::after makes the 0.3ch chevron collapse into a dot */
+lexxy-toolbar .lexxy-editor__toolbar-dropdown--chevron summary::after {
+  box-sizing: content-box;
+}
+
 /* ================================== */
 /* Minimal Toolbar Buttons Hidden      */
 /* ================================== */
 .lexxy-minimal lexxy-toolbar {
-  button:is(
-    [name="quote"],
-    [name="code"],
-    [name="upload"],
-    [name="unordered-list"],
-    [name="ordered-list"],
-    [name="heading"],
-    [name="highlight"],
-    [name="table"],
-    [name="divider"],
-    [name="strikethrough"]),
-  summary[name="highlight"] {
+  button:is([name="quote"], [name="code"], [name="table"], [name="divider"], [name="image"], [name="file"]),
+  details:has(summary:is([name="format"], [name="lists"], [name="highlight"])) {
     display: none;
   }
 }
@@ -190,6 +198,9 @@ lexxy-highlight-dropdown button {
 }
 
 lexxy-link-dropdown {
+  max-inline-size: 48ch;
+  margin-inline: auto;
+
   form {
     display: flex;
     align-items: center;
@@ -215,6 +226,7 @@ lexxy-link-dropdown {
   /* Shared styles for link/unlink buttons */
   button.lexxy-editor__toolbar-button:is([value="link"], [value="unlink"]) {
     aspect-ratio: auto;
+    block-size: 1.75lh;
     padding-inline: 1ch;
   }
 

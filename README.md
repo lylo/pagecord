@@ -10,7 +10,7 @@ Publish your writing effortlessly. All you need is email.
 
 ### Quick Start with Docker
 
-The easiest way to get Pagecord running locally is with Docker.
+The easiest way to get Pagecord running locally is with Docker. `docker compose up` is the Docker equivalent of `bin/dev` — it starts PostgreSQL, Redis, Memcached, the Rails server, and the Tailwind watcher all in one go.
 
 First, install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and make sure it's running.
 
@@ -19,31 +19,42 @@ Then:
 ```bash
 git clone https://github.com/lylo/pagecord.git
 cd pagecord
-docker-compose up
+docker compose up
 ```
 
-This will:
-- Start PostgreSQL, Redis, and Memcached containers
-- Build and run the Rails app
-- Set up the database automatically
+This stays running in your terminal. Open a second terminal for running commands.
 
 You can view the app at [http://localhost:3000](http://localhost:3000). You can view individual blogs on their respective subdomains, e.g. [http://joel.localhost:3000](http://joel.localhost:3000). Note: Safari doesn't support `*.localhost` subdomains - use `lvh.me` instead (e.g. [http://joel.lvh.me:3000](http://joel.lvh.me:3000)).
 
+### After pulling changes
+
+```bash
+# Rebuild the image (needed when Gemfile or Dockerfile changes)
+docker compose up --build
+
+# Clear stale CSS (needed when Tailwind output looks wrong or out of date)
+docker compose exec web rake assets:clobber
+```
+
+Your local files are mounted into the container, so changes to `.erb` views and Ruby files take effect immediately. But compiled assets like `app/assets/builds/tailwind.css` can become stale — if the UI looks wrong after pulling, clear them with `assets:clobber` and the Tailwind watcher will regenerate.
+
 ### Running commands in Docker
+
+With `docker compose up` running in one terminal, use a second terminal for one-off commands:
 
 ```bash
 # Rails console
-docker-compose exec web bin/rails console
+docker compose exec web bin/rails console
 
 # Run tests
-docker-compose exec web bin/rails test
-docker-compose exec web bin/rails test:system
+docker compose exec web bin/rails test
+docker compose exec web bin/rails test:system
 
 # Run migrations
-docker-compose exec web bin/rails db:migrate
+docker compose exec web bin/rails db:migrate
 
 # Process emails (debug)
-docker-compose exec web bash -c "DIR=tmp/emails rake email:load"
+docker compose exec web bash -c "DIR=tmp/emails rake email:load"
 ```
 
 ### Native Development (Alternative)

@@ -4,17 +4,29 @@ published: true
 published_at: 2025-12-18T16:30:29+00:00
 ---
 
-Make your blog your own. All appearance settings are in **Settings** → **Appearance**.
+Make your blog your own. Identity settings live in **Settings** → **About**, and visual design options are in **Settings** → **Appearance**.
 
-## Bio
+## About
 
-Add a short bio that appears on your blog's home page. This is a great place to introduce yourself to readers.
+Found in **Settings** → **About**. These settings control how your blog introduces itself to readers.
 
-## Title
+### Bio
+
+Add a short bio that appears on your blog's home page. This is a great place to introduce yourself or describe what your blog is about.
+
+### Title
 
 By default, your blog title is your username (e.g. @joel). You can change it to anything you like.
 
-## Colour scheme
+### Avatar
+
+Premium feature. Upload an image that appears next to your blog title.
+
+## Appearance
+
+Found in **Settings** → **Appearance**. These settings control how your blog looks. Most changes apply immediately making it easy to see the results. Note that Custom colours and Custom CSS have their own Save buttons.
+
+### Colour scheme
 
 Choose from several pre-made themes:
 
@@ -30,7 +42,7 @@ Or choose **Custom** to pick your own colours for background, text, and accent �
 
 All themes automatically support dark mode based on your reader's system preference.
 
-## Font
+### Font
 
 Choose between three font styles:
 
@@ -38,7 +50,7 @@ Choose between three font styles:
 - **Serif** — Classic, traditional serif
 - **Mono** — Monospaced, typewriter-style
 
-## Content width
+### Content width
 
 Control how wide your content appears:
 
@@ -46,7 +58,7 @@ Control how wide your content appears:
 - **Standard** — Balanced width
 - **Wide** — More room for images and content
 
-## Layout
+### Layout
 
 Choose how posts appear on your home page:
 
@@ -54,11 +66,20 @@ Choose how posts appear on your home page:
 - **List of Titles** — Compact list with dates and titles
 - **Cards** — Grid of cards with excerpts
 
-## Avatar
-
-Premium feature. Upload an image that appears next to your blog title.
-
-## Branding
+### Branding
 
 Premium feature. Choose whether to hide the Pagecord logo at the bottom of your blog (please consider keeping it to spread the good word about Pagecord!)
 
+## Theme Garden
+
+Found in **Settings** → **Appearance** → **Theme Garden** link. Premium feature.
+
+The Theme Garden is a curated collection of CSS templates that you can preview and apply to your blog with one click. Each template is a complete design – combining custom CSS with optional colour scheme, font, layout, and width settings.
+
+- **Preview** any template to see how it looks with your own blog content (opens in a new tab)
+- **Apply** a template to instantly update your blog's appearance
+- Templates use your blog's colour scheme variables, so switching colour scheme after applying a template still works
+
+If you already have Custom CSS, you'll be asked to confirm before applying a template (since it replaces your existing CSS).
+
+Have a CSS design you'd like to share with the community? [Email us](mailto:hello@pagecord.com) and we may add it to the garden.

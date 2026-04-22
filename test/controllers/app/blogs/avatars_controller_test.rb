@@ -20,7 +20,7 @@ class App::Blogs::AvatarsControllerTest < ActionDispatch::IntegrationTest
 
     delete app_blog_avatar_path(@blog)
 
-    assert_redirected_to app_settings_appearance_index_path
+    assert_redirected_to app_settings_about_index_path
     assert_equal "Avatar removed", flash[:notice]
     assert_not @blog.reload.avatar.attached?, "Avatar should be removed after destroy"
   end

@@ -23,6 +23,7 @@ de:
         footer: "Du hast den Newsletter abonniert, um neue Beiträge von %{blog_name} zu erhalten."
         unsubscribe_link: "Abmelden"
         unsubscribe_text: "Zum Abmelden klicke auf den folgenden Link:"
+        view_online: "Diesen Beitrag online ansehen"
       confirmation:
         subject: "Bestätige dein Abonnement bei %{blog_name}"
         message: "Bitte bestätige dein Abonnement bei %{blog_name}. Wenn du dich nicht anmelden wolltest, kannst du diese E-Mail ignorieren."
@@ -37,15 +38,7 @@ de:
     read_more: "Weiterlesen"
   replies:
     form:
-      name_label: "Dein Name"
-      email_label: "Deine E-Mail"
       subject_label: "Betreff"
-      message_label: "Nachricht"
-      submit_button: "Antwort senden"
       cancel_link: "Abbrechen"
-    success_message: "Antwort erfolgreich gesendet!"
     mailer:
       intro: "Toll! Jemand hat auf deinen Beitrag geantwortet"
-      from_label: "Von"
-      footer: "Antworte auf diese E-Mail, um %{name} zu antworten."
-      footer_text: "Um %{name} zu antworten, antworte einfach auf diese E-Mail."

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
+ActiveRecord::Schema[8.2].define(version: 2026_04_16_114406) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -88,6 +88,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.boolean "allow_search_indexing", default: true, null: false
     t.string "analytics_id"
     t.string "analytics_service"
+    t.string "api_key_digest"
+    t.string "api_key_hint"
     t.datetime "created_at", null: false
     t.text "custom_css"
     t.string "custom_domain"
@@ -120,10 +122,21 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
+    t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
+  end
+
+  create_table "contact_messages", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.text "message", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_contact_messages_on_blog_id"
   end
 
   create_table "content_moderations", force: :cascade do |t|
@@ -192,13 +205,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.string "url"
     t.index ["blog_id", "position"], name: "index_navigation_items_on_blog_id_and_position"
     t.index ["post_id"], name: "index_navigation_items_on_post_id"
-  end
-
-  create_table "open_graph_images", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "post_id", null: false
-    t.datetime "updated_at", null: false
-    t.string "url", null: false
   end
 
   create_table "paddle_events", force: :cascade do |t|
@@ -287,13 +293,14 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.string "canonical_url"
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
+    t.text "excerpt"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.string "locale"
+    t.boolean "open_graph_image_suppressed", default: false, null: false
     t.datetime "published_at"
-    t.text "raw_content"
-    t.boolean "show_in_navigation", default: true, null: false
     t.string "slug"
+    t.integer "source", default: 0, null: false
     t.integer "status", default: 1, null: false
     t.string "tag_list", default: [], array: true
     t.text "text_summary"
@@ -375,6 +382,30 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
+  create_table "theme_templates", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "author_name"
+    t.string "author_url"
+    t.datetime "created_at", null: false
+    t.text "custom_css", null: false
+    t.string "custom_theme_accent_dark"
+    t.string "custom_theme_accent_light"
+    t.string "custom_theme_bg_dark"
+    t.string "custom_theme_bg_light"
+    t.string "custom_theme_text_dark"
+    t.string "custom_theme_text_light"
+    t.text "description"
+    t.string "font"
+    t.integer "layout"
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.string "theme"
+    t.datetime "updated_at", null: false
+    t.string "width"
+    t.index ["active"], name: "index_theme_templates_on_active"
+    t.index ["position"], name: "index_theme_templates_on_position"
+  end
+
   create_table "unengaged_follow_ups", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "sent_at", null: false
@@ -414,6 +445,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
   add_foreign_key "blog_exports", "blogs"
   add_foreign_key "blogs", "posts", column: "home_page_id", on_delete: :nullify
   add_foreign_key "blogs", "users"
+  add_foreign_key "contact_messages", "blogs"
   add_foreign_key "content_moderations", "posts"
   add_foreign_key "custom_domain_changes", "blogs"
   add_foreign_key "digest_posts", "post_digests"
@@ -422,7 +454,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_23_124623) do
   add_foreign_key "email_subscribers", "blogs"
   add_foreign_key "navigation_items", "blogs"
   add_foreign_key "navigation_items", "posts"
-  add_foreign_key "open_graph_images", "posts"
   add_foreign_key "paddle_events", "users"
   add_foreign_key "page_views", "blogs"
   add_foreign_key "page_views", "posts"

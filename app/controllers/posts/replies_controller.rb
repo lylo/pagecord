@@ -1,6 +1,10 @@
 class Posts::RepliesController < Blogs::BaseController
   include SpamPrevention
 
+  rate_limit to: 3, within: 1.hour, only: [ :create ]
+
+  before_action :turnstile_check, only: [ :create ]
+
   skip_before_action :authenticate, :ip_reputation_check
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
@@ -23,7 +27,7 @@ class Posts::RepliesController < Blogs::BaseController
     if @reply.save
       SendPostReplyJob.perform_later(@reply.id)
 
-      redirect_to view_context.post_path(@post), notice: I18n.t("replies.success_message")
+      redirect_to view_context.post_path(@post), notice: I18n.t("email_form.success_message")
     else
       render :new, status: :unprocessable_entity
     end
@@ -40,15 +44,11 @@ class Posts::RepliesController < Blogs::BaseController
     end
 
     def verify
-      begin
-        token_data = encryptor.decrypt_and_verify(params[:form_token])
-        if token_data["post_id"] != @post.id
-          raise "Form token / post_id mismatch"
-        end
-      rescue => e
-        Rails.logger.warn("Reply spam check failed: #{e.message}")
-        head :unprocessable_entity and return
-      end
+      token_data = encryptor.decrypt_and_verify(params[:form_token])
+      raise "Form token / post_id mismatch" if token_data["post_id"] != @post.id
+    rescue => e
+      Rails.logger.warn("Reply spam check failed: #{e.message}")
+      head :unprocessable_entity
     end
 
     def encryptor

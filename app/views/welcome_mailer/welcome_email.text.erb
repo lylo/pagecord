@@ -1,16 +1,19 @@
-Hi there ( * ^ *) ノシ
+Hi there 👋
 
-Thanks so much for signing up to Pagecord!
+Thanks for signing up to Pagecord. Your blog is live at <%= blog_home_url(@blog) %>.
 
-Your blog is now live at <%= blog_home_url(@blog) %>. Log in to create your first post, or try creating one by sending an email from <%= @user.email %> to <%= @blog.delivery_email %>.
+To get started, try customising your site to make it your own. You can:
 
-You have 14 days of free access to all Premium features! This includes custom domains, blog analytics, image uploads and custom CSS. Give them a try!
+- Browse the Theme Garden for ready-made designs: <%= app_settings_theme_garden_index_url %>
+- Pick your colour scheme and typeface
+- Create a Home page, an About page, or any page you like
+- Take full control of the design with custom CSS
 
-You can customise the look and feel of your blog in the Settings > Appearance area. You can create a custom home page and even embed your latest posts and tags in it. See the Pagecord Help Guide to read about all the features! -> https://help.pagecord.com.
+Log in to get started: <%= app_onboarding_url %>
 
-After your trial you can continue using Pagecord for free, or you can upgrade for only $<%= @price %>/year or $<%= @monthly_price %>/month to keep all the premium features. I think it's the best deal out there and it helps keep Pagecord running!
+One more thing — you can also publish posts by emailing <%= @blog.delivery_email %> directly from <%= @user.email %>. No login needed!
 
-I'd love to know what you think of Pagecord. You can let me know by replying to this email!
+If you get stuck or have any questions, check out the Help Guide at https://help.pagecord.com — or just reply to this email. I read every one.
 
 Olly
 

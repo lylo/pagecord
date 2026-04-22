@@ -5,6 +5,8 @@ published: true
 
 Custom CSS is an advanced feature that gives you finer control over the look and feel of your blog. You can change fonts, colors, adjust spacing, hide elements and more.
 
+**New to Custom CSS?** Try the [Theme Garden](https://pagecord.com/app/settings/theme_garden) first – it has curated CSS templates you can preview and apply with one click, no coding required.
+
 ### A Quick Note
 
 Pagecord is small business. It's not possible to offer customer support with writing or debugging custom CSS — you're on your own with this one!
@@ -29,10 +31,10 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ .titlebar                                    │ │ │ │
-│ │ │ │ ┌──────────────────┐ ┌─────────────────────┐ │ │ │ │
-│ │ │ │ │ .avatar-container│ │ .blog-title         │ │ │ │ │
-│ │ │ │ │ [ .avatar ]      │ │                     │ │ │ │ │
-│ │ │ │ └──────────────────┘ └─────────────────────┘ │ │ │ │
+│ │ │ │ ┌──────────────────────────────────────────┐ │ │ │ │
+│ │ │ │ │ .avatar-container (when avatar present)  │ │ │ │ │
+│ │ │ │ │ [ .avatar ] [ .blog-title ]              │ │ │ │ │
+│ │ │ │ └──────────────────────────────────────────┘ │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ .bio (Your profile description)              │ │ │ │
@@ -70,7 +72,7 @@ Here are some examples of CSS snippets you can use to customise your blog.
 
 ### Changing the font
 
-Pagecord has three lovely default fonts: Sans-Serif (Inter), Serif (Source Sans Pro), and Monospace (IBM Plex Mono). If you'd like to use a different font, you can import it from [Google Fonts](https://fonts.google.com/) or [Bunny Fonts](https://fonts.bunny.net/) (the only providers supported). Here's an example of using the "Lato" font from Google Fonts which is a solid alternative sans-serif choice:
+Pagecord has three lovely default fonts: Sans-Serif (Inter), Serif (Lora), and Monospace (IBM Plex Mono). If you'd like to use a different font, you can import it from [Google Fonts](https://fonts.google.com/) or [Bunny Fonts](https://fonts.bunny.net/) (the only providers supported). Here's an example of using the "Lato" font from Google Fonts which is a solid alternative sans-serif choice:
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
@@ -96,9 +98,32 @@ You might like sans-serif fonts for your body text and a serif font for headings
 
 ```css
 h1, h2, h3, h4, h5 {
-  font-family: SourceSerif4Variable, serif;
+  font-family: "Lora Variable", serif;
 }
 ```
+
+### Centering the Header
+
+Center the navigation, title, avatar, and bio:
+
+```css
+nav {
+  justify-content: center;
+}
+
+.titlebar, .avatar-container {
+  flex-direction: column;
+  align-items: center;
+}
+
+.bio {
+  text-align: center;
+}
+```
+
+This targets both `.titlebar` and `.avatar-container` so it works whether or not you have an avatar.
+
+Or pick and choose from the individual options below.
 
 ### Centering the Top Navigation
 
@@ -110,12 +135,21 @@ nav {
 }
 ```
 
-### Stacking the Avatar and Title in the centre
+### Centering the Title and Avatar
 
-If you want your avatar to appear above your blog title and both to be centered:
+If you have an avatar, target `.avatar-container` to stack and center both:
 
 ```css
 .avatar-container {
+  flex-direction: column;
+  align-items: center;
+}
+```
+
+If you don't have an avatar (or want it to work either way), include `.titlebar` too:
+
+```css
+.titlebar, .avatar-container {
   flex-direction: column;
   align-items: center;
 }
@@ -255,6 +289,29 @@ article footer .post-actions {
 }
 ```
 
+### Styling posts by tag
+
+Posts with tags include a `data-tags` attribute on their wrapper element. You can use this to style posts differently based on their tags:
+
+```css
+[data-tags~="photo"] {
+  border-left: 3px solid #f4a435;
+}
+```
+
+### Non-italic blockquotes
+
+Blockquotes are styled in italics by default. If you prefer upright text, use this snippet. The second rule ensures that any emphasised text inside the quote still appears italic:
+
+```css
+blockquote {
+  font-style: normal;
+}
+blockquote em {
+  font-style: italic;
+}
+```
+
 ### Full-width images
 
 By default, images display at their natural size. To make all images stretch to fill the full width of your posts:
@@ -276,6 +333,32 @@ article img {
   margin-inline-start: 0;
 }
 ```
+
+### Galleries: fewer columns on mobile
+
+By default, image galleries render in 2 or 3 columns depending on how many images you've added. On narrow screens this can feel cramped. Change the layout below a chosen breakpoint.
+
+**One image per row on mobile:**
+
+```css
+@media (max-width: 600px) {
+  .attachment-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+**Two images per row on mobile:**
+
+```css
+@media (max-width: 600px) {
+  .attachment-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+```
+
+Adjust `600px` to your preferred breakpoint.
 
 ### Adding a background image to your blog
 

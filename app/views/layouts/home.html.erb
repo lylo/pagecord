@@ -9,10 +9,10 @@
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
-    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $29/year." %>">
+    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $39/year." %>">
 
     <% og_title = (content_for?(:title) ? content_for(:title) : "Pagecord: Blog Without The Slog.").strip %>
-    <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $29/year.").strip %>
+    <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $39/year.").strip %>
     <% og_image = (content_for?(:og_image) ? content_for(:og_image) : image_url("social/open-graph.webp")).strip %>
 
     <!-- Open Graph / Facebook -->
@@ -28,7 +28,7 @@
     <meta property="twitter:image" content="<%= og_image %>">
     <meta property="twitter:card" content="summary_large_image">
 
-    <link rel="canonical" href="<%= request.original_url %>">
+    <link rel="canonical" href="<%= canonical_url %>">
 
     <%= stylesheet_link_tag "tailwind", "inter", "source-serif-4", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -59,7 +59,7 @@
     </div>
 
     <main class="flex flex-grow text-slate-950 dark:text-slate-50">
-      <div class="mx-auto mt-8">
+      <div class="mx-auto mt-8 w-full">
         <%= yield %>
       </div>
     </main>

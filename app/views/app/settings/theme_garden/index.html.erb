@@ -1,0 +1,46 @@
+<h2 class="text-2xl font-bold mb-2">🪴 Theme Garden</h2>
+<p class="mb-8">
+  Browse our curated selection of theme templates and apply them to your blog with one click.
+</p>
+
+<% confirm_message = @blog.custom_css.present? ? "This will replace your current Custom CSS and appearance settings. Continue?" : nil %>
+<% if @templates.any? %>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @templates.each do |template| %>
+      <div class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+        <% if template.screenshot? %>
+          <%= image_tag template.screenshot_asset, class: "w-full h-48 object-cover object-top", alt: template.name %>
+        <% else %>
+          <div class="w-full h-48 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+            <span class="text-slate-400 dark:text-slate-600 text-sm">No preview</span>
+          </div>
+        <% end %>
+
+        <div class="p-4">
+          <h3 class="font-bold text-lg mb-1"><%= template.name %></h3>
+          <% if template.author_name.present? %>
+            <p class="text-xs text-slate-400 dark:text-slate-500 mb-3">
+              By
+              <% if template.author_url.present? %>
+                <%= link_to template.author_name, template.author_url, class: "underline", target: "_blank" %>
+              <% else %>
+                <%= template.author_name %>
+              <% end %>
+            </p>
+          <% end %>
+
+          <div class="flex gap-2">
+            <%= link_to "Preview", preview_app_settings_theme_garden_path(template), class: "btn-secondary text-sm", target: "_blank" %>
+            <%= button_to "Apply", apply_app_settings_theme_garden_path(template), class: "btn-primary text-sm", form: { data: { turbo_confirm: confirm_message } } %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-slate-500 dark:text-slate-400">No templates available yet. Check back soon!</p>
+<% end %>
+
+<div class="mt-12 border-t border-t-slate-200 dark:border-slate-600 pt-4">
+  <%= link_to "Back to Appearance", app_settings_appearance_index_path, class: "btn-secondary" %>
+</div>

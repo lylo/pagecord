@@ -7,11 +7,12 @@ class PostDigest::DeliveryJob < ApplicationJob
 
   def perform(post_digest_id)
     digest = PostDigest.find(post_digest_id)
-
-    if !Rails.env.production?
-      deliver_via_mailer(digest)
-    else
-      PostDigest::PostmarkDelivery.new(digest).deliver_all
+    with_sentry_context(user: digest.blog.user, blog: digest.blog) do
+      if Rails.env.production?
+        PostDigest::PostmarkDelivery.new(digest).deliver_all
+      else
+        deliver_via_mailer(digest)
+      end
     end
   end
 

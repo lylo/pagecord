@@ -1,12 +1,12 @@
 <div class="post">
   <% if post.title %>
-    <h2>
+    <h2 class="post-title">
       <%= link_to post.title, post_url(post) %>
     </h2>
   <% end %>
 
   <div class="post-content">
-    <%= strip_video_tags(without_action_text_image_wrapper(post.content.to_s)).html_safe %>
+    <%= render_digest_post_content(post) %>
   </div>
   <p class="post-timestamp">
      <%= link_to l(post.published_at_in_user_timezone.to_date, format: :post_date), post_url(post) %>

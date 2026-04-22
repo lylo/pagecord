@@ -1,12 +1,11 @@
 class App::PostsController < AppController
   include Pagy::Method
-  include EditorPreparation
 
   rescue_from Pagy::RangeError, with: :redirect_to_first_page
 
   def index
-    posts_query = Current.user.blog.posts.kept.published.order(published_at: :desc)
-    drafts_query = Current.user.blog.posts.kept.draft.order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
+    posts_query = Current.user.blog.posts.kept.published.includes(:post_digests).order(published_at: :desc)
+    drafts_query = Current.user.blog.posts.kept.draft.includes(:post_digests).order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
 
     @search_term = params[:search]
     if @search_term.present?
@@ -20,6 +19,7 @@ class App::PostsController < AppController
       end
     end
 
+    @search_results_count = @search_term.present? ? posts_query.count + drafts_query.count : nil
     @pagy, @posts = pagy(posts_query, limit: 25)
     @drafts = @pagy.page == 1 ? drafts_query.load : []
     @total_posts_count = Current.user.blog.posts.kept.published.count
@@ -31,8 +31,6 @@ class App::PostsController < AppController
 
   def edit
     @post = Current.user.blog.posts.kept.find_by!(token: params[:token])
-
-    prepare_content_for_editor(@post)
 
     session[:return_to_page] = params[:page].presence
   end
@@ -46,11 +44,13 @@ class App::PostsController < AppController
   end
 
   def create
-    post = Current.user.blog.posts.build(post_params)
-    if post.save
+    @post = Current.user.blog.posts.build(post_params)
+
+    return render_stale_form_context unless context_blog_id_matches_current_blog?
+
+    if @post.save
       redirect_to app_posts_path, notice: "Post was successfully created"
     else
-      @post = post
       render :new, status: :unprocessable_entity
     end
   end
@@ -64,7 +64,6 @@ class App::PostsController < AppController
 
       redirect_to app_posts_path(options), notice: "Post was successfully updated"
     else
-      prepare_content_for_editor(@post)
       render :edit, status: :unprocessable_entity
     end
   end
@@ -78,10 +77,12 @@ class App::PostsController < AppController
 
   private
 
+
     def post_params
       status = params[:button] == "save_draft" ? :draft : :published
-
-      params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale).merge(status: status)
+      permitted = [ :title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale ]
+      permitted += [ :open_graph_image, :open_graph_image_suppressed ] if Current.user.has_premium_access?
+      params.require(:post).permit(*permitted).merge(status: status)
     end
 
     def redirect_to_first_page

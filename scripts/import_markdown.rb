@@ -165,8 +165,7 @@ def import_markdown(path, blog_subdomain, assets_root: nil, dry_run: false)
       title: title,
       published_at: published_at,
       tag_list: tag_list,
-      is_page: is_page,
-      show_in_navigation: false
+      is_page: is_page
     )
 
     # Process images and create ActionText content

@@ -1,0 +1,15 @@
+<% content_for :head do %>
+  <base href="<%= blog_home_url(@blog) %>">
+<% end %>
+
+<%= render "blogs/header" %>
+
+<% if @posts.any? %>
+  <div class="<%= @blog.layout %>">
+    <%= render @blog.layout %>
+  </div>
+<% else %>
+  <div class="empty-state">
+    <p>No posts to preview</p>
+  </div>
+<% end %>

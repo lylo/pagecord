@@ -1,19 +1,20 @@
 class Blogs::PostsController < Blogs::BaseController
   include Pagy::Method, RequestHash, PostsHelper
 
+  STREAM_PAGE_SIZE = 15
+  TITLE_PAGE_SIZE = 100
+
   rate_limit to: 60, within: 1.minute
 
   skip_forgery_protection only: :not_found
   rescue_from Pagy::RangeError, with: :redirect_to_last_page
 
   def index
-    # FIXME this filtered check can be removed after cache has been reset
-    filtered = params[:tag].present?
-    if request.format.html? && @blog.has_custom_home_page? && !filtered
+    if request.format.html? && @blog.has_custom_home_page? && !filtered?
       @post = @blog.home_page
       if @post&.published? && !@post.pending?
         set_blog_cache_headers
-        return if fresh_when etag: etag_for(@post), last_modified: @post.updated_at, public: true, template: "blogs/posts/show"
+        return if fresh_when etag: [ @post.id, @blog.updated_at ], last_modified: @blog.updated_at, public: true, template: "blogs/posts/show"
         return render :show
       end
     end
@@ -22,18 +23,19 @@ class Blogs::PostsController < Blogs::BaseController
   end
 
   def posts_list
-    base_scope = @blog.posts.visible
+    @current_tags = params[:tag].split(",").map(&:strip) if params[:tag].present?
+    @current_lang = params[:lang].to_s.downcase.split("-").first if params[:lang].present?
+
+    scope = @blog.posts.visible
       .with_full_rich_text
       .includes(:upvotes)
       .order(published_at: :desc, id: :desc)
+    scope = scope.tagged_with_any(@current_tags) if @current_tags
+    scope = scope.tagged_without_any(params[:without_tag].split(",").map(&:strip)) if params[:without_tag].present?
+    scope = scope.titled(params[:title]) if params[:title].present?
+    scope = scope.for_locale(@current_lang, @blog.locale) if @current_lang
 
-    # Filter by tag if specified
-    if params[:tag].present?
-      base_scope = base_scope.tagged_with(params[:tag])
-      @current_tag = params[:tag]
-    end
-
-    @pagy, @posts = pagy(base_scope, limit: page_size)
+    @pagy, @posts = pagy(scope, limit: page_size)
 
     respond_to do |format|
       format.html do
@@ -58,8 +60,10 @@ class Blogs::PostsController < Blogs::BaseController
       .includes(:upvotes)
       .find_by!(slug: blog_params[:slug])
 
+    return if flash.any? # Don't cache responses with flash — session skip prevents flash clearing
+
     set_blog_cache_headers
-    fresh_when etag: etag_for(@post), last_modified: @post.updated_at, public: true, template: "blogs/posts/show"
+    fresh_when etag: [ @post.id, @blog.updated_at ], last_modified: @blog.updated_at, public: true
   end
 
   # Handle unmatched routes on blog domains
@@ -74,19 +78,15 @@ class Blogs::PostsController < Blogs::BaseController
     end
 
     def page_size
-      @blog.title_layout? ? 100 : 15
-    end
-
-    def etag_for(post)
-      post.is_page? ? [ post, @blog.posts.maximum(:updated_at) ] : post
+      @blog.title_layout? ? TITLE_PAGE_SIZE : STREAM_PAGE_SIZE
     end
 
     def set_conditional_get_headers
       set_blog_cache_headers
 
       stale?(
-        etag: [ @posts.map(&:id), @blog.id, @pagy.page ],
-        last_modified: @posts.maximum(:updated_at),
+        etag: [ @blog.id, @blog.updated_at, @pagy.page ],
+        last_modified: @blog.updated_at,
         public: true
       )
     end
@@ -97,6 +97,7 @@ class Blogs::PostsController < Blogs::BaseController
     # Custom domains are not edge-cached (they route through Caddy, not Cloudflare).
     # No-op unless Cloudflare credentials are configured.
     def set_blog_cache_headers
+      return unless default_domain_request?
       return unless Rails.env.production? && ENV["CLOUDFLARE_ZONE_ID"].present? && ENV["CLOUDFLARE_API_TOKEN"].present?
 
       response.headers["Cache-Tag"] = @blog.subdomain

@@ -1,4 +1,4 @@
-<% if show_email_banner?(@post, @blog) && current_features.enabled?(:individual_email_delivery) %>
+<% if show_email_banner?(@post, @blog) %>
   <% subscriber_count = @blog.email_subscribers.confirmed.count %>
   <% if @post.individually_sent? %>
     <% digest = @post.post_digests.individual.first %>
@@ -21,11 +21,14 @@
           <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" %>
           <span>Send this post to your <%= pluralize(subscriber_count, "subscriber") %>.</span>
         </div>
-        <%= button_to "Send to subscribers",
-          app_post_broadcast_path(@post),
-          method: :post,
-          class: "btn-primary text-xs !py-1.5 !px-3",
-          data: { turbo_confirm: "Send this post to all your email subscribers?" } %>
+        <div class="flex items-center gap-3">
+          <%= link_to "Send a test email", test_app_post_broadcast_path(@post), data: { turbo_method: :post, turbo_confirm: "Send a test email to #{Current.user.email}?" }, class: "text-xs underline" %>
+          <%= button_to "Send to subscribers",
+            app_post_broadcast_path(@post),
+            method: :post,
+            class: "btn-primary text-xs !py-1.5 !px-3",
+            data: { turbo_confirm: "Send this post to all your email subscribers?" } %>
+        </div>
       </div>
     </div>
   <% end %>

@@ -1,5 +1,13 @@
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
   <% disabled = !@blog.user.subscribed? %>
+  <div>
+    <h3 class="font-bold text-lg mb-2">Post by Email</h3>
+    <p>
+      Send an email from <%= @blog.user.email %> to
+      <%= mail_to @blog.delivery_email, class: "font-semibold underline" %> to publish a new post on this blog.
+    </p>
+  </div>
+
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
     <% if disabled %>
@@ -53,7 +61,7 @@
     <div class="mt-6">
       <div class="flex gap-3">
         <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+          <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" } %>
         </div>
         <div>
           <%= form.label :allow_search_indexing, "Allow search engines to index my blog", class: "text-slate-800 dark:text-slate-100" %>

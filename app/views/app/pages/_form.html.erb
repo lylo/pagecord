@@ -1,7 +1,7 @@
 <% is_new = !@page.persisted? %>
 
 <div data-controller="post-attributes autosave"
-    data-autosave-key-value="<%= is_new ? "draft-page-new" : "draft-page-#{@page.id}" %>">
+    data-autosave-key-value="<%= is_new ? "draft-page-new-#{Current.user.blog.id}" : "draft-page-#{@page.id}" %>">
 
   <div class="mb-4"><%= trial_callout("Image uploads") %></div>
 
@@ -22,6 +22,16 @@
                 <span class="hidden md:inline text-xs text-gray-400 dark:text-gray-500">S</span>
               <% end %>
             </div>
+
+            <% if Current.user.has_premium_access? %>
+              <div class="p-1">
+                <%= link_to "#", class: "flex justify-between items-center rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+                  data: { action: "click->post-attributes#toggle", toggle_target: "og-image" } do %>
+                  <span class="ms-1">Open Graph Image</span>
+                  <span class="hidden md:inline text-xs text-gray-400 dark:text-gray-500">G</span>
+                <% end %>
+              </div>
+            <% end %>
 
             <% if @page.persisted? %>
               <hr class="mx-2 mt-2 dark:border-gray-600">
@@ -46,6 +56,9 @@
   </div>
 
   <%= form_with(model: @page, url: @page.persisted? ? app_page_path(@page) : app_pages_path, html: { id: "page-form" }) do |form| %>
+    <%= hidden_field_tag :context_blog_id, Current.user.blog.id if is_new %>
+
+    <%= render "app/posts/open_graph_image_section", record: @page, form: form %>
 
     <div class="<%= 'hidden' unless @page.errors[:slug].any? %> mb-8" data-post-attributes-target="section" data-section="slug">
       <div class="mt-4 font-bold">

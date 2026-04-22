@@ -1,12 +1,12 @@
 <%= t('replies.mailer.intro') %>: <%= @post.display_title %>
 
-<%= t('replies.mailer.from_label') %>:
+<%= t('email_form.mailer.from_label') %>:
 <%= @reply.name %> (<%= @reply.email %>)
 
 <%= t('replies.form.subject_label') %>:
 <%= @reply.subject %>
 
-<%= t('replies.form.message_label') %>:
+<%= t('email_form.form.message_label') %>:
 <%= @reply.message.gsub(/\r?\n/, "\n") %>
 
-<%= t('replies.mailer.footer_text', name: @reply.name) %>
+<%= t('email_form.mailer.footer_text', name: @reply.name) %>

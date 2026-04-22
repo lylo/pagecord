@@ -4,19 +4,35 @@ class WelcomeMailer < MailpaceMailer
   default from: "Olly at Pagecord <hello@mailer.pagecord.com>",
           reply_to: "Olly at Pagecord <olly@pagecord.com>"
 
+  before_action :set_user_and_blog
+
+  # Sent immediately after a user completes signup (via AccessRequestsController).
   def welcome_email
-    @user = params[:user]
-    @blog = @user.blog
-    @price = params[:price] || Subscription.price
-    @monthly_price = Subscription.price(:monthly)
+    @preheader_text = "Pick a theme, add a Home or About page, then publish your first post."
 
-    mail to: @user.email, subject: "Welcome to Pagecord!"
+    mail to: @user.email, subject: "Your Pagecord is live! Time to make it your own"
   end
 
-  def unengaged_follow_up
-    @user = params[:user]
-    @blog = @user.blog
+  # Sent to users who signed up 1+ month ago but never completed onboarding
+  # (still in "account_created" state). Triggered by SendUnengagedFollowUpEmailsJob.
+  def onboarding_follow_up
+    @preheader_text = "It only takes a minute to make your blog feel like yours."
 
-    mail to: @user.email, subject: "Can I help you get started with Pagecord?"
+    mail to: @user.email, subject: "Your Pagecord is waiting — make it yours"
   end
+
+  # Sent to users who completed onboarding 1+ month ago but never published a post.
+  # Triggered by SendUnengagedFollowUpEmailsJob.
+  def no_content_follow_up
+    @preheader_text = "Don't overthink it — an About page, a short post, anything at all."
+
+    mail to: @user.email, subject: "Your Pagecord could use a first post"
+  end
+
+  private
+
+    def set_user_and_blog
+      @user = params[:user]
+      @blog = @user.blog
+    end
 end

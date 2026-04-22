@@ -35,6 +35,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should publish post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
         post: { title: "New Post", content: "New content" }
       }
     end
@@ -48,6 +49,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should create hidden post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
         post: { title: "Hidden Post", content: "Hidden content", hidden: true }
       }
     end
@@ -62,6 +64,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should create public post when hidden is false" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
         post: { title: "Public Post", content: "Public content", hidden: false }
       }
     end
@@ -76,6 +79,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should save draft post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
         post: { title: "New Post", content: "New content" },
         button: "save_draft"
       }
@@ -92,6 +96,31 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     end
     assert post_to_discard.reload.discarded?
     assert_redirected_to app_posts_path
+  end
+
+  test "should not create post when form blog context does not match session blog" do
+    assert_no_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        context_blog_id: users(:joel).blog.id,
+        post: { title: "New Post", content: "New content" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Your browser session changed while you were editing."
+    assert_includes response.body, "New Post"
+  end
+
+  test "should not create post when form blog context is missing" do
+    assert_no_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        post: { title: "New Post", content: "New content" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Your browser session changed while you were editing."
+    assert_includes response.body, "New Post"
   end
 
   test "should show edit post page for published post" do
@@ -135,6 +164,29 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "https://example.com", @user.blog.posts.first.canonical_url
   end
 
+  test "should update post with open graph image" do
+    user = users(:joel)
+    login_as user
+    post = user.blog.posts.first
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    patch app_post_url(post), params: { post: { open_graph_image: image } }
+
+    assert_redirected_to app_posts_url
+    assert post.reload.open_graph_image.attached?
+  end
+
+  test "should update post with open_graph_image_suppressed" do
+    user = users(:joel)
+    login_as user
+    post = user.blog.posts.first
+
+    patch app_post_url(post), params: { post: { open_graph_image_suppressed: true } }
+
+    assert_redirected_to app_posts_url
+    assert post.reload.open_graph_image_suppressed?
+  end
+
   test "should update post and preserve page via session" do
     get edit_app_post_url(@user.blog.posts.first, page: 3)
 
@@ -152,6 +204,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should create post with tags" do
     assert_difference("Post.count") do
       post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
         post: {
           title: "Post with Tags",
           content: "Content about Rails and JavaScript",
@@ -184,6 +237,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should preserve tags on validation errors" do
     post app_posts_url, params: {
+      context_blog_id: @user.blog.id,
       post: {
         title: "Invalid Post",
         content: "", # Invalid - content is required
@@ -314,6 +368,26 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "should show emailed icon for posts in delivered digests" do
+    post = @user.blog.posts.create!(title: "Emailed Post", content: "Content")
+    digest = PostDigest.create!(blog: @user.blog, kind: :individual, delivered_at: Time.current)
+    digest.digest_posts.create!(post: post)
+
+    get app_posts_url
+
+    assert_response :success
+    assert_select "svg title", text: "Emailed to subscribers"
+  end
+
+  test "should show private icon for hidden posts" do
+    @user.blog.posts.create!(title: "Hidden Post", content: "Content", hidden: true)
+
+    get app_posts_url
+
+    assert_response :success
+    assert_select "svg title", text: "Private post"
+  end
+
   test "app area should be inaccessible on custom domain" do
     post = posts(:four)
     login_as post.blog.user
@@ -324,13 +398,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should preview draft post with blog layout" do
-    draft_post = @user.blog.posts.create!(
-      title: "Draft Preview",
-      content: "Draft content for preview",
-      status: :draft
-    )
-
-    get app_post_url(draft_post)
+    get app_post_url(posts(:vivian_draft))
 
     assert_response :success
     assert_select "article"

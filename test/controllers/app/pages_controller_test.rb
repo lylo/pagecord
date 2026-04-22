@@ -17,6 +17,27 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should sort pages by recently updated when requested" do
+    @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
+    posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
+
+    get app_pages_path(sort: "updated")
+
+    assert_response :success
+    assert_operator response.body.index("Fresh Notes"), :<, response.body.index("Archive Page")
+  end
+
+  test "should sort pages by remembered cookie preference" do
+    @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
+    posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
+
+    get app_pages_path(sort: "updated")
+    get app_pages_path
+
+    assert_response :success
+    assert_operator response.body.index("Fresh Notes"), :<, response.body.index("Archive Page")
+  end
+
   test "should get new" do
     get new_app_page_path
     assert_response :success
@@ -25,27 +46,26 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should create page" do
     assert_difference("@blog.pages.count") do
       post app_pages_path, params: {
+        context_blog_id: @blog.id,
         post: {
           title: "New Page",
-          content: "Page content",
-          show_in_navigation: true
+          content: "Page content"
         }
       }
     end
 
     page = @blog.pages.last
     assert page.page?
-    assert page.show_in_navigation?
     assert_redirected_to app_pages_path
   end
 
   test "should create draft page" do
     assert_difference("@blog.pages.count") do
       post app_pages_path, params: {
+        context_blog_id: @blog.id,
         post: {
           title: "Test Draft Page",
-          content: "Draft content",
-          show_in_navigation: false
+          content: "Draft content"
         },
         button: "save_draft"
       }
@@ -54,7 +74,6 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     page = @blog.pages.last
     assert page.page?
     assert page.draft?
-    assert_not page.show_in_navigation?
   end
 
   test "should get edit" do
@@ -62,18 +81,32 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should not create page when form blog context does not match session blog" do
+    assert_no_difference("@blog.pages.count") do
+      post app_pages_path, params: {
+        context_blog_id: users(:elliot).blog.id,
+        post: {
+          title: "New Page",
+          content: "Page content"
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Your browser session changed while you were editing."
+    assert_includes response.body, "New Page"
+  end
+
   test "should update page" do
     patch app_page_path(@page), params: {
       post: {
         title: "Updated About",
-        content: "Updated content",
-        show_in_navigation: false
+        content: "Updated content"
       }
     }
 
     @page.reload
     assert_equal "Updated About", @page.title
-    assert_not @page.show_in_navigation?
     assert_redirected_to app_pages_path
   end
 
@@ -115,6 +148,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should not create page without title" do
     assert_no_difference("@blog.pages.count") do
       post app_pages_path, params: {
+        context_blog_id: @blog.id,
         post: {
           content: "Content without title"
         }
@@ -127,6 +161,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should not create page without content" do
     assert_no_difference("@blog.pages.count") do
       post app_pages_path, params: {
+        context_blog_id: @blog.id,
         post: {
           title: "Title without content"
         }
@@ -172,6 +207,22 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal @draft_page.id, @blog.home_page_id
     assert_redirected_to app_pages_path
     assert_equal "Home page set!", flash[:notice]
+  end
+
+  test "should update page with open graph image" do
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    patch app_page_path(@page), params: { post: { open_graph_image: image } }
+
+    assert_redirected_to app_pages_path
+    assert @page.reload.open_graph_image.attached?
+  end
+
+  test "should update page with open_graph_image_suppressed" do
+    patch app_page_path(@page), params: { post: { open_graph_image_suppressed: true } }
+
+    assert_redirected_to app_pages_path
+    assert @page.reload.open_graph_image_suppressed?
   end
 
   test "should preview draft page with blog layout" do

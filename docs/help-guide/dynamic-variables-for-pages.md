@@ -72,6 +72,42 @@ By default, posts are shown newest first. Use `sort: asc` to show oldest first â
 {{ posts | sort: asc }}
 ```
 
+#### **Exclude posts with a tag**
+
+```javascript
+{{ posts | without_tag: personal }}
+```
+
+#### **Exclude posts with multiple tags**
+
+```javascript
+{{ posts | without_tag: personal, draft }}
+```
+
+#### **Only posts with a title**
+
+```javascript
+{{ posts | title: true }}
+```
+
+#### **Only posts without a title**
+
+```javascript
+{{ posts | title: false }}
+```
+
+#### **Only posts sent in a newsletter**
+
+```javascript
+{{ posts | emailed: true }}
+```
+
+#### **Only posts not sent in a newsletter**
+
+```javascript
+{{ posts | emailed: false }}
+```
+
 #### **Combine parameters**
 
 ```javascript
@@ -92,6 +128,24 @@ Display posts grouped by year with headers â€” perfect for archive pages.
 
 ```javascript
 {{ posts_by_year | tag: photography }}
+```
+
+#### **Exclude posts with a tag**
+
+```javascript
+{{ posts_by_year | without_tag: personal }}
+```
+
+#### **Only posts with a title**
+
+```javascript
+{{ posts_by_year | title: true }}
+```
+
+#### **Only posts sent as newsletter**
+
+```javascript
+{{ posts_by_year | emailed: true }}
 ```
 
 #### **Sort order**
@@ -118,6 +172,34 @@ Display a list of all tags used in your posts.
 {{ tags | style: inline }}
 ```
 
+### Last Updated Date
+
+Display the date the page was last updated. This is handy for pages that evolve over time, such as a Now page or a reading log.
+
+```javascript
+{{ updated_at }}
+```
+
+By default, the date is shown in your blog's locale format. Use the `format` parameter for a specific style:
+
+| Format | Example |
+|--------|---------|
+| _(default)_ | 12 Sep 2026 _(locale-specific)_ |
+| `datetime` | 12 Sep 2026 14:30 _(locale-specific + time)_ |
+| `long` | 12 September 2026 _(English only)_ |
+| `long_datetime` | 12 September 2026 14:30 _(English only)_ |
+| `dd_mm_yyyy` | 12/09/2026 |
+| `mm_dd_yyyy` | 09/12/2026 |
+| `yyyy_mm_dd` | 2026-09-12 |
+
+```javascript
+{{ updated_at format: datetime }}
+```
+
+Note: `long` and `long_datetime` always display month names in English. For non-English blogs, use the default or a numeric format.
+
+You can style the output with the CSS class `updated-at`.
+
 ### Email Subscription
 
 Embed an email subscription form for readers to subscribe to your blog (premium customers only).
@@ -127,6 +209,16 @@ Embed an email subscription form for readers to subscribe to your blog (premium 
 ```
 
 _Note: This only appears if you have email subscriptions enabled in your blog settings._
+
+### Contact Form
+
+Embed a contact form so readers can send you a message directly from your blog.
+
+```javascript
+{{ contact_form }}
+```
+
+_Note: This is a premium feature and only appears for subscribers and users on a free trial._
 
 ## Examples
 
@@ -166,7 +258,7 @@ Browse posts by topic:
 
 ## Tips
 
-- Dynamic variables only work in **pages** , not blog posts
+- Dynamic variables only work in **pages**, not blog posts
 - If a variable isn't recognized, it will appear as-is in your content
 - The posts list automatically excludes unpublished and scheduled posts
 - Tags are sorted alphabetically

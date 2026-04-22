@@ -95,16 +95,16 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     user = users(:vivian)
 
     patch admin_user_url(user), params: {
-      user: { blog_attributes: { id: user.blog.id, features: [ "", "analytics_countries" ] } }
+      user: { blog_attributes: { id: user.blog.id, features: [ "", "individual_email_delivery" ] } }
     }
 
     assert_redirected_to admin_user_path(user)
-    assert_includes user.blog.reload.features, "analytics_countries"
+    assert_includes user.blog.reload.features, "individual_email_delivery"
   end
 
   test "should remove all features from blog" do
     user = users(:vivian)
-    user.blog.update!(features: [ "analytics_countries" ])
+    user.blog.update!(features: [ "individual_email_delivery" ])
 
     patch admin_user_url(user), params: {
       user: { blog_attributes: { id: user.blog.id, features: [ "" ] } }
@@ -112,16 +112,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_user_path(user)
     assert_empty user.blog.reload.features
-  end
-
-  test "should render features section on show page" do
-    user = users(:vivian)
-
-    get admin_user_url(user)
-
-    assert_response :success
-    assert_select "h3", text: "Features"
-    assert_select "input[type=checkbox][value=analytics_countries]"
   end
 
   test "should update user trial_ends_at" do

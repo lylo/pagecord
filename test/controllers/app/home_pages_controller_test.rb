@@ -21,20 +21,25 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create home page with title" do
     assert_difference("@blog.pages.count") do
-      post app_home_page_url, params: { post: { title: "Welcome", content: "Welcome to my blog" } }
+      post app_home_page_url, params: {
+        context_blog_id: @blog.id,
+        post: { title: "Welcome", content: "Welcome to my blog" }
+      }
     end
 
     assert_redirected_to app_pages_path
     home_page = @blog.reload.home_page
     assert_equal "Welcome", home_page.title
     assert_equal true, home_page.is_page
-    assert_equal false, home_page.show_in_navigation
     assert_equal "published", home_page.status
   end
 
   test "should create home page without title" do
     assert_difference("@blog.pages.count") do
-      post app_home_page_url, params: { post: { content: "Welcome to my blog" } }
+      post app_home_page_url, params: {
+        context_blog_id: @blog.id,
+        post: { content: "Welcome to my blog" }
+      }
     end
 
     assert_redirected_to app_pages_path
@@ -45,10 +50,26 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create home page without content" do
     assert_no_difference("@blog.pages.count") do
-      post app_home_page_url, params: { post: { title: "Welcome" } }
+      post app_home_page_url, params: {
+        context_blog_id: @blog.id,
+        post: { title: "Welcome" }
+      }
     end
 
     assert_response :unprocessable_entity
+  end
+
+  test "should not create home page when form blog context does not match session blog" do
+    assert_no_difference("@blog.pages.count") do
+      post app_home_page_url, params: {
+        context_blog_id: users(:elliot).blog.id,
+        post: { title: "Welcome", content: "Welcome to my blog" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Your browser session changed while you were editing."
+    assert_includes response.body, "Welcome"
   end
 
   # Edit action
@@ -71,7 +92,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
   # Update action
 
   test "should update home page" do
-    page = @blog.pages.create!(title: "Old Title", content: "Old content", status: :published)
+    page = posts(:about)
     @blog.update!(home_page_id: page.id)
 
     patch app_home_page_url, params: { post: { title: "New Title", content: "New content" } }
@@ -95,7 +116,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
   # Destroy action
 
   test "should remove home page" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome content", status: :published)
+    page = posts(:about)
     @blog.update!(home_page_id: page.id)
 
     delete app_home_page_url
@@ -118,12 +139,35 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not change title on home page with title when removing" do
-    page = @blog.pages.create!(title: "My Homepage", content: "Welcome content", status: :published)
+    page = posts(:contact)
     @blog.update!(home_page_id: page.id)
 
     delete app_home_page_url
 
     assert_nil @blog.reload.home_page_id
-    assert_equal "My Homepage", page.reload.title
+    assert_equal "Contact", page.reload.title
+  end
+
+  test "should update home page with open graph image" do
+    user = users(:annie)
+    login_as user
+    home_page = user.blog.home_page
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    patch app_home_page_url, params: { post: { open_graph_image: image } }
+
+    assert_redirected_to app_pages_path
+    assert home_page.reload.open_graph_image.attached?
+  end
+
+  test "should update home page with open_graph_image_suppressed" do
+    user = users(:annie)
+    login_as user
+    home_page = user.blog.home_page
+
+    patch app_home_page_url, params: { post: { open_graph_image_suppressed: true } }
+
+    assert_redirected_to app_pages_path
+    assert home_page.reload.open_graph_image_suppressed?
   end
 end

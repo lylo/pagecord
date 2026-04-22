@@ -1,13 +1,4 @@
 module PostsHelper
-  def without_action_text_image_wrapper(html)
-    doc = Nokogiri::HTML::DocumentFragment.parse(html)
-    doc.css("action-text-attachment").each do |attachment|
-      figure = attachment.at_css("figure")
-      attachment.replace(figure) if figure
-    end
-    doc.to_html
-  end
-
   def strip_video_tags(html)
     doc = Nokogiri::HTML::DocumentFragment.parse(html)
     doc.css("figure").each do |figure|
@@ -32,14 +23,43 @@ module PostsHelper
     item.link_url
   end
 
+  def filtered?
+    params[:tag].present? || params[:title].present? || params[:lang].present?
+  end
+
+  def filter_description
+    parts = []
+    parts << "tagged with <strong>#{h @current_tags.join(", ")}</strong>" if @current_tags.present?
+    parts << (params[:title] == "true" ? "with titles" : "without titles") if params[:title].present?
+    parts << "in <strong>#{h Post.locale_name(@current_lang)}</strong>" if @current_lang.present?
+    safe_join([ "Posts ", parts.join(", ").html_safe ])
+  end
+
+  def post_tag_data(post)
+    { tags: post.tag_list.join(" ") } if post.tag_list.present?
+  end
+
   def published_at_date_format
     :post_date
+  end
+
+  def render_post_content(post)
+    content = process_dynamic_variables(post)
+    content = Html::StripActionTextAttachments.new.transform(content)
+
+    safe_auto_link(content, sanitize: false).html_safe
+  end
+
+  def render_digest_post_content(post)
+    content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
+
+    strip_video_tags(content).html_safe
   end
 
   def process_dynamic_variables(post)
     return post.content.to_s unless post.is_page?
 
-    processor = DynamicVariableProcessor.new(blog: post.blog, view: self)
+    processor = DynamicVariableProcessor.new(post: post, view: self)
     processor.process(post.content.to_s)
   rescue => e
     Rails.logger.error("Dynamic variable error: #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}")

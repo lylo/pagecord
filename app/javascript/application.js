@@ -2,7 +2,7 @@ import "@hotwired/turbo-rails"
 import "controllers"
 
 
-import "lexxy"
+import * as Lexxy from "lexxy"
 import "@rails/actiontext"
 
 import LocalTime from "local-time"

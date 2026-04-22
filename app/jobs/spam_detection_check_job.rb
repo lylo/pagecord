@@ -5,7 +5,7 @@ class SpamDetectionCheckJob < ApplicationJob
     blog = Blog.find_by(id: blog_id)
     return unless blog
 
-    detector = SpamDetector.new(blog)
+    detector = BlogSpamDetector.new(blog)
     detector.detect
 
     Rails.logger.info "[SpamDetection] #{blog.subdomain}: #{detector.result.status} - #{detector.result.reason}"

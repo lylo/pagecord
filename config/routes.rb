@@ -17,6 +17,16 @@ module DomainConstraints
       request.host == default_host || request.host == "www.#{default_host}"
     end
   end
+
+  def self.api_domain?(request)
+    if Rails.env.test?
+      request.host == "api.example.com"
+    elsif Rails.env.production?
+      request.host == "api.#{Rails.application.config.x.domain}"
+    else
+      request.host.start_with?("api.")
+    end
+  end
 end
 
 
@@ -86,7 +96,10 @@ Rails.application.routes.draw do
       resources :trash, only: [ :index, :destroy ], param: :token
     end
     resources :posts, param: :token do
-      resource :broadcast, only: [ :create ], controller: "posts/broadcasts"
+      resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
+        post :test
+      end
+      resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
     end
 
     namespace :pages do
@@ -107,10 +120,17 @@ Rails.application.routes.draw do
     end
 
     namespace :settings do
+      resources :about, only: [ :index, :update ]
       resources :audience, only: [ :index ]
       resources :users, only: [ :update, :destroy ]
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
+      resources :theme_garden, only: [ :index ] do
+        member do
+          get :preview
+          post :apply
+        end
+      end
       resources :navigation_items, only: [ :index, :create, :update, :destroy ]
       resources :email_change_requests, only: [ :create, :destroy ] do
         member do
@@ -121,6 +141,7 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :api, only: [ :show, :create, :destroy ], controller: "api"
       resources :exports
 
       resources :sender_email_addresses, only: [ :create, :destroy ] do
@@ -150,13 +171,24 @@ Rails.application.routes.draw do
 
   get "/admin", to: "admin#index", as: :admin
   namespace :admin do
+    resources :theme_templates do
+      get :fixtures, on: :collection
+    end
     resources :blogs, only: [ :index ]
     resources :analytics, only: [ :index ]
     resources :posts, only: [ :index ]
+    resources :suppressions, only: [ :index ] do
+      collection do
+        delete :destroy
+        delete :destroy_all
+      end
+    end
     resources :users, only: [ :show, :destroy, :new, :create, :update ] do
       member do
         post :restore
       end
+      resource :subscription, only: [ :update ]
+      resource :verification_email, only: [ :create ]
     end
     namespace :moderation do
       root to: redirect("/admin/moderation/spam")
@@ -180,6 +212,15 @@ Rails.application.routes.draw do
     end
   end
 
+  constraints(DomainConstraints.method(:api_domain?)) do
+    scope module: :api do
+      resources :posts, only: [ :index, :show, :create, :update, :destroy ], param: :token
+      resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
+      resource :home_page, only: [ :show, :create, :update, :destroy ]
+      resources :attachments, only: [ :create ]
+    end
+  end
+
   constraints(->(request) { !DomainConstraints.default_domain?(request) }) do
     get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
@@ -198,11 +239,14 @@ Rails.application.routes.draw do
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
     resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
+    resources :contact_messages, controller: "blogs/contact_messages", only: [ :create ]
 
     get "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#show", as: :email_subscriber_confirmation
     get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
     post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
     post "/email_subscribers/:token/one_click_unsubscribe", to: "blogs/email_subscribers/unsubscribes#one_click", as: :email_subscriber_one_click_unsubscribe
+
+    get "/upvotes/statuses", to: "posts/upvotes/statuses#show", as: :upvotes_statuses
 
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create ], module: :posts
@@ -230,6 +274,7 @@ Rails.application.routes.draw do
     get "/blogging-by-email", to: "public#blogging_by_email"
     get "/blog-with-newsletter", to: "public#blog_with_newsletter"
 
+    get "/spotlight", to: "home/spotlight#show"
     get "/shuffle", to: "posts/shuffle#show"
 
     get "/@:name", to: redirect("/%{name}")

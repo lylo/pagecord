@@ -1,12 +1,12 @@
 class App::HomePagesController < AppController
-  include EditorPreparation
-
   def new
     @home_page = Current.user.blog.pages.build
   end
 
   def create
     @home_page = Current.user.blog.pages.build(home_page_params)
+
+    return render_stale_form_context unless context_blog_id_matches_current_blog?
 
     if @home_page.save
       Current.user.blog.update!(home_page_id: @home_page.id)
@@ -19,7 +19,6 @@ class App::HomePagesController < AppController
   def edit
     @home_page = Current.user.blog.home_page
     redirect_to new_app_home_page_path and return unless @home_page
-    prepare_content_for_editor(@home_page)
   end
 
   def update
@@ -48,9 +47,8 @@ class App::HomePagesController < AppController
 
     def home_page_params
       status = params[:button] == "save_draft" ? :draft : :published
-
-      params.require(:post).permit(:title, :content, :slug).merge(
-          is_page: true, status: status, is_home_page: true, show_in_navigation: false
-        )
+      permitted = [ :title, :content, :slug ]
+      permitted += [ :open_graph_image, :open_graph_image_suppressed ] if Current.user.has_premium_access?
+      params.require(:post).permit(*permitted).merge(is_page: true, status: status, is_home_page: true)
     end
 end

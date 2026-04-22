@@ -1,15 +1,19 @@
 module SpamPrevention
   extend ActiveSupport::Concern
 
-  included do
-    rate_limit to: 5, within: 1.hour, only: [ :create ], name: "spam-prevention-hourly"
-    rate_limit to: 1, within: 2.minutes, only: [ :create ], if: :spammer_detected?, name: "spam-prevention-blocked"
+  DEFAULT_MINIMUM_FORM_COMPLETION_TIME = 3.seconds
 
+  included do
     before_action :form_complete_time_check, :honeypot_check, :ip_reputation_check, :suspicious_email_check, only: [ :create ]
   end
 
+  # Override in controllers that need stricter timing (e.g., contact forms)
+  def minimum_form_completion_time
+    DEFAULT_MINIMUM_FORM_COMPLETION_TIME
+  end
+
   def honeypot_check
-    unless params[:email_confirmation].blank?
+    if params[:email_confirmation].present?
       Rails.logger.warn "Honeypot field completed. Request blocked."
       fail
     end
@@ -30,15 +34,12 @@ module SpamPrevention
   def form_complete_time_check
     timestamp = Rails.application.message_verifier(:spam_prevention).verified(params[:rendered_at])
 
-    unless timestamp
+    if timestamp.nil?
       Rails.logger.warn "Invalid or missing form token. Request blocked."
-      fail
-      return
+      return fail
     end
 
-    form_complete_time = Time.current.to_i - timestamp
-
-    if form_complete_time < 3.seconds
+    if (Time.current.to_i - timestamp) < minimum_form_completion_time
       Rails.logger.warn "Form completed too quickly. Request blocked."
       fail
     end
@@ -46,23 +47,45 @@ module SpamPrevention
 
   def suspicious_email_check
     email = params.dig(:email_subscriber, :email) || params.dig(:signup, :email) || params[:email]
-    return unless email.present?
+    return if email.blank?
 
-    local, domain = email.to_s.split("@", 2)
+    local, domain = email.split("@", 2)
     if domain&.downcase == "gmail.com" && local.count(".") >= 3
       Rails.logger.warn "Dotted Gmail address blocked: #{email}"
       fail
     end
   end
 
+  def turnstile_check
+    return true unless turnstile_enabled?
+    fail unless valid_turnstile_token?(params["cf-turnstile-response"])
+  end
+
+  def valid_turnstile_token?(token)
+    return true if Rails.env.test?
+    return false if token.blank?
+
+    response = HTTParty.post(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      body: {
+        secret: ENV["TURNSTILE_SECRET_KEY"],
+        response: token,
+        remoteip: request.remote_ip
+      }
+    )
+
+    response.parsed_response["success"] == true
+  rescue HTTParty::Error => e
+    Rails.logger.error "Turnstile verification failed: #{e.message}"
+    false
+  end
+
+  def turnstile_enabled?
+    ENV["TURNSTILE_ENABLED"].present? && default_domain_request?
+  end
+
   def fail
     @spammer_detected = true
     head :forbidden
   end
-
-  private
-
-    def spammer_detected?
-      @spammer_detected == true
-    end
 end
