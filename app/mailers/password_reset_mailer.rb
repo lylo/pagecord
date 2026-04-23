@@ -1,4 +1,4 @@
-class PasswordResetMailer < MailpaceMailer
+class PasswordResetMailer < CloudflareMailer
   def reset
     @user = params[:user]
     @access_request = @user.access_requests.create!(purpose: :password_reset)
