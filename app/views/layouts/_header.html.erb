@@ -10,7 +10,11 @@
       <%= link_to "Pricing", root_path(anchor: "pricing"), class: "home-link" %>
       <%= link_to "Features", root_path(anchor: "features"), class: "home-link" %>
       <%= link_to "Updates", "https://blog.pagecord.com", class: "home-link" %>
-      <%= link_to "Log In", login_path, class: "home-link" %>
+      <% if logged_in? %>
+        <%= link_to "Dashboard", app_root_path, class: "home-link" %>
+      <% else %>
+        <%= link_to "Log In", login_path, class: "home-link" %>
+      <% end %>
     </div>
   </nav>
 </header>

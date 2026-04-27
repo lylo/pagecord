@@ -8,12 +8,13 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should redirect to app when logged in" do
+  test "should render home page when logged in" do
     user = users(:joel)
     login_as user
 
     get root_path
-    assert_redirected_to app_root_path
+    assert_response :success
+    assert_select "a", text: "Dashboard"
   end
 
   test "should render localized price for Brazil" do
