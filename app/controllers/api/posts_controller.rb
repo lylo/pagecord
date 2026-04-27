@@ -47,7 +47,11 @@ class Api::PostsController < Api::BaseController
   end
 
   def destroy
-    @post.discard!
+    if params[:permanent] == "true"
+      @post.destroy!
+    else
+      @post.discard!
+    end
     head :no_content
   end
 

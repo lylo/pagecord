@@ -189,6 +189,13 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     assert @page.reload.discarded?
   end
 
+  test "destroy permanently deletes a page when permanent=true" do
+    assert_difference("Post.count", -1) do
+      delete "/pages/#{@page.token}", params: { permanent: true }, headers: auth_header
+    end
+    assert_response :no_content
+  end
+
   test "destroy clears home_page_id if destroying the home page" do
     @blog.update!(home_page_id: @page.id)
 

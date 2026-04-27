@@ -89,6 +89,12 @@ DELETE /posts/:token
 
 Moves the post to trash (soft delete). Returns `204 No Content`.
 
+Pass `permanent=true` to delete immediately and irrevocably:
+
+```
+DELETE /posts/:token?permanent=true
+```
+
 ## Pages
 
 ### List pages
@@ -127,6 +133,12 @@ DELETE /pages/:token
 ```
 
 Moves the page to trash (soft delete). Returns `204 No Content`. If the page is the current home page, the home page is unlinked first.
+
+Pass `permanent=true` to delete immediately and irrevocably:
+
+```
+DELETE /pages/:token?permanent=true
+```
 
 ## Home page
 
