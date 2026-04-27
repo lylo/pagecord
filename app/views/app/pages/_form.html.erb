@@ -1,7 +1,9 @@
 <% is_new = !@page.persisted? %>
 
 <div data-controller="post-attributes autosave"
-    data-autosave-key-value="<%= is_new ? "draft-page-new-#{Current.user.blog.id}" : "draft-page-#{@page.id}" %>">
+    data-autosave-key-value="<%= is_new ? "draft-page-new-#{Current.user.blog.id}" : "draft-page-#{@page.id}" %>"
+    data-autosave-base-title-value="<%= @page.title.to_s %>"
+    data-autosave-base-content-value="<%= h(@page.content.body.to_html) if @page.persisted? %>">
 
   <div class="mb-4"><%= trial_callout("Image uploads") %></div>
 
