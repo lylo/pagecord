@@ -1,7 +1,7 @@
 <div data-controller="post-attributes autosave"
     data-autosave-key-value="<%= home_page.persisted? ? "draft-homepage-#{home_page.id}" : "draft-homepage-new-#{Current.user.blog.id}" %>"
     data-autosave-base-title-value="<%= home_page.title.to_s %>"
-    data-autosave-base-content-value="<%= h(home_page.content.body.to_html) if home_page.persisted? %>">
+    data-autosave-base-content-value="<%= h(home_page.content&.body&.to_html.to_s) if home_page.persisted? %>">
 
   <div class="mb-4"><%= trial_callout("Image uploads") %></div>
 
