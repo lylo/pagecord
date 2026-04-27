@@ -89,13 +89,14 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert @user.blog.posts.last.draft?
   end
 
-  test "should discard post" do
-    post_to_discard = @user.blog.posts.first
-    assert_no_difference("@user.blog.posts.count") do
-      delete app_post_url(post_to_discard)
+  test "should permanently delete post" do
+    post_to_destroy = @user.blog.posts.first
+    post_to_destroy.discard!
+
+    assert_difference("@user.blog.posts.count", -1) do
+      delete app_post_url(post_to_destroy)
     end
-    assert post_to_discard.reload.discarded?
-    assert_redirected_to app_posts_path
+    assert_redirected_to app_posts_trash_path
   end
 
   test "should not create post when form blog context does not match session blog" do

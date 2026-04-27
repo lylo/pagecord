@@ -93,19 +93,21 @@ Rails.application.routes.draw do
     resource :upgrade_banner, only: [ :destroy ]
     resources :analytics, only: [ :index ]
     namespace :posts do
-      resources :trash, only: [ :index, :destroy ], param: :token
+      resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
     end
     resources :posts, param: :token do
       resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
         post :test
       end
       resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
+      resource :restoration, only: [ :create ], controller: "posts/restorations"
     end
 
     namespace :pages do
-      resources :trash, only: [ :index, :destroy ], param: :token
+      resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
     end
     resources :pages, except: [ :show ], param: :token do
+      resource :restoration, only: [ :create ], controller: "pages/restorations"
       member do
         post :set_as_home_page
       end

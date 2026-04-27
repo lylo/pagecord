@@ -20,16 +20,19 @@
     <% else %>
       <div class="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900/60">
         <div class="p-4 sm:p-5">
-          <div class="mb-3 flex items-center gap-2">
-            <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">🗑️ Trash</div>
-            <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-              <%= @trashed_pages.size %>
-            </span>
+          <div class="mb-3 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">🗑️ Trash</div>
+              <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                <%= @trashed_pages.size %>
+              </span>
+            </div>
+            <%= link_to "Empty trash", app_pages_trash_path, data: { turbo_method: :delete, turbo_confirm: "Permanently delete all pages in the trash? This cannot be undone." }, class: "text-sm font-medium underline text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" %>
           </div>
 
           <div>
             <% @trashed_pages.each do |page| %>
-              <div class="flex items-center justify-between gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/80">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg py-3 transition-colors">
                 <div class="min-w-0">
                   <div class="font-medium [overflow-wrap:anywhere] text-slate-900 dark:text-slate-100">
                     <%= page.display_title %>
@@ -39,10 +42,9 @@
                   </div>
                 </div>
 
-                <div class="flex shrink-0 items-center gap-x-3 text-sm">
-                  <%= button_to app_pages_trash_path(page), method: :delete, title: "Restore #{page.display_title}", class: "font-medium underline text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer" do %>
-                    Restore
-                  <% end %>
+                <div class="flex shrink-0 items-center gap-x-2">
+                  <%= button_to "Restore", app_page_restoration_path(page), method: :post, title: "Restore #{page.display_title}", class: "btn-primary" %>
+                  <%= button_to "Delete forever", app_page_path(page), method: :delete, data: { turbo_confirm: "Permanently delete this page? This cannot be undone." }, title: "Permanently delete #{page.display_title}", class: "btn-danger" %>
                 </div>
               </div>
             <% end %>
