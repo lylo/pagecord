@@ -416,6 +416,10 @@ hr {
   table[class=body] span,
   table[class=body] a {
     font-size: 16px !important; }
+  table[class=body] .footer td,
+  table[class=body] .footer span,
+  table[class=body] .footer a {
+    font-size: 12px !important; }
   table[class=body] h2 a {
     font-size: 24px !important;
   }
