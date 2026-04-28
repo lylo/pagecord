@@ -146,4 +146,11 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "h2", text: /Unlock your blog's analytics with Premium/i, count: 1
   end
+
+  test "redirects to dashboard when blog has metrics hidden" do
+    @user.blog.update!(show_metrics: false)
+
+    get app_analytics_path
+    assert_redirected_to app_root_path
+  end
 end

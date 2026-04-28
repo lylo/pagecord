@@ -18,7 +18,7 @@
 <% end %>
 
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
-  <% if @blog.email_subscriptions_enabled && Current.user.subscribed? %>
+  <% if @blog.email_subscriptions_enabled && Current.user.subscribed? && @blog.show_metrics? %>
     <p>
       Your blog has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
     </p>
@@ -103,6 +103,20 @@
         <p class="text-slate-500 text-sm">
           When checked, a heart-shaped like button will appear next to each post for readers to show
           their appreciation.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6">
+    <div class="flex gap-3">
+      <div class="flex h-6 shrink-0 items-center">
+        <%= form.check_box :show_metrics, { checked: @blog.show_metrics, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" } %>
+      </div>
+      <div>
+        <%= form.label :show_metrics, "Show metrics", class: "text-slate-800 dark:text-slate-100" %>
+        <p class="text-slate-500 text-sm">
+          When unchecked, the Analytics page is hidden and your subscriber count is no longer shown to you.
         </p>
       </div>
     </div>
