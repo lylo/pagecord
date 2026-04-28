@@ -33,6 +33,7 @@ pin "codemirror/addon/hint/css-hint", to: "codemirror/css-hint.js", preload: "ap
 
 # Media embed handlers - lazy loaded (used by blogs and app)
 pin "apple_music", to: "embeds/apple_music.js", preload: false
+pin "bluesky", to: "embeds/bluesky.js", preload: false
 pin "bandcamp", to: "embeds/bandcamp.js", preload: false
 pin "checkvist", to: "embeds/checkvist.js", preload: false
 pin "github", to: "embeds/github.js", preload: false

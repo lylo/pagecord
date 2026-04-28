@@ -19,7 +19,8 @@ class PasswordAuthenticationTest < ActionDispatch::IntegrationTest
     assert user.has_password?
 
     post sessions_url, params: {
-      user: { subdomain: "newuser", password: "password1234" }
+      user: { subdomain: "newuser", password: "password1234" },
+      rendered_at: signed_rendered_at
     }
 
     assert_redirected_to app_root_path

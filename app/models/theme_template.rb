@@ -1,0 +1,61 @@
+class ThemeTemplate < ApplicationRecord
+  include CssSanitizable, Themeable
+
+  enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
+
+  validates :name, presence: true, uniqueness: true
+  validates :custom_css, presence: true
+
+  before_validation :clear_custom_theme_colors, unless: :custom_theme?
+
+  scope :active, -> { where(active: true) }
+  scope :ordered, -> { order(position: :asc, name: :asc) }
+
+  def screenshot_asset
+    "theme_templates/#{name.parameterize}.webp"
+  end
+
+  def screenshot?
+    name.present? && Rails.root.join("app/assets/images", screenshot_asset).exist?
+  end
+
+  def reorder(new_position)
+    transaction do
+      old_position = position
+      update_column(:position, -1)
+
+      if new_position > old_position
+        ThemeTemplate.where("position > ? AND position <= ?", old_position, new_position)
+                     .update_all("position = position - 1")
+      elsif new_position < old_position
+        ThemeTemplate.where("position >= ? AND position < ?", new_position, old_position)
+                     .update_all("position = position + 1")
+      end
+
+      update_column(:position, new_position)
+    end
+  end
+
+  def appearance_attributes
+    {
+      custom_css:,
+      theme: theme.presence,
+      font: font.presence,
+      width: width.presence,
+      layout: layout.presence,
+      **(theme == "custom" ? {
+        custom_theme_bg_light:, custom_theme_text_light:, custom_theme_accent_light:,
+        custom_theme_bg_dark:, custom_theme_text_dark:, custom_theme_accent_dark:
+      } : {})
+    }.compact_blank
+  end
+
+  private
+
+    def clear_custom_theme_colors
+      assign_attributes(
+        custom_theme_bg_light: nil, custom_theme_text_light: nil, custom_theme_accent_light: nil,
+        custom_theme_bg_dark: nil,  custom_theme_text_dark: nil,  custom_theme_accent_dark: nil
+      )
+    end
+end

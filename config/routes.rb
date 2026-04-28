@@ -93,18 +93,21 @@ Rails.application.routes.draw do
     resource :upgrade_banner, only: [ :destroy ]
     resources :analytics, only: [ :index ]
     namespace :posts do
-      resources :trash, only: [ :index, :destroy ], param: :token
+      resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
     end
     resources :posts, param: :token do
       resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
         post :test
       end
+      resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
+      resource :restoration, only: [ :create ], controller: "posts/restorations"
     end
 
     namespace :pages do
-      resources :trash, only: [ :index, :destroy ], param: :token
+      resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
     end
     resources :pages, except: [ :show ], param: :token do
+      resource :restoration, only: [ :create ], controller: "pages/restorations"
       member do
         post :set_as_home_page
       end
@@ -124,6 +127,12 @@ Rails.application.routes.draw do
       resources :users, only: [ :update, :destroy ]
       resources :blogs, only: [ :index, :update ]
       resources :appearance, only: [ :index, :update ]
+      resources :theme_garden, only: [ :index ] do
+        member do
+          get :preview
+          post :apply
+        end
+      end
       resources :navigation_items, only: [ :index, :create, :update, :destroy ]
       resources :email_change_requests, only: [ :create, :destroy ] do
         member do
@@ -164,9 +173,18 @@ Rails.application.routes.draw do
 
   get "/admin", to: "admin#index", as: :admin
   namespace :admin do
+    resources :theme_templates do
+      get :fixtures, on: :collection
+    end
     resources :blogs, only: [ :index ]
     resources :analytics, only: [ :index ]
     resources :posts, only: [ :index ]
+    resources :suppressions, only: [ :index ] do
+      collection do
+        delete :destroy
+        delete :destroy_all
+      end
+    end
     resources :users, only: [ :show, :destroy, :new, :create, :update ] do
       member do
         post :restore
@@ -232,6 +250,8 @@ Rails.application.routes.draw do
     post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
     post "/email_subscribers/:token/one_click_unsubscribe", to: "blogs/email_subscribers/unsubscribes#one_click", as: :email_subscriber_one_click_unsubscribe
 
+    get "/upvotes/statuses", to: "posts/upvotes/statuses#show", as: :upvotes_statuses
+
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create ], module: :posts
       get "upvotes/status", to: "posts/upvotes/status#show", as: :upvotes_status
@@ -258,6 +278,7 @@ Rails.application.routes.draw do
     get "/blogging-by-email", to: "public#blogging_by_email"
     get "/blog-with-newsletter", to: "public#blog_with_newsletter"
 
+    get "/spotlight", to: "home/spotlight#show"
     get "/shuffle", to: "posts/shuffle#show"
 
     get "/@:name", to: redirect("/%{name}")

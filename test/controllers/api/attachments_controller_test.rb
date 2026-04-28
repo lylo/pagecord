@@ -5,7 +5,6 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
     host! "api.example.com"
 
     @blog = blogs(:joel)
-    @blog.update!(features: [ "api" ])
     @user = users(:joel)
     @user.update!(trial_ends_at: 30.days.from_now)
   end

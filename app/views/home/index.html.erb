@@ -60,7 +60,7 @@
     </div>
 
     <p>
-    Check out real sites: <a href="https://olly.world" class="home-link">Olly's home page</a>, <a href="https://dhester.me/" class="home-link">Darren's blog</a>, <a href="https://sylvia.buzz" class="home-link">Sylvia's Noodling Nook</a> or use the shuffle feature to <a href="/shuffle" class="home-link">discover a random blog</a>.
+    Check out real sites: <a href="https://olly.world" class="home-link">Olly's home page</a>, <a href="https://yeechie.nl" class="home-link">Yee Chie's Corner</a>, <a href="https://jan.fyi/" class="home-link">jan.fyi</a>, or see what's trending in the <%= link_to "Pagecord Spotlight", spotlight_path, class: "home-link" %>.
     </p>
    </div>
 </div>
@@ -203,6 +203,10 @@
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          API access
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           Support independent software 😊
         </li>
       </ul>
@@ -243,14 +247,13 @@
 
 <!-- Newsletter Section -->
 <div id="newsletter" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">A weekly email digest of all your posts. Fully automated!</h2>
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Your posts, delivered by email</h2>
 
   <p class="md:text-xl leading-relaxed my-5">
-  Premium customers can allow people to subscribe to their blog by email. Each week,
-  Pagecord will create a digest of your recent posts and send it to your subscribers.
+  Premium customers can allow people to subscribe to their blog by email. Choose between a <strong>weekly digest</strong> that's fully automated, or <strong>individual delivery</strong> where you pick exactly which posts to send.
   </p>
   <p class="md:text-xl leading-relaxed my-5">
-  You focus on writing, we handle the rest.
+  Either way, you focus on writing. Pagecord handles the rest.
   </p>
 
   <%= image_tag "home/weekly-digest.webp",
@@ -428,7 +431,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Email newsletter</div>
-            <div class="hidden sm:block">Readers can sign up to receive a weekly email digest of your posts 📬
+            <div class="hidden sm:block">Readers subscribe and receive a weekly digest or individual posts as you publish them 📬
             <br><span class="text-xs">(250 subscriber limit. More for <a href="/faq#subscribers" class="home-link">an additional fee</a>)</span><br>
             </div>
           </td>
@@ -487,6 +490,15 @@
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Custom CSS</div>
             <div class="hidden sm:block">Add your own CSS to customise the look of your blog beyond the built-in themes 🎨</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">API</div>
+            <div class="hidden sm:block">Manage your posts programmatically, or via Obsidian 🔌</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>

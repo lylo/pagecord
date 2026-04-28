@@ -1,4 +1,4 @@
-<% if show_email_banner?(@post, @blog) && current_features.enabled?(:individual_email_delivery) %>
+<% if show_email_banner?(@post, @blog) %>
   <% subscriber_count = @blog.email_subscribers.confirmed.count %>
   <% if @post.individually_sent? %>
     <% digest = @post.post_digests.individual.first %>
@@ -10,18 +10,19 @@
         <div class="relative flex items-center gap-2">
           <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-[#4fbd9c] shrink-0" %>
           <% count = digest.delivered_at? ? digest.deliveries.count : subscriber_count %>
-          <span>Emailed to <%= pluralize(count, "subscriber") %> on <%= l(digest.created_at.in_time_zone(Current.user.timezone).to_date, format: :post_date) %>.</span>
+          <% recipients = @blog.show_metrics? ? pluralize(count, "subscriber") : "subscribers" %>
+          <span>Emailed to <%= recipients %> on <%= l(digest.created_at.in_time_zone(Current.user.timezone).to_date, format: :post_date) %>.</span>
         </div>
       </div>
     </div>
   <% elsif @post.individually_sendable? %>
     <div class="rounded-lg border p-4 text-sm mb-4 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div class="flex items-center gap-2">
           <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" %>
-          <span>Send this post to your <%= pluralize(subscriber_count, "subscriber") %>.</span>
+          <span>Send this post to your <%= @blog.show_metrics? ? pluralize(subscriber_count, "subscriber") : "subscribers" %>.</span>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex flex-row-reverse justify-between items-center gap-3 sm:flex-row sm:justify-start">
           <%= link_to "Send a test email", test_app_post_broadcast_path(@post), data: { turbo_method: :post, turbo_confirm: "Send a test email to #{Current.user.email}?" }, class: "text-xs underline" %>
           <%= button_to "Send to subscribers",
             app_post_broadcast_path(@post),

@@ -13,24 +13,6 @@ class Analytics::TrendingTest < ActiveSupport::TestCase
     assert_equal [], @trending.top_posts(limit: 10)
   end
 
-  test "includes posts with pageviews" do
-    post = posts(:one)
-    PageView.create!(blog: post.blog, post: post, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-1")
-
-    result = @trending.top_posts(limit: 10)
-
-    assert result.any? { |r| r[:post] == post && r[:views] == 1 }
-  end
-
-  test "includes posts with upvotes" do
-    post = posts(:one)
-    post.update_column(:upvotes_count, 5)
-
-    result = @trending.top_posts(limit: 10)
-
-    assert result.any? { |r| r[:post] == post && r[:upvotes] == 5 }
-  end
-
   test "excludes pages" do
     page = posts(:about)
     PageView.create!(blog: page.blog, post: page, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-page")
@@ -47,6 +29,16 @@ class Analytics::TrendingTest < ActiveSupport::TestCase
     result = @trending.top_posts(limit: 10)
 
     refute result.any? { |r| r[:post] == draft }
+  end
+
+  test "excludes posts older than 14 days" do
+    post = posts(:three)
+    post.update_columns(published_at: 15.days.ago, upvotes_count: 25)
+    PageView.create!(blog: post.blog, post: post, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-old")
+
+    result = @trending.top_posts(limit: 10)
+
+    refute result.any? { |r| r[:post] == post }
   end
 
   test "newer posts with same engagement score higher due to age penalty" do

@@ -5,7 +5,6 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     host! "api.example.com"
 
     @blog = blogs(:joel)
-    @blog.update!(features: [ "api" ])
     @user = users(:joel)
     @user.update!(trial_ends_at: 30.days.from_now)
 
@@ -188,6 +187,13 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :no_content
     assert @page.reload.discarded?
+  end
+
+  test "destroy permanently deletes a page when permanent=true" do
+    assert_difference("Post.count", -1) do
+      delete "/pages/#{@page.token}", params: { permanent: true }, headers: auth_header
+    end
+    assert_response :no_content
   end
 
   test "destroy clears home_page_id if destroying the home page" do

@@ -3,7 +3,6 @@ import "controllers"
 
 
 import * as Lexxy from "lexxy"
-Lexxy.configure({ default: { toolbar: { upload: "image" } } })
 import "@rails/actiontext"
 
 import LocalTime from "local-time"
