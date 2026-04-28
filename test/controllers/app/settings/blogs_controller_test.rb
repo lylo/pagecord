@@ -183,6 +183,13 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_equal false, @blog.reload.show_subscription_in_footer
   end
 
+  test "should update show_metrics" do
+    patch app_settings_blog_url(@blog), params: { blog: { show_metrics: false } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal false, @blog.reload.show_metrics
+  end
+
   test "should not allow non-subscribed user to update subscription location settings" do
     login_as users(:vivian)
 

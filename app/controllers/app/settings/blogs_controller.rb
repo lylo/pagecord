@@ -31,7 +31,8 @@ class App::Settings::BlogsController < AppController
         :allow_search_indexing,
         :google_site_verification,
         :seo_title,
-        :locale
+        :locale,
+        :show_metrics
       ]
 
       if @blog.user.subscribed?

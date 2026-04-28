@@ -1,4 +1,6 @@
 class App::AnalyticsController < AppController
+  before_action :redirect_if_metrics_hidden
+
   def index
     @view_type = params[:view_type] || "month"
     @date = Current.user.has_premium_access? ? summary.parse_date(@view_type, params[:date]) : Date.current
@@ -20,6 +22,10 @@ class App::AnalyticsController < AppController
   end
 
   private
+
+    def redirect_if_metrics_hidden
+      redirect_to app_root_path unless Current.user.blog.show_metrics?
+    end
 
     def summary
       @summary ||= Analytics::Summary.new(@blog, user_timezone)
