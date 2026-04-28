@@ -1,13 +1,17 @@
 <%= turbo_frame_tag @page_frame_id do %>
   <%= turbo_stream.append @container_id do %>
     <% if @style == "card" %>
-      <%= render partial: "blogs/posts/card_post", collection: @posts, as: :post %>
-    <% elsif @style == "title" %>
-      <%= render partial: "blogs/posts/title_post", collection: @posts, as: :post %>
+      <div data-controller="media-embeds">
+        <%= render partial: "blogs/posts/card_post", collection: @posts, as: :post %>
+      </div>
+    <% elsif @style == "stream" %>
+      <div data-controller="media-embeds lightbox">
+        <%= render partial: "blogs/posts/stream_post", collection: @posts, as: :post %>
+      </div>
     <% elsif @style == "gallery" %>
       <%= render partial: "blogs/posts/gallery_post", collection: @posts, as: :post %>
     <% else %>
-      <%= render partial: "blogs/posts/stream_post", collection: @posts, as: :post %>
+      <%= render partial: "blogs/posts/title_post", collection: @posts, as: :post %>
     <% end %>
   <% end %>
 

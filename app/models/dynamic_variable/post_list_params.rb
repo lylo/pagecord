@@ -11,7 +11,8 @@ class DynamicVariable::PostListParams
   end
 
   def limit
-    @params[:limit]
+    parsed_limit = Integer(@params[:limit], exception: false)
+    parsed_limit if parsed_limit && parsed_limit >= 0
   end
 
   def filter_args(include_year: true)
