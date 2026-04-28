@@ -5,7 +5,7 @@
         <%= render partial: "blogs/posts/card_post", collection: @posts, as: :post %>
       </div>
     <% elsif @style == "stream" %>
-      <div data-controller="media-embeds lightbox">
+      <div data-controller="media-embeds">
         <%= render partial: "blogs/posts/stream_post", collection: @posts, as: :post %>
       </div>
     <% elsif @style == "gallery" %>

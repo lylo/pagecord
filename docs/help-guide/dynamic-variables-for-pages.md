@@ -40,6 +40,8 @@ Display a list of your posts with dates and links.
 
 #### **With a limit**
 
+Use `limit` to show a fixed number of posts. When a limit is set, posts are not lazy-loaded or paginated.
+
 ```javascript
 {{ posts | limit: 10 }}
 ```
@@ -148,9 +150,9 @@ You can combine `style` with any other filter parameter.
 {{ posts | style: card | tag: photography }}
 ```
 
-#### **Limit without pagination**
+#### **Limit with filters**
 
-Use `limit` to show a fixed number of posts without pagination.
+You can combine `limit` with any other filter parameter.
 
 ```javascript
 {{ posts | limit: 5 | tag: photography }}
