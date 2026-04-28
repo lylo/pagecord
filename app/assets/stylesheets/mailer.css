@@ -159,6 +159,7 @@ a {
 .digest .post-title {
   font-weight: 700;
   font-size: 24px !important;
+  margin-top: 0 !important;
   margin-bottom: 1.4rem !important;
 }
 
@@ -263,6 +264,7 @@ a {
 }
 
 .post-timestamp {
+  margin-top: 0.25rem !important;
   font-size: 14px !important;
 }
 
