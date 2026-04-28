@@ -1,6 +1,6 @@
 class DynamicVariable::PostsTag
   STYLES = %w[card stream title gallery].freeze
-  PAGE_SIZES = { "card" => 20, "stream" => 10, "title" => 100, "gallery" => 20 }.freeze
+  PAGE_SIZES = { "card" => 20, "stream" => 10, "title" => 100, "gallery" => 40 }.freeze
   DEFAULT_STYLE = "title"
 
   class << self
