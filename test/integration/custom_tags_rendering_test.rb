@@ -308,6 +308,37 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_includes lazy_frame_src, "sort=asc"
   end
 
+  test "renders posts tag with gallery style and skips posts without images" do
+    @blog.posts.visible.each { |p| p.update!(status: :draft) }
+
+    body_image = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+    @blog.posts.create!(
+      title: "Body Image",
+      content: %(<action-text-attachment sgid="#{body_image.attachable_sgid}"></action-text-attachment>),
+      status: :published,
+      published_at: 1.minute.ago
+    )
+
+    post = @blog.posts.create!(title: "Open Graph Image", content: "Content", status: :published, published_at: 2.minutes.ago)
+    post.open_graph_image.attach(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+
+    @blog.posts.create!(title: "No image post", content: "Content", status: :published, published_at: 10.minutes.ago)
+
+    page = @blog.pages.create!(title: "Gallery", content: "{{ posts | style: gallery }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".posts-gallery .posts-gallery-item", count: 2
+    assert_select ".posts-gallery-title", text: "Body Image"
+    assert_select ".posts-gallery-title", text: "Open Graph Image"
+    assert_select "body", text: /No image post/, count: 0
+  end
+
   test "renders posts_by_year tag" do
     @blog.posts.create!(title: "2023 Post", content: "Content", status: :published, published_at: Date.new(2023, 6, 15))
     @blog.posts.create!(title: "2024 Post A", content: "Content", status: :published, published_at: Date.new(2024, 3, 20))

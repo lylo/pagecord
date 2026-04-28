@@ -18,6 +18,7 @@ export default class extends Controller {
   }
 
   lightboxEnabledFor(img) {
+    if (img.closest(".posts-gallery")) return false
     return !this.isMobile() || img.closest(".attachment-gallery")
   }
 

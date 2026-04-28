@@ -4,6 +4,8 @@
       <%= render partial: "blogs/posts/card_post", collection: @posts, as: :post %>
     <% elsif @style == "title" %>
       <%= render partial: "blogs/posts/title_post", collection: @posts, as: :post %>
+    <% elsif @style == "gallery" %>
+      <%= render partial: "blogs/posts/gallery_post", collection: @posts, as: :post %>
     <% else %>
       <%= render partial: "blogs/posts/stream_post", collection: @posts, as: :post %>
     <% end %>

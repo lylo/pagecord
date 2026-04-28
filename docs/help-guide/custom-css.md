@@ -360,6 +360,40 @@ By default, image galleries render in 2 or 3 columns depending on how many image
 
 Adjust `600px` to your preferred breakpoint.
 
+### Posts gallery: customising the layout
+
+The `{{ posts | style: gallery }}` dynamic variable renders posts as a grid of square thumbnails. You can target the following classes:
+
+- `.posts-gallery` — the grid container
+- `.posts-gallery-item` — each tile (an `<a>` linking to the post)
+- `.posts-gallery-image` — the wrapper around the thumbnail
+- `.posts-gallery-title` — the post title (hidden by default)
+
+**Change the number of columns:**
+
+```css
+.posts-gallery { grid-template-columns: 1fr; }
+@media (min-width: 600px) { .posts-gallery { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 900px) { .posts-gallery { grid-template-columns: repeat(4, 1fr); } }
+```
+
+**Use the natural aspect ratio of each image** (instead of square crops):
+
+```css
+.posts-gallery-image { aspect-ratio: auto; }
+.posts-gallery-image img { height: auto; }
+```
+
+**Show the post title under each tile:**
+
+```css
+.posts-gallery-title {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
+```
+
 ### Adding a background image to your blog
 
 You can set a background image so that it fits the viewport and scales nicely. It can be unreliable to rely on a 3rd party URL for the image, so I would recommend creating page on your Pagecord blog and upload your background image of choice to it. View the page, then copy the link to the image and then reference that image in your CSS.

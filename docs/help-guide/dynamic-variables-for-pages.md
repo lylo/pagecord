@@ -132,6 +132,14 @@ Render posts as a date-and-title list (the same layout as the "title" blog style
 {{ posts | style: title }}
 ```
 
+#### **Display as gallery**
+
+Render posts as a grid of image thumbnails with automatic lazy-loading pagination. Each tile uses the post's Open Graph image, or the first image in the post body if no Open Graph image is set. Posts with no image are not shown.
+
+```javascript
+{{ posts | style: gallery }}
+```
+
 #### **Style with filters**
 
 You can combine `style` with any other filter parameter.
@@ -296,4 +304,3 @@ Browse posts by topic:
 - If a variable isn't recognized, it will appear as-is in your content
 - The posts list automatically excludes unpublished and scheduled posts
 - Tags are sorted alphabetically
-

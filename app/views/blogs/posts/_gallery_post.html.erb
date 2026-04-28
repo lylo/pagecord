@@ -1,0 +1,13 @@
+<% if (image = post_thumbnail(post)).present? %>
+  <%= link_to post_path(post),
+        class: "posts-gallery-item h-entry u-url",
+        data: { turbo_frame: "_top", **(post_tag_data(post) || {}) } do %>
+    <div class="posts-gallery-image">
+      <%= image_tag resized_image_url(image, width: 800, height: 800),
+            alt: post.display_title, loading: "lazy" %>
+    </div>
+    <% if post.title.present? %>
+      <span class="posts-gallery-title p-name"><%= post.title %></span>
+    <% end %>
+  <% end %>
+<% end %>
