@@ -22,11 +22,14 @@ class DynamicVariable::PostsTag
   end
 
   def render
-    limit = @post_list_params.limit&.clamp(1, page_size) || page_size
-    paginate = @post_list_params.limit.nil?
-    posts = filtered_relation.limit(paginate ? limit + 1 : limit).to_a
-    has_next = paginate && posts.size > limit
-    posts = posts.first(limit) if has_next
+    if @post_list_params.limit
+      posts = filtered_relation.limit(@post_list_params.limit)
+      has_next = false
+    else
+      posts = filtered_relation.limit(page_size + 1).to_a
+      has_next = posts.size > page_size
+      posts = posts.first(page_size) if has_next
+    end
 
     @view.render(partial: "blogs/custom_tags/posts_#{@style}",
       locals: { posts: posts, has_next: has_next, frame_id: SecureRandom.hex(4),
@@ -42,5 +45,6 @@ class DynamicVariable::PostsTag
     def filtered_relation
       @blog.posts.visible
         .filtered_for_dynamic_variable(**@post_list_params.filter_args)
+        .for_blog_render
     end
 end
