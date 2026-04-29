@@ -7,7 +7,7 @@ id:
       email_placeholder: "Masukkan emailmu..."
       submit_button: "Berlangganan"
     create:
-      success_message: "Terima kasih sudah berlangganan. Kecuali kamu sudah berlangganan, email konfirmasi sedang dikirim ke %{email}"
+      success_message: "Terima kasih sudah berlangganan. Kecuali kalau kamu sudah berlanggana, email konfirmasi sedang dikirim ke %{email}"
     confirmations:
       success_message:
         digest: "Langgananmu pada %{blog_name} sudah terkonfirmasi. Kamu akan menerima email ringkasan mingguan saat ada pos baru yang dipublikasikan."
