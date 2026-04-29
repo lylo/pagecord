@@ -350,7 +350,7 @@ novella:
     header > .titlebar { order: 1; }
     header > .bio { order: 2; }
     header > nav { order: 3; }
-    header > .email-subscriber-form { order: 4; }
+    header > .email-subscriber-form { order: 4; margin-top: 1.25rem; }
     header > hr { order: 5; width: 100%; }
 
     .titlebar { justify-content: center; }
@@ -396,8 +396,7 @@ novella:
       font-size: 3.2em;
       float: left;
       line-height: 1;
-      padding-right: 0.05em;
-      margin-top: 0.05em;
+      margin: 0.05em 0.12em 0 0;
       font-weight: 600;
       color: var(--color-accent);
     }
