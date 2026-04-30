@@ -1,12 +1,19 @@
 Hi there 👋
 
-Thanks so much for signing up to Pagecord! Your blog is now live at <%= blog_home_url(@blog) %>.
+Thanks for signing up to Pagecord. Your blog is live at <%= blog_home_url(@blog) %>.
 
-You've got 14 days of free access to all premium features – custom domains, analytics, image uploads and more. Have a play around!
+To get started, try customising your site to make it your own. You can:
 
-Check out the Help Guide if you want to explore everything Pagecord can do: https://help.pagecord.com
+- Browse the Theme Garden for ready-made designs: <%= app_settings_theme_garden_index_url %>
+- Pick your colour scheme and typeface
+- Create a Home page, an About page, or any page you like
+- Take full control of the design with custom CSS
 
-I'd love to know what you think – just reply to this email!
+Log in to get started: <%= app_onboarding_url %>
+
+One more thing — you can also publish posts by emailing <%= @blog.delivery_email %> directly from <%= @user.email %>. No login needed!
+
+If you get stuck or have any questions, check out the Help Guide at https://help.pagecord.com — or just reply to this email. I read every one.
 
 Olly
 

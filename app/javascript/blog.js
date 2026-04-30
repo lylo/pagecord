@@ -1,4 +1,6 @@
 import "@hotwired/turbo-rails"
+import LocalTime from "local-time"
+LocalTime.start()
 import { Application } from "@hotwired/stimulus"
 import { lazyLoadControllersFrom } from "@hotwired/stimulus-loading"
 

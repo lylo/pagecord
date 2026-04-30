@@ -1,13 +1,14 @@
-<div class="flex justify-end mb-4 font-bold text-lg">
+<div class="mb-4 flex justify-end">
   <%= turbo_frame_tag "heading_blog_title" do %>
-    <%= link_to blog_home_url(@blog), data: { turbo: false } do %>
-      <div class="blog-title">
+    <%= link_to blog_home_url(@blog), data: { turbo: false }, target: "_blank", class: "group inline-flex items-center gap-1.5 font-bold text-lg text-slate-900 dark:text-slate-50" do %>
+      <span class="blog-title group-hover:underline">
         <% if @blog.custom_title? %>
           <%= @blog.title %>
         <% else %>
           @<%= persisted_value(@blog, :subdomain) %>
         <% end %>
-      </div>
+      </span>
+      <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300" %>
     <% end %>
   <% end %>
 </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_03_23_134130) do
+ActiveRecord::Schema[8.2].define(version: 2026_04_27_104710) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -113,6 +113,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_23_134130) do
     t.boolean "reply_by_email", default: false, null: false
     t.string "seo_title"
     t.boolean "show_branding", default: true, null: false
+    t.boolean "show_metrics", default: true, null: false
     t.boolean "show_subscription_in_footer", default: true, null: false
     t.boolean "show_subscription_in_header", default: true, null: false
     t.boolean "show_upvotes", default: true, null: false
@@ -297,6 +298,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_23_134130) do
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.string "locale"
+    t.boolean "open_graph_image_suppressed", default: false, null: false
     t.datetime "published_at"
     t.string "slug"
     t.integer "source", default: 0, null: false

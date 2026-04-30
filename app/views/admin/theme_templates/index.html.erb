@@ -1,0 +1,32 @@
+<div class="max-w-3xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Theme Templates</h1>
+    <%= link_to "New Template", new_admin_theme_template_path, class: "btn-primary" %>
+  </div>
+
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+       data-controller="sortable"
+       data-sortable-resource-name-value="theme_template"
+       data-sortable-handle-value=".handle"
+       data-sortable-animation-value="150">
+    <% @templates.each do |template| %>
+      <div class="flex items-center gap-3 py-3 px-4 border-b border-slate-200 dark:border-slate-700 last:border-b-0"
+           data-id="<%= template.id %>"
+           data-sortable-update-url="<%= admin_theme_template_path(template) %>">
+        <div class="handle cursor-grab" title="Drag to reorder">
+          <%= inline_svg_tag "icons/grip-dots.svg", class: "w-4 h-4 text-slate-400" %>
+        </div>
+        <div class="flex-1">
+          <%= link_to template.name, edit_admin_theme_template_path(template), class: "font-medium hover:underline" %>
+        </div>
+        <span class="text-sm text-slate-500"><%= template.theme.presence || "–" %></span>
+        <span class="text-sm text-slate-500"><%= template.font.presence || "–" %></span>
+        <span class="text-sm <%= template.active? ? 'text-green-600' : 'text-slate-400' %>"><%= template.active? ? "Active" : "Inactive" %></span>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-4 text-right">
+    <%= link_to "Download as fixtures", fixtures_admin_theme_templates_path, class: "text-sm text-slate-500 hover:text-slate-700" %>
+  </div>
+</div>

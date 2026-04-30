@@ -3,6 +3,8 @@ class Analytics::Trending
   NEW_BOOST_DAYS = 14
   AGE_PENALTY_FACTOR = 0.1
 
+  MIN_VIEWS = 10
+
   def top_posts(limit: 10)
     view_counts = PageView
       .where(viewed_at: VIEW_WINDOW_DAYS.days.ago.beginning_of_day..Time.current.end_of_day, is_unique: true)
@@ -10,9 +12,16 @@ class Analytics::Trending
       .group(:post_id)
       .count
 
+    eligible_post_ids = view_counts.select { |_, count| count >= MIN_VIEWS }.keys
+
     Post.visible.posts
-      .where("published_at > ?", 90.days.ago)
-      .includes(:blog)
+      .joins(blog: :user)
+      .where(blogs: { allow_search_indexing: true })
+      .where(users: { discarded_at: nil })
+      .where(published_at: 14.days.ago..)
+      .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
+      .where(id: eligible_post_ids)
+      .eager_load(:blog)
       .map { |post| score_post(post, view_counts) }
       .select { |item| item[:score] > 0 }
       .sort_by { |item| -item[:score] }
@@ -24,18 +33,16 @@ class Analytics::Trending
 
     # Score = (engagement × boost) - age_penalty
     #
-    # - engagement: √views + (√upvotes × 10) — sqrt dampens viral outliers
-    # - boost: 2× for brand new posts, decaying to 1× over 14 days
-    # - age_penalty: -0.1 per day, so newer posts with equal engagement rank higher
-    #
-    # Views are the primary signal (all blogs have them), upvotes are a bonus.
-    # Zero engagement = zero score (won't appear in results).
+    # - engagement: √views + (√(upvotes - 1) × 10) — sqrt dampens outliers at the top end
+    # - boost: 2× for brand new posts, decaying linearly to 1× at NEW_BOOST_DAYS
+    # - age_penalty: 0.1 subtracted per day, breaking ties toward newer posts
     def score_post(post, view_counts)
       views = view_counts[post.id] || 0
       upvotes = post.upvotes_count
+      external_upvotes = [ upvotes - 1, 0 ].max
       days_old = (Date.current - post.published_at.to_date).to_i
 
-      engagement = Math.sqrt(views) + (Math.sqrt(upvotes) * 10)
+      engagement = Math.sqrt(views) + (Math.sqrt(external_upvotes) * 10)
       boost_multiplier = 1 + ([ NEW_BOOST_DAYS - days_old, 0 ].max / NEW_BOOST_DAYS.to_f)
       age_penalty = days_old * AGE_PENALTY_FACTOR
 

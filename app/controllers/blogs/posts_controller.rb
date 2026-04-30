@@ -1,6 +1,9 @@
 class Blogs::PostsController < Blogs::BaseController
   include Pagy::Method, RequestHash, PostsHelper
 
+  STREAM_PAGE_SIZE = 15
+  TITLE_PAGE_SIZE = 100
+
   rate_limit to: 60, within: 1.minute
 
   skip_forgery_protection only: :not_found
@@ -24,9 +27,8 @@ class Blogs::PostsController < Blogs::BaseController
     @current_lang = params[:lang].to_s.downcase.split("-").first if params[:lang].present?
 
     scope = @blog.posts.visible
-      .with_full_rich_text
-      .includes(:upvotes)
-      .order(published_at: :desc, id: :desc)
+      .for_blog_render
+      .ordered_by_published
     scope = scope.tagged_with_any(@current_tags) if @current_tags
     scope = scope.tagged_without_any(params[:without_tag].split(",").map(&:strip)) if params[:without_tag].present?
     scope = scope.titled(params[:title]) if params[:title].present?
@@ -53,8 +55,7 @@ class Blogs::PostsController < Blogs::BaseController
       .kept
       .published
       .released
-      .with_full_rich_text
-      .includes(:upvotes)
+      .for_blog_render
       .find_by!(slug: blog_params[:slug])
 
     return if flash.any? # Don't cache responses with flash — session skip prevents flash clearing
@@ -75,7 +76,7 @@ class Blogs::PostsController < Blogs::BaseController
     end
 
     def page_size
-      @blog.title_layout? ? 100 : 15
+      @blog.title_layout? ? TITLE_PAGE_SIZE : STREAM_PAGE_SIZE
     end
 
     def set_conditional_get_headers
@@ -86,19 +87,5 @@ class Blogs::PostsController < Blogs::BaseController
         last_modified: @blog.updated_at,
         public: true
       )
-    end
-
-    # Enable Cloudflare edge caching for *.pagecord.com blog pages. Sets a
-    # 12-hour edge TTL with tag-based purging (on post save / blog settings
-    # change). Skips the session cookie so Cloudflare doesn't BYPASS the cache.
-    # Custom domains are not edge-cached (they route through Caddy, not Cloudflare).
-    # No-op unless Cloudflare credentials are configured.
-    def set_blog_cache_headers
-      return unless default_domain_request?
-      return unless Rails.env.production? && ENV["CLOUDFLARE_ZONE_ID"].present? && ENV["CLOUDFLARE_API_TOKEN"].present?
-
-      response.headers["Cache-Tag"] = @blog.subdomain
-      request.session_options[:skip] = true
-      expires_in 0, public: true, "s-maxage": 12.hours.to_i, "stale-while-revalidate": 1.hour.to_i
     end
 end

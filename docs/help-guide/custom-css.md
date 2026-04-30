@@ -5,6 +5,8 @@ published: true
 
 Custom CSS is an advanced feature that gives you finer control over the look and feel of your blog. You can change fonts, colors, adjust spacing, hide elements and more.
 
+**New to Custom CSS?** Try the [Theme Garden](https://pagecord.com/app/settings/theme_garden) first – it has curated CSS templates you can preview and apply with one click, no coding required.
+
 ### A Quick Note
 
 Pagecord is small business. It's not possible to offer customer support with writing or debugging custom CSS — you're on your own with this one!
@@ -29,10 +31,10 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ .titlebar                                    │ │ │ │
-│ │ │ │ ┌──────────────────┐ ┌─────────────────────┐ │ │ │ │
-│ │ │ │ │ .avatar-container│ │ .blog-title         │ │ │ │ │
-│ │ │ │ │ [ .avatar ]      │ │                     │ │ │ │ │
-│ │ │ │ └──────────────────┘ └─────────────────────┘ │ │ │ │
+│ │ │ │ ┌──────────────────────────────────────────┐ │ │ │ │
+│ │ │ │ │ .avatar-container (when avatar present)  │ │ │ │ │
+│ │ │ │ │ [ .avatar ] [ .blog-title ]              │ │ │ │ │
+│ │ │ │ └──────────────────────────────────────────┘ │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ .bio (Your profile description)              │ │ │ │
@@ -100,6 +102,29 @@ h1, h2, h3, h4, h5 {
 }
 ```
 
+### Centering the Header
+
+Center the navigation, title, avatar, and bio:
+
+```css
+nav {
+  justify-content: center;
+}
+
+.titlebar, .avatar-container {
+  flex-direction: column;
+  align-items: center;
+}
+
+.bio {
+  text-align: center;
+}
+```
+
+This targets both `.titlebar` and `.avatar-container` so it works whether or not you have an avatar.
+
+Or pick and choose from the individual options below.
+
 ### Centering the Top Navigation
 
 By default, the navigation links are aligned to the right. This will move them to the center.
@@ -110,12 +135,21 @@ nav {
 }
 ```
 
-### Stacking the Avatar and Title in the centre
+### Centering the Title and Avatar
 
-If you want your avatar to appear above your blog title and both to be centered:
+If you have an avatar, target `.avatar-container` to stack and center both:
 
 ```css
 .avatar-container {
+  flex-direction: column;
+  align-items: center;
+}
+```
+
+If you don't have an avatar (or want it to work either way), include `.titlebar` too:
+
+```css
+.titlebar, .avatar-container {
   flex-direction: column;
   align-items: center;
 }
@@ -265,6 +299,19 @@ Posts with tags include a `data-tags` attribute on their wrapper element. You ca
 }
 ```
 
+### Non-italic blockquotes
+
+Blockquotes are styled in italics by default. If you prefer upright text, use this snippet. The second rule ensures that any emphasised text inside the quote still appears italic:
+
+```css
+blockquote {
+  font-style: normal;
+}
+blockquote em {
+  font-style: italic;
+}
+```
+
 ### Full-width images
 
 By default, images display at their natural size. To make all images stretch to fill the full width of your posts:
@@ -284,6 +331,93 @@ Images are centered by default. To left-align them instead:
 ```css
 article img {
   margin-inline-start: 0;
+}
+```
+
+### Galleries: fewer columns on mobile
+
+By default, image galleries render in 2 or 3 columns depending on how many images you've added. On narrow screens this can feel cramped. Change the layout below a chosen breakpoint.
+
+**One image per row on mobile:**
+
+```css
+@media (max-width: 600px) {
+  .attachment-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+**Two images per row on mobile:**
+
+```css
+@media (max-width: 600px) {
+  .attachment-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+```
+
+Adjust `600px` to your preferred breakpoint.
+
+### Posts gallery: customising the layout
+
+The `{{ posts | style: gallery }}` dynamic variable renders posts as a grid of square thumbnails. You can target the following classes:
+
+- `.posts-gallery` — the grid container
+- `.posts-gallery-item` — each tile (an `<a>` linking to the post)
+- `.posts-gallery-image` — the wrapper around the thumbnail
+- `.posts-gallery-title` — the post title (hidden by default)
+
+**Change the number of columns:**
+
+```css
+.posts-gallery { grid-template-columns: 1fr; }
+@media (min-width: 600px) { .posts-gallery { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 900px) { .posts-gallery { grid-template-columns: repeat(4, 1fr); } }
+```
+
+**Use the natural aspect ratio of each image** (instead of square crops):
+
+```css
+.posts-gallery-image { aspect-ratio: auto; }
+.posts-gallery-image img { height: auto; }
+```
+
+**Show the post title under each tile:**
+
+```css
+.posts-gallery-title {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
+```
+
+**Show the post title inside the image:**
+
+```css
+.posts-gallery-item {
+  position: relative;
+  display: block;
+}
+
+.posts-gallery-title {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: block;
+  padding: 1.5rem 0.75rem 0.75rem;
+  color: white;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.55), transparent);
+}
+```
+
+This keeps the label background transparent at the top while adding contrast behind the text. If the title is still hard to read on pale images, add a subtle shadow:
+
+```css
+.posts-gallery-title {
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.7);
 }
 ```
 

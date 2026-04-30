@@ -23,20 +23,20 @@ class RackAttackTest < ActionDispatch::IntegrationTest
 
   test "throttles POST requests exceeding the POST limit per IP" do
     Rack::Attack::POST_LIMIT.times do
-      post "/", headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.2" }
+      post blog_page_views_url(host: blog_host), headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.2" }
     end
 
-    post "/", headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.2" }
+    post blog_page_views_url(host: blog_host), headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.2" }
     assert_equal 429, response.status
   end
 
   test "tracks different IPs independently" do
     Rack::Attack::POST_LIMIT.times do
-      post "/", headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.3" }
+      post blog_page_views_url(host: blog_host), headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.3" }
     end
 
     # Different IP should still be allowed
-    post "/", headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.4" }
+    post blog_page_views_url(host: blog_host), headers: { "HTTP_X_FORWARDED_FOR" => "10.0.0.4" }
     assert_not_equal 429, response.status
   end
 
@@ -55,4 +55,10 @@ class RackAttackTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  private
+
+    def blog_host
+      "#{blogs(:joel).subdomain}.#{Rails.application.config.x.domain}"
+    end
 end

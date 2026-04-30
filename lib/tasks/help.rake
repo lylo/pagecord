@@ -1,74 +1,87 @@
-namespace :help do
-  desc "Sync help guide markdown files to help.pagecord.com pages"
-  task sync: :environment do
-    subdomain = ENV.fetch("BLOG", "help")
-    blog = Blog.find_by(subdomain: subdomain)
-    abort "Blog '#{subdomain}' not found" unless blog
+require "net/http"
+require "json"
+require "yaml"
 
+namespace :help do
+  desc "Sync help guide markdown files to help.pagecord.com pages via API"
+  task :sync do
+    api_key = ENV.fetch("PAGECORD_API_KEY") { abort "PAGECORD_API_KEY is required" }
+    base_url = ENV.fetch("PAGECORD_API_URL", "https://api.pagecord.com")
     dry_run = ENV["DRY_RUN"].present?
+    puts "Target: #{base_url}"
     puts "DRY RUN - no changes will be saved\n\n" if dry_run
 
-    markdown = Redcarpet::Markdown.new(
-      Redcarpet::Render::HTML.new(hard_wrap: true, with_toc_data: true),
-      autolink: true, tables: true, fenced_code_blocks: true
-    )
-
-    Dir.glob(Rails.root.join("docs/help-guide/*.md")).each do |file|
-      slug = File.basename(file, ".md")
-      raw = File.read(file)
-      front_matter, body = parse_front_matter(raw)
-      title = front_matter["title"] || body[/^#\s+(.+)$/, 1]
-      body = body.gsub(/\]\(([^)]+)\.md\)/, '](/\1)')  # Convert .md links to absolute paths
-      html = markdown.render(body)
-
-      page = if slug == "index"
-        blog.home_page || Post.new(blog: blog, is_page: true)
-      else
-        Post.find_or_initialize_by(blog: blog, slug: slug, is_page: true)
+    # Build slug → token map from all existing pages (published and draft)
+    existing = {}
+    [ "published", "draft" ].each do |status|
+      page_num = 1
+      loop do
+        res = help_api_get(base_url, api_key, "/pages?status=#{status}&page=#{page_num}")
+        abort "API error #{res.code}: #{res.body}" unless res.code.start_with?("2")
+        JSON.parse(res.body).each { |p| existing[p["slug"]] = p["token"] }
+        break unless res["Link"]&.include?('rel="next"')
+        page_num += 1
       end
-      existing_content_html = normalize_html(page.content.body&.to_html)
-      new_content_html = normalize_html(ActionText::Content.new(html).to_html)
-      page.assign_attributes(
-        title: title,
-        content: html,
-        status: front_matter["published"] ? "published" : "draft"
-      )
-      content_changed = new_content_html != existing_content_html
+    end
+    home_res = help_api_get(base_url, api_key, "/home_page")
+    home_token = home_res.code == "200" ? JSON.parse(home_res.body)["token"] : nil
 
-      if page.new_record?
-        puts "CREATE: #{slug}"
-        unless dry_run
-          page.save!
-          blog.update!(home_page: page) if slug == "index"
+    docs_dir = File.expand_path("../../docs/help-guide", __dir__)
+    Dir.glob("#{docs_dir}/*.md").each do |file|
+      slug = File.basename(file, ".md")
+      next if ENV["SLUG"] && ENV["SLUG"] != slug
+      raw = File.read(file)
+      front_matter, _body = help_parse_front_matter(raw)
+      status = front_matter["published"] ? "published" : "draft"
+      content = help_rewrite_links(raw)
+
+      if slug == "index"
+        if home_token
+          puts "UPDATE: home_page"
+          help_api_call(:patch, base_url, api_key, "/pages/#{home_token}",
+            content: content, content_format: "markdown", status: status) unless dry_run
+        else
+          puts "CREATE: home_page"
+          help_api_call(:post, base_url, api_key, "/home_page",
+            content: content, content_format: "markdown", status: status) unless dry_run
         end
-      elsif page.changed? || content_changed
-        reasons = []
-        reasons << "attributes: #{page.changes.keys.join(', ')}" if page.changed?
-        reasons << "content" if content_changed
-        puts "UPDATE: #{slug} (#{reasons.join(', ')})"
-        if ENV["DEBUG"] && content_changed
-          puts "  new (first 200): #{new_content_html[0..200].inspect}"
-          puts "  old (first 200): #{existing_content_html[0..200].inspect}"
-        end
-        page.save! unless dry_run
+      elsif (token = existing[slug])
+        puts "UPDATE: #{slug}"
+        help_api_call(:patch, base_url, api_key, "/pages/#{token}",
+          content: content, content_format: "markdown", status: status) unless dry_run
       else
-        puts "unchanged: #{slug}"
+        puts "CREATE: #{slug}"
+        help_api_call(:post, base_url, api_key, "/pages",
+          content: content, content_format: "markdown", status: status, slug: slug) unless dry_run
       end
     end
   end
 
-  def normalize_html(html)
-    return "" if html.nil?
-    html
-      .gsub(/>\s+</, "><")           # strip whitespace between tags
-      .gsub(/<b>(<strong>.*?<\/strong>)<\/b>/, '\1')  # unwrap <b> around <strong>
-      .gsub(/ id="[^"]*"/, "")       # strip heading id attributes
-      .strip
+  def help_api_get(base_url, api_key, path)
+    uri = URI("#{base_url}#{path}")
+    req = Net::HTTP::Get.new(uri)
+    req["Authorization"] = "Bearer #{api_key}"
+    Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") { |http| http.request(req) }
   end
 
-  def parse_front_matter(content)
-    return [ {}, content ] unless content.start_with?("---")
+  def help_api_call(method, base_url, api_key, path, params)
+    uri = URI("#{base_url}#{path}")
+    req = (method == :post ? Net::HTTP::Post : Net::HTTP::Patch).new(uri)
+    req["Authorization"] = "Bearer #{api_key}"
+    req.set_form_data(params)
+    res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") { |http| http.request(req) }
+    abort "API error #{res.code}: #{res.body}" unless res.code.start_with?("2")
+    res
+  end
 
+  def help_rewrite_links(raw)
+    parts = raw.start_with?("---") ? raw.split("---", 3) : [ nil, nil, raw ]
+    body = parts[2].gsub(/\]\(index\.md\)/, "](/)").gsub(/\]\(([^)]+)\.md\)/, '](/\1)')
+    parts[1] ? "---#{parts[1]}---#{body}" : body
+  end
+
+  def help_parse_front_matter(content)
+    return [ {}, content ] unless content.start_with?("---")
     parts = content.split("---", 3)
     front_matter = YAML.safe_load(parts[1], permitted_classes: [ Time, Date ]) || {}
     [ front_matter, parts[2].to_s.strip ]

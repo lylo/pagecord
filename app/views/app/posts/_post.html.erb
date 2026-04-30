@@ -18,7 +18,7 @@
       <% if post.hidden? %>
         <%= inline_svg_tag "icons/eye-slash.svg", class: "w-4 h-4", title: "Private post", aria: { label: "Private post" }, role: "img" %>
       <% end %>
-      <% if @user.has_premium_access? && post.upvotes_count > 0 %>
+      <% if @user.has_premium_access? && @user.blog.show_metrics? && post.upvotes_count > 0 %>
         <span class="flex gap-x-0.5">
           <span class="text-xs"><%= post.upvotes_count %></span>
           <%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4" %>

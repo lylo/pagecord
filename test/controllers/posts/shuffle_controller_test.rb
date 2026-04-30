@@ -36,6 +36,17 @@ class Posts::ShuffleControllerTest < ActionDispatch::IntegrationTest
     refute_match /#{user.blog.subdomain}\./, response.location
   end
 
+  test "should exclude posts published within the last 2 hours" do
+    travel_to Time.zone.parse("2026-04-07 12:00:00") do
+      post = posts(:one)
+      post.update_column(:published_at, 30.minutes.ago)
+
+      get shuffle_path
+
+      refute_match %r{/#{post.slug}$}, response.location
+    end
+  end
+
   test "should redirect to root when no eligible posts exist" do
     Post.update_all(hidden: true)
 

@@ -79,7 +79,8 @@ export default class extends Controller {
         "t": "tags",
         "p": "published-at",
         "c": "canonical-url",
-        "l": "locale"
+        "l": "locale",
+        "g": "og-image"
       }
 
       const sectionId = shortcuts[event.key.toLowerCase()]

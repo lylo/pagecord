@@ -77,6 +77,7 @@
         <%= @blog.sanitized_custom_css %>
       </style>
     <% end %>
+    <%= yield :head %>
   </head>
 
   <body class="<%= font_class %>" <%= theme_data_attribute %>>

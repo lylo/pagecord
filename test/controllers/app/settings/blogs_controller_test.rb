@@ -13,7 +13,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     get app_settings_blogs_url
 
     assert_select "h3", { count: 1, text: "Custom Domain" }
-    assert_select "h3", { count: 1, text: "Search Engine Visibility" }
+    assert_select "h3", { count: 1, text: "Discoverability" }
     assert_select "h3", { count: 1, text: "Google Site Verification" }
     assert_select "h3", { count: 1, text: "Fediverse Author Attribution" }
     assert_response :success
@@ -181,6 +181,13 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_settings_url
     assert_equal false, @blog.reload.show_subscription_in_footer
+  end
+
+  test "should update show_metrics" do
+    patch app_settings_blog_url(@blog), params: { blog: { show_metrics: false } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal false, @blog.reload.show_metrics
   end
 
   test "should not allow non-subscribed user to update subscription location settings" do

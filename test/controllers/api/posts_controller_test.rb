@@ -5,7 +5,6 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     host! "api.example.com"
 
     @blog = blogs(:joel)
-    @blog.update!(features: [ "api" ])
     @user = users(:joel)
     @user.update!(trial_ends_at: 30.days.from_now)
 
@@ -30,15 +29,6 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     @user.update!(trial_ends_at: nil)
     get "/posts", headers: auth_header
     assert_response :forbidden
-  end
-
-  test "returns forbidden when api feature is disabled" do
-    @blog.update!(features: [])
-
-    get "/posts", headers: auth_header
-
-    assert_response :forbidden
-    assert_equal "API access is not enabled for this blog", JSON.parse(response.body)["error"]
   end
 
   # -- Index --
@@ -71,22 +61,25 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index with published_after filters posts" do
-    get "/posts", params: { published_after: 1.day.ago.iso8601 }, headers: auth_header
+    published_after = 2.days.ago.beginning_of_day
+    get "/posts", params: { published_after: published_after.iso8601 }, headers: auth_header
 
     assert_response :success
     posts = JSON.parse(response.body)
+    assert posts.any?, "expected at least one post"
     posts.each do |p|
-      assert Time.parse(p["published_at"]) >= 1.day.ago
+      assert Time.parse(p["published_at"]) >= published_after
     end
   end
 
   test "index with published_before filters posts" do
-    get "/posts", params: { published_before: 2.days.ago.iso8601 }, headers: auth_header
+    published_before = 2.days.ago
+    get "/posts", params: { published_before: published_before.iso8601 }, headers: auth_header
 
     assert_response :success
     posts = JSON.parse(response.body)
     posts.each do |p|
-      assert Time.parse(p["published_at"]) <= 2.days.ago
+      assert Time.parse(p["published_at"]) <= published_before
     end
   end
 
@@ -431,6 +424,13 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :no_content
     assert @post.reload.discarded?
+  end
+
+  test "destroy permanently deletes a post when permanent=true" do
+    assert_difference("Post.count", -1) do
+      delete "/posts/#{@post.token}", params: { permanent: true }, headers: auth_header
+    end
+    assert_response :no_content
   end
 
   test "destroy returns 404 for unknown token" do

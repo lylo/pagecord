@@ -1,7 +1,7 @@
 module Localisable
   extend ActiveSupport::Concern
 
-  SUPPORTED_LOCALES = %w[en es fr de pt].freeze
+  SUPPORTED_LOCALES = %w[en es fr de nl pt].freeze
 
   included do
     class_attribute :locale_optional, default: false
@@ -18,6 +18,7 @@ module Localisable
         [ "Español", "es" ],
         [ "Français", "fr" ],
         [ "Deutsch", "de" ],
+        [ "Nederlands", "nl" ],
         [ "Português", "pt" ]
       ]
     end

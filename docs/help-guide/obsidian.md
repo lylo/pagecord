@@ -8,9 +8,21 @@ Publish notes from [Obsidian](https://obsidian.md) to your Pagecord blog using t
 
 ## Installation
 
-1. In Obsidian, go to **Settings → Community Plugins → Browse**
-2. Search for **Pagecord**
-3. Click **Install**, then **Enable**
+The plugin is pending review in the Obsidian community directory. For now, install it manually:
+
+```
+git clone https://github.com/pagecord/obsidian-pagecord.git
+cd obsidian-pagecord
+npm install
+npm run build
+
+mkdir -p /path/to/your/vault/.obsidian/plugins/obsidian-pagecord
+cp main.js manifest.json /path/to/your/vault/.obsidian/plugins/obsidian-pagecord/
+```
+
+Then in Obsidian, go to **Settings → Community Plugins**, turn off **Restricted mode** if needed, then enable **Pagecord**.
+
+Once the plugin is accepted into the community directory you'll be able to install and update it directly from Obsidian.
 
 ## Setup
 

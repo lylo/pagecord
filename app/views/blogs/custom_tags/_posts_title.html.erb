@@ -1,0 +1,9 @@
+<ul id="embedded-posts-<%= frame_id %>" class="posts-list">
+  <%= render partial: "blogs/posts/title_post", collection: posts, as: :post %>
+</ul>
+<% if has_next %>
+  <%= turbo_frame_tag "embedded-posts-#{frame_id}-page-2",
+      src: blog_embedded_posts_path(page: 2, style: "title", frame_id: frame_id,
+            page_frame_id: "embedded-posts-#{frame_id}-page-2", **filter_params),
+      loading: :lazy %>
+<% end %>

@@ -19,6 +19,7 @@ class App::PostsController < AppController
       end
     end
 
+    @search_results_count = @search_term.present? ? posts_query.count + drafts_query.count : nil
     @pagy, @posts = pagy(posts_query, limit: 25)
     @drafts = @pagy.page == 1 ? drafts_query.load : []
     @total_posts_count = Current.user.blog.posts.kept.published.count
@@ -43,11 +44,13 @@ class App::PostsController < AppController
   end
 
   def create
-    post = Current.user.blog.posts.build(post_params)
-    if post.save
+    @post = Current.user.blog.posts.build(post_params)
+
+    return render_stale_form_context unless context_blog_id_matches_current_blog?
+
+    if @post.save
       redirect_to app_posts_path, notice: "Post was successfully created"
     else
-      @post = post
       render :new, status: :unprocessable_entity
     end
   end
@@ -66,10 +69,10 @@ class App::PostsController < AppController
   end
 
   def destroy
-    post = Current.user.blog.posts.kept.find_by!(token: params[:token])
-    post.discard!
+    post = Current.user.blog.posts.find_by!(token: params[:token])
+    post.destroy!
 
-    redirect_to app_posts_path, notice: "Post was successfully deleted"
+    redirect_to app_posts_trash_path, notice: "Post was permanently deleted"
   end
 
   private
@@ -77,8 +80,9 @@ class App::PostsController < AppController
 
     def post_params
       status = params[:button] == "save_draft" ? :draft : :published
-
-      params.require(:post).permit(:title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale).merge(status: status)
+      permitted = [ :title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale ]
+      permitted += [ :open_graph_image, :open_graph_image_suppressed ] if Current.user.has_premium_access?
+      params.require(:post).permit(*permitted).merge(status: status)
     end
 
     def redirect_to_first_page

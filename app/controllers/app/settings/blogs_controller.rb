@@ -31,12 +31,12 @@ class App::Settings::BlogsController < AppController
         :allow_search_indexing,
         :google_site_verification,
         :seo_title,
-        :locale
+        :locale,
+        :show_metrics
       ]
 
       if @blog.user.subscribed?
-        permitted_params += [ :custom_domain, :email_subscriptions_enabled, :show_subscription_in_header, :show_subscription_in_footer ]
-        permitted_params << :email_delivery_mode if current_features.enabled?(:individual_email_delivery)
+        permitted_params += [ :custom_domain, :email_subscriptions_enabled, :show_subscription_in_header, :show_subscription_in_footer, :email_delivery_mode ]
       end
 
       if @blog.user.has_premium_access?

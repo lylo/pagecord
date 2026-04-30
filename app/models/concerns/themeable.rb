@@ -14,9 +14,9 @@ module Themeable
   PAGE_WIDTHS = %w[narrow standard wide].freeze
 
   included do
-    validates :theme, inclusion: { in: THEMES, message: "%{value} is not a valid theme" }
-    validates :font, inclusion: { in: FONTS, message: "%{value} is not a valid font" }
-    validates :width, inclusion: { in: PAGE_WIDTHS, message: "%{value} is not a valid width" }
+    validates :theme, inclusion: { in: THEMES, message: "%{value} is not a valid theme" }, allow_blank: true
+    validates :font, inclusion: { in: FONTS, message: "%{value} is not a valid font" }, allow_blank: true
+    validates :width, inclusion: { in: PAGE_WIDTHS, message: "%{value} is not a valid width" }, allow_blank: true
 
     validates :custom_theme_bg_light, :custom_theme_text_light, :custom_theme_accent_light,
               :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark,

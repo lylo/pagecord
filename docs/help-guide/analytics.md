@@ -16,6 +16,7 @@ Click **Analytics** in your dashboard to see your page views.
 - **Chart** — Visual breakdown of views over time
 - **Top posts** — Your most-viewed content
 - **Traffic sources** — Where your visitors are coming from
+- **Countries** — Geographic breakdown of your audience
 
 ## Time periods
 
@@ -34,6 +35,10 @@ The traffic sources list shows where your visitors are coming from, ranked by po
 Direct traffic includes both typed URLs and visits from sources that don't pass referrer data, such as email clients, certain apps, and privacy-focused browsers.
 
 Traffic source data is available from January 2026 onwards.
+
+## Countries
+
+See which countries your visitors are coming from. Country data is determined using Cloudflare's geolocation headers when available, with a fallback to the [DB-IP](https://db-ip.com) Lite database. Both are local lookups that don't share any visitor data with third parties.
 
 ## Privacy-focused
 

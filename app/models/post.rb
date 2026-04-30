@@ -1,6 +1,6 @@
 class Post < ApplicationRecord
   include Discard::Model
-  include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable, Post::Emailable
+  include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable, Post::Emailable, Post::Filterable
 
   enum :source, [ :editor, :email, :api ]
 
@@ -10,6 +10,7 @@ class Post < ApplicationRecord
 
   has_rich_text :content
   has_many_attached :attachments, dependent: :destroy
+  has_one_attached :open_graph_image
 
   has_many :digest_posts, dependent: :destroy
   has_many :post_digests, through: :digest_posts
@@ -41,6 +42,7 @@ class Post < ApplicationRecord
         ]
       )
     }
+  scope :for_blog_render, -> { with_full_rich_text.with_attached_attachments.includes(:upvotes) }
   after_commit :touch_blog, on: [ :create, :update, :destroy ]
 
   def content_present

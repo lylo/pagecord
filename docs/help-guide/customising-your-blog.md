@@ -69,3 +69,17 @@ Choose how posts appear on your home page:
 ### Branding
 
 Premium feature. Choose whether to hide the Pagecord logo at the bottom of your blog (please consider keeping it to spread the good word about Pagecord!)
+
+## Theme Garden
+
+Found in **Settings** → **Appearance** → **Theme Garden** link. Premium feature.
+
+The Theme Garden is a curated collection of CSS templates that you can preview and apply to your blog with one click. Each template is a complete design – combining custom CSS with optional colour scheme, font, layout, and width settings.
+
+- **Preview** any template to see how it looks with your own blog content (opens in a new tab)
+- **Apply** a template to instantly update your blog's appearance
+- Templates use your blog's colour scheme variables, so switching colour scheme after applying a template still works
+
+If you already have Custom CSS, you'll be asked to confirm before applying a template (since it replaces your existing CSS).
+
+Have a CSS design you'd like to share with the community? [Email us](mailto:hello@pagecord.com) and we may add it to the garden.

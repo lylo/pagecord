@@ -85,6 +85,20 @@ class Blogs::BaseController < ApplicationController
       end
     end
 
+    # Enable Cloudflare edge caching for *.pagecord.com blog pages. Sets a
+    # 12-hour edge TTL with tag-based purging (on post save / blog settings
+    # change). Skips the session cookie so Cloudflare doesn't BYPASS the cache.
+    # Custom domains are not edge-cached (they route through Caddy, not Cloudflare).
+    # No-op unless Cloudflare credentials are configured.
+    def set_blog_cache_headers
+      return unless default_domain_request?
+      return unless Rails.env.production? && ENV["CLOUDFLARE_ZONE_ID"].present? && ENV["CLOUDFLARE_API_TOKEN"].present?
+
+      response.headers["Cache-Tag"] = @blog.subdomain
+      request.session_options[:skip] = true
+      expires_in 0, public: true, "s-maxage": 12.hours.to_i, "stale-while-revalidate": 1.hour.to_i
+    end
+
     def render_blog_not_found
       respond_to do |format|
         format.html { render "blogs/errors/not_found", status: 404 }
@@ -93,6 +107,10 @@ class Blogs::BaseController < ApplicationController
     end
 
     def render_too_many_requests
-      render "blogs/errors/too_many_requests", status: :too_many_requests
+      if request.format.html?
+        render "blogs/errors/too_many_requests", status: :too_many_requests
+      else
+        head :too_many_requests
+      end
     end
 end

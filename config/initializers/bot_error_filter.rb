@@ -1,6 +1,7 @@
 # Middleware to catch common bot errors before they reach error tracking
 class BotErrorFilter
   HANDLED_ERRORS = [
+    Rack::Multipart::BoundaryTooLongError,
     Rack::Multipart::EmptyContentError,
     ActionDispatch::Http::MimeNegotiation::InvalidType,
     URI::InvalidURIError,
@@ -21,7 +22,7 @@ class BotErrorFilter
   rescue *HANDLED_ERRORS
     [ 400, { "Content-Type" => "text/plain" }, [ "Bad Request\n" ] ]
   rescue ActionController::BadRequest => e
-    raise unless HANDLED_ERRORS.any? { |error_class| e.cause.is_a?(error_class) }
+    raise unless HANDLED_ERRORS.any? { |error_class| e.cause.is_a?(error_class) } || e.message.include?("Invalid encoding")
     [ 400, { "Content-Type" => "text/plain" }, [ "Bad Request\n" ] ]
   end
 
