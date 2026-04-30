@@ -13,7 +13,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     get app_settings_blogs_url
 
     assert_select "h3", { count: 1, text: "Custom Domain" }
-    assert_select "h3", { count: 1, text: "Search Engine Visibility" }
+    assert_select "h3", { count: 1, text: "Discoverability" }
     assert_select "h3", { count: 1, text: "Google Site Verification" }
     assert_select "h3", { count: 1, text: "Fediverse Author Attribution" }
     assert_response :success
