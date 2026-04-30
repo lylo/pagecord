@@ -151,6 +151,24 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "", summary
   end
 
+  test "excerpt_summary uses excerpt when present" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>Intro text for cards.</p><p>{{ more }}</p><p>Body text should stay off cards.</p>"
+    )
+
+    assert_equal "Intro text for cards.", post.excerpt_summary
+  end
+
+  test "excerpt_summary falls back to summary when no excerpt break is present" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "This is a long post with lots of text content that should be truncated when we call the summary method with a limit."
+    )
+
+    assert_equal post.summary(limit: 50), post.excerpt_summary(limit: 50)
+  end
+
   test "has_text_content? should return true for posts with text" do
     blog = blogs(:joel)
     post = blog.posts.create!(
@@ -212,6 +230,16 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "This content should be cached.", post.text_summary
   end
 
+  test "should set excerpt without changing text_summary when excerpt break is present" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>Intro text.</p><p>{{ more }}</p><p>Body text stays in the full summary.</p>"
+    )
+
+    assert_equal "<p>Intro text.</p>", post.excerpt
+    assert_equal "Intro text. Body text stays in the full summary.", post.text_summary
+  end
+
   test "should update text_summary when content changes on untitled post" do
     blog = blogs(:joel)
     post = blog.posts.create!(content: "Original content")
@@ -236,6 +264,15 @@ class PostTest < ActiveSupport::TestCase
     post = blog.posts.create!(content: "This is my content that will be used as the title")
 
     assert_equal "This is my content that will be used as the title", post.display_title
+  end
+
+  test "display_title should still use full text_summary when excerpt break is present" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>Intro title text.</p><p>{{ more }}</p><p>Body text stays part of the title fallback.</p>"
+    )
+
+    assert_equal "Intro title text. Body text stays part of the title fallback.", post.display_title
   end
 
   test "display_title should truncate long text_summary" do

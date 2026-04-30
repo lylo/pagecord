@@ -8,8 +8,9 @@
       <% end %>
 
       <div class="post-card-summary p-summary">
-        <% if post.has_text_content? %>
-          <%= post.summary(limit: 324) %>
+        <% summary = post.excerpt_summary(limit: 324) %>
+        <% if summary.present? %>
+          <%= summary %>
         <% elsif post.first_image.present? %>
           <%= image_tag resized_image_url(post.first_image, width: 1600, height: 1200), alt: post.display_title %>
         <% else %>
