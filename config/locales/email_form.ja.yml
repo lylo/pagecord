@@ -1,0 +1,14 @@
+ja:
+  email_form:
+    form:
+      name_label: "あなたの名前"
+      email_label: "あなたのメールアドレス"
+      message_label: "本文"
+      submit_button: "送信"
+    success_message: "メッセージを送信しました!"
+    error_message: "メッセージの送信中に問題が発生しました。"
+    rate_limit_message: "短時間に多くのメッセージを送信しました。しばらくしてからもう一度お試しください。"
+    mailer:
+      from_label: "から"
+      footer: "%{name}様への返事は、このメールに返信してください。"
+      footer_text: "%{name}様に返事を送るには、このメールに返信してください。"
