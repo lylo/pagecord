@@ -29,6 +29,21 @@ class Css::SanitizerTest < ActiveSupport::TestCase
     assert_includes result, "padding-block"
   end
 
+  test "preserves initial-letter for drop caps" do
+    css = "p::first-letter { initial-letter: 3; -webkit-initial-letter: 3; }"
+    result = Css::Sanitizer.sanitize_stylesheet(css)
+    assert_includes result, "initial-letter: 3"
+    assert_includes result, "-webkit-initial-letter: 3"
+  end
+
+  test "preserves @supports feature queries" do
+    css = "@supports (initial-letter: 2) { p::first-letter { color: red; } }"
+    result = Css::Sanitizer.sanitize_stylesheet(css)
+    assert_includes result, "@supports"
+    assert_includes result, "initial-letter: 2"
+    assert_includes result, "color: red"
+  end
+
   test "allows Google Fonts @import" do
     css = '@import url("https://fonts.googleapis.com/css2?family=Roboto");'
     result = Css::Sanitizer.sanitize_stylesheet(css)

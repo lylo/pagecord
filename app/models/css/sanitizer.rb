@@ -37,9 +37,9 @@ module Css
           ::Sanitize::Config.freeze_config(
             ::Sanitize::Config::RELAXED.merge(
               css: base_css_config.merge(
-                at_rules: %w[import layer],
+                at_rules: %w[import layer supports],
                 import_url_validator: ->(url) { allowed_font_url?(url) },
-                at_rules_with_styles: (base_css_config[:at_rules_with_styles] || []) + %w[layer],
+                at_rules_with_styles: (base_css_config[:at_rules_with_styles] || []) + %w[layer supports],
                 properties: base_css_config[:properties] + custom_properties + logical_properties + extra_properties
               )
             )
@@ -57,6 +57,8 @@ module Css
           %w[
             scroll-behavior
             -moz-osx-font-smoothing
+            initial-letter
+            -webkit-initial-letter
           ]
         end
 

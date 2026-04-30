@@ -392,13 +392,14 @@ novella:
     .post-title a { text-decoration: none; }
 
     /* Drop cap on first paragraph of posts (not bio) */
-    article.post .e-content > p:first-child::first-letter {
-      font-size: 3.2em;
-      float: left;
-      line-height: 1;
-      margin: 0.05em 0.12em 0 0;
-      font-weight: 600;
-      color: var(--color-accent);
+    @supports (initial-letter: 2) or (-webkit-initial-letter: 2) {
+      article.post .e-content > p:first-child::first-letter {
+        -webkit-initial-letter: 2;
+        initial-letter: 2;
+        margin-right: 0.35em;
+        font-weight: 600;
+        color: var(--color-accent);
+      }
     }
 
     /* Links */
