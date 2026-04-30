@@ -29,6 +29,7 @@ namespace :help do
     docs_dir = File.expand_path("../../docs/help-guide", __dir__)
     Dir.glob("#{docs_dir}/*.md").each do |file|
       slug = File.basename(file, ".md")
+      next if ENV["SLUG"] && ENV["SLUG"] != slug
       raw = File.read(file)
       front_matter, _body = help_parse_front_matter(raw)
       status = front_matter["published"] ? "published" : "draft"
