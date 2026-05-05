@@ -3,14 +3,13 @@
 <% editor_value = @blog.custom_robots_txt.presence %>
 <% editor_value ||= @blog.generated_robots_txt(sitemap_url: sitemap_url_for(@blog)) if has_premium %>
 
-<div data-controller="robots-txt">
+<div class="group">
   <div class="flex gap-3 <%= 'opacity-50' unless has_premium %>">
     <div class="flex h-6 shrink-0 items-center">
       <%= check_box_tag :use_custom_robots_txt,
           "1",
           has_premium && saved,
           disabled: !has_premium,
-          data: { robots_txt_target: "checkbox", action: "change->robots-txt#toggle" },
           class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:cursor-not-allowed" %>
     </div>
     <div>
@@ -25,7 +24,7 @@
     </div>
   </div>
 
-  <div class="ml-8 mt-4 <%= 'hidden' unless has_premium && saved %>" data-robots-txt-target="editor">
+  <div class="ml-8 mt-4 hidden group-has-[input:checked]:block">
     <%= text_area_tag "blog[custom_robots_txt]",
         editor_value,
         id: "blog_custom_robots_txt",

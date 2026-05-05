@@ -37,14 +37,13 @@ class App::Settings::BlogsController < AppController
 
       if @blog.user.subscribed?
         permitted_params += [ :custom_domain, :custom_robots_txt, :email_subscriptions_enabled, :show_subscription_in_header, :show_subscription_in_footer, :email_delivery_mode ]
+        params[:blog][:custom_robots_txt] = nil unless params[:use_custom_robots_txt].present?
       end
 
       if @blog.user.has_premium_access?
         permitted_params += [ :reply_by_email, :show_upvotes ]
       end
 
-      attrs = params.require(:blog).permit(permitted_params)
-      attrs[:custom_robots_txt] = nil if @blog.user.subscribed? && params[:use_custom_robots_txt] != "1"
-      attrs
+      params.require(:blog).permit(permitted_params)
     end
 end
