@@ -8,7 +8,7 @@ module Blogs
     skip_before_action :authenticate
 
     def show
-      render formats: :text, content_type: "text/plain"
+      render plain: @blog.robots_txt(sitemap_url: sitemap_url_for(@blog)), content_type: "text/plain"
     end
   end
 end

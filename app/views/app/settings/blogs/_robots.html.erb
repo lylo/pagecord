@@ -1,0 +1,36 @@
+<% has_premium = @blog.user.subscribed? %>
+<% saved = @blog.custom_robots_txt.present? %>
+<% editor_value = @blog.custom_robots_txt.presence %>
+<% editor_value ||= @blog.generated_robots_txt(sitemap_url: sitemap_url_for(@blog)) if has_premium %>
+
+<div data-controller="robots-txt">
+  <div class="flex gap-3 <%= 'opacity-50' unless has_premium %>">
+    <div class="flex h-6 shrink-0 items-center">
+      <%= check_box_tag :use_custom_robots_txt,
+          "1",
+          has_premium && saved,
+          disabled: !has_premium,
+          data: { robots_txt_target: "checkbox", action: "change->robots-txt#toggle" },
+          class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:cursor-not-allowed" %>
+    </div>
+    <div>
+      <%= label_tag :use_custom_robots_txt, "Use custom robots.txt", class: "text-slate-800 dark:text-slate-100" %>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+        <% if has_premium %>
+          Start with Pagecord's default robots.txt and edit it for specific crawlers. Incorrect rules can affect search visibility.
+        <% else %>
+          Custom robots.txt is available with a subscription.
+        <% end %>
+      </p>
+    </div>
+  </div>
+
+  <div class="ml-8 mt-4 <%= 'hidden' unless has_premium && saved %>" data-robots-txt-target="editor">
+    <%= text_area_tag "blog[custom_robots_txt]",
+        editor_value,
+        id: "blog_custom_robots_txt",
+        rows: 16,
+        class: "form-field font-mono text-sm w-full" %>
+    <%= field_error(@blog, :custom_robots_txt) %>
+  </div>
+</div>
