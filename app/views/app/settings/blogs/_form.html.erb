@@ -55,10 +55,10 @@
     </p>
 
     <p class="mt-4 text-slate-500 dark:text-slate-400">
-      (Note: All blogs are configured to discourage AI crawlers)
+      (Note: All blogs are configured to discourage AI crawlers by default)
     </p>
 
-    <div class="mt-6">
+    <div class="mt-6 space-y-4">
       <div class="flex gap-3">
         <div class="flex h-6 shrink-0 items-center">
           <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" } %>
@@ -67,6 +67,7 @@
           <%= form.label :allow_search_indexing, "Make my blog discoverable", class: "text-slate-800 dark:text-slate-100" %>
         </div>
       </div>
+      <%= render "app/settings/blogs/robots" %>
     </div>
   </div>
 
