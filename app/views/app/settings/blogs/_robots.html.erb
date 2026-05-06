@@ -32,4 +32,10 @@
         class: "form-field font-mono text-sm w-full" %>
     <%= field_error(@blog, :custom_robots_txt) %>
   </div>
+
+  <% if saved %>
+    <p class="hidden group-has-[input:not(:checked)]:block mt-2 ml-8 text-sm text-amber-600 dark:text-amber-400">
+      Note: Unchecking this box and saving will remove your custom robots.txt.
+    </p>
+  <% end %>
 </div>
