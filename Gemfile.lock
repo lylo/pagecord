@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 238111c4ded06c75db9bc497e65850337ddf8a19
+  revision: 2d670320f7b02ae879545d5202f0633841b8f196
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -248,7 +248,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.19.4)
+    json (2.19.5)
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -286,7 +286,7 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (6.0.5)
+    minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
     mocha (3.1.0)
