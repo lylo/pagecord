@@ -2,7 +2,7 @@
 <div class="<%= 'hidden' unless record.open_graph_image.attached? || record.open_graph_image_suppressed? %> mb-8" data-post-attributes-target="section" data-section="og-image">
   <div class="mt-4 font-bold">Open Graph Image</div>
 
-  <% if record.open_graph_image.attached? %>
+  <% if record.open_graph_image.attached? && record.open_graph_image.blob.persisted? %>
     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
       Click the image to select a new one, or click 'Remove' to delete it.
     </p>

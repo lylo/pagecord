@@ -99,6 +99,21 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_posts_trash_path
   end
 
+  test "should re-render new form when save fails with open_graph_image attached" do
+    user = users(:joel)
+    login_as user
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    Post.any_instance.stubs(:save).returns(false)
+
+    post app_posts_url, params: {
+      context_blog_id: user.blog.id,
+      post: { title: "New Post", content: "New content", open_graph_image: image }
+    }
+
+    assert_response :unprocessable_entity
+  end
+
   test "should not create post when form blog context does not match session blog" do
     assert_no_difference("@user.blog.posts.count") do
       post app_posts_url, params: {

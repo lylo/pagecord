@@ -350,7 +350,7 @@ novella:
     header > .titlebar { order: 1; }
     header > .bio { order: 2; }
     header > nav { order: 3; }
-    header > .email-subscriber-form { order: 4; }
+    header > .email-subscriber-form { order: 4; margin-top: 1.25rem; }
     header > hr { order: 5; width: 100%; }
 
     .titlebar { justify-content: center; }
@@ -392,14 +392,14 @@ novella:
     .post-title a { text-decoration: none; }
 
     /* Drop cap on first paragraph of posts (not bio) */
-    article.post .e-content > p:first-child::first-letter {
-      font-size: 3.2em;
-      float: left;
-      line-height: 1;
-      padding-right: 0.05em;
-      margin-top: 0.05em;
-      font-weight: 600;
-      color: var(--color-accent);
+    @supports (initial-letter: 2) or (-webkit-initial-letter: 2) {
+      article.h-entry .e-content > p:first-child::first-letter {
+        -webkit-initial-letter: 2;
+        initial-letter: 2;
+        margin-right: 0.35em;
+        font-weight: 600;
+        color: var(--color-accent);
+      }
     }
 
     /* Links */
