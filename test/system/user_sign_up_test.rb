@@ -20,7 +20,7 @@ class SignUpTest < ApplicationSystemTestCase
     user = User.create!(email: "test@example.com", blog: blog = Blog.new(subdomain: "testuser"))
     user.access_requests.create!
 
-    visit verify_access_request_url(token: user.access_requests.last.token_digest)
+    visit verify_access_request_path(token: user.access_requests.last.token_digest)
 
     assert_current_path app_onboarding_path
   end
