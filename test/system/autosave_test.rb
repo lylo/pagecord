@@ -7,7 +7,7 @@ class AutosaveTest < ApplicationSystemTestCase
     @other_blog = users(:joel).blog
 
     access_request = @user.access_requests.create!
-    visit verify_access_request_url(token: access_request.token_digest)
+    visit verify_access_request_path(token: access_request.token_digest)
 
     assert_current_path app_posts_path
   end
