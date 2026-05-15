@@ -25,6 +25,14 @@
               <% end %>
             </div>
 
+            <div class="p-1">
+              <%= link_to "#", class: "flex justify-between items-center rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
+                data: { action: "click->post-attributes#toggle", toggle_target: "visibility" } do %>
+                <span class="ms-1">Change Visibility</span>
+                <span class="hidden md:inline text-xs text-gray-400 dark:text-gray-500">V</span>
+              <% end %>
+            </div>
+
             <% if Current.user.has_premium_access? %>
               <div class="p-1">
                 <%= link_to "#", class: "flex justify-between items-center rounded-lg px-2 py-1 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-gray-600 dark:hover:text-gray-50",
@@ -61,6 +69,24 @@
     <%= hidden_field_tag :context_blog_id, Current.user.blog.id if is_new %>
 
     <%= render "app/posts/open_graph_image_section", record: @page, form: form %>
+
+    <div class="<%= 'hidden' unless @page.hidden? %> mb-8" data-post-attributes-target="section" data-section="visibility">
+      <div class="mt-4 font-bold">
+        Page Visibility
+      </div>
+
+      <div class="mt-4 flex gap-3">
+        <div class="flex h-6 shrink-0 items-center">
+          <%= form.check_box :hidden, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" %>
+        </div>
+        <div>
+          <%= form.label :hidden, "Hide this page on my blog", class: "text-sm text-slate-800 dark:text-slate-100" %>
+          <p class="text-slate-500 text-sm">
+            When checked, this page will not be visible on your blog or in the sitemap, but it can be accessed via its link.
+          </p>
+        </div>
+      </div>
+    </div>
 
     <div class="<%= 'hidden' unless @page.errors[:slug].any? %> mb-8" data-post-attributes-target="section" data-section="slug">
       <div class="mt-4 font-bold">
