@@ -20,8 +20,8 @@ Just paste the verification code (or the full meta tag — Pagecord will extract
 
 If you're on Mastodon or another Fediverse platform, you can enter your Fediverse username (e.g. `@you@mastodon.social`) so that your posts are attributed to you when shared on those platforms.
 
-## Search Engine Indexing
+## Discoverability
 
-Blogs on a custom domain can opt out of search engine indexing. When unchecked, Pagecord serves a `robots.txt` that discourages search engines from indexing your site.
+By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. If you'd prefer to keep things low-key, untick the "Make my blog discoverable" box — Pagecord will serve a `robots.txt` that discourages search engines, and exclude your blog from Spotlight and Shuffle.
 
 All Pagecord blogs are automatically configured to discourage AI crawlers regardless of this setting.

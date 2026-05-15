@@ -1,0 +1,1 @@
+<li><%= local_time post.published_at, format: :post_date %> <%= link_to post.display_title, post_path(post), data: { turbo_prefetch: false } %></li>

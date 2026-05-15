@@ -39,6 +39,14 @@ module PostsHelper
     { tags: post.tag_list.join(" ") } if post.tag_list.present?
   end
 
+  def post_thumbnail(post)
+    if post.open_graph_image.attached?
+      post.open_graph_image
+    elsif post.first_image.present?
+      post.first_image
+    end
+  end
+
   def published_at_date_format
     :post_date
   end
@@ -61,8 +69,7 @@ module PostsHelper
 
     processor = DynamicVariableProcessor.new(post: post, view: self)
     processor.process(post.content.to_s)
-  rescue => e
-    Rails.logger.error("Dynamic variable error: #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}")
+  rescue
     post.content.to_s
   end
 

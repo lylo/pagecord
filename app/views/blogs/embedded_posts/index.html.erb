@@ -1,0 +1,29 @@
+<%= turbo_frame_tag @page_frame_id do %>
+  <%= turbo_stream.append @container_id do %>
+    <% if @style == "card" %>
+      <div data-controller="media-embeds">
+        <%= render partial: "blogs/posts/card_post", collection: @posts, as: :post %>
+      </div>
+    <% elsif @style == "stream" %>
+      <div data-controller="media-embeds">
+        <%= render partial: "blogs/posts/stream_post", collection: @posts, as: :post %>
+      </div>
+    <% elsif @style == "gallery" %>
+      <%= render partial: "blogs/posts/gallery_post", collection: @posts, as: :post %>
+    <% else %>
+      <%= render partial: "blogs/posts/title_post", collection: @posts, as: :post %>
+    <% end %>
+  <% end %>
+
+  <% if @pagy.next %>
+    <%= turbo_stream.replace @page_frame_id do %>
+      <%= turbo_frame_tag @next_page_frame_id,
+          src: blog_embedded_posts_path(page: @pagy.next, style: @style, frame_id: @frame_id,
+                page_frame_id: @next_page_frame_id,
+                **request.query_parameters.except("page", "page_frame_id", "style", "frame_id")),
+          loading: :lazy %>
+    <% end %>
+  <% else %>
+    <%= turbo_stream.remove @page_frame_id %>
+  <% end %>
+<% end %>

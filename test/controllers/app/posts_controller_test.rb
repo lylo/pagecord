@@ -99,6 +99,21 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_posts_trash_path
   end
 
+  test "should re-render new form when save fails with open_graph_image attached" do
+    user = users(:joel)
+    login_as user
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    Post.any_instance.stubs(:save).returns(false)
+
+    post app_posts_url, params: {
+      context_blog_id: user.blog.id,
+      post: { title: "New Post", content: "New content", open_graph_image: image }
+    }
+
+    assert_response :unprocessable_entity
+  end
+
   test "should not create post when form blog context does not match session blog" do
     assert_no_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
@@ -389,13 +404,13 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "svg title", text: "Private post"
   end
 
-  test "app area should be inaccessible on custom domain" do
+  test "app area should not route on custom domain" do
     post = posts(:four)
     login_as post.blog.user
 
     get app_posts_url, headers: { "HOST" => post.blog.custom_domain }
 
-    assert_redirected_to root_url(host: post.blog.custom_domain)
+    assert_response :not_found
   end
 
   test "should preview draft post with blog layout" do

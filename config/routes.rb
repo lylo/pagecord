@@ -57,210 +57,165 @@ Rails.application.routes.draw do
   # PWA routes
   get "manifest", to: "rails/pwa#manifest", as: :pwa_manifest, defaults: { format: :json }, constraints: { format: :json }
 
-  constraints AdminConstraint.new do
-    mount Sidekiq::Web, at: "/admin/sidekiq"
-    mount PgHero::Engine, at: "/admin/pghero"
-  end
-
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 
   get "/404", to: "errors#not_found"
   get "/422", to: "errors#unacceptable"
   get "/500", to: "errors#internal_error"
 
-  resources :signups, only: [ :index, :new, :create ] do
-    get :thanks, on: :collection
-  end
-
   namespace :billing do
     resources :paddle_events, only: [ :create ]
     post "/paddle/create_update_payment_method_transaction", to: "paddle#create_update_payment_method_transaction"
   end
 
-  get "/login", to: "sessions#new"
-  delete "/logout", to: "sessions#destroy"
-  resources :sessions, only: [ :create ] do
-    get :thanks, on: :collection
-  end
-
-  resources :password_resets, only: [ :new, :create, :edit, :update ], param: :token do
-    get :thanks, on: :collection
-  end
-
-  get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
-
-  namespace :app do
-    resource :upgrade_banner, only: [ :destroy ]
-    resources :analytics, only: [ :index ]
-    namespace :posts do
-      resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
-    end
-    resources :posts, param: :token do
-      resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
-        post :test
-      end
-      resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
-      resource :restoration, only: [ :create ], controller: "posts/restorations"
-    end
-
-    namespace :pages do
-      resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
-    end
-    resources :pages, except: [ :show ], param: :token do
-      resource :restoration, only: [ :create ], controller: "pages/restorations"
-      member do
-        post :set_as_home_page
-      end
-    end
-    resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
-    resources :settings, only: [ :index ]
-
-    resource :onboarding, only: [ :show, :update ], path: "onboarding" do
-      member do
-        post :complete
-      end
-    end
-
-    namespace :settings do
-      resources :about, only: [ :index, :update ]
-      resources :audience, only: [ :index ]
-      resources :users, only: [ :update, :destroy ]
-      resources :blogs, only: [ :index, :update ]
-      resources :appearance, only: [ :index, :update ]
-      resources :theme_garden, only: [ :index ] do
-        member do
-          get :preview
-          post :apply
-        end
-      end
-      resources :navigation_items, only: [ :index, :create, :update, :destroy ]
-      resources :email_change_requests, only: [ :create, :destroy ] do
-        member do
-          post :resend
-        end
-        collection do
-          get "verify/:token", to: "email_change_requests#verify", as: :verify
-        end
-      end
-
-      resource :api, only: [ :show, :create, :destroy ], controller: "api"
-      resources :exports
-
-      resources :sender_email_addresses, only: [ :create, :destroy ] do
-        collection do
-          get "verify/:token", to: "sender_email_addresses#verify", as: :verify
-        end
-      end
-
-      get "/account/edit", to: "account#edit"
-
-      resources :subscriptions, only: [ :index, :destroy ] do
-        get :thanks, on: :collection
-        get :cancel_confirm, on: :collection
-        post :change_plan, on: :collection
-        post :resume, on: :collection
-      end
-    end
-
-    resources :blogs do
-      resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
-    end
-
-    get "/account", to: "account#index"
-
-    root "posts#index"
-  end
-
-  get "/admin", to: "admin#index", as: :admin
-  namespace :admin do
-    resources :theme_templates do
-      get :fixtures, on: :collection
-    end
-    resources :blogs, only: [ :index ]
-    resources :analytics, only: [ :index ]
-    resources :posts, only: [ :index ]
-    resources :suppressions, only: [ :index ] do
-      collection do
-        delete :destroy
-        delete :destroy_all
-      end
-    end
-    resources :users, only: [ :show, :destroy, :new, :create, :update ] do
-      member do
-        post :restore
-      end
-      resource :subscription, only: [ :update ]
-      resource :verification_email, only: [ :create ]
-    end
-    namespace :moderation do
-      root to: redirect("/admin/moderation/spam")
-
-      resources :content, only: [ :index, :show ] do
-        member do
-          post :dismiss
-          post :discard
-        end
-      end
-
-      resources :spam, only: [ :index, :show ] do
-        collection do
-          post :run_detection
-        end
-        member do
-          post :dismiss
-          post :confirm
-        end
-      end
-    end
-  end
-
-  constraints(DomainConstraints.method(:api_domain?)) do
-    scope module: :api do
-      resources :posts, only: [ :index, :show, :create, :update, :destroy ], param: :token
-      resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
-      resource :home_page, only: [ :show, :create, :update, :destroy ]
-      resources :attachments, only: [ :create ]
-    end
-  end
-
-  constraints(->(request) { !DomainConstraints.default_domain?(request) }) do
-    get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
-    get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
-    get "/", to: "blogs/posts#index", as: :blog_posts
-    get "/posts", to: "blogs/posts#posts_list", as: :blog_posts_list
-    get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
-    get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
-    get "/:name.rss", to: redirect("/feed.xml")
-
-    post "/pv", to: "blogs/page_views#create", as: :blog_page_views
-
-    namespace :api do
-      post "embeds/bandcamp", to: "embeds#bandcamp"
-    end
-
-    get "/:slug", to: "blogs/posts#show", as: :blog_post
-
-    resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
-    resources :contact_messages, controller: "blogs/contact_messages", only: [ :create ]
-
-    get "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#show", as: :email_subscriber_confirmation
-    get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
-    post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
-    post "/email_subscribers/:token/one_click_unsubscribe", to: "blogs/email_subscribers/unsubscribes#one_click", as: :email_subscriber_one_click_unsubscribe
-
-    get "/upvotes/statuses", to: "posts/upvotes/statuses#show", as: :upvotes_statuses
-
-    resources :posts, only: [], param: :token do
-      resources :upvotes, only: [ :create ], module: :posts
-      get "upvotes/status", to: "posts/upvotes/status#show", as: :upvotes_status
-      resources :replies, only: [ :new, :create ], module: :posts
-    end
-
-    # Catch-all for unmatched routes on blog domains
-    match "*path", to: "blogs/posts#not_found", via: :all
-  end
-
   constraints(DomainConstraints.method(:default_domain?)) do
+    constraints AdminConstraint.new do
+      mount Sidekiq::Web, at: "/admin/sidekiq"
+      mount PgHero::Engine, at: "/admin/pghero"
+    end
+
+    resources :signups, only: [ :index, :new, :create ] do
+      get :thanks, on: :collection
+    end
+
+    get "/login", to: "sessions#new"
+    delete "/logout", to: "sessions#destroy"
+    resources :sessions, only: [ :create ] do
+      get :thanks, on: :collection
+    end
+
+    resources :password_resets, only: [ :new, :create, :edit, :update ], param: :token do
+      get :thanks, on: :collection
+    end
+
+    get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
+
+    namespace :app do
+      resource :upgrade_banner, only: [ :destroy ]
+      resources :analytics, only: [ :index ]
+      namespace :posts do
+        resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
+      end
+      resources :posts, param: :token do
+        resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
+          post :test
+        end
+        resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
+        resource :restoration, only: [ :create ], controller: "posts/restorations"
+      end
+
+      namespace :pages do
+        resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
+      end
+      resources :pages, except: [ :show ], param: :token do
+        resource :restoration, only: [ :create ], controller: "pages/restorations"
+        member do
+          post :set_as_home_page
+        end
+      end
+      resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
+      resources :settings, only: [ :index ]
+
+      resource :onboarding, only: [ :show, :update ], path: "onboarding" do
+        member do
+          post :complete
+        end
+      end
+
+      namespace :settings do
+        resources :about, only: [ :index, :update ]
+        resources :audience, only: [ :index ]
+        resources :users, only: [ :update, :destroy ]
+        resources :blogs, only: [ :index, :update ]
+        resources :appearance, only: [ :index, :update ]
+        resources :theme_garden, only: [ :index ] do
+          member do
+            get :preview
+            post :apply
+          end
+        end
+        resources :navigation_items, only: [ :index, :create, :update, :destroy ]
+        resources :email_change_requests, only: [ :create, :destroy ] do
+          member do
+            post :resend
+          end
+          collection do
+            get "verify/:token", to: "email_change_requests#verify", as: :verify
+          end
+        end
+
+        resource :api, only: [ :show, :create, :destroy ], controller: "api"
+        resources :exports
+
+        resources :sender_email_addresses, only: [ :create, :destroy ] do
+          collection do
+            get "verify/:token", to: "sender_email_addresses#verify", as: :verify
+          end
+        end
+
+        get "/account/edit", to: "account#edit"
+
+        resources :subscriptions, only: [ :index, :destroy ] do
+          get :thanks, on: :collection
+          get :cancel_confirm, on: :collection
+          post :change_plan, on: :collection
+          post :resume, on: :collection
+        end
+      end
+
+      resources :blogs do
+        resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
+      end
+
+      get "/account", to: "account#index"
+
+      root "posts#index"
+    end
+
+    get "/admin", to: "admin#index", as: :admin
+
+    namespace :admin do
+      resources :theme_templates do
+        get :fixtures, on: :collection
+      end
+      resources :blogs, only: [ :index ]
+      resources :analytics, only: [ :index ]
+      resources :posts, only: [ :index ]
+      resources :suppressions, only: [ :index ] do
+        collection do
+          delete :destroy
+          delete :destroy_all
+        end
+      end
+      resources :users, only: [ :show, :destroy, :new, :create, :update ] do
+        member do
+          post :restore
+        end
+        resource :subscription, only: [ :update ]
+        resource :verification_email, only: [ :create ]
+      end
+      namespace :moderation do
+        root to: redirect("/admin/moderation/spam")
+
+        resources :content, only: [ :index, :show ] do
+          member do
+            post :dismiss
+            post :discard
+          end
+        end
+
+        resources :spam, only: [ :index, :show ] do
+          collection do
+            post :run_detection
+          end
+          member do
+            post :dismiss
+            post :confirm
+          end
+        end
+      end
+    end
+
     get "/sitemap.xml", to: "public#sitemap", as: :public_sitemap, format: :xml
     get "/robots.txt", to: "public#robots", as: :robots, format: :text
     get "/llms.txt", to: "public/llms#show", as: :llms_txt, format: :text
@@ -288,6 +243,54 @@ Rails.application.routes.draw do
       path = params[:path] ? "/#{params[:path]}" : "/"
       subdomain_redirect(path).call(params, _req)
     }, constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }
+  end
+
+  constraints(DomainConstraints.method(:api_domain?)) do
+    scope module: :api do
+      resources :posts, only: [ :index, :show, :create, :update, :destroy ], param: :token
+      resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
+      resource :home_page, only: [ :show, :create, :update, :destroy ]
+      resources :attachments, only: [ :create ]
+    end
+  end
+
+  constraints(->(request) { !DomainConstraints.default_domain?(request) }) do
+    get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
+    get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
+    get "/", to: "blogs/posts#index", as: :blog_posts
+    get "/posts", to: "blogs/posts#posts_list", as: :blog_posts_list
+    get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
+    get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
+    get "/:name.rss", to: redirect("/feed.xml")
+
+    post "/pv", to: "blogs/page_views#create", as: :blog_page_views
+
+    get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
+
+    namespace :api do
+      post "embeds/bandcamp", to: "embeds#bandcamp"
+    end
+
+    get "/:slug", to: "blogs/posts#show", as: :blog_post
+
+    resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]
+    resources :contact_messages, controller: "blogs/contact_messages", only: [ :create ]
+
+    get "/email_subscribers/:token/confirm", to: "blogs/email_subscribers/confirmations#show", as: :email_subscriber_confirmation
+    get "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#show", as: :email_subscriber_unsubscribe
+    post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
+    post "/email_subscribers/:token/one_click_unsubscribe", to: "blogs/email_subscribers/unsubscribes#one_click", as: :email_subscriber_one_click_unsubscribe
+
+    get "/upvotes/statuses", to: "posts/upvotes/statuses#show", as: :upvotes_statuses
+
+    resources :posts, only: [], param: :token do
+      resources :upvotes, only: [ :create ], module: :posts
+      get "upvotes/status", to: "posts/upvotes/status#show", as: :upvotes_status
+      resources :replies, only: [ :new, :create ], module: :posts
+    end
+
+    # Catch-all for unmatched routes on blog domains
+    match "*path", to: "blogs/posts#not_found", via: :all
   end
 
   direct :rails_public_blob do |blob|

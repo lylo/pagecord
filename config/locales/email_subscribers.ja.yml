@@ -1,0 +1,44 @@
+ja:
+  email_subscribers:
+    form:
+      subscribe_description:
+        digest: "登録すると、新しい投稿の週刊ダイジェストをメールで受け取れます。"
+        individual: "登録すると、新しい投稿をメールで受け取れます。"
+      email_placeholder: "メールアドレスを入力"
+      submit_button: "登録する"
+    create:
+      success_message: "ご登録ありがとうございます。まだ登録されていない場合は、%{email}宛てに確認メールをお送りします。"
+    confirmations:
+      success_message:
+        digest: "%{blog_name}の購読が完了しました。新しい投稿が公開されると、週に1回ダイジェストメールが届きます。"
+        individual: "%{blog_name}の購読が完了しました。新しい投稿が公開されると、メールが届きます。"
+      unsubscribe_link: "購読を解除する"
+    unsubscribes:
+      success_message: "%{blog_name}の購読を解除しました 👋"
+      confirm_message: "%{blog_name}の購読を解除するには、下のリンクをクリックしてください。"
+      unsubscribe_button: "購読を解除する"
+      not_found: "メール購読が見つかりませんでした。"
+    mailers:
+      shared:
+        footer: "このメールは、%{blog_name}の新しい投稿を受け取るよう登録されている方にお送りしています。"
+        unsubscribe_link: "購読を解除する"
+        unsubscribe_text: "購読を解除するには、以下のリンクをクリックしてください。"
+        view_online: "この投稿をWebで読む"
+      confirmation:
+        subject: "%{blog_name}の購読を確認してください"
+        message: "%{blog_name}の購読を確認してください。心当たりがない場合は、このメールを無視してください。"
+        button: "購読を確認する"
+      weekly_digest:
+        subject: "%{blog_name}の新着投稿 – %{date}"
+        footer: "このメールは、%{blog_name}の新しい投稿を受け取るよう登録されている方にお送りしています。"
+        unsubscribe_link: "購読を解除する"
+      individual:
+        default_subject: "%{blog_name}の新しい投稿 – %{date}"
+  posts:
+    read_more: "続きを読む"
+  replies:
+    form:
+      subject_label: "件名"
+      cancel_link: "キャンセル"
+    mailer:
+      intro: "投稿に返信がありました"

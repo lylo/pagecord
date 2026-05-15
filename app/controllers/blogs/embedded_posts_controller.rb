@@ -1,0 +1,42 @@
+class Blogs::EmbeddedPostsController < Blogs::BaseController
+  include Pagy::Method
+
+  rate_limit to: 60, within: 1.minute
+
+  def self._prefixes
+    super + [ "blogs/posts" ]
+  end
+
+  rescue_from Pagy::RangeError, with: :head_gone
+
+  def index
+    post_list_params = DynamicVariable::PostListParams.new(blog: @blog, params: params)
+    @style = post_list_params.style
+    raise ActiveRecord::RecordNotFound unless DynamicVariable::PostsTag.valid_style?(@style)
+
+    relation = @blog.posts.visible
+      .filtered_for_dynamic_variable(**post_list_params.filter_args)
+
+    if @style == "gallery"
+      relation = DynamicVariable::PostsTag
+        .with_gallery_image(relation)
+        .with_attached_open_graph_image
+    end
+
+    relation = relation.for_blog_render
+
+    @pagy, @posts = pagy(relation, limit: DynamicVariable::PostsTag.page_size_for(@style))
+    @frame_id = params[:frame_id].presence || SecureRandom.hex(4)
+    @container_id = "embedded-posts-#{@frame_id}"
+    @page_frame_id = params[:page_frame_id].presence || "#{@container_id}-page-#{@pagy.page}"
+    @next_page_frame_id = "#{@container_id}-page-#{@pagy.next}" if @pagy.next
+    set_blog_cache_headers
+    render layout: false
+  end
+
+  private
+
+    def head_gone
+      head :gone
+    end
+end
