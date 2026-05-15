@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 985e510db4331798e5bf43b892cef9ede7dca43f
+  revision: 9cc62ec2a5c4ac56f7571f05489da9d27c6df69d
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -261,7 +261,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (0.9.11.beta)
+    lexxy (0.9.12.beta)
       rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
