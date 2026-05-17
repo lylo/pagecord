@@ -31,27 +31,6 @@ Excerpt breaks affect your blog's post lists:
 
 The full post page, RSS feed, and email digests still include the full post content. The marker itself is stripped before the post is shown to readers.
 
-## Changing the "Read more" text
-
-Pagecord translates "Read more" based on your blog language. If you want different wording, you can hide the original text and replace it with custom CSS.
-
-Go to **Settings > Appearance**, then add this to the Custom CSS box:
-
-```css
-.excerpt-read-more a {
-  font-size: 0;
-}
-
-.excerpt-read-more a::after {
-  content: "Continue reading";
-  font-size: 0.875em;
-}
-```
-
-Change `Continue reading` to whatever text you want.
-
-This changes the visible label. The underlying link still uses Pagecord's translated "Read more" text.
-
 ## Notes
 
 The marker must be on its own line. If you put it in the middle of a paragraph, list item, blockquote, or table, Pagecord will treat it as normal text.

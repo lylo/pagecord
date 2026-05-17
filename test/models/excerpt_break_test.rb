@@ -50,6 +50,11 @@ class ExcerptBreakTest < ActiveSupport::TestCase
     assert_not_includes result, "Middle"
   end
 
+  test "extract ignores markers inside pre/code blocks" do
+    assert_nil ExcerptBreak.extract("<pre>{{ more }}</pre><p>Content</p>")
+    assert_nil ExcerptBreak.extract("<pre><code>{{ more }}</code></pre><p>Content</p>")
+  end
+
   test "extract ignores markers nested inside lists" do
     assert_nil ExcerptBreak.extract("<ul><li>{{ more }}</li></ul><p>Content</p>")
   end

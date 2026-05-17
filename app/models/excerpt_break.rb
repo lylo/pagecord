@@ -35,7 +35,7 @@ class ExcerptBreak
       # tables etc. are ignored.
       def find_marker_block(doc)
         doc.children.each do |child|
-          if child.element? && !child.at_css("*")
+          if child.element? && %w[p div].include?(child.name) && !child.at_css("*")
             return child if child.text.match?(MARKER_BLOCK) || child.text.match?(WP_COMMENT_BLOCK)
           elsif child.comment? && child.text.strip.match?(/\Amore\z/i)
             return child
