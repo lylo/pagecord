@@ -55,18 +55,17 @@ module PostsHelper
     content = process_dynamic_variables(post)
     content = Html::StripActionTextAttachments.new.transform(content)
     content = safe_auto_link(content, sanitize: false)
-    content = ExcerptBreak.strip(content) if post.has_excerpt_break?
-    content.html_safe
+    ExcerptBreak.strip(content).html_safe
   end
 
   def render_post_excerpt(post)
-    content = Html::StripActionTextAttachments.new.transform(post.excerpt)
+    content = Html::StripActionTextAttachments.new.transform(post.excerpt_html)
     safe_auto_link(content, sanitize: false).html_safe
   end
 
   def render_digest_post_content(post)
     content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
-    content = ExcerptBreak.strip(content) if post.has_excerpt_break?
+    content = ExcerptBreak.strip(content)
     strip_video_tags(content).html_safe
   end
 

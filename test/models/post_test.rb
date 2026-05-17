@@ -151,13 +151,13 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "", summary
   end
 
-  test "summary returns teaser text when excerpt break is present" do
+  test "excerpt_text returns plain text of excerpt when excerpt break is present" do
     blog = blogs(:joel)
     post = blog.posts.create!(
       content: "<p>Intro text for cards.</p><p>{{ more }}</p><p>Body text should stay off cards.</p>"
     )
 
-    assert_equal "Intro text for cards.", post.summary
+    assert_equal "Intro text for cards.", post.excerpt_text
   end
 
   test "has_text_content? should return true for posts with text" do
@@ -221,13 +221,13 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "This content should be cached.", post.text_summary
   end
 
-  test "excerpt returns teaser HTML while text_summary keeps full content" do
+  test "excerpt_html returns teaser HTML while text_summary keeps full content" do
     blog = blogs(:joel)
     post = blog.posts.create!(
       content: "<p>Intro text.</p><p>{{ more }}</p><p>Body text stays in the full summary.</p>"
     )
 
-    assert_equal "<p>Intro text.</p>", post.excerpt
+    assert_equal "<p>Intro text.</p>", post.excerpt_html
     assert_equal "Intro text. Body text stays in the full summary.", post.text_summary
   end
 

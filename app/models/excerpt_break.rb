@@ -4,7 +4,6 @@ class ExcerptBreak
 
   class << self
     # Returns HTML before the first marker, or nil if no marker found.
-    # Used on save to pre-compute the excerpt column.
     def extract(html)
       doc = parse(html)
       block = find_marker_block(doc)
@@ -15,7 +14,6 @@ class ExcerptBreak
     end
 
     # Removes the marker block from HTML, keeps all other content.
-    # Used at render time for full post view, RSS, email.
     def strip(html)
       doc = parse(html)
       block = find_marker_block(doc)
