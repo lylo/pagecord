@@ -147,6 +147,76 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "{{ more }}"
   end
 
+  test "should treat app as a post slug on blog subdomains" do
+    post = @blog.posts.create!(
+      title: "App slug",
+      content: "This is a post at /app",
+      slug: "app",
+      status: :published,
+      published_at: Time.current
+    )
+
+    get "/app"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should treat login as a post slug on blog subdomains" do
+    post = @blog.posts.create!(
+      title: "Login slug",
+      content: "This is a post at /login",
+      slug: "login",
+      status: :published,
+      published_at: Time.current
+    )
+
+    get "/login"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should treat admin as a post slug on blog subdomains" do
+    post = @blog.posts.create!(
+      title: "Admin slug",
+      content: "This is a post at /admin",
+      slug: "admin",
+      status: :published,
+      published_at: Time.current
+    )
+
+    get "/admin"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should treat app as a post slug on custom domains" do
+    blog = blogs(:annie)
+    post = blog.posts.create!(
+      title: "Custom domain app slug",
+      content: "This is a custom domain post at /app",
+      slug: "app",
+      status: :published,
+      published_at: Time.current
+    )
+    host! blog.custom_domain
+
+    get "/app"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should return not found for app path on custom domains without matching slug" do
+    host! blogs(:annie).custom_domain
+
+    get "/app"
+
+    assert_response :not_found
+  end
+
   test "should render image attachments without action text wrappers on post show" do
     post = create_content_with_attachment(
       blog: @blog,

@@ -1,0 +1,6 @@
+ja:
+  date:
+    formats:
+      post_date: "%Y/%m/%d"
+      post_date_short: "%m/%d"
+      month_day: "%m/%d"

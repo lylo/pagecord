@@ -17,20 +17,13 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: "Dashboard"
   end
 
-  test "should render localized price for Brazil" do
-    # Inject the CF-IPCountry header with BR value
-    get root_path, headers: { "CF-IPCountry" => "BR" }
+  test "should render localized price for discounted countries" do
+    PricingHelper::DISCOUNTED_COUNTRIES.each do |country_code|
+      get root_path, headers: { "CF-IPCountry" => country_code }
 
-    assert_response :success
-    assert_select "body", text: /\$25/
-  end
-
-  test "should render localized price for India" do
-    # Inject the CF-IPCountry header with IN value
-    get root_path, headers: { "CF-IPCountry" => "IN" }
-
-    assert_response :success
-    assert_select "body", text: /\$25/
+      assert_response :success
+      assert_select "body", text: /\$25/
+    end
   end
 
   test "should render default price for other countries" do

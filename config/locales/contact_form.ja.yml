@@ -1,0 +1,5 @@
+ja:
+  contact_form:
+    mailer:
+      subject: "%{name}様から新しいメッセージが届きました"
+      intro: "%{blog_name}のお問い合わせフォームからメッセージが送信されました。"

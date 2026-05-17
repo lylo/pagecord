@@ -404,13 +404,13 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "svg title", text: "Private post"
   end
 
-  test "app area should be inaccessible on custom domain" do
+  test "app area should not route on custom domain" do
     post = posts(:four)
     login_as post.blog.user
 
     get app_posts_url, headers: { "HOST" => post.blog.custom_domain }
 
-    assert_redirected_to root_url(host: post.blog.custom_domain)
+    assert_response :not_found
   end
 
   test "should preview draft post with blog layout" do

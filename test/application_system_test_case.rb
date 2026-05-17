@@ -5,6 +5,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   setup do
     Capybara.always_include_port = true
+    Capybara.app_host = "http://lvh.me:#{Capybara.current_session.server.port}"
   end
 
   def use_subdomain(subdomain, path = "/")
