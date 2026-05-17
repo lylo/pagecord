@@ -1,5 +1,5 @@
 class ExcerptBreak
-  MARKER_BLOCK = /\A\s*\{\{\s*(?:more|excerpt)\s*\}\}\s*\z/i
+  MARKER_BLOCK = /\A\s*\{\{\s*more\s*\}\}\s*\z/i
   WP_COMMENT_BLOCK = /\A\s*<!--\s*more\s*-->\s*\z/i
 
   class << self

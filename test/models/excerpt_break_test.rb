@@ -9,12 +9,6 @@ class ExcerptBreakTest < ActiveSupport::TestCase
     assert_not_includes result, "Second"
   end
 
-  test "extract returns HTML before {{ excerpt }}" do
-    result = ExcerptBreak.extract("<p>Visible</p><p>{{ excerpt }}</p><p>Hidden</p>")
-    assert_includes result, "Visible"
-    assert_not_includes result, "Hidden"
-  end
-
   test "extract returns HTML before <!--more-->" do
     result = ExcerptBreak.extract("<p>Before</p><!--more--><p>After</p>")
     assert_includes result, "Before"
@@ -37,9 +31,12 @@ class ExcerptBreakTest < ActiveSupport::TestCase
     assert_nil ExcerptBreak.extract("<p>No marker here</p>")
   end
 
+  test "extract ignores unsupported marker names" do
+    assert_nil ExcerptBreak.extract("<p>A</p><p>{{ excerpt }}</p><p>B</p>")
+  end
+
   test "extract is case-insensitive" do
     assert ExcerptBreak.extract("<p>A</p><p>{{ MORE }}</p><p>B</p>")
-    assert ExcerptBreak.extract("<p>A</p><p>{{ Excerpt }}</p><p>B</p>")
   end
 
   test "extract allows flexible whitespace" do
