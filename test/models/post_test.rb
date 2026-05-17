@@ -151,22 +151,13 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "", summary
   end
 
-  test "excerpt_summary uses excerpt when present" do
+  test "summary returns teaser text when excerpt break is present" do
     blog = blogs(:joel)
     post = blog.posts.create!(
       content: "<p>Intro text for cards.</p><p>{{ more }}</p><p>Body text should stay off cards.</p>"
     )
 
-    assert_equal "Intro text for cards.", post.excerpt_summary
-  end
-
-  test "excerpt_summary falls back to summary when no excerpt break is present" do
-    blog = blogs(:joel)
-    post = blog.posts.create!(
-      content: "This is a long post with lots of text content that should be truncated when we call the summary method with a limit."
-    )
-
-    assert_equal post.summary(limit: 50), post.excerpt_summary(limit: 50)
+    assert_equal "Intro text for cards.", post.summary
   end
 
   test "has_text_content? should return true for posts with text" do

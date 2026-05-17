@@ -52,7 +52,9 @@ module PostsHelper
   end
 
   def render_post_content(post)
-    content = processed_content(post)
+    content = process_dynamic_variables(post)
+    content = Html::StripActionTextAttachments.new.transform(content)
+    content = safe_auto_link(content, sanitize: false)
     content = ExcerptBreak.strip(content) if post.has_excerpt_break?
     content.html_safe
   end
@@ -78,12 +80,6 @@ module PostsHelper
   end
 
   private
-
-    def processed_content(post)
-      content = process_dynamic_variables(post)
-      content = Html::StripActionTextAttachments.new.transform(content)
-      safe_auto_link(content, sanitize: false)
-    end
 
     def safe_auto_link(content, options = {})
       code_blocks = []

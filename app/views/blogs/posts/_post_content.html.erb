@@ -1,10 +1,3 @@
 <div class="lexxy-content e-content" data-controller="syntax-highlight">
-  <% if local_assigns[:excerpt] %>
-    <%= render_post_excerpt(post) %>
-    <p class="excerpt-read-more">
-      <%= link_to t('posts.read_more'), post_path(post), data: { turbo_frame: "_top" } %>
-    </p>
-  <% else %>
-    <%= render_post_content(post) %>
-  <% end %>
+  <%= render_post_content(post) %>
 </div>

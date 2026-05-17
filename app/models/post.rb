@@ -81,18 +81,12 @@ class Post < ApplicationRecord
 
   def summary(limit: 64)
     return "" unless has_text_content?
-    text_summary.truncate(limit, separator: /\s/)
+    summary_source.truncate(limit, separator: /\s/)
   end
 
   def excerpt
     return @excerpt if defined?(@excerpt)
     @excerpt = content.body.present? ? ExcerptBreak.extract(content.to_s) : nil
-  end
-
-  def excerpt_summary(limit: 64)
-    return summary(limit:) unless has_excerpt_break?
-
-    extract_plain_text(excerpt).truncate(limit, separator: /\s/)
   end
 
   def has_text_content?
@@ -167,33 +161,48 @@ class Post < ApplicationRecord
   # Used by content moderation. See also: text_summary (truncated version).
   def plain_text_content
     return "" unless content.body.present?
-    extract_plain_text(content.to_s)
+
+    doc = Nokogiri::HTML::DocumentFragment.parse(content.to_s)
+    doc.css("figcaption").remove
+
+    doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
+      element.add_child(Nokogiri::XML::Text.new(" ", doc))
+    end
+
+    doc.text
+      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
+      .gsub(/\[Image\]/i, "")
+      .gsub(%r{https?://\S+}, "")
+      .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
+      .gsub(/\s+/, " ")
+      .strip
   end
 
   private
 
-    def set_text_summary
-      self.text_summary = extract_plain_text(content.to_s).truncate(512, separator: /\s/, omission: "")
-    end
+    def summary_source
+      return text_summary unless has_excerpt_break?
 
-    def extract_plain_text(html)
-      return "" if html.blank?
-
-      doc = Nokogiri::HTML::DocumentFragment.parse(html)
+      doc = Nokogiri::HTML::DocumentFragment.parse(excerpt)
       doc.css("figcaption").remove
-
       doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
         element.add_child(Nokogiri::XML::Text.new(" ", doc))
       end
-
       doc.text
         .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
         .gsub(/\[Image\]/i, "")
         .gsub(%r{https?://\S+}, "")
         .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
-        .gsub(/<!--\s*more\s*-->/i, "")
         .gsub(/\s+/, " ")
         .strip
+    end
+
+    def text_content
+      plain_text_content
+    end
+
+    def set_text_summary
+      self.text_summary = text_content.truncate(512, separator: /\s/, omission: "")
     end
 
     # Sets published_at to Time.current if the post is being published but no date was provided.
