@@ -230,7 +230,7 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "This content should be cached.", post.text_summary
   end
 
-  test "should set excerpt without changing text_summary when excerpt break is present" do
+  test "excerpt returns teaser HTML while text_summary keeps full content" do
     blog = blogs(:joel)
     post = blog.posts.create!(
       content: "<p>Intro text.</p><p>{{ more }}</p><p>Body text stays in the full summary.</p>"

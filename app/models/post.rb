@@ -19,7 +19,7 @@ class Post < ApplicationRecord
   has_many :navigation_items, dependent: :destroy
 
   before_create :limit_content_size
-  before_save :set_excerpt, :set_text_summary, :set_published_at
+  before_save :set_text_summary, :set_published_at
 
   validate :content_present
   validate :title_present_for_pages
@@ -84,6 +84,11 @@ class Post < ApplicationRecord
     text_summary.truncate(limit, separator: /\s/)
   end
 
+  def excerpt
+    return @excerpt if defined?(@excerpt)
+    @excerpt = content.body.present? ? ExcerptBreak.extract(content.to_s) : nil
+  end
+
   def excerpt_summary(limit: 64)
     return summary(limit:) unless has_excerpt_break?
 
@@ -95,7 +100,7 @@ class Post < ApplicationRecord
   end
 
   def has_excerpt_break?
-    excerpt.present?
+    !excerpt.nil?
   end
 
   def display_title
@@ -166,10 +171,6 @@ class Post < ApplicationRecord
   end
 
   private
-
-    def set_excerpt
-      self.excerpt = ExcerptBreak.extract(content.to_s) if content.body.present?
-    end
 
     def set_text_summary
       self.text_summary = extract_plain_text(content.to_s).truncate(512, separator: /\s/, omission: "")
