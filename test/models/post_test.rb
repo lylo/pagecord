@@ -221,6 +221,13 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "This content should be cached.", post.text_summary
   end
 
+  test "text_summary strips WordPress-style excerpt marker" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "<p>Before</p><!--more--><p>After</p>")
+
+    assert_equal "Before After", post.text_summary
+  end
+
   test "excerpt_html returns teaser HTML while text_summary keeps full content" do
     blog = blogs(:joel)
     post = blog.posts.create!(

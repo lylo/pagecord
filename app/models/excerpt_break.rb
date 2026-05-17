@@ -29,7 +29,7 @@ class ExcerptBreak
         Nokogiri::HTML::DocumentFragment.parse(html)
       end
 
-      # Only matches markers in top-level blocks — the marker must be the sole
+      # Only matches markers in top-level blocks – the marker must be the sole
       # content of a direct child element (e.g. <p>{{ more }}</p>), or a top-level
       # HTML comment (<!--more-->). Markers nested inside lists, blockquotes,
       # tables etc. are ignored.

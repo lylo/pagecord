@@ -183,6 +183,7 @@ class Post < ApplicationRecord
         .gsub(/\[Image\]/i, "")
         .gsub(%r{https?://\S+}, "")
         .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
+        .gsub(/<!--\s*more\s*-->/i, "")
         .gsub(/\s+/, " ")
         .strip
     end
