@@ -1255,6 +1255,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   # Cache header tests
 
   test "should set cache headers on default domain in production" do
+    Rack::Attack.cache.store.clear
     Rails.stubs(:env).returns(ActiveSupport::EnvironmentInquirer.new("production"))
     ENV.stubs(:[]).with("CLOUDFLARE_ZONE_ID").returns("zone123")
     ENV.stubs(:[]).with("CLOUDFLARE_API_TOKEN").returns("token123")
@@ -1268,6 +1269,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not set cache headers on custom domain in production" do
+    Rack::Attack.cache.store.clear
     @blog = blogs(:annie)
     host! @blog.custom_domain
 
