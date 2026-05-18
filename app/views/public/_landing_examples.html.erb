@@ -1,0 +1,42 @@
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <section class="my-10 md:my-14">
+    <h2 class="source-serif text-center font-semibold mb-8 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">Real Pagecord sites</h2>
+    <div class="grid md:grid-cols-3 gap-4">
+      <% examples.each do |example| %>
+        <a href="<%= example[:url] %>" class="block bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 hover:border-[#4fbd9c] dark:hover:border-[#4fbd9c]">
+          <h3 class="font-semibold text-slate-900 dark:text-slate-100"><%= example[:name] %></h3>
+          <p class="mt-2 text-sm text-slate-500 dark:text-slate-400"><%= example[:url].delete_prefix("https://").delete_suffix("/") %></p>
+          <p class="mt-4 text-slate-700 dark:text-slate-300 leading-relaxed"><%= example[:description] %></p>
+        </a>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="my-10 md:my-14">
+    <h2 class="source-serif text-center font-semibold mb-8 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">What people say</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+      <% testimonials.each do |testimonial| %>
+        <figure class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
+          <blockquote class="text-lg leading-relaxed text-slate-800 dark:text-slate-200">
+            “<%= testimonial[:quote] %>”
+          </blockquote>
+          <figcaption class="mt-4 text-sm text-slate-500 dark:text-slate-400">
+            <span class="font-semibold text-slate-700 dark:text-slate-300"><%= testimonial[:name] %></span>
+            <% if testimonial[:url].present? %>
+              · <a href="<%= testimonial[:url] %>" class="underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300"><%= testimonial[:url].delete_prefix("https://").delete_suffix("/") %></a>
+            <% end %>
+          </figcaption>
+        </figure>
+      <% end %>
+    </div>
+  </section>
+
+  <div class="my-8 text-center flex flex-col md:flex-row gap-3 justify-center items-center">
+    <%= link_to new_signup_path do %>
+      <div class="inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
+    <% end %>
+    <%= link_to spotlight_path do %>
+      <div class="inline-flex font-medium p-4 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 text-xl">See Spotlight</div>
+    <% end %>
+  </div>
+</div>
