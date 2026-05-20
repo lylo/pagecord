@@ -7,6 +7,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     @blog = blogs(:joel)
 
     host_subdomain! @blog.subdomain
+
+    Rails.cache.clear
   end
 
   test "should get index as stream of posts" do
