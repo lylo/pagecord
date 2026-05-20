@@ -220,7 +220,7 @@ lexxy-link-dropdown {
     gap: 1ch;
   }
 
-  input.input {
+  [data-dropdown-panel] input[type="url"].input {
     min-inline-size: 30ch;
     line-height: normal;
 
