@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 11417bac09d616fdbc1fdbfe8bedf7faf8db5fc3
+  revision: c3c65d10b0bb4acb300ff3863ddc3d200e93db45
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -280,7 +280,7 @@ GEM
       actionmailer (>= 6.0.0)
       activestorage (>= 6.0.0)
       httparty (>= 0.18.1)
-    marcel (1.1.0)
+    marcel (1.2.0)
     matrix (0.4.3)
     maxminddb (0.1.22)
     mini_magick (5.3.1)
@@ -524,7 +524,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yaml (0.4.0)
-    zeitwerk (2.7.5)
+    zeitwerk (2.8.1)
 
 PLATFORMS
   aarch64-linux
