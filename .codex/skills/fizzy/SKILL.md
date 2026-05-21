@@ -20,6 +20,12 @@ Every API call should include:
 - `Accept: application/json`
 - `Content-Type: application/json` for write requests
 
+Card descriptions should be sent as HTML, not Markdown. Fizzy stores the `description`
+through ActionText; Markdown is shown as plain text, while HTML renders correctly in
+`description_html`. Use standard tags such as `<h2>`, `<p>`, `<ul>`, `<li>`, and
+`<code>`. Avoid task-list checkbox inputs in descriptions because ActionText strips
+the `<input>` elements.
+
 ## Common operations
 
 - List boards: `GET /$SLUG/boards`
