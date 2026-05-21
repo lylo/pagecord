@@ -7,8 +7,12 @@
     {
       "fingerprint": "0dfbc3bb7da613a4ed55ba90c2b83268e8cb2f4a9cc7885ec66d19738d49c2b2",
       "note": "SQL values are hardcoded in AdminHelper#blogs_date_column, not user input"
+    },
+    {
+      "fingerprint": "4d27bc375baf7b5892ac53a25bf63c138272cd3aaa5435e762839612f0b07f93",
+      "note": "Paddle customer portal URL host is validated against ALLOWED_HOSTS before redirecting"
     }
   ],
-  "updated": "2026-04-15",
+  "updated": "2026-05-21",
   "brakeman_version": "8.0.4"
 }

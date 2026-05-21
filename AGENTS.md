@@ -97,7 +97,8 @@ Docker: prefix commands with `docker-compose exec web`
 - **Trial**: 14-day free trial. `has_premium_access?` = subscribed OR on trial. `subscribed?` = paid only.
 - Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains, API access
 - Subscriber-only features: email subscriptions, branding removal
-- Payment failures handled automatically by Paddle Retain — don't email customers about failed payments
+- Payment failures handled automatically by Paddle Retain – don't email customers about failed payments
+- **Invoices**: customers view past invoices via Paddle's customer portal. `App::Settings::Subscriptions::PaddleInvoicesController#show` mints a portal session (`POST customers/:id/portal-sessions`) and redirects – don't build an inline invoice list
 
 ### Content Pipeline
 - **Email-to-blog**: ActionMailbox → PostsMailbox → MailParser (HTML pipeline: body extraction → monospace detection → image unfurl → inline attachments → tag extraction → sanitize)

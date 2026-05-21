@@ -15,6 +15,15 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_not User.last.marketing_consent
   end
 
+  test "should capture signup attribution fields" do
+    assert_difference("User.count") do
+      post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, signup_referrer: "https://pagecord.com/pagecord_vs_substack", signup_source_note: "Hacker News" }, rendered_at: signed_rendered_at }
+    end
+
+    assert_equal "https://pagecord.com/pagecord_vs_substack", User.last.signup_referrer
+    assert_equal "Hacker News", User.last.signup_source_note
+  end
+
   test "should create user with marketing consent" do
     assert_difference("User.count") do
       assert_emails 1 do

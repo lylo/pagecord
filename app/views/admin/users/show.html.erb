@@ -42,6 +42,20 @@
         <dt class="font-medium text-slate-900 dark:text-slate-50">Timezone</dt>
         <dd class="text-slate-500 dark:text-slate-400"><%= @user.timezone %></dd>
       </div>
+      <% if @user.signup_referrer.present? %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Referrer</dt>
+          <dd class="text-slate-500 dark:text-slate-400 text-right truncate min-w-0">
+            <%= link_to @user.signup_referrer, @user.signup_referrer, class: "underline", target: "_blank", rel: "noopener" %>
+          </dd>
+        </div>
+      <% end %>
+      <% if @user.signup_source_note.present? %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Heard via</dt>
+          <dd class="text-slate-500 dark:text-slate-400 text-right break-words min-w-0"><%= @user.signup_source_note %></dd>
+        </div>
+      <% end %>
     </dl>
   </div>
 
