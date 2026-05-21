@@ -161,6 +161,7 @@ Rails.application.routes.draw do
           post :change_plan, on: :collection
           post :resume, on: :collection
         end
+        resource :paddle_invoices, only: :show, controller: "subscriptions/paddle_invoices"
       end
 
       resources :blogs do
