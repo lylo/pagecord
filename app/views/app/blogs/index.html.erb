@@ -31,7 +31,7 @@
 
   <% unless Current.user.subscribed? %>
     <p class="text-sm text-slate-500">
-      <%= link_to "Upgrade to Pagecord Premium", app_settings_subscriptions_path, class: "underline font-medium" %> to create up to <%= Blog::MAX_BLOGS_PAID %> blogs.
+      <%= link_to "Upgrade to Premium", app_settings_subscriptions_path, class: "underline font-medium" %> to run a second blog from the same account. Handy for a side project, a newsletter, or a microblog.
     </p>
   <% end %>
 </div>

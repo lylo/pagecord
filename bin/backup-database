@@ -1,0 +1,81 @@
+#!/bin/bash
+set -e
+
+DB_USER=""
+DB_PASSWORD=""
+DB_HOST=""
+DB_PORT=""
+DB_NAME=""
+
+export RCLONE_S3_NO_CHECK_BUCKET=true
+
+NAME="pagecord_prod"
+BACKUP_FOLDER="/home/deploy/backups/$NAME"
+BACKUP_PATH="$BACKUP_FOLDER/`date '+%Y.%m.%d.%H.%M.%S'`"
+FILENAME="$NAME.sql"
+BUCKET="pagecord_prod:pagecord-db-backups/pagecord_prod"
+HATCHBOX_WEBHOOK_URL=""
+
+mkdir -p $BACKUP_PATH
+cd $BACKUP_PATH
+
+echo "Dumping database..."
+pg_dump --format=c -d postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME -f $FILENAME
+
+echo "Compressing backup..."
+tar -czvf pagecord_prod.tar.gz $FILENAME
+rm -fr $FILENAME
+
+echo "Syncing backup with rclone..."
+rclone move $BACKUP_FOLDER $BUCKET/ 2>/dev/null
+
+echo "Cleaning up old backups..."
+
+# Retention policy:
+#   0-7 days:    keep everything
+#   7-30 days:   keep 1 per day
+#   30-730 days: keep 1 per month
+#   >730 days:   delete all
+#
+# How the awk trick works:
+#   Directories are named YYYY.MM.DD.HH.MM.SS and sorted newest-first.
+#   seen[day]++ is a post-increment used as an awk pattern (condition).
+#   First time a day appears: seen is 0 (falsy) → don't print → KEEP.
+#   Every subsequent time: seen is ≥1 (truthy) → print → piped to rclone purge.
+#   Result: the latest backup per day (or month) survives, the rest are deleted.
+#
+# We filter by directory name rather than rclone's --min-age/--max-age because
+# R2 directories are virtual prefixes with no real timestamps.
+
+CUTOFF_7D=$(date -d '7 days ago' '+%Y.%m.%d')
+CUTOFF_30D=$(date -d '30 days ago' '+%Y.%m.%d')
+CUTOFF_730D=$(date -d '730 days ago' '+%Y.%m.%d')
+ALL_DIRS=$(rclone lsf "$BUCKET" --dirs-only 2>/dev/null | sort -r)
+
+# Keep all backups for 7 days (do nothing)
+
+# Between 7d and 30d: keep one per day, delete the rest
+echo "$ALL_DIRS" | \
+  awk -F. -v min="$CUTOFF_30D" -v max="$CUTOFF_7D" \
+    '{ day=$1"."$2"."$3 } day < max && day >= min && seen[day]++' | \
+  while read dir; do rclone purge "$BUCKET/$dir" 2>/dev/null; done
+
+# Between 30d and 730d: keep one per month, delete the rest
+echo "$ALL_DIRS" | \
+  awk -F. -v min="$CUTOFF_730D" -v max="$CUTOFF_30D" \
+    '{ month=$1"."$2; day=$1"."$2"."$3 } day < max && day >= min && seen[month]++' | \
+  while read dir; do rclone purge "$BUCKET/$dir" 2>/dev/null; done
+
+# Older than 2 years: delete all
+echo "$ALL_DIRS" | \
+  awk -F. -v max="$CUTOFF_730D" \
+    '{ day=$1"."$2"."$3 } day < max' | \
+  while read dir; do rclone purge "$BUCKET/$dir" 2>/dev/null; done
+
+# Remove local backups
+cd $BACKUP_FOLDER
+ls | xargs -d '\n' -r rm -r --
+
+echo "Notifying Hatchbox..."
+curl -sS -X POST -H "Content-Type: application/json" $HATCHBOX_WEBHOOK_URL
+echo "Done!"

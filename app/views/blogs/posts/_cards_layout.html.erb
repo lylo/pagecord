@@ -4,6 +4,6 @@
   </div>
 
   <% if @pagy.next %>
-    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, host: request.host), loading: :lazy %>
+    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, tag: params[:tag], host: request.host), loading: :lazy %>
   <% end %>
 <% end %>

@@ -29,11 +29,18 @@ lexxy-editor {
     color: inherit;
   }
 
+  /* Flip <em> to upright inside italic blockquotes so emphasis is visible.
+     Workaround for https://github.com/basecamp/lexxy/issues/XXX */
+  blockquote em.lexxy-content__italic {
+    font-style: normal;
+  }
+
   .lexxy-content__table-wrapper {
     margin-block: 0 var(--lexxy-content-margin);
   }
 
   .horizontal-divider {
+    margin-block: var(--lexxy-content-margin);
     padding-block: 0.5em;
 
     hr {
@@ -47,6 +54,8 @@ lexxy-editor {
 /* ================================== */
 
 lexxy-toolbar {
+  --lexxy-toolbar-button-size: 1.75lh;
+
   position: sticky;
   top: 0;
   z-index: 10;
@@ -62,7 +71,6 @@ lexxy-toolbar {
     background: var(--color-slate-100);
     color: var(--color-slate-800);
     border: none;
-    block-size: 1.75lh;
 
     svg path {
       fill: currentColor;
@@ -84,8 +92,23 @@ lexxy-toolbar {
     }
   }
 
-  .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
+  .lexxy-editor__toolbar-dropdown > .lexxy-editor__toolbar-button[aria-expanded="true"]:not([value="link"]):not([value="unlink"]) {
     background-color: var(--color-slate-300);
+  }
+
+  /* Lexxy 0.9.12 moved dropdown triggers from summary elements to buttons. */
+  .lexxy-editor__toolbar-dropdown .lexxy-editor__toolbar-button--chevron {
+    gap: 0.5ch;
+    grid-template-columns: auto auto;
+    min-inline-size: 0;
+
+    &::after {
+      box-sizing: content-box;
+    }
+  }
+
+  .lexxy-editor__toolbar-dropdown-list {
+    padding: var(--lexxy-toolbar-spacing);
   }
 }
 
@@ -103,6 +126,9 @@ lexxy-toolbar {
     --lexxy-color-ink-inverted: var(--color-slate-900);
     --lexxy-color-canvas: var(--color-slate-900);
     --lexxy-color-text-subtle: var(--color-slate-400);
+
+    /* Table header */
+    --lexxy-color-table-header-bg: var(--color-slate-800);
 
     /* Selected states for pressed buttons */
     --lexxy-color-selected: var(--color-slate-700);
@@ -140,8 +166,14 @@ lexxy-toolbar {
       }
     }
 
-    .lexxy-editor__toolbar-dropdown[open] .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
+    .lexxy-editor__toolbar-dropdown > .lexxy-editor__toolbar-button[aria-expanded="true"]:not([value="link"]):not([value="unlink"]) {
       background-color: var(--color-slate-600);
+    }
+
+    .lexxy-editor__toolbar-dropdown-list button {
+      color: var(--color-slate-200);
+
+      svg path { fill: currentColor; }
     }
   }
 
@@ -156,18 +188,8 @@ lexxy-toolbar {
 /* Minimal Toolbar Buttons Hidden      */
 /* ================================== */
 .lexxy-minimal lexxy-toolbar {
-  button:is(
-    [name="quote"],
-    [name="code"],
-    [name="upload"],
-    [name="unordered-list"],
-    [name="ordered-list"],
-    [name="heading"],
-    [name="highlight"],
-    [name="table"],
-    [name="divider"],
-    [name="strikethrough"]),
-  summary[name="highlight"] {
+  button:is([name="quote"], [name="code"], [name="table"], [name="divider"], [name="image"], [name="file"], [name="unordered-list"], [name="ordered-list"]),
+  :is(lexxy-toolbar-dropdown, lexxy-highlight-dropdown):has(> .lexxy-editor__toolbar-button:is([name="format"], [name="highlight"])) {
     display: none;
   }
 }
@@ -187,13 +209,18 @@ lexxy-highlight-dropdown button {
 }
 
 lexxy-link-dropdown {
+  [data-dropdown-panel] {
+    max-inline-size: 48ch;
+    margin-inline: auto;
+  }
+
   form {
     display: flex;
     align-items: center;
     gap: 1ch;
   }
 
-  input.input {
+  [data-dropdown-panel] input[type="url"].input {
     min-inline-size: 30ch;
     line-height: normal;
 

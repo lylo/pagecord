@@ -1,0 +1,9 @@
+<%= t('contact_form.mailer.intro', blog_name: @blog.display_name) %>
+
+<%= t('email_form.mailer.from_label') %>:
+<%= @contact_message.name %> (<%= @contact_message.email %>)
+
+<%= t('email_form.form.message_label') %>:
+<%= @contact_message.message.gsub(/\r?\n/, "\n") %>
+
+<%= t('email_form.mailer.footer_text', name: @contact_message.name) %>

@@ -1,4 +1,4 @@
-<div class="post-card h-entry">
+<div class="post-card h-entry" <%= tag.attributes(data: post_tag_data(post)) %>>
   <%= link_to post_path(post), class: "post-card-link u-url", data: { turbo_frame: "_top" } do %>
     <div class="post-card-content">
       <% if post.title.present? %>

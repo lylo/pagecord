@@ -1,0 +1,86 @@
+<%= content_for :title do %>
+  Create a blog with a built-in email newsletter
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Newsletter Should Start as a Post, Not a Campaign") %>
+<% end %>
+
+<%= content_for :meta_description do %>
+  Pagecord is a blog with built-in email subscriptions. Publish posts to your site and send them to subscribers per post or as an automatic weekly digest.
+<% end %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
+    A newsletter should start as a post, not a campaign.
+  </h1>
+
+  <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4 mt-8 md:mt-12">
+    <p>
+      Newsletter tools are built for marketing departments: campaigns, templates, segments, drip sequences, conversion funnels, and constant list anxiety.
+    </p>
+    <p>
+      Most independent writers need something calmer. Write a post. Publish it to your site. Let readers get it by email if that is how they prefer to follow along.
+    </p>
+    <p>
+      Pagecord is a blog first, with email subscriptions built in. Send individual posts when they matter, or let Pagecord send a weekly digest automatically.
+    </p>
+  </div>
+
+  <div class="text-center mt-8 mb-4 md:text-xl">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
+    <% end %>
+  </div>
+</div>
+
+<%= render "comparison_intro", sections: [
+  {
+    title: "Who this is for",
+    paragraphs: [
+      "Writers, creators, consultants, tiny teams, and personal bloggers who want readers to subscribe without turning the whole site into a newsletter business.",
+      "It is for people who want a public archive, RSS, a custom domain, and email delivery from the same place."
+    ]
+  },
+  {
+    title: "Why a blog comes first",
+    paragraphs: [
+      "Email is excellent for reaching people, but a newsletter alone can make your writing feel temporary. It lands in an inbox, ages quickly, and is hard to browse later.",
+      "A blog gives every piece a home: a URL, an archive, search visibility, links from other sites, and a place readers can return to."
+    ]
+  },
+  {
+    title: "What Pagecord does differently",
+    paragraphs: [
+      "Pagecord sends posts to subscribers without asking you to design a campaign. Choose per-post delivery for important updates or weekly digest mode for a quieter rhythm.",
+      "Subscribers are attached to your site, not a separate newsletter machine. Your writing stays readable on the open web."
+    ]
+  }
+] %>
+
+<%= render "screenshots" %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <section class="my-10 md:my-14 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 md:p-8">
+    <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">Good writing deserves a home</h2>
+    <div class="mt-6 md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+      <p>
+        A newsletter platform makes the inbox the destination. Pagecord makes your site the destination, then uses email as a friendly way back to it.
+      </p>
+      <p>
+        Classic is free forever. Premium is $<%= localised_price %>/year and includes email subscriptions, custom domains, analytics, image uploads, and more.
+      </p>
+    </div>
+  </section>
+</div>
+
+<%= render "landing_examples",
+  examples: [
+    { name: "Chad Moore", url: "https://blog.chadmoore.net/", description: "A personal blog with a custom domain and a natural rhythm for reader updates." },
+    { name: "Moonwriting", url: "https://moonwriting.blog", description: "A writer-owned site where posts can be followed without needing a separate newsletter platform." },
+    { name: "Focustivity", url: "https://focustivity.blog", description: "A personal site that can publish posts and keep subscribers in the loop." }
+  ],
+  testimonials: [
+    { name: "Greg", url: "https://iamgregb.io/", quote: "Pagecord is the perfect place to host your own blog, especially if you want to keep things simple without getting lost in modern publishing platforms or newsletter engines." },
+    { name: "Eetu", url: "https://moonwriting.blog", quote: "Pagecord has everything I'm looking for. Open source, privacy-respecting, with many customization options. Pricing is competitive." }
+  ] %>

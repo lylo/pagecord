@@ -6,14 +6,17 @@ class PostDigest < ApplicationRecord
   has_many :deliveries, class_name: "PostDigestDelivery", dependent: :destroy
   has_many :recipients, class_name: "EmailSubscriber", through: :deliveries, source: :email_subscriber
 
+  enum :kind, { weekly_digest: 0, individual: 1 }
+
   scope :delivered, -> { where.not(delivered_at: nil) }
   scope :undelivered, -> { where(delivered_at: nil) }
 
-  def self.generate_for(blog)
+  def self.generate_weekly_digest_for(blog)
     return nil unless blog.user.subscribed? && blog.email_subscriptions_enabled?
+    return nil unless blog.digest?
 
     Rails.logger.info "Generating digest for #{blog.subdomain}"
-    last_digest = blog.post_digests.delivered.order(created_at: :desc).first
+    last_digest = blog.post_digests.weekly_digest.delivered.order(created_at: :desc).first
     since_date = last_digest&.created_at || 1.week.ago
 
     new_posts = blog.posts.visible
@@ -25,8 +28,18 @@ class PostDigest < ApplicationRecord
     return nil if new_posts.empty?
 
     transaction do
-      digest = create!(blog: blog)
+      digest = create!(blog: blog, kind: :weekly_digest)
       new_posts.each { |post| digest.digest_posts.create!(post: post) }
+      digest
+    end
+  end
+
+  def self.generate_individual_for(post)
+    return nil if post.individually_sent?
+
+    transaction do
+      digest = create!(blog: post.blog, kind: :individual)
+      digest.digest_posts.create!(post: post)
       digest
     end
   end
@@ -39,11 +52,12 @@ class PostDigest < ApplicationRecord
 
   def subject
     I18n.with_locale(blog.locale) do
-      I18n.t(
-        "email_subscribers.mailers.weekly_digest.subject",
+      return posts.first.title if individual? && posts.first&.title.present?
+
+      key = individual? ? "individual.default_subject" : "weekly_digest.subject"
+      I18n.t("email_subscribers.mailers.#{key}",
         blog_name: blog.display_name,
-        date: I18n.l(created_at.to_date, format: :post_date)
-      )
+        date: I18n.l(created_at.to_date, format: :post_date))
     end
   end
 

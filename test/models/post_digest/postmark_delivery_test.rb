@@ -10,7 +10,7 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     subscriber = email_subscribers(:one)
     post = blog.posts.create!(title: "New Post", content: "Content")
-    digest = PostDigest.generate_for(blog)
+    digest = PostDigest.generate_weekly_digest_for(blog)
 
     mock_client = mock("postmark_client")
     mock_client.expects(:deliver_messages).returns([ { error_code: 0, message: "OK" } ])
@@ -32,7 +32,7 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     subscriber = email_subscribers(:one)
     post = blog.posts.create!(title: "New Post", content: "Content")
-    digest = PostDigest.generate_for(blog)
+    digest = PostDigest.generate_weekly_digest_for(blog)
 
     mock_client = mock("postmark_client")
     mock_client.expects(:deliver_messages).returns([ { error_code: 406, message: "Inactive recipient" } ])
@@ -51,7 +51,7 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
     blog = blogs(:joel)
     subscriber = email_subscribers(:one)
     post = blog.posts.create!(title: "New Post", content: "Content")
-    digest = PostDigest.generate_for(blog)
+    digest = PostDigest.generate_weekly_digest_for(blog)
     digest.deliveries.create!(email_subscriber: subscriber, delivered_at: Time.current)
 
     mock_client = mock("postmark_client")
@@ -61,6 +61,24 @@ class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
 
     assert_no_difference "PostDigestDelivery.count" do
       delivery.deliver_all
+    end
+
+    assert digest.reload.delivered_at?
+  end
+
+  test "deliver_all uses individual mailer action for individual digests" do
+    blog = blogs(:joel)
+    subscriber = email_subscribers(:one)
+    post = blog.posts.create!(title: "Individual Post", content: "Content")
+    digest = PostDigest.create!(blog: blog, kind: :individual)
+    digest.digest_posts.create!(post: post)
+
+    mock_client = mock("postmark_client")
+    mock_client.expects(:deliver_messages).returns([ { error_code: 0, message: "OK" } ])
+    Postmark::ApiClient.stubs(:new).returns(mock_client)
+
+    assert_difference "PostDigestDelivery.count", 1 do
+      PostDigest::PostmarkDelivery.new(digest).deliver_all
     end
 
     assert digest.reload.delivered_at?

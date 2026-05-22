@@ -17,9 +17,9 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_not users(:vivian).subscribed?
   end
 
-  test "should be priced at $29 for annual" do
-    assert_equal "29", Subscription.price
-    assert_equal "29", Subscription.price(:annual)
+  test "should be priced at $39 for annual" do
+    assert_equal "39", Subscription.price
+    assert_equal "39", Subscription.price(:annual)
   end
 
   test "should be priced at $4 for monthly" do

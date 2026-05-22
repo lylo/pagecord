@@ -1,4 +1,5 @@
 <% content_for :title, "Pagecord - Reset Password" %>
+<% content_for :meta_description, "Reset your Pagecord password. Enter your email to receive a password reset link." %>
 
 <p>
   Enter your blog subdomain and email address to receive a password reset link.
@@ -23,7 +24,9 @@
     <%= render "/shared/spam_prevention" %>
   </div>
 
-  <div class="mt-8 flex items-center gap-4">
+  <%= render "/shared/turnstile" %>
+
+  <div class="flex items-center gap-4">
     <%= form.submit "Send reset link", class: "btn-primary" %>
     <%= link_to "Cancel", login_path(mode: :password), class: "text-sm font-medium underline" %>
   </div>

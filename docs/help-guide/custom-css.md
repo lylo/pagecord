@@ -5,6 +5,8 @@ published: true
 
 Custom CSS is an advanced feature that gives you finer control over the look and feel of your blog. You can change fonts, colors, adjust spacing, hide elements and more.
 
+**New to Custom CSS?** Try the [Theme Garden](https://pagecord.com/app/settings/theme_garden) first – it has curated CSS templates you can preview and apply with one click, no coding required.
+
 ### A Quick Note
 
 Pagecord is small business. It's not possible to offer customer support with writing or debugging custom CSS — you're on your own with this one!
@@ -29,10 +31,10 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ .titlebar                                    │ │ │ │
-│ │ │ │ ┌──────────────────┐ ┌─────────────────────┐ │ │ │ │
-│ │ │ │ │ .avatar-container│ │ .blog-title         │ │ │ │ │
-│ │ │ │ │ [ .avatar ]      │ │                     │ │ │ │ │
-│ │ │ │ └──────────────────┘ └─────────────────────┘ │ │ │ │
+│ │ │ │ ┌──────────────────────────────────────────┐ │ │ │ │
+│ │ │ │ │ .avatar-container (when avatar present)  │ │ │ │ │
+│ │ │ │ │ [ .avatar ] [ .blog-title ]              │ │ │ │ │
+│ │ │ │ └──────────────────────────────────────────┘ │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ .bio (Your profile description)              │ │ │ │
@@ -46,7 +48,7 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ │ │ .post-title                                  │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
-│ │ │ │ .lexxy-content (The post body text)           │ │ │ │
+│ │ │ │ .lexxy-content (The post body text)          │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ <footer> (Date, tags, and actions)           │ │ │ │
@@ -68,19 +70,9 @@ Head to `Settings > Appearance` and scroll to the "Custom CSS" section. Paste yo
 
 Here are some examples of CSS snippets you can use to customise your blog.
 
-### Centering the Top Navigation
-
-By default, the navigation links are aligned to the right. This will move them to the center.
-
-```css
-nav {
-  justify-content: center;
-}
-```
-
 ### Changing the font
 
-Pagecord has three lovely default fonts: Sans-Serif (Inter), Serif (Source Sans Pro), and Monospace (IBM Plex Mono). If you'd like to use a different font, you can import it from [Google Fonts](https://fonts.google.com/) or [Bunny Fonts](https://fonts.bunny.net/) (the only providers supported). Here's an example of using the "Lato" font from Google Fonts which is a solid alternative sans-serif choice:
+Pagecord has three lovely default fonts: Sans-Serif (Inter), Serif (Lora), and Monospace (IBM Plex Mono). If you'd like to use a different font, you can import it from [Google Fonts](https://fonts.google.com/) or [Bunny Fonts](https://fonts.bunny.net/) (the only providers supported). Here's an example of using the "Lato" font from Google Fonts which is a solid alternative sans-serif choice:
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
@@ -106,18 +98,70 @@ You might like sans-serif fonts for your body text and a serif font for headings
 
 ```css
 h1, h2, h3, h4, h5 {
-  font-family: SourceSerif4Variable, serif;
+  font-family: "Lora Variable", serif;
 }
 ```
 
-### Stacking the Avatar and Title in the centre
+### Centering the Header
 
-If you want your avatar to appear above your blog title and both to be centered:
+Center the navigation, title, avatar, and bio:
+
+```css
+nav {
+  justify-content: center;
+}
+
+.titlebar, .avatar-container {
+  flex-direction: column;
+  align-items: center;
+}
+
+.bio {
+  text-align: center;
+}
+```
+
+This targets both `.titlebar` and `.avatar-container` so it works whether or not you have an avatar.
+
+Or pick and choose from the individual options below.
+
+### Centering the Top Navigation
+
+By default, the navigation links are aligned to the right. This will move them to the center.
+
+```css
+nav {
+  justify-content: center;
+}
+```
+
+### Centering the Title and Avatar
+
+If you have an avatar, target `.avatar-container` to stack and center both:
 
 ```css
 .avatar-container {
   flex-direction: column;
   align-items: center;
+}
+```
+
+If you don't have an avatar (or want it to work either way), include `.titlebar` too:
+
+```css
+.titlebar, .avatar-container {
+  flex-direction: column;
+  align-items: center;
+}
+```
+
+### Centering the Bio
+
+Center the bio text below the title:
+
+```css
+.bio {
+  text-align: center;
 }
 ```
 
@@ -140,16 +184,6 @@ If you have an avatar uploaded but want to hide it from your blog header (it wil
 }
 ```
 
-### Centering the Bio
-
-Center the bio text below the title:
-
-```css
-.bio {
-  text-align: center;
-}
-```
-
 ### Change the border at the bottom of the header
 
 By default the border is just a straight line. You can use CSS to create a more embellished divider. Here's an example that [Olly uses on his blog](https://olly.world):
@@ -168,6 +202,38 @@ header hr::before {
   background: var(--color-bg);
   padding: 0 0.5em;
   font-size: 0.75em
+}
+```
+
+### Reordering the header elements
+
+By default, the navigation appears above the title. You can use CSS `order` to rearrange the header elements, for example to show the title first:
+
+```css
+/* set the header to use flexbox layout and stack items vertically */
+header {
+  display: flex;
+  flex-direction: column;
+}
+
+header > nav {
+  order: 2;
+}
+
+header > .titlebar {
+  order: 1;
+}
+
+header > .bio {
+  order: 3;
+}
+
+header > .email-subscriber-form {
+  order: 4;
+}
+
+header > hr {
+  order: 5;
 }
 ```
 
@@ -220,6 +286,138 @@ article footer .post-actions {
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 0.25rem;
+}
+```
+
+### Styling posts by tag
+
+Posts with tags include a `data-tags` attribute on their wrapper element. You can use this to style posts differently based on their tags:
+
+```css
+[data-tags~="photo"] {
+  border-left: 3px solid #f4a435;
+}
+```
+
+### Non-italic blockquotes
+
+Blockquotes are styled in italics by default. If you prefer upright text, use this snippet. The second rule ensures that any emphasised text inside the quote still appears italic:
+
+```css
+blockquote {
+  font-style: normal;
+}
+blockquote em {
+  font-style: italic;
+}
+```
+
+### Full-width images
+
+By default, images display at their natural size. To make all images stretch to fill the full width of your posts:
+
+```css
+article img {
+  width: 100%;
+  height: auto;
+  max-block-size: none;
+}
+```
+
+### Left-align images
+
+Images are centered by default. To left-align them instead:
+
+```css
+article img {
+  margin-inline-start: 0;
+}
+```
+
+### Galleries: fewer columns on mobile
+
+By default, image galleries render in 2 or 3 columns depending on how many images you've added. On narrow screens this can feel cramped. Change the layout below a chosen breakpoint.
+
+**One image per row on mobile:**
+
+```css
+@media (max-width: 600px) {
+  .attachment-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+**Two images per row on mobile:**
+
+```css
+@media (max-width: 600px) {
+  .attachment-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+```
+
+Adjust `600px` to your preferred breakpoint.
+
+### Posts gallery: customising the layout
+
+The `{{ posts | style: gallery }}` dynamic variable renders posts as a grid of square thumbnails. You can target the following classes:
+
+- `.posts-gallery` — the grid container
+- `.posts-gallery-item` — each tile (an `<a>` linking to the post)
+- `.posts-gallery-image` — the wrapper around the thumbnail
+- `.posts-gallery-title` — the post title (hidden by default)
+
+**Change the number of columns:**
+
+```css
+.posts-gallery { grid-template-columns: 1fr; }
+@media (min-width: 600px) { .posts-gallery { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 900px) { .posts-gallery { grid-template-columns: repeat(4, 1fr); } }
+```
+
+**Use the natural aspect ratio of each image** (instead of square crops):
+
+```css
+.posts-gallery-image { aspect-ratio: auto; }
+.posts-gallery-image img { height: auto; }
+```
+
+**Show the post title under each tile:**
+
+```css
+.posts-gallery-title {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
+```
+
+**Show the post title inside the image:**
+
+```css
+.posts-gallery-item {
+  position: relative;
+  display: block;
+}
+
+.posts-gallery-title {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: block;
+  padding: 1.5rem 0.75rem 0.75rem;
+  color: white;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.55), transparent);
+}
+```
+
+This keeps the label background transparent at the top while adding contrast behind the text. If the title is still hard to read on pale images, add a subtle shadow:
+
+```css
+.posts-gallery-title {
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.7);
 }
 ```
 

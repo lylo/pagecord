@@ -40,12 +40,10 @@ module BlogsHelper
   def canonical_url
     if @post.present? && @post.canonical_url.present?
       @post.canonical_url
-    elsif @post.present?
+    elsif @post.present? && !@post.home_page?
       post_url(@post)
-    elsif @blog.present?
-      blog_home_url(@blog)
     else
-      request&.original_url
+      request.base_url + request.path
     end
   end
 

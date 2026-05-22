@@ -1,15 +1,12 @@
 # config/initializers/active_storage_blob_extension.rb
-# Replace the previous implementation with this:
 module ActiveStorageBlobExtension
-  def to_trix_content_attachment_partial_path
+  def to_editor_content_attachment_partial_path
     return "active_storage/blobs/video_attachment" if content_type.start_with?("video/")
     super
   end
 end
 
-# Safely extend ActiveStorage::Blob
-Rails.configuration.to_prepare do
-  ActiveStorage::Blob.class_eval do
-    prepend ActiveStorageBlobExtension
-  end
+# Extend Active Storage only after the blob class is loaded.
+ActiveSupport.on_load(:active_storage_blob) do
+  prepend ActiveStorageBlobExtension unless ancestors.include?(ActiveStorageBlobExtension)
 end

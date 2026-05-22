@@ -2,6 +2,7 @@ class ContentModerator
   Result = Struct.new(:status, :flags, :scores, :model_version, keyword_init: true)
 
   SCORE_THRESHOLD = 0.8
+  CATEGORY_THRESHOLDS = { "violence" => 0.95, "violence/graphic" => 0.95 }.freeze
 
   CATEGORIES = %w[
     sexual sexual/minors harassment harassment/threatening
@@ -114,7 +115,7 @@ class ContentModerator
         end
       end
 
-      flags = scores.transform_values { |score| score >= SCORE_THRESHOLD }
+      flags = scores.to_h { |category, score| [ category, score >= CATEGORY_THRESHOLDS.fetch(category, SCORE_THRESHOLD) ] }
       { flags: flags, scores: scores }
     end
 

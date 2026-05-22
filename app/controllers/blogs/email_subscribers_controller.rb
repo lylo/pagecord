@@ -1,10 +1,14 @@
 class Blogs::EmailSubscribersController < Blogs::BaseController
   include SpamPrevention
 
+  rate_limit to: 3, within: 1.hour, only: [ :create ]
+
+  skip_forgery_protection # Cached pages have no session cookie for CSRF verification
   before_action :requires_user_subscription
 
   def create
     @subscriber = @blog.email_subscribers.new(email_subscriber_params)
+    @subscriber.country = request.headers["CF-IPCountry"]
     default_message = I18n.t("email_subscribers.create.success_message", email: @subscriber.email)
 
     if @blog.email_subscribers.find_by(email: @subscriber.email)
@@ -23,7 +27,6 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
   private
 
     def fail
-      @spammer_detected = true
       @message = "There's an issue with your subscription. If you're using a VPN, try subscribing without it. Contact support if the problem persists."
 
       respond_to do |format|

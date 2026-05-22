@@ -12,14 +12,15 @@ class PasswordAuthenticationTest < ActionDispatch::IntegrationTest
         timezone: "UTC",
         blogs_attributes: [ { subdomain: "newuser" } ]
       },
-      rendered_at: 6.seconds.ago.to_i
+      rendered_at: signed_rendered_at
     }
 
     user = User.find_by(email: "newuser@example.com")
     assert user.has_password?
 
     post sessions_url, params: {
-      user: { subdomain: "newuser", password: "password1234" }
+      user: { subdomain: "newuser", password: "password1234" },
+      rendered_at: signed_rendered_at
     }
 
     assert_redirected_to app_root_path

@@ -201,6 +201,16 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
     assert_equal [], transformer.tags
   end
 
+  test "should extract unicode hashtags" do
+    html = "Wrote about my trip.\n\n#programação #café #über-cool"
+    result = @transformer.transform(html)
+
+    assert_equal [ "café", "programação", "über-cool" ], @transformer.tags
+    assert_includes result, "Wrote about my trip."
+    assert_not_includes result, "#programação"
+    assert_not_includes result, "#café"
+  end
+
   test "should extract hashtags followed by non-breaking space" do
     nbsp = "\u00A0"
     html = "This is a post about Pagecord.\n\n#pagecord#{nbsp}#rails#{nbsp}#ruby#{nbsp}"

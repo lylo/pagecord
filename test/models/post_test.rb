@@ -96,58 +96,20 @@ class PostTest < ActiveSupport::TestCase
     assert_not_includes blog.posts, page
   end
 
-  test "should filter navigation pages" do
-    blog = blogs(:joel)
-    visible_page = blog.posts.create!(
-      title: "Test Navigation Page",
-      content: "Navigation page content",
-      is_page: true,
-      show_in_navigation: true,
-      status: :published,
-      published_at: 1.day.ago
-    )
-    non_nav_page = blog.posts.create!(
-      title: "Hidden Page",
-      content: "Hidden content",
-      is_page: true,
-      show_in_navigation: false,
-      status: :published,
-      published_at: 1.day.ago
-    )
-
-    assert_includes blog.pages.navigation_pages.visible, visible_page
-    assert_not_includes blog.pages.navigation_pages.visible, non_nav_page
-  end
-
-  test "show_in_navigation defaults to true" do
-    blog = blogs(:joel)
-    page = blog.posts.build(is_page: true)
-    assert page.show_in_navigation
-  end
-
   test "is_page defaults to false" do
     blog = blogs(:joel)
     post = blog.posts.build
     assert_not post.is_page
   end
 
-  test "pages should not trigger open graph image job" do
-    blog = blogs(:joel)
-    assert_no_enqueued_jobs(only: GenerateOpenGraphImageJob) do
-      blog.posts.create!(title: "Test OpenGraph Page", content: "Page content", is_page: true)
-    end
-  end
-
   test "fixture pages should be correctly configured" do
     about_page = posts(:about)
     assert about_page.page?
-    assert about_page.show_in_navigation?
     assert_equal "about", about_page.slug
     assert_equal blogs(:joel), about_page.blog
 
     draft_page = posts(:draft_page)
     assert draft_page.page?
-    assert_not draft_page.show_in_navigation?
     assert draft_page.draft?
   end
 
@@ -338,5 +300,100 @@ class PostTest < ActiveSupport::TestCase
 
     assert_equal "First block. Second block.", post.text_summary
     assert_includes post.text_summary, "block. Second"
+  end
+
+  # Locale tests
+  test "locale should be nil by default" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Test post")
+
+    assert_nil post.locale
+  end
+
+  test "locale should accept valid locales" do
+    blog = blogs(:joel)
+    Localisable::SUPPORTED_LOCALES.each do |locale|
+      post = blog.posts.build(content: "Test post", locale: locale)
+      assert post.valid?, "Expected locale '#{locale}' to be valid"
+    end
+  end
+
+  test "locale should normalize blank string to nil" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Test post", locale: "")
+
+    assert_nil post.locale
+  end
+
+  test "locale should reject invalid locales" do
+    blog = blogs(:joel)
+    post = blog.posts.build(content: "Test post", locale: "invalid")
+    assert_not post.valid?
+    assert_includes post.errors[:locale], "invalid is not a supported locale"
+  end
+
+  test "effective_locale should return post locale when set" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Test post", locale: "es")
+
+    assert_equal "es", post.effective_locale
+  end
+
+  test "effective_locale should return blog locale when post locale is nil" do
+    blog = blogs(:joel)
+    blog.update!(locale: "fr")
+    post = blog.posts.create!(content: "Test post")
+
+    assert_nil post.locale
+    assert_equal "fr", post.effective_locale
+  end
+
+  # touch_blog callback tests
+
+  test "should touch blog when published post is created" do
+    blog = blogs(:joel)
+    original_updated_at = blog.updated_at
+
+    travel 1.minute do
+      blog.posts.create!(content: "New post", status: :published)
+    end
+
+    assert_not_equal original_updated_at, blog.reload.updated_at
+  end
+
+  test "should touch blog when published post is updated" do
+    blog = blogs(:joel)
+    post = posts(:one)
+    original_updated_at = blog.updated_at
+
+    travel 1.minute do
+      post.update!(title: "Updated title")
+    end
+
+    assert_not_equal original_updated_at, blog.reload.updated_at
+  end
+
+  test "should touch blog when published post is destroyed" do
+    blog = blogs(:joel)
+    post = posts(:one)
+    original_updated_at = blog.updated_at
+
+    travel 1.minute do
+      post.destroy!
+    end
+
+    assert_not_equal original_updated_at, blog.reload.updated_at
+  end
+
+  test "should touch blog when post status changes to published" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "Draft post", status: :draft)
+    original_updated_at = blog.reload.updated_at
+
+    travel 1.minute do
+      post.update!(status: :published)
+    end
+
+    assert_not_equal original_updated_at, blog.reload.updated_at
   end
 end

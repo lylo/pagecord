@@ -22,10 +22,4 @@ class IpReputationTest < ActiveSupport::TestCase
     IpReputation::GetIpIntel.expects(:valid?).with(@valid_ip).returns(true)
     assert IpReputation.valid?(@valid_ip)
   end
-
-  test "valid? delegates to the configured provider (ApiVoid)" do
-    IpReputation.provider = IpReputation::ApiVoid
-    IpReputation::ApiVoid.expects(:valid?).with(@valid_ip).returns(true)
-    assert IpReputation.valid?(@valid_ip)
-  end
 end

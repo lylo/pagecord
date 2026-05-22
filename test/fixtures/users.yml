@@ -34,14 +34,8 @@ pagecord:
   onboarding_state: completed
   created_at: <%= 30.days.ago %>
 
-spammer:
-  email: spammer@example.com
+unengaged:
+  email: unengaged@example.com
   verified: true
   onboarding_state: completed
-  created_at: <%= 30.days.ago %>
-
-suspicious:
-  email: suspicious@example.com
-  verified: true
-  onboarding_state: completed
-  created_at: <%= 30.days.ago %>
+  created_at: <%= 1.week.ago %>

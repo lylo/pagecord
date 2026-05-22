@@ -14,7 +14,7 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
     assert_emails 1 do
       post password_resets_url, params: {
         user: { subdomain: @user.blog.subdomain, email: @user.email },
-        rendered_at: 6.seconds.ago.to_i
+        rendered_at: signed_rendered_at
       }
     end
 
@@ -25,7 +25,7 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
     assert_emails 0 do
       post password_resets_url, params: {
         user: { subdomain: "nonexistent", email: "nobody@example.com" },
-        rendered_at: 6.seconds.ago.to_i
+        rendered_at: signed_rendered_at
       }
     end
 

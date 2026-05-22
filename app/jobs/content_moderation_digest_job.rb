@@ -2,7 +2,7 @@ class ContentModerationDigestJob < ApplicationJob
   queue_as :default
 
   def perform
-    count = ContentModeration.flagged.count
+    count = Post.kept.moderation_flagged.published.joins(blog: :user).where(users: { discarded_at: nil }).count
 
     return if count.zero?
 

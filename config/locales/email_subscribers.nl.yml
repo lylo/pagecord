@@ -1,0 +1,44 @@
+nl:
+  email_subscribers:
+    form:
+      subscribe_description:
+        digest: "Abonneer je om wekelijks een overzicht van berichten in je inbox te ontvangen"
+        individual: "Abonneer je om nieuwe berichten via e-mail te ontvangen"
+      email_placeholder: "Vul je e-mailadres in..."
+      submit_button: "Abonneren"
+    create:
+      success_message: "Bedankt voor je aanmelding. Tenzij je al abonnee bent, is er een bevestigingsmail onderweg naar %{email}"
+    confirmations:
+      success_message:
+        digest: "Je abonnement op %{blog_name} is bevestigd. Je ontvangt een wekelijks e-mailoverzicht wanneer er nieuwe berichten worden gepubliceerd."
+        individual: "Je abonnement op %{blog_name} is bevestigd. Je ontvangt een e-mail wanneer er nieuwe berichten worden gepubliceerd."
+      unsubscribe_link: "Afmelden"
+    unsubscribes:
+      success_message: "Je bent nu afgemeld van %{blog_name} 👋"
+      confirm_message: "Klik op de onderstaande link om je af te melden van %{blog_name}."
+      unsubscribe_button: "Afmelden"
+      not_found: "Geen e-mailabonnement gevonden"
+    mailers:
+      shared:
+        footer: "Je ontvangt nieuwe berichten van %{blog_name}."
+        unsubscribe_link: "Afmelden"
+        unsubscribe_text: "Meld je af via de onderstaande link:"
+        view_online: "Bekijk dit bericht online"
+      confirmation:
+        subject: "Bevestig je abonnement op %{blog_name}"
+        message: "Bevestig je abonnement op %{blog_name}. Als je je niet hebt aangemeld, kun je deze e-mail negeren."
+        button: "Abonneer mij"
+      weekly_digest:
+        subject: "Nieuwe berichten van %{blog_name} - %{date}"
+        footer: "Je ontvangt nieuwe berichten van %{blog_name}."
+        unsubscribe_link: "Afmelden"
+      individual:
+        default_subject: "Nieuw bericht van %{blog_name} — %{date}"
+  posts:
+    read_more: "Lees verder"
+  replies:
+    form:
+      subject_label: "Onderwerp"
+      cancel_link: "Annuleren"
+    mailer:
+      intro: "Joepie! Iemand heeft op je bericht gereageerd"

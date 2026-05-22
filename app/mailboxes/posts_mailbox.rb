@@ -31,7 +31,7 @@ class PostsMailbox < ApplicationMailbox
           blog.posts.create!(
             title: title,
             content: content,
-            raw_content: mail.raw_source,
+            source: :email,
             attachments: parser.attachments,
             tag_list: parser.tags,
             published_at: mail.date)
@@ -41,19 +41,7 @@ class PostsMailbox < ApplicationMailbox
         raise "Unable to parse email: #{e}"
       end
     else
-      # Raise an error in Sentry for information. No need to retry the email
-      Sentry.with_scope do |scope|
-        scope.set_tags(from: from, recipient: recipient)
-        Sentry.capture_message("User not found")
-      end
-
-      Appsignal.report_error(StandardError.new("User not found")) do |transaction|
-        Appsignal.set_action("PostsMailbox#process")
-        Appsignal.add_tags(
-          from: from,
-          recipient: recipient
-        )
-      end
+      Rails.logger.info "No blog found for from: #{from}, recipient: #{recipient}"
     end
   end
 

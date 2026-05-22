@@ -4,6 +4,7 @@ class Posts::UpvotesController < Blogs::BaseController
   rate_limit to: 10, within: 1.minute
 
   skip_before_action :authenticate
+  skip_forgery_protection # Cached pages have no session cookie for CSRF verification
   before_action :load_post
 
   def create

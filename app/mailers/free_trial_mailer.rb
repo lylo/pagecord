@@ -12,4 +12,11 @@ class FreeTrialMailer < MailpaceMailer
 
     mail to: @user.email, subject: "Your Pagecord free trial has ended"
   end
+
+  def trial_reminder
+    @user = params[:user]
+    @blog = @user.blog
+
+    mail to: @user.email, subject: "Your Pagecord free trial ends in a few days"
+  end
 end

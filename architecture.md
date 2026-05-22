@@ -4,11 +4,11 @@ Pagecord is a minimal blogging app where you create posts simply by sending emai
 
 ## Web app
 
-Pagecord is a web app that uses [Rails](https://rubyonrails.org) 8 and associated tech like Turbo, Stimulus and Import Maps. It uses [Tailwind CSS](https://tailwindcss.com) for styling. It runs on Ruby 3.3.4.
+Pagecord is a web app that uses [Rails](https://rubyonrails.org) 8 and associated tech like Turbo, Stimulus and Import Maps. It uses [Tailwind CSS](https://tailwindcss.com) for styling. It runs on Ruby 3.4.7.
 
 ## Database
 
-Currently the database is Postgres which runs on a Hetzner server, thanks to Hatchbox. It's not a managed service, but it is backed up to Cloudflare R2 every 30 mins. Could be better, obvs.
+Currently the database is Postgres which runs on a Hetzner server, thanks to Hatchbox. It's not a managed service, but WAL files are continuously replicated to Cloudflare R2 via WAL-G, enabling point-in-time recovery.
 
 ## Background Jobs
 
@@ -28,15 +28,15 @@ Premium accounts can apply a custom domain to their blog. Pagecord does this by 
 
 Ideally I would run a separate server and create a reverse proxy using Caddy, detaching custom domains from the underlying app hosting. I'm avoiding the overhead of hosting costs and sysadmin work, but it'll bite me at some point I know.
 
-### DNS
+### DNS & Edge Caching
 
-DNS for Pagecord is managed by [Cloudflare](https://cloudflare.com).
+DNS for Pagecord is managed by [Cloudflare](https://cloudflare.com). Cloudflare sits in front of the app, providing edge caching for `*.pagecord.com` blog pages. Custom domains route through Caddy and are not edge-cached by Cloudflare.
 
 ### Email
 
-Inbound emails are managed by [Resend](https://resend.com). The Pagecord app uses ActionMailbox to receive and process the emails.
+Inbound emails are handled by [Postmark](https://postmarkapp.com) via ActionMailbox.
 
-Transacitonal emails are sent via [Resend](https://resend.com).
+Transactional emails are sent via a mixture of [Postmark](https://postmarkapp.com) and [Mailpace](https://mailpace.com).
 
 ### Observability
 

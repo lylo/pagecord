@@ -53,7 +53,15 @@ end
 
 ### Adding images
 
-Drag and drop images directly into the editor, or click the picture button in the toolbar.
+Drag and drop images directly into the editor, or click the attachment icon (paperclip) in the toolbar.
+
+### Image galleries
+
+To create a gallery, click the paperclip icon in the toolbar and select multiple images at once. You can also drag multiple photos straight into the editor. Either way, they'll be arranged in a grid automatically.
+
+If you have two or four images, they display in a 2-column grid. For three or more, they'll be arranged in a 3-column grid. Larger galleries wrap onto new rows, always with a maximum of three images per row. Aspect ratios are preserved throughout, so your photos won't get cropped or stretched.
+
+Want to add more images to an existing gallery? Just drag a new photo over an existing one and it will be added to the gallery group.
 
 ## Post Titles
 
@@ -86,7 +94,27 @@ Posts are saved as drafts automatically in your browser as you write, but you sh
 
 A slug is the end part of the URL that looks like `/my-first-post`. This is set automatically when you create a post, but you can change it by selecting **Change Slug** from the drop-down menu when editing (or creating) a post.
 
+## Setting the language for a post
+
+By default, posts use the language set on your blog. If you write a post in a different language, you can override this per post.
+
+Select **Set Language** from the drop-down menu (or press **L**) to choose a language for that post. To revert to the blog default, select the blank "Use blog default" option.
+
+The post language is used for the `lang` attribute in your HTML and helps browsers and screen readers render text correctly.
+
+## Hidden posts
+
+You can hide a post from your blog feed while keeping it accessible via its direct link. This is useful for posts you want to share privately or keep as a reference without showing them on your blog.
+
+To hide a post, select **Post Visibility** from the drop-down menu and check "Hide this post on my blog".
+
+## Canonical URLs
+
+If you're cross-posting content from another site, you can set a canonical URL to tell search engines where the original version lives. This helps avoid duplicate content issues.
+
+To set a canonical URL, select **Canonical URL** from the drop-down menu when editing a post.
+
 ## Deleting posts
 
-To delete a post, select **Delete Post** from the drop-down menu.
+To delete a post, select **Delete Post** from the drop-down menu. Deleted posts are moved to the trash and kept for 30 days, so you can restore them if you change your mind.
 

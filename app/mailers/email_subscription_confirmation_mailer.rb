@@ -1,5 +1,5 @@
 class EmailSubscriptionConfirmationMailer < MailpaceMailer
-  layout "mailer_digest"
+  layout "mailer_minimal"
   helper RoutingHelper
 
   def confirm

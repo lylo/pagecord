@@ -32,14 +32,20 @@ module CssSanitizable
       # @import whitelisting for Google Fonts, and CSS custom properties
       sanitized = Css::Sanitizer.sanitize_stylesheet(custom_css)
 
-      # Normalize for comparison (browsers may send \r\n)
-      original_normalized = custom_css.gsub("\r\n", "\n").strip
-      sanitized_normalized = sanitized.gsub("\r\n", "\n").strip
+      # Normalize for comparison (browsers may send \r\n, Crass rewrites @layer foo; as @layer foo{})
+      original_normalized = normalize_css_for_comparison(custom_css)
+      sanitized_normalized = normalize_css_for_comparison(sanitized)
 
       # If sanitization changed the CSS, something unsafe or unsupported was removed
       # Don't mutate the attribute - let the user see what failed and fix it
       if original_normalized != sanitized_normalized
         errors.add(:custom_css, "contains invalid or potentially unsafe content")
       end
+    end
+
+    def normalize_css_for_comparison(css)
+      css.gsub("\r\n", "\n")
+         .gsub(/@layer\s+([^{;]+);/, '@layer \1{}') # Crass rewrites bare @layer declarations
+         .strip
     end
 end

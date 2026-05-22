@@ -4,6 +4,7 @@ import Tagify from "@yaireo/tagify"
 // Connects to data-controller="tags-input"
 export default class extends Controller {
   static targets = ["input"]
+  static values = { suggestions: { type: Array, default: [] } }
 
   connect() {
     this.initializeTagify()
@@ -23,23 +24,21 @@ export default class extends Controller {
         tagData.value = tagData.value.toLowerCase()
       },
 
-      // Validate tags (alphanumeric and hyphens only)
+      // Validate tags (letters including unicode, numbers, and hyphens)
       validate: (tagData) => {
-        return /^[a-zA-Z0-9-]+$/.test(tagData.value)
+        return /^[\p{L}\p{N}-]+$/u.test(tagData.value)
       },
 
       // Maximum number of tags
       maxTags: 10,
 
-      // Disable dropdown
+      // Autocomplete from existing tags
+      whitelist: this.suggestionsValue,
       dropdown: {
-        enabled: false,
-        highlightFirst: false
-      },
-
-      // Disable autocomplete
-      autoComplete: {
-        enabled: false
+        enabled: 1,
+        maxItems: 10,
+        closeOnSelect: false,
+        highlightFirst: true
       },
 
       // Don't allow duplicates

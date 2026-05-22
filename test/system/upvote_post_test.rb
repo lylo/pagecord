@@ -16,9 +16,13 @@ class UpvotePostTest < ApplicationSystemTestCase
     sleep 0.5  # Allow request to complete
     assert_equal 1, post.upvotes.reload.count
 
-    # Second click is idempotent (same visitor can't upvote twice)
+    # Second click has no effect (already upvoted)
     find("a.upvote").click
     sleep 0.5
     assert_equal 1, post.upvotes.reload.count
+
+    # Upvote state persists after page refresh
+    visit blog_post_path(post.slug)
+    assert_selector ".upvote-heart[style*='fill']"
   end
 end

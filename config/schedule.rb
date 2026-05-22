@@ -58,6 +58,10 @@ every :day, at: "5:00 am" do
   rake "subscriptions:send_renewal_reminders"
 end
 
+every :day, at: "5:10 am" do
+  runner "SendTrialReminderEmailsJob.perform_later"
+end
+
 every :day, at: "5:15 am" do
   runner "SendTrialEndedEmailsJob.perform_later"
 end
@@ -78,12 +82,16 @@ every :day, at: "8:00 am" do
   runner "ContentModerationDigestJob.perform_later"
 end
 
-every 1.week, at: "6:00 am" do
-  rake "posts:clear_old_raw_content"
+every :day, at: "3:30 am" do
+  runner "Posts::EmptyTrashJob.perform_later"
 end
 
 every 1.month, at: "1:30 am" do  # 1:30 AM on the 1st of every month
   runner "RollupAndCleanupPageViewsJob.perform_later"
+end
+
+every 1.month, at: "2:00 am" do
+  runner "SendUnengagedFollowUpEmailsJob.perform_later"
 end
 
 # every hour on a Tuesday

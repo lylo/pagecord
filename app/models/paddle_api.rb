@@ -24,6 +24,10 @@ class PaddleApi
     get "subscriptions/#{subscription_id}/update-payment-method-transaction"
   end
 
+  def create_customer_portal_session(customer_id, subscription_ids = [])
+    post "customers/#{customer_id}/portal-sessions", { subscription_ids: subscription_ids }.to_json
+  end
+
   def get_discount(id)
     get "discounts/#{id}"
   end

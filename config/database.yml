@@ -18,6 +18,7 @@ test:
   port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
   username: <%= ENV.fetch("DATABASE_USERNAME", ENV["USER"]) %>
   password: <%= ENV.fetch("DATABASE_PASSWORD", "") %>
+  gssencmode: disable
 
 production:
   <<: *default

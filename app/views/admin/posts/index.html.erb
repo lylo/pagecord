@@ -1,28 +1,66 @@
-<div class="overflow-auto">
-  <div>
-    Currently hosting <%= pluralize(number_with_delimiter(@pagy.count), "post") %>.
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-6">
+  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4">
+    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Overview</h3>
   </div>
-  <table class="mt-8 min-w-full divide-y divide-slate-300 dark:divide-slate-700">
+  <div class="px-6 py-5">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-8">
+      <%= link_to admin_posts_path, class: "group" do %>
+        <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Post.visible.joins(blog: :user).where(users: { discarded_at: nil }).count) %></span>
+        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Posts</span>
+      <% end %>
+      <span class="hidden sm:inline text-slate-200 dark:text-slate-700">|</span>
+      <%= link_to admin_posts_path(period: "today"), class: "group" do %>
+        <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Post.visible.where("published_at >= ?", Date.current.beginning_of_day).count) %></span>
+        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Today</span>
+      <% end %>
+      <span class="hidden sm:inline text-slate-200 dark:text-slate-700">|</span>
+      <%= link_to admin_posts_path(period: "week"), class: "group" do %>
+        <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Post.visible.where("published_at >= ?", 7.days.ago.beginning_of_day).count) %></span>
+        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">This week</span>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<% if params[:period].present? %>
+  <div class="bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 rounded-xl px-6 py-3 mb-4 flex items-center gap-3" data-controller="search" data-search-url-value="<%= admin_posts_path %>">
+    <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @pagy.count %></span>
+    <span class="text-sm text-slate-500 dark:text-slate-400"><%= "post".pluralize(@pagy.count) %></span>
+    <% period_label = params[:period] == "today" ? "Today" : "This week" %>
+    <%= link_to admin_posts_path, class: "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-colors" do %>
+      <%= period_label %>
+      <%= inline_svg_tag "icons/close.svg", class: "w-3.5 h-3.5 text-slate-400" %>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+  <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
     <thead>
-      <tr>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Name</th>
-        <th class="py-4 pe-4 sm:ps-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-50">Posts</th>
-        <th class="py-4 sm:ps-4 text-end text-sm font-semibold text-slate-900 dark:text-slate-50">Created</th>
+      <tr class="bg-slate-50 dark:bg-slate-700/50">
+        <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Blog</th>
+        <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Post</th>
+        <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Published</th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-slate-300 dark:divide-slate-700">
+    <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
     <% @posts.each do |post| %>
       <tr>
-        <td class="whitespace-nowrap py-4 pe-4 sm:ps-4 text-sm font-medium text-slate-900 dark:text-slate-50">
-          <%= link_to "@#{post.blog.subdomain}", admin_user_path(post.blog.user), class: "hover:underline" %>
-          <% if post.blog.custom_domain.present? %>
-            <div class="text-xs font-light text-slate-500 dark:text-slate-400"><%= post.blog.custom_domain %></div>
-          <% end %>
+        <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50">
+          <div class="leading-tight">
+            <%= link_to "@#{post.blog.subdomain}", admin_user_path(post.blog.user), class: "font-medium underline" %>
+            <% if post.blog.custom_domain.present? %>
+              <div class="text-xs text-slate-400 dark:text-slate-500 font-normal mt-1"><%= post.blog.custom_domain %></div>
+            <% end %>
+          </div>
         </td>
-        <td class="whitespace-wrap py-4 pe-4 sm:ps-4 text-sm text-slate-900 dark:text-slate-50">
+        <td class="py-3 px-6 text-sm text-slate-900 dark:text-slate-50">
           <%= link_to post.display_title, post_url(post), class: "hover:underline" %>
         </td>
-        <td class="whitespace-nowrap py-4 sm:ps-4 text-sm text-slate-500 dark:text-slate-400 text-end"><%= post.published_at.to_formatted_s :long %></td>
+        <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end">
+          <span class="hidden sm:inline"><%= post.published_at.strftime("%-d %b %Y %H:%M") %></span>
+          <span class="sm:hidden"><%= post.published_at.strftime("%-d %b %Y") %></span>
+        </td>
       </tr>
     <% end %>
     </tbody>

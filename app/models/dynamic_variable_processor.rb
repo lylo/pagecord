@@ -1,34 +1,40 @@
 class DynamicVariableProcessor
-  RENDERERS = {
-    "posts" => :render_posts_tag,
-    "posts_by_year" => :render_posts_by_year_tag,
-    "tags" => :render_tags_tag,
-    "email_subscription" => :render_email_subscription_tag
+  include DynamicVariable::Params
+
+  TAGS = {
+    "posts"              => DynamicVariable::PostsTag,
+    "posts_by_year"      => DynamicVariable::PostsByYearTag,
+    "tags"               => DynamicVariable::TagsTag,
+    "email_subscription" => DynamicVariable::EmailSubscriptionTag,
+    "contact_form"       => DynamicVariable::ContactFormTag,
+    "updated_at"         => :render_updated_at_tag
   }.freeze
 
-  attr_reader :blog, :view
+  UPDATED_AT_FORMATS = {
+    "long"          => "%d %B %Y",
+    "long_datetime" => "%d %B %Y %H:%M",
+    "dd_mm_yyyy"    => "%d/%m/%Y",
+    "mm_dd_yyyy"    => "%m/%d/%Y",
+    "yyyy_mm_dd"    => "%Y-%m-%d"
+  }.freeze
 
-  def initialize(blog:, view:)
-    @blog = blog
+  def initialize(post:, view:)
+    @post = post
+    @blog = post.blog
     @view = view
   end
 
   def process(content)
-    # Protect code blocks from processing
     code_blocks = []
     protected_content = content.gsub(%r{<(pre|code)[^>]*>.*?</\1>}m) do |match|
       code_blocks << match
       "___CODE_BLOCK_#{code_blocks.length - 1}___"
     end
 
-    # Process tags in the remaining content
     processed = protected_content.gsub(tag_pattern) do
-      tag_name = $1
-      params_string = $2.strip
-      render_tag(tag_name, params_string)
+      render_tag($1, $2.strip)
     end
 
-    # Restore code blocks
     code_blocks.each_with_index do |block, i|
       processed = processed.sub("___CODE_BLOCK_#{i}___", block)
     end
@@ -43,85 +49,28 @@ class DynamicVariableProcessor
     end
 
     def render_tag(tag_name, params_string)
-      if (renderer = RENDERERS[tag_name])
-        send(renderer, params_string)
+      if (tag_handler = TAGS[tag_name])
+        tag_handler.is_a?(Symbol) ? send(tag_handler, params_string) : tag_handler.new(blog: @blog, view: @view, params_string: params_string).render
       else
         unknown_tag = "#{tag_name} #{params_string}".strip
         "{{ #{unknown_tag} }}"
       end
+    rescue StandardError => e
+      Rails.logger.error(
+        "[DynamicVariableProcessor] Failed to render #{tag_name} " \
+        "for post #{@post.id}: #{e.class} - #{e.message}"
+      )
+      ""
     end
 
-    def render_posts_tag(params_string)
+    def render_updated_at_tag(params_string)
       params = parse_params(params_string)
-      relation = blog.posts.visible.order(published_at: :desc)
-      relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
-
-      if params[:year]
-        start_date = Date.new(params[:year], 1, 1)
-        end_date = Date.new(params[:year], 12, 31).end_of_day
-        relation = relation.where(published_at: start_date..end_date)
+      format = if params[:format] == "datetime"
+        "#{I18n.t("date.formats.post_date", locale: @blog.locale)} %H:%M"
+      else
+        UPDATED_AT_FORMATS[params[:format]] || :post_date
       end
 
-      posts = params[:limit] ? relation.limit(params[:limit]) : relation.all
-      view.render(partial: "blogs/custom_tags/posts", locals: { posts: posts, limit: params[:limit] })
-    end
-
-    def render_posts_by_year_tag(params_string)
-      params = parse_params(params_string)
-      relation = blog.posts.visible.order(published_at: :desc)
-      relation = relation.tagged_with_any(*Array(params[:tag])) if params[:tag]
-
-      posts = relation.all
-
-      view.render(partial: "blogs/custom_tags/posts_by_year", locals: { posts: posts })
-    end
-
-    def render_tags_tag(params_string)
-      params = parse_params(params_string)
-      tags = blog.posts.visible.all_tags
-      partial = params[:style] == "inline" ? "blogs/custom_tags/tags_inline" : "blogs/custom_tags/tags"
-      view.render(partial: partial, locals: { tags: tags, blog: blog })
-    end
-
-    def render_email_subscription_tag(params_string)
-      view.render(partial: "blogs/email_subscriber_form", locals: {})
-    end
-
-    def parse_params(params_string)
-      params = {}
-      return params if params_string.blank?
-
-      # Split by pipe, each part is a parameter
-      params_string.split("|").each do |param|
-        param = param.strip
-        next if param.blank?
-
-        # Split on first colon to get key and value
-        key, value = param.split(":", 2).map(&:strip)
-        next if key.blank? || value.blank?
-
-        # Remove quotes if present
-        value = value[1..-2] if value.start_with?('"', "'") && value.end_with?('"', "'")
-
-        # Handle comma-separated values (only for 'tag' parameter)
-        if key == "tag" && value.include?(",")
-          value = value.split(",").map(&:strip)
-        end
-
-        # Convert to appropriate type
-        params[key.to_sym] = if value.is_a?(Array)
-          value
-        elsif value =~ /^\d+$/
-          value.to_i
-        elsif value == "true"
-          true
-        elsif value == "false"
-          false
-        else
-          value
-        end
-      end
-
-      params
+      @view.local_time(@post.updated_at, format: format, class: "updated-at")
     end
 end

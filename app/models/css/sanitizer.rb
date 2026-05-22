@@ -3,7 +3,7 @@
 
 module Css
   module Sanitizer
-    MAX_CSS_SIZE = 4096 # 4KB limit to prevent DoS
+    MAX_CSS_SIZE = 16384 # 16KB limit to prevent DoS
 
     ALLOWED_FONT_HOSTS = %w[
       fonts.googleapis.com
@@ -37,9 +37,10 @@ module Css
           ::Sanitize::Config.freeze_config(
             ::Sanitize::Config::RELAXED.merge(
               css: base_css_config.merge(
-                at_rules: [ "import" ],
+                at_rules: %w[import layer supports],
                 import_url_validator: ->(url) { allowed_font_url?(url) },
-                properties: base_css_config[:properties] + custom_properties + logical_properties
+                at_rules_with_styles: (base_css_config[:at_rules_with_styles] || []) + %w[layer supports],
+                properties: base_css_config[:properties] + custom_properties + logical_properties + extra_properties
               )
             )
           )
@@ -52,6 +53,15 @@ module Css
           false
         end
 
+        def extra_properties
+          %w[
+            scroll-behavior
+            -moz-osx-font-smoothing
+            initial-letter
+            -webkit-initial-letter
+          ]
+        end
+
         def logical_properties
           %w[
             margin-inline margin-inline-start margin-inline-end
@@ -62,6 +72,8 @@ module Css
             border-block border-block-start border-block-end
             inset-inline inset-inline-start inset-inline-end
             inset-block inset-block-start inset-block-end
+            inline-size min-inline-size max-inline-size
+            block-size min-block-size max-block-size
           ]
         end
 

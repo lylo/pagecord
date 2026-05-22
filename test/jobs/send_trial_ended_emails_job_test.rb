@@ -4,7 +4,7 @@ class SendTrialEndedEmailsJobTest < ActiveSupport::TestCase
   include ActionMailer::TestHelper
 
   test "sends email to users whose trial ended yesterday" do
-    user = User.create!(email: "trialended@example.com", trial_ends_at: Date.yesterday)
+    user = User.create!(email: "trialended@example.com", trial_ends_at: Date.yesterday, verified: true)
 
     assert_enqueued_email_with FreeTrialMailer, :trial_ended, params: { user: user } do
       SendTrialEndedEmailsJob.perform_now
@@ -39,6 +39,14 @@ class SendTrialEndedEmailsJobTest < ActiveSupport::TestCase
   test "does not send email to discarded users" do
     user = User.create!(email: "discarded@example.com", trial_ends_at: Date.yesterday)
     user.discard!
+
+    assert_no_enqueued_emails do
+      SendTrialEndedEmailsJob.perform_now
+    end
+  end
+
+  test "does not send email to unverified users" do
+    User.create!(email: "unverified@example.com", trial_ends_at: Date.yesterday, verified: false)
 
     assert_no_enqueued_emails do
       SendTrialEndedEmailsJob.perform_now

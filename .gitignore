@@ -10,6 +10,7 @@
 # Ignore all environment files (except templates).
 /.env*
 !/.env*.erb
+!/.env.example
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -31,6 +32,8 @@
 
 /public/assets
 /public/*.html
+!/public/maintenance.html
+!/public/error.html
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
@@ -44,3 +47,4 @@
 /tmp/emails/*.eml
 
 node_modules
+.claude.json

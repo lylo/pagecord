@@ -4,7 +4,7 @@ published: true
 published_at: 2026-02-02T12:00:00+00:00
 ---
 
-It is possible to import existing blog content from other platforms into Pagecord, but this is not self-serve. Please contact support so we can take a look and handle it for you. If the import is possible a Premium subscription is required to proceed after you've verified it.
+It is possible to import existing blog content from other platforms into Pagecord, but this is not self-serve. Please [get in touch](support.md) so we can take a look and handle it for you. If the import is possible a Premium subscription is required to proceed after you've verified it.
 
 ## What we can import
 

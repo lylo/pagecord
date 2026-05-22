@@ -1,5 +1,13 @@
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
   <% disabled = !@blog.user.subscribed? %>
+  <div>
+    <h3 class="font-bold text-lg mb-2">Post by Email</h3>
+    <p>
+      Send an email from <%= @blog.user.email %> to
+      <%= mail_to @blog.delivery_email, class: "font-semibold underline" %> to publish a new post on this blog.
+    </p>
+  </div>
+
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
     <% if disabled %>
@@ -41,9 +49,9 @@
   </div>
 
   <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Search Engine Visibility</h3>
+    <h3 class="font-bold text-lg mb-2">Discoverability</h3>
     <p>
-      If your blog is on a custom domain, you can opt out of search engine indexing by checking the box below.
+      By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. Untick the box below to opt out – we'll serve a <tt>/robots.txt</tt> that discourages search engines, and exclude your blog from Spotlight and Shuffle.
     </p>
 
     <p class="mt-4 text-slate-500 dark:text-slate-400">
@@ -53,14 +61,10 @@
     <div class="mt-6">
       <div class="flex gap-3">
         <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" } %>
+          <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" } %>
         </div>
         <div>
-          <%= form.label :allow_search_indexing, "Allow search engines to index my blog", class: "text-slate-800 dark:text-slate-100" %>
-          <p class="text-slate-500 text-sm">
-            When unchecked, a <tt>/robots.txt</tt> endpoint wil discourage search engines from indexing your site. This only works
-      for blogs using a custom domain at the moment, sorry.
-          </p>
+          <%= form.label :allow_search_indexing, "Make my blog discoverable", class: "text-slate-800 dark:text-slate-100" %>
         </div>
       </div>
     </div>

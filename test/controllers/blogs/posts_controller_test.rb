@@ -7,6 +7,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     @blog = blogs(:joel)
 
     host_subdomain! @blog.subdomain
+
+    Rails.cache.clear
   end
 
   test "should get index as stream of posts" do
@@ -86,9 +88,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
       email_subscriptions_enabled: true,
       show_subscription_in_footer: true
     )
-    page = @blog.pages.create!(title: "Test Page", content: "Content", status: "published")
 
-    get blog_post_path(page.slug)
+    get blog_post_path(posts(:about).slug)
 
     assert_response :success
     assert_select "turbo-frame#email_subscriber_form", count: 0
@@ -103,15 +104,111 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal post, assigns(:post)
   end
 
-  test "should include no-follow meta tag for hidden posts" do
+  test "should treat app as a post slug on blog subdomains" do
     post = @blog.posts.create!(
-      title: "Hidden Post",
-      content: "This is hidden content",
-      hidden: true,
-      status: "published"
+      title: "App slug",
+      content: "This is a post at /app",
+      slug: "app",
+      status: :published,
+      published_at: Time.current
+    )
+
+    get "/app"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should treat login as a post slug on blog subdomains" do
+    post = @blog.posts.create!(
+      title: "Login slug",
+      content: "This is a post at /login",
+      slug: "login",
+      status: :published,
+      published_at: Time.current
+    )
+
+    get "/login"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should treat admin as a post slug on blog subdomains" do
+    post = @blog.posts.create!(
+      title: "Admin slug",
+      content: "This is a post at /admin",
+      slug: "admin",
+      status: :published,
+      published_at: Time.current
+    )
+
+    get "/admin"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should treat app as a post slug on custom domains" do
+    blog = blogs(:annie)
+    post = blog.posts.create!(
+      title: "Custom domain app slug",
+      content: "This is a custom domain post at /app",
+      slug: "app",
+      status: :published,
+      published_at: Time.current
+    )
+    host! blog.custom_domain
+
+    get "/app"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should return not found for app path on custom domains without matching slug" do
+    host! blogs(:annie).custom_domain
+
+    get "/app"
+
+    assert_response :not_found
+  end
+
+  test "should render image attachments without action text wrappers on post show" do
+    post = create_content_with_attachment(
+      blog: @blog,
+      title: "Image Post",
+      caption: "Post caption"
     )
 
     get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_includes @response.body, "<figure"
+    assert_includes @response.body, "<img"
+    assert_includes @response.body, "Post caption"
+    assert_not_includes @response.body, "action-text-attachment"
+  end
+
+  test "should render image attachments without action text wrappers on page show" do
+    page = create_content_with_attachment(
+      blog: @blog,
+      title: "Image Page",
+      caption: "Page caption",
+      is_page: true
+    )
+
+    get blog_post_path(page.slug)
+
+    assert_response :success
+    assert_includes @response.body, "<figure"
+    assert_includes @response.body, "<img"
+    assert_includes @response.body, "Page caption"
+    assert_not_includes @response.body, "action-text-attachment"
+  end
+
+  test "should include no-follow meta tag for hidden posts" do
+    get blog_post_path(posts(:joel_hidden).slug)
 
     assert_response :success
     assert_select 'meta[name="robots"][content="noindex, nofollow"]'
@@ -173,6 +270,29 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "application/rss+xml; charset=utf-8", @response.content_type
   end
 
+  test "should use blog bio as RSS channel description when present" do
+    @blog.update!(bio: "A blog about Ruby and Rails")
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+    doc = Nokogiri::XML(@response.body)
+    description = doc.xpath("//channel/description").text
+    assert_equal "A blog about Ruby and Rails", description
+  end
+
+  test "should fall back to default RSS channel description when bio is blank" do
+    @blog.bio = nil
+    @blog.save!
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+    doc = Nokogiri::XML(@response.body)
+    description = doc.xpath("//channel/description").text
+    assert_equal "Latest posts from #{@blog.display_name}", description
+  end
+
   test "should exclude hidden posts from RSS feed" do
     # Create a hidden post
     hidden_post = @blog.posts.create!(
@@ -225,6 +345,34 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     cdata_content = xml.xpath("//item/description").first.children.find { |n| n.cdata? }.content
 
     assert_includes cdata_content, "<p>This is my first post.</p>"
+  end
+
+  test "should render image attachments without action text wrappers in RSS feed" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+    @blog.posts.create!(
+      title: "Image Feed Post",
+      content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}" caption="RSS caption"></action-text-attachment>),
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+
+    xml = Nokogiri::XML(@response.body)
+    item = xml.xpath("//item[title='Image Feed Post']").first
+    assert_not_nil item, "Image Feed Post should be in RSS feed"
+
+    cdata_content = item.xpath("description").first.children.find { |node| node.cdata? }.content
+    assert_includes cdata_content, "<figure"
+    assert_includes cdata_content, "<img"
+    assert_includes cdata_content, "RSS caption"
+    assert_not_includes cdata_content, "action-text-attachment"
   end
 
   test "should map RSS feed aliases to index" do
@@ -304,6 +452,26 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get "/"
 
     assert_response :success
+  end
+
+  test "should set canonical_url to custom domain on blog home" do
+    @blog = blogs(:annie)
+    host! @blog.custom_domain
+
+    get "/"
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.custom_domain}/"
+  end
+
+  test "should set canonical_url to custom domain on posts list" do
+    @blog = blogs(:annie)
+    host! @blog.custom_domain
+
+    get "/posts"
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.custom_domain}/posts"
   end
 
   test "should get show on custom domain" do
@@ -417,6 +585,27 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "link[rel=canonical][href=?]", "https://myblog.net"
+  end
+
+  test "should set the canonical_url to the blog home without query params" do
+    get blog_posts_path(ref: "example.com")
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/"
+  end
+
+  test "should set the canonical_url to /posts on the posts list page" do
+    get blog_posts_list_path
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/posts"
+  end
+
+  test "should set the canonical_url to /posts without tag query params" do
+    get blog_posts_list_path(tag: "nerd")
+
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/posts"
   end
 
   test "should redirect trailing slash on post URL to non-trailing slash version" do
@@ -665,48 +854,122 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   # Tag filtering tests
 
   test "should filter posts by tag" do
-    # Create posts with different tags
-    @blog.posts.create!(content: "Rails post", tags_string: "rails, web")
-    @blog.posts.create!(content: "Python post", tags_string: "python, backend")
-    @blog.posts.create!(content: "General post", tags_string: "general")
-
-    get blog_posts_path(tag: "rails")
+    get blog_posts_path(tag: "photography")
 
     assert_response :success
-    assert_includes @response.body, "Rails post"
-    assert_not_includes @response.body, "Python post"
-    assert_not_includes @response.body, "General post"
+    assert_includes @response.body, posts(:one).title
+    assert_includes @response.body, posts(:two).title
+    assert_not_includes @response.body, posts(:embeds).title
   end
 
   test "should show all posts when no tag filter is applied" do
-    @blog.posts.create!(content: "Rails post", tags_string: "rails")
-    @blog.posts.create!(content: "Python post", tags_string: "python")
-
     get blog_posts_path
 
     assert_response :success
-    assert_includes @response.body, "Rails post"
-    assert_includes @response.body, "Python post"
+    assert_includes @response.body, posts(:one).title
+    assert_includes @response.body, posts(:embeds).title
   end
 
   test "should show tag filter indicator when filtering" do
-    @blog.posts.create!(content: "Rails post", tags_string: "rails")
-
-    get blog_posts_path(tag: "rails")
+    get blog_posts_path(tag: "photography")
 
     assert_response :success
-    assert_select "div", text: /Showing posts tagged with "rails"/
-    assert_select "a[href='#{blog_posts_list_path}']", text: "Show all posts"
+    assert_select "p", text: /Posts tagged with/
+    assert_select "a.tag-filter-clear[href='#{blog_posts_list_path}']", text: "Show all posts"
+    assert_select "a.tag-filter-rss", text: "RSS feed for these posts"
   end
 
   test "should show no posts message when tag has no matches" do
-    @blog.posts.create!(content: "Rails post", tags_string: "rails")
-
     get blog_posts_path(tag: "nonexistent")
 
     assert_response :success
-    assert_select "p", text: /No posts found with the tag "nonexistent"/
+    assert_select "p", text: /No posts found/
     assert_select "a[href='#{blog_posts_path}']", text: "View all posts"
+  end
+
+  test "should filter posts by multiple comma-separated tags using OR" do
+    get blog_posts_path(tag: "photography,technology")
+
+    assert_response :success
+    assert_includes @response.body, posts(:one).title
+    assert_includes @response.body, posts(:photography_and_tech).title
+    assert_not_includes @response.body, posts(:embeds).title
+  end
+
+  test "should filter RSS feed by multiple comma-separated tags using OR" do
+    get blog_feed_xml_path(tag: "photography,technology")
+
+    assert_response :success
+    assert_includes @response.body, posts(:one).title
+    assert_includes @response.body, posts(:photography_and_tech).title
+    assert_not_includes @response.body, posts(:embeds).title
+  end
+
+  test "should filter RSS feed by without_tag excluding matching posts" do
+    get blog_feed_xml_path(without_tag: "photography")
+
+    assert_response :success
+    assert_not_includes @response.body, posts(:one).title
+    assert_not_includes @response.body, posts(:two).title
+    assert_not_includes @response.body, posts(:photography_and_tech).title
+  end
+
+  test "should filter RSS feed by multiple comma-separated without_tag using OR" do
+    get blog_feed_xml_path(without_tag: "technology")
+
+    assert_response :success
+    assert_includes @response.body, posts(:one).title
+    assert_includes @response.body, posts(:two).title
+    assert_not_includes @response.body, posts(:photography_and_tech).title
+  end
+
+  test "should filter RSS feed by language" do
+    get blog_feed_xml_path(lang: "en")
+
+    assert_response :success
+    assert_includes @response.body, posts(:one).title # nil locale inherits blog default (en)
+    assert_not_includes @response.body, posts(:joel_spanish).title
+  end
+
+  test "should filter RSS feed by non-blog language" do
+    get blog_feed_xml_path(lang: "es")
+
+    assert_response :success
+    assert_includes @response.body, posts(:joel_spanish).title
+    assert_not_includes @response.body, posts(:one).title
+  end
+
+  test "should filter posts with title=true" do
+    get blog_posts_path(title: "true")
+
+    assert_response :success
+    assert_includes @response.body, posts(:one).title
+    assert_not_includes @response.body, posts(:joel_titleless).slug
+  end
+
+  test "should filter posts with title=false" do
+    get blog_posts_path(title: "false")
+
+    assert_response :success
+    assert_includes @response.body, posts(:joel_titleless).slug
+    assert_not_includes @response.body, posts(:one).title
+  end
+
+  test "should filter RSS feed with title=true" do
+    get blog_feed_xml_path(title: "true")
+
+    assert_response :success
+    assert_includes @response.body, posts(:one).title
+    assert_not_includes @response.body, posts(:joel_titleless).slug
+  end
+
+  test "should combine tag and title filters" do
+    get blog_posts_path(tag: "photography", title: "true")
+
+    assert_response :success
+    assert_includes @response.body, posts(:one).title
+    assert_not_includes @response.body, posts(:joel_titleless).slug
+    assert_not_includes @response.body, posts(:embeds).title
   end
 
   test "should use correct page size for different layouts" do
@@ -745,13 +1008,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not show draft posts" do
-    post = @blog.posts.create!(
-      title: "Draft Post",
-      content: "This is draft content",
-      status: "draft"
-    )
-
-    get blog_post_path(post.slug)
+    get blog_post_path(posts(:joel_draft).slug)
     assert_response :not_found
   end
 
@@ -823,7 +1080,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   # Home page tests
 
   test "should show home page instead of posts index when home page is set" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
+    page = posts(:about)
     @blog.update!(home_page_id: page.id)
 
     get blog_posts_path
@@ -831,6 +1088,15 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal page, assigns(:post)
     assert_template "blogs/posts/show"
+  end
+
+  test "should set canonical_url to root when custom home page is rendered" do
+    page = posts(:about)
+    @blog.update!(home_page_id: page.id)
+
+    get blog_posts_path
+
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/"
   end
 
   test "should show posts index when home page is not set" do
@@ -842,8 +1108,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should still show RSS feed when home page is set" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :published)
-    @blog.update!(home_page_id: page.id)
+    @blog.update!(home_page_id: posts(:about).id)
 
     get rss_feed_path(@blog)
 
@@ -853,8 +1118,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show posts index when home page is draft" do
-    page = @blog.pages.create!(title: "Welcome", content: "Welcome to my blog", status: :draft)
-    @blog.update!(home_page_id: page.id)
+    @blog.update!(home_page_id: posts(:draft_page).id)
 
     get blog_posts_path
 
@@ -863,9 +1127,118 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_template "blogs/posts/index"
   end
 
+  # data-tags attribute tests
+
+  test "stream layout should include data-tags on tagged posts" do
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "div.post-stream-item[data-tags='photography']", minimum: 1
+  end
+
+  test "stream layout should not include data-tags on untagged posts" do
+    get blog_posts_path
+
+    assert_response :success
+    # embeds fixture has no tags
+    assert_select "div.post-stream-item[data-tags]", count: @blog.posts.visible.select { |p| p.tag_list.present? }.count
+  end
+
+  test "cards layout should include data-tags on tagged posts" do
+    @blog.cards_layout!
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "div.post-card[data-tags='photography']", minimum: 1
+  end
+
+  test "title layout should include data-tags on tagged posts" do
+    @blog.title_layout!
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "div.post-row[data-tags='photography']", minimum: 1
+  end
+
+  test "show page should include data-tags on tagged post" do
+    post = posts(:one) # has tag_list: [photography]
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "div[data-tags='photography']"
+  end
+
+  test "show page should not include data-tags on untagged post" do
+    post = posts(:embeds) # no tags
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "div[data-tags]", count: 0
+  end
+
+  test "data-tags should include multiple tags space-separated" do
+    post = posts(:photography_and_tech) # tag_list: [photography, technology]
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "div[data-tags='photography technology']"
+  end
+
+  # Cache header tests
+
+  test "should set cache headers on default domain in production" do
+    Rails.stubs(:env).returns(ActiveSupport::EnvironmentInquirer.new("production"))
+    ENV.stubs(:[]).with("CLOUDFLARE_ZONE_ID").returns("zone123")
+    ENV.stubs(:[]).with("CLOUDFLARE_API_TOKEN").returns("token123")
+    ENV.stubs(:[]).with(Not(equals("CLOUDFLARE_ZONE_ID") | equals("CLOUDFLARE_API_TOKEN"))).returns(nil)
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_equal @blog.subdomain, @response.headers["Cache-Tag"]
+    assert_includes @response.headers["Cache-Control"], "s-maxage="
+  end
+
+  test "should not set cache headers on custom domain in production" do
+    @blog = blogs(:annie)
+    host! @blog.custom_domain
+
+    Rails.stubs(:env).returns(ActiveSupport::EnvironmentInquirer.new("production"))
+    ENV.stubs(:[]).with("CLOUDFLARE_ZONE_ID").returns("zone123")
+    ENV.stubs(:[]).with("CLOUDFLARE_API_TOKEN").returns("token123")
+    ENV.stubs(:[]).with(Not(equals("CLOUDFLARE_ZONE_ID") | equals("CLOUDFLARE_API_TOKEN"))).returns(nil)
+
+    get "/"
+
+    assert_response :success
+    assert_nil @response.headers["Cache-Tag"]
+    assert_not_includes(@response.headers["Cache-Control"] || "", "s-maxage")
+  end
+
   private
 
     def host_subdomain!(name)
       host! "#{name}.#{Rails.application.config.x.domain}"
+    end
+
+    def create_content_with_attachment(blog:, title:, caption:, is_page: false)
+      blob = ActiveStorage::Blob.create_and_upload!(
+        io: file_fixture("space.jpg").open,
+        filename: "space.jpg",
+        content_type: "image/jpeg"
+      )
+
+      blog.posts.create!(
+        title: title,
+        content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}" caption="#{caption}"></action-text-attachment>),
+        is_page: is_page,
+        status: :published,
+        published_at: 30.minutes.ago
+      )
     end
 end

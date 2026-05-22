@@ -199,4 +199,13 @@ class Html::LexxyCleanerTest < ActiveSupport::TestCase
     input = "<div><br></div><div><br><br></div>"
     assert_equal "", Html::LexxyCleaner.clean(input)
   end
+
+  test "preserves gallery div wrapping action-text-attachments" do
+    input = '<div class="attachment-gallery attachment-gallery--2"><action-text-attachment sgid="1" presentation="gallery"></action-text-attachment><action-text-attachment sgid="2" presentation="gallery"></action-text-attachment></div>'
+    result = Html::LexxyCleaner.clean(input)
+
+    assert_includes result, '<div class="attachment-gallery attachment-gallery--2">'
+    assert_includes result, '<action-text-attachment sgid="1" presentation="gallery">'
+    assert_includes result, '<action-text-attachment sgid="2" presentation="gallery">'
+  end
 end

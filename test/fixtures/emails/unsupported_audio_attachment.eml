@@ -1,0 +1,17 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: ALAC audio
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary-mixed"
+
+--boundary-mixed
+Content-Type: text/plain; charset="utf-8"
+
+Here is some audio.
+--boundary-mixed
+Content-Type: audio/mp4; name="song.m4a"
+Content-Disposition: attachment; filename="song.m4a"
+Content-Transfer-Encoding: base64
+
+AAAAAAAAAAA=
+--boundary-mixed--

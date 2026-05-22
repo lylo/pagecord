@@ -85,6 +85,29 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "should add a feature to blog" do
+    user = users(:vivian)
+
+    patch admin_user_url(user), params: {
+      user: { blogs_attributes: [ { id: user.blog.id, features: [ "", "individual_email_delivery" ] } ] }
+    }
+
+    assert_redirected_to admin_user_path(user)
+    assert_includes user.blog.reload.features, "individual_email_delivery"
+  end
+
+  test "should remove all features from blog" do
+    user = users(:vivian)
+    user.blog.update!(features: [ "individual_email_delivery" ])
+
+    patch admin_user_url(user), params: {
+      user: { blogs_attributes: [ { id: user.blog.id, features: [ "" ] } ] }
+    }
+
+    assert_redirected_to admin_user_path(user)
+    assert_empty user.blog.reload.features
+  end
+
   test "should update user trial_ends_at" do
     user = users(:vivian)
     new_trial_date = 30.days.from_now.to_date

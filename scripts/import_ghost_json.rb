@@ -129,8 +129,7 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_p
       published_at: published_at,
       tag_list: tag_list,
       is_page: is_page,
-      status: is_draft ? :draft : :published,
-      show_in_navigation: false
+      status: is_draft ? :draft : :published
     )
 
     # Process images/videos and create ActionText content

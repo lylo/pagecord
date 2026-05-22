@@ -1,13 +1,17 @@
 es:
   email_subscribers:
     form:
-      subscribe_description: "Suscríbete para recibir un resumen semanal de los artículos en tu bandeja de entrada"
+      subscribe_description:
+        digest: "Suscríbete para recibir un resumen semanal de los artículos en tu bandeja de entrada"
+        individual: "Suscríbete para recibir nuevos artículos por correo"
       email_placeholder: "Introduce tu email..."
       submit_button: "Suscribirse"
     create:
       success_message: "Gracias por suscribirte. A menos que ya estés suscrito, un correo de confirmación está en camino a %{email}"
     confirmations:
-      success_message: "Tu suscripción a %{blog_name} está confirmada. Recibirás un resumen semanal por correo cuando se publiquen nuevos artículos."
+      success_message:
+        digest: "Tu suscripción a %{blog_name} está confirmada. Recibirás un resumen semanal por correo cuando se publiquen nuevos artículos."
+        individual: "Tu suscripción a %{blog_name} está confirmada. Recibirás un correo cuando se publiquen nuevos artículos."
       unsubscribe_link: "Cancelar suscripción"
     unsubscribes:
       success_message: "Ya no estás suscrito a %{blog_name} 👋"
@@ -15,6 +19,11 @@ es:
       unsubscribe_button: "Cancelar suscripción"
       not_found: "No se encontró ninguna suscripción con ese email  "
     mailers:
+      shared:
+        footer: "Estás suscrito para recibir nuevos artículos de %{blog_name}."
+        unsubscribe_link: "Cancelar suscripción"
+        unsubscribe_text: "Cancela tu suscripción haciendo clic en el enlace de abajo:"
+        view_online: "Ver este artículo en línea"
       confirmation:
         subject: "Confirma tu suscripción a %{blog_name}"
         message: "Por favor confirma tu suscripción a %{blog_name}. Si no tenías intención de suscribirte, puedes ignorar este correo."
@@ -23,19 +32,13 @@ es:
         subject: "Nuevos artículos de %{blog_name} - %{date}"
         footer: "Estás suscrito para recibir nuevos artículos de %{blog_name}."
         unsubscribe_link: "Cancelar suscripción"
+      individual:
+        default_subject: "Nuevo artículo de %{blog_name} — %{date}"
   posts:
     read_more: "Leer más"
   replies:
     form:
-      name_label: "Tu Nombre"
-      email_label: "Tu Email"
       subject_label: "Asunto"
-      message_label: "Mensaje"
-      submit_button: "Enviar Respuesta"
       cancel_link: "Cancelar"
-    success_message: "¡Respuesta enviada con éxito!"
     mailer:
       intro: "¡Genial! Alguien respondió a tu publicación"
-      from_label: "De"
-      footer: "Responde a este email para contestar a %{name}."
-      footer_text: "Para responder a %{name}, simplemente responde a este email."

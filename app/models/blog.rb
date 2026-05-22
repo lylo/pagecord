@@ -1,13 +1,13 @@
 class Blog < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, StorageTrackable
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, StorageTrackable, Blog::Contactable, Blog::ApiKey
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
   belongs_to :user, inverse_of: :blogs
 
   MAX_BLOGS_FREE = 1
-  MAX_BLOGS_PAID = 3
+  MAX_BLOGS_PAID = 2
 
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
@@ -32,7 +32,7 @@ class Blog < ApplicationRecord
   validate :within_blog_limit, on: :create
 
   before_validation :downcase_subdomain
-  after_update :touch_posts_if_settings_changed
+  after_commit :purge_cloudflare_cache, on: :update
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
@@ -79,9 +79,9 @@ class Blog < ApplicationRecord
       end
     end
 
-    def touch_posts_if_settings_changed
-      if saved_change_to_reply_by_email? || saved_change_to_show_upvotes?
-        posts.touch_all
-      end
+    def purge_cloudflare_cache
+      return unless Rails.env.production?
+      return unless Rails.cache.write("cf_purge:#{id}", true, expires_in: 5.seconds, unless_exist: true)
+      PurgeCloudflareCacheJob.perform_later(id)
     end
 end

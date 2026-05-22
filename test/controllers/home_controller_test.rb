@@ -8,28 +8,22 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should redirect to app when logged in" do
+  test "should render home page when logged in" do
     user = users(:joel)
     login_as user
 
     get root_path
-    assert_redirected_to app_root_path
+    assert_response :success
+    assert_select "a", text: "Dashboard"
   end
 
-  test "should render localized price for Brazil" do
-    # Inject the CF-IPCountry header with BR value
-    get root_path, headers: { "CF-IPCountry" => "BR" }
+  test "should render localized price for discounted countries" do
+    PricingHelper::DISCOUNTED_COUNTRIES.each do |country_code|
+      get root_path, headers: { "CF-IPCountry" => country_code }
 
-    assert_response :success
-    assert_select "body", text: /\$19/
-  end
-
-  test "should render localized price for India" do
-    # Inject the CF-IPCountry header with IN value
-    get root_path, headers: { "CF-IPCountry" => "IN" }
-
-    assert_response :success
-    assert_select "body", text: /\$19/
+      assert_response :success
+      assert_select "body", text: /\$25/
+    end
   end
 
   test "should render default price for other countries" do
@@ -37,7 +31,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get root_path, headers: { "CF-IPCountry" => "US" }
 
     assert_response :success
-    assert_select "body", text: /\$29/
+    assert_select "body", text: /\$39/
   end
 
   test "should render default price when no country header" do
@@ -45,6 +39,6 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    assert_select "body", text: /\$29/
+    assert_select "body", text: /\$39/
   end
 end

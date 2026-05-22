@@ -5,11 +5,15 @@
   <title><%= blog.display_name %></title>
 </head>
 <body>
-  <% navigation_pages = blog.pages.navigation_pages.visible.order(:title) %>
-  <% if navigation_pages.any? %>
+  <% navigation_items = blog.navigation_items.ordered.reject { |i| i.is_a?(SocialNavigationItem) } %>
+  <% if navigation_items.any? %>
     <ul>
-    <% navigation_pages.each do |page| %>
-      <li class="page"><a href="<%= page.slug %>.html"><%= page.title %></a></li>
+    <% navigation_items.each do |item| %>
+      <% if item.is_a?(PageNavigationItem) %>
+        <li class="page"><a href="<%= item.post.slug %>.html"><%= item.label %></a></li>
+      <% else %>
+        <li class="page"><a href="<%= item.url %>"><%= item.label %></a></li>
+      <% end %>
     <% end %>
     </ul>
   <% end %>

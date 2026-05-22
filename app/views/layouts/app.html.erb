@@ -11,9 +11,9 @@
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css"/>
     <%= stylesheet_link_tag "application", "tailwind", "inter", "tagify", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "blog-themes", "lexxy", "lexxy-variables", "lexxy-typography", "lexxy-editor-overrides", "lexxy-variable-overrides" %>
-    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css"/>
     <%= javascript_importmap_tags %>
 
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
@@ -50,7 +50,6 @@
         <% end %>
 
         <%= link_to "Help", "https://help.pagecord.com", class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
-        <%= mail_to "hello@pagecord.com", "Contact", class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
         <%= button_to logout_path, method: :delete, class: "text-sm font-semibold hover:underline dark:text-slate-200", form: { class: "flex" } do %>
           Logout
         <% end %>

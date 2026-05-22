@@ -23,8 +23,8 @@ module RoutingHelper
     route_for_blog(blog, "blog_feed_xml", "path")
   end
 
-  def rss_feed_url(blog)
-    route_for_blog(blog, "blog_feed_xml", "url")
+  def rss_feed_url(blog, options = {})
+    route_for_blog(blog, "blog_feed_xml", "url", options)
   end
 
   def sitemap_url_for(blog)
@@ -46,9 +46,9 @@ module RoutingHelper
   private
 
     def route_for_blog(blog, route_name, type, options = {})
-      route_options = options.merge(host: host(blog))
+      route_options = options.symbolize_keys.merge(host: host(blog))
 
-      send("#{route_name}_#{type}", route_options)
+      public_send("#{route_name}_#{type}", **route_options)
     end
 
     def host(blog)

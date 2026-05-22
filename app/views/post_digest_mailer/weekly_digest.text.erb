@@ -1,21 +1,12 @@
 <% @posts.each do |post| %>
-<% if post.title %>
-## <%= post.title %>
-<% end %>
-
-<%= post.content.to_plain_text %>
-
-
--- <%= l(post.published_at_in_user_timezone.to_date, format: :post_date) %>
-<%= post_url(post) %>
-
+<%= render partial: "post", locals: { post: post } %>
 
 <% end %>
 
 ----------
 
-You're subscribed to receive new posts from <%= @subscriber.blog.display_name %>.
+<%= t('email_subscribers.mailers.shared.footer', blog_name: @subscriber.blog.display_name) %>
 
-Unsubscribe by clicking the link below:
+<%= t('email_subscribers.mailers.shared.unsubscribe_text') %>
 
 <%= email_subscriber_unsubscribe_url_for(@subscriber) %>

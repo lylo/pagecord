@@ -1,6 +1,6 @@
 module Html
   class ExtractTags < Transformation
-    HASHTAG_REGEX = /#([a-zA-Z0-9-]+)(?=\p{Space}|$|#)/
+    HASHTAG_REGEX = /#([\p{L}\p{N}-]+)(?=\p{Space}|$|#)/
 
     def transform(input)
       @tags = []

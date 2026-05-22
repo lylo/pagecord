@@ -134,6 +134,7 @@ class MailParserTest < ActiveSupport::TestCase
       "Attachment should be embedded as action-text-attachment in the content"
 
     # Verify attachment attributes are present
+    assert_includes parser.body, 'url="/rails/active_storage/blobs/redirect/'
     assert_includes parser.body, 'content-type="image/jpeg"'
     assert_includes parser.body, 'filename="attachment.jpg"'
 
@@ -239,6 +240,14 @@ class MailParserTest < ActiveSupport::TestCase
 
     assert_equal [], parser.attachments
     assert_not parser.has_attachments?
+  end
+
+  test "should reject attachments with unsupported content types" do
+    mail = Mail.read(fixture_path("unsupported_audio_attachment.eml"))
+    parser = MailParser.new(mail)
+
+    assert_not parser.has_attachments?, "Should reject unsupported audio/mp4 content type"
+    assert_equal 0, parser.attachments.size
   end
 
   private

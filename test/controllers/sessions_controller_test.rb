@@ -12,7 +12,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
 
     assert_emails 1 do
-      post sessions_url, params: { user: { subdomain: user.blog.subdomain, email: user.email } }
+      post sessions_url, params: { user: { subdomain: user.blog.subdomain, email: user.email }, rendered_at: signed_rendered_at }
     end
 
     assert_redirected_to thanks_sessions_path
@@ -22,7 +22,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
 
     assert_emails 1 do
-      post sessions_url, params: { user: { subdomain: "#{user.blog.subdomain} ", email: "#{user.email} " } }
+      post sessions_url, params: { user: { subdomain: "#{user.blog.subdomain} ", email: "#{user.email} " }, rendered_at: signed_rendered_at }
     end
 
     assert_redirected_to thanks_sessions_path
@@ -32,7 +32,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
 
     assert_emails 1 do
-      post sessions_url, params: { user: { subdomain: user.blog.subdomain.upcase, email: user.email.upcase } }
+      post sessions_url, params: { user: { subdomain: user.blog.subdomain.upcase, email: user.email.upcase }, rendered_at: signed_rendered_at }
     end
 
     assert_redirected_to thanks_sessions_path
@@ -40,7 +40,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not send verification email for invalid credentials" do
     assert_emails 0 do
-      post sessions_url, params: { user: { subdomain: "nope", email: "nope@nope.com" } }
+      post sessions_url, params: { user: { subdomain: "nope", email: "nope@nope.com" }, rendered_at: signed_rendered_at }
     end
 
     assert_redirected_to thanks_sessions_path
@@ -63,7 +63,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user.update!(password: "TestPass1234", password_confirmation: "TestPass1234")
 
     post sessions_url, params: {
-      user: { subdomain: user.blog.subdomain, password: "TestPass1234" }
+      user: { subdomain: user.blog.subdomain, password: "TestPass1234" },
+      rendered_at: signed_rendered_at
     }
 
     assert_redirected_to app_root_path
@@ -75,7 +76,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user.update!(password: "TestPass1234", password_confirmation: "TestPass1234")
 
     post sessions_url, params: {
-      user: { subdomain: user.blog.subdomain, password: "wrongpassword" }
+      user: { subdomain: user.blog.subdomain, password: "wrongpassword" },
+      rendered_at: signed_rendered_at
     }
 
     assert_response :unprocessable_entity

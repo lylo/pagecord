@@ -28,7 +28,7 @@ module Pagecord
     config.active_record.automatically_invert_plural_associations = true
 
     # Configure available locales
-    config.i18n.available_locales = [ :en, :es, :fr, :de, :pt ]
+    config.i18n.available_locales = [ :en, :es, :fr, :de, :nl, :pt, :ja, :id ]
     config.i18n.default_locale = :en
 
     config.filter_parameters += [ :RawEmail, :Attachments, :HtmlBody, :TextBody, :Headers ]
@@ -40,5 +40,7 @@ module Pagecord
 
     # ignore mismatches between HTTP_CLIENT_IP and HTTP_X_FORWARDED_FOR
     config.action_dispatch.ip_spoofing_check = false
+
+    config.middleware.use Rack::Attack
   end
 end

@@ -29,7 +29,7 @@ module Html
         img_element = document.at_css "img[src='cid:#{content_id}']"
         return unless img_element
 
-        node_html = attachment_preview_node(blob, url, original)
+        node_html = attachment_preview_node(blob, url)
 
         # If the img is wrapped in a <figure>, replace that figure instead
         if (figure = img_element.ancestors("figure").first)

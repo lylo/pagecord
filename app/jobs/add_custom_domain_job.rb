@@ -3,16 +3,17 @@ class AddCustomDomainJob < ApplicationJob
 
   def perform(blog_id, domain)
     blog = Blog.find(blog_id)
+    with_sentry_context(user: blog.user, blog: blog) do
+      domain_changes_in_the_past_year = blog.custom_domain_changes.where("created_at > ?", 1.year.ago).count
 
-    domain_changes_in_the_past_year = blog.custom_domain_changes.where("created_at > ?", 1.year.ago).count
+      if domain_changes_in_the_past_year >= 20
+        raise "Domain change limit exceeded for blog #{blog.subdomain}"
+      else
+        Rails.logger.info "Adding custom domain #{domain} for blog #{blog.subdomain}"
 
-    if domain_changes_in_the_past_year >= 20
-      raise "Domain change limit exceeded for blog #{blog.subdomain}"
-    else
-      Rails.logger.info "Adding custom domain #{domain} for blog #{blog.subdomain}"
-
-      if Rails.env.production?
-        HatchboxDomainApi.new(blog).add_domain(domain)
+        if Rails.env.production?
+          HatchboxDomainApi.new(blog).add_domain(domain)
+        end
       end
     end
   end

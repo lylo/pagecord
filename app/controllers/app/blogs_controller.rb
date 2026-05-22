@@ -4,13 +4,13 @@ class App::BlogsController < AppController
   end
 
   def new
-    @blog = Current.user.blogs.build
+    @new_blog = Current.user.blogs.build
   end
 
   def create
-    @blog = Current.user.blogs.build(blog_params)
-    if @blog.save
-      session[:current_blog_id] = @blog.id
+    @new_blog = Current.user.blogs.build(blog_params)
+    if @new_blog.save
+      session[:current_blog_id] = @new_blog.id
       redirect_to app_root_path, notice: "Blog created"
     else
       render :new, status: :unprocessable_entity

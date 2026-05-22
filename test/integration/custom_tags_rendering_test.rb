@@ -38,6 +38,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders posts tag with limit parameter" do
+    @blog.posts.visible.each { |p| p.update!(status: :draft) }
     3.times do |i|
       @blog.posts.create!(title: "Post #{i}", content: "Content", status: :published, published_at: (i + 1).minutes.ago)
     end
@@ -47,9 +48,25 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
+    assert_select ".posts-list li", count: 2
     assert_select "body", text: /Post 0/
     assert_select "body", text: /Post 1/
     assert_select "body", text: /Post 2/, count: 0
+  end
+
+  test "renders posts tag with card style and limit" do
+    @blog.posts.visible.each { |p| p.update!(status: :draft) }
+    3.times do |i|
+      @blog.posts.create!(title: "Card #{i}", content: "Content", status: :published, published_at: (i + 1).minutes.ago)
+    end
+
+    page = @blog.pages.create!(title: "One Card", content: "{{ posts | style: card | limit: 1 }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".post-card", count: 1
+    assert_select ".post-card-title", text: "Card 0"
   end
 
   test "renders posts tag with tag filter" do
@@ -84,6 +101,22 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select "body", text: /technology/
     # Should not render as a list when inline
     assert_select "ul.tag-list", count: 0
+  end
+
+  test "renders inline tags within surrounding text" do
+    page = @blog.pages.create!(
+      title: "Tags Inline Sentence",
+      content: "Before {{ tags | style: inline }} after",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "article.page > .lexxy-content", count: 1
+    assert_select "article.page > .lexxy-content", text: /Before/
+    assert_select "article.page > .lexxy-content", text: /after/
+    assert_select "article.page > .lexxy-content span.tags-inline", count: 1
   end
 
   test "tag_list only shows tags from visible posts" do
@@ -164,11 +197,8 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # Page should process the custom tag in the content
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
     assert_response :success
-    assert_select ".lexxy-content", text: /Test Post/
-    # Make sure custom tag is not in the actual content area
-    doc = Nokogiri::HTML(response.body)
-    content_div = doc.at_css(".lexxy-content")
-    assert_not_includes content_div.text, "{{ posts }}"
+    assert_select "body", text: /Test Post/
+    assert_not_includes response.body, "{{ posts }}"
   end
 
   test "renders posts tag with year filter" do
@@ -193,6 +223,120 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # Should show only 1 photography post (the most recent)
     assert_select "body", text: /The Art of Street Photography/
     assert_select "body", text: /The Beauty of Landscape Photography/, count: 0
+  end
+
+  test "renders page content before and after a custom tag" do
+    page = @blog.pages.create!(
+      title: "Mixed Content",
+      content: "<p>Intro text</p>{{ posts | limit: 1 }}<p>Outro text</p>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "article.page > .lexxy-content", count: 1
+    assert_select ".lexxy-content", text: /Intro text/
+    assert_select ".lexxy-content", text: /Outro text/
+    assert_select ".posts-list"
+  end
+
+  test "renders posts tag with card style and preserves lazy pagination filters" do
+    21.times do |i|
+      @blog.posts.create!(
+        title: "Card Review #{i + 1}",
+        content: "Content",
+        status: :published,
+        published_at: Time.zone.local(2025, 2, i + 1, 12),
+        tag_list: [ "card-review" ]
+      )
+    end
+
+    page = @blog.pages.create!(
+      title: "Card Posts",
+      content: "{{ posts | style: card | tag: card-review }}",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".post-card", count: 20
+
+    lazy_frame_src = Nokogiri::HTML(response.body).css("turbo-frame[src]").map { _1["src"] }.find { _1.include?("style=card") }
+    assert lazy_frame_src.present?
+    assert_includes lazy_frame_src, "page=2"
+    assert_includes lazy_frame_src, "tag=card-review"
+  end
+
+  test "renders posts tag with stream style and preserves year and sort in lazy pagination" do
+    11.times do |i|
+      @blog.posts.create!(
+        title: "Stream Review #{i + 1}",
+        content: "Content",
+        status: :published,
+        published_at: Time.zone.local(2025, 1, i + 1, 12),
+        tag_list: [ "stream-review" ]
+      )
+    end
+
+    @blog.posts.create!(
+      title: "Stream Review 2024",
+      content: "Content",
+      status: :published,
+      published_at: Time.zone.local(2024, 12, 31, 12),
+      tag_list: [ "stream-review" ]
+    )
+
+    page = @blog.pages.create!(
+      title: "Stream Posts",
+      content: "{{ posts | style: stream | tag: stream-review | year: 2025 | sort: asc }}",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".post-stream-item", count: 10
+    assert_select "body", text: /Stream Review 2024/, count: 0
+
+    lazy_frame_src = Nokogiri::HTML(response.body).css("turbo-frame[src]").map { _1["src"] }.find { _1.include?("style=stream") }
+    assert lazy_frame_src.present?
+    assert_includes lazy_frame_src, "page=2"
+    assert_includes lazy_frame_src, "tag=stream-review"
+    assert_includes lazy_frame_src, "year=2025"
+    assert_includes lazy_frame_src, "sort=asc"
+  end
+
+  test "renders posts tag with gallery style and skips posts without images" do
+    @blog.posts.visible.each { |p| p.update!(status: :draft) }
+
+    body_image = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+    @blog.posts.create!(
+      title: "Body Image",
+      content: %(<action-text-attachment sgid="#{body_image.attachable_sgid}"></action-text-attachment>),
+      status: :published,
+      published_at: 1.minute.ago
+    )
+
+    post = @blog.posts.create!(title: "Open Graph Image", content: "Content", status: :published, published_at: 2.minutes.ago)
+    post.open_graph_image.attach(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+
+    @blog.posts.create!(title: "No image post", content: "Content", status: :published, published_at: 10.minutes.ago)
+
+    page = @blog.pages.create!(title: "Gallery", content: "{{ posts | style: gallery }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".posts-gallery .posts-gallery-item", count: 2
+    assert_select ".posts-gallery-title", text: "Body Image"
+    assert_select ".posts-gallery-title", text: "Open Graph Image"
+    assert_select "body", text: /No image post/, count: 0
   end
 
   test "renders posts_by_year tag" do
@@ -312,6 +456,82 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select ".posts-list"
   end
 
+  test "renders posts tag with sort asc" do
+    @blog.posts.create!(title: "Oldest Post", content: "Content", status: :published, published_at: 3.days.ago)
+    @blog.posts.create!(title: "Newest Post", content: "Content", status: :published, published_at: 1.day.ago)
+
+    page = @blog.pages.create!(title: "Sorted Posts", content: "{{ posts | sort: asc }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    # Oldest post should appear before newest post
+    oldest_pos = response.body.index("Oldest Post")
+    newest_pos = response.body.index("Newest Post")
+    assert oldest_pos < newest_pos, "Expected oldest post to appear before newest post with sort: asc"
+  end
+
+  test "renders posts_by_year tag with sort asc" do
+    @blog.posts.create!(title: "2022 Post", content: "Content", status: :published, published_at: Date.new(2022, 6, 15))
+    @blog.posts.create!(title: "2024 Post", content: "Content", status: :published, published_at: Date.new(2024, 3, 20))
+
+    page = @blog.pages.create!(title: "Archive Asc", content: "{{ posts_by_year | sort: asc }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    # 2022 year group should appear before 2024 year group
+    year_2022_pos = response.body.index("2022")
+    year_2024_pos = response.body.index("2024")
+    assert year_2022_pos < year_2024_pos, "Expected 2022 to appear before 2024 with sort: asc"
+  end
+
+  test "renders posts tag with sort asc and tag filter" do
+    @blog.posts.create!(title: "Old Photo", content: "Content", status: :published, published_at: 10.days.ago, tag_list: [ "photography" ])
+    @blog.posts.create!(title: "New Photo", content: "Content", status: :published, published_at: 1.day.ago, tag_list: [ "photography" ])
+
+    page = @blog.pages.create!(title: "Sorted Photography", content: "{{ posts | sort: asc | tag: photography }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    old_pos = response.body.index("Old Photo")
+    new_pos = response.body.index("New Photo")
+    assert old_pos < new_pos, "Expected oldest photo post to appear before newest with sort: asc"
+  end
+
+  test "renders updated_at tag" do
+    page = @blog.pages.create!(title: "Updated", content: "Last updated: {{ updated_at }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "article.page > .lexxy-content", count: 1
+    assert_select "article.page > .lexxy-content", text: /Last updated:/
+    assert_select "article.page > .lexxy-content time.updated-at", count: 1
+    assert_select "time.updated-at"
+  end
+
+  test "renders updated_at tag with named formats" do
+    %w[datetime long long_datetime dd_mm_yyyy mm_dd_yyyy yyyy_mm_dd].each do |fmt|
+      page = @blog.pages.create!(title: "Updated #{fmt}", content: "{{ updated_at format: #{fmt} }}", status: :published)
+
+      get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+      assert_response :success
+      assert_select "time.updated-at", minimum: 1
+    end
+  end
+
+  test "does not process updated_at tag in regular posts" do
+    post = @blog.posts.create!(title: "A Post", content: "{{ updated_at }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_response :success
+    assert_includes response.body, "{{ updated_at }}"
+  end
+
   test "does not process custom tags inside inline code" do
     page = @blog.pages.create!(
       title: "Inline Code Example",
@@ -324,5 +544,105 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     # The inline code should contain literal {{ posts }}
     assert_select "code", text: /{{ posts }}/
+  end
+
+  test "renders contact_form tag for premium user" do
+    assert @user.has_premium_access?
+    @blog.update!(features: [ "contact_form" ])
+
+    page = @blog.pages.create!(title: "Contact", content: "{{ contact_form }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".contact-form"
+    assert_select "form[action='#{contact_messages_path}']"
+  end
+
+  test "contact_form tag renders nothing for non-premium user" do
+    @user.subscription.destroy
+    @user.update!(created_at: 30.days.ago)
+
+    assert_not @user.reload.has_premium_access?
+
+    page = @blog.pages.create!(title: "Contact", content: "{{ contact_form }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".contact-form", count: 0
+    # Should not show the literal tag either
+    assert_not_includes response.body, "{{ contact_form }}"
+  end
+
+  # Language filter tests
+  test "renders posts tag with lang filter - explicit locale match" do
+    @blog.update!(locale: "en")
+    @blog.posts.create!(title: "English Post", content: "Content", status: :published, locale: "en")
+    @blog.posts.create!(title: "Spanish Post", content: "Content", status: :published, locale: "es")
+
+    page = @blog.pages.create!(title: "English Posts", content: "{{ posts | lang: en }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /English Post/
+    assert_select "body", text: /Spanish Post/, count: 0
+  end
+
+  test "renders posts tag with lang filter - includes inherited posts when matching blog locale" do
+    @blog.update!(locale: "en")
+    @blog.posts.create!(title: "Explicit English", content: "Content", status: :published, locale: "en")
+    @blog.posts.create!(title: "Inherited English", content: "Content", status: :published, locale: nil)
+    @blog.posts.create!(title: "Spanish Post", content: "Content", status: :published, locale: "es")
+
+    page = @blog.pages.create!(title: "English Posts", content: "{{ posts | lang: en }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /Explicit English/
+    assert_select "body", text: /Inherited English/
+    assert_select "body", text: /Spanish Post/, count: 0
+  end
+
+  test "renders posts tag with lang filter - excludes inherited posts when not matching blog locale" do
+    @blog.update!(locale: "en")
+    @blog.posts.create!(title: "Explicit Spanish", content: "Content", status: :published, locale: "es")
+    @blog.posts.create!(title: "Inherited English", content: "Content", status: :published, locale: nil)
+
+    page = @blog.pages.create!(title: "Spanish Posts", content: "{{ posts | lang: es }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /Explicit Spanish/
+    assert_select "body", text: /Inherited English/, count: 0
+  end
+
+  test "renders posts_by_year tag with lang filter" do
+    @blog.update!(locale: "en")
+    @blog.posts.create!(title: "2024 English Post", content: "Content", status: :published, locale: "en", published_at: Date.new(2024, 6, 15))
+    @blog.posts.create!(title: "2024 Spanish Post", content: "Content", status: :published, locale: "es", published_at: Date.new(2024, 6, 15))
+
+    page = @blog.pages.create!(title: "English Archive", content: "{{ posts_by_year | lang: en }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /2024 English Post/
+    assert_select "body", text: /2024 Spanish Post/, count: 0
+  end
+
+  test "lang filter normalizes regional variants" do
+    @blog.update!(locale: "pt")
+    @blog.posts.create!(title: "Portuguese Post", content: "Content", status: :published, locale: "pt")
+
+    page = @blog.pages.create!(title: "Portuguese Posts", content: "{{ posts | lang: pt-BR }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /Portuguese Post/
   end
 end

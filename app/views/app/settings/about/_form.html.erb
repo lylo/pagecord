@@ -1,0 +1,74 @@
+<%= form_with url: app_settings_about_path(@blog), model: @blog, data: { controller: "avatar" } do |form| %>
+  <fieldset>
+    <h3 class="font-bold text-lg mb-2">Bio</h3>
+    <p class="mb-4">
+      Your bio appears in the header of your blog's home page. It's a way to introduce yourself or describe what your blog is about.
+    </p>
+
+    <div class="lexxy-minimal">
+      <%= form.rich_text_area :bio,
+          placeholder: "add a bio to your profile if you like...",
+          class: "lexxy-content focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
+          spellcheck: true,
+          autocorrect: "on",
+          attachments: false,
+          autofocus: true,
+          data: { controller: "lexxy ios-toolbar", subscribed: false } %>
+    </div>
+
+    <div class="field-error"><%= @blog.errors[:bio].first if @blog.errors[:bio].any? %></div>
+  </fieldset>
+
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Title</h3>
+    <p>
+      If you'd prefer a different title than <strong>@<%= @blog.subdomain %></strong> on your Pagecord,
+      enter it below.
+    </p>
+
+    <%= styled_text_field(form, :title, class: "mt-4 w-full") %>
+  </div>
+
+  <% avatar_disabled = @blog.user.on_free_plan? %>
+  <h3 class="mt-8 font-bold text-lg mb-2">Avatar</h3>
+
+  <% if avatar_disabled %>
+    <div class="mb-4">
+      <%= callout(:info) do %>
+        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add an avatar to your blog.
+      <% end %>
+    </div>
+  <% else %>
+    <div class="mb-4"><%= trial_callout("Avatar") %></div>
+  <% end %>
+
+  <div class="<%= 'opacity-50 pointer-events-none' if avatar_disabled %>">
+    <p>
+      <% if @blog.avatar&.attached? %>
+        Click the image to select a new avatar, or click 'Remove' to delete the existing one.
+      <% else %>
+        If you'd like to include an avatar image on your home page, click the icon to select then
+        click the Update button below.
+      <% end %>
+    </p>
+
+    <div class="mt-4 text-start flex flex-col" id="blog-avatar">
+      <a href="#" data-action="click->avatar#open" title="Update your avatar">
+        <%= render "avatar", blog: @blog %>
+      </a>
+      <% if @blog.avatar&.attached? %>
+        <%= link_to app_blog_avatar_path(@blog), data: { turbo_method: :delete }, class: "flex items-center text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 hover:dark:text-slate-200 p-0 mt-1" do %>
+          <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 me-1 " %>
+          Remove
+        <% end %>
+      <% end %>
+    </div>
+
+    <%= form.file_field :avatar, class: "hidden", accept: "image/jpeg, image/png, image/webp", data: { avatar_target: "input" } %>
+  </div>
+
+  <div class="mt-12 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4 gap-x-2">
+    <%= form.submit "Update", class: "btn-primary" %>
+    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+  </div>
+<% end %>
