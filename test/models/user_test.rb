@@ -82,4 +82,17 @@ class UserTest < ActiveSupport::TestCase
     user = User.create!(email: "trial@example.com", created_at: 5.days.ago)
     assert_not user.on_free_plan?
   end
+
+  test "nested blog attributes cannot exceed the user blog limit" do
+    user = User.new(
+      email: "two-blogs@example.com",
+      blogs_attributes: [
+        { subdomain: "twoblogsone" },
+        { subdomain: "twoblogstwo" }
+      ]
+    )
+
+    assert_not user.valid?
+    assert_includes user.errors[:blogs], "You've reached your blog limit (1)"
+  end
 end

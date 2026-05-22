@@ -164,7 +164,7 @@ Rails.application.routes.draw do
         resource :paddle_invoices, only: :show, controller: "subscriptions/paddle_invoices"
       end
 
-      resources :blogs do
+      resources :blogs, only: [ :index, :new, :create, :destroy ] do
         member do
           post :switch
         end

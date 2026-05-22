@@ -10,6 +10,7 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :blogs
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validate :within_blog_limit
   normalizes :email, with: -> { it.downcase.strip }
 
   def verify!
@@ -24,7 +25,19 @@ class User < ApplicationRecord
     blogs.order(:created_at).first
   end
 
+  def blog_limit
+    subscribed? ? Blog::MAX_BLOGS_PAID : Blog::MAX_BLOGS_FREE
+  end
+
   def pending_email_change_request
     email_change_requests.active.pending.order(created_at: :desc).first
   end
+
+  private
+
+    def within_blog_limit
+      if blogs.reject(&:marked_for_destruction?).size > blog_limit
+        errors.add(:blogs, "#{Blog::LIMIT_MESSAGE} (#{blog_limit})")
+      end
+    end
 end

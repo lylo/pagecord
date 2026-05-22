@@ -1,7 +1,7 @@
 <% is_new = !@post.persisted? %>
 
 <div data-controller="post-attributes autosave"
-    data-autosave-key-value="<%= is_new ? "draft-post-new-#{Current.user.blog.id}" : "draft-post-#{@post.id}" %>"
+    data-autosave-key-value="<%= is_new ? "draft-post-new-#{@blog.id}" : "draft-post-#{@post.id}" %>"
     data-autosave-base-title-value="<%= @post.title.to_s %>"
     data-autosave-base-content-value="<%= h(@post.content&.body&.to_html.to_s) if @post.persisted? %>">
 
@@ -22,7 +22,7 @@
   </div>
 
   <%= form_with(model: [:app, @post], html: { id: "post-form" }) do |form| %>
-    <%= hidden_field_tag :context_blog_id, Current.user.blog.id if is_new %>
+    <%= hidden_field_tag :context_blog_id, @blog.id if is_new %>
 
     <div class="hidden mb-8" data-post-attributes-target="section" data-section="published-at">
       <div class="mt-4 font-bold">

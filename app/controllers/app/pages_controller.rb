@@ -1,6 +1,4 @@
 class App::PagesController < AppController
-  include EditorPreparation
-
   def index
     persist_sort_preference if params[:sort].present?
 
@@ -27,7 +25,6 @@ class App::PagesController < AppController
 
   def edit
     @page = @blog.pages.kept.find_by!(token: params[:token])
-    prepare_content_for_editor(@page)
   end
 
   def update

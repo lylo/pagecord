@@ -1,5 +1,5 @@
 <div data-controller="post-attributes autosave"
-    data-autosave-key-value="<%= home_page.persisted? ? "draft-homepage-#{home_page.id}" : "draft-homepage-new-#{Current.user.blog.id}" %>"
+    data-autosave-key-value="<%= home_page.persisted? ? "draft-homepage-#{home_page.id}" : "draft-homepage-new-#{@blog.id}" %>"
     data-autosave-base-title-value="<%= home_page.title.to_s %>"
     data-autosave-base-content-value="<%= h(home_page.content&.body&.to_html.to_s) if home_page.persisted? %>">
 
@@ -27,7 +27,7 @@
   <% end %>
 
   <%= form_with(model: home_page, url: home_page.persisted? ? app_home_page_path : app_home_page_path, method: home_page.persisted? ? :patch : :post, html: { id: "homepage-form" }) do |form| %>
-    <%= hidden_field_tag :context_blog_id, Current.user.blog.id unless home_page.persisted? %>
+    <%= hidden_field_tag :context_blog_id, @blog.id unless home_page.persisted? %>
 
     <%= render "app/posts/open_graph_image_section", record: home_page, form: form %>
 
