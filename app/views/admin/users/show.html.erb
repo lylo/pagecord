@@ -179,6 +179,16 @@
         <dt class="font-medium text-slate-900 dark:text-slate-50">Theme</dt>
         <dd class="text-slate-500 dark:text-slate-400"><%= @user.blog.theme %> · <%= @user.blog.width %> · <%= @user.blog.font %></dd>
       </div>
+      <div class="flex justify-between gap-4 items-center">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Spotlight</dt>
+        <dd>
+          <% if @user.blog.spotlight_exclusion %>
+            <%= button_to "Include in spotlight", admin_user_spotlight_exclusion_path(@user), method: :delete, class: "btn-optional text-xs" %>
+          <% else %>
+            <%= button_to "Exclude from spotlight", admin_user_spotlight_exclusion_path(@user), method: :post, class: "btn-optional text-xs" %>
+          <% end %>
+        </dd>
+      </div>
     </dl>
   </div>
 

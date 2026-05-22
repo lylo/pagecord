@@ -194,6 +194,7 @@ Rails.application.routes.draw do
         end
         resource :subscription, only: [ :update ]
         resource :verification_email, only: [ :create ]
+        resource :spotlight_exclusion, only: [ :create, :destroy ]
       end
       namespace :moderation do
         root to: redirect("/admin/moderation/spam")

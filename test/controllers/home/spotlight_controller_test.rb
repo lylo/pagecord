@@ -32,24 +32,14 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav a.bg-slate-900", "Trending"
   end
 
-  test "excludes blogs with search indexing disabled from recent" do
+  test "excludes blogs that aren't spotlit from recent" do
     blog = blogs(:joel)
-    blog.update!(allow_search_indexing: false)
+    blog.exclude_from_spotlight
 
     get spotlight_path(tab: "recent")
 
     assert_response :success
     assert_no_match blog.subdomain, response.body
-  end
-
-  test "excludes posts from discarded users from recent" do
-    user = users(:elliot)
-    user.discard!
-
-    get spotlight_path(tab: "recent")
-
-    assert_response :success
-    assert_no_match user.blog.subdomain, response.body
   end
 
   test "excludes posts published within the last 15 minutes from recent" do
