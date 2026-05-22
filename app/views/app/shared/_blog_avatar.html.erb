@@ -1,0 +1,15 @@
+<%# locals: (blog:, size: "md") %>
+<% sizes = { "sm" => "w-7 h-7 text-xs", "md" => "w-9 h-9 text-sm" } %>
+<% colors = %w[bg-emerald-600 bg-sky-600 bg-indigo-600 bg-rose-600 bg-amber-600 bg-teal-600 bg-fuchsia-600 bg-slate-600] %>
+<% classes = "#{sizes[size]} rounded-full overflow-hidden flex items-center justify-center font-bold text-white shrink-0 ring-1 ring-black/10 dark:ring-white/15" %>
+
+<% if blog.avatar.attached? %>
+  <div class="<%= classes %>">
+    <%= image_tag resized_image_url(blog.avatar, width: 72, height: 72),
+        class: "object-cover w-full h-full", alt: blog.display_name %>
+  </div>
+<% else %>
+  <div class="<%= classes %> <%= colors[blog.id.to_i % colors.size] %>">
+    <span><%= (blog.subdomain.presence || "?")[0].upcase %></span>
+  </div>
+<% end %>

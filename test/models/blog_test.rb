@@ -57,7 +57,7 @@ class BlogTest < ActiveSupport::TestCase
   end
 
   test "should generate unique delivery email" do
-    user = User.create!(email: "newuser@newuser.com", blog: Blog.new(subdomain: "newuser"))
+    user = User.create!(email: "newuser@newuser.com", blogs_attributes: [ { subdomain: "newuser" } ])
     assert user.blog.delivery_email.present?
     assert user.blog.delivery_email =~ /newuser_[a-zA-Z0-9]{8}@post.pagecord.com/
   end

@@ -2,7 +2,7 @@ class App::Posts::OpenGraphImagesController < AppController
   before_action :require_premium
 
   def destroy
-    post = Current.user.blog.all_posts.kept.find_by!(token: params[:post_token])
+    post = @blog.all_posts.kept.find_by!(token: params[:post_token])
     post.open_graph_image.purge
 
     redirect_path = if post.home_page?
