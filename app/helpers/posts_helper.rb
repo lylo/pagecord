@@ -54,13 +54,18 @@ module PostsHelper
   def render_post_content(post)
     content = process_dynamic_variables(post)
     content = Html::StripActionTextAttachments.new.transform(content)
+    content = safe_auto_link(content, sanitize: false)
+    ExcerptBreak.strip(content).html_safe
+  end
 
+  def render_post_excerpt(post)
+    content = Html::StripActionTextAttachments.new.transform(post.excerpt_html)
     safe_auto_link(content, sanitize: false).html_safe
   end
 
   def render_digest_post_content(post)
     content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
-
+    content = ExcerptBreak.strip(content)
     strip_video_tags(content).html_safe
   end
 
@@ -73,19 +78,21 @@ module PostsHelper
     post.content.to_s
   end
 
-  def safe_auto_link(content, options = {})
-    code_blocks = []
-    protected = content.gsub(%r{<(pre|code)[^>]*>.*?</\1>}m) do |match|
-      code_blocks << match
-      "___CODE_BLOCK_#{code_blocks.length - 1}___"
+  private
+
+    def safe_auto_link(content, options = {})
+      code_blocks = []
+      protected = content.gsub(%r{<(pre|code)[^>]*>.*?</\1>}m) do |match|
+        code_blocks << match
+        "___CODE_BLOCK_#{code_blocks.length - 1}___"
+      end
+
+      linked = auto_link(protected, options)
+
+      code_blocks.each_with_index do |block, i|
+        linked = linked.sub("___CODE_BLOCK_#{i}___", block)
+      end
+
+      linked
     end
-
-    linked = auto_link(protected, options)
-
-    code_blocks.each_with_index do |block, i|
-      linked = linked.sub("___CODE_BLOCK_#{i}___", block)
-    end
-
-    linked
-  end
 end

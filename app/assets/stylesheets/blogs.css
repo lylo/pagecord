@@ -381,6 +381,18 @@ footer.blog-footer #brand svg {
 }
 
 /* ============================= */
+/* Excerpt Read More              */
+/* ============================= */
+
+.excerpt-read-more {
+  margin-top: var(--lexxy-content-margin);
+}
+
+.excerpt-read-more a {
+  color: var(--color-text-muted);
+}
+
+/* ============================= */
 /* Post Footer                   */
 /* ============================= */
 

@@ -84,8 +84,21 @@ class Post < ApplicationRecord
     text_summary.truncate(limit, separator: /\s/)
   end
 
+  def excerpt_html
+    return @excerpt_html if defined?(@excerpt_html)
+    @excerpt_html = content.body.present? ? ExcerptBreak.extract(content.to_s) : nil
+  end
+
+  def excerpt_text(limit: 64)
+    plain_text_from(excerpt_html.to_s).truncate(limit, separator: /\s/)
+  end
+
   def has_text_content?
     text_summary.present?
+  end
+
+  def has_excerpt?
+    !excerpt_html.nil?
   end
 
   def display_title
@@ -152,24 +165,28 @@ class Post < ApplicationRecord
   # Used by content moderation. See also: text_summary (truncated version).
   def plain_text_content
     return "" unless content.body.present?
-
-    doc = Nokogiri::HTML::DocumentFragment.parse(content.to_s)
-    doc.css("figcaption").remove
-
-    doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
-      element.add_child(Nokogiri::XML::Text.new(" ", doc))
-    end
-
-    doc.text
-      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
-      .gsub(/\[Image\]/i, "")
-      .gsub(%r{https?://\S+}, "")
-      .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
-      .gsub(/\s+/, " ")
-      .strip
+    plain_text_from(content.to_s)
   end
 
   private
+
+    def plain_text_from(html)
+      doc = Nokogiri::HTML::DocumentFragment.parse(html)
+      doc.css("figcaption").remove
+
+      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
+        element.add_child(Nokogiri::XML::Text.new(" ", doc))
+      end
+
+      doc.text
+        .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
+        .gsub(/\[Image\]/i, "")
+        .gsub(%r{https?://\S+}, "")
+        .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
+        .gsub(/<!--\s*more\s*-->/i, "")
+        .gsub(/\s+/, " ")
+        .strip
+    end
 
     def text_content
       plain_text_content
