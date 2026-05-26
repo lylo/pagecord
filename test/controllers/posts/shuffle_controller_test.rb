@@ -20,20 +20,12 @@ class Posts::ShuffleControllerTest < ActionDispatch::IntegrationTest
     refute_match %r{/#{page.slug}$}, response.location
   end
 
-  test "should exclude blogs with search indexing disabled" do
+  test "should exclude blogs that aren't spotlit" do
     blog = blogs(:joel)
-    blog.update!(allow_search_indexing: false)
+    blog.exclude_from_spotlight
 
     get shuffle_path
     refute_match /#{blog.subdomain}\./, response.location
-  end
-
-  test "should exclude posts from discarded users" do
-    user = users(:joel)
-    user.discard!
-
-    get shuffle_path
-    refute_match /#{user.blog.subdomain}\./, response.location
   end
 
   test "should exclude posts published within the last 2 hours" do

@@ -7,7 +7,7 @@
     <priority>1.0</priority>
   </url>
 
-  <% @blog.posts.visible.each do |post| %>
+  <% @blog.all_posts.visible.each do |post| %>
     <url>
       <loc><%= post_url(post) %></loc>
       <lastmod><%= post.updated_at.strftime("%Y-%m-%d") %></lastmod>

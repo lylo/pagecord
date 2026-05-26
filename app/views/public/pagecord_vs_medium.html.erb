@@ -1,5 +1,5 @@
 <%= content_for :title do %>
-  Pagecord vs Medium: No paywalls. No popups. You own your content.
+  Medium alternative with no paywalls and no popups — Pagecord
 <% end %>
 
 <%= content_for :og_image do %>
@@ -7,32 +7,56 @@
 <% end %>
 
 <%= content_for :meta_description do %>
-  Medium puts your writing behind a paywall and bombards readers with popups. Pagecord is free to read, zero popups, and you own your domain. Free forever or $39/year.
+  A Medium alternative where you own your domain and content. No paywalls, no popups, full export. Free forever or $39/year.
 <% end %>
 
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
-    Pagecord: A Better Medium Alternative
+    Medium gives you distribution. Pagecord gives you a home.
   </h1>
 
   <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4 mt-8 md:mt-12">
     <p>
-      Medium locks your writing behind a paywall. Your readers get three free articles a month, then hit a wall. They get bombarded with popups begging them to sign up. You don't own your domain or your content.
+      Medium can help strangers find your writing, and that can matter. But the reader experience belongs to Medium: paywalls, popups, app prompts, recommendation widgets, and a domain that is not yours.
     </p>
     <p>
-      Pagecord is the opposite. Your readers never hit a paywall. Zero popups. You own your domain. You can export everything as HTML or Markdown anytime. Plus you can blog by email—just hit send and you're published.
+      Pagecord is for writers who would rather have a small home of their own. Your readers can visit without creating an account, hitting a paywall, or being pulled into someone else's feed.
     </p>
     <p>
-      Open source. Classic plan is free forever. Premium is $<%= localised_price %>/year.
+      Own your domain. Export your site. Publish from the web or by email. Classic is free forever. Premium is $<%= localised_price %>/year.
     </p>
   </div>
 
   <div class="text-center mt-8 mb-4 md:text-xl">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
     <% end %>
   </div>
 </div>
+
+<%= render "comparison_intro", sections: [
+  {
+    title: "Who this is for",
+    paragraphs: [
+      "People who care more about a direct relationship with readers than appearing inside a platform feed.",
+      "Essayists, diarists, technologists, artists, and small publishers who want posts, pages, RSS, email updates, and a domain that can travel with them."
+    ]
+  },
+  {
+    title: "Why people switch",
+    paragraphs: [
+      "On Medium, you're a tenant. The writing is yours, but the page, the URL, the popups, and the business model belong to someone else.",
+      "Pagecord puts the site itself in your hands — your domain, your archive, your readers."
+    ]
+  },
+  {
+    title: "What is different",
+    paragraphs: [
+      "No reader paywall. No popups. Every blog gets RSS, a public archive, themes, pages, custom domains, email subscriptions, and export.",
+      "Readers can bookmark you, subscribe, link to you, and come back — without anyone asking them to sign up first."
+    ]
+  }
+] %>
 
 <%= render "screenshots" %>
 
@@ -133,7 +157,7 @@
         </tr>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Open source</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">���</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
         </tr>
         <tr>
@@ -145,6 +169,7 @@
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Free version</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
 
         <!-- Pricing -->
         <tr>
@@ -156,9 +181,27 @@
     </table>
   </div>
 
-  <div class="my-8 text-center">
-    <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
-    <% end %>
-  </div>
 </div>
+
+<%= render "comparison_after_table",
+  examples: [
+    { name: "jan.fyi", url: "https://jan.fyi/", description: "A short personal domain, direct writing, no clutter." },
+    { name: "Richard Dallaway", url: "https://richard.dallaway.com", description: "Longer-form writing on a custom domain, with the chrome turned right down." },
+    { name: "iamgregb", url: "https://iamgregb.io/", description: "A personal blog readers can follow without signing up to anything." }
+  ],
+  testimonials: [
+    { name: "David", url: "https://front.pagecord.com/", quote: "Of all the platforms I've explored, Pagecord is my favourite. The developer is very responsive while maintaining the core simplicity of using it." },
+    { name: "e6on", url: "https://e6on.pagecord.com", quote: "It's simple, it's niche, it's elegant. The most important thing is the words and it takes away all the excuses." }
+  ],
+  migration: {
+    can: [
+      "Your posts and images, copied or exported from Medium",
+      "Canonical links from old Medium URLs, so search keeps working",
+      "Your own domain, pointed at Pagecord"
+    ],
+    cannot: [
+      "Medium followers, claps, highlights, and comments",
+      "Partner Program earnings and the paywall",
+      "Medium publication memberships"
+    ]
+  } %>

@@ -217,6 +217,10 @@ curl -X POST https://api.pagecord.com/posts \
 
 The image will render inline in your post, just like images added through the editor.
 
+If you're sending Markdown with `content_format=markdown`, normal Markdown image tags that point at external URLs, such as `![](https://example.com/photo.jpg)`, stay as external images. To have Pagecord host the image, upload the file to `POST /attachments` first and include the returned `attachable_sgid` in an Action Text attachment tag.
+
+The Obsidian plugin handles this automatically for images that are local files in your vault. Drag an image into Obsidian, embed it in the note, and the plugin uploads it to the attachments API and swaps the note reference for the SGID-backed attachment before publishing. External Markdown image URLs are not uploaded by the plugin.
+
 ### Reusing attachments across updates
 
 Each `attachable_sgid` is stable – upload the file once, then reuse the same sgid every time you update the post. Re-uploading an unchanged image creates a new blob and **permanently deletes** the old one.

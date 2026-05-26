@@ -97,13 +97,15 @@ Docker: prefix commands with `docker-compose exec web`
 - **Trial**: 14-day free trial. `has_premium_access?` = subscribed OR on trial. `subscribed?` = paid only.
 - Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains, API access
 - Subscriber-only features: email subscriptions, branding removal
-- Payment failures handled automatically by Paddle Retain — don't email customers about failed payments
+- Payment failures handled automatically by Paddle Retain – don't email customers about failed payments
+- **Invoices**: customers view past invoices via Paddle's customer portal. `App::Settings::Subscriptions::PaddleInvoicesController#show` mints a portal session (`POST customers/:id/portal-sessions`) and redirects – don't build an inline invoice list
 
 ### Content Pipeline
 - **Email-to-blog**: ActionMailbox → PostsMailbox → MailParser (HTML pipeline: body extraction → monospace detection → image unfurl → inline attachments → tag extraction → sanitize)
 - **Content moderation**: OpenAI API via `ContentModerator`. `ContentModerationBatchJob` runs every 10 min. Flagged posts stay visible for admin review. Daily digest to admin via `ContentModerationDigestJob`.
 - **Spam detection**: GPT-4o-mini via `SpamDetector`. Checks blogs 2h–7d old. Skips subscribers. Admin confirms (discards user) or dismisses. Daily digest via `SpamDetectionDigestJob`. IP reputation checks via `IpReputation` (GetIpIntel provider).
 - **Dynamic variables**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}` — processed in pages only (`is_page: true`) via `DynamicVariableProcessor`
+- **Excerpt break**: `{{ more }}` or `<!--more-->` marker splits a post into a teaser and the rest. `ExcerptBreak` parses the marker; `Post#excerpt_html` / `excerpt_text` expose the teaser (computed on demand, memoized – no DB column). Stream layout renders teaser + "Read more" link; cards use `excerpt_text`. Full post views, RSS, and digest emails render full content with the marker stripped. Help doc: `docs/help-guide/excerpt-breaks.md`.
 - **OG images**: Auto-generated from first post image via `GenerateOpenGraphImageJob`
 
 ### Analytics
@@ -177,3 +179,4 @@ CSP `frame-src` in `config/initializers/content_security_policy.rb` must be upda
 - **Blog views**: No Tailwind, use semantic CSS. Check `lexxy-typography.css`, `components.css`, `themes/*.css`
 - **Post text_summary**: Cached plain text column updated via before_save. Use `display_title`, `summary(limit:)` — don't parse ActionText in loops
 - **Analytics**: Uses mixed data (raw PageViews for recent, Rollups for historical). `cutoff_time` returns 1900-01-01 when no rollups exist to ensure raw data is always used.
+- **Client IP**: Use `request.ip` / `req.ip`. The `cloudflare-rails` gem patches Rack/Rails proxy checks so X-Forwarded-For is walked correctly past Cloudflare's edges. Never parse `HTTP_X_FORWARDED_FOR` yourself — the leftmost value is attacker-controlled and bypasses Rails' trusted-proxy filtering. Rack 3 also honours RFC 7239 `Forwarded` ahead of X-Forwarded-* by default; we pin `Rack::Request.forwarded_priority = [:x_forwarded]` in `config/initializers/rack_request.rb` to neutralise that. (See incident 2026-05-01.)

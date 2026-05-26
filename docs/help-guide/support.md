@@ -20,4 +20,4 @@ You can email [hello@pagecord.com](mailto:hello@pagecord.com). I try my best to 
 
 ## Social Media
 
-Pagecord has accounts on [Bluesky](https://bsky.app/profile/pagecord.com) and [X](https://x.com/pagecord_) but these are only checked periodically – they're not really for support. If you definitely want a response, please use GitHub Issues or email instead.
+Pagecord has an account on [Bluesky](https://bsky.app/profile/pagecord.com) but it's only checked periodically – it's not intended for support. If definitely want a prompt response, please use email or file a GitHub issue instead.

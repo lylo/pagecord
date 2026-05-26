@@ -11,7 +11,7 @@ class SignupsController < ApplicationController
   end
 
   def new
-    @user = User.new(marketing_consent: true)
+    @user = User.new(marketing_consent: true, signup_referrer: request.referer)
     @user.build_blog
   end
 
@@ -43,7 +43,7 @@ class SignupsController < ApplicationController
 
     def user_params
       @user_params ||= begin
-        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation, blog_attributes: [ :subdomain ])
+        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation, :signup_referrer, :signup_source_note, blog_attributes: [ :subdomain ])
         translate_timezone_param(raw_params)
       end
     end

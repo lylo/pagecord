@@ -1,0 +1,14 @@
+id:
+  email_form:
+    form:
+      name_label: "Namamu"
+      email_label: "Emailmu"
+      message_label: "Pesan"
+      submit_button: "Kirim"
+    success_message: "Pesan terkirim!"
+    error_message: "Terjadi kesalahan dalam mengirimkan pesanmu."
+    rate_limit_message: "Kamu mengirim pesan terlalu banyak dalam waktu singkat. Silakan coba lagi nanti."
+    mailer:
+      from_label: "Dari"
+      footer: "Balas ke email ini untuk membalas ke %{name}."
+      footer_text: "Untuk membalas ke %{name}, cukup balas pada email ini."
