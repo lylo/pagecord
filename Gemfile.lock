@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 9f95bc01ce1c04ff3b1d917eccb6adc4a55feb72
+  revision: f9c1cee7ed4505d72d4482cbb9e16a82e509ccbb
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -164,7 +164,7 @@ GEM
     css_parser (2.2.0)
       addressable
     csv (3.3.5)
-    dalli (5.0.4)
+    dalli (5.0.5)
       logger
     date (3.5.1)
     debug (1.11.1)
@@ -242,7 +242,7 @@ GEM
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    jbuilder (2.15.0)
+    jbuilder (2.15.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
@@ -259,7 +259,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (0.9.13.beta)
+    lexxy (0.9.14.beta)
       rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
@@ -369,7 +369,7 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
-    puma (8.0.1)
+    puma (8.0.2)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.6)
@@ -435,7 +435,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.47.1, < 2.0)
-    rubocop-rails (2.35.2)
+    rubocop-rails (2.35.3)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
