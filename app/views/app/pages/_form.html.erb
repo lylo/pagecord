@@ -117,6 +117,7 @@
         class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
         spellcheck: true,
         autocorrect: "on",
+        autocapitalize: "sentences",
         data: { controller: "lexxy ios-toolbar", attachments: Current.user.has_premium_access?, autosave_target: "content" } %>
 
       <div class="field-error"><%= @page.errors[:content].first if @page.errors[:content].any? %></div>
