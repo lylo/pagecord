@@ -2,6 +2,16 @@
 title: "Dynamic Variables for Pages"
 published: true
 published_at: 2025-12-17T16:36:48+00:00
+attachments:
+  gallery-default:
+    file: images/dynamic-variables/gallery-default.webp
+    sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjE1NjA_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--f75d5f20fc3b9e5d73d29d8a665b228d96990c38"
+  gallery-title-below:
+    file: images/dynamic-variables/gallery-title-below.webp
+    sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjE1NTg_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--338460c18413e4c94e4d4831c139ebd65b457be0"
+  gallery-title-overlay:
+    file: images/dynamic-variables/gallery-title-overlay.webp
+    sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjE1NTk_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--48190830675270a6240c192c85157b6be56a062c"
 ---
 
 Pages in Pagecord support dynamic variables that let you automatically display lists of posts, tags, forms, and other content. These variables are processed when the page is rendered, so your content stays up-to-date without manual editing.
@@ -151,6 +161,8 @@ Render posts as a grid of image thumbnails with automatic lazy-loading paginatio
 ```javascript
 {{ posts | style: gallery }}
 ```
+
+{{ attachment: gallery-default }}
 
 Gallery titles are included in the HTML but hidden by default. You can show or overlay them with custom CSS – see [Posts gallery: customising the layout](https://help.pagecord.com/custom-css#posts-gallery-customising-the-layout).
 
@@ -365,6 +377,8 @@ Photos
 
 {{ posts | style: gallery }}
 ```
+
+{{ attachment: gallery-title-below }}
 
 ## Topic Index
 

@@ -1,6 +1,13 @@
 ---
 title: "Using Custom CSS for advanced customisation"
 published: true
+attachments:
+  gallery-title-below:
+    file: images/dynamic-variables/gallery-title-below.webp
+    sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjE1NTg_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--338460c18413e4c94e4d4831c139ebd65b457be0"
+  gallery-title-overlay:
+    file: images/dynamic-variables/gallery-title-overlay.webp
+    sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjE1NTk_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--48190830675270a6240c192c85157b6be56a062c"
 ---
 
 Custom CSS is an advanced feature that gives you finer control over the look and feel of your blog. You can change fonts, colours, adjust spacing, hide elements and more.
@@ -403,6 +410,8 @@ The `{{ posts | style: gallery }}` dynamic variable renders posts as a grid of s
 }
 ```
 
+{{ attachment: gallery-title-below }}
+
 **Show the post title inside the image:**
 
 ```css
@@ -429,6 +438,8 @@ This keeps the label background transparent at the top while adding contrast beh
   text-shadow: 0 1px 3px rgb(0 0 0 / 0.7);
 }
 ```
+
+{{ attachment: gallery-title-overlay }}
 
 ### Adding a background image to your blog
 
