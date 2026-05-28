@@ -7,14 +7,19 @@ const maxFileSizes = {
   "audio/mpeg": 20, "audio/wav": 20
 }
 
+const typingAttributes = ["autocapitalize", "autocorrect", "spellcheck"]
+
 export default class extends Controller {
   connect() {
     this.element.addEventListener("lexxy:file-accept", this.#validateFile)
+    this.element.addEventListener("lexxy:editor-initialized", this.#syncTypingAttributes)
     this.#installClipboardPasteOverride()
+    this.#syncTypingAttributes()
   }
 
   disconnect() {
     this.element.removeEventListener("lexxy:file-accept", this.#validateFile)
+    this.element.removeEventListener("lexxy:editor-initialized", this.#syncTypingAttributes)
     this.#restoreClipboardPaste()
   }
 
@@ -56,6 +61,17 @@ export default class extends Controller {
 
     this.element.clipboard.paste = this.originalClipboardPaste
     this.originalClipboardPaste = null
+  }
+
+  #syncTypingAttributes = () => {
+    const editorContent = this.element.editorContentElement || this.element.querySelector(".lexxy-editor__content")
+    if (!editorContent) return
+
+    for (const attribute of typingAttributes) {
+      if (this.element.hasAttribute(attribute)) {
+        editorContent.setAttribute(attribute, this.element.getAttribute(attribute))
+      }
+    }
   }
 
   #pastePreferringImageFiles = (event) => {
