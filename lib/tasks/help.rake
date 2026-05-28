@@ -186,6 +186,7 @@ namespace :help do
       if sgid.to_s.strip.empty?
         abort "Missing attachment sgid for #{slug}: #{key}"
       end
+      next "" if ENV["SKIP_HELP_ATTACHMENTS"].present?
 
       %(<action-text-attachment sgid="#{ERB::Util.html_escape(sgid)}"></action-text-attachment>)
     end
