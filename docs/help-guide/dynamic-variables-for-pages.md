@@ -4,7 +4,7 @@ published: true
 published_at: 2025-12-17T16:36:48+00:00
 ---
 
-Pages in Pagecord support dynamic variables that let you automatically display lists of posts, tags, and other content. These variables are processed when the page is rendered, so your content stays up-to-date without manual editing.
+Pages in Pagecord support dynamic variables that let you automatically display lists of posts, tags, forms, and other content. These variables are processed when the page is rendered, so your content stays up-to-date without manual editing.
 
 ## Basic Syntax
 
@@ -30,7 +30,7 @@ Multiple parameters are separated by pipes:
 
 ### Posts
 
-Display a list of your posts with dates and links.
+Display a list of your posts with dates and links. By default, posts are shown in the title layout, newest first, and longer lists lazy-load automatically as readers scroll.
 
 #### **Basic usage**
 
@@ -54,7 +54,7 @@ Use `limit` to show a fixed number of posts. When a limit is set, posts are not 
 
 #### **Filter by multiple tags**
 
-Shows posts matching any of the tags
+Shows posts matching any of the tags.
 
 ```javascript
 {{ posts | tag: photography, travel }}
@@ -66,9 +66,19 @@ Shows posts matching any of the tags
 {{ posts | year: 2025 }}
 ```
 
+#### **Filter by language**
+
+Use `lang` to show posts in a particular language. Regional variants are normalised, so `pt-BR` matches posts marked as `pt`.
+
+```javascript
+{{ posts | lang: en }}
+```
+
+Posts that use your blog's default language setting are included when the filter matches the blog language.
+
 #### **Sort order**
 
-By default, posts are shown newest first. Use `sort: asc` to show oldest first — useful for chronological archives.
+By default, posts are shown newest first. Use `sort: asc` to show oldest first – useful for chronological archives.
 
 ```javascript
 {{ posts | sort: asc }}
@@ -142,12 +152,22 @@ Render posts as a grid of image thumbnails with automatic lazy-loading paginatio
 {{ posts | style: gallery }}
 ```
 
+Gallery titles are included in the HTML but hidden by default. You can show or overlay them with custom CSS – see [Posts gallery: customising the layout](https://help.pagecord.com/custom-css#posts-gallery-customising-the-layout).
+
 #### **Style with filters**
 
 You can combine `style` with any other filter parameter.
 
 ```javascript
 {{ posts | style: card | tag: photography }}
+```
+
+```javascript
+{{ posts | style: stream | year: 2026 | sort: asc }}
+```
+
+```javascript
+{{ posts | style: stream | title: false }}
 ```
 
 #### **Limit with filters**
@@ -158,9 +178,13 @@ You can combine `limit` with any other filter parameter.
 {{ posts | limit: 5 | tag: photography }}
 ```
 
+```javascript
+{{ posts | style: card | limit: 1 }}
+```
+
 ### Posts by Year
 
-Display posts grouped by year with headers — perfect for archive pages.
+Display posts grouped by year with headers – perfect for archive pages.
 
 #### **Basic usage**
 
@@ -174,10 +198,24 @@ Display posts grouped by year with headers — perfect for archive pages.
 {{ posts_by_year | tag: photography }}
 ```
 
+#### **Filter by multiple tags**
+
+Shows posts matching any of the tags.
+
+```javascript
+{{ posts_by_year | tag: photography, travel }}
+```
+
 #### **Exclude posts with a tag**
 
 ```javascript
 {{ posts_by_year | without_tag: personal }}
+```
+
+#### **Exclude posts with multiple tags**
+
+```javascript
+{{ posts_by_year | without_tag: personal, draft }}
 ```
 
 #### **Only posts with a title**
@@ -190,6 +228,20 @@ Display posts grouped by year with headers — perfect for archive pages.
 
 ```javascript
 {{ posts_by_year | emailed: true }}
+```
+
+#### **Only posts not sent in a newsletter**
+
+```javascript
+{{ posts_by_year | emailed: false }}
+```
+
+#### **Filter by language**
+
+Use `lang` to create language-specific archives.
+
+```javascript
+{{ posts_by_year | lang: en }}
 ```
 
 #### **Sort order**
@@ -237,7 +289,7 @@ By default, the date is shown in your blog's locale format. Use the `format` par
 | `yyyy_mm_dd` | 2026-09-12 |
 
 ```javascript
-{{ updated_at format: datetime }}
+{{ updated_at | format: datetime }}
 ```
 
 Note: `long` and `long_datetime` always display month names in English. For non-English blogs, use the default or a numeric format.
@@ -281,9 +333,37 @@ Here's everything I've written:
 ### Recent Posts on your Home Page
 
 ```javascript
-My latest Posts
+My latest posts
 
 {{ posts | limit: 5 }}
+```
+
+### One Featured Card
+
+```javascript
+Featured post
+
+{{ posts | style: card | limit: 1 }}
+```
+
+### Microblog Stream
+
+Show title-free posts as a full-content stream:
+
+```javascript
+Notes
+
+{{ posts | style: stream | title: false }}
+```
+
+### Photo Gallery
+
+Show only posts that have an image:
+
+```javascript
+Photos
+
+{{ posts | style: gallery }}
 ```
 
 ## Topic Index
@@ -305,6 +385,7 @@ Browse posts by topic:
 ## Tips
 
 - Dynamic variables only work in **pages**, not blog posts
-- If a variable isn't recognized, it will appear as-is in your content
+- If a variable isn't recognised, it will appear as-is in your content
 - The posts list automatically excludes unpublished and scheduled posts
+- Dynamic variables inside inline code or code blocks are left alone
 - Tags are sorted alphabetically
