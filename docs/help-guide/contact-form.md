@@ -30,5 +30,5 @@ The form asks the reader for their name, email address, and a message.
 ## Tips
 
 - Add a "Contact" page to your [navigation menu](setting-up-navigation.md) so readers can easily find it
-- You can combine the contact form with other content on the same page — just add `{{ contact_form }}` wherever you want it to appear
+- You can combine the contact form with other content on the same page – just add `{{ contact_form }}` wherever you want it to appear
 - Submissions are automatically scanned for spam and deleted if they are flagged

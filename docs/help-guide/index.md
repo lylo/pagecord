@@ -27,7 +27,7 @@ Learn how to create posts, format your content, add images, schedule posts for l
 
 ## Pages & Navigation
 
-Pages are for content that lives outside your blog feed — like an About page, Archive, or custom home page. Learn how to create pages, set up your navigation menu, and use dynamic variables.
+Pages are for content that lives outside your blog feed – like an About page, Archive, or custom home page. Learn how to create pages, set up your navigation menu, and use dynamic variables.
 
 - [Creating pages](creating-pages.md)
 - [Setting up navigation](setting-up-navigation.md)
