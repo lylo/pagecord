@@ -10,6 +10,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 ## Code Style
 
+- Use British English spelling in user-facing copy and documentation (for example, "capitalisation", not "capitalization")
 - Double quotes for strings, not single quotes
 - Use en-dashes (–), never em-dashes (—)
 - Remove trailing whitespace
