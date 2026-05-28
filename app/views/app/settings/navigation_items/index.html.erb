@@ -1,9 +1,20 @@
 <div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
   <div class="my-8">
-    <h2 class="text-2xl font-bold mb-2">Navigation</h2>
-    <p class="mb-8">
-      Manage the links in your blog's header. Drag to reorder.
-    </p>
+    <div class="mb-2 flex items-start justify-between gap-4">
+      <div>
+        <h2 class="text-2xl font-bold">Navigation</h2>
+        <p class="mt-2">
+          Manage the links in your blog's header. Drag to reorder.
+        </p>
+      </div>
+
+      <%= render "app/shared/dialog",
+        id: "navigation-help",
+        title: "Navigation Quick Start",
+        button_label: "Navigation help",
+        shortcut: "?",
+        content_partial: "app/shared/help/navigation_content" %>
+    </div>
 
     <% if @navigation_items.any? %>
       <div class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"

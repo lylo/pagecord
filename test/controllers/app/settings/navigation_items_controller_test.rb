@@ -13,6 +13,9 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     get app_settings_navigation_items_path
     assert_response :success
     assert_select "h2", "Navigation"
+    assert_select "button[aria-label='Navigation help']"
+    assert_select "[data-dialog-shortcut-value='?']"
+    assert_includes response.body, "/posts"
   end
 
   test "index shows pages dropdown without home page" do

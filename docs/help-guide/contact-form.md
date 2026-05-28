@@ -16,6 +16,8 @@ Contact forms are embedded using a dynamic variable on a [page](creating-pages.m
 {{ contact_form }}
 ```
 
+Paste it directly into the page content. Don't wrap it in a code block inside the editor – that will display it as literal text instead of rendering the form.
+
 The form asks the reader for their name, email address, and a message.
 
 ## How it works

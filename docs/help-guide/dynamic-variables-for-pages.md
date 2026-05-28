@@ -264,6 +264,8 @@ Embed a contact form so readers can send you a message directly from your blog.
 
 _Note: This is a premium feature and only appears for subscribers and users on a free trial._
 
+_Paste it directly into the page content, not inside a code block in the editor._
+
 ## Examples
 
 ### Simple Archive Page

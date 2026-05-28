@@ -1,0 +1,38 @@
+<div>
+  <p class="text-sm leading-6 text-slate-600 dark:text-slate-300">
+    Use <a href="https://help.pagecord.com/dynamic-variables-for-pages" class="font-medium text-slate-900 dark:text-slate-100 underline" target="_blank" rel="noopener noreferrer">dynamic variables</a> to add functionality to your pages. Here are some examples.
+  </p>
+</div>
+
+<div>
+  <h3 class="font-medium text-slate-900 dark:text-slate-100">Add a Contact form</h3>
+  <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+    Let your visitors send you messages without revealing your email address.
+  </p>
+  <div class="mt-2 inline-flex rounded-md bg-slate-100 px-2 py-1 text-sm text-slate-800 dark:bg-slate-800 dark:text-slate-200">{{ contact_form }}</div>
+  <div class="mt-2">
+    <%= link_to "Contact form help", "https://help.pagecord.com/contact-form", class: "text-sm font-medium underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:decoration-slate-600 dark:hover:decoration-slate-300", target: "_blank", rel: "noopener" %>
+  </div>
+</div>
+
+<div>
+  <h3 class="font-medium text-slate-900 dark:text-slate-100">Show recent posts</h3>
+  <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+    Useful on a custom home page.
+  </p>
+  <div class="mt-2 inline-flex rounded-md bg-slate-100 px-2 py-1 text-sm text-slate-800 dark:bg-slate-800 dark:text-slate-200">{{ posts | limit: 5 }}</div>
+  <div class="mt-2">
+    <%= link_to "See the recent posts example", "https://help.pagecord.com/dynamic-variables-for-pages#recent-posts-on-your-home-page", class: "text-sm font-medium underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:decoration-slate-600 dark:hover:decoration-slate-300", target: "_blank", rel: "noopener" %>
+  </div>
+</div>
+
+<div>
+  <h3 class="font-medium text-slate-900 dark:text-slate-100">Make an Archive page</h3>
+  <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+    Render a list of all your posts grouped by year.
+  </p>
+  <div class="mt-2 inline-flex rounded-md bg-slate-100 px-2 py-1 text-sm text-slate-800 dark:bg-slate-800 dark:text-slate-200">{{ posts_by_year }}</div>
+  <div class="mt-2">
+    <%= link_to "Archive help", "https://help.pagecord.com/dynamic-variables-for-pages#posts-by-year", class: "text-sm font-medium underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:decoration-slate-600 dark:hover:decoration-slate-300", target: "_blank", rel: "noopener" %>
+  </div>
+</div>

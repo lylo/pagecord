@@ -18,6 +18,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
         assert_equal "Save Draft", elements.first.text.strip
       end
     end
+    assert_select "button[aria-label='Page ideas and help']", false
   end
 
   test "should get root" do
