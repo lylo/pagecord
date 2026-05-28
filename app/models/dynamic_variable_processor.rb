@@ -5,6 +5,7 @@ class DynamicVariableProcessor
     "posts"              => DynamicVariable::PostsTag,
     "posts_by_year"      => DynamicVariable::PostsByYearTag,
     "tags"               => DynamicVariable::TagsTag,
+    "table_of_contents"  => :render_table_of_contents_tag,
     "email_subscription" => DynamicVariable::EmailSubscriptionTag,
     "contact_form"       => DynamicVariable::ContactFormTag,
     "updated_at"         => :render_updated_at_tag
@@ -72,5 +73,9 @@ class DynamicVariableProcessor
       end
 
       @view.local_time(@post.updated_at, format: format, class: "updated-at")
+    end
+
+    def render_table_of_contents_tag(params_string)
+      DynamicVariable::TableOfContentsTag.new(post: @post, view: @view, params_string: params_string).render
     end
 end
