@@ -212,7 +212,7 @@ class BlogTest < ActiveSupport::TestCase
   end
 
   test "should allow local custom footer links and images" do
-    @blog.custom_footer_html = '<a href="/about"><img src="/buttons/made-with-pagecord.gif" alt="Made with Pagecord"></a>'
+    @blog.custom_footer_html = '<hr><a href="/about" target="_blank" rel="noopener noreferrer"><img src="/buttons/made-with-pagecord.gif" alt="Made with Pagecord"></a>'
 
     assert @blog.valid?
   end

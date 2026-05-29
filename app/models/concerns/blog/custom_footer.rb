@@ -3,10 +3,10 @@ module Blog::CustomFooter
 
   MAX_SIZE = 4.kilobytes
   ALLOWED_TAGS = %w[
-    a b br div em i img li ol p span strong u ul
+    a b br div em hr i img li ol p small span strong u ul
   ].freeze
   ALLOWED_ATTRIBUTES = %w[
-    href title target src alt width height loading
+    href title target rel src alt width height loading
   ].freeze
 
   included do
