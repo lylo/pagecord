@@ -124,8 +124,11 @@
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Custom footer</h3>
     <p class="mb-4">
-      Add simple footer HTML for badges, webrings, links, or small images. Only safe, limited HTML is allowed.
-      Links and images can use local paths like <code>/buttons/made-with-pagecord.gif</code>. Scripts, embeds, forms, iframes, and inline styles are not supported.
+      Add a small HTML snippet to the bottom of your blog for badges, webrings, links, or copyright text.
+    </p>
+
+    <p class="mb-4 text-sm text-slate-500 italic">
+      Only basic, safe HTML is supported. Scripts, embeds, forms, iframes, and inline styles are not supported. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-footer", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
     </p>
 
     <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
