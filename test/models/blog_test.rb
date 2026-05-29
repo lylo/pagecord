@@ -211,6 +211,19 @@ class BlogTest < ActiveSupport::TestCase
     assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
   end
 
+  test "should allow local custom footer links and images" do
+    @blog.custom_footer_html = '<a href="/about"><img src="/buttons/made-with-pagecord.gif" alt="Made with Pagecord"></a>'
+
+    assert @blog.valid?
+  end
+
+  test "should reject unsafe custom footer HTML" do
+    @blog.custom_footer_html = '<img src="https://example.com/x.png" onerror="alert(1)">'
+
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom footer html contains invalid or potentially unsafe content"
+  end
+
   test "should not touch posts when reply_by_email changes" do
     blog = blogs(:joel)
     post = posts(:one)

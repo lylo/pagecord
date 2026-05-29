@@ -11,7 +11,10 @@ class App::Settings::AppearanceController < AppController
     else
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.update("css-error", partial: "css_error"),
+          render turbo_stream: [
+            turbo_stream.update("css-error", @blog.errors[:custom_css].first.to_s),
+            turbo_stream.update("footer-error", @blog.errors[:custom_footer_html].first.to_s)
+          ],
                  status: :unprocessable_entity
         end
         format.html { render :index, status: :unprocessable_entity }
@@ -29,7 +32,7 @@ class App::Settings::AppearanceController < AppController
       ]
 
       permitted_params << :show_branding if @blog.user.subscribed?
-      permitted_params << :custom_css if @blog.user.has_premium_access?
+      permitted_params += [ :custom_css, :custom_footer_html ] if @blog.user.has_premium_access?
 
       params.require(:blog).permit(permitted_params)
     end
