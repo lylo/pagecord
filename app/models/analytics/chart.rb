@@ -74,14 +74,7 @@ class Analytics::Chart < Analytics::Base
       start_time_utc = start_date.in_time_zone(user_timezone).beginning_of_day.utc
       end_time_utc = end_date.in_time_zone(user_timezone).end_of_day.utc
 
-      page_views = blog.page_views.where(viewed_at: start_time_utc..end_time_utc, is_unique: true)
-
-      unique_views_by_day = Hash.new(0)
-
-      page_views.find_each do |page_view|
-        day_key = page_view.viewed_at.in_time_zone(user_timezone).to_date
-        unique_views_by_day[day_key] += 1
-      end
+      unique_views_by_day = page_view_counts_by_day(start_time_utc, end_time_utc)
 
       (start_date..end_date).map do |day|
         {
@@ -105,15 +98,7 @@ class Analytics::Chart < Analytics::Base
         dimensions: { blog_id: blog.id }
       ).group(:time).sum(:value)
 
-      # Get raw page views for the entire year to handle months without rollups
-      all_page_views = blog.page_views.where(viewed_at: start_time_utc..end_time_utc, is_unique: true)
-
-      unique_views_by_month = Hash.new(0)
-
-      all_page_views.find_each do |page_view|
-        month_key = page_view.viewed_at.in_time_zone(user_timezone).beginning_of_month.to_date
-        unique_views_by_month[month_key] += 1
-      end
+      unique_views_by_month = page_view_counts_by_month([ start_time_utc, cutoff_time ].max, end_time_utc)
 
       (0..11).map do |month_offset|
         month_start = start_date.beginning_of_month + month_offset.months
@@ -134,6 +119,36 @@ class Analytics::Chart < Analytics::Base
           unique_page_views: unique_views
         }
       end
+    end
+
+    def page_view_counts_by_day(start_time, end_time)
+      page_view_counts_grouped_by(
+        "DATE(page_views.viewed_at AT TIME ZONE 'UTC' AT TIME ZONE ?)",
+        start_time,
+        end_time
+      )
+    end
+
+    def page_view_counts_by_month(start_time, end_time)
+      page_view_counts_grouped_by(
+        "DATE_TRUNC('month', page_views.viewed_at AT TIME ZONE 'UTC' AT TIME ZONE ?)::date",
+        start_time,
+        end_time
+      )
+    end
+
+    def page_view_counts_grouped_by(group_sql, start_time, end_time)
+      group_expression = Arel.sql(PageView.sanitize_sql_array([ group_sql, database_timezone ]))
+
+      blog.page_views
+          .where(viewed_at: start_time..end_time, is_unique: true)
+          .group(group_expression)
+          .count
+          .transform_keys(&:to_date)
+    end
+
+    def database_timezone
+      ActiveSupport::TimeZone[user_timezone]&.tzinfo&.name || user_timezone
     end
 
     def year_chart_data_from_rollups(start_date, end_date)
