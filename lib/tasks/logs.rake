@@ -26,6 +26,14 @@ module LogDisplay
     str[0, max - 1] + "\u2026"
   end
 
+  def self.ms(value)
+    value ? "#{value.round}ms" : "-"
+  end
+
+  def self.number(value, precision: 1)
+    value ? value.round(precision).to_s : "-"
+  end
+
   # Renders a box-drawn table.
   # columns: array of { label:, width:, align: :left|:right }
   # rows:    array of arrays (same length as columns)
@@ -86,6 +94,80 @@ module LogDisplay
 
     out << "#{CYAN}#{bottom}#{RESET}\n"
     out
+  end
+end
+
+module LogPerformance
+  def self.records_for(entries, host: nil)
+    requests = {}
+    records = []
+
+    entries.each do |e|
+      next if e.uuid.to_s.empty?
+
+      request = requests[e.uuid] ||= {
+        timestamp: e.timestamp,
+        host: e.host,
+        ip: e.ip,
+        user_agent: e.user_agent
+      }
+
+      case e.line_type
+      when :started
+        request[:timestamp] = e.timestamp
+        request[:host] = e.host
+        request[:path] = e.detail
+      when :processing
+        request[:endpoint] = e.detail
+      when :completed
+        request[:host] ||= e.host
+        next if host && request[:host] != host
+
+        records << request.merge(
+          status: e.status,
+          duration_ms: e.duration_ms,
+          views_ms: e.views_ms,
+          active_record_ms: e.active_record_ms,
+          query_count: e.query_count,
+          cached_query_count: e.cached_query_count,
+          gc_ms: e.gc_ms
+        )
+      end
+    end
+
+    records
+  end
+
+  def self.endpoint_stats(records)
+    records.group_by { |record| record[:endpoint] || "(unknown)" }.map do |endpoint, endpoint_records|
+      durations = endpoint_records.map { |record| record[:duration_ms] }.compact
+      active_record_times = endpoint_records.map { |record| record[:active_record_ms] }.compact
+      query_counts = endpoint_records.map { |record| record[:query_count] }.compact
+
+      {
+        endpoint: endpoint,
+        count: endpoint_records.size,
+        average_ms: average(durations),
+        p95_ms: percentile(durations, 95),
+        max_ms: durations.max,
+        active_record_average_ms: average(active_record_times),
+        query_average: average(query_counts),
+        query_max: query_counts.max
+      }
+    end
+  end
+
+  def self.average(values)
+    return nil if values.empty?
+
+    values.sum.to_f / values.size
+  end
+
+  def self.percentile(values, percentile)
+    return nil if values.empty?
+
+    sorted = values.sort
+    sorted[((percentile / 100.0) * (sorted.size - 1)).ceil]
   end
 end
 
@@ -390,6 +472,152 @@ namespace :logs do
 
     total = time_counts.values.sum
     puts "#{LogDisplay::BOLD}Total requests for #{hostname}: #{total}#{LogDisplay::RESET}"
+  end
+
+  desc "Performance report: rake \"logs:performance[2026-02-23]\" or rake \"logs:performance[2026-02-23,21]\"; optional HOST=joel"
+  task :performance, [ :date, :hour ] do |_t, args|
+    date = args[:date]
+    hour = args[:hour]
+
+    unless date
+      puts "#{LogDisplay::RED}Usage: rake \"logs:performance[2026-02-23]\" or rake \"logs:performance[2026-02-23,21]\"#{LogDisplay::RESET}"
+      exit 1
+    end
+
+    host_filter = ENV["HOST"].to_s.strip
+    hostname = unless host_filter.empty?
+      host_filter.include?(".") ? host_filter : "#{host_filter}.pagecord.com"
+    end
+
+    if hour
+      puts "#{LogDisplay::BOLD}Analysing performance for #{date} #{hour.rjust(2, "0")}:00\u2013#{hour.rjust(2, "0")}:59 ...#{LogDisplay::RESET}"
+      entries = LogParser.each_entry_for_hour(date, hour.to_i)
+    else
+      puts "#{LogDisplay::BOLD}Analysing performance for #{date} (full day) ...#{LogDisplay::RESET}"
+      entries = LogParser.each_entry_for_date(date)
+    end
+    puts "#{LogDisplay::DIM}Host filter: #{hostname}#{LogDisplay::RESET}" if hostname
+
+    records = LogPerformance.records_for(entries, host: hostname)
+
+    if records.empty?
+      puts "#{LogDisplay::YELLOW}No completed requests found for that period.#{LogDisplay::RESET}"
+      exit 0
+    end
+
+    total = records.size
+    durations = records.map { |record| record[:duration_ms] }.compact
+    active_record_times = records.map { |record| record[:active_record_ms] }.compact
+    query_counts = records.map { |record| record[:query_count] }.compact
+
+    puts LogDisplay.table(
+      title: "Summary (#{total} completed requests)",
+      columns: [
+        { label: "Metric", width: 20, align: :left },
+        { label: "Average", width: 10, align: :right },
+        { label: "P95", width: 10, align: :right },
+        { label: "Max", width: 10, align: :right }
+      ],
+      rows: [
+        [
+          "Response time",
+          LogDisplay.ms(LogPerformance.average(durations)),
+          LogDisplay.ms(LogPerformance.percentile(durations, 95)),
+          LogDisplay.ms(durations.max)
+        ],
+        [
+          "ActiveRecord time",
+          LogDisplay.ms(LogPerformance.average(active_record_times)),
+          LogDisplay.ms(LogPerformance.percentile(active_record_times, 95)),
+          LogDisplay.ms(active_record_times.max)
+        ],
+        [
+          "Query count",
+          LogDisplay.number(LogPerformance.average(query_counts)),
+          LogDisplay.number(LogPerformance.percentile(query_counts, 95), precision: 0),
+          query_counts.max || "-"
+        ]
+      ]
+    )
+
+    slowest_requests = records.sort_by { |record| -(record[:duration_ms] || 0) }.first(20)
+    puts LogDisplay.table(
+      title: "1. Slowest requests",
+      columns: [
+        { label: "Time", width: 8, align: :left },
+        { label: "Status", width: 6, align: :right },
+        { label: "Total", width: 8, align: :right },
+        { label: "AR", width: 8, align: :right },
+        { label: "Queries", width: 7, align: :right },
+        { label: "Host", width: 28, align: :left },
+        { label: "Endpoint", width: 42, align: :left },
+        { label: "Request", width: 60, align: :left }
+      ],
+      rows: slowest_requests.map do |record|
+        [
+          record[:timestamp]&.strftime("%H:%M:%S") || "-",
+          record[:status] || "-",
+          LogDisplay.ms(record[:duration_ms]),
+          LogDisplay.ms(record[:active_record_ms]),
+          record[:query_count] || "-",
+          record[:host] || "-",
+          record[:endpoint] || "-",
+          record[:path] || "-"
+        ]
+      end
+    )
+
+    endpoint_stats = LogPerformance.endpoint_stats(records)
+
+    slow_endpoints = endpoint_stats.sort_by { |stat| -(stat[:p95_ms] || 0) }.first(20)
+    puts LogDisplay.table(
+      title: "2. Slowest endpoints by P95 response time",
+      columns: [
+        { label: "Endpoint", width: 60, align: :left },
+        { label: "Requests", width: 10, align: :right },
+        { label: "Avg", width: 8, align: :right },
+        { label: "P95", width: 8, align: :right },
+        { label: "Max", width: 8, align: :right },
+        { label: "AR avg", width: 8, align: :right },
+        { label: "Q avg", width: 7, align: :right },
+        { label: "Q max", width: 7, align: :right }
+      ],
+      rows: slow_endpoints.map do |stat|
+        [
+          stat[:endpoint],
+          stat[:count],
+          LogDisplay.ms(stat[:average_ms]),
+          LogDisplay.ms(stat[:p95_ms]),
+          LogDisplay.ms(stat[:max_ms]),
+          LogDisplay.ms(stat[:active_record_average_ms]),
+          LogDisplay.number(stat[:query_average]),
+          stat[:query_max] || "-"
+        ]
+      end
+    )
+
+    query_heavy_endpoints = endpoint_stats.sort_by { |stat| -(stat[:query_average] || 0) }.first(20)
+    puts LogDisplay.table(
+      title: "3. Query-heavy endpoints",
+      columns: [
+        { label: "Endpoint", width: 60, align: :left },
+        { label: "Requests", width: 10, align: :right },
+        { label: "Q avg", width: 7, align: :right },
+        { label: "Q max", width: 7, align: :right },
+        { label: "AR avg", width: 8, align: :right },
+        { label: "P95", width: 8, align: :right }
+      ],
+      rows: query_heavy_endpoints.map do |stat|
+        [
+          stat[:endpoint],
+          stat[:count],
+          LogDisplay.number(stat[:query_average]),
+          stat[:query_max] || "-",
+          LogDisplay.ms(stat[:active_record_average_ms]),
+          LogDisplay.ms(stat[:p95_ms])
+        ]
+      end
+    )
   end
 
   desc "Live tail of production.log with per-minute request counter"
