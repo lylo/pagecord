@@ -1,7 +1,6 @@
 require "minitest/autorun"
-require "rake"
-
-load File.expand_path("../../lib/tasks/logs.rake", __dir__)
+require_relative "../../lib/log_parser"
+require_relative "../../lib/log_performance"
 
 class LogPerformanceTest < Minitest::Test
   def test_records_for_pairs_request_lines_by_request_id
