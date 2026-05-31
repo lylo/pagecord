@@ -15,22 +15,24 @@ Before adding your domain in Pagecord, you need to point it to our servers. Add 
 #### **Option 1: ALIAS + CNAME (recommended)**
 
 ```javascript
-ALIAS @ → proxy.pagecord.com
-CNAME www → proxy.pagecord.com
+ALIAS @ → domains.pagecord.com
+CNAME www → domains.pagecord.com
 ```
 
 #### **Option 2: CNAME only (Cloudflare users)**
 
 ```javascript
-CNAME @ → proxy.pagecord.com
-CNAME www → proxy.pagecord.com
+CNAME @ → domains.pagecord.com
+CNAME www → domains.pagecord.com
 ```
+
+If you're using Cloudflare DNS, set your records to **DNS only** (grey cloud).
 
 #### **Option 3: A record (if ALIAS not supported)**
 
 ```javascript
 A @ → 94.130.191.219
-CNAME www → proxy.pagecord.com
+CNAME www → domains.pagecord.com
 ```
 
 _<mark><em>Note: The IP address may change. Use ALIAS if your provider supports it.</em></mark>_
@@ -38,7 +40,7 @@ _<mark><em>Note: The IP address may change. Use ALIAS if your provider supports 
 ### For subdomains (e.g. blog.mydomain.com)
 
 ```javascript
-CNAME blog → proxy.pagecord.com
+CNAME blog → domains.pagecord.com
 ```
 
 ## Step 2: Add the domain in Pagecord
@@ -47,18 +49,16 @@ CNAME blog → proxy.pagecord.com
 2. Enter your domain in the **Custom Domain** field
 3. Click **Update**
 
-Pagecord will verify your DNS and set up SSL automatically. This can take a few minutes.
+Pagecord will verify your DNS and set up SSL automatically. This can take a few minutes. You can check the SSL status on your Blog Settings page.
 
 ## Cloudflare users
 
-**Important:** when first setting up your domain, your Cloudflare DNS records must be set to **DNS only** (grey cloud). The orange-cloud proxy prevents us from issuing your SSL certificate, which will leave your site showing a `522` error.
+Set your DNS records to **DNS only** (grey cloud) for the simplest setup, since Pagecord already provides CDN and SSL.
 
-Once your site is loading successfully on Pagecord, you have two options:
+## Migrating from proxy.pagecord.com
 
-- Leave it as **DNS only** (grey cloud) – the simplest setup, since Pagecord already provides CDN and SSL.
-- Switch to the **proxied** (orange cloud) mode if you want Cloudflare's CDN and protections. If you do, set your SSL/TLS mode to **Full (Strict)** to avoid certificate errors. The certificate renews fine through the proxy once it has been issued.
+If you previously set up your domain with `proxy.pagecord.com`, it will continue to work. However, we recommend updating your DNS records to point to `domains.pagecord.com` for improved performance and edge caching.
 
 ## Removing a custom domain
 
 To remove your custom domain, clear the Custom Domain field in Blog Settings and click Update. Don't forget to remove the DNS records too.
-
