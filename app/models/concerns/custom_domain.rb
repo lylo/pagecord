@@ -4,7 +4,7 @@ module CustomDomain
   included do
     has_many :custom_domain_changes, dependent: :destroy
 
-    before_save :normalize_custom_domain
+    before_validation :normalize_custom_domain
     after_update :record_custom_domain_change
 
     validates :custom_domain, uniqueness: true, allow_blank: true, format: { with: /\A(?!:\/\/)([a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}\z/ }
@@ -22,6 +22,13 @@ module CustomDomain
       return unless root_domain?(domain)
 
       find_by(custom_domain: variant_domain(domain))
+    end
+
+    def custom_domain_hostnames(domain)
+      host = extract_host(domain.to_s.strip.downcase)
+      return [] unless host.present?
+
+      [ host, root_domain?(host) ? variant_domain(host) : nil ].compact.uniq
     end
 
     private
@@ -67,9 +74,11 @@ module CustomDomain
   private
 
     def restricted_domain
-      restricted_domains = %w[pagecord.com proxy.pagecord.com domains.pagecord.com]
+      return if custom_domain.blank?
 
-      if restricted_domains.include?(custom_domain)
+      domain = custom_domain.downcase
+
+      if domain == "pagecord.com" || domain.end_with?(".pagecord.com")
         errors.add(:custom_domain, "is restricted")
       end
     end
@@ -81,6 +90,6 @@ module CustomDomain
     end
 
     def normalize_custom_domain
-      self.custom_domain = nil if custom_domain.blank?
+      self.custom_domain = custom_domain.to_s.strip.downcase.presence
     end
 end

@@ -38,6 +38,15 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "newdomain.com", @blog.reload.custom_domain
   end
 
+  test "should not call Cloudflare when showing blog settings" do
+    @blog.update!(custom_domain: "example.com")
+    HTTParty.expects(:get).never
+
+    get app_settings_blogs_url
+
+    assert_response :success
+  end
+
   test "should enqueue job when adding custom domain" do
     assert_performed_jobs 1 do
       patch app_settings_blog_url(@blog), params: { blog: { custom_domain: "newdomain.com" } }, as: :turbo_stream
