@@ -1,0 +1,7 @@
+<% if heading.present? %>
+  <h2 class="table-of-contents-heading"><%= heading %></h2>
+<% end %>
+
+<ol class="table-of-contents">
+  <%= render partial: "blogs/custom_tags/table_of_contents_items", locals: { items: items } %>
+</ol>
