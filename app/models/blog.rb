@@ -12,6 +12,7 @@ class Blog < ApplicationRecord
 
   has_many :sender_email_addresses, dependent: :destroy
 
+  # Root custom domains use two Cloudflare hostnames: apex and www.
   has_many :cloudflare_custom_hostnames, dependent: :destroy
   has_many :navigation_items, dependent: :destroy
   has_many :social_navigation_items, -> { where(type: "SocialNavigationItem") }, class_name: "SocialNavigationItem", foreign_key: :blog_id
