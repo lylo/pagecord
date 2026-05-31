@@ -16,49 +16,28 @@ module CustomDomain
     def find_by_domain_with_www_fallback(domain)
       return unless domain.present?
 
-      blog = find_by(custom_domain: domain)
-      return blog if blog
+      variant = www_variant(domain)
 
-      return unless root_domain?(domain)
-
-      find_by(custom_domain: variant_domain(domain))
+      find_by(custom_domain: domain) || (find_by(custom_domain: variant) if variant.present?)
     end
 
     def custom_domain_hostnames(domain)
-      host = extract_host(domain.to_s.strip.downcase)
-      return [] unless host.present?
+      domain = domain.to_s.strip.downcase
+      return [] if domain.blank?
 
-      [ host, root_domain?(host) ? variant_domain(host) : nil ].compact.uniq
+      [ domain, www_variant(domain) ].compact.uniq
     end
 
     private
 
-      def root_domain?(domain)
-        host = extract_host(domain)
-        return false unless host
+      def www_variant(domain)
+        parts = domain.to_s.split(".")
+        return unless parts.length == 2 || (parts.length == 3 && parts.first == "www")
 
-        parts = host.split(".")
-
-        # Root domain: example.com (2 parts) or www.example.com (3 parts starting with www)
-        parts.length == 2 || (parts.length == 3 && parts.first == "www")
-      end
-
-      def variant_domain(domain)
-        host = extract_host(domain)
-        return nil unless host
-
-        if host.start_with?("www.")
-          host.delete_prefix("www.")
+        if domain.start_with?("www.")
+          domain.delete_prefix("www.")
         else
-          "www.#{host}"
-        end
-      end
-
-      def extract_host(domain)
-        if domain.start_with?("http")
-          URI.parse(domain).host
-        else
-          domain
+          "www.#{domain}"
         end
       end
   end
