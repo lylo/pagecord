@@ -120,6 +120,33 @@
       </div>
     <% end %>
   </div>
+
+  <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Custom footer</h3>
+    <p class="mb-4">
+      Add a small HTML snippet to the bottom of your blog for badges, webrings, links, or copyright text.
+    </p>
+
+    <p class="mb-4 text-sm text-slate-500 italic">
+      Only basic, safe HTML is supported. Scripts, embeds, forms, iframes, and inline styles are not supported. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-footer", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+    </p>
+
+    <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+          data: {
+            controller: "save-button",
+            action: "turbo:submit-end->save-button#showMessage"
+          } do |form| %>
+      <%= form.text_area :custom_footer_html,
+          rows: 6,
+          class: "w-full rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-mono text-sm focus:border-slate-500 dark:focus:border-slate-400 focus:ring-0 [field-sizing:content]" %>
+
+      <div id="footer-error" class="field-error"><%= @blog.errors[:custom_footer_html].first if @blog.errors[:custom_footer_html].any? %></div>
+
+      <div class="mt-4">
+        <%= form.submit "Save custom footer", data: { save_button_target: "button" }, class: "btn-primary" %>
+      </div>
+    <% end %>
+  </div>
 <% end %>
 
 <div class="mt-12 border-t border-t-slate-200 dark:border-slate-600 pt-4">

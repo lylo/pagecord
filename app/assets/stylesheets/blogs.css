@@ -89,7 +89,15 @@ html, body {
   color: var(--color-text);
 }
 
-/* Footer - centered with padding */
+.custom-footer {
+  margin-block-end: 1rem;
+}
+
+.custom-footer img {
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
 footer.blog-footer {
   width: 100%;
   display: flex;
@@ -97,7 +105,6 @@ footer.blog-footer {
   text-align: center;
   padding: 2rem;
   margin-top: auto;
-  color: var(--color-text-light);
 }
 
 footer.blog-footer #brand svg {

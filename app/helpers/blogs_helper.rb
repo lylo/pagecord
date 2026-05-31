@@ -59,6 +59,12 @@ module BlogsHelper
     end
   end
 
+  def custom_footer_html(blog)
+    sanitize blog.custom_footer_html,
+      tags: Blog::CustomFooter::ALLOWED_TAGS,
+      attributes: Blog::CustomFooter::ALLOWED_ATTRIBUTES
+  end
+
   private
 
     def blog_description(blog)

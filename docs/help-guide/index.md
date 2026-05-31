@@ -40,6 +40,7 @@ Make your blog your own. Choose a theme, tweak colours, change layouts, add cust
 
 - [Customising your blog](customising-your-blog.md)
 - [Custom CSS Guide](custom-css.md)
+- [Adding a custom footer](custom-footer.md)
 - [SEO & Discovery](seo-and-discovery.md)
 
 ## Email
