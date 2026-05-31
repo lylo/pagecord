@@ -137,6 +137,18 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
 
+  create_table "cloudflare_custom_hostnames", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.string "domain", null: false
+    t.string "external_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id", "domain"], name: "index_cloudflare_custom_hostnames_on_blog_id_and_domain", unique: true
+    t.index ["blog_id"], name: "index_cloudflare_custom_hostnames_on_blog_id"
+    t.index ["domain"], name: "index_cloudflare_custom_hostnames_on_domain", unique: true
+    t.index ["external_id"], name: "index_cloudflare_custom_hostnames_on_external_id", unique: true
+  end
+
   create_table "contact_messages", force: :cascade do |t|
     t.bigint "blog_id", null: false
     t.datetime "created_at", null: false
@@ -456,6 +468,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
   add_foreign_key "blog_spotlight_exclusions", "blogs"
   add_foreign_key "blogs", "posts", column: "home_page_id", on_delete: :nullify
   add_foreign_key "blogs", "users"
+  add_foreign_key "cloudflare_custom_hostnames", "blogs"
   add_foreign_key "contact_messages", "blogs"
   add_foreign_key "content_moderations", "posts"
   add_foreign_key "custom_domain_changes", "blogs"

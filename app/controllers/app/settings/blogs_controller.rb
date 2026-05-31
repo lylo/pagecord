@@ -1,5 +1,8 @@
 class App::Settings::BlogsController < AppController
   def index
+    if @blog.custom_domain.present?
+      @custom_hostname_status = CloudflareSaasApi.new(@blog).status
+    end
   end
 
   def update

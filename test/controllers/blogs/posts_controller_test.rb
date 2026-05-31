@@ -1270,7 +1270,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.headers["Cache-Control"], "s-maxage="
   end
 
-  test "should not set cache headers on custom domain in production" do
+  test "should set cache headers on custom domain in production" do
     Rack::Attack.cache.store.clear
     @blog = blogs(:annie)
     host! @blog.custom_domain
@@ -1283,8 +1283,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get "/"
 
     assert_response :success
-    assert_nil @response.headers["Cache-Tag"]
-    assert_not_includes(@response.headers["Cache-Control"] || "", "s-maxage")
+    assert_equal @blog.subdomain, @response.headers["Cache-Tag"]
+    assert_includes @response.headers["Cache-Control"], "s-maxage="
   end
 
   private
