@@ -128,7 +128,7 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
     expect_delete_hostname("root-id")
     expect_delete_hostname("www-id")
 
-    CloudflareSaasApi.new(nil).remove_domain("example.com")
+    CloudflareSaasApi.new.remove_domain("example.com")
   end
 
   private

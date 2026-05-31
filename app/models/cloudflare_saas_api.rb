@@ -1,18 +1,22 @@
+# Manages Cloudflare for SaaS custom hostnames for blog custom domains.
+# Pagecord treats apex and www variants as the same customer domain for redirects,
+# so both hostnames are provisioned and removed together. Removing a domain can
+# also run after the blog has been deleted, as long as the old domain is supplied.
 class CloudflareSaasApi
   REQUEST_TIMEOUT = 5
 
-  def initialize(blog)
+  def initialize(blog = nil)
     @blog = blog
   end
 
   def add_domain(domain)
     return unless @blog&.reload&.custom_domain == domain
 
-    Blog.custom_domain_hostnames(domain).filter_map { |hostname| add_hostname(hostname) }
+    hostnames_for(domain).filter_map { |hostname| add_hostname(hostname) }
   end
 
   def remove_domain(domain)
-    Blog.custom_domain_hostnames(domain).each { |hostname| remove_hostname(hostname) }
+    hostnames_for(domain).each { |hostname| remove_hostname(hostname) }
   end
 
   private
@@ -104,7 +108,7 @@ class CloudflareSaasApi
     def save_hostname(hostname, result)
       hostname_id = result.is_a?(Hash) ? result["id"] : result
       return unless hostname_id.present?
-      return unless Blog.custom_domain_hostnames(@blog&.reload&.custom_domain).include?(hostname)
+      return unless hostnames_for(@blog&.reload&.custom_domain).include?(hostname)
 
       CloudflareCustomHostname
         .find_or_initialize_by(domain: hostname)
@@ -115,7 +119,11 @@ class CloudflareSaasApi
     end
 
     def hostname_in_use?(hostname)
-      Blog.where(custom_domain: Blog.custom_domain_hostnames(hostname)).exists?
+      Blog.where(custom_domain: hostnames_for(hostname)).exists?
+    end
+
+    def hostnames_for(domain)
+      Blog.custom_domain_hostnames(domain)
     end
 
     def blog_label
