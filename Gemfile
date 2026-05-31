@@ -44,7 +44,7 @@ gem "ruby-openai", "~> 8.3"
 # everything else
 gem "aws-sdk-s3"
 gem "bcrypt", "~> 3.1.7"
-gem "discard", "~> 1.2"
+gem "discard", "~> 2.0"
 gem "redcarpet"
 gem "pg_search"
 gem "reverse_markdown"
