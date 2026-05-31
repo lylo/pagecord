@@ -13,6 +13,8 @@ module CustomDomain
   end
 
   class_methods do
+    # Look up the configured custom domain, treating apex and www as variants of
+    # the same customer domain so Rails can redirect to the canonical stored value.
     def find_by_domain_with_www_fallback(domain)
       return unless domain.present?
 
@@ -21,6 +23,8 @@ module CustomDomain
       find_by(custom_domain: domain) || (find_by(custom_domain: variant) if variant.present?)
     end
 
+    # Hostnames that must exist at the edge for this custom domain to preserve
+    # the existing apex/www redirect behaviour.
     def custom_domain_hostnames(domain)
       domain = domain.to_s.strip.downcase
       return [] if domain.blank?
@@ -30,6 +34,8 @@ module CustomDomain
 
     private
 
+      # Only apex domains and their immediate www variant get paired. Deeper
+      # subdomains like blog.example.com stand alone.
       def www_variant(domain)
         parts = domain.to_s.split(".")
         return unless parts.length == 2 || (parts.length == 3 && parts.first == "www")
