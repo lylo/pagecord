@@ -10,6 +10,7 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
     get new_post_reply_path(@post)
     assert_response :success
     assert_select "form[action=?]", post_replies_path(@post)
+    assert_select "textarea#reply_message.autogrow"
   end
 
   test "should get new reply form for custom domain" do

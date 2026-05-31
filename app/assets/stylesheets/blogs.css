@@ -487,6 +487,11 @@ footer.blog-footer #brand svg {
     textarea {
       resize: vertical;
       max-width: 100%;
+
+      &.autogrow {
+        field-sizing: content;
+        min-block-size: 10em;
+      }
     }
 
     input[type="email"]::placeholder {
