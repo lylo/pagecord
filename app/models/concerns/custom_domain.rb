@@ -74,9 +74,7 @@ module CustomDomain
   private
 
     def restricted_domain
-      return if custom_domain.blank?
-
-      domain = custom_domain.downcase
+      domain = custom_domain.to_s.downcase
 
       if domain == "pagecord.com" || domain.end_with?(".pagecord.com")
         errors.add(:custom_domain, "is restricted")

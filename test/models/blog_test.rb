@@ -1,6 +1,8 @@
 require "test_helper"
 
 class BlogTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   def setup
     @blog = blogs(:joel)
   end
@@ -118,6 +120,14 @@ class BlogTest < ActiveSupport::TestCase
   test "should destroy post digests on destroy" do
     assert_difference "PostDigest.count", -1 do
       @blog.destroy
+    end
+  end
+
+  test "should enqueue custom domain removal on destroy" do
+    blog = blogs(:annie)
+
+    assert_enqueued_with(job: RemoveCustomDomainJob, args: [ blog.id, "annie.blog" ]) do
+      blog.destroy
     end
   end
 

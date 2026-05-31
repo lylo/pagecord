@@ -120,6 +120,17 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
     assert_equal "www-id", custom_hostname("www.example.com").external_id
   end
 
+  test "remove domain can run after the blog has been destroyed" do
+    @blog.update!(custom_domain: nil)
+    CloudflareCustomHostname.where(domain: [ "example.com", "www.example.com" ]).destroy_all
+    expect_find_hostname("example.com", id: "root-id")
+    expect_find_hostname("www.example.com", id: "www-id")
+    expect_delete_hostname("root-id")
+    expect_delete_hostname("www-id")
+
+    CloudflareSaasApi.new(nil).remove_domain("example.com")
+  end
+
   private
 
     def custom_hostnames_url
@@ -133,6 +144,14 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
         query: { hostname: hostname },
         timeout: CloudflareSaasApi::REQUEST_TIMEOUT
       ).returns(response(result: [ { "id" => id, "hostname" => hostname } ]))
+    end
+
+    def expect_delete_hostname(id)
+      HTTParty.expects(:delete).with(
+        "#{custom_hostnames_url}/#{id}",
+        headers: anything,
+        timeout: CloudflareSaasApi::REQUEST_TIMEOUT
+      ).returns(response)
     end
 
     def custom_hostname(domain)

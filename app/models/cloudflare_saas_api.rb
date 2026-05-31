@@ -6,7 +6,7 @@ class CloudflareSaasApi
   end
 
   def add_domain(domain)
-    return unless @blog.reload.custom_domain == domain
+    return unless @blog&.reload&.custom_domain == domain
 
     Blog.custom_domain_hostnames(domain).filter_map { |hostname| add_hostname(hostname) }
   end
@@ -39,7 +39,7 @@ class CloudflareSaasApi
           return existing_hostname
         end
 
-        raise "Failed to add custom hostname #{hostname} for blog #{@blog.subdomain}: #{response.code} #{response.body}"
+        raise "Failed to add custom hostname #{hostname} for blog #{blog_label}: #{response.code} #{response.body}"
       end
 
       result = response.parsed_response["result"]
@@ -49,7 +49,7 @@ class CloudflareSaasApi
     end
 
     def remove_hostname(hostname)
-      return if restricted_domain?(hostname) || hostname_in_use?(hostname)
+      return if hostname_in_use?(hostname)
 
       hostname_record = stored_hostname(hostname)
       hostname_id = hostname_record&.external_id || find_hostname(hostname)&.dig("id")
@@ -62,7 +62,7 @@ class CloudflareSaasApi
       )
 
       unless response.success? || response.code == 404
-        raise "Failed to remove custom hostname #{hostname} for blog #{@blog.subdomain}: #{response.code} #{response.body}"
+        raise "Failed to remove custom hostname #{hostname} for blog #{blog_label}: #{response.code} #{response.body}"
       end
 
       hostname_record&.destroy!
@@ -104,7 +104,7 @@ class CloudflareSaasApi
     def save_hostname(hostname, result)
       hostname_id = result.is_a?(Hash) ? result["id"] : result
       return unless hostname_id.present?
-      return unless Blog.custom_domain_hostnames(@blog.reload.custom_domain).include?(hostname)
+      return unless Blog.custom_domain_hostnames(@blog&.reload&.custom_domain).include?(hostname)
 
       CloudflareCustomHostname
         .find_or_initialize_by(domain: hostname)
@@ -114,11 +114,11 @@ class CloudflareSaasApi
         )
     end
 
-    def restricted_domain?(hostname)
-      hostname == "pagecord.com" || hostname.end_with?(".pagecord.com")
-    end
-
     def hostname_in_use?(hostname)
       Blog.where(custom_domain: Blog.custom_domain_hostnames(hostname)).exists?
+    end
+
+    def blog_label
+      @blog&.subdomain || "deleted blog"
     end
 end
