@@ -9,20 +9,30 @@ class CloudflareSaasApi
     @blog = blog
   end
 
+  # Creates Cloudflare custom hostnames for the blog's current custom domain.
+  # Includes the apex/www pair so Rails can keep redirecting either variant to
+  # the canonical custom domain.
   def add_domain(domain)
     return unless @blog&.reload&.custom_domain == domain
 
     hostnames_for(domain).filter_map { |hostname| add_hostname(hostname) }
   end
 
+  # Removes Cloudflare custom hostnames for a previously configured domain.
+  # Removal can run after the blog has gone, but active domains owned by any blog
+  # are left alone.
   def remove_domain(domain)
     hostnames_for(domain).each { |hostname| remove_hostname(hostname) }
   end
 
   private
 
+    # Ensures a single hostname exists in Cloudflare and stores the Cloudflare
+    # hostname ID locally for later deletion or ownership transfer.
     def add_hostname(hostname)
       if existing_hostname = find_hostname(hostname)
+        # A previous attempt may have reached Cloudflare but failed before
+        # storing the hostname ID locally, so reconcile the local record.
         save_hostname(hostname, existing_hostname)
         return existing_hostname
       end
