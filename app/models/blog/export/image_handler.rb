@@ -47,6 +47,8 @@ class Blog::Export::ImageHandler
         URI.open(actual_src, read_timeout: 30, redirect: true) do |remote_file|
           File.open(local_path, "wb") { |file| file.write(remote_file.read) }
         end
+      rescue OpenSSL::SSL::SSLError, SocketError
+        raise
       rescue StandardError => e
         if attempts < max_retries
           wait_time = attempts * 2
