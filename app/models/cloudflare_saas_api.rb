@@ -3,6 +3,8 @@
 # so both hostnames are provisioned and removed together. Removing a domain can
 # also run after the blog has been deleted, as long as the old domain is supplied.
 class CloudflareSaasApi
+  MIN_TLS_VERSION = "1.2"
+
   def initialize(blog = nil)
     @blog = blog
   end
@@ -31,6 +33,12 @@ class CloudflareSaasApi
     hostnames_for(domain).filter_map { |hostname| refresh_hostname_validation(hostname) }
   end
 
+  def update_domain(domain)
+    return [] unless @blog&.reload&.custom_domain == domain
+
+    hostnames_for(domain).filter_map { |hostname| update_hostname(hostname) }
+  end
+
   private
 
     # Ensures a single hostname exists in Cloudflare and stores the Cloudflare
@@ -48,7 +56,7 @@ class CloudflareSaasApi
         headers: headers,
         body: {
           hostname: hostname,
-          ssl: { method: "http", type: "dv" }
+          ssl: ssl_options
         }.to_json
       )
 
@@ -97,7 +105,7 @@ class CloudflareSaasApi
         "#{base_url}/custom_hostnames/#{hostname_record.external_id}",
         headers: headers,
         body: {
-          ssl: { method: "http", type: "dv" }
+          ssl: ssl_options
         }.to_json
       )
 
@@ -108,10 +116,37 @@ class CloudflareSaasApi
       response.parsed_response["result"]
     end
 
+    def update_hostname(hostname)
+      hostname_record = stored_hostname(hostname)
+      return unless hostname_record
+
+      response = HTTParty.patch(
+        "#{base_url}/custom_hostnames/#{hostname_record.external_id}",
+        headers: headers,
+        body: {
+          ssl: ssl_options
+        }.to_json
+      )
+
+      unless response.success?
+        raise "Failed to update custom hostname #{hostname} for blog #{blog_label}: #{response.code} #{response.body}"
+      end
+
+      response.parsed_response["result"]
+    end
+
     def headers
       {
         "Authorization" => "Bearer #{ENV["CLOUDFLARE_API_TOKEN"]}",
         "Content-Type" => "application/json"
+      }
+    end
+
+    def ssl_options
+      {
+        method: "http",
+        type: "dv",
+        settings: { min_tls_version: MIN_TLS_VERSION }
       }
     end
 

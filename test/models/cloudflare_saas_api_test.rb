@@ -133,7 +133,7 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
     HTTParty.expects(:patch).with(
       "#{custom_hostnames_url}/root-id",
       headers: anything,
-      body: { ssl: { method: "http", type: "dv" } }.to_json
+      body: { ssl: { method: "http", type: "dv", settings: { min_tls_version: "1.2" } } }.to_json
     ).returns(response(result: pending_hostname("root-id", "example.com")))
 
     refreshed_hostnames = CloudflareSaasApi.new(@blog).refresh_domain_validation("example.com")
@@ -156,6 +156,17 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
     HTTParty.expects(:patch).never
 
     assert_empty CloudflareSaasApi.new(@blog).refresh_domain_validation("example.com")
+  end
+
+  test "update domain patches stored hostnames" do
+    CloudflareCustomHostname.create!(blog: @blog, domain: "example.com", external_id: "root-id")
+    CloudflareCustomHostname.create!(blog: @blog, domain: "www.example.com", external_id: "www-id")
+    expect_update_hostname("root-id", hostname: "example.com")
+    expect_update_hostname("www-id", hostname: "www.example.com")
+
+    hostnames = CloudflareSaasApi.new(@blog).update_domain("example.com")
+
+    assert_equal [ "root-id", "www-id" ], hostnames.map { |hostname| hostname["id"] }
   end
 
   private
@@ -184,6 +195,14 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
         "#{custom_hostnames_url}/#{id}",
         headers: anything
       ).returns(response(result: result))
+    end
+
+    def expect_update_hostname(id, hostname:)
+      HTTParty.expects(:patch).with(
+        "#{custom_hostnames_url}/#{id}",
+        headers: anything,
+        body: { ssl: { method: "http", type: "dv", settings: { min_tls_version: "1.2" } } }.to_json
+      ).returns(response(result: pending_hostname(id, hostname)))
     end
 
     def custom_hostname(domain)
