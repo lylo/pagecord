@@ -18,9 +18,12 @@
       <p>
         Your Pagecord is now available at <code><mark class="bg-slate-100 dark:bg-slate-700 dark:text-slate-100 px-1"><%= @blog.custom_domain %></mark></code>
       </p>
+      <p class="mt-2">
+        Point your DNS records to <code><mark class="bg-slate-100 dark:bg-slate-700 dark:text-slate-100 px-1">domains.pagecord.com</mark></code>. See <a href="https://pagecord.com/faq#dns" class="font-medium underline">the FAQ</a> for details.
+      </p>
     <% else %>
       <p>
-        To set up a custom domain, enter it below and click Update. You'll need to configure your DNS first. See <a href="https://pagecord.com/faq#dns" class="font-medium underline">the FAQ</a> for details on how to do that.
+        To set up a custom domain, enter it below and click Update. Once saved, point your DNS records to <code><mark class="bg-slate-100 dark:bg-slate-700 dark:text-slate-100 px-1">domains.pagecord.com</mark></code>. See <a href="https://pagecord.com/faq#dns" class="font-medium underline">the FAQ</a> for details.
       </p>
     <% end %>
 

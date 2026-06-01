@@ -1,6 +1,8 @@
 require "test_helper"
 
 class BlogTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   def setup
     @blog = blogs(:joel)
   end
@@ -81,6 +83,19 @@ class BlogTest < ActiveSupport::TestCase
     assert_includes @blog.errors.full_messages, "Custom domain is restricted"
   end
 
+  test "should validate pagecord subdomains as restricted custom domains" do
+    @blog.custom_domain = "anything.pagecord.com"
+
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom domain is restricted"
+  end
+
+  test "custom domain hostnames includes apex and www variants" do
+    assert_equal [ "example.com", "www.example.com" ], Blog.custom_domain_hostnames("example.com")
+    assert_equal [ "www.example.com", "example.com" ], Blog.custom_domain_hostnames("www.example.com")
+    assert_equal [ "blog.example.com" ], Blog.custom_domain_hostnames("blog.example.com")
+  end
+
   test "should record custom domain change" do
     @blog.update!(custom_domain: "newdomain.com")
 
@@ -95,9 +110,24 @@ class BlogTest < ActiveSupport::TestCase
     assert_nil @blog.reload.custom_domain
   end
 
+  test "should normalize custom domain before validation" do
+    @blog.custom_domain = " Example.COM "
+    @blog.save!
+
+    assert_equal "example.com", @blog.reload.custom_domain
+  end
+
   test "should destroy post digests on destroy" do
     assert_difference "PostDigest.count", -1 do
       @blog.destroy
+    end
+  end
+
+  test "should enqueue custom domain removal on destroy" do
+    blog = blogs(:annie)
+
+    assert_enqueued_with(job: RemoveCustomDomainJob, args: [ blog.id, "annie.blog" ]) do
+      blog.destroy
     end
   end
 

@@ -4,7 +4,7 @@ module CustomDomain
   included do
     has_many :custom_domain_changes, dependent: :destroy
 
-    before_save :normalize_custom_domain
+    before_validation :normalize_custom_domain
     after_update :record_custom_domain_change
 
     validates :custom_domain, uniqueness: true, allow_blank: true, format: { with: /\A(?!:\/\/)([a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}\z/ }
@@ -13,45 +13,37 @@ module CustomDomain
   end
 
   class_methods do
+    # Look up the configured custom domain, treating apex and www as variants of
+    # the same customer domain so Rails can redirect to the canonical stored value.
     def find_by_domain_with_www_fallback(domain)
       return unless domain.present?
 
-      blog = find_by(custom_domain: domain)
-      return blog if blog
+      variant = www_variant(domain)
 
-      return unless root_domain?(domain)
+      find_by(custom_domain: domain) || (find_by(custom_domain: variant) if variant.present?)
+    end
 
-      find_by(custom_domain: variant_domain(domain))
+    # Hostnames that must exist at the edge for this custom domain to preserve
+    # the existing apex/www redirect behaviour.
+    def custom_domain_hostnames(domain)
+      domain = domain.to_s.strip.downcase
+      return [] if domain.blank?
+
+      [ domain, www_variant(domain) ].compact.uniq
     end
 
     private
 
-      def root_domain?(domain)
-        host = extract_host(domain)
-        return false unless host
+      # Only apex domains and their immediate www variant get paired. Deeper
+      # subdomains like blog.example.com stand alone.
+      def www_variant(domain)
+        parts = domain.to_s.split(".")
+        return unless parts.length == 2 || (parts.length == 3 && parts.first == "www")
 
-        parts = host.split(".")
-
-        # Root domain: example.com (2 parts) or www.example.com (3 parts starting with www)
-        parts.length == 2 || (parts.length == 3 && parts.first == "www")
-      end
-
-      def variant_domain(domain)
-        host = extract_host(domain)
-        return nil unless host
-
-        if host.start_with?("www.")
-          host.delete_prefix("www.")
+        if domain.start_with?("www.")
+          domain.delete_prefix("www.")
         else
-          "www.#{host}"
-        end
-      end
-
-      def extract_host(domain)
-        if domain.start_with?("http")
-          URI.parse(domain).host
-        else
-          domain
+          "www.#{domain}"
         end
       end
   end
@@ -67,9 +59,9 @@ module CustomDomain
   private
 
     def restricted_domain
-      restricted_domains = %w[pagecord.com proxy.pagecord.com]
+      domain = custom_domain.to_s.downcase
 
-      if restricted_domains.include?(custom_domain)
+      if domain == "pagecord.com" || domain.end_with?(".pagecord.com")
         errors.add(:custom_domain, "is restricted")
       end
     end
@@ -81,6 +73,6 @@ module CustomDomain
     end
 
     def normalize_custom_domain
-      self.custom_domain = nil if custom_domain.blank?
+      self.custom_domain = custom_domain.to_s.strip.downcase.presence
     end
 end

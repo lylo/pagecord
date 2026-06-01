@@ -53,10 +53,10 @@ class CustomDomainTest < ActiveSupport::TestCase
     assert_nil result
   end
 
-  test "find_by_domain_with_www_fallback should handle URLs with protocol" do
+  test "find_by_domain_with_www_fallback expects a host, not a URL" do
     @blog.update!(custom_domain: "example.com")
 
     result = Blog.find_by_domain_with_www_fallback("https://www.example.com")
-    assert_equal @blog, result
+    assert_nil result
   end
 end

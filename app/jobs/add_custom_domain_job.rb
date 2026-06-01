@@ -12,7 +12,8 @@ class AddCustomDomainJob < ApplicationJob
         Rails.logger.info "Adding custom domain #{domain} for blog #{blog.subdomain}"
 
         if Rails.env.production?
-          HatchboxDomainApi.new(blog).add_domain(domain)
+          hostnames = CloudflareSaasApi.new(blog).add_domain(domain)
+          RefreshCloudflareCustomHostnamesJob.set(wait: 10.minutes).perform_later(blog.id, domain) if hostnames.present?
         end
       end
     end

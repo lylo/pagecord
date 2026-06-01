@@ -6,6 +6,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 - **Vanilla Rails**: No services, commands, or interactors. Private methods in controllers, rich domain models, concerns for shared behavior. See [Vanilla Rails is Plenty](https://dev.37signals.com/vanilla-rails-is-plenty/).
 - **Minimal code**: Fewer lines when clarity is maintained. Simple over clever. No over-engineering or premature abstraction.
+- **Keep changes boring**: Match the app's existing patterns before adding custom retry, timeout, recovery, or abstraction code.
 - **Idiomatic**: Follow Ruby and Rails conventions throughout. Fat models, skinny controllers, RESTful routes.
 
 ## Code Style
@@ -69,6 +70,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **CI skill** (`/ci`): runs brakeman, rubocop, importmap audit, and tests locally
 - **Sentry skill** (`/sentry`): investigate and fix Sentry errors
 - **Support skill** (`/support`): investigate customer issues and draft responses
+- Never connect to production systems (SSH, production Rails console/runner, production database, or production service APIs) unless the user explicitly asks for that exact production action.
 
 ## Commands
 

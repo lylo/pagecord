@@ -12,6 +12,8 @@ class Blog < ApplicationRecord
 
   has_many :sender_email_addresses, dependent: :destroy
 
+  # Root custom domains use two Cloudflare hostnames: apex and www.
+  has_many :cloudflare_custom_hostnames, dependent: :destroy
   has_many :navigation_items, dependent: :destroy
   has_many :social_navigation_items, -> { where(type: "SocialNavigationItem") }, class_name: "SocialNavigationItem", foreign_key: :blog_id
 
@@ -28,6 +30,7 @@ class Blog < ApplicationRecord
 
   before_validation :downcase_subdomain
   after_commit :purge_cloudflare_cache, on: :update
+  after_destroy_commit :remove_cloudflare_custom_domain, if: -> { custom_domain.present? }
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
@@ -71,5 +74,9 @@ class Blog < ApplicationRecord
       return unless Rails.env.production?
       return unless Rails.cache.write("cf_purge:#{id}", true, expires_in: 5.seconds, unless_exist: true)
       PurgeCloudflareCacheJob.perform_later(id)
+    end
+
+    def remove_cloudflare_custom_domain
+      RemoveCustomDomainJob.perform_later(id, custom_domain)
     end
 end
