@@ -3,20 +3,38 @@ require "test_helper"
 class PasswordAuthenticationTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
-  test "signup with password then login" do
-    post signups_url, params: {
-      user: {
-        email: "newuser@example.com",
-        password: "password1234",
-        password_confirmation: "password1234",
-        timezone: "UTC",
-        blog_attributes: { subdomain: "newuser" }
-      },
-      rendered_at: signed_rendered_at
-    }
+  test "signup with password requires verification before login" do
+    assert_emails 1 do
+      post signups_url, params: {
+        user: {
+          email: "newuser@example.com",
+          password: "password1234",
+          password_confirmation: "password1234",
+          timezone: "UTC",
+          blog_attributes: { subdomain: "newuser" }
+        },
+        rendered_at: signed_rendered_at
+      }
+    end
 
     user = User.find_by(email: "newuser@example.com")
     assert user.has_password?
+    assert_not user.verified?
+
+    post sessions_url, params: {
+      user: { subdomain: "newuser", password: "password1234" },
+      rendered_at: signed_rendered_at
+    }
+
+    assert_response :unprocessable_entity
+    assert_nil session[:user_id]
+
+    get verify_access_request_url(user.access_requests.last.token_digest)
+
+    assert_redirected_to app_posts_path
+    assert user.reload.verified?
+
+    delete logout_url
 
     post sessions_url, params: {
       user: { subdomain: "newuser", password: "password1234" },

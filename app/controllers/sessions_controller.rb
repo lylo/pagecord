@@ -36,7 +36,7 @@ class SessionsController < ApplicationController
     def create_with_password
       user = User.kept.joins(:blog).find_by(blogs: { subdomain: user_params[:subdomain] })
 
-      if user&.authenticate(user_params[:password])
+      if user&.verified? && user.authenticate(user_params[:password])
         sign_in user
         redirect_to app_root_path, notice: "Welcome back!"
       else

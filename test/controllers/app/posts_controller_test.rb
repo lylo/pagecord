@@ -47,6 +47,20 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "New content", @user.blog.posts.last.content.to_s.strip
   end
 
+  test "should not create post for unverified user" do
+    @user.update!(verified: false)
+
+    assert_no_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
+        post: { title: "New Post", content: "New content" }
+      }
+    end
+
+    assert_redirected_to login_path
+    assert_nil session[:user_id]
+  end
+
   test "should create hidden post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
