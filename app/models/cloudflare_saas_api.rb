@@ -3,8 +3,6 @@
 # so both hostnames are provisioned and removed together. Removing a domain can
 # also run after the blog has been deleted, as long as the old domain is supplied.
 class CloudflareSaasApi
-  REQUEST_TIMEOUT = 5
-
   def initialize(blog = nil)
     @blog = blog
   end
@@ -48,7 +46,6 @@ class CloudflareSaasApi
       response = HTTParty.post(
         "#{base_url}/custom_hostnames",
         headers: headers,
-        timeout: REQUEST_TIMEOUT,
         body: {
           hostname: hostname,
           ssl: { method: "http", type: "dv" }
@@ -79,8 +76,7 @@ class CloudflareSaasApi
 
       response = HTTParty.delete(
         "#{base_url}/custom_hostnames/#{hostname_id}",
-        headers: headers,
-        timeout: REQUEST_TIMEOUT
+        headers: headers
       )
 
       unless response.success? || response.code == 404
@@ -100,7 +96,6 @@ class CloudflareSaasApi
       response = HTTParty.patch(
         "#{base_url}/custom_hostnames/#{hostname_record.external_id}",
         headers: headers,
-        timeout: REQUEST_TIMEOUT,
         body: {
           ssl: { method: "http", type: "dv" }
         }.to_json
@@ -128,8 +123,7 @@ class CloudflareSaasApi
       response = HTTParty.get(
         "#{base_url}/custom_hostnames",
         headers: headers,
-        query: { hostname: hostname },
-        timeout: REQUEST_TIMEOUT
+        query: { hostname: hostname }
       )
 
       return unless response.success?
@@ -140,8 +134,7 @@ class CloudflareSaasApi
     def fetch_hostname(hostname_id)
       response = HTTParty.get(
         "#{base_url}/custom_hostnames/#{hostname_id}",
-        headers: headers,
-        timeout: REQUEST_TIMEOUT
+        headers: headers
       )
 
       unless response.success?

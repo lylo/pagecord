@@ -70,13 +70,11 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
     CloudflareCustomHostname.create!(blog: @blog, domain: "new.example.com", external_id: "new-id")
     HTTParty.expects(:delete).with(
       "#{custom_hostnames_url}/old-id",
-      headers: anything,
-      timeout: CloudflareSaasApi::REQUEST_TIMEOUT
+      headers: anything
     ).returns(response)
     HTTParty.expects(:delete).with(
       "#{custom_hostnames_url}/old-www-id",
-      headers: anything,
-      timeout: CloudflareSaasApi::REQUEST_TIMEOUT
+      headers: anything
     ).returns(response)
 
     CloudflareSaasApi.new(@blog).remove_domain("example.com")
@@ -92,13 +90,11 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
     CloudflareCustomHostname.create!(blog: @blog, domain: "www.example.com", external_id: "www-id")
     HTTParty.expects(:delete).with(
       "#{custom_hostnames_url}/old-id",
-      headers: anything,
-      timeout: CloudflareSaasApi::REQUEST_TIMEOUT
+      headers: anything
     ).returns(response)
     HTTParty.expects(:delete).with(
       "#{custom_hostnames_url}/www-id",
-      headers: anything,
-      timeout: CloudflareSaasApi::REQUEST_TIMEOUT
+      headers: anything
     ).returns(response)
 
     CloudflareSaasApi.new(@blog).remove_domain("example.com")
@@ -137,7 +133,6 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
     HTTParty.expects(:patch).with(
       "#{custom_hostnames_url}/root-id",
       headers: anything,
-      timeout: CloudflareSaasApi::REQUEST_TIMEOUT,
       body: { ssl: { method: "http", type: "dv" } }.to_json
     ).returns(response(result: pending_hostname("root-id", "example.com")))
 
@@ -173,24 +168,21 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
       HTTParty.expects(:get).with(
         custom_hostnames_url,
         headers: anything,
-        query: { hostname: hostname },
-        timeout: CloudflareSaasApi::REQUEST_TIMEOUT
+        query: { hostname: hostname }
       ).returns(response(result: [ { "id" => id, "hostname" => hostname } ]))
     end
 
     def expect_delete_hostname(id)
       HTTParty.expects(:delete).with(
         "#{custom_hostnames_url}/#{id}",
-        headers: anything,
-        timeout: CloudflareSaasApi::REQUEST_TIMEOUT
+        headers: anything
       ).returns(response)
     end
 
     def expect_fetch_hostname(id, result:)
       HTTParty.expects(:get).with(
         "#{custom_hostnames_url}/#{id}",
-        headers: anything,
-        timeout: CloudflareSaasApi::REQUEST_TIMEOUT
+        headers: anything
       ).returns(response(result: result))
     end
 
