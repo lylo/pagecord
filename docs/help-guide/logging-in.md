@@ -1,7 +1,7 @@
 ---
 title: "Logging in"
 published: true
-published_at: 2026-06-01T12:00:00+00:00
+published_at: 2026-06-01T00:00:00+00:00
 ---
 
 There are two ways to log in to Pagecord: magic email links and passwords.
