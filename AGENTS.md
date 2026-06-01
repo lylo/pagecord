@@ -69,6 +69,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **CI skill** (`/ci`): runs brakeman, rubocop, importmap audit, and tests locally
 - **Sentry skill** (`/sentry`): investigate and fix Sentry errors
 - **Support skill** (`/support`): investigate customer issues and draft responses
+- Never connect to production systems (SSH, production Rails console/runner, production database, or production service APIs) unless the user explicitly asks for that exact production action.
 
 ## Commands
 

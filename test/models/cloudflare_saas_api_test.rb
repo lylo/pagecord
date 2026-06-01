@@ -131,6 +131,38 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
     CloudflareSaasApi.new.remove_domain("example.com")
   end
 
+  test "refresh domain validation patches pending hostnames" do
+    CloudflareCustomHostname.create!(blog: @blog, domain: "example.com", external_id: "root-id")
+    expect_fetch_hostname("root-id", result: pending_hostname("root-id", "example.com"))
+    HTTParty.expects(:patch).with(
+      "#{custom_hostnames_url}/root-id",
+      headers: anything,
+      timeout: CloudflareSaasApi::REQUEST_TIMEOUT,
+      body: { ssl: { method: "http", type: "dv" } }.to_json
+    ).returns(response(result: pending_hostname("root-id", "example.com")))
+
+    refreshed_hostnames = CloudflareSaasApi.new(@blog).refresh_domain_validation("example.com")
+
+    assert_equal [ "root-id" ], refreshed_hostnames.map { |hostname| hostname["id"] }
+  end
+
+  test "refresh domain validation does not patch active hostnames" do
+    CloudflareCustomHostname.create!(blog: @blog, domain: "example.com", external_id: "root-id")
+    expect_fetch_hostname("root-id", result: active_hostname("root-id", "example.com"))
+    HTTParty.expects(:patch).never
+
+    assert_empty CloudflareSaasApi.new(@blog).refresh_domain_validation("example.com")
+  end
+
+  test "refresh domain validation ignores stale domains" do
+    @blog.update!(custom_domain: "new.example.com")
+    CloudflareCustomHostname.create!(blog: @blog, domain: "example.com", external_id: "root-id")
+    HTTParty.expects(:get).never
+    HTTParty.expects(:patch).never
+
+    assert_empty CloudflareSaasApi.new(@blog).refresh_domain_validation("example.com")
+  end
+
   private
 
     def custom_hostnames_url
@@ -154,8 +186,34 @@ class CloudflareSaasApiTest < ActiveSupport::TestCase
       ).returns(response)
     end
 
+    def expect_fetch_hostname(id, result:)
+      HTTParty.expects(:get).with(
+        "#{custom_hostnames_url}/#{id}",
+        headers: anything,
+        timeout: CloudflareSaasApi::REQUEST_TIMEOUT
+      ).returns(response(result: result))
+    end
+
     def custom_hostname(domain)
       CloudflareCustomHostname.find_by(domain:)
+    end
+
+    def pending_hostname(id, hostname)
+      {
+        "id" => id,
+        "hostname" => hostname,
+        "status" => "pending",
+        "ssl" => { "status" => "pending_validation" }
+      }
+    end
+
+    def active_hostname(id, hostname)
+      {
+        "id" => id,
+        "hostname" => hostname,
+        "status" => "active",
+        "ssl" => { "status" => "active" }
+      }
     end
 
     def response(code: 200, result: { "id" => "hostname-id", "hostname" => "example.com" }, errors: [])

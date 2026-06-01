@@ -25,6 +25,14 @@ class CloudflareSaasApi
     hostnames_for(domain).each { |hostname| remove_hostname(hostname) }
   end
 
+  # Cloudflare backs off hostname validation when customers save a domain before
+  # pointing DNS at the SaaS target. A no-op PATCH nudges validation to run again.
+  def refresh_domain_validation(domain)
+    return [] unless @blog&.reload&.custom_domain == domain
+
+    hostnames_for(domain).filter_map { |hostname| refresh_hostname_validation(hostname) }
+  end
+
   private
 
     # Ensures a single hostname exists in Cloudflare and stores the Cloudflare
@@ -82,6 +90,29 @@ class CloudflareSaasApi
       hostname_record&.destroy!
     end
 
+    def refresh_hostname_validation(hostname)
+      hostname_record = stored_hostname(hostname)
+      return unless hostname_record
+
+      result = fetch_hostname(hostname_record.external_id)
+      return if active_hostname?(result)
+
+      response = HTTParty.patch(
+        "#{base_url}/custom_hostnames/#{hostname_record.external_id}",
+        headers: headers,
+        timeout: REQUEST_TIMEOUT,
+        body: {
+          ssl: { method: "http", type: "dv" }
+        }.to_json
+      )
+
+      unless response.success?
+        raise "Failed to refresh custom hostname #{hostname} for blog #{blog_label}: #{response.code} #{response.body}"
+      end
+
+      response.parsed_response["result"]
+    end
+
     def headers
       {
         "Authorization" => "Bearer #{ENV["CLOUDFLARE_API_TOKEN"]}",
@@ -104,6 +135,24 @@ class CloudflareSaasApi
       return unless response.success?
 
       Array(response.parsed_response["result"]).find { |result| result["hostname"] == hostname }
+    end
+
+    def fetch_hostname(hostname_id)
+      response = HTTParty.get(
+        "#{base_url}/custom_hostnames/#{hostname_id}",
+        headers: headers,
+        timeout: REQUEST_TIMEOUT
+      )
+
+      unless response.success?
+        raise "Failed to fetch custom hostname #{hostname_id} for blog #{blog_label}: #{response.code} #{response.body}"
+      end
+
+      response.parsed_response["result"]
+    end
+
+    def active_hostname?(result)
+      result["status"] == "active" && result.dig("ssl", "status") == "active"
     end
 
     def hostname_exists?(response)
