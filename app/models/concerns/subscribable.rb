@@ -2,7 +2,7 @@ module Subscribable
   extend ActiveSupport::Concern
 
   TRIAL_PERIOD_DAYS = 14
-  CUSTOM_DOMAIN_GRACE_PERIOD = 60.days
+  CUSTOM_DOMAIN_GRACE_PERIOD = 30
 
   included do
     has_one :subscription, dependent: :destroy
@@ -37,7 +37,7 @@ module Subscribable
   end
 
   def custom_domain_access?
-    subscribed? || subscription&.next_billed_at&.after?(CUSTOM_DOMAIN_GRACE_PERIOD.ago)
+    subscribed? || subscription&.next_billed_at&.after?(CUSTOM_DOMAIN_GRACE_PERIOD.days.ago)
   end
 
   private

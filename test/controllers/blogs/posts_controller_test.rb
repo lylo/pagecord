@@ -579,7 +579,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not redirect from default domain to custom domain after grace period" do
     @blog = blogs(:annie)
-    @blog.user.subscription.update!(next_billed_at: 61.days.ago)
+    @blog.user.subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
     host! "#{@blog.subdomain}.example.com"
     post = @blog.posts.visible.first
 
@@ -590,7 +590,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should redirect from lapsed custom domain to default domain after grace period" do
     @blog = blogs(:annie)
-    @blog.user.subscription.update!(next_billed_at: 61.days.ago)
+    @blog.user.subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
     host! @blog.custom_domain
     post = @blog.posts.visible.first
 

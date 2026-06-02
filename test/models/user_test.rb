@@ -88,13 +88,13 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "custom_domain_access? allows lapsed subscribers during grace period" do
-    users(:joel).subscription.update!(next_billed_at: 30.days.ago)
+    users(:joel).subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD - 1).days.ago)
 
     assert users(:joel).custom_domain_access?
   end
 
   test "custom_domain_access? rejects subscribers after grace period" do
-    users(:joel).subscription.update!(next_billed_at: 61.days.ago)
+    users(:joel).subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
 
     assert_not users(:joel).custom_domain_access?
   end
