@@ -62,6 +62,13 @@ class BlogTest < ActiveSupport::TestCase
     assert user.blog.delivery_email =~ /newuser_[a-zA-Z0-9]{8}@post.pagecord.com/
   end
 
+  test "should not create blogs beyond the user's limit" do
+    blog = users(:vivian).blogs.build(subdomain: "vivianextra")
+
+    assert_not blog.valid?
+    assert_includes blog.errors[:base], "You've reached your blog limit (1)"
+  end
+
   test "should allow valid custom domain" do
     @blog.custom_domain = "newdomain.com"
 

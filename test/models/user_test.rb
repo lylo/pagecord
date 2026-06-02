@@ -93,7 +93,7 @@ class UserTest < ActiveSupport::TestCase
     )
 
     assert_not user.valid?
-    assert_includes user.errors[:blogs], "You've reached your blog limit (1)"
+    assert user.blogs.any? { |blog| blog.errors[:base].include?("You've reached your blog limit (1)") }
   end
 
   test "destroy removes kept and discarded blogs" do

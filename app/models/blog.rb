@@ -54,8 +54,16 @@ class Blog < ApplicationRecord
   private
 
     def within_blog_limit
-      if user && user.blogs.count >= user.blog_limit
+      if user && blog_count_exceeds_limit?
         errors.add(:base, "#{LIMIT_MESSAGE} (#{user.blog_limit})")
+      end
+    end
+
+    def blog_count_exceeds_limit?
+      if user.new_record? || user.association(:blogs).loaded?
+        user.blogs.reject(&:marked_for_destruction?).size > user.blog_limit
+      else
+        user.blogs.count >= user.blog_limit
       end
     end
 
