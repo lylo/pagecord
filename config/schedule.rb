@@ -86,6 +86,10 @@ every :day, at: "3:30 am" do
   runner "Posts::EmptyTrashJob.perform_later"
 end
 
+every :day, at: "3:35 am" do
+  runner "Blogs::EmptyTrashJob.perform_later"
+end
+
 every 1.month, at: "1:30 am" do  # 1:30 AM on the 1st of every month
   runner "RollupAndCleanupPageViewsJob.perform_later"
 end

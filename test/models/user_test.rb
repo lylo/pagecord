@@ -96,6 +96,20 @@ class UserTest < ActiveSupport::TestCase
     assert_includes user.errors[:blogs], "You've reached your blog limit (1)"
   end
 
+  test "destroy removes kept and discarded blogs" do
+    user = users(:joel)
+    kept_blog = user.blog
+    discarded_blog = user.blogs.create!(subdomain: "joeldiscarded")
+    discarded_blog.discard!
+
+    assert_difference "Blog.with_discarded.count", -2 do
+      user.destroy!
+    end
+
+    assert_not Blog.with_discarded.exists?(kept_blog.id)
+    assert_not Blog.with_discarded.exists?(discarded_blog.id)
+  end
+
   test "custom_domain_access? allows active subscribers" do
     assert users(:joel).custom_domain_access?
   end

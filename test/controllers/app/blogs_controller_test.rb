@@ -96,6 +96,22 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "cannot delete the only blog with a direct request" do
+    user = users(:vivian)
+    blog = user.blog
+    with_multiple_blogs_for(user) do
+      login_as user
+
+      assert_no_difference -> { user.blogs.reload.count } do
+        delete app_blog_url(blog)
+      end
+
+      assert_not blog.reload.discarded?
+      assert_redirected_to app_blogs_url
+      assert_equal "You must have at least one blog", flash[:alert]
+    end
+  end
+
   test "multiple blog UI redirects when feature is disabled" do
     user = users(:joel)
     blog = user.blogs.create!(subdomain: "joelblocked")
