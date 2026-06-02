@@ -220,6 +220,16 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "show renders feature fields as an array" do
+    user = users(:vivian)
+
+    get admin_user_url(user)
+
+    assert_response :success
+    assert_select "input[type='hidden'][name='user[features][]'][value='']"
+    assert_select "input[type='checkbox'][name='user[features][]'][value='multiple_blogs']"
+  end
+
   test "should add a feature to user" do
     user = users(:vivian)
 

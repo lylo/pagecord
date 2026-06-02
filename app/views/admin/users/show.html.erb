@@ -157,7 +157,7 @@
   <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
     <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Features</h3>
     <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "p-6", data: { turbo: false } do |f| %>
-      <%= f.hidden_field :features, value: "", multiple: true %>
+      <%= hidden_field_tag "user[features][]", "" %>
       <% all_features = (Rails.features.names.map(&:to_s) | @user.features).sort %>
       <div class="space-y-3">
         <% all_features.each do |feature| %>
