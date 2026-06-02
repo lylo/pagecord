@@ -37,7 +37,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     get app_posts_url
 
     assert_response :success
-    assert_select "[data-controller='blog-switcher']", false
+    assert_select "[data-controller='toggle']", false
     assert_select "turbo-frame#heading_blog_title a", text: /@#{@user.blog.subdomain}/
     assert_no_match "Manage blogs", @response.body
   end
@@ -48,7 +48,8 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     get app_posts_url
 
     assert_response :success
-    assert_select "[data-controller='blog-switcher']"
+    assert_select "[data-controller='toggle']"
+    assert_select "[data-toggle-target='element']"
     assert_select "a[href='#{app_blogs_path}']", text: "Manage blogs"
     assert_select "turbo-frame#heading_blog_title", false
   end

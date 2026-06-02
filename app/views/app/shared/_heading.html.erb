@@ -1,11 +1,11 @@
 <div class="flex justify-end mb-4">
   <% if current_features.enabled?(:multiple_blogs) %>
-    <div class="relative" data-controller="blog-switcher">
-      <button data-action="click->blog-switcher#toggle" class="flex items-center gap-2 cursor-pointer">
+    <div class="relative" data-controller="toggle">
+      <button data-action="click->toggle#toggle click@window->toggle#hide" class="flex items-center gap-2 cursor-pointer">
         <%= render "app/shared/blog_avatar", blog: @blog, size: "md" %>
       </button>
 
-      <div data-blog-switcher-target="menu" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 z-50">
+      <div data-toggle-target="element" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 z-50">
         <div class="py-2">
           <% Current.user.blogs.order(:created_at).each do |blog| %>
             <%= button_to switch_app_blog_path(blog), method: :post, class: "w-full flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 #{blog.id == @blog.id ? 'bg-slate-50 dark:bg-slate-700/50' : ''}" do %>
