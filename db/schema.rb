@@ -110,6 +110,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_02_120000) do
     t.datetime "discarded_at"
     t.integer "email_delivery_mode", default: 0, null: false
     t.boolean "email_subscriptions_enabled", default: true, null: false
+    t.string "features", default: [], array: true
     t.string "fediverse_author_attribution"
     t.string "font", default: "sans", null: false
     t.string "google_site_verification"
