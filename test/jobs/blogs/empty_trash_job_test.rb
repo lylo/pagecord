@@ -2,7 +2,7 @@ require "test_helper"
 
 class Blogs::EmptyTrashJobTest < ActiveJob::TestCase
   test "destroys blogs discarded more than 30 days ago" do
-    old_blog = users(:joel).blogs.create!(subdomain: "oldtrash")
+    old_blog = users(:annie).blogs.create!(subdomain: "oldtrash")
     old_blog.discard!
     old_blog.update_columns(discarded_at: 31.days.ago)
 
@@ -29,7 +29,7 @@ class Blogs::EmptyTrashJobTest < ActiveJob::TestCase
   end
 
   test "frees discarded blog subdomains after cleanup" do
-    user = users(:joel)
+    user = users(:annie)
     discarded_blog = user.blogs.create!(subdomain: "freedtrash")
     discarded_blog.discard!
     discarded_blog.update_columns(discarded_at: 31.days.ago)

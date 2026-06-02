@@ -34,10 +34,12 @@ class SessionsController < ApplicationController
   private
 
     def create_with_password
-      user = User.kept.joins(:blogs).find_by(blogs: { subdomain: user_params[:subdomain] })
+      blog = Blog.kept.joins(:user).where(users: { discarded_at: nil }).find_by(subdomain: user_params[:subdomain])
+      user = blog&.user
 
       if user&.verified? && user.authenticate(user_params[:password])
         sign_in user
+        session[:current_blog_id] = blog.id
         redirect_to app_root_path, notice: "Welcome back!"
       else
         flash.now[:alert] = "Invalid subdomain or password"

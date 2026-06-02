@@ -4,15 +4,15 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
   test "premium user can create a second blog and it becomes current" do
-    user = users(:joel)
+    user = users(:annie)
     with_multiple_blogs_for(user) do
       login_as user
 
       assert_difference -> { user.blogs.reload.count } do
-        post app_blogs_url, params: { blog: { subdomain: "joelsecond", title: "Joel Second" } }
+        post app_blogs_url, params: { blog: { subdomain: "anniessecond", title: "Annie Second" } }
       end
 
-      blog = user.blogs.find_by!(subdomain: "joelsecond")
+      blog = user.blogs.find_by!(subdomain: "anniessecond")
       assert_equal blog.id, session[:current_blog_id]
       assert_redirected_to app_root_url
     end
@@ -33,7 +33,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
 
   test "switching blogs uses the selected blog in new post context" do
     user = users(:joel)
-    blog = user.blogs.create!(subdomain: "joelnotes")
+    blog = blogs(:joel_notes)
     with_multiple_blogs_for(user) do
       login_as user
 
@@ -49,7 +49,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
 
   test "creates posts on the selected blog" do
     user = users(:joel)
-    blog = user.blogs.create!(subdomain: "joelposts")
+    blog = blogs(:joel_notes)
     with_multiple_blogs_for(user) do
       login_as user
       post switch_app_blog_url(blog)
@@ -67,7 +67,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
 
   test "trashes posts on the selected blog" do
     user = users(:joel)
-    blog = user.blogs.create!(subdomain: "joeltrash")
+    blog = blogs(:joel_notes)
     post = blog.posts.create!(title: "Trash me", content: "Hello")
     with_multiple_blogs_for(user) do
       login_as user
@@ -83,7 +83,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
 
   test "deleting selected blog falls back to remaining blog" do
     user = users(:joel)
-    blog = user.blogs.create!(subdomain: "joeldelete")
+    blog = blogs(:joel_notes)
     with_multiple_blogs_for(user) do
       login_as user
       post switch_app_blog_url(blog)
@@ -114,7 +114,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
 
   test "multiple blog UI redirects when feature is disabled" do
     user = users(:joel)
-    blog = user.blogs.create!(subdomain: "joelblocked")
+    blog = blogs(:joel_notes)
     login_as user
 
     get app_blogs_url

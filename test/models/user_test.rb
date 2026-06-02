@@ -97,9 +97,9 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "destroy removes kept and discarded blogs" do
-    user = users(:joel)
+    user = users(:annie)
     kept_blog = user.blog
-    discarded_blog = user.blogs.create!(subdomain: "joeldiscarded")
+    discarded_blog = user.blogs.create!(subdomain: "anniediscarded")
     discarded_blog.discard!
 
     assert_difference "Blog.with_discarded.count", -2 do
