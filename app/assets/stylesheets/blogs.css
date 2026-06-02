@@ -682,6 +682,10 @@ footer.blog-footer #brand svg {
 }
 
 /* Titles layout - compact chronological list */
+.title_layout {
+  margin-block-end: 2rem;
+}
+
 .posts-titles .year-header {
   color: var(--color-text-heading);
   font-size: 1.125rem;
