@@ -183,7 +183,6 @@ Rails.application.routes.draw do
       resources :theme_templates do
         get :fixtures, on: :collection
       end
-      resources :blogs, only: [ :index ]
       resources :analytics, only: [ :index ]
       resources :posts, only: [ :index ]
       resources :suppressions, only: [ :index ] do
@@ -192,7 +191,7 @@ Rails.application.routes.draw do
           delete :destroy_all
         end
       end
-      resources :users, only: [ :show, :destroy, :new, :create, :update ] do
+      resources :users, only: [ :index, :show, :destroy, :new, :create, :update ] do
         member do
           post :restore
         end

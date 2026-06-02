@@ -1,4 +1,34 @@
 class Admin::UsersController < AdminController
+  include Pagy::Method
+
+  def index
+    @total_users = User.count
+
+    users = User.left_outer_joins(:subscription)
+                .includes(:subscription, :blogs)
+                .order(created_at: :desc)
+
+    if params[:search].present?
+      users = users.joins(:blogs)
+                   .where("blogs.subdomain ILIKE ? OR blogs.custom_domain ILIKE ? OR users.email ILIKE ? OR subscriptions.paddle_customer_id ILIKE ? OR subscriptions.paddle_subscription_id ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
+                   .distinct
+    end
+
+    if params[:status].present?
+      case params[:status]
+      when "paid"
+        users = users.where("subscriptions.plan IN (?) AND subscriptions.cancelled_at IS NULL AND subscriptions.next_billed_at > ?", [ "annual", "monthly" ], Time.current)
+      when "comped"
+        users = users.where("subscriptions.plan = ?", "complimentary")
+      when "churning"
+        users = users.where.not(subscriptions: { cancelled_at: nil }).where("subscriptions.next_billed_at > ?", Time.current)
+      end
+    end
+
+    @pagy, @users = pagy(users, limit: 15)
+    @post_counts_by_blog_id = Post.where(blog_id: @users.flat_map { |user| user.blogs.map(&:id) }, is_page: false).group(:blog_id).count
+  end
+
   def show
     @user = User.find(params[:id])
   end
@@ -38,7 +68,7 @@ class Admin::UsersController < AdminController
       DestroyUserJob.perform_now(@user.id)
     end
 
-    redirect_to admin_blogs_path
+    redirect_to admin_users_path
   end
 
   def restore
@@ -49,7 +79,7 @@ class Admin::UsersController < AdminController
       flash[:notice] = "User was successfully restored"
     end
 
-    redirect_to admin_blogs_path
+    redirect_to admin_users_path
   end
 
   private

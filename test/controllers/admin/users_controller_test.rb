@@ -9,13 +9,148 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
+  test "should get index" do
+    get admin_users_url
+    assert_response :success
+  end
+
+  test "should search users by email" do
+    user1 = users(:vivian)
+    user2 = users(:joel)
+
+    get admin_users_path(search: "vivian")
+
+    assert_response :success
+    assert_includes @response.body, user1.email
+    assert_not_includes @response.body, user2.email
+  end
+
+  test "should search users by subdomain" do
+    user1 = users(:vivian)
+    user2 = users(:joel)
+
+    get admin_users_path(search: user1.blog.subdomain)
+
+    assert_response :success
+    assert_includes @response.body, user1.blog.subdomain
+    assert_not_includes @response.body, user2.blog.subdomain
+  end
+
+  test "should search users by custom domain" do
+    user1 = users(:annie)
+    user2 = users(:joel)
+
+    get admin_users_path(search: "annie.blog")
+
+    assert_response :success
+    assert_includes @response.body, user1.email
+    assert_not_includes @response.body, user2.email
+  end
+
+  test "should handle empty search parameter" do
+    get admin_users_path(search: "")
+
+    assert_response :success
+    assert_includes @response.body, users(:vivian).email
+    assert_includes @response.body, users(:joel).email
+  end
+
+  test "should return empty results for non-matching search" do
+    get admin_users_path(search: "nonexistent@example.com")
+
+    assert_response :success
+    assert_not_includes @response.body, users(:vivian).email
+    assert_not_includes @response.body, users(:joel).email
+  end
+
+  test "should filter by paid status" do
+    get admin_users_path, params: { status: "paid" }
+    assert_response :success
+
+    assert_select "span", text: "Paid"
+    assert_select "div", text: /results?/
+  end
+
+  test "should filter by comped status" do
+    users(:joel).subscription.update!(plan: :complimentary)
+
+    get admin_users_path, params: { status: "comped" }
+    assert_response :success
+
+    assert_select "span", text: "Comped"
+    assert_select "td", text: /joel/
+  end
+
+  test "should combine search and status filters" do
+    get admin_users_path, params: { search: "joel", status: "paid" }
+    assert_response :success
+
+    assert_select "a", text: /Paid/
+    assert_select "div", text: /results?/
+  end
+
+  test "should preserve status filter when searching" do
+    get admin_users_path, params: { status: "paid" }
+    assert_response :success
+
+    assert_select "input[type='hidden'][name='status'][value='paid']"
+  end
+
+  test "should show clickable stats summary links when no filter is active" do
+    get admin_users_path
+    assert_response :success
+
+    assert_select "a[href='#{admin_users_path(status: "paid")}']"
+    assert_select "a[href='#{admin_users_path(status: "comped")}']"
+  end
+
+  test "should highlight active filter in stats summary" do
+    get admin_users_path, params: { status: "paid" }
+    assert_response :success
+
+    assert_select "a[href='#{admin_users_path}']", text: /Users/
+  end
+
+  test "should require admin access" do
+    non_admin = users(:vivian)
+    login_as non_admin
+
+    get admin_users_path
+    assert_redirected_to root_path
+  end
+
+  test "should show correct status labels in table" do
+    get admin_users_path
+    assert_response :success
+
+    assert_select "td", text: "Premium"
+    assert_select "td", text: "Free"
+  end
+
+  test "should handle empty search results with status filter" do
+    get admin_users_path, params: { search: "nonexistent", status: "paid" }
+    assert_response :success
+
+    assert_select "span", text: "Paid"
+    assert_select "div", text: /0 results/
+  end
+
+  test "should render blog rows with post counts" do
+    get admin_users_path
+    assert_response :success
+
+    assert_select "th", text: "User"
+    assert_select "th", text: "Blogs"
+    assert_select "span", text: /posts?/
+  end
+
   test "should discard regular user" do
     user = users(:vivian)
     assert_difference("User.kept.count", -1) do
       delete admin_user_url(user)
     end
 
-    assert_redirected_to admin_blogs_path
+    assert_redirected_to admin_users_path
     assert_equal "User was successfully discarded", flash[:notice]
     assert user.reload.discarded?
   end
@@ -28,7 +163,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       post restore_admin_user_path(user)
     end
 
-    assert_redirected_to admin_blogs_path
+    assert_redirected_to admin_users_path
     assert_equal "User was successfully restored", flash[:notice]
     assert_not user.reload.discarded?
   end

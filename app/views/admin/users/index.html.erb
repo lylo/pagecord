@@ -7,27 +7,27 @@
   </div>
   <div class="px-6 py-5">
     <div class="grid grid-cols-2 sm:flex sm:items-center sm:gap-8 gap-4 mb-4">
-      <%= link_to admin_blogs_path, class: "group" do %>
+      <%= link_to admin_users_path, class: "group" do %>
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(@total_users) %></span>
         <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Users</span>
       <% end %>
-      <%= link_to admin_blogs_path(status: "paid"), class: "group" do %>
+      <%= link_to admin_users_path(status: "paid"), class: "group" do %>
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Subscription.active_paid.count) %></span>
         <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Paid</span>
       <% end %>
-      <%= link_to admin_blogs_path(status: "comped"), class: "group" do %>
+      <%= link_to admin_users_path(status: "comped"), class: "group" do %>
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Subscription.comped.count) %></span>
         <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Comped</span>
       <% end %>
-      <%= link_to admin_blogs_path(status: "churning"), class: "group" do %>
+      <%= link_to admin_users_path(status: "churning"), class: "group" do %>
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Subscription.where.not(cancelled_at: nil).where("next_billed_at > ?", Time.current).count) %></span>
         <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Churning</span>
       <% end %>
     </div>
 
-    <%= form_with url: admin_blogs_path, method: :get, data: { turbo_frame: "stats-content", controller: "search", search_target: "form" }, local: true do |form| %>
+    <%= form_with url: admin_users_path, method: :get, data: { turbo_frame: "stats-content", controller: "search", search_target: "form" }, local: true do |form| %>
       <div class="relative">
-        <%= form.text_field :search, placeholder: "Search by subdomain, email or Paddle ID...", value: params[:search],
+        <%= form.text_field :search, placeholder: "Search by subdomain, custom domain, email or Paddle ID...", value: params[:search],
             class: "form-field w-full px-3 py-2 pr-10 text-sm",
             data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
             autofocus: true %>
@@ -47,13 +47,13 @@
       <span class="text-sm text-slate-500 dark:text-slate-400"><%= "result".pluralize(@pagy.count) %> for</span>
       <% if params[:status].present? %>
         <% status_label = case params[:status] when "paid" then "Paid" when "comped" then "Comped" when "churning" then "Churning" end %>
-        <%= link_to admin_blogs_path, class: "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-colors" do %>
+        <%= link_to admin_users_path, class: "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-colors" do %>
           <%= status_label %>
           <%= inline_svg_tag "icons/close.svg", class: "w-3.5 h-3.5 text-slate-400" %>
         <% end %>
       <% end %>
       <% if params[:search].present? %>
-        <%= link_to admin_blogs_path, class: "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-colors" do %>
+        <%= link_to admin_users_path, class: "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-colors" do %>
           "<%= params[:search] %>"
           <%= inline_svg_tag "icons/close.svg", class: "w-3.5 h-3.5 text-slate-400" %>
         <% end %>
@@ -64,7 +64,7 @@
     <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
       <thead>
         <tr class="bg-slate-50 dark:bg-slate-700/50">
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Account</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">User</th>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Blogs</th>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Verified</th>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Status</th>
@@ -75,21 +75,27 @@
       <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
       <% @users.each do |user| %>
         <tr>
-          <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50">
+          <td class="whitespace-nowrap py-4 px-6 text-sm font-medium text-slate-900 dark:text-slate-50 align-top">
             <%= link_to user.email, admin_user_path(user), class: "font-medium underline", data: { turbo_frame: "_top" } %>
           </td>
-          <td class="py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
-            <div class="flex flex-col gap-y-1">
-              <% user.blogs.each do |blog| %>
-                <div class="flex items-center gap-x-2">
-                  <%= link_to blog.subdomain, blog_home_url(blog), class: "hover:underline", target: "_blank" %>
-                  <span class="text-xs text-slate-400"><%= pluralize(blog.posts.count, "post") %></span>
+          <td class="py-3 px-6 text-sm text-slate-500 dark:text-slate-400 align-top min-w-[18rem]">
+            <div class="space-y-1">
+              <% user.blogs.sort_by(&:created_at).each do |blog| %>
+                <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 px-2 py-1">
+                  <div class="flex min-w-0 items-baseline gap-x-1.5">
+                    <%= link_to blog.subdomain, blog_home_url(blog), class: "font-medium text-slate-700 dark:text-slate-200 hover:underline", target: "_blank" %>
+                    <% if blog.custom_domain.present? %>
+                      <span class="text-slate-300 dark:text-slate-600">·</span>
+                      <span class="truncate text-xs text-slate-500 dark:text-slate-400" title="<%= blog.custom_domain %>"><%= blog.custom_domain %></span>
+                    <% end %>
+                  </div>
+                  <span class="whitespace-nowrap rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-700 dark:text-slate-300"><%= pluralize(@post_counts_by_blog_id.fetch(blog.id, 0), "post") %></span>
                 </div>
               <% end %>
             </div>
           </td>
-          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400"><%= user.verified? ? '✅' : '❌' %></td>
-          <td class="whitespace-nowrap py-3 px-6 text-sm">
+          <td class="whitespace-nowrap py-4 px-6 text-sm text-slate-500 dark:text-slate-400 align-top"><%= user.verified? ? "Yes" : "No" %></td>
+          <td class="whitespace-nowrap py-4 px-6 text-sm align-top">
             <% if user.discarded_at %>
               <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Cancelled</span>
             <% elsif user.subscribed? %>
@@ -107,10 +113,10 @@
               <% end %>
             <% end %>
           </td>
-          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-center">
-            <% if user.marketing_consent? %>✅<% end %>
+          <td class="whitespace-nowrap py-4 px-6 text-sm text-slate-500 dark:text-slate-400 text-center align-top">
+            <%= user.marketing_consent? ? "Yes" : "" %>
           </td>
-          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end"><%= user.created_at.to_formatted_s :long %></td>
+          <td class="whitespace-nowrap py-4 px-6 text-sm text-slate-500 dark:text-slate-400 text-end align-top"><%= user.created_at.to_formatted_s :long %></td>
         </tr>
       <% end %>
       </tbody>
