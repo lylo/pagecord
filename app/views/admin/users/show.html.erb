@@ -153,6 +153,30 @@
   </div>
   <% end %>
 
+  <%# ---- Features ---- %>
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Features</h3>
+    <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "p-6", data: { turbo: false } do |f| %>
+      <%= f.hidden_field :features, value: "", multiple: true %>
+      <% all_features = (Rails.features.names.map(&:to_s) | @user.features).sort %>
+      <div class="space-y-3">
+        <% all_features.each do |feature| %>
+          <label class="flex gap-3 items-start cursor-pointer">
+            <div class="flex h-6 shrink-0 items-center">
+              <%= f.check_box :features, { multiple: true, checked: @user.features.include?(feature), class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0", onchange: "this.form.requestSubmit()" }, feature, nil %>
+            </div>
+            <div>
+              <span class="text-sm text-slate-800 dark:text-slate-100"><%= feature %></span>
+              <% unless Rails.features.names.map(&:to_s).include?(feature) %>
+                <span class="text-xs text-yellow-600 dark:text-yellow-400">(legacy)</span>
+              <% end %>
+            </div>
+          </label>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
   <% @user.blogs.order(:created_at).each do |blog| %>
     <%# ---- Blog ---- %>
     <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
@@ -191,33 +215,6 @@
           </dd>
         </div>
       </dl>
-    </div>
-
-    <%# ---- Features ---- %>
-    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-      <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Features – <%= blog.subdomain %></h3>
-      <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "p-6", data: { turbo: false } do |f| %>
-        <%= f.fields_for :blogs, blog do |bf| %>
-          <%= bf.hidden_field :id %>
-          <%= bf.hidden_field :features, value: "", multiple: true %>
-          <% all_features = (Rails.features.names.map(&:to_s) | blog.features).sort %>
-          <div class="space-y-3">
-            <% all_features.each do |feature| %>
-              <label class="flex gap-3 items-start cursor-pointer">
-                <div class="flex h-6 shrink-0 items-center">
-                  <%= bf.check_box :features, { multiple: true, checked: blog.features.include?(feature), class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0", onchange: "this.form.requestSubmit()" }, feature, nil %>
-                </div>
-                <div>
-                  <span class="text-sm text-slate-800 dark:text-slate-100"><%= feature %></span>
-                  <% unless Rails.features.names.map(&:to_s).include?(feature) %>
-                    <span class="text-xs text-yellow-600 dark:text-yellow-400">(legacy)</span>
-                  <% end %>
-                </div>
-              </label>
-            <% end %>
-          </div>
-        <% end %>
-      <% end %>
     </div>
   <% end %>
 </div>

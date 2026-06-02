@@ -33,6 +33,26 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "div#draft_posts"
   end
 
+  test "heading shows blog title link when multiple blogs feature is disabled" do
+    get app_posts_url
+
+    assert_response :success
+    assert_select "[data-controller='blog-switcher']", false
+    assert_select "turbo-frame#heading_blog_title a", text: /@#{@user.blog.subdomain}/
+    assert_no_match "Manage blogs", @response.body
+  end
+
+  test "heading shows blog switcher when multiple blogs feature is enabled" do
+    @user.update!(features: [ "multiple_blogs" ])
+
+    get app_posts_url
+
+    assert_response :success
+    assert_select "[data-controller='blog-switcher']"
+    assert_select "a[href='#{app_blogs_path}']", text: "Manage blogs"
+    assert_select "turbo-frame#heading_blog_title", false
+  end
+
   test "should publish post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {

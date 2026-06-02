@@ -220,27 +220,27 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "should add a feature to blog" do
+  test "should add a feature to user" do
     user = users(:vivian)
 
     patch admin_user_url(user), params: {
-      user: { blogs_attributes: [ { id: user.blog.id, features: [ "", "individual_email_delivery" ] } ] }
+      user: { features: [ "", "multiple_blogs" ] }
     }
 
     assert_redirected_to admin_user_path(user)
-    assert_includes user.blog.reload.features, "individual_email_delivery"
+    assert_includes user.reload.features, "multiple_blogs"
   end
 
-  test "should remove all features from blog" do
+  test "should remove all features from user" do
     user = users(:vivian)
-    user.blog.update!(features: [ "individual_email_delivery" ])
+    user.update!(features: [ "multiple_blogs" ])
 
     patch admin_user_url(user), params: {
-      user: { blogs_attributes: [ { id: user.blog.id, features: [ "" ] } ] }
+      user: { features: [ "" ] }
     }
 
     assert_redirected_to admin_user_path(user)
-    assert_empty user.blog.reload.features
+    assert_empty user.reload.features
   end
 
   test "should update user trial_ends_at" do

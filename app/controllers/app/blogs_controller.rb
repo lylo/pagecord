@@ -1,4 +1,6 @@
 class App::BlogsController < AppController
+  before_action :require_multiple_blogs
+
   def index
     @blogs = Current.user.blogs.order(:created_at)
   end
@@ -9,6 +11,7 @@ class App::BlogsController < AppController
 
   def create
     @new_blog = Current.user.blogs.build(blog_params)
+
     if @new_blog.save
       session[:current_blog_id] = @new_blog.id
       redirect_to app_root_path, notice: "Blog created"
@@ -42,7 +45,11 @@ class App::BlogsController < AppController
 
   private
 
-  def blog_params
-    params.require(:blog).permit(:subdomain, :title)
-  end
+    def require_multiple_blogs
+      redirect_to app_root_path unless current_features.enabled?(:multiple_blogs)
+    end
+
+    def blog_params
+      params.require(:blog).permit(:subdomain, :title)
+    end
 end

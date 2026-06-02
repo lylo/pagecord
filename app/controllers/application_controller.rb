@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_features
 
   def current_features
-    Rails.features.for(blog: @blog)
+    Rails.features.for(user: Current.user, blog: @blog)
   end
 
   protected

@@ -85,11 +85,8 @@ class Admin::UsersController < AdminController
   private
 
     def user_params
-      permitted = params.require(:user).permit(:email, :trial_ends_at, blogs_attributes: [ :id, :subdomain, features: [] ])
-      blogs_attrs = permitted[:blogs_attributes]
-      (blogs_attrs.respond_to?(:values) ? blogs_attrs.values : Array(blogs_attrs)).each do |blog_attrs|
-        blog_attrs[:features] = blog_attrs[:features].reject(&:blank?) if blog_attrs[:features]
-      end
+      permitted = params.require(:user).permit(:email, :trial_ends_at, features: [], blogs_attributes: [ :id, :subdomain ])
+      permitted[:features] = permitted[:features].reject(&:blank?) if permitted[:features]
       permitted
     end
 end
