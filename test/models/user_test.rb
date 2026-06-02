@@ -82,4 +82,20 @@ class UserTest < ActiveSupport::TestCase
     user = User.create!(email: "trial@example.com", created_at: 5.days.ago)
     assert_not user.on_free_plan?
   end
+
+  test "custom_domain_access? allows active subscribers" do
+    assert users(:joel).custom_domain_access?
+  end
+
+  test "custom_domain_access? allows lapsed subscribers during grace period" do
+    users(:joel).subscription.update!(next_billed_at: 30.days.ago)
+
+    assert users(:joel).custom_domain_access?
+  end
+
+  test "custom_domain_access? rejects subscribers after grace period" do
+    users(:joel).subscription.update!(next_billed_at: 61.days.ago)
+
+    assert_not users(:joel).custom_domain_access?
+  end
 end
