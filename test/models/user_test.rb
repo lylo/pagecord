@@ -95,4 +95,20 @@ class UserTest < ActiveSupport::TestCase
     assert_not user.valid?
     assert_includes user.errors[:blogs], "You've reached your blog limit (1)"
   end
+
+  test "custom_domain_access? allows active subscribers" do
+    assert users(:joel).custom_domain_access?
+  end
+
+  test "custom_domain_access? allows lapsed subscribers during grace period" do
+    users(:joel).subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD - 1).days.ago)
+
+    assert users(:joel).custom_domain_access?
+  end
+
+  test "custom_domain_access? rejects subscribers after grace period" do
+    users(:joel).subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
+
+    assert_not users(:joel).custom_domain_access?
+  end
 end

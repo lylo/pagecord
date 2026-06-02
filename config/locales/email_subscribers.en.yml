@@ -35,7 +35,7 @@ en:
       individual:
         default_subject: "New post from %{blog_name} — %{date}"
   posts:
-    read_more: "Read more"
+    read_more: "Read more…"
   replies:
     form:
       subject_label: "Subject"

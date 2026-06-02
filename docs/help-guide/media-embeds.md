@@ -4,7 +4,7 @@ published: true
 published_at: 2026-03-30T00:00:00+00:00
 ---
 
-Pagecord can automatically turn links into rich embeds. Paste a supported URL on its own line — with no other text around it — and it will be replaced by an embedded player or preview when readers view your post.
+Pagecord can automatically turn links into rich embeds. Paste a supported URL on its own line – with no other text around it – and it will be replaced by an embedded player or preview when readers view your post.
 
 ## Supported services
 
@@ -33,4 +33,4 @@ https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT
 
 ## Embeds in the editor
 
-Embeds are not rendered in the editor — you'll see the raw URL while writing. They only appear in the published (or previewed) post.
+Embeds are not rendered in the editor – you'll see the raw URL while writing. They only appear in the published (or previewed) post.

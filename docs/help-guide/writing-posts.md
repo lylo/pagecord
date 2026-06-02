@@ -74,6 +74,10 @@ Title-free posts work well for:
 - Quotes
 - Short updates
 
+## Excerpt breaks
+
+If you want to show only the beginning of a post on your blog home page, add an excerpt break. See [Using excerpt breaks](excerpt-breaks.md) for details.
+
 ## Tags
 
 Add tags to organise your posts by topic. Readers can click a tag to see all posts with that tag.
@@ -117,4 +121,3 @@ To set a canonical URL, select **Canonical URL** from the drop-down menu when ed
 ## Deleting posts
 
 To delete a post, select **Delete Post** from the drop-down menu. Deleted posts are moved to the trash and kept for 30 days, so you can restore them if you change your mind.
-

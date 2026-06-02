@@ -36,9 +36,6 @@ class Home::SpotlightController < ApplicationController
     end
 
     def spotlight_posts_scope
-      Post.visible.posts
-        .joins(blog: :user)
-        .where(blogs: { allow_search_indexing: true })
-        .where(users: { discarded_at: nil })
+      Post.visible.posts.joins(:blog).merge(Blog.spotlit)
     end
 end

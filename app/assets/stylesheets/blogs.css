@@ -381,6 +381,18 @@ footer.blog-footer #brand svg {
 }
 
 /* ============================= */
+/* Excerpt Read More              */
+/* ============================= */
+
+.excerpt-read-more {
+  margin-top: var(--lexxy-content-margin);
+}
+
+.excerpt-read-more a {
+  color: var(--color-text-muted);
+}
+
+/* ============================= */
 /* Post Footer                   */
 /* ============================= */
 
@@ -475,6 +487,11 @@ footer.blog-footer #brand svg {
     textarea {
       resize: vertical;
       max-width: 100%;
+
+      &.autogrow {
+        field-sizing: content;
+        min-block-size: 10em;
+      }
     }
 
     input[type="email"]::placeholder {

@@ -10,6 +10,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 ## Code Style
 
+- Use British English spelling in user-facing copy and documentation (for example, "capitalisation", not "capitalization")
 - Double quotes for strings, not single quotes
 - Use en-dashes (–), never em-dashes (—)
 - Remove trailing whitespace
@@ -58,6 +59,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 ## Git Commits
 
+- Use plain branch names without category prefixes (for example `help-dialogs`, not `feature/help-dialogs` or `fix/help-dialogs`)
 - **NEVER** add "Co-Authored-By", "Generated with Claude Code", or any AI attribution to commit messages, PR descriptions, or code comments. This is a hard rule — no exceptions.
 - Ask for human review before committing generated code
 
@@ -105,6 +107,7 @@ Docker: prefix commands with `docker-compose exec web`
 - **Content moderation**: OpenAI API via `ContentModerator`. `ContentModerationBatchJob` runs every 10 min. Flagged posts stay visible for admin review. Daily digest to admin via `ContentModerationDigestJob`.
 - **Spam detection**: GPT-4o-mini via `SpamDetector`. Checks blogs 2h–7d old. Skips subscribers. Admin confirms (discards user) or dismisses. Daily digest via `SpamDetectionDigestJob`. IP reputation checks via `IpReputation` (GetIpIntel provider).
 - **Dynamic variables**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}` — processed in pages only (`is_page: true`) via `DynamicVariableProcessor`
+- **Excerpt break**: `{{ more }}` or `<!--more-->` marker splits a post into a teaser and the rest. `ExcerptBreak` parses the marker; `Post#excerpt_html` / `excerpt_text` expose the teaser (computed on demand, memoized – no DB column). Stream layout renders teaser + "Read more" link; cards use `excerpt_text`. Full post views, RSS, and digest emails render full content with the marker stripped. Help doc: `docs/help-guide/excerpt-breaks.md`.
 - **OG images**: Auto-generated from first post image via `GenerateOpenGraphImageJob`
 
 ### Analytics

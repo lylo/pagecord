@@ -47,6 +47,7 @@ Rails.application.configure do
                      "https://open.spotify.com",
                      "https://player.vimeo.com",
                      "https://www.youtube.com",
+                     "https://www.youtube-nocookie.com",
                      "https://youtube.com",
                      "https://embed.music.apple.com",
                      "https://gist.github.com",

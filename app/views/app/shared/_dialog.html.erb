@@ -1,0 +1,41 @@
+<%
+  dialog_id = local_assigns.fetch(:id)
+  title_id = "#{dialog_id}-title"
+  shortcut = local_assigns[:shortcut]
+  button_label = local_assigns.fetch(:button_label, title)
+  button_title = shortcut.present? ? "#{button_label} (#{shortcut})" : button_label
+  dialog_data = { controller: "dialog" }
+  dialog_data[:dialog_shortcut_value] = shortcut if shortcut.present?
+  wrapper_options = { data: dialog_data }
+  wrapper_options[:data][:action] = "keydown@document->dialog#openFromShortcut" if shortcut.present?
+%>
+
+<%= tag.div(**wrapper_options) do %>
+  <button type="button"
+          class="inline-flex h-7 w-7 cursor-pointer items-center justify-center text-slate-500 hover:text-black dark:text-slate-300 dark:hover:text-slate-50"
+          title="<%= button_title %>"
+          aria-label="<%= button_label %>"
+          data-action="dialog#open">
+    <%= inline_svg_tag "icons/information-circle.svg", class: "w-7 h-7" %>
+  </button>
+
+  <dialog class="fixed inset-0 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-lg border border-slate-200 bg-white p-0 text-slate-900 shadow-xl backdrop:bg-slate-950/50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+          aria-labelledby="<%= title_id %>"
+          data-dialog-target="dialog"
+          data-action="click->dialog#closeOnBackdrop">
+    <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
+      <h2 id="<%= title_id %>" class="text-base font-semibold"><%= title %></h2>
+      <button type="button"
+              class="cursor-pointer rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              title="Close"
+              aria-label="Close"
+              data-action="dialog#close">
+        <%= inline_svg_tag "icons/close.svg", class: "h-5 w-5" %>
+      </button>
+    </div>
+
+    <div class="space-y-5 px-5 py-5">
+      <%= render content_partial %>
+    </div>
+  </dialog>
+<% end %>

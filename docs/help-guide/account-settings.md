@@ -21,7 +21,7 @@ Set your time zone to display dates and times in your local time. This affects h
 
 ## Password
 
-Pagecord uses magic link emails by default — no password needed. If you prefer a password, click the link to set one via the forgot password flow.
+Pagecord uses magic link emails by default – no password needed. If you prefer a password, click the link to set one via the forgot password flow.
 
 ## Sender email addresses
 
@@ -44,4 +44,3 @@ To permanently delete your account:
 4. Confirm when prompted
 
 This cannot be undone. All your posts, pages, and data will be permanently deleted.
-

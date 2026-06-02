@@ -151,6 +151,15 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "", summary
   end
 
+  test "excerpt_text returns plain text of excerpt when excerpt break is present" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>Intro text for cards.</p><p>{{ more }}</p><p>Body text should stay off cards.</p>"
+    )
+
+    assert_equal "Intro text for cards.", post.excerpt_text
+  end
+
   test "has_text_content? should return true for posts with text" do
     blog = blogs(:joel)
     post = blog.posts.create!(
@@ -212,6 +221,23 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "This content should be cached.", post.text_summary
   end
 
+  test "text_summary strips WordPress-style excerpt marker" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(content: "<p>Before</p><!--more--><p>After</p>")
+
+    assert_equal "Before After", post.text_summary
+  end
+
+  test "excerpt_html returns teaser HTML while text_summary keeps full content" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>Intro text.</p><p>{{ more }}</p><p>Body text stays in the full summary.</p>"
+    )
+
+    assert_equal "<p>Intro text.</p>", post.excerpt_html
+    assert_equal "Intro text. Body text stays in the full summary.", post.text_summary
+  end
+
   test "should update text_summary when content changes on untitled post" do
     blog = blogs(:joel)
     post = blog.posts.create!(content: "Original content")
@@ -236,6 +262,15 @@ class PostTest < ActiveSupport::TestCase
     post = blog.posts.create!(content: "This is my content that will be used as the title")
 
     assert_equal "This is my content that will be used as the title", post.display_title
+  end
+
+  test "display_title should still use full text_summary when excerpt break is present" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>Intro title text.</p><p>{{ more }}</p><p>Body text stays part of the title fallback.</p>"
+    )
+
+    assert_equal "Intro title text. Body text stays part of the title fallback.", post.display_title
   end
 
   test "display_title should truncate long text_summary" do

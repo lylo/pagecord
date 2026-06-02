@@ -23,7 +23,7 @@ Links to one of your published pages. The label is automatically set to the page
 
 A manual link with your own label and URL. Use this for:
 
-- A link to `/posts` (your full post list)
+- A link to `/posts` (all your posts)
 - External links (e.g., your portfolio or shop)
 - Any URL you want
 
@@ -57,4 +57,3 @@ Drag items to change their order. The order you see in settings is the order the
 ## Removing navigation items
 
 Click the trash icon next to any navigation item to remove it.
-

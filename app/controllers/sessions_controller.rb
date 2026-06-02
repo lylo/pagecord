@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  rate_limit to: 5, within: 5.minutes, only: :create
+  rate_limit to: 5, within: 5.minutes, only: :create, with: :login_rate_limit_reached
   rate_limit to: 20, within: 1.minute, only: :new
 
   layout "sessions"
@@ -36,7 +36,7 @@ class SessionsController < ApplicationController
     def create_with_password
       user = User.kept.joins(:blogs).find_by(blogs: { subdomain: user_params[:subdomain] })
 
-      if user&.authenticate(user_params[:password])
+      if user&.verified? && user.authenticate(user_params[:password])
         sign_in user
         redirect_to app_root_path, notice: "Welcome back!"
       else
@@ -58,6 +58,11 @@ class SessionsController < ApplicationController
       end
 
       redirect_to thanks_sessions_path
+    end
+
+    def login_rate_limit_reached
+      path = params.dig(:user, :password).present? ? login_path(mode: :password) : login_path
+      redirect_to path, alert: "Too many login attempts. Please wait a few minutes and try again."
     end
 
     def user_params

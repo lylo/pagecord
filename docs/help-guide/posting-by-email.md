@@ -61,5 +61,5 @@ If your post doesn't appear:
 
 - Check the email was sent from the right email address. This must be the email address you signed up with! This is the most common issue people face. You can add up to three additional sender email addresses in the settings so you can publish from different addresses.Look in your spam folder for any bounce messages
 
-Posts from email are published immediately — there's no draft state. If you need to edit, you can do so in the app after it's published.
+Posts from email are published immediately – there's no draft state. If you need to edit, you can do so in the app after it's published.
 

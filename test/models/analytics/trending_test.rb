@@ -31,10 +31,12 @@ class Analytics::TrendingTest < ActiveSupport::TestCase
     refute result.any? { |r| r[:post] == draft }
   end
 
-  test "excludes posts older than 14 days" do
+  test "excludes posts older than 10 days" do
     post = posts(:three)
-    post.update_columns(published_at: 15.days.ago, upvotes_count: 25)
-    PageView.create!(blog: post.blog, post: post, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-old")
+    post.update_columns(published_at: 11.days.ago, upvotes_count: 25)
+    10.times do |i|
+      PageView.create!(blog: post.blog, post: post, viewed_at: 1.day.ago, is_unique: true, visitor_hash: "test-old-#{i}")
+    end
 
     result = @trending.top_posts(limit: 10)
 
@@ -56,7 +58,7 @@ class Analytics::TrendingTest < ActiveSupport::TestCase
     assert recent_score > older_score
   end
 
-  test "new posts get a multiplicative boost that decays over 14 days" do
+  test "new posts get a multiplicative boost that decays over 10 days" do
     brand_new = posts(:one)
     week_old = posts(:two)
 
@@ -68,7 +70,7 @@ class Analytics::TrendingTest < ActiveSupport::TestCase
     new_score = @trending.send(:score_post, brand_new, view_counts)[:score]
     week_score = @trending.send(:score_post, week_old, view_counts)[:score]
 
-    # Brand new gets 2x multiplier, week old gets 1.5x multiplier
+    # Brand new gets 2x multiplier, week old gets 1.3x multiplier
     assert new_score > week_score
   end
 end

@@ -174,18 +174,28 @@
         <% end %>
         <div class="flex justify-between gap-4">
           <dt class="font-medium text-slate-900 dark:text-slate-50">Custom Domain</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= blog.custom_domain.presence || 'None' %></dd>
+          <dd class="text-slate-500 dark:text-slate-400"><%= blog.custom_domain.presence || "None" %></dd>
         </div>
         <div class="flex justify-between gap-4">
           <dt class="font-medium text-slate-900 dark:text-slate-50">Theme</dt>
           <dd class="text-slate-500 dark:text-slate-400"><%= blog.theme %> · <%= blog.width %> · <%= blog.font %></dd>
+        </div>
+        <div class="flex justify-between gap-4 items-center">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Spotlight</dt>
+          <dd>
+            <% if blog.spotlight_exclusion %>
+              <%= button_to "Include in spotlight", admin_user_spotlight_exclusion_path(@user, blog_id: blog.id), method: :delete, class: "btn-optional text-xs" %>
+            <% else %>
+              <%= button_to "Exclude from spotlight", admin_user_spotlight_exclusion_path(@user, blog_id: blog.id), method: :post, class: "btn-optional text-xs" %>
+            <% end %>
+          </dd>
         </div>
       </dl>
     </div>
 
     <%# ---- Features ---- %>
     <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-      <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Features — <%= blog.subdomain %></h3>
+      <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Features – <%= blog.subdomain %></h3>
       <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "p-6", data: { turbo: false } do |f| %>
         <%= f.fields_for :blogs, blog do |bf| %>
           <%= bf.hidden_field :id %>

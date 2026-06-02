@@ -12,6 +12,13 @@ class AppController < ApplicationController
 
     def load_user
       @user = Current.user
+
+      unless @user.verified?
+        sign_out
+        redirect_to login_path, alert: "Please verify your email address before using Pagecord."
+        return
+      end
+
       @blog = resolve_current_blog
       Current.blog = @blog
     end

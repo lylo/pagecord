@@ -1,13 +1,12 @@
 class Analytics::Trending
-  VIEW_WINDOW_DAYS = 14
-  NEW_BOOST_DAYS = 14
+  WINDOW_DAYS = 10
   AGE_PENALTY_FACTOR = 0.1
 
   MIN_VIEWS = 10
 
   def top_posts(limit: 10)
     view_counts = PageView
-      .where(viewed_at: VIEW_WINDOW_DAYS.days.ago.beginning_of_day..Time.current.end_of_day, is_unique: true)
+      .where(viewed_at: WINDOW_DAYS.days.ago.beginning_of_day..Time.current.end_of_day, is_unique: true)
       .where.not(post_id: nil)
       .group(:post_id)
       .count
@@ -15,10 +14,8 @@ class Analytics::Trending
     eligible_post_ids = view_counts.select { |_, count| count >= MIN_VIEWS }.keys
 
     Post.visible.posts
-      .joins(blog: :user)
-      .where(blogs: { allow_search_indexing: true })
-      .where(users: { discarded_at: nil })
-      .where(published_at: 14.days.ago..)
+      .joins(:blog).merge(Blog.spotlit)
+      .where(published_at: WINDOW_DAYS.days.ago..)
       .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
       .where(id: eligible_post_ids)
       .eager_load(:blog)
@@ -34,7 +31,7 @@ class Analytics::Trending
     # Score = (engagement × boost) - age_penalty
     #
     # - engagement: √views + (√(upvotes - 1) × 10) — sqrt dampens outliers at the top end
-    # - boost: 2× for brand new posts, decaying linearly to 1× at NEW_BOOST_DAYS
+    # - boost: 2× for brand new posts, decaying linearly to 1× at WINDOW_DAYS
     # - age_penalty: 0.1 subtracted per day, breaking ties toward newer posts
     def score_post(post, view_counts)
       views = view_counts[post.id] || 0
@@ -43,7 +40,7 @@ class Analytics::Trending
       days_old = (Date.current - post.published_at.to_date).to_i
 
       engagement = Math.sqrt(views) + (Math.sqrt(external_upvotes) * 10)
-      boost_multiplier = 1 + ([ NEW_BOOST_DAYS - days_old, 0 ].max / NEW_BOOST_DAYS.to_f)
+      boost_multiplier = 1 + ([ WINDOW_DAYS - days_old, 0 ].max / WINDOW_DAYS.to_f)
       age_penalty = days_old * AGE_PENALTY_FACTOR
 
       score = (engagement * boost_multiplier) - age_penalty

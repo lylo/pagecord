@@ -1,6 +1,6 @@
 class Blog < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, StorageTrackable, Blog::Contactable, Blog::ApiKey
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, StorageTrackable, Blog::Contactable, Blog::ApiKey, Blog::Spotlit
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 

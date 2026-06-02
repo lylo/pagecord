@@ -15,6 +15,7 @@ If you need specific help or have a question, visit the [Support](support.md) pa
 New to Pagecord? Start here. These guides will help you set up your blog and publish your first post in no time.
 
 - [Getting Started with Pagecord](getting-started-with-pagecord.md)
+- [Logging in](logging-in.md)
 - [Importing your blog](importing-an-existing-blog.md)
 
 ## Writing & Publishing
@@ -22,12 +23,13 @@ New to Pagecord? Start here. These guides will help you set up your blog and pub
 Learn how to create posts, format your content, add images, schedule posts for later, and organise with tags.
 
 - [Writing posts](writing-posts.md)
+- [Using excerpt breaks](excerpt-breaks.md)
 - [Media embeds](media-embeds.md)
 - [Posting by email](posting-by-email.md)
 
 ## Pages & Navigation
 
-Pages are for content that lives outside your blog feed — like an About page, Archive, or custom home page. Learn how to create pages, set up your navigation menu, and use dynamic variables.
+Pages are for content that lives outside your blog feed – like an About page, Archive, or custom home page. Learn how to create pages, set up your navigation menu, and use dynamic variables.
 
 - [Creating pages](creating-pages.md)
 - [Setting up navigation](setting-up-navigation.md)
@@ -81,4 +83,3 @@ Manage your subscription, update your settings, or export your content.
 - [Account settings](account-settings.md)
 - [Billing](billing.md)
 - [Exporting your blog](exporting-your-blog.md)
-

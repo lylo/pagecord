@@ -103,11 +103,11 @@
   <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Fediverse Author Attribution</h3>
     <p>
-      To allow your Pagecord posts to be attributed to you when shared on Mastodon (or any other Fediverse platform), enter your
-      Fediverse username below.
+      Add your Fediverse handle so Mastodon can show you as the author when someone shares one of your posts. Use the full handle,
+      not your profile URL.
     </p>
 
-    <%= styled_text_field(form, :fediverse_author_attribution, class: "mt-4 md:w-full") %>
+    <%= styled_text_field(form, :fediverse_author_attribution, placeholder: "e.g. @you@mastodon.social", class: "mt-4 md:w-full") %>
   </div>
 
   <div class="mt-8">

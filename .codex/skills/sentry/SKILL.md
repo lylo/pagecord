@@ -16,6 +16,6 @@ description: Investigate and fix a Sentry issue in this codebase. Use when the u
 
 ## Git and output
 
-- Create a branch named `fix/sentry-{issue-id}` when starting an implementation task.
+- Create a branch named `sentry-{issue-id}` when starting an implementation task.
 - Summarize the issue, cause, fix, and verification.
 - If the user wants a PR and GitHub tooling is available, prepare one with a short factual summary and a clear test plan.
