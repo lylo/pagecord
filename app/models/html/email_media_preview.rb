@@ -1,14 +1,13 @@
 module Html
   class EmailMediaPreview < Transformation
-    YOUTUBE = YoutubeEmailPreview.new
-
     def transform(html)
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
+      youtube = YoutubeEmailPreview.new
 
       doc.css("a[href]").each do |link|
         next unless bare_link?(link)
 
-        replacement = preview_link_for(doc, link["href"])
+        replacement = youtube.preview_link(doc, link["href"])
         link.replace(replacement) if replacement
       end
 
@@ -16,7 +15,7 @@ module Html
         url = standalone_text_url(node)
         next unless url
 
-        replacement = preview_link_for(doc, url)
+        replacement = youtube.preview_link(doc, url)
         node.replace(replacement) if replacement
       end
 
@@ -24,12 +23,6 @@ module Html
     end
 
     private
-
-      def preview_link_for(doc, url)
-        return if url.blank?
-
-        YOUTUBE.preview_link(doc, url)
-      end
 
       def standalone_text_url(node)
         return unless node.text? && node.ancestors("a").empty?
