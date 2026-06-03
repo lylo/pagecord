@@ -132,10 +132,12 @@ Docker: prefix commands with `docker-compose exec web`
 - **Cancellation**: `SendCancellationEmailJob` sends appropriate email (subscriber vs free account). User destruction via `DestroyUserJob`.
 
 ### Feature Toggles
-- Per-blog feature flags stored in the blog's `features` array column (e.g. `["contact_form", "analytics_countries"]`)
-- Defined in `config/features.rb` using `feature :name do |blog:| ... end`
-- In controllers/views: `current_features.enabled?(:feature_name)` (via `Rails.features.for(blog: @blog)`)
-- In models/concerns: check `features.include?("feature_name")` directly on the blog instance
+- Feature flags are stored on `users.features` as an array column (e.g. `["multiple_blogs"]`).
+- Defined in `config/features.rb` using the `feature_toggles` gem: `feature :name do |user: nil, blog: nil| ... end`
+- `ApplicationController#current_features` returns `Rails.features.for(user: Current.user, blog: @blog)` and is exposed to controllers/views.
+- In app controllers/views: prefer `current_features.enabled?(:feature_name)` so checks have both current user and blog context.
+- In models/concerns: check `user.features.include?("feature_name")` when direct model-level access is needed.
+- Feature-gated app UI should also guard direct routes with a `before_action` and redirect when disabled; for example, the multiple-blog management UI is gated by `:multiple_blogs`.
 
 ### Key Concerns
 - **Subscribable**: Trial management (14 days), `has_premium_access?` vs `subscribed?`

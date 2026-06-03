@@ -19,10 +19,10 @@ class Blogs::BaseController < ApplicationController
       @blog ||= if custom_domain_request?
         blog_from_custom_domain
       elsif request.subdomain.present? && request.subdomain != "www"
-        Blog.includes(:avatar_attachment).find_by(subdomain: request.subdomain)
+        Blog.kept.includes(:avatar_attachment).find_by(subdomain: request.subdomain)
       else
         if blog_params[:subdomain].present?
-          Blog.includes(:avatar_attachment).find_by(subdomain: blog_params[:subdomain])
+          Blog.kept.includes(:avatar_attachment).find_by(subdomain: blog_params[:subdomain])
         end
       end
 
@@ -43,13 +43,14 @@ class Blogs::BaseController < ApplicationController
     end
 
     def enforce_custom_domain
-      redirect_from_default_domain || redirect_to_canonical_custom_domain
+      redirect_from_lapsed_custom_domain || redirect_from_default_domain || redirect_to_canonical_custom_domain
     end
 
     # Redirects requests from the default pagecord.com subdomain to the blog's custom domain
     # Example: joel.pagecord.com/about -> example.com/about
     def redirect_from_default_domain
       return false unless default_domain_request? && @blog.custom_domain.present?
+      return false unless @blog.user.custom_domain_access?
 
       escaped_subdomain = Regexp.escape(@blog.subdomain)
       request_path = request.path.gsub(/^\/@?#{escaped_subdomain}\/?/, "")
@@ -58,6 +59,15 @@ class Blogs::BaseController < ApplicationController
       request_path = request_path.sub(/^\//, "") if full_url.end_with?("/")
       new_url = "#{full_url}#{request_path}"
 
+      redirect_to new_url, status: :moved_permanently, allow_other_host: true
+      true
+    end
+
+    def redirect_from_lapsed_custom_domain
+      return false unless custom_domain_request? && @blog.custom_domain.present?
+      return false if @blog.user.custom_domain_access?
+
+      new_url = "#{request.protocol}#{@blog.subdomain}.#{Rails.application.config.x.domain}#{request.fullpath}"
       redirect_to new_url, status: :moved_permanently, allow_other_host: true
       true
     end

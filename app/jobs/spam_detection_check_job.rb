@@ -2,7 +2,7 @@ class SpamDetectionCheckJob < ApplicationJob
   queue_as :low
 
   def perform(blog_id)
-    blog = Blog.find_by(id: blog_id)
+    blog = Blog.kept.find_by(id: blog_id)
     return unless blog
 
     detector = BlogSpamDetector.new(blog)

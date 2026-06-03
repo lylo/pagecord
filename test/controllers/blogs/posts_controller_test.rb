@@ -291,6 +291,13 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to "http://www.example.com/"
   end
 
+  test "should redirect to root if blog is discarded" do
+    @blog.discard!
+
+    get blog_posts_path
+    assert_redirected_to "http://www.example.com/"
+  end
+
   test "should redirect to root if user is unverified" do
     @blog = blogs(:elliot)
     host_subdomain! @blog.subdomain
@@ -575,6 +582,28 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get "/#{post.slug}"
 
     assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
+  end
+
+  test "should not redirect from default domain to custom domain after grace period" do
+    @blog = blogs(:annie)
+    @blog.user.subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
+    host! "#{@blog.subdomain}.example.com"
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_response :success
+  end
+
+  test "should redirect from lapsed custom domain to default domain after grace period" do
+    @blog = blogs(:annie)
+    @blog.user.subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
+    host! @blog.custom_domain
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{post.slug}"
   end
 
   test "should redirect from www variant to canonical custom domain" do

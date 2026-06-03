@@ -121,6 +121,16 @@ rake "logs:report[2026-02-23]"
 # Drill into a specific hour (requests/minute instead of per-hour)
 rake "logs:report[2026-02-23,21]"
 
+# Performance report for a day (response times, ActiveRecord time, query counts)
+rake "logs:performance[2026-02-23]"
+
+# Performance report for a specific hour
+rake "logs:performance[2026-02-23,21]"
+
+# Performance report for one blog or custom domain
+HOST=joel rake "logs:performance[2026-02-23]"
+HOST=example.com rake "logs:performance[2026-02-23,21]"
+
 # Live tail with per-minute request counter (alerts at >500 req/min)
 rake logs:watch
 

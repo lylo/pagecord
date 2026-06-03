@@ -6,7 +6,7 @@
     <li>
       <%= link_to "Pages", app_pages_path, class: nav_class_for("pages") %>
     </li>
-    <% if Current.user.blog.show_metrics? %>
+    <% if @blog.show_metrics? %>
       <li>
         <%= link_to "Analytics", app_analytics_path, class: nav_class_for("analytics") %>
       </li>
