@@ -5,7 +5,7 @@ class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
     html = %(<p><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a></p>)
     result = Html::EmailMediaPreview.new.transform(html)
 
-    assert_includes result, %(<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="display:block;text-align:center;">)
+    assert_includes result, %(<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="email-media-preview">)
     assert_includes result, %(<img src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg")
     assert_includes result, %(alt="YouTube video thumbnail")
     assert_includes result, %(style="display:block;margin:0 auto;max-width:100%;height:auto;")
@@ -15,15 +15,19 @@ class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
     html = %(<p>https://www.youtube.com/watch?v=dQw4w9WgXcQ</p>)
     result = Html::EmailMediaPreview.new.transform(html)
 
-    assert_includes result, %(<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="display:block;text-align:center;">)
+    assert_includes result, %(<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="email-media-preview">)
     assert_includes result, %(<img src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg")
   end
 
   test "leaves inline youtube text urls unchanged" do
-    html = %(<p>Watch https://www.youtube.com/watch?v=dQw4w9WgXcQ later</p>)
+    html = <<~HTML
+      <p>Watch https://www.youtube.com/watch?v=dQw4w9WgXcQ later</p>
+      <p>https://www.youtube.com/watch?v=dQw4w9WgXcQ later</p>
+    HTML
     result = Html::EmailMediaPreview.new.transform(html)
 
     assert_includes result, "Watch https://www.youtube.com/watch?v=dQw4w9WgXcQ later"
+    assert_includes result, "https://www.youtube.com/watch?v=dQw4w9WgXcQ later"
     assert_not_includes result, "hqdefault.jpg"
   end
 

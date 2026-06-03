@@ -16,7 +16,7 @@ module Html
       def thumbnail_link(doc, url, video_id)
         link = Nokogiri::XML::Node.new("a", doc)
         link["href"] = url
-        link["style"] = "display:block;text-align:center;"
+        link["class"] = "email-media-preview"
         link.add_child(thumbnail_image(doc, video_id))
         link
       end

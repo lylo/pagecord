@@ -1,25 +1,23 @@
 module Html
   class EmailMediaPreview < Transformation
-    PROVIDERS = [
-      YoutubeEmailPreview.new
-    ].freeze
+    YOUTUBE = YoutubeEmailPreview.new
 
     def transform(html)
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
 
       doc.css("a[href]").each do |link|
-        replacement = preview_link_for(doc, link["href"])
-        next unless replacement && bare_link?(link)
+        next unless bare_link?(link)
 
-        link.replace(replacement)
+        replacement = preview_link_for(doc, link["href"])
+        link.replace(replacement) if replacement
       end
 
       doc.traverse do |node|
         url = standalone_text_url(node)
-        replacement = preview_link_for(doc, url)
-        next unless replacement
+        next unless url
 
-        node.replace(replacement)
+        replacement = preview_link_for(doc, url)
+        node.replace(replacement) if replacement
       end
 
       doc.to_html
@@ -30,15 +28,14 @@ module Html
       def preview_link_for(doc, url)
         return if url.blank?
 
-        PROVIDERS.lazy.filter_map { |provider| provider.preview_link(doc, url) }.first
+        YOUTUBE.preview_link(doc, url)
       end
 
       def standalone_text_url(node)
         return unless node.text? && node.ancestors("a").empty?
 
-        text = node.text
-        url = text.strip
-        url if url.present? && text.match?(/\A\s*#{Regexp.escape(url)}\s*\z/)
+        url = node.text.strip
+        url if url.present? && !url.match?(/\s/)
       end
 
       def bare_link?(link)
