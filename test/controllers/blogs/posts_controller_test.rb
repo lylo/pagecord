@@ -291,6 +291,13 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to "http://www.example.com/"
   end
 
+  test "should redirect to root if blog is discarded" do
+    @blog.discard!
+
+    get blog_posts_path
+    assert_redirected_to "http://www.example.com/"
+  end
+
   test "should redirect to root if user is unverified" do
     @blog = blogs(:elliot)
     host_subdomain! @blog.subdomain

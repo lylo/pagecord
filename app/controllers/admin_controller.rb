@@ -4,7 +4,7 @@ class AdminController < AppController
   before_action :require_admin
 
   def index
-    redirect_to admin_blogs_path
+    redirect_to admin_users_path
   end
 
   private

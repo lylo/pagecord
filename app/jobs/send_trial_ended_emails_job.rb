@@ -3,7 +3,7 @@ class SendTrialEndedEmailsJob < ApplicationJob
 
   def perform
     users = User.kept
-                .includes(:blog)
+                .includes(:blogs)
                 .where(verified: true)
                 .where(trial_ends_at: Date.yesterday)
                 .where.missing(:subscription)

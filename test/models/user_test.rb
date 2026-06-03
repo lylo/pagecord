@@ -83,6 +83,33 @@ class UserTest < ActiveSupport::TestCase
     assert_not user.on_free_plan?
   end
 
+  test "nested blog attributes cannot exceed the user blog limit" do
+    user = User.new(
+      email: "two-blogs@example.com",
+      blogs_attributes: [
+        { subdomain: "twoblogsone" },
+        { subdomain: "twoblogstwo" }
+      ]
+    )
+
+    assert_not user.valid?
+    assert user.blogs.any? { |blog| blog.errors[:base].include?("You've reached your blog limit (1)") }
+  end
+
+  test "destroy removes kept and discarded blogs" do
+    user = users(:annie)
+    kept_blog = user.blog
+    discarded_blog = user.blogs.create!(subdomain: "anniediscarded")
+    discarded_blog.discard!
+
+    assert_difference "Blog.with_discarded.count", -2 do
+      user.destroy!
+    end
+
+    assert_not Blog.with_discarded.exists?(kept_blog.id)
+    assert_not Blog.with_discarded.exists?(discarded_blog.id)
+  end
+
   test "custom_domain_access? allows active subscribers" do
     assert users(:joel).custom_domain_access?
   end

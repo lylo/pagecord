@@ -3,16 +3,16 @@ class App::PagesController < AppController
     persist_sort_preference if params[:sort].present?
 
     @sort = selected_sort
-    @pages = Current.user.blog.pages.kept.published.order(pages_order)
-    @drafts = Current.user.blog.pages.kept.draft.order(:title)
+    @pages = @blog.pages.kept.published.order(pages_order)
+    @drafts = @blog.pages.kept.draft.order(:title)
   end
 
   def new
-    @page = Current.user.blog.pages.build
+    @page = @blog.pages.build
   end
 
   def create
-    @page = Current.user.blog.pages.build(page_params)
+    @page = @blog.pages.build(page_params)
 
     return render_stale_form_context unless context_blog_id_matches_current_blog?
 
@@ -24,11 +24,11 @@ class App::PagesController < AppController
   end
 
   def edit
-    @page = Current.user.blog.pages.kept.find_by!(token: params[:token])
+    @page = @blog.pages.kept.find_by!(token: params[:token])
   end
 
   def update
-    @page = Current.user.blog.pages.kept.find_by!(token: params[:token])
+    @page = @blog.pages.kept.find_by!(token: params[:token])
 
     if @page.update(page_params)
       redirect_to app_pages_path, notice: "Page was successfully updated."
@@ -38,15 +38,15 @@ class App::PagesController < AppController
   end
 
   def destroy
-    @page = Current.user.blog.pages.find_by!(token: params[:token])
-    Current.user.blog.update!(home_page_id: nil) if @page.home_page?
+    @page = @blog.pages.find_by!(token: params[:token])
+    @blog.update!(home_page_id: nil) if @page.home_page?
     @page.destroy!
     redirect_to app_pages_trash_path, notice: "Page was permanently deleted."
   end
 
   def set_as_home_page
-    @page = Current.user.blog.pages.kept.find_by!(token: params[:token])
-    Current.user.blog.update!(home_page_id: @page.id)
+    @page = @blog.pages.kept.find_by!(token: params[:token])
+    @blog.update!(home_page_id: @page.id)
     redirect_to app_pages_path, notice: "Home page set!"
   end
 
@@ -57,7 +57,7 @@ class App::PagesController < AppController
     end
 
     def pages_order
-      @sort == "updated" ? Arel.sql("updated_at DESC, LOWER(title)") : Arel.sql("CASE WHEN id = #{Current.user.blog.home_page_id.to_i} THEN 0 ELSE 1 END, LOWER(title), updated_at DESC")
+      @sort == "updated" ? Arel.sql("updated_at DESC, LOWER(title)") : Arel.sql("CASE WHEN id = #{@blog.home_page_id.to_i} THEN 0 ELSE 1 END, LOWER(title), updated_at DESC")
     end
 
     def persist_sort_preference

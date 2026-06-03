@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
     if Current.user.present?
       redirect_to app_root_path
     else
-      @user = User.new(blog: Blog.new(subdomain: ""))
+      @user = User.new.tap { |u| u.blogs.build(subdomain: "") }
       @password_mode = params[:mode] == "password"
     end
   end
@@ -34,21 +34,23 @@ class SessionsController < ApplicationController
   private
 
     def create_with_password
-      user = User.kept.joins(:blog).find_by(blogs: { subdomain: user_params[:subdomain] })
+      blog = Blog.kept.joins(:user).where(users: { discarded_at: nil }).find_by(subdomain: user_params[:subdomain])
+      user = blog&.user
 
       if user&.verified? && user.authenticate(user_params[:password])
         sign_in user
+        session[:current_blog_id] = blog.id
         redirect_to app_root_path, notice: "Welcome back!"
       else
         flash.now[:alert] = "Invalid subdomain or password"
-        @user = User.new(blog: Blog.new(subdomain: user_params[:subdomain]))
+        @user = User.new.tap { |u| u.blogs.build(subdomain: user_params[:subdomain]) }
         @password_mode = true
         render :new, status: :unprocessable_entity
       end
     end
 
     def create_with_email
-      @user = User.kept.joins(:blog).find_by(
+      @user = User.kept.joins(:blogs).find_by(
         blogs: { subdomain: user_params[:subdomain] },
         email: user_params[:email]
       )

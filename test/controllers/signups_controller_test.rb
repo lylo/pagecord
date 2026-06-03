@@ -4,7 +4,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should create user and redirect to posts path" do
     assert_difference("User.count") do
       assert_emails 1 do
-        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" } }, rendered_at: signed_rendered_at }
+        post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at }
       end
     end
 
@@ -17,7 +17,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
   test "should capture signup attribution fields" do
     assert_difference("User.count") do
-      post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, signup_referrer: "https://pagecord.com/pagecord_vs_substack", signup_source_note: "Hacker News" }, rendered_at: signed_rendered_at }
+      post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ], signup_referrer: "https://pagecord.com/pagecord_vs_substack", signup_source_note: "Hacker News" }, rendered_at: signed_rendered_at }
     end
 
     assert_equal "https://pagecord.com/pagecord_vs_substack", User.last.signup_referrer
@@ -27,7 +27,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should create user with marketing consent" do
     assert_difference("User.count") do
       assert_emails 1 do
-        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, marketing_consent: true }, rendered_at: signed_rendered_at }
+        post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ], marketing_consent: true }, rendered_at: signed_rendered_at }
       end
     end
 
@@ -38,7 +38,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should create user with timezone" do
     assert_difference("User.count") do
       assert_emails 1 do
-        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, marketing_consent: true, timezone: "Europe/Warsaw" }, rendered_at: signed_rendered_at }
+        post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ], marketing_consent: true, timezone: "Europe/Warsaw" }, rendered_at: signed_rendered_at }
       end
     end
 
@@ -52,7 +52,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       assert_emails 0 do
         previous_env = ENV["BANNED_TIMEZONES"]
         ENV["BANNED_TIMEZONES"] = "Chennai"
-        post signups_url, params: { user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" }, marketing_consent: true, timezone: "Asia/Kolkata" }, rendered_at: signed_rendered_at }
+        post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ], marketing_consent: true, timezone: "Asia/Kolkata" }, rendered_at: signed_rendered_at }
         ENV["BANNED_TIMEZONES"] = previous_env
       end
     end
@@ -63,7 +63,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should not create user with invalid subdomain" do
     assert_no_difference("User.count") do
       assert_emails 0 do
-        post signups_url, params: { user: { email: "test@pagecord.com", blog_attributes: { subdomain: " invalid.subdomain" } }, rendered_at: signed_rendered_at }
+        post signups_url, params: { user: { email: "test@pagecord.com", blogs_attributes: [ { subdomain: " invalid.subdomain" } ] }, rendered_at: signed_rendered_at }
       end
     end
 
@@ -73,7 +73,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create user if honeypot field is populated" do
     assert_no_difference("User.count") do
-      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" } } }
+      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] } }
     end
 
     assert_redirected_to new_signup_path
@@ -82,7 +82,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create user if form rendered and submitted within 5 seconds" do
     assert_no_difference("User.count") do
-      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blog_attributes: { subdomain: "testuser" } }, rendered_at: signed_rendered_at(1.second.ago) }
+      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at(1.second.ago) }
     end
 
     assert_redirected_to new_signup_path

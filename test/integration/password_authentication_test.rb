@@ -11,7 +11,7 @@ class PasswordAuthenticationTest < ActionDispatch::IntegrationTest
           password: "password1234",
           password_confirmation: "password1234",
           timezone: "UTC",
-          blog_attributes: { subdomain: "newuser" }
+          blogs_attributes: [ { subdomain: "newuser" } ]
         },
         rendered_at: signed_rendered_at
       }

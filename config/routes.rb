@@ -165,7 +165,10 @@ Rails.application.routes.draw do
         resource :paddle_invoices, only: :show, controller: "subscriptions/paddle_invoices"
       end
 
-      resources :blogs do
+      resources :blogs, only: [ :index, :new, :create, :destroy ] do
+        member do
+          post :switch
+        end
         resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
       end
 
@@ -180,7 +183,6 @@ Rails.application.routes.draw do
       resources :theme_templates do
         get :fixtures, on: :collection
       end
-      resources :blogs, only: [ :index ]
       resources :analytics, only: [ :index ]
       resources :posts, only: [ :index ]
       resources :suppressions, only: [ :index ] do
@@ -189,7 +191,7 @@ Rails.application.routes.draw do
           delete :destroy_all
         end
       end
-      resources :users, only: [ :show, :destroy, :new, :create, :update ] do
+      resources :users, only: [ :index, :show, :destroy, :new, :create, :update ] do
         member do
           post :restore
         end
@@ -247,6 +249,7 @@ Rails.application.routes.draw do
       subdomain_redirect(path).call(params, _req)
     }, constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }
   end
+
 
   constraints(DomainConstraints.method(:api_domain?)) do
     scope module: :api do
