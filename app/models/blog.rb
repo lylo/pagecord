@@ -82,9 +82,13 @@ class Blog < ApplicationRecord
         errors.add(:subdomain, "can only use letters, numbers or underscores")
       end
 
-      if Subdomain.reserved?(subdomain)
+      if subdomain_reserved?
         errors.add(:subdomain, "is reserved")
       end
+    end
+
+    def subdomain_reserved?
+      (new_record? || will_save_change_to_subdomain?) && Subdomain.reserved?(subdomain)
     end
 
     def purge_cloudflare_cache
