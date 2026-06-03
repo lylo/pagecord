@@ -18,16 +18,51 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "free user can see manage blogs upsell" do
+    user = users(:vivian)
+    with_multiple_blogs_for(user) do
+      login_as user
+
+      get app_blogs_url
+
+      assert_response :success
+      assert_select "h1", "Your blogs"
+      assert_select "a[href='#{new_app_blog_path}']", count: 0
+      assert_match "add a second blog", response.body
+      assert_select "a[href='#{app_settings_subscriptions_path}']", text: "Subscribe to Pagecord Premium"
+    end
+  end
+
+  test "trial user can see manage blogs upsell" do
+    user = users(:vivian)
+    user.update!(trial_ends_at: 5.days.from_now)
+
+    with_multiple_blogs_for(user) do
+      login_as user
+
+      get app_blogs_url
+
+      assert_response :success
+      assert_select "h1", "Your blogs"
+      assert_select "a[href='#{new_app_blog_path}']", count: 0
+      assert_match "add a second blog", response.body
+    end
+  end
+
   test "free user cannot create a second blog" do
     user = users(:vivian)
     with_multiple_blogs_for(user) do
       login_as user
 
+      get new_app_blog_url
+      assert_redirected_to app_blogs_url
+      assert_equal "Subscribe to create another blog", flash[:alert]
+
       assert_no_difference -> { user.blogs.reload.count } do
         post app_blogs_url, params: { blog: { subdomain: "viviansecond" } }
       end
 
-      assert_response :unprocessable_entity
+      assert_redirected_to app_blogs_url
     end
   end
 
