@@ -100,6 +100,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.datetime "created_at", null: false
     t.text "custom_css"
     t.string "custom_domain"
+    t.text "custom_robots_txt"
     t.string "custom_theme_accent_dark"
     t.string "custom_theme_accent_light"
     t.string "custom_theme_bg_dark"
