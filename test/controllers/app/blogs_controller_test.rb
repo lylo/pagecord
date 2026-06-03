@@ -49,6 +49,22 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "delete blog buttons require confirmation" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    with_multiple_blogs_for(user) do
+      login_as user
+
+      get app_blogs_url
+
+      assert_response :success
+      assert_select "form[action='#{app_blog_path(blog)}'][method='post'][data-turbo-confirm=?]", "Are you sure you want to delete #{blog.display_name}?" do
+        assert_select "input[name='_method'][value='delete']"
+        assert_select "button", "Delete"
+      end
+    end
+  end
+
   test "free user cannot create a second blog" do
     user = users(:vivian)
     with_multiple_blogs_for(user) do

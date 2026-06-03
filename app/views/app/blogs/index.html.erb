@@ -24,9 +24,10 @@
         </div>
 
         <% if @blogs.count > 1 %>
+          <% confirm_message = "Are you sure you want to delete #{blog.display_name}?" %>
           <%= button_to app_blog_path(blog), method: :delete,
               class: "btn-danger",
-              data: { turbo_confirm: "Are you sure you want to delete #{blog.display_name}? This can't be undone." } do %>
+              form: { data: { turbo_confirm: confirm_message } } do %>
             Delete
           <% end %>
         <% end %>
