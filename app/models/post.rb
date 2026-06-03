@@ -17,6 +17,7 @@ class Post < ApplicationRecord
   has_many :replies, class_name: "Post::Reply", dependent: :destroy
   has_many :page_views, dependent: :destroy
   has_many :navigation_items, dependent: :destroy
+  has_one :standard_site_document, class_name: "StandardSite::Document", dependent: :destroy
 
   before_create :limit_content_size
   before_save :set_text_summary, :set_published_at
@@ -43,7 +44,7 @@ class Post < ApplicationRecord
       )
     }
   scope :for_blog_render, -> { with_full_rich_text.with_attached_attachments.includes(:upvotes) }
-  after_commit :touch_blog, on: [ :create, :update, :destroy ]
+  after_commit :touch_blog, :sync_standard_site_document, on: [ :create, :update, :destroy ]
 
   def content_present
     has_content = content.body.present? && content.body.to_plain_text.strip.present?
@@ -214,5 +215,11 @@ class Post < ApplicationRecord
     def touch_blog
       return unless published? || status_previously_changed?
       blog.touch unless blog.destroyed?
+    end
+
+    def sync_standard_site_document
+      return unless blog.standard_site_account&.connected?
+
+      StandardSite::SyncDocumentJob.perform_later(id)
     end
 end

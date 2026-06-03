@@ -146,6 +146,7 @@ Rails.application.routes.draw do
         end
 
         resource :api, only: [ :show, :create, :destroy ], controller: "api"
+        resource :standard_site, only: [ :show, :create, :destroy ], controller: "standard_site"
         resources :exports
 
         resources :sender_email_addresses, only: [ :create, :destroy ] do
@@ -261,6 +262,7 @@ Rails.application.routes.draw do
   end
 
   constraints(->(request) { !DomainConstraints.default_domain?(request) }) do
+    get "/.well-known/site.standard.publication", to: "blogs/standard_site_publications#show", as: :blog_standard_site_publication
     get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
     get "/", to: "blogs/posts#index", as: :blog_posts

@@ -59,6 +59,16 @@ module BlogsHelper
     end
   end
 
+  def standard_site_publication_at_uri
+    publication = @blog&.standard_site_publication
+    publication.at_uri if publication&.synced?
+  end
+
+  def standard_site_document_at_uri
+    document = @post&.standard_site_document
+    document.at_uri if document&.synced?
+  end
+
   private
 
     def blog_description(blog)

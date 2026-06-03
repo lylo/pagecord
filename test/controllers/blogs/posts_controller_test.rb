@@ -766,6 +766,44 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end
 
+  test "should insert standard site publication and document links into the head" do
+    post = @blog.posts.visible.first
+    @blog.create_standard_site_publication!(
+      at_uri: "at://did:plc:joel123/site.standard.publication/self",
+      sync_status: :synced
+    )
+    post.create_standard_site_document!(
+      at_uri: "at://did:plc:joel123/site.standard.document/#{post.token}",
+      rkey: post.token,
+      sync_status: :synced
+    )
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select 'link[rel="site.standard.publication"][href="at://did:plc:joel123/site.standard.publication/self"]'
+    assert_select "link[rel=\"site.standard.document\"][href=\"at://did:plc:joel123/site.standard.document/#{post.token}\"]"
+  end
+
+  test "should not insert standard site links before sync succeeds" do
+    post = @blog.posts.visible.first
+    @blog.create_standard_site_publication!(
+      at_uri: "at://did:plc:joel123/site.standard.publication/self",
+      sync_status: :failed
+    )
+    post.create_standard_site_document!(
+      at_uri: "at://did:plc:joel123/site.standard.document/#{post.token}",
+      rkey: post.token,
+      sync_status: :failed
+    )
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select 'link[rel="site.standard.publication"]', count: 0
+    assert_select 'link[rel="site.standard.document"]', count: 0
+  end
+
   test "should include rel='me' link if Mastodon social navigation item is present" do
     mastodon_link = SocialNavigationItem.create!(
       blog: @blog,
