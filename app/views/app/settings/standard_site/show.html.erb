@@ -1,0 +1,61 @@
+<h3 class="mb-2 font-bold text-xl">Bluesky / Standard.site</h3>
+
+<p class="text-slate-600 dark:text-slate-300">
+  Connect Bluesky so Pagecord can create Standard.site records for your posts. When someone shares a compatible Pagecord link on Bluesky, it can be rendered as a richer document preview.
+</p>
+
+<% unless @blog.user.has_premium_access? %>
+  <div class="mt-6">
+    <%= callout(:info) do %>
+      <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to use Standard.site.
+    <% end %>
+  </div>
+<% end %>
+
+<% if @blog.standard_site_account&.connected? %>
+  <div class="mt-6 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6">
+    <p class="font-medium text-slate-900 dark:text-slate-100">Connected as <%= @blog.standard_site_account.handle %></p>
+    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+      DID: <code class="rounded bg-white dark:bg-slate-900 px-1.5 py-0.5"><%= @blog.standard_site_account.did %></code>
+    </p>
+
+    <% if @blog.standard_site_publication&.at_uri.present? %>
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        Publication: <code class="rounded bg-white dark:bg-slate-900 px-1.5 py-0.5"><%= @blog.standard_site_publication.at_uri %></code>
+      </p>
+    <% end %>
+
+    <% if @blog.standard_site_publication&.failed? %>
+      <p class="mt-4 text-sm text-red-600 dark:text-red-400"><%= @blog.standard_site_publication.sync_error %></p>
+    <% end %>
+
+    <div class="mt-6">
+      <%= button_to "Disconnect Bluesky", app_settings_standard_site_path, method: :delete, class: "btn-danger", data: { turbo_confirm: "Disconnect Bluesky? Pagecord will stop adding Standard.site verification metadata." } %>
+    </div>
+  </div>
+<% else %>
+  <div class="mt-6 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6">
+    <%= form_with url: app_settings_standard_site_path, scope: :standard_site do |form| %>
+      <fieldset <%= "disabled" unless @blog.user.has_premium_access? %>>
+        <div>
+          <%= form.label :handle, "Bluesky handle", class: "block font-medium text-slate-900 dark:text-slate-100" %>
+          <%= form.text_field :handle, placeholder: "you.bsky.social", required: true, class: "mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-800 dark:text-slate-200" %>
+        </div>
+
+        <div class="mt-4">
+          <%= form.label :app_password, "Bluesky app password", class: "block font-medium text-slate-900 dark:text-slate-100" %>
+          <%= form.password_field :app_password, required: true, class: "mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-800 dark:text-slate-200" %>
+          <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            Create an app password in Bluesky settings. Pagecord stores the resulting AT session securely and never stores the app password itself.
+          </p>
+        </div>
+
+        <%= form.hidden_field :pds_url, value: "https://bsky.social" %>
+
+        <div class="mt-6">
+          <%= form.submit "Connect Bluesky", class: "btn-primary" %>
+        </div>
+      </fieldset>
+    <% end %>
+  </div>
+<% end %>

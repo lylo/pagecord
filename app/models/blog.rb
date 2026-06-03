@@ -23,6 +23,8 @@ class Blog < ApplicationRecord
   has_many :exports, class_name: "Blog::Export", dependent: :destroy
   has_many :page_views, dependent: :destroy
   has_one :spam_detection, dependent: :destroy
+  has_one :standard_site_account, class_name: "StandardSite::Account", dependent: :destroy
+  has_one :standard_site_publication, class_name: "StandardSite::Publication", dependent: :destroy
 
   has_one_attached :avatar do |attachable|
     attachable.variant :thumb, resize_to_limit: [ 96, 96 ], format: :png
@@ -33,7 +35,7 @@ class Blog < ApplicationRecord
   validate :within_blog_limit, on: :create
 
   before_validation :downcase_subdomain
-  after_commit :purge_cloudflare_cache, on: :update
+  after_commit :purge_cloudflare_cache, :sync_standard_site_publication, on: :update
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
@@ -91,5 +93,13 @@ class Blog < ApplicationRecord
       return unless Rails.env.production?
       return unless Rails.cache.write("cf_purge:#{id}", true, expires_in: 5.seconds, unless_exist: true)
       PurgeCloudflareCacheJob.perform_later(id)
+    end
+
+    def sync_standard_site_publication
+      return unless standard_site_account&.connected?
+      return unless standard_site_publication
+      return unless (previous_changes.keys & %w[allow_search_indexing custom_domain discarded_at subdomain title]).any?
+
+      StandardSite::SyncPublicationJob.perform_later(id)
     end
 end
