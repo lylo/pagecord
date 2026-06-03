@@ -78,8 +78,9 @@ Use the Pagecord API to manage your blog programmatically, or publish directly f
 
 ## Account & Billing
 
-Manage your subscription, update your settings, or export your content.
+Manage your account, blogs, subscription, or exported content.
 
 - [Account settings](account-settings.md)
+- [Managing multiple blogs](managing-multiple-blogs.md)
 - [Billing](billing.md)
 - [Exporting your blog](exporting-your-blog.md)
