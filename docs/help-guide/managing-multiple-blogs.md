@@ -5,10 +5,13 @@ published_at: 2026-06-03T12:00:00+00:00
 attachments:
   avatar-menu:
     file: images/managing-multiple-blogs/avatar-menu.webp
+    sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjIwNjc_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--30410ed4885200135ee9c028a1a2caa9cbf36c05"
   manage-blogs:
     file: images/managing-multiple-blogs/manage-blogs.webp
+    sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjIwNjg_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--756a8c6e93246849f29c5bd58fafa04e9493e1cf"
   blog-switcher:
     file: images/managing-multiple-blogs/blog-switcher.webp
+    sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjIwNjk_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--c1d7b02ca5b5fe85decd0fa6984cad4cb017462c"
 ---
 
 Premium subscribers can run two blogs from the same Pagecord account. This is useful if you want separate spaces for different projects, audiences, or writing styles.
