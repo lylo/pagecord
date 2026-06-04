@@ -1,6 +1,4 @@
 class App::BlogsController < AppController
-  before_action :require_multiple_blogs
-
   def index
     @blogs = Current.user.blogs.order(:created_at)
   end
@@ -44,10 +42,6 @@ class App::BlogsController < AppController
   end
 
   private
-
-    def require_multiple_blogs
-      redirect_to app_root_path unless current_features.enabled?(:multiple_blogs)
-    end
 
     def blog_params
       params.require(:blog).permit(:subdomain, :title)
