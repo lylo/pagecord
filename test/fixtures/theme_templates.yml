@@ -111,7 +111,7 @@ cardashian:
   custom_theme_bg_dark: "#1a1718"
   custom_theme_text_dark: "#e8e6e3"
   custom_theme_accent_dark: "#a78bfa"
-  position: 0
+  position: 1
   active: true
 broadside:
   name: Broadside
@@ -210,7 +210,7 @@ broadside:
   custom_theme_bg_dark: "#150830"
   custom_theme_text_dark: "#ede8ee"
   custom_theme_accent_dark: "#ff4535"
-  position: 1
+  position: 2
   active: true
 archibald:
   name: Archibald
@@ -255,7 +255,7 @@ archibald:
   font: mono
   width: standard
   layout: title_layout
-  position: 2
+  position: 3
   active: true
 hestia:
   name: Hestia
@@ -333,7 +333,7 @@ hestia:
   custom_theme_bg_dark: "#1a1816"
   custom_theme_text_dark: "#d4cfc8"
   custom_theme_accent_dark: "#d4748a"
-  position: 3
+  position: 4
   active: true
 holamundo:
   name: Holamundo
@@ -569,7 +569,7 @@ holamundo:
   font: sans
   width: wide
   layout: cards_layout
-  position: 4
+  position: 5
   active: true
 novella:
   name: Novella
@@ -660,7 +660,7 @@ novella:
   custom_theme_bg_dark: "#141f18"
   custom_theme_text_dark: "#d0d8d2"
   custom_theme_accent_dark: "#d4a840"
-  position: 5
+  position: 6
   active: true
 folly:
   name: Folly
@@ -680,7 +680,7 @@ folly:
   custom_theme_bg_dark: "#353536"
   custom_theme_text_dark: "#cbd5e1"
   custom_theme_accent_dark: "#df6d83"
-  position: 6
+  position: 7
   active: true
 mozake:
   name: Mozake
@@ -802,7 +802,7 @@ mozake:
   custom_theme_bg_dark: "#ffffff"
   custom_theme_text_dark: "#000000"
   custom_theme_accent_dark: "#0000EE"
-  position: 7
+  position: 8
   active: true
 minimal_mono:
   name: Minimal Mono
@@ -875,5 +875,5 @@ minimal_mono:
   font: mono
   width: narrow
   layout: stream_layout
-  position: 8
+  position: 9
   active: true

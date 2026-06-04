@@ -9,7 +9,7 @@ class ThemeTemplate < ApplicationRecord
   before_validation :clear_custom_theme_colors, unless: :custom_theme?
 
   scope :active, -> { where(active: true) }
-  scope :ordered, -> { order(position: :asc, name: :asc) }
+  scope :ordered, -> { order(:position, :id) }
 
   def screenshot_asset
     "theme_templates/#{name.parameterize}.webp"
@@ -21,6 +21,9 @@ class ThemeTemplate < ApplicationRecord
 
   def reorder(new_position)
     transaction do
+      self.class.normalize_positions!
+      reload
+
       old_position = position
       update_column(:position, -1)
 
@@ -33,6 +36,12 @@ class ThemeTemplate < ApplicationRecord
       end
 
       update_column(:position, new_position)
+    end
+  end
+
+  def self.normalize_positions!
+    ordered.each.with_index(1) do |template, index|
+      template.update_column(:position, index) unless template.position == index
     end
   end
 
