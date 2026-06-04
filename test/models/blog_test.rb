@@ -31,6 +31,14 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.valid?
   end
 
+  test "should allow existing reserved subdomain when unchanged" do
+    blog = blogs(:pagecord)
+
+    blog.title = "Pagecord"
+
+    assert blog.valid?
+  end
+
   test "should validate format of subdomain" do
     @blog.subdomain = "abcdef-"
     assert_not @blog.valid?

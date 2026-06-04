@@ -1,11 +1,16 @@
 <div class="space-y-6">
   <div class="flex justify-between items-center">
     <h1 class="text-2xl font-bold">Your blogs</h1>
-    <% limit = Current.user.subscribed? ? Blog::MAX_BLOGS_PAID : Blog::MAX_BLOGS_FREE %>
-    <% if @blogs.count < limit %>
+    <% if Current.user.subscribed? && @blogs.count < Current.user.blog_limit %>
       <%= link_to "New blog", new_app_blog_path, class: "btn-primary text-sm" %>
     <% end %>
   </div>
+
+  <% unless Current.user.subscribed? %>
+    <%= callout(:info) do %>
+      <%= link_to "Subscribe to Pagecord Premium", app_settings_subscriptions_path, class: "underline font-medium" %> to add a second blog to your account. Handy for a separate photo blog or microblog!
+    <% end %>
+  <% end %>
 
   <div class="space-y-3">
     <% @blogs.each do |blog| %>
@@ -19,19 +24,14 @@
         </div>
 
         <% if @blogs.count > 1 %>
+          <% confirm_message = "Are you sure you want to delete #{blog.display_name}?" %>
           <%= button_to app_blog_path(blog), method: :delete,
               class: "btn-danger",
-              data: { turbo_confirm: "Are you sure you want to delete #{blog.display_name}? This can't be undone." } do %>
+              form: { data: { turbo_confirm: confirm_message } } do %>
             Delete
           <% end %>
         <% end %>
       </div>
     <% end %>
   </div>
-
-  <% unless Current.user.subscribed? %>
-    <p class="text-sm text-slate-500">
-      <%= link_to "Upgrade to Premium", app_settings_subscriptions_path, class: "underline font-medium" %> to run a second blog from the same account. Handy for a side project, a newsletter, or a microblog.
-    </p>
-  <% end %>
 </div>

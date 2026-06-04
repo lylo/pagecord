@@ -1,4 +1,6 @@
 class App::BlogsController < AppController
+  before_action :require_subscription, only: [ :new, :create ]
+
   def index
     @blogs = Current.user.blogs.order(:created_at)
   end
@@ -42,6 +44,10 @@ class App::BlogsController < AppController
   end
 
   private
+
+    def require_subscription
+      redirect_to app_blogs_path, alert: "Subscribe to create another blog" unless Current.user.subscribed?
+    end
 
     def blog_params
       params.require(:blog).permit(:subdomain, :title)

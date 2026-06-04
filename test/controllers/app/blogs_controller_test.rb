@@ -16,15 +16,60 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_root_url
   end
 
+  test "free user can see manage blogs upsell" do
+    user = users(:vivian)
+    login_as user
+
+    get app_blogs_url
+
+    assert_response :success
+    assert_select "h1", "Your blogs"
+    assert_select "a[href='#{new_app_blog_path}']", count: 0
+    assert_match "add a second blog", response.body
+    assert_select "a[href='#{app_settings_subscriptions_path}']", text: "Subscribe to Pagecord Premium"
+  end
+
+  test "trial user can see manage blogs upsell" do
+    user = users(:vivian)
+    user.update!(trial_ends_at: 5.days.from_now)
+
+    login_as user
+
+    get app_blogs_url
+
+    assert_response :success
+    assert_select "h1", "Your blogs"
+    assert_select "a[href='#{new_app_blog_path}']", count: 0
+    assert_match "add a second blog", response.body
+  end
+
+  test "delete blog buttons require confirmation" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    login_as user
+
+    get app_blogs_url
+
+    assert_response :success
+    assert_select "form[action='#{app_blog_path(blog)}'][method='post'][data-turbo-confirm=?]", "Are you sure you want to delete #{blog.display_name}?" do
+      assert_select "input[name='_method'][value='delete']"
+      assert_select "button", "Delete"
+    end
+  end
+
   test "free user cannot create a second blog" do
     user = users(:vivian)
     login_as user
+
+    get new_app_blog_url
+    assert_redirected_to app_blogs_url
+    assert_equal "Subscribe to create another blog", flash[:alert]
 
     assert_no_difference -> { user.blogs.reload.count } do
       post app_blogs_url, params: { blog: { subdomain: "viviansecond" } }
     end
 
-    assert_response :unprocessable_entity
+    assert_redirected_to app_blogs_url
   end
 
   test "switching blogs uses the selected blog in new post context" do
