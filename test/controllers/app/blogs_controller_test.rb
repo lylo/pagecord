@@ -65,6 +65,21 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "manage blogs links to trash when blogs are deleted" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    blog.discard!
+
+    with_multiple_blogs_for(user) do
+      login_as user
+
+      get app_blogs_url
+
+      assert_response :success
+      assert_select "a[href='#{app_blogs_trash_path}']", text: "1 deleted blog"
+    end
+  end
+
   test "free user cannot create a second blog" do
     user = users(:vivian)
     with_multiple_blogs_for(user) do
@@ -144,6 +159,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
       assert blog.reload.discarded?
       assert_equal user.blog.id, session[:current_blog_id]
       assert_redirected_to app_blogs_url
+      assert_equal "#{blog.display_name} was moved to trash", flash[:notice]
     end
   end
 
@@ -160,6 +176,40 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
       assert_not blog.reload.discarded?
       assert_redirected_to app_blogs_url
       assert_equal "You must have at least one blog", flash[:alert]
+    end
+  end
+
+  test "permanently deletes trashed blog" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    blog.discard!
+
+    with_multiple_blogs_for(user) do
+      login_as user
+
+      assert_difference -> { Blog.with_discarded.count }, -1 do
+        delete app_blog_url(blog)
+      end
+
+      assert_redirected_to app_blogs_trash_url
+      assert_equal "#{blog.display_name} was permanently deleted", flash[:notice]
+    end
+  end
+
+  test "does not permanently delete another user's trashed blog" do
+    user = users(:joel)
+    other_blog = blogs(:annie)
+    other_blog.discard!
+
+    with_multiple_blogs_for(user) do
+      login_as user
+
+      assert_no_difference -> { Blog.with_discarded.count } do
+        delete app_blog_url(other_blog)
+      end
+
+      assert_response :not_found
+      assert other_blog.reload.discarded?
     end
   end
 

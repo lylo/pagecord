@@ -165,10 +165,15 @@ Rails.application.routes.draw do
         resource :paddle_invoices, only: :show, controller: "subscriptions/paddle_invoices"
       end
 
+      namespace :blogs do
+        resource :trash, only: [ :show, :destroy ], controller: "trash"
+      end
+
       resources :blogs, only: [ :index, :new, :create, :destroy ] do
         member do
           post :switch
         end
+        resource :restoration, only: [ :create ], controller: "blogs/restorations"
         resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
       end
 
