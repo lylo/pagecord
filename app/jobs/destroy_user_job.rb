@@ -5,7 +5,7 @@ class DestroyUserJob < ApplicationJob
     user = User.find(user_id)
     with_sentry_context(user: user, blog: user.blog) do
       user.discard!
-      user.blog&.touch
+      user.blogs.find_each(&:touch)
 
       if user.subscription
         PaddleApi.new.cancel_subscription(user.subscription.paddle_subscription_id)

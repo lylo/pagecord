@@ -31,6 +31,14 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.valid?
   end
 
+  test "should allow existing reserved subdomain when unchanged" do
+    blog = blogs(:pagecord)
+
+    blog.title = "Pagecord"
+
+    assert blog.valid?
+  end
+
   test "should validate format of subdomain" do
     @blog.subdomain = "abcdef-"
     assert_not @blog.valid?
@@ -57,9 +65,16 @@ class BlogTest < ActiveSupport::TestCase
   end
 
   test "should generate unique delivery email" do
-    user = User.create!(email: "newuser@newuser.com", blog: Blog.new(subdomain: "newuser"))
+    user = User.create!(email: "newuser@newuser.com", blogs_attributes: [ { subdomain: "newuser" } ])
     assert user.blog.delivery_email.present?
     assert user.blog.delivery_email =~ /newuser_[a-zA-Z0-9]{8}@post.pagecord.com/
+  end
+
+  test "should not create blogs beyond the user's limit" do
+    blog = users(:vivian).blogs.build(subdomain: "vivianextra")
+
+    assert_not blog.valid?
+    assert_includes blog.errors[:base], "You've reached your blog limit (1)"
   end
 
   test "should allow valid custom domain" do

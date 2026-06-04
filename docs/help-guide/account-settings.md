@@ -44,4 +44,3 @@ To permanently delete your account:
 4. Confirm when prompted
 
 This cannot be undone. All your posts, pages, and data will be permanently deleted.
-

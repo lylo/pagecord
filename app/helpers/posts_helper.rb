@@ -66,6 +66,7 @@ module PostsHelper
   def render_digest_post_content(post)
     content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
     content = ExcerptBreak.strip(content)
+    content = Html::EmailMediaPreview.new.transform(content)
     strip_video_tags(content).html_safe
   end
 

@@ -246,7 +246,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.19.5)
+    json (2.19.7)
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -454,7 +454,7 @@ GEM
       ffi (~> 1.12)
       logger
     ruby2_keywords (0.0.5)
-    rubyzip (3.3.0)
+    rubyzip (3.3.1)
     sanitize (7.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
@@ -465,10 +465,10 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    sentry-rails (6.5.0)
+    sentry-rails (6.6.0)
       railties (>= 5.2.0)
-      sentry-ruby (~> 6.5.0)
-    sentry-ruby (6.5.0)
+      sentry-ruby (~> 6.6.0)
+    sentry-ruby (6.6.0)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
       logger

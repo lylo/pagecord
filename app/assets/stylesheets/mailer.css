@@ -245,6 +245,12 @@ a {
   padding: 0;
 }
 
+.digest .post-content .email-media-preview {
+  display: block;
+  text-align: center;
+  margin: 1.5em 0;
+}
+
 .digest .post-content table {
   border-collapse: collapse;
   width: 100%;

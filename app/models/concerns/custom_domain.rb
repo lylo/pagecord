@@ -16,12 +16,12 @@ module CustomDomain
     def find_by_domain_with_www_fallback(domain)
       return unless domain.present?
 
-      blog = find_by(custom_domain: domain)
+      blog = kept.find_by(custom_domain: domain)
       return blog if blog
 
       return unless root_domain?(domain)
 
-      find_by(custom_domain: variant_domain(domain))
+      kept.find_by(custom_domain: variant_domain(domain))
     end
 
     private

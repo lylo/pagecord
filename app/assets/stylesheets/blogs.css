@@ -339,6 +339,10 @@ footer.blog-footer #brand svg {
       color: var(--color-text-light);
     }
 
+    :where(.lexxy-content h1, .lexxy-content h2, .lexxy-content h3, .lexxy-content h4, .lexxy-content h5, .lexxy-content h6) {
+      color: var(--color-text-heading);
+    }
+
     h1.post-title {
       font-size: 1.875rem;
       line-height: 2.5rem;
@@ -494,6 +498,11 @@ footer.blog-footer #brand svg {
     textarea {
       resize: vertical;
       max-width: 100%;
+
+      &.autogrow {
+        field-sizing: content;
+        min-block-size: 10em;
+      }
     }
 
     input[type="email"]::placeholder {
@@ -684,6 +693,10 @@ footer.blog-footer #brand svg {
 }
 
 /* Titles layout - compact chronological list */
+.title_layout {
+  margin-block-end: 2rem;
+}
+
 .posts-titles .year-header {
   color: var(--color-text-heading);
   font-size: 1.125rem;

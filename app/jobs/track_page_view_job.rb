@@ -2,7 +2,7 @@ class TrackPageViewJob < ApplicationJob
   queue_as :default
 
   def perform(blog_id, post_token, ip, user_agent, path, referrer, country_code)
-    blog = Blog.find_by(id: blog_id)
+    blog = Blog.kept.find_by(id: blog_id)
     return unless blog
 
     country_code = GeoIp.lookup(ip) if country_code.blank?
