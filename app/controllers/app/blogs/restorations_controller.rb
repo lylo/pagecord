@@ -1,6 +1,4 @@
 class App::Blogs::RestorationsController < AppController
-  before_action :require_multiple_blogs
-
   def create
     blog = Current.user.all_blogs.discarded.find(params[:blog_id])
 
@@ -11,10 +9,4 @@ class App::Blogs::RestorationsController < AppController
       redirect_to app_blogs_trash_path, notice: "#{blog.display_name} was successfully restored"
     end
   end
-
-  private
-
-    def require_multiple_blogs
-      redirect_to app_root_path unless current_features.enabled?(:multiple_blogs)
-    end
 end

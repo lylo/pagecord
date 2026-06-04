@@ -209,8 +209,14 @@ namespace :help do
 
       escaped_key = Regexp.escape(key)
       escaped_sgid = attachment["sgid"].to_s.gsub("\\", "\\\\\\").gsub("\"", "\\\\\"")
-      pattern = /^(\s{2}#{escaped_key}:\n(?:(?!\s{2}[\w-]+:).*\n)*?\s{4}sgid:).*$/
-      front_matter = front_matter.sub(pattern, "\\1 \"#{escaped_sgid}\"")
+      block_pattern = /^(\s{2}#{escaped_key}:\n(?:(?!\s{2}[\w-]+:).*\n)*)/
+      front_matter = front_matter.sub(block_pattern) do |block|
+        if block.match?(/^\s{4}sgid:/)
+          block.sub(/^(\s{4}sgid:).*$/, "\\1 \"#{escaped_sgid}\"")
+        else
+          "#{block}    sgid: \"#{escaped_sgid}\"\n"
+        end
+      end
     end
 
     "---#{front_matter}---#{body}"

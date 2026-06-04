@@ -1,5 +1,4 @@
 class App::BlogsController < AppController
-  before_action :require_multiple_blogs
   before_action :require_subscription, only: [ :new, :create ]
 
   def index
@@ -52,10 +51,6 @@ class App::BlogsController < AppController
   end
 
   private
-
-    def require_multiple_blogs
-      redirect_to app_root_path unless current_features.enabled?(:multiple_blogs)
-    end
 
     def require_subscription
       redirect_to app_blogs_path, alert: "Subscribe to create another blog" unless Current.user.subscribed?
