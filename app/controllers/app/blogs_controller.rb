@@ -21,7 +21,14 @@ class App::BlogsController < AppController
   end
 
   def destroy
-    blog = Current.user.blogs.find(params[:id])
+    blog = Current.user.all_blogs.find(params[:id])
+
+    if blog.discarded?
+      display_name = blog.display_name
+      blog.destroy!
+      redirect_to app_blogs_trash_path, notice: "#{display_name} was permanently deleted"
+      return
+    end
 
     if Current.user.blogs.count <= 1
       redirect_to app_blogs_path, alert: "You must have at least one blog"
@@ -34,7 +41,7 @@ class App::BlogsController < AppController
       session[:current_blog_id] = Current.user.blogs.order(:created_at).first.id
     end
 
-    redirect_to app_blogs_path, notice: "Blog deleted"
+    redirect_to app_blogs_path, notice: "#{blog.display_name} was moved to trash"
   end
 
   def switch
