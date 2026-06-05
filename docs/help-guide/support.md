@@ -8,7 +8,7 @@ If you need some specific help with Pagecord that you can't find in the [Help Gu
 
 ## Email Support
 
-You can email [hello@pagecord.com](mailto:hello@pagecord.com). I try my best to be proactive, and you'll usually get a quickreply, but there's no SLA I'm afraid. It's just lil ol' me.
+You can email [hello@pagecord.com](mailto:hello@pagecord.com). I try my best to be proactive, and you'll usually get a quick reply, but there's no SLA I'm afraid. It's just lil ol' me.
 
 ## GitHub Issues (Recommended)
 
