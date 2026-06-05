@@ -1,23 +1,9 @@
 namespace :cache do
-  STATIC_PAGE_PATHS = [
-    "/",
-    "/faq",
-    "/terms",
-    "/privacy",
-    "/pagecord-vs-hey-world",
-    "/pagecord-vs-wordpress",
-    "/pagecord-vs-substack",
-    "/pagecord-vs-medium",
-    "/pagecord-vs-about-me",
-    "/blogging-by-email",
-    "/minimalist-blogging"
-  ].freeze
-
   desc "Expire cached static pages"
   task expire_static_pages: :environment do
     controller = ActionController::Base.new
 
-    STATIC_PAGE_PATHS.each do |path|
+    static_page_paths.each do |path|
       controller.expire_page(path)
     end
   end
@@ -89,5 +75,21 @@ namespace :cache do
       end
 
       "#{size.round(2)} #{units[unit_index]}"
+    end
+
+    def static_page_paths
+      [
+        "/",
+        "/faq",
+        "/terms",
+        "/privacy",
+        "/pagecord-vs-hey-world",
+        "/pagecord-vs-wordpress",
+        "/pagecord-vs-substack",
+        "/pagecord-vs-medium",
+        "/pagecord-vs-about-me",
+        "/blogging-by-email",
+        "/minimalist-blogging"
+      ]
     end
 end

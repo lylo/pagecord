@@ -17,6 +17,10 @@ class LexxyEditorTest < ApplicationSystemTestCase
     assert_equal "sentences", editor_content_attribute("autocapitalize")
     assert_equal "on", editor_content_attribute("autocorrect")
     assert_equal "true", editor_content_attribute("spellcheck")
+
+    find("lexxy-editor .lexxy-editor__content").click
+
+    assert_selector "lexxy-editor .lexxy-editor__content[autocapitalize='sentences']", wait: 2
   end
 
   private
