@@ -13,6 +13,7 @@ export default class extends Controller {
   connect() {
     this.element.addEventListener("lexxy:file-accept", this.#validateFile)
     this.element.addEventListener("lexxy:editor-initialized", this.#syncTypingAttributes)
+    this.element.addEventListener("focusin", this.#syncTypingAttributesAfterFocus)
     this.#installClipboardPasteOverride()
     this.#syncTypingAttributes()
   }
@@ -20,6 +21,7 @@ export default class extends Controller {
   disconnect() {
     this.element.removeEventListener("lexxy:file-accept", this.#validateFile)
     this.element.removeEventListener("lexxy:editor-initialized", this.#syncTypingAttributes)
+    this.element.removeEventListener("focusin", this.#syncTypingAttributesAfterFocus)
     this.#restoreClipboardPaste()
   }
 
@@ -72,6 +74,11 @@ export default class extends Controller {
         editorContent.setAttribute(attribute, this.element.getAttribute(attribute))
       }
     }
+  }
+
+  #syncTypingAttributesAfterFocus = () => {
+    this.#syncTypingAttributes()
+    requestAnimationFrame(this.#syncTypingAttributes)
   }
 
   #pastePreferringImageFiles = (event) => {
