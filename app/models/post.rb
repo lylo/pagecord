@@ -148,8 +148,9 @@ class Post < ApplicationRecord
 
   def first_image
     @first_image ||= begin
-      if content_image_attachments.any?
-        content_image_attachments.first
+      content_images = content_image_attachments
+      if content_images.any?
+        content_images.first
       elsif attachments.any?
         attachments.find(&:image?)
       end
@@ -158,6 +159,13 @@ class Post < ApplicationRecord
 
   def content_image_attachments
     return [] unless content.body.present?
+    if rich_text_content&.association(:embeds_attachments)&.loaded?
+      return rich_text_content.embeds_attachments.filter_map do |attachment|
+        blob = attachment.blob
+        blob if blob.image?
+      end
+    end
+
     content.body.attachments.select { |attachment| attachment.try(:image?) }
   end
 
