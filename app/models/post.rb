@@ -86,11 +86,11 @@ class Post < ApplicationRecord
 
   def excerpt_html
     return @excerpt_html if defined?(@excerpt_html)
-    @excerpt_html = content.body.present? ? ExcerptBreak.extract(content.to_s) : nil
+    @excerpt_html = has_excerpt? ? ExcerptBreak.extract(content.to_s) : nil
   end
 
   def excerpt_text(limit: 64)
-    plain_text_from(excerpt_html.to_s).truncate(limit, separator: /\s/)
+    plain_text_from(raw_excerpt_html.to_s).truncate(limit, separator: /\s/)
   end
 
   def has_text_content?
@@ -98,7 +98,7 @@ class Post < ApplicationRecord
   end
 
   def has_excerpt?
-    !excerpt_html.nil?
+    !raw_excerpt_html.nil?
   end
 
   def display_title
@@ -194,6 +194,13 @@ class Post < ApplicationRecord
         .gsub(/<!--\s*more\s*-->/i, "")
         .gsub(/\s+/, " ")
         .strip
+    end
+
+    def raw_excerpt_html
+      return @raw_excerpt_html if defined?(@raw_excerpt_html)
+      # Use stored Action Text HTML for marker detection so attachment previews
+      # are not rendered just to decide whether a post has an excerpt break.
+      @raw_excerpt_html = content.body.present? ? ExcerptBreak.extract(content.body.to_html) : nil
     end
 
     def text_content
