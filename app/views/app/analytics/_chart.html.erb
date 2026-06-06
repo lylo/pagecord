@@ -6,8 +6,9 @@
     <div class="relative h-64">
       <svg class="w-full h-full" viewBox="0 0 640 250">
         <% chart_max = chart_max_value(@chart_data) %>
-        <% chart_left_margin = 35 %>
-        <% chart_right_margin = 20 %>
+        <% # Keep the compact default, but widen the y-axis gutter for larger labels like 100,000. %>
+        <% chart_left_margin = [ 22, (number_with_delimiter(chart_max).length * 7) + 4 ].max %>
+        <% chart_right_margin = 8 %>
         <% chart_top_margin = 20 %>
         <% chart_bottom_margin = 40 %>
         <% chart_width = 640 - chart_left_margin - chart_right_margin %>
