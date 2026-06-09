@@ -12,8 +12,11 @@
  * em (relative) - Used for values that should scale with font size
  *   - Font sizes (scale relative to parent)
  *   - Icon dimensions (scale with surrounding text)
- *   - Letter spacing, line height
+ *   - Letter spacing
  *   - List indentation (relative to text size)
+ *
+ * unitless - Used for line-height so text keeps the same rhythm
+ *   when parent font sizes change
  *
  * Why not em everywhere?
  *   em values compound. If an element has font-size: 1.5em and
@@ -266,7 +269,7 @@ footer.blog-footer #brand svg {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     font-size: 0.875em;
-    line-height: 1.25rem;
+    line-height: 1.4;
     color: var(--color-text-muted);
     overflow-wrap: break-word;
 
@@ -337,8 +340,8 @@ footer.blog-footer #brand svg {
     }
 
     h1.post-title {
-      font-size: 1.875rem;
-      line-height: 2.5rem;
+      font-size: 1.875em;
+      line-height: 1.4;
       margin-top: 0;
       margin-bottom: 2rem;
       color: var(--color-text-heading);
@@ -402,7 +405,7 @@ footer.blog-footer #brand svg {
 
 :where(.blog) {
   :where(article) :where(footer) {
-    font-size: 0.875rem;
+    font-size: 0.875em;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -666,8 +669,8 @@ footer.blog-footer #brand svg {
 
 .form-error {
   color: #ef4444;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-size: 0.875em;
+  line-height: 1.4;
 }
 
 .form-actions {
@@ -692,7 +695,7 @@ footer.blog-footer #brand svg {
 
 .posts-titles .year-header {
   color: var(--color-text-heading);
-  font-size: 1.125rem;
+  font-size: 1.125em;
   font-weight: 600;
   margin: 0 0 1rem 0;
 }
@@ -760,8 +763,8 @@ footer.blog-footer #brand svg {
 }
 
 .post-card-title {
-  font-size: 1.5rem;
-  line-height: 2rem;
+  font-size: 1.5em;
+  line-height: 1.4;
   font-weight: 700;
   letter-spacing: -0.025em;
   margin-top: 0;
@@ -797,8 +800,8 @@ footer.blog-footer #brand svg {
 }
 
 .post-card-date {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-size: 0.875em;
+  line-height: 1.4;
   color: var(--color-text-muted);
   opacity: 0.75;
 }
@@ -807,8 +810,8 @@ footer.blog-footer #brand svg {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  line-height: 1rem;
+  font-size: 0.75em;
+  line-height: 1.4;
   font-weight: 500;
   color: var(--color-text-muted);
   border-radius: 9999px;
@@ -830,7 +833,7 @@ footer.blog-footer #brand svg {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.875em;
   font-weight: 500;
   text-decoration: none;
   background-color: var(--color-bg-subtle);
@@ -1046,7 +1049,7 @@ ul.posts-list {
 .tag-filter-notice {
   margin-bottom: 1.5rem;
   padding: 0.75rem 1rem;
-  font-size: 0.875rem;
+  font-size: 0.875em;
   color: var(--color-text-muted);
   background-color: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
@@ -1070,7 +1073,6 @@ ul.posts-list {
 
 .tag-filter-notice-link {
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
   text-decoration: underline;
 }
 

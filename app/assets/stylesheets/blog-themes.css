@@ -21,11 +21,6 @@
   --content-width-standard: 36rem; /* container-xl */
   --content-width-wide: 48rem;     /* container-3xl */
 
-  /* Font size scale factors */
-  --font-size-standard: 1rem;
-  --font-size-large: 1.125rem;
-  --font-size-xl: 1.25rem;
-
   /* Pagecord accent color */
   --color-pagecord-accent: hsl(162, 54%, 57%); /* #56cda9 */
 }

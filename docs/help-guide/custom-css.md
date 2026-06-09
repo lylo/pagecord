@@ -55,7 +55,7 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ │ │ .post-title                                  │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
-│ │ │ │ .lexxy-content (The post body text)          │ │ │ │
+│ │ │ │ .post-body (The post body text)              │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ <footer> (Date, tags, and actions)           │ │ │ │
@@ -98,13 +98,41 @@ body {
 }
 ```
 
-### Change the size of the body font
+### Change the size of your blog text
 
-While Pagecord defaults to industry-standard font sizes, you might prefer your fonts to be slightly larger. Try this:
+Pagecord uses your browser's normal text size by default, which is usually 16px. If you'd like your whole blog to feel slightly larger, adjust Pagecord's base font size:
+
+```css
+:root {
+  --font-size-base: 112.5%;
+}
+```
+
+That makes the default text size 18px for readers whose browser default is 16px, while still respecting readers who have changed their browser's text size.
+
+If your text only feels a little small on mobile, you can make a smaller adjustment just for narrow screens:
+
+```css
+@media (max-width: 640px) {
+  :root {
+    --font-size-base: 106.25%;
+  }
+}
+```
+
+If you only want to change posts and pages, you can target `article`:
 
 ```css
 article {
-  font-size: 1.2rem;
+  font-size: 1.125em;
+}
+```
+
+If you want to change only the authored post or page body, target `.post-body` instead:
+
+```css
+.post-body {
+  font-size: 1.125em;
 }
 ```
 

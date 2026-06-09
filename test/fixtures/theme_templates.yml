@@ -89,12 +89,12 @@ cardashian:
     .post-title a { text-decoration: none; }
 
     /* Links */
-    .lexxy-content a {
+    .post-body a {
       font-weight: 500;
       text-decoration-color: var(--color-accent-muted);
       text-underline-offset: 0.15em;
     }
-    .lexxy-content a:hover { text-decoration-color: var(--color-accent); }
+    .post-body a:hover { text-decoration-color: var(--color-accent); }
 
     /* Images */
     article img { border-radius: 0.375rem; }
@@ -190,7 +190,7 @@ broadside:
     .post-title a { text-decoration: none; }
 
     /* Links */
-    .lexxy-content a { font-weight: 500; }
+    .post-body a { font-weight: 500; }
 
     /* Tags */
     .tag-link {
@@ -231,13 +231,13 @@ archibald:
     header > hr { order: 5; }
 
     /* Links: accent underline, highlight on hover */
-    nav a, .lexxy-content a, .posts-titles a, .posts-list a, .subscription-message a {
-      color: var(--lexxy-color-ink);
+    nav a, .post-body a, .posts-titles a, .posts-list a, .subscription-message a {
+      color: var(--color-text);
       border-bottom: 3px solid var(--color-accent);
       text-decoration: none;
       font-weight: normal;
     }
-    nav a:hover, .lexxy-content a:hover, .posts-titles a:hover, .posts-list a:hover, .subscription-message a:hover {
+    nav a:hover, .post-body a:hover, .posts-titles a:hover, .posts-list a:hover, .subscription-message a:hover {
       background-color: var(--color-accent);
       color: var(--color-bg);
       text-decoration: none;
@@ -435,7 +435,7 @@ holamundo:
         text-wrap: balance;
       }
 
-      article .lexxy-content {
+      article .post-body {
         line-height: 1.4;
         letter-spacing: 0;
         font-size: 1.1rem;
@@ -446,7 +446,7 @@ holamundo:
           font-size: 2.75rem;
         }
 
-        article .lexxy-content,
+        article .post-body,
         .post-card-summary {
           font-size: 1.25rem;
         }
@@ -639,11 +639,11 @@ novella:
     }
 
     /* Links */
-    .lexxy-content a {
+    .post-body a {
       text-decoration-color: var(--color-accent-muted);
       text-underline-offset: 0.15em;
     }
-    .lexxy-content a:hover { text-decoration-color: var(--color-accent); }
+    .post-body a:hover { text-decoration-color: var(--color-accent); }
 
     /* Images */
     article img { border-radius: 0.25rem; }
@@ -689,7 +689,7 @@ mozake:
     /* Mozake – plain HTML, circa 1991 */
 
     body { font-family: "Times New Roman", Times, serif; }
-    .lexxy-content { --lexxy-content-margin: 0.75rem; }
+    .post-body { --lexxy-content-margin: 0.75rem; }
 
     /* Header */
     header { margin-bottom: 1rem; }
@@ -709,8 +709,8 @@ mozake:
 
     /* Typography */
     article { line-height: revert; }
-    .lexxy-content h1, .lexxy-content h2, .lexxy-content h3,
-    .lexxy-content h4, .lexxy-content h5, .lexxy-content h6 {
+    .post-body h1, .post-body h2, .post-body h3,
+    .post-body h4, .post-body h5, .post-body h6 {
       font-size: revert; font-weight: revert; line-height: revert;
       margin-block: revert;
     }
@@ -736,8 +736,8 @@ mozake:
     article img, .post-card-summary img { border-radius: 0; }
 
     /* Code */
-    .lexxy-content pre { background: transparent; border-radius: 0; }
-    .lexxy-content code { background: transparent; }
+    .post-body pre { background: transparent; border-radius: 0; }
+    .post-body code { background: transparent; }
 
     /* Post cards */
     .post-card-content {
@@ -817,7 +817,7 @@ minimal_mono:
     h1.post-title, article footer,
     .post-card-date, .post-card-summary, .post-card-title,
     .tag-link, .tag-filter-notice, .tag-filter-notice-links, .tag-filter-notice-link,
-    .email-subscriber-form, figcaption, .lexxy-content figcaption { font-size: 0.75rem; }
+    .email-subscriber-form, figcaption, .post-body figcaption { font-size: 0.75rem; }
 
     /* Header */
     .avatar, header hr, .post-card-badge { display: none; }
@@ -853,24 +853,24 @@ minimal_mono:
     .form-container { padding: 0; }
 
     /* Heading markers */
-    .lexxy-content h1::before,
-    .lexxy-content h2::before,
-    .lexxy-content h3::before,
-    .lexxy-content h4::before { color: var(--color-text-muted); font-weight: inherit; }
-    .lexxy-content h1::before { content: "# "; }
-    .lexxy-content h2::before { content: "## "; }
-    .lexxy-content h3::before { content: "### "; }
-    .lexxy-content h4::before { content: "#### "; }
+    .post-body h1::before,
+    .post-body h2::before,
+    .post-body h3::before,
+    .post-body h4::before { color: var(--color-text-muted); font-weight: inherit; }
+    .post-body h1::before { content: "# "; }
+    .post-body h2::before { content: "## "; }
+    .post-body h3::before { content: "### "; }
+    .post-body h4::before { content: "#### "; }
 
     /* Content */
     article img { border-radius: 0; }
 
     /* Links */
-    .bio a, .lexxy-content a {
+    .bio a, .post-body a {
       text-decoration: underline dotted var(--color-text-muted);
       text-underline-offset: 0.125em;
     }
-    .bio a:hover, .lexxy-content a:hover { text-decoration-color: var(--color-text); }
+    .bio a:hover, .post-body a:hover { text-decoration-color: var(--color-text); }
   theme: base
   font: mono
   width: narrow
