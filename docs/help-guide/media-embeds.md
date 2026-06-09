@@ -4,7 +4,7 @@ published: true
 published_at: 2026-03-30T00:00:00+00:00
 ---
 
-Pagecord can turn links into rich embeds. Paste a supported URL on its own line to embed it automatically, or use an explicit `{{ embed ... }}` tag in posts and pages.
+Pagecord can turn links into rich embeds. Common media links can be embedded automatically when pasted on their own line. Other supported services use an explicit `{{ embed ... }}` tag, which works in both posts and pages.
 
 ## Supported services
 
@@ -13,14 +13,14 @@ Pagecord can turn links into rich embeds. Paste a supported URL on its own line 
 | **YouTube** | Videos, Shorts, and live streams | Automatic or `{{ embed ... }}` |
 | **Spotify** | Tracks, albums, playlists, podcasts, and shows | Automatic or `{{ embed ... }}` |
 | **Apple Music** | Songs, albums, and playlists | Automatic or `{{ embed ... }}` |
-| **TIDAL** | Tracks, albums, and playlists | Automatic or `{{ embed ... }}` |
 | **Bandcamp** | Albums and tracks | Automatic or `{{ embed ... }}` |
-| **Transistor** | Podcast episodes and shows | Automatic or `{{ embed ... }}` |
-| **Strava** | Activity pages | Automatic or `{{ embed ... }}` |
-| **GitHub** | Gists | Automatic or `{{ embed ... }}` |
-| **Bluesky** | Individual posts | Automatic or `{{ embed ... }}` |
 | **Images** | Direct image URLs (jpg, png, gif, webp, svg) | Automatic or `{{ embed ... }}` |
-| **Checkvist** | Public lists | Automatic or `{{ embed ... }}` |
+| **Bluesky** | Individual posts | `{{ embed ... }}` |
+| **GitHub** | Gists | `{{ embed ... }}` |
+| **TIDAL** | Tracks, albums, and playlists | `{{ embed ... }}` |
+| **Strava** | Activity pages | `{{ embed ... }}` |
+| **Transistor** | Podcast episodes and shows | `{{ embed ... }}` |
+| **Checkvist** | Public lists | `{{ embed ... }}` |
 
 ## Automatic embeds
 
@@ -34,7 +34,7 @@ https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT
 
 ## Explicit embeds
 
-You can also wrap a URL in an `embed` tag:
+For services that are not embedded automatically, wrap the URL in an `embed` tag:
 
 ```
 {{ embed https://bsky.app/profile/pagecord.com/post/3mhpkv6y5e22v }}
