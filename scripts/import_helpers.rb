@@ -114,6 +114,7 @@ module ImportHelpers
     end
 
     def build_attachment_node(blob, img)
+      blob.analyze unless blob.analyzed?
       url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
 
       # Check if img is inside a figure with figcaption
@@ -121,6 +122,10 @@ module ImportHelpers
       caption_text = parent_figure&.at_css("figcaption")&.text&.strip
       attributes = { url: url }
       attributes[:caption] = caption_text if caption_text.present?
+      attributes[:alt] = img["alt"] if img["alt"].present?
+      attributes[:width] = blob.metadata["width"] if blob.metadata["width"].present?
+      attributes[:height] = blob.metadata["height"] if blob.metadata["height"].present?
+      attributes[:presentation] = "gallery" if img.ancestors(".attachment-gallery").any?
 
       ActionText::Attachment.from_attachable(blob, attributes).to_html
     end
