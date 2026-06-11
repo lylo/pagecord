@@ -12,7 +12,7 @@ module CloudflareEmail
     end
 
     def deliver!(mail)
-      uri = URI("https://api.cloudflare.com/client/v4/accounts/#{settings[:account_id]}/email/sending/send")
+      uri = URI("https://api.cloudflare.com/client/v4/accounts/#{settings[:account_id]}/email/sending/send_raw")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
 
@@ -27,35 +27,10 @@ module CloudflareEmail
 
     def payload(mail)
       {
-        from: from_field(mail),
-        to: mail.to,
-        subject: mail.subject,
-        html: html_body(mail),
-        text: text_body(mail),
-        reply_to: mail.reply_to&.first
-      }.compact
-    end
-
-    def html_body(mail)
-      if mail.multipart?
-        mail.html_part&.decoded
-      elsif mail.mime_type == "text/html"
-        mail.decoded
-      end
-    end
-
-    def text_body(mail)
-      if mail.multipart?
-        mail.text_part&.decoded
-      elsif mail.mime_type == "text/plain"
-        mail.decoded
-      end
-    end
-
-    def from_field(mail)
-      addr = mail.from.first
-      name = mail[:from].display_names&.first&.presence
-      name ? { address: addr, name: name } : addr
+        from: mail.from.first,
+        recipients: [ mail.to, mail.cc, mail.bcc ].compact.flatten.uniq,
+        mime_message: mail.encoded
+      }
     end
   end
 end
