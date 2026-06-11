@@ -71,9 +71,10 @@ Let readers subscribe to your blog using an RSS reader.
 
 ## API & Integrations
 
-Use the Pagecord API to manage your blog programmatically, or publish directly from tools like Obsidian.
+Use the Pagecord API to manage your blog programmatically, publish from the command line, or publish directly from tools like Obsidian.
 
 - [API](api.md)
+- [Publishing with the Pagecord CLI](pagecord-cli.md)
 - [Publishing from Obsidian](obsidian.md)
 
 ## Account & Billing
