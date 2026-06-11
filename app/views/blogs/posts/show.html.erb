@@ -13,7 +13,7 @@
 <%= render "blogs/header", hide_email_form: true, hide_bio: !@post.home_page? %>
 
 <div data-controller="media-embeds lightbox" <%= tag.attributes(data: post_tag_data(@post)) %>>
-<%= render @post %>
+<%= render "blogs/posts/post", post: @post %>
 </div>
 
 <%= render "blogs/email_subscriber_form" if @post.post? && @blog.show_subscription_in_footer? %>

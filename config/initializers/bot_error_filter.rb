@@ -1,6 +1,7 @@
 # Middleware to catch common bot errors before they reach error tracking
 class BotErrorFilter
   HANDLED_ERRORS = [
+    Rack::Multipart::BoundaryTooLongError,
     Rack::Multipart::EmptyContentError,
     ActionDispatch::Http::MimeNegotiation::InvalidType,
     URI::InvalidURIError,

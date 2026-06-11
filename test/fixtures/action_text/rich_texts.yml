@@ -112,6 +112,34 @@ photography_and_tech:
     <p>Exploring how modern technology is transforming the art of photography.</p>
     <p>From mirrorless cameras to AI-powered editing tools, the intersection of photography and technology continues to evolve.</p>
 
+dynamic_variable_test:
+  record: dynamic_variable_test (Post)
+  name: content
+  body: |
+    <p>This page tests all the dynamic variables available in Pagecord. Each one is placed between regular paragraphs to check spacing renders correctly.</p>
+
+    <p>The morning light crept through the blinds and settled on the desk where a half-finished letter lay waiting. Some days the words came easily and other days they hid behind a fog that no amount of coffee could lift.</p>
+
+    <p>{{ posts }}</p>
+
+    <p>There was a bookshop on the corner that never seemed to close. Its windows were stacked with paperbacks and the door was always slightly ajar, letting the smell of old pages drift out onto the pavement.</p>
+
+    <p>{{ posts_by_year }}</p>
+
+    <p>Rain began to fall around midday, first as a fine mist then as heavy drops that hammered the rooftops and sent everyone scurrying for cover under awnings and doorways.</p>
+
+    <p>{{ tags }}</p>
+
+    <p>He kept a small notebook in his jacket pocket where he wrote down things he overheard on the bus. Fragments of conversation that meant nothing on their own but together formed a strange kind of poetry.</p>
+
+    <p>{{ tags | style: inline }}</p>
+
+    <p>The kitchen smelled of burnt toast and strong tea. She sat at the table reading the same paragraph for the third time, unable to concentrate on anything except the sound of the clock on the wall.</p>
+
+    <p>{{ contact_form }}</p>
+
+    <p>By evening the rain had stopped and the streets were glossy and reflective. Lamplight pooled in the puddles and somewhere a dog was barking at nothing in particular.</p>
+
 joel_hidden:
   record: joel_hidden (Post)
   name: content
@@ -166,3 +194,8 @@ embeds:
     <h3>Strava</h3>
     <p><a href="https://www.strava.com/activities/2307958367">https://www.strava.com/activities/2307958367</a></p>
 
+
+annie_home_page:
+  record: annie_home_page (Post)
+  name: content
+  body: <p>Welcome to my blog.</p>

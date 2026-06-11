@@ -3,7 +3,7 @@ class SendTrialReminderEmailsJob < ApplicationJob
 
   def perform
     users = User.kept
-                .includes(:blog)
+                .includes(:blogs)
                 .where(verified: true)
                 .where(trial_ends_at: 3.days.from_now.to_date)
                 .where.missing(:subscription)

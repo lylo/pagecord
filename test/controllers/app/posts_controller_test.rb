@@ -18,6 +18,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
         assert_equal "Save Draft", elements.first.text.strip
       end
     end
+    assert_select "button[aria-label='Page ideas and help']", false
   end
 
   test "should get root" do
@@ -32,6 +33,16 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "div#draft_posts"
   end
 
+  test "heading shows blog switcher" do
+    get app_posts_url
+
+    assert_response :success
+    assert_select "[data-controller='toggle']"
+    assert_select "[data-toggle-target='element']"
+    assert_select "a[href='#{app_blogs_path}']", text: "Manage blogs"
+    assert_select "turbo-frame#heading_blog_title", false
+  end
+
   test "should publish post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
@@ -44,6 +55,20 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert @user.blog.posts.last.published?
     assert_equal "New Post", @user.blog.posts.last.title
     assert_equal "New content", @user.blog.posts.last.content.to_s.strip
+  end
+
+  test "should not create post for unverified user" do
+    @user.update!(verified: false)
+
+    assert_no_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
+        post: { title: "New Post", content: "New content" }
+      }
+    end
+
+    assert_redirected_to login_path
+    assert_nil session[:user_id]
   end
 
   test "should create hidden post" do
@@ -89,13 +114,29 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert @user.blog.posts.last.draft?
   end
 
-  test "should discard post" do
-    post_to_discard = @user.blog.posts.first
-    assert_no_difference("@user.blog.posts.count") do
-      delete app_post_url(post_to_discard)
+  test "should permanently delete post" do
+    post_to_destroy = @user.blog.posts.first
+    post_to_destroy.discard!
+
+    assert_difference("@user.blog.posts.count", -1) do
+      delete app_post_url(post_to_destroy)
     end
-    assert post_to_discard.reload.discarded?
-    assert_redirected_to app_posts_path
+    assert_redirected_to app_posts_trash_path
+  end
+
+  test "should re-render new form when save fails with open_graph_image attached" do
+    user = users(:joel)
+    login_as user
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    Post.any_instance.stubs(:save).returns(false)
+
+    post app_posts_url, params: {
+      context_blog_id: user.blog.id,
+      post: { title: "New Post", content: "New content", open_graph_image: image }
+    }
+
+    assert_response :unprocessable_entity
   end
 
   test "should not create post when form blog context does not match session blog" do
@@ -162,6 +203,29 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "New content", @user.blog.posts.first.content.to_s.strip
     assert_equal 1.month.ago.to_date, @user.blog.posts.first.published_at
     assert_equal "https://example.com", @user.blog.posts.first.canonical_url
+  end
+
+  test "should update post with open graph image" do
+    user = users(:joel)
+    login_as user
+    post = user.blog.posts.first
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    patch app_post_url(post), params: { post: { open_graph_image: image } }
+
+    assert_redirected_to app_posts_url
+    assert post.reload.open_graph_image.attached?
+  end
+
+  test "should update post with open_graph_image_suppressed" do
+    user = users(:joel)
+    login_as user
+    post = user.blog.posts.first
+
+    patch app_post_url(post), params: { post: { open_graph_image_suppressed: true } }
+
+    assert_redirected_to app_posts_url
+    assert post.reload.open_graph_image_suppressed?
   end
 
   test "should update post and preserve page via session" do
@@ -365,13 +429,13 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "svg title", text: "Private post"
   end
 
-  test "app area should be inaccessible on custom domain" do
+  test "app area should not route on custom domain" do
     post = posts(:four)
     login_as post.blog.user
 
     get app_posts_url, headers: { "HOST" => post.blog.custom_domain }
 
-    assert_redirected_to root_url(host: post.blog.custom_domain)
+    assert_response :not_found
   end
 
   test "should preview draft post with blog layout" do

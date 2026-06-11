@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_03_16_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_06_02_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -84,6 +84,13 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_16_120000) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "blog_spotlight_exclusions", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_blog_spotlight_exclusions_on_blog_id", unique: true
+  end
+
   create_table "blogs", force: :cascade do |t|
     t.boolean "allow_search_indexing", default: true, null: false
     t.string "analytics_id"
@@ -113,6 +120,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_16_120000) do
     t.boolean "reply_by_email", default: false, null: false
     t.string "seo_title"
     t.boolean "show_branding", default: true, null: false
+    t.boolean "show_metrics", default: true, null: false
     t.boolean "show_subscription_in_footer", default: true, null: false
     t.boolean "show_subscription_in_header", default: true, null: false
     t.boolean "show_upvotes", default: true, null: false
@@ -293,9 +301,11 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_16_120000) do
     t.string "canonical_url"
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
+    t.text "excerpt"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.string "locale"
+    t.boolean "open_graph_image_suppressed", default: false, null: false
     t.datetime "published_at"
     t.string "slug"
     t.integer "source", default: 0, null: false
@@ -380,6 +390,30 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_16_120000) do
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
+  create_table "theme_templates", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "author_name"
+    t.string "author_url"
+    t.datetime "created_at", null: false
+    t.text "custom_css", null: false
+    t.string "custom_theme_accent_dark"
+    t.string "custom_theme_accent_light"
+    t.string "custom_theme_bg_dark"
+    t.string "custom_theme_bg_light"
+    t.string "custom_theme_text_dark"
+    t.string "custom_theme_text_light"
+    t.text "description"
+    t.string "font"
+    t.integer "layout"
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.string "theme"
+    t.datetime "updated_at", null: false
+    t.string "width"
+    t.index ["active"], name: "index_theme_templates_on_active"
+    t.index ["position"], name: "index_theme_templates_on_position"
+  end
+
   create_table "unengaged_follow_ups", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "sent_at", null: false
@@ -408,6 +442,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_16_120000) do
     t.date "trial_ends_at"
     t.datetime "updated_at", null: false
     t.boolean "verified", default: false
+    t.string "signup_referrer"
+    t.string "signup_source_note", limit: 500
+    t.string "features", default: [], null: false, array: true
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["password_digest"], name: "index_users_on_password_digest"
@@ -417,6 +454,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_16_120000) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "blog_exports", "blogs"
+  add_foreign_key "blog_spotlight_exclusions", "blogs"
   add_foreign_key "blogs", "posts", column: "home_page_id", on_delete: :nullify
   add_foreign_key "blogs", "users"
   add_foreign_key "contact_messages", "blogs"

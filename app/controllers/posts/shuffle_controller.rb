@@ -13,9 +13,7 @@ class Posts::ShuffleController < ApplicationController
 
     def random_post
       Post.visible.posts
-        .joins(blog: :user)
-        .where(blogs: { allow_search_indexing: true })
-        .where(users: { discarded_at: nil })
+        .joins(:blog).merge(Blog.spotlit)
         .where(posts: { published_at: 1.month.ago..2.hours.ago })
         .order("RANDOM()")
         .first

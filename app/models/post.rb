@@ -1,6 +1,6 @@
 class Post < ApplicationRecord
   include Discard::Model
-  include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable, Post::Emailable
+  include Draftable, Sluggable, Tokenable, Trimmable, HeadingIdentifiable, Upvotable, Taggable, Post::Searchable, Post::Moderatable, Localisable, Post::Emailable, Post::Filterable
 
   enum :source, [ :editor, :email, :api ]
 
@@ -10,6 +10,7 @@ class Post < ApplicationRecord
 
   has_rich_text :content
   has_many_attached :attachments, dependent: :destroy
+  has_one_attached :open_graph_image
 
   has_many :digest_posts, dependent: :destroy
   has_many :post_digests, through: :digest_posts
@@ -41,6 +42,7 @@ class Post < ApplicationRecord
         ]
       )
     }
+  scope :for_blog_render, -> { with_full_rich_text.with_attached_attachments.includes(:upvotes) }
   after_commit :touch_blog, on: [ :create, :update, :destroy ]
 
   def content_present
@@ -82,8 +84,21 @@ class Post < ApplicationRecord
     text_summary.truncate(limit, separator: /\s/)
   end
 
+  def excerpt_html
+    return @excerpt_html if defined?(@excerpt_html)
+    @excerpt_html = has_excerpt? ? ExcerptBreak.extract(content.to_s) : nil
+  end
+
+  def excerpt_text(limit: 64)
+    plain_text_from(raw_excerpt_html.to_s).truncate(limit, separator: /\s/)
+  end
+
   def has_text_content?
     text_summary.present?
+  end
+
+  def has_excerpt?
+    !raw_excerpt_html.nil?
   end
 
   def display_title
@@ -133,8 +148,9 @@ class Post < ApplicationRecord
 
   def first_image
     @first_image ||= begin
-      if content_image_attachments.any?
-        content_image_attachments.first
+      content_images = content_image_attachments
+      if content_images.any?
+        content_images.first
       elsif attachments.any?
         attachments.find(&:image?)
       end
@@ -143,6 +159,13 @@ class Post < ApplicationRecord
 
   def content_image_attachments
     return [] unless content.body.present?
+    if rich_text_content&.association(:embeds_attachments)&.loaded?
+      return rich_text_content.embeds_attachments.filter_map do |attachment|
+        blob = attachment.blob
+        blob if blob.image?
+      end
+    end
+
     content.body.attachments.select { |attachment| attachment.try(:image?) }
   end
 
@@ -150,24 +173,35 @@ class Post < ApplicationRecord
   # Used by content moderation. See also: text_summary (truncated version).
   def plain_text_content
     return "" unless content.body.present?
-
-    doc = Nokogiri::HTML::DocumentFragment.parse(content.to_s)
-    doc.css("figcaption").remove
-
-    doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
-      element.add_child(Nokogiri::XML::Text.new(" ", doc))
-    end
-
-    doc.text
-      .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
-      .gsub(/\[Image\]/i, "")
-      .gsub(%r{https?://\S+}, "")
-      .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
-      .gsub(/\s+/, " ")
-      .strip
+    plain_text_from(content.to_s)
   end
 
   private
+
+    def plain_text_from(html)
+      doc = Nokogiri::HTML::DocumentFragment.parse(html)
+      doc.css("figcaption").remove
+
+      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
+        element.add_child(Nokogiri::XML::Text.new(" ", doc))
+      end
+
+      doc.text
+        .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
+        .gsub(/\[Image\]/i, "")
+        .gsub(%r{https?://\S+}, "")
+        .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
+        .gsub(/<!--\s*more\s*-->/i, "")
+        .gsub(/\s+/, " ")
+        .strip
+    end
+
+    def raw_excerpt_html
+      return @raw_excerpt_html if defined?(@raw_excerpt_html)
+      # Use stored Action Text HTML for marker detection so attachment previews
+      # are not rendered just to decide whether a post has an excerpt break.
+      @raw_excerpt_html = content.body.present? ? ExcerptBreak.extract(content.body.to_html) : nil
+    end
 
     def text_content
       plain_text_content

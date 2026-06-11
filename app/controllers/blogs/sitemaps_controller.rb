@@ -3,8 +3,8 @@ class Blogs::SitemapsController < Blogs::BaseController
 
   def show
     fresh_when(
-      etag: @blog.posts.kept.maximum(:updated_at),
-      last_modified: @blog.posts.kept.maximum(:updated_at),
+      etag: @blog.all_posts.kept.maximum(:updated_at),
+      last_modified: @blog.all_posts.kept.maximum(:updated_at),
       public: true
     )
 

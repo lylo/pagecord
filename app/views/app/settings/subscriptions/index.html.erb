@@ -23,6 +23,9 @@
     <p>
       Your Pagecord Premium subscription has been scheduled for cancellation on
       <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
+      <% if @subscription.paddle_customer_id.present? %>
+        <%= link_to "View past invoices", app_settings_paddle_invoices_path, target: "_blank", rel: "noopener", class: "underline font-medium" %>.
+      <% end %>
     </p>
     <p class="mt-2">Changed your mind?</p>
     <div class="mt-4">
@@ -68,6 +71,12 @@
       </p>
     <% end %>
 
+    <% if @subscription.paddle_customer_id.present? %>
+      <p class="mt-2">
+        <%= link_to "View past invoices", app_settings_paddle_invoices_path, target: "_blank", rel: "noopener", class: "underline font-medium" %>
+      </p>
+    <% end %>
+
     <div class="mt-6 flex justify-between" data-controller="paddle">
       <%= link_to "Update Card Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "btn-primary" %>
       <%= link_to "Cancel Subscription", cancel_confirm_app_settings_subscriptions_path, class: "btn-danger" %>
@@ -80,6 +89,9 @@
 <% else %>
   <p>
     You're currently on the Pagecord free plan. Please consider upgrading!
+    <% if @subscription&.paddle_customer_id.present? %>
+      <%= link_to "View past invoices", app_settings_paddle_invoices_path, target: "_blank", rel: "noopener", class: "underline font-medium" %>.
+    <% end %>
   </p>
   <p class="mt-4">
     Premium subscribers get access to <b>image attachments</b>, <b>custom

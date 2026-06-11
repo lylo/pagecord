@@ -7,9 +7,10 @@
     <%= render "layouts/favicons" %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "tailwind", "inter", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "inter", "blog-themes", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%= yield :head %>
   </head>
 
   <body class="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900">

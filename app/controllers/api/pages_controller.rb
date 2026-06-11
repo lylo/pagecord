@@ -48,7 +48,11 @@ class Api::PagesController < Api::BaseController
 
   def destroy
     Current.blog.update!(home_page_id: nil) if Current.blog.home_page_id == @page.id
-    @page.discard!
+    if params[:permanent] == "true"
+      @page.destroy!
+    else
+      @page.discard!
+    end
     head :no_content
   end
 

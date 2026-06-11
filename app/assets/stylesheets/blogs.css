@@ -12,8 +12,11 @@
  * em (relative) - Used for values that should scale with font size
  *   - Font sizes (scale relative to parent)
  *   - Icon dimensions (scale with surrounding text)
- *   - Letter spacing, line height
+ *   - Letter spacing
  *   - List indentation (relative to text size)
+ *
+ * unitless - Used for line-height so text keeps the same rhythm
+ *   when parent font sizes change
  *
  * Why not em everywhere?
  *   em values compound. If an element has font-size: 1.5em and
@@ -148,7 +151,7 @@ footer.blog-footer #brand svg {
     line-height: inherit;
 
     /* gives images rounded corners */
-    img {
+    img:not(.posts-gallery *) {
       border-radius: 0.5em;
       max-width: 100%;
       display: block;
@@ -156,18 +159,30 @@ footer.blog-footer #brand svg {
 
     /* increased margin around images in article content */
     figure:has(img):not(.attachment-gallery *),
-    img:not(figure img, .attachment-gallery *),
+    img:not(figure img, .attachment-gallery *, .posts-gallery *),
     .attachment:not(.attachment-gallery *) {
       margin-block: 1.5rem;
     }
 
     .attachment-gallery {
       margin-block: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
     }
 
-    .attachment-gallery .attachment {
+    .attachment-gallery--2,
+    .attachment-gallery--4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .attachment-gallery .attachment,
+    .attachment-gallery.attachment-gallery--2 .attachment,
+    .attachment-gallery.attachment-gallery--4 .attachment {
       margin-block: 0;
       gap: calc(var(--lexxy-attachment-gap) / 2);
+      inline-size: 100%;
+      padding: 0;
     }
 
     .attachment--preview {
@@ -254,7 +269,7 @@ footer.blog-footer #brand svg {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     font-size: 0.875em;
-    line-height: 1.25rem;
+    line-height: 1.4;
     color: var(--color-text-muted);
     overflow-wrap: break-word;
 
@@ -305,11 +320,6 @@ footer.blog-footer #brand svg {
       &:hover {
         color: var(--color-accent-hover);
       }
-
-      &.post-title-link {
-        color: inherit;
-        text-decoration: none;
-      }
     }
 
     :where(blockquote) {
@@ -325,13 +335,27 @@ footer.blog-footer #brand svg {
       color: var(--color-text-light);
     }
 
-    :where(h1.post-title) {
-      font-size: 1.875rem;
-      line-height: 2.5rem;
+    :where(.lexxy-content h1, .lexxy-content h2, .lexxy-content h3, .lexxy-content h4, .lexxy-content h5, .lexxy-content h6) {
+      color: var(--color-text-heading);
+    }
+
+    h1.post-title {
+      font-size: 1.875em;
+      line-height: 1.4;
       margin-top: 0;
       margin-bottom: 2rem;
       color: var(--color-text-heading);
       font-weight: 800;
+    }
+
+    h1.post-title > a.post-title-link {
+      color: inherit;
+      text-decoration: none;
+      font-weight: inherit;
+    }
+
+    h1.post-title > a.post-title-link:hover {
+      color: inherit;
     }
 
     figcaption.attachment__caption {
@@ -364,12 +388,24 @@ footer.blog-footer #brand svg {
 }
 
 /* ============================= */
+/* Excerpt Read More              */
+/* ============================= */
+
+.excerpt-read-more {
+  margin-top: var(--lexxy-content-margin);
+}
+
+.excerpt-read-more a {
+  color: var(--color-text-muted);
+}
+
+/* ============================= */
 /* Post Footer                   */
 /* ============================= */
 
 :where(.blog) {
   :where(article) :where(footer) {
-    font-size: 0.875rem;
+    font-size: 0.875em;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -458,6 +494,11 @@ footer.blog-footer #brand svg {
     textarea {
       resize: vertical;
       max-width: 100%;
+
+      &.autogrow {
+        field-sizing: content;
+        min-block-size: 10em;
+      }
     }
 
     input[type="email"]::placeholder {
@@ -628,8 +669,8 @@ footer.blog-footer #brand svg {
 
 .form-error {
   color: #ef4444;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-size: 0.875em;
+  line-height: 1.4;
 }
 
 .form-actions {
@@ -648,9 +689,13 @@ footer.blog-footer #brand svg {
 }
 
 /* Titles layout - compact chronological list */
+.title_layout {
+  margin-block-end: 2rem;
+}
+
 .posts-titles .year-header {
   color: var(--color-text-heading);
-  font-size: 1.125rem;
+  font-size: 1.125em;
   font-weight: 600;
   margin: 0 0 1rem 0;
 }
@@ -718,8 +763,8 @@ footer.blog-footer #brand svg {
 }
 
 .post-card-title {
-  font-size: 1.5rem;
-  line-height: 2rem;
+  font-size: 1.5em;
+  line-height: 1.4;
   font-weight: 700;
   letter-spacing: -0.025em;
   margin-top: 0;
@@ -755,8 +800,8 @@ footer.blog-footer #brand svg {
 }
 
 .post-card-date {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-size: 0.875em;
+  line-height: 1.4;
   color: var(--color-text-muted);
   opacity: 0.75;
 }
@@ -765,8 +810,8 @@ footer.blog-footer #brand svg {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  line-height: 1rem;
+  font-size: 0.75em;
+  line-height: 1.4;
   font-weight: 500;
   color: var(--color-text-muted);
   border-radius: 9999px;
@@ -788,7 +833,7 @@ footer.blog-footer #brand svg {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.875em;
   font-weight: 500;
   text-decoration: none;
   background-color: var(--color-bg-subtle);
@@ -895,6 +940,34 @@ ul.posts-list {
   margin-top: 1.5rem;
 }
 
+.posts-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-block: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .posts-gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.posts-gallery-image {
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.posts-gallery-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.posts-gallery-title {
+  display: none;
+}
+
 /* Tag list component */
 .tag-list {
   list-style: disc;
@@ -907,12 +980,14 @@ ul.posts-list {
   padding: 0;
 }
 
-.tag-list a {
+.tag-list a,
+.tags-inline a {
   font-weight: 500;
   text-decoration: none;
 }
 
-.tag-list a:hover {
+.tag-list a:hover,
+.tags-inline a:hover {
   text-decoration: underline;
 }
 
@@ -974,7 +1049,7 @@ ul.posts-list {
 .tag-filter-notice {
   margin-bottom: 1.5rem;
   padding: 0.75rem 1rem;
-  font-size: 0.875rem;
+  font-size: 0.875em;
   color: var(--color-text-muted);
   background-color: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
@@ -998,7 +1073,6 @@ ul.posts-list {
 
 .tag-filter-notice-link {
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
   text-decoration: underline;
 }
 

@@ -1,7 +1,9 @@
 <% is_new = !@post.persisted? %>
 
 <div data-controller="post-attributes autosave"
-    data-autosave-key-value="<%= is_new ? "draft-post-new-#{Current.user.blog.id}" : "draft-post-#{@post.id}" %>">
+    data-autosave-key-value="<%= is_new ? "draft-post-new-#{@blog.id}" : "draft-post-#{@post.id}" %>"
+    data-autosave-base-title-value="<%= @post.title.to_s %>"
+    data-autosave-base-content-value="<%= h(@post.content&.body&.to_html.to_s) if @post.persisted? %>">
 
   <div class="mb-4"><%= trial_callout("Image uploads") %></div>
 
@@ -20,7 +22,7 @@
   </div>
 
   <%= form_with(model: [:app, @post], html: { id: "post-form" }) do |form| %>
-    <%= hidden_field_tag :context_blog_id, Current.user.blog.id if is_new %>
+    <%= hidden_field_tag :context_blog_id, @blog.id if is_new %>
 
     <div class="hidden mb-8" data-post-attributes-target="section" data-section="published-at">
       <div class="mt-4 font-bold">
@@ -64,10 +66,10 @@
 
       <div class="mt-4 flex gap-3">
         <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :hidden, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 rounded focus:ring focus:ring-slate-300" %>
+          <%= form.check_box :hidden, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" %>
         </div>
         <div>
-          <%= form.label :hidden, "Hide this post on my blog", class: "text-slate-800 dark:text-slate-100" %>
+          <%= form.label :hidden, "Hide this post on my blog", class: "text-sm text-slate-800 dark:text-slate-100" %>
           <p class="text-slate-500 text-sm">
             When checked, this post will not be visible on your blog, but it can accessed via it's link.
           </p>
@@ -92,6 +94,8 @@
         </div>
       </div>
     </div>
+
+    <%= render "app/posts/open_graph_image_section", record: @post, form: form %>
 
     <div class="<%= 'hidden' unless @post.locale.present? %> mb-8" data-post-attributes-target="section" data-section="locale">
       <div class="mt-4 font-bold">
@@ -118,6 +122,7 @@
         class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
         spellcheck: true,
         autocorrect: "on",
+        autocapitalize: "sentences",
         data: { controller: "lexxy ios-toolbar", attachments: Current.user.has_premium_access?, autosave_target: "content" } %>
 
       <div class="field-error"><%= @post.errors[:content].first if @post.errors[:content].any? %></div>

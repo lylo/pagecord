@@ -71,4 +71,5 @@
     @apply !text-current !underline !decoration-pagecord-accent !decoration-2 !font-medium hover:!bg-pagecord-accent/10 !transition-all !duration-200 !rounded;
   }
 
+
 }

@@ -15,6 +15,10 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
   test "should get new" do
     get new_app_home_page_url
     assert_response :success
+    assert_select "button[aria-label='Page ideas and help']"
+    assert_includes response.body, "{{ posts | limit: 5 }}"
+    assert_includes response.body, "https://help.pagecord.com/dynamic-variables-for-pages#recent-posts-on-your-home-page"
+    assert_includes response.body, "https://help.pagecord.com/dynamic-variables-for-pages#posts-by-year"
   end
 
   # Create action
@@ -82,6 +86,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
 
     get edit_app_home_page_url
     assert_response :success
+    assert_select "button[aria-label='Page ideas and help']"
   end
 
   test "should redirect to new when home page does not exist" do
@@ -146,5 +151,28 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_nil @blog.reload.home_page_id
     assert_equal "Contact", page.reload.title
+  end
+
+  test "should update home page with open graph image" do
+    user = users(:annie)
+    login_as user
+    home_page = user.blog.home_page
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    patch app_home_page_url, params: { post: { open_graph_image: image } }
+
+    assert_redirected_to app_pages_path
+    assert home_page.reload.open_graph_image.attached?
+  end
+
+  test "should update home page with open_graph_image_suppressed" do
+    user = users(:annie)
+    login_as user
+    home_page = user.blog.home_page
+
+    patch app_home_page_url, params: { post: { open_graph_image_suppressed: true } }
+
+    assert_redirected_to app_pages_path
+    assert home_page.reload.open_graph_image_suppressed?
   end
 end

@@ -1,5 +1,5 @@
 <%= content_for :title do %>
-  Pagecord vs HEY World: Email-to-blog without the $99/year fee
+  HEY World alternative — blog by email from any inbox — Pagecord
 <% end %>
 
 <%= content_for :og_image do %>
@@ -7,32 +7,56 @@
 <% end %>
 
 <%= content_for :meta_description do %>
-  HEY World locks you into HEY email ($99/year). Pagecord works with any email provider—Gmail, Fastmail, whatever you've got. Free forever or $39/year. More features, more flexibility.
+  A HEY World alternative that works with Gmail, Fastmail, iCloud, Proton — any inbox. Plus pages, themes, custom domains, RSS, and export. Free or $39/year.
 <% end %>
 
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
-    Pagecord: A Better HEY World Alternative
+    HEY World is great if you live in HEY. Pagecord works from any inbox.
   </h1>
 
   <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
     <p class="mt-8 md:mt-12">
-      HEY World requires you to use HEY email ($99/year). That's it. One email provider, take it or leave it.
+      HEY World gets one thing very right: publishing from email feels natural. If HEY is already your home, that simplicity is lovely.
     </p>
     <p>
-      Pagecord works with any email provider—Gmail, Fastmail, iCloud, ProtonMail, whatever you've got. Same email-to-blog magic, but with themes, custom domains, standalone pages, tags, analytics, and a lot more flexibility.
+      Pagecord keeps the email-to-blog magic but removes the inbox lock-in. Use Gmail, Fastmail, iCloud, Proton Mail, Outlook, or whatever you already have, then add pages, themes, custom domains, RSS, newsletters, analytics, and export.
     </p>
     <p>
-      Open source. Classic plan is free forever. Premium is $<%= localised_price %>/year.
+      Classic is free forever. Premium is $<%= localised_price %>/year.
     </p>
   </div>
 
   <div class="text-center mt-8 mb-4 md:text-xl">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
     <% end %>
   </div>
 </div>
+
+<%= render "comparison_intro", sections: [
+  {
+    title: "Who this is for",
+    paragraphs: [
+      "People who love the idea of posting by email but do not want to move their whole email life to one provider.",
+      "Small personal sites, field notes, status updates, project logs, family blogs, and any blog where the fastest editor is your inbox."
+    ]
+  },
+  {
+    title: "Why people switch",
+    paragraphs: [
+      "HEY World is tied to HEY. That's clean if you're already there, but a non-starter if your email lives somewhere else.",
+      "It's also intentionally narrow. Pagecord keeps the simplicity but gives your site more room to grow beyond a stream of emailed posts."
+    ]
+  },
+  {
+    title: "What is different",
+    paragraphs: [
+      "Every Pagecord blog gets a private posting address. Send an email, publish a post. Use the web editor when you want more control.",
+      "Any inbox in, a real website out — with RSS, custom domains, subscribers, pages, themes, and export."
+    ]
+  }
+] %>
 
 <%= render "screenshots" %>
 
@@ -62,8 +86,13 @@
         </tr>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Email newsletters</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700">✅<br><span class="text-sm">Weekly digest or per-post delivery</span></td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700"><span class="text-xl">✅</span><br><span class="text-sm">Weekly digest or per-post delivery</span></td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Multiple blogs from one account (Premium includes 2)</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
         </tr>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">RSS feeds</td>
@@ -74,7 +103,7 @@
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Use any email provider (Gmail, Yahoo, Fastmail, etc.)</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700">❌<br><span class="text-sm">(HEY only)</span></td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700"><span class="text-xl">❌</span><br><span class="text-sm">(HEY only)</span></td>
         </tr>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Free version</td>
@@ -170,9 +199,27 @@
     </table>
   </div>
 
-  <div class="my-8 text-center">
-    <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
-    <% end %>
-  </div>
 </div>
+
+<%= render "comparison_after_table",
+  examples: [
+    { name: "Noodlings", url: "https://noodlings.pagecord.com/what-s-so-great-about-posting-by-email", description: "A direct example of why posting by email changes the feel of blogging." },
+    { name: "Focustivity", url: "https://focustivity.blog", description: "A personal blog on a custom domain, posted mostly by email." },
+    { name: "Chad Moore", url: "https://blog.chadmoore.net/", description: "Another custom-domain blog where email publishing keeps the habit going." }
+  ],
+  testimonials: [
+    { name: "Eric", url: "https://focustivity.blog", quote: "I was drawn to Pagecord because it allows me to post simply by sending an email. I was blown away by the other great features." },
+    { name: "Chad", url: "https://blog.chadmoore.net/", quote: "The ability to post by email was such a relief. Write, send, publish. Frictionless!" }
+  ],
+  migration: {
+    can: [
+      "Post text copied from HEY World or your email archive",
+      "Your existing email workflow, because Pagecord works with any provider",
+      "A custom domain for the new site",
+      "Readers moved to RSS or email subscriptions where you have permission"
+    ],
+    cannot: [
+      "Your HEY World publishing address (you'll get a new one)",
+      "HEY account features tied to the HEY app itself"
+    ]
+  } %>

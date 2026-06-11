@@ -34,14 +34,14 @@ To change your delivery mode, go to **Settings** → **Audience** and pick betwe
 
 ## Email subject lines
 
-Individual emails use the post title as the subject line, or "New post from [your blog title] — [date]" if the post has no title. Weekly digest emails always use "New posts from [your blog title]".
+Individual emails use the post title as the subject line, or "New post from [your blog title] – [date]" if the post has no title. Weekly digest emails always use "New posts from [your blog title]".
 
 ## Displaying the subscription form
 
 You can show the subscription form in two places:
 
-- **Blog header** — Appears at the top of your home page
-- **Post footer** — Appears at the bottom of individual posts
+- **Blog header** – Appears at the top of your home page
+- **Post footer** – Appears at the bottom of individual posts
 
 Enable either or both options in the Audience settings.
 

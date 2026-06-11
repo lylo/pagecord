@@ -19,6 +19,6 @@ class Subscription::SendRenewalRemindersJob < ApplicationJob
   private
 
     def subscriptions_renewing_in_two_weeks
-      Subscription.active_paid.includes(user: :blog).where("next_billed_at <= ?", 2.weeks.from_now)
+      Subscription.active_paid.includes(user: :blogs).where("next_billed_at <= ?", 2.weeks.from_now)
     end
 end

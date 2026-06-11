@@ -1,0 +1,50 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold"><%= @template.name %></h1>
+  <div class="flex gap-2">
+    <%= link_to "Edit", edit_admin_theme_template_path(@template), class: "btn-secondary" %>
+    <%= button_to "Delete", admin_theme_template_path(@template), method: :delete, class: "btn-secondary text-red-600", form: { data: { turbo_confirm: "Are you sure?" } } %>
+  </div>
+</div>
+
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
+  <div>
+    <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Description</span>
+    <p><%= @template.description.presence || "–" %></p>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div>
+      <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Theme</span>
+      <p><%= @template.theme.presence || "–" %></p>
+    </div>
+    <div>
+      <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Font</span>
+      <p><%= @template.font.presence || "–" %></p>
+    </div>
+    <div>
+      <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Width</span>
+      <p><%= @template.width.presence || "–" %></p>
+    </div>
+    <div>
+      <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Layout</span>
+      <p><%= @template.layout.presence || "–" %></p>
+    </div>
+  </div>
+
+  <div>
+    <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Custom CSS</span>
+    <pre class="mt-1 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg text-sm font-mono overflow-x-auto"><%= @template.custom_css %></pre>
+  </div>
+
+  <% if @template.author_name.present? %>
+    <div>
+      <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Author</span>
+      <p>
+        <%= @template.author_name %>
+        <% if @template.author_url.present? %>
+          (<%= link_to @template.author_url, @template.author_url, class: "underline", target: "_blank" %>)
+        <% end %>
+      </p>
+    </div>
+  <% end %>
+</div>

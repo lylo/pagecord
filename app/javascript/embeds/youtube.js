@@ -9,7 +9,7 @@ class YouTube extends MediaSite {
         const match = url.match(this.regex)
         if (match) {
           const videoId = match[1]
-          return `https://www.youtube.com/embed/${videoId}`
+          return `https://www.youtube-nocookie.com/embed/${videoId}`
         }
         return null
       },

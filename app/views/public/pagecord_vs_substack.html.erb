@@ -1,5 +1,5 @@
 <%= content_for :title do %>
-  Pagecord vs Substack: No revenue share. No $50 domain fee. Free forever or $39/year.
+  Substack alternative without the 10% revenue share — Pagecord
 <% end %>
 
 <%= content_for :og_image do %>
@@ -7,32 +7,56 @@
 <% end %>
 
 <%= content_for :meta_description do %>
-  Substack charges $50 for custom domains and takes 10% of your revenue. Pagecord is free forever (Classic) or $39/year (Premium) with custom domains included. Email-to-blog publishing, open source, built to last.
+  A Substack alternative for personal sites, not publications. No revenue share, no $50 custom domain fee, free forever or $39/year.
 <% end %>
 
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
-    Pagecord: A Better Substack Alternative
+    Substack is for publications. Pagecord is for personal sites.
   </h1>
 
   <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
     <p class="mt-8 md:mt-12">
-      Substack charges you $50 to use your own domain. They take 10% of your revenue. They're VC-backed and haven't turned a profit despite being around since 2017.
+      Substack is good if you want to run a publication, chase subscribers, and think in newsletter issues. Many people do not want that. They want a small home on the web that can also send posts by email.
     </p>
     <p>
-      Pagecord is different. No revenue share. Built by one person, profitable from day one, and will be around for the long haul. Plus you can blog by email—just hit send and you're published. And like Substack, you can send each post directly to your subscribers — or let Pagecord send a weekly digest automatically.
+      Pagecord gives you a blog first: posts, pages, RSS, themes, a custom domain, and export. Email subscribers are there when you want them, with per-post delivery or a weekly digest, but the site is still yours even if you never become a newsletter operator.
     </p>
     <p>
-      Open source. Classic plan is free forever. Premium is $<%= localised_price %>/year and includes custom domains, analytics, and more.
+      No revenue share. No $50 custom domain fee. Open source. Classic is free forever. Premium is $<%= localised_price %>/year.
     </p>
   </div>
 
   <div class="text-center mt-8 mb-4 md:text-xl">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
     <% end %>
   </div>
 </div>
+
+<%= render "comparison_intro", sections: [
+  {
+    title: "Who this is for",
+    paragraphs: [
+      "Independent writers who like email but do not want their whole online identity to become a publication brand.",
+      "People who want a personal homepage, posts, static pages, RSS, and subscribers in one calm place."
+    ]
+  },
+  {
+    title: "Why people switch",
+    paragraphs: [
+      "Substack makes every writer feel like a media business. That's exciting for some, but it can make casual writing feel performative.",
+      "And the money adds up: a 10% revenue share if you charge readers, plus $50 for a custom domain. Pagecord keeps the pricing boring on purpose."
+    ]
+  },
+  {
+    title: "What is different",
+    paragraphs: [
+      "Pagecord isn't trying to build a social network around your writing. You get a site, an RSS feed, email delivery, and an export button.",
+      "It's independent and profitable. Your readers can subscribe — they don't have to sign up to a platform to read you."
+    ]
+  }
+] %>
 
 <%= render "screenshots" %>
 
@@ -57,7 +81,7 @@
         </tr>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Email newsletters</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700">✅<br><span class="text-sm">Weekly digest or per-post delivery</span></td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700"><span class="text-xl">✅</span><br><span class="text-sm">Weekly digest or per-post delivery</span></td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
@@ -84,7 +108,12 @@
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Custom domains</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
-          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700">✅<br><span class="text-sm">($50 charge)</span></td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700"><span class="text-xl">✅</span><br><span class="text-sm">($50 charge)</span></td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Multiple blogs from one account (Premium includes 2)</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Create blog posts by sending an email</td>
@@ -134,15 +163,33 @@
         <tr>
           <td class="py-3 px-4">Independent and profitable</td>
           <td class="text-center py-3 px-4 text-xl">✅</td>
-          <td class="text-center py-3 px-4">❌<br><span class="text-sm">(VC backed, never made a profit)</span></td>
+          <td class="text-center py-3 px-4"><span class="text-xl">❌</span><br><span class="text-sm">(VC backed, never made a profit)</span></td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="my-8 text-center">
-    <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Get your FREE account today</div>
-    <% end %>
-  </div>
 </div>
+
+<%= render "comparison_after_table",
+  examples: [
+    { name: "Focustivity", url: "https://focustivity.blog", description: "A personal blog on a custom domain, posted by email." },
+    { name: "Chad Moore", url: "https://blog.chadmoore.net/", description: "A clean personal site with subscribers, replies, and regular posts." },
+    { name: "Moonwriting", url: "https://moonwriting.blog", description: "A writer-owned site, not a channel in someone else's network." }
+  ],
+  testimonials: [
+    { name: "Eric", url: "https://focustivity.blog", quote: "I was drawn to Pagecord because it allows me to post simply by sending an email. I was blown away by the other great features." },
+    { name: "Greg", url: "https://iamgregb.io/", quote: "Pagecord is the perfect place to host your own blog, especially if you want to keep things simple without getting lost in modern publishing platforms or newsletter engines." }
+  ],
+  migration: {
+    can: [
+      "Your posts, exported from Substack",
+      "Your subscriber list, if you've exported it",
+      "Your custom domain, pointed at Pagecord"
+    ],
+    cannot: [
+      "Substack's recommendation network and app audience",
+      "Paid subscriptions and paywalled posts",
+      "Notes, chat, and the discussion threads"
+    ]
+  } %>

@@ -5,9 +5,6 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     Rails.cache.clear
-    host! Rails.application.config.x.domain
-    @admin = users(:joel)
-    login_as @admin
   end
 
   teardown do
@@ -35,24 +32,14 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav a.bg-slate-900", "Trending"
   end
 
-  test "excludes blogs with search indexing disabled from recent" do
+  test "excludes blogs that aren't spotlit from recent" do
     blog = blogs(:joel)
-    blog.update!(allow_search_indexing: false)
+    blog.exclude_from_spotlight
 
     get spotlight_path(tab: "recent")
 
     assert_response :success
     assert_no_match blog.subdomain, response.body
-  end
-
-  test "excludes posts from discarded users from recent" do
-    user = users(:elliot)
-    user.discard!
-
-    get spotlight_path(tab: "recent")
-
-    assert_response :success
-    assert_no_match user.blog.subdomain, response.body
   end
 
   test "excludes posts published within the last 15 minutes from recent" do
@@ -88,23 +75,5 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_match "Title from summary", response.body
-  end
-
-  test "redirects non-admin users" do
-    non_admin = users(:joel)
-    non_admin.update!(admin: false)
-
-    get spotlight_path
-
-    assert_redirected_to root_path
-  end
-
-  test "redirects logged-out users" do
-    reset!
-    host! Rails.application.config.x.domain
-
-    get spotlight_path
-
-    assert_redirected_to root_path
   end
 end

@@ -17,7 +17,7 @@ module Blog::ApiKey
 
   class_methods do
     def find_by_api_key(token)
-      find_by(api_key_digest: Digest::SHA256.hexdigest(token))
+      kept.find_by(api_key_digest: Digest::SHA256.hexdigest(token))
     end
   end
 end

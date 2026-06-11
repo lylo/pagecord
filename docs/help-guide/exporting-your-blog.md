@@ -11,8 +11,8 @@ Download a copy of all your posts and pages.
 1. Go to **Settings** → **Exports**
 2. Choose a format:
 3. 
-  - **HTML** — Ready to view in a browser
-  - **Markdown** — Plain text with front-matter metadata
+  - **HTML** – Ready to view in a browser
+  - **Markdown** – Plain text with front-matter metadata
 
 4. Click **Generate New Export**
 

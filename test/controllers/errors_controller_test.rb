@@ -16,6 +16,11 @@ class ErrorsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "should get too_many_requests" do
+    get "/429"
+    assert_response :too_many_requests
+  end
+
   test "should get internal_error" do
     get "/500"
     assert_response :internal_server_error

@@ -1,5 +1,5 @@
 <h2 class="text-2xl font-bold pt-4 mb-8">
-  <%= link_to @user.blog.display_name, blog_home_url(@user.blog), class: "hover:underline" %>
+  <%= @user.email %>
 </h2>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -42,6 +42,20 @@
         <dt class="font-medium text-slate-900 dark:text-slate-50">Timezone</dt>
         <dd class="text-slate-500 dark:text-slate-400"><%= @user.timezone %></dd>
       </div>
+      <% if @user.signup_referrer.present? %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Referrer</dt>
+          <dd class="text-slate-500 dark:text-slate-400 text-right truncate min-w-0">
+            <%= link_to @user.signup_referrer, @user.signup_referrer, class: "underline", target: "_blank", rel: "noopener" %>
+          </dd>
+        </div>
+      <% end %>
+      <% if @user.signup_source_note.present? %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Heard via</dt>
+          <dd class="text-slate-500 dark:text-slate-400 text-right break-words min-w-0"><%= @user.signup_source_note %></dd>
+        </div>
+      <% end %>
     </dl>
   </div>
 
@@ -139,66 +153,75 @@
   </div>
   <% end %>
 
-  <%# ---- Blog ---- %>
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Blog</h3>
-    <dl class="space-y-3 text-sm p-6">
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Subdomain</dt>
-        <dd><%= link_to @user.blog.subdomain, blog_home_url(@user.blog), class: "font-medium underline", target: "_blank" %></dd>
-      </div>
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Posts</dt>
-        <dd class="text-slate-500 dark:text-slate-400"><%= @user.blog.posts.count %></dd>
-      </div>
-      <% if @user.blog.email_subscriptions_enabled? %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Subscribers</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= @user.blog.email_subscribers.confirmed.count %></dd>
-        </div>
-      <% end %>
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Custom Domain</dt>
-        <dd class="text-slate-500 dark:text-slate-400"><%= @user.blog.custom_domain.presence || 'None' %></dd>
-      </div>
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Theme</dt>
-        <dd class="text-slate-500 dark:text-slate-400"><%= @user.blog.theme %> · <%= @user.blog.width %> · <%= @user.blog.font %></dd>
-      </div>
-    </dl>
-  </div>
-
   <%# ---- Features ---- %>
   <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
     <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Features</h3>
     <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "p-6", data: { turbo: false } do |f| %>
-      <%= f.fields_for :blog do |bf| %>
-        <%= bf.hidden_field :id %>
-        <%= bf.hidden_field :features, value: "", multiple: true %>
-        <% all_features = (Rails.features.names.map(&:to_s) | @user.blog.features).sort %>
-        <div class="space-y-3">
-          <% all_features.each do |feature| %>
-            <label class="flex gap-3 items-start cursor-pointer">
-              <div class="flex h-6 shrink-0 items-center">
-                <%= bf.check_box :features, { multiple: true, checked: @user.blog.features.include?(feature), class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0", onchange: "this.form.requestSubmit()" }, feature, nil %>
-              </div>
-              <div>
-                <span class="text-sm text-slate-800 dark:text-slate-100"><%= feature %></span>
-                <% unless Rails.features.names.map(&:to_s).include?(feature) %>
-                  <span class="text-xs text-yellow-600 dark:text-yellow-400">(legacy)</span>
-                <% end %>
-              </div>
-            </label>
-          <% end %>
-        </div>
-      <% end %>
+      <%= hidden_field_tag "user[features][]", "" %>
+      <% all_features = (Rails.features.names.map(&:to_s) | @user.features).sort %>
+      <div class="space-y-3">
+        <% all_features.each do |feature| %>
+          <label class="flex gap-3 items-start cursor-pointer">
+            <div class="flex h-6 shrink-0 items-center">
+              <%= f.check_box :features, { multiple: true, checked: @user.features.include?(feature), class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0", onchange: "this.form.requestSubmit()" }, feature, nil %>
+            </div>
+            <div>
+              <span class="text-sm text-slate-800 dark:text-slate-100"><%= feature %></span>
+              <% unless Rails.features.names.map(&:to_s).include?(feature) %>
+                <span class="text-xs text-yellow-600 dark:text-yellow-400">(legacy)</span>
+              <% end %>
+            </div>
+          </label>
+        <% end %>
+      </div>
     <% end %>
   </div>
+
+  <% @user.blogs.order(:created_at).each do |blog| %>
+    <%# ---- Blog ---- %>
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Blog</h3>
+      <dl class="space-y-3 text-sm p-6">
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Subdomain</dt>
+          <dd><%= link_to blog.subdomain, blog_home_url(blog), class: "font-medium underline", target: "_blank" %></dd>
+        </div>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Posts</dt>
+          <dd class="text-slate-500 dark:text-slate-400"><%= blog.posts.count %></dd>
+        </div>
+        <% if blog.email_subscriptions_enabled? %>
+          <div class="flex justify-between gap-4">
+            <dt class="font-medium text-slate-900 dark:text-slate-50">Subscribers</dt>
+            <dd class="text-slate-500 dark:text-slate-400"><%= blog.email_subscribers.confirmed.count %></dd>
+          </div>
+        <% end %>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Custom Domain</dt>
+          <dd class="text-slate-500 dark:text-slate-400"><%= blog.custom_domain.presence || "None" %></dd>
+        </div>
+        <div class="flex justify-between gap-4">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Theme</dt>
+          <dd class="text-slate-500 dark:text-slate-400"><%= blog.theme %> · <%= blog.width %> · <%= blog.font %></dd>
+        </div>
+        <div class="flex justify-between gap-4 items-center">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Spotlight</dt>
+          <dd>
+            <% if blog.spotlight_exclusion %>
+              <%= button_to "Include in spotlight", admin_user_spotlight_exclusion_path(@user, blog_id: blog.id), method: :delete, class: "btn-optional text-xs" %>
+            <% else %>
+              <%= button_to "Exclude from spotlight", admin_user_spotlight_exclusion_path(@user, blog_id: blog.id), method: :post, class: "btn-optional text-xs" %>
+            <% end %>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  <% end %>
 </div>
 
 <div class="flex flex-col sm:flex-row justify-between mt-16 py-4">
   <div>
-    <%= link_to "← Back to Blogs", admin_blogs_path, class: "btn-optional" %>
+    <%= link_to "← Back to Users", admin_users_path, class: "btn-optional" %>
   </div>
 
   <% if @user != Current.user %>

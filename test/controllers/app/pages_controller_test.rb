@@ -41,6 +41,12 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should get new" do
     get new_app_page_path
     assert_response :success
+    assert_select "button[aria-label='Page ideas and help']"
+    assert_select "[data-dialog-shortcut-value='?']"
+    assert_includes response.body, "{{ contact_form }}"
+    assert_includes response.body, "{{ posts_by_year }}"
+    assert_includes response.body, "https://help.pagecord.com/dynamic-variables-for-pages#recent-posts-on-your-home-page"
+    assert_includes response.body, "https://help.pagecord.com/dynamic-variables-for-pages#posts-by-year"
   end
 
   test "should create page" do
@@ -79,6 +85,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should get edit" do
     get edit_app_page_path(@page)
     assert_response :success
+    assert_select "button[aria-label='Page ideas and help']"
   end
 
   test "should not create page when form blog context does not match session blog" do
@@ -124,13 +131,14 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert @page.draft?
   end
 
-  test "should discard page" do
-    page_to_discard = @blog.pages.first
-    assert_no_difference("@blog.pages.count") do
-      delete app_page_path(page_to_discard)
+  test "should permanently delete page" do
+    page_to_destroy = @blog.pages.first
+    page_to_destroy.discard!
+
+    assert_difference("@blog.pages.count", -1) do
+      delete app_page_path(page_to_destroy)
     end
-    assert page_to_discard.reload.discarded?
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_trash_path
   end
 
   test "should not access other user's pages" do
@@ -207,6 +215,22 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal @draft_page.id, @blog.home_page_id
     assert_redirected_to app_pages_path
     assert_equal "Home page set!", flash[:notice]
+  end
+
+  test "should update page with open graph image" do
+    image = fixture_file_upload("avatar.png", "image/png")
+
+    patch app_page_path(@page), params: { post: { open_graph_image: image } }
+
+    assert_redirected_to app_pages_path
+    assert @page.reload.open_graph_image.attached?
+  end
+
+  test "should update page with open_graph_image_suppressed" do
+    patch app_page_path(@page), params: { post: { open_graph_image_suppressed: true } }
+
+    assert_redirected_to app_pages_path
+    assert @page.reload.open_graph_image_suppressed?
   end
 
   test "should preview draft page with blog layout" do

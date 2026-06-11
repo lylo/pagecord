@@ -159,6 +159,7 @@ a {
 .digest .post-title {
   font-weight: 700;
   font-size: 24px !important;
+  margin-top: 0 !important;
   margin-bottom: 1.4rem !important;
 }
 
@@ -244,6 +245,12 @@ a {
   padding: 0;
 }
 
+.digest .post-content .email-media-preview {
+  display: block;
+  text-align: center;
+  margin: 1.5em 0;
+}
+
 .digest .post-content table {
   border-collapse: collapse;
   width: 100%;
@@ -263,6 +270,7 @@ a {
 }
 
 .post-timestamp {
+  margin-top: 0.25rem !important;
   font-size: 14px !important;
 }
 
@@ -416,6 +424,10 @@ hr {
   table[class=body] span,
   table[class=body] a {
     font-size: 16px !important; }
+  table[class=body] .footer td,
+  table[class=body] .footer span,
+  table[class=body] .footer a {
+    font-size: 12px !important; }
   table[class=body] h2 a {
     font-size: 24px !important;
   }

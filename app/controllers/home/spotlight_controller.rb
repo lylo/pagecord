@@ -1,7 +1,6 @@
 class Home::SpotlightController < ApplicationController
   include RoutingHelper
   layout "home"
-  before_action -> { redirect_to root_path unless Current.user&.admin? } # TODO: remove before launch
 
   def show
     @tab = params[:tab] == "recent" ? "recent" : "trending"
@@ -13,11 +12,17 @@ class Home::SpotlightController < ApplicationController
 
     def recent_posts
       Rails.cache.fetch("public_spotlight_recent_posts", expires_in: 15.minutes) do
-        spotlight_posts_scope
+        latest_per_blog = spotlight_posts_scope
           .where(published_at: ..15.minutes.ago)
+          .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
+          .select("DISTINCT ON (posts.blog_id) posts.*")
+          .order("posts.blog_id, posts.published_at DESC")
+
+        Post.from(latest_per_blog, :posts)
           .order(published_at: :desc)
           .limit(20)
           .includes(:blog)
+          .to_a
       end
     end
 
@@ -31,9 +36,6 @@ class Home::SpotlightController < ApplicationController
     end
 
     def spotlight_posts_scope
-      Post.visible.posts
-        .joins(blog: :user)
-        .where(blogs: { allow_search_indexing: true })
-        .where(users: { discarded_at: nil })
+      Post.visible.posts.joins(:blog).merge(Blog.spotlit)
     end
 end

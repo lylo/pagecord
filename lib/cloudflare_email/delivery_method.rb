@@ -30,10 +30,26 @@ module CloudflareEmail
         from: from_field(mail),
         to: mail.to,
         subject: mail.subject,
-        html: mail.html_part&.decoded,
-        text: mail.text_part&.decoded,
+        html: html_body(mail),
+        text: text_body(mail),
         reply_to: mail.reply_to&.first
       }.compact
+    end
+
+    def html_body(mail)
+      if mail.multipart?
+        mail.html_part&.decoded
+      elsif mail.mime_type == "text/html"
+        mail.decoded
+      end
+    end
+
+    def text_body(mail)
+      if mail.multipart?
+        mail.text_part&.decoded
+      elsif mail.mime_type == "text/plain"
+        mail.decoded
+      end
     end
 
     def from_field(mail)

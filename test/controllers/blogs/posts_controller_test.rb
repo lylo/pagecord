@@ -7,6 +7,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     @blog = blogs(:joel)
 
     host_subdomain! @blog.subdomain
+
+    Rails.cache.clear
   end
 
   test "should get index as stream of posts" do
@@ -34,6 +36,36 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "div.post-card", minimum: 1
     assert_select ".cards_layout", count: 1
+  end
+
+  test "stream layout should render excerpt with read more when excerpt break is present" do
+    @blog.posts.create!(
+      title: "Excerpted Stream Post",
+      content: "<p>Stream teaser text.</p><p>{{ more }}</p><p>Stream hidden text.</p>",
+      status: :published
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_includes @response.body, "Stream teaser text."
+    assert_not_includes @response.body, "Stream hidden text."
+    assert_select ".excerpt-read-more a", text: I18n.t("posts.read_more"), minimum: 1
+  end
+
+  test "cards layout should use excerpt summary when excerpt break is present" do
+    @blog.cards_layout!
+    @blog.posts.create!(
+      title: "Excerpted Card Post",
+      content: "<p>Card teaser text.</p><p>{{ more }}</p><p>Card hidden text.</p>",
+      status: :published
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_includes @response.body, "Card teaser text."
+    assert_not_includes @response.body, "Card hidden text."
   end
 
   test "should show email subscription form on index" do
@@ -100,6 +132,91 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal post, assigns(:post)
+  end
+
+  test "show should render full content without excerpt marker" do
+    post = @blog.posts.create!(
+      title: "Excerpted Show Post",
+      content: "<p>Show teaser text.</p><p>{{ more }}</p><p>Show full text.</p>",
+      status: :published
+    )
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_includes @response.body, "Show teaser text."
+    assert_includes @response.body, "Show full text."
+    assert_not_includes @response.body, "{{ more }}"
+  end
+
+  test "should treat app as a post slug on blog subdomains" do
+    post = @blog.posts.create!(
+      title: "App slug",
+      content: "This is a post at /app",
+      slug: "app",
+      status: :published,
+      published_at: Time.current
+    )
+
+    get "/app"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should treat login as a post slug on blog subdomains" do
+    post = @blog.posts.create!(
+      title: "Login slug",
+      content: "This is a post at /login",
+      slug: "login",
+      status: :published,
+      published_at: Time.current
+    )
+
+    get "/login"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should treat admin as a post slug on blog subdomains" do
+    post = @blog.posts.create!(
+      title: "Admin slug",
+      content: "This is a post at /admin",
+      slug: "admin",
+      status: :published,
+      published_at: Time.current
+    )
+
+    get "/admin"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should treat app as a post slug on custom domains" do
+    blog = blogs(:annie)
+    post = blog.posts.create!(
+      title: "Custom domain app slug",
+      content: "This is a custom domain post at /app",
+      slug: "app",
+      status: :published,
+      published_at: Time.current
+    )
+    host! blog.custom_domain
+
+    get "/app"
+
+    assert_response :success
+    assert_equal post, assigns(:post)
+  end
+
+  test "should return not found for app path on custom domains without matching slug" do
+    host! blogs(:annie).custom_domain
+
+    get "/app"
+
+    assert_response :not_found
   end
 
   test "should render image attachments without action text wrappers on post show" do
@@ -169,6 +286,13 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should redirect to root if blog not found" do
     host_subdomain! "nope"
+
+    get blog_posts_path
+    assert_redirected_to "http://www.example.com/"
+  end
+
+  test "should redirect to root if blog is discarded" do
+    @blog.discard!
 
     get blog_posts_path
     assert_redirected_to "http://www.example.com/"
@@ -273,6 +397,26 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     cdata_content = xml.xpath("//item/description").first.children.find { |n| n.cdata? }.content
 
     assert_includes cdata_content, "<p>This is my first post.</p>"
+  end
+
+  test "should strip excerpt marker from RSS feed while keeping full content" do
+    @blog.posts.create!(
+      title: "Excerpted RSS Post",
+      content: "<p>RSS teaser text.</p><p>{{ more }}</p><p>RSS full text.</p>",
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get rss_feed_path(@blog)
+
+    assert_response :success
+
+    xml = Nokogiri::XML(@response.body)
+    cdata_content = xml.xpath("//item[title='Excerpted RSS Post']/description").first.children.find { |n| n.cdata? }.content
+
+    assert_includes cdata_content, "RSS teaser text."
+    assert_includes cdata_content, "RSS full text."
+    assert_not_includes cdata_content, "{{ more }}"
   end
 
   test "should render image attachments without action text wrappers in RSS feed" do
@@ -438,6 +582,28 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get "/#{post.slug}"
 
     assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
+  end
+
+  test "should not redirect from default domain to custom domain after grace period" do
+    @blog = blogs(:annie)
+    @blog.user.subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
+    host! "#{@blog.subdomain}.example.com"
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_response :success
+  end
+
+  test "should redirect from lapsed custom domain to default domain after grace period" do
+    @blog = blogs(:annie)
+    @blog.user.subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
+    host! @blog.custom_domain
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{post.slug}"
   end
 
   test "should redirect from www variant to canonical custom domain" do
@@ -1120,6 +1286,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   # Cache header tests
 
   test "should set cache headers on default domain in production" do
+    Rack::Attack.cache.store.clear
     Rails.stubs(:env).returns(ActiveSupport::EnvironmentInquirer.new("production"))
     ENV.stubs(:[]).with("CLOUDFLARE_ZONE_ID").returns("zone123")
     ENV.stubs(:[]).with("CLOUDFLARE_API_TOKEN").returns("token123")
@@ -1133,6 +1300,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not set cache headers on custom domain in production" do
+    Rack::Attack.cache.store.clear
     @blog = blogs(:annie)
     host! @blog.custom_domain
 

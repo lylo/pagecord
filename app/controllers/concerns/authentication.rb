@@ -26,5 +26,6 @@ module Authentication
 
   def sign_out
     session[:user_id] = nil
+    session[:current_blog_id] = nil
   end
 end

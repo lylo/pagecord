@@ -7,9 +7,11 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **Vanilla Rails**: No services, commands, or interactors. Private methods in controllers, rich domain models, concerns for shared behavior. See [Vanilla Rails is Plenty](https://dev.37signals.com/vanilla-rails-is-plenty/).
 - **Minimal code**: Fewer lines when clarity is maintained. Simple over clever. No over-engineering or premature abstraction.
 - **Idiomatic**: Follow Ruby and Rails conventions throughout. Fat models, skinny controllers, RESTful routes.
+- **Default Rails baseline**: For Rails coding, refactoring, debugging, migrations, and review tasks, apply the `rails-best-practices-core` skill unless a more specific instruction conflicts.
 
 ## Code Style
 
+- Use British English spelling in user-facing copy and documentation (for example, "capitalisation", not "capitalization")
 - Double quotes for strings, not single quotes
 - Use en-dashes (–), never em-dashes (—)
 - Remove trailing whitespace
@@ -58,6 +60,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 ## Git Commits
 
+- Use plain branch names without category prefixes (for example `help-dialogs`, not `feature/help-dialogs` or `fix/help-dialogs`)
 - **NEVER** add "Co-Authored-By", "Generated with Claude Code", or any AI attribution to commit messages, PR descriptions, or code comments. This is a hard rule — no exceptions.
 - Ask for human review before committing generated code
 
@@ -97,13 +100,15 @@ Docker: prefix commands with `docker-compose exec web`
 - **Trial**: 14-day free trial. `has_premium_access?` = subscribed OR on trial. `subscribed?` = paid only.
 - Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains, API access
 - Subscriber-only features: email subscriptions, branding removal
-- Payment failures handled automatically by Paddle Retain — don't email customers about failed payments
+- Payment failures handled automatically by Paddle Retain – don't email customers about failed payments
+- **Invoices**: customers view past invoices via Paddle's customer portal. `App::Settings::Subscriptions::PaddleInvoicesController#show` mints a portal session (`POST customers/:id/portal-sessions`) and redirects – don't build an inline invoice list
 
 ### Content Pipeline
 - **Email-to-blog**: ActionMailbox → PostsMailbox → MailParser (HTML pipeline: body extraction → monospace detection → image unfurl → inline attachments → tag extraction → sanitize)
 - **Content moderation**: OpenAI API via `ContentModerator`. `ContentModerationBatchJob` runs every 10 min. Flagged posts stay visible for admin review. Daily digest to admin via `ContentModerationDigestJob`.
 - **Spam detection**: GPT-4o-mini via `SpamDetector`. Checks blogs 2h–7d old. Skips subscribers. Admin confirms (discards user) or dismisses. Daily digest via `SpamDetectionDigestJob`. IP reputation checks via `IpReputation` (GetIpIntel provider).
 - **Dynamic variables**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}` — processed in pages only (`is_page: true`) via `DynamicVariableProcessor`
+- **Excerpt break**: `{{ more }}` or `<!--more-->` marker splits a post into a teaser and the rest. `ExcerptBreak` parses the marker; `Post#excerpt_html` / `excerpt_text` expose the teaser (computed on demand, memoized – no DB column). Stream layout renders teaser + "Read more" link; cards use `excerpt_text`. Full post views, RSS, and digest emails render full content with the marker stripped. Help doc: `docs/help-guide/excerpt-breaks.md`.
 - **OG images**: Auto-generated from first post image via `GenerateOpenGraphImageJob`
 
 ### Analytics
@@ -128,10 +133,12 @@ Docker: prefix commands with `docker-compose exec web`
 - **Cancellation**: `SendCancellationEmailJob` sends appropriate email (subscriber vs free account). User destruction via `DestroyUserJob`.
 
 ### Feature Toggles
-- Per-blog feature flags stored in the blog's `features` array column (e.g. `["contact_form", "analytics_countries"]`)
-- Defined in `config/features.rb` using `feature :name do |blog:| ... end`
-- In controllers/views: `current_features.enabled?(:feature_name)` (via `Rails.features.for(blog: @blog)`)
-- In models/concerns: check `features.include?("feature_name")` directly on the blog instance
+- Feature flags are stored on `users.features` as an array column (e.g. `["multiple_blogs"]`).
+- Defined in `config/features.rb` using the `feature_toggles` gem: `feature :name do |user: nil, blog: nil| ... end`
+- `ApplicationController#current_features` returns `Rails.features.for(user: Current.user, blog: @blog)` and is exposed to controllers/views.
+- In app controllers/views: prefer `current_features.enabled?(:feature_name)` so checks have both current user and blog context.
+- In models/concerns: check `user.features.include?("feature_name")` when direct model-level access is needed.
+- Feature-gated app UI should also guard direct routes with a `before_action` and redirect when disabled; for example, the multiple-blog management UI is gated by `:multiple_blogs`.
 
 ### Key Concerns
 - **Subscribable**: Trial management (14 days), `has_premium_access?` vs `subscribed?`
@@ -177,3 +184,4 @@ CSP `frame-src` in `config/initializers/content_security_policy.rb` must be upda
 - **Blog views**: No Tailwind, use semantic CSS. Check `lexxy-typography.css`, `components.css`, `themes/*.css`
 - **Post text_summary**: Cached plain text column updated via before_save. Use `display_title`, `summary(limit:)` — don't parse ActionText in loops
 - **Analytics**: Uses mixed data (raw PageViews for recent, Rollups for historical). `cutoff_time` returns 1900-01-01 when no rollups exist to ensure raw data is always used.
+- **Client IP**: Use `request.ip` / `req.ip`. The `cloudflare-rails` gem patches Rack/Rails proxy checks so X-Forwarded-For is walked correctly past Cloudflare's edges. Never parse `HTTP_X_FORWARDED_FOR` yourself — the leftmost value is attacker-controlled and bypasses Rails' trusted-proxy filtering. Rack 3 also honours RFC 7239 `Forwarded` ahead of X-Forwarded-* by default; we pin `Rack::Request.forwarded_priority = [:x_forwarded]` in `config/initializers/rack_request.rb` to neutralise that. (See incident 2026-05-01.)

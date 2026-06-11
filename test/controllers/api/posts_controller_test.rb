@@ -24,6 +24,13 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test "returns unauthorized for discarded blog api key" do
+    @blog.discard!
+
+    get "/posts", headers: auth_header
+    assert_response :unauthorized
+  end
+
   test "returns forbidden without premium access" do
     @user.subscription.destroy!
     @user.update!(trial_ends_at: nil)
@@ -424,6 +431,13 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :no_content
     assert @post.reload.discarded?
+  end
+
+  test "destroy permanently deletes a post when permanent=true" do
+    assert_difference("Post.count", -1) do
+      delete "/posts/#{@post.token}", params: { permanent: true }, headers: auth_header
+    end
+    assert_response :no_content
   end
 
   test "destroy returns 404 for unknown token" do

@@ -8,10 +8,21 @@ joel:
   user: joel
   subdomain: joel
   delivery_email: joel_gf35jsue@post.pagecord.com
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 2.days.ago %>
   <<: *default
   reply_by_email: true
   api_key_digest: <%= Digest::SHA256.hexdigest("test_api_key_for_fixtures") %>
   api_key_hint: ures
+
+joel_notes:
+  user: joel
+  subdomain: joelnotes
+  delivery_email: joelnotes_gf35jsue@post.pagecord.com
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>
+  email_subscriptions_enabled: false
+  <<: *default
 
 elliot:
   user: elliot
@@ -31,6 +42,7 @@ annie:
   delivery_email: annie_asj232j@post.pagecord.com
   custom_domain: annie.blog
   reply_by_email: true
+  home_page: annie_home_page
   <<: *default
 
 saul:

@@ -19,10 +19,10 @@ class Blogs::BaseController < ApplicationController
       @blog ||= if custom_domain_request?
         blog_from_custom_domain
       elsif request.subdomain.present? && request.subdomain != "www"
-        Blog.includes(:avatar_attachment).find_by(subdomain: request.subdomain)
+        Blog.kept.includes(:avatar_attachment).find_by(subdomain: request.subdomain)
       else
         if blog_params[:subdomain].present?
-          Blog.includes(:avatar_attachment).find_by(subdomain: blog_params[:subdomain])
+          Blog.kept.includes(:avatar_attachment).find_by(subdomain: blog_params[:subdomain])
         end
       end
 
@@ -43,13 +43,14 @@ class Blogs::BaseController < ApplicationController
     end
 
     def enforce_custom_domain
-      redirect_from_default_domain || redirect_to_canonical_custom_domain
+      redirect_from_lapsed_custom_domain || redirect_from_default_domain || redirect_to_canonical_custom_domain
     end
 
     # Redirects requests from the default pagecord.com subdomain to the blog's custom domain
     # Example: joel.pagecord.com/about -> example.com/about
     def redirect_from_default_domain
       return false unless default_domain_request? && @blog.custom_domain.present?
+      return false unless @blog.user.custom_domain_access?
 
       escaped_subdomain = Regexp.escape(@blog.subdomain)
       request_path = request.path.gsub(/^\/@?#{escaped_subdomain}\/?/, "")
@@ -58,6 +59,15 @@ class Blogs::BaseController < ApplicationController
       request_path = request_path.sub(/^\//, "") if full_url.end_with?("/")
       new_url = "#{full_url}#{request_path}"
 
+      redirect_to new_url, status: :moved_permanently, allow_other_host: true
+      true
+    end
+
+    def redirect_from_lapsed_custom_domain
+      return false unless custom_domain_request? && @blog.custom_domain.present?
+      return false if @blog.user.custom_domain_access?
+
+      new_url = "#{request.protocol}#{@blog.subdomain}.#{Rails.application.config.x.domain}#{request.fullpath}"
       redirect_to new_url, status: :moved_permanently, allow_other_host: true
       true
     end
@@ -83,6 +93,20 @@ class Blogs::BaseController < ApplicationController
         # Reject null bytes and CRLF characters to prevent injection attacks
         raise ActiveRecord::RecordNotFound if value.match?(/[\x00\r\n]/)
       end
+    end
+
+    # Enable Cloudflare edge caching for *.pagecord.com blog pages. Sets a
+    # 12-hour edge TTL with tag-based purging (on post save / blog settings
+    # change). Skips the session cookie so Cloudflare doesn't BYPASS the cache.
+    # Custom domains are not edge-cached (they route through Caddy, not Cloudflare).
+    # No-op unless Cloudflare credentials are configured.
+    def set_blog_cache_headers
+      return unless default_domain_request?
+      return unless Rails.env.production? && ENV["CLOUDFLARE_ZONE_ID"].present? && ENV["CLOUDFLARE_API_TOKEN"].present?
+
+      response.headers["Cache-Tag"] = @blog.subdomain
+      request.session_options[:skip] = true
+      expires_in 0, public: true, "s-maxage": 12.hours.to_i, "stale-while-revalidate": 1.hour.to_i
     end
 
     def render_blog_not_found

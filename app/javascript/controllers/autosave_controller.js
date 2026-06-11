@@ -2,16 +2,13 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["title", "content"]
-  static values = { key: String }
+  static values = { key: String, baseTitle: String, baseContent: String }
 
   connect() {
-    this.baseDraft = this.currentDraft()
+    this.baseDraft = { title: this.baseTitleValue, content: this.baseContentValue }
 
-    if (this.isExistingRecord && this.hasContentTarget && !this.baseDraft.content) {
-      customElements.whenDefined(this.contentTarget.localName).then(() => {
-        this.baseDraft = this.currentDraft()
-        this.restore()
-      })
+    if (this.hasContentTarget) {
+      customElements.whenDefined(this.contentTarget.localName).then(() => this.restore())
     } else {
       this.restore()
     }
