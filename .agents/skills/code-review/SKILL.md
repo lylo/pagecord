@@ -1,6 +1,7 @@
 ---
 name: code-review
-description: Review Ruby and Rails code as a principal engineer. Use when the user asks for a code review, PR review, diff review, or wants risks, regressions, security issues, Rails idiom problems, or test gaps identified before merging.
+description: Review Ruby and Rails code as a principal engineer. Use when the user asks for a code review, PR review, diff review, or wants risks, regressions, security issues, Rails idiom problems, UI state issues, or test gaps identified before merging.
+allowed-tools: Bash, Read, Grep
 ---
 
 # Code Review
@@ -22,6 +23,7 @@ Review as a principal Ruby and Rails engineer. Prioritise correctness, maintaina
 - Check controllers, models, routes, views, jobs, mailers, policies, migrations, tests, and background behaviour touched by the change.
 - Trace the real data flow: params, authorisation, model state, persistence, callbacks, jobs, mail delivery, cache invalidation, and redirects.
 - Look for behaviour that differs between kept/discarded records, premium/free users, current blog vs other blogs, admin vs app contexts, and HTML UI vs direct requests.
+- For UI changes, check loading, sending, sent, and error states; redirects after async work; counts read after background jobs; and relevant system tests when they exist.
 
 ## Rails and Ruby standards
 
@@ -33,13 +35,6 @@ Review as a principal Ruby and Rails engineer. Prioritise correctness, maintaina
 - Avoid N+1 queries. Check index pages, admin tables, partial loops, mailers, and jobs for missing `includes`, `preload`, or `eager_load`.
 - Prefer fewer lines when clarity is preserved. Remove unnecessary branches, objects, indirection, and defensive code that does not protect a real boundary.
 - Apply DRY pragmatically. Leverage existing helpers and patterns first; introduce a new abstraction only if it also simplifies current or near-current code.
-
-## Domain design
-
-- Naming should match the product domain, not implementation trivia.
-- Check that route names, controller namespaces, model methods, copy, and tests use the same nouns consistently.
-- Watch for concepts split across multiple names without reason, such as "account", "user", and "blog" describing the same UI concern.
-- Prefer explicit lifecycle language: discard, restore, destroy, trash, delete, publish, broadcast, subscribe, cancel.
 
 ## Security and data integrity
 
@@ -67,11 +62,4 @@ Use this structure:
 3. Brief summary
 4. Tests reviewed or recommended
 
-For each finding include:
-
-- Severity: `Critical`, `High`, `Medium`, or `Low`
-- File and line
-- The concrete risk
-- The smallest defensible fix
-
-Keep summaries short. Do not bury findings after praise or general commentary.
+For each finding include severity (`Critical`, `High`, `Medium`, or `Low`), file and line, the concrete risk, and the smallest defensible fix. Keep summaries short. Do not bury findings after praise or general commentary.

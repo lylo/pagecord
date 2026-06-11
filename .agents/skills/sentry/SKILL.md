@@ -1,6 +1,7 @@
 ---
 name: sentry
 description: Investigate and fix a Sentry issue in this codebase. Use when the user provides a Sentry issue URL or ID and wants diagnosis, a fix, verification, or a PR.
+allowed-tools: Bash, Read, Grep
 ---
 
 # Sentry
@@ -17,12 +18,13 @@ description: Investigate and fix a Sentry issue in this codebase. Use when the u
 ## CLI access
 
 - Check `sentry-cli --version` before calling Sentry.
-- Check authentication and scopes with `sentry-cli info`; issue investigation needs read scopes such as `org:read`, `project:read`, and `event:read`. If the CLI only has deployment/CI scopes such as `org:ci`, ask the user to run `sentry-cli login` or otherwise configure a read-capable token locally. Never ask the user to paste an auth token in chat.
+- Check authentication and scopes with `sentry-cli info`; issue investigation needs read scopes such as `org:read`, `project:read`, and `event:read`.
+- If the CLI only has deployment/CI scopes such as `org:ci`, ask the user to run `sentry-cli login` or otherwise configure a read-capable token locally. Never ask the user to paste an auth token in chat.
 - For Pagecord, use org `pagecord`. Infer the issue ID from a Sentry URL like `https://pagecord.sentry.io/issues/7528519207`.
 - `sentry-cli issues list` requires both org and project. Use it to confirm an issue is visible when the project slug is known:
 
 ```bash
-sentry-cli issues list --org pagecord --project <project-slug> --id 7528519207 --max-rows 5
+sentry-cli issues list --org pagecord --project <project-slug> --id <issue-id> --max-rows 5
 ```
 
 - Use `sentry-cli events list` for recent project events when the project slug is known:
@@ -43,8 +45,8 @@ curl -fsS -H "Authorization: Bearer $TOKEN" -H "Accept: application/json" \
   "https://sentry.io/api/0/projects/pagecord/<project-slug>/events/<event-id>/"
 ```
 
-- Prefer piping API responses through `jq` to extract only the fields needed for diagnosis. For performance issues, inspect `metadata`, `culprit`, `transaction`, `breakdowns`, span entries, breadcrumbs, and render partial identifiers rather than pasting raw event JSON.
-- If no Sentry MCP/API tool is exposed and `~/.sentryclirc` has no read-capable token, report the blocker and ask the user to provide read-capable local access or paste the redacted issue details.
+- Prefer piping API responses through `jq` to extract only the fields needed for diagnosis.
+- For performance issues, inspect `metadata`, `culprit`, `transaction`, `breakdowns`, span entries, breadcrumbs, and render partial identifiers rather than pasting raw event JSON.
 - If project discovery is needed, list projects with:
 
 ```bash
@@ -55,6 +57,7 @@ sentry-cli projects list --org pagecord
 
 ## Git and output
 
-- Create a branch named `sentry-{issue-id}` when starting an implementation task.
-- Summarize the issue, cause, fix, and verification.
+- Create a branch named `sentry-<issue-id>` when starting an implementation task.
+- If the user explicitly wants the older Claude branch convention, use `fix/sentry-<issue-id>` instead.
 - If the user wants a PR and GitHub tooling is available, prepare one with a short factual summary and a clear test plan.
+- Summarize the issue, cause, fix, verification, and PR link when applicable.

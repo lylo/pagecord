@@ -1,6 +1,7 @@
 ---
 name: ci
 description: Run the local CI sequence for this repo. Use when the user asks to run CI, verify a branch before push, or check code quality with the full local pipeline.
+allowed-tools: Bash
 ---
 
 # CI
