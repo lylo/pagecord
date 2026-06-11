@@ -1,7 +1,7 @@
 ---
 title: "Publishing with the Pagecord CLI"
 published: true
-published_at: 2026-06-11T12:00:00+00:00
+published_at: 2026-06-11T00:00:00+00:00
 ---
 
 The Pagecord CLI lets you publish local Markdown and HTML files to your Pagecord blog from the command line. It is useful if you write in a local folder, use an editor like Vim, Emacs, iA Writer, or VS Code, or want to publish from scripts and automation.
