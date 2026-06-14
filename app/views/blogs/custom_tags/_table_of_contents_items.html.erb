@@ -1,0 +1,11 @@
+<% items.each do |item| %>
+  <% heading = item[:heading] %>
+  <li class="toc-level-<%= item[:level] %>">
+    <%= link_to heading.text.strip, "##{heading["id"]}" %>
+    <% if item[:children].any? %>
+      <ol>
+        <%= render partial: "blogs/custom_tags/table_of_contents_items", locals: { items: item[:children] } %>
+      </ol>
+    <% end %>
+  </li>
+<% end %>

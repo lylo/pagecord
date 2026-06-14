@@ -991,6 +991,23 @@ ul.posts-list {
   text-decoration: underline;
 }
 
+.table-of-contents {
+  margin-block: 0 var(--lexxy-content-margin);
+}
+
+.table-of-contents ol {
+  margin-block: 0;
+}
+
+.table-of-contents li,
+.table-of-contents ol {
+  margin: 0;
+}
+
+.table-of-contents li::marker {
+  color: var(--color-text);
+}
+
 /* ============================= */
 /* Media Embeds                  */
 /* ============================= */
