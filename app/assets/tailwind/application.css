@@ -27,15 +27,6 @@
   .max-w-content-wide {
     max-width: var(--content-width-wide);
   }
-
-  /* Font size utility classes */
-  .text-size-standard {
-    font-size: var(--font-size-standard);
-  }
-
-  .text-size-large {
-    font-size: var(--font-size-large);
-  }
 }
 
 @layer base {

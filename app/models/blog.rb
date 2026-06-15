@@ -8,7 +8,6 @@ class Blog < ApplicationRecord
 
   MAX_BLOGS_FREE = 1
   MAX_BLOGS_PAID = 2
-  LIMIT_MESSAGE = "You've reached your blog limit"
 
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
@@ -55,7 +54,7 @@ class Blog < ApplicationRecord
 
     def within_blog_limit
       if user && blog_count_exceeds_limit?
-        errors.add(:base, "#{LIMIT_MESSAGE} (#{user.blog_limit})")
+        errors.add(:base, "You can't add another blog because you've already reached your blog limit")
       end
     end
 

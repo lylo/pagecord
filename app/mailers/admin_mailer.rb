@@ -1,4 +1,4 @@
-class AdminMailer < ApplicationMailer
+class AdminMailer < CloudflareMailer
   def spam_detection_digest(detection_ids)
     @detections = SpamDetection.where(id: detection_ids)
                                .includes(blog: :user)

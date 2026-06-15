@@ -90,7 +90,10 @@ Rails.application.configure do
   # ---------------------------------
 
   # Use a different cache store in production.
-  config.cache_store = :mem_cache_store
+  config.cache_store = :mem_cache_store, ENV.fetch("MEMCACHE_SERVERS", "localhost:11211"), {
+    expires_in: 7.days,
+    compress: true
+  }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   config.active_job.queue_adapter = :sidekiq

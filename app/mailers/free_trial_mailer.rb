@@ -1,7 +1,7 @@
-class FreeTrialMailer < MailpaceMailer
+class FreeTrialMailer < CloudflareMailer
   helper :routing
 
-  default from: "Olly at Pagecord <hello@mailer.pagecord.com>",
+  default from: "Olly at Pagecord <hello@cfmail.pagecord.com>",
           reply_to: "Olly at Pagecord <olly@pagecord.com>"
 
   def trial_ended

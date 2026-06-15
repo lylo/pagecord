@@ -241,23 +241,23 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "input[type='hidden'][name='user[features][]'][value='']"
-    assert_select "input[type='checkbox'][name='user[features][]'][value='multiple_blogs']"
+    assert_select "input[type='checkbox'][name='user[features][]']", false
   end
 
   test "should add a feature to user" do
     user = users(:vivian)
 
     patch admin_user_url(user), params: {
-      user: { features: [ "", "multiple_blogs" ] }
+      user: { features: [ "", "custom_feature" ] }
     }
 
     assert_redirected_to admin_user_path(user)
-    assert_includes user.reload.features, "multiple_blogs"
+    assert_includes user.reload.features, "custom_feature"
   end
 
   test "should remove all features from user" do
     user = users(:vivian)
-    user.update!(features: [ "multiple_blogs" ])
+    user.update!(features: [ "custom_feature" ])
 
     patch admin_user_url(user), params: {
       user: { features: [ "" ] }

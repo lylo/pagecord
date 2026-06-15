@@ -74,7 +74,7 @@ class BlogTest < ActiveSupport::TestCase
     blog = users(:vivian).blogs.build(subdomain: "vivianextra")
 
     assert_not blog.valid?
-    assert_includes blog.errors[:base], "You've reached your blog limit (1)"
+    assert_includes blog.errors[:base], "You can't add another blog because you've already reached your blog limit"
   end
 
   test "should allow valid custom domain" do

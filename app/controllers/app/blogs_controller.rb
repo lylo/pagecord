@@ -1,5 +1,4 @@
 class App::BlogsController < AppController
-  before_action :require_multiple_blogs
   before_action :require_subscription, only: [ :new, :create ]
 
   def index
@@ -22,7 +21,14 @@ class App::BlogsController < AppController
   end
 
   def destroy
-    blog = Current.user.blogs.find(params[:id])
+    blog = Current.user.all_blogs.find(params[:id])
+
+    if blog.discarded?
+      display_name = blog.display_name
+      blog.destroy!
+      redirect_to app_blogs_trash_path, notice: "#{display_name} was permanently deleted"
+      return
+    end
 
     if Current.user.blogs.count <= 1
       redirect_to app_blogs_path, alert: "You must have at least one blog"
@@ -35,7 +41,7 @@ class App::BlogsController < AppController
       session[:current_blog_id] = Current.user.blogs.order(:created_at).first.id
     end
 
-    redirect_to app_blogs_path, notice: "Blog deleted"
+    redirect_to app_blogs_path, notice: "#{blog.display_name} was moved to trash"
   end
 
   def switch
@@ -45,10 +51,6 @@ class App::BlogsController < AppController
   end
 
   private
-
-    def require_multiple_blogs
-      redirect_to app_root_path unless current_features.enabled?(:multiple_blogs)
-    end
 
     def require_subscription
       redirect_to app_blogs_path, alert: "Subscribe to create another blog" unless Current.user.subscribed?

@@ -165,10 +165,15 @@ Rails.application.routes.draw do
         resource :paddle_invoices, only: :show, controller: "subscriptions/paddle_invoices"
       end
 
+      namespace :blogs do
+        resource :trash, only: [ :show, :destroy ], controller: "trash"
+      end
+
       resources :blogs, only: [ :index, :new, :create, :destroy ] do
         member do
           post :switch
         end
+        resource :restoration, only: [ :create ], controller: "blogs/restorations"
         resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
       end
 
@@ -232,6 +237,7 @@ Rails.application.routes.draw do
     get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"
     get "/pagecord-vs-wordpress", to: "public#pagecord_vs_wordpress"
     get "/pagecord-vs-substack", to: "public#pagecord_vs_substack"
+    get "/personal-website", to: "public#personal_website"
     get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
     get "/blog-with-newsletter", to: "public#blog_with_newsletter"
