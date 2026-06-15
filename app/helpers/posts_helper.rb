@@ -53,13 +53,15 @@ module PostsHelper
 
   def render_post_content(post)
     content = process_dynamic_variables(post)
+    content = process_embed_tags(content)
     content = Html::StripActionTextAttachments.new.transform(content)
     content = safe_auto_link(content, sanitize: false)
     ExcerptBreak.strip(content).html_safe
   end
 
   def render_post_excerpt(post)
-    content = Html::StripActionTextAttachments.new.transform(post.excerpt_html)
+    content = process_embed_tags(post.excerpt_html)
+    content = Html::StripActionTextAttachments.new.transform(content)
     safe_auto_link(content, sanitize: false).html_safe
   end
 
@@ -80,6 +82,14 @@ module PostsHelper
   end
 
   private
+
+    def process_embed_tags(content)
+      return content unless content&.match?(/\{\{\s*embed\b/i)
+
+      EmbedTagProcessor.new(view: self).process(content)
+    rescue
+      content
+    end
 
     def safe_auto_link(content, options = {})
       code_blocks = []
