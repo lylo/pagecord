@@ -24,6 +24,15 @@ class Blog::SpotlitTest < ActiveSupport::TestCase
     assert_not_includes Blog.spotlit, @blog
   end
 
+  test "excludes blogs whose user was recently created" do
+    travel_to Time.zone.parse("2026-04-07 12:00:00") do
+      @blog.user.update!(created_at: 6.days.ago)
+
+      assert_not @blog.reload.spotlit?
+      assert_not_includes Blog.spotlit, @blog
+    end
+  end
+
   test "excludes blogs with a spotlight_exclusion" do
     @blog.exclude_from_spotlight
 
