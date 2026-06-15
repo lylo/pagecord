@@ -16,4 +16,27 @@ class Html::SanitizeTest < ActiveSupport::TestCase
     HTML
     assert_equal expected_html.strip, transformed_html
   end
+
+  test "preserves subscript and superscript" do
+    html = "<div>H<sub>2</sub>O and x<sup>2</sup></div>"
+
+    transformed_html = Html::Sanitize.new.transform(html)
+
+    assert_includes transformed_html, "H<sub>2</sub>O"
+    assert_includes transformed_html, "x<sup>2</sup>"
+  end
+
+  test "strips inline styles" do
+    html = <<~HTML
+      <div class="align-right" style="font-size: 2em; text-align: right; color: red;">Right</div>
+      <div style="font-family: ui-monospace, monospace;">Code-looking text</div>
+    HTML
+
+    transformed_html = Html::Sanitize.new.transform(html)
+
+    assert_equal <<~HTML.strip, transformed_html
+      <div>Right</div>
+      <div>Code-looking text</div>
+    HTML
+  end
 end
