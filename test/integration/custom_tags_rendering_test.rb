@@ -108,11 +108,11 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "ol.table-of-contents", count: 1
     assert_select "ol.table-of-contents li", count: 3
-    assert_select "ol.table-of-contents li.toc-level-2 a[href='#getting-started']", "Getting started"
-    assert_select "ol.table-of-contents li.toc-level-3 a[href='#posting-by-email']", "Posting by email"
-    assert_select "ol.table-of-contents li.toc-level-2 a[href='#settings']", "Settings"
-    assert_select "ol.table-of-contents > li.toc-level-2 > ol > li.toc-level-3", count: 1
-    assert_select "ol.table-of-contents li.toc-level-1", count: 0
+    assert_select "ol.table-of-contents li.toc-h2 a[href='#getting-started']", "Getting started"
+    assert_select "ol.table-of-contents li.toc-h3 a[href='#posting-by-email']", "Posting by email"
+    assert_select "ol.table-of-contents li.toc-h2 a[href='#settings']", "Settings"
+    assert_select "ol.table-of-contents > li.toc-h2 > ol > li.toc-h3", count: 1
+    assert_select "ol.table-of-contents li.toc-h1", count: 0
   end
 
   test "table_of_contents tag preserves heading order" do

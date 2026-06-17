@@ -1,6 +1,6 @@
 <% items.each do |item| %>
   <% heading = item[:heading] %>
-  <li class="toc-level-<%= item[:level] %>">
+  <li class="toc-<%= heading.name %>">
     <%= link_to heading.text.strip, "##{heading["id"]}" %>
     <% if item[:children].any? %>
       <ol>
