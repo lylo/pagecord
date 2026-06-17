@@ -134,7 +134,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal post, assigns(:post)
   end
 
-  test "should redirect legacy posts path to canonical post URL on custom domain" do
+  test "should redirect prefixed posts path to canonical post URL on custom domain" do
     @blog = blogs(:annie)
     host! @blog.custom_domain
     post = @blog.posts.visible.first
@@ -145,45 +145,99 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 301, @response.status
   end
 
-  test "should not redirect legacy posts path for pages on custom domain" do
+  test "should redirect prefixed posts path for pages on custom domain" do
     @blog = blogs(:annie)
     host! @blog.custom_domain
     page = posts(:annie_home_page)
 
     get "/posts/#{page.slug}"
 
-    assert_response :not_found
+    assert_redirected_to "http://#{@blog.custom_domain}/#{page.slug}"
+    assert_equal 301, @response.status
   end
 
-  test "should not redirect legacy posts path on pagecord subdomain" do
+  test "should redirect prefixed posts path on pagecord subdomain" do
     post = @blog.posts.visible.first
+
+    get "/posts/#{post.slug}"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{post.slug}"
+    assert_equal 301, @response.status
+  end
+
+  test "should let custom domain redirect take precedence for prefixed posts path" do
+    @blog = blogs(:annie)
+    host_subdomain! @blog.subdomain
+    post = @blog.posts.visible.first
+
+    get "/posts/#{post.slug}"
+
+    assert_redirected_to "http://#{@blog.custom_domain}/posts/#{post.slug}"
+    assert_equal 301, @response.status
+  end
+
+  test "should not redirect prefixed posts path for draft posts" do
+    post = @blog.posts.create!(title: "Draft Post", content: "Draft content", status: :draft)
 
     get "/posts/#{post.slug}"
 
     assert_response :not_found
   end
 
-  test "should redirect legacy posts path for hidden posts" do
-    @blog = blogs(:annie)
-    host! @blog.custom_domain
+  test "should redirect prefixed posts path for hidden posts" do
     post = @blog.posts.create!(
-      title: "Hidden Legacy Post",
-      content: "This is hidden legacy content",
-      status: "published",
+      title: "Hidden Post",
+      content: "This is hidden content",
+      status: :published,
       hidden: true
     )
 
     get "/posts/#{post.slug}"
 
-    assert_redirected_to "http://#{@blog.custom_domain}/#{post.slug}"
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{post.slug}"
     assert_equal 301, @response.status
   end
 
-  test "should keep posts archive route before legacy posts redirect" do
+  test "should not redirect prefixed posts path for discarded posts" do
+    post = @blog.posts.visible.first
+    post.discard!
+
+    get "/posts/#{post.slug}"
+
+    assert_response :not_found
+  end
+
+  test "should not redirect prefixed posts path for future posts" do
+    post = @blog.posts.create!(
+      title: "Future Post",
+      content: "Future content",
+      status: :published,
+      published_at: 1.day.from_now
+    )
+
+    get "/posts/#{post.slug}"
+
+    assert_response :not_found
+  end
+
+  test "should not redirect prefixed posts path for missing content" do
+    get "/posts/missing"
+
+    assert_response :not_found
+  end
+
+  test "should keep posts archive route before prefixed posts redirect" do
     get "/posts"
 
     assert_response :success
     assert_template "blogs/posts/index"
+  end
+
+  test "should keep embedded posts route before prefixed posts redirect" do
+    get "/posts/embedded", params: { style: "card", frame_id: "posts" }
+
+    assert_response :success
+    assert_template "blogs/embedded_posts/index"
   end
 
   test "show should render full content without excerpt marker" do

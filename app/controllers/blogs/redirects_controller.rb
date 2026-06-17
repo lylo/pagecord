@@ -1,8 +1,6 @@
 class Blogs::RedirectsController < Blogs::BaseController
   def show
-    raise ActiveRecord::RecordNotFound unless custom_domain_request?
-
-    post = @blog.posts
+    post = @blog.all_posts
       .kept
       .published
       .released
