@@ -42,6 +42,18 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
     assert_no_match blog.subdomain, response.body
   end
 
+  test "excludes blogs from recently created users from recent" do
+    travel_to Time.zone.parse("2026-04-07 12:00:00") do
+      blog = blogs(:joel)
+      blog.user.update!(created_at: 6.days.ago)
+
+      get spotlight_path(tab: "recent")
+
+      assert_response :success
+      assert_no_match blog.subdomain, response.body
+    end
+  end
+
   test "excludes posts published within the last 15 minutes from recent" do
     travel_to Time.zone.parse("2026-04-07 12:00:00") do
       post = posts(:one)

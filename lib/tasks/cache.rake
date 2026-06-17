@@ -1,17 +1,11 @@
 namespace :cache do
-  desc "Expire the cache for the home page"
+  desc "Expire cached static pages"
   task expire_static_pages: :environment do
-    ActionController::Base.new.expire_page("/")
-    ActionController::Base.new.expire_page("/faq")
-    ActionController::Base.new.expire_page("/terms")
-    ActionController::Base.new.expire_page("/privacy")
-    ActionController::Base.new.expire_page("/pagecord-vs-hey-world")
-    ActionController::Base.new.expire_page("/pagecord-vs-wordpress")
-    ActionController::Base.new.expire_page("/pagecord-vs-substack")
-    ActionController::Base.new.expire_page("/pagecord-vs-medium")
-    ActionController::Base.new.expire_page("/pagecord-vs-about-me")
-    ActionController::Base.new.expire_page("/blogging-by-email")
-    ActionController::Base.new.expire_page("/minimalist-blogging")
+    controller = ActionController::Base.new
+
+    static_page_paths.each do |path|
+      controller.expire_page(path)
+    end
   end
 
   desc "Show readable cache statistics"
@@ -81,5 +75,21 @@ namespace :cache do
       end
 
       "#{size.round(2)} #{units[unit_index]}"
+    end
+
+    def static_page_paths
+      [
+        "/",
+        "/faq",
+        "/terms",
+        "/privacy",
+        "/pagecord-vs-hey-world",
+        "/pagecord-vs-wordpress",
+        "/pagecord-vs-substack",
+        "/pagecord-vs-medium",
+        "/pagecord-vs-about-me",
+        "/blogging-by-email",
+        "/minimalist-blogging"
+      ]
     end
 end

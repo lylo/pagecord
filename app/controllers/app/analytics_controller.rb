@@ -24,7 +24,7 @@ class App::AnalyticsController < AppController
   private
 
     def redirect_if_metrics_hidden
-      redirect_to app_root_path unless Current.user.blog.show_metrics?
+      redirect_to app_root_path unless @blog.show_metrics?
     end
 
     def summary

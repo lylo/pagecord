@@ -61,6 +61,21 @@ class Admin::ThemeTemplatesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Updated Name", @template.reload.name
   end
 
+  test "should update position via drag and drop" do
+    templates = ThemeTemplate.ordered.to_a
+    template = templates.first
+
+    patch admin_theme_template_url(template), params: {
+      theme_template: { position: 3 }
+    }
+
+    assert_response :success
+    assert_equal templates[1].id, ThemeTemplate.ordered.first.id
+    assert_equal templates[2].id, ThemeTemplate.ordered.second.id
+    assert_equal template.id, ThemeTemplate.ordered.third.id
+    assert_equal (1..ThemeTemplate.count).to_a, ThemeTemplate.ordered.pluck(:position)
+  end
+
   test "should destroy template" do
     assert_difference("ThemeTemplate.count", -1) do
       delete admin_theme_template_url(@template)

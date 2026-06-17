@@ -3,7 +3,6 @@ require "test_helper"
 class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
-    @blog.update!(features: [ "contact_form" ])
     @user = @blog.user
     host! "#{@blog.subdomain}.lvh.me"
   end

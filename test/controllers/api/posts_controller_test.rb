@@ -24,6 +24,13 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test "returns unauthorized for discarded blog api key" do
+    @blog.discard!
+
+    get "/posts", headers: auth_header
+    assert_response :unauthorized
+  end
+
   test "returns forbidden without premium access" do
     @user.subscription.destroy!
     @user.update!(trial_ends_at: nil)

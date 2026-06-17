@@ -21,6 +21,7 @@ module ImportHelpers
       process_video(video, assets_root: assets_root, dry_run: dry_run, skip_on_error: skip_on_error)
     end
 
+    unwrap_attachment_paragraphs(processed_content)
     processed_content.to_html
   end
 
@@ -28,7 +29,6 @@ module ImportHelpers
 
     def process_image(img, assets_root:, dry_run:, skip_on_error:)
       image_src = img["src"]
-      alt_text = img["alt"] || ""
       return unless image_src
 
       # Skip data URI images (commonly used as placeholders for lazy loading)
@@ -50,7 +50,7 @@ module ImportHelpers
         blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
         puts "    Stored as: #{blob.key} (#{number_to_human_size(blob.byte_size)})"
 
-        attachment_node = build_attachment_node(blob, img, alt_text)
+        attachment_node = build_attachment_node(blob, img)
         replace_with_attachment(img, attachment_node)
       rescue => e
         handle_media_error(e, image_src, "image", skip_on_error)
@@ -75,25 +75,15 @@ module ImportHelpers
         blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: filename)
         puts "    Stored as: #{blob.key} (#{number_to_human_size(blob.byte_size)})"
 
-        # Build video attachment node
         url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
-        trix_attributes = {
-          sgid: blob.attachable_sgid,
-          contentType: blob.content_type,
-          filename: blob.filename.to_s,
-          filesize: blob.byte_size,
-          previewable: blob.previewable?,
-          url: url
-        }
-        attachment_node = %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
-        video.replace(attachment_node)
+        video.replace(ActionText::Attachment.from_attachable(blob, url: url).to_html)
       rescue => e
         handle_media_error(e, video_src, "video", skip_on_error)
       end
     end
 
     def local_file?(src, assets_root)
-      assets_root && src.start_with?('/')
+      assets_root && src.start_with?("/")
     end
 
     def verify_local_file(src, assets_root)
@@ -113,7 +103,7 @@ module ImportHelpers
         [ File.open(local_path), filename ]
       else
         filename = File.basename(URI.parse(src).path)
-        filename = "#{type}_#{Time.current.to_i}.#{type == 'video' ? 'mp4' : 'jpg'}" if filename.empty? || !filename.include?('.')
+        filename = "#{type}_#{Time.current.to_i}.#{type == "video" ? "mp4" : "jpg"}" if filename.empty? || !filename.include?(".")
         puts "  Downloading #{type}: #{filename}"
         file = URI.open(src,
           open_timeout: 10,
@@ -123,28 +113,25 @@ module ImportHelpers
       end
     end
 
-    def build_attachment_node(blob, img, alt_text)
+    def build_attachment_node(blob, img)
+      blob.analyze unless blob.analyzed?
       url = Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
-      trix_attributes = {
-        sgid: blob.attachable_sgid,
-        contentType: blob.content_type,
-        filename: blob.filename.to_s,
-        filesize: blob.byte_size,
-        previewable: blob.previewable?,
-        url: url
-      }
 
       # Check if img is inside a figure with figcaption
-      parent_figure = img.ancestors('figure').first
-      caption_text = parent_figure&.at_css('figcaption')&.text&.strip
-      caption_text = alt_text if caption_text.nil? || caption_text.empty?
-      trix_attributes[:caption] = caption_text if caption_text && !caption_text.empty?
+      parent_figure = img.ancestors("figure").first
+      caption_text = parent_figure&.at_css("figcaption")&.text&.strip
+      attributes = { url: url }
+      attributes[:caption] = caption_text if caption_text.present?
+      attributes[:alt] = img["alt"] if img["alt"].present?
+      attributes[:width] = blob.metadata["width"] if blob.metadata["width"].present?
+      attributes[:height] = blob.metadata["height"] if blob.metadata["height"].present?
+      attributes[:presentation] = "gallery" if img.ancestors(".attachment-gallery").any?
 
-      %Q(<figure data-trix-attachment="#{CGI.escapeHTML(trix_attributes.to_json)}"></figure>)
+      ActionText::Attachment.from_attachable(blob, attributes).to_html
     end
 
     def replace_with_attachment(img, attachment_node)
-      parent_figure = img.ancestors('figure').first
+      parent_figure = img.ancestors("figure").first
       parent_figure ? parent_figure.replace(attachment_node) : img.replace(attachment_node)
     end
 
@@ -153,6 +140,16 @@ module ImportHelpers
         puts "  Warning: Could not download #{type} #{src}, keeping original URL: #{error.message}"
       else
         raise "Failed to process #{type} #{src}: #{error.message}"
+      end
+    end
+
+    def unwrap_attachment_paragraphs(fragment)
+      fragment.css("p").each do |paragraph|
+        meaningful_children = paragraph.children.reject { |child| child.text? && child.text.strip.empty? }
+        next unless meaningful_children.any?
+        next unless meaningful_children.all? { |child| child.element? && child.name == ActionText::Attachment.tag_name }
+
+        paragraph.replace(Nokogiri::HTML::DocumentFragment.parse(meaningful_children.map(&:to_html).join))
       end
     end
 
@@ -177,7 +174,7 @@ module ImportHelpers
 
   # Clean and normalize tag text for import
   def clean_tag(tag_text)
-    tag_text.strip.downcase.gsub(/\s+/, '-').gsub(/[^a-z0-9\-]/, '')
+    tag_text.strip.downcase.gsub(/\s+/, "-").gsub(/[^a-z0-9\-]/, "")
   end
 
   # Parse datetime string with fallback to current time

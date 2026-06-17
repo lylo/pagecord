@@ -3,7 +3,7 @@ class SendUnengagedFollowUpEmailsJob < ApplicationJob
 
   def perform
     users = User.kept
-                .includes(:blog)
+                .includes(:blogs)
                 .where(verified: true)
                 .where(created_at: ..1.month.ago)
                 .where.missing(:subscription, :unengaged_follow_up)

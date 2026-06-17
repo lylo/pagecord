@@ -1,9 +1,13 @@
 class Blog < ApplicationRecord
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, StorageTrackable, Blog::Contactable, Blog::ApiKey, Blog::Spotlit
+  include Discard::Model
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, StorageTrackable, Blog::Contactable, Blog::ApiKey, Blog::Spotlit
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
-  belongs_to :user, inverse_of: :blog
+  belongs_to :user, inverse_of: :blogs
+
+  MAX_BLOGS_FREE = 1
+  MAX_BLOGS_PAID = 2
 
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
@@ -25,6 +29,7 @@ class Blog < ApplicationRecord
 
   has_rich_text :bio
   validate :bio_length
+  validate :within_blog_limit, on: :create
 
   before_validation :downcase_subdomain
   after_commit :purge_cloudflare_cache, on: :update
@@ -47,6 +52,20 @@ class Blog < ApplicationRecord
 
   private
 
+    def within_blog_limit
+      if user && blog_count_exceeds_limit?
+        errors.add(:base, "You can't add another blog because you've already reached your blog limit")
+      end
+    end
+
+    def blog_count_exceeds_limit?
+      if user.new_record? || user.association(:blogs).loaded?
+        user.blogs.reject(&:marked_for_destruction?).size > user.blog_limit
+      else
+        user.blogs.count >= user.blog_limit
+      end
+    end
+
     def bio_length
       if bio.to_plain_text.length > 500
         errors.add(:bio, "is too long (maximum 500 characters)")
@@ -62,9 +81,13 @@ class Blog < ApplicationRecord
         errors.add(:subdomain, "can only use letters, numbers or underscores")
       end
 
-      if Subdomain.reserved?(subdomain)
+      if subdomain_reserved?
         errors.add(:subdomain, "is reserved")
       end
+    end
+
+    def subdomain_reserved?
+      (new_record? || will_save_change_to_subdomain?) && Subdomain.reserved?(subdomain)
     end
 
     def purge_cloudflare_cache

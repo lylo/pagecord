@@ -67,16 +67,16 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     assert_difference -> { SocialNavigationItem.count }, 1 do
       post app_settings_navigation_items_path, params: {
         nav_type: "social",
-        navigation_item: { platform: "GitHub", url: "https://github.com/user" }
+        navigation_item: { platform: "Pixelfed", url: "https://pixelfed.social/user" }
       }
     end
 
     assert_redirected_to app_settings_navigation_items_path
 
     item = SocialNavigationItem.last
-    assert_equal "GitHub", item.platform
-    assert_equal "https://github.com/user", item.url
-    assert_equal "GitHub", item.label
+    assert_equal "Pixelfed", item.platform
+    assert_equal "https://pixelfed.social/user", item.url
+    assert_equal "Pixelfed", item.label
   end
 
   test "create with validation errors re-renders form" do

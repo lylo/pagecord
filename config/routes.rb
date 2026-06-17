@@ -61,6 +61,7 @@ Rails.application.routes.draw do
 
   get "/404", to: "errors#not_found"
   get "/422", to: "errors#unacceptable"
+  get "/429", to: "errors#too_many_requests"
   get "/500", to: "errors#internal_error"
 
   namespace :billing do
@@ -164,7 +165,15 @@ Rails.application.routes.draw do
         resource :paddle_invoices, only: :show, controller: "subscriptions/paddle_invoices"
       end
 
-      resources :blogs do
+      namespace :blogs do
+        resource :trash, only: [ :show, :destroy ], controller: "trash"
+      end
+
+      resources :blogs, only: [ :index, :new, :create, :destroy ] do
+        member do
+          post :switch
+        end
+        resource :restoration, only: [ :create ], controller: "blogs/restorations"
         resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
       end
 
@@ -179,7 +188,6 @@ Rails.application.routes.draw do
       resources :theme_templates do
         get :fixtures, on: :collection
       end
-      resources :blogs, only: [ :index ]
       resources :analytics, only: [ :index ]
       resources :posts, only: [ :index ]
       resources :suppressions, only: [ :index ] do
@@ -188,7 +196,7 @@ Rails.application.routes.draw do
           delete :destroy_all
         end
       end
-      resources :users, only: [ :show, :destroy, :new, :create, :update ] do
+      resources :users, only: [ :index, :show, :destroy, :new, :create, :update ] do
         member do
           post :restore
         end
@@ -229,6 +237,7 @@ Rails.application.routes.draw do
     get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"
     get "/pagecord-vs-wordpress", to: "public#pagecord_vs_wordpress"
     get "/pagecord-vs-substack", to: "public#pagecord_vs_substack"
+    get "/personal-website", to: "public#personal_website"
     get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
     get "/blog-with-newsletter", to: "public#blog_with_newsletter"
@@ -246,6 +255,7 @@ Rails.application.routes.draw do
       subdomain_redirect(path).call(params, _req)
     }, constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }
   end
+
 
   constraints(DomainConstraints.method(:api_domain?)) do
     scope module: :api do

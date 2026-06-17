@@ -27,6 +27,18 @@ class ErrorsController < ApplicationController
     end
   end
 
+  def too_many_requests
+    respond_to do |format|
+      format.all do
+        if custom_domain_request?
+          render layout: "error", status: 429, formats: :html
+        else
+          render :too_many_requests, status: 429, formats: :html
+        end
+      end
+    end
+  end
+
   def internal_error
     respond_to do |format|
       format.all do

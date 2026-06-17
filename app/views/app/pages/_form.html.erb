@@ -1,7 +1,7 @@
 <% is_new = !@page.persisted? %>
 
 <div data-controller="post-attributes autosave"
-    data-autosave-key-value="<%= is_new ? "draft-page-new-#{Current.user.blog.id}" : "draft-page-#{@page.id}" %>"
+    data-autosave-key-value="<%= is_new ? "draft-page-new-#{@blog.id}" : "draft-page-#{@page.id}" %>"
     data-autosave-base-title-value="<%= @page.title.to_s %>"
     data-autosave-base-content-value="<%= h(@page.content&.body&.to_html.to_s) if @page.persisted? %>">
 
@@ -68,7 +68,7 @@
   </div>
 
   <%= form_with(model: @page, url: @page.persisted? ? app_page_path(@page) : app_pages_path, html: { id: "page-form" }) do |form| %>
-    <%= hidden_field_tag :context_blog_id, Current.user.blog.id if is_new %>
+    <%= hidden_field_tag :context_blog_id, @blog.id if is_new %>
 
     <%= render "app/posts/open_graph_image_section", record: @page, form: form %>
 

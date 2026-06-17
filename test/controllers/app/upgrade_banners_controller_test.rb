@@ -23,7 +23,7 @@ class App::UpgradeBannersControllerTest < ActionDispatch::IntegrationTest
   test "upgrade banner is visible for post-trial non-subscribed user" do
     get app_posts_path
     assert_select "turbo-frame#upgrade_banner"
-    assert_select "a", text: "Upgrade to premium"
+    assert_select "a", text: "Subscribe to Premium"
   end
 
   test "upgrade banner is hidden when dismissed cookie is set" do

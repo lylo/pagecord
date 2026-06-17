@@ -15,6 +15,7 @@ If you need specific help or have a question, visit the [Support](support.md) pa
 New to Pagecord? Start here. These guides will help you set up your blog and publish your first post in no time.
 
 - [Getting Started with Pagecord](getting-started-with-pagecord.md)
+- [Logging in](logging-in.md)
 - [Importing your blog](importing-an-existing-blog.md)
 
 ## Writing & Publishing
@@ -22,6 +23,7 @@ New to Pagecord? Start here. These guides will help you set up your blog and pub
 Learn how to create posts, format your content, add images, schedule posts for later, and organise with tags.
 
 - [Writing posts](writing-posts.md)
+- [Using excerpt breaks](excerpt-breaks.md)
 - [Media embeds](media-embeds.md)
 - [Posting by email](posting-by-email.md)
 
@@ -39,6 +41,7 @@ Make your blog your own. Choose a theme, tweak colours, change layouts, add cust
 
 - [Customising your blog](customising-your-blog.md)
 - [Custom CSS Guide](custom-css.md)
+- [Adding a custom footer](custom-footer.md)
 - [SEO & Discovery](seo-and-discovery.md)
 
 ## Email
@@ -69,15 +72,17 @@ Let readers subscribe to your blog using an RSS reader.
 
 ## API & Integrations
 
-Use the Pagecord API to manage your blog programmatically, or publish directly from tools like Obsidian.
+Use the Pagecord API to manage your blog programmatically, publish from the command line, or publish directly from tools like Obsidian.
 
 - [API](api.md)
+- [Publishing with the Pagecord CLI](pagecord-cli.md)
 - [Publishing from Obsidian](obsidian.md)
 
 ## Account & Billing
 
-Manage your subscription, update your settings, or export your content.
+Manage your account, blogs, subscription, or exported content.
 
 - [Account settings](account-settings.md)
+- [Managing multiple blogs](managing-multiple-blogs.md)
 - [Billing](billing.md)
 - [Exporting your blog](exporting-your-blog.md)

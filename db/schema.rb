@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_06_02_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -110,7 +110,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.datetime "discarded_at"
     t.integer "email_delivery_mode", default: 0, null: false
     t.boolean "email_subscriptions_enabled", default: true, null: false
-    t.string "features", default: [], array: true
     t.string "fediverse_author_attribution"
     t.string "font", default: "sans", null: false
     t.string "google_site_verification"
@@ -130,6 +129,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
+    t.text "custom_footer_html"
     t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
@@ -444,6 +444,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.boolean "verified", default: false
     t.string "signup_referrer"
     t.string "signup_source_note", limit: 500
+    t.string "features", default: [], null: false, array: true
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["password_digest"], name: "index_users_on_password_digest"

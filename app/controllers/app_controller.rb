@@ -12,12 +12,25 @@ class AppController < ApplicationController
 
     def load_user
       @user = Current.user
-      @blog = @user.blog
+
+      unless @user.verified?
+        sign_out
+        redirect_to login_path, alert: "Please verify your email address before using Pagecord."
+        return
+      end
+
+      @blog = resolve_current_blog
       Current.blog = @blog
     end
 
+    def resolve_current_blog
+      if session[:current_blog_id]
+        @user.blogs.find_by(id: session[:current_blog_id])
+      end || @user.blogs.order(:created_at).first
+    end
+
     def context_blog_id_matches_current_blog?
-      params[:context_blog_id].to_s == Current.user.blog.id.to_s
+      params[:context_blog_id].to_s == Current.blog.id.to_s
     end
 
     def render_stale_form_context
