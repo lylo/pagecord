@@ -16,6 +16,10 @@ attachments:
 
 Pages in Pagecord support dynamic variables that let you automatically display lists of posts, tags, forms, and other content. These variables are processed when the page is rendered, so your content stays up-to-date without manual editing.
 
+<div>
+{{ table_of_contents | heading: "Table of Contents" }}
+</div>
+
 ## Basic Syntax
 
 Dynamic variables use double curly braces:
