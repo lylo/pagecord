@@ -10,8 +10,7 @@ class Bandcamp extends MediaSite {
           const response = await fetch('/api/embeds/bandcamp', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({ url })
           })

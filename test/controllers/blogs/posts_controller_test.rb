@@ -72,7 +72,9 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
+    assert_select "meta[name='csrf-token']", count: 0
     assert_select "turbo-frame#email_subscriber_form"
+    assert_select "input[name='authenticity_token']", count: 0
   end
 
   test "should not show email subscription form on index if show_subscription_in_header is false" do

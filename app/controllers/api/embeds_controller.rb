@@ -3,6 +3,9 @@ require "nokogiri"
 
 class Api::EmbedsController < ApplicationController
   skip_before_action :domain_check
+  skip_forgery_protection only: :bandcamp
+
+  rate_limit to: 30, within: 1.minute, only: :bandcamp, with: :rate_limit_reached
 
   def bandcamp
     url = params[:url]
@@ -34,5 +37,9 @@ class Api::EmbedsController < ApplicationController
         meta_tag = doc.at("meta[property=\"og:video\"]")
         meta_tag&.attr("content")
       end
+    end
+
+    def rate_limit_reached
+      render json: { error: "Rate limit exceeded" }, status: :too_many_requests
     end
 end

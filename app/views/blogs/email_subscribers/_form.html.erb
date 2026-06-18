@@ -1,4 +1,7 @@
-<%= form_with url: email_subscribers_path, model: [EmailSubscriber.new], local: true,
+<%= form_with url: email_subscribers_path,
+      model: [EmailSubscriber.new],
+      local: true,
+      authenticity_token: false,
       class: "email-form-container" do |form| %>
   <div class="subscription-description">
     <%= t("email_subscribers.form.subscribe_description.#{@blog.email_delivery_mode}") %>

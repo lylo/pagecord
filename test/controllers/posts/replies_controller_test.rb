@@ -9,7 +9,9 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
   test "should get new reply form" do
     get new_post_reply_path(@post)
     assert_response :success
+    assert_select "meta[name='csrf-token']", count: 0
     assert_select "form[action=?]", post_replies_path(@post)
+    assert_select "input[name='authenticity_token']", count: 0
     assert_select "textarea#reply_message.autogrow"
   end
 

@@ -3,6 +3,7 @@
             url: contact_messages_path,
             method: :post,
             scope: :contact_message,
+            authenticity_token: false,
             class: "form-container" do |form| %>
 
     <%= render "/shared/spam_prevention" %>

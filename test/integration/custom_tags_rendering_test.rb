@@ -646,8 +646,10 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
+    assert_select "meta[name='csrf-token']", count: 0
     assert_select ".contact-form"
     assert_select "form[action='#{contact_messages_path}']"
+    assert_select "input[name='authenticity_token']", count: 0
   end
 
   test "contact_form tag renders nothing for non-premium user" do

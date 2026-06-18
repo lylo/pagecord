@@ -20,7 +20,9 @@ class Api::EmbedsControllerTest < ActionDispatch::IntegrationTest
 
     URI.stubs(:open).with(bandcamp_url, uri_open_options).returns(StringIO.new(mock_html))
 
-    post "/api/embeds/bandcamp", params: { url: bandcamp_url }
+    with_forgery_protection do
+      post "/api/embeds/bandcamp", params: { url: bandcamp_url }
+    end
 
     assert_response :success
     json_response = JSON.parse(response.body)
@@ -78,16 +80,6 @@ class Api::EmbedsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "https://bandcamp.com/EmbeddedPlayer/v=2/album=456/", json_response["embed_url"]
   end
 
-  test "should skip CSRF token verification" do
-    # This test ensures the endpoint works without CSRF tokens (important for API endpoints)
-    URI.stubs(:open).with(bandcamp_url, uri_open_options).returns(StringIO.new("<html></html>"))
-
-    post "/api/embeds/bandcamp", params: { url: bandcamp_url }
-
-    # Should not get InvalidAuthenticityToken error
-    assert_not_equal "ActionController::InvalidAuthenticityToken", response.body
-  end
-
   test "should cache resolved embed URLs" do
     Rails.stubs(:cache).returns(ActiveSupport::Cache::MemoryStore.new)
 
@@ -135,5 +127,17 @@ class Api::EmbedsControllerTest < ActionDispatch::IntegrationTest
         open_timeout: 2,
         read_timeout: 3
       }
+    end
+
+    def with_forgery_protection
+      base_setting = ActionController::Base.allow_forgery_protection
+      application_setting = ApplicationController.allow_forgery_protection
+
+      ActionController::Base.allow_forgery_protection = true
+      ApplicationController.allow_forgery_protection = true
+      yield
+    ensure
+      ActionController::Base.allow_forgery_protection = base_setting
+      ApplicationController.allow_forgery_protection = application_setting
     end
 end
