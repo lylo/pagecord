@@ -40,6 +40,8 @@ Multiple parameters are separated by pipes:
 {{ variable_name | param1: value1 | param2: value2 }}
 ```
 
+> **Important:** Paste variables directly into the page content, not inside a code block in the editor. Variables shown in code blocks here are examples only.
+
 ## Available Variables
 
 ### Posts
