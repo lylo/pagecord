@@ -245,6 +245,7 @@ Rails.application.routes.draw do
     get "/indie-blogging-platform", to: "public#indie_blogging_platform"
 
     get "/spotlight", to: "home/spotlight#show"
+    get "/spotlight/trending.xml", to: "home/spotlight#show", defaults: { format: :rss }, as: :spotlight_trending_feed
     get "/shuffle", to: "posts/shuffle#show"
 
     get "/@:name", to: redirect("/%{name}")

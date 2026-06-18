@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <title><%= content_for?(:title) ? content_for(:title) : "Pagecord: A blog you'll actually keep updated" %></title>
     <%= render "layouts/default_favicons" %>
@@ -30,6 +29,7 @@
     <meta property="twitter:card" content="summary_large_image">
 
     <link rel="canonical" href="<%= canonical_url %>">
+    <%= yield :head %>
 
     <%= stylesheet_link_tag "tailwind", "inter", "source-serif-4", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
