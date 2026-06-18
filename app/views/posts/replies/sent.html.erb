@@ -1,0 +1,12 @@
+<% content_for :robots_meta do %>
+  <meta name="robots" content="noindex, nofollow">
+<% end %>
+
+<%= render "blogs/header", hide_email_form: true, hide_bio: true %>
+
+<div class="form reply-form reply-sent empty-state">
+  <p><%= t("email_form.success_message") %></p>
+  <%= form_with url: post_path(@post), method: :get do |form| %>
+    <%= form.submit "←" %>
+  <% end %>
+</div>

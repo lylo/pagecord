@@ -300,7 +300,9 @@ Rails.application.routes.draw do
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create ], module: :posts
       get "upvotes/status", to: "posts/upvotes/status#show", as: :upvotes_status
-      resources :replies, only: [ :new, :create ], module: :posts
+      resources :replies, only: [ :new, :create ], module: :posts do
+        get :sent, on: :collection
+      end
     end
 
     # Catch-all for unmatched routes on blog domains

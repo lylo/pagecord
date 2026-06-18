@@ -36,9 +36,18 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_enqueued_jobs 1, only: SendPostReplyJob
-    assert_redirected_to blog_post_path(@post.slug)
+    assert_redirected_to sent_post_replies_path(@post)
     follow_redirect!
-    assert_equal I18n.t("email_form.success_message"), flash[:notice]
+    assert_select ".reply-form p", text: I18n.t("email_form.success_message")
+    assert_select "form[action=?][method=get] input[type=submit][value=?]", blog_post_path(@post.slug), "←"
+  end
+
+  test "should show sent confirmation" do
+    get sent_post_replies_path(@post)
+
+    assert_response :success
+    assert_select ".reply-form p", text: I18n.t("email_form.success_message")
+    assert_select "form[action=?][method=get] input[type=submit][value=?]", blog_post_path(@post.slug), "←"
   end
 
   test "should not create reply with invalid data" do
