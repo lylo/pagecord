@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <title><%= content_for?(:title) ? content_for(:title) : "Pagecord: Blog Without The Slog." %></title>
+    <title><%= content_for?(:title) ? content_for(:title) : "Pagecord: A blog you'll actually keep updated" %></title>
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
-    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "A blogging platform for curious, independent writers. Create a site with home page and powerful blog in seconds. Publish with the rich text editor, email, Obsidian, API, or CLI." %>">
+    <% default_meta_description = "Pagecord is a personal blog you'll actually keep updated. Publish wherever you like, from email, Obsidian, the editor, API, CLI, or your own scripts." %>
+    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : default_meta_description %>">
 
-    <% og_title = (content_for?(:title) ? content_for(:title) : "Pagecord: Blog Without The Slog.").strip %>
-    <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : "A blogging platform for curious, independent writers. Create a site with home page and powerful blog in seconds. Publish with the rich text editor, email, Obsidian, API, or CLI.").strip %>
+    <% og_title = (content_for?(:title) ? content_for(:title) : "Pagecord: A blog you'll actually keep updated").strip %>
+    <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : default_meta_description).strip %>
     <% og_image = (content_for?(:og_image) ? content_for(:og_image) : image_url("social/open-graph.webp")).strip %>
 
     <!-- Open Graph / Facebook -->

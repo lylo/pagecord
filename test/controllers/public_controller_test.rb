@@ -44,7 +44,9 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
       personal_website_path,
       minimalist_blogging_path,
       blogging_by_email_path,
-      blog_with_newsletter_path
+      blog_with_newsletter_path,
+      blogger_alternative_path,
+      indie_blogging_platform_path
     ].each do |path|
       get path
       assert_response :success
@@ -65,5 +67,7 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, "https://pagecord.com/personal-website"
     assert_includes @response.body, "https://pagecord.com/minimalist-blogging"
     assert_includes @response.body, "https://pagecord.com/blog-with-newsletter"
+    assert_includes @response.body, "https://pagecord.com/blogger-alternative"
+    assert_includes @response.body, "https://pagecord.com/indie-blogging-platform"
   end
 end
