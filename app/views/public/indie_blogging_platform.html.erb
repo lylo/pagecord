@@ -1,0 +1,62 @@
+<%= content_for :title do %>
+  The freshest indie blogging platform for personal blogs
+<% end %>
+
+<%= content_for :meta_description do %>
+  Pagecord is an indie blogging platform for people who want a personal blog they can keep updated from email, Obsidian, the editor, RSS, and their own domain.
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "The Freshest Indie Blogging Platform") %>
+<% end %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
+    The freshest indie blogging platform
+  </h1>
+
+  <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4 mt-8 md:mt-12">
+    <p>
+      Pagecord is a fresh new indie blogging platform for the independent-minded, cool kids on the block.
+    </p>
+    <p>
+      It's free to get started. Publish from email, Obsidian, the editor, the API, the CLI, or your own scripts. Everything you need is built in: RSS, email subscribers, pages, archives, custom domains, and full site export.
+    </p>
+    <p>
+      All the blog essentials in one tidy package. No lock-in, no AI, no bloat.
+    </p>
+  </div>
+
+  <div class="text-center mt-8 mb-4 md:text-xl">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Create your blog for free</div>
+    <% end %>
+  </div>
+</div>
+
+<%= render "public/screenshots" %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <section class="my-10 md:my-14 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 md:p-8">
+    <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">Built for indie bloggers on the small web</h2>
+    <div class="mt-6 md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+      <p>
+        Pagecord is free forever for the blogging basics, with a premium version at $<%= localised_price %>/year or $<%= localised_price(:monthly) %>/month when you need more.
+      </p>
+      <p>
+        You get custom domains, full site export, RSS feeds, and optional email subscribers without turning your blog into another platform you have to feed.
+      </p>
+      <p>
+        Open source, independent, profitable and proud. Sign up for free today!
+      </p>
+    </div>
+  </section>
+</div>
+
+<%= render "home/testimonials" %>
+
+<div class="text-center mt-8 mb-4 md:text-xl">
+  <%= link_to new_signup_path do %>
+    <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Sign up for free today!</div>
+  <% end %>
+</div>

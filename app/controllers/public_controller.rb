@@ -1,7 +1,10 @@
 class PublicController < ApplicationController
   layout "home"
 
-  caches_page :terms, :privacy, :faq, :pagecord_vs_hey_world, :pagecord_vs_wordpress, :pagecord_vs_substack, :pagecord_vs_about_me, :pagecord_vs_medium, :blogging_by_email, :personal_website, :minimalist_blogging, :blog_with_newsletter
+  caches_page :terms, :privacy, :faq, :pagecord_vs_hey_world, :pagecord_vs_wordpress,
+    :pagecord_vs_substack, :pagecord_vs_about_me, :pagecord_vs_medium,
+    :blogging_by_email, :personal_website, :minimalist_blogging,
+    :blog_with_newsletter, :blogger_alternative, :indie_blogging_platform
 
   def terms
   end
@@ -37,6 +40,12 @@ class PublicController < ApplicationController
   end
 
   def blog_with_newsletter
+  end
+
+  def blogger_alternative
+  end
+
+  def indie_blogging_platform
   end
 
   def sitemap
