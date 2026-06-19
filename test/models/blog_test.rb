@@ -232,11 +232,24 @@ class BlogTest < ActiveSupport::TestCase
     assert @blog.valid?
   end
 
-  test "should reject unsafe custom footer HTML" do
+  test "should allow safe inline styles in custom footer HTML" do
+    @blog.custom_footer_html = '<a href="https://www.buymeacoffee.com/heyolly" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>'
+
+    assert @blog.valid?
+  end
+
+  test "should strip unsafe custom footer HTML" do
     @blog.custom_footer_html = '<img src="https://example.com/x.png" onerror="alert(1)">'
 
-    assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom footer html contains invalid or potentially unsafe content"
+    assert @blog.valid?
+    assert_equal '<img src="https://example.com/x.png">', @blog.custom_footer_html
+  end
+
+  test "should strip unsafe inline styles in custom footer HTML" do
+    @blog.custom_footer_html = '<img src="https://example.com/x.png" style="background-image:url(javascript:alert(1)); color: red; position: fixed;">'
+
+    assert @blog.valid?
+    assert_equal '<img src="https://example.com/x.png" style="color:red;">', @blog.custom_footer_html
   end
 
   test "should not touch posts when reply_by_email changes" do

@@ -6,7 +6,7 @@ module Blog::CustomFooter
     a b br div em hr i img li ol p small span strong u ul
   ].freeze
   ALLOWED_ATTRIBUTES = %w[
-    href title target rel src alt width height loading
+    href title target rel src alt width height loading style
   ].freeze
 
   included do
@@ -22,8 +22,8 @@ module Blog::CustomFooter
     def validate_custom_footer_html
       if custom_footer_html.bytesize > MAX_SIZE
         errors.add(:custom_footer_html, "is too large (maximum is #{MAX_SIZE / 1.kilobyte}KB)")
-      elsif sanitize_custom_footer_html != custom_footer_html.strip
-        errors.add(:custom_footer_html, "contains invalid or potentially unsafe content")
+      else
+        self.custom_footer_html = sanitize_custom_footer_html
       end
     end
 
