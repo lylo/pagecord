@@ -34,7 +34,22 @@ class Api::BaseController < ActionController::API
         Current.blog = Blog.find_by_api_key(token)
       end
 
-      render json: { error: "Unauthorized" }, status: :unauthorized unless Current.blog
+      authenticate_with_access_token if allow_access_token_parameter? && !Current.blog
+
+      unauthorized unless Current.blog
+    end
+
+    def allow_access_token_parameter?
+      false
+    end
+
+    def unauthorized
+      render json: { error: "Unauthorized" }, status: :unauthorized
+    end
+
+    def authenticate_with_access_token
+      token = request.request_parameters[:access_token]
+      Current.blog = Blog.find_by_api_key(token) if token.present?
     end
 
     def require_premium

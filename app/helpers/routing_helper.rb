@@ -43,6 +43,10 @@ module RoutingHelper
     email_subscriber_one_click_unsubscribe_url(email_subscriber.token, host: host(email_subscriber.blog))
   end
 
+  def micropub_endpoint_url
+    micropub_url(host: "api.#{Rails.application.config.x.domain}")
+  end
+
   private
 
     def route_for_blog(blog, route_name, type, options = {})
