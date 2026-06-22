@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
-  rate_limit to: 5, within: 5.minutes, only: :create, with: :login_rate_limit_reached
-  rate_limit to: 20, within: 1.minute, only: :new
+  rate_limit to: 5, within: 5.minutes, only: :create, with: :login_rate_limit_reached, name: "session-create"
+  rate_limit to: 20, within: 1.minute, only: :new, name: "session-new"
 
   layout "sessions"
 

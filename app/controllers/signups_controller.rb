@@ -1,8 +1,8 @@
 class SignupsController < ApplicationController
   include SpamPrevention, TimezoneTranslation
 
-  rate_limit to: 3, within: 1.hour, only: [ :create ]
-  rate_limit to: 20, within: 1.minute, only: [ :new ]
+  rate_limit to: 3, within: 1.hour, only: [ :create ], name: "signup-create"
+  rate_limit to: 20, within: 1.minute, only: [ :new ], name: "signup-new"
 
   layout "sessions"
 
