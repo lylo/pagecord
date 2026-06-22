@@ -2,6 +2,7 @@ module Authentication
   extend ActiveSupport::Concern
 
   included do
+    before_action :expire_legacy_session_cookie
     before_action :authenticate
     helper_method :logged_in?
   end
@@ -29,5 +30,15 @@ module Authentication
   def sign_out
     session[:user_id] = nil
     session[:current_blog_id] = nil
+  end
+
+  # Remove after June 2027, once all _pagecord_v2 cookies issued before the v3 rotation have expired.
+  def expire_legacy_session_cookie
+    return if cookies["_pagecord_v2"].blank?
+
+    domain = Rails.application.config.x.domain
+    return unless request.host == domain || request.host.end_with?(".#{domain}")
+
+    cookies.delete("_pagecord_v2", domain: ".#{domain}", path: "/")
   end
 end
