@@ -31,24 +31,54 @@
     <link rel="canonical" href="<%= canonical_url %>">
     <%= yield :head %>
 
-    <%= stylesheet_link_tag "tailwind", "inter", "source-serif-4", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags "home" %>
+    <%= preload_fonts([
+      "inter/InterVariable.woff2",
+      "source-serif-4/SourceSerif4Variable-Roman.ttf.woff2"
+    ]) %>
+    <style>
+      @font-face {
+        font-family: "InterVariable";
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url("<%= asset_path("inter/InterVariable.woff2") %>") format("woff2-variations");
+      }
 
-    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-    <script type="text/javascript">
-      document.addEventListener('turbo:load', function() {
-        <% if Rails.env.development? %>
-          Paddle.Environment.set("sandbox")
-          Paddle.Initialize({
-            token: "test_945b246ef8df8bfe446632bf70b"
-          })
-        <% else %>
-          Paddle.Environment.set("production")
-          Paddle.Initialize({
-            token: "live_8d79ebbaac5c745a173f00967fb"
-          })
-        <% end %>
+      @font-face {
+        font-family: "SourceSerif4Variable";
+        font-style: normal;
+        font-weight: 200 900;
+        font-display: swap;
+        src: url("<%= asset_path("source-serif-4/SourceSerif4Variable-Roman.ttf.woff2") %>") format("woff2-variations");
+      }
+
+      body {
+        font-family: "InterVariable", ui-sans-serif, system-ui, sans-serif;
+      }
+
+      .source-serif {
+        font-family: "SourceSerif4Variable", sans-serif;
+      }
+    </style>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <script>
+      window.addEventListener("load", function() {
+        var script = document.createElement("script")
+        script.src = "https://cdn.paddle.com/paddle/v2/paddle.js"
+        script.onload = function() {
+          <% if Rails.env.development? %>
+            Paddle.Environment.set("sandbox")
+            Paddle.Initialize({
+              token: "test_945b246ef8df8bfe446632bf70b"
+            })
+          <% else %>
+            Paddle.Environment.set("production")
+            Paddle.Initialize({
+              token: "live_8d79ebbaac5c745a173f00967fb"
+            })
+          <% end %>
+        }
+        document.head.appendChild(script)
       })
     </script>
     <script defer data-domain="pagecord.com" src="https://plausible.io/js/script.js"></script>

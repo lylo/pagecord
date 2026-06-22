@@ -59,6 +59,9 @@ Rails.application.configure do
                      "https://paddle.com",
                      "*.paddle.com"
 
+    # Native media
+    policy.media_src :self, :https
+
     # Connect sources
     policy.connect_src :self, :https,
                        "https://plausible.io",

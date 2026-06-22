@@ -43,7 +43,7 @@
 }
 
 .animate-scroll-smooth {
-  animation: scroll-smooth 20s linear infinite;
+  animation: scroll-smooth 60s linear infinite;
   will-change: transform; /* smoother hardware-accelerated animation */
 }
 
