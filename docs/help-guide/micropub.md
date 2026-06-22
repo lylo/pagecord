@@ -4,7 +4,7 @@ published: true
 published_at: 2026-06-21T00:00:00+00:00
 ---
 
-Micropub lets compatible writing apps publish posts to your Pagecord blog. It is useful if you write in an app such as iA Writer and want to send drafts or published posts straight to Pagecord.
+Micropub lets compatible writing apps publish posts to your Pagecord blog. It is useful if you write in an app such as iA Writer and want to send drafts straight to Pagecord.
 
 Micropub uses your Pagecord API key, so it is a Premium feature.
 
@@ -43,7 +43,9 @@ iA Writer has built-in Micropub support on Mac, iPhone, and iPad.
 5. Enter your blog URL, for example `https://example.pagecord.com`, and paste your Pagecord API key. Do not enter `https://api.pagecord.com/micropub` unless iA Writer explicitly asks for a Micropub endpoint.
 6. In the Micropub publishing options, set the format to Markdown.
 
-You can then publish from iA Writer as a draft or published post, depending on the options iA Writer shows for your device.
+You can then publish from iA Writer using **File > Publish > New Draft on Micropub**. iA Writer currently creates a new draft in Pagecord rather than syncing changes back to an existing post.
+
+iA Writer does not currently behave as a full sync client for Pagecord. If you publish the same file again, it may create another draft instead of updating the existing one. For a richer writing workflow, use the [Pagecord Obsidian plugin](/obsidian), the [Pagecord CLI](/pagecord-cli), or the [Pagecord API](/api).
 
 ## Supported Features
 
@@ -59,6 +61,8 @@ Pagecord supports creating and updating posts with:
 - Image descriptions from apps, stored as captions
 
 Pagecord does not currently support cross-posting targets through Micropub. The `syndicate-to` response is intentionally empty.
+
+Pagecord's Micropub implementation has been tested with [Micropub.rocks](https://micropub.rocks/implementation-reports/servers/983/MxFCtISG3t38OzwCnyOg), the standard Micropub test suite.
 
 ## Authentication
 
