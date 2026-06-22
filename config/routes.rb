@@ -232,6 +232,7 @@ Rails.application.routes.draw do
     get "/terms", to: "public#terms", as: :terms
     get "/privacy", to: "public#privacy", as: :privacy
     get "/faq", to: "public#faq", as: :faq
+    get "/brand", to: "public#brand", as: :brand
     get "/pagecord-vs-about-me", to: "public#pagecord_vs_about_me"
     get "/pagecord-vs-medium", to: "public#pagecord_vs_medium"
     get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"

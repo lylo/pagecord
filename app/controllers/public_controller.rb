@@ -4,7 +4,7 @@ class PublicController < ApplicationController
   caches_page :terms, :privacy, :faq, :pagecord_vs_hey_world, :pagecord_vs_wordpress,
     :pagecord_vs_substack, :pagecord_vs_about_me, :pagecord_vs_medium,
     :blogging_by_email, :personal_website, :minimalist_blogging,
-    :blog_with_newsletter, :blogger_alternative, :indie_blogging_platform
+    :blog_with_newsletter, :blogger_alternative, :indie_blogging_platform, :brand
 
   def terms
   end
@@ -13,6 +13,9 @@ class PublicController < ApplicationController
   end
 
   def faq
+  end
+
+  def brand
   end
 
   def pagecord_vs_hey_world
