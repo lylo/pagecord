@@ -567,6 +567,19 @@ footer.blog-footer #brand svg {
   margin-block: var(--lexxy-content-margin);
 }
 
+.reply-sent {
+  padding-block-end: 1.5rem;
+
+  input[type="submit"] {
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+
+    &:hover {
+      color: var(--color-text);
+    }
+  }
+}
+
 .email-subscriber-form {
   display: flex;
   justify-content: center;

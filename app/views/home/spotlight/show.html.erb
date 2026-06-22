@@ -1,12 +1,16 @@
 <% content_for(:title, "Spotlight – Pagecord") %>
 <% content_for(:meta_description, "Spotlight surfaces trending and recent posts from independent bloggers on Pagecord.") %>
+<% content_for(:head) do %>
+  <%= tag :link, rel: "alternate", type: "application/rss+xml", title: "Pagecord Spotlight", href: spotlight_trending_feed_url %>
+<% end %>
 
 <div class="md:mt-4 mb-8 mx-auto max-w-2xl w-full ps-2 pe-4 sm:px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-5xl tracking-tight">
     Spotlight
   </h1>
-  <p class="mt-4 text-center text-slate-600 dark:text-slate-400">
-    <span class="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 px-2 py-1 rounded-full text-xs font-semibold">BETA</span> A look at what people are reading and writing on Pagecord.
+  <p class="mt-4 flex items-center justify-center gap-2 text-center text-slate-600 dark:text-slate-400">
+    <span class="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800 dark:bg-amber-900 dark:text-amber-200">BETA</span>
+    <span>A look at what people are reading and writing on Pagecord.</span>
   </p>
 
   <nav class="mt-8 flex justify-center gap-1 text-sm font-medium">
@@ -43,6 +47,10 @@
       <p class="text-center py-12 text-slate-500 dark:text-slate-400">No posts to show right now. Check back soon!</p>
     <% end %>
   </div>
+
+  <p class="mt-6 text-center text-slate-500 dark:text-slate-400">
+    Follow trending Spotlight posts by <%= link_to "RSS", spotlight_trending_feed_path, class: "font-medium text-slate-700 dark:text-slate-300 hover:text-[#4fbd9c] transition-colors underline" %>
+  </p>
 
   <div class="mt-8 text-center space-y-4">
     <%= link_to new_signup_path, class: "inline-flex font-medium px-6 py-3 rounded-xl shadow-sm btn-primary text-lg" do %>

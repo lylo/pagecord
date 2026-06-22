@@ -1,6 +1,7 @@
 module Sluggable
   extend ActiveSupport::Concern
 
+  MAX_SLUG_LENGTH = 100
   RESERVED_SLUGS = %w[posts feed guestbook].freeze
 
   included do
@@ -38,12 +39,21 @@ module Sluggable
       temp_token = self.token.presence || SecureRandom.hex(4)
       base_slug = parameterized_title.presence || temp_token
 
+      self.slug = unique_slug(base_slug)
+    end
+
+    def unique_slug(base_slug)
       candidate_slug = base_slug
+
       while slug_taken?(candidate_slug)
-        candidate_slug = "#{base_slug}-#{SecureRandom.hex(4)}"
+        suffix = SecureRandom.hex(4)
+        candidate_base = base_slug
+          .truncate(MAX_SLUG_LENGTH - suffix.length - 1, omission: "")
+          .delete_suffix("-")
+        candidate_slug = "#{candidate_base}-#{suffix}"
       end
 
-      self.slug = candidate_slug
+      candidate_slug
     end
 
     def slug_taken?(candidate)
@@ -54,8 +64,8 @@ module Sluggable
       # remove apostrophes to avoid unwanted hyphens during parameterization
       parameterized = title.to_s.delete("'")
 
-      # convert to URL-friendly form and cap at 100 chars
-      parameterized = parameterized.parameterize.truncate(100, omission: "") || ""
+      # convert to URL-friendly form and cap generated slugs for readability
+      parameterized = parameterized.parameterize.truncate(MAX_SLUG_LENGTH, omission: "") || ""
 
       # Remove trailing hyphens that can result from truncation
       parameterized.gsub(/-+\z/, "")

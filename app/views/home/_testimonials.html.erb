@@ -1,12 +1,8 @@
 <div id="testimonials" class="relative w-full px-4 md:px-6 lg:px-8 my-12 py-8">
   <h2 class="source-serif text-center font-semibold mb-8 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">What people are saying</h2>
 
-  <div class="relative -mx-4 md:-mx-6 lg:-mx-8 testimonials-fade-edges"
-       data-controller="testimonials-carousel"
-       data-action="mouseenter->testimonials-carousel#pause mouseleave->testimonials-carousel#resume">
-    <div class="relative overflow-auto pb-4"
-         data-action="scroll->testimonials-carousel#scroll">
-      <div class="flex gap-6 pl-4 md:pl-6 lg:pl-8" data-testimonials-carousel-target="slider">
+  <div class="relative -mx-4 md:-mx-6 lg:-mx-8 testimonials-fade-edges">
+    <% testimonial_cards = capture do %>
 
         <!-- Testimonial 1 -->
         <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-md border border-slate-200 dark:border-slate-700">
@@ -178,6 +174,17 @@
               <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://elettrodora.xyz/" class="hover:underline">elettrodora.xyz</a></p>
             </div>
           </div>
+        </div>
+    <% end %>
+
+    <div class="relative overflow-x-auto pb-4">
+      <div class="flex w-max animate-scroll-smooth">
+        <div class="flex gap-6 pl-4 md:pl-6 lg:pl-8 pr-6">
+          <%= testimonial_cards %>
+        </div>
+
+        <div class="flex gap-6 pl-4 md:pl-6 lg:pl-8 pr-6" inert>
+          <%= testimonial_cards %>
         </div>
       </div>
     </div>

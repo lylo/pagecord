@@ -77,6 +77,7 @@ Use the Pagecord API to manage your blog programmatically, publish from the comm
 - [API](api.md)
 - [Publishing with the Pagecord CLI](pagecord-cli.md)
 - [Publishing from Obsidian](obsidian.md)
+- [Publishing with Micropub](micropub.md)
 
 ## Account & Billing
 

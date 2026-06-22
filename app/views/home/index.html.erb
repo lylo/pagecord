@@ -142,7 +142,9 @@
   Pagecord includes a calm online editor for the days when you want a traditional blogging surface. It handles text formatting, images, galleries, tables, colours, and code blocks with syntax highlighting.
   </p>
 
-  <%= image_tag "home/rich-text-editor.webp",
+  <%= image_tag home_image_path("home/rich-text-editor.webp", width: 1600, quality: 90),
+    srcset: home_image_srcset("home/rich-text-editor.webp", widths: [ 800, 1600 ], quality: 88),
+    sizes: "(min-width: 56rem) 54rem, 100vw",
     alt: "A screenshot of Pagecord's rich text editor",
     width: "1600",
     height: "967" %>
@@ -159,7 +161,9 @@
   <p class="md:text-xl leading-relaxed my-5">
   The email becomes a real post on your site with a URL, RSS, and an archive you own. <a href="https://help.pagecord.com/posting-by-email" class="font-medium underline">Pagecord does the rest</a>.
   </p>
-  <%= image_tag "home/gmail-compose.webp",
+  <%= image_tag home_image_path("home/gmail-compose.webp", width: 1600, quality: 90),
+        srcset: home_image_srcset("home/gmail-compose.webp", widths: [ 800, 1600 ], quality: 88),
+        sizes: "(min-width: 56rem) 54rem, 100vw",
         alt: "Screenshot of composing a post in Gmail",
         width: "1600",
         height: "967" %>
@@ -173,7 +177,9 @@
   If you think in <a href="https://obsidian.md" class="font-medium underline">Obsidian</a>, keep thinking there. The <a href="https://help.pagecord.com/obsidian" class="font-medium underline">official Pagecord plugin</a> publishes selected notes straight to your blog. The <a href="https://help.pagecord.com/api" class="font-medium underline">Pagecord API</a> and <a href="https://help.pagecord.com/pagecord-cli" class="font-medium underline">CLI</a> let you publish from Shortcuts, scripts, local folders, or any workflow that already works for you.
   </p>
 
-  <%= image_tag "home/obsidian.webp",
+  <%= image_tag home_image_path("home/obsidian.webp", width: 1600, quality: 90),
+        srcset: home_image_srcset("home/obsidian.webp", widths: [ 800, 1600 ], quality: 88),
+        sizes: "(min-width: 56rem) 54rem, 100vw",
         alt: "Screenshot of the composing a post in Obsidian",
         width: "1600",
         height: "1609" %>
@@ -190,7 +196,9 @@
   Your writing stays on your site. Email is just a friendly way back to it.
   </p>
 
-  <%= image_tag "home/weekly-digest.webp",
+  <%= image_tag home_image_path("home/weekly-digest.webp", width: 1600, quality: 90),
+    srcset: home_image_srcset("home/weekly-digest.webp", widths: [ 800, 1600 ], quality: 88),
+    sizes: "(min-width: 56rem) 54rem, 100vw",
     alt: "A screenshot of Apple Mail with a weekly digest email",
     width: "1600",
     height: "967" %>
@@ -207,7 +215,9 @@
   Pagecord Premium has simple, privacy-first analytics built in. And if you would rather not know, you can turn it all off.
   </p>
 
-  <%= image_tag "home/analytics.webp",
+  <%= image_tag home_image_path("home/analytics.webp", width: 1600, quality: 90),
+    srcset: home_image_srcset("home/analytics.webp", widths: [ 800, 1600 ], quality: 88),
+    sizes: "(min-width: 56rem) 54rem, 100vw",
     alt: "A screenshot of Pagecord's page view analytics page",
     width: "1600",
     height: "964" %>
@@ -610,17 +620,14 @@
   <p class="md:text-xl leading-relaxed mb-8">
     Join Pagecord creator Olly for a 20-minute tour of everything Pagecord can do.
   </p>
-  <div class="relative rounded-xl overflow-hidden shadow-lg" style="padding-bottom: 56.25%;">
-    <iframe
-      src="https://www.youtube-nocookie.com/embed/8vVm7e7HxMQ"
-      title="YouTube video player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen
-      class="absolute inset-0 w-full h-full">
-    </iframe>
-  </div>
+  <video controls preload="none" poster="<%= asset_path("home/pagecord-walkthrough-poster.jpg") %>" class="aspect-video w-full rounded-xl shadow-lg">
+    <source src="https://media.pagecord.com/pagecord-walkthrough-jan-2026.mp4" type="video/mp4">
+    <track kind="captions" src="<%= asset_path("home/pagecord-walkthrough-captions.vtt") %>" srclang="en" label="English">
+  </video>
+
+  <p class="mt-3 text-center text-sm text-slate-600 dark:text-slate-400">
+    <%= link_to "Watch on YouTube", "https://www.youtube.com/watch?v=8vVm7e7HxMQ", class: "home-link" %>
+  </p>
 </div>
 
 <div class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200 ">
@@ -639,12 +646,4 @@
   <p class="md:text-xl leading-relaxed my-12 text-center">
   Made with ❤️ and ☕️ in 🏴󠁧󠁢󠁳󠁣󠁴󠁿
   </p>
-
-  <hr>
-
-  <div class="mt-12 mb-2 max-w-[500px] mx-auto bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 p-4 rounded-lg text-sm">
-    <%= turbo_frame_tag "email_subscriber_form" do %>
-      <%= render "newsletter_form" %>
-    <% end %>
-  </div>
 </div>

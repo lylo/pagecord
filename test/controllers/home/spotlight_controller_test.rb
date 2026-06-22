@@ -32,6 +32,17 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav a.bg-slate-900", "Trending"
   end
 
+  test "should show trending RSS feed" do
+    get spotlight_trending_feed_path
+
+    assert_response :success
+    assert_equal "application/rss+xml; charset=utf-8", @response.content_type
+
+    xml = Nokogiri::XML(@response.body)
+
+    assert_equal "Pagecord Spotlight", xml.xpath("//channel/title").text
+  end
+
   test "excludes blogs that aren't spotlit from recent" do
     blog = blogs(:joel)
     blog.exclude_from_spotlight
