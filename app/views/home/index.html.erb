@@ -4,7 +4,7 @@
   "@type": "SoftwareApplication",
   "name": "Pagecord",
   "url": "https://pagecord.com",
-  "description": "The personal blog you'll actually keep updated. Publish from the editor, email, Obsidian, API, or CLI, and keep your words on a site you own.",
+  "description": "The personal blog you'll actually keep updated. Publish from the editor, email, Obsidian, iA Writer, API, or CLI, and keep your words on a site you own.",
   "applicationCategory": "BloggingApplication",
   "operatingSystem": "Any (web-based)",
   "offers": [
@@ -48,7 +48,7 @@
       Pagecord meets you where you already write&hellip; then stays out of your way.
     </span></p>
 
-    <p>Write posts where you like, when you like. Use the editor, post by email, publish from Obsidian, or use the terminal to sync local files.</p>
+    <p>Write posts where you like, when you like. Use the editor, post by email, publish from Obsidian, iA Writer, or use the terminal to sync local files.</p>
 
     <p>All the blog essentials in one tidy package: posts, pages, themes, email subscribers, analytics, and a domain of your own.</p>
 
@@ -93,7 +93,7 @@
         <div class="absolute -left-10 -top-10 h-28 w-28 rounded-full bg-[#4fbd9c]/12 blur-2xl"></div>
         <div class="relative">
           <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Use your favourite writing tool</h3>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord lets you use the writing tools you already love. Use the fantastic web editor, post by sending an email, publish from Obsidian, or publish from the terminal using the CLI or API.</p>
+          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord lets you use the writing tools you already love. Use the fantastic web editor, post by sending an email, publish from Obsidian, iA Writer, or publish from the terminal using the CLI or API.</p>
         </div>
       </section>
 
@@ -109,7 +109,7 @@
         <div class="absolute -left-10 -bottom-10 h-28 w-28 rounded-full bg-[#4fbd9c]/12 blur-2xl"></div>
         <div class="relative">
           <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Embrace boring web standards</h3>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord embraces the original dream of the World Wide Web. Fast, lean, semantic HTML that looks great on every device. Tiny JavaScript sprinkles, evergreen permalinks, RSS, and email. No bloat, no adverts. Built for the long haul using tried and trusted tech.</p>
+          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord embraces the original dream of the World Wide Web. Fast, lean, semantic HTML that looks great on every device. Tiny JavaScript sprinkles, evergreen permalinks, RSS, email, and Micropub. No bloat, no adverts. Built for the long haul using tried and trusted tech.</p>
         </div>
       </section>
 
@@ -171,10 +171,10 @@
 
 <!-- Obsidian and API Section -->
 <div id="obsidian-api" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Publish from Obsidian, Shortcuts, or your own scripts</h2>
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Publish from Obsidian, iA Writer, or your own scripts</h2>
 
   <p class="md:text-xl leading-relaxed my-5">
-  If you think in <a href="https://obsidian.md" class="font-medium underline">Obsidian</a>, keep thinking there. The <a href="https://help.pagecord.com/obsidian" class="font-medium underline">official Pagecord plugin</a> publishes selected notes straight to your blog. The <a href="https://help.pagecord.com/api" class="font-medium underline">Pagecord API</a> and <a href="https://help.pagecord.com/pagecord-cli" class="font-medium underline">CLI</a> let you publish from Shortcuts, scripts, local folders, or any workflow that already works for you.
+  The <a href="https://help.pagecord.com/obsidian" class="font-medium underline">official Pagecord Obsidian plugin</a> publishes selected notes straight to your blog. If you prefer <a href="https://help.pagecord.com/micropub#using-ia-writer" class="font-medium underline">iA Writer</a>, Pagecord has you covered. Or you can use the <a href="https://help.pagecord.com/api" class="font-medium underline">Pagecord API</a> and <a href="https://help.pagecord.com/pagecord-cli" class="font-medium underline">CLI</a> to publish from Shortcuts, scripts, local folders, or any workflow that already works for you.
   </p>
 
   <%= image_tag home_image_path("home/obsidian.webp", width: 1600, quality: 90),
@@ -209,8 +209,7 @@
   <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Privacy-respecting analytics built in</h2>
 
   <p class="md:text-xl leading-relaxed my-5">
-  It is useful to know whether people are reading, but a personal blog should not need surveillance scripts or heavyweight dashboards.
-  </p>
+  It's nice to know how many visitors your blog gets, and where they come from, but you shouldn't have to add costly 3rd party tracking scripts.</p>
   <p class="md:text-xl leading-relaxed my-5">
   Pagecord Premium has simple, privacy-first analytics built in. And if you would rather not know, you can turn it all off.
   </p>
@@ -231,7 +230,7 @@
   <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Pricing</h2>
 
   <p class="md:text-xl leading-relaxed mt-5 mb-8">
-    The blogging basics are <strong>free forever</strong>. Upgrade any time for custom domains, analytics, email subscribers, images, Obsidian, API, CLI, and more for <strong>$<%= localised_price %>/year</strong> or <strong>$<%= localised_price(:monthly) %>/month</strong>.
+    The blogging basics are <strong>free forever</strong>. Upgrade any time for custom domains, analytics, email subscribers, hosted images, Obsidian, API, CLI, and more for <strong>$<%= localised_price %>/year</strong> or <strong>$<%= localised_price(:monthly) %>/month</strong>.
   </p>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -292,7 +291,7 @@
         <div class="text-4xl font-bold text-pagecord-accent dark:text-pagecord-accent mb-1">
           $<%= localised_price %><span class="text-lg font-normal text-slate-600 dark:text-slate-400"> /year or $<%= localised_price(:monthly) %>/mo</span>
         </div>
-        <p class="text-slate-600 dark:text-slate-400 mb-6">Everything you need to keep a personal blog alive.</p>
+        <p class="text-slate-600 dark:text-slate-400 mb-6">Everything you could possibly need.</p>
 
         <%= link_to new_signup_path, class: "block w-full" do %>
           <div class="w-full py-3 px-6 rounded-xl font-medium bg-pagecord-accent text-white transition-colors text-center">
@@ -356,10 +355,10 @@
 </div>
 
 <div id="features" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200 ">
-  <h2 class="source-serif font-semibold text-center my-8 text-3xl md:text-4xl tracking-tight">Simple by default, flexible when needed</h2>
+  <h2 class="source-serif font-semibold text-center my-8 text-3xl md:text-4xl tracking-tight">Pagecord has everything you need</h2>
 
   <p class="md:text-xl leading-relaxed my-5">
-    Pagecord is not trying to turn your blog into a media business. It gives you the practical web primitives that keep a personal site useful: posts, pages, RSS, email, a domain, an archive, and a few good ways to publish.
+     Pagecord gives you everything a personal website actually needs: blog posts, pages, RSS, email subscriptions, simple analytics, a custom domain, full site export, and integrations with popular writing tools like Obsidian and iA Writer.
   </p>
 
   <div class="mt-8 bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-xl">
@@ -582,7 +581,7 @@
         <tr>
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">API, Obsidian &amp; Shortcuts</div>
-            <div class="hidden sm:block">Publish from the official Obsidian plugin, scripts, Shortcuts, or anything that can make an HTTP request 🔌</div>
+            <div class="hidden sm:block">Publish from the official Obsidian plugin, iA Writer, scripts, Shortcuts, or anything that can make an HTTP request 🔌</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -602,10 +601,13 @@
   </div>
 
   <p class="md:text-xl leading-relaxed my-8 text-center text-slate-700 dark:text-slate-300">
-    Explore Pagecord as an
-    <%= link_to "indie blogging platform", indie_blogging_platform_path, class: "home-link" %>,
-    <%= link_to "Blogger alternative", blogger_alternative_path, class: "home-link" %>, or a way to publish from Obsidian to your own blog.
+    Looking for a
+    <%= link_to "minimalist blogging platform", minimalist_blogging_path, class: "home-link" %>
+    or an
+    <%= link_to "indie blogging platform", indie_blogging_platform_path, class: "home-link" %>?
+
     Switching from another platform? See how Pagecord compares to
+    <%= link_to "Blogger", blogger_alternative_path, class: "home-link" %>,
     <%= link_to "WordPress", "/pagecord-vs-wordpress", class: "home-link" %>,
     <%= link_to "Substack", "/pagecord-vs-substack", class: "home-link" %>,
     <%= link_to "Medium", "/pagecord-vs-medium", class: "home-link" %>,
