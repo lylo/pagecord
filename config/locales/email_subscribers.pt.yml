@@ -8,6 +8,7 @@ pt:
       submit_button: "Assinar"
     create:
       success_message: "Valeu! Se você já não era assinante, um e-mail de confirmação foi enviado para %{email}"
+      rate_limit_message: "Muitas tentativas. Tente novamente mais tarde."
     confirmations:
       success_message:
         digest: "Sua assinatura no %{blog_name} está confirmada. Você vai receber um e-mail semanal com as novas postagens publicadas"

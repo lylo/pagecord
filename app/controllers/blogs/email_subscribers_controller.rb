@@ -1,7 +1,7 @@
 class Blogs::EmailSubscribersController < Blogs::BaseController
   include SpamPrevention
 
-  rate_limit to: 3, within: 1.hour, only: [ :create ]
+  rate_limit to: 10, within: 1.hour, only: [ :create ], with: :rate_limit_reached
 
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
   before_action :requires_user_subscription
@@ -31,6 +31,18 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
 
       respond_to do |format|
         format.turbo_stream { render :create }
+        format.html { redirect_to blog_posts_path, alert: @message }
+      end
+    end
+
+    def rate_limit_reached
+      @message = I18n.t(
+        "email_subscribers.create.rate_limit_message",
+        default: "You've tried to subscribe too many times, too quickly. Please try again later."
+      )
+
+      respond_to do |format|
+        format.turbo_stream { render :create, status: :too_many_requests }
         format.html { redirect_to blog_posts_path, alert: @message }
       end
     end

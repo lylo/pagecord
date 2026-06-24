@@ -8,6 +8,7 @@ fi:
       submit_button: "Tilaa"
     create:
       success_message: "Kiitos tilauksesta. Jos et ole vielä tilaaja, vahvistusviesti on lähetetty osoitteeseen %{email}."
+      rate_limit_message: "Liian monta yritystä. Yritä myöhemmin uudelleen."
     confirmations:
       success_message:
         digest: "Tilauksesi blogiin %{blog_name} on vahvistettu. Saat viikoittaisen sähköpostikoosteen, kun uusia julkaisuja julkaistaan."

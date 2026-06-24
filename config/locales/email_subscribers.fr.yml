@@ -8,6 +8,7 @@ fr:
       submit_button: "S'abonner"
     create:
       success_message: "Merci de t'être abonné. Sauf si tu es déjà abonné, un email de confirmation est en route vers %{email}"
+      rate_limit_message: "Trop de tentatives. Réessaie plus tard."
     confirmations:
       success_message:
         digest: "Ton abonnement à %{blog_name} est confirmé. Tu recevras un résumé hebdomadaire par email lorsque de nouveaux articles seront publiés."
