@@ -24,6 +24,7 @@ nl:
         unsubscribe_link: "Afmelden"
         unsubscribe_text: "Meld je af via de onderstaande link:"
         view_online: "Bekijk dit bericht online"
+        view_digest_online: "Bekijk deze e-mail online"
       confirmation:
         subject: "Bevestig je abonnement op %{blog_name}"
         message: "Bevestig je abonnement op %{blog_name}. Als je je niet hebt aangemeld, kun je deze e-mail negeren."

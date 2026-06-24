@@ -24,6 +24,7 @@ de:
         unsubscribe_link: "Abmelden"
         unsubscribe_text: "Zum Abmelden klicke auf den folgenden Link:"
         view_online: "Diesen Beitrag online ansehen"
+        view_digest_online: "Diese E-Mail online ansehen"
       confirmation:
         subject: "Bestätige dein Abonnement bei %{blog_name}"
         message: "Bitte bestätige dein Abonnement bei %{blog_name}. Wenn du dich nicht anmelden wolltest, kannst du diese E-Mail ignorieren."

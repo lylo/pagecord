@@ -4,6 +4,8 @@
   <hr>
 
   <p class="digest-footer">
+    <%= link_to t('email_subscribers.mailers.shared.view_digest_online'), post_digest_url_for(@digest) %>
+    <br><br>
     <%= t('email_subscribers.mailers.shared.footer', blog_name: @subscriber.blog.display_name) %>
     <br>
     <%= link_to t('email_subscribers.mailers.shared.unsubscribe_link'), email_subscriber_unsubscribe_url_for(@subscriber) %>

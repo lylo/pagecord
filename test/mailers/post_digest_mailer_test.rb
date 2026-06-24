@@ -25,15 +25,29 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_equal email_subscriber.token, email.header["X-PM-Metadata-SubscriberToken"].to_s
   end
 
+  test "digest email includes link to view digest online" do
+    digest = post_digests(:one)
+    email_subscriber = email_subscribers(:one)
+    expected_url = "http://#{digest.blog.subdomain}.#{Rails.application.config.x.domain}/digests/#{digest.masked_id}"
+
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: digest).weekly_digest
+
+    assert_includes email.html_part.body.encoded, "View this email online"
+    assert_includes email.html_part.body.encoded, expected_url
+    assert_includes email.text_part.body.encoded, "View this email online"
+    assert_includes email.text_part.body.encoded, expected_url
+  end
+
   test "digest email with custom blog domain" do
     blog = blogs(:joel)
     blog.update!(custom_domain: "custom.example.com")
     email_subscriber = email_subscribers(:one)
-    posts = [ posts(:one) ]
+    digest = post_digests(:one)
 
-    email = PostDigestMailer.with(subscriber: email_subscriber, digest: post_digests(:one)).weekly_digest
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: digest).weekly_digest
 
     assert_match "custom.example.com", email.body.encoded
+    assert_match "http://custom.example.com/digests/#{digest.masked_id}", email.body.encoded
   end
 
   test "digest email unwraps image attachments" do

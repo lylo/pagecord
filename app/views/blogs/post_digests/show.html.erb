@@ -1,0 +1,16 @@
+<%= render "blogs/header", hide_email_form: true %>
+
+<div class="digest" data-controller="media-embeds lightbox">
+  <% @posts.each do |post| %>
+    <article class="post h-entry">
+      <%= render "blogs/posts/post_title", post: post %>
+      <%= render "blogs/posts/post_content", post: post %>
+
+      <footer>
+        <%= link_to post_path(post), class: "post-date u-url", data: { turbo_frame: "_top" } do %>
+          <%= local_time post.published_at, format: published_at_date_format, class: "dt-published" %>
+        <% end %>
+      </footer>
+    </article>
+  <% end %>
+</div>
