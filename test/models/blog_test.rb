@@ -150,6 +150,9 @@ class BlogTest < ActiveSupport::TestCase
     @blog.locale = "de"
     assert @blog.valid?
 
+    @blog.locale = "fi"
+    assert @blog.valid?
+
     @blog.locale = "invalid"
     assert_not @blog.valid?
     assert_includes @blog.errors.full_messages, "Locale invalid is not a supported locale"

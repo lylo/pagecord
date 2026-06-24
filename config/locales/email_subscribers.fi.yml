@@ -1,0 +1,44 @@
+fi:
+  email_subscribers:
+    form:
+      subscribe_description:
+        digest: "Tilaa viikoittainen kooste julkaisuista sähköpostiisi"
+        individual: "Tilaa uudet julkaisut sähköpostiisi"
+      email_placeholder: "Kirjoita sähköpostiosoitteesi..."
+      submit_button: "Tilaa"
+    create:
+      success_message: "Kiitos tilauksesta. Ellet ole jo tilaaja, vahvistusviesti on matkalla osoitteeseen %{email}"
+    confirmations:
+      success_message:
+        digest: "Tilauksesi blogiin %{blog_name} on vahvistettu. Saat viikoittaisen sähköpostikoosteen, kun uusia julkaisuja julkaistaan."
+        individual: "Tilauksesi blogiin %{blog_name} on vahvistettu. Saat sähköpostin, kun uusia julkaisuja julkaistaan."
+      unsubscribe_link: "Peru tilaus"
+    unsubscribes:
+      success_message: "Tilauksesi blogiin %{blog_name} on nyt peruttu 👋"
+      confirm_message: "Peruaksesi tilauksen blogiin %{blog_name}, napsauta alla olevaa linkkiä."
+      unsubscribe_button: "Peru tilaus"
+      not_found: "Sähköpostitilausta ei löytynyt"
+    mailers:
+      shared:
+        footer: "Olet tilannut uudet julkaisut blogista %{blog_name}."
+        unsubscribe_link: "Peru tilaus"
+        unsubscribe_text: "Peru tilaus napsauttamalla alla olevaa linkkiä:"
+        view_online: "Lue tämä julkaisu verkossa"
+      confirmation:
+        subject: "Vahvista tilauksesi blogiin %{blog_name}"
+        message: "Vahvista tilauksesi blogiin %{blog_name}. Jos et tarkoittanut tilata, voit ohittaa tämän viestin."
+        button: "Tilaa minut"
+      weekly_digest:
+        subject: "Uusia julkaisuja blogista %{blog_name} – %{date}"
+        footer: "Olet tilannut uudet julkaisut blogista %{blog_name}."
+        unsubscribe_link: "Peru tilaus"
+      individual:
+        default_subject: "Uusi julkaisu blogista %{blog_name} – %{date}"
+  posts:
+    read_more: "Lue lisää…"
+  replies:
+    form:
+      subject_label: "Aihe"
+      cancel_link: "Peruuta"
+    mailer:
+      intro: "Hienoa! Joku vastasi julkaisuusi"
