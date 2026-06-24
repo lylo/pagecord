@@ -7,7 +7,7 @@ fi:
       email_placeholder: "Kirjoita sähköpostiosoitteesi..."
       submit_button: "Tilaa"
     create:
-      success_message: "Kiitos tilauksesta. Ellet ole jo tilaaja, vahvistusviesti on matkalla osoitteeseen %{email}"
+      success_message: "Kiitos tilauksesta. Jos et ole vielä tilaaja, vahvistusviesti on lähetetty osoitteeseen %{email}."
     confirmations:
       success_message:
         digest: "Tilauksesi blogiin %{blog_name} on vahvistettu. Saat viikoittaisen sähköpostikoosteen, kun uusia julkaisuja julkaistaan."
@@ -15,7 +15,7 @@ fi:
       unsubscribe_link: "Peru tilaus"
     unsubscribes:
       success_message: "Tilauksesi blogiin %{blog_name} on nyt peruttu 👋"
-      confirm_message: "Peruaksesi tilauksen blogiin %{blog_name}, napsauta alla olevaa linkkiä."
+      confirm_message: "Napsauta alla olevaa linkkiä peruaksesi blogin %{blog_name} tilauksen."
       unsubscribe_button: "Peru tilaus"
       not_found: "Sähköpostitilausta ei löytynyt"
     mailers:
@@ -26,8 +26,8 @@ fi:
         view_online: "Lue tämä julkaisu verkossa"
       confirmation:
         subject: "Vahvista tilauksesi blogiin %{blog_name}"
-        message: "Vahvista tilauksesi blogiin %{blog_name}. Jos et tarkoittanut tilata, voit ohittaa tämän viestin."
-        button: "Tilaa minut"
+        message: "Vahvista, että haluat tilata blogin %{blog_name}. Voit ohittaa tämän viestin, jos et tarkoittanut tilata."
+        button: "Tilaa"
       weekly_digest:
         subject: "Uusia julkaisuja blogista %{blog_name} – %{date}"
         footer: "Olet tilannut uudet julkaisut blogista %{blog_name}."

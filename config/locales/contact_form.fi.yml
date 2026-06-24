@@ -2,4 +2,4 @@ fi:
   contact_form:
     mailer:
       subject: "Uusi viesti henkilöltä %{name}"
-      intro: "Sait viestin blogin %{blog_name} yhteydenottolomakkeen kautta."
+      intro: "Sait viestin blogisi %{blog_name} yhteydenottolomakkeen kautta."
