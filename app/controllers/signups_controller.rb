@@ -29,9 +29,12 @@ class SignupsController < ApplicationController
     @user.features = [ "lexxy" ] if ENV["LEXXY_FOR_NEW_USERS"]
 
     if signup_from_allowed_timezone && @user.save
+      attribution = signup_attribution
+      session.delete(:signup_attribution)
+
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
-      redirect_to thanks_signups_path
+      redirect_to thanks_signups_path(attribution)
     else
       render :new, status: :unprocessable_entity
     end

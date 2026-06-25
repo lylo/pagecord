@@ -9,6 +9,20 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: "A blog you'll actually keep updated"
   end
 
+  test "should publicly cache unattributed home page" do
+    get root_path
+
+    assert_response :success
+    assert_includes @response.headers["Cache-Control"], "s-maxage=3600"
+  end
+
+  test "should not publicly cache attributed home page" do
+    get root_path, params: { utm_source: "reddit", utm_campaign: "obsidian_blog" }
+
+    assert_response :success
+    assert_not_includes @response.headers["Cache-Control"] || "", "s-maxage"
+  end
+
   test "should render home page when logged in" do
     user = users(:joel)
     login_as user
