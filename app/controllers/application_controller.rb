@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  include Authentication, CustomDomainHelper
+  include Authentication, CustomDomainHelper, AttributionTrackable
 
   before_action :domain_check
 

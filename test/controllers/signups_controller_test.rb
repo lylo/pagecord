@@ -15,6 +15,62 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_not User.last.marketing_consent
   end
 
+  test "should preserve signup attribution for plausible goal page" do
+    get root_url, params: {
+      utm_source: "reddit",
+      utm_campaign: "obsidian_blog",
+      utm_content: "ignored"
+    }
+
+    assert_difference("User.count") do
+      assert_emails 1 do
+        post signups_url, params: {
+          user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] },
+          rendered_at: signed_rendered_at
+        }
+      end
+    end
+
+    assert_redirected_to thanks_signups_path(utm_source: "reddit", utm_campaign: "obsidian_blog")
+
+    assert_difference("User.count") do
+      assert_emails 1 do
+        post signups_url, params: {
+          user: { email: "second@example.com", blogs_attributes: [ { subdomain: "seconduser" } ] },
+          rendered_at: signed_rendered_at
+        }
+      end
+    end
+
+    assert_redirected_to thanks_signups_path
+  end
+
+  test "should keep signup attribution after validation failure" do
+    get root_url, params: { utm_source: "reddit", utm_campaign: "obsidian_blog" }
+
+    assert_no_difference("User.count") do
+      assert_emails 0 do
+        post signups_url, params: {
+          user: { email: "test@example.com", blogs_attributes: [ { subdomain: " invalid.subdomain" } ] },
+          rendered_at: signed_rendered_at
+        }
+      end
+    end
+
+    assert_response :unprocessable_entity
+
+    assert_difference("User.count") do
+      assert_emails 1 do
+        post signups_url, params: {
+          user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] },
+          rendered_at: signed_rendered_at
+        }
+      end
+    end
+
+    assert_redirected_to thanks_signups_path(utm_source: "reddit", utm_campaign: "obsidian_blog")
+  end
+
   test "should capture signup attribution fields" do
     assert_difference("User.count") do
       post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ], signup_referrer: "https://pagecord.com/pagecord_vs_substack", signup_source_note: "Hacker News" }, rendered_at: signed_rendered_at }
