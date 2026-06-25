@@ -805,6 +805,14 @@ footer.blog-footer #brand svg {
   max-width: 100%;
 }
 
+.post-card-summary video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 30rem;
+  object-fit: contain;
+}
+
 .post-card-meta {
   display: flex;
   align-items: center;

@@ -160,6 +160,34 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "Intro text for cards.", post.excerpt_text
   end
 
+  test "text summary ignores video attachment filenames" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new("video"),
+      filename: "clip.mov",
+      content_type: "video/quicktime"
+    )
+    post = blogs(:joel).posts.create!(
+      content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>)
+    )
+
+    assert_equal "", post.text_summary
+  end
+
+  test "first_media returns first image or video attachment" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new("video"),
+      filename: "clip.mov",
+      content_type: "video/quicktime"
+    )
+    post = blogs(:joel).posts.create!(
+      content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>)
+    )
+
+    rendered_post = Post.where(id: post.id).with_full_rich_text.first
+
+    assert_equal blob, rendered_post.first_media
+  end
+
   test "has_text_content? should return true for posts with text" do
     blog = blogs(:joel)
     post = blog.posts.create!(

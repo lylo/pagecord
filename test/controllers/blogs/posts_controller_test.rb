@@ -68,6 +68,49 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "Card hidden text."
   end
 
+  test "cards layout should render a video preview for video-only posts" do
+    @blog.cards_layout!
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new("video"),
+      filename: "clip.mov",
+      content_type: "video/quicktime"
+    )
+    @blog.posts.create!(
+      title: "Video Card Post",
+      content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "video.post-card-video", minimum: 1
+    assert_select "video.post-card-video[controls]", count: 0
+    assert_not_includes @response.body, "[clip.mov]"
+  end
+
+  test "cards layout should keep text preview for posts with text and video" do
+    @blog.cards_layout!
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new("video"),
+      filename: "clip.mov",
+      content_type: "video/quicktime"
+    )
+    @blog.posts.create!(
+      title: "Text and Video Card Post",
+      content: %(<p>Visible card text.</p><action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_includes @response.body, "Visible card text."
+    assert_select "video.post-card-video", count: 0
+  end
+
   test "should show email subscription form on index" do
     get blog_posts_path
 
