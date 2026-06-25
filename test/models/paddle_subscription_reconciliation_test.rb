@@ -35,7 +35,7 @@ class PaddleSubscriptionReconciliationTest < ActiveSupport::TestCase
       paddle_subscription(id: "sub_duplicate_joel", customer_id: "ctm_joel"),
       paddle_subscription(id: annie_subscription.paddle_subscription_id, customer_id: "ctm_annie"),
       paddle_subscription(id: pagecord_subscription.paddle_subscription_id, customer_id: "ctm_pagecord", scheduled_change_action: "cancel"),
-      paddle_subscription(id: "sub_email_match", customer_id: "ctm_vivian"),
+      paddle_subscription(id: "sub_custom_data_match", customer_id: "ctm_vivian", custom_data: { "user_id" => users(:vivian).id, "blog_subdomain" => "old-vivian" }),
       paddle_subscription(id: "sub_orphan", customer_id: "ctm_orphan")
     ]
     scheduled_cancel_subscriptions = [
@@ -51,7 +51,7 @@ class PaddleSubscriptionReconciliationTest < ActiveSupport::TestCase
       },
       scheduled_cancel_subscriptions:,
       customers: {
-        "ctm_vivian" => { "email" => users(:vivian).email },
+        "ctm_vivian" => { "email" => "old-vivian@example.com" },
         "ctm_orphan" => { "email" => "orphan@example.com" }
       }
     )
@@ -81,15 +81,21 @@ class PaddleSubscriptionReconciliationTest < ActiveSupport::TestCase
       assert_csv_rows directory, "paddle_active_subscriptions.csv", 6
       assert_csv_rows directory, "paddle_subscription_reconciliation.csv", 7
       assert_csv_rows directory, "paddle_discrepancies.csv", 6
+
+      custom_data_match = CSV.read(File.join(directory, "paddle_active_subscriptions.csv"), headers: true).find { |row| row["paddle_subscription_id"] == "sub_custom_data_match" }
+      assert_equal users(:vivian).id.to_s, custom_data_match["matched_user_id"]
+      assert_equal "paddle_custom_data_user_id", custom_data_match["match_method"]
+      assert_equal "old-vivian", custom_data_match["paddle_custom_data_blog_subdomain"]
     end
   end
 
   private
 
-    def paddle_subscription(id:, customer_id: "ctm_test", scheduled_change_action: nil)
+    def paddle_subscription(id:, customer_id: "ctm_test", scheduled_change_action: nil, custom_data: nil)
       {
         "id" => id,
         "customer_id" => customer_id,
+        "custom_data" => custom_data,
         "status" => "active",
         "scheduled_change" => scheduled_change_action.present? ? { "action" => scheduled_change_action, "effective_at" => 1.month.from_now.iso8601 } : nil,
         "next_billed_at" => 1.month.from_now.iso8601,

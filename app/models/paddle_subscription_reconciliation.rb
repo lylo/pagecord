@@ -9,6 +9,8 @@ class PaddleSubscriptionReconciliation
   ACTIVE_SUBSCRIPTION_HEADERS = [
     "paddle_subscription_id",
     "paddle_customer_id",
+    "paddle_custom_data_user_id",
+    "paddle_custom_data_blog_subdomain",
     "paddle_status",
     "scheduled_change_action",
     "scheduled_change_effective_at",
@@ -29,6 +31,8 @@ class PaddleSubscriptionReconciliation
     "record_type",
     "paddle_subscription_id",
     "paddle_customer_id",
+    "paddle_custom_data_user_id",
+    "paddle_custom_data_blog_subdomain",
     "paddle_status",
     "paddle_scheduled_change_action",
     "paddle_customer_email",
@@ -47,6 +51,8 @@ class PaddleSubscriptionReconciliation
     "type",
     "paddle_subscription_id",
     "paddle_customer_id",
+    "paddle_custom_data_user_id",
+    "paddle_custom_data_blog_subdomain",
     "paddle_customer_email",
     "user_id",
     "user_email",
@@ -250,6 +256,8 @@ class PaddleSubscriptionReconciliation
       [
         subscription_id(paddle_subscription),
         customer_id(paddle_subscription),
+        custom_data_user_id(paddle_subscription),
+        custom_data_blog_subdomain(paddle_subscription),
         paddle_subscription["status"],
         scheduled_change_action(paddle_subscription),
         scheduled_change_effective_at(paddle_subscription),
@@ -273,6 +281,8 @@ class PaddleSubscriptionReconciliation
         record_type,
         subscription_id(paddle_subscription),
         customer_id(paddle_subscription),
+        custom_data_user_id(paddle_subscription),
+        custom_data_blog_subdomain(paddle_subscription),
         paddle_subscription&.fetch("status", nil),
         scheduled_change_action(paddle_subscription),
         customer_email(paddle_subscription),
@@ -297,6 +307,8 @@ class PaddleSubscriptionReconciliation
         discrepancy.type,
         subscription_id(paddle_subscription),
         customer_id(paddle_subscription),
+        custom_data_user_id(paddle_subscription),
+        custom_data_blog_subdomain(paddle_subscription),
         customer_email(paddle_subscription),
         match&.user&.id,
         match&.user&.email,
@@ -314,6 +326,11 @@ class PaddleSubscriptionReconciliation
 
       if customer_id(paddle_subscription).present? && subscriptions_by_paddle_customer_id[customer_id(paddle_subscription)]
         return match_for_local(subscriptions_by_paddle_customer_id[customer_id(paddle_subscription)], "paddle_customer_id")
+      end
+
+      if custom_data_user_id(paddle_subscription).present? && users_by_id[custom_data_user_id(paddle_subscription)]
+        user = users_by_id[custom_data_user_id(paddle_subscription)]
+        return Match.new(user:, subscription: user.subscription, method: "paddle_custom_data_user_id")
       end
 
       email = customer_email(paddle_subscription, fetch: true)
@@ -339,6 +356,10 @@ class PaddleSubscriptionReconciliation
 
     def users_by_email
       @users_by_email ||= User.includes(:subscription).index_by { |user| user.email.downcase }
+    end
+
+    def users_by_id
+      @users_by_id ||= User.includes(:subscription).index_by(&:id)
     end
 
     def local_subscriptions
@@ -403,6 +424,14 @@ class PaddleSubscriptionReconciliation
 
     def scheduled_change_effective_at(subscription)
       subscription&.dig("scheduled_change", "effective_at")
+    end
+
+    def custom_data_user_id(subscription)
+      subscription&.dig("custom_data", "user_id").presence&.to_i
+    end
+
+    def custom_data_blog_subdomain(subscription)
+      subscription&.dig("custom_data", "blog_subdomain")
     end
 
     def customer_email(subscription, fetch: false)

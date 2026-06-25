@@ -110,6 +110,41 @@ class UserTest < ActiveSupport::TestCase
     assert_not Blog.with_discarded.exists?(discarded_blog.id)
   end
 
+  test "purgeable_discarded includes old discarded users without subscriptions" do
+    user = users(:elliot)
+    user.discard!
+    user.update_columns(discarded_at: 8.days.ago)
+
+    assert_includes User.purgeable_discarded(before: 7.days.ago), user
+  end
+
+  test "purgeable_discarded excludes discarded paid users before paid access ends" do
+    user = users(:joel)
+    user.discard!
+    user.update_columns(discarded_at: 8.days.ago)
+    user.subscription.update!(cancelled_at: 1.day.ago, next_billed_at: 1.month.from_now)
+
+    assert_not_includes User.purgeable_discarded(before: 7.days.ago), user
+  end
+
+  test "purgeable_discarded includes discarded paid users after paid access ends" do
+    user = users(:joel)
+    user.discard!
+    user.update_columns(discarded_at: 8.days.ago)
+    user.subscription.update!(cancelled_at: 2.months.ago, next_billed_at: 1.month.ago)
+
+    assert_includes User.purgeable_discarded(before: 7.days.ago), user
+  end
+
+  test "purgeable_discarded excludes discarded paid users with unknown paid access end" do
+    user = users(:joel)
+    user.discard!
+    user.update_columns(discarded_at: 8.days.ago)
+    user.subscription.update!(cancelled_at: 1.day.ago, next_billed_at: nil)
+
+    assert_not_includes User.purgeable_discarded(before: 7.days.ago), user
+  end
+
   test "custom_domain_access? allows active subscribers" do
     assert users(:joel).custom_domain_access?
   end
