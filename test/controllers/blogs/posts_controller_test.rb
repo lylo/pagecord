@@ -70,6 +70,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "cards layout should render a video preview for video-only posts" do
     @blog.cards_layout!
+    ActiveStorage::Previewer::VideoPreviewer.stubs(:accept?).returns(true)
     blob = ActiveStorage::Blob.create_and_upload!(
       io: StringIO.new("video"),
       filename: "clip.mov",
@@ -85,8 +86,8 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "video.post-card-video", minimum: 1
-    assert_select "video.post-card-video[controls]", count: 0
+    assert_select ".post-card-summary img", minimum: 1
+    assert_select "video.post-card-video", count: 0
     assert_not_includes @response.body, "[clip.mov]"
   end
 

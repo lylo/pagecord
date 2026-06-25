@@ -17,7 +17,11 @@
           <% if media.image? %>
             <%= image_tag resized_image_url(media, width: 1600, height: 1200), alt: post.display_title %>
           <% elsif media.video? %>
-            <%= video_tag rails_public_blob_url(media), preload: "metadata", muted: true, playsinline: true, class: "post-card-video" %>
+            <% if media.previewable? %>
+              <%= image_tag media.preview(resize_to_limit: [ 1600, 1200 ]), alt: post.display_title %>
+            <% else %>
+              <%= video_tag rails_public_blob_url(media), preload: "metadata", muted: true, playsinline: true, class: "post-card-video" %>
+            <% end %>
           <% end %>
         <% else %>
           <%= post.content.to_plain_text.truncate(324) %>
