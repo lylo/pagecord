@@ -17,5 +17,6 @@ production:
     - ActionController::TooManyRequests
     - URI::InvalidURIError
     - ActionDispatch::Http::MimeNegotiation::InvalidType
+    - Rack::Multipart::BoundaryTooLongError
     - Rack::Multipart::EmptyContentError
     - Encoding::CompatibilityError
