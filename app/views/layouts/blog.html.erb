@@ -99,9 +99,7 @@
             <% end %>
 
             <% if @blog.show_branding? %>
-              <%= link_to "https://pagecord.com", id: "brand", aria: { label: "Pagecord Home" } do %>
-                <%= inline_svg_tag "logo-black.svg" %>
-              <% end %>
+              <span class="brand-credit">Made with <%= link_to "Pagecord", "https://pagecord.com", id: "brand" %></span>
             <% end %>
           </footer>
         <% end %>

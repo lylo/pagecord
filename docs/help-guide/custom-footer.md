@@ -12,11 +12,13 @@ Premium customers can add an HTML snippet to the footer of their blog. This is u
 
 To add your own custom HTML, head over to **Settings** → **Appearance** → **Custom footer**
 
-Your custom footer appears at the bottom of every blog page, above the Pagecord logo if you have branding enabled.
+Your custom footer appears at the bottom of every blog page, above the Made with Pagecord credit if you have branding enabled.
 
 ### A Quick Note
 
 Custom footer is intended for small, simple snippets. Pagecord checks that the HTML is safe before saving it, and snippets must be under 4KB. Customer support for writing or debugging custom HTML and CSS is limited.
+
+For custom or translated attribution text, hide Pagecord branding and add your own custom footer.
 
 ## What HTML is supported?
 

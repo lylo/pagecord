@@ -918,11 +918,12 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "time[datetime$='T19:45:00Z']"
   end
 
-  test "should pagecord branding" do
+  test "should show pagecord branding" do
     get blog_posts_path
 
     assert_response :success
-    assert_select "footer a[id=brand]", count: 1
+    assert_select "footer.blog-footer", text: /Made with Pagecord/
+    assert_select "footer a[id=brand]", text: "Pagecord", count: 1
   end
 
   test "should hide pagecord branding when show_branding off" do
