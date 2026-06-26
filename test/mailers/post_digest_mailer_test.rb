@@ -163,6 +163,16 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_equal [ "digest@newsletters.pagecord.com" ], email.from
   end
 
+  test "test_individual quotes blog names with commas in from header" do
+    post = posts(:one)
+    post.blog.title = "Dear readers, notes"
+
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_equal [ "digest@newsletters.pagecord.com" ], email.from
+    assert_equal "\"Dear readers, notes\" <digest@newsletters.pagecord.com>", email.header["from"].to_s
+  end
+
   test "test_individual has no broadcast headers" do
     post = posts(:one)
 
