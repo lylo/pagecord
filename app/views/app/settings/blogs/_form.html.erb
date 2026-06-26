@@ -38,7 +38,7 @@
             <% end %>
 
             <fieldset>
-              <%= styled_text_field(form, :custom_domain, placeholder: "yourdomain.com", class: "mt-4 md:w-96", disabled: disabled) %>
+              <%= styled_text_field(form, :custom_domain, placeholder: "yourdomain.com", class: "mt-4 md:w-80", disabled: disabled) %>
               <%= field_error(@blog, :custom_domain) %>
             </fieldset>
 
@@ -52,29 +52,6 @@
 
         <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
           <div>
-            <h4 class="font-bold text-slate-900 dark:text-slate-100">Blog Subdomain</h4>
-          </div>
-          <div>
-            <p class="mb-4 text-slate-700 dark:text-slate-300">
-              Your current blog subdomain is <strong><%= persisted_value(@blog, :subdomain) %></strong> which means your blog is available at <span class="bg-slate-100 px-1 dark:bg-slate-700">https://<%= persisted_value(@blog, :subdomain) %>.pagecord.com</span>.
-            </p>
-
-            <div class="mb-4">
-              <%= callout(:warning) do %>
-                <strong>Warning:</strong> Changing your blog subdomain changes the URL of your blog, so any links to your old blog URL will no longer work!
-              <% end %>
-            </div>
-
-            <fieldset>
-              <%= form.label :subdomain, "Subdomain", class: "sr-only" %>
-              <%= styled_text_field(form, :subdomain, required: true, placeholder: "subdomain", maxlength: 20, class: "md:w-96") %>
-              <%= field_error(@blog, :subdomain) %>
-            </fieldset>
-          </div>
-        </div>
-
-        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
-          <div>
             <h4 class="font-bold text-slate-900 dark:text-slate-100">Language</h4>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">For subscription forms and interface copy</p>
           </div>
@@ -83,6 +60,23 @@
               <%= render "language_select", form: form %>
               <%= field_error(@blog, :locale) %>
             </fieldset>
+          </div>
+        </div>
+
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">Links</h4>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Choose how links in your posts and pages behave for readers</p>
+          </div>
+          <div>
+            <div class="flex gap-3">
+              <div class="flex h-6 shrink-0 items-center">
+                <%= form.check_box :external_links_in_new_tab, { checked: @blog.external_links_in_new_tab, class: "form-checkbox h-5 w-5 rounded border-slate-300 text-slate-600 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600" } %>
+              </div>
+              <div>
+                <%= form.label :external_links_in_new_tab, "Open external links in a new tab", class: "text-slate-800 dark:text-slate-100" %>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -105,23 +99,6 @@
               </div>
               <div>
                 <%= form.label :allow_search_indexing, "Make my blog discoverable", class: "text-slate-800 dark:text-slate-100" %>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
-          <div>
-            <h4 class="font-bold text-slate-900 dark:text-slate-100">Links</h4>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Choose how links in your posts and pages behave for readers</p>
-          </div>
-          <div>
-            <div class="flex gap-3">
-              <div class="flex h-6 shrink-0 items-center">
-                <%= form.check_box :external_links_in_new_tab, { checked: @blog.external_links_in_new_tab, class: "form-checkbox h-5 w-5 rounded border-slate-300 text-slate-600 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600" } %>
-              </div>
-              <div>
-                <%= form.label :external_links_in_new_tab, "Open external links in a new tab", class: "text-slate-800 dark:text-slate-100" %>
               </div>
             </div>
           </div>
@@ -183,6 +160,29 @@
                 To remove your Google site verification, clear the box above and click Update.
               </p>
             <% end %>
+          </div>
+        </div>
+
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">Blog Subdomain</h4>
+          </div>
+          <div>
+            <p class="mb-4 text-slate-700 dark:text-slate-300">
+              Your current blog subdomain is <strong><%= persisted_value(@blog, :subdomain) %></strong> which means your blog is available at <span class="bg-slate-100 px-1 dark:bg-slate-700">https://<%= persisted_value(@blog, :subdomain) %>.pagecord.com</span>.
+            </p>
+
+            <div class="mb-4">
+              <%= callout(:warning) do %>
+                <strong>Warning:</strong> Changing your blog subdomain changes the URL of your blog, so any links to your old blog URL will no longer work!
+              <% end %>
+            </div>
+
+            <fieldset>
+              <%= form.label :subdomain, "Subdomain", class: "sr-only" %>
+              <%= styled_text_field(form, :subdomain, required: true, placeholder: "subdomain", maxlength: 20, class: "md:w-80") %>
+              <%= field_error(@blog, :subdomain) %>
+            </fieldset>
           </div>
         </div>
       </div>
