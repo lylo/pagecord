@@ -70,8 +70,37 @@
     </div>
   </div>
 
+  <div class="mt-12 border-t border-t-slate-200 dark:border-slate-600 pt-8">
+    <h3 class="font-bold text-lg mb-2">Web Settings</h3>
+    <p>
+      Fine-tune how your blog appears around the web.
+    </p>
+  </div>
+
   <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Google Site Verification</h3>
+    <h4 class="font-bold text-lg mb-2">SEO Blog Title</h4>
+    <p>
+      By default your blog name is used in the HTML title for search engines and social sharing. You can override this by entering a different title below.
+    </p>
+
+    <fieldset>
+      <%= styled_text_field(form, :seo_title, placeholder: "e.g. #{@blog.display_name} - Personal Blog", class: "mt-4 md:w-full") %>
+      <%= field_error(@blog, :seo_title) %>
+    </fieldset>
+  </div>
+
+  <div class="mt-8">
+    <h4 class="font-bold text-lg mb-2">Fediverse Author Attribution</h4>
+    <p>
+      Add your Fediverse handle so Mastodon can show you as the author when someone shares one of your posts. Use the full handle,
+      not your profile URL.
+    </p>
+
+    <%= styled_text_field(form, :fediverse_author_attribution, placeholder: "e.g. @you@mastodon.social", class: "mt-4 md:w-full") %>
+  </div>
+
+  <div class="mt-8">
+    <h4 class="font-bold text-lg mb-2">Google Site Verification</h4>
     <p>
       If you need to add a Google Site Verification meta tag to your blog (e.g. for Google Search Console), enter the verification code below. This will appear in your blog HTML as <code class="text-sm bg-slate-100 dark:bg-slate-800">&lt;meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" /&gt;</code>
     </p>
@@ -89,23 +118,7 @@
   </div>
 
   <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">SEO Blog Title</h3>
-    <p>
-      By default your blog name is used in the HTML title for search engines and social sharing. You can override this by entering a different title below.
-    </p>
-
-    <fieldset>
-      <%= styled_text_field(form, :seo_title, placeholder: "e.g. #{@blog.display_name} - Personal Blog", class: "mt-4 md:w-full") %>
-      <%= field_error(@blog, :seo_title) %>
-    </fieldset>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">External Links</h3>
-    <p>
-      Choose whether external links in your posts and pages open in a new browser tab.
-    </p>
-
+    <h4 class="font-bold text-lg mb-2">Links</h4>
     <div class="mt-6">
       <div class="flex gap-3">
         <div class="flex h-6 shrink-0 items-center">
@@ -119,17 +132,7 @@
   </div>
 
   <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Fediverse Author Attribution</h3>
-    <p>
-      Add your Fediverse handle so Mastodon can show you as the author when someone shares one of your posts. Use the full handle,
-      not your profile URL.
-    </p>
-
-    <%= styled_text_field(form, :fediverse_author_attribution, placeholder: "e.g. @you@mastodon.social", class: "mt-4 md:w-full") %>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2 mt-8">Blog Subdomain</h3>
+    <h4 class="font-bold text-lg mb-2">Blog Subdomain</h4>
     <p class="mb-4">
       Your current blog subdomain is <strong><%= persisted_value(@blog, :subdomain) %></strong> which means your blog is available at <span class="bg-slate-200 dark:bg-slate-700">https://<%= persisted_value(@blog, :subdomain) %>.pagecord.com</span>.
     </p>
