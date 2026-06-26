@@ -12,9 +12,10 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 1, text: "Custom Domain" }
-    assert_select "h3", { count: 1, text: "Discoverability" }
-    assert_select "h3", { count: 1, text: "Web Settings" }
+    assert_select "h3", { count: 1, text: "Blog Settings" }
+    assert_select "h3", { count: 1, text: "Advanced" }
+    assert_select "h4", { count: 1, text: "Custom Domain" }
+    assert_select "h4", { count: 1, text: "Discoverability" }
     assert_select "h4", { count: 1, text: "Google Site Verification" }
     assert_select "h4", { count: 1, text: "Links" }
     assert_select "h4", { count: 1, text: "Fediverse Author Attribution" }
@@ -28,7 +29,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 1, text: "Custom Domain" }
+    assert_select "h4", { count: 1, text: "Custom Domain" }
     assert_select "input[name='blog[custom_domain]'][disabled]"
     assert_response :success
   end
@@ -168,7 +169,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   test "should show language section" do
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 1, text: "Language" }
+    assert_select "h4", { count: 1, text: "Language" }
     assert_select "select[name='blog[locale]']", count: 1
     assert_response :success
   end
