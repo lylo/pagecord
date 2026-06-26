@@ -181,7 +181,11 @@ class Post < ApplicationRecord
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
       doc.css("figcaption").remove
 
-      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
+      doc.css("br").each do |element|
+        element.replace(Nokogiri::XML::Text.new(" ", doc))
+      end
+
+      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote, td, th").each do |element|
         element.add_child(Nokogiri::XML::Text.new(" ", doc))
       end
 

@@ -365,6 +365,26 @@ class PostTest < ActiveSupport::TestCase
     assert_includes post.text_summary, "block. Second"
   end
 
+  test "text_summary should preserve space between line breaks" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>First paragraph ends here.<br><br>Second paragraph starts here.</p>"
+    )
+
+    assert_equal "First paragraph ends here. Second paragraph starts here.", post.text_summary
+    assert_includes post.summary(limit: 324), "here. Second"
+  end
+
+  test "text_summary should preserve space between table cells" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<table><tr><td>First cell.</td><td>Second cell.</td></tr></table>"
+    )
+
+    assert_equal "First cell. Second cell.", post.text_summary
+    assert_includes post.text_summary, "cell. Second"
+  end
+
   # Locale tests
   test "locale should be nil by default" do
     blog = blogs(:joel)
