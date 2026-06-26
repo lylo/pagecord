@@ -101,6 +101,24 @@
   </div>
 
   <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">External Links</h3>
+    <p>
+      Choose whether external links in your posts and pages open in a new browser tab.
+    </p>
+
+    <div class="mt-6">
+      <div class="flex gap-3">
+        <div class="flex h-6 shrink-0 items-center">
+          <%= form.check_box :external_links_in_new_tab, { checked: @blog.external_links_in_new_tab, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" } %>
+        </div>
+        <div>
+          <%= form.label :external_links_in_new_tab, "Open external links in a new tab", class: "text-slate-800 dark:text-slate-100" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Fediverse Author Attribution</h3>
     <p>
       Add your Fediverse handle so Mastodon can show you as the author when someone shares one of your posts. Use the full handle,

@@ -15,6 +15,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h3", { count: 1, text: "Custom Domain" }
     assert_select "h3", { count: 1, text: "Discoverability" }
     assert_select "h3", { count: 1, text: "Google Site Verification" }
+    assert_select "h3", { count: 1, text: "External Links" }
     assert_select "h3", { count: 1, text: "Fediverse Author Attribution" }
     assert_select "p", text: /Use the full handle, not your profile URL/
     assert_select "input[name='blog[fediverse_author_attribution]'][placeholder='e.g. @you@mastodon.social']"
@@ -190,6 +191,13 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_settings_url
     assert_equal false, @blog.reload.show_metrics
+  end
+
+  test "should update external links in new tab" do
+    patch app_settings_blog_url(@blog), params: { blog: { external_links_in_new_tab: true } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal true, @blog.reload.external_links_in_new_tab
   end
 
   test "should not allow non-subscribed user to update subscription location settings" do
