@@ -1,6 +1,6 @@
 class Blogs::RedirectsController < Blogs::BaseController
   def show
-    post = @blog.all_posts
+    post = @blog.posts
       .kept
       .published
       .released

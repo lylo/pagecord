@@ -122,10 +122,6 @@ class Api::EmbedsControllerTest < ActionDispatch::IntegrationTest
 
   private
 
-    def host_subdomain!(name)
-      host! "#{name}.#{Rails.application.config.x.domain}"
-    end
-
     def bandcamp_url
       "https://artist.bandcamp.com/album/example"
     end
