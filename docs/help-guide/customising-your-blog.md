@@ -68,7 +68,7 @@ Choose how posts appear on your home page:
 
 ### Branding
 
-Premium feature. Choose whether to hide the Made with Pagecord credit at the bottom of your blog (please consider keeping it to spread the good word about Pagecord!)
+Premium feature. Choose whether to hide the Pagecord logo at the bottom of your blog (please consider keeping it to spread the good word about Pagecord!)
 
 ### Custom footer
 

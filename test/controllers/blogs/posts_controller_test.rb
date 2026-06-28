@@ -922,8 +922,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "footer.blog-footer", text: /Made with Pagecord/
-    assert_select "footer a[id=brand]", text: "Pagecord", count: 1
+    assert_select "footer a[id=brand][aria-label='Pagecord Home'] svg", count: 1
   end
 
   test "should hide pagecord branding when show_branding off" do

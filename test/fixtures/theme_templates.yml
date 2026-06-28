@@ -782,11 +782,12 @@ mozake:
     .email-form-container { display: block; text-align: revert; }
     .email-form-container fieldset { margin: 0.5em 0; padding: 0; }
 
-    /* Footer */
+    /* Footer – text link instead of logo */
     footer.blog-footer {
       margin-top: 2em; padding: 0; display: block;
     }
-    footer.blog-footer .brand-credit { margin-bottom: 1em; display: block; }
+    footer.blog-footer #brand svg { display: none; }
+    footer.blog-footer #brand::after { content: "Pagecord"; margin-bottom: 1em; display: block; }
 
     /* Misc */
     .tag-filter-notice { background: transparent; border: none; border-radius: 0; padding: 0; font-size: revert; color: revert; }
