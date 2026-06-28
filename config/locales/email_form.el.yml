@@ -1,0 +1,14 @@
+el:
+  email_form:
+    form:
+      name_label: "Το όνομά σας"
+      email_label: "Το email σας"
+      message_label: "Μήνυμα"
+      submit_button: "Αποστολή"
+    success_message: "Το μήνυμα στάλθηκε!"
+    error_message: "Παρουσιάστηκε πρόβλημα κατά την αποστολή του μηνύματός σας."
+    rate_limit_message: "Στείλατε πάρα πολλά μηνύματα πολύ γρήγορα. Δοκιμάστε ξανά αργότερα."
+    mailer:
+      from_label: "Από"
+      footer: "Απαντήστε σε αυτό το email για να απαντήσετε στον αποστολέα %{name}."
+      footer_text: "Για να απαντήσετε στον αποστολέα %{name}, απλώς απαντήστε σε αυτό το email."
