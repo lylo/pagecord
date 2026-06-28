@@ -1,8 +1,8 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.4.7
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+ARG RUBY_VERSION=4.0.5
+FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
 
 
 # Rails app lives here
@@ -14,7 +14,7 @@ ENV RAILS_ENV="development" \
 
 
 # Throw-away build stage to reduce size of final image
-FROM base as build
+FROM base AS build
 
 # Install packages needed to build gems
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -25,6 +25,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 # Install application gems
 COPY Gemfile Gemfile.lock .ruby-version ./
 RUN --mount=type=cache,target=/usr/local/bundle/cache \
+    gem install bundler -v "$(awk '/BUNDLED WITH/{getline; print $1}' Gemfile.lock)" && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile

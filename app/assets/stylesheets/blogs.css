@@ -567,6 +567,19 @@ footer.blog-footer #brand svg {
   margin-block: var(--lexxy-content-margin);
 }
 
+.reply-sent {
+  padding-block-end: 1.5rem;
+
+  input[type="submit"] {
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+
+    &:hover {
+      color: var(--color-text);
+    }
+  }
+}
+
 .email-subscriber-form {
   display: flex;
   justify-content: center;
@@ -792,6 +805,14 @@ footer.blog-footer #brand svg {
   max-width: 100%;
 }
 
+.post-card-summary video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 30rem;
+  object-fit: contain;
+}
+
 .post-card-meta {
   display: flex;
   align-items: center;
@@ -996,6 +1017,23 @@ ul.posts-list {
 .tag-list a:hover,
 .tags-inline a:hover {
   text-decoration: underline;
+}
+
+.table-of-contents {
+  margin-block: 0 var(--lexxy-content-margin);
+}
+
+.table-of-contents ol {
+  margin-block: 0;
+}
+
+.table-of-contents li,
+.table-of-contents ol {
+  margin: 0;
+}
+
+.table-of-contents li::marker {
+  color: var(--color-text);
 }
 
 /* ============================= */

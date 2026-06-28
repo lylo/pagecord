@@ -8,6 +8,10 @@ Manage your blog posts programmatically using the Pagecord API. Useful for publi
 
 The API is a Premium feature.
 
+<div>
+{{ table_of_contents | heading: "Table of Contents" }}
+</div>
+
 ## Getting an API key
 
 1. Go to **Settings > API** in your dashboard

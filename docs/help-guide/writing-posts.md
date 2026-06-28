@@ -6,6 +6,10 @@ published_at: 2025-12-18T11:49:59+00:00
 
 Everything you need to know about creating and formatting posts in Pagecord.
 
+<div>
+{{ table_of_contents | heading: "Table of Contents" }}
+</div>
+
 ## The editor
 
 Pagecord uses a rich text editor with Markdown support. You can use the toolbar, keyboard shortcuts, or type Markdown directly.

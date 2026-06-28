@@ -160,6 +160,34 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "Intro text for cards.", post.excerpt_text
   end
 
+  test "text summary ignores video attachment filenames" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new("video"),
+      filename: "clip.mov",
+      content_type: "video/quicktime"
+    )
+    post = blogs(:joel).posts.create!(
+      content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>)
+    )
+
+    assert_equal "", post.text_summary
+  end
+
+  test "first_media returns first image or video attachment" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new("video"),
+      filename: "clip.mov",
+      content_type: "video/quicktime"
+    )
+    post = blogs(:joel).posts.create!(
+      content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>)
+    )
+
+    rendered_post = Post.where(id: post.id).with_full_rich_text.first
+
+    assert_equal blob, rendered_post.first_media
+  end
+
   test "has_text_content? should return true for posts with text" do
     blog = blogs(:joel)
     post = blog.posts.create!(
@@ -335,6 +363,26 @@ class PostTest < ActiveSupport::TestCase
 
     assert_equal "First block. Second block.", post.text_summary
     assert_includes post.text_summary, "block. Second"
+  end
+
+  test "text_summary should preserve space between line breaks" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>First paragraph ends here.<br><br>Second paragraph starts here.</p>"
+    )
+
+    assert_equal "First paragraph ends here. Second paragraph starts here.", post.text_summary
+    assert_includes post.summary(limit: 324), "here. Second"
+  end
+
+  test "text_summary should preserve space between table cells" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<table><tr><td>First cell.</td><td>Second cell.</td></tr></table>"
+    )
+
+    assert_equal "First cell. Second cell.", post.text_summary
+    assert_includes post.text_summary, "cell. Second"
   end
 
   # Locale tests

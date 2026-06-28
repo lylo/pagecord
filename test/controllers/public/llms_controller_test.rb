@@ -6,6 +6,7 @@ class Public::LlmsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "text/plain; charset=utf-8", @response.content_type
     assert_includes @response.body, "# Pagecord"
-    assert_includes @response.body, "Blog Without The Slog"
+    assert_includes @response.body, "A blog you'll actually keep updated"
+    assert_includes @response.body, "Publish wherever you like"
   end
 end

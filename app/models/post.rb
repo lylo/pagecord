@@ -147,26 +147,25 @@ class Post < ApplicationRecord
   end
 
   def first_image
-    @first_image ||= begin
-      content_images = content_image_attachments
-      if content_images.any?
-        content_images.first
-      elsif attachments.any?
-        attachments.find(&:image?)
-      end
-    end
+    @first_image ||= content_image_attachments.first || attachments.find(&:image?)
+  end
+
+  def first_media
+    @first_media ||= content_media_attachments.first ||
+      attachments.find { |attachment| attachment.image? || attachment.video? }
   end
 
   def content_image_attachments
+    content_media_attachments.select(&:image?)
+  end
+
+  def content_media_attachments
     return [] unless content.body.present?
     if rich_text_content&.association(:embeds_attachments)&.loaded?
-      return rich_text_content.embeds_attachments.filter_map do |attachment|
-        blob = attachment.blob
-        blob if blob.image?
-      end
+      return rich_text_content.embeds_attachments.filter_map(&:blob).select { |blob| blob.image? || blob.video? }
     end
 
-    content.body.attachments.select { |attachment| attachment.try(:image?) }
+    content.body.attachments.filter_map(&:attachable).select { |attachable| attachable.try(:image?) || attachable.try(:video?) }
   end
 
   # Returns full plain text extracted from ActionText content.
@@ -182,12 +181,16 @@ class Post < ApplicationRecord
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
       doc.css("figcaption").remove
 
-      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
+      doc.css("br").each do |element|
+        element.replace(Nokogiri::XML::Text.new(" ", doc))
+      end
+
+      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote, td, th").each do |element|
         element.add_child(Nokogiri::XML::Text.new(" ", doc))
       end
 
       doc.text
-        .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
+        .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp|mp4|mov)\]/i, "")
         .gsub(/\[Image\]/i, "")
         .gsub(%r{https?://\S+}, "")
         .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")

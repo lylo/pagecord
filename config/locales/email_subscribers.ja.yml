@@ -8,6 +8,7 @@ ja:
       submit_button: "登録する"
     create:
       success_message: "ご登録ありがとうございます。すでに登録済みの場合を除き、%{email}宛てに確認メールが届きます。"
+      rate_limit_message: "試行回数が多すぎます。しばらくしてからもう一度お試しください。"
     confirmations:
       success_message:
         digest: "%{blog_name}の登録が完了しました。新しい投稿が公開されると、週に1回ダイジェストメールが届きます。"

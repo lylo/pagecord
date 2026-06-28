@@ -110,14 +110,32 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
   end
 
-  test "should not track visits from logged in blog owner" do
+  test "should track direct visits from logged in blog owner on blog subdomain" do
     login_as(@blog.user)
     host! "#{@blog.subdomain}.example.com"
 
-    assert_no_enqueued_jobs only: TrackPageViewJob do
-      post blog_page_views_path,
-           params: { path: "/" }.to_json,
-           headers: json_headers
+    assert_difference("PageView.count", 1) do
+      perform_enqueued_jobs do
+        post blog_page_views_path,
+             params: { path: "/" }.to_json,
+             headers: json_headers
+      end
+    end
+
+    assert_response :no_content
+  end
+
+  test "should ignore app session cookies on blog subdomains" do
+    login_as(@blog.user)
+    session_cookie = cookies[Rails.application.config.session_options[:key]]
+    host! "#{@blog.subdomain}.example.com"
+
+    assert_difference("PageView.count", 1) do
+      perform_enqueued_jobs do
+        post blog_page_views_path,
+             params: { path: "/" }.to_json,
+             headers: json_headers.merge("Cookie" => "#{Rails.application.config.session_options[:key]}=#{session_cookie}")
+      end
     end
 
     assert_response :no_content

@@ -6,7 +6,21 @@ allowed-tools: Bash, Read, Grep
 
 # Fizzy
 
-Use the Fizzy API via `curl`.
+Use the Fizzy API through the local wrapper when available. Fall back to `curl` only when the wrapper is missing.
+
+## Transport
+
+- Prefer `/Users/olly/.local/bin/fizzy METHOD /path [json]` when the file exists.
+- Do not create the wrapper inside this repo; it is a local operator tool.
+- The wrapper already reads `FIZZY_TOKEN`, pins requests to `https://app.fizzy.do`, and adds the usual JSON/auth headers.
+- Use raw `curl` as a fallback only when `/Users/olly/.local/bin/fizzy` is not executable.
+- When the wrapper is available, do not ask for per-URL approvals. Use the stable command prefix `/Users/olly/.local/bin/fizzy`.
+
+Examples:
+
+- `/Users/olly/.local/bin/fizzy GET /my/identity`
+- `/Users/olly/.local/bin/fizzy GET /6102591/cards/318`
+- `/Users/olly/.local/bin/fizzy POST /6102591/cards/318/triage '{"column_id":"..."}'`
 
 ## Setup
 

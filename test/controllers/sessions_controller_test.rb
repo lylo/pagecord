@@ -71,6 +71,21 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal user.id, session[:user_id]
   end
 
+  test "login session cookie is scoped to the app host" do
+    user = users(:joel)
+    user.update!(password: "TestPass1234", password_confirmation: "TestPass1234")
+
+    post sessions_url, params: {
+      user: { subdomain: user.blog.subdomain, password: "TestPass1234" },
+      rendered_at: signed_rendered_at
+    }
+
+    session_cookie = set_cookie_headers.grep(/\A_pagecord_v3=/).join("\n")
+
+    assert session_cookie.present?
+    assert_no_match(/;\s*domain=/i, session_cookie)
+  end
+
   test "password login selects the matching blog" do
     user = users(:joel)
     second_blog = blogs(:joel_notes)
@@ -130,4 +145,10 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_nil session[:user_id]
   end
+
+  private
+
+    def set_cookie_headers
+      Array(response.headers["Set-Cookie"]).flat_map { |header| header.to_s.split("\n") }
+    end
 end

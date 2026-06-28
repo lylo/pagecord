@@ -1,8 +1,8 @@
 class SignupsController < ApplicationController
-  include SpamPrevention, TimezoneTranslation
+  include AttributionTrackable, SpamPrevention, TimezoneTranslation
 
-  rate_limit to: 3, within: 1.hour, only: [ :create ]
-  rate_limit to: 20, within: 1.minute, only: [ :new ]
+  rate_limit to: 3, within: 1.hour, only: [ :create ], name: "signup-create"
+  rate_limit to: 20, within: 1.minute, only: [ :new ], name: "signup-new"
 
   layout "sessions"
 
@@ -29,9 +29,12 @@ class SignupsController < ApplicationController
     @user.features = [ "lexxy" ] if ENV["LEXXY_FOR_NEW_USERS"]
 
     if signup_from_allowed_timezone && @user.save
+      attribution = signup_attribution
+      session.delete(:signup_attribution)
+
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
-      redirect_to thanks_signups_path
+      redirect_to thanks_signups_path(attribution)
     else
       render :new, status: :unprocessable_entity
     end

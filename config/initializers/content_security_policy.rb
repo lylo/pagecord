@@ -9,7 +9,7 @@ Rails.application.configure do
     policy.font_src :self, :https, :data
 
     # Images
-    policy.img_src :self, :data, :https,
+    policy.img_src :self, :data, :blob, :https,
                    "http://localhost:3000",
                    "http://lvh.me:3000",
                    "https://storage.pagecord.com",
@@ -58,6 +58,9 @@ Rails.application.configure do
                      "https://embed.bsky.app",
                      "https://paddle.com",
                      "*.paddle.com"
+
+    # Native media
+    policy.media_src :self, :https
 
     # Connect sources
     policy.connect_src :self, :https,

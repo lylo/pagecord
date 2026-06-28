@@ -9,15 +9,20 @@ class Admin::UsersController < AdminController
                 .order(created_at: :desc)
 
     if params[:search].present?
-      users = users.joins(:blogs)
-                   .where("blogs.subdomain ILIKE ? OR blogs.custom_domain ILIKE ? OR users.email ILIKE ? OR subscriptions.paddle_customer_id ILIKE ? OR subscriptions.paddle_subscription_id ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
-                   .distinct
+      search = "%#{params[:search]}%"
+      blog_user_ids = Blog.kept
+                          .where("blogs.subdomain ILIKE ? OR blogs.custom_domain ILIKE ?", search, search)
+                          .select(:user_id)
+
+      users = users.where("users.email ILIKE :search OR subscriptions.paddle_customer_id ILIKE :search OR subscriptions.paddle_subscription_id ILIKE :search", search:)
+                   .or(users.where(id: blog_user_ids))
     end
 
     if params[:status].present?
       case params[:status]
       when "paid"
-        users = users.where("subscriptions.plan IN (?) AND subscriptions.cancelled_at IS NULL AND subscriptions.next_billed_at > ?", [ "annual", "monthly" ], Time.current)
+        users = users.merge(Subscription.active_paid)
+                     .reorder(Subscription.arel_table[:created_at].desc)
       when "comped"
         users = users.where("subscriptions.plan = ?", "complimentary")
       when "churning"

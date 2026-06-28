@@ -27,10 +27,13 @@ class Posts::RepliesController < Blogs::BaseController
     if @reply.save
       SendPostReplyJob.perform_later(@reply.id)
 
-      redirect_to view_context.post_path(@post), notice: I18n.t("email_form.success_message")
+      redirect_to sent_post_replies_path(@post)
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def sent
   end
 
   private

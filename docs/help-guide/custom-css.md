@@ -14,6 +14,10 @@ Custom CSS is an advanced feature that gives you finer control over the look and
 
 **New to Custom CSS?** Try the [Theme Garden](https://pagecord.com/app/settings/theme_garden) first – it has curated CSS templates you can preview and apply with one click, no coding required.
 
+<div>
+{{ table_of_contents | heading: "Table of Contents" }}
+</div>
+
 ### A Quick Note
 
 Pagecord is a small business. It's not possible to offer customer support with writing or debugging custom CSS – you're on your own with this one!
@@ -63,7 +67,7 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ └──────────────────────────────────────────────────┘ │ │
 │ │                                                      │ │
 │ │ ┌──────────────────────────────────────────────────┐ │ │
-│ │ │ .blog-footer (Pagecord branding)                 │ │ │
+│ │ │ .blog-footer (Custom footer and Pagecord logo)   │ │ │
 │ │ └──────────────────────────────────────────────────┘ │ │
 │ └──────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────┘

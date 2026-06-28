@@ -8,6 +8,10 @@ The Pagecord CLI lets you publish local Markdown and HTML files to your Pagecord
 
 The CLI is a Premium feature because it uses the Pagecord API.
 
+<div>
+{{ table_of_contents | heading: "Table of Contents" }}
+</div>
+
 ## Installation
 
 The CLI is published as a Ruby gem:

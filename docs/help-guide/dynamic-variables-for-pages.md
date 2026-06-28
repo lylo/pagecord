@@ -16,6 +16,10 @@ attachments:
 
 Pages in Pagecord support dynamic variables that let you automatically display lists of posts, tags, forms, and other content. These variables are processed when the page is rendered, so your content stays up-to-date without manual editing.
 
+<div>
+{{ table_of_contents | heading: "Table of Contents" }}
+</div>
+
 ## Basic Syntax
 
 Dynamic variables use double curly braces:
@@ -35,6 +39,8 @@ Multiple parameters are separated by pipes:
 ```javascript
 {{ variable_name | param1: value1 | param2: value2 }}
 ```
+
+> **Important:** Paste variables directly into the page content, not inside a code block in the editor. Variables shown in code blocks here are examples only.
 
 ## Available Variables
 
@@ -308,6 +314,22 @@ Note: `long` and `long_datetime` always display month names in English. For non-
 
 You can style the output with the CSS class `updated-at`.
 
+### Table of Contents
+
+Build a linked table of contents from the headings in the page.
+
+```javascript
+{{ table_of_contents }}
+```
+
+The list includes headings from `h2` to `h6`, using nested numbering for deeper sections.
+
+To show a heading without adding it to the table of contents, use the `heading` parameter:
+
+```javascript
+{{ table_of_contents | heading: "Table of contents" }}
+```
+
 ### Email Subscription
 
 Embed an email subscription form for readers to subscribe to your blog (premium customers only).
@@ -402,4 +424,5 @@ Browse posts by topic:
 - If a variable isn't recognised, it will appear as-is in your content
 - The posts list automatically excludes unpublished and scheduled posts
 - Dynamic variables inside inline code or code blocks are left alone
+- The table of contents variable uses headings in the page body
 - Tags are sorted alphabetically

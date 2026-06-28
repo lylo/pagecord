@@ -35,10 +35,15 @@ Adds a social media icon to your header. Choose from:
 
 - Bluesky
 - Email
+- Facebook
+- Foto
 - GitHub
+- Glass
+- Hipstamatic
 - Instagram
 - LinkedIn
 - Mastodon
+- Pixelfed
 - Reddit
 - RSS
 - Spotify
@@ -48,7 +53,7 @@ Adds a social media icon to your header. Choose from:
 - X
 - YouTube
 
-Enter the URL to your profile and the appropriate icon will be displayed.
+Enter the URL to your profile, or an email address for Email links, and the appropriate icon will be displayed.
 
 ## Reordering navigation items
 

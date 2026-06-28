@@ -10,6 +10,17 @@ class User < ApplicationRecord
 
   accepts_nested_attributes_for :blogs
 
+  scope :purgeable_discarded, ->(before:) {
+    discarded
+      .left_outer_joins(:subscription)
+      .where("users.discarded_at < ?", before)
+      .where(
+        "subscriptions.id IS NULL OR subscriptions.plan = ? OR subscriptions.next_billed_at <= ?",
+        Subscription.plans[:complimentary],
+        Time.current
+      )
+  }
+
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   normalizes :email, with: -> { it.downcase.strip }
 

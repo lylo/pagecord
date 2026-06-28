@@ -232,6 +232,7 @@ Rails.application.routes.draw do
     get "/terms", to: "public#terms", as: :terms
     get "/privacy", to: "public#privacy", as: :privacy
     get "/faq", to: "public#faq", as: :faq
+    get "/brand", to: "public#brand", as: :brand
     get "/pagecord-vs-about-me", to: "public#pagecord_vs_about_me"
     get "/pagecord-vs-medium", to: "public#pagecord_vs_medium"
     get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"
@@ -241,8 +242,11 @@ Rails.application.routes.draw do
     get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
     get "/blog-with-newsletter", to: "public#blog_with_newsletter"
+    get "/blogger-alternative", to: "public#blogger_alternative"
+    get "/indie-blogging-platform", to: "public#indie_blogging_platform"
 
     get "/spotlight", to: "home/spotlight#show"
+    get "/spotlight/trending.xml", to: "home/spotlight#show", defaults: { format: :rss }, as: :spotlight_trending_feed
     get "/shuffle", to: "posts/shuffle#show"
 
     get "/@:name", to: redirect("/%{name}")
@@ -263,6 +267,9 @@ Rails.application.routes.draw do
       resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
       resource :home_page, only: [ :show, :create, :update, :destroy ]
       resources :attachments, only: [ :create ]
+      post "/micropub", to: "micropub#create"
+      get "/micropub", to: "micropub#query", as: nil
+      post "/micropub/media", to: "micropub/media#create"
     end
   end
 
@@ -299,7 +306,9 @@ Rails.application.routes.draw do
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create ], module: :posts
       get "upvotes/status", to: "posts/upvotes/status#show", as: :upvotes_status
-      resources :replies, only: [ :new, :create ], module: :posts
+      resources :replies, only: [ :new, :create ], module: :posts do
+        get :sent, on: :collection
+      end
     end
 
     # Catch-all for unmatched routes on blog domains
