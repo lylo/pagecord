@@ -27,6 +27,10 @@ module RoutingHelper
     route_for_blog(blog, "blog_feed_xml", "url", options)
   end
 
+  def post_digest_url_for(digest)
+    blog_post_digest_url(digest.masked_id, host: host(digest.blog))
+  end
+
   def sitemap_url_for(blog)
     route_for_blog(blog, "blog_sitemap", "url")
   end

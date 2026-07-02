@@ -25,6 +25,7 @@ en:
         unsubscribe_link: "Unsubscribe"
         unsubscribe_text: "Unsubscribe by clicking the link below:"
         view_online: "View this post online"
+        view_digest_online: "View this email online"
       confirmation:
         subject: "Confirm your subscription to %{blog_name}"
         message: "Please confirm your subscription to %{blog_name}. If you didn't intend to subscribe, you can ignore this email."

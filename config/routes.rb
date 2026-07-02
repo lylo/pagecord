@@ -291,6 +291,8 @@ Rails.application.routes.draw do
       post "embeds/bandcamp", to: "embeds#bandcamp"
     end
 
+    get "/digests/:masked_id", to: "blogs/post_digests#show", as: :blog_post_digest
+
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
     resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]

@@ -18,6 +18,8 @@ module BlogsHelper
       else
         "#{blog_title(@post.blog)} - #{@post.display_date_in_user_timezone.to_formatted_s(:long)}"
       end
+    elsif @digest
+      "#{@digest.subject} - #{@blog.display_name}"
     elsif @blog
       blog_title(@blog)
     end
@@ -32,6 +34,8 @@ module BlogsHelper
   def meta_description
     if @post
       @post.summary(limit: 160)
+    elsif @digest
+      @digest.subject
     elsif @blog.present?
       blog_description(@blog)
     end

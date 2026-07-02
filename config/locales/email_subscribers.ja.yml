@@ -25,6 +25,7 @@ ja:
         unsubscribe_link: "登録を解除する"
         unsubscribe_text: "登録を解除するには、以下のリンクをクリックしてください。"
         view_online: "この投稿をWebで読む"
+        view_digest_online: "このメールをWebで読む"
       confirmation:
         subject: "%{blog_name}の登録を確認してください"
         message: "%{blog_name}の登録を確認してください。心当たりがない場合は、このメールを無視してください。"

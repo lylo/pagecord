@@ -25,6 +25,7 @@ pt:
         unsubscribe_link: "Cancelar assinatura"
         unsubscribe_text: "Cancele sua assinatura clicando no link abaixo:"
         view_online: "Ver esta postagem online"
+        view_digest_online: "Ver este e-mail online"
       confirmation:
         subject: "Confirme sua assinatura em %{blog_name}"
         message: "Por favor, confirme sua assinatura no %{blog_name}. Se você não queria assinar, pode ignorar este e-mail."
