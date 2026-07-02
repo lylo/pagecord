@@ -54,13 +54,13 @@ module PostsHelper
   def render_post_content(post)
     content = process_dynamic_variables(post)
     content = Html::StripActionTextAttachments.new.transform(content)
-    content = safe_auto_link(content, sanitize: false)
+    content = process_blog_links(content, post.blog)
     ExcerptBreak.strip(content).html_safe
   end
 
   def render_post_excerpt(post)
     content = Html::StripActionTextAttachments.new.transform(post.excerpt_html)
-    safe_auto_link(content, sanitize: false).html_safe
+    process_blog_links(content, post.blog).html_safe
   end
 
   def render_digest_post_content(post)
@@ -95,5 +95,45 @@ module PostsHelper
       end
 
       linked
+    end
+
+    def process_blog_links(content, blog)
+      content = safe_auto_link(content, sanitize: false)
+      content = open_external_links_in_new_tab(content, blog) if blog.external_links_in_new_tab?
+      content
+    end
+
+    def open_external_links_in_new_tab(content, blog)
+      doc = Nokogiri::HTML::DocumentFragment.parse(content)
+      doc.css("a[href]").each do |link|
+        next unless external_link?(link["href"], blog)
+
+        link["target"] = "_blank"
+        link["rel"] = ([ *link["rel"].to_s.split, "noopener" ].uniq).join(" ")
+      end
+      doc.to_html
+    end
+
+    def external_link?(href, blog)
+      uri = URI.parse(href.start_with?("//") ? "https:#{href}" : href)
+      return false unless uri.is_a?(URI::HTTP) && uri.host.present?
+
+      !blog_hosts(blog).include?(uri.host.downcase)
+    rescue URI::InvalidURIError
+      false
+    end
+
+    def blog_hosts(blog)
+      hosts = [ "#{blog.subdomain}.#{Rails.application.config.x.domain}" ]
+      hosts += custom_domain_hosts(blog.custom_domain) if blog.custom_domain.present?
+      hosts.map(&:downcase)
+    end
+
+    def custom_domain_hosts(custom_domain)
+      parts = custom_domain.split(".")
+      return [ custom_domain.delete_prefix("www."), custom_domain ] if parts.length == 3 && parts.first == "www"
+      return [ custom_domain, "www.#{custom_domain}" ] if parts.length == 2
+
+      [ custom_domain ]
     end
 end
