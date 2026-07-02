@@ -2,7 +2,7 @@ class Blogs::BaseController < ApplicationController
   layout "blog"
 
   skip_before_action :domain_check
-  before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale, :reject_malicious_params
+  before_action :load_blog, :validate_user, :enforce_custom_domain, :require_blog_password, :set_locale, :reject_malicious_params
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_blog_not_found
   rescue_from ActionController::TooManyRequests, with: :render_too_many_requests
@@ -36,6 +36,13 @@ class Blogs::BaseController < ApplicationController
 
     def validate_user
       redirect_to_app_home unless @blog.user&.verified? && @blog.user&.kept?
+    end
+
+    def require_blog_password
+      return unless @blog&.password_protected?
+      return if cookies.encrypted[:blog_unlock] == @blog.password_digest
+
+      redirect_to blog_unlock_path(return_to: request.fullpath)
     end
 
     def blog_from_custom_domain
@@ -101,6 +108,7 @@ class Blogs::BaseController < ApplicationController
     # Custom domains are not edge-cached (they route through Caddy, not Cloudflare).
     # No-op unless Cloudflare credentials are configured.
     def set_blog_cache_headers
+      return if @blog.password_protected?
       return unless default_domain_request?
       return unless Rails.env.production? && ENV["CLOUDFLARE_ZONE_ID"].present? && ENV["CLOUDFLARE_API_TOKEN"].present?
 

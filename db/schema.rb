@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_06_02_130000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -130,6 +130,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_02_130000) do
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
     t.text "custom_footer_html"
+    t.boolean "external_links_in_new_tab", default: false, null: false
+    t.string "password_digest"
     t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
@@ -301,6 +303,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_02_130000) do
     t.string "canonical_url"
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
+    t.text "excerpt"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.string "locale"
@@ -364,6 +367,46 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_02_130000) do
     t.datetime "updated_at", null: false
     t.index ["blog_id", "detected_at"], name: "index_spam_detections_on_blog_id_and_detected_at", order: { detected_at: :desc }
     t.index ["status"], name: "index_spam_detections_on_status"
+  end
+
+  create_table "standard_site_accounts", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.string "handle", null: false
+    t.string "did", null: false
+    t.string "pds_url", default: "https://bsky.social", null: false
+    t.text "access_jwt_ciphertext"
+    t.text "refresh_jwt_ciphertext"
+    t.datetime "connected_at"
+    t.datetime "disconnected_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_standard_site_accounts_on_blog_id", unique: true
+  end
+
+  create_table "standard_site_documents", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.string "at_uri"
+    t.string "cid"
+    t.string "rkey", null: false
+    t.integer "sync_status", default: 0, null: false
+    t.datetime "last_synced_at"
+    t.text "sync_error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_standard_site_documents_on_post_id", unique: true
+  end
+
+  create_table "standard_site_publications", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.string "at_uri"
+    t.string "cid"
+    t.string "rkey", default: "self", null: false
+    t.integer "sync_status", default: 0, null: false
+    t.datetime "last_synced_at"
+    t.text "sync_error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_standard_site_publications_on_blog_id", unique: true
   end
 
   create_table "subscription_renewal_reminders", force: :cascade do |t|
@@ -475,6 +518,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_02_130000) do
   add_foreign_key "posts", "blogs"
   add_foreign_key "sender_email_addresses", "blogs"
   add_foreign_key "spam_detections", "blogs"
+  add_foreign_key "standard_site_accounts", "blogs"
+  add_foreign_key "standard_site_documents", "posts"
+  add_foreign_key "standard_site_publications", "blogs"
   add_foreign_key "subscription_renewal_reminders", "subscriptions"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "unengaged_follow_ups", "users"

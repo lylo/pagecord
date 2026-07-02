@@ -4,6 +4,8 @@ class Blog < ApplicationRecord
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
+  has_secure_password validations: false
+
   belongs_to :user, inverse_of: :blogs
 
   MAX_BLOGS_FREE = 1
@@ -48,6 +50,10 @@ class Blog < ApplicationRecord
 
   def display_name
     title.blank? ? "@#{subdomain}" : title
+  end
+
+  def password_protected?
+    password_digest.present?
   end
 
   private

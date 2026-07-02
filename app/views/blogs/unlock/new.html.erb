@@ -1,0 +1,17 @@
+<%= render "blogs/header", hide_email_form: true, hide_bio: true %>
+
+<div class="lexxy-content">
+  <article class="overflow-auto break-words">
+    <h2>This blog is password protected 🔒</h2>
+
+    <%= form_with url: blog_unlock_path, method: :post, data: { turbo: false }, class: "space-y-4" do |form| %>
+      <%= hidden_field_tag :return_to, params[:return_to] %>
+      <%= form.password_field :password,
+            placeholder: "Password",
+            autofocus: true,
+            required: true,
+            class: "w-full sm:w-96 px-3 py-2.5 form-field rounded-lg" %>
+      <%= form.submit "Unlock", class: "btn-primary" %>
+    <% end %>
+  </article>
+</div>

@@ -5,6 +5,8 @@ class App::Settings::BlogsController < AppController
   def update
     on_demand_tls = ENV["ON_DEMAND_TLS"].present?
 
+    @blog.password = nil if params.dig(:blog, :remove_password) == "1"
+
     if @blog.update(blog_params)
       if @blog.domain_changed?
         if @blog.custom_domain_previously_was.present?
@@ -32,7 +34,9 @@ class App::Settings::BlogsController < AppController
         :google_site_verification,
         :seo_title,
         :locale,
-        :show_metrics
+        :show_metrics,
+        :password,
+        :password_confirmation
       ]
 
       if @blog.user.subscribed?
