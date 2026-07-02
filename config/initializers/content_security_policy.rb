@@ -50,11 +50,13 @@ Rails.application.configure do
                      "https://www.youtube-nocookie.com",
                      "https://youtube.com",
                      "https://embed.music.apple.com",
+                     "https://checkvist.com",
                      "https://gist.github.com",
                      "https://bandcamp.com",
                      "*.bandcamp.com",
                      "https://strava-embeds.com",
                      "https://share.transistor.fm",
+                     "https://embed.tidal.com",
                      "https://embed.bsky.app",
                      "https://paddle.com",
                      "*.paddle.com"

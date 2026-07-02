@@ -263,6 +263,107 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "{{ posts }}"
   end
 
+  test "renders embed tag in regular posts" do
+    post = @blog.posts.create!(
+      title: "Post With Embed",
+      content: "<p>{{ embed https://youtu.be/abc123 }}</p>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_response :success
+    assert_select ".video-embed-container iframe[src='https://www.youtube-nocookie.com/embed/abc123']"
+    assert_not_includes response.body, "{{ embed"
+  end
+
+  test "renders embed tag when Lexxy turns the URL into a bare anchor" do
+    post = @blog.posts.create!(
+      title: "Post With Linked Embed",
+      content: %(<p>{{ embed <a href="https://youtu.be/abc123">https://youtu.be/abc123</a> }}</p>),
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_response :success
+    assert_select ".video-embed-container iframe[src='https://www.youtube-nocookie.com/embed/abc123']"
+    assert_not_includes response.body, "{{ embed"
+  end
+
+  test "does not render embed tag when linked URL text is editorial" do
+    post = @blog.posts.create!(
+      title: "Post With Editorial Link",
+      content: %(<p>{{ embed <a href="https://youtu.be/abc123">watch this</a> }}</p>),
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_response :success
+    assert_select ".video-embed-container", count: 0
+    assert_select "a[href='https://youtu.be/abc123']", text: "watch this"
+  end
+
+  test "renders embed tag in pages alongside page dynamic variables" do
+    @blog.posts.create!(title: "Linked Post", content: "Content", status: :published)
+    page = @blog.pages.create!(
+      title: "Page With Embed",
+      content: "<p>{{ embed https://youtu.be/abc123 }}</p><p>{{ posts | limit: 1 }}</p>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".video-embed-container iframe[src='https://www.youtube-nocookie.com/embed/abc123']"
+    assert_select "body", text: /Linked Post/
+  end
+
+  test "renders embed tag in post excerpts" do
+    post = @blog.posts.create!(
+      title: "Excerpt Embed",
+      content: "<p>{{ embed https://youtu.be/abc123 }}</p><p>{{ more }}</p><p>Hidden body</p>",
+      status: :published,
+      published_at: Time.current
+    )
+
+    get blog_posts_url(subdomain: @blog.subdomain)
+
+    assert_response :success
+    assert_select ".video-embed-container iframe[src='https://www.youtube-nocookie.com/embed/abc123']"
+    assert_select "body", text: /Hidden body/, count: 0
+    assert_select ".excerpt-read-more a", text: /Read more/
+  end
+
+  test "does not process embed tags inside inline code" do
+    post = @blog.posts.create!(
+      title: "Code Embed",
+      content: "<p>Use <code>{{ embed https://youtu.be/abc123 }}</code> to embed media.</p>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_response :success
+    assert_select ".video-embed-container", count: 0
+    assert_includes response.body, "{{ embed https://youtu.be/abc123 }}"
+  end
+
+  test "unsupported embed URLs fall back to normal links" do
+    post = @blog.posts.create!(
+      title: "Unsupported Embed",
+      content: "<p>{{ embed https://example.com/not-embeddable }}</p>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_response :success
+    assert_select "a[href='https://example.com/not-embeddable']", text: "https://example.com/not-embeddable"
+    assert_select "iframe", count: 0
+  end
+
   test "processes custom tags only in pages not posts" do
     @blog.posts.create!(title: "Test Post", content: "Content", status: :published)
 

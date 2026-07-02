@@ -44,6 +44,18 @@ Multiple parameters are separated by pipes:
 
 ## Available Variables
 
+### Media Embeds
+
+Embed supported media in posts or pages by pasting the URL into an `embed` tag:
+
+```javascript
+{{ embed https://open.spotify.com/track/... }}
+```
+
+This works in regular posts as well as pages. Supported providers include YouTube, Spotify, Apple Music, TIDAL, Transistor, Bandcamp, Bluesky, Strava, GitHub Gists, Checkvist, and direct image URLs.
+
+For more details, see [Media embeds](media-embeds.md).
+
 ### Posts
 
 Display a list of your posts with dates and links. By default, posts are shown in the title layout, newest first, and longer lists lazy-load automatically as readers scroll.
