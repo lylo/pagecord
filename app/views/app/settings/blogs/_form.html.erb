@@ -71,6 +71,32 @@
   </div>
 
   <div class="mt-8">
+    <h3 class="font-bold text-lg mb-2">Password Protection</h3>
+    <p>
+      Require a password to read your blog. Everyone visiting your blog will need to enter it before they can see any of your posts or pages. Useful for a private family journal or travelogue.
+    </p>
+
+    <fieldset>
+      <%= form.label :password, "Password", class: "sr-only" %>
+      <%= form.password_field :password, placeholder: @blog.password_protected? ? "Enter a new password to change it" : "Set a password", autocomplete: "new-password", class: "form-field mt-4 md:w-96" %>
+      <%= field_error(@blog, :password) %>
+    </fieldset>
+
+    <% if @blog.password_protected? %>
+      <div class="mt-4">
+        <div class="flex gap-3">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= check_box_tag "blog[remove_password]", "1", false, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" %>
+          </div>
+          <div>
+            <%= label_tag "blog_remove_password", "Remove password protection", class: "text-slate-800 dark:text-slate-100" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-8">
     <h3 class="font-bold text-lg mb-2">Google Site Verification</h3>
     <p>
       If you need to add a Google Site Verification meta tag to your blog (e.g. for Google Search Console), enter the verification code below. This will appear in your blog HTML as <code class="text-sm bg-slate-100 dark:bg-slate-800">&lt;meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" /&gt;</code>

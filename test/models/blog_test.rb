@@ -276,4 +276,31 @@ class BlogTest < ActiveSupport::TestCase
 
     blog.update!(title: "New Title")
   end
+
+  test "password_protected? reflects presence of a password" do
+    assert_not @blog.password_protected?
+
+    @blog.update!(password: "letmein")
+    assert @blog.password_protected?
+    assert @blog.authenticate("letmein")
+    assert_not @blog.authenticate("wrong")
+  end
+
+  test "blank password on update does not clear an existing password" do
+    @blog.update!(password: "letmein")
+
+    @blog.update!(title: "New Title", password: "")
+
+    assert @blog.reload.password_protected?
+    assert @blog.authenticate("letmein")
+  end
+
+  test "password can be removed by setting it to nil" do
+    @blog.update!(password: "letmein")
+
+    @blog.password = nil
+    @blog.save!
+
+    assert_not @blog.reload.password_protected?
+  end
 end

@@ -291,6 +291,9 @@ Rails.application.routes.draw do
       post "embeds/bandcamp", to: "embeds#bandcamp"
     end
 
+    get  "/unlock", to: "blogs/unlock#new", as: :blog_unlock
+    post "/unlock", to: "blogs/unlock#create"
+
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
     resources :email_subscribers, controller: "blogs/email_subscribers", only: [ :create, :destroy ]

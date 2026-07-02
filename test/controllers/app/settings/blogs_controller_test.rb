@@ -206,4 +206,21 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert blog.show_subscription_in_header
     assert blog.show_subscription_in_footer
   end
+
+  test "should set a blog password" do
+    patch app_settings_blog_url(@blog), params: { blog: { password: "letmein" } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert @blog.reload.password_protected?
+    assert @blog.authenticate("letmein")
+  end
+
+  test "should remove a blog password" do
+    @blog.update!(password: "letmein")
+
+    patch app_settings_blog_url(@blog), params: { blog: { remove_password: "1" } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_not @blog.reload.password_protected?
+  end
 end
