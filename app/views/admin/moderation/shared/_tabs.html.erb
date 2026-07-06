@@ -13,4 +13,11 @@
       <span class="ml-1.5 px-2 py-0.5 text-xs font-medium rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300"><%= content_moderation_count %></span>
     <% end %>
   <% end %>
+  <%= link_to admin_moderation_avatars_path,
+      class: "pb-3 text-sm font-medium #{controller_name == 'avatars' ? 'border-b-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}" do %>
+    Avatars
+    <% if avatar_moderation_count > 0 %>
+      <span class="ml-1.5 px-2 py-0.5 text-xs font-medium rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300"><%= avatar_moderation_count %></span>
+    <% end %>
+  <% end %>
 </div>

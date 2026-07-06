@@ -11,4 +11,11 @@ module Admin::ModerationHelper
   def spam_detection_count
     @spam_detection_count ||= SpamDetection.needs_review.count
   end
+
+  def avatar_moderation_count
+    @avatar_moderation_count ||= AvatarModeration.needs_review
+                                                 .joins(blog: :user)
+                                                 .where(users: { discarded_at: nil })
+                                                 .count
+  end
 end

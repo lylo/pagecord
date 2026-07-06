@@ -17,20 +17,20 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should show avatar section if subscribed" do
+  test "should show avatar section" do
     get app_settings_about_index_url
 
     assert_select "h3", { count: 1, text: "Avatar" }
     assert_response :success
   end
 
-  test "should disable avatar section if not subscribed and not on trial" do
+  test "should show enabled avatar section even when not subscribed" do
     login_as users(:vivian)
 
     get app_settings_about_index_url
 
     assert_select "h3", { count: 1, text: "Avatar" }
-    assert_select ".opacity-50.pointer-events-none", count: 1
+    assert_select ".opacity-50.pointer-events-none", count: 0
     assert_response :success
   end
 
@@ -48,15 +48,18 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     assert_equal "New Title", @blog.reload.title
   end
 
-  test "should update avatar if subscribed" do
+  test "should update avatar and enqueue moderation" do
     file = fixture_file_upload("avatar.png", "image/png")
-    patch app_settings_about_url(@blog), params: { blog: { avatar: file } }, as: :turbo_stream
+
+    assert_enqueued_with(job: AvatarModerationJob) do
+      patch app_settings_about_url(@blog), params: { blog: { avatar: file } }, as: :turbo_stream
+    end
 
     assert_redirected_to app_settings_url
     assert @blog.reload.avatar.attached?
   end
 
-  test "should not update avatar if not subscribed" do
+  test "should update avatar even when not subscribed" do
     login_as users(:vivian)
     non_subscribed_blog = users(:vivian).blog
 
@@ -64,6 +67,6 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     patch app_settings_about_url(non_subscribed_blog), params: { blog: { avatar: file } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
-    assert_not non_subscribed_blog.reload.avatar.attached?
+    assert non_subscribed_blog.reload.avatar.attached?
   end
 end

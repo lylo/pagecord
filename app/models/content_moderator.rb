@@ -15,8 +15,8 @@ class ContentModerator
 
   attr_reader :result
 
-  def initialize(post)
-    @post = post
+  def initialize(subject)
+    @subject = subject
     @access_token = ENV["OPENAI_ACCESS_TOKEN"] ||
                     Rails.application.credentials.dig(:openai_access_token)
     @client = OpenAI::Client.new(access_token: @access_token) if @access_token.present?
@@ -30,14 +30,14 @@ class ContentModerator
     parse_response(response)
   rescue Faraday::BadRequestError => e
     body = e.response&.dig(:body) || "no response body"
-    Rails.logger.error("[ContentModeration] Bad request for post #{@post.id}: #{body}")
+    Rails.logger.error("[ContentModeration] Bad request for #{subject_label}: #{body}")
     error_result("Invalid request to moderation API: #{body}")
   rescue Faraday::Error => e
     body = e.response&.dig(:body) rescue nil
-    Rails.logger.error("[ContentModeration] API error for post #{@post.id}: #{e.class} - #{e.message} - #{body}")
+    Rails.logger.error("[ContentModeration] API error for #{subject_label}: #{e.class} - #{e.message} - #{body}")
     error_result("Moderation API error")
   rescue StandardError => e
-    Rails.logger.error("[ContentModeration] Unexpected error for post #{@post.id}: #{e.class} - #{e.message}")
+    Rails.logger.error("[ContentModeration] Unexpected error for #{subject_label}: #{e.class} - #{e.message}")
     error_result("Unexpected error")
   end
 
@@ -55,8 +55,12 @@ class ContentModerator
 
   private
 
+    def subject_label
+      "#{@subject.class.name.underscore} #{@subject.id}"
+    end
+
     def has_content?
-      @post.moderation_text_payload.present? || @post.moderation_image_payloads.any?
+      @subject.moderation_text_payload.present? || @subject.moderation_image_payloads.any?
     end
 
     # OpenAI moderation API only allows 1 image per request, so we make
@@ -64,16 +68,16 @@ class ContentModerator
     def call_moderation_api
       all_results = []
 
-      if @post.moderation_text_payload.present?
-        text_kb = (@post.moderation_text_payload.bytesize / 1024.0).round(1)
-        Rails.logger.info("[ContentModeration] Moderating text for post #{@post.id}: #{text_kb}KB")
-        response = moderate_input({ type: "text", text: @post.moderation_text_payload })
+      if @subject.moderation_text_payload.present?
+        text_kb = (@subject.moderation_text_payload.bytesize / 1024.0).round(1)
+        Rails.logger.info("[ContentModeration] Moderating text for #{subject_label}: #{text_kb}KB")
+        response = moderate_input({ type: "text", text: @subject.moderation_text_payload })
         all_results.concat(response.dig("results") || [])
       end
 
-      @post.moderation_image_payloads.each_with_index do |image_payload, index|
+      @subject.moderation_image_payloads.each_with_index do |image_payload, index|
         image_kb = (image_payload.dig(:image_url, :url).bytesize / 1024.0).round(1)
-        Rails.logger.info("[ContentModeration] Moderating image #{index + 1} for post #{@post.id}: #{image_kb}KB")
+        Rails.logger.info("[ContentModeration] Moderating image #{index + 1} for #{subject_label}: #{image_kb}KB")
         response = moderate_input(image_payload)
         all_results.concat(response.dig("results") || [])
       end

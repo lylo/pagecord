@@ -82,6 +82,10 @@ every :day, at: "8:00 am" do
   runner "ContentModerationDigestJob.perform_later"
 end
 
+every :day, at: "8:05 am" do
+  runner "AvatarModerationDigestJob.perform_later"
+end
+
 every :day, at: "3:30 am" do
   runner "Posts::EmptyTrashJob.perform_later"
 end

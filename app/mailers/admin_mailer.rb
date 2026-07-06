@@ -21,4 +21,13 @@ class AdminMailer < CloudflareMailer
       subject: "Content Moderation: #{@count} posts need review"
     )
   end
+
+  def avatar_moderation_digest(count)
+    @count = count
+
+    mail(
+      to: "hello@pagecord.com",
+      subject: "Avatar Moderation: #{@count} avatars need review"
+    )
+  end
 end

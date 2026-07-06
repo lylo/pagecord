@@ -223,6 +223,13 @@ Rails.application.routes.draw do
             post :confirm
           end
         end
+
+        resources :avatars, only: [ :index ] do
+          member do
+            post :dismiss
+            post :remove
+          end
+        end
       end
     end
 

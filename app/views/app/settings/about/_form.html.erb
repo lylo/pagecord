@@ -30,20 +30,9 @@
     <%= styled_text_field(form, :title, class: "mt-4 w-full") %>
   </div>
 
-  <% avatar_disabled = @blog.user.on_free_plan? %>
   <h3 class="mt-8 font-bold text-lg mb-2">Avatar</h3>
 
-  <% if avatar_disabled %>
-    <div class="mb-4">
-      <%= callout(:info) do %>
-        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add an avatar to your blog.
-      <% end %>
-    </div>
-  <% else %>
-    <div class="mb-4"><%= trial_callout("Avatar") %></div>
-  <% end %>
-
-  <div class="<%= 'opacity-50 pointer-events-none' if avatar_disabled %>">
+  <div>
     <p>
       <% if @blog.avatar&.attached? %>
         Click the image to select a new avatar, or click 'Remove' to delete the existing one.

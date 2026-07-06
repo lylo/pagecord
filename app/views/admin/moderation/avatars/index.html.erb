@@ -1,0 +1,59 @@
+<%= render "admin/moderation/shared/tabs" %>
+
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center gap-3">
+    <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @total_unreviewed %></span>
+    <span class="text-sm text-slate-500 dark:text-slate-400"><%= "avatar".pluralize(@total_unreviewed) %> flagged for review</span>
+  </div>
+
+  <% if @avatar_moderations.any? %>
+    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+      <thead>
+        <tr>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Avatar</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Blog</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Flagged</th>
+          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Moderated</th>
+          <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+        <% @avatar_moderations.each do |moderation| %>
+          <tr>
+            <td class="py-3 px-6">
+              <% if moderation.blog.avatar.attached? %>
+                <%= image_tag resized_image_url(moderation.blog.avatar, width: 96, height: 96), class: "w-12 h-12 rounded-full object-cover", alt: "Avatar" %>
+              <% end %>
+            </td>
+            <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50">
+              <%= link_to blog_home_url(moderation.blog), target: "_blank", rel: "noopener", class: "font-medium underline" do %>
+                @<%= moderation.blog.subdomain %>
+              <% end %>
+            </td>
+            <td class="py-3 px-6 text-sm text-slate-500 dark:text-slate-400 max-w-md">
+              <%= moderation.flagged_categories.join(", ") %>
+            </td>
+            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
+              <%= moderation.moderated_at&.to_formatted_s(:short) %>
+            </td>
+            <td class="whitespace-nowrap py-3 px-6 text-end text-sm">
+              <div class="flex justify-end space-x-2">
+                <%= button_to "Keep",
+                    dismiss_admin_moderation_avatar_path(moderation),
+                    method: :post,
+                    class: "btn-primary py-1" %>
+                <%= button_to "Remove",
+                    remove_admin_moderation_avatar_path(moderation),
+                    method: :post,
+                    class: "btn-danger py-1",
+                    form: { data: { turbo_confirm: "Remove this avatar?" } } %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <%= render "app/shared/pagy_nav" %>
+  <% end %>
+</div>

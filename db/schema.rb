@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_06_02_130000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_06_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -74,6 +74,21 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_02_130000) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "avatar_moderations", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.integer "status", default: 0, null: false
+    t.jsonb "flags", default: {}
+    t.jsonb "category_scores", default: {}
+    t.string "fingerprint"
+    t.string "model_version"
+    t.datetime "moderated_at"
+    t.datetime "reviewed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_avatar_moderations_on_blog_id", unique: true
+    t.index ["status"], name: "index_avatar_moderations_on_status"
   end
 
   create_table "blog_exports", force: :cascade do |t|
@@ -452,6 +467,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_02_130000) do
   add_foreign_key "access_requests", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "avatar_moderations", "blogs"
   add_foreign_key "blog_exports", "blogs"
   add_foreign_key "blog_spotlight_exclusions", "blogs"
   add_foreign_key "blogs", "posts", column: "home_page_id", on_delete: :nullify
