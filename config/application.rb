@@ -28,7 +28,7 @@ module Pagecord
     config.active_record.automatically_invert_plural_associations = true
 
     # Configure available locales
-    config.i18n.available_locales = [ :en, :id, :de, :es, :fr, :nl, :pt, :fi, :ja ]
+    config.i18n.available_locales = [ :en, :id, :de, :es, :fr, :nl, :pl, :pt, :fi, :ja ]
     config.i18n.default_locale = :en
 
     config.filter_parameters += [ :RawEmail, :Attachments, :HtmlBody, :TextBody, :Headers ]
