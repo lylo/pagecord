@@ -19,7 +19,6 @@ Premium includes:
 - Email subscribers
 - Reply by email
 - Analytics
-- Avatar
 - Custom CSS
 - Human customer support
 

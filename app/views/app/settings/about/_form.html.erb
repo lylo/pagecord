@@ -23,41 +23,30 @@
       </p>
     <% end %>
 
-    <% avatar_disabled = @blog.user.on_free_plan? %>
     <%= settings_row "Avatar" do %>
-      <% if avatar_disabled %>
-        <div class="mb-4">
-          <%= callout(:info) do %>
-            <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add an avatar to your blog.
+      <div class="text-start flex flex-col" id="blog-avatar">
+        <a href="#" data-action="click->avatar#open" title="Update your avatar">
+          <%= render "avatar", blog: @blog %>
+        </a>
+        <% if @blog.avatar&.attached? %>
+          <%= link_to app_blog_avatar_path(@blog), data: { turbo_method: :delete }, class: "flex items-center text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 hover:dark:text-slate-200 p-0 mt-1" do %>
+            <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 me-1 " %>
+            Remove
           <% end %>
-        </div>
-      <% elsif @blog.user.on_trial? %>
-        <div class="mb-4"><%= trial_callout("Avatar") %></div>
-      <% end %>
-
-      <div class="<%= 'opacity-50 pointer-events-none' if avatar_disabled %>">
-        <div class="text-start flex flex-col" id="blog-avatar">
-          <a href="#" data-action="click->avatar#open" title="Update your avatar">
-            <%= render "avatar", blog: @blog %>
-          </a>
-          <% if @blog.avatar&.attached? %>
-            <%= link_to app_blog_avatar_path(@blog), data: { turbo_method: :delete }, class: "flex items-center text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 hover:dark:text-slate-200 p-0 mt-1" do %>
-              <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 me-1 " %>
-              Remove
-            <% end %>
-          <% end %>
-        </div>
-
-        <%= form.file_field :avatar, class: "hidden", accept: "image/jpeg, image/png, image/webp", data: { avatar_target: "input" } %>
-
-        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-          <% if @blog.avatar&.attached? %>
-            Click the image to choose a new avatar, or Remove to delete it.
-          <% else %>
-            Click the icon to choose an avatar, then click Update.
-          <% end %>
-        </p>
+        <% end %>
       </div>
+
+      <%= form.file_field :avatar, class: "hidden", accept: Blog::AVATAR_CONTENT_TYPES.join(", "), data: { avatar_target: "input" } %>
+
+      <div class="field-error"><%= @blog.errors[:avatar].first if @blog.errors[:avatar].any? %></div>
+
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        <% if @blog.avatar&.attached? %>
+          Click the image to choose a new avatar, or Remove to delete it.
+        <% else %>
+          Click the icon to choose an avatar, then click Update.
+        <% end %>
+      </p>
     <% end %>
   <% end %>
 
