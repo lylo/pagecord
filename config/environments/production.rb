@@ -7,6 +7,11 @@ Rails.application.configure do
 
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Start AppSignal after the app is initialized so its hooks don't force
+  # frameworks (e.g. ActionCable) to load mid-boot, which triggers Rails'
+  # "load hook run before application initialization" warnings.
+  config.appsignal.start_at = :after_initialize
+
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
