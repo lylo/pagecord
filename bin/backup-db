@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Independent off-Ubicloud database backup: pg_dump the managed DB to Cloudflare R2.
+# Belt-and-braces on top of Ubicloud's managed PITR. Runs as a weekly Hatchbox
+# Scheduled Task on the cron-role server. Uses the app's DATABASE_URL (already the
+# Ubicloud connection) and the existing `pagecord_prod` rclone remote.
+#
+set -e
+
+NAME="pagecord_prod"
+BACKUP_FOLDER="/home/deploy/backups/$NAME"
+BACKUP_PATH="$BACKUP_FOLDER/`date '+%Y.%m.%d.%H.%M.%S'`"
+FILENAME="$NAME.sql"
+
+mkdir -p $BACKUP_PATH
+cd $BACKUP_PATH
+
+echo "Dumping database..."
+pg_dump --format=custom -f $FILENAME "$DATABASE_URL"
+
+echo "Compressing backup..."
+tar -czvf $NAME.tar.gz $FILENAME
+rm -fr $FILENAME
+
+echo "Syncing backup with rclone..."
+rclone move $BACKUP_FOLDER pagecord_prod:pagecord-db-backups/pagecord_prod/
+
+echo "Cleaning up backups older than 30d..."
+rclone --min-age 30d delete pagecord_prod:pagecord-db-backups/pagecord_prod/
+
+# Remove local backups
+cd $BACKUP_FOLDER
+ls | xargs -d '\n' -r rm -r --
+
+echo "Done!"

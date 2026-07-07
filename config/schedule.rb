@@ -102,3 +102,9 @@ end
 every "0 * * * 2" do
   rake "post_digests:deliver"
 end
+
+# Independent off-Ubicloud DB backup to R2 (bin/backup-db). Weekly is plenty on top
+# of Ubicloud's managed 7-day PITR; switch to `every :day` for more restore points.
+every :sunday, at: "4:20 am" do
+  rake "db:backup"
+end
