@@ -25,8 +25,8 @@ rm -fr $FILENAME
 echo "Syncing backup with rclone..."
 rclone move $BACKUP_FOLDER pagecord_prod:pagecord-db-backups/pagecord_prod/
 
-echo "Cleaning up backups older than 30d..."
-rclone --min-age 30d delete pagecord_prod:pagecord-db-backups/pagecord_prod/
+echo "Cleaning up backups older than 90d..."
+rclone --min-age 90d delete pagecord_prod:pagecord-db-backups/pagecord_prod/
 
 # Remove local backups
 cd $BACKUP_FOLDER
