@@ -1,16 +1,17 @@
 require "active_support/core_ext/integer/time"
 require "appsignal"
 
+# We don't use ActionCable. AppSignal's ActionCable hook force-loads
+# ActionCable::Channel::Base during boot, tripping Rails' "load hook run before
+# application initialization" warning. There's no config flag to skip a single
+# hook, so unregister it before AppSignal installs its hooks.
+Appsignal::Hooks.hooks.delete(:action_cable)
+
 Rails.application.configure do
   # Prepare the ingress controller used to receive mail
   # config.action_mailbox.ingress = :relay
 
   # Settings specified here will take precedence over those in config/application.rb.
-
-  # Start AppSignal after the app is initialized so its hooks don't force
-  # frameworks (e.g. ActionCable) to load mid-boot, which triggers Rails'
-  # "load hook run before application initialization" warnings.
-  config.appsignal.start_at = :after_initialize
 
   # Code is not reloaded between requests.
   config.enable_reloading = false
