@@ -43,7 +43,7 @@ class Posts::RepliesController < Blogs::BaseController
     end
 
     def load_post
-      @post = @blog.posts.includes(blog: :avatar_attachment).find_by!(token: params[:post_token])
+      @post = @blog.posts.with_full_rich_text.includes(blog: :avatar_attachment).find_by!(token: params[:post_token])
     end
 
     def verify
