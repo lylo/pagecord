@@ -19,17 +19,6 @@
 
 # Learn more: http://github.com/javan/whenever
 
-# Run hourly instead of suggested 5 min to reduce overhead
-every 1.hour do
-  rake "pghero:capture_query_stats"
-end
-
-every 1.day, at: "1:00 am" do
-  rake "pghero:capture_space_stats"
-  runner "PgHero.clean_query_stats(before: 7.days.ago)"  # Reduced from default of 14 to save space
-  runner "PgHero.clean_space_stats(before: 90.days.ago)"
-end
-
 every 1.day, at: "2:30 am" do
   rake "email_change_requests:cleanup"
 end
@@ -101,4 +90,10 @@ end
 # every hour on a Tuesday
 every "0 * * * 2" do
   rake "post_digests:deliver"
+end
+
+# Independent off-Ubicloud DB backup to R2 (bin/backup-db). Weekly is plenty on top
+# of Ubicloud's managed 7-day PITR; switch to `every :day` for more restore points.
+every :sunday, at: "4:20 am" do
+  rake "db:backup"
 end

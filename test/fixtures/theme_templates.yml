@@ -877,3 +877,121 @@ minimal_mono:
   layout: stream_layout
   position: 9
   active: true
+pukka:
+  name: Pukka
+  description: A clean, roomy theme with a square avatar beside stacked title and
+    nav, in a generous system-font type
+  custom_css: |
+    /* Pukka – a clean, roomy default */
+
+    /* System font at an 18px base, in a 700px column */
+    :root {
+      --font-size-base: 112.5%;
+      --content-width-wide: 43.75rem;
+    }
+    .blog {
+      font-family: "SF Pro Display", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Header: square avatar left, title and nav stacked beside it */
+    header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      margin-top: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .titlebar,
+    .avatar-container {
+      display: contents;
+    }
+
+    /* margin-right (not column-gap) so title and nav sit flush
+       left when there is no avatar */
+    .avatar {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      margin-right: 1rem;
+    }
+    .avatar img { border-radius: 0.5rem; }
+
+    .blog-title {
+      grid-column: 2;
+      grid-row: 1;
+      font-size: 1.5em;
+    }
+
+    header nav {
+      grid-column: 2;
+      grid-row: 2;
+      justify-content: flex-start;
+      gap: 1rem;
+      font-size: 1em;
+      margin-top: 0.5rem;
+    }
+    header nav a {
+      color: var(--color-accent);
+      text-decoration: underline;
+    }
+    header nav a:hover { color: var(--color-accent-hover); }
+
+    .bio,
+    .email-subscriber-form,
+    header hr {
+      grid-column: 1 / -1;
+    }
+
+    header hr {
+      margin-top: 2rem;
+    }
+
+    /* Bio reads like body text */
+    .bio {
+      font-size: 1em;
+      line-height: 1.5;
+      color: var(--color-text);
+    }
+
+    /* Title list: light, underlined links */
+    .posts-titles a {
+      font-weight: 400;
+      text-decoration: underline;
+    }
+
+    /* Stream layout: a divider between every post */
+    .stream_layout .post-stream-item {
+      border-top: 1px solid var(--color-border);
+      padding-top: 3rem;
+      margin-bottom: 3rem;
+    }
+    .stream_layout > turbo-frame > .h-feed > .post-stream-item:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    /* Links throughout sit at a normal weight */
+    .bio a,
+    .post-body a { font-weight: 400; }
+
+    /* Tags read like body text; card "read more" matches */
+    .tag-link,
+    .post-card-badge {
+      font-weight: 400;
+      color: var(--color-text);
+    }
+
+    /* Headings sit at a lighter weight */
+    h1.post-title { font-weight: 700; }
+  theme: custom
+  font: sans
+  width: wide
+  layout: title_layout
+  custom_theme_bg_light: "#eef2f9"
+  custom_theme_text_light: "#1e1e1e"
+  custom_theme_accent_light: "#2563eb"
+  custom_theme_bg_dark: "#14171f"
+  custom_theme_text_dark: "#d7d7d7"
+  custom_theme_accent_dark: "#60a5fa"
+  position: 10
+  active: true

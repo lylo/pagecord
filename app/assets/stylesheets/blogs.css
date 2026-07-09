@@ -402,10 +402,6 @@ footer.blog-footer #brand svg {
   margin-top: var(--lexxy-content-margin);
 }
 
-.excerpt-read-more a {
-  color: var(--color-text-muted);
-}
-
 /* ============================= */
 /* Post Footer                   */
 /* ============================= */

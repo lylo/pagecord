@@ -4,7 +4,7 @@ Pagecord is a minimal blogging app where you create posts simply by sending emai
 
 ## Web app
 
-Pagecord is a web app that uses [Rails](https://rubyonrails.org) 8 and associated tech like Turbo, Stimulus and Import Maps. It uses [Tailwind CSS](https://tailwindcss.com) for styling. It runs on Ruby 3.4.7.
+Pagecord is a web app that uses [Rails](https://rubyonrails.org) 8 and associated tech like Turbo, Stimulus and Import Maps. It uses [Tailwind CSS](https://tailwindcss.com) for styling. It runs on Ruby 4.0.5.
 
 ## Database
 

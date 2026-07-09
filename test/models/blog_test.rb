@@ -271,8 +271,11 @@ class BlogTest < ActiveSupport::TestCase
   test "should purge cloudflare cache on update" do
     blog = blogs(:joel)
 
-    PurgeCloudflareCacheJob.expects(:perform_later).with(blog.id).once
     Rails.stubs(:env).returns(ActiveSupport::EnvironmentInquirer.new("production"))
+
+    job = mock
+    job.expects(:perform_later).with(blog.id).once
+    PurgeCloudflareCacheJob.expects(:set).with(wait: 5.seconds).returns(job)
 
     blog.update!(title: "New Title")
   end

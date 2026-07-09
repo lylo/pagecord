@@ -193,6 +193,20 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "{{ more }}"
   end
 
+  test "show should render a collapsible details section" do
+    post = @blog.posts.create!(
+      title: "Collapsible Show Post",
+      content: "<details open><summary>Read more</summary><p>Hidden detail.</p></details>",
+      status: :published
+    )
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "details[open] > summary", text: "Read more"
+    assert_select "details > p", text: "Hidden detail."
+  end
+
   test "should treat app as a post slug on blog subdomains" do
     post = @blog.posts.create!(
       title: "App slug",
@@ -918,11 +932,11 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "time[datetime$='T19:45:00Z']"
   end
 
-  test "should pagecord branding" do
+  test "should show pagecord branding" do
     get blog_posts_path
 
     assert_response :success
-    assert_select "footer a[id=brand]", count: 1
+    assert_select "footer a[id=brand][aria-label='Pagecord Home'] svg", count: 1
   end
 
   test "should hide pagecord branding when show_branding off" do
@@ -1361,10 +1375,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   private
-
-    def host_subdomain!(name)
-      host! "#{name}.#{Rails.application.config.x.domain}"
-    end
 
     def create_content_with_attachment(blog:, title:, caption:, is_page: false)
       blob = ActiveStorage::Blob.create_and_upload!(

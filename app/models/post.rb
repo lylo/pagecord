@@ -181,7 +181,11 @@ class Post < ApplicationRecord
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
       doc.css("figcaption").remove
 
-      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
+      doc.css("br").each do |element|
+        element.replace(Nokogiri::XML::Text.new(" ", doc))
+      end
+
+      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote, td, th").each do |element|
         element.add_child(Nokogiri::XML::Text.new(" ", doc))
       end
 
@@ -217,6 +221,10 @@ class Post < ApplicationRecord
       if published? && published_at.blank?
         self.published_at = Time.current
       end
+
+      # A home page is a landing page, never scheduled — a future published_at
+      # would make it pending and drop the blog to its empty "nothing to read" state.
+      self.published_at = Time.current if home_page? && published_at&.future?
     end
 
     def limit_content_size

@@ -129,6 +129,24 @@ class PostTest < ActiveSupport::TestCase
     assert_equal manual_date, post.published_at
   end
 
+  test "should clamp a future published_at for the home page" do
+    blog = blogs(:joel)
+    page = blog.pages.create!(title: "Home", content: "welcome", is_home_page: true)
+    blog.update!(home_page: page)
+
+    page.update!(published_at: 1.week.from_now)
+
+    assert_not page.pending?
+    assert page.published_at <= Time.current
+  end
+
+  test "should not clamp a future published_at for a normal post" do
+    published_at = 1.week.from_now
+    post = blogs(:joel).posts.create!(title: "scheduled", content: "later", published_at:)
+
+    assert_equal published_at.to_time.to_i, post.published_at.to_time.to_i
+  end
+
   test "summary should return truncated text content" do
     blog = blogs(:joel)
     post = blog.posts.create!(
@@ -363,6 +381,26 @@ class PostTest < ActiveSupport::TestCase
 
     assert_equal "First block. Second block.", post.text_summary
     assert_includes post.text_summary, "block. Second"
+  end
+
+  test "text_summary should preserve space between line breaks" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<p>First paragraph ends here.<br><br>Second paragraph starts here.</p>"
+    )
+
+    assert_equal "First paragraph ends here. Second paragraph starts here.", post.text_summary
+    assert_includes post.summary(limit: 324), "here. Second"
+  end
+
+  test "text_summary should preserve space between table cells" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: "<table><tr><td>First cell.</td><td>Second cell.</td></tr></table>"
+    )
+
+    assert_equal "First cell. Second cell.", post.text_summary
+    assert_includes post.text_summary, "cell. Second"
   end
 
   # Locale tests

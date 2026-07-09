@@ -301,7 +301,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_02_130000) do
     t.string "canonical_url"
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
-    t.text "excerpt"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.string "locale"

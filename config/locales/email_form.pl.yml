@@ -1,0 +1,14 @@
+pl:
+  email_form:
+    form:
+      name_label: "Twoje imię"
+      email_label: "Twój e-mail"
+      message_label: "Wiadomość"
+      submit_button: "Wyślij"
+    success_message: "Wiadomość wysłana!"
+    error_message: "Wystąpił problem podczas wysyłania wiadomości."
+    rate_limit_message: "Wysłałeś zbyt wiele wiadomości w zbyt krótkim czasie. Spróbuj ponownie później."
+    mailer:
+      from_label: "Od"
+      footer: "Odpowiedz na tego e-maila, aby napisać do %{name}."
+      footer_text: "Aby odpowiedzieć %{name}, po prostu odpowiedz na tego e-maila."
