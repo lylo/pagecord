@@ -1041,8 +1041,9 @@ aurelia:
     header hr { display: none; }
 
     /* Group the avatar and title together, aligned right */
-    .titlebar { justify-content: flex-end; }
+    .titlebar { justify-content: flex-end; margin-bottom: 0.75rem; }
     .avatar-container { width: auto; align-items: center; }
+    .avatar, .avatar img { width: 3rem; height: 3rem; }
     .blog-title {
       font-size: 2em;
       text-align: right;
