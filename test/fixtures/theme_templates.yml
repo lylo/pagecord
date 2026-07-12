@@ -1040,7 +1040,9 @@ aurelia:
     header > .email-subscriber-form { order: 4; }
     header hr { display: none; }
 
+    /* Group the avatar and title together, aligned right */
     .titlebar { justify-content: flex-end; }
+    .avatar-container { width: auto; align-items: center; }
     .blog-title {
       font-size: 2em;
       text-align: right;
@@ -1068,12 +1070,14 @@ aurelia:
       background-color: color-mix(in srgb, var(--color-accent) 18%, transparent);
     }
 
+    .avatar a,
     .blog-title a,
     .post-title a,
     .posts-titles a {
       color: var(--color-text);
       text-decoration: none;
     }
+    .avatar a:hover,
     .blog-title a:hover,
     .post-title a:hover,
     .posts-titles a:hover {
