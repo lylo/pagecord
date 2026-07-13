@@ -52,7 +52,7 @@ Card descriptions should be sent as HTML, not Markdown. Fizzy stores description
 - Move to Not Now: `POST /$SLUG/cards/:card_number/not_now`
 - Toggle tag: `POST /$SLUG/cards/:card_number/taggings` with `{"tag_title":"bug"}`
 - Toggle assignment: `POST /$SLUG/cards/:card_number/assignments` with `{"assignee_id":"..."}`
-- Add comment: `POST /$SLUG/cards/:card_number/comments`
+- Add comment: `POST /$SLUG/cards/:card_number/comments` with `{"comment":{"body":"..."}}` (HTML/Action Text, same as descriptions; the key is `body`, not `content` or `description`)
 - List comments: `GET /$SLUG/cards/:card_number/comments`
 - Delete comment: `DELETE /$SLUG/cards/:card_number/comments/:comment_id` (returns 204; handy for cleaning up probe comments)
 - List boards: `GET /$SLUG/boards`
