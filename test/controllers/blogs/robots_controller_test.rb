@@ -16,8 +16,7 @@ class Blogs::RobotsControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, "Blog robots.txt for #{@blog.subdomain}"
     assert_includes @response.body, "Allow: /"
     assert_includes @response.body, "Sitemap:"
-    assert_includes @response.body, "User-agent: GPTBot"
-    assert_includes @response.body, "Disallow: /"
+    refute_includes @response.body, "Disallow: /"
   end
 
   test "should get robots.txt for custom domain" do
@@ -29,8 +28,7 @@ class Blogs::RobotsControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, "Blog robots.txt for #{blog.subdomain}"
     assert_includes @response.body, "Allow: /"
     assert_includes @response.body, "Sitemap:"
-    assert_includes @response.body, "User-agent: GPTBot"
-    assert_includes @response.body, "Disallow: /"
+    refute_includes @response.body, "Disallow: /"
   end
 
   test "should disallow all indexing" do
