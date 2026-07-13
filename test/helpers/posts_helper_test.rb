@@ -89,6 +89,17 @@ class PostsHelperTest < ActionView::TestCase
     assert_nil link["rel"]
   end
 
+  test "render_post_content leaves multi-part TLD custom domain www variant unchanged" do
+    blog = blogs(:annie)
+    blog.update!(external_links_in_new_tab: true, custom_domain: "annie.co.uk")
+    post = blog.posts.build(content: '<p><a href="https://www.annie.co.uk/about">Internal</a></p>')
+
+    link = rendered_link(render_post_content(post))
+
+    assert_nil link["target"]
+    assert_nil link["rel"]
+  end
+
   test "render_post_content opens protocol-relative external links in new tab" do
     @blog.update!(external_links_in_new_tab: true)
     post = @blog.posts.build(content: '<p><a href="//example.org/about">Example</a></p>')
@@ -99,10 +110,8 @@ class PostsHelperTest < ActionView::TestCase
     assert_equal "noopener", link["rel"]
   end
 
-  test "render_post_content preserves existing rel tokens" do
-    @blog.update!(external_links_in_new_tab: true)
-
-    link = rendered_link(send(:open_external_links_in_new_tab, '<p><a href="https://example.org" rel="nofollow">Example</a></p>', @blog))
+  test "preserves existing rel tokens" do
+    link = rendered_link(Html::ExternalLinksInNewTab.new(@blog).transform('<p><a href="https://example.org" rel="nofollow">Example</a></p>'))
 
     assert_equal "_blank", link["target"]
     assert_equal "nofollow noopener", link["rel"]
