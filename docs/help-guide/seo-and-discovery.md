@@ -23,5 +23,3 @@ If you're on Mastodon or another Fediverse platform, you can enter your Fedivers
 ## Discoverability
 
 By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. If you'd prefer to keep things low-key, untick the "Make my blog discoverable" box – Pagecord will serve a `robots.txt` that discourages search engines, and exclude your blog from Spotlight and Shuffle.
-
-All Pagecord blogs are automatically configured to discourage AI crawlers regardless of this setting.
