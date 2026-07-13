@@ -63,7 +63,7 @@ every :day, at: "7:00 am" do
   runner "SpamDetectionDigestJob.perform_later"
 end
 
-every "5,15,25,35,45,55 * * * *" do
+every 1.hour do
   runner "ContentModerationBatchJob.perform_later"
 end
 
