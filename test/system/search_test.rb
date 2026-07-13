@@ -106,6 +106,9 @@ class SearchTest < ApplicationSystemTestCase
     # Clear search
     fill_in "search", with: ""
 
+    # Clearing triggers a full page reload back to the unfiltered path
+    assert_current_path app_posts_path
+
     # Should show all posts
     assert_text "Rails Tutorial"
     assert_text "Python Guide"
