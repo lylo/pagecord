@@ -1,8 +1,8 @@
 fi:
   email_form:
     form:
-      name_label: "Nimesi"
-      email_label: "Sähköpostisi"
+      name_label: "Nimi"
+      email_label: "Sähköposti"
       message_label: "Viesti"
       submit_button: "Lähetä"
     success_message: "Viesti lähetetty!"

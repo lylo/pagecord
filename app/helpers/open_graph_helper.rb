@@ -63,7 +63,6 @@ module OpenGraphHelper
     def build_dynamic_og_url(title:, subtitle:, blog:)
       worker_url = ENV["OG_WORKER_URL"]
       return nil unless worker_url.present?
-      return nil unless blog.user.has_premium_access?
 
       params = {
         title: title,

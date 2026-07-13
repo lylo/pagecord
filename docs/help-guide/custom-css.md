@@ -67,7 +67,7 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ └──────────────────────────────────────────────────┘ │ │
 │ │                                                      │ │
 │ │ ┌──────────────────────────────────────────────────┐ │ │
-│ │ │ .blog-footer (Custom footer and Pagecord credit) │ │ │
+│ │ │ .blog-footer (Custom footer and Pagecord logo)   │ │ │
 │ │ └──────────────────────────────────────────────────┘ │ │
 │ └──────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────┘
@@ -89,27 +89,6 @@ For safety, Pagecord validates custom CSS before saving it:
 ## Examples
 
 Here are some examples of CSS snippets you can use to customise your blog.
-
-### Changing the Pagecord credit language
-
-The footer credit says "Made with Pagecord" by default. To translate the text while keeping only "Pagecord" as the link, hide the original words and add your own:
-
-```css
-footer.blog-footer .brand-credit {
-  font-size: 0;
-}
-
-footer.blog-footer .brand-credit::before {
-  content: "Feito com ";
-  font-size: 0.875rem;
-}
-
-footer.blog-footer #brand {
-  font-size: 0.875rem;
-}
-```
-
-For more control, hide Pagecord branding in Settings > Appearance and add your own custom footer.
 
 ### Changing the font
 

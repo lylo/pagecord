@@ -72,6 +72,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **CI skill** (`/ci`): runs brakeman, rubocop, importmap audit, and tests locally
 - **Sentry skill** (`/sentry`): investigate and fix Sentry errors
 - **Support skill** (`/support`): investigate customer issues and draft responses
+- **Fizzy skill** (`/fizzy`): list, create, update, move, comment on, and inspect Fizzy tracker cards. Use it for any tracker work rather than hand-rolling the API
 - **Pagecord blog drafts**: write reviewable Obsidian posts to `/Users/olly/Notes/Personal/Pagecord Blog Posts`
 
 ## Commands

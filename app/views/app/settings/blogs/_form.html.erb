@@ -89,10 +89,6 @@
               By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. Untick the box below to opt out – we'll serve a <tt>/robots.txt</tt> that discourages search engines, and exclude your blog from Spotlight and Shuffle.
             </p>
 
-            <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">
-              Note: All blogs are configured to discourage AI crawlers.
-            </p>
-
             <div class="mt-6 flex gap-3">
               <div class="flex h-6 shrink-0 items-center">
                 <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 rounded border-slate-300 text-slate-600 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600" } %>

@@ -12,13 +12,13 @@ Premium customers can add an HTML snippet to the footer of their blog. This is u
 
 To add your own custom HTML, head over to **Settings** → **Appearance** → **Custom footer**
 
-Your custom footer appears at the bottom of every blog page, above the Made with Pagecord credit if you have branding enabled.
+Your custom footer appears at the bottom of every blog page, above the Pagecord logo if you have branding enabled.
 
 ### A Quick Note
 
 Custom footer is intended for small, simple snippets. Pagecord checks that the HTML is safe before saving it, and snippets must be under 4KB. Customer support for writing or debugging custom HTML and CSS is limited.
 
-For custom or translated attribution text, hide Pagecord branding and add your own custom footer.
+For custom or translated attribution text, turn off Pagecord branding and add your own custom footer.
 
 ## What HTML is supported?
 
@@ -62,6 +62,24 @@ For a row of simple text links, you could use:
 <a href="https://example.com">My other site</a>
 ⋅
 <a href="https://example.com/contact">Contact</a>
+```
+
+## Using a plain text Pagecord footer
+
+Pagecord shows the logo in the footer by default. If you'd prefer a plain text credit, turn off **Show Pagecord branding** in **Settings** → **Appearance**, then add this to **Custom footer**:
+
+```html
+<p>
+  Made with <a href="https://pagecord.com">Pagecord</a>
+</p>
+```
+
+You can change the wording if you want to translate it:
+
+```html
+<p>
+  Feito com <a href="https://pagecord.com">Pagecord</a>
+</p>
 ```
 
 ## Finding badge buttons

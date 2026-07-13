@@ -110,15 +110,10 @@ footer.blog-footer {
   margin-top: auto;
 }
 
-footer.blog-footer .brand-credit {
-  color: var(--color-text);
-  font-size: 0.875em;
-}
-
-footer.blog-footer #brand {
-  color: var(--color-accent);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
+footer.blog-footer #brand svg {
+  width: 110px;
+  display: inline-flex;
+  color: var(--color-text-heading);
 }
 
 /* ============================= */
@@ -405,10 +400,6 @@ footer.blog-footer #brand {
 
 .excerpt-read-more {
   margin-top: var(--lexxy-content-margin);
-}
-
-.excerpt-read-more a {
-  color: var(--color-text-muted);
 }
 
 /* ============================= */

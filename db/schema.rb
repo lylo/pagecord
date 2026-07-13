@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_06_26_090000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_13_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -246,26 +246,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_26_090000) do
     t.index ["visitor_hash", "post_id", "viewed_at"], name: "index_page_views_on_visitor_hash_and_post_id_and_viewed_at"
   end
 
-  create_table "pghero_query_stats", force: :cascade do |t|
-    t.bigint "calls"
-    t.datetime "captured_at", precision: nil
-    t.text "database"
-    t.text "query"
-    t.bigint "query_hash"
-    t.float "total_time"
-    t.text "user"
-    t.index ["database", "captured_at"], name: "index_pghero_query_stats_on_database_and_captured_at"
-  end
-
-  create_table "pghero_space_stats", force: :cascade do |t|
-    t.datetime "captured_at", precision: nil
-    t.text "database"
-    t.text "relation"
-    t.text "schema"
-    t.bigint "size"
-    t.index ["database", "captured_at"], name: "index_pghero_space_stats_on_database_and_captured_at"
-  end
-
   create_table "post_digest_deliveries", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "delivered_at"
@@ -302,7 +282,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_26_090000) do
     t.string "canonical_url"
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
-    t.text "excerpt"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.string "locale"

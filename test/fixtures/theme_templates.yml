@@ -111,7 +111,7 @@ cardashian:
   custom_theme_bg_dark: "#1a1718"
   custom_theme_text_dark: "#e8e6e3"
   custom_theme_accent_dark: "#a78bfa"
-  position: 1
+  position: 7
   active: true
 broadside:
   name: Broadside
@@ -210,7 +210,7 @@ broadside:
   custom_theme_bg_dark: "#150830"
   custom_theme_text_dark: "#ede8ee"
   custom_theme_accent_dark: "#ff4535"
-  position: 2
+  position: 4
   active: true
 archibald:
   name: Archibald
@@ -255,7 +255,7 @@ archibald:
   font: mono
   width: standard
   layout: title_layout
-  position: 3
+  position: 2
   active: true
 hestia:
   name: Hestia
@@ -333,7 +333,7 @@ hestia:
   custom_theme_bg_dark: "#1a1816"
   custom_theme_text_dark: "#d4cfc8"
   custom_theme_accent_dark: "#d4748a"
-  position: 4
+  position: 8
   active: true
 holamundo:
   name: Holamundo
@@ -569,7 +569,7 @@ holamundo:
   font: sans
   width: wide
   layout: cards_layout
-  position: 5
+  position: 6
   active: true
 novella:
   name: Novella
@@ -660,7 +660,7 @@ novella:
   custom_theme_bg_dark: "#141f18"
   custom_theme_text_dark: "#d0d8d2"
   custom_theme_accent_dark: "#d4a840"
-  position: 6
+  position: 9
   active: true
 folly:
   name: Folly
@@ -680,7 +680,7 @@ folly:
   custom_theme_bg_dark: "#353536"
   custom_theme_text_dark: "#cbd5e1"
   custom_theme_accent_dark: "#df6d83"
-  position: 7
+  position: 3
   active: true
 mozake:
   name: Mozake
@@ -782,11 +782,12 @@ mozake:
     .email-form-container { display: block; text-align: revert; }
     .email-form-container fieldset { margin: 0.5em 0; padding: 0; }
 
-    /* Footer */
+    /* Footer – text link instead of logo */
     footer.blog-footer {
       margin-top: 2em; padding: 0; display: block;
     }
-    footer.blog-footer .brand-credit { margin-bottom: 1em; display: block; }
+    footer.blog-footer #brand svg { display: none; }
+    footer.blog-footer #brand::after { content: "Pagecord"; margin-bottom: 1em; display: block; }
 
     /* Misc */
     .tag-filter-notice { background: transparent; border: none; border-radius: 0; padding: 0; font-size: revert; color: revert; }
@@ -801,7 +802,7 @@ mozake:
   custom_theme_bg_dark: "#ffffff"
   custom_theme_text_dark: "#000000"
   custom_theme_accent_dark: "#0000EE"
-  position: 8
+  position: 11
   active: true
 minimal_mono:
   name: Minimal Mono
@@ -874,5 +875,261 @@ minimal_mono:
   font: mono
   width: narrow
   layout: stream_layout
-  position: 9
+  position: 10
+  active: true
+pukka:
+  name: Pukka
+  description: A clean, roomy theme with a square avatar beside stacked title and
+    nav, in a generous system-font type
+  custom_css: |
+    /* Pukka – a clean, roomy default */
+
+    /* System font at an 18px base, in a 700px column */
+    :root {
+      --font-size-base: 112.5%;
+      --content-width-wide: 43.75rem;
+    }
+    .blog {
+      font-family: "SF Pro Display", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Header: square avatar left, title and nav stacked beside it */
+    header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      margin-top: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .titlebar,
+    .avatar-container {
+      display: contents;
+    }
+
+    /* margin-right (not column-gap) so title and nav sit flush
+       left when there is no avatar */
+    .avatar {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      margin-right: 1rem;
+    }
+    .avatar img { border-radius: 0.5rem; }
+
+    .blog-title {
+      grid-column: 2;
+      grid-row: 1;
+      font-size: 1.5em;
+    }
+
+    header nav {
+      grid-column: 2;
+      grid-row: 2;
+      justify-content: flex-start;
+      gap: 1rem;
+      font-size: 1em;
+      margin-top: 0.5rem;
+    }
+    header nav a {
+      color: var(--color-accent);
+      text-decoration: underline;
+    }
+    header nav a:hover { color: var(--color-accent-hover); }
+
+    .bio,
+    .email-subscriber-form,
+    header hr {
+      grid-column: 1 / -1;
+    }
+
+    header hr {
+      margin-top: 2rem;
+    }
+
+    /* Bio reads like body text */
+    .bio {
+      font-size: 1em;
+      line-height: 1.5;
+      color: var(--color-text);
+    }
+
+    /* Title list: light, underlined links */
+    .posts-titles a {
+      font-weight: 400;
+      text-decoration: underline;
+    }
+
+    /* Stream layout: a divider between every post */
+    .stream_layout .post-stream-item {
+      border-top: 1px solid var(--color-border);
+      padding-top: 3rem;
+      margin-bottom: 3rem;
+    }
+    .stream_layout > turbo-frame > .h-feed > .post-stream-item:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    /* Links throughout sit at a normal weight */
+    .bio a,
+    .post-body a { font-weight: 400; }
+
+    /* Tags read like body text; card "read more" matches */
+    .tag-link,
+    .post-card-badge {
+      font-weight: 400;
+      color: var(--color-text);
+    }
+
+    /* Headings sit at a lighter weight */
+    h1.post-title { font-weight: 700; }
+  theme: custom
+  font: sans
+  width: wide
+  layout: title_layout
+  custom_theme_bg_light: "#eef2f9"
+  custom_theme_text_light: "#1e1e1e"
+  custom_theme_accent_light: "#2563eb"
+  custom_theme_bg_dark: "#14171f"
+  custom_theme_text_dark: "#d7d7d7"
+  custom_theme_accent_dark: "#60a5fa"
+  position: 5
+  active: true
+aurelia:
+  name: Aurelia
+  description: A soft dusk-gradient theme with a display serif and an airy grotesque
+    body
+  custom_css: |
+    /* Aurelia – soft dusk gradient, editorial display serif */
+
+    @import url('https://fonts.bunny.net/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+    @import url('https://fonts.bunny.net/css2?family=Bricolage+Grotesque:wght@300;400;500;700&display=swap');
+
+    :root {
+      --font-text: "Bricolage Grotesque", sans-serif;
+      --font-header: "Fraunces", serif;
+    }
+
+    /* Base type and a fixed dusk gradient behind the content */
+    body {
+      font-family: var(--font-text);
+      font-weight: 300;
+      background-image:
+        radial-gradient(75% 75% at 28% 72%, #F0A57F33 0%, transparent 68%),
+        radial-gradient(72% 72% at 76% 58%, #DE7FA62B 0%, transparent 60%),
+        radial-gradient(75% 75% at 50% 20%, #8E9BE026 0%, transparent 55%);
+      background-attachment: fixed;
+    }
+
+    /* Let the gradient show through the blog container */
+    .blog { background: transparent; }
+
+    /* Headings in the display serif */
+    h1, h2, h3, h4, h5, h6,
+    h1.post-title, .blog-title {
+      font-family: var(--font-header);
+      font-weight: 400;
+    }
+    h1.post-title { letter-spacing: -0.01em; }
+
+    /* Header: title right, then nav, then bio */
+    header { display: flex; flex-direction: column; }
+    header > .titlebar { order: 1; }
+    header > nav { order: 2; }
+    header > .bio { order: 3; color: var(--color-text); }
+    header > .email-subscriber-form { order: 4; }
+    header hr { display: none; }
+
+    /* Group the avatar and title together, aligned right */
+    .titlebar { justify-content: flex-end; margin-bottom: 0.75rem; }
+    .avatar-container { width: auto; align-items: center; }
+    .avatar, .avatar img { width: 3rem; height: 3rem; }
+    .blog-title {
+      font-size: 2em;
+      text-align: right;
+    }
+    nav { gap: 1rem; }
+
+    /* Divider under the header, index page only */
+    .blog:not(.post, .page, .home-page) header {
+      border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+      padding-bottom: 1.5rem;
+    }
+
+    /* Title list: align the date column */
+    .post-row time { font-variant-numeric: tabular-nums; }
+
+    /* Links: accent underline, soft highlight on hover */
+    a {
+      color: var(--color-text);
+      text-decoration: underline;
+      text-decoration-color: var(--color-accent);
+      text-decoration-thickness: 0.1em;
+      text-underline-offset: 0.22em;
+    }
+    a:hover {
+      background-color: color-mix(in srgb, var(--color-accent) 18%, transparent);
+    }
+
+    .avatar a,
+    .blog-title a,
+    .post-title a,
+    .posts-titles a {
+      color: var(--color-text);
+      text-decoration: none;
+    }
+    .avatar a:hover,
+    .blog-title a:hover,
+    .post-title a:hover,
+    .posts-titles a:hover {
+      color: var(--color-accent);
+      background-color: transparent;
+    }
+
+    footer a { text-decoration: none; }
+    footer a:hover {
+      color: var(--color-accent);
+      fill: var(--color-accent);
+      background-color: transparent;
+    }
+
+    /* Tags: plain #hashtag text */
+    .tag-link {
+      background: transparent;
+      padding: 0;
+      color: var(--color-text);
+      font-size: 0.85em;
+      font-weight: 400;
+    }
+    .tag-link::before { content: "#"; color: var(--color-text-muted); }
+    .tag-link:hover,
+    .tag-link:hover::before {
+      color: var(--color-accent);
+      background-color: transparent;
+    }
+
+    /* Forms (subscription, contact, reply) and tag filter notice:
+       soft accent fill, no border */
+    .form,
+    .tag-filter-notice {
+      background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+      border: none;
+    }
+    .email-subscriber-form input[type="email"] { border: none; }
+
+    /* Text selection */
+    ::selection {
+      background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+    }
+  theme: custom
+  font: sans
+  width: standard
+  layout: title_layout
+  custom_theme_bg_light: "#fbf7f1"
+  custom_theme_text_light: "#2b2724"
+  custom_theme_accent_light: "#c05b4d"
+  custom_theme_bg_dark: "#1a1613"
+  custom_theme_text_dark: "#e7dfd5"
+  custom_theme_accent_dark: "#e39385"
+  position: 1
   active: true

@@ -2,7 +2,7 @@ class CustomDomainsController < ApplicationController
   skip_forgery_protection
   skip_before_action :domain_check
 
-  rate_limit to: 10, within: 1.minute, only: :verify
+  rate_limit to: 10, within: 1.minute, only: :verify, by: -> { params[:domain] }
 
   def verify
     domain = params[:domain]&.downcase

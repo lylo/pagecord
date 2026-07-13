@@ -93,6 +93,8 @@ class Blog < ApplicationRecord
     def purge_cloudflare_cache
       return unless Rails.env.production?
       return unless Rails.cache.write("cf_purge:#{id}", true, expires_in: 5.seconds, unless_exist: true)
-      PurgeCloudflareCacheJob.perform_later(id)
+      # Trailing debounce: coalesce rapid updates (a bulk sync/import) into one
+      # purge that fires after the burst, so the final state is never left stale.
+      PurgeCloudflareCacheJob.set(wait: 5.seconds).perform_later(id)
     end
 end

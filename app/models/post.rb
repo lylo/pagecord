@@ -221,6 +221,10 @@ class Post < ApplicationRecord
       if published? && published_at.blank?
         self.published_at = Time.current
       end
+
+      # A home page is a landing page, never scheduled — a future published_at
+      # would make it pending and drop the blog to its empty "nothing to read" state.
+      self.published_at = Time.current if home_page? && published_at&.future?
     end
 
     def limit_content_size

@@ -14,7 +14,7 @@ module AttributionTrackable
       return unless DomainConstraints.default_domain?(request)
       return if signup_attribution.present?
 
-      attribution = params.permit(*SIGNUP_ATTRIBUTION_PARAMS).to_h.compact_blank
+      attribution = params.slice(*SIGNUP_ATTRIBUTION_PARAMS).permit(*SIGNUP_ATTRIBUTION_PARAMS).to_h.compact_blank
       return if attribution.blank?
 
       session[:signup_attribution] = attribution.merge("expires_at" => SIGNUP_ATTRIBUTION_TTL.from_now.iso8601)

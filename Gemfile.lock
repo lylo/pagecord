@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 00be6ce026f16d4355eb79760dd15206f5e5b641
+  revision: ca0627edfbbb11b2836be411ae88a913e051c784
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -49,7 +49,7 @@ GIT
       rails-html-sanitizer (~> 1.7)
     activejob (8.2.0.alpha)
       activesupport (= 8.2.0.alpha)
-      globalid (>= 0.3.6)
+      globalid (>= 1.4.0)
     activemodel (8.2.0.alpha)
       activesupport (= 8.2.0.alpha)
     activerecord (8.2.0.alpha)
@@ -73,6 +73,7 @@ GIT
       logger (>= 1.4.2)
       minitest (>= 5.1)
       psych (>= 4)
+      ractor-dispatch (>= 0.2.0)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
@@ -109,13 +110,13 @@ GEM
       actionpack (>= 4.0.0)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
-    appsignal (4.8.5)
+    appsignal (4.8.6)
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1261.0)
-    aws-sdk-core (3.252.0)
+    aws-partitions (1.1268.0)
+    aws-sdk-core (3.254.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -123,11 +124,11 @@ GEM
       bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-kms (1.129.0)
-      aws-sdk-core (~> 3, >= 3.248.0)
+    aws-sdk-kms (1.130.0)
+      aws-sdk-core (~> 3, >= 3.254.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.226.0)
-      aws-sdk-core (~> 3, >= 3.248.0)
+    aws-sdk-s3 (1.227.0)
+      aws-sdk-core (~> 3, >= 3.254.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
@@ -160,7 +161,7 @@ GEM
       zeitwerk (>= 2.5.0)
     concurrent-ruby (1.3.7)
     connection_pool (3.0.2)
-    crass (1.0.6)
+    crass (1.0.7)
     css_parser (3.0.0)
       addressable
       ssrf_filter (~> 1.5)
@@ -197,7 +198,7 @@ GEM
     ffi (1.17.4-x86_64-darwin)
     ffi (1.17.4-x86_64-linux-gnu)
     ffi (1.17.4-x86_64-linux-musl)
-    globalid (1.3.0)
+    globalid (1.4.0)
       activesupport (>= 6.1)
     google-protobuf (4.35.1)
       bigdecimal
@@ -247,7 +248,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.19.9)
+    json (2.21.1)
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -260,7 +261,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (0.9.20)
+    lexxy (0.9.24)
       rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
@@ -268,7 +269,7 @@ GEM
     loofah (2.25.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    mail (2.9.0)
+    mail (2.9.1)
       logger
       mini_mime (>= 0.1.1)
       net-imap
@@ -323,7 +324,7 @@ GEM
       racc (~> 1.4)
     openssl (4.0.2)
     ostruct (0.6.3)
-    pagy (43.5.6)
+    pagy (43.6.0)
       json
       uri
       yaml
@@ -383,6 +384,7 @@ GEM
       rack (>= 1.3)
     rackup (2.3.1)
       rack (>= 3)
+    ractor-dispatch (0.2.0)
     rails-controller-testing (1.0.5)
       actionpack (>= 5.0.1.rc1)
       actionview (>= 5.0.1.rc1)
@@ -400,9 +402,14 @@ GEM
       railties (> 3.1)
     rainbow (3.1.1)
     rake (13.4.2)
-    rdoc (7.2.0)
+    rbs (4.0.3)
+      logger
+      prism (>= 1.6.0)
+      tsort
+    rdoc (8.0.0)
       erb
-      psych (>= 4.0.0)
+      prism (>= 1.6.0)
+      rbs (>= 4.0.0)
       tsort
     redcarpet (3.6.1)
     redis (5.4.1)
@@ -455,12 +462,12 @@ GEM
       ffi (~> 1.12)
       logger
     ruby2_keywords (0.0.5)
-    rubyzip (3.4.0)
+    rubyzip (3.4.1)
     sanitize (7.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
     securerandom (0.4.1)
-    selenium-webdriver (4.45.0)
+    selenium-webdriver (4.46.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -501,7 +508,7 @@ GEM
       railties (>= 7.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    tzinfo-data (1.2026.2)
+    tzinfo-data (1.2026.3)
       tzinfo (>= 1.0.0)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
@@ -513,7 +520,7 @@ GEM
       bindex (>= 0.4.0)
       railties (>= 8.0.0)
     websocket (1.2.11)
-    websocket-driver (0.8.1)
+    websocket-driver (0.8.2)
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)

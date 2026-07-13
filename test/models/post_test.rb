@@ -129,6 +129,24 @@ class PostTest < ActiveSupport::TestCase
     assert_equal manual_date, post.published_at
   end
 
+  test "should clamp a future published_at for the home page" do
+    blog = blogs(:joel)
+    page = blog.pages.create!(title: "Home", content: "welcome", is_home_page: true)
+    blog.update!(home_page: page)
+
+    page.update!(published_at: 1.week.from_now)
+
+    assert_not page.pending?
+    assert page.published_at <= Time.current
+  end
+
+  test "should not clamp a future published_at for a normal post" do
+    published_at = 1.week.from_now
+    post = blogs(:joel).posts.create!(title: "scheduled", content: "later", published_at:)
+
+    assert_equal published_at.to_time.to_i, post.published_at.to_time.to_i
+  end
+
   test "summary should return truncated text content" do
     blog = blogs(:joel)
     post = blog.posts.create!(

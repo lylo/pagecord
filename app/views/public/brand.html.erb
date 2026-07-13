@@ -3,13 +3,13 @@
 
 <%
   logos = [
-    { title: "Logo", description: "The full Pagecord logo, with the colour mark.", path: "/brand/logo.svg" },
-    { title: "Monochrome logo", description: "The full Pagecord logo in a single colour.", path: "/brand/logo-black.svg" }
+    { title: "Logo", description: "The full Pagecord logo, with the colour mark.", asset: "logo.svg" },
+    { title: "Monochrome logo", description: "The full Pagecord logo in a single colour.", asset: "logo-black.svg" }
   ]
 
   marks = [
-    { title: "Mark", description: "The Pagecord mark on its own.", path: "/brand/logo-mark.svg" },
-    { title: "Monochrome mark", description: "The Pagecord mark in a single colour.", path: "/brand/logo-mark-black.svg" }
+    { title: "Mark", description: "The Pagecord mark on its own.", asset: "logo-mark.svg" },
+    { title: "Monochrome mark", description: "The Pagecord mark in a single colour.", asset: "logo-mark-black.svg" }
   ]
 %>
 
@@ -35,12 +35,12 @@
       <% logos.each do |logo| %>
         <article class="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800">
           <div class="flex min-h-56 items-center justify-center bg-white p-8">
-            <%= image_tag logo[:path], alt: logo[:title], class: "w-full max-w-md" %>
+            <%= image_tag logo[:asset], alt: logo[:title], class: "w-full max-w-md" %>
           </div>
           <div class="p-5">
             <h3 class="font-semibold text-slate-900 dark:text-slate-100"><%= logo[:title] %></h3>
             <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300"><%= logo[:description] %></p>
-            <%= link_to "Download SVG", logo[:path], class: "mt-4 inline-flex rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700", download: true %>
+            <%= link_to "Download SVG", asset_path(logo[:asset]), class: "mt-4 inline-flex rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700", download: true %>
           </div>
         </article>
       <% end %>
@@ -55,12 +55,12 @@
       <% marks.each do |mark| %>
         <article class="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800">
           <div class="flex min-h-56 items-center justify-center bg-white p-8">
-            <%= image_tag mark[:path], alt: mark[:title], class: "h-28 w-28" %>
+            <%= image_tag mark[:asset], alt: mark[:title], class: "h-28 w-28" %>
           </div>
           <div class="p-5">
             <h3 class="font-semibold text-slate-900 dark:text-slate-100"><%= mark[:title] %></h3>
             <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300"><%= mark[:description] %></p>
-            <%= link_to "Download SVG", mark[:path], class: "mt-4 inline-flex rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700", download: true %>
+            <%= link_to "Download SVG", asset_path(mark[:asset]), class: "mt-4 inline-flex rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700", download: true %>
           </div>
         </article>
       <% end %>

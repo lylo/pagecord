@@ -44,6 +44,7 @@ Card descriptions should be sent as HTML, not Markdown. Fizzy stores description
 - Get card: `GET /$SLUG/cards/:card_number`
 - Create card: `POST /$SLUG/boards/:board_id/cards` with `{"card":{"title":"...","description":"..."}}`
 - Update card: `PUT /$SLUG/cards/:card_number`
+- Delete card: `DELETE /$SLUG/cards/:card_number` (permanent, returns 204; prefer Close for normal workflow)
 - Close card: `POST /$SLUG/cards/:card_number/closure`
 - Reopen card: `DELETE /$SLUG/cards/:card_number/closure`
 - Move card into a column: `POST /$SLUG/cards/:card_number/triage` with `{"column_id":"..."}`
@@ -51,8 +52,9 @@ Card descriptions should be sent as HTML, not Markdown. Fizzy stores description
 - Move to Not Now: `POST /$SLUG/cards/:card_number/not_now`
 - Toggle tag: `POST /$SLUG/cards/:card_number/taggings` with `{"tag_title":"bug"}`
 - Toggle assignment: `POST /$SLUG/cards/:card_number/assignments` with `{"assignee_id":"..."}`
-- Add comment: `POST /$SLUG/cards/:card_number/comments`
+- Add comment: `POST /$SLUG/cards/:card_number/comments` with `{"comment":{"body":"..."}}` (HTML/Action Text, same as descriptions; the key is `body`, not `content` or `description`)
 - List comments: `GET /$SLUG/cards/:card_number/comments`
+- Delete comment: `DELETE /$SLUG/cards/:card_number/comments/:comment_id` (returns 204; handy for cleaning up probe comments)
 - List boards: `GET /$SLUG/boards`
 - List columns: `GET /$SLUG/boards/:board_id/columns`
 - List tags: `GET /$SLUG/tags`

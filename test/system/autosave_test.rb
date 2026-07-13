@@ -83,6 +83,43 @@ class AutosaveTest < ApplicationSystemTestCase
     assert_nil draft_for("draft-post-#{post.id}")
   end
 
+  test "clears autosaved draft after a successful save" do
+    visit new_app_post_path
+    key = rendered_autosave_key
+
+    store_draft(key, {
+      title: "Publish me",
+      content: "<p>Body to publish</p>"
+    })
+
+    visit app_posts_path
+    visit new_app_post_path
+    wait_for_editor
+
+    click_on "Publish Post"
+
+    assert_current_path app_posts_path
+    assert_nil draft_for(key)
+  end
+
+  test "keeps autosaved draft when the save fails" do
+    visit new_app_post_path
+    key = rendered_autosave_key
+
+    store_draft(key, {
+      title: "Keep me",
+      content: ""
+    })
+
+    visit app_posts_path
+    visit new_app_post_path
+    wait_for_editor
+
+    click_on "Publish Post"
+
+    assert_not_nil draft_for(key)
+  end
+
   private
 
     def rendered_autosave_key

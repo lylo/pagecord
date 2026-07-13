@@ -110,10 +110,7 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
       site_tags_div = footer.at('div.site-tags')
       if site_tags_div
         tag_links = site_tags_div.css('a')
-        tag_list = tag_links.map do |link|
-          # Clean up the tag: strip whitespace, replace spaces with hyphens, keep only alphanumeric and hyphens
-          link.text.strip.downcase.gsub(/\s+/, '-').gsub(/[^a-z0-9\-]/, '')
-        end.reject(&:empty?)
+        tag_list = tag_links.map { |link| clean_tag(link.text) }.reject(&:empty?).uniq.sort
       end
     end
 
@@ -170,7 +167,7 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
 
     # Step 4: Process all img tags using shared helper
     begin
-      post.content = process_images_to_actiontext(article_content.to_html)
+      post.content = process_images_to_actiontext(article_content.to_html, dry_run: dry_run)
     rescue => e
       puts "Skipping post due to image processing failure: #{title} - #{e.message}"
       failed_count += 1
@@ -283,7 +280,7 @@ def import_from_json(path, blog, dry_run = false, as_pages = false)
     end
 
     # Extract tags for this post
-    tag_list = post_tags_lookup[post_data["id"]] || []
+    tag_list = (post_tags_lookup[post_data["id"]] || []).map { |tag| clean_tag(tag) }.reject(&:empty?).uniq.sort
 
     # Determine is_page: use --as-pages flag if provided, otherwise use type from JSON
     is_page = as_pages ? true : (type == "page")
@@ -305,9 +302,17 @@ def import_from_json(path, blog, dry_run = false, as_pages = false)
       is_page: is_page
     )
 
+    # Preserve Pika's "read more" break, map Pika's dynamic page variables to
+    # Pagecord's, then convert Pika's ActionText markup into plain <img> tags so
+    # they can be downloaded and re-attached.
+    html_content = insert_excerpt_marker(html_content, post_data["custom_excerpt"])
+    html_content = map_pika_variables(html_content)
+    html_content = convert_pika_embeds(html_content)
+    html_content = prepare_pika_attachments(html_content)
+
     # Process images in HTML content
     begin
-      post.content = process_images_to_actiontext(html_content)
+      post.content = process_images_to_actiontext(html_content, dry_run: dry_run)
     rescue => e
       puts "Skipping post due to image processing failure: #{title} - #{e.message}"
       failed_count += 1
@@ -349,6 +354,75 @@ def import_from_json(path, blog, dry_run = false, as_pages = false)
   puts "Failed: #{failed_count}"
   puts "Skipped: #{skipped_count}"
   puts "====================="
+end
+
+# Insert Pagecord's {{ more }} marker where Pika's "read more" break was.
+# Pika exports the pre-break content in custom_excerpt, which is a prefix of html.
+def insert_excerpt_marker(html, custom_excerpt)
+  return html if custom_excerpt.to_s.strip.empty?
+
+  excerpt_count = Nokogiri::HTML::DocumentFragment.parse(custom_excerpt).children.count(&:element?)
+  return html if excerpt_count.zero?
+
+  doc = Nokogiri::HTML::DocumentFragment.parse(html)
+  elements = doc.children.select(&:element?)
+  return html if elements.size <= excerpt_count
+
+  elements[excerpt_count - 1].add_next_sibling("<p>{{ more }}</p>")
+  doc.to_html
+end
+
+# Map Pika's dynamic page variables to their Pagecord equivalents.
+# {{ tags }} must be mapped before {{ tag_list }} to avoid double-converting.
+def map_pika_variables(html)
+  html
+    .gsub(/\{\{\s*tags\s*\}\}/, "{{ tags | style: inline }}")
+    .gsub(/\{\{\s*tag_list\s*\}\}/, "{{ tags }}")
+    .gsub(/\{\{\s*letterbird_form[^}]*\}\}/, "{{ contact_form }}")
+    .gsub(%r{<p>\s*\{\{\s*search_form\s*\}\}\s*</p>}, "")
+end
+
+# Pika stores embeds as <iframe>, which Pagecord strips on import. Convert
+# YouTube iframes into bare links so Pagecord's client-side embeds pick them up.
+def convert_pika_embeds(html)
+  doc = Nokogiri::HTML::DocumentFragment.parse(html)
+  doc.css("iframe").each do |iframe|
+    target = iframe.parent.name == "div" ? iframe.parent : iframe
+    if iframe["src"].to_s =~ %r{youtube(?:-nocookie)?\.com/embed/([\w-]+)}
+      url = "https://www.youtube.com/watch?v=#{$1}"
+      target.replace(%(<p><a href="#{url}">#{url}</a></p>))
+    else
+      target.remove
+    end
+  end
+  doc.to_html
+end
+
+# Convert Pika's exported <action-text-attachment> markup into plain <img> tags
+# that process_images_to_actiontext can download and re-attach to the post.
+def prepare_pika_attachments(html)
+  doc = Nokogiri::HTML::DocumentFragment.parse(html)
+
+  # Pika wraps every image - even single ones - in an attachment-gallery, but
+  # Pagecord renders galleries as a multi-column grid. Unwrap single-image
+  # galleries so the image stays full-width and centered.
+  doc.css("div.attachment-gallery").each do |gallery|
+    gallery.replace(gallery.children) if gallery.css("action-text-attachment").size <= 1
+  end
+
+  # Replace each attachment with its inner <figure>, pointing the image at the
+  # original file (the inline src is a data: URI placeholder for lazy loading).
+  doc.css("action-text-attachment").each do |attachment|
+    img = attachment.at_css("img")
+    if img
+      img["src"] = attachment["url"] || img["data-original-src"] || img["data-src"]
+      attachment.replace(attachment.at_css("figure") || img)
+    else
+      attachment.remove
+    end
+  end
+
+  doc.to_html
 end
 
 # Process article content: remove duplicate title and convert action-text-attachments to img tags

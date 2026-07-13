@@ -126,6 +126,7 @@ Rails.application.routes.draw do
       namespace :settings do
         resources :about, only: [ :index, :update ]
         resources :audience, only: [ :index ]
+        resources :subscribers, only: [ :index ]
         resources :users, only: [ :update, :destroy ]
         resources :blogs, only: [ :index, :update ]
         resources :appearance, only: [ :index, :update ]
@@ -285,6 +286,7 @@ Rails.application.routes.draw do
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 
     get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
+    get "/posts/:slug", to: "blogs/redirects#show"
 
     namespace :api do
       post "embeds/bandcamp", to: "embeds#bandcamp"
