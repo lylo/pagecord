@@ -22,6 +22,12 @@ Send an email to your posting address:
 
 Your post is published immediately.
 
+## Saving as a draft
+
+If you'd rather save a post without publishing it, add `+draft` to your delivery address, just before the `@`. So `myblog_abc123@post.pagecord.com` becomes `myblog_abc123+draft@post.pagecord.com`.
+
+The post is created as a draft, ready for you to review, edit and publish from the app whenever you're ready.
+
 ## Formatting
 
 The email body is converted to rich text. You can use basic HTML formatting if your email client supports it (most do).
@@ -61,5 +67,5 @@ If your post doesn't appear:
 
 - Check the email was sent from the right email address. This must be the email address you signed up with! This is the most common issue people face. You can add up to three additional sender email addresses in the settings so you can publish from different addresses.Look in your spam folder for any bounce messages
 
-Posts from email are published immediately – there's no draft state. If you need to edit, you can do so in the app after it's published.
+Posts from email are published immediately, unless you send them to your `+draft` address (see above). If you need to edit, you can do so in the app at any time.
 
