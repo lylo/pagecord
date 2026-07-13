@@ -15,8 +15,11 @@ class Home::SpotlightController < ApplicationController
         @posts = spotlight_items
       end
       format.rss do
-        @posts = feed_posts
-        render :show, layout: false
+        body = Rails.cache.fetch([ "spotlight_rss", selected_tab, spotlight_refresh_window ], expires_in: CACHE_TTL) do
+          @posts = feed_posts
+          render_to_string :show, layout: false
+        end
+        render xml: body, content_type: "application/rss+xml"
       end
     end
   end
@@ -30,7 +33,7 @@ class Home::SpotlightController < ApplicationController
     def feed_posts
       # Trending stores score hashes; RSS needs render-ready posts with rich text loaded.
       posts = spotlight_items.map { |item| item[:post] }
-      posts_by_id = Post.where(id: posts.map(&:id)).for_blog_render.includes(:blog).index_by(&:id)
+      posts_by_id = Post.where(id: posts.map(&:id)).for_blog_render.includes(blog: :user).index_by(&:id)
 
       posts.filter_map { |post| posts_by_id[post.id] }
     end
