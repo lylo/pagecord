@@ -1,5 +1,5 @@
 <div class="space-y-8">
-  <%= settings_section "Exports", description: "Download a ZIP archive of your posts" do %>
+  <%= settings_section "Exports", description: "Download a ZIP archive of your posts. Videos are not currently included in exports." do %>
     <%= settings_row "New Export", stacked: true do %>
       <%= form_with model: Blog::Export.new, url: app_settings_exports_path, local: true, class: "space-y-4" do |form| %>
         <fieldset class="space-y-3">
@@ -27,8 +27,6 @@
         </fieldset>
 
         <%= form.submit "💾 Generate New Export", class: "btn-primary" %>
-
-        <p class="text-sm italic text-slate-500 dark:text-slate-400">Note: Videos are not currently included in exports</p>
       <% end %>
     <% end %>
 
@@ -37,10 +35,7 @@
         <p class="text-slate-500 dark:text-slate-400">You have no exports yet.</p>
       <% else %>
         <p>
-          You have <%= pluralize @exports.size, "export" %>. Click to download the ZIP file.
-        </p>
-        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Exports are automatically deleted after 7 days.
+          You have <%= pluralize @exports.size, "export" %>. Click to download the ZIP file. Exports are automatically deleted after 7 days.
         </p>
 
         <%= render "exports" %>
