@@ -102,15 +102,14 @@
 
               <div class="mt-4 flex gap-3 <%= 'opacity-50' if disabled %>">
                 <div class="flex h-6 shrink-0 items-center">
-                  <%= check_box_tag :use_custom_robots_txt,
-                      "1",
-                      !disabled && saved_robots,
+                  <%= form.check_box :use_custom_robots_txt, {
+                      checked: !disabled && saved_robots,
                       disabled: disabled,
                       id: "use-custom-robots-txt",
-                      class: "form-checkbox h-5 w-5 rounded border-slate-300 text-slate-600 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600 disabled:cursor-not-allowed" %>
+                      class: "form-checkbox h-5 w-5 rounded border-slate-300 text-slate-600 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600 disabled:cursor-not-allowed" } %>
                 </div>
                 <div>
-                  <%= label_tag "use-custom-robots-txt", "Use custom crawler rules", class: "text-slate-800 dark:text-slate-100" %>
+                  <%= form.label :use_custom_robots_txt, "Use custom crawler rules", for: "use-custom-robots-txt", class: "text-slate-800 dark:text-slate-100" %>
                   <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                     <% if disabled %>
                       Customising crawler rules is available with a subscription.
@@ -118,7 +117,7 @@
                       Customise the crawler rules section of your <tt>robots.txt</tt> – for example, to unblock an AI crawler. The default rules (search engine access and your sitemap) always apply and can't be changed.
                     <% end %>
                   </p>
-                  <% if saved_robots %>
+                  <% if saved_robots && !disabled %>
                     <p class="hidden group-has-[#use-custom-robots-txt:not(:checked)]:block mt-2 text-sm text-amber-600 dark:text-amber-400">
                       Note: Unchecking this box and saving will restore Pagecord's default crawler rules.
                     </p>

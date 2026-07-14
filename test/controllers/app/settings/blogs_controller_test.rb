@@ -125,7 +125,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   test "should show custom robots controls for subscriber" do
     get app_settings_blogs_url
 
-    assert_select "input[name='use_custom_robots_txt']:not([disabled])", count: 1
+    assert_select "input[type='checkbox'][name='blog[use_custom_robots_txt]']:not([disabled])", count: 1
     assert_select "textarea#blog_custom_robots_txt", count: 1
   end
 
@@ -134,7 +134,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     get app_settings_blogs_url
 
-    assert_select "input[name='use_custom_robots_txt'][disabled]", count: 1
+    assert_select "input[type='checkbox'][name='blog[use_custom_robots_txt]'][disabled]", count: 1
     assert_select "p", /Customising crawler rules is available with a subscription/
   end
 
@@ -142,8 +142,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     custom_robots_txt = "User-agent: Bubbles\nAllow: /\n"
 
     patch app_settings_blog_url(@blog), params: {
-      blog: { custom_robots_txt: custom_robots_txt },
-      use_custom_robots_txt: "1"
+      blog: { custom_robots_txt: custom_robots_txt, use_custom_robots_txt: "1" }
     }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
@@ -154,17 +153,28 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     @blog.update!(custom_robots_txt: "User-agent: Bubbles\nAllow: /\n")
 
     patch app_settings_blog_url(@blog), params: {
-      blog: { custom_robots_txt: "User-agent: Bubbles\nAllow: /\n" }
+      blog: { custom_robots_txt: "User-agent: Bubbles\nAllow: /\n", use_custom_robots_txt: "0" }
     }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
     assert_nil @blog.reload.custom_robots_txt
   end
 
+  test "updating from a form without the robots checkbox preserves custom robots txt" do
+    custom_robots_txt = "User-agent: Bubbles\nAllow: /\n"
+    @blog.update!(custom_robots_txt: custom_robots_txt)
+
+    patch app_settings_blog_url(@blog), params: {
+      blog: { allow_search_indexing: true }
+    }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal custom_robots_txt, @blog.reload.custom_robots_txt
+  end
+
   test "subscriber save with invalid custom robots txt renders errors" do
     patch app_settings_blog_url(@blog), params: {
-      blog: { custom_robots_txt: "Host: example.com\n" },
-      use_custom_robots_txt: "1"
+      blog: { custom_robots_txt: "Host: example.com\n", use_custom_robots_txt: "1" }
     }, as: :turbo_stream
 
     assert_response :unprocessable_entity
@@ -175,8 +185,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     login_as users(:vivian)
 
     patch app_settings_blog_url(users(:vivian).blog), params: {
-      blog: { custom_robots_txt: "User-agent: Bubbles\nAllow: /\n" },
-      use_custom_robots_txt: "1"
+      blog: { custom_robots_txt: "User-agent: Bubbles\nAllow: /\n", use_custom_robots_txt: "1" }
     }, as: :turbo_stream
 
     assert_nil users(:vivian).blog.reload.custom_robots_txt

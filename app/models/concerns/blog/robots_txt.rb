@@ -4,6 +4,9 @@ module Blog::RobotsTxt
   MAX_CUSTOM_ROBOTS_TXT_BYTES = 10.kilobytes
 
   included do
+    attribute :use_custom_robots_txt, :boolean
+
+    before_validation :clear_custom_robots_txt, if: -> { use_custom_robots_txt == false }
     before_validation :normalize_custom_robots_txt
     validate :custom_robots_txt_valid
   end
@@ -13,6 +16,10 @@ module Blog::RobotsTxt
   end
 
   private
+
+    def clear_custom_robots_txt
+      self.custom_robots_txt = nil
+    end
 
     def normalize_custom_robots_txt
       return if custom_robots_txt.nil?
@@ -71,7 +78,7 @@ module Blog::RobotsTxt
     end
 
     def validate_path(value, directive, line_number)
-      return if directive.casecmp("disallow").zero? && value.blank?
+      return if directive.casecmp?("disallow") && value.blank?
       return if value.start_with?("/")
 
       errors.add(:custom_robots_txt, "has an invalid path on line #{line_number}")
