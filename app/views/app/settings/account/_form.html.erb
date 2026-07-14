@@ -26,11 +26,6 @@
             <% end %>
           </div>
       <% else %>
-        <p class="mb-4">
-          Enter your new email and click the Change Email button. You'll receive a verification email at the
-          new address to confirm the change.
-        </p>
-
         <%= form_with model: [:app, :settings, EmailChangeRequest.new] do |form| %>
           <div class="sm:flex items-center">
             <div>
@@ -43,6 +38,10 @@
             </div>
           </div>
         <% end %>
+
+        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          You'll receive a verification email at the new address to confirm the change.
+        </p>
       <% end %>
     <% end %>
 
@@ -101,10 +100,6 @@
             </div>
           <% end %>
         </div>
-      <% else %>
-        <p class="mb-4">
-          Add an address below and follow the verification instructions.
-        </p>
       <% end %>
 
       <%= form_with model: @sender_email_address, url: app_settings_sender_email_addresses_path, local: true do |form| %>
@@ -119,23 +114,25 @@
           </div>
         </div>
       <% end %>
+
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        You'll need to verify the address before it can post.
+      </p>
     <% end %>
   <% end %>
 
-  <%= settings_section "Danger Zone" do %>
+  <%= settings_section "Danger Zone", description: "These actions cannot be undone" do %>
     <%= settings_row "Delete Account", stacked: true do %>
-      <p>
-        You can delete your account by clicking the button below. Sorry to see you go!
-      </p>
+      <%= button_to app_settings_user_path(@user),
+            method: :delete,
+            data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
+            class: "btn-danger" do %>
+        Delete account
+      <% end %>
 
-      <div class="mt-4 flex gap-x-2 items-center">
-        <%= button_to app_settings_user_path(@user),
-              method: :delete,
-              data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
-              class: "btn-danger" do %>
-          Delete account
-        <% end %>
-      </div>
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        Your account and blog will be permanently deleted. Sorry to see you go!
+      </p>
     <% end %>
   <% end %>
 </div>
