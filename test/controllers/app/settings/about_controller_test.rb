@@ -12,15 +12,16 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get app_settings_about_index_url
 
-    assert_select "h3", { count: 1, text: "Bio" }
-    assert_select "h3", { count: 1, text: "Title" }
+    assert_select "h3", { count: 1, text: "About" }
+    assert_select "h4", { count: 1, text: "Bio" }
+    assert_select "h4", { count: 1, text: "Blog Title" }
     assert_response :success
   end
 
   test "should show avatar section if subscribed" do
     get app_settings_about_index_url
 
-    assert_select "h3", { count: 1, text: "Avatar" }
+    assert_select "h4", { count: 1, text: "Avatar" }
     assert_response :success
   end
 
@@ -29,7 +30,7 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
 
     get app_settings_about_index_url
 
-    assert_select "h3", { count: 1, text: "Avatar" }
+    assert_select "h4", { count: 1, text: "Avatar" }
     assert_select ".opacity-50.pointer-events-none", count: 1
     assert_response :success
   end
