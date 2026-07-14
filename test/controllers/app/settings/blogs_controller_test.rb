@@ -19,7 +19,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h4", { count: 1, text: "Google Site Verification" }
     assert_select "h4", { count: 1, text: "Links" }
     assert_select "h4", { count: 1, text: "Fediverse Author Attribution" }
-    assert_select "p", text: /Use the full handle, not your profile URL/
+    assert_select "p", text: /Your full Fediverse handle, not your profile URL/
     assert_select "input[name='blog[fediverse_author_attribution]'][placeholder='e.g. @you@mastodon.social']"
     assert_response :success
   end
