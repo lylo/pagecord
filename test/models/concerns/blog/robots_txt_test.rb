@@ -61,9 +61,9 @@ class Blog::RobotsTxtTest < ActiveSupport::TestCase
 
   test "custom robots txt validation rejects oversized content" do
     blog = blogs(:joel)
-    blog.custom_robots_txt = "User-agent: *\n#{"# padding\n" * 1100}"
+    blog.custom_robots_txt = "User-agent: *\n#{"# padding\n" * 3500}"
 
     assert_not blog.valid?
-    assert_includes blog.errors[:custom_robots_txt], "is too long (maximum 10 KB)"
+    assert_includes blog.errors[:custom_robots_txt], "is too long (maximum 32 KB)"
   end
 end

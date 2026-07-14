@@ -1,7 +1,7 @@
 module Blog::RobotsTxt
   extend ActiveSupport::Concern
 
-  MAX_CUSTOM_ROBOTS_TXT_BYTES = 10.kilobytes
+  MAX_CUSTOM_ROBOTS_TXT_BYTES = 32.kilobytes
 
   included do
     attribute :use_custom_robots_txt, :boolean
@@ -38,7 +38,7 @@ module Blog::RobotsTxt
       end
 
       if custom_robots_txt.bytesize > MAX_CUSTOM_ROBOTS_TXT_BYTES
-        errors.add(:custom_robots_txt, "is too long (maximum 10 KB)")
+        errors.add(:custom_robots_txt, "is too long (maximum #{ActiveSupport::NumberHelper.number_to_human_size(MAX_CUSTOM_ROBOTS_TXT_BYTES)})")
       end
 
       if custom_robots_txt.each_char.any? { |char| char.ord < 32 && char != "\n" && char != "\t" }
