@@ -24,6 +24,14 @@ module AppHelper
     content_tag :div, class: "rounded-lg border p-4 text-sm #{styles[type]}", &block
   end
 
+  def settings_section(title, &block)
+    render layout: "app/settings/section", locals: { title: title }, &block
+  end
+
+  def settings_row(title, hint: nil, **options, &block)
+    render layout: "app/settings/row", locals: { title: title, hint: hint, options: options }, &block
+  end
+
   def trial_callout(feature_name)
     return unless Current.user.on_trial?
 
