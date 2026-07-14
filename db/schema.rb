@@ -130,6 +130,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_13_120000) do
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
     t.text "custom_footer_html"
+    t.boolean "external_links_in_new_tab", default: false, null: false
     t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
