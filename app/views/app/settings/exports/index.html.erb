@@ -1,49 +1,50 @@
-<h3 class="mb-4 font-bold text-xl">Exports</h3>
+<div class="space-y-8">
+  <%= settings_section "Exports", description: "Download a ZIP archive of your posts" do %>
+    <%= settings_row "New Export", stacked: true do %>
+      <%= form_with model: Blog::Export.new, url: app_settings_exports_path, local: true, class: "space-y-4" do |form| %>
+        <fieldset class="space-y-3">
+          <legend class="text-sm font-medium text-slate-500 dark:text-slate-400">Format</legend>
+          <div class="flex flex-col sm:flex-row gap-y-2 sm:gap-x-4">
+            <div class="w-full flex border border-slate-200 dark:border-slate-700 rounded-lg items-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+              <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
+                <%= form.radio_button :format, 'html',
+                  checked: true,
+                  class: "peer w-4 h-4 border-slate-300 checked:border-sky-600 dark:checked:border-gray-600 ring-offset-0 ring-0 text-sky-600 dark:focus:ring-gray-800 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 cursor-pointer",
+                  id: "format_html" %>
+                <span>HTML</span>
+              </label>
+            </div>
 
-<div class="flex flex-col w-full">
-  <% if @exports.empty? %>
-    <div>You have no exports.</div>
-  <% else %>
-    <div>
-      <p>
-        You have <%= pluralize @exports.size, "export" %>. Click to download the ZIP file.
-      </p>
-
-      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-        (Exports are automatically deleted after 7 days)
-      </p>
-    </div>
-  <% end %>
-
-  <%= form_with model: Blog::Export.new, url: app_settings_exports_path, local: true, class: "space-y-4" do |form| %>
-    <div class="my-4 space-y-3">
-      <label class="block text-base font-medium">Export Format</label>
-      <div class="flex flex-col sm:flex-row gap-y-2 sm:gap-x-4">
-        <fieldset class="w-full flex border border-slate-200 dark:border-slate-700 rounded-lg items-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
-          <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
-            <%= form.radio_button :format, 'html',
-              checked: true,
-              class: "peer w-4 h-4 border-slate-300 checked:border-sky-600 dark:checked:border-gray-600 ring-offset-0 ring-0 text-sky-600 dark:focus:ring-gray-800 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 cursor-pointer",
-              id: "format_html" %>
-            <span>HTML</span>
-          </label>
+            <div class="w-full flex border border-slate-200 dark:border-slate-700 rounded-lg items-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+              <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
+                <%= form.radio_button :format, 'markdown',
+                  class: "peer w-4 h-4 border-slate-300 checked:border-sky-600 dark:checked:border-gray-600 ring-offset-0 ring-0 text-sky-600 dark:focus:ring-gray-800 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 cursor-pointer",
+                  id: "format_markdown" %>
+                <span>Markdown</span>
+              </label>
+            </div>
+          </div>
         </fieldset>
 
-        <fieldset class="w-full flex border border-slate-200 dark:border-slate-700 rounded-lg items-center hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
-          <label class="text-slate-900 dark:text-slate-300 flex items-center space-x-2 w-full p-4 cursor-pointer">
-            <%= form.radio_button :format, 'markdown',
-              class: "peer w-4 h-4 border-slate-300 checked:border-sky-600 dark:checked:border-gray-600 ring-offset-0 ring-0 text-sky-600 dark:focus:ring-gray-800 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 cursor-pointer",
-              id: "format_markdown" %>
-            <span>Markdown</span>
-          </label>
-        </fieldset>
-      </div>
-    </div>
+        <%= form.submit "💾 Generate New Export", class: "btn-primary" %>
 
-    <%= form.submit "💾 Generate New Export", class: "mt-4 btn-primary" %>
+        <p class="text-sm italic text-slate-500 dark:text-slate-400">Note: Videos are not currently included in exports</p>
+      <% end %>
+    <% end %>
 
-    <p class="text-sm italic text-slate-500 dark:text-slate-400">Note: Videos are not currently included in exports</p>
+    <%= settings_row "Your Exports", stacked: true do %>
+      <% if @exports.empty? %>
+        <p class="text-slate-500 dark:text-slate-400">You have no exports yet.</p>
+      <% else %>
+        <p>
+          You have <%= pluralize @exports.size, "export" %>. Click to download the ZIP file.
+        </p>
+        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          Exports are automatically deleted after 7 days.
+        </p>
+
+        <%= render "exports" %>
+      <% end %>
+    <% end %>
   <% end %>
 </div>
-
-<%= render "exports" unless @exports.empty? %>
