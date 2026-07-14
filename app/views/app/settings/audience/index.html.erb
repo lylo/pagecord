@@ -76,7 +76,7 @@
     <% end %>
 
     <%= settings_section "Engagement", description: "Ways for readers to respond to your posts. Your email address is never revealed, and only you can see your numbers" do %>
-      <%= settings_row "Reply by Email" do %>
+      <%= settings_row "Reply by Email", stacked: true do %>
         <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
           <div class="flex h-6 shrink-0 items-center">
             <%= styled_check_box form, :reply_by_email, checked: @blog.reply_by_email, disabled: features_disabled %>
@@ -85,16 +85,16 @@
         </div>
       <% end %>
 
-      <%= settings_row "Post Likes" do %>
+      <%= settings_row "Post Likes", stacked: true do %>
         <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
           <div class="flex h-6 shrink-0 items-center">
             <%= styled_check_box form, :show_upvotes, checked: @blog.show_upvotes, disabled: features_disabled %>
           </div>
-          <%= form.label :show_upvotes, "Show a like button ❤️ next to each post", class: "text-slate-800 dark:text-slate-100" %>
+          <%= form.label :show_upvotes, "Show a ❤️ button next to each post to receive appreciation", class: "text-slate-800 dark:text-slate-100" %>
         </div>
       <% end %>
 
-      <%= settings_row "Analytics" do %>
+      <%= settings_row "Analytics", stacked: true do %>
         <div class="flex gap-3">
           <div class="flex h-6 shrink-0 items-center">
             <%= styled_check_box form, :show_metrics, checked: @blog.show_metrics %>
