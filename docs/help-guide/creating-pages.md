@@ -37,9 +37,9 @@ Once you've created a page, you can add it to your blog's header navigation. See
 
 Common pages people create:
 
-- **About** — Tell readers who you are
-- **Archive** — A full list of posts using `{{ posts_by_year }}`
-- **Now** — What you're currently up to (a [/now page](https://nownownow.com/about))
-- **Uses** — Tools and software you use
-- **Contact** — How to get in touch
+- **About** – Tell readers who you are
+- **Archive** – A full list of posts using `{{ posts_by_year }}`
+- **Now** – What you're currently up to (a [/now page](https://nownownow.com/about))
+- **Uses** – Tools and software you use
+- **Contact** – How to get in touch
 

@@ -67,4 +67,44 @@ class Analytics::ChartTest < ActiveSupport::TestCase
     current_month_data = chart_data.find { |month| month[:date].month == recent_time.month }
     assert_equal 1, current_month_data[:unique_page_views]
   end
+
+  test "month chart groups raw page views in the user's timezone" do
+    chart = Analytics::Chart.new(@blog, "America/New_York")
+
+    PageView.create!(
+      blog: @blog,
+      visitor_hash: "new_york_late_visitor",
+      user_agent: "Test Browser",
+      is_unique: true,
+      viewed_at: Time.utc(2026, 5, 2, 3, 30)
+    )
+
+    chart_data = chart.chart_data("month", Date.new(2026, 5, 1), nil)
+
+    may_first = chart_data.find { |day| day[:date] == Date.new(2026, 5, 1) }
+    may_second = chart_data.find { |day| day[:date] == Date.new(2026, 5, 2) }
+
+    assert_equal 1, may_first[:unique_page_views]
+    assert_equal 0, may_second[:unique_page_views]
+  end
+
+  test "year chart groups raw page views by local month" do
+    chart = Analytics::Chart.new(@blog, "America/Los_Angeles")
+
+    PageView.create!(
+      blog: @blog,
+      visitor_hash: "los_angeles_month_visitor",
+      user_agent: "Test Browser",
+      is_unique: true,
+      viewed_at: Time.utc(2026, 6, 1, 6, 30)
+    )
+
+    chart_data = chart.chart_data("year", Date.new(2026, 1, 1), nil)
+
+    may = chart_data.find { |month| month[:date] == Date.new(2026, 5, 1) }
+    june = chart_data.find { |month| month[:date] == Date.new(2026, 6, 1) }
+
+    assert_equal 1, may[:unique_page_views]
+    assert_equal 0, june[:unique_page_views]
+  end
 end

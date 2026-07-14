@@ -1,5 +1,6 @@
 <%= link_to post_upvotes_path(post),
             class: "upvote",
+            rel: "nofollow",
             data: { turbo_method: :post, controller: "upvote", action: "click->upvote#pulse", upvote_token_value: post.token },
             title: "Click to like this post",
             aria: { label: "Like this post" } do %>

@@ -1,4 +1,4 @@
-<div class="mx-auto max-w-2xl w-full text-slate-950 dark:text-slate-50">
+<div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50">
   <div class="my-8">
     <div class="mb-8">
       <% if @pages.empty? && @drafts.empty? %>
@@ -117,7 +117,7 @@
       </div>
     <% end %>
 
-    <% trashed_count = Current.user.blog.pages.discarded.count %>
+    <% trashed_count = @blog.pages.discarded.count %>
     <% if trashed_count > 0 %>
       <div class="mt-8 pt-4 border-t border-slate-200 dark:border-slate-700">
         <%= link_to app_pages_trash_path, class: "inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300" do %>

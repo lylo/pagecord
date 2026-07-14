@@ -80,6 +80,26 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_nil vivian_blog.reload.custom_css
   end
 
+  test "should update custom_footer_html if user has premium access" do
+    custom_footer_html = '<a href="https://example.com" target="_blank">Example</a>'
+
+    patch app_settings_appearance_url(@blog), params: { blog: { custom_footer_html: custom_footer_html } }, as: :turbo_stream
+
+    assert_response :success
+    assert_equal custom_footer_html, @blog.reload.custom_footer_html
+  end
+
+  test "should not update custom_footer_html if user does not have premium access" do
+    login_as users(:vivian)
+    vivian_blog = users(:vivian).blog
+    custom_footer_html = '<a href="https://example.com">Example</a>'
+
+    patch app_settings_appearance_url(vivian_blog), params: { blog: { custom_footer_html: custom_footer_html } }, as: :turbo_stream
+
+    assert_response :success
+    assert_nil vivian_blog.reload.custom_footer_html
+  end
+
   test "should show validation error for malicious custom css" do
     malicious_css = ".blog { color: red; }</style><script>alert(1)</script>"
 

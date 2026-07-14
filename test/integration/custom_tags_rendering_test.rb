@@ -90,6 +90,98 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select "ul.tag-list"
   end
 
+  test "renders table_of_contents tag from page headings" do
+    page = @blog.pages.create!(
+      title: "Manual",
+      content: <<~HTML,
+        <h1>Manual</h1>
+        {{ table_of_contents }}
+        <h2>Getting started</h2>
+        <h3>Posting by email</h3>
+        <h2>Settings</h2>
+      HTML
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "ol.table-of-contents", count: 1
+    assert_select "ol.table-of-contents li", count: 3
+    assert_select "ol.table-of-contents li.toc-h2 a[href='#getting-started']", "Getting started"
+    assert_select "ol.table-of-contents li.toc-h3 a[href='#posting-by-email']", "Posting by email"
+    assert_select "ol.table-of-contents li.toc-h2 a[href='#settings']", "Settings"
+    assert_select "ol.table-of-contents > li.toc-h2 > ol > li.toc-h3", count: 1
+    assert_select "ol.table-of-contents li.toc-h1", count: 0
+  end
+
+  test "table_of_contents tag preserves heading order" do
+    page = @blog.pages.create!(
+      title: "Ordered",
+      content: "<p>{{ table_of_contents }}</p><h2>First</h2><h3>Second</h3><h2>Third</h2>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    doc = Nokogiri::HTML(response.body)
+    assert_equal [ "First", "Second", "Third" ], doc.css("ol.table-of-contents a").map(&:text)
+  end
+
+  test "table_of_contents tag can render its own heading" do
+    page = @blog.pages.create!(
+      title: "Manual",
+      content: %(<p>{{ table_of_contents | heading: "Table of contents" }}</p><h2>Getting started</h2>),
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "h2.table-of-contents-heading", "Table of contents"
+    assert_select "ol.table-of-contents a[href='#table-of-contents']", count: 0
+    assert_select "ol.table-of-contents a[href='#getting-started']", "Getting started"
+  end
+
+  test "table_of_contents tag renders nothing without matching headings" do
+    page = @blog.pages.create!(title: "No TOC", content: "<p>{{ table_of_contents }}</p><h1>Only H1</h1>", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "ol.table-of-contents", count: 0
+    assert_not_includes response.body, "{{ table_of_contents }}"
+  end
+
+  test "does not process table_of_contents tag in regular posts" do
+    post = @blog.posts.create!(
+      title: "Regular Post",
+      content: "<p>{{ table_of_contents }}</p><h2>Heading</h2>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_response :success
+    assert_includes response.body, "{{ table_of_contents }}"
+    assert_select "ol.table-of-contents", count: 0
+  end
+
+  test "does not process table_of_contents tag inside code" do
+    page = @blog.pages.create!(
+      title: "TOC Code",
+      content: "<p><code>{{ table_of_contents }}</code></p><pre><code>{{ table_of_contents }}</code></pre><h2>Heading</h2>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "code", text: /{{ table_of_contents }}/, count: 2
+    assert_select "ol.table-of-contents", count: 0
+  end
+
   test "renders tags with inline style" do
     page = @blog.pages.create!(title: "Tags Inline", content: "{{ tags | style: inline }}", status: :published)
 
@@ -548,7 +640,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
 
   test "renders contact_form tag for premium user" do
     assert @user.has_premium_access?
-    @blog.update!(features: [ "contact_form" ])
 
     page = @blog.pages.create!(title: "Contact", content: "{{ contact_form }}", status: :published)
 

@@ -1,15 +1,26 @@
 ---
 title: "Using Custom CSS for advanced customisation"
 published: true
+attachments:
+  gallery-title-below:
+    file: images/dynamic-variables/gallery-title-below.webp
+    sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjE1NTg_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--338460c18413e4c94e4d4831c139ebd65b457be0"
+  gallery-title-overlay:
+    file: images/dynamic-variables/gallery-title-overlay.webp
+    sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjE1NTk_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--48190830675270a6240c192c85157b6be56a062c"
 ---
 
-Custom CSS is an advanced feature that gives you finer control over the look and feel of your blog. You can change fonts, colors, adjust spacing, hide elements and more.
+Custom CSS is an advanced feature that gives you finer control over the look and feel of your blog. You can change fonts, colours, adjust spacing, hide elements and more.
 
 **New to Custom CSS?** Try the [Theme Garden](https://pagecord.com/app/settings/theme_garden) first – it has curated CSS templates you can preview and apply with one click, no coding required.
 
+<div>
+{{ table_of_contents | heading: "Table of Contents" }}
+</div>
+
 ### A Quick Note
 
-Pagecord is small business. It's not possible to offer customer support with writing or debugging custom CSS — you're on your own with this one!
+Pagecord is a small business. It's not possible to offer customer support with writing or debugging custom CSS – you're on your own with this one!
 
 If you're new to CSS, check out the [MDN CSS First Steps guide](https://developer.mozilla.org/en-US/docs/Learn/CSS/First_steps).
 
@@ -48,7 +59,7 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ │ │ .post-title                                  │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
-│ │ │ │ .lexxy-content (The post body text)          │ │ │ │
+│ │ │ │ .post-body (The post body text)              │ │ │ │
 │ │ │ └──────────────────────────────────────────────┘ │ │ │
 │ │ │ ┌──────────────────────────────────────────────┐ │ │ │
 │ │ │ │ <footer> (Date, tags, and actions)           │ │ │ │
@@ -56,7 +67,7 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ └──────────────────────────────────────────────────┘ │ │
 │ │                                                      │ │
 │ │ ┌──────────────────────────────────────────────────┐ │ │
-│ │ │ .blog-footer (Pagecord branding)                 │ │ │
+│ │ │ .blog-footer (Custom footer and Pagecord logo)   │ │ │
 │ │ └──────────────────────────────────────────────────┘ │ │
 │ └──────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────┘
@@ -64,7 +75,16 @@ To help you know which elements to target, here is a visual map of the blog page
 
 ## Where to add the custom CSS
 
-Head to `Settings > Appearance` and scroll to the "Custom CSS" section. Paste your CSS code into the text area provided and click Update.
+Head to `Settings > Appearance` and scroll to the "Custom CSS" section. Paste your CSS code into the text area provided and click **Save Custom CSS**.
+
+Custom CSS is available to customers with premium access. Your CSS is inserted into the `<head>` of your blog pages and is only rendered while your account has premium access.
+
+For safety, Pagecord validates custom CSS before saving it:
+
+- The maximum size is 16KB
+- `@import` is only allowed for HTTPS URLs from Google Fonts and Bunny Fonts
+- CSS custom properties, logical properties, `@supports`, and `@layer` are supported
+- Unsafe content, invalid import URLs, and unsupported syntax such as nested CSS are rejected
 
 ## Examples
 
@@ -75,20 +95,48 @@ Here are some examples of CSS snippets you can use to customise your blog.
 Pagecord has three lovely default fonts: Sans-Serif (Inter), Serif (Lora), and Monospace (IBM Plex Mono). If you'd like to use a different font, you can import it from [Google Fonts](https://fonts.google.com/) or [Bunny Fonts](https://fonts.bunny.net/) (the only providers supported). Here's an example of using the "Lato" font from Google Fonts which is a solid alternative sans-serif choice:
 
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 
 body {
   font-family: Lato, sans-serif;
 }
 ```
 
-### Change the size of the body font
+### Change the size of your blog text
 
-While Pagecord defaults to industry-standard font sizes, you might prefer your fonts to be slightly larger. Try this:
+Pagecord uses your browser's normal text size by default, which is usually 16px. If you'd like your whole blog to feel slightly larger, adjust Pagecord's base font size:
+
+```css
+:root {
+  --font-size-base: 112.5%;
+}
+```
+
+That makes the default text size 18px for readers whose browser default is 16px, while still respecting readers who have changed their browser's text size.
+
+If your text only feels a little small on mobile, you can make a smaller adjustment just for narrow screens:
+
+```css
+@media (max-width: 640px) {
+  :root {
+    --font-size-base: 106.25%;
+  }
+}
+```
+
+If you only want to change posts and pages, you can target `article`:
 
 ```css
 article {
-  font-size: 1.2rem;
+  font-size: 1.125em;
+}
+```
+
+If you want to change only the authored post or page body, target `.post-body` instead:
+
+```css
+.post-body {
+  font-size: 1.125em;
 }
 ```
 
@@ -190,18 +238,18 @@ By default the border is just a straight line. You can use CSS to create a more 
 
 ```css
 header hr {
-	border: none;
+  border: none;
   text-align: center;
   background: linear-gradient(var(--color-border), var(--color-border)) center / 40% 1px no-repeat;
   margin: 2rem 0;
 }
 
 header hr::before {
-	content: "☆";
+  content: "☆";
   color: var(--color-text-muted);
   background: var(--color-bg);
   padding: 0 0.5em;
-  font-size: 0.75em
+  font-size: 0.75em;
 }
 ```
 
@@ -260,7 +308,7 @@ a.reply-by-email .icon {
 }
 ```
 
-### Add text to the upvote button
+### Add text to the upvote button
 
 You can add text next to the upvote icon like this:
 
@@ -277,15 +325,15 @@ If you prefer the post footer items (date, tags, actions) to be stacked vertical
 
 ```css
 article footer {
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 0.25rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
 }
 
 article footer .post-actions {
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 0.25rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
 }
 ```
 
@@ -364,10 +412,10 @@ Adjust `600px` to your preferred breakpoint.
 
 The `{{ posts | style: gallery }}` dynamic variable renders posts as a grid of square thumbnails. You can target the following classes:
 
-- `.posts-gallery` — the grid container
-- `.posts-gallery-item` — each tile (an `<a>` linking to the post)
-- `.posts-gallery-image` — the wrapper around the thumbnail
-- `.posts-gallery-title` — the post title (hidden by default)
+- `.posts-gallery` – the grid container
+- `.posts-gallery-item` – each tile (an `<a>` linking to the post)
+- `.posts-gallery-image` – the wrapper around the thumbnail
+- `.posts-gallery-title` – the post title (hidden by default)
 
 **Change the number of columns:**
 
@@ -393,6 +441,8 @@ The `{{ posts | style: gallery }}` dynamic variable renders posts as a grid of s
   font-size: 0.875rem;
 }
 ```
+
+{{ attachment: gallery-title-below }}
 
 **Show the post title inside the image:**
 
@@ -421,9 +471,11 @@ This keeps the label background transparent at the top while adding contrast beh
 }
 ```
 
+{{ attachment: gallery-title-overlay }}
+
 ### Adding a background image to your blog
 
-You can set a background image so that it fits the viewport and scales nicely. It can be unreliable to rely on a 3rd party URL for the image, so I would recommend creating page on your Pagecord blog and upload your background image of choice to it. View the page, then copy the link to the image and then reference that image in your CSS.
+You can set a background image so that it fits the viewport and scales nicely. It can be unreliable to rely on a 3rd party URL for the image, so I would recommend creating a page on your Pagecord blog and uploading your background image there. View the page, copy the image URL, then reference that image in your CSS.
 
 
 ```css
@@ -451,6 +503,8 @@ Another nice touch is to make the blog background slightly transparent to allow 
 
 ```css
 .blog {
-  opacity: 0.9;
+  background-color: rgb(255 255 255 / 0.9);
 }
 ```
+
+Using `opacity` on `.blog` would also make your text and images transparent, so prefer setting a translucent background colour instead.

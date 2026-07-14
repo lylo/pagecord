@@ -3,10 +3,10 @@
 # Entry points - each preloads only for itself
 pin "application", preload: "application"
 pin "blog", preload: "blog"
-pin "home", preload: "home"
+pin "sessions", preload: "sessions"
 
-# Core dependencies - always preloaded
-pin "@hotwired/turbo-rails", to: "turbo.min.js"
+# Core dependencies
+pin "@hotwired/turbo-rails", to: "turbo.min.js", preload: %w[application blog sessions]
 pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 

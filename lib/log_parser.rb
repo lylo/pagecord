@@ -2,7 +2,24 @@ require "zlib"
 require "time"
 
 class LogParser
-  Entry = Struct.new(:timestamp, :level, :uuid, :host, :ip, :user_agent, :line_type, :detail, keyword_init: true)
+  Entry = Struct.new(
+    :timestamp,
+    :level,
+    :uuid,
+    :host,
+    :ip,
+    :user_agent,
+    :line_type,
+    :detail,
+    :status,
+    :duration_ms,
+    :views_ms,
+    :active_record_ms,
+    :query_count,
+    :cached_query_count,
+    :gc_ms,
+    keyword_init: true
+  )
 
   # line_type is one of :started, :processing, :completed, :other
   # detail holds the type-specific info:
@@ -28,7 +45,7 @@ class LogParser
 
   STARTED_RE    = /Started\s+(\w+)\s+"([^"]+)"/
   PROCESSING_RE = /Processing\s+by\s+(\S+)/
-  COMPLETED_RE  = /Completed\s+(.*)/
+  COMPLETED_RE  = /Completed\s+(?<status>\d{3})\s+(?<status_text>.*?)\s+in\s+(?<duration>[\d.]+)ms(?:\s+\((?<breakdown>.*)\))?/
 
   def self.each_entry(*paths, &block)
     return enum_for(:each_entry, *paths) unless block_given?
@@ -132,7 +149,7 @@ class LogParser
     ts = Time.strptime(m[:ts], TS_FORMAT) rescue nil
 
     body = m[:body]
-    line_type, detail = classify_body(body)
+    line_type, detail, attributes = classify_body(body)
 
     Entry.new(
       timestamp: ts,
@@ -142,20 +159,46 @@ class LogParser
       ip: m[:ip],
       user_agent: m[:ua],
       line_type: line_type,
-      detail: detail
+      detail: detail,
+      **attributes
     )
   end
 
   def self.classify_body(body)
     if (sm = STARTED_RE.match(body))
-      [ :started, "#{sm[1]} #{sm[2]}" ]
+      [ :started, "#{sm[1]} #{sm[2]}", {} ]
     elsif (pm = PROCESSING_RE.match(body))
-      [ :processing, pm[1] ]
+      [ :processing, pm[1], {} ]
     elsif (cm = COMPLETED_RE.match(body))
-      [ :completed, cm[1] ]
+      detail = "#{cm[:status]} #{cm[:status_text]} in #{cm[:duration]}ms"
+      [ :completed, detail, completed_attributes(cm) ]
     else
-      [ :other, body ]
+      [ :other, body, {} ]
     end
+  end
+
+  def self.completed_attributes(match)
+    breakdown = match[:breakdown].to_s
+
+    {
+      status: match[:status].to_i,
+      duration_ms: match[:duration].to_f,
+      views_ms: duration_component(breakdown, "Views"),
+      active_record_ms: duration_component(breakdown, "ActiveRecord"),
+      query_count: query_count_component(breakdown, 1),
+      cached_query_count: query_count_component(breakdown, 2),
+      gc_ms: duration_component(breakdown, "GC")
+    }
+  end
+
+  def self.duration_component(breakdown, name)
+    match = breakdown.match(/#{Regexp.escape(name)}:\s+([\d.]+)ms/)
+    match[1].to_f if match
+  end
+
+  def self.query_count_component(breakdown, index)
+    match = breakdown.match(/ActiveRecord:\s+[\d.]+ms\s+\((\d+)\s+queries,\s+(\d+)\s+cached\)/)
+    match[index].to_i if match
   end
 
   # Iterates over all discovered log files, yielding each IO.

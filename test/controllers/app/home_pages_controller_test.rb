@@ -15,6 +15,10 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
   test "should get new" do
     get new_app_home_page_url
     assert_response :success
+    assert_select "button[aria-label='Page ideas and help']"
+    assert_includes response.body, "{{ posts | limit: 5 }}"
+    assert_includes response.body, "https://help.pagecord.com/dynamic-variables-for-pages#recent-posts-on-your-home-page"
+    assert_includes response.body, "https://help.pagecord.com/dynamic-variables-for-pages#posts-by-year"
   end
 
   # Create action
@@ -82,6 +86,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
 
     get edit_app_home_page_url
     assert_response :success
+    assert_select "button[aria-label='Page ideas and help']"
   end
 
   test "should redirect to new when home page does not exist" do

@@ -43,7 +43,7 @@
 
   <div class="form-field">
     <%= form.label :message, t('email_form.form.message_label') %>
-    <%= form.text_area :message, rows: 6, required: true %>
+    <%= form.text_area :message, rows: 6, required: true, class: "autogrow" %>
     <% if @reply.errors[:message].any? %>
       <span class="form-error"><%= @reply.errors.full_messages_for(:message).first %></span>
     <% end %>

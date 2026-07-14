@@ -68,6 +68,50 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "Card hidden text."
   end
 
+  test "cards layout should render a video preview for video-only posts" do
+    @blog.cards_layout!
+    ActiveStorage::Previewer::VideoPreviewer.stubs(:accept?).returns(true)
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new("video"),
+      filename: "clip.mov",
+      content_type: "video/quicktime"
+    )
+    @blog.posts.create!(
+      title: "Video Card Post",
+      content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select ".post-card-summary img", minimum: 1
+    assert_select "video.post-card-video", count: 0
+    assert_not_includes @response.body, "[clip.mov]"
+  end
+
+  test "cards layout should keep text preview for posts with text and video" do
+    @blog.cards_layout!
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new("video"),
+      filename: "clip.mov",
+      content_type: "video/quicktime"
+    )
+    @blog.posts.create!(
+      title: "Text and Video Card Post",
+      content: %(<p>Visible card text.</p><action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_includes @response.body, "Visible card text."
+    assert_select "video.post-card-video", count: 0
+  end
+
   test "should show email subscription form on index" do
     get blog_posts_path
 
@@ -147,6 +191,20 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, "Show teaser text."
     assert_includes @response.body, "Show full text."
     assert_not_includes @response.body, "{{ more }}"
+  end
+
+  test "show should render a collapsible details section" do
+    post = @blog.posts.create!(
+      title: "Collapsible Show Post",
+      content: "<details open><summary>Read more</summary><p>Hidden detail.</p></details>",
+      status: :published
+    )
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "details[open] > summary", text: "Read more"
+    assert_select "details > p", text: "Hidden detail."
   end
 
   test "should treat app as a post slug on blog subdomains" do
@@ -286,6 +344,13 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should redirect to root if blog not found" do
     host_subdomain! "nope"
+
+    get blog_posts_path
+    assert_redirected_to "http://www.example.com/"
+  end
+
+  test "should redirect to root if blog is discarded" do
+    @blog.discard!
 
     get blog_posts_path
     assert_redirected_to "http://www.example.com/"
@@ -577,6 +642,28 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
   end
 
+  test "should not redirect from default domain to custom domain after grace period" do
+    @blog = blogs(:annie)
+    @blog.user.subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
+    host! "#{@blog.subdomain}.example.com"
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_response :success
+  end
+
+  test "should redirect from lapsed custom domain to default domain after grace period" do
+    @blog = blogs(:annie)
+    @blog.user.subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
+    host! @blog.custom_domain
+    post = @blog.posts.visible.first
+
+    get "/#{post.slug}"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{post.slug}"
+  end
+
   test "should redirect from www variant to canonical custom domain" do
     @blog = blogs(:annie)
     @blog.update!(custom_domain: "example.blog")
@@ -845,11 +932,11 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "time[datetime$='T19:45:00Z']"
   end
 
-  test "should pagecord branding" do
+  test "should show pagecord branding" do
     get blog_posts_path
 
     assert_response :success
-    assert_select "footer a[id=brand]", count: 1
+    assert_select "footer a[id=brand][aria-label='Pagecord Home'] svg", count: 1
   end
 
   test "should hide pagecord branding when show_branding off" do
@@ -1288,10 +1375,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   private
-
-    def host_subdomain!(name)
-      host! "#{name}.#{Rails.application.config.x.domain}"
-    end
 
     def create_content_with_attachment(blog:, title:, caption:, is_page: false)
       blob = ActiveStorage::Blob.create_and_upload!(

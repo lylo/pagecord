@@ -21,6 +21,21 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "email", user.blog.posts.last.source
   end
 
+  test "should save as draft when delivered to the +draft address" do
+    user = users(:joel)
+
+    assert_difference -> { user.blog.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.blog.delivery_email.sub("@", "+draft@"),
+        from: user.email,
+        reply_to: user.email,
+        subject: "Hello world!",
+        body: "Hello?"
+    end
+
+    assert user.blog.posts.last.draft?
+  end
+
   test "should receive valid HTML mail from HEY" do
     user = users(:joel)
     raw_mail = File.read(Rails.root.join("test/fixtures/emails/hey.eml"))

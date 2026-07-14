@@ -1,0 +1,24 @@
+<%# locals: (blog:, size: "md") %>
+<% sizes = { "sm" => "w-7 h-7 text-xs", "md" => "w-9 h-9 text-sm" } %>
+<% colors = [
+  "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/45 dark:text-emerald-200",
+  "bg-sky-100 text-sky-700 dark:bg-sky-900/45 dark:text-sky-200",
+  "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/45 dark:text-indigo-200",
+  "bg-rose-100 text-rose-700 dark:bg-rose-900/45 dark:text-rose-200",
+  "bg-amber-100 text-amber-800 dark:bg-amber-900/45 dark:text-amber-200",
+  "bg-teal-100 text-teal-700 dark:bg-teal-900/45 dark:text-teal-200",
+  "bg-purple-100 text-purple-700 dark:bg-purple-900/45 dark:text-purple-200",
+  "bg-slate-100 text-slate-700 dark:bg-slate-700/70 dark:text-slate-200"
+] %>
+<% classes = "#{sizes[size]} rounded-full overflow-hidden flex items-center justify-center font-bold shrink-0" %>
+
+<% if blog.avatar.attached? %>
+  <div class="<%= classes %> ring-1 ring-black/10 dark:ring-white/15">
+    <%= image_tag resized_image_url(blog.avatar, width: 72, height: 72),
+        class: "object-cover w-full h-full", alt: blog.display_name %>
+  </div>
+<% else %>
+  <div class="<%= classes %> <%= colors[blog.id.to_i % colors.size] %>">
+    <span><%= (blog.subdomain.presence || "?")[0].upcase %></span>
+  </div>
+<% end %>

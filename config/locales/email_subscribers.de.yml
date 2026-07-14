@@ -8,6 +8,7 @@ de:
       submit_button: "Abonnieren"
     create:
       success_message: "Danke fürs Abonnieren. Eine Bestätigungs-E-Mail ist unterwegs an %{email}"
+      rate_limit_message: "Zu viele Versuche. Bitte versuche es später erneut."
     confirmations:
       success_message:
         digest: "Dein Abonnement bei %{blog_name} ist bestätigt. Du erhältst eine wöchentliche E-Mail-Zusammenfassung, wenn neue Beiträge veröffentlicht werden."

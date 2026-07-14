@@ -1,22 +1,6 @@
 require "test_helper"
 
 class Blog::RobotsTxtTest < ActiveSupport::TestCase
-  test "generated robots txt preserves existing discoverable behavior" do
-    robots_txt = blogs(:joel).generated_robots_txt(sitemap_url: "https://joel.example.com/sitemap.xml")
-
-    assert_includes robots_txt, "User-agent: *\nAllow: /"
-    assert_includes robots_txt, "Sitemap: https://joel.example.com/sitemap.xml"
-    assert_includes robots_txt, "User-agent: GPTBot\nDisallow: /"
-    assert_not_includes robots_txt, "Last updated:"
-  end
-
-  test "generated robots txt disallows all when search indexing is disabled" do
-    blog = blogs(:joel)
-    blog.allow_search_indexing = false
-
-    assert_equal "User-agent: *\nDisallow: /\n", blog.generated_robots_txt(sitemap_url: "https://joel.example.com/sitemap.xml")
-  end
-
   test "custom robots txt is only active for subscribers" do
     subscribed_blog = blogs(:joel)
     free_blog = blogs(:vivian)
@@ -25,8 +9,8 @@ class Blog::RobotsTxtTest < ActiveSupport::TestCase
     subscribed_blog.custom_robots_txt = custom_robots_txt
     free_blog.custom_robots_txt = custom_robots_txt
 
-    assert_equal custom_robots_txt, subscribed_blog.robots_txt(sitemap_url: "https://joel.example.com/sitemap.xml")
-    assert_includes free_blog.robots_txt(sitemap_url: "https://vivian.example.com/sitemap.xml"), "User-agent: GPTBot"
+    assert subscribed_blog.custom_robots_txt_active?
+    assert_not free_blog.custom_robots_txt_active?
   end
 
   test "blank custom robots txt normalizes to nil" do
@@ -43,13 +27,26 @@ class Blog::RobotsTxtTest < ActiveSupport::TestCase
     assert blog.valid?
   end
 
+  test "custom robots txt allows user agents with spaces" do
+    blog = blogs(:joel)
+    blog.custom_robots_txt = "User-agent: Kangaroo Bot\nDisallow: /\n"
+
+    assert blog.valid?
+  end
+
+  test "default crawler rules are valid custom robots txt" do
+    blog = blogs(:joel)
+    blog.custom_robots_txt = ApplicationController.render(partial: "blogs/robots/ai_training_crawlers", formats: :text)
+
+    assert blog.valid?
+  end
+
   test "custom robots txt validation rejects unsafe or unsupported content" do
     invalid_values = [
       "Host: example.com\n",
-      "User-agent: Bad Bot\nDisallow: /\n",
+      "Sitemap: https://example.com/sitemap.xml\n",
       "User-agent: *\nAllow: posts\n",
-      "User-agent: *\nSitemap: javascript:alert(1)\n",
-      "User-agent: *\nDisallow: /\u0000\n",
+      "User-agent: *\nDisallow: /\u0007\n",
       "User-agent: *\nCrawl-delay: slowly\n"
     ]
 

@@ -3,7 +3,8 @@ require "rake"
 
 class SubscriptionsRakeTest < ActiveSupport::TestCase
   setup do
-    Rails.application.load_tasks if Rake::Task.tasks.empty?
+    Rails.application.load_tasks unless Rake::Task.task_defined?("subscriptions:send_renewal_reminders")
+    Rake::Task["subscriptions:send_renewal_reminders"].reenable
   end
 
   test "send_renewal_reminders runs the job" do

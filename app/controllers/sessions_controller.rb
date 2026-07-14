@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
-  rate_limit to: 5, within: 5.minutes, only: :create
-  rate_limit to: 20, within: 1.minute, only: :new
+  rate_limit to: 5, within: 5.minutes, only: :create, with: :login_rate_limit_reached, name: "session-create"
+  rate_limit to: 20, within: 1.minute, only: :new, name: "session-new"
 
   layout "sessions"
 
@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
     if Current.user.present?
       redirect_to app_root_path
     else
-      @user = User.new(blog: Blog.new(subdomain: ""))
+      @user = User.new.tap { |u| u.blogs.build(subdomain: "") }
       @password_mode = params[:mode] == "password"
     end
   end
@@ -34,21 +34,23 @@ class SessionsController < ApplicationController
   private
 
     def create_with_password
-      user = User.kept.joins(:blog).find_by(blogs: { subdomain: user_params[:subdomain] })
+      blog = Blog.kept.joins(:user).where(users: { discarded_at: nil }).find_by(subdomain: user_params[:subdomain])
+      user = blog&.user
 
-      if user&.authenticate(user_params[:password])
+      if user&.verified? && user.authenticate(user_params[:password])
         sign_in user
+        session[:current_blog_id] = blog.id
         redirect_to app_root_path, notice: "Welcome back!"
       else
         flash.now[:alert] = "Invalid subdomain or password"
-        @user = User.new(blog: Blog.new(subdomain: user_params[:subdomain]))
+        @user = User.new.tap { |u| u.blogs.build(subdomain: user_params[:subdomain]) }
         @password_mode = true
         render :new, status: :unprocessable_entity
       end
     end
 
     def create_with_email
-      @user = User.kept.joins(:blog).find_by(
+      @user = User.kept.joins(:blogs).find_by(
         blogs: { subdomain: user_params[:subdomain] },
         email: user_params[:email]
       )
@@ -58,6 +60,11 @@ class SessionsController < ApplicationController
       end
 
       redirect_to thanks_sessions_path
+    end
+
+    def login_rate_limit_reached
+      path = params.dig(:user, :password).present? ? login_path(mode: :password) : login_path
+      redirect_to path, alert: "Too many login attempts. Please wait a few minutes and try again."
     end
 
     def user_params

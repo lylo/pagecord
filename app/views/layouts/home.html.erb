@@ -3,16 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <title><%= content_for?(:title) ? content_for(:title) : "Pagecord: Blog Without The Slog." %></title>
+    <title><%= content_for?(:title) ? content_for(:title) : "Pagecord: A blog you'll actually keep updated" %></title>
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
-    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $39/year." %>">
+    <% default_meta_description = "Pagecord is a personal blog you'll actually keep updated. Publish wherever you like, from email, Obsidian, the editor, API, CLI, or your own scripts." %>
+    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : default_meta_description %>">
 
-    <% og_title = (content_for?(:title) ? content_for(:title) : "Pagecord: Blog Without The Slog.").strip %>
-    <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : "Create your home page and blog in seconds. A powerful editor when you need it, post by email when you don't. Free forever, premium $39/year.").strip %>
+    <% og_title = (content_for?(:title) ? content_for(:title) : "Pagecord: A blog you'll actually keep updated").strip %>
+    <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : default_meta_description).strip %>
     <% og_image = (content_for?(:og_image) ? content_for(:og_image) : image_url("social/open-graph.webp")).strip %>
 
     <!-- Open Graph / Facebook -->
@@ -29,25 +29,56 @@
     <meta property="twitter:card" content="summary_large_image">
 
     <link rel="canonical" href="<%= canonical_url %>">
+    <%= yield :head %>
 
-    <%= stylesheet_link_tag "tailwind", "inter", "source-serif-4", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags "home" %>
+    <%= preload_fonts([
+      "inter/InterVariable.woff2",
+      "source-serif-4/SourceSerif4Variable-Roman.ttf.woff2"
+    ]) %>
+    <style>
+      @font-face {
+        font-family: "InterVariable";
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url("<%= asset_path("inter/InterVariable.woff2") %>") format("woff2-variations");
+      }
 
-    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-    <script type="text/javascript">
-      document.addEventListener('turbo:load', function() {
-        <% if Rails.env.development? %>
-          Paddle.Environment.set("sandbox")
-          Paddle.Initialize({
-            token: "test_945b246ef8df8bfe446632bf70b"
-          })
-        <% else %>
-          Paddle.Environment.set("production")
-          Paddle.Initialize({
-            token: "live_8d79ebbaac5c745a173f00967fb"
-          })
-        <% end %>
+      @font-face {
+        font-family: "SourceSerif4Variable";
+        font-style: normal;
+        font-weight: 200 900;
+        font-display: swap;
+        src: url("<%= asset_path("source-serif-4/SourceSerif4Variable-Roman.ttf.woff2") %>") format("woff2-variations");
+      }
+
+      body {
+        font-family: "InterVariable", ui-sans-serif, system-ui, sans-serif;
+      }
+
+      .source-serif {
+        font-family: "SourceSerif4Variable", sans-serif;
+      }
+    </style>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <script>
+      window.addEventListener("load", function() {
+        var script = document.createElement("script")
+        script.src = "https://cdn.paddle.com/paddle/v2/paddle.js"
+        script.onload = function() {
+          <% if Rails.env.development? %>
+            Paddle.Environment.set("sandbox")
+            Paddle.Initialize({
+              token: "test_945b246ef8df8bfe446632bf70b"
+            })
+          <% else %>
+            Paddle.Environment.set("production")
+            Paddle.Initialize({
+              token: "live_8d79ebbaac5c745a173f00967fb"
+            })
+          <% end %>
+        }
+        document.head.appendChild(script)
       })
     </script>
     <script defer data-domain="pagecord.com" src="https://plausible.io/js/script.js"></script>

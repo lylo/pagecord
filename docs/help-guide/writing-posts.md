@@ -6,6 +6,10 @@ published_at: 2025-12-18T11:49:59+00:00
 
 Everything you need to know about creating and formatting posts in Pagecord.
 
+<div>
+{{ table_of_contents | heading: "Table of Contents" }}
+</div>
+
 ## The editor
 
 Pagecord uses a rich text editor with Markdown support. You can use the toolbar, keyboard shortcuts, or type Markdown directly.
@@ -53,7 +57,13 @@ end
 
 ### Adding images
 
-Drag and drop images directly into the editor, or click the attachment icon (paperclip) in the toolbar.
+Drag and drop images directly into the editor, or click the attachment icon (paperclip) in the toolbar. See [Image size and quality](#image-size-and-quality) for tips on preparing your photos.
+
+### Image size and quality
+
+You don't need to worry too much about preparing your images. Pagecord automatically resizes and optimises every image for the web, converting it to WebP and serving the right size for where it appears – smaller for thumbnails and galleries, up to 1600 pixels wide for the full view. Images are only ever scaled down, never up.
+
+For the best results, export your photos at around 1600 pixels on the longest edge. Anything larger will simply be scaled down to fit, so there's no benefit to uploading huge files. This resolution stays sharp on desktop monitors and high-resolution phone screens alike. The maximum file size per image is 10MB, though at these dimensions you'll rarely come close.
 
 ### Image galleries
 

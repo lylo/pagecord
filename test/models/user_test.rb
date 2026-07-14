@@ -82,4 +82,82 @@ class UserTest < ActiveSupport::TestCase
     user = User.create!(email: "trial@example.com", created_at: 5.days.ago)
     assert_not user.on_free_plan?
   end
+
+  test "nested blog attributes cannot exceed the user blog limit" do
+    user = User.new(
+      email: "two-blogs@example.com",
+      blogs_attributes: [
+        { subdomain: "twoblogsone" },
+        { subdomain: "twoblogstwo" }
+      ]
+    )
+
+    assert_not user.valid?
+    assert user.blogs.any? { |blog| blog.errors[:base].include?("You can't add another blog because you've already reached your blog limit") }
+  end
+
+  test "destroy removes kept and discarded blogs" do
+    user = users(:annie)
+    kept_blog = user.blog
+    discarded_blog = user.blogs.create!(subdomain: "anniediscarded")
+    discarded_blog.discard!
+
+    assert_difference "Blog.with_discarded.count", -2 do
+      user.destroy!
+    end
+
+    assert_not Blog.with_discarded.exists?(kept_blog.id)
+    assert_not Blog.with_discarded.exists?(discarded_blog.id)
+  end
+
+  test "purgeable_discarded includes old discarded users without subscriptions" do
+    user = users(:elliot)
+    user.discard!
+    user.update_columns(discarded_at: 8.days.ago)
+
+    assert_includes User.purgeable_discarded(before: 7.days.ago), user
+  end
+
+  test "purgeable_discarded excludes discarded paid users before paid access ends" do
+    user = users(:joel)
+    user.discard!
+    user.update_columns(discarded_at: 8.days.ago)
+    user.subscription.update!(cancelled_at: 1.day.ago, next_billed_at: 1.month.from_now)
+
+    assert_not_includes User.purgeable_discarded(before: 7.days.ago), user
+  end
+
+  test "purgeable_discarded includes discarded paid users after paid access ends" do
+    user = users(:joel)
+    user.discard!
+    user.update_columns(discarded_at: 8.days.ago)
+    user.subscription.update!(cancelled_at: 2.months.ago, next_billed_at: 1.month.ago)
+
+    assert_includes User.purgeable_discarded(before: 7.days.ago), user
+  end
+
+  test "purgeable_discarded excludes discarded paid users with unknown paid access end" do
+    user = users(:joel)
+    user.discard!
+    user.update_columns(discarded_at: 8.days.ago)
+    user.subscription.update!(cancelled_at: 1.day.ago, next_billed_at: nil)
+
+    assert_not_includes User.purgeable_discarded(before: 7.days.ago), user
+  end
+
+  test "custom_domain_access? allows active subscribers" do
+    assert users(:joel).custom_domain_access?
+  end
+
+  test "custom_domain_access? allows lapsed subscribers during grace period" do
+    users(:joel).subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD - 1).days.ago)
+
+    assert users(:joel).custom_domain_access?
+  end
+
+  test "custom_domain_access? rejects subscribers after grace period" do
+    users(:joel).subscription.update!(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
+
+    assert_not users(:joel).custom_domain_access?
+  end
 end

@@ -1,0 +1,60 @@
+<%= content_for :title do %>
+  Create a personal website with a blog - Pagecord
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Personal Website You Will Actually Keep Updated") %>
+<% end %>
+
+<%= content_for :meta_description do %>
+  Pagecord helps you create a personal website with a home page, blog, unlimited pages, a custom domain, email newsletter, and more.
+<% end %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
+    Create a personal website you'll actually keep updated.
+  </h1>
+
+  <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4 mt-8 md:mt-12">
+    <p>
+      Everyone should own their own web presence. A personal website is a home for you and your online identity. Don't hand it over to the social networks!
+    </p>
+    <p>
+      Pagecord gives you a home page, a blog, unlimited pages, theme customisations and a custom domain. You can even add an email newsletter!
+    </p>
+    <p>
+      Write in an excellent rich text editor, publish blog posts using email, or even connect Obsidian and your own scripts using the API. Classic plan is free forever. Premium is $<%= localised_price %>/year.
+    </p>
+  </div>
+
+  <div class="text-center mt-8 mb-4 md:text-xl">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Try it with a free account</div>
+    <% end %>
+  </div>
+</div>
+
+<%= render "screenshots" %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <section class="my-10 md:my-14 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 md:p-8">
+    <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">A personal site that let's your focus on the writing</h2>
+    <div class="mt-6 md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+      <p>
+        Pagecord is a personal website builder and blogging platform that focuses on writing. It's simple, beautiful and effortless to use, on any device.
+      </p>
+      <p>
+        Start simple with a home page and a blog, then add pages, a newsletter, even use custom CSS to make it your own.
+      </p>
+      <p>
+        It's free (for the basics), so why not give it a try?
+      </p>
+    </div>
+  </section>
+</div>
+
+  <div class="text-center mt-8 mb-4 md:text-xl">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Try now! Cancel anytime</div>
+    <% end %>
+  </div>

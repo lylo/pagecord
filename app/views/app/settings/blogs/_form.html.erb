@@ -1,138 +1,193 @@
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
   <% disabled = !@blog.user.subscribed? %>
-  <div>
-    <h3 class="font-bold text-lg mb-2">Post by Email</h3>
-    <p>
-      Send an email from <%= @blog.user.email %> to
-      <%= mail_to @blog.delivery_email, class: "font-semibold underline" %> to publish a new post on this blog.
-    </p>
-  </div>
 
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Custom Domain</h3>
-    <% if disabled %>
-      <%= callout(:info) do %>
-        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to use your own domain for your blog.
-      <% end %>
-    <% elsif @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? %>
-      <p>
-        Your Pagecord is now available at <code><mark class="bg-slate-100 dark:bg-slate-700 dark:text-slate-100 px-1"><%= @blog.custom_domain %></mark></code>
-      </p>
-    <% else %>
-      <p>
-        To set up a custom domain, enter it below and click Update. You'll need to configure your DNS first. See <a href="https://pagecord.com/faq#dns" class="font-medium underline">the FAQ</a> for details on how to do that.
-      </p>
-    <% end %>
+  <div class="space-y-8">
+    <section class="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div class="border-b border-slate-200 bg-slate-50 px-6 py-5 dark:border-slate-700 dark:bg-slate-800">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Blog Settings</h3>
+      </div>
 
-    <fieldset>
-      <%= styled_text_field(form, :custom_domain, placeholder: "yourdomain.com", class: "mt-4 md:w-96", disabled: disabled) %>
-      <%= field_error(@blog, :custom_domain) %>
-    </fieldset>
-
-    <% if @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? && !disabled %>
-      <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm">
-        To remove your custom domain, clear the box above and click Update. Don't forget to remove the records from your DNS!
-      </p>
-    <% end %>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Language</h3>
-    <p>
-      Choose the language for your email subscription form and other interface elements.
-    </p>
-
-    <fieldset>
-      <%= render "language_select", form: form %>
-      <%= field_error(@blog, :locale) %>
-    </fieldset>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Discoverability</h3>
-    <p>
-      By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. Untick the box below to opt out – we'll serve a <tt>/robots.txt</tt> that discourages search engines, and exclude your blog from Spotlight and Shuffle.
-    </p>
-
-    <p class="mt-4 text-slate-500 dark:text-slate-400">
-      (Note: All blogs are configured to discourage AI crawlers by default)
-    </p>
-
-    <div class="mt-6 space-y-4">
-      <div class="flex gap-3">
-        <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" } %>
+      <div class="divide-y divide-slate-200 dark:divide-slate-700">
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">Post by Email</h4>
+          </div>
+          <p class="text-slate-700 dark:text-slate-300">
+            Send an email from <%= @blog.user.email %> to
+            <%= mail_to @blog.delivery_email, class: "font-semibold underline" %> to publish a new post on this blog.
+          </p>
         </div>
-        <div>
-          <%= form.label :allow_search_indexing, "Make my blog discoverable", class: "text-slate-800 dark:text-slate-100" %>
+
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">Custom Domain</h4>
+          </div>
+          <div>
+            <% if disabled %>
+              <%= callout(:info) do %>
+                <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to use your own domain for your blog.
+              <% end %>
+            <% elsif @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? %>
+              <p class="text-slate-700 dark:text-slate-300">
+                Your Pagecord is now available at <code><mark class="bg-slate-100 px-1 dark:bg-slate-700 dark:text-slate-100"><%= @blog.custom_domain %></mark></code>
+              </p>
+            <% else %>
+              <p class="text-slate-700 dark:text-slate-300">
+                To set up a custom domain, enter it below and click Update. You'll need to configure your DNS first. Read <a href="https://help.pagecord.com/custom-domains" class="font-medium underline">the help guide</a> for details on how to do that.
+              </p>
+            <% end %>
+
+            <fieldset>
+              <%= styled_text_field(form, :custom_domain, placeholder: "yourdomain.com", class: "mt-4 md:w-80", disabled: disabled) %>
+              <%= field_error(@blog, :custom_domain) %>
+            </fieldset>
+
+            <% if @blog.custom_domain.present? && @blog.errors[:custom_domain].empty? && !disabled %>
+              <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                To remove your custom domain, clear the box above and click Update. Don't forget to remove the records from your DNS!
+              </p>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">Language</h4>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">For subscription forms and interface copy</p>
+          </div>
+          <div>
+            <fieldset>
+              <%= render "language_select", form: form %>
+              <%= field_error(@blog, :locale) %>
+            </fieldset>
+          </div>
+        </div>
+
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">Links</h4>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Choose how links in your posts and pages behave for readers</p>
+          </div>
+          <div>
+            <div class="flex gap-3">
+              <div class="flex h-6 shrink-0 items-center">
+                <%= form.check_box :external_links_in_new_tab, { checked: @blog.external_links_in_new_tab, class: "form-checkbox h-5 w-5 rounded border-slate-300 text-slate-600 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600" } %>
+              </div>
+              <div>
+                <%= form.label :external_links_in_new_tab, "Open external links in a new tab", class: "text-slate-800 dark:text-slate-100" %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">Discoverability</h4>
+          </div>
+          <div>
+            <p class="text-slate-700 dark:text-slate-300">
+              By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. Untick the box below to opt out – we'll serve a <tt>/robots.txt</tt> that discourages search engines, and exclude your blog from Spotlight and Shuffle.
+            </p>
+
+            <div class="mt-6 flex gap-3">
+              <div class="flex h-6 shrink-0 items-center">
+                <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 rounded border-slate-300 text-slate-600 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600" } %>
+              </div>
+              <div>
+                <%= form.label :allow_search_indexing, "Make my blog discoverable", class: "text-slate-800 dark:text-slate-100" %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <%= render "app/settings/blogs/robots" %>
+      </div>
+    </section>
+
+    <section class="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div class="border-b border-slate-200 bg-slate-50 px-6 py-5 dark:border-slate-700 dark:bg-slate-800">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Advanced</h3>
+      </div>
+
+      <div class="divide-y divide-slate-200 dark:divide-slate-700">
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">SEO Blog Title</h4>
+          </div>
+          <div>
+            <p class="text-slate-700 dark:text-slate-300">
+              By default your blog name is used in the HTML title for search engines and social sharing. You can override this by entering a different title below.
+            </p>
+
+            <fieldset class="mt-4">
+              <%= styled_text_field(form, :seo_title, placeholder: "e.g. #{@blog.display_name} - Personal Blog", class: "md:w-full") %>
+              <%= field_error(@blog, :seo_title) %>
+            </fieldset>
+          </div>
+        </div>
+
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">Fediverse Author Attribution</h4>
+          </div>
+          <div>
+            <p class="text-slate-700 dark:text-slate-300">
+              Add your Fediverse handle so Mastodon can show you as the author when someone shares one of your posts. Use the full handle, not your profile URL.
+            </p>
+
+            <%= styled_text_field(form, :fediverse_author_attribution, placeholder: "e.g. @you@mastodon.social", class: "mt-4 md:w-full") %>
+          </div>
+        </div>
+
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">Google Site Verification</h4>
+          </div>
+          <div>
+            <p class="text-slate-700 dark:text-slate-300">
+              If you need to add a Google Site Verification meta tag to your blog, enter the verification code below. This will appear in your blog HTML as <code class="bg-slate-100 text-sm dark:bg-slate-800">&lt;meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" /&gt;</code>
+            </p>
+
+            <fieldset class="mt-4">
+              <%= styled_text_field(form, :google_site_verification, placeholder: "e.g. Gzm-PA_FXh231_cgsIxY_h9OgR6r8DZ", class: "md:w-full", data: { controller: "google-site-verification", action: "paste->google-site-verification#paste" }) %>
+              <%= field_error(@blog, :google_site_verification) %>
+            </fieldset>
+
+            <% if @blog.google_site_verification.present? %>
+              <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                To remove your Google site verification, clear the box above and click Update.
+              </p>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">Blog Subdomain</h4>
+          </div>
+          <div>
+            <p class="mb-4 text-slate-700 dark:text-slate-300">
+              Your current blog subdomain is <strong><%= persisted_value(@blog, :subdomain) %></strong> which means your blog is available at <span class="bg-slate-100 px-1 dark:bg-slate-700">https://<%= persisted_value(@blog, :subdomain) %>.pagecord.com</span>.
+            </p>
+
+            <div class="mb-4">
+              <%= callout(:warning) do %>
+                <strong>Warning:</strong> Changing your blog subdomain changes the URL of your blog, so any links to your old blog URL will no longer work!
+              <% end %>
+            </div>
+
+            <fieldset>
+              <%= form.label :subdomain, "Subdomain", class: "sr-only" %>
+              <%= styled_text_field(form, :subdomain, required: true, placeholder: "subdomain", maxlength: 20, class: "md:w-80") %>
+              <%= field_error(@blog, :subdomain) %>
+            </fieldset>
+          </div>
         </div>
       </div>
-      <%= render "app/settings/blogs/robots" %>
-    </div>
+    </section>
   </div>
 
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Google Site Verification</h3>
-    <p>
-      If you need to add a Google Site Verification meta tag to your blog (e.g. for Google Search Console), enter the verification code below. This will appear in your blog HTML as <code class="text-sm bg-slate-100 dark:bg-slate-800">&lt;meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" /&gt;</code>
-    </p>
-
-    <fieldset>
-      <%= styled_text_field(form, :google_site_verification, placeholder: "e.g. Gzm-PA_FXh231_cgsIxY_h9OgR6r8DZ", class: "mt-4 md:w-full", data: { controller: "google-site-verification", action: "paste->google-site-verification#paste" }) %>
-      <%= field_error(@blog, :google_site_verification) %>
-    </fieldset>
-
-    <% if @blog.google_site_verification.present? %>
-      <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm">
-        To remove your Google site verification, clear the box above and click Update.
-      </p>
-    <% end %>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">SEO Blog Title</h3>
-    <p>
-      By default your blog name is used in the HTML title for search engines and social sharing. You can override this by entering a different title below.
-    </p>
-
-    <fieldset>
-      <%= styled_text_field(form, :seo_title, placeholder: "e.g. #{@blog.display_name} - Personal Blog", class: "mt-4 md:w-full") %>
-      <%= field_error(@blog, :seo_title) %>
-    </fieldset>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Fediverse Author Attribution</h3>
-    <p>
-      Add your Fediverse handle so Mastodon can show you as the author when someone shares one of your posts. Use the full handle,
-      not your profile URL.
-    </p>
-
-    <%= styled_text_field(form, :fediverse_author_attribution, placeholder: "e.g. @you@mastodon.social", class: "mt-4 md:w-full") %>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2 mt-8">Blog Subdomain</h3>
-    <p class="mb-4">
-      Your current blog subdomain is <strong><%= persisted_value(@blog, :subdomain) %></strong> which means your blog is available at <span class="bg-slate-200 dark:bg-slate-700">https://<%= persisted_value(@blog, :subdomain) %>.pagecord.com</span>.
-    </p>
-
-    <div class="mb-4">
-      <%= callout(:warning) do %>
-        <strong>Warning:</strong> Changing your blog subdomain changes the URL of your blog, so any links to your old blog URL will no longer work!
-      <% end %>
-    </div>
-
-    <fieldset>
-      <%= form.label :subdomain, "Subdomain", class: "sr-only" %>
-      <div class="flex items-center">
-        <%= styled_text_field(form, :subdomain, required: true, placeholder: "subdomain", maxlength: 20, class: "md:w-96") %>
-      </div>
-      <%= field_error(@blog, :subdomain) %>
-    </fieldset>
-  </div>
-
-  <div class="mt-12 gap-x-2 flex items-center border-t border-t-slate-200 dark:border-slate-600 pt-4">
+  <div class="mt-12 flex items-center gap-x-2 border-t border-t-slate-200 pt-4 dark:border-slate-600">
     <%= form.submit "Update", class: "btn-primary" %>
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
   </div>

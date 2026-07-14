@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_14_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -100,7 +100,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.datetime "created_at", null: false
     t.text "custom_css"
     t.string "custom_domain"
-    t.text "custom_robots_txt"
     t.string "custom_theme_accent_dark"
     t.string "custom_theme_accent_light"
     t.string "custom_theme_bg_dark"
@@ -111,7 +110,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.datetime "discarded_at"
     t.integer "email_delivery_mode", default: 0, null: false
     t.boolean "email_subscriptions_enabled", default: true, null: false
-    t.string "features", default: [], array: true
     t.string "fediverse_author_attribution"
     t.string "font", default: "sans", null: false
     t.string "google_site_verification"
@@ -131,6 +129,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "width", default: "standard", null: false
+    t.text "custom_footer_html"
+    t.boolean "external_links_in_new_tab", default: false, null: false
+    t.text "custom_robots_txt"
     t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
@@ -246,26 +247,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.index ["visitor_hash", "post_id", "viewed_at"], name: "index_page_views_on_visitor_hash_and_post_id_and_viewed_at"
   end
 
-  create_table "pghero_query_stats", force: :cascade do |t|
-    t.bigint "calls"
-    t.datetime "captured_at", precision: nil
-    t.text "database"
-    t.text "query"
-    t.bigint "query_hash"
-    t.float "total_time"
-    t.text "user"
-    t.index ["database", "captured_at"], name: "index_pghero_query_stats_on_database_and_captured_at"
-  end
-
-  create_table "pghero_space_stats", force: :cascade do |t|
-    t.datetime "captured_at", precision: nil
-    t.text "database"
-    t.text "relation"
-    t.text "schema"
-    t.bigint "size"
-    t.index ["database", "captured_at"], name: "index_pghero_space_stats_on_database_and_captured_at"
-  end
-
   create_table "post_digest_deliveries", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "delivered_at"
@@ -302,7 +283,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.string "canonical_url"
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
-    t.text "excerpt"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.string "locale"
@@ -445,6 +425,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_05_22_120000) do
     t.boolean "verified", default: false
     t.string "signup_referrer"
     t.string "signup_source_note", limit: 500
+    t.string "features", default: [], null: false, array: true
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["password_digest"], name: "index_users_on_password_digest"

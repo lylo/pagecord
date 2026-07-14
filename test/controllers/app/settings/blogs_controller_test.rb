@@ -12,10 +12,13 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 1, text: "Custom Domain" }
-    assert_select "h3", { count: 1, text: "Discoverability" }
-    assert_select "h3", { count: 1, text: "Google Site Verification" }
-    assert_select "h3", { count: 1, text: "Fediverse Author Attribution" }
+    assert_select "h3", { count: 1, text: "Blog Settings" }
+    assert_select "h3", { count: 1, text: "Advanced" }
+    assert_select "h4", { count: 1, text: "Custom Domain" }
+    assert_select "h4", { count: 1, text: "Discoverability" }
+    assert_select "h4", { count: 1, text: "Google Site Verification" }
+    assert_select "h4", { count: 1, text: "Links" }
+    assert_select "h4", { count: 1, text: "Fediverse Author Attribution" }
     assert_select "p", text: /Use the full handle, not your profile URL/
     assert_select "input[name='blog[fediverse_author_attribution]'][placeholder='e.g. @you@mastodon.social']"
     assert_response :success
@@ -26,7 +29,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 1, text: "Custom Domain" }
+    assert_select "h4", { count: 1, text: "Custom Domain" }
     assert_select "input[name='blog[custom_domain]'][disabled]"
     assert_response :success
   end
@@ -132,7 +135,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     get app_settings_blogs_url
 
     assert_select "input[name='use_custom_robots_txt'][disabled]", count: 1
-    assert_select "p", /Custom robots.txt is available with a subscription/
+    assert_select "p", /Customising crawler rules is available with a subscription/
   end
 
   test "subscriber should save custom robots txt" do
@@ -226,7 +229,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   test "should show language section" do
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 1, text: "Language" }
+    assert_select "h4", { count: 1, text: "Language" }
     assert_select "select[name='blog[locale]']", count: 1
     assert_response :success
   end
@@ -250,6 +253,13 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_settings_url
     assert_equal false, @blog.reload.show_metrics
+  end
+
+  test "should update external links in new tab" do
+    patch app_settings_blog_url(@blog), params: { blog: { external_links_in_new_tab: true } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal true, @blog.reload.external_links_in_new_tab
   end
 
   test "should not allow non-subscribed user to update subscription location settings" do

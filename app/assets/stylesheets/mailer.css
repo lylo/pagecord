@@ -64,7 +64,7 @@ table {
 
 .wrapper {
   box-sizing: border-box;
-  padding: 1rem; }
+  padding: 16px; }
 
 .content-block {
   padding-bottom: 10px;
@@ -95,7 +95,7 @@ h4 {
   font-family: sans-serif;
   font-weight: 400;
   line-height: 1.4;
-  margin: 1.75rem 0 0.75rem 0; }
+  margin: 28px 0 12px 0; }
 
 h1 {
   font-size: 35px;
@@ -152,7 +152,7 @@ a {
   font-weight: 700;
   text-align: left;
   font-size: 18px !important;
-  line-height: 1.6rem;
+  line-height: 26px;
   margin-bottom: 0 !important;
 }
 
@@ -160,7 +160,7 @@ a {
   font-weight: 700;
   font-size: 24px !important;
   margin-top: 0 !important;
-  margin-bottom: 1.4rem !important;
+  margin-bottom: 22px !important;
 }
 
 .digest .post-title a {
@@ -191,11 +191,11 @@ a {
 .digest blockquote {
   border-left: 2px solid #ccc;
   margin-left: 0;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: 1.25rem;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 20px;
   font-style: italic;
 }
 
@@ -210,15 +210,15 @@ a {
   border-radius: 3px;
   font-family: monospace;
   font-size: 85%;
-  padding: 1rem;
-  margin: 1.5rem 0;
+  padding: 16px;
+  margin: 24px 0;
   overflow-x: auto;
   word-break: break-all;
   white-space: pre-wrap;
 }
 
 .digest .post-content {
-  padding-bottom: 0.5rem !important;
+  padding-bottom: 8px !important;
 }
 
 .digest .post-content a {
@@ -237,12 +237,18 @@ a {
 }
 
 .digest .post {
-  padding-bottom: 4rem !important;
+  padding-bottom: 64px !important;
 }
 
 .digest .post-content figure {
   margin: 1.5em 0;
   padding: 0;
+}
+
+.digest .post-content .email-media-preview {
+  display: block;
+  text-align: center;
+  margin: 1.5em 0;
 }
 
 .digest .post-content table {
@@ -253,7 +259,7 @@ a {
 .digest .post-content table th,
 .digest .post-content table td {
   border: 1px solid #ddd;
-  padding: 0 0.75rem;
+  padding: 0 12px;
   text-align: left;
 }
 
@@ -264,7 +270,7 @@ a {
 }
 
 .post-timestamp {
-  margin-top: 0.25rem !important;
+  margin-top: 4px !important;
   font-size: 14px !important;
 }
 
@@ -276,8 +282,8 @@ a {
 
 .post-content figure {
   text-align: center;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 .post-content .attachment-gallery {

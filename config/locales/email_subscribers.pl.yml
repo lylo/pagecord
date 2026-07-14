@@ -1,0 +1,45 @@
+pl:
+  email_subscribers:
+    form:
+      subscribe_description:
+        digest: "Zasubskrybuj, aby otrzymywać cotygodniowy przegląd wpisów na swoją skrzynkę"
+        individual: "Zasubskrybuj, aby otrzymywać nowe wpisy e-mailem"
+      email_placeholder: "Wpisz swój e-mail..."
+      submit_button: "Subskrybuj"
+    create:
+      success_message: "Dziękujemy za subskrypcję. Jeśli nie subskrybujesz już, e-mail potwierdzający jest w drodze na adres %{email}"
+      rate_limit_message: "Zbyt wiele prób. Spróbuj ponownie później."
+    confirmations:
+      success_message:
+        digest: "Twoja subskrypcja bloga %{blog_name} została potwierdzona. Będziesz otrzymywać cotygodniowy przegląd, gdy pojawią się nowe wpisy."
+        individual: "Twoja subskrypcja bloga %{blog_name} została potwierdzona. Będziesz otrzymywać e-mail, gdy pojawią się nowe wpisy."
+      unsubscribe_link: "Anuluj subskrypcję"
+    unsubscribes:
+      success_message: "Subskrypcja bloga %{blog_name} została anulowana 👋"
+      confirm_message: "Aby anulować subskrypcję bloga %{blog_name}, kliknij poniższy link."
+      unsubscribe_button: "Anuluj subskrypcję"
+      not_found: "Nie znaleziono subskrypcji e-mail"
+    mailers:
+      shared:
+        footer: "Subskrybujesz nowe wpisy z bloga %{blog_name}."
+        unsubscribe_link: "Anuluj subskrypcję"
+        unsubscribe_text: "Anuluj subskrypcję, klikając poniższy link:"
+        view_online: "Zobacz ten wpis online"
+      confirmation:
+        subject: "Potwierdź subskrypcję bloga %{blog_name}"
+        message: "Potwierdź subskrypcję bloga %{blog_name}. Jeśli nie chciałeś subskrybować, możesz zignorować tego e-maila."
+        button: "Zasubskrybuj mnie"
+      weekly_digest:
+        subject: "Nowe wpisy z bloga %{blog_name} - %{date}"
+        footer: "Subskrybujesz nowe wpisy z bloga %{blog_name}."
+        unsubscribe_link: "Anuluj subskrypcję"
+      individual:
+        default_subject: "Nowy wpis z bloga %{blog_name} – %{date}"
+  posts:
+    read_more: "Czytaj dalej…"
+  replies:
+    form:
+      subject_label: "Temat"
+      cancel_link: "Anuluj"
+    mailer:
+      intro: "Hurra! Ktoś odpowiedział na Twój wpis"

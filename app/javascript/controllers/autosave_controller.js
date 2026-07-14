@@ -21,7 +21,9 @@ export default class extends Controller {
       this.contentTarget.addEventListener("lexxy:change", () => this.save())
     }
 
-    this.element.addEventListener("submit", () => this.clear())
+    this.element.addEventListener("turbo:submit-end", (event) => {
+      if (event.detail.success) this.clear()
+    })
   }
 
   save() {

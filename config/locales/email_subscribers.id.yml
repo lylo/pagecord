@@ -8,6 +8,7 @@ id:
       submit_button: "Berlangganan"
     create:
       success_message: "Terima kasih sudah berlangganan. Kecuali kalau kamu sudah berlangganan, email konfirmasi sedang dikirim ke %{email}"
+      rate_limit_message: "Terlalu banyak percobaan. Coba lagi nanti."
     confirmations:
       success_message:
         digest: "Langgananmu pada %{blog_name} sudah terkonfirmasi. Kamu akan menerima email ringkasan mingguan saat ada pos baru yang dipublikasikan."

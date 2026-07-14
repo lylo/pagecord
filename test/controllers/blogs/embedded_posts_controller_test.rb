@@ -51,10 +51,4 @@ class Blogs::EmbeddedPostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_operator response.body.index("Embedded Review 11"), :<, response.body.index("Embedded Review 12")
   end
-
-  private
-
-    def host_subdomain!(name)
-      host! "#{name}.#{Rails.application.config.x.domain}"
-    end
 end

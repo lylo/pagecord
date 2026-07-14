@@ -27,10 +27,13 @@ class Posts::RepliesController < Blogs::BaseController
     if @reply.save
       SendPostReplyJob.perform_later(@reply.id)
 
-      redirect_to view_context.post_path(@post), notice: I18n.t("email_form.success_message")
+      redirect_to sent_post_replies_path(@post)
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def sent
   end
 
   private
@@ -40,7 +43,7 @@ class Posts::RepliesController < Blogs::BaseController
     end
 
     def load_post
-      @post = @blog.posts.includes(blog: :avatar_attachment).find_by!(token: params[:post_token])
+      @post = @blog.posts.with_full_rich_text.includes(blog: :avatar_attachment).find_by!(token: params[:post_token])
     end
 
     def verify

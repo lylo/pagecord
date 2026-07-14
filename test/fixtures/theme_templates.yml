@@ -89,12 +89,12 @@ cardashian:
     .post-title a { text-decoration: none; }
 
     /* Links */
-    .lexxy-content a {
+    .post-body a {
       font-weight: 500;
       text-decoration-color: var(--color-accent-muted);
       text-underline-offset: 0.15em;
     }
-    .lexxy-content a:hover { text-decoration-color: var(--color-accent); }
+    .post-body a:hover { text-decoration-color: var(--color-accent); }
 
     /* Images */
     article img { border-radius: 0.375rem; }
@@ -111,7 +111,7 @@ cardashian:
   custom_theme_bg_dark: "#1a1718"
   custom_theme_text_dark: "#e8e6e3"
   custom_theme_accent_dark: "#a78bfa"
-  position: 0
+  position: 7
   active: true
 broadside:
   name: Broadside
@@ -190,7 +190,7 @@ broadside:
     .post-title a { text-decoration: none; }
 
     /* Links */
-    .lexxy-content a { font-weight: 500; }
+    .post-body a { font-weight: 500; }
 
     /* Tags */
     .tag-link {
@@ -210,7 +210,7 @@ broadside:
   custom_theme_bg_dark: "#150830"
   custom_theme_text_dark: "#ede8ee"
   custom_theme_accent_dark: "#ff4535"
-  position: 1
+  position: 4
   active: true
 archibald:
   name: Archibald
@@ -231,13 +231,13 @@ archibald:
     header > hr { order: 5; }
 
     /* Links: accent underline, highlight on hover */
-    nav a, .lexxy-content a, .posts-titles a, .posts-list a, .subscription-message a {
-      color: var(--lexxy-color-ink);
+    nav a, .post-body a, .posts-titles a, .posts-list a, .subscription-message a {
+      color: var(--color-text);
       border-bottom: 3px solid var(--color-accent);
       text-decoration: none;
       font-weight: normal;
     }
-    nav a:hover, .lexxy-content a:hover, .posts-titles a:hover, .posts-list a:hover, .subscription-message a:hover {
+    nav a:hover, .post-body a:hover, .posts-titles a:hover, .posts-list a:hover, .subscription-message a:hover {
       background-color: var(--color-accent);
       color: var(--color-bg);
       text-decoration: none;
@@ -333,7 +333,243 @@ hestia:
   custom_theme_bg_dark: "#1a1816"
   custom_theme_text_dark: "#d4cfc8"
   custom_theme_accent_dark: "#d4748a"
-  position: 3
+  position: 8
+  active: true
+holamundo:
+  name: Holamundo
+  description: A centred email-style journal theme inspired by HEY World
+  custom_css: |
+    .blog {
+        font-family: -apple-system, BlinkMacSystemFont, Aptos, Roboto, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+
+      header {
+        font-size: 1.1rem;
+      }
+
+      nav {
+        justify-content: center;
+      }
+
+      .titlebar,
+      .avatar-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .avatar,
+      .avatar img {
+        width: 5rem;
+        height: 5rem;
+      }
+
+      .avatar img {
+        box-shadow: none;
+      }
+
+      .blog-title {
+        color: var(--color-text-muted);
+        font-size: 0.85em;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .bio {
+        text-align: center;
+        font-size: 1.1rem;
+        line-height: 1.4;
+        padding-bottom: 1em;
+      }
+
+      .bio a {
+        color: inherit;
+        font-weight: inherit;
+        text-decoration: underline;
+      }
+
+      header hr {
+        display: none;
+      }
+
+      article {
+        display: flex;
+        flex-direction: column;
+      }
+
+      article footer,
+      .post-card-meta {
+        display: contents;
+      }
+
+      article .post-date {
+        order: -2;
+        align-self: center;
+        margin-bottom: 0.75rem;
+      }
+
+      .post-card-date {
+        order: -1;
+        margin-bottom: 0.35rem;
+        opacity: 1;
+      }
+
+      article .post-date,
+      .post-card-date {
+        color: var(--color-text-muted);
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+
+      article h1.post-title {
+        order: -1;
+        margin: 0 auto 2rem;
+        text-align: center;
+        font-size: 2.35rem;
+        line-height: 1;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-wrap: balance;
+      }
+
+      article .post-body {
+        line-height: 1.4;
+        letter-spacing: 0;
+        font-size: 1.1rem;
+      }
+
+      @media (min-width: 700px) {
+        article h1.post-title {
+          font-size: 2.75rem;
+        }
+
+        article .post-body,
+        .post-card-summary {
+          font-size: 1.25rem;
+        }
+      }
+
+      article .post-actions {
+        order: 99;
+        align-self: flex-start;
+        margin-top: 2rem;
+      }
+
+      .blog .form.email-subscriber-form {
+        max-width: 38rem;
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+      }
+
+      .blog.post .email-subscriber-form {
+        margin-top: 2.5rem;
+      }
+
+      .email-subscriber-form {
+        position: relative;
+        font-size: 1rem;
+      }
+
+      .email-subscriber-form::before {
+        content: "";
+        position: absolute;
+        top: -1.25rem;
+        left: 50%;
+        width: 12rem;
+        border-top: 1px solid var(--color-border);
+        transform: translateX(-50%);
+      }
+
+      .subscription-description {
+        color: var(--color-text-muted);
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+
+      .email-subscriber-form .form-fieldset {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .blog .form.email-subscriber-form input[type="email"],
+      .blog .form.email-subscriber-form input[type="submit"] {
+        border: 1px solid var(--color-border);
+        padding: 0.65rem 1rem;
+      }
+
+      .blog .form.email-subscriber-form input[type="email"] {
+        background: transparent;
+        border-right: none;
+        border-radius: 9999px 0 0 9999px;
+      }
+
+      .blog .form.email-subscriber-form input[type="submit"] {
+        background: var(--color-bg-subtle);
+        color: var(--color-text-muted);
+        border-left: none;
+        border-radius: 0 9999px 9999px 0;
+        font-weight: 400;
+      }
+
+      .blog .form.email-subscriber-form input[type="submit"]:hover {
+        background: var(--color-bg-elevated);
+        color: var(--color-text);
+      }
+
+      .post-card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2.25rem 2.5rem;
+        text-align: center;
+        background: var(--color-bg);
+        border-radius: 0.2rem;
+        box-shadow: 5px 5px 7px color-mix(in srgb, var(--color-shadow) 30%, transparent);
+      }
+
+      .post-card:hover .post-card-content {
+        transform: none;
+        box-shadow: inherit;
+        border-color: var(--color-border);
+      }
+
+      .post-card-title {
+        margin-bottom: 1.25rem;
+        color: var(--color-text-heading);
+        font-size: 2rem;
+        line-height: 1.15;
+      }
+
+      .post-card-summary {
+        margin-bottom: 1.25rem;
+        color: var(--color-text);
+        line-height: 1.3;
+        letter-spacing: 0;
+        font-size: 1.1rem;
+        text-align: justify;
+        hyphens: auto;
+      }
+
+      .post-card-badge {
+        align-self: center;
+        padding: 0.45rem 0.9rem;
+        color: var(--color-text-muted);
+        background: transparent;
+        border-color: var(--color-border);
+        border-radius: 9999px;
+        font-size: 1rem;
+        font-weight: 400;
+      }
+  theme: base
+  font: sans
+  width: wide
+  layout: cards_layout
+  position: 6
   active: true
 novella:
   name: Novella
@@ -403,11 +639,11 @@ novella:
     }
 
     /* Links */
-    .lexxy-content a {
+    .post-body a {
       text-decoration-color: var(--color-accent-muted);
       text-underline-offset: 0.15em;
     }
-    .lexxy-content a:hover { text-decoration-color: var(--color-accent); }
+    .post-body a:hover { text-decoration-color: var(--color-accent); }
 
     /* Images */
     article img { border-radius: 0.25rem; }
@@ -424,7 +660,7 @@ novella:
   custom_theme_bg_dark: "#141f18"
   custom_theme_text_dark: "#d0d8d2"
   custom_theme_accent_dark: "#d4a840"
-  position: 4
+  position: 9
   active: true
 folly:
   name: Folly
@@ -444,7 +680,7 @@ folly:
   custom_theme_bg_dark: "#353536"
   custom_theme_text_dark: "#cbd5e1"
   custom_theme_accent_dark: "#df6d83"
-  position: 5
+  position: 3
   active: true
 mozake:
   name: Mozake
@@ -453,7 +689,7 @@ mozake:
     /* Mozake – plain HTML, circa 1991 */
 
     body { font-family: "Times New Roman", Times, serif; }
-    .lexxy-content { --lexxy-content-margin: 0.75rem; }
+    .post-body { --lexxy-content-margin: 0.75rem; }
 
     /* Header */
     header { margin-bottom: 1rem; }
@@ -473,8 +709,8 @@ mozake:
 
     /* Typography */
     article { line-height: revert; }
-    .lexxy-content h1, .lexxy-content h2, .lexxy-content h3,
-    .lexxy-content h4, .lexxy-content h5, .lexxy-content h6 {
+    .post-body h1, .post-body h2, .post-body h3,
+    .post-body h4, .post-body h5, .post-body h6 {
       font-size: revert; font-weight: revert; line-height: revert;
       margin-block: revert;
     }
@@ -500,8 +736,8 @@ mozake:
     article img, .post-card-summary img { border-radius: 0; }
 
     /* Code */
-    .lexxy-content pre { background: transparent; border-radius: 0; }
-    .lexxy-content code { background: transparent; }
+    .post-body pre { background: transparent; border-radius: 0; }
+    .post-body code { background: transparent; }
 
     /* Post cards */
     .post-card-content {
@@ -566,7 +802,7 @@ mozake:
   custom_theme_bg_dark: "#ffffff"
   custom_theme_text_dark: "#000000"
   custom_theme_accent_dark: "#0000EE"
-  position: 6
+  position: 11
   active: true
 minimal_mono:
   name: Minimal Mono
@@ -581,7 +817,7 @@ minimal_mono:
     h1.post-title, article footer,
     .post-card-date, .post-card-summary, .post-card-title,
     .tag-link, .tag-filter-notice, .tag-filter-notice-links, .tag-filter-notice-link,
-    .email-subscriber-form, figcaption, .lexxy-content figcaption { font-size: 0.75rem; }
+    .email-subscriber-form, figcaption, .post-body figcaption { font-size: 0.75rem; }
 
     /* Header */
     .avatar, header hr, .post-card-badge { display: none; }
@@ -617,27 +853,283 @@ minimal_mono:
     .form-container { padding: 0; }
 
     /* Heading markers */
-    .lexxy-content h1::before,
-    .lexxy-content h2::before,
-    .lexxy-content h3::before,
-    .lexxy-content h4::before { color: var(--color-text-muted); font-weight: inherit; }
-    .lexxy-content h1::before { content: "# "; }
-    .lexxy-content h2::before { content: "## "; }
-    .lexxy-content h3::before { content: "### "; }
-    .lexxy-content h4::before { content: "#### "; }
+    .post-body h1::before,
+    .post-body h2::before,
+    .post-body h3::before,
+    .post-body h4::before { color: var(--color-text-muted); font-weight: inherit; }
+    .post-body h1::before { content: "# "; }
+    .post-body h2::before { content: "## "; }
+    .post-body h3::before { content: "### "; }
+    .post-body h4::before { content: "#### "; }
 
     /* Content */
     article img { border-radius: 0; }
 
     /* Links */
-    .bio a, .lexxy-content a {
+    .bio a, .post-body a {
       text-decoration: underline dotted var(--color-text-muted);
       text-underline-offset: 0.125em;
     }
-    .bio a:hover, .lexxy-content a:hover { text-decoration-color: var(--color-text); }
+    .bio a:hover, .post-body a:hover { text-decoration-color: var(--color-text); }
   theme: base
   font: mono
   width: narrow
   layout: stream_layout
-  position: 7
+  position: 10
+  active: true
+pukka:
+  name: Pukka
+  description: A clean, roomy theme with a square avatar beside stacked title and
+    nav, in a generous system-font type
+  custom_css: |
+    /* Pukka – a clean, roomy default */
+
+    /* System font at an 18px base, in a 700px column */
+    :root {
+      --font-size-base: 112.5%;
+      --content-width-wide: 43.75rem;
+    }
+    .blog {
+      font-family: "SF Pro Display", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Header: square avatar left, title and nav stacked beside it */
+    header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      margin-top: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .titlebar,
+    .avatar-container {
+      display: contents;
+    }
+
+    /* margin-right (not column-gap) so title and nav sit flush
+       left when there is no avatar */
+    .avatar {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      margin-right: 1rem;
+    }
+    .avatar img { border-radius: 0.5rem; }
+
+    .blog-title {
+      grid-column: 2;
+      grid-row: 1;
+      font-size: 1.5em;
+    }
+
+    header nav {
+      grid-column: 2;
+      grid-row: 2;
+      justify-content: flex-start;
+      gap: 1rem;
+      font-size: 1em;
+      margin-top: 0.5rem;
+    }
+    header nav a {
+      color: var(--color-accent);
+      text-decoration: underline;
+    }
+    header nav a:hover { color: var(--color-accent-hover); }
+
+    .bio,
+    .email-subscriber-form,
+    header hr {
+      grid-column: 1 / -1;
+    }
+
+    header hr {
+      margin-top: 2rem;
+    }
+
+    /* Bio reads like body text */
+    .bio {
+      font-size: 1em;
+      line-height: 1.5;
+      color: var(--color-text);
+    }
+
+    /* Title list: light, underlined links */
+    .posts-titles a {
+      font-weight: 400;
+      text-decoration: underline;
+    }
+
+    /* Stream layout: a divider between every post */
+    .stream_layout .post-stream-item {
+      border-top: 1px solid var(--color-border);
+      padding-top: 3rem;
+      margin-bottom: 3rem;
+    }
+    .stream_layout > turbo-frame > .h-feed > .post-stream-item:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    /* Links throughout sit at a normal weight */
+    .bio a,
+    .post-body a { font-weight: 400; }
+
+    /* Tags read like body text; card "read more" matches */
+    .tag-link,
+    .post-card-badge {
+      font-weight: 400;
+      color: var(--color-text);
+    }
+
+    /* Headings sit at a lighter weight */
+    h1.post-title { font-weight: 700; }
+  theme: custom
+  font: sans
+  width: wide
+  layout: title_layout
+  custom_theme_bg_light: "#eef2f9"
+  custom_theme_text_light: "#1e1e1e"
+  custom_theme_accent_light: "#2563eb"
+  custom_theme_bg_dark: "#14171f"
+  custom_theme_text_dark: "#d7d7d7"
+  custom_theme_accent_dark: "#60a5fa"
+  position: 5
+  active: true
+aurelia:
+  name: Aurelia
+  description: A soft dusk-gradient theme with a display serif and an airy grotesque
+    body
+  custom_css: |
+    /* Aurelia – soft dusk gradient, editorial display serif */
+
+    @import url('https://fonts.bunny.net/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+    @import url('https://fonts.bunny.net/css2?family=Bricolage+Grotesque:wght@300;400;500;700&display=swap');
+
+    :root {
+      --font-text: "Bricolage Grotesque", sans-serif;
+      --font-header: "Fraunces", serif;
+    }
+
+    /* Base type and a fixed dusk gradient behind the content */
+    body {
+      font-family: var(--font-text);
+      font-weight: 300;
+      background-image:
+        radial-gradient(75% 75% at 28% 72%, #F0A57F33 0%, transparent 68%),
+        radial-gradient(72% 72% at 76% 58%, #DE7FA62B 0%, transparent 60%),
+        radial-gradient(75% 75% at 50% 20%, #8E9BE026 0%, transparent 55%);
+      background-attachment: fixed;
+    }
+
+    /* Let the gradient show through the blog container */
+    .blog { background: transparent; }
+
+    /* Headings in the display serif */
+    h1, h2, h3, h4, h5, h6,
+    h1.post-title, .blog-title {
+      font-family: var(--font-header);
+      font-weight: 400;
+    }
+    h1.post-title { letter-spacing: -0.01em; }
+
+    /* Header: title right, then nav, then bio */
+    header { display: flex; flex-direction: column; }
+    header > .titlebar { order: 1; }
+    header > nav { order: 2; }
+    header > .bio { order: 3; color: var(--color-text); }
+    header > .email-subscriber-form { order: 4; }
+    header hr { display: none; }
+
+    /* Group the avatar and title together, aligned right */
+    .titlebar { justify-content: flex-end; margin-bottom: 0.75rem; }
+    .avatar-container { width: auto; align-items: center; }
+    .avatar, .avatar img { width: 3rem; height: 3rem; }
+    .blog-title {
+      font-size: 2em;
+      text-align: right;
+    }
+    nav { gap: 1rem; }
+
+    /* Divider under the header, index page only */
+    .blog:not(.post, .page, .home-page) header {
+      border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+      padding-bottom: 1.5rem;
+    }
+
+    /* Title list: align the date column */
+    .post-row time { font-variant-numeric: tabular-nums; }
+
+    /* Links: accent underline, soft highlight on hover */
+    a {
+      color: var(--color-text);
+      text-decoration: underline;
+      text-decoration-color: var(--color-accent);
+      text-decoration-thickness: 0.1em;
+      text-underline-offset: 0.22em;
+    }
+    a:hover {
+      background-color: color-mix(in srgb, var(--color-accent) 18%, transparent);
+    }
+
+    .avatar a,
+    .blog-title a,
+    .post-title a,
+    .posts-titles a {
+      color: var(--color-text);
+      text-decoration: none;
+    }
+    .avatar a:hover,
+    .blog-title a:hover,
+    .post-title a:hover,
+    .posts-titles a:hover {
+      color: var(--color-accent);
+      background-color: transparent;
+    }
+
+    footer a { text-decoration: none; }
+    footer a:hover {
+      color: var(--color-accent);
+      fill: var(--color-accent);
+      background-color: transparent;
+    }
+
+    /* Tags: plain #hashtag text */
+    .tag-link {
+      background: transparent;
+      padding: 0;
+      color: var(--color-text);
+      font-size: 0.85em;
+      font-weight: 400;
+    }
+    .tag-link::before { content: "#"; color: var(--color-text-muted); }
+    .tag-link:hover,
+    .tag-link:hover::before {
+      color: var(--color-accent);
+      background-color: transparent;
+    }
+
+    /* Forms (subscription, contact, reply) and tag filter notice:
+       soft accent fill, no border */
+    .form,
+    .tag-filter-notice {
+      background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+      border: none;
+    }
+    .email-subscriber-form input[type="email"] { border: none; }
+
+    /* Text selection */
+    ::selection {
+      background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+    }
+  theme: custom
+  font: sans
+  width: standard
+  layout: title_layout
+  custom_theme_bg_light: "#fbf7f1"
+  custom_theme_text_light: "#2b2724"
+  custom_theme_accent_light: "#c05b4d"
+  custom_theme_bg_dark: "#1a1613"
+  custom_theme_text_dark: "#e7dfd5"
+  custom_theme_accent_dark: "#e39385"
+  position: 1
   active: true

@@ -6,10 +6,13 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 - **Vanilla Rails**: No services, commands, or interactors. Private methods in controllers, rich domain models, concerns for shared behavior. See [Vanilla Rails is Plenty](https://dev.37signals.com/vanilla-rails-is-plenty/).
 - **Minimal code**: Fewer lines when clarity is maintained. Simple over clever. No over-engineering or premature abstraction.
+- **Reuse existing code**: Before adding a helper, predicate, query object, or host/routing check, search for an existing app concept that already expresses it. Prefer calling the existing method over duplicating the logic.
 - **Idiomatic**: Follow Ruby and Rails conventions throughout. Fat models, skinny controllers, RESTful routes.
+- **Default Rails baseline**: For Rails coding, refactoring, debugging, migrations, and review tasks, apply the `rails-best-practices-core` skill unless a more specific instruction conflicts.
 
 ## Code Style
 
+- Use British English spelling in user-facing copy and documentation (for example, "capitalisation", not "capitalization")
 - Double quotes for strings, not single quotes
 - Use en-dashes (–), never em-dashes (—)
 - Remove trailing whitespace
@@ -58,6 +61,8 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 ## Git Commits
 
+- Use plain branch names without category prefixes (for example `help-dialogs`, not `feature/help-dialogs` or `fix/help-dialogs`)
+- Use plain PR titles without automation prefixes (for example `Help dialogs`, not `[codex] Help dialogs`)
 - **NEVER** add "Co-Authored-By", "Generated with Claude Code", or any AI attribution to commit messages, PR descriptions, or code comments. This is a hard rule — no exceptions.
 - Ask for human review before committing generated code
 
@@ -67,6 +72,8 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **CI skill** (`/ci`): runs brakeman, rubocop, importmap audit, and tests locally
 - **Sentry skill** (`/sentry`): investigate and fix Sentry errors
 - **Support skill** (`/support`): investigate customer issues and draft responses
+- **Fizzy skill** (`/fizzy`): list, create, update, move, comment on, and inspect Fizzy tracker cards. Use it for any tracker work rather than hand-rolling the API
+- **Pagecord blog drafts**: write reviewable Obsidian posts to `/Users/olly/Notes/Personal/Pagecord Blog Posts`
 
 ## Commands
 
@@ -130,10 +137,12 @@ Docker: prefix commands with `docker-compose exec web`
 - **Cancellation**: `SendCancellationEmailJob` sends appropriate email (subscriber vs free account). User destruction via `DestroyUserJob`.
 
 ### Feature Toggles
-- Per-blog feature flags stored in the blog's `features` array column (e.g. `["contact_form", "analytics_countries"]`)
-- Defined in `config/features.rb` using `feature :name do |blog:| ... end`
-- In controllers/views: `current_features.enabled?(:feature_name)` (via `Rails.features.for(blog: @blog)`)
-- In models/concerns: check `features.include?("feature_name")` directly on the blog instance
+- Feature flags are stored on `users.features` as an array column (e.g. `["multiple_blogs"]`).
+- Defined in `config/features.rb` using the `feature_toggles` gem: `feature :name do |user: nil, blog: nil| ... end`
+- `ApplicationController#current_features` returns `Rails.features.for(user: Current.user, blog: @blog)` and is exposed to controllers/views.
+- In app controllers/views: prefer `current_features.enabled?(:feature_name)` so checks have both current user and blog context.
+- In models/concerns: check `user.features.include?("feature_name")` when direct model-level access is needed.
+- Feature-gated app UI should also guard direct routes with a `before_action` and redirect when disabled; for example, the multiple-blog management UI is gated by `:multiple_blogs`.
 
 ### Key Concerns
 - **Subscribable**: Trial management (14 days), `has_premium_access?` vs `subscribed?`

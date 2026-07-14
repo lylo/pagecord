@@ -115,6 +115,17 @@ class SluggableTest < ActiveSupport::TestCase
     assert_equal post.title.parameterize.truncate(100, omission: ""), post.slug
   end
 
+  test "should allow duplicate slugs generated from max length titles" do
+    title = "#{"a" * 100} duplicate"
+
+    post1 = @blog.posts.create!(title: title, content: "Content 1")
+    post2 = @blog.posts.create!(title: title, content: "Content 2")
+
+    assert_equal 100, post1.slug.length
+    assert_equal 100, post2.slug.length
+    assert_match /\A#{"a" * 91}-[a-f0-9]{8}\z/, post2.slug
+  end
+
   test "should remove trailing hyphens from truncated slugs" do
     title = "Futurism: Companies That Tried to Save Money With AI Are Now Spending a Fortune Hiring People to Fix Its Mistakes"
     raw_slug = title.parameterize.truncate(100, omission: "")

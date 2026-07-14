@@ -1,0 +1,69 @@
+<% content_for :title, "Pagecord Brand Assets" %>
+<% content_for :meta_description, "Download Pagecord logos and marks for press, reviews, integrations, and Pagecord-powered sites." %>
+
+<%
+  logos = [
+    { title: "Logo", description: "The full Pagecord logo, with the colour mark.", asset: "logo.svg" },
+    { title: "Monochrome logo", description: "The full Pagecord logo in a single colour.", asset: "logo-black.svg" }
+  ]
+
+  marks = [
+    { title: "Mark", description: "The Pagecord mark on its own.", asset: "logo-mark.svg" },
+    { title: "Monochrome mark", description: "The Pagecord mark in a single colour.", asset: "logo-mark-black.svg" }
+  ]
+%>
+
+<div class="mx-auto mb-16 max-w-4xl px-4">
+  <section class="mx-auto max-w-4xl text-center">
+    <h1 class="source-serif font-semibold text-4xl tracking-tight text-slate-900 dark:text-slate-100 md:text-6xl">
+      Pagecord brand assets
+    </h1>
+    <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-700 dark:text-slate-300 md:text-xl">
+      Logos and marks for press, reviews, integrations, and Pagecord-powered sites.
+    </p>
+  </section>
+
+  <section class="mt-14">
+    <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h2 class="source-serif text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">Logos</h2>
+        <p class="mt-2 text-slate-600 dark:text-slate-300">Use the full logo when there is enough horizontal room.</p>
+      </div>
+    </div>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <% logos.each do |logo| %>
+        <article class="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+          <div class="flex min-h-56 items-center justify-center bg-white p-8">
+            <%= image_tag logo[:asset], alt: logo[:title], class: "w-full max-w-md" %>
+          </div>
+          <div class="p-5">
+            <h3 class="font-semibold text-slate-900 dark:text-slate-100"><%= logo[:title] %></h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300"><%= logo[:description] %></p>
+            <%= link_to "Download SVG", asset_path(logo[:asset]), class: "mt-4 inline-flex rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700", download: true %>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="mt-14">
+    <h2 class="source-serif text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">Marks</h2>
+    <p class="mt-2 text-slate-600 dark:text-slate-300">Use the mark where the full logo would be too small.</p>
+
+    <div class="mt-6 grid gap-5 md:grid-cols-2">
+      <% marks.each do |mark| %>
+        <article class="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+          <div class="flex min-h-56 items-center justify-center bg-white p-8">
+            <%= image_tag mark[:asset], alt: mark[:title], class: "h-28 w-28" %>
+          </div>
+          <div class="p-5">
+            <h3 class="font-semibold text-slate-900 dark:text-slate-100"><%= mark[:title] %></h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300"><%= mark[:description] %></p>
+            <%= link_to "Download SVG", asset_path(mark[:asset]), class: "mt-4 inline-flex rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700", download: true %>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  </section>
+</div>

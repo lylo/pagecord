@@ -6,7 +6,7 @@ published_at: 2025-12-17T16:45:24+00:00
 
 ## Your blog URL
 
-Initially your blog lives on a subdomain at `yourusername.pagecord.com`. You can share this link right away — no setup required.
+Initially your blog lives on a subdomain at `yourusername.pagecord.com`. You can share this link right away – no setup required.
 
 If you have a premium subscription, you can connect your own domain name later.
 
@@ -29,7 +29,7 @@ Every Pagecord account has a unique email address for sending posts to. You'll f
 
 Send an email to your secret delivery email:
 
-- **Subject line** becomes the post title (optional — leave it blank for a title-free post)
+- **Subject line** becomes the post title (optional – leave it blank for a title-free post)
 - **Email body** becomes the post content
 - **Attachments** are automatically included as images
 
@@ -37,7 +37,7 @@ This is perfect for posting from your phone or when inspiration strikes away fro
 
 ## Adding a title (optional)
 
-Pagecord doesn't require titles. Some posts are better without them — a quick thought, a photo, a quote.
+Pagecord doesn't require titles. Some posts are better without them – a quick thought, a photo, a quote.
 
 If you do want a title, just add it in the title field when writing in the app, or use the subject line when posting by email.
 
@@ -49,10 +49,10 @@ You can change the language of your blog's interface elements (like email subscr
 
 Now that you've published your first post, here are some things to explore:
 
-- **[Customise your blog](customising-your-blog.md)** — Choose a theme that fits your style
-- **[Set up your navigation](setting-up-navigation.md)** — Add links to your menu
-- **[Create an About page](creating-pages.md)** — Tell readers who you are
-- **[Post by email](posting-by-email.md)** — Learn the tricks for email posting
+- **[Customise your blog](customising-your-blog.md)** – Choose a theme that fits your style
+- **[Set up your navigation](setting-up-navigation.md)** – Add links to your menu
+- **[Create an About page](creating-pages.md)** – Tell readers who you are
+- **[Post by email](posting-by-email.md)** – Learn the tricks for email posting
 
 ## Need Help?
 

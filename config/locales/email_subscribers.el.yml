@@ -1,0 +1,45 @@
+el:
+  email_subscribers:
+    form:
+      subscribe_description:
+        digest: "Εγγραφείτε για να λαμβάνετε μια εβδομαδιαία σύνοψη αναρτήσεων στα εισερχόμενά σας"
+        individual: "Εγγραφείτε για να λαμβάνετε νέες αναρτήσεις μέσω email"
+      email_placeholder: "Πληκτρολογήστε το email σας..."
+      submit_button: "Εγγραφή"
+    create:
+      success_message: "Ευχαριστούμε για την εγγραφή σας. Αν δεν είστε ήδη εγγεγραμμένοι, ένα email επιβεβαίωσης αποστέλλεται στο %{email}"
+      rate_limit_message: "Πάρα πολλές προσπάθειες. Δοκιμάστε ξανά αργότερα."
+    confirmations:
+      success_message:
+        digest: "Η εγγραφή σας στο %{blog_name} επιβεβαιώθηκε. Θα λαμβάνετε μια εβδομαδιαία σύνοψη μέσω email όταν δημοσιεύονται νέες αναρτήσεις."
+        individual: "Η εγγραφή σας στο %{blog_name} επιβεβαιώθηκε. Θα λαμβάνετε email όταν δημοσιεύονται νέες αναρτήσεις."
+      unsubscribe_link: "Κατάργηση εγγραφής"
+    unsubscribes:
+      success_message: "Έχετε πλέον καταργήσει την εγγραφή σας από το %{blog_name} 👋"
+      confirm_message: "Για να καταργήσετε την εγγραφή σας από το %{blog_name}, κάντε κλικ στον παρακάτω σύνδεσμο."
+      unsubscribe_button: "Κατάργηση εγγραφής"
+      not_found: "Δεν βρέθηκε εγγραφή email"
+    mailers:
+      shared:
+        footer: "Έχετε εγγραφεί για να λαμβάνετε νέες αναρτήσεις από το %{blog_name}."
+        unsubscribe_link: "Κατάργηση εγγραφής"
+        unsubscribe_text: "Καταργήστε την εγγραφή σας κάνοντας κλικ στον παρακάτω σύνδεσμο:"
+        view_online: "Προβολή αυτής της ανάρτησης online"
+      confirmation:
+        subject: "Επιβεβαιώστε την εγγραφή σας στο %{blog_name}"
+        message: "Παρακαλούμε επιβεβαιώστε την εγγραφή σας στο %{blog_name}. Αν δεν σκοπεύατε να εγγραφείτε, μπορείτε να αγνοήσετε αυτό το email."
+        button: "Εγγραφή"
+      weekly_digest:
+        subject: "Νέες αναρτήσεις από το %{blog_name} – %{date}"
+        footer: "Έχετε εγγραφεί για να λαμβάνετε νέες αναρτήσεις από το %{blog_name}."
+        unsubscribe_link: "Κατάργηση εγγραφής"
+      individual:
+        default_subject: "Νέα ανάρτηση από το %{blog_name} – %{date}"
+  posts:
+    read_more: "Διαβάστε περισσότερα…"
+  replies:
+    form:
+      subject_label: "Θέμα"
+      cancel_link: "Ακύρωση"
+    mailer:
+      intro: "Υπέροχα! Κάποιος απάντησε στην ανάρτησή σας"

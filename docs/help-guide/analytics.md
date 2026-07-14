@@ -12,19 +12,19 @@ Click **Analytics** in your dashboard to see your page views.
 
 ## What you can see
 
-- **Page views** — Total views for the selected period
-- **Chart** — Visual breakdown of views over time
-- **Top posts** — Your most-viewed content
-- **Traffic sources** — Where your visitors are coming from
-- **Countries** — Geographic breakdown of your audience
+- **Page views** – Total views for the selected period
+- **Chart** – Visual breakdown of views over time
+- **Top posts** – Your most-viewed content
+- **Traffic sources** – Where your visitors are coming from
+- **Countries** – Geographic breakdown of your audience
 
 ## Time periods
 
 Switch between different views:
 
-- **Day** — Hour-by-hour breakdown
-- **Month** — Day-by-day breakdown
-- **Year** — Month-by-month breakdown
+- **Day** – Hour-by-hour breakdown
+- **Month** – Day-by-day breakdown
+- **Year** – Month-by-month breakdown
 
 Use the arrows to navigate to previous periods, or click **Today** to jump back to the current period. Click the date icon to select a specific day to view.
 

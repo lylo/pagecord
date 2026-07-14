@@ -1,0 +1,12 @@
+<% if @blog.allow_search_indexing && @blog.user.search_indexable? %>
+<%= render "default" %>
+
+<% if @blog.custom_robots_txt_active? %>
+<%= @blog.custom_robots_txt %>
+<% else %>
+<%= render "ai_training_crawlers" %>
+<% end %>
+<% else %>
+User-agent: *
+Disallow: /
+<% end %>

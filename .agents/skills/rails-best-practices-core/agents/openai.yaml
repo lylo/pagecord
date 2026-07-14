@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rails Best Practices"
+  short_description: "Core Rails architecture and review defaults"
+  default_prompt: "Apply the core Rails best-practices baseline to this Rails task."

@@ -1,30 +1,44 @@
 <% has_premium = @blog.user.subscribed? %>
 <% saved = @blog.custom_robots_txt.present? %>
 <% editor_value = @blog.custom_robots_txt.presence %>
-<% editor_value ||= @blog.generated_robots_txt(sitemap_url: sitemap_url_for(@blog)) if has_premium %>
+<% editor_value ||= render(partial: "blogs/robots/ai_training_crawlers", formats: :text) if has_premium %>
 
 <div class="group">
-  <div class="flex gap-3 <%= 'opacity-50' unless has_premium %>">
-    <div class="flex h-6 shrink-0 items-center">
-      <%= check_box_tag :use_custom_robots_txt,
-          "1",
-          has_premium && saved,
-          disabled: !has_premium,
-          class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:cursor-not-allowed" %>
+  <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+    <div>
+      <h4 class="font-bold text-slate-900 dark:text-slate-100">Crawler Rules</h4>
     </div>
     <div>
-      <%= label_tag :use_custom_robots_txt, "Use custom robots.txt", class: "text-slate-800 dark:text-slate-100" %>
-      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+      <p class="text-slate-700 dark:text-slate-300">
         <% if has_premium %>
-          Start with Pagecord's default robots.txt and edit it for specific crawlers. Incorrect rules can affect search visibility.
+          Customise the crawler rules section of your blog's <tt>robots.txt</tt> – for example, to unblock an AI crawler. The default rules (search engine access and your sitemap) always apply and can't be changed.
         <% else %>
-          Custom robots.txt is available with a subscription.
+          Customising crawler rules is available with a subscription.
         <% end %>
       </p>
+
+      <div class="mt-6 flex gap-3 <%= 'opacity-50' unless has_premium %>">
+        <div class="flex h-6 shrink-0 items-center">
+          <%= check_box_tag :use_custom_robots_txt,
+              "1",
+              has_premium && saved,
+              disabled: !has_premium,
+              class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:cursor-not-allowed" %>
+        </div>
+        <div>
+          <%= label_tag :use_custom_robots_txt, "Use custom crawler rules", class: "text-slate-800 dark:text-slate-100" %>
+        </div>
+      </div>
+
+      <% if saved %>
+        <p class="hidden group-has-[input:not(:checked)]:block mt-2 text-sm text-amber-600 dark:text-amber-400">
+          Note: Unchecking this box and saving will restore Pagecord's default crawler rules.
+        </p>
+      <% end %>
     </div>
   </div>
 
-  <div class="ml-8 mt-4 hidden group-has-[input:checked]:block">
+  <div class="hidden group-has-[input:checked]:block px-6 pb-6">
     <%= text_area_tag "blog[custom_robots_txt]",
         editor_value,
         id: "blog_custom_robots_txt",
@@ -32,10 +46,4 @@
         class: "form-field font-mono text-sm w-full" %>
     <%= field_error(@blog, :custom_robots_txt) %>
   </div>
-
-  <% if saved %>
-    <p class="hidden group-has-[input:not(:checked)]:block mt-2 ml-8 text-sm text-amber-600 dark:text-amber-400">
-      Note: Unchecking this box and saving will remove your custom robots.txt.
-    </p>
-  <% end %>
 </div>

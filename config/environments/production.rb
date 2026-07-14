@@ -1,6 +1,12 @@
 require "active_support/core_ext/integer/time"
 require "appsignal"
 
+# We don't use ActionCable. AppSignal's ActionCable hook force-loads
+# ActionCable::Channel::Base during boot, tripping Rails' "load hook run before
+# application initialization" warning. There's no config flag to skip a single
+# hook, so unregister it before AppSignal installs its hooks.
+Appsignal::Hooks.hooks.delete(:action_cable)
+
 Rails.application.configure do
   # Prepare the ingress controller used to receive mail
   # config.action_mailbox.ingress = :relay
@@ -90,7 +96,10 @@ Rails.application.configure do
   # ---------------------------------
 
   # Use a different cache store in production.
-  config.cache_store = :mem_cache_store
+  config.cache_store = :mem_cache_store, ENV.fetch("MEMCACHE_SERVERS", "localhost:11211"), {
+    expires_in: 7.days,
+    compress: true
+  }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   config.active_job.queue_adapter = :sidekiq

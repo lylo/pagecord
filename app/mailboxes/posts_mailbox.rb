@@ -3,6 +3,7 @@ class PostsMailbox < ApplicationMailbox
     return unless mail.to.present? && mail.from.present?
 
     recipient = ENV["PAGECORD_RECIPIENT"] || mail.to.first.downcase
+    status = recipient.sub!(/\+draft@/, "@") ? :draft : :published
     from = ENV["PAGECORD_FROM"] || mail.from.first.downcase
 
     reply_to = if ENV["PAGECORD_REPLYTO"]
@@ -31,6 +32,7 @@ class PostsMailbox < ApplicationMailbox
           blog.posts.create!(
             title: title,
             content: content,
+            status: status,
             source: :email,
             attachments: parser.attachments,
             tag_list: parser.tags,

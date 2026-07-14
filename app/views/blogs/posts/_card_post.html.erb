@@ -12,8 +12,17 @@
           <%= post.excerpt_text(limit: 324) %>
         <% elsif post.has_text_content? %>
           <%= post.summary(limit: 324) %>
-        <% elsif post.first_image.present? %>
-          <%= image_tag resized_image_url(post.first_image, width: 1600, height: 1200), alt: post.display_title %>
+        <% elsif post.first_media.present? %>
+          <% media = post.first_media %>
+          <% if media.image? %>
+            <%= image_tag resized_image_url(media, width: 1600, height: 1200), alt: post.display_title %>
+          <% elsif media.video? %>
+            <% if media.previewable? %>
+              <%= image_tag media.preview(resize_to_limit: [ 1600, 1200 ]), alt: post.display_title %>
+            <% else %>
+              <%= video_tag rails_public_blob_url(media), preload: "metadata", muted: true, playsinline: true, class: "post-card-video" %>
+            <% end %>
+          <% end %>
         <% else %>
           <%= post.content.to_plain_text.truncate(324) %>
         <% end %>

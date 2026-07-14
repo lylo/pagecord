@@ -1,8 +1,8 @@
 class SignupsController < ApplicationController
-  include SpamPrevention, TimezoneTranslation
+  include AttributionTrackable, SpamPrevention, TimezoneTranslation
 
-  rate_limit to: 3, within: 1.hour, only: [ :create ]
-  rate_limit to: 20, within: 1.minute, only: [ :new ]
+  rate_limit to: 10, within: 1.hour, only: [ :create ], name: "signup-create"
+  rate_limit to: 20, within: 1.minute, only: [ :new ], name: "signup-new"
 
   layout "sessions"
 
@@ -12,23 +12,29 @@ class SignupsController < ApplicationController
 
   def new
     @user = User.new(marketing_consent: true, signup_referrer: request.referer)
-    @user.build_blog
+    @user.blogs.build
   end
 
   def create
     if turnstile_enabled? && !valid_turnstile_token?(params["cf-turnstile-response"])
       flash.now[:error] = "Please complete the security check"
       @user = User.new
-      @user.build_blog
+      @user.blogs.build
       render :new and return
     end
 
     @user = User.new(user_params)
 
+    # New users should get Lexxy if configured
+    @user.features = [ "lexxy" ] if ENV["LEXXY_FOR_NEW_USERS"]
+
     if signup_from_allowed_timezone && @user.save
+      attribution = signup_attribution
+      session.delete(:signup_attribution)
+
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
-      redirect_to thanks_signups_path
+      redirect_to thanks_signups_path(attribution)
     else
       render :new, status: :unprocessable_entity
     end
@@ -43,7 +49,7 @@ class SignupsController < ApplicationController
 
     def user_params
       @user_params ||= begin
-        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation, :signup_referrer, :signup_source_note, blog_attributes: [ :subdomain ])
+        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation, :signup_referrer, :signup_source_note, blogs_attributes: [ :subdomain ])
         translate_timezone_param(raw_params)
       end
     end

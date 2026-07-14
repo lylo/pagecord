@@ -3,6 +3,7 @@ class Blogs::PostsController < Blogs::BaseController
 
   STREAM_PAGE_SIZE = 15
   TITLE_PAGE_SIZE = 100
+  RSS_PAGE_SIZE = STREAM_PAGE_SIZE
 
   rate_limit to: 60, within: 1.minute
 
@@ -76,6 +77,8 @@ class Blogs::PostsController < Blogs::BaseController
     end
 
     def page_size
+      return RSS_PAGE_SIZE if request.format.rss?
+
       @blog.title_layout? ? TITLE_PAGE_SIZE : STREAM_PAGE_SIZE
     end
 

@@ -59,6 +59,6 @@ class PostDigestMailer < PostmarkMailer
     end
 
     def sender_address_for(blog)
-      "#{blog.display_name} <digest@newsletters.pagecord.com>"
+      email_address_with_name("digest@newsletters.pagecord.com", blog.display_name)
     end
 end

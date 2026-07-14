@@ -1,0 +1,186 @@
+require "test_helper"
+
+class App::BlogsControllerTest < ActionDispatch::IntegrationTest
+  include AuthenticatedTest
+
+  test "premium user can create a second blog and it becomes current" do
+    user = users(:annie)
+    login_as user
+
+    assert_difference -> { user.blogs.reload.count } do
+      post app_blogs_url, params: { blog: { subdomain: "anniessecond", title: "Annie Second" } }
+    end
+
+    blog = user.blogs.find_by!(subdomain: "anniessecond")
+    assert_equal blog.id, session[:current_blog_id]
+    assert_redirected_to app_root_url
+  end
+
+  test "free user can see manage blogs upsell" do
+    user = users(:vivian)
+    login_as user
+
+    get app_blogs_url
+
+    assert_response :success
+    assert_select "h1", "Your blogs"
+    assert_select "a[href='#{new_app_blog_path}']", count: 0
+    assert_match "add a second blog", response.body
+    assert_select "a[href='#{app_settings_subscriptions_path}']", text: "Subscribe to Pagecord Premium"
+  end
+
+  test "trial user can see manage blogs upsell" do
+    user = users(:vivian)
+    user.update!(trial_ends_at: 5.days.from_now)
+
+    login_as user
+
+    get app_blogs_url
+
+    assert_response :success
+    assert_select "h1", "Your blogs"
+    assert_select "a[href='#{new_app_blog_path}']", count: 0
+    assert_match "add a second blog", response.body
+  end
+
+  test "delete blog buttons require confirmation" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    login_as user
+
+    get app_blogs_url
+
+    assert_response :success
+    assert_select "form[action='#{app_blog_path(blog)}'][method='post'][data-turbo-confirm=?]", "Are you sure you want to delete #{blog.display_name}?" do
+      assert_select "input[name='_method'][value='delete']"
+      assert_select "button", "Delete"
+    end
+  end
+
+  test "manage blogs links to trash when blogs are deleted" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    blog.discard!
+    login_as user
+
+    get app_blogs_url
+
+    assert_response :success
+    assert_select "a[href='#{app_blogs_trash_path}']", text: "1 deleted blog"
+  end
+
+  test "free user cannot create a second blog" do
+    user = users(:vivian)
+    login_as user
+
+    get new_app_blog_url
+    assert_redirected_to app_blogs_url
+    assert_equal "Subscribe to create another blog", flash[:alert]
+
+    assert_no_difference -> { user.blogs.reload.count } do
+      post app_blogs_url, params: { blog: { subdomain: "viviansecond" } }
+    end
+
+    assert_redirected_to app_blogs_url
+  end
+
+  test "switching blogs uses the selected blog in new post context" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    login_as user
+
+    post switch_app_blog_url(blog)
+    assert_equal blog.id, session[:current_blog_id]
+
+    get new_app_post_url
+
+    assert_response :success
+    assert_select "input[name='context_blog_id'][value='#{blog.id}']"
+  end
+
+  test "creates posts on the selected blog" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    login_as user
+    post switch_app_blog_url(blog)
+
+    assert_difference -> { blog.posts.reload.count } do
+      post app_posts_url, params: {
+        context_blog_id: blog.id,
+        post: { title: "Second Blog Post", content: "Hello" }
+      }
+    end
+
+    assert_equal "Second Blog Post", blog.posts.last.title
+  end
+
+  test "trashes posts on the selected blog" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    post = blog.posts.create!(title: "Trash me", content: "Hello")
+    login_as user
+    post switch_app_blog_url(blog)
+
+    assert_difference -> { blog.posts.discarded.count } do
+      post app_posts_trash_url, params: { post_token: post.token }
+    end
+
+    assert post.reload.discarded?
+  end
+
+  test "deleting selected blog falls back to remaining blog" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    login_as user
+    post switch_app_blog_url(blog)
+
+    delete app_blog_url(blog)
+
+    assert blog.reload.discarded?
+    assert_equal user.blog.id, session[:current_blog_id]
+    assert_redirected_to app_blogs_url
+    assert_equal "#{blog.display_name} was moved to trash", flash[:notice]
+  end
+
+  test "cannot delete the only blog with a direct request" do
+    user = users(:vivian)
+    blog = user.blog
+    login_as user
+
+    assert_no_difference -> { user.blogs.reload.count } do
+      delete app_blog_url(blog)
+    end
+
+    assert_not blog.reload.discarded?
+    assert_redirected_to app_blogs_url
+    assert_equal "You must have at least one blog", flash[:alert]
+  end
+
+  test "permanently deletes trashed blog" do
+    user = users(:joel)
+    blog = blogs(:joel_notes)
+    blog.discard!
+    login_as user
+
+    assert_difference -> { Blog.with_discarded.count }, -1 do
+      delete app_blog_url(blog)
+    end
+
+    assert_redirected_to app_blogs_trash_url
+    assert_equal "#{blog.display_name} was permanently deleted", flash[:notice]
+  end
+
+  test "does not permanently delete another user's trashed blog" do
+    user = users(:joel)
+    other_blog = blogs(:annie)
+    other_blog.discard!
+    login_as user
+
+    assert_no_difference -> { Blog.with_discarded.count } do
+      delete app_blog_url(other_blog)
+    end
+
+    assert_response :not_found
+    assert other_blog.reload.discarded?
+  end
+end

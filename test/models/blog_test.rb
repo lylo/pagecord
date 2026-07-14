@@ -31,6 +31,14 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.valid?
   end
 
+  test "should allow existing reserved subdomain when unchanged" do
+    blog = blogs(:pagecord)
+
+    blog.title = "Pagecord"
+
+    assert blog.valid?
+  end
+
   test "should validate format of subdomain" do
     @blog.subdomain = "abcdef-"
     assert_not @blog.valid?
@@ -57,9 +65,16 @@ class BlogTest < ActiveSupport::TestCase
   end
 
   test "should generate unique delivery email" do
-    user = User.create!(email: "newuser@newuser.com", blog: Blog.new(subdomain: "newuser"))
+    user = User.create!(email: "newuser@newuser.com", blogs_attributes: [ { subdomain: "newuser" } ])
     assert user.blog.delivery_email.present?
     assert user.blog.delivery_email =~ /newuser_[a-zA-Z0-9]{8}@post.pagecord.com/
+  end
+
+  test "should not create blogs beyond the user's limit" do
+    blog = users(:vivian).blogs.build(subdomain: "vivianextra")
+
+    assert_not blog.valid?
+    assert_includes blog.errors[:base], "You can't add another blog because you've already reached your blog limit"
   end
 
   test "should allow valid custom domain" do
@@ -133,6 +148,9 @@ class BlogTest < ActiveSupport::TestCase
     assert @blog.valid?
 
     @blog.locale = "de"
+    assert @blog.valid?
+
+    @blog.locale = "fi"
     assert @blog.valid?
 
     @blog.locale = "invalid"
@@ -211,6 +229,19 @@ class BlogTest < ActiveSupport::TestCase
     assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
   end
 
+  test "should allow local custom footer links and images" do
+    @blog.custom_footer_html = '<hr><a href="/about" target="_blank" rel="noopener noreferrer"><img src="/buttons/made-with-pagecord.gif" alt="Made with Pagecord"></a>'
+
+    assert @blog.valid?
+  end
+
+  test "should reject unsafe custom footer HTML" do
+    @blog.custom_footer_html = '<img src="https://example.com/x.png" onerror="alert(1)">'
+
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom footer html contains invalid or potentially unsafe content"
+  end
+
   test "should not touch posts when reply_by_email changes" do
     blog = blogs(:joel)
     post = posts(:one)
@@ -240,8 +271,11 @@ class BlogTest < ActiveSupport::TestCase
   test "should purge cloudflare cache on update" do
     blog = blogs(:joel)
 
-    PurgeCloudflareCacheJob.expects(:perform_later).with(blog.id).once
     Rails.stubs(:env).returns(ActiveSupport::EnvironmentInquirer.new("production"))
+
+    job = mock
+    job.expects(:perform_later).with(blog.id).once
+    PurgeCloudflareCacheJob.expects(:set).with(wait: 5.seconds).returns(job)
 
     blog.update!(title: "New Title")
   end

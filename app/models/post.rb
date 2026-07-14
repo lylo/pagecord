@@ -86,11 +86,11 @@ class Post < ApplicationRecord
 
   def excerpt_html
     return @excerpt_html if defined?(@excerpt_html)
-    @excerpt_html = content.body.present? ? ExcerptBreak.extract(content.to_s) : nil
+    @excerpt_html = has_excerpt? ? ExcerptBreak.extract(content.to_s) : nil
   end
 
   def excerpt_text(limit: 64)
-    plain_text_from(excerpt_html.to_s).truncate(limit, separator: /\s/)
+    plain_text_from(raw_excerpt_html.to_s).truncate(limit, separator: /\s/)
   end
 
   def has_text_content?
@@ -98,7 +98,7 @@ class Post < ApplicationRecord
   end
 
   def has_excerpt?
-    !excerpt_html.nil?
+    !raw_excerpt_html.nil?
   end
 
   def display_title
@@ -147,18 +147,25 @@ class Post < ApplicationRecord
   end
 
   def first_image
-    @first_image ||= begin
-      if content_image_attachments.any?
-        content_image_attachments.first
-      elsif attachments.any?
-        attachments.find(&:image?)
-      end
-    end
+    @first_image ||= content_image_attachments.first || attachments.find(&:image?)
+  end
+
+  def first_media
+    @first_media ||= content_media_attachments.first ||
+      attachments.find { |attachment| attachment.image? || attachment.video? }
   end
 
   def content_image_attachments
+    content_media_attachments.select(&:image?)
+  end
+
+  def content_media_attachments
     return [] unless content.body.present?
-    content.body.attachments.select { |attachment| attachment.try(:image?) }
+    if rich_text_content&.association(:embeds_attachments)&.loaded?
+      return rich_text_content.embeds_attachments.filter_map(&:blob).select { |blob| blob.image? || blob.video? }
+    end
+
+    content.body.attachments.filter_map(&:attachable).select { |attachable| attachable.try(:image?) || attachable.try(:video?) }
   end
 
   # Returns full plain text extracted from ActionText content.
@@ -174,18 +181,29 @@ class Post < ApplicationRecord
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
       doc.css("figcaption").remove
 
-      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote").each do |element|
+      doc.css("br").each do |element|
+        element.replace(Nokogiri::XML::Text.new(" ", doc))
+      end
+
+      doc.css("p, div, h1, h2, h3, h4, h5, h6, li, blockquote, td, th").each do |element|
         element.add_child(Nokogiri::XML::Text.new(" ", doc))
       end
 
       doc.text
-        .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp)\]/i, "")
+        .gsub(/\[.*?\.(jpg|png|gif|jpeg|webp|mp4|mov)\]/i, "")
         .gsub(/\[Image\]/i, "")
         .gsub(%r{https?://\S+}, "")
         .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
         .gsub(/<!--\s*more\s*-->/i, "")
         .gsub(/\s+/, " ")
         .strip
+    end
+
+    def raw_excerpt_html
+      return @raw_excerpt_html if defined?(@raw_excerpt_html)
+      # Use stored Action Text HTML for marker detection so attachment previews
+      # are not rendered just to decide whether a post has an excerpt break.
+      @raw_excerpt_html = content.body.present? ? ExcerptBreak.extract(content.body.to_html) : nil
     end
 
     def text_content
@@ -203,6 +221,10 @@ class Post < ApplicationRecord
       if published? && published_at.blank?
         self.published_at = Time.current
       end
+
+      # A home page is a landing page, never scheduled — a future published_at
+      # would make it pending and drop the blog to its empty "nothing to read" state.
+      self.published_at = Time.current if home_page? && published_at&.future?
     end
 
     def limit_content_size

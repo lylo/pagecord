@@ -8,6 +8,7 @@ nl:
       submit_button: "Abonneren"
     create:
       success_message: "Bedankt voor je aanmelding. Tenzij je al abonnee bent, is er een bevestigingsmail onderweg naar %{email}"
+      rate_limit_message: "Te veel pogingen. Probeer het later opnieuw."
     confirmations:
       success_message:
         digest: "Je abonnement op %{blog_name} is bevestigd. Je ontvangt een wekelijks e-mailoverzicht wanneer er nieuwe berichten worden gepubliceerd."

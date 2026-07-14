@@ -41,6 +41,12 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should get new" do
     get new_app_page_path
     assert_response :success
+    assert_select "button[aria-label='Page ideas and help']"
+    assert_select "[data-dialog-shortcut-value='?']"
+    assert_includes response.body, "{{ contact_form }}"
+    assert_includes response.body, "{{ posts_by_year }}"
+    assert_includes response.body, "https://help.pagecord.com/dynamic-variables-for-pages#recent-posts-on-your-home-page"
+    assert_includes response.body, "https://help.pagecord.com/dynamic-variables-for-pages#posts-by-year"
   end
 
   test "should create page" do
@@ -79,6 +85,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should get edit" do
     get edit_app_page_path(@page)
     assert_response :success
+    assert_select "button[aria-label='Page ideas and help']"
   end
 
   test "should not create page when form blog context does not match session blog" do

@@ -2,8 +2,8 @@
 # Prepend to sanitizer_allowed_tags to always include our custom tags
 # regardless of when Lexxy sets allowed_tags
 module ActionTextCustomTags
-  CUSTOM_TAGS = %w[s u mark].freeze
-  CUSTOM_ATTRIBUTES = %w[data-lightbox-full-url data-highlight-language playsinline id].freeze
+  CUSTOM_TAGS = %w[s u mark details summary].freeze
+  CUSTOM_ATTRIBUTES = %w[data-lightbox-full-url data-highlight-language playsinline id open].freeze
 
   def sanitizer_allowed_tags
     super + CUSTOM_TAGS

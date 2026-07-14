@@ -53,6 +53,24 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_not_includes email.body.encoded, "action-text-attachment"
   end
 
+  test "digest email replaces bare youtube links with linked thumbnails in html only" do
+    email_subscriber = email_subscribers(:one)
+    post = blogs(:joel).posts.create!(
+      title: "YouTube digest post",
+      content: "<p>https://www.youtube.com/watch?v=dQw4w9WgXcQ</p>",
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+    post_digests(:one).digest_posts.create!(post: post)
+
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: post_digests(:one)).weekly_digest
+
+    assert_includes email.html_part.body.encoded, "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert_includes email.html_part.body.encoded, "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+    assert_includes email.text_part.body.encoded, "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    assert_not_includes email.text_part.body.encoded, "hqdefault.jpg"
+  end
+
   test "individual email renders correctly with post title as subject" do
     blog = blogs(:joel)
     email_subscriber = email_subscribers(:one)
@@ -143,6 +161,16 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_equal [ "test@example.com" ], email.to
     assert_equal "[Test] #{post.title}", email.subject
     assert_equal [ "digest@newsletters.pagecord.com" ], email.from
+  end
+
+  test "test_individual quotes blog names with commas in from header" do
+    post = posts(:one)
+    post.blog.title = "Dear readers, notes"
+
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_equal [ "digest@newsletters.pagecord.com" ], email.from
+    assert_equal "\"Dear readers, notes\" <digest@newsletters.pagecord.com>", email.header["from"].to_s
   end
 
   test "test_individual has no broadcast headers" do

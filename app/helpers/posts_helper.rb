@@ -54,18 +54,19 @@ module PostsHelper
   def render_post_content(post)
     content = process_dynamic_variables(post)
     content = Html::StripActionTextAttachments.new.transform(content)
-    content = safe_auto_link(content, sanitize: false)
+    content = process_blog_links(content, post.blog)
     ExcerptBreak.strip(content).html_safe
   end
 
   def render_post_excerpt(post)
     content = Html::StripActionTextAttachments.new.transform(post.excerpt_html)
-    safe_auto_link(content, sanitize: false).html_safe
+    process_blog_links(content, post.blog).html_safe
   end
 
   def render_digest_post_content(post)
     content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
     content = ExcerptBreak.strip(content)
+    content = Html::EmailMediaPreview.new.transform(content)
     strip_video_tags(content).html_safe
   end
 
@@ -94,5 +95,11 @@ module PostsHelper
       end
 
       linked
+    end
+
+    def process_blog_links(content, blog)
+      content = safe_auto_link(content, sanitize: false)
+      content = Html::ExternalLinksInNewTab.new(blog).transform(content) if blog.external_links_in_new_tab?
+      content
     end
 end

@@ -8,6 +8,7 @@ en:
       submit_button: "Subscribe"
     create:
       success_message: "Thanks for subscribing. Unless you're already subscribed, a confirmation email is on its way to %{email}"
+      rate_limit_message: "Too many attempts. Please try again later."
     confirmations:
       success_message:
         digest: "Your subscription to %{blog_name} is confirmed. You'll receive a weekly email digest when new posts are published."

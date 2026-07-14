@@ -32,7 +32,8 @@ class App::Settings::BlogsController < AppController
         :google_site_verification,
         :seo_title,
         :locale,
-        :show_metrics
+        :show_metrics,
+        :external_links_in_new_tab
       ]
 
       if @blog.user.subscribed?

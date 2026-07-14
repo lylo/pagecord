@@ -1,12 +1,8 @@
 <div id="testimonials" class="relative w-full px-4 md:px-6 lg:px-8 my-12 py-8">
   <h2 class="source-serif text-center font-semibold mb-8 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">What people are saying</h2>
 
-  <div class="relative -mx-4 md:-mx-6 lg:-mx-8 testimonials-fade-edges"
-       data-controller="testimonials-carousel"
-       data-action="mouseenter->testimonials-carousel#pause mouseleave->testimonials-carousel#resume">
-    <div class="relative overflow-auto pb-4"
-         data-action="scroll->testimonials-carousel#scroll">
-      <div class="flex gap-6 pl-4 md:pl-6 lg:pl-8" data-testimonials-carousel-target="slider">
+  <div class="relative -mx-4 md:-mx-6 lg:-mx-8 testimonials-fade-edges">
+    <% testimonial_cards = capture do %>
 
         <!-- Testimonial 1 -->
         <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-md border border-slate-200 dark:border-slate-700">
@@ -145,7 +141,7 @@
         <!-- Testimonial 8 -->
         <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-md border border-slate-200 dark:border-slate-700">
           <div class="flex items-start mb-4">
-<%= inline_svg_tag "icons/quote.svg", class: "w-10 h-10 text-pagecord-accent opacity-50" %>
+            <%= inline_svg_tag "icons/quote.svg", class: "w-10 h-10 text-pagecord-accent opacity-50" %>
           </div>
           <p class="text-lg mb-6 leading-relaxed">
             "I've used every platform one can imagine over the years! Pagecord is seamless, well designed, and is as simple as an email."
@@ -159,6 +155,36 @@
               <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://thehundredfold.pagecord.com/" class="hover:underline">thehundredfold.pagecord.com</a></p>
             </div>
           </div>
+        </div>
+
+        <!-- Testimonial 9 -->
+        <div class="flex-none w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-md border border-slate-200 dark:border-slate-700">
+          <div class="flex items-start mb-4">
+            <%= inline_svg_tag "icons/quote.svg", class: "w-10 h-10 text-pagecord-accent opacity-50" %>
+          </div>
+          <p class="text-lg mb-6 leading-relaxed">
+            "Pagecord is fire."
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4fbd9c] to-[#3da688] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+              E
+            </div>
+            <div class="ml-3">
+              <p class="font-semibold">Elettrodora</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400"><a href="https://elettrodora.xyz/" class="hover:underline">elettrodora.xyz</a></p>
+            </div>
+          </div>
+        </div>
+    <% end %>
+
+    <div class="relative overflow-x-auto pb-4">
+      <div class="flex w-max animate-scroll-smooth">
+        <div class="flex gap-6 pl-4 md:pl-6 lg:pl-8 pr-6">
+          <%= testimonial_cards %>
+        </div>
+
+        <div class="flex gap-6 pl-4 md:pl-6 lg:pl-8 pr-6" inert>
+          <%= testimonial_cards %>
         </div>
       </div>
     </div>

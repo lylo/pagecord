@@ -61,6 +61,7 @@ Rails.application.routes.draw do
 
   get "/404", to: "errors#not_found"
   get "/422", to: "errors#unacceptable"
+  get "/429", to: "errors#too_many_requests"
   get "/500", to: "errors#internal_error"
 
   namespace :billing do
@@ -125,6 +126,7 @@ Rails.application.routes.draw do
       namespace :settings do
         resources :about, only: [ :index, :update ]
         resources :audience, only: [ :index ]
+        resources :subscribers, only: [ :index ]
         resources :users, only: [ :update, :destroy ]
         resources :blogs, only: [ :index, :update ]
         resources :appearance, only: [ :index, :update ]
@@ -164,7 +166,15 @@ Rails.application.routes.draw do
         resource :paddle_invoices, only: :show, controller: "subscriptions/paddle_invoices"
       end
 
-      resources :blogs do
+      namespace :blogs do
+        resource :trash, only: [ :show, :destroy ], controller: "trash"
+      end
+
+      resources :blogs, only: [ :index, :new, :create, :destroy ] do
+        member do
+          post :switch
+        end
+        resource :restoration, only: [ :create ], controller: "blogs/restorations"
         resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
       end
 
@@ -179,7 +189,6 @@ Rails.application.routes.draw do
       resources :theme_templates do
         get :fixtures, on: :collection
       end
-      resources :blogs, only: [ :index ]
       resources :analytics, only: [ :index ]
       resources :posts, only: [ :index ]
       resources :suppressions, only: [ :index ] do
@@ -188,7 +197,7 @@ Rails.application.routes.draw do
           delete :destroy_all
         end
       end
-      resources :users, only: [ :show, :destroy, :new, :create, :update ] do
+      resources :users, only: [ :index, :show, :destroy, :new, :create, :update ] do
         member do
           post :restore
         end
@@ -224,16 +233,21 @@ Rails.application.routes.draw do
     get "/terms", to: "public#terms", as: :terms
     get "/privacy", to: "public#privacy", as: :privacy
     get "/faq", to: "public#faq", as: :faq
+    get "/brand", to: "public#brand", as: :brand
     get "/pagecord-vs-about-me", to: "public#pagecord_vs_about_me"
     get "/pagecord-vs-medium", to: "public#pagecord_vs_medium"
     get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"
     get "/pagecord-vs-wordpress", to: "public#pagecord_vs_wordpress"
     get "/pagecord-vs-substack", to: "public#pagecord_vs_substack"
+    get "/personal-website", to: "public#personal_website"
     get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
     get "/blog-with-newsletter", to: "public#blog_with_newsletter"
+    get "/blogger-alternative", to: "public#blogger_alternative"
+    get "/indie-blogging-platform", to: "public#indie_blogging_platform"
 
     get "/spotlight", to: "home/spotlight#show"
+    get "/spotlight/trending.xml", to: "home/spotlight#show", defaults: { format: :rss }, as: :spotlight_trending_feed
     get "/shuffle", to: "posts/shuffle#show"
 
     get "/@:name", to: redirect("/%{name}")
@@ -247,12 +261,16 @@ Rails.application.routes.draw do
     }, constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }
   end
 
+
   constraints(DomainConstraints.method(:api_domain?)) do
     scope module: :api do
       resources :posts, only: [ :index, :show, :create, :update, :destroy ], param: :token
       resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
       resource :home_page, only: [ :show, :create, :update, :destroy ]
       resources :attachments, only: [ :create ]
+      post "/micropub", to: "micropub#create"
+      get "/micropub", to: "micropub#query", as: nil
+      post "/micropub/media", to: "micropub/media#create"
     end
   end
 
@@ -268,6 +286,7 @@ Rails.application.routes.draw do
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 
     get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
+    get "/posts/:slug", to: "blogs/redirects#show"
 
     namespace :api do
       post "embeds/bandcamp", to: "embeds#bandcamp"
@@ -288,7 +307,9 @@ Rails.application.routes.draw do
     resources :posts, only: [], param: :token do
       resources :upvotes, only: [ :create ], module: :posts
       get "upvotes/status", to: "posts/upvotes/status#show", as: :upvotes_status
-      resources :replies, only: [ :new, :create ], module: :posts
+      resources :replies, only: [ :new, :create ], module: :posts do
+        get :sent, on: :collection
+      end
     end
 
     # Catch-all for unmatched routes on blog domains

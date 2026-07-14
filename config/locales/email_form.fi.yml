@@ -1,0 +1,14 @@
+fi:
+  email_form:
+    form:
+      name_label: "Nimi"
+      email_label: "Sähköposti"
+      message_label: "Viesti"
+      submit_button: "Lähetä"
+    success_message: "Viesti lähetetty!"
+    error_message: "Viestin lähettämisessä tapahtui virhe."
+    rate_limit_message: "Olet lähettänyt liian monta viestiä liian nopeasti. Yritä myöhemmin uudelleen."
+    mailer:
+      from_label: "Lähettäjä"
+      footer: "Vastaa tähän sähköpostiin vastataksesi henkilölle %{name}."
+      footer_text: "Vastaa tähän sähköpostiin vastataksesi henkilölle %{name}."

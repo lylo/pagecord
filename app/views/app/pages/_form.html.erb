@@ -1,18 +1,19 @@
 <% is_new = !@page.persisted? %>
 
 <div data-controller="post-attributes autosave"
-    data-autosave-key-value="<%= is_new ? "draft-page-new-#{Current.user.blog.id}" : "draft-page-#{@page.id}" %>"
+    data-autosave-key-value="<%= is_new ? "draft-page-new-#{@blog.id}" : "draft-page-#{@page.id}" %>"
     data-autosave-base-title-value="<%= @page.title.to_s %>"
     data-autosave-base-content-value="<%= h(@page.content&.body&.to_html.to_s) if @page.persisted? %>">
 
   <div class="mb-4"><%= trial_callout("Image uploads") %></div>
 
-  <div class="flex justify-end mb-4" data-controller="toggle">
-    <%= link_to "#", class: "ms-3 font-medium text-slate-500 hover:text-black dark:text-slate-300 dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
-        <div class="">
+  <div class="mb-4 flex items-center justify-end gap-x-2">
+    <%= render "app/shared/help/edit_page" %>
+
+    <div data-controller="toggle">
+      <%= link_to "#", class: "inline-flex h-7 w-7 items-center justify-center text-slate-500 hover:text-black dark:text-slate-300 dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
           <%= inline_svg_tag "icons/ellipsis-horizontal-circle.svg", class: "w-7 h-7" %>
-        </div>
-      <% end %>
+        <% end %>
 
       <div class="relative hidden" data-toggle-target="element">
         <div class="absolute end-0 w-56 rounded-md border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-lg z-100" role="menu">
@@ -63,10 +64,11 @@
           </div>
         </div>
       </div>
+    </div>
   </div>
 
   <%= form_with(model: @page, url: @page.persisted? ? app_page_path(@page) : app_pages_path, html: { id: "page-form" }) do |form| %>
-    <%= hidden_field_tag :context_blog_id, Current.user.blog.id if is_new %>
+    <%= hidden_field_tag :context_blog_id, @blog.id if is_new %>
 
     <%= render "app/posts/open_graph_image_section", record: @page, form: form %>
 
@@ -117,6 +119,7 @@
         class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
         spellcheck: true,
         autocorrect: "on",
+        autocapitalize: "sentences",
         data: { controller: "lexxy ios-toolbar", attachments: Current.user.has_premium_access?, autosave_target: "content" } %>
 
       <div class="field-error"><%= @page.errors[:content].first if @page.errors[:content].any? %></div>
