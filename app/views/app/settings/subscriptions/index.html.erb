@@ -1,4 +1,5 @@
-<div class="mt-4 flex flex-col gap-y-4">
+<%= settings_section "Billing" do %>
+<div class="px-6 py-5 flex flex-col gap-y-4">
 <% if Current.user.on_trial? %>
   <%= callout(:info) do %>
     You have <strong><%= pluralize(Current.user.trial_days_remaining, "day") %></strong> remaining of your 14-day free trial of Pagecord Premium!
@@ -102,4 +103,6 @@
   <div class="mt-4">
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
   </div>
+<% end %>
+</div>
 <% end %>

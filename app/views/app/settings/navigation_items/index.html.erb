@@ -1,24 +1,16 @@
-<div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50">
-  <div class="my-8">
-    <div class="mb-2 flex items-start justify-between gap-4">
-      <div>
-        <h2 class="text-2xl font-bold">Navigation</h2>
-        <p class="mt-2">
-          Manage the links in your blog's header. Drag to reorder.
-        </p>
-      </div>
+<% nav_help = capture do %>
+  <%= render "app/shared/dialog",
+    id: "navigation-help",
+    title: "Navigation Quick Start",
+    button_label: "Navigation help",
+    shortcut: "?",
+    content_partial: "app/shared/help/navigation_content" %>
+<% end %>
 
-      <%= render "app/shared/dialog",
-        id: "navigation-help",
-        title: "Navigation Quick Start",
-        button_label: "Navigation help",
-        shortcut: "?",
-        content_partial: "app/shared/help/navigation_content" %>
-    </div>
-
+<div class="space-y-8">
+  <%= settings_section "Navigation", description: "Links in your blog's header. Drag to reorder.", control: nav_help do %>
     <% if @navigation_items.any? %>
-      <div class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
-           data-controller="sortable"
+      <div data-controller="sortable"
            data-sortable-resource-name-value="navigation_item"
            data-sortable-handle-value=".handle"
            data-sortable-animation-value="150">
@@ -26,11 +18,15 @@
           <%= render partial: item.class.name.underscore, locals: { item.class.name.underscore.to_sym => item } %>
         <% end %>
       </div>
+    <% else %>
+      <p class="px-6 py-5 text-slate-500 dark:text-slate-400">
+        No navigation links yet. Add one below.
+      </p>
     <% end %>
+  <% end %>
 
-    <div class="mt-8" data-controller="navigation-form" data-navigation-form-rss-feed-url-value="<%= rss_feed_url(@blog) %>">
-      <h3 class="font-bold text-lg mb-4">Add Navigation Item</h3>
-
+  <%= settings_section "Add a link" do %>
+    <div class="px-6 py-5" data-controller="navigation-form" data-navigation-form-rss-feed-url-value="<%= rss_feed_url(@blog) %>">
       <%= form_with model: [:app, :settings, @navigation_item || NavigationItem.new], scope: :navigation_item, url: @navigation_item&.persisted? ? app_settings_navigation_item_path(@navigation_item) : app_settings_navigation_items_path, class: "space-y-6" do |form| %>
         <div>
           <div class="space-y-3">
@@ -113,5 +109,5 @@
         </div>
       <% end %>
     </div>
-  </div>
+  <% end %>
 </div>

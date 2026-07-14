@@ -1,151 +1,138 @@
-<h3 class="mb-4 font-bold text-xl">Email Address</h3>
-
-<div class="mb-12">
-  <p class="mb-4">
-    Your current email address is <strong><%= Current.user.email %></strong>.
-  </p>
-
-  <% if pending_request = Current.user.pending_email_change_request %>
-      <p>
-        You have a pending email change to <strong><%= pending_request.new_email %></strong>.
-        Please check that email account for a verification link.
+<div class="space-y-8">
+  <%= settings_section "My Account" do %>
+    <%= settings_row "Email Address", stacked: true do %>
+      <p class="mb-4">
+        Your current email address is <strong><%= Current.user.email %></strong>.
       </p>
 
-      <div class="mt-4 flex items-center gap-x-2">
-        <%= button_to resend_app_settings_email_change_request_path(pending_request),
-              method: :post,
-              class: "btn-primary" do %>
-          Resend verification email
-        <% end %>
+      <% if pending_request = Current.user.pending_email_change_request %>
+          <p>
+            You have a pending email change to <strong><%= pending_request.new_email %></strong>.
+            Please check that email account for a verification link.
+          </p>
 
-        <%= button_to app_settings_email_change_request_path(pending_request),
-              method: :delete,
-              data: { turbo_confirm: "Are you sure? This will cancel the email change request." },
-              class: "btn-secondary cursor-pointer hover:underline" do %>
-          Cancel this change
-        <% end %>
-      </div>
-  <% else %>
-    <p class="mb-4">
-      Enter your new email and click the Change Email button. You'll receive a verification email at the
-      new address to confirm the change.
-    </p>
+          <div class="mt-4 flex items-center gap-x-2">
+            <%= button_to resend_app_settings_email_change_request_path(pending_request),
+                  method: :post,
+                  class: "btn-primary" do %>
+              Resend verification email
+            <% end %>
 
-    <%= form_with model: [:app, :settings, EmailChangeRequest.new], class: "mt-4" do |form| %>
-      <div class="mt-6 sm:flex items-center">
-        <div>
-          <%= form.label :new_email, "New email address", class: "sr-only" %>
+            <%= button_to app_settings_email_change_request_path(pending_request),
+                  method: :delete,
+                  data: { turbo_confirm: "Are you sure? This will cancel the email change request." },
+                  class: "btn-secondary cursor-pointer hover:underline" do %>
+              Cancel this change
+            <% end %>
+          </div>
+      <% else %>
+        <%= form_with model: [:app, :settings, EmailChangeRequest.new] do |form| %>
+          <div class="sm:flex items-center">
+            <div>
+              <%= form.label :new_email, "New email address", class: "sr-only" %>
 
-          <%= form.email_field :new_email, required: true, autofocus: true, placeholder: "new@email.com", class: "w-full md:w-96 form-field" %>
-        </div>
-        <div class="mt-4 sm:mt-0 sm:ml-2">
-          <%= form.submit "Change Email", class: "btn-primary" %>
-        </div>
-      </div>
-    <% end %>
-  <% end %>
-</div>
-
-
-<h3 class="mb-4 font-bold text-xl">Time Zone</h3>
-
-<div class="mb-12">
-  <p class="mb-4">
-    Your current time zone is <strong><%= Current.user.timezone || "UTC" %></strong>.
-  </p>
-
-  <p class="mb-4">
-    Select your time zone to display dates and times in your local time.
-  </p>
-
-  <%= form_with url: app_settings_user_path(@user), model: @user, method: :patch, class: "mt-4" do |form| %>
-    <div class="mt-6 sm:flex items-center">
-      <div>
-        <%= form.label :timezone, "Time Zone", class: "sr-only" %>
-        <%= form.time_zone_select :timezone, nil,
-              { default: Current.user.timezone },
-              { class: "w-full md:w-96 form-field" } %>
-      </div>
-      <div class="mt-4 sm:mt-0 sm:ml-2">
-        <%= form.submit "Update Timezone", class: "btn-primary" %>
-      </div>
-    </div>
-  <% end %>
-</div>
-
-<h3 class="mb-4 font-bold text-xl">Account Password</h3>
-
-<div class="mb-12">
-  <% if Current.user.has_password? %>
-    <p>
-      To change your password, use the <%= link_to "forgot password", new_password_reset_path, class: "text-slate-900 dark:text-slate-100 underline" %> flow.
-    </p>
-  <% else %>
-    <p>
-      By default Pagecord uses magic link emails for logging in. You can <%= link_to "set a password", new_password_reset_path, class: "text-slate-900 dark:text-slate-100 underline" %> if you prefer to log in that way.
-    </p>
-  <% end %>
-</div>
-
-<h3 class="mb-4 font-bold text-xl">Sender Email Addresses</h3>
-
-<div class="mb-12">
-  <p class="mb-6">
-    You can add up to 3 additional email addresses for sending posts to your blog. Add one below and follow the verification instructions.
-  </p>
-
-  <% if @blog.sender_email_addresses.any? %>
-    <div class="space-y-3 mb-6">
-      <% @blog.sender_email_addresses.each do |sender| %>
-        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-3">
-              <span class="text-sm text-slate-900 dark:text-slate-100 truncate"><%= sender.email %></span>
-              <% if sender.accepted? %>
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
-                  ✓ Verified
-                </span>
-              <% else %>
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-                  ⏳ Pending
-                </span>
-              <% end %>
+              <%= form.email_field :new_email, required: true, autofocus: true, placeholder: "new@email.com", class: "w-full md:w-96 form-field" %>
+            </div>
+            <div class="mt-4 sm:mt-0 sm:ml-2">
+              <%= form.submit "Change Email", class: "btn-primary" %>
             </div>
           </div>
-          <div class="flex items-center gap-2 ml-4">
-            <%= button_to app_settings_sender_email_address_path(sender), method: :delete, class: "p-1 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 transition-colors cursor-pointer", title: "Remove sender email address", data: { turbo_confirm: "Are you sure you want to remove this sender email address?" } do %>
-              <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 mt-1" %>
-            <% end %>
+        <% end %>
+
+        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          You'll receive a verification email at the new address to confirm the change.
+        </p>
+      <% end %>
+    <% end %>
+
+    <%= settings_row "Time Zone", stacked: true, hint: "Dates and times are shown in your local time" do %>
+      <%= form_with url: app_settings_user_path(@user), model: @user, method: :patch do |form| %>
+        <div class="sm:flex items-center">
+          <div>
+            <%= form.label :timezone, "Time Zone", class: "sr-only" %>
+            <%= form.time_zone_select :timezone, nil,
+                  { default: Current.user.timezone },
+                  { class: "w-full md:w-96 form-field" } %>
+          </div>
+          <div class="mt-4 sm:mt-0 sm:ml-2">
+            <%= form.submit "Update Timezone", class: "btn-primary" %>
           </div>
         </div>
       <% end %>
-    </div>
+    <% end %>
+
+    <%= settings_row "Password", stacked: true do %>
+      <% if Current.user.has_password? %>
+        <p>
+          To change your password, use the <%= link_to "forgot password", new_password_reset_path, class: "text-slate-900 dark:text-slate-100 underline" %> flow.
+        </p>
+      <% else %>
+        <p>
+          By default Pagecord uses magic link emails for logging in. You can <%= link_to "set a password", new_password_reset_path, class: "text-slate-900 dark:text-slate-100 underline" %> if you prefer to log in that way.
+        </p>
+      <% end %>
+    <% end %>
+
+    <%= settings_row "Sender Email Addresses", stacked: true, hint: "Up to 3 additional addresses that can post to your blog by email" do %>
+      <% if @blog.sender_email_addresses.any? %>
+        <div class="space-y-3 mb-6">
+          <% @blog.sender_email_addresses.each do |sender| %>
+            <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-3">
+                  <span class="text-sm text-slate-900 dark:text-slate-100 truncate"><%= sender.email %></span>
+                  <% if sender.accepted? %>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
+                      ✓ Verified
+                    </span>
+                  <% else %>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                      ⏳ Pending
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 ml-4">
+                <%= button_to app_settings_sender_email_address_path(sender), method: :delete, class: "p-1 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 transition-colors cursor-pointer", title: "Remove sender email address", data: { turbo_confirm: "Are you sure you want to remove this sender email address?" } do %>
+                  <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4 mt-1" %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= form_with model: @sender_email_address, url: app_settings_sender_email_addresses_path, local: true do |form| %>
+        <div class="sm:flex items-center gap-3">
+          <fieldset>
+            <%= form.label :email, "Add sender email address", class: "sr-only" %>
+            <%= form.email_field :email, required: true, placeholder: "sender@email.com", class: "w-full md:w-96 form-field" %>
+            <div class="field-error"><%= @sender_email_address.errors[:email].to_sentence if @sender_email_address&.errors&.[](:email)&.any? %></div>
+          </fieldset>
+          <div class="mt-4 sm:mt-0 sm:ml-2">
+            <%= form.submit "Add Sender Email", class: "btn-primary" %>
+          </div>
+        </div>
+      <% end %>
+
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        You'll need to verify the address before it can post.
+      </p>
+    <% end %>
   <% end %>
 
-  <%= form_with model: @sender_email_address, url: app_settings_sender_email_addresses_path, local: true do |form| %>
-    <div class="sm:flex items-center gap-3">
-      <fieldset>
-        <%= form.label :email, "Add sender email address", class: "sr-only" %>
-        <%= form.email_field :email, required: true, placeholder: "sender@email.com", class: "w-full md:w-96 form-field" %>
-        <div class="field-error"><%= @sender_email_address.errors[:email].to_sentence if @sender_email_address&.errors&.[](:email)&.any? %></div>
-      </fieldset>
-      <div class="mt-4 sm:mt-0 sm:ml-2">
-        <%= form.submit "Add Sender Email", class: "btn-primary" %>
-      </div>
-    </div>
-  <% end %>
-</div>
+  <%= settings_section "Danger Zone", description: "These actions cannot be undone" do %>
+    <%= settings_row "Delete Account", stacked: true do %>
+      <%= button_to app_settings_user_path(@user),
+            method: :delete,
+            data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
+            class: "btn-danger" do %>
+        Delete account
+      <% end %>
 
-<h3 class="mb-4 font-bold text-xl">Danger Zone</h3>
-<p>
-  You can delete your account by clicking the button below. Sorry to see you go!
-</p>
-
-<div class="mt-4 flex gap-x-2 items-center">
-  <%= button_to app_settings_user_path(@user),
-        method: :delete,
-        data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
-        class: "btn-danger" do %>
-    Delete account
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        Your account and blog will be permanently deleted. Sorry to see you go!
+      </p>
+    <% end %>
   <% end %>
 </div>

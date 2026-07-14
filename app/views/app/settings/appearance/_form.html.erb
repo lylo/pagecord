@@ -6,148 +6,147 @@
   <% end %>
 <% end %>
 
-<div data-controller="theme-selector">
-  <h3 class="font-bold text-lg mb-2">Colour Scheme</h3>
-  <p>
-    Choose a colour scheme for your blog, or <%= link_to "pick a ready-made design", app_settings_theme_garden_index_path, class: "font-semibold underline" %> from the Theme Garden.
-  </p>
-
-  <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
-        data: { controller: "radio-button-auto-submit" } do |form| %>
-    <%= render "theme_presets", form: form %>
-  <% end %>
-
-  <div data-theme-selector-target="customThemeFields" class="<%= 'hidden' unless @blog.custom_theme? %>">
-    <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
-          data: {
-            controller: "save-button",
-            action: "turbo:submit-end->save-button#showMessage"
-          } do |form| %>
-      <%= render "theme_custom_colours", form: form %>
-      <div class="mt-4">
-        <%= form.submit "Save custom colours", data: { save_button_target: "button" }, class: "btn-primary" %>
-      </div>
-    <% end %>
-  </div>
-</div>
-
-<div class="mt-8">
-  <h3 class="font-bold text-lg mb-2">Font</h3>
-  <p>
-    Choose a font for your blog.
-  </p>
-  <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
-        data: { controller: "radio-button-auto-submit" } do |form| %>
-    <%= render "theme_font", form: form %>
-  <% end %>
-</div>
-
-<div class="mt-8">
-  <h3 class="font-bold text-lg mb-2">Content Width</h3>
-  <p class="mb-4">
-    Choose how wide your blog content should be displayed.
-  </p>
-  <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
-        data: { controller: "radio-button-auto-submit" } do |form| %>
-    <%= render "layout_width", form: form %>
-  <% end %>
-</div>
-
-<div class="mt-8">
-  <h3 class="font-bold text-lg mb-2">Layout</h3>
-  <p>
-    Choose how your posts are displayed on your blog's home page: as a full-content stream, a list of titles, or cards with excerpts.
-  </p>
-  <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
-        data: { controller: "radio-button-auto-submit" } do |form| %>
-    <%= render "layout_options", form: form %>
-  <% end %>
-</div>
-
-<% branding_disabled = !@blog.user.subscribed? %>
-<div class="mt-8">
-  <h3 class="font-bold text-lg mb-4">Branding</h3>
-
-  <% if branding_disabled %>
-    <div class="mb-4">
-      <%= callout(:info) do %>
-        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to hide Pagecord branding from your blog.
-      <% end %>
-    </div>
-  <% end %>
-
-  <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
-        data: { controller: "checkbox-auto-submit" } do |form| %>
-    <div class="flex gap-3 <%= 'opacity-50' if branding_disabled %>">
-      <div class="flex h-6 shrink-0 items-center">
-        <%= form.check_box :show_branding, { checked: @blog.show_branding, disabled: branding_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded #{branding_disabled ? 'cursor-not-allowed' : 'focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0'}" } %>
-      </div>
-      <div>
-        <%= form.label :show_branding, "Show Pagecord branding", class: "text-slate-800 dark:text-slate-100" %>
-        <p class="text-slate-500 text-sm">
-          When checked, the Pagecord logo will be displayed at the bottom of each page on your blog. Please consider
-          keeping this on to help spread the word about Pagecord!
+<div class="space-y-8">
+  <%= settings_section "Theme" do %>
+    <%= settings_row "Colour Scheme", stacked: true do %>
+      <div data-controller="theme-selector">
+        <p>
+          Choose a colour scheme for your blog, or <%= link_to "pick a ready-made design", app_settings_theme_garden_index_path, class: "font-semibold underline" %> from the Theme Garden.
         </p>
+
+        <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+              data: { controller: "radio-button-auto-submit" } do |form| %>
+          <%= render "theme_presets", form: form %>
+        <% end %>
+
+        <div data-theme-selector-target="customThemeFields" class="<%= 'hidden' unless @blog.custom_theme? %>">
+          <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+                data: {
+                  controller: "save-button",
+                  action: "turbo:submit-end->save-button#showMessage"
+                } do |form| %>
+            <%= render "theme_custom_colours", form: form %>
+            <div class="mt-4">
+              <%= form.submit "Save custom colours", data: { save_button_target: "button" }, class: "btn-primary" %>
+            </div>
+          <% end %>
+        </div>
       </div>
-    </div>
+    <% end %>
+
+    <%= settings_row "Font", stacked: true do %>
+      <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+            data: { controller: "radio-button-auto-submit" } do |form| %>
+        <%= render "theme_font", form: form %>
+      <% end %>
+    <% end %>
+
+    <%= settings_row "Content Width", stacked: true do %>
+      <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+            data: { controller: "radio-button-auto-submit" } do |form| %>
+        <%= render "layout_width", form: form %>
+      <% end %>
+    <% end %>
+
+    <%= settings_row "Layout", stacked: true, hint: "How your posts appear on your home page: a full-content stream, a list of titles, or cards with excerpts" do %>
+      <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+            data: { controller: "radio-button-auto-submit" } do |form| %>
+        <%= render "layout_options", form: form %>
+      <% end %>
+    <% end %>
+
+    <% branding_disabled = !@blog.user.subscribed? %>
+    <%= settings_row "Branding", stacked: true do %>
+      <% if branding_disabled %>
+        <div class="mb-4">
+          <%= callout(:info) do %>
+            <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to hide Pagecord branding from your blog.
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+            data: { controller: "checkbox-auto-submit" } do |form| %>
+        <div class="flex gap-3 <%= 'opacity-50' if branding_disabled %>">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= styled_check_box form, :show_branding, checked: @blog.show_branding, disabled: branding_disabled %>
+          </div>
+          <div>
+            <%= form.label :show_branding, "Show Pagecord branding", class: "text-slate-800 dark:text-slate-100" %>
+            <p class="text-slate-500 text-sm">
+              When checked, the Pagecord logo will be displayed at the bottom of each page on your blog. Please consider
+              keeping this on to help spread the word about Pagecord!
+            </p>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if @blog.user.has_premium_access? %>
+    <%= settings_section "Advanced" do %>
+      <%= settings_row "Custom CSS", stacked: true do %>
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <p>
+              Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
+              You can use <code>@import</code> for Google Fonts or Bunny Fonts.
+            </p>
+
+            <p class="text-sm text-slate-500 italic">
+             Custom CSS is an advanced feature. Customer support for creating or debugging custom CSS is not possible - you're on your own with this one! Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+            </p>
+          </div>
+
+          <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+                data: {
+                  controller: "save-button css-editor",
+                  action: "turbo:submit-end->save-button#showMessage"
+                } do |form| %>
+            <%= form.text_area :custom_css,
+                data: { css_editor_target: "textarea" } %>
+
+            <div id="css-error" class="field-error"><%= @blog.errors[:custom_css].first if @blog.errors[:custom_css].any? %></div>
+
+            <div class="mt-4">
+              <%= form.submit "Save Custom CSS", data: { save_button_target: "button" }, class: "btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= settings_row "Custom Footer", stacked: true do %>
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <p>
+              Add a small HTML snippet to the bottom of your blog for badges, webrings, links, or copyright text.
+            </p>
+
+            <p class="text-sm text-slate-500 italic">
+              Only basic, safe HTML is supported. Scripts, embeds, forms, iframes, and inline styles are not supported. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-footer", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+            </p>
+          </div>
+
+          <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+                data: {
+                  controller: "save-button",
+                  action: "turbo:submit-end->save-button#showMessage"
+                } do |form| %>
+            <%= form.text_area :custom_footer_html,
+                rows: 6,
+                class: "w-full min-h-36 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-mono text-sm focus:border-slate-500 dark:focus:border-slate-400 focus:ring-0 [field-sizing:content]" %>
+
+            <div id="footer-error" class="field-error"><%= @blog.errors[:custom_footer_html].first if @blog.errors[:custom_footer_html].any? %></div>
+
+            <div class="mt-4">
+              <%= form.submit "Save custom footer", data: { save_button_target: "button" }, class: "btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
   <% end %>
 </div>
-
-<% if @blog.user.has_premium_access? %>
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Custom CSS</h3>
-    <p class="mb-4">
-      Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
-      You can use <code>@import</code> for Google Fonts or Bunny Fonts.
-    </p>
-
-    <p class="mb-4 text-sm text-slate-500 italic">
-     Custom CSS is an advanced feature. Customer support for creating or debugging custom CSS is not possible - you're on your own with this one! Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
-    </p>
-
-    <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
-          data: {
-            controller: "save-button css-editor",
-            action: "turbo:submit-end->save-button#showMessage"
-          } do |form| %>
-      <%= form.text_area :custom_css,
-          data: { css_editor_target: "textarea" } %>
-
-      <div id="css-error" class="field-error"><%= @blog.errors[:custom_css].first if @blog.errors[:custom_css].any? %></div>
-
-      <div class="mt-4">
-        <%= form.submit "Save Custom CSS", data: { save_button_target: "button" }, class: "btn-primary" %>
-      </div>
-    <% end %>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="font-bold text-lg mb-2">Custom footer</h3>
-    <p class="mb-4">
-      Add a small HTML snippet to the bottom of your blog for badges, webrings, links, or copyright text.
-    </p>
-
-    <p class="mb-4 text-sm text-slate-500 italic">
-      Only basic, safe HTML is supported. Scripts, embeds, forms, iframes, and inline styles are not supported. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-footer", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
-    </p>
-
-    <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
-          data: {
-            controller: "save-button",
-            action: "turbo:submit-end->save-button#showMessage"
-          } do |form| %>
-      <%= form.text_area :custom_footer_html,
-          rows: 6,
-          class: "w-full min-h-36 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-mono text-sm focus:border-slate-500 dark:focus:border-slate-400 focus:ring-0 [field-sizing:content]" %>
-
-      <div id="footer-error" class="field-error"><%= @blog.errors[:custom_footer_html].first if @blog.errors[:custom_footer_html].any? %></div>
-
-      <div class="mt-4">
-        <%= form.submit "Save custom footer", data: { save_button_target: "button" }, class: "btn-primary" %>
-      </div>
-    <% end %>
-  </div>
-<% end %>
 
 <div class="mt-12 border-t border-t-slate-200 dark:border-slate-600 pt-4">
   <%= link_to "Back to Settings", app_settings_path, class: "btn-secondary" %>
