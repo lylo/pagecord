@@ -63,7 +63,7 @@
       <% end %>
 
       <% saved_robots = @blog.custom_robots_txt.present? %>
-      <%= settings_row "Discoverability" do %>
+      <%= settings_row "Discoverability", stacked: true do %>
         <div class="group">
           <div class="flex gap-3">
             <div class="flex h-6 shrink-0 items-center">
