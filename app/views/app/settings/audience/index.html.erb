@@ -17,7 +17,16 @@
 
 <%= form_with url: app_settings_blog_path(@blog), model: @blog, data: { controller: "subscription-settings" } do |form| %>
   <div class="space-y-8">
-    <%= settings_section "Email Subscriptions" do %>
+    <%= settings_section "Email Subscriptions", description: "Let readers subscribe to get your posts by email" do %>
+      <%= settings_row "Status" do %>
+        <div class="flex gap-3 <%= 'opacity-50' if email_disabled %>">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= styled_check_box form, :email_subscriptions_enabled, checked: @blog.email_subscriptions_enabled, disabled: email_disabled, data: { subscription_settings_target: "primary", action: "change->subscription-settings#toggleDependents" } %>
+          </div>
+          <%= form.label :email_subscriptions_enabled, "Email subscriptions enabled", class: "text-slate-800 dark:text-slate-100" %>
+        </div>
+      <% end %>
+
       <% if @blog.email_subscriptions_enabled && Current.user.subscribed? && @blog.show_metrics? %>
         <%= settings_row "Subscribers" do %>
           <p>
@@ -32,21 +41,7 @@
         <% end %>
       <% end %>
 
-      <%= settings_row "Status" do %>
-        <div class="flex gap-3 <%= 'opacity-50' if email_disabled %>">
-          <div class="flex h-6 shrink-0 items-center">
-            <%= form.check_box :email_subscriptions_enabled, { checked: @blog.email_subscriptions_enabled, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:cursor-not-allowed", data: { subscription_settings_target: "primary", action: "change->subscription-settings#toggleDependents" } } %>
-          </div>
-          <div>
-            <%= form.label :email_subscriptions_enabled, "Email subscriptions enabled", class: "text-slate-800 dark:text-slate-100" %>
-            <p class="text-slate-500 text-sm">
-              Allow readers to subscribe to your blog via email.
-            </p>
-          </div>
-        </div>
-      <% end %>
-
-      <%= settings_row "Delivery", hint: "How subscribers receive your posts", class: ("opacity-50" if email_disabled), data: { subscription_settings_target: "dependent" } do %>
+      <%= settings_row "Delivery", class: ("opacity-50" if email_disabled), data: { subscription_settings_target: "dependent" } do %>
         <div class="flex flex-col sm:flex-row gap-3">
           <label class="flex-1 cursor-pointer rounded-lg border p-4 has-[:checked]:border-[#4fbd9c] has-[:checked]:bg-emerald-50 dark:has-[:checked]:bg-emerald-900/20 border-slate-200 dark:border-slate-700 transition-colors">
             <%= form.radio_button :email_delivery_mode, "digest", disabled: email_disabled, class: "sr-only" %>
@@ -61,74 +56,50 @@
         </div>
       <% end %>
 
-      <%= settings_row "Subscription Forms", hint: "Where the sign-up form appears on your blog", class: ("opacity-50" if email_disabled), data: { subscription_settings_target: "dependent" } do %>
-        <div class="flex gap-3">
-          <div class="flex h-6 shrink-0 items-center">
-            <%= form.check_box :show_subscription_in_header, { checked: @blog.show_subscription_in_header, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
+      <%= settings_row "Subscription Forms", class: ("opacity-50" if email_disabled), data: { subscription_settings_target: "dependent" } do %>
+        <div class="space-y-3">
+          <div class="flex gap-3">
+            <div class="flex h-6 shrink-0 items-center">
+              <%= styled_check_box form, :show_subscription_in_header, checked: @blog.show_subscription_in_header, disabled: email_disabled, data: { subscription_settings_target: "dependent" } %>
+            </div>
+            <%= form.label :show_subscription_in_header, "Show the form in the blog header on the home page only", class: "text-slate-800 dark:text-slate-100" %>
           </div>
-          <div>
-            <%= form.label :show_subscription_in_header, "Show subscription form in blog header", class: "text-slate-800 dark:text-slate-100" %>
-            <p class="text-slate-500 text-sm">
-              Display the email subscription form in your blog's header when viewing all posts.
-            </p>
-          </div>
-        </div>
 
-        <div class="mt-4 flex gap-3">
-          <div class="flex h-6 shrink-0 items-center">
-            <%= form.check_box :show_subscription_in_footer, { checked: @blog.show_subscription_in_footer, disabled: email_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed", data: { subscription_settings_target: "dependent" } } %>
-          </div>
-          <div>
-            <%= form.label :show_subscription_in_footer, "Show subscription form in post footer", class: "text-slate-800 dark:text-slate-100" %>
-            <p class="text-slate-500 text-sm">
-              Display the email subscription form at the bottom of the page when viewing individual posts.
-            </p>
+          <div class="flex gap-3">
+            <div class="flex h-6 shrink-0 items-center">
+              <%= styled_check_box form, :show_subscription_in_footer, checked: @blog.show_subscription_in_footer, disabled: email_disabled, data: { subscription_settings_target: "dependent" } %>
+            </div>
+            <%= form.label :show_subscription_in_footer, "Show the form in the footer of each post", class: "text-slate-800 dark:text-slate-100" %>
           </div>
         </div>
       <% end %>
     <% end %>
 
-    <%= settings_section "Engagement" do %>
+    <%= settings_section "Engagement", description: "Ways for readers to respond to your posts. Your email address is never revealed, and only you can see your numbers" do %>
       <%= settings_row "Reply by Email" do %>
         <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
           <div class="flex h-6 shrink-0 items-center">
-            <%= form.check_box :reply_by_email, { checked: @blog.reply_by_email, disabled: features_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:cursor-not-allowed" } %>
+            <%= styled_check_box form, :reply_by_email, checked: @blog.reply_by_email, disabled: features_disabled %>
           </div>
-          <div>
-            <%= form.label :reply_by_email, "Allow replies by email", class: "text-slate-800 dark:text-slate-100" %>
-            <p class="text-slate-500 text-sm">
-              Allow readers to reply to your posts via a contact form. You will receive an email with the reply. Your email address is not revealed.
-            </p>
-          </div>
+          <%= form.label :reply_by_email, "Allow readers to reply to your posts via a contact form", class: "text-slate-800 dark:text-slate-100" %>
         </div>
       <% end %>
 
       <%= settings_row "Post Likes" do %>
         <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
           <div class="flex h-6 shrink-0 items-center">
-            <%= form.check_box :show_upvotes, { checked: @blog.show_upvotes, disabled: features_disabled, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0 disabled:cursor-not-allowed" } %>
+            <%= styled_check_box form, :show_upvotes, checked: @blog.show_upvotes, disabled: features_disabled %>
           </div>
-          <div>
-            <%= form.label :show_upvotes, "Show Post Likes ❤️", class: "text-slate-800 dark:text-slate-100" %>
-            <p class="text-slate-500 text-sm">
-              When checked, a heart-shaped like button will appear next to each post for readers to show
-              their appreciation.
-            </p>
-          </div>
+          <%= form.label :show_upvotes, "Show a like button ❤️ next to each post", class: "text-slate-800 dark:text-slate-100" %>
         </div>
       <% end %>
 
-      <%= settings_row "Metrics" do %>
+      <%= settings_row "Analytics" do %>
         <div class="flex gap-3">
           <div class="flex h-6 shrink-0 items-center">
-            <%= form.check_box :show_metrics, { checked: @blog.show_metrics, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" } %>
+            <%= styled_check_box form, :show_metrics, checked: @blog.show_metrics %>
           </div>
-          <div>
-            <%= form.label :show_metrics, "Show metrics", class: "text-slate-800 dark:text-slate-100" %>
-            <p class="text-slate-500 text-sm">
-              When unchecked, the Analytics page is hidden, and post like counts and email subscriber counts are no longer shown to you.
-            </p>
-          </div>
+          <%= form.label :show_metrics, "Show metrics and the Analytics page", class: "text-slate-800 dark:text-slate-100" %>
         </div>
       <% end %>
     <% end %>
