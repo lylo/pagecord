@@ -80,27 +80,65 @@
           </div>
         </div>
 
-        <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
-          <div>
-            <h4 class="font-bold text-slate-900 dark:text-slate-100">Discoverability</h4>
-          </div>
-          <div>
-            <p class="text-slate-700 dark:text-slate-300">
-              By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. Untick the box below to opt out – we'll serve a <tt>/robots.txt</tt> that discourages search engines, and exclude your blog from Spotlight and Shuffle.
-            </p>
+        <% saved_robots = @blog.custom_robots_txt.present? %>
+        <div class="group">
+          <div class="grid gap-4 px-6 py-5 md:grid-cols-[12rem_1fr]">
+            <div>
+              <h4 class="font-bold text-slate-900 dark:text-slate-100">Discoverability</h4>
+            </div>
+            <div>
+              <p class="text-slate-700 dark:text-slate-300">
+                By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. Untick the box below to opt out – we'll serve a <tt>/robots.txt</tt> that discourages search engines, and exclude your blog from Spotlight and Shuffle.
+              </p>
 
-            <div class="mt-6 flex gap-3">
-              <div class="flex h-6 shrink-0 items-center">
-                <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 rounded border-slate-300 text-slate-600 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600" } %>
+              <div class="mt-6 flex gap-3">
+                <div class="flex h-6 shrink-0 items-center">
+                  <%= form.check_box :allow_search_indexing, { checked: @blog.allow_search_indexing, class: "form-checkbox h-5 w-5 rounded border-slate-300 text-slate-600 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600" } %>
+                </div>
+                <div>
+                  <%= form.label :allow_search_indexing, "Make my blog discoverable", class: "text-slate-800 dark:text-slate-100" %>
+                </div>
               </div>
-              <div>
-                <%= form.label :allow_search_indexing, "Make my blog discoverable", class: "text-slate-800 dark:text-slate-100" %>
+
+              <div class="mt-4 flex gap-3 <%= 'opacity-50' if disabled %>">
+                <div class="flex h-6 shrink-0 items-center">
+                  <%= check_box_tag :use_custom_robots_txt,
+                      "1",
+                      !disabled && saved_robots,
+                      disabled: disabled,
+                      id: "use-custom-robots-txt",
+                      class: "form-checkbox h-5 w-5 rounded border-slate-300 text-slate-600 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600 disabled:cursor-not-allowed" %>
+                </div>
+                <div>
+                  <%= label_tag "use-custom-robots-txt", "Use custom crawler rules", class: "text-slate-800 dark:text-slate-100" %>
+                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    <% if disabled %>
+                      Customising crawler rules is available with a subscription.
+                    <% else %>
+                      Customise the crawler rules section of your <tt>robots.txt</tt> – for example, to unblock an AI crawler. The default rules (search engine access and your sitemap) always apply and can't be changed.
+                    <% end %>
+                  </p>
+                  <% if saved_robots %>
+                    <p class="hidden group-has-[#use-custom-robots-txt:not(:checked)]:block mt-2 text-sm text-amber-600 dark:text-amber-400">
+                      Note: Unchecking this box and saving will restore Pagecord's default crawler rules.
+                    </p>
+                  <% end %>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <%= render "app/settings/blogs/robots" %>
+          <div class="hidden group-has-[#use-custom-robots-txt:checked]:block px-6 pb-6">
+            <% editor_value = @blog.custom_robots_txt.presence %>
+            <% editor_value ||= render(partial: "blogs/robots/ai_training_crawlers", formats: :text) unless disabled %>
+            <%= text_area_tag "blog[custom_robots_txt]",
+                editor_value,
+                id: "blog_custom_robots_txt",
+                rows: 16,
+                class: "form-field font-mono text-sm w-full" %>
+            <%= field_error(@blog, :custom_robots_txt) %>
+          </div>
+        </div>
       </div>
     </section>
 
