@@ -1,10 +1,16 @@
-<h2 class="font-bold text-lg">Thank you for subscribing! ✨</h2>
+<div class="space-y-8">
+  <%= settings_section "Billing" do %>
+    <div class="px-6 py-5 space-y-4">
+      <p class="text-lg font-bold">Thank you for subscribing! ✨</p>
 
-<p class="mt-4">
-  Your Pagecord Premium subscription is now active 🎉
-</p>
+      <p>
+        Your Pagecord Premium subscription is now active 🎉
+      </p>
 
-<p class="mt-4">
-  You can manage your subscription from your
-  <a href="<%= app_settings_subscriptions_path %>" class="font-medium underline">Billing</a> page at any time.
-</p>
+      <p>
+        You can manage your subscription from your
+        <a href="<%= app_settings_subscriptions_path %>" class="font-medium underline">Billing</a> page at any time.
+      </p>
+    </div>
+  <% end %>
+</div>
