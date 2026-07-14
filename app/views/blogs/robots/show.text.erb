@@ -1,12 +1,7 @@
 <% if @blog.allow_search_indexing && @blog.user.search_indexable? %>
-# Blog robots.txt for <%= @blog.subdomain %>
+<%= render "default" %>
 
-# Allow all user agents
-User-agent: *
-Allow: /
-
-# Sitemap location
-Sitemap: <%= sitemap_url_for(@blog) %>
+<%= render "ai_training_crawlers" %>
 <% else %>
 User-agent: *
 Disallow: /
