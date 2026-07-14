@@ -27,16 +27,16 @@
         </div>
       <% end %>
 
-      <% if @blog.email_subscriptions_enabled && Current.user.subscribed? && @blog.show_metrics? %>
+      <% if @blog.email_subscriptions_enabled && Current.user.subscribed? && @blog.email_subscribers.confirmed.any? %>
         <%= settings_row "Subscribers" do %>
-          <p>
-            Your blog has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
-          </p>
-          <% if @blog.email_subscribers.confirmed.any? %>
-            <%= link_to app_settings_subscribers_path(format: :csv), class: "btn-optional mt-3" do %>
-              <%= inline_svg_tag "icons/download.svg", class: "w-4 h-4" %>
-              <span class="ml-2">Download CSV</span>
-            <% end %>
+          <% if @blog.show_metrics? %>
+            <p>
+              Your blog has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
+            </p>
+          <% end %>
+          <%= link_to app_settings_subscribers_path(format: :csv), class: "btn-optional #{'mt-3' if @blog.show_metrics?}" do %>
+            <%= inline_svg_tag "icons/download.svg", class: "w-4 h-4" %>
+            <span class="ml-2">Download CSV</span>
           <% end %>
         <% end %>
       <% end %>
