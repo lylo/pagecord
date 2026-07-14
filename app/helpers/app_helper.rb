@@ -24,8 +24,8 @@ module AppHelper
     content_tag :div, class: "rounded-lg border p-4 text-sm #{styles[type]}", &block
   end
 
-  def settings_section(title, description: nil, &block)
-    render layout: "app/settings/section", locals: { title: title, description: description }, &block
+  def settings_section(title, description: nil, control: nil, &block)
+    render layout: "app/settings/section", locals: { title: title, description: description, control: control }, &block
   end
 
   def settings_row(title, hint: nil, stacked: false, **options, &block)
