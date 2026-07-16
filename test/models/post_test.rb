@@ -497,4 +497,50 @@ class PostTest < ActiveSupport::TestCase
 
     assert_not_equal original_updated_at, blog.reload.updated_at
   end
+
+  test "plain_text_from strips attachment markers, urls, and dynamic variables" do
+    html = %(<h1>Trip</h1><p>Photos [beach.jpg] from https://example.com {{author}}</p>)
+    assert_equal "Trip Photos from", Post.new(blog: blogs(:joel)).send(:plain_text_from, html)
+  end
+
+  test "plain_text_from drops figcaptions and treats breaks and blocks as spaces" do
+    html = %(<figure><img><figcaption>caption</figcaption></figure><p>One</p><p>Two<br>Three</p>)
+    assert_equal "One Two Three", Post.new(blog: blogs(:joel)).send(:plain_text_from, html)
+  end
+
+  test "plain_text_content returns the text and ignores attachment tags" do
+    post = blogs(:joel).posts.build(content: "<p>Caption</p>#{attachment_tag("gid://unresolved")}")
+    assert_equal "Caption", post.plain_text_content
+  end
+
+  test "content_present accepts text or attachments and rejects empty content" do
+    assert blogs(:joel).posts.build(content: "Just words").valid?
+    assert blogs(:joel).posts.build(content: attachment_tag("gid://unresolved")).valid?
+
+    empty = blogs(:joel).posts.build(content: "<div></div>")
+    assert_not empty.valid?
+    assert_includes empty.errors[:content], "can't be blank"
+  end
+
+  # These run on every post save, so they must check presence and extract text
+  # from the parsed HTML without resolving the embeds - one blob query each is
+  # an N+1 on image-heavy posts. Keep the sgid real: a fake one never resolves,
+  # so assert_no_queries would pass without guarding anything.
+  test "content_present and plain_text_content never resolve attachment sgids" do
+    blob = ActiveStorage::Blob.create_before_direct_upload!(
+      filename: "photo.jpg", byte_size: 1, checksum: "x", content_type: "image/jpeg"
+    )
+    post = blogs(:joel).posts.build(content: attachment_tag(blob.attachable_sgid) * 3)
+
+    assert_no_queries do
+      post.content_present
+      post.plain_text_content
+    end
+  end
+
+  private
+
+    def attachment_tag(sgid)
+      %(<action-text-attachment sgid="#{sgid}" content-type="image/jpeg"></action-text-attachment>)
+    end
 end
