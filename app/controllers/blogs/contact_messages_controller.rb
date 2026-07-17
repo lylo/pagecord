@@ -1,9 +1,7 @@
 class Blogs::ContactMessagesController < Blogs::BaseController
-  include SpamPrevention, TurnstileVerification
+  include SpamPrevention
 
   rate_limit to: 5, within: 1.hour, only: [ :create ], with: :rate_limit_reached
-
-  before_action :turnstile_check, only: [ :create ]
 
   skip_before_action :authenticate
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
@@ -35,6 +33,10 @@ class Blogs::ContactMessagesController < Blogs::BaseController
         format.turbo_stream { render :create }
         format.html { redirect_to blog_posts_path, alert: @message }
       end
+    end
+
+    def submitted_email
+      params.dig(:contact_message, :email)
     end
 
     def minimum_form_completion_time

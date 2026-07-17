@@ -1,18 +1,38 @@
 module SpamPrevention
   extend ActiveSupport::Concern
 
+  include TurnstileHelper
+
   DEFAULT_MINIMUM_FORM_COMPLETION_TIME = 3.seconds
 
   included do
-    before_action :form_complete_time_check, :honeypot_check, :suspicious_email_check, only: [ :create ]
-  end
-
-  # Override in controllers that need stricter timing (e.g., contact forms)
-  def minimum_form_completion_time
-    DEFAULT_MINIMUM_FORM_COMPLETION_TIME
+    before_action :form_complete_time_check, :honeypot_check, :suspicious_email_check,
+                  :turnstile_check, only: [ :create ]
   end
 
   private
+
+    # The email the visitor typed, for the suspicious email check. Override in
+    # each controller; the concern can't know the form's param shape.
+    def submitted_email
+      nil
+    end
+
+    # Override in controllers that need stricter timing (e.g., contact forms)
+    def minimum_form_completion_time
+      DEFAULT_MINIMUM_FORM_COMPLETION_TIME
+    end
+
+    # Override to say how a rejected submission responds.
+    def reject_submission
+      head :forbidden
+    end
+
+    # A failed challenge isn't the same as looking like a bot: it's usually a
+    # real person who can retry. Override to say so.
+    def reject_turnstile
+      reject_submission
+    end
 
     def honeypot_check
       if params[:email_confirmation].present?
@@ -40,18 +60,19 @@ module SpamPrevention
     end
 
     def suspicious_email_check
-      email = params.dig(:email_subscriber, :email) || params[:email]
-      return if email.blank?
+      return if submitted_email.blank?
 
-      if SuspiciousEmail.new(email).suspicious?
-        Rails.logger.warn "Suspicious email blocked: #{email}"
+      if SuspiciousEmail.new(submitted_email).suspicious?
+        Rails.logger.warn "Suspicious email blocked: #{submitted_email}"
         reject_submission
       end
     end
 
-    # Override to say how a rejected submission responds. Shared with
-    # TurnstileVerification, which is always included alongside this.
-    def reject_submission
-      head :forbidden
+    def turnstile_check
+      return unless turnstile_enabled?
+      return if Turnstile.verify?(params["cf-turnstile-response"], remote_ip: request.remote_ip)
+
+      Rails.logger.warn "Turnstile check failed. Request blocked."
+      reject_turnstile
     end
 end
