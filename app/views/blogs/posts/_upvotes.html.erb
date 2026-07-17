@@ -1,11 +1,10 @@
-<%= link_to post_upvotes_path(post),
-            class: "upvote",
-            rel: "nofollow",
-            data: { turbo_method: :post, turbo_prefetch: false, controller: "upvote", action: "click->upvote#pulse", upvote_token_value: post.token },
-            title: "Click to like this post",
-            aria: { label: "Like this post" } do %>
+<%= button_to post_upvotes_path(post),
+              class: "upvote",
+              form_class: "upvote-form",
+              data: { controller: "upvote", action: "click->upvote#pulse", upvote_token_value: post.token },
+              title: "Click to like this post",
+              aria: { label: "Like this post" } do %>
   <%= inline_svg_tag "icons/heart.svg",
         class: "icon cursor-pointer upvote-heart",
         data: { upvote_target: "heart" } %>
 <% end %>
-

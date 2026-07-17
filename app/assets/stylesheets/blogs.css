@@ -435,7 +435,9 @@ footer.blog-footer #brand svg {
       align-items: center;
       gap: 0.5rem;
 
-      a {
+      a,
+      .upvote-form,
+      .upvote {
         display: flex;
         align-items: center;
       }

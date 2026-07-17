@@ -868,7 +868,10 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "a.upvote"
+    assert_select "button.upvote"
+    # A GET-shaped href to the POST-only upvotes route draws 404s from browsers
+    # following the link, so the button must never be an anchor.
+    assert_select "a[href*='/upvotes']", false
   end
 
   test "should not render upvotes for a non-subscriber" do
