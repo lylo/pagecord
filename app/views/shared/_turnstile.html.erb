@@ -1,8 +1,9 @@
-<% if ENV["TURNSTILE_ENABLED"] && default_domain_request? %>
+<% if turnstile_enabled? %>
 <div class="turnstile-widget">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <div class="cf-turnstile"
     data-sitekey="<%= ENV["TURNSTILE_SITE_KEY"] %>"
+    data-appearance="interaction-only"
     <% if Rails.env.test? %>
     data-action="test"
     <% end %>

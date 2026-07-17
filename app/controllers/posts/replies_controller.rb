@@ -1,11 +1,11 @@
 class Posts::RepliesController < Blogs::BaseController
-  include SpamPrevention
+  include SpamPrevention, TurnstileVerification
 
   rate_limit to: 3, within: 1.hour, only: [ :create ]
 
   before_action :turnstile_check, only: [ :create ]
 
-  skip_before_action :authenticate, :ip_reputation_check
+  skip_before_action :authenticate
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
   before_action :load_post

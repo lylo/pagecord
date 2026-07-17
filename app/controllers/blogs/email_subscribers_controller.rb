@@ -26,7 +26,7 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
 
   private
 
-    def fail
+    def reject_submission
       @message = "There's an issue with your subscription. If you're using a VPN, try subscribing without it. Contact support if the problem persists."
 
       respond_to do |format|

@@ -1,5 +1,5 @@
 class PasswordResetsController < ApplicationController
-  include SpamPrevention
+  include SpamPrevention, TurnstileVerification
 
   rate_limit to: 3, within: 1.hour, only: [ :create ]
 
@@ -39,7 +39,7 @@ class PasswordResetsController < ApplicationController
 
   private
 
-    def fail
+    def reject_submission
       redirect_to new_password_reset_path, alert: "Something went wrong, please try again or contact support if the problem persists"
     end
 
