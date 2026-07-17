@@ -42,6 +42,13 @@ class SignupsController < ApplicationController
       redirect_to new_signup_path
     end
 
+    def reject_turnstile
+      flash.now[:error] = "Please complete the security check"
+      @user = User.new
+      @user.blogs.build
+      render :new
+    end
+
     def user_params
       @user_params ||= begin
         raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation, :signup_referrer, :signup_source_note, blogs_attributes: [ :subdomain ])

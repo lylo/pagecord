@@ -12,6 +12,13 @@ module TurnstileVerification
       return if valid_turnstile_token?(params["cf-turnstile-response"])
 
       Rails.logger.warn "Turnstile check failed. Request blocked."
+      reject_turnstile
+    end
+
+    # A failed challenge isn't the same as looking like a bot: it's usually a
+    # real person who can retry. Override to say so; falls back to the shared
+    # spam rejection.
+    def reject_turnstile
       reject_submission
     end
 

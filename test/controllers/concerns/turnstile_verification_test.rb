@@ -27,6 +27,17 @@ class TurnstileVerificationTest < ActionDispatch::IntegrationTest
     end
   end
 
+  # A failed challenge is usually a real person who can retry, so it re-renders
+  # the form and says so, rather than reusing the generic spam rejection.
+  test "a failed challenge asks the visitor to complete the security check" do
+    stub_siteverify(success: true, body: { "success" => false })
+
+    post signups_url, params: signup_params
+
+    assert_response :success
+    assert_includes @response.body, "Please complete the security check"
+  end
+
   test "blocks a blank token" do
     assert_no_difference "User.count" do
       post signups_url, params: signup_params(token: "")
