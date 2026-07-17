@@ -37,7 +37,6 @@ class Blogs::ContactMessagesController < Blogs::BaseController
       end
     end
 
-
     def minimum_form_completion_time
       7.seconds
     end
