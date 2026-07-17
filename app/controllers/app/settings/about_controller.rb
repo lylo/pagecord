@@ -6,6 +6,8 @@ class App::Settings::AboutController < AppController
     if @blog.update(about_params)
       redirect_to app_settings_path, notice: "About settings updated"
     else
+      # Discard the rejected upload so the form renders the existing avatar
+      @blog.attachment_changes.delete("avatar")
       render :index, status: :unprocessable_entity
     end
   end
@@ -13,9 +15,6 @@ class App::Settings::AboutController < AppController
   private
 
     def about_params
-      permitted_params = [ :bio, :title ]
-      permitted_params << :avatar if @blog.user.has_premium_access?
-
-      params.require(:blog).permit(permitted_params)
+      params.require(:blog).permit(:bio, :title, :avatar)
     end
 end
