@@ -830,11 +830,10 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     get blog_posts_path
 
-    assert_select "link[rel=\"me\"]", count: 5
+    assert_select "link[rel=\"me\"]", count: 4
     assert_select "link[rel=\"me\"][href=\"https://mas.to/@saul\"]"
     assert_select "link[rel=\"me\"][href=\"https://github.com/saul\"]"
     assert_select "link[rel=\"me\"][href=\"mailto:saul@example.com\"]"
-    assert_select "link[rel=\"me\"][href=\"https://example.com\"]"
     assert_select "link[rel=\"me\"][href=\"https://x.com/saul\"]"
   end
 
@@ -845,7 +844,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     get blog_posts_path
 
-    assert_select "link[rel=\"me\"]", count: 6
+    assert_select "link[rel=\"me\"]", count: 5
     assert_select "link[rel=\"me\"][href=\"https://micro.blog/saul\"]"
     assert_select "link[rel=\"me\"][href=\"https://mas.to/@saul\"]"
   end

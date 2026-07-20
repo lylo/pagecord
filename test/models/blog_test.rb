@@ -281,7 +281,7 @@ class BlogTest < ActiveSupport::TestCase
   end
 
   test "rel_me_urls should infer from social navigation items" do
-    assert_equal [ "https://mas.to/@saul", "https://github.com/saul", "mailto:saul@example.com", "https://example.com", "https://x.com/saul" ],
+    assert_equal [ "https://mas.to/@saul", "https://github.com/saul", "mailto:saul@example.com", "https://x.com/saul" ],
       blogs(:saul).rel_me_urls
   end
 
@@ -289,14 +289,14 @@ class BlogTest < ActiveSupport::TestCase
     blog = blogs(:saul)
     blog.rel_me_links = "https://micro.blog/saul"
 
-    assert_equal [ "https://micro.blog/saul", "https://mas.to/@saul", "https://github.com/saul", "mailto:saul@example.com", "https://example.com", "https://x.com/saul" ], blog.rel_me_urls
+    assert_equal [ "https://micro.blog/saul", "https://mas.to/@saul", "https://github.com/saul", "mailto:saul@example.com", "https://x.com/saul" ], blog.rel_me_urls
   end
 
   test "rel_me_urls should not duplicate links that are both explicit and inferred" do
     blog = blogs(:saul)
     blog.rel_me_links = "https://github.com/saul"
 
-    assert_equal [ "https://github.com/saul", "https://mas.to/@saul", "mailto:saul@example.com", "https://example.com", "https://x.com/saul" ], blog.rel_me_urls
+    assert_equal [ "https://github.com/saul", "https://mas.to/@saul", "mailto:saul@example.com", "https://x.com/saul" ], blog.rel_me_urls
   end
 
   test "rel_me_urls should parse explicit links one per line" do

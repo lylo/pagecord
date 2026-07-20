@@ -7,11 +7,13 @@ module Blog::RelMe
     validate :rel_me_links_valid
   end
 
-  # Explicit identity links (one per line) combined with those inferred from
-  # social navigation items. Emitted as <link rel="me"> in the blog head.
+  # Explicit identity links (one per line) combined with social navigation
+  # item links. RSS (the blog's own feed) and Web (an arbitrary site, not
+  # necessarily the author's) are not inferred. Emitted as <link rel="me">
+  # in the blog head.
   def rel_me_urls
     urls = explicit_rel_me_links +
-      social_navigation_items.ordered.where.not(platform: "RSS").map(&:link_url)
+      social_navigation_items.ordered.where.not(platform: %w[RSS Web]).map(&:link_url)
 
     urls.uniq.select { |url| valid_rel_me_url?(url) }
   end

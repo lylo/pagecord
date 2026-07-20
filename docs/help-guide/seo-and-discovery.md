@@ -26,7 +26,7 @@ Identity links tell other services that profiles elsewhere on the web belong to 
 
 Add one URL per line (e.g. `https://mastodon.social/@you` or `https://github.com/you`). For verification to work, your profile on that service must also link back to your blog – on Mastodon, add your blog URL to your profile metadata and re-save it.
 
-Your social navigation links are included automatically (everything except your RSS feed), so you only need to add links here that aren't already in your navigation.
+Your social navigation links are included automatically, except your RSS feed and any generic "Web" links (which might point at a site that isn't yours) – so you only need to add links here that aren't already covered.
 
 ## Discoverability
 
