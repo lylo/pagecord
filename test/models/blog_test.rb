@@ -279,4 +279,48 @@ class BlogTest < ActiveSupport::TestCase
 
     blog.update!(title: "New Title")
   end
+
+  test "rel_me_urls should infer from social navigation items that support verification" do
+    assert_equal [ "https://mas.to/@saul", "https://github.com/saul", "mailto:saul@example.com" ],
+      blogs(:saul).rel_me_urls
+  end
+
+  test "rel_me_urls should prefer explicit links over social navigation items" do
+    blog = blogs(:saul)
+    blog.rel_me_links = "https://micro.blog/saul"
+
+    assert_equal [ "https://micro.blog/saul" ], blog.rel_me_urls
+  end
+
+  test "rel_me_urls should parse explicit links one per line" do
+    @blog.rel_me_links = "  https://github.com/joel \n\nhttps://mastodon.social/@joel\nhttps://github.com/joel\n"
+
+    assert_equal [ "https://github.com/joel", "https://mastodon.social/@joel" ], @blog.rel_me_urls
+  end
+
+  test "rel_me_urls should filter out invalid schemes" do
+    @blog.rel_me_links = "javascript:alert(1)\nhttps://github.com/joel"
+
+    assert_equal [ "https://github.com/joel" ], @blog.rel_me_urls
+  end
+
+  test "should validate rel_me_links format" do
+    @blog.rel_me_links = "https://github.com/joel\nmailto:joel@pagecord.com"
+    assert @blog.valid?
+
+    @blog.rel_me_links = "not a url"
+    assert_not @blog.valid?
+
+    @blog.rel_me_links = "javascript:alert(1)"
+    assert_not @blog.valid?
+
+    @blog.rel_me_links = "mailto:foo"
+    assert_not @blog.valid?
+  end
+
+  test "should limit rel_me_links to 10" do
+    @blog.rel_me_links = (1..11).map { |i| "https://example.com/#{i}" }.join("\n")
+
+    assert_not @blog.valid?
+  end
 end

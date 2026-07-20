@@ -20,6 +20,14 @@ Just paste the verification code (or the full meta tag – Pagecord will extract
 
 If you're on Mastodon or another Fediverse platform, you can enter your Fediverse username (e.g. `@you@mastodon.social`) so that your posts are attributed to you when shared on those platforms.
 
+## Identity Links (rel=me)
+
+Identity links tell other services that profiles elsewhere on the web belong to the same person as your blog. Mastodon, Threads and IndieAuth use them to verify you – this is what gets you the green verified tick on a Mastodon profile.
+
+Add one URL per line (e.g. `https://mastodon.social/@you` or `https://github.com/you`). For verification to work, your profile on that service must also link back to your blog – on Mastodon, add your blog URL to your profile metadata and re-save it.
+
+Leave this blank and Pagecord will use your social navigation links instead, for services that support verification: Mastodon, Pixelfed, GitHub, Threads and Email.
+
 ## Discoverability
 
 By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. If you'd prefer to keep things low-key, untick the "Make my blog discoverable" box – Pagecord will serve a `robots.txt` that discourages search engines, and exclude your blog from Spotlight and Shuffle.

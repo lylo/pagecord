@@ -824,19 +824,31 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end
 
-  test "should include rel='me' link if Mastodon social navigation item is present" do
-    mastodon_link = SocialNavigationItem.create!(
-      blog: @blog,
-      platform: "Mastodon",
-      url: "https://mas.to/@joel_on_pagecord"
-    )
+  test "should include rel='me' links for social navigation items that support verification" do
+    blog = blogs(:saul)
+    host_subdomain! blog.subdomain
 
     get blog_posts_path
 
-    assert_select "link[rel=\"me\"][href=\"#{mastodon_link.url}\"]"
+    assert_select "link[rel=\"me\"]", count: 3
+    assert_select "link[rel=\"me\"][href=\"https://mas.to/@saul\"]"
+    assert_select "link[rel=\"me\"][href=\"https://github.com/saul\"]"
+    assert_select "link[rel=\"me\"][href=\"mailto:saul@example.com\"]"
   end
 
-  test "should not include rel='me' link if Mastodon social navigation item is not present" do
+  test "should include rel='me' links from identity links instead of social navigation items" do
+    blog = blogs(:saul)
+    blog.update!(rel_me_links: "https://micro.blog/saul")
+    host_subdomain! blog.subdomain
+
+    get blog_posts_path
+
+    assert_select "link[rel=\"me\"]", count: 1
+    assert_select "link[rel=\"me\"][href=\"https://micro.blog/saul\"]"
+  end
+
+  test "should not include rel='me' link if no social navigation items support verification" do
+    # joel's only social navigation item is Bluesky, which doesn't use rel=me
     get blog_posts_path
 
     assert_select "link[rel=\"me\"]", count: 0

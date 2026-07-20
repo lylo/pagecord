@@ -95,6 +95,19 @@
         </p>
       <% end %>
 
+      <%= settings_row "Identity Links (rel=me)" do %>
+        <fieldset>
+          <%= form.text_area :rel_me_links,
+              rows: 4,
+              placeholder: "https://mastodon.social/@you\nhttps://github.com/you",
+              class: "form-field md:w-full font-mono text-sm" %>
+          <%= field_error(@blog, :rel_me_links) %>
+        </fieldset>
+        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          Links to your profiles elsewhere on the web, one per line. Services like Mastodon, Threads and IndieAuth use these to verify that this blog is yours – your profile there must also link back to this blog. Leave blank to use your social navigation links on services that support verification.
+        </p>
+      <% end %>
+
       <%= settings_row "Google Site Verification" do %>
         <fieldset>
           <%= styled_text_field(form, :google_site_verification, placeholder: "e.g. Gzm-PA_FXh231_cgsIxY_h9OgR6r8DZ", class: "md:w-full", data: { controller: "google-site-verification", action: "paste->google-site-verification#paste" }) %>

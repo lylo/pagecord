@@ -21,6 +21,8 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h4", { count: 1, text: "Fediverse Author Attribution" }
     assert_select "p", text: /Your full Fediverse handle, not your profile URL/
     assert_select "input[name='blog[fediverse_author_attribution]'][placeholder='e.g. @you@mastodon.social']"
+    assert_select "h4", { count: 1, text: "Identity Links (rel=me)" }
+    assert_select "textarea[name='blog[rel_me_links]']"
     assert_response :success
   end
 
@@ -127,6 +129,20 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_settings_url
     assert_equal "@example@mastodon.social", @blog.reload.fediverse_author_attribution
+  end
+
+  test "should update rel me links" do
+    patch app_settings_blog_url(@blog), params: { blog: { rel_me_links: "https://github.com/joel\nhttps://mastodon.social/@joel" } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal "https://github.com/joel\nhttps://mastodon.social/@joel", @blog.reload.rel_me_links
+  end
+
+  test "should not update rel me links with invalid URLs" do
+    patch app_settings_blog_url(@blog), params: { blog: { rel_me_links: "not a url" } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_nil @blog.reload.rel_me_links
   end
 
   test "should update google site verification" do
