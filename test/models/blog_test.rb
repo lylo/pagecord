@@ -280,25 +280,34 @@ class BlogTest < ActiveSupport::TestCase
     blog.update!(title: "New Title")
   end
 
-  test "rel_me_urls should infer from social navigation items that support verification" do
-    assert_equal [ "https://mas.to/@saul", "https://github.com/saul", "mailto:saul@example.com" ],
+  test "rel_me_urls should infer from social navigation items" do
+    assert_equal [ "https://mas.to/@saul", "https://github.com/saul", "mailto:saul@example.com", "https://example.com", "https://x.com/saul" ],
       blogs(:saul).rel_me_urls
   end
 
-  test "rel_me_urls should prefer explicit links over social navigation items" do
+  test "rel_me_urls should combine explicit links with social navigation items" do
     blog = blogs(:saul)
     blog.rel_me_links = "https://micro.blog/saul"
 
-    assert_equal [ "https://micro.blog/saul" ], blog.rel_me_urls
+    assert_equal [ "https://micro.blog/saul", "https://mas.to/@saul", "https://github.com/saul", "mailto:saul@example.com", "https://example.com", "https://x.com/saul" ], blog.rel_me_urls
+  end
+
+  test "rel_me_urls should not duplicate links that are both explicit and inferred" do
+    blog = blogs(:saul)
+    blog.rel_me_links = "https://github.com/saul"
+
+    assert_equal [ "https://github.com/saul", "https://mas.to/@saul", "mailto:saul@example.com", "https://example.com", "https://x.com/saul" ], blog.rel_me_urls
   end
 
   test "rel_me_urls should parse explicit links one per line" do
+    @blog.social_navigation_items.destroy_all
     @blog.rel_me_links = "  https://github.com/joel \n\nhttps://mastodon.social/@joel\nhttps://github.com/joel\n"
 
     assert_equal [ "https://github.com/joel", "https://mastodon.social/@joel" ], @blog.rel_me_urls
   end
 
   test "rel_me_urls should filter out invalid schemes" do
+    @blog.social_navigation_items.destroy_all
     @blog.rel_me_links = "javascript:alert(1)\nhttps://github.com/joel"
 
     assert_equal [ "https://github.com/joel" ], @blog.rel_me_urls

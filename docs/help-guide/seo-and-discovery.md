@@ -26,7 +26,7 @@ Identity links tell other services that profiles elsewhere on the web belong to 
 
 Add one URL per line (e.g. `https://mastodon.social/@you` or `https://github.com/you`). For verification to work, your profile on that service must also link back to your blog – on Mastodon, add your blog URL to your profile metadata and re-save it.
 
-Leave this blank and Pagecord will use your social navigation links instead, for services that support verification: Mastodon, Pixelfed, GitHub, Threads and Email.
+Your social navigation links are included automatically (everything except your RSS feed), so you only need to add links here that aren't already in your navigation.
 
 ## Discoverability
 

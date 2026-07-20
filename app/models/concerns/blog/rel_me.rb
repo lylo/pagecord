@@ -3,21 +3,17 @@ module Blog::RelMe
 
   MAX_REL_ME_LINKS = 10
 
-  # Platforms whose profiles participate in rel=me verification, either by
-  # emitting rel=me on profile links or by verifying links back to this blog
-  REL_ME_PLATFORMS = %w[ Email GitHub Mastodon Pixelfed Threads ].freeze
-
   included do
     validate :rel_me_links_valid
   end
 
-  # Explicit identity links (one per line) when set, otherwise inferred from
+  # Explicit identity links (one per line) combined with those inferred from
   # social navigation items. Emitted as <link rel="me"> in the blog head.
   def rel_me_urls
-    urls = explicit_rel_me_links.presence ||
-      social_navigation_items.ordered.where(platform: REL_ME_PLATFORMS).map(&:link_url)
+    urls = explicit_rel_me_links +
+      social_navigation_items.ordered.where.not(platform: "RSS").map(&:link_url)
 
-    urls.select { |url| valid_rel_me_url?(url) }
+    urls.uniq.select { |url| valid_rel_me_url?(url) }
   end
 
   private

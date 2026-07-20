@@ -824,31 +824,42 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end
 
-  test "should include rel='me' links for social navigation items that support verification" do
+  test "should include rel='me' links for social navigation items" do
     blog = blogs(:saul)
     host_subdomain! blog.subdomain
 
     get blog_posts_path
 
-    assert_select "link[rel=\"me\"]", count: 3
+    assert_select "link[rel=\"me\"]", count: 5
     assert_select "link[rel=\"me\"][href=\"https://mas.to/@saul\"]"
     assert_select "link[rel=\"me\"][href=\"https://github.com/saul\"]"
     assert_select "link[rel=\"me\"][href=\"mailto:saul@example.com\"]"
+    assert_select "link[rel=\"me\"][href=\"https://example.com\"]"
+    assert_select "link[rel=\"me\"][href=\"https://x.com/saul\"]"
   end
 
-  test "should include rel='me' links from identity links instead of social navigation items" do
+  test "should include rel='me' links from identity links alongside social navigation items" do
     blog = blogs(:saul)
     blog.update!(rel_me_links: "https://micro.blog/saul")
     host_subdomain! blog.subdomain
 
     get blog_posts_path
 
-    assert_select "link[rel=\"me\"]", count: 1
+    assert_select "link[rel=\"me\"]", count: 6
     assert_select "link[rel=\"me\"][href=\"https://micro.blog/saul\"]"
+    assert_select "link[rel=\"me\"][href=\"https://mas.to/@saul\"]"
   end
 
-  test "should not include rel='me' link if no social navigation items support verification" do
-    # joel's only social navigation item is Bluesky, which doesn't use rel=me
+  test "should include rel='me' link for any social profile platform" do
+    # joel's only social navigation item is Bluesky
+    get blog_posts_path
+
+    assert_select "link[rel=\"me\"][href=\"https://bsky.app/profile/joel.example.com\"]"
+  end
+
+  test "should not include rel='me' link if no identity links or social navigation items are present" do
+    @blog.social_navigation_items.destroy_all
+
     get blog_posts_path
 
     assert_select "link[rel=\"me\"]", count: 0
