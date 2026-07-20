@@ -1,10 +1,8 @@
 class SignupsController < ApplicationController
-  include AttributionTrackable, SpamPrevention, TurnstileVerification, TimezoneTranslation
+  include AttributionTrackable, SpamPrevention, TimezoneTranslation
 
   rate_limit to: 10, within: 1.hour, only: [ :create ], name: "signup-create"
   rate_limit to: 20, within: 1.minute, only: [ :new ], name: "signup-new"
-
-  before_action :turnstile_check, only: [ :create ]
 
   layout "sessions"
 
@@ -36,6 +34,10 @@ class SignupsController < ApplicationController
   end
 
   private
+
+    def submitted_email
+      params.dig(:user, :email)
+    end
 
     def reject_submission
       flash[:error] = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."

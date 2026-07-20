@@ -1,10 +1,9 @@
 class PasswordResetsController < ApplicationController
-  include SpamPrevention, TurnstileVerification
+  include SpamPrevention
 
   rate_limit to: 3, within: 1.hour, only: [ :create ]
 
   skip_before_action :authenticate, :domain_check
-  before_action :turnstile_check, only: [ :create ]
   before_action :find_access_request, only: [ :edit, :update ]
 
   layout "sessions"
@@ -38,6 +37,10 @@ class PasswordResetsController < ApplicationController
   end
 
   private
+
+    def submitted_email
+      params.dig(:user, :email)
+    end
 
     def reject_submission
       redirect_to new_password_reset_path, alert: "Something went wrong, please try again or contact support if the problem persists"
