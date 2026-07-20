@@ -70,6 +70,12 @@ Let readers subscribe to your blog using an RSS reader.
 
 - [RSS feeds](rss-feeds.md)
 
+## IndieWeb
+
+Pagecord blogs are marked up with microformats so that IndieWeb tools can understand your content.
+
+- [Microformats](microformats.md)
+
 ## API & Integrations
 
 Use the Pagecord API to manage your blog programmatically, publish from the command line, or publish directly from tools like Obsidian.

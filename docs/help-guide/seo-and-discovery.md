@@ -28,6 +28,8 @@ Add one URL per line (e.g. `https://mastodon.social/@you` or `https://github.com
 
 Your social navigation links are included automatically, except your RSS feed and any generic "Web" links (which might point at a site that isn't yours) – so you only need to add links here that aren't already covered.
 
+rel=me is one of several [microformats](microformats.md) built into every Pagecord blog.
+
 ## Discoverability
 
 By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. If you'd prefer to keep things low-key, untick the "Make my blog discoverable" box – Pagecord will serve a `robots.txt` that discourages search engines, and exclude your blog from Spotlight and Shuffle.
