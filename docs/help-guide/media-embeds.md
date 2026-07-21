@@ -10,7 +10,8 @@ Pagecord can automatically turn links into rich embeds. Paste a supported URL on
 
 | Service | What embeds |
 |---|---|
-| **YouTube** | Videos, Shorts, and live streams |
+| **YouTube** | Videos, Shorts, live streams, and playlists |
+| **YouTube Music** | Tracks and public playlists (played via the standard YouTube player) |
 | **Spotify** | Tracks, albums, playlists, podcasts, and shows |
 | **Apple Music** | Songs, albums, and playlists |
 | **Tidal** | Tracks, albums, and playlists |
