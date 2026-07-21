@@ -52,4 +52,13 @@ class Blogs::SearchesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".post-row a", text: "The Art of Street Photography"
   end
+
+  test "rate limited requests render the friendly too many requests page" do
+    Blogs::SearchesController.any_instance.stubs(:show).raises(ActionController::TooManyRequests)
+
+    get blog_search_path(q: "photography")
+
+    assert_response :too_many_requests
+    assert_select "h2", text: "Slow down!"
+  end
 end

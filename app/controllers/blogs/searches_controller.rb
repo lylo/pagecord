@@ -4,7 +4,7 @@ class Blogs::SearchesController < Blogs::BaseController
   PAGE_SIZE = 25
   MAX_QUERY_LENGTH = 100
 
-  rate_limit to: 30, within: 1.minute
+  rate_limit to: 20, within: 1.minute
 
   def show
     @query = params[:q].to_s.strip.first(MAX_QUERY_LENGTH)
