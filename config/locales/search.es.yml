@@ -1,0 +1,8 @@
+es:
+  search:
+    placeholder: "Buscar publicaciones"
+    submit: "Buscar"
+    no_results: "No se encontraron publicaciones ✨"
+    results_count_html:
+      one: "%{count} publicación que coincide con <strong>%{query}</strong>"
+      other: "%{count} publicaciones que coinciden con <strong>%{query}</strong>"

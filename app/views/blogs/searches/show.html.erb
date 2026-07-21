@@ -1,20 +1,20 @@
-<%= render "blogs/header" %>
+<%= render "blogs/header", hide_email_form: true, hide_bio: true %>
 
 <div class="form search-form">
   <%= form_with url: blog_search_path, method: :get do %>
-    <%= text_field_tag :q, @query, placeholder: "Search posts", autofocus: true %>
-    <%= submit_tag "Search", name: nil %>
+    <%= text_field_tag :q, @query, placeholder: t("search.placeholder"), autofocus: true %>
+    <%= submit_tag t("search.submit"), name: nil %>
   <% end %>
 </div>
 
 <% if @query.present? %>
   <% if @posts.empty? %>
     <div class="empty-state">
-      <p>No posts found ✨</p>
+      <p><%= t("search.no_results") %></p>
     </div>
   <% else %>
     <div class="tag-filter-notice">
-      <p><%= pluralize(@pagy.count, "post") %> matching <strong><%= @query %></strong></p>
+      <p><%= t("search.results_count_html", count: @pagy.count, query: @query) %></p>
     </div>
 
     <div class="title_layout">

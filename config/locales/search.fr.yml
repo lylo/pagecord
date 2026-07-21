@@ -1,0 +1,8 @@
+fr:
+  search:
+    placeholder: "Rechercher des articles"
+    submit: "Rechercher"
+    no_results: "Aucun article trouvé ✨"
+    results_count_html:
+      one: "%{count} article correspondant à <strong>%{query}</strong>"
+      other: "%{count} articles correspondant à <strong>%{query}</strong>"

@@ -1,0 +1,8 @@
+de:
+  search:
+    placeholder: "Beiträge durchsuchen"
+    submit: "Suchen"
+    no_results: "Keine Beiträge gefunden ✨"
+    results_count_html:
+      one: "%{count} Beitrag passend zu <strong>%{query}</strong>"
+      other: "%{count} Beiträge passend zu <strong>%{query}</strong>"

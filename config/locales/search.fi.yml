@@ -1,0 +1,8 @@
+fi:
+  search:
+    placeholder: "Hae julkaisuja"
+    submit: "Hae"
+    no_results: "Julkaisuja ei löytynyt ✨"
+    results_count_html:
+      one: "%{count} julkaisu haulle <strong>%{query}</strong>"
+      other: "%{count} julkaisua haulle <strong>%{query}</strong>"

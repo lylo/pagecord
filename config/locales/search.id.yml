@@ -1,0 +1,8 @@
+id:
+  search:
+    placeholder: "Cari pos"
+    submit: "Cari"
+    no_results: "Tidak ada pos yang ditemukan ✨"
+    results_count_html:
+      one: "%{count} pos yang cocok dengan <strong>%{query}</strong>"
+      other: "%{count} pos yang cocok dengan <strong>%{query}</strong>"
