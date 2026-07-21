@@ -6,6 +6,8 @@ class Blogs::SearchesController < Blogs::BaseController
 
   rate_limit to: 20, within: 1.minute
 
+  before_action :require_premium
+
   def show
     @query = params[:q].to_s.strip.first(MAX_QUERY_LENGTH)
     return if @query.blank?
@@ -21,4 +23,10 @@ class Blogs::SearchesController < Blogs::BaseController
 
     @pagy, @posts = pagy(scope, limit: PAGE_SIZE)
   end
+
+  private
+
+    def require_premium
+      redirect_to blog_posts_path unless @blog.user.has_premium_access?
+    end
 end

@@ -1,6 +1,7 @@
 <% if @blog.navigation_items.ordered.any? %>
   <nav>
     <% @blog.navigation_items.ordered.each do |item| %>
+      <% next if item.is_a?(SearchNavigationItem) && !@blog.user.has_premium_access? %>
       <% if item.icon %>
         <%= link_to navigation_item_url(item), class: "social-link", aria: { label: item.icon_label } do %>
           <%= inline_svg_tag item.icon %>

@@ -57,7 +57,7 @@
                   data: { navigation_form_target: "socialRadio", action: "change->navigation-form#toggleFields" } %>
               <span class="ml-2">Social link</span>
             </label>
-            <% if @navigation_item.is_a?(SearchNavigationItem) || !@blog.navigation_items.exists?(type: "SearchNavigationItem") %>
+            <% if @blog.user.has_premium_access? && (@navigation_item.is_a?(SearchNavigationItem) || !@blog.navigation_items.exists?(type: "SearchNavigationItem")) %>
               <label class="flex items-center">
                 <%= radio_button_tag :nav_type, "search", selected_type == "search",
                     class: "rounded-full border-slate-300 dark:border-slate-600 text-[#4fbd9c] focus:ring-[#4fbd9c]",

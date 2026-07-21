@@ -53,6 +53,14 @@ class Blogs::SearchesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".post-row a", text: "The Art of Street Photography"
   end
 
+  test "redirects to the blog home when the owner is not premium" do
+    host_subdomain! blogs(:vivian).subdomain
+
+    get blog_search_path(q: "photography")
+
+    assert_redirected_to blog_posts_path
+  end
+
   test "rate limited requests render the friendly too many requests page" do
     Blogs::SearchesController.any_instance.stubs(:show).raises(ActionController::TooManyRequests)
 
