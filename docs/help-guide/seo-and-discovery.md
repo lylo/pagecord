@@ -36,4 +36,15 @@ By default, your blog can be found through search engines and may be featured in
 
 Pagecord blocks AI training crawlers (such as GPTBot and ClaudeBot) in your blog's `robots.txt` by default, so your writing isn't used to train AI models. AI search engines can still index and cite your posts, and AI assistants can read a post when a reader asks about it – so your blog stays discoverable without feeding the training pipelines.
 
-If you have a subscription, you can customise the crawler rules section of your `robots.txt` in **Settings → Blog Settings** – for example, to unblock a crawler you're happy with. The default rules (search engine access and your sitemap location) always apply and can't be changed.
+## Custom Crawler Rules
+
+If you have a subscription, you can take control of the crawler rules in your blog's `robots.txt`. In **Settings → Blog Settings**, tick "Use custom crawler rules" and an editor will appear, pre-filled with Pagecord's default rules as a starting point – delete a crawler's entry to allow it, or add rules of your own.
+
+A few things to know:
+
+- Your custom rules replace Pagecord's default AI crawler block entirely. Any crawler you remove from the list will no longer be blocked.
+- The core rules – search engine access and your sitemap location – always apply and can't be changed, so there's no need to add a `Sitemap` line (in fact, it isn't allowed).
+- Supported directives are `User-agent`, `Allow`, `Disallow` and `Crawl-delay`. Comments starting with `#` are fine, and `Allow`/`Disallow` paths must start with `/`.
+- To restore Pagecord's defaults, untick the box and save.
+
+If your subscription lapses, the default rules take over again. And if your blog isn't discoverable (see above), search engines are discouraged entirely and custom crawler rules don't apply.
