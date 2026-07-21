@@ -18,10 +18,9 @@ class SignupsController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    # New users should get Lexxy if configured
-    @user.features = [ "lexxy" ] if ENV["LEXXY_FOR_NEW_USERS"]
+    return reject_submission unless signup_from_allowed_timezone
 
-    if signup_from_allowed_timezone && @user.save
+    if @user.save
       attribution = signup_attribution
       session.delete(:signup_attribution)
 
@@ -40,15 +39,17 @@ class SignupsController < ApplicationController
     end
 
     def reject_submission
-      flash[:error] = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."
-      redirect_to new_signup_path
+      @error_message = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."
+      @user = User.new
+      @user.blogs.build
+      render :new, status: :unprocessable_entity
     end
 
     def reject_turnstile
-      flash.now[:error] = "Please complete the security check"
+      @error_message = "Please complete the security check"
       @user = User.new
       @user.blogs.build
-      render :new
+      render :new, status: :unprocessable_entity
     end
 
     def user_params

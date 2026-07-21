@@ -31,7 +31,7 @@ class SpamPreventionTest < ActionDispatch::IntegrationTest
 
       post signups_url, params: signup_params
 
-      assert_response :success
+      assert_response :unprocessable_entity
       assert_includes @response.body, "Please complete the security check"
     end
   end
@@ -41,7 +41,8 @@ class SpamPreventionTest < ActionDispatch::IntegrationTest
       post signups_url, params: signup_params(email: "s.p.a.m.m.e.r@gmail.com")
     end
 
-    assert_redirected_to new_signup_path
+    assert_response :unprocessable_entity
+    assert_includes @response.body, "There&#39;s an issue signing you up"
   end
 
   private

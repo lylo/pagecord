@@ -1,3 +1,9 @@
+<% if @error_message %>
+  <div class="mt-6 px-4 py-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-sm">
+    <%= @error_message %>
+  </div>
+<% end %>
+
 <%= form_with url: signups_path, model: @user, data: { controller: "timezone", turbo: "false" }, class: "mt-6 space-y-6" do |form| %>
   <%= form.hidden_field :signup_referrer %>
 

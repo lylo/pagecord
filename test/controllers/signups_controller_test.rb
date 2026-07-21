@@ -114,6 +114,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
+    assert_includes @response.body, "There&#39;s an issue signing you up"
   end
 
   test "should not create user with invalid subdomain" do
@@ -132,8 +133,8 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] } }
     end
 
-    assert_redirected_to new_signup_path
-    assert_equal "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists.", flash[:error]
+    assert_response :unprocessable_entity
+    assert_includes @response.body, "There&#39;s an issue signing you up"
   end
 
   test "should not create user if form rendered and submitted within 5 seconds" do
@@ -141,7 +142,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at(1.second.ago) }
     end
 
-    assert_redirected_to new_signup_path
-    assert_equal "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists.", flash[:error]
+    assert_response :unprocessable_entity
+    assert_includes @response.body, "There&#39;s an issue signing you up"
   end
 end
