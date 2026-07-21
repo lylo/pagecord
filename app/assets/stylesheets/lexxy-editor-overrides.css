@@ -30,7 +30,7 @@ lexxy-editor {
   }
 
   /* Flip <em> to upright inside italic blockquotes so emphasis is visible.
-     Workaround for https://github.com/basecamp/lexxy/issues/XXX */
+     Workaround for https://github.com/basecamp/lexxy/issues/939 */
   blockquote em.lexxy-content__italic {
     font-style: normal;
   }
