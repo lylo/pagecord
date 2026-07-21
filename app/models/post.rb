@@ -46,14 +46,16 @@ class Post < ApplicationRecord
   after_commit :touch_blog, on: [ :create, :update, :destroy ]
 
   def content_present
-    has_content = content.body.present? && content.body.to_plain_text.strip.present?
-    has_attachments = content.body&.attachments&.any?
+    # Check the fragment Action Text has already parsed. to_plain_text and
+    # attachments resolve every embed's sgid, one blob query each, which is a
+    # heavy N+1 on image-heavy posts.
+    fragment = content.body&.fragment
+
+    has_content = fragment && fragment.source.text.strip.present?
+    has_attachments = fragment && fragment.find_all("action-text-attachment, img, video, audio").any?
 
     unless has_content || has_attachments
-      doc = Nokogiri::HTML::DocumentFragment.parse(content.body.to_s)
-      unless doc.css("img, video, audio").any?
-        errors.add(:content, "can't be blank")
-      end
+      errors.add(:content, "can't be blank")
     end
   end
 
@@ -172,7 +174,11 @@ class Post < ApplicationRecord
   # Used by content moderation. See also: text_summary (truncated version).
   def plain_text_content
     return "" unless content.body.present?
-    plain_text_from(content.to_s)
+    # Use stored Action Text HTML, not the rendered output: content.to_s
+    # resolves every embed's sgid (one blob query per attachment, ignoring
+    # preloads), while to_html is a plain round-trip. The attachment markers
+    # it leaves behind are stripped by plain_text_from anyway.
+    plain_text_from(content.body.to_html)
   end
 
   private

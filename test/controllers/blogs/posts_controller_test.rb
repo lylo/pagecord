@@ -824,19 +824,29 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end
 
-  test "should include rel='me' link if Mastodon social navigation item is present" do
-    mastodon_link = SocialNavigationItem.create!(
-      blog: @blog,
-      platform: "Mastodon",
-      url: "https://mas.to/@joel_on_pagecord"
-    )
+  test "should include rel='me' links for social navigation items" do
+    blog = blogs(:saul)
+    host_subdomain! blog.subdomain
 
     get blog_posts_path
 
-    assert_select "link[rel=\"me\"][href=\"#{mastodon_link.url}\"]"
+    assert_select "link[rel=\"me\"]", count: 4
+    assert_select "link[rel=\"me\"][href=\"https://mas.to/@saul\"]"
+    assert_select "link[rel=\"me\"][href=\"https://github.com/saul\"]"
+    assert_select "link[rel=\"me\"][href=\"mailto:saul@example.com\"]"
+    assert_select "link[rel=\"me\"][href=\"https://x.com/saul\"]"
   end
 
-  test "should not include rel='me' link if Mastodon social navigation item is not present" do
+  test "should include rel='me' link for any social profile platform" do
+    # joel's only social navigation item is Bluesky
+    get blog_posts_path
+
+    assert_select "link[rel=\"me\"][href=\"https://bsky.app/profile/joel.example.com\"]"
+  end
+
+  test "should not include rel='me' link if no social navigation items are present" do
+    @blog.social_navigation_items.destroy_all
+
     get blog_posts_path
 
     assert_select "link[rel=\"me\"]", count: 0
@@ -868,7 +878,10 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "a.upvote"
+    assert_select "button.upvote"
+    # A GET-shaped href to the POST-only upvotes route draws 404s from browsers
+    # following the link, so the button must never be an anchor.
+    assert_select "a[href*='/upvotes']", false
   end
 
   test "should not render upvotes for a non-subscriber" do

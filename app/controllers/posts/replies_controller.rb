@@ -3,9 +3,7 @@ class Posts::RepliesController < Blogs::BaseController
 
   rate_limit to: 3, within: 1.hour, only: [ :create ]
 
-  before_action :turnstile_check, only: [ :create ]
-
-  skip_before_action :authenticate, :ip_reputation_check
+  skip_before_action :authenticate
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
   before_action :load_post
@@ -16,9 +14,7 @@ class Posts::RepliesController < Blogs::BaseController
 
     @reply = @post.replies.new(subject: "Re: #{@post.display_title}")
 
-    @form_token = encryptor.encrypt_and_sign({
-      post_id: @post.id
-    })
+    @form_token = @post.signed_id(purpose: :reply_form)
   end
 
   def create
@@ -38,6 +34,10 @@ class Posts::RepliesController < Blogs::BaseController
 
   private
 
+    def submitted_email
+      params.dig(:reply, :email)
+    end
+
     def reply_params
       params.require(:reply).permit(:name, :email, :subject, :message)
     end
@@ -47,15 +47,9 @@ class Posts::RepliesController < Blogs::BaseController
     end
 
     def verify
-      token_data = encryptor.decrypt_and_verify(params[:form_token])
-      raise "Form token / post_id mismatch" if token_data["post_id"] != @post.id
-    rescue => e
-      Rails.logger.warn("Reply spam check failed: #{e.message}")
-      head :unprocessable_entity
-    end
-
-    def encryptor
-      key = ActiveSupport::KeyGenerator.new(Rails.application.secret_key_base).generate_key("form-token", 32)
-      ActiveSupport::MessageEncryptor.new(key)
+      unless Post.find_signed(params[:form_token], purpose: :reply_form) == @post
+        Rails.logger.warn "Reply form token / post mismatch. Request blocked."
+        head :unprocessable_entity
+      end
     end
 end

@@ -4,6 +4,7 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
   rate_limit to: 10, within: 1.hour, only: [ :create ], with: :rate_limit_reached
 
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
+  skip_before_action :turnstile_check # The subscribe form is embedded on every blog page; no widget is rendered
   before_action :requires_user_subscription
 
   def create
@@ -26,7 +27,11 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
 
   private
 
-    def fail
+    def submitted_email
+      params.dig(:email_subscriber, :email)
+    end
+
+    def reject_submission
       @message = "There's an issue with your subscription. If you're using a VPN, try subscribing without it. Contact support if the problem persists."
 
       respond_to do |format|

@@ -61,6 +61,16 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
     assert_select "span", text: /Email can't be blank/
   end
 
+  test "should not create reply with a form token for a different post" do
+    params = reply_params.merge(spam_prevention_params(posts(:two)))
+
+    assert_no_difference("Post::Reply.count") do
+      post post_replies_path(@post), params: params
+    end
+
+    assert_response :unprocessable_entity
+  end
+
   test "should not create reply if honeypot field is populated" do
     assert_no_difference("Post::Reply.count") do
       params = reply_params.merge(email_confirmation: "test@test.com")
@@ -86,15 +96,8 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
 
     def spam_prevention_params(post)
       {
-          form_token: encryptor.encrypt_and_sign({
-            post_id: post.id
-          }),
-          rendered_at: signed_rendered_at(10.seconds.ago)
+        form_token: post.signed_id(purpose: :reply_form),
+        rendered_at: signed_rendered_at(10.seconds.ago)
       }
-    end
-
-    def encryptor
-      key = ActiveSupport::KeyGenerator.new(Rails.application.secret_key_base).generate_key("form-token", 32)
-      ActiveSupport::MessageEncryptor.new(key)
     end
 end

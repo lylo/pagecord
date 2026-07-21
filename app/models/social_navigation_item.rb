@@ -8,7 +8,9 @@ class SocialNavigationItem < NavigationItem
 
   before_validation :set_label_from_platform, if: -> { platform.present? && label.blank? }
 
-  scope :mastodon, -> { where(platform: "Mastodon") }
+  # Platforms whose links are identity claims: profiles of the blog's author,
+  # not the blog's own feed (RSS) or an arbitrary site (Web)
+  scope :rel_me, -> { where.not(platform: %w[RSS Web]) }
 
   def link_url
     email? ? "mailto:#{url}" : url

@@ -16,13 +16,6 @@ class SignupsController < ApplicationController
   end
 
   def create
-    if turnstile_enabled? && !valid_turnstile_token?(params["cf-turnstile-response"])
-      flash.now[:error] = "Please complete the security check"
-      @user = User.new
-      @user.blogs.build
-      render :new and return
-    end
-
     @user = User.new(user_params)
 
     # New users should get Lexxy if configured
@@ -42,9 +35,20 @@ class SignupsController < ApplicationController
 
   private
 
-    def fail
+    def submitted_email
+      params.dig(:user, :email)
+    end
+
+    def reject_submission
       flash[:error] = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."
       redirect_to new_signup_path
+    end
+
+    def reject_turnstile
+      flash.now[:error] = "Please complete the security check"
+      @user = User.new
+      @user.blogs.build
+      render :new
     end
 
     def user_params
