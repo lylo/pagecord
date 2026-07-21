@@ -58,7 +58,7 @@ class Home::SpotlightController < ApplicationController
     end
 
     def recent_posts
-      latest_per_blog = spotlight_posts_scope
+      latest_per_blog = Blog.spotlit_posts
         .where(published_at: ..15.minutes.ago)
         .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
         .select("DISTINCT ON (posts.blog_id) posts.*")
@@ -76,9 +76,5 @@ class Home::SpotlightController < ApplicationController
       Analytics::Trending.new.top_posts(limit: 100)
         .select { |item| item[:post].published_at <= 15.minutes.ago }
         .first(20)
-    end
-
-    def spotlight_posts_scope
-      Post.visible.posts.joins(:blog).merge(Blog.spotlit)
     end
 end

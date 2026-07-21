@@ -92,7 +92,7 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
 
   test "uses display_title for titleless posts" do
     post = posts(:one)
-    post.update_columns(title: nil, text_summary: "Title from summary")
+    post.update_columns(title: nil, text_summary: "Title from summary" + " lorem ipsum" * 30)
 
     get spotlight_path(tab: "recent")
 

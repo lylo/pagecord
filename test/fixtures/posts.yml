@@ -8,6 +8,7 @@ one:
   token: <%= SecureRandom.hex(4) %>
   slug: the-art-of-street-photography
   tag_list: [photography]
+  text_summary: Street photography is about patience and timing, learning to see the ordinary in a way that feels extraordinary, and being ready when the moment arrives. The best frames come not from chasing scenes but from waiting quietly and letting the city reveal itself to you in its own time.
   <<: *default
 
 two:
