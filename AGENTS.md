@@ -183,6 +183,7 @@ CSP `frame-src` in `config/initializers/content_security_policy.rb` must be upda
 ## Key Gotchas
 
 - **ActionText before_save**: Read from `content.to_s` directly — ActionText changes aren't persisted until callback completes
+- **Rich text save N²**: `ActiveStorage::Attachment`'s auto-generated presence validator on `:record` calls `RichText#blank?`, which re-renders the whole body and re-resolves every attachment's SGID – one full render per embedded attachment, so N photos cost N² blob queries (~1,161 for a 33-photo post). `config/initializers/active_storage.rb` swaps the validator for a cheap nil check; a query-budget test in `test/models/post_test.rb` guards it. Never add an `EachValidator` to an attribute that returns a `RichText` – `value.blank?` renders.
 - **API Markdown attachments**: Redcarpet wraps standalone raw `<action-text-attachment>` tags in `<p>` tags. `Api::BaseController#enrich_attachments` must unwrap attachment-only paragraphs after Markdown conversion or rendered blog HTML loses the outer `<action-text-attachment>` wrapper.
 - **Safari**: Doesn't support `*.localhost` — use Chrome/Firefox for subdomain testing
 - **Blog views**: No Tailwind, use semantic CSS. Check `lexxy-typography.css`, `components.css`, `themes/*.css`

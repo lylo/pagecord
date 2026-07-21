@@ -1,5 +1,5 @@
 xml.instruct! :xml, version: "1.0"
-xml.rss version: "2.0" do
+xml.rss version: "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/" do
   xml.channel do
     xml.title "Pagecord Spotlight"
     xml.description "Trending posts from independent bloggers on Pagecord"
@@ -20,6 +20,7 @@ xml.rss version: "2.0" do
         xml.pubDate publication_time.to_formatted_s(:rfc822)
         xml.link link
         xml.guid link
+        xml.dc :creator, post.blog.display_name
         xml.source post.blog.display_name, url: rss_feed_url(post.blog)
 
         post.tag_list.each do |tag|
