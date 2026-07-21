@@ -1,3 +1,4 @@
+<%# landing-page: standalone marketing / SEO page (app/views/public), not part of a user's blog %>
 <%= content_for :title do %>
   Pagecord – a fresh, modern Blogger alternative
 <% end %>
@@ -33,30 +34,6 @@
     <% end %>
   </div>
 </div>
-
-<%= render "comparison_intro", sections: [
-  {
-    title: "What Blogger got right",
-    paragraphs: [
-      "Blogger understood that a personal blog should not need a publishing department. You wrote something, pressed publish, and had your own small place on the web.",
-      "That idea still matters. A blog should feel personal, durable, and yours."
-    ]
-  },
-  {
-    title: "What changed",
-    paragraphs: [
-      "People now write across email, notes apps, phones, Markdown files, and automation. The hard part is not starting a blog; it is keeping publishing close enough to writing that posts make it out.",
-      "Pagecord is built around that gap."
-    ]
-  },
-  {
-    title: "What Pagecord adds",
-    paragraphs: [
-      "You get a modern personal site with posts, pages, themes, RSS, email subscribers, custom domains, analytics, reply by email, and full export.",
-      "Classic is free forever. Premium is $#{localised_price}/year and includes custom domains, email subscribers, images, Obsidian, API, CLI, and more."
-    ]
-  }
-] %>
 
 <%= render "public/screenshots" %>
 

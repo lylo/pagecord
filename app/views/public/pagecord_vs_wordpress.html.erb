@@ -1,3 +1,4 @@
+<%# landing-page: standalone marketing / SEO page (app/views/public), not part of a user's blog %>
 <%= content_for :title do %>
   WordPress alternative with no plugins or maintenance — Pagecord
 <% end %>
@@ -29,34 +30,10 @@
 
   <div class="text-center mt-8 mb-4 md:text-xl">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Create your free Pagecord account</div>
     <% end %>
   </div>
 </div>
-
-<%= render "comparison_intro", sections: [
-  {
-    title: "Who this is for",
-    paragraphs: [
-      "People who want a durable personal site, not a weekend spent choosing themes, plugins, hosting, security settings, and backups.",
-      "Writers, makers, consultants, academics, and small teams who need a web home that can publish posts, pages, RSS, and email updates without becoming a project of its own."
-    ]
-  },
-  {
-    title: "Why people switch",
-    paragraphs: [
-      "WordPress starts simple, then slowly becomes a maintenance habit. There's always another plugin update, another theme to evaluate, another dashboard prompt, another thing that could break.",
-      "For a personal blog, all that power gets in the way. Pagecord clears it out so the gap between thought and published post stays short."
-    ]
-  },
-  {
-    title: "What is different",
-    paragraphs: [
-      "Pagecord isn't trying to be a CMS for every kind of website. It's a small publishing tool — posts, pages, email publishing, RSS, newsletters, custom domains, export, and enough design control to feel like yours.",
-      "The important things are built in. There's no admin to learn, because there's no admin."
-    ]
-  }
-] %>
 
 <%= render "screenshots" %>
 
@@ -139,6 +116,11 @@
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700"><span class="text-xl">✅</span><br><span class="text-sm">Weekly digest or per-post delivery</span></td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700"><span class="text-xl">✅</span><br><span class="text-sm">(requires plugins)</span></td>
         </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Search your posts</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+        </tr>
         <!-- Pagecord advantages -->
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Full site HTML export</td>
@@ -181,26 +163,4 @@
 
 </div>
 
-<%= render "comparison_after_table",
-  examples: [
-    { name: "Richard Dallaway", url: "https://richard.dallaway.com", description: "A personal site with a custom domain, simple writing, and a clear archive." },
-    { name: "Chad Moore", url: "https://blog.chadmoore.net/", description: "A straightforward personal blog. Posts up front, not the platform." },
-    { name: "Moonwriting", url: "https://moonwriting.blog", description: "A quiet writing site with custom styling and a clear personal voice." }
-  ],
-  testimonials: [
-    { name: "Richard Dallaway", url: "https://richard.dallaway.com", quote: "Pagecord has two big attractions. One is rediscovering blogging by email, but a bigger win is the source availability. It does what I need, very nicely." },
-    { name: "Eetu", url: "https://moonwriting.blog", quote: "Pagecord has everything I'm looking for. Open source, privacy-respecting, with many customization options. Pricing is competitive." }
-  ],
-  migration: {
-    can: [
-      "Posts and pages from a WordPress export",
-      "Tags and categories as Pagecord tags",
-      "Published dates, slugs, and most normal post content",
-      "A custom domain once DNS is pointed at Pagecord"
-    ],
-    cannot: [
-      "Themes, plugins, shortcodes, widgets, and page-builder layouts",
-      "WooCommerce, memberships, forums, and anything CMS-shaped",
-      "Custom fields and plugin-specific content models"
-    ]
-  } %>
+<%= render "comparison_after_table" %>

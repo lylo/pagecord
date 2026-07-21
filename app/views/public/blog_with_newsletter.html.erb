@@ -1,3 +1,4 @@
+<%# landing-page: standalone marketing / SEO page (app/views/public), not part of a user's blog %>
 <%= content_for :title do %>
   Create a blog with a built-in email newsletter
 <% end %>
@@ -29,34 +30,10 @@
 
   <div class="text-center mt-8 mb-4 md:text-xl">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Create your free Pagecord account</div>
     <% end %>
   </div>
 </div>
-
-<%= render "comparison_intro", sections: [
-  {
-    title: "Who this is for",
-    paragraphs: [
-      "Writers, creators, consultants, tiny teams, and personal bloggers who want readers to subscribe without turning the whole site into a newsletter business.",
-      "It is for people who want a public archive, RSS, a custom domain, and email delivery from the same place."
-    ]
-  },
-  {
-    title: "Why a blog comes first",
-    paragraphs: [
-      "Email is excellent for reaching people, but a newsletter alone can make your writing feel temporary. It lands in an inbox, ages quickly, and is hard to browse later.",
-      "A blog gives every piece a home: a URL, an archive, search visibility, links from other sites, and a place readers can return to."
-    ]
-  },
-  {
-    title: "What Pagecord does differently",
-    paragraphs: [
-      "Pagecord sends posts to subscribers without asking you to design a campaign. Choose per-post delivery for important updates or weekly digest mode for a quieter rhythm.",
-      "Subscribers are attached to your site, not a separate newsletter machine. Your writing stays readable on the open web."
-    ]
-  }
-] %>
 
 <%= render "screenshots" %>
 

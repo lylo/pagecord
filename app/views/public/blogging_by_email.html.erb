@@ -1,3 +1,4 @@
+<%# landing-page: standalone marketing / SEO page (app/views/public), not part of a user's blog %>
 <%= content_for :title do %>
   Blog By Email: Your inbox is already a writing app.
 <% end %>
@@ -29,7 +30,7 @@
 
   <div class="text-center mt-8 mb-4 md:text-xl">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Create your free Pagecord account</div>
     <% end %>
   </div>
 </div>
@@ -37,30 +38,6 @@
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <%= image_tag "public/blogging-by-email.jpg", class: "rounded-lg my-8", alt: "Screenshot of blogging via Gmail" %>
 </div>
-
-<%= render "comparison_intro", sections: [
-  {
-    title: "Who this is for",
-    paragraphs: [
-      "People who write in bursts: on trains, from phones, between meetings, late at night, or whenever the thought is fresh.",
-      "It suits personal blogs, field notes, travel updates, project logs, family blogs, and small public journals where speed matters more than ceremony."
-    ]
-  },
-  {
-    title: "Why email helps",
-    paragraphs: [
-      "Email has almost no learning curve. You already know how to draft, attach images, save a thought, and send it from any device.",
-      "That familiarity changes the emotional shape of blogging. A post can feel like sending a note instead of operating publishing software."
-    ]
-  },
-  {
-    title: "What Pagecord does differently",
-    paragraphs: [
-      "Pagecord turns email into proper web publishing. Your posts live on your site, with clean URLs, RSS, themes, subscribers, pages, custom domains, and export.",
-      "It works with any email provider. The inbox is just the writing surface; Pagecord is the website."
-    ]
-  }
-] %>
 
 <div class="flex justify-center gap-x-8 grayscale opacity-50 mb-8 px-4">
   <%= image_tag "public/yahoo.jpg", class: "h-10 sm:h-16 rounded-md", alt: "Yahoo logo" %>

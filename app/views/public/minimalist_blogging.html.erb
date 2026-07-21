@@ -1,3 +1,4 @@
+<%# landing-page: standalone marketing / SEO page (app/views/public), not part of a user's blog %>
 <%= content_for :title do %>
   Minimalist Blogging: The best blog is the one you keep using.
 <% end %>
@@ -29,34 +30,10 @@
 
   <div class="text-center mt-8 mb-4 md:text-xl">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Create your free Pagecord account</div>
     <% end %>
   </div>
 </div>
-
-<%= render "comparison_intro", sections: [
-  {
-    title: "Who this is for",
-    paragraphs: [
-      "People who want a personal blog, not a publishing stack. Writers, makers, researchers, developers, artists, and anyone who wants a quiet place to put words online.",
-      "It is especially good when you want a homepage, archive, RSS feed, email subscribers, and custom domain without turning your blog into another system to manage."
-    ]
-  },
-  {
-    title: "Why simple wins",
-    paragraphs: [
-      "Most blogging tools make avoidance feel productive. You can tweak templates, compare plugins, tune SEO dashboards, design newsletter forms, and never publish the thing you meant to write.",
-      "Pagecord is opinionated about that trap. The writing should be the main event, and the software should feel almost boring once the post is live."
-    ]
-  },
-  {
-    title: "What Pagecord does differently",
-    paragraphs: [
-      "Pagecord keeps the important web primitives built in: pages, posts, RSS, clean URLs, custom domains, email delivery, and export.",
-      "It leaves out the machinery that makes a personal blog feel like work: plugin marketplaces, campaign builders, reader paywalls, popups, and social-feed pressure."
-    ]
-  }
-] %>
 
 <%= render "screenshots" %>
 
