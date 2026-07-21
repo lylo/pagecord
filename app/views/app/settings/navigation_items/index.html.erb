@@ -30,8 +30,15 @@
       <%= form_with model: [:app, :settings, @navigation_item || NavigationItem.new], scope: :navigation_item, url: @navigation_item&.persisted? ? app_settings_navigation_item_path(@navigation_item) : app_settings_navigation_items_path, class: "space-y-6" do |form| %>
         <div>
           <div class="space-y-3">
-            <% selected_type = @navigation_item&.is_a?(PageNavigationItem) ? "page" : (@navigation_item&.is_a?(SocialNavigationItem) ? "social" : "custom") %>
-            <% selected_type = "page" unless @navigation_item %>
+            <% selected_type = if @navigation_item.nil? || @navigation_item.is_a?(PageNavigationItem)
+                 "page"
+               elsif @navigation_item.is_a?(SocialNavigationItem)
+                 "social"
+               elsif @navigation_item.is_a?(SearchNavigationItem)
+                 "search"
+               else
+                 "custom"
+               end %>
             <label class="flex items-center">
               <%= radio_button_tag :nav_type, "page", selected_type == "page",
                   class: "rounded-full border-slate-300 dark:border-slate-600 text-[#4fbd9c] focus:ring-[#4fbd9c]",
@@ -50,6 +57,14 @@
                   data: { navigation_form_target: "socialRadio", action: "change->navigation-form#toggleFields" } %>
               <span class="ml-2">Social link</span>
             </label>
+            <% if @navigation_item.is_a?(SearchNavigationItem) || !@blog.navigation_items.exists?(type: "SearchNavigationItem") %>
+              <label class="flex items-center">
+                <%= radio_button_tag :nav_type, "search", selected_type == "search",
+                    class: "rounded-full border-slate-300 dark:border-slate-600 text-[#4fbd9c] focus:ring-[#4fbd9c]",
+                    data: { navigation_form_target: "searchRadio", action: "change->navigation-form#toggleFields" } %>
+                <span class="ml-2">Search</span>
+              </label>
+            <% end %>
           </div>
         </div>
 
@@ -102,6 +117,13 @@
                 data: { navigation_form_target: "url" } %>
             <div class="field-error"><%= @navigation_item.errors[:url].to_sentence if @navigation_item&.errors&.[](:url)&.any? %></div>
           </fieldset>
+        </div>
+
+        <div data-navigation-form-target="searchFields" class="<%= 'hidden' if selected_type != 'search' %>">
+          <%= form.hidden_field :label, value: "Search" %>
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Adds a search icon to your navigation, linking to your blog's search page.
+          </p>
         </div>
 
         <div>

@@ -1,0 +1,5 @@
+<%= render layout: "navigation_item", locals: { navigation_item: search_navigation_item } do %>
+  <% content_for :icon do %>
+    <%= inline_svg_tag "icons/search.svg", class: "w-4 h-4" %>
+  <% end %>
+<% end %>

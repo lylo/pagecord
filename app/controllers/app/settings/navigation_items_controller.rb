@@ -10,6 +10,7 @@ class App::Settings::NavigationItemsController < AppController
     when "page" then PageNavigationItem
     when "custom" then CustomNavigationItem
     when "social" then SocialNavigationItem
+    when "search" then SearchNavigationItem
     else NavigationItem
     end
 
