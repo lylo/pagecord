@@ -26,3 +26,51 @@ joel_hidden:
   post: contact
   label: "Contact"
   position: 4
+
+saul_social_mastodon:
+  type: SocialNavigationItem
+  blog: saul
+  label: "Mastodon"
+  platform: "Mastodon"
+  url: "https://mas.to/@saul"
+  position: 1
+
+saul_social_github:
+  type: SocialNavigationItem
+  blog: saul
+  label: "GitHub"
+  platform: "GitHub"
+  url: "https://github.com/saul"
+  position: 2
+
+saul_social_email:
+  type: SocialNavigationItem
+  blog: saul
+  label: "Email"
+  platform: "Email"
+  url: "saul@example.com"
+  position: 3
+
+saul_social_rss:
+  type: SocialNavigationItem
+  blog: saul
+  label: "RSS"
+  platform: "RSS"
+  url: "https://saul.pagecord.com/feed.xml"
+  position: 4
+
+saul_social_web:
+  type: SocialNavigationItem
+  blog: saul
+  label: "Web"
+  platform: "Web"
+  url: "https://example.com"
+  position: 5
+
+saul_social_x:
+  type: SocialNavigationItem
+  blog: saul
+  label: "X"
+  platform: "X"
+  url: "https://x.com/saul"
+  position: 6
