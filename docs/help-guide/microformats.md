@@ -1,6 +1,7 @@
 ---
 title: "Microformats"
-published: false
+published: true
+published_at: 2026-07-21T00:00:00+00:00
 ---
 Every Pagecord blog is marked up with [microformats](https://microformats.org) – small HTML conventions that let machines understand your content, not just humans. You don't need to do anything; it's built into every blog, free or premium.
 
