@@ -527,7 +527,7 @@ footer.blog-footer #brand svg {
   }
 
   /* Search form on the /search page */
-  :where(.search-form) {
+  .form.search-form {
     padding: 0;
     background-color: transparent;
     margin-block-end: 2rem;
