@@ -1,4 +1,4 @@
-<div class="<%= class_names("px-6 py-5", stacked ? "space-y-4" : "grid gap-4 md:grid-cols-[12rem_1fr]", options[:class]) %>" <%= tag.attributes(options.except(:class)) %>>
+<div class="<%= class_names("px-4 py-5 sm:px-6", stacked ? "space-y-4" : "grid gap-4 md:grid-cols-[12rem_1fr]", options[:class]) %>" <%= tag.attributes(options.except(:class)) %>>
   <div>
     <h4 class="font-bold text-slate-900 dark:text-slate-100"><%= title %></h4>
     <% if hint %>

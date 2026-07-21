@@ -23,7 +23,7 @@
           <% end %>
 
           <fieldset>
-            <%= styled_text_field(form, :custom_domain, placeholder: "yourdomain.com", class: "md:w-80", disabled: disabled) %>
+            <%= styled_text_field(form, :custom_domain, placeholder: "yourdomain.com", class: "w-full md:w-80", disabled: disabled) %>
             <%= field_error(@blog, :custom_domain) %>
           </fieldset>
         </div>
@@ -115,7 +115,7 @@
     <%= settings_section "Advanced", description: "Optional settings most blogs won't need to change" do %>
       <%= settings_row "SEO Blog Title" do %>
         <fieldset>
-          <%= styled_text_field(form, :seo_title, placeholder: "e.g. #{@blog.display_name} - Personal Blog", class: "md:w-full") %>
+          <%= styled_text_field(form, :seo_title, placeholder: "e.g. #{@blog.display_name} - Personal Blog", class: "w-full") %>
           <%= field_error(@blog, :seo_title) %>
         </fieldset>
         <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
@@ -124,7 +124,7 @@
       <% end %>
 
       <%= settings_row "Fediverse Author Attribution" do %>
-        <%= styled_text_field(form, :fediverse_author_attribution, placeholder: "e.g. @you@mastodon.social", class: "md:w-full") %>
+        <%= styled_text_field(form, :fediverse_author_attribution, placeholder: "e.g. @you@mastodon.social", class: "w-full") %>
         <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
           Your full Fediverse handle, not your profile URL. Mastodon will show you as the author when someone shares one of your posts.
         </p>
@@ -132,7 +132,7 @@
 
       <%= settings_row "Google Site Verification" do %>
         <fieldset>
-          <%= styled_text_field(form, :google_site_verification, placeholder: "e.g. Gzm-PA_FXh231_cgsIxY_h9OgR6r8DZ", class: "md:w-full", data: { controller: "google-site-verification", action: "paste->google-site-verification#paste" }) %>
+          <%= styled_text_field(form, :google_site_verification, placeholder: "e.g. Gzm-PA_FXh231_cgsIxY_h9OgR6r8DZ", class: "w-full", data: { controller: "google-site-verification", action: "paste->google-site-verification#paste" }) %>
           <%= field_error(@blog, :google_site_verification) %>
         </fieldset>
         <% if @blog.google_site_verification.present? %>
@@ -159,14 +159,14 @@
 
         <fieldset>
           <%= form.label :subdomain, "Subdomain", class: "sr-only" %>
-          <%= styled_text_field(form, :subdomain, required: true, placeholder: "subdomain", maxlength: 20, class: "md:w-80") %>
+          <%= styled_text_field(form, :subdomain, required: true, placeholder: "subdomain", maxlength: 20, class: "w-full md:w-80") %>
           <%= field_error(@blog, :subdomain) %>
         </fieldset>
       <% end %>
     <% end %>
   </div>
 
-  <div class="mt-12 flex items-center gap-x-2 border-t border-t-slate-200 pt-4 dark:border-slate-600">
+  <div class="mt-12 flex items-center gap-x-2">
     <%= form.submit "Update", class: "btn-primary" %>
     <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
   </div>
