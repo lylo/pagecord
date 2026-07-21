@@ -1,6 +1,6 @@
 nl:
   search:
-    placeholder: "Berichten zoeken"
+    placeholder: "Deze site doorzoeken"
     submit: "Zoeken"
     no_results: "Geen berichten gevonden ✨"
     results_count_html:

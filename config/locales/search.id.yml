@@ -1,6 +1,6 @@
 id:
   search:
-    placeholder: "Cari pos"
+    placeholder: "Cari di situs ini"
     submit: "Cari"
     no_results: "Tidak ada pos yang ditemukan ✨"
     results_count_html:

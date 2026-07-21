@@ -1,6 +1,6 @@
 fr:
   search:
-    placeholder: "Rechercher des articles"
+    placeholder: "Rechercher sur ce site"
     submit: "Rechercher"
     no_results: "Aucun article trouvé ✨"
     results_count_html:

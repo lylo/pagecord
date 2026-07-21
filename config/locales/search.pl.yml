@@ -1,6 +1,6 @@
 pl:
   search:
-    placeholder: "Szukaj wpisów"
+    placeholder: "Szukaj w tej witrynie"
     submit: "Szukaj"
     no_results: "Nie znaleziono wpisów ✨"
     results_count_html:

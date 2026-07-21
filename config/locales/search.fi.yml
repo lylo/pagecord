@@ -1,6 +1,6 @@
 fi:
   search:
-    placeholder: "Hae julkaisuja"
+    placeholder: "Hae tältä sivustolta"
     submit: "Hae"
     no_results: "Julkaisuja ei löytynyt ✨"
     results_count_html:

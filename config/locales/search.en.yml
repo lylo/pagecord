@@ -1,6 +1,6 @@
 en:
   search:
-    placeholder: "Search posts"
+    placeholder: "Search this site"
     submit: "Search"
     no_results: "No posts found ✨"
     results_count_html:

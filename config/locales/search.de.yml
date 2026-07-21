@@ -1,6 +1,6 @@
 de:
   search:
-    placeholder: "Beiträge durchsuchen"
+    placeholder: "Diese Website durchsuchen"
     submit: "Suchen"
     no_results: "Keine Beiträge gefunden ✨"
     results_count_html:

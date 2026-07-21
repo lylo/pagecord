@@ -1,6 +1,6 @@
 pt:
   search:
-    placeholder: "Buscar postagens"
+    placeholder: "Pesquisar neste site"
     submit: "Buscar"
     no_results: "Nenhuma postagem encontrada ✨"
     results_count_html:

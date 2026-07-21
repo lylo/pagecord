@@ -1,6 +1,6 @@
 es:
   search:
-    placeholder: "Buscar publicaciones"
+    placeholder: "Buscar en este sitio"
     submit: "Buscar"
     no_results: "No se encontraron publicaciones ✨"
     results_count_html:

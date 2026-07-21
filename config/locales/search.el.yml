@@ -1,6 +1,6 @@
 el:
   search:
-    placeholder: "Αναζήτηση αναρτήσεων"
+    placeholder: "Αναζήτηση σε αυτόν τον ιστότοπο"
     submit: "Αναζήτηση"
     no_results: "Δεν βρέθηκαν αναρτήσεις ✨"
     results_count_html:
