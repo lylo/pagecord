@@ -526,6 +526,21 @@ footer.blog-footer #brand svg {
     }
   }
 
+  /* Search form on the /search page */
+  :where(.search-form) {
+    margin-block-end: 2rem;
+
+    form {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
   /* Email subscription form - inline on desktop, stacked on mobile */
   :where(.email-subscriber-form) {
     input[type="email"] {
