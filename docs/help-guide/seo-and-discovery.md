@@ -20,6 +20,14 @@ Just paste the verification code (or the full meta tag – Pagecord will extract
 
 If you're on Mastodon or another Fediverse platform, you can enter your Fediverse username (e.g. `@you@mastodon.social`) so that your posts are attributed to you when shared on those platforms.
 
+## Identity Links (rel=me)
+
+Pagecord adds a `rel="me"` link to your blog's HTML for each social link in your navigation, except your RSS feed and generic "Web" links (which might point at a site that isn't yours). These tell other services that those profiles belong to the same person as your blog – it's what gets you the green verified tick on a Mastodon profile.
+
+Verification is reciprocal: your profile on the other service must also link back to your blog. On Mastodon, add your blog's URL to your profile metadata and re-save it.
+
+rel=me is one of several [microformats](microformats.md) built into every Pagecord blog.
+
 ## Discoverability
 
 By default, your blog can be found through search engines and may be featured in the Pagecord Spotlight and Shuffle. If you'd prefer to keep things low-key, untick the "Make my blog discoverable" box – Pagecord will serve a `robots.txt` that discourages search engines, and exclude your blog from Spotlight and Shuffle.
