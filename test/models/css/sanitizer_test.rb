@@ -29,6 +29,14 @@ class Css::SanitizerTest < ActiveSupport::TestCase
     assert_includes result, "padding-block"
   end
 
+  test "preserves gap properties" do
+    css = "nav { gap: 1rem; row-gap: 0.25rem; column-gap: 0.75rem; }"
+    result = Css::Sanitizer.sanitize_stylesheet(css)
+    assert_includes result, "gap: 1rem"
+    assert_includes result, "row-gap: 0.25rem"
+    assert_includes result, "column-gap: 0.75rem"
+  end
+
   test "preserves initial-letter for drop caps" do
     css = "p::first-letter { initial-letter: 3; -webkit-initial-letter: 3; }"
     result = Css::Sanitizer.sanitize_stylesheet(css)
