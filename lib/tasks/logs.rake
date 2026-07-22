@@ -547,6 +547,82 @@ namespace :logs do
     )
   end
 
+  desc "AI bot robots.txt compliance: which disallowed crawlers still hit the site. rake \"logs:bots\" or rake \"logs:bots[2026-07-21]\""
+  task :bots, [ :date ] do |_t, args|
+    date = args[:date]
+
+    blocklist_path = File.join(Dir.pwd, "app/views/blogs/robots/_ai_training_crawlers.text.erb")
+    unless File.exist?(blocklist_path)
+      puts "#{LogDisplay::RED}AI crawler blocklist not found at #{blocklist_path}#{LogDisplay::RESET}"
+      exit 1
+    end
+
+    tokens = File.readlines(blocklist_path).filter_map { |line| line[/^\s*User-agent:\s*(.+?)\s*$/, 1] }
+    if tokens.empty?
+      puts "#{LogDisplay::YELLOW}No User-agent tokens found in blocklist.#{LogDisplay::RESET}"
+      exit 0
+    end
+
+    # Ambiguous tokens that are common words or short substrings. A match is a
+    # signal, not proof, so flag them for human review before adding a Caddy
+    # block rather than treating them as confirmed offenders.
+    review = %w[spider scrapy lcc yak]
+
+    scope = date || "all retained logs"
+    puts "#{LogDisplay::BOLD}Scanning #{scope} for #{tokens.size} disallowed AI bots ...#{LogDisplay::RESET}"
+
+    entries = date ? LogParser.each_entry_for_date(date) : LogParser.each_entry
+    # needle is a cheap prefilter; boundary confirms the token isn't buried
+    # inside a longer word (e.g. ExaBot inside VirexaBot).
+    matchers = tokens.map do |token|
+      needle = token.downcase
+      [ token, needle, /(?<![a-z0-9])#{Regexp.escape(needle)}(?![a-z0-9])/ ]
+    end
+    hits = {}
+
+    entries.each do |e|
+      next unless e.line_type == :started
+      ua = e.user_agent.to_s
+      next if ua.empty?
+      ua_down = ua.downcase
+
+      matchers.each do |token, needle, boundary|
+        next unless ua_down.include?(needle) && boundary.match?(ua_down)
+        hit = hits[token] ||= { count: 0, ips: {}, sample: ua }
+        hit[:count] += 1
+        hit[:ips][e.ip] = true
+      end
+    end
+
+    if hits.empty?
+      puts "#{LogDisplay::GREEN}No disallowed AI bots seen in #{scope}. All quiet.#{LogDisplay::RESET}"
+      exit 0
+    end
+
+    rows = hits.sort_by { |_, hit| -hit[:count] }.map do |token, hit|
+      verdict = review.include?(token.downcase) ? "review" : "block"
+      [ token, hit[:count].to_s, hit[:ips].size.to_s, verdict, hit[:sample] ]
+    end
+
+    puts LogDisplay.table(
+      title: "AI bots ignoring robots.txt (#{scope})",
+      columns: [
+        { label: "Bot", width: 28, align: :left },
+        { label: "Requests", width: 9, align: :right },
+        { label: "IPs", width: 5, align: :right },
+        { label: "Verdict", width: 7, align: :left },
+        { label: "Sample user agent", width: 70, align: :left }
+      ],
+      rows: rows,
+      highlight: ->(row) { row[3] == "block" }
+    )
+
+    to_block = rows.count { |row| row[3] == "block" }
+    to_review = rows.count { |row| row[3] == "review" }
+    puts "#{LogDisplay::BOLD}#{to_block} confident offender(s) to block in Caddy; #{to_review} generic-token match(es) to review.#{LogDisplay::RESET}"
+    puts "#{LogDisplay::DIM}\"block\" = distinctive bot token seen despite robots.txt Disallow. \"review\" = ambiguous token, confirm before blocking.#{LogDisplay::RESET}"
+  end
+
   desc "Live tail of production.log with per-minute request counter"
   task :watch do
     log_path = File.join(Dir.pwd, "log", "production.log")

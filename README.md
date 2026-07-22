@@ -109,7 +109,7 @@ OG_SIGNING_SECRET=your-secret-key
 
 ## Log Analysis
 
-Rake tasks for analysing production logs on the server. No external gems required.
+Rake tasks for analysing production logs. They read `log/production.log*` in the repo, so they run the same on the server or locally against logs copied down (see below). No external gems required.
 
 ```bash
 # Per-hour request overview — highlights anomalous traffic spikes
@@ -131,6 +131,10 @@ rake "logs:performance[2026-02-23,21]"
 HOST=joel rake "logs:performance[2026-02-23]"
 HOST=example.com rake "logs:performance[2026-02-23,21]"
 
+# AI bot robots.txt compliance — disallowed crawlers still hitting the site
+rake logs:bots              # all retained logs
+rake "logs:bots[2026-02-23]"  # a single day
+
 # Live tail with per-minute request counter (alerts at >500 req/min)
 rake logs:watch
 
@@ -146,6 +150,16 @@ rake "logs:blog[joel,2026-02-23,21]"
 # Works with custom domains too
 rake "logs:blog[example.com]"
 ```
+
+### Running locally
+
+Copy the production logs into the repo's `log/` directory, then run any of the tasks above:
+
+```bash
+scp 'pagecord:pagecord/current/log/production.log*' log/
+```
+
+The parser reads every `production.log*` file, including rotated `.gz`, so this gives you the full retained window (a couple of weeks). Rotation maps as `production.log` (today), `production.log.1.gz` (yesterday), and so on, so grab a single file if you only need one day.
 
 ## More info
 
