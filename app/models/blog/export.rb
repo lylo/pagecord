@@ -18,7 +18,9 @@ class Blog::Export < ApplicationRecord
     in_progress!
 
     begin
-      Dir.mktmpdir do |dir|
+      # /tmp is a small tmpfs in production; large exports (several GB of images
+      # plus the zip) exhaust it, so stage them on the main disk instead.
+      Dir.mktmpdir("pagecord-export", ("/var/tmp" if Rails.env.production?)) do |dir|
         export_posts(dir)
         attach_zip_file(dir)
       end
