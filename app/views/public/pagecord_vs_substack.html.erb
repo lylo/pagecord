@@ -1,3 +1,4 @@
+<%# landing-page: standalone marketing / SEO page (app/views/public), not part of a user's blog %>
 <%= content_for :title do %>
   Substack alternative without the 10% revenue share — Pagecord
 <% end %>
@@ -17,7 +18,7 @@
 
   <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
     <p class="mt-8 md:mt-12">
-      Substack is good if you want to run a publication, chase subscribers, and think in newsletter issues. Many people do not want that. They want a small home on the web that can also send posts by email.
+      Substack is a great fit if you want to run a publication and monetise your blog. Many people want something different: a small home on the web that can also send posts by email.
     </p>
     <p>
       Pagecord gives you a blog first: posts, pages, RSS, themes, a custom domain, and export. Email subscribers are there when you want them, with per-post delivery or a weekly digest, but the site is still yours even if you never become a newsletter operator.
@@ -29,34 +30,10 @@
 
   <div class="text-center mt-8 mb-4 md:text-xl">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Create your free Pagecord account</div>
     <% end %>
   </div>
 </div>
-
-<%= render "comparison_intro", sections: [
-  {
-    title: "Who this is for",
-    paragraphs: [
-      "Independent writers who like email but do not want their whole online identity to become a publication brand.",
-      "People who want a personal homepage, posts, static pages, RSS, and subscribers in one calm place."
-    ]
-  },
-  {
-    title: "Why people switch",
-    paragraphs: [
-      "Substack makes every writer feel like a media business. That's exciting for some, but it can make casual writing feel performative.",
-      "And the money adds up: a 10% revenue share if you charge readers, plus $50 for a custom domain. Pagecord keeps the pricing boring on purpose."
-    ]
-  },
-  {
-    title: "What is different",
-    paragraphs: [
-      "Pagecord isn't trying to build a social network around your writing. You get a site, an RSS feed, email delivery, and an export button.",
-      "It's independent and profitable. Your readers can subscribe — they don't have to sign up to a platform to read you."
-    ]
-  }
-] %>
 
 <%= render "screenshots" %>
 
@@ -101,6 +78,11 @@
         </tr>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">RSS feeds</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Search your posts</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
@@ -171,25 +153,4 @@
 
 </div>
 
-<%= render "comparison_after_table",
-  examples: [
-    { name: "Focustivity", url: "https://focustivity.blog", description: "A personal blog on a custom domain, posted by email." },
-    { name: "Chad Moore", url: "https://blog.chadmoore.net/", description: "A clean personal site with subscribers, replies, and regular posts." },
-    { name: "Moonwriting", url: "https://moonwriting.blog", description: "A writer-owned site, not a channel in someone else's network." }
-  ],
-  testimonials: [
-    { name: "Eric", url: "https://focustivity.blog", quote: "I was drawn to Pagecord because it allows me to post simply by sending an email. I was blown away by the other great features." },
-    { name: "Greg", url: "https://iamgregb.io/", quote: "Pagecord is the perfect place to host your own blog, especially if you want to keep things simple without getting lost in modern publishing platforms or newsletter engines." }
-  ],
-  migration: {
-    can: [
-      "Your posts, exported from Substack",
-      "Your subscriber list, if you've exported it",
-      "Your custom domain, pointed at Pagecord"
-    ],
-    cannot: [
-      "Substack's recommendation network and app audience",
-      "Paid subscriptions and paywalled posts",
-      "Notes, chat, and the discussion threads"
-    ]
-  } %>
+<%= render "comparison_after_table" %>

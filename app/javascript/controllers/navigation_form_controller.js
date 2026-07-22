@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["pageFields", "customFields", "socialFields", "pageRadio", "customRadio", "socialRadio", "platform", "url"]
+  static targets = ["pageFields", "customFields", "socialFields", "searchFields", "pageRadio", "customRadio", "socialRadio", "searchRadio", "platform", "url"]
   static values = {
     rssFeedUrl: { type: String }
   }
@@ -30,39 +30,26 @@ export default class extends Controller {
 
   toggleFields() {
     if (this.pageRadioTarget.checked) {
-      this.showPageFields()
+      this.showOnly(this.pageFieldsTarget)
     } else if (this.customRadioTarget.checked) {
-      this.showCustomFields()
+      this.showOnly(this.customFieldsTarget)
+    } else if (this.hasSearchRadioTarget && this.searchRadioTarget.checked) {
+      this.showOnly(this.searchFieldsTarget)
     } else {
-      this.showSocialFields()
+      this.showOnly(this.socialFieldsTarget)
     }
   }
 
-  showPageFields() {
-    this.pageFieldsTarget.classList.remove("hidden")
-    this.enableFields(this.pageFieldsTarget)
-    this.customFieldsTarget.classList.add("hidden")
-    this.disableFields(this.customFieldsTarget)
-    this.socialFieldsTarget.classList.add("hidden")
-    this.disableFields(this.socialFieldsTarget)
-  }
-
-  showCustomFields() {
-    this.pageFieldsTarget.classList.add("hidden")
-    this.disableFields(this.pageFieldsTarget)
-    this.customFieldsTarget.classList.remove("hidden")
-    this.enableFields(this.customFieldsTarget)
-    this.socialFieldsTarget.classList.add("hidden")
-    this.disableFields(this.socialFieldsTarget)
-  }
-
-  showSocialFields() {
-    this.pageFieldsTarget.classList.add("hidden")
-    this.disableFields(this.pageFieldsTarget)
-    this.customFieldsTarget.classList.add("hidden")
-    this.disableFields(this.customFieldsTarget)
-    this.socialFieldsTarget.classList.remove("hidden")
-    this.enableFields(this.socialFieldsTarget)
+  showOnly(activeTarget) {
+    [this.pageFieldsTarget, this.customFieldsTarget, this.socialFieldsTarget, this.searchFieldsTarget].forEach(target => {
+      if (target === activeTarget) {
+        target.classList.remove("hidden")
+        this.enableFields(target)
+      } else {
+        target.classList.add("hidden")
+        this.disableFields(target)
+      }
+    })
   }
 
   disableFields(container) {

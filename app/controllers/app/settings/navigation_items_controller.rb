@@ -1,5 +1,6 @@
 class App::Settings::NavigationItemsController < AppController
   before_action :set_navigation_item, only: [ :update, :destroy ]
+  before_action :require_premium_for_search, only: :create
 
   def index
     load_form_data
@@ -10,6 +11,7 @@ class App::Settings::NavigationItemsController < AppController
     when "page" then PageNavigationItem
     when "custom" then CustomNavigationItem
     when "social" then SocialNavigationItem
+    when "search" then SearchNavigationItem
     else NavigationItem
     end
 
@@ -45,6 +47,10 @@ class App::Settings::NavigationItemsController < AppController
 
     def set_navigation_item
       @navigation_item = @blog.navigation_items.find(params[:id])
+    end
+
+    def require_premium_for_search
+      render_app_not_found if params[:nav_type] == "search" && !Current.user.has_premium_access?
     end
 
     def load_form_data

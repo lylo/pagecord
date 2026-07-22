@@ -16,6 +16,14 @@ class SocialNavigationItem < NavigationItem
     email? ? "mailto:#{url}" : url
   end
 
+  def icon
+    "icons/social/#{platform.downcase}.svg"
+  end
+
+  def icon_label
+    "#{platform.titleize} Link"
+  end
+
   def email?
     platform == "Email"
   end

@@ -1,3 +1,4 @@
+<%# landing-page: standalone marketing / SEO page (app/views/public), not part of a user's blog %>
 <%= content_for :title do %>
   about.me alternative with a blog and custom domain — Pagecord
 <% end %>
@@ -32,34 +33,10 @@
 
   <div class="text-center mt-8 mb-4 md:text-xl">
     <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start free</div>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Create your free Pagecord account</div>
     <% end %>
   </div>
 </div>
-
-<%= render "comparison_intro", sections: [
-  {
-    title: "Who this is for",
-    paragraphs: [
-      "People who want a personal homepage that can keep changing: freelancers, artists, writers, developers, researchers, and anyone with more to say than a link list.",
-      "Use it as a homepage today, then add posts, a Now page, a contact form, or a small newsletter when you need them."
-    ]
-  },
-  {
-    title: "Why people switch",
-    paragraphs: [
-      "A one-page profile can feel finished too quickly. It tells people where else to find you, but it does not give you much space to think, publish, archive, or grow.",
-      "Pagecord keeps the links, but gives you somewhere to actually publish. Posts, pages, a domain that's yours."
-    ]
-  },
-  {
-    title: "What is different",
-    paragraphs: [
-      "You can write posts, add pages, send updates, point your own domain at it, and export everything whenever you want.",
-      "It's still a personal site — just one that doesn't have to stay frozen."
-    ]
-  }
-] %>
 
 <%= render "screenshots" %>
 
@@ -103,6 +80,11 @@
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
         </tr>
         <!-- Pagecord advantages -->
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Search your posts</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Full blogging platform</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
@@ -150,7 +132,7 @@
         </tr>
         <!-- about.me unique features -->
         <tr>
-          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Built-in analytics</td>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Privacy-respecting analytics</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
         </tr>
@@ -171,26 +153,4 @@
 
 </div>
 
-<%= render "comparison_after_table",
-  examples: [
-    { name: "Olly's home page", url: "https://olly.world", description: "A personal homepage with writing, identity, links, and a custom domain in one place." },
-    { name: "Yee Chie's Corner", url: "https://yeechie.nl", description: "A personal site with more room to breathe than a static profile." },
-    { name: "jan.fyi", url: "https://jan.fyi/", description: "A short, memorable domain with space to post over time." }
-  ],
-  testimonials: [
-    { name: "e6on", url: "https://e6on.pagecord.com", quote: "It's simple, it's niche, it's elegant. The most important thing is the words and it takes away all the excuses." },
-    { name: "Greg", url: "https://iamgregb.io/", quote: "Pagecord is the perfect place to host your own blog, especially if you want to keep things simple." }
-  ],
-  migration: {
-    can: [
-      "Profile copy, bio text, links, and images",
-      "A custom domain you already own",
-      "A link-in-bio style homepage recreated as a Pagecord page",
-      "A new blog archive added alongside your existing profile content"
-    ],
-    cannot: [
-      "about.me's AI chatbot",
-      "about.me page templates (you'll pick a Pagecord theme instead)",
-      "about.me analytics history"
-    ]
-  } %>
+<%= render "comparison_after_table" %>

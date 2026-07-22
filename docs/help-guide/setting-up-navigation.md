@@ -55,6 +55,10 @@ Adds a social media icon to your header. Choose from:
 
 Enter the URL to your profile, or an email address for Email links, and the appropriate icon will be displayed.
 
+### Search
+
+Premium feature. Adds a search icon that links to your blog's [search page](search.md), so readers can find your posts and pages. You can only add one.
+
 ## Reordering navigation items
 
 Drag items to change their order. The order you see in settings is the order they'll appear on your blog.

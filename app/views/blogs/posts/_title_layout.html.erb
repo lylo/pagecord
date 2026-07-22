@@ -2,21 +2,22 @@
   <div class="posts-titles h-feed" data-turbo="false">
     <% previous_year = params[:last_visible_year]&.to_i %>
     <% @posts.each do |post| %>
-      <% if post.published_at.year != previous_year %>
+      <% post_date = post.is_page? ? post.updated_at : post.published_at %>
+      <% if post_date.year != previous_year %>
         <h2 class="year-header <%= 'has-previous' if previous_year %>">
-          <%= local_time post.published_at, "%Y" %>
+          <%= local_time post_date, "%Y" %>
         </h2>
-        <% previous_year = post.published_at.year %>
+        <% previous_year = post_date.year %>
       <% end %>
       <div class="post-row h-entry" <%= tag.attributes(data: post_tag_data(post)) %>>
-        <%= local_time post.published_at, format: :month_day, class: "dt-published" %>
+        <%= local_time post_date, format: :month_day, class: "dt-published" %>
         <%= link_to post.display_title, post_path(post), class: "p-name u-url", data: { turbo_prefetch: false } %>
       </div>
     <% end %>
   </div>
 
   <% if @pagy.next %>
-    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, last_visible_year: previous_year, tag: params[:tag], host: request.host), loading: :lazy %>
+    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, last_visible_year: previous_year, tag: params[:tag], q: params[:q], host: request.host), loading: :lazy %>
   <% end %>
 <% end %>
 

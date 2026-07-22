@@ -79,6 +79,65 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     assert_equal "Pixelfed", item.label
   end
 
+  test "create search navigation item" do
+    assert_difference -> { SearchNavigationItem.count }, 1 do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "search",
+        navigation_item: { label: "Search" }
+      }
+    end
+
+    assert_redirected_to app_settings_navigation_items_path
+
+    item = SearchNavigationItem.last
+    assert_equal @blog, item.blog
+    assert_equal "Search", item.label
+    assert_equal "/search", item.link_url
+  end
+
+  test "only one search navigation item allowed per blog" do
+    @blog.navigation_items.create!(type: "SearchNavigationItem")
+
+    assert_no_difference -> { SearchNavigationItem.count } do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "search",
+        navigation_item: { label: "Search" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "search radio hidden for non-premium user" do
+    login_as users(:vivian)
+
+    get app_settings_navigation_items_path
+    assert_select "input[name='nav_type'][value='search']", count: 0
+  end
+
+  test "does not create search navigation item for non-premium user" do
+    login_as users(:vivian)
+
+    assert_no_difference -> { SearchNavigationItem.count } do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "search",
+        navigation_item: { label: "Search" }
+      }
+    end
+
+    assert_response :not_found
+  end
+
+  test "search radio hidden once a search item exists" do
+    get app_settings_navigation_items_path
+    assert_select "input[name='nav_type'][value='search']", count: 1
+
+    @blog.navigation_items.create!(type: "SearchNavigationItem")
+
+    get app_settings_navigation_items_path
+    assert_select "input[name='nav_type'][value='search']", count: 0
+  end
+
   test "create with validation errors re-renders form" do
     assert_no_difference -> { CustomNavigationItem.count } do
       post app_settings_navigation_items_path, params: {

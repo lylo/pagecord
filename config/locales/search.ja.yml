@@ -1,0 +1,8 @@
+ja:
+  search:
+    placeholder: "このサイト内を検索"
+    submit: "検索"
+    no_results: "投稿が見つかりませんでした ✨"
+    results_count_html:
+      one: "<strong>%{query}</strong> に一致する投稿 %{count} 件"
+      other: "<strong>%{query}</strong> に一致する投稿 %{count} 件"

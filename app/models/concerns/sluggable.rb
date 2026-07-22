@@ -2,7 +2,7 @@ module Sluggable
   extend ActiveSupport::Concern
 
   MAX_SLUG_LENGTH = 100
-  RESERVED_SLUGS = %w[posts feed guestbook].freeze
+  RESERVED_SLUGS = %w[posts feed guestbook search].freeze
 
   included do
     before_validation :set_slug

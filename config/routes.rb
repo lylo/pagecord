@@ -279,6 +279,7 @@ Rails.application.routes.draw do
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
     get "/", to: "blogs/posts#index", as: :blog_posts
     get "/posts", to: "blogs/posts#posts_list", as: :blog_posts_list
+    get "/search", to: "blogs/searches#show", as: :blog_search
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")
