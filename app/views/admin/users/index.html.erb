@@ -15,6 +15,10 @@
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Subscription.active_paid.count) %></span>
         <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Paid</span>
       <% end %>
+      <%= link_to admin_users_path(status: "supporter"), class: "group" do %>
+        <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Subscription.active_paid.where(plan: :supporter).count) %></span>
+        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Supporter</span>
+      <% end %>
       <%= link_to admin_users_path(status: "comped"), class: "group" do %>
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Subscription.comped.count) %></span>
         <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Comped</span>
@@ -46,9 +50,8 @@
       <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @pagy.count %></span>
       <span class="text-sm text-slate-500 dark:text-slate-400"><%= "result".pluralize(@pagy.count) %> for</span>
       <% if params[:status].present? %>
-        <% status_label = case params[:status] when "paid" then "Paid" when "comped" then "Comped" when "churning" then "Churning" end %>
         <%= link_to admin_users_path, class: "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 transition-colors" do %>
-          <%= status_label %>
+          <%= params[:status].capitalize %>
           <%= inline_svg_tag "icons/close.svg", class: "w-3.5 h-3.5 text-slate-400" %>
         <% end %>
       <% end %>
@@ -69,7 +72,7 @@
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Verified</th>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Status</th>
           <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Marketing</th>
-          <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400"><%= params[:status] == "paid" ? "Subscribed" : "Created" %></th>
+          <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400"><%= %w[paid supporter].include?(params[:status]) ? "Subscribed" : "Created" %></th>
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
@@ -118,7 +121,7 @@
           <td class="whitespace-nowrap py-4 px-6 text-sm text-slate-500 dark:text-slate-400 text-center align-top">
             <%= user.marketing_consent? ? "Yes" : "" %>
           </td>
-          <td class="whitespace-nowrap py-4 px-6 text-sm text-slate-500 dark:text-slate-400 text-end align-top"><%= (params[:status] == "paid" ? user.subscription.created_at : user.created_at).to_formatted_s :long %></td>
+          <td class="whitespace-nowrap py-4 px-6 text-sm text-slate-500 dark:text-slate-400 text-end align-top"><%= (%w[paid supporter].include?(params[:status]) ? user.subscription.created_at : user.created_at).to_formatted_s :long %></td>
         </tr>
       <% end %>
       </tbody>

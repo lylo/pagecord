@@ -23,6 +23,9 @@ class Admin::UsersController < AdminController
       when "paid"
         users = users.merge(Subscription.active_paid)
                      .reorder(Subscription.arel_table[:created_at].desc)
+      when "supporter"
+        users = users.merge(Subscription.active_paid.where(plan: :supporter))
+                     .reorder(Subscription.arel_table[:created_at].desc)
       when "comped"
         users = users.where("subscriptions.plan = ?", "complimentary")
       when "churning"
