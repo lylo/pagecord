@@ -160,6 +160,22 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
     assert @user.subscription.reload.annual?
   end
 
+  test "should route a too-small proration charge to a renewal-timing message" do
+    mock_response = mock
+    mock_response.stubs(:success?).returns(false)
+    mock_response.stubs(:code).returns(400)
+    mock_response.stubs(:body).returns('{"error":{"code":"subscription_update_transaction_balance_less_than_charge_limit","detail":"too small"}}')
+    mock_api = mock
+    mock_api.expects(:update_subscription_items).returns(mock_response)
+    PaddleApi.stubs(:new).returns(mock_api)
+
+    post change_plan_app_settings_subscriptions_path(plan: "supporter")
+
+    assert_redirected_to app_settings_subscriptions_path
+    assert_equal "Your subscription is too close to its renewal date to switch plans right now. Please try again after it renews.", flash[:alert]
+    assert @user.subscription.reload.annual?
+  end
+
   test "should resume cancelled subscription" do
     @user.subscription.update!(cancelled_at: Time.current)
     mock_response = mock

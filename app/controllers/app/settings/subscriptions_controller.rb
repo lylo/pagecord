@@ -51,6 +51,8 @@ class App::Settings::SubscriptionsController < AppController
       Rails.logger.error "change_plan failed for user #{Current.user.id} (#{@subscription.paddle_subscription_id} -> #{new_plan}): HTTP #{response.code} #{response.body}"
       alert = if response.body.to_s.include?("subscription_payment_declined")
         "Your payment was declined. Please update your card details below, then try again."
+      elsif response.body.to_s.include?("subscription_update_transaction_balance_less_than_charge_limit")
+        "Your subscription is too close to its renewal date to switch plans right now. Please try again after it renews."
       else
         "Unable to change plan. Please try again."
       end
