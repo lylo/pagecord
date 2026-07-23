@@ -13,12 +13,12 @@ class Subscription::SupporterWelcomeMailerTest < ActionMailer::TestCase
     assert_equal "Thank you for becoming a Pagecord Supporter 💛", email.subject
   end
 
-  test "welcome email renders both parts with the blog name" do
+  test "welcome email renders both html and text parts" do
     subscription = subscriptions(:one)
     email = Subscription::SupporterWelcomeMailer.welcome(subscription)
 
-    assert_match subscription.user.blog.display_name, email.html_part.body.to_s
-    assert_match subscription.user.blog.display_name, email.text_part.body.to_s
-    assert_match(/extra features/, email.html_part.body.to_s)
+    assert_match(/Pagecord Supporter/, email.html_part.body.to_s)
+    assert_match(/Pagecord Supporter/, email.text_part.body.to_s)
+    assert_match(/supporters page/, email.text_part.body.to_s)
   end
 end
