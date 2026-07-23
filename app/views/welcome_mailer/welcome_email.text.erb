@@ -1,19 +1,28 @@
 Hi there 👋
 
-Thanks for signing up to Pagecord. Your blog is live at <%= blog_home_url(@blog) %>.
+Welcome to Pagecord! Your blog is live at <%= blog_home_url(@blog) %>. To help you get started, here are a few things you can try to personalise your site.
 
-To get started, try customising your site to make it your own. You can:
+🎨 Pick a theme
+Browse the Theme Garden for a ready-made design, then fine-tune it using Custom CSS until it's just right: <%= app_settings_theme_garden_index_url %>
 
-- Browse the Theme Garden for ready-made designs: <%= app_settings_theme_garden_index_url %>
-- Pick your colour scheme and typeface
-- Create a Home page, an About page, or any page you like
-- Take full control of the design with custom CSS
+✏️ Make it yours
+Add a Home page, an About page, or anything other page you like. You can even embed posts and tags in pages using dynamic variables: https://help.pagecord.com/dynamic-variables-for-pages
+
+📮 Post from where you already write
+You can compose posts in the editor, or email a post to <%= @blog.delivery_email %> from <%= @user.email %>. You can even publish from Obsidian! https://help.pagecord.com/obsidian.
 
 Log in to get started: <%= app_onboarding_url %>
 
-You can start writing posts directly in the editor, or you can publish posts by emailing <%= @blog.delivery_email %> directly from <%= @user.email %>. No login needed!
+🌱 Room to grow
+You can use Pagecord Classic for free, forever. You have a 14-day free trial of the premium features. If you like what you see, subscribe to Pagecord Premium to connect your own domain name, and send email newsletters to your readers: <%= app_settings_subscriptions_url %>
 
-If you get stuck or have any questions, check out the Help Guide at https://help.pagecord.com — or just reply to this email. I read every one.
+<% if @user.marketing_consent -%>
+By the way, the Pagecord blog is itself a Pagecord blog! You're on the mailing list, so look out for regular updates: https://blog.pagecord.com
+<% else -%>
+By the way, the Pagecord blog is itself a Pagecord blog! Subscribe to get regular updates in your inbox or RSS reader: https://blog.pagecord.com
+<% end -%>
+
+Stuck, or just want to learn more? Check out the Help Guide at https://help.pagecord.com, or just reply to this email. I read every one.
 
 Olly
 

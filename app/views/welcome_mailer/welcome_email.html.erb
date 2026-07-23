@@ -1,17 +1,18 @@
 <p>Hi there 👋</p>
 
-<p>Thanks for signing up to Pagecord. Your blog is live at <a href="<%= blog_home_url(@blog) %>"><%= blog_home_url(@blog) %></a>.</p>
+<p>Welcome to Pagecord!</p>
+<p>Your blog is live at <a href="<%= blog_home_url(@blog) %>"><%= blog_home_url(@blog) %></a>. To help you get started, here are a few things you can try to personalise your site.</p>
 
-<p>To get started, try customising your site to make it your own. You can:</p>
+<h3 style="font-size: 18px; font-weight: 700; color: #000000; margin: 28px 0 8px;">🎨 Pick a theme</h3>
+<p>Browse the <a href="<%= app_settings_theme_garden_index_url %>">Theme Garden</a> for a ready-made design, then fine-tune it using <a href="https://help.pagecord.com/custom-css">Custom CSS</a> until it's just right.</p>
 
-<ul>
-  <li>Browse the <a href="<%= app_settings_theme_garden_index_url %>">Theme Garden</a> for ready-made designs</li>
-  <li>Pick your colour scheme and typeface</li>
-  <li>Create a Home page, an About page, or any page you like</li>
-  <li>Take full control of the design with custom CSS</li>
-</ul>
+<h3 style="font-size: 18px; font-weight: 700; color: #000000; margin: 28px 0 8px;">✏️ Make it yours</h3>
+<p>Add a Home page, an About page, or anything other page you like. You can even embed posts and tags in pages using <a href="https://help.pagecord.com/dynamic-variables-for-pages">dynamic variables</a>.</p>
 
-<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="padding-top:5px; padding-bottom:5px;">
+<h3 style="font-size: 18px; font-weight: 700; color: #000000; margin: 28px 0 8px;">📮 Post from where you already write</h3>
+<p>You can compose posts in the editor, or email a post to <strong><%= @blog.delivery_email %></strong> from <strong><%= @user.email %></strong>. You can even publish from <a href="https://help.pagecord.com/obsidian">Obsidian</a>.</p>
+
+<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="padding-top:12px; padding-bottom:12px;">
   <tbody>
     <tr>
       <td align="center">
@@ -29,9 +30,16 @@
   </tbody>
 </table>
 
-<p>You can start writing posts directly in the editor, or you can publish posts by emailing <strong><%= @blog.delivery_email %></strong> directly from <strong><%= @user.email %></strong>. No login needed!</p>
+<h3 style="font-size: 18px; font-weight: 700; color: #000000; margin: 28px 0 8px;">🌱 Room to grow</h3>
+<p>You can use Pagecord Classic for free, forever. You have a 14-day free trial of the premium features. If you like what you see, subscribe to <a href="<%= app_settings_subscriptions_url %>">Pagecord Premium</a> to connect your own domain name, and send email newsletters to your readers.</p>
 
-<p>If you get stuck or have any questions, check out <a href="https://help.pagecord.com">the Help Guide</a> — or just reply to this email. I read every one.</p>
+<% if @user.marketing_consent %>
+  <p>By the way, the <a href="https://blog.pagecord.com">Pagecord blog</a> is itself a Pagecord blog! You're on the mailing list, so look out for regular updates.</p>
+<% else %>
+  <p>By the way, the <a href="https://blog.pagecord.com">Pagecord blog</a> is itself a Pagecord blog! Subscribe to get regular updates in your inbox or RSS reader.</p>
+<% end %>
+
+<p>Stuck, or just want to learn more? Check out <a href="https://help.pagecord.com">the Help Guide</a>, or just reply to this email. I read every one.</p>
 
 <%= image_tag "signature.jpg", style: "margin-top: 8px; text-align: left; width:120px;" %>
 
