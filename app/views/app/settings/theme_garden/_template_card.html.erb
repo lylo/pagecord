@@ -1,0 +1,42 @@
+<div class="rounded-lg overflow-hidden bg-slate-50 dark:bg-slate-800 hover:shadow-md transition-shadow">
+  <% if template.screenshot? %>
+    <%= image_tag template.screenshot_asset, class: "w-full h-48 object-cover object-top", alt: template.name %>
+  <% else %>
+    <div class="w-full h-48 bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+      <span class="text-slate-400 dark:text-slate-500 text-sm">No preview</span>
+    </div>
+  <% end %>
+
+  <div class="p-4">
+    <h4 class="font-bold text-lg mb-1"><%= template.name %></h4>
+    <% if template.author_name.present? %>
+      <p class="text-xs text-slate-400 dark:text-slate-500 mb-3">
+        By
+        <% if template.author_url.present? %>
+          <%= link_to template.author_name, template.author_url, class: "underline", target: "_blank" %>
+        <% else %>
+          <%= template.author_name %>
+        <% end %>
+      </p>
+    <% end %>
+
+    <div class="flex gap-2">
+      <% if local_assigns[:preview_path].present? %>
+        <%= link_to "Preview", preview_path, class: "btn-secondary text-sm", target: "_blank" %>
+      <% end %>
+      <% if local_assigns[:save_message].present? %>
+        <%= form_with url: apply_path, method: :post,
+              data: { controller: "save-button", action: "turbo:submit-end->save-button#showMessage" } do |form| %>
+          <% local_assigns.fetch(:apply_params, {}).each do |name, value| %>
+            <%= form.hidden_field name, value: value %>
+          <% end %>
+          <%= form.submit "Apply",
+                data: { save_button_target: "button", save_button_message_value: save_message },
+                class: "btn-primary text-sm" %>
+        <% end %>
+      <% else %>
+        <%= button_to "Apply", apply_path, params: local_assigns.fetch(:apply_params, {}), class: "btn-primary text-sm", form: { data: { turbo_confirm: local_assigns[:confirm] } } %>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -120,6 +120,7 @@ Rails.application.routes.draw do
       resource :onboarding, only: [ :show, :update ], path: "onboarding" do
         member do
           post :complete
+          post :apply_theme
         end
       end
 

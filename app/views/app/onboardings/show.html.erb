@@ -78,52 +78,68 @@
   </div>
 
   <h2 class="text-xl sm:text-2xl">
-    Select a ready-made design 🖼️
+    Choose a design ✨
   </h2>
   <p>
-    The quickest way to pimp your site is to <%= link_to "browse the Theme Garden", app_settings_theme_garden_index_path, class: "font-semibold underline" %>. This lets you get started with a ready-made design. Alternatively, just select your favourite colour scheme, font and layout below. You can always revisit the Theme Garden later in Appearance Settings!
+    Start from a ready-made design, or set the basics yourself. You can always change any of this later in Appearance settings.
   </p>
 
-  <h2 class="text-xl sm:text-2xl">
-    Pick a colour scheme 🎨
-  </h2>
-  <p>
-    The default is the classic Pagecord minimal monochrome.
-  </p>
+  <div data-controller="tabs" class="not-prose my-6">
+    <div class="flex gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-800">
+      <button type="button"
+        data-tabs-target="tab"
+        data-action="tabs#select"
+        data-tabs-index-param="0"
+        class="flex-1 px-4 py-3 rounded-lg text-sm sm:text-base font-bold cursor-pointer transition bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm">
+        🖼️ Ready-made design
+      </button>
+      <button type="button"
+        data-tabs-target="tab"
+        data-action="tabs#select"
+        data-tabs-index-param="1"
+        class="flex-1 px-4 py-3 rounded-lg text-sm sm:text-base font-bold cursor-pointer transition text-slate-500 dark:text-slate-400">
+        🎛️ Start with the basics
+      </button>
+    </div>
 
-  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
-    <%= render "/app/settings/appearance/theme_colour", form: form %>
-  <% end %>
+    <div data-tabs-target="panel" class="pt-6">
+      <%= render "ready_made", templates: @featured_templates %>
+    </div>
 
-  <h2 class="text-xl sm:text-2xl">
-    Choose a typeface
-  </h2>
-  <p>
-    Choose whether you'd like a sans-serif font, or serif for that elegant look.
-  </p>
-  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
-    <%= render "/app/settings/appearance/theme_font", form: form %>
-  <% end %>
+    <div data-tabs-target="panel" class="hidden pt-6 space-y-8">
+      <div>
+        <h3 class="text-lg font-semibold">Pick a colour scheme 🎨</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">The default is the classic Pagecord minimal monochrome.</p>
+        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+          <%= render "/app/settings/appearance/theme_colour", form: form %>
+        <% end %>
+      </div>
 
-  <h2 class="text-xl sm:text-2xl mt-8">
-    Choose your blog layout
-  </h2>
-  <p>
-    The default layout for a Pagecord blog is a stream of all your posts on the home page. You can also choose a list of post titles and dates, or cards with excerpts.
-  </p>
-  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
-    <%= render "/app/settings/appearance/layout_options", form: form %>
-  <% end %>
+      <div>
+        <h3 class="text-lg font-semibold">Choose a typeface</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Choose whether you'd like a sans-serif font, or serif for that elegant look.</p>
+        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+          <%= render "/app/settings/appearance/theme_font", form: form %>
+        <% end %>
+      </div>
 
-  <h2 class="text-xl sm:text-2xl mt-8">
-    Choose a page width
-  </h2>  <p class="mb-4">
-    Choose whether you'd like the standard layout, or one that's wider or narrow.
-  </p>
+      <div>
+        <h3 class="text-lg font-semibold">Choose your blog layout</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">The default is a stream of all your posts on the home page. You can also choose a list of post titles and dates, or cards with excerpts.</p>
+        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+          <%= render "/app/settings/appearance/layout_options", form: form %>
+        <% end %>
+      </div>
 
-  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
-    <%= render "/app/settings/appearance/layout_width", form: form %>
-  <% end %>
+      <div>
+        <h3 class="text-lg font-semibold">Choose a page width</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Choose whether you'd like the standard layout, or one that's wider or narrower.</p>
+        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+          <%= render "/app/settings/appearance/layout_width", form: form %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 
   <h2 class="text-xl sm:text-2xl">
     Choose your language
@@ -137,38 +153,16 @@
   <% end %>
 
   <h2 class="text-xl sm:text-2xl">
-    Create your first post
+    Ready to write ✍️
   </h2>
 
   <p>
-    You can create a blog post in two ways:
-  </p>
-
-  <ol>
-    <li>
-      Send an email from <%= @blog.user.email %> to <%= mail_to @blog.delivery_email, class: "underline font-semibold" %>. Add this email address to your contacts to make it easier to find!
-    </li>
-    <li>Click on the <span class="no-underline btn-primary px-2 py-1">✏️ New Post</span> button in the <strong>Posts</strong> section.</li>
-  </ol>
-
-  <h2 class="text-xl sm:text-2xl">
-    Create a custom home page
-  </h2>
-
-  <p>
-  By default your blog is your home page, but if you'd prefer a separate home page, you can create one by clicking
-  the <span class="no-underline btn-primary px-2 py-1">🏠 Create Home Page</span> button in the <strong>Pages</strong> section.
-  You can also add dynamic content to your custom home page – find
-  out more on <a href="https://blog.pagecord.com/create-a-custom-home-page-for-your-pagecord-blog">this blog post</a>.
-  </p>
-
-  <p>
-    Ok, time to go and explore the app and get writing!
+    That's the setup done. Next you'll land on your Posts page, where you can publish your first post &ndash; write it in the editor, from Obsidian, or straight from your inbox.
   </p>
 
   <div class="flex justify-center">
     <%= button_to complete_app_onboarding_path, class: "text-lg btn-primary my-8" do %>
-      Go to your Pagecord admin area →
+      Go to your blog and start writing →
     <% end %>
   </div>
 </div>

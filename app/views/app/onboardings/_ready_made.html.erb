@@ -1,0 +1,13 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+  <% templates.each do |template| %>
+    <%= render "app/settings/theme_garden/template_card",
+          template: template,
+          apply_path: apply_theme_app_onboarding_path,
+          apply_params: { template_id: template.id },
+          save_message: "✅ Applied!" %>
+  <% end %>
+</div>
+
+<p class="mt-6 text-sm">
+  <%= link_to "Browse all designs in the Theme Garden", app_settings_theme_garden_index_path, class: "font-semibold underline" %>
+</p>

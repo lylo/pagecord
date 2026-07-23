@@ -2,6 +2,7 @@ class App::OnboardingsController < AppController
   skip_before_action :onboarding_check
 
   def show
+    @featured_templates = ThemeTemplate.active.ordered.limit(6)
   end
 
   def update
@@ -22,6 +23,13 @@ class App::OnboardingsController < AppController
     Current.user.onboarding_complete!
 
     redirect_to app_root_path, notice: "Welcome to Pagecord!"
+  end
+
+  def apply_theme
+    template = ThemeTemplate.active.find(params[:template_id])
+    @blog.update(template.appearance_attributes)
+
+    head :no_content
   end
 
   private
