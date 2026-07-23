@@ -1,7 +1,7 @@
 module PricingHelper
   # India, Brazil, China, Indonesia, Mexico, Philippines, Vietnam
   DISCOUNTED_COUNTRIES = %w[IN BR CN ID MX PH VN].freeze
-  DISCOUNTED_PRICES = { monthly: "2.50", annual: "25" }.freeze
+  DISCOUNTED_PRICES = { monthly: "2.50", annual: "25", supporter: "50" }.freeze
 
   def localised_price(plan = :annual)
     if DISCOUNTED_COUNTRIES.include?(request.headers["CF-IPCountry"])

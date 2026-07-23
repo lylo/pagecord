@@ -112,10 +112,10 @@
       <div class="mt-6 rounded-lg p-4 bg-[#4fbd9c]/5 border border-[#4fbd9c]/40">
         <h3 class="font-semibold text-lg">Become a Supporter</h3>
         <p class="text-sm text-slate-500 mt-1">
-          Love Pagecord? Back its independent development for <strong>$<%= Subscription.price(:supporter) %>/year</strong>. No extra features, just buckets of thanks and a spot for your blog on the upcoming supporters page 🙏💖
+          Love Pagecord? Back its independent development for <strong>$<%= localised_price(:supporter) %>/year</strong>. No extra features, just buckets of thanks and a spot for your blog on the upcoming supporters page 🙏💖
         </p>
         <div class="mt-4">
-          <%= button_to "Support Pagecord", change_plan_app_settings_subscriptions_path(plan: "supporter"), class: "btn-primary", data: { turbo_confirm: "Become a Pagecord Supporter for $#{Subscription.price(:supporter)}/year? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
+          <%= button_to "Support Pagecord", change_plan_app_settings_subscriptions_path(plan: "supporter"), class: "btn-primary", data: { turbo_confirm: "Become a Pagecord Supporter for $#{localised_price(:supporter)}/year? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
         </div>
       </div>
     <% end %>
