@@ -48,6 +48,7 @@ class App::Settings::SubscriptionsController < AppController
       @subscription.update!(plan: new_plan, paddle_price_id: SubscriptionsHelper.price_id(new_plan))
       redirect_to app_settings_path, notice: "Your plan has been updated to #{new_plan}!"
     else
+      Rails.logger.error "change_plan failed for user #{Current.user.id} (#{@subscription.paddle_subscription_id} -> #{new_plan}): HTTP #{response.code} #{response.body}"
       redirect_to app_settings_subscriptions_path, alert: "Unable to change plan. Please try again."
     end
   end
