@@ -17,20 +17,30 @@
   <% if @subscription.complimentary? %>
     <p>You have a free Pagecord Premium subscription! 🎉</p>
 
-    <div class="mt-4">
-      <%= link_to "← Back", app_settings_path, class: "btn-primary" %>
+    <div class="mt-6">
+      <%= link_to "Back", app_settings_path, class: "btn-secondary" %>
     </div>
   <% elsif @subscription.cancelled? %>
     <p>
       Your Pagecord Premium subscription has been scheduled for cancellation on
       <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
-      <% if @subscription.paddle_customer_id.present? %>
-        <%= link_to "View past invoices", app_settings_paddle_invoices_path, target: "_blank", rel: "noopener", class: "underline font-medium" %>.
-      <% end %>
     </p>
     <p class="mt-2">Changed your mind?</p>
     <div class="mt-4">
       <%= button_to "Resume Subscription", resume_app_settings_subscriptions_path, class: "btn-primary" %>
+    </div>
+
+    <% if @subscription.paddle_customer_id.present? %>
+      <div class="mt-6 pt-2 border-t border-slate-200 dark:border-slate-700">
+        <%= link_to app_settings_paddle_invoices_path, target: "_blank", rel: "noopener", class: "flex items-center justify-between py-3 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white" do %>
+          <span>View past invoices</span>
+          <span aria-hidden="true" class="text-slate-400">&rsaquo;</span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="mt-6">
+      <%= link_to "Back", app_settings_path, class: "btn-secondary" %>
     </div>
   <% elsif @subscription.lapsed? %>
     <p>
@@ -43,47 +53,91 @@
 
     <%= render "plan_cards", monthly_label: "Restart Monthly", annual_label: "Restart Annually" %>
   <% else %>
-    <p>
-      💳 You are currently subscribed to Pagecord Premium. Thank you! 💖
-    </p>
+    <% if @subscription.supporter? %>
+      <p>You're a <strong>Pagecord Supporter</strong> 💛 Thank you for helping keep Pagecord independent and affordable for everyone.</p>
+    <% else %>
+      <p>💳 You're subscribed to <strong>Pagecord Premium</strong>. Thank you! 💖</p>
+    <% end %>
 
-    <% if @subscription.monthly? %>
+    <% unless @subscription.monthly? %>
+      <dl class="mt-3 sm:max-w-sm overflow-hidden rounded-lg text-sm">
+        <div class="grid grid-cols-[6rem_1fr] gap-x-4 px-4 py-2 bg-slate-50 dark:bg-slate-800/60">
+          <dt class="text-slate-500 dark:text-slate-400">Plan</dt>
+          <dd class="font-medium text-slate-900 dark:text-slate-100"><%= @subscription.plan.titleize %></dd>
+        </div>
+        <div class="grid grid-cols-[6rem_1fr] gap-x-4 px-4 py-2">
+          <dt class="text-slate-500 dark:text-slate-400">Price</dt>
+          <dd class="font-medium text-slate-900 dark:text-slate-100">$<%= @subscription.unit_price / 100 %>/year</dd>
+        </div>
+        <div class="grid grid-cols-[6rem_1fr] gap-x-4 px-4 py-2 bg-slate-50 dark:bg-slate-800/60">
+          <dt class="text-slate-500 dark:text-slate-400">Renews</dt>
+          <dd class="font-medium text-slate-900 dark:text-slate-100"><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></dd>
+        </div>
+      </dl>
+    <% end %>
+
+    <% if @subscription.supporter? %>
+      <h3 class="font-semibold text-lg mt-6">Change your plan</h3>
+      <p class="mt-2">
+        Switching takes effect at your next renewal, with no charge or refund now.
+      </p>
+      <div class="mt-4 border border-slate-200 dark:border-slate-600 rounded-lg p-4 sm:max-w-xs">
+        <h3 class="font-semibold text-lg">Annual</h3>
+        <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500">/year</span></p>
+        <div class="mt-4">
+          <%= button_to "Switch to Annual", change_plan_app_settings_subscriptions_path(plan: "annual"), class: "btn-optional w-full justify-center", data: { turbo_confirm: "Switch to the standard annual plan? You won't be charged or refunded now: it takes effect at your next renewal." } %>
+        </div>
+      </div>
+    <% elsif @subscription.monthly? %>
+      <h3 class="font-semibold text-lg mt-6">Change your plan</h3>
       <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="border-2 border-[#4fbd9c] rounded-lg p-4 relative">
           <span class="absolute -top-3 left-4 bg-[#4fbd9c] text-white text-xs font-semibold px-2 py-1 rounded">Current Plan</span>
           <h3 class="font-semibold text-lg">Monthly</h3>
           <p class="text-2xl font-bold mt-2">$<%= @subscription.unit_price / 100 %><span class="text-sm font-normal text-slate-500">/month</span></p>
-          <p class="text-sm text-slate-500 mt-1">Next payment <%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></p>
+          <p class="text-sm text-slate-500 mt-1">Renews <%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></p>
         </div>
         <div class="border border-slate-200 dark:border-slate-600 rounded-lg p-4">
           <h3 class="font-semibold text-lg">Annual</h3>
           <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500">/year</span></p>
           <p class="text-sm text-slate-500 mt-1">Save vs monthly</p>
           <div class="mt-4">
-            <%= button_to "Switch to Annual", change_plan_app_settings_subscriptions_path(plan: "annual"), class: "btn-primary w-full text-center", data: { turbo_confirm: "Switch to annual billing? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
+            <%= button_to "Switch to Annual", change_plan_app_settings_subscriptions_path(plan: "annual"), class: "btn-primary w-full justify-center", data: { turbo_confirm: "Switch to annual billing? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
           </div>
         </div>
       </div>
-    <% else %>
-      <p class="mt-2">
-        Your next payment of
-        <strong>$<%= @subscription.unit_price / 100 %></strong> will be taken on
-        <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>.
-      </p>
     <% end %>
 
-    <% if @subscription.paddle_customer_id.present? %>
-      <p class="mt-2">
-        <%= link_to "View past invoices", app_settings_paddle_invoices_path, target: "_blank", rel: "noopener", class: "underline font-medium" %>
-      </p>
+    <% unless @subscription.supporter? %>
+      <div class="mt-6 rounded-lg p-4 bg-[#4fbd9c]/5 border border-[#4fbd9c]/40">
+        <h3 class="font-semibold text-lg">Become a Supporter</h3>
+        <p class="text-sm text-slate-500 mt-1">
+          Love Pagecord? Back its independent development for <strong>$<%= Subscription.price(:supporter) %>/year</strong>. No extra features, just buckets of thanks and a spot for your blog on the upcoming supporters page 🙏💖
+        </p>
+        <div class="mt-4">
+          <%= button_to "Support Pagecord", change_plan_app_settings_subscriptions_path(plan: "supporter"), class: "btn-primary", data: { turbo_confirm: "Become a Pagecord Supporter for $#{Subscription.price(:supporter)}/year? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
+        </div>
+      </div>
     <% end %>
 
-    <div class="mt-6 flex justify-between" data-controller="paddle">
-      <%= link_to "Update Card Details", "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "btn-primary" %>
-      <%= link_to "Cancel Subscription", cancel_confirm_app_settings_subscriptions_path, class: "btn-danger" %>
+    <div class="mt-6 pt-2 border-t border-slate-200 dark:border-slate-700" data-controller="paddle">
+      <%= link_to "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "flex items-center justify-between py-3 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white" do %>
+        <span>Update card details</span>
+        <span aria-hidden="true" class="text-slate-400">&rsaquo;</span>
+      <% end %>
+      <% if @subscription.paddle_customer_id.present? %>
+        <%= link_to app_settings_paddle_invoices_path, target: "_blank", rel: "noopener", class: "flex items-center justify-between py-3 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white" do %>
+          <span>View past invoices</span>
+          <span aria-hidden="true" class="text-slate-400">&rsaquo;</span>
+        <% end %>
+      <% end %>
+      <%= link_to cancel_confirm_app_settings_subscriptions_path, class: "flex items-center justify-between py-3 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white" do %>
+        <span>Cancel subscription</span>
+        <span aria-hidden="true" class="text-slate-400">&rsaquo;</span>
+      <% end %>
     </div>
 
-    <div class="flex items-center gap-x-2 pt-4 border-t border-t-slate-200 dark:border-slate-600">
+    <div class="mt-6">
       <%= link_to "Back", app_settings_path, class: "btn-secondary" %>
     </div>
   <% end %>

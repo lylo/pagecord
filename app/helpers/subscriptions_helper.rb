@@ -9,6 +9,11 @@ module SubscriptionsHelper
       production: "pri_01kj7dvn8xc1yee6ppwzda5ykk",
       development: "pri_01jxfe5399nzanxj57bbqk28t4",
       test: "pri_01jxfe5399nzanxj57bbqk28t4"
+    },
+    supporter: {
+      production: "pri_01ky75g6xy1tyddwrax0r3wge4",
+      development: "pri_01ky7775szgjfcrvsaf4pxtnyf",
+      test: "pri_01ky7775szgjfcrvsaf4pxtnyf"
     }
   }.freeze
 
@@ -34,6 +39,10 @@ module SubscriptionsHelper
     paddle_checkout_data(:monthly)
   end
 
+  def paddle_supporter_data
+    paddle_checkout_data(:supporter)
+  end
+
   def paddle_data
     paddle_annual_data
   end
@@ -48,7 +57,7 @@ module SubscriptionsHelper
       {
         items: [ { priceId: price_id(plan), quantity: 1 } ].to_json,
         allow_logout: false,
-        success_url: thanks_app_settings_subscriptions_url,
+        success_url: thanks_app_settings_subscriptions_url(plan: plan),
         custom_data: { user_id: Current.user.id, blog_subdomain: Current.blog.subdomain, plan: plan }.to_json
       }
     end

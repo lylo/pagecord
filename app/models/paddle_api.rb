@@ -9,10 +9,10 @@ class PaddleApi
     post "subscriptions/#{id}/cancel", { effective_from: "next_billing_period" }.to_json
   end
 
-  def update_subscription_items(subscription_id, price_id)
+  def update_subscription_items(subscription_id, price_id, proration_billing_mode: "prorated_immediately")
     patch "subscriptions/#{subscription_id}", {
       items: [ { price_id: price_id, quantity: 1 } ],
-      proration_billing_mode: "prorated_immediately"
+      proration_billing_mode: proration_billing_mode
     }.to_json
   end
 

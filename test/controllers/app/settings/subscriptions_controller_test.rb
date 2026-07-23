@@ -30,6 +30,7 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
     end
 
     assert_redirected_to app_settings_path
+    assert_equal "Your subscription has been cancelled. You'll keep access until the end of your current billing period.", flash[:notice]
     assert @user.subscription.reload.cancelled?
   end
 
@@ -44,28 +45,24 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
     assert_select "body", text: /\$20/
   end
 
-  test "should change plan from annual to monthly" do
-    mock_response = mock
-    mock_response.stubs(:success?).returns(true)
-    mock_api = mock
-    mock_api.expects(:update_subscription_items)
-      .with(@user.subscription.paddle_subscription_id, SubscriptionsHelper.price_id(:monthly))
-      .returns(mock_response)
-    PaddleApi.stubs(:new).returns(mock_api)
+  test "should not allow switching from a yearly plan to monthly" do
+    # @user.subscription is annual; monthly is a different billing interval Paddle can't defer.
+    PaddleApi.expects(:new).never
 
     post change_plan_app_settings_subscriptions_path(plan: "monthly")
 
-    assert_redirected_to app_settings_path
-    assert_equal "Your plan has been updated to monthly!", flash[:notice]
+    assert_redirected_to app_settings_subscriptions_path
+    assert_equal "Switching to monthly billing isn't available from a yearly plan.", flash[:alert]
+    assert @user.subscription.reload.annual?
   end
 
-  test "should change plan from monthly to annual" do
+  test "should change plan from monthly to annual with immediate proration" do
     @user.subscription.update!(plan: :monthly)
     mock_response = mock
     mock_response.stubs(:success?).returns(true)
     mock_api = mock
     mock_api.expects(:update_subscription_items)
-      .with(@user.subscription.paddle_subscription_id, SubscriptionsHelper.price_id(:annual))
+      .with(@user.subscription.paddle_subscription_id, SubscriptionsHelper.price_id(:annual), proration_billing_mode: "prorated_immediately")
       .returns(mock_response)
     PaddleApi.stubs(:new).returns(mock_api)
 
@@ -73,6 +70,55 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
 
     assert_redirected_to app_settings_path
     assert_equal "Your plan has been updated to annual!", flash[:notice]
+  end
+
+  test "should upgrade from annual to supporter with immediate proration" do
+    mock_response = mock
+    mock_response.stubs(:success?).returns(true)
+    mock_api = mock
+    mock_api.expects(:update_subscription_items)
+      .with(@user.subscription.paddle_subscription_id, SubscriptionsHelper.price_id(:supporter), proration_billing_mode: "prorated_immediately")
+      .returns(mock_response)
+    PaddleApi.stubs(:new).returns(mock_api)
+
+    post change_plan_app_settings_subscriptions_path(plan: "supporter")
+
+    assert_redirected_to app_settings_path
+    assert_equal "Your plan has been updated to supporter!", flash[:notice]
+  end
+
+  test "should upgrade from monthly to supporter with immediate proration" do
+    @user.subscription.update!(plan: :monthly)
+    mock_response = mock
+    mock_response.stubs(:success?).returns(true)
+    mock_api = mock
+    mock_api.expects(:update_subscription_items)
+      .with(@user.subscription.paddle_subscription_id, SubscriptionsHelper.price_id(:supporter), proration_billing_mode: "prorated_immediately")
+      .returns(mock_response)
+    PaddleApi.stubs(:new).returns(mock_api)
+
+    post change_plan_app_settings_subscriptions_path(plan: "supporter")
+
+    assert_redirected_to app_settings_path
+    assert_equal "Your plan has been updated to supporter!", flash[:notice]
+  end
+
+  test "should downgrade from supporter to standard at next cycle without refund" do
+    @user.subscription.update!(plan: :supporter)
+    mock_response = mock
+    mock_response.stubs(:success?).returns(true)
+    mock_api = mock
+    mock_api.expects(:update_subscription_items)
+      .with(@user.subscription.paddle_subscription_id, SubscriptionsHelper.price_id(:annual), proration_billing_mode: "do_not_bill")
+      .returns(mock_response)
+    PaddleApi.stubs(:new).returns(mock_api)
+
+    post change_plan_app_settings_subscriptions_path(plan: "annual")
+
+    assert_redirected_to app_settings_path
+    assert_equal "Your plan has been updated to annual!", flash[:notice]
+    assert @user.subscription.reload.annual?, "expected plan to be optimistically updated to annual"
+    assert_equal SubscriptionsHelper.price_id(:annual), @user.subscription.paddle_price_id
   end
 
   test "should reject invalid plan" do
@@ -89,10 +135,11 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
     mock_api.expects(:update_subscription_items).returns(mock_response)
     PaddleApi.stubs(:new).returns(mock_api)
 
-    post change_plan_app_settings_subscriptions_path(plan: "monthly")
+    post change_plan_app_settings_subscriptions_path(plan: "supporter")
 
     assert_redirected_to app_settings_subscriptions_path
     assert_equal "Unable to change plan. Please try again.", flash[:alert]
+    assert @user.subscription.reload.annual?, "plan should be unchanged when Paddle rejects the change"
   end
 
   test "should resume cancelled subscription" do

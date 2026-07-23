@@ -1,11 +1,19 @@
 <div class="space-y-8">
   <%= settings_section "Billing" do %>
     <div class="px-6 py-5 space-y-4">
-      <p class="text-lg font-bold">Thank you for subscribing! ✨</p>
+      <% if params[:plan] == "supporter" %>
+        <p class="text-lg font-bold">Thank you for becoming a Supporter! 💛</p>
 
-      <p>
-        Your Pagecord Premium subscription is now active 🎉
-      </p>
+        <p>
+          You're now a <strong>Pagecord Supporter</strong>. Thank you for backing Pagecord's independent development 🙏
+        </p>
+      <% else %>
+        <p class="text-lg font-bold">Thank you for subscribing! ✨</p>
+
+        <p>
+          Your Pagecord Premium subscription is now active 🎉
+        </p>
+      <% end %>
 
       <p>
         You can manage your subscription from your

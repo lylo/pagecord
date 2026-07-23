@@ -93,6 +93,46 @@ folder and create posts for the first user account in the seed data (`joel@pagec
 DIR=tmp/emails rake email:load
 ```
 
+## Testing billing locally
+
+Billing runs on Paddle Billing. When a subscription is created or changed, Paddle
+sends webhooks to `/billing/paddle_events`, and those webhook handlers are what
+actually set the plan, price, billing dates and send emails. The `paddle:simulate`
+rake tasks replay those webhooks against your running dev server with a valid
+signature, so you can exercise the whole subscription lifecycle without driving the
+Paddle sandbox by hand.
+
+This covers everything **after** Paddle. The outbound side (the `change_plan`
+controller calling Paddle to switch a plan) is a real API call, so verifying Paddle's
+own proration still needs the sandbox.
+
+The dev server must be running (`bin/dev`). Then:
+
+```bash
+# List the ready-made scenarios and the raw fixtures
+bin/rails "paddle:scenarios"
+
+# Run a named scenario against a user (blog subdomain, id, or email)
+bin/rails "paddle:flow[signup_supporter,joel]"
+bin/rails "paddle:flow[upgrade_to_supporter,joel]"
+bin/rails "paddle:flow[downgrade_from_supporter,joel]"
+bin/rails "paddle:flow[cancel,joel]"
+
+# Replay a single webhook fixture, optionally overriding the plan in custom_data
+bin/rails "paddle:simulate[subscription.created,joel,supporter]"
+bin/rails "paddle:simulate[transaction.completed.plan_change.supporter,joel]"
+```
+
+Each run prints the subscription state before and after, so watch that rather than the
+HTTP status (the endpoint always returns `200`). Fixtures live in
+`test/fixtures/billing/`; target a non-default host with `PADDLE_SIMULATE_URL`.
+
+Signature verification needs a shared `webhook_secret_key`. In development this falls
+back to a fixed value (`config/paddle.yml`) when `PADDLE_SANDBOX_WEBHOOK_SECRET_KEY`
+is unset, so both the server and the simulator sign with the same key. Restart the dev
+server after changing that config. Supporter welcome emails are sent with
+`deliver_later`, so to see one you need your local mail catcher and job worker running.
+
 ## Open Graph Images
 
 Pagecord can optionally generate dynamic Open Graph images for blog posts using a separate Cloudflare Worker service. This worker is currently **closed source** and not required to run Pagecord locally.

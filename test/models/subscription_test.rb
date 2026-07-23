@@ -26,6 +26,20 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_equal "4", Subscription.price(:monthly)
   end
 
+  test "should be priced at $75 for supporter" do
+    assert_equal "75", Subscription.price(:supporter)
+  end
+
+  test "plan_from_price_id maps each plan's price id back to its plan" do
+    assert_equal "monthly", Subscription.plan_from_price_id(SubscriptionsHelper.price_id(:monthly))
+    assert_equal "annual", Subscription.plan_from_price_id(SubscriptionsHelper.price_id(:annual))
+    assert_equal "supporter", Subscription.plan_from_price_id(SubscriptionsHelper.price_id(:supporter))
+  end
+
+  test "plan_from_price_id falls back to annual for unknown price id" do
+    assert_equal "annual", Subscription.plan_from_price_id("pri_unknown")
+  end
+
   test "active? should return true if not cancelled and not lapsed" do
     assert @subscription.active?
   end
@@ -71,8 +85,8 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_not @subscription.active?
   end
 
-  test "plan enum should have monthly, annual, and complimentary values" do
-    assert_equal({ "monthly" => "monthly", "annual" => "annual", "complimentary" => "complimentary" }, Subscription.plans)
+  test "plan enum should have monthly, annual, supporter, and complimentary values" do
+    assert_equal({ "monthly" => "monthly", "annual" => "annual", "supporter" => "supporter", "complimentary" => "complimentary" }, Subscription.plans)
   end
 
   test "monthly? should return true for monthly subscription" do

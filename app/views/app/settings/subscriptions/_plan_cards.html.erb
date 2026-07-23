@@ -6,7 +6,7 @@
       <p class="text-sm text-slate-500 mt-1">Billed monthly</p>
     <% end %>
     <div class="mt-4">
-      <%= link_to monthly_label, "#", class: "paddle_button btn-secondary w-full text-center", data: paddle_monthly_data %>
+      <%= link_to monthly_label, "#", class: "paddle_button btn-secondary w-full justify-center", data: paddle_monthly_data %>
     </div>
   </div>
   <div class="border-2 border-[#4fbd9c] rounded-lg p-4 relative">
@@ -17,7 +17,10 @@
       <p class="text-sm text-slate-500 mt-1">Save vs monthly</p>
     <% end %>
     <div class="mt-4">
-      <%= link_to annual_label, "#", class: "paddle_button btn-primary w-full text-center", data: paddle_annual_data %>
+      <%= link_to annual_label, "#", class: "paddle_button btn-primary w-full justify-center", data: paddle_annual_data %>
     </div>
   </div>
 </div>
+<p class="mt-4 text-center text-sm text-slate-500">
+  Or <%= link_to "become a Supporter for $#{Subscription.price(:supporter)}/year", "#", class: "paddle_button underline font-medium", data: paddle_supporter_data %> and back Pagecord's independent development: no extra features, just buckets of thanks and a spot for your blog on the upcoming supporters page 🙏💖
+</p>
