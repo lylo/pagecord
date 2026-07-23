@@ -148,11 +148,10 @@ module Billing
 
         if @subscription.present?
           next_billed_at = Time.parse(billing_period_ends_at)
-          actual_unit_price = transaction_unit_price
 
           updates = {
             next_billed_at: next_billed_at,
-            unit_price: actual_unit_price
+            unit_price: transaction_unit_price
           }
 
           # Plan change: find the new plan item (quantity > 0)
@@ -162,6 +161,10 @@ module Billing
               new_price_id = new_item.price.id
               updates[:paddle_price_id] = new_price_id
               updates[:plan] = Subscription.plan_from_price_id(new_price_id)
+              # On a plan switch, the transaction's line-item total is the prorated
+              # top-up charged today, not the ongoing recurring price. Store the new
+              # price's list price instead, so it matches what the next full renewal bills.
+              updates[:unit_price] = new_item.price.unit_price.amount.to_i
               Rails.logger.info "Plan changed to #{updates[:plan]} (price_id: #{new_price_id})"
             end
           end
@@ -170,7 +173,7 @@ module Billing
 
           notify_supporter_upgrade
 
-          Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}, unit_price: #{actual_unit_price}"
+          Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}, unit_price: #{updates[:unit_price]}"
         else
           raise "Subscription not found for transaction_completed event for #{@user.id} (#{@user.blog.subdomain})"
         end

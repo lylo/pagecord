@@ -220,6 +220,28 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal SubscriptionsHelper.price_id(:annual), subscription.paddle_price_id
   end
 
+  test "should store the new plan's recurring price, not the prorated transaction total, on a small-proration plan change" do
+    subscription = subscriptions(:one)
+    assert subscription.annual?
+
+    payload = payload_for("transaction.completed.plan_change.small_proration", subscription.user)
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    subscription.reload
+    assert subscription.supporter?
+    # The transaction's line-item total (758) is the prorated top-up charged today, not
+    # the ongoing recurring price (7500) — the stored unit_price must be the latter.
+    assert_equal 7500, subscription.unit_price
+  end
+
   test "should set supporter plan and send welcome email on subscription.created" do
     user = users(:vivian)
     payload = payload_for("subscription.created", user)

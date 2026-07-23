@@ -131,6 +131,8 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
   test "should handle failed plan change" do
     mock_response = mock
     mock_response.stubs(:success?).returns(false)
+    mock_response.stubs(:code).returns(400)
+    mock_response.stubs(:body).returns('{"error":{"detail":"declined"}}')
     mock_api = mock
     mock_api.expects(:update_subscription_items).returns(mock_response)
     PaddleApi.stubs(:new).returns(mock_api)
@@ -140,6 +142,22 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
     assert_redirected_to app_settings_subscriptions_path
     assert_equal "Unable to change plan. Please try again.", flash[:alert]
     assert @user.subscription.reload.annual?, "plan should be unchanged when Paddle rejects the change"
+  end
+
+  test "should route a declined payment to updating card details" do
+    mock_response = mock
+    mock_response.stubs(:success?).returns(false)
+    mock_response.stubs(:code).returns(400)
+    mock_response.stubs(:body).returns('{"error":{"code":"subscription_payment_declined","detail":"declined"}}')
+    mock_api = mock
+    mock_api.expects(:update_subscription_items).returns(mock_response)
+    PaddleApi.stubs(:new).returns(mock_api)
+
+    post change_plan_app_settings_subscriptions_path(plan: "supporter")
+
+    assert_redirected_to app_settings_subscriptions_path
+    assert_equal "Your payment was declined. Please update your card details below, then try again.", flash[:alert]
+    assert @user.subscription.reload.annual?
   end
 
   test "should resume cancelled subscription" do
