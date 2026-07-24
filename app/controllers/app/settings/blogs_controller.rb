@@ -33,7 +33,8 @@ class App::Settings::BlogsController < AppController
         :seo_title,
         :locale,
         :show_metrics,
-        :external_links_in_new_tab
+        :external_links_in_new_tab,
+        :show_upvotes
       ]
 
       if @blog.user.subscribed?
@@ -41,7 +42,7 @@ class App::Settings::BlogsController < AppController
       end
 
       if @blog.user.has_premium_access?
-        permitted_params += [ :reply_by_email, :show_upvotes ]
+        permitted_params += [ :reply_by_email ]
       end
 
       params.require(:blog).permit(permitted_params)
