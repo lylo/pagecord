@@ -6,7 +6,6 @@
     data-autosave-base-title-value="<%= @post.title.to_s %>"
     data-autosave-base-content-value="<%= h(@post.content&.body&.to_html.to_s) if @post.persisted? %>">
 
-  <%= render "app/shared/upload_quota", quota: quota %>
 
   <%= render "email_banner" %>
 
@@ -141,5 +140,7 @@
         <%= form.button draft_button_text(@post), value: "save_draft", class: "btn-optional" %>
       </div>
     </div>
+
+    <%= render "app/shared/upload_quota", quota: quota %>
   <% end %>
 </div>
