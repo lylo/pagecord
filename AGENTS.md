@@ -102,8 +102,11 @@ Docker: prefix commands with `docker-compose exec web`
 ### Billing & Access
 - **Payments**: Paddle webhooks (`Billing::PaddleEventsController`) → Subscription model. Plans: monthly, annual, complimentary
 - **Trial**: 14-day free trial. `has_premium_access?` = subscribed OR on trial. `subscribed?` = paid only.
-- Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains, API access
-- Subscriber-only features: email subscriptions, branding removal
+- Trial-eligible (`has_premium_access?`): analytics, reply by email, contact form, writing custom CSS and footers, API access
+- Subscriber-only (`subscribed?`): custom domains, email subscriptions, branding removal, uncapped uploads, video uploads, custom robots.txt, second blog
+- Free on every plan: avatar, post likes, search, themes, tags, RSS, export, 50 uploads (`UploadQuota::FREE_LIMIT`)
+- **Uploads**: `UploadQuota` (PORO over User) is the single source of truth – count, bytes, and what the plan allows. Enforced by `UploadQuota::Validator` on Post; the direct-upload endpoint check is an advisory pre-check only. A save that crosses the limit is allowed; the next upload is refused. Only blobs a save *introduces* are checked, so a lapsed subscriber can still edit old posts
+- **Lapsing**: content and appearance you made keeps rendering (custom CSS, footer, robots.txt, uploads). Ongoing services stop (newsletter, analytics, API, certificates), and so do `Blog#accepts_replies?` and `#accepts_subscribers?`. `Blog#branding_visible?` brings our branding back
 - Payment failures handled automatically by Paddle Retain – don't email customers about failed payments
 - **Invoices**: customers view past invoices via Paddle's customer portal. `App::Settings::Subscriptions::PaddleInvoicesController#show` mints a portal session (`POST customers/:id/portal-sessions`) and redirects – don't build an inline invoice list
 
