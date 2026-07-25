@@ -263,6 +263,33 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "baby-yoda.webp", post.attachments.first.filename.to_s
   end
 
+  test "should skip an image attachment that exceeds the upload limit" do
+    user = users(:joel)
+    oversized = "x" * (UploadLimits::CONTENT_TYPES["image/jpeg"] + 1)
+
+    assert_difference -> { user.blog.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.blog.delivery_email,
+        from: user.email,
+        reply_to: user.email,
+        subject: "Hello, world" do |mail|
+          mail.text_part = Mail::Part.new do
+            content_type "text/plain; charset=UTF-8"
+            body "Hello"
+          end
+
+          mail.html_part = Mail::Part.new do
+            content_type "text/html; charset=UTF-8"
+            body "<p>Hello</p>"
+          end
+
+          mail.attachments["huge.jpg"] = { content_type: "image/jpeg", content: oversized }
+        end
+    end
+
+    assert_equal 0, user.blog.posts.last.attachments.count
+  end
+
   test "should not parse image attachments for a freemium user" do
     user = users(:vivian)
 

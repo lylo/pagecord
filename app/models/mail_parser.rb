@@ -222,7 +222,9 @@ class MailParser
 
     def media_attachment?(part)
       mime_type = part.content_type&.split(";")&.first&.strip
-      UploadLimits::CONTENT_TYPES.key?(mime_type)
+      max_size = UploadLimits::CONTENT_TYPES[mime_type]
+
+      max_size && part.body.to_s.bytesize <= max_size
     end
 
     def append_unreferenced_attachments(html_content)
