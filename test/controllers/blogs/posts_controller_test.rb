@@ -865,6 +865,16 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=\"me\"]", count: 0
   end
 
+  test "should render the search navigation item for a free blog" do
+    blog = blogs(:vivian)
+    blog.navigation_items.create!(type: "SearchNavigationItem")
+    host_subdomain! blog.subdomain
+
+    get blog_posts_path
+
+    assert_select "nav a[href=?]", "/search"
+  end
+
   test "should render avatar favicon when blog has an avatar" do
     @blog.avatar.attach(
       io: File.open(Rails.root.join("test/fixtures/files/avatar.png")),

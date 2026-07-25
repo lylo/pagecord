@@ -108,24 +108,24 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     assert_response :unprocessable_entity
   end
 
-  test "search radio hidden for non-premium user" do
+  test "search radio shown for free user" do
     login_as users(:vivian)
 
     get app_settings_navigation_items_path
-    assert_select "input[name='nav_type'][value='search']", count: 0
+    assert_select "input[name='nav_type'][value='search']", count: 1
   end
 
-  test "does not create search navigation item for non-premium user" do
+  test "creates search navigation item for free user" do
     login_as users(:vivian)
 
-    assert_no_difference -> { SearchNavigationItem.count } do
+    assert_difference -> { SearchNavigationItem.count }, 1 do
       post app_settings_navigation_items_path, params: {
         nav_type: "search",
         navigation_item: { label: "Search" }
       }
     end
 
-    assert_response :not_found
+    assert_redirected_to app_settings_navigation_items_path
   end
 
   test "search radio hidden once a search item exists" do

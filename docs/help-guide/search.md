@@ -4,7 +4,7 @@ published: true
 published_at: 2026-07-21T10:00:00+00:00
 ---
 
-Premium feature. Let readers search your blog to find the posts and pages they're looking for.
+Let readers search your blog to find the posts and pages they're looking for.
 
 ## Adding search to your blog
 

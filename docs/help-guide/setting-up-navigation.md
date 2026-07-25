@@ -57,7 +57,7 @@ Enter the URL to your profile, or an email address for Email links, and the appr
 
 ### Search
 
-Premium feature. Adds a search icon that links to your blog's [search page](search.md), so readers can find your posts and pages. You can only add one.
+Adds a search icon that links to your blog's [search page](search.md), so readers can find your posts and pages. You can only add one.
 
 ## Reordering navigation items
 
