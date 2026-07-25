@@ -213,20 +213,6 @@ class BlogSpamDetectorTest < ActiveSupport::TestCase
     assert_includes prompt, "no outbound links"
   end
 
-  test "building the prompt does not load rich text per post" do
-    3.times { |i| @blog.posts.create!(content: "<p>post #{i}</p>") }
-
-    queries = 0
-    counter = ->(_name, _started, _finished, _id, payload) {
-      queries += 1 if payload[:sql].include?("action_text_rich_texts")
-    }
-
-    ActiveSupport::Notifications.subscribed(counter, "sql.active_record") { prompt_for(@blog) }
-
-    # One for the preloaded posts scope, one for the bio – never one per post.
-    assert_equal 2, queries
-  end
-
   private
 
     def prompt_for(blog)

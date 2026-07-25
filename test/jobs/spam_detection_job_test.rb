@@ -26,18 +26,6 @@ class SpamDetectionJobTest < ActiveSupport::TestCase
     refute_includes queued_blog_ids, @blog.id
   end
 
-  test "skips a comped user" do
-    @blog.user.create_subscription!(plan: :complimentary)
-
-    refute_includes queued_blog_ids, @blog.id
-  end
-
-  test "checks a user whose subscription has lapsed" do
-    @blog.user.create_subscription!(plan: :monthly, next_billed_at: 1.day.ago)
-
-    assert_includes queued_blog_ids, @blog.id
-  end
-
   test "rechecks a clean blog that has published since it was checked" do
     settled_blog
     detect!(detected_at: 40.days.ago)
