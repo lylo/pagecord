@@ -9,17 +9,18 @@ Manage your Pagecord subscription. Go to **Settings** → **Billing**.
 ## Subscribing to Premium
 
 1. Go to **Settings** → **Billing**
-2. Click **Upgrade Today!**
+2. Click **Subscribe**
 3. Complete payment through Paddle (our payment provider)
 
 Premium includes:
 
-- Image attachments
+- A much bigger upload allowance, including video
 - Custom domains
 - Email subscribers
-- Reply by email
 - Analytics
-- Custom CSS
+- Writing your own custom CSS
+- API access, for the Obsidian plugin and Shortcuts
+- The embeddable contact form
 - Human customer support
 
 ## Viewing your subscription

@@ -2,7 +2,7 @@
   <%= settings_section "Cancel Subscription" do %>
     <div class="px-6 py-5 space-y-4">
       <p>
-        After cancelling, you will stay on Pagecord Premium until <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>. After that, your account will be downgraded to the free tier. This means you will lose access to image attachments, custom domains, custom titles and human customer support.
+        After cancelling, you will stay on Pagecord Premium until <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>. After that, your account moves to Classic. Everything you've made stays exactly as it is – your posts, pages, custom CSS, footer and uploads all keep working. You'll lose custom domains, email subscribers, analytics, the API, the contact form, reply by email and human customer support. Pagecord branding reappears, and uploads are limited to <%= UploadQuota::FREE_LIMIT %> in total with no video.
       </p>
 
       <p>

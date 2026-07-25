@@ -77,7 +77,7 @@ To help you know which elements to target, here is a visual map of the blog page
 
 Head to `Settings > Appearance` and scroll to the "Custom CSS" section. Paste your CSS code into the text area provided and click **Save Custom CSS**.
 
-Custom CSS is available to customers with premium access. Your CSS is inserted into the `<head>` of your blog pages and is only rendered while your account has premium access.
+Writing your own custom CSS is a premium feature. Your CSS is inserted into the `<head>` of your blog pages, and once it's saved it keeps rendering whatever plan you're on.
 
 For safety, Pagecord validates custom CSS before saving it:
 

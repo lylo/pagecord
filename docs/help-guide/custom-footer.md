@@ -3,7 +3,7 @@ title: "Adding a custom footer"
 published: true
 ---
 
-Premium customers can add an HTML snippet to the footer of their blog. This is useful for things like:
+Premium customers can add an HTML snippet to the footer of their blog, and it keeps rendering afterwards whatever plan you're on. This is useful for things like:
 
 - badge buttons
 - webring links

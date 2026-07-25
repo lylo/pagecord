@@ -5,8 +5,10 @@
     You have <strong><%= pluralize(Current.user.trial_days_remaining, "day") %></strong> remaining of your 14-day free trial of Pagecord Premium!
   <% end %>
   <p class="mt-4">
-    Subscribe now to keep access to <b>image attachments</b>, <b>custom
-    domains</b>, <b>custom CSS</b>, <b>email subscribers</b>, <b>reply by email</b> and <b>Olly's awesome customer support</b>!
+    Subscribe now to keep <b>analytics</b>, <b>custom CSS</b>, <b>reply by email</b> and the <b>contact form</b>, and to unlock <b>a bigger upload allowance</b>, <b>custom domains</b>, <b>email subscribers</b> and <b>Olly's awesome customer support</b>!
+  </p>
+  <p>
+    Whatever you decide, nothing you've made will be taken away when your trial ends.
   </p>
 
   <%= render "plan_cards", monthly_label: "Subscribe Monthly", annual_label: "Subscribe Annually", show_subtitles: true %>
@@ -47,7 +49,7 @@
       Your Pagecord Premium subscription has now lapsed.
     </p>
     <p class="mt-2">
-      Renew now to continue enjoying premium features like image attachments, custom domains, and more!
+      Renew now to continue enjoying premium features like video uploads, custom domains, and more!
     </p>
     <p class="mt-2 text-sm text-slate-500">You'll be billed immediately when you restart.</p>
 
@@ -149,8 +151,7 @@
     <% end %>
   </p>
   <p class="mt-4">
-    Premium subscribers get access to <b>image attachments</b>, <b>custom
-    domains</b>, <b>custom CSS</b>, <b>email subscribers</b>, <b>reply by email</b> and <b>human customer support</b>! 💖
+    Premium subscribers get <b>a bigger upload allowance</b>, <b>custom domains</b>, <b>email subscribers</b>, <b>analytics</b>, <b>custom CSS</b>, <b>API access</b> and <b>human customer support</b>! 💖
   </p>
 
   <%= render "plan_cards", monthly_label: "Subscribe Monthly", annual_label: "Subscribe Annually", show_subtitles: true %>

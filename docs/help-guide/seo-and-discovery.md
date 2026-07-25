@@ -47,4 +47,4 @@ A few things to know:
 - Supported directives are `User-agent`, `Allow`, `Disallow` and `Crawl-delay`. Comments starting with `#` are fine, and `Allow`/`Disallow` paths must start with `/`.
 - To restore Pagecord's defaults, untick the box and save.
 
-If your subscription lapses, the default rules take over again. And if your blog isn't discoverable (see above), search engines are discouraged entirely and custom crawler rules don't apply.
+Rules you've saved keep being served even if your subscription lapses. If your blog isn't discoverable (see above), search engines are discouraged entirely and custom crawler rules don't apply.

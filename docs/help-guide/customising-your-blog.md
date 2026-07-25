@@ -72,7 +72,7 @@ Premium feature. Choose whether to hide the Pagecord logo at the bottom of your 
 
 ### Custom footer
 
-Premium feature. Add a small HTML footer for badges, webring links, or other simple links at the bottom of your blog. See [Adding a custom footer](custom-footer.md) for details.
+Premium feature to set up, and it keeps rendering afterwards whatever plan you're on. Add a small HTML footer for badges, webring links, or other simple links at the bottom of your blog. See [Adding a custom footer](custom-footer.md) for details.
 
 ## Theme Garden
 
