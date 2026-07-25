@@ -102,8 +102,9 @@ class BlogSpamDetector
         Most posts here are short. Sharing a video, image, song or article with a one-line comment, or no comment at all, is the normal shape of a post on this platform. It is never spam on its own, however often the blog does it.
 
         These are never backlinks, no matter how many appear or how often the same one repeats:
-        - Media and image hosts: YouTube, Vimeo, imgur, gyazo, tenor, giphy, streamable, Apple Music, Spotify, SoundCloud, Midjourney and similar CDNs
+        - Media and image hosts: YouTube, Vimeo, imgur, gyazo, tenor, giphy, streamable, Apple Music, Spotify, SoundCloud, Bandcamp, Midjourney and similar CDNs
         - Social platforms: Instagram, Bluesky, Mastodon, X, Threads, TikTok, Reddit, GitHub, LinkedIn
+        - Sharing sites for photos, film, music and books: glass.photo, Flickr, 500px, VSCO, Behance, Letterboxd, Goodreads and their equivalents
         - The author's own site, shop, portfolio, newsletter or employer, including a bio or links page that is nothing but these
 
         SPAM (classify as "spam" only when the links point at an unrelated business the blog is being used to promote):
