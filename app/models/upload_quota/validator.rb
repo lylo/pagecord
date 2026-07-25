@@ -14,7 +14,7 @@ class UploadQuota::Validator < ActiveModel::Validator
     if ActiveStorage::Blob.where(id: added).where.not(content_type: UploadQuota::FREE_CONTENT_TYPES).exists?
       record.errors.add(:content, "Video uploads need a paid subscription")
     elsif quota.exceeded?
-      record.errors.add(:content, "You've used all #{UploadQuota::FREE_LIMIT} free uploads. Everything you've already added is safe. Subscribe to upload more.")
+      record.errors.add(:content, "You've used all #{UploadQuota::FREE_LIMIT} free uploads. Subscribe to upload more.")
     end
   end
 

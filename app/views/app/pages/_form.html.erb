@@ -6,7 +6,7 @@
     data-autosave-base-title-value="<%= @page.title.to_s %>"
     data-autosave-base-content-value="<%= h(@page.content&.body&.to_html.to_s) if @page.persisted? %>">
 
-  <div class="mb-4"><%= render "app/shared/upload_quota", quota: quota %></div>
+  <%= render "app/shared/upload_quota", quota: quota %>
 
   <div class="mb-4 flex items-center justify-end gap-x-2">
     <%= render "app/shared/help/edit_page" %>

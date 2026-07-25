@@ -29,7 +29,7 @@
   <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
     <header class="mb-4">
       <% if Current.user.onboarding_complete? && !Current.user.subscribed? %>
-        <%= render "/app/shared/premium_upsell_banner" %>
+        <%= render "/app/shared/trial_banner" %>
       <% end %>
     </header>
     <main class="container mx-auto px-4 flex flex-grow">

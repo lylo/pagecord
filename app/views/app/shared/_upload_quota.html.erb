@@ -1,12 +1,14 @@
 <% unless quota.unlimited? %>
   <% if quota.exceeded? %>
-    <%= callout(:warning) do %>
-      You've used all <%= UploadQuota::FREE_LIMIT %> free uploads. Everything you've already added is safe.
-      <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to upload more.
-    <% end %>
-  <% else %>
-    <div class="rounded-lg border p-4 text-sm bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
-      <%= quota.used %> of <%= UploadQuota::FREE_LIMIT %> free uploads used
+    <div class="mb-4">
+      <%= callout(:info) do %>
+        You've used all <%= UploadQuota::FREE_LIMIT %> free uploads.
+        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to upload more.
+      <% end %>
     </div>
+  <% else %>
+    <p class="mb-4 text-sm text-slate-500 dark:text-slate-400">
+      <%= quota.used %> of <%= UploadQuota::FREE_LIMIT %> free uploads used
+    </p>
   <% end %>
 <% end %>

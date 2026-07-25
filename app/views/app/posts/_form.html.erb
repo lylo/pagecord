@@ -6,7 +6,7 @@
     data-autosave-base-title-value="<%= @post.title.to_s %>"
     data-autosave-base-content-value="<%= h(@post.content&.body&.to_html.to_s) if @post.persisted? %>">
 
-  <div class="mb-4"><%= render "app/shared/upload_quota", quota: quota %></div>
+  <%= render "app/shared/upload_quota", quota: quota %>
 
   <%= render "email_banner" %>
 

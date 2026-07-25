@@ -1,8 +1,4 @@
 module AppHelper
-  def show_upgrade_banner?
-    !cookies[:upgrade_banner_dismissed].present?
-  end
-
   def is_current_path?(path)
     request.path.include?(path) || controller_name =~ /#{path}/
   end
