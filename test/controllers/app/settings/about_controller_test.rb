@@ -18,20 +18,20 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should show avatar section if subscribed" do
+  test "should show avatar section" do
     get app_settings_about_index_url
 
     assert_select "h4", { count: 1, text: "Avatar" }
     assert_response :success
   end
 
-  test "should disable avatar section if not subscribed and not on trial" do
+  test "should show enabled avatar section even when not subscribed" do
     login_as users(:vivian)
 
     get app_settings_about_index_url
 
     assert_select "h4", { count: 1, text: "Avatar" }
-    assert_select ".opacity-50.pointer-events-none", count: 1
+    assert_select ".opacity-50.pointer-events-none", count: 0
     assert_response :success
   end
 
@@ -49,7 +49,7 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     assert_equal "New Title", @blog.reload.title
   end
 
-  test "should update avatar if subscribed" do
+  test "should update avatar" do
     file = fixture_file_upload("avatar.png", "image/png")
     patch app_settings_about_url(@blog), params: { blog: { avatar: file } }, as: :turbo_stream
 
@@ -57,7 +57,7 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     assert @blog.reload.avatar.attached?
   end
 
-  test "should not update avatar if not subscribed" do
+  test "should update avatar even when not subscribed" do
     login_as users(:vivian)
     non_subscribed_blog = users(:vivian).blog
 
@@ -65,6 +65,17 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     patch app_settings_about_url(non_subscribed_blog), params: { blog: { avatar: file } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
-    assert_not non_subscribed_blog.reload.avatar.attached?
+    assert non_subscribed_blog.reload.avatar.attached?
+  end
+
+  test "should not update avatar with a non-image disguised as an image" do
+    file = Rack::Test::UploadedFile.new(
+      StringIO.new("<svg xmlns='http://www.w3.org/2000/svg'><script>alert(1)</script></svg>"),
+      "image/png", original_filename: "avatar.png"
+    )
+    patch app_settings_about_url(@blog), params: { blog: { avatar: file } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_not @blog.reload.avatar.attached?
   end
 end

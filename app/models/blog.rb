@@ -9,6 +9,9 @@ class Blog < ApplicationRecord
   MAX_BLOGS_FREE = 1
   MAX_BLOGS_PAID = 2
 
+  AVATAR_CONTENT_TYPES = %w[ image/jpeg image/png image/webp ].freeze
+  AVATAR_MAX_SIZE = 5.megabytes
+
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
   has_many :pages, -> { where(is_page: true) }, class_name: "Post"
@@ -29,6 +32,7 @@ class Blog < ApplicationRecord
 
   has_rich_text :bio
   validate :bio_length
+  validate :avatar_format
   validate :within_blog_limit, on: :create
 
   before_validation :downcase_subdomain
@@ -69,6 +73,18 @@ class Blog < ApplicationRecord
     def bio_length
       if bio.to_plain_text.length > 500
         errors.add(:bio, "is too long (maximum 500 characters)")
+      end
+    end
+
+    def avatar_format
+      return unless avatar.attachment&.new_record?
+
+      unless AVATAR_CONTENT_TYPES.include?(avatar.blob.content_type)
+        errors.add(:avatar, "must be a JPEG, PNG or WebP image")
+      end
+
+      if avatar.blob.byte_size > AVATAR_MAX_SIZE
+        errors.add(:avatar, "is too big (maximum 5MB)")
       end
     end
 

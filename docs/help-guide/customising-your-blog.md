@@ -20,7 +20,7 @@ By default, your blog title is your username (e.g. @joel). You can change it to 
 
 ### Avatar
 
-Premium feature. Upload an image that appears next to your blog title.
+Upload an image that appears next to your blog title. It's also used as your blog's favicon. JPEG, PNG or WebP, up to 5MB.
 
 ## Appearance
 

@@ -19,6 +19,19 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".stream_layout", count: 1
   end
 
+  test "should render the avatar for a blog on the free plan" do
+    free_blog = blogs(:vivian)
+    assert free_blog.user.on_free_plan?
+
+    free_blog.avatar.attach(io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png")
+    host_subdomain! free_blog.subdomain
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select ".avatar-container .avatar img", count: 1
+  end
+
   test "should render a list of post titles" do
     @blog.title_layout!
 

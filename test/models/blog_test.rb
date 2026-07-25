@@ -58,6 +58,28 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.valid?
   end
 
+  test "should accept a valid avatar" do
+    @blog.avatar = { io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png" }
+
+    assert @blog.valid?
+  end
+
+  test "should reject an avatar disguised as an image" do
+    @blog.avatar = { io: StringIO.new("<svg xmlns='http://www.w3.org/2000/svg'><script>alert(1)</script></svg>"),
+                     filename: "avatar.png", content_type: "image/png" }
+
+    assert_not @blog.valid?
+    assert_includes @blog.errors[:avatar], "must be a JPEG, PNG or WebP image"
+  end
+
+  test "should reject an avatar that is too big" do
+    @blog.avatar = { io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png" }
+    @blog.avatar.blob.stubs(:byte_size).returns(Blog::AVATAR_MAX_SIZE + 1)
+
+    assert_not @blog.valid?
+    assert_includes @blog.errors[:avatar], "is too big (maximum 5MB)"
+  end
+
   test "should store subdomain in lowercase" do
     @blog.subdomain = "JOEL"
     @blog.save
