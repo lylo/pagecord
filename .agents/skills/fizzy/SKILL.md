@@ -38,6 +38,8 @@ Every API call should include:
 
 Card descriptions should be sent as HTML, not Markdown. Fizzy stores descriptions through ActionText; Markdown is shown as plain text, while HTML renders correctly in `description_html`. Use standard tags such as `<h2>`, `<p>`, `<ul>`, `<li>`, and `<code>`. Avoid task-list checkbox inputs because ActionText strips the `<input>` elements.
 
+Multi-line code (console snippets, scripts, config) goes in a `<pre>` block, which ActionText allows. Put real newlines and indentation inside it. Never fake a code block with a run of `<code>` elements joined by `<br>`; that renders as unreadable inline fragments and loses indentation. Reserve `<code>` for short inline identifiers within prose, such as a column or method name. Escape `&`, `<`, and `>` inside `<pre>` (`&amp;`, `&lt;`, `&gt;`), which Ruby snippets need constantly for `&:sym`, `->`, `&&`, and `>=`.
+
 ## Common operations
 
 - List cards: `GET /$SLUG/cards`
