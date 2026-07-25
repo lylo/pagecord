@@ -9,7 +9,7 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
     @blog = @user.blog
   end
 
-  test "renders custom css in head when user has premium access and css is present" do
+  test "renders custom css in head when css is present" do
     @blog.update(custom_css: ".blog { background: red; }")
     post = posts(:one)
 
@@ -19,7 +19,7 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
     assert_select "head style", text: /\.blog { background: red; }/
   end
 
-  test "does not render custom css when user does not have premium access" do
+  test "renders custom css when user does not have premium access" do
     vivian = users(:vivian)
     vivian.blog.update(custom_css: ".blog { background: red; }")
     post = vivian.blog.posts.first
@@ -27,7 +27,7 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: vivian.blog.subdomain, slug: post.slug)
 
     assert_response :success
-    assert_select "head style", text: /\.blog { background: red; }/, count: 0
+    assert_select "head style", text: /\.blog { background: red; }/
   end
 
   test "does not render style tag when custom_css is blank" do
