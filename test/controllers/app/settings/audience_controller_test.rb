@@ -24,4 +24,13 @@ class App::Settings::AudienceControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "p", text: /Your blog has/, count: 0
   end
+
+  test "a lapsed subscriber can still download the subscriber list" do
+    @user.subscription.update!(next_billed_at: 1.day.ago)
+
+    get app_settings_audience_index_url
+
+    assert_response :success
+    assert_select "a[href=?]", app_settings_subscribers_path(format: :csv)
+  end
 end

@@ -81,6 +81,27 @@ class Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
+  test "should not serve the reply form for a lapsed subscriber" do
+    blog = blogs(:joel)
+    blog.update!(reply_by_email: true)
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+
+    get new_post_reply_path(post_token: posts(:one).token)
+
+    assert_response :redirect
+    assert_select "form", count: 0
+  end
+
+  test "should not serve the reply form for a free blog" do
+    blog = blogs(:vivian)
+    blog.update!(reply_by_email: true)
+    host_subdomain! blog.subdomain
+
+    get new_post_reply_path(post_token: blog.posts.visible.first.token)
+
+    assert_response :redirect
+  end
+
   private
 
     def reply_params

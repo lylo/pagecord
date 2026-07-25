@@ -68,7 +68,7 @@ class Blogs::RobotsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "User-agent: *\nDisallow: /\n", @response.body
   end
 
-  test "should ignore custom robots txt for lapsed subscriber" do
+  test "should keep serving custom robots txt for a lapsed subscriber" do
     @user = users(:joel)
     @user.subscription.update!(next_billed_at: 1.day.ago)
     @blog.update!(custom_robots_txt: "User-agent: Bubbles\nAllow: /\n")
@@ -76,6 +76,6 @@ class Blogs::RobotsControllerTest < ActionDispatch::IntegrationTest
     get blog_robots_path
 
     assert_response :success
-    assert_includes @response.body, "User-agent: GPTBot"
+    assert_includes @response.body, "User-agent: Bubbles"
   end
 end

@@ -12,7 +12,7 @@ module Blog::RobotsTxt
   end
 
   def custom_robots_txt_active?
-    user.subscribed? && custom_robots_txt.present?
+    custom_robots_txt.present?
   end
 
   private

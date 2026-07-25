@@ -31,7 +31,7 @@ class Blog < ApplicationRecord
   end
 
   has_rich_text :bio
-  validate :bio_length
+  validate :bio_length, :bio_without_attachments
   validate :avatar_format
   validate :within_blog_limit, on: :create
 
@@ -54,6 +54,22 @@ class Blog < ApplicationRecord
     title.blank? ? "@#{subdomain}" : title
   end
 
+  # Both of these are perks of paying rather than things the blogger made, so
+  # the stored preference only takes effect while the plan includes it. Sending
+  # a reply is an ongoing service – we mail the owner on their behalf – and
+  # branding removal is our own mark being suppressed.
+  def accepts_replies?
+    reply_by_email && user.has_premium_access?
+  end
+
+  def branding_visible?
+    !user.subscribed? || show_branding
+  end
+
+  def accepts_subscribers?
+    email_subscriptions_enabled && user.subscribed?
+  end
+
   private
 
     def within_blog_limit
@@ -73,6 +89,14 @@ class Blog < ApplicationRecord
     def bio_length
       if bio.to_plain_text.length > 500
         errors.add(:bio, "is too long (maximum 500 characters)")
+      end
+    end
+
+    # The bio editors don't offer attachments, so anything here arrived as
+    # hand-crafted HTML.
+    def bio_without_attachments
+      if bio.body&.fragment&.find_all("action-text-attachment")&.any?
+        errors.add(:bio, "can't contain attachments")
       end
     end
 

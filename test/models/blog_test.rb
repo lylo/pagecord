@@ -301,4 +301,51 @@ class BlogTest < ActiveSupport::TestCase
 
     blog.update!(title: "New Title")
   end
+
+  test "a bio cannot contain attachments, whatever the plan" do
+    blog = blogs(:vivian)
+    blog.bio = image_attachment_html(1)
+
+    assert_not blog.valid?
+    assert_equal "can't contain attachments", blog.errors[:bio].first
+
+    subscriber = blogs(:joel)
+    subscriber.bio = image_attachment_html(1)
+
+    assert_not subscriber.valid?
+  end
+
+
+  test "branding reappears when a subscription lapses" do
+    blog = blogs(:joel)
+    blog.update!(show_branding: false)
+
+    assert_not blog.branding_visible?
+
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+
+    assert blog.reload.branding_visible?
+  end
+
+  test "branding stays hidden for a subscriber who turned it off" do
+    blog = blogs(:joel)
+    blog.update!(show_branding: false)
+
+    assert_not blog.reload.branding_visible?
+  end
+
+  test "branding shows for a free blog" do
+    assert blogs(:vivian).branding_visible?
+  end
+
+  test "replies stop when premium access lapses" do
+    blog = blogs(:joel)
+    blog.update!(reply_by_email: true)
+
+    assert blog.accepts_replies?
+
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+
+    assert_not blog.reload.accepts_replies?
+  end
 end

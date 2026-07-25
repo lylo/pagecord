@@ -1410,6 +1410,26 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes(@response.headers["Cache-Control"] || "", "s-maxage")
   end
 
+  test "should not render the reply button for a free blog" do
+    blog = blogs(:vivian)
+    blog.update!(reply_by_email: true)
+    host_subdomain! blog.subdomain
+
+    get blog_post_path(blog.posts.visible.first.slug)
+
+    assert_select "a.reply-by-email", count: 0
+  end
+
+  test "should render the custom footer for a lapsed subscriber" do
+    blog = blogs(:joel)
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+    blog.update!(custom_footer_html: %(<a href="https://example.com">Example</a>))
+
+    get blog_posts_path
+
+    assert_select ".custom-footer a[href=?]", "https://example.com"
+  end
+
   private
 
     def create_content_with_attachment(blog:, title:, caption:, is_page: false)

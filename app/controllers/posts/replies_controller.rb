@@ -10,7 +10,7 @@ class Posts::RepliesController < Blogs::BaseController
   before_action :verify, only: [ :create ]
 
   def new
-    redirect_to view_context.post_path(@post) and return unless @blog.reply_by_email
+    redirect_to view_context.post_path(@post) and return unless @blog.accepts_replies?
 
     @reply = @post.replies.new(subject: "Re: #{@post.display_title}")
 
@@ -18,6 +18,8 @@ class Posts::RepliesController < Blogs::BaseController
   end
 
   def create
+    redirect_to view_context.post_path(@post) and return unless @blog.accepts_replies?
+
     @reply = @post.replies.new(reply_params)
 
     if @reply.save

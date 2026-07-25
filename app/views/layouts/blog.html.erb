@@ -90,7 +90,7 @@
 
         <%= yield %>
 
-        <% if @blog.custom_footer? || @blog.show_branding? %>
+        <% if @blog.custom_footer? || @blog.branding_visible? %>
           <footer class="blog-footer">
             <% if @blog.custom_footer? %>
               <div class="custom-footer">
@@ -98,7 +98,7 @@
               </div>
             <% end %>
 
-            <% if @blog.show_branding? %>
+            <% if @blog.branding_visible? %>
               <%= link_to "https://pagecord.com", id: "brand", aria: { label: "Pagecord Home" } do %>
                 <%= inline_svg_tag "logo-black.svg" %>
               <% end %>
