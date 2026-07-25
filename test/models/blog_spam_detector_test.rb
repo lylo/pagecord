@@ -150,4 +150,86 @@ class BlogSpamDetectorTest < ActiveSupport::TestCase
     detector.detect
     refute_equal :no_content, detector.result.status
   end
+
+  test "prompt includes post links that plain text strips" do
+    @blog.posts.create!(content: '<p>Great deals <a href="https://casino.example/bonus">click here</a></p>')
+
+    assert_includes prompt_for(@blog), "casino.example"
+    assert_includes prompt_for(@blog), "click here"
+  end
+
+  test "prompt includes bio links" do
+    @blog.bio = ActionText::Content.new('<a href="https://cheap-loans.example">my site</a>')
+
+    assert_includes prompt_for(@blog), "cheap-loans.example"
+  end
+
+  test "prompt includes navigation links" do
+    @blog.navigation_items.create!(type: "CustomNavigationItem", label: "Deals", url: "https://pills.example")
+
+    assert_includes prompt_for(@blog), "pills.example"
+  end
+
+  test "prompt tallies repeated hosts across posts" do
+    3.times { |i| @blog.posts.create!(content: %(<p>#{i} <a href="https://seo-tools.example">link</a></p>)) }
+
+    assert_includes prompt_for(@blog), "seo-tools.example x3"
+  end
+
+  test "prompt ignores links back to pagecord" do
+    @blog.posts.create!(content: '<p><a href="https://someone.example.com/post">A friend</a></p>')
+
+    assert_includes prompt_for(@blog), "no outbound links"
+  end
+
+  test "prompt strips attachment sgids from post html" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new("image"), filename: "photo.jpg", content_type: "image/jpeg"
+    )
+    @blog.posts.create!(content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))
+
+    refute_includes prompt_for(@blog), blob.attachable_sgid
+  end
+
+  test "prompt samples at most POST_SAMPLE_SIZE posts" do
+    (BlogSpamDetector::POST_SAMPLE_SIZE + 2).times do |i|
+      @blog.posts.create!(title: "Post number #{i}", content: "content #{i}", published_at: i.minutes.ago)
+    end
+
+    prompt = prompt_for(@blog)
+
+    assert_includes prompt, "Post number 0"
+    refute_includes prompt, "Post number #{BlogSpamDetector::POST_SAMPLE_SIZE + 1}"
+  end
+
+  test "prompt renders a blog with no posts or links" do
+    blog = Blog.new(subdomain: "quiet", user: users(:joel))
+    blog.save(validate: false)
+    blog.bio = ActionText::Content.new("Just writing.")
+
+    prompt = prompt_for(blog)
+
+    assert_includes prompt, "(no posts)"
+    assert_includes prompt, "no outbound links"
+  end
+
+  test "building the prompt does not load rich text per post" do
+    3.times { |i| @blog.posts.create!(content: "<p>post #{i}</p>") }
+
+    queries = 0
+    counter = ->(_name, _started, _finished, _id, payload) {
+      queries += 1 if payload[:sql].include?("action_text_rich_texts")
+    }
+
+    ActiveSupport::Notifications.subscribed(counter, "sql.active_record") { prompt_for(@blog) }
+
+    # One for the preloaded posts scope, one for the bio – never one per post.
+    assert_equal 2, queries
+  end
+
+  private
+
+    def prompt_for(blog)
+      BlogSpamDetector.new(blog).send(:prompt)
+    end
 end
