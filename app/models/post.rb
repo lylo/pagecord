@@ -22,6 +22,7 @@ class Post < ApplicationRecord
   before_save :set_text_summary, :set_published_at
 
   validate :content_present
+  validates_with UploadQuota::Validator
   validate :title_present_for_pages
   validate :one_home_page, on: :create
 

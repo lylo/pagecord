@@ -215,6 +215,75 @@ class PostTest < ActiveSupport::TestCase
     assert_operator query_count, :<, 100, "Expected bounded query count, got #{query_count}"
   end
 
+  test "a save that crosses the allowance is allowed, the next one is not" do
+    blog = blogs(:vivian)
+    fill_upload_quota(blog.user, UploadQuota::FREE_LIMIT - 1)
+
+    assert blog.posts.create!(content: image_attachment_html(3), status: :published).persisted?
+    assert blog.user.upload_quota.exceeded?
+    assert_not blog.posts.build(content: image_attachment_html(1), status: :published).valid?
+  end
+
+  test "a trial user is capped like a free user" do
+    blog = blogs(:vivian)
+    blog.user.update!(trial_ends_at: 7.days.from_now)
+    fill_upload_quota(blog.user, UploadQuota::FREE_LIMIT)
+
+    post = blog.posts.build(content: image_attachment_html(1), status: :published)
+
+    assert_not post.valid?
+    assert_match(/free uploads/, post.errors[:content].first)
+  end
+
+  test "an over quota user can still save a post without adding images" do
+    blog = blogs(:vivian)
+    post = blog.posts.create!(content: image_attachment_html(2), status: :published)
+    fill_upload_quota(blog.user, UploadQuota::FREE_LIMIT - 2)
+
+    assert blog.user.upload_quota.exceeded?
+    assert post.update(title: "Renamed")
+  end
+
+  test "an over quota user can remove an image and save" do
+    blog = blogs(:vivian)
+    post = blog.posts.create!(content: image_attachment_html(2), status: :published)
+    fill_upload_quota(blog.user, UploadQuota::FREE_LIMIT - 2)
+
+    assert post.update(content: "<p>No pictures any more</p>")
+  end
+
+  test "a free user cannot attach video" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("video"), filename: "clip.mp4", content_type: "video/mp4")
+    post = blogs(:vivian).posts.build(content: attachment_node_for(blob), status: :published)
+
+    assert_not post.valid?
+    assert_equal "Video uploads need a paid subscription", post.errors[:content].first
+  end
+
+  test "a forged sgid does not count against the allowance" do
+    blog = blogs(:vivian)
+    fill_upload_quota(blog.user, UploadQuota::FREE_LIMIT)
+
+    post = blog.posts.build(content: %(<p>Hi</p><action-text-attachment sgid="not-a-real-sgid"></action-text-attachment>), status: :published)
+
+    assert post.valid?
+  end
+
+  test "validating the allowance does not resolve one blob per embed" do
+    blog = blogs(:vivian)
+    content = image_attachment_html(10)
+
+    query_count = 0
+    counter = ->(name, started, finished, unique_id, payload) {
+      query_count += 1 unless payload[:name].in?([ "SCHEMA", "TRANSACTION" ]) || payload[:cached]
+    }
+
+    post = blog.posts.build(content: content, status: :published)
+    ActiveSupport::Notifications.subscribed(counter, "sql.active_record") { post.save! }
+
+    assert_operator query_count, :<, 40, "Expected bounded query count, got #{query_count}"
+  end
+
   test "first_media returns first image or video attachment" do
     blob = ActiveStorage::Blob.create_and_upload!(
       io: StringIO.new("video"),
@@ -560,6 +629,32 @@ class PostTest < ActiveSupport::TestCase
       post.content_present
       post.plain_text_content
     end
+  end
+
+  test "a free user can attach audio" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("audio"), filename: "track.mp3", content_type: "audio/mpeg")
+
+    assert blogs(:vivian).posts.build(content: attachment_node_for(blob), status: :published).valid?
+  end
+
+  test "a lapsed subscriber can still edit a post containing their video" do
+    blog = blogs(:joel)
+    video = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("video"), filename: "clip.mp4", content_type: "video/mp4")
+    post = blog.posts.create!(title: "Has video", content: attachment_node_for(video), status: :published)
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+
+    assert post.reload.update(title: "Renamed")
+  end
+
+  test "a lapsed subscriber cannot add a new video" do
+    blog = blogs(:joel)
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+    video = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("video"), filename: "clip.mp4", content_type: "video/mp4")
+
+    post = blog.posts.build(content: attachment_node_for(video), status: :published)
+
+    assert_not post.valid?
+    assert_equal "Video uploads need a paid subscription", post.errors[:content].first
   end
 
   private

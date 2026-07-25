@@ -476,4 +476,17 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
+
+  test "should refuse hand-crafted attachment HTML once the upload allowance is used" do
+    fill_upload_quota(@user, UploadQuota::FREE_LIMIT)
+
+    assert_no_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
+        post: { title: "Sneaky", content: image_attachment_html(1) }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
 end

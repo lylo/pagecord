@@ -94,7 +94,7 @@ class MailParserTest < ActiveSupport::TestCase
 
   test "should parse multipart/alternative and prefer HTML" do
     mail = Mail.read(fixture_path("multipart_alternative.eml"))
-    parser = MailParser.new(mail, process_attachments: false)
+    parser = MailParser.new(mail, allowed_content_types: [])
 
     assert_includes parser.body, "<strong>HTML</strong>"
     assert_not_includes parser.body, "plain text content"
@@ -102,7 +102,7 @@ class MailParserTest < ActiveSupport::TestCase
 
   test "should handle Apple Mail edge case with multiple HTML fragments" do
     mail = Mail.read(fixture_path("apple_mail_edge_case.eml"))
-    parser = MailParser.new(mail, process_attachments: false)
+    parser = MailParser.new(mail, allowed_content_types: [])
 
     assert_includes parser.body, "First paragraph before image"
     assert_includes parser.body, "Second paragraph after image"
@@ -175,7 +175,7 @@ class MailParserTest < ActiveSupport::TestCase
     # This tests the bug where content after an image was being stripped
     # Email structure: text/plain → image/jpeg → text/plain
     mail = Mail.read(fixture_path("text_image_text.eml"))
-    parser = MailParser.new(mail, process_attachments: false)
+    parser = MailParser.new(mail, allowed_content_types: [])
 
     # Should include content from BOTH text parts
     assert_includes parser.body, "Fancy a change from apple cake", "Should include intro text before image"
@@ -190,7 +190,7 @@ class MailParserTest < ActiveSupport::TestCase
 
   test "should handle empty email" do
     mail = Mail.read(fixture_path("empty_email.eml"))
-    parser = MailParser.new(mail, process_attachments: false)
+    parser = MailParser.new(mail, allowed_content_types: [])
 
     assert parser.blank?, "Email with no subject or body should be blank"
     assert parser.subject_blank?
@@ -199,7 +199,7 @@ class MailParserTest < ActiveSupport::TestCase
 
   test "should handle email with empty subject" do
     mail = create_mail(subject: "", body: "Content here")
-    parser = MailParser.new(mail, process_attachments: false)
+    parser = MailParser.new(mail, allowed_content_types: [])
 
     assert parser.subject_blank?
     assert_not parser.body_blank?
@@ -208,7 +208,7 @@ class MailParserTest < ActiveSupport::TestCase
 
   test "should handle email with empty body" do
     mail = create_mail(subject: "Test", body: "")
-    parser = MailParser.new(mail, process_attachments: false)
+    parser = MailParser.new(mail, allowed_content_types: [])
 
     assert_not parser.subject_blank?
     assert parser.body_blank?
@@ -217,7 +217,7 @@ class MailParserTest < ActiveSupport::TestCase
 
   test "should handle email with only whitespace in body" do
     mail = create_mail(subject: "Test", body: "   \n\n   ")
-    parser = MailParser.new(mail, process_attachments: false)
+    parser = MailParser.new(mail, allowed_content_types: [])
 
     assert parser.body_blank?
   end
@@ -228,15 +228,15 @@ class MailParserTest < ActiveSupport::TestCase
 
   test "should return empty array when no attachments" do
     mail = create_mail(subject: "Test", body: "Content")
-    parser = MailParser.new(mail, process_attachments: false)
+    parser = MailParser.new(mail, allowed_content_types: [])
 
     assert_equal [], parser.attachments
     assert_not parser.has_attachments?
   end
 
-  test "should not process attachments when process_attachments is false" do
+  test "should not process attachments when no content types are allowed" do
     mail = Mail.read(fixture_path("plain_text_with_attachments.eml"))
-    parser = MailParser.new(mail, process_attachments: false)
+    parser = MailParser.new(mail, allowed_content_types: [])
 
     assert_equal [], parser.attachments
     assert_not parser.has_attachments?

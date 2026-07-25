@@ -1,11 +1,12 @@
 <% is_new = !@post.persisted? %>
+<% quota = Current.user.upload_quota %>
 
 <div data-controller="post-attributes autosave"
     data-autosave-key-value="<%= is_new ? "draft-post-new-#{@blog.id}" : "draft-post-#{@post.id}" %>"
     data-autosave-base-title-value="<%= @post.title.to_s %>"
     data-autosave-base-content-value="<%= h(@post.content&.body&.to_html.to_s) if @post.persisted? %>">
 
-  <div class="mb-4"><%= trial_callout("Image uploads") %></div>
+  <div class="mb-4"><%= render "app/shared/upload_quota", quota: quota %></div>
 
   <%= render "email_banner" %>
 
@@ -123,7 +124,7 @@
         spellcheck: true,
         autocorrect: "on",
         autocapitalize: "sentences",
-        data: { controller: "lexxy ios-toolbar", attachments: Current.user.has_premium_access?, autosave_target: "content" } %>
+        data: { controller: "lexxy ios-toolbar", autosave_target: "content", attachments: !quota.exceeded?, videos: quota.unlimited? } %>
 
       <div class="field-error"><%= @post.errors[:content].first if @post.errors[:content].any? %></div>
     </fieldset>
