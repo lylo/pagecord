@@ -16,6 +16,12 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "pricing redirects to the home page pricing section" do
+    get pricing_path
+
+    assert_redirected_to "/#pricing"
+  end
+
   test "should get pagecord vs hey world page" do
     get pagecord_vs_hey_world_path
     assert_response :success
