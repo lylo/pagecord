@@ -4,7 +4,7 @@
 <% if Current.user.on_free_plan? %>
   <div class="mb-6">
     <%= callout(:info) do %>
-      <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to enable audience features for your blog.
+      <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to enable email subscriptions and reply by email for your blog.
     <% end %>
   </div>
 <% elsif Current.user.on_trial? %>
@@ -86,9 +86,9 @@
       <% end %>
 
       <%= settings_row "Post Likes", stacked: true do %>
-        <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
+        <div class="flex gap-3">
           <div class="flex h-6 shrink-0 items-center">
-            <%= styled_check_box form, :show_upvotes, checked: @blog.show_upvotes, disabled: features_disabled %>
+            <%= styled_check_box form, :show_upvotes, checked: @blog.show_upvotes %>
           </div>
           <%= form.label :show_upvotes, "Show a ❤️ button next to each post to receive appreciation", class: "text-slate-800 dark:text-slate-100" %>
         </div>

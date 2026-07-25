@@ -884,14 +884,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href*='/upvotes']", false
   end
 
-  test "should not render upvotes for a non-subscriber" do
+  test "should render upvotes for a non-subscriber" do
     @blog = blogs(:vivian)
     host_subdomain! "vivian"
 
     get blog_posts_path
 
     assert_response :success
-    assert_select "a.upvote", count: 0
+    assert_select "button.upvote"
   end
 
   test "should not render upvotes if show_upvotes is false" do
@@ -900,7 +900,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "a.upvote", count: 0
+    assert_select "button.upvote", count: 0
   end
 
   test "post published_at is stored and rendered correctly in UTC" do

@@ -7,9 +7,10 @@
     <%= local_time post.published_at, format: published_at_date_format, class: "dt-published" %>
   <% end %>
 
-  <% if @user.has_premium_access? %>
+  <% reply_enabled = @user.has_premium_access? && @blog.reply_by_email %>
+  <% if @blog.show_upvotes? || reply_enabled %>
     <div class="post-actions">
-      <% if @blog.reply_by_email %>
+      <% if reply_enabled %>
         <%= link_to new_post_reply_path(post),
                   title: "Reply to this post via email",
                   aria: { label: "Reply to this post via email" },
