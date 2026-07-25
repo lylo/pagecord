@@ -1,6 +1,6 @@
 class Blog < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, StorageTrackable, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::Spotlit
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::Spotlit
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
@@ -54,10 +54,10 @@ class Blog < ApplicationRecord
     title.blank? ? "@#{subdomain}" : title
   end
 
-  # Both of these are perks of paying rather than things the blogger made, so
-  # the stored preference only takes effect while the plan includes it. Sending
-  # a reply is an ongoing service – we mail the owner on their behalf – and
-  # branding removal is our own mark being suppressed.
+  # Perks of paying rather than things the blogger made, so the stored
+  # preference only applies while the plan includes it. Replies are an ongoing
+  # service – we mail the owner on their behalf – and branding removal
+  # suppresses our own mark.
   def accepts_replies?
     reply_by_email && user.has_premium_access?
   end

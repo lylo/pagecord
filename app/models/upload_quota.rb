@@ -1,18 +1,16 @@
 class UploadQuota
   FREE_LIMIT = 50
-  # What a free plan may upload at all. Video is premium only – at 50MB a file
-  # it's five times the ceiling of anything else, and free accounts are free to
-  # create, so allowing it would make us cheap video hosting.
+  # Video is premium only: at 50MB a file it is five times the ceiling of
+  # anything else, and free accounts are free to create.
   FREE_CONTENT_TYPES = UploadLimits::CONTENT_TYPES.keys.grep_v(/\Avideo\//).freeze
 
   def initialize(user)
     @user = user
   end
 
-  # Deliberately subscribed?, not has_premium_access?. Uncapping the trial would
-  # hand every signup unlimited hosting for storage we keep forever, repeatable
-  # with a fresh account, and guarantee a cliff the day the trial ends. Fifty
-  # images inside fourteen days constrains nobody, so this costs us nothing.
+  # subscribed?, not has_premium_access?: an uncapped trial would hand every
+  # signup unmetered hosting for storage we keep forever, repeatable with a
+  # fresh account.
   def unlimited?
     @user.subscribed?
   end
@@ -35,9 +33,9 @@ class UploadQuota
     !unlimited? && used >= FREE_LIMIT
   end
 
-  # The blobs a save would introduce. Anything already counted is theirs
-  # already, so re-saving a post never trips the limit or the type check – a
-  # lapsed subscriber can still edit a back catalogue full of images and video.
+  # The blobs a save would introduce. Anything already counted stays free to
+  # re-save, so a lapsed subscriber can still edit a back catalogue of images
+  # and video.
   def uncounted(blob_ids)
     blob_ids - attachments.where(blob_id: blob_ids).distinct.pluck(:blob_id)
   end

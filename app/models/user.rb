@@ -40,8 +40,8 @@ class User < ApplicationRecord
     subscribed? ? Blog::MAX_BLOGS_PAID : Blog::MAX_BLOGS_FREE
   end
 
-  # Built fresh each call: a quota read after a save that attached images must
-  # not return the count from before it.
+  # Fresh each call: a quota read after a save that attached images must not
+  # return the count from before it.
   def upload_quota
     UploadQuota.new(self)
   end

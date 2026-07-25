@@ -1,6 +1,6 @@
 module UploadQuotaHelpers
   # Builds a post whose content embeds `count` freshly uploaded images, so the
-  # user's image quota counts them exactly as a real save would.
+  # user's upload quota counts them exactly as a real save would.
   def fill_upload_quota(user, count)
     user.blog.posts.create!(title: "Gallery", content: image_attachment_html(count), status: :published)
   end

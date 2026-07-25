@@ -1,8 +1,6 @@
 module Post::Moderatable
   extend ActiveSupport::Concern
 
-  # Raised from 5 now the free plan uploads too: a gallery post routinely
-  # carries more than five, and anything past the cap goes unmoderated.
   MAX_MODERATION_IMAGES = 10
 
   included do
