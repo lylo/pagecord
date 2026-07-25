@@ -97,26 +97,32 @@ class BlogSpamDetector
         #{recent_posts_content}
         Outbound link summary: #{link_summary}
 
-        Judge this blog on what it links to and how much of it is link, not on how well it is written. Links to #{domain} are internal to this platform and are not outbound links.
+        Judge this blog on where its links point and what they are for, not on how many there are or how little writing surrounds them. Links to #{domain} are internal to this platform and are not outbound links.
 
-        SPAM (classify as "spam"):
-        - Posts exist mainly to carry outbound links: little or no writing around them, or filler written around the links
-        - The same external commercial host repeats across several posts, or many times within one post
-        - Links, anchor text or titles push gambling, pharmacy or pills, crypto trading, loans, essay writing, cheap flights or tickets, escorts, streaming or piracy, or SEO, backlink and guest post services
+        Most posts here are short. Sharing a video, image, song or article with a one-line comment, or no comment at all, is the normal shape of a post on this platform. It is never spam on its own, however often the blog does it.
+
+        These are never backlinks, no matter how many appear or how often the same one repeats:
+        - Media and image hosts: YouTube, Vimeo, imgur, gyazo, tenor, giphy, streamable, Apple Music, Spotify, SoundCloud, Midjourney and similar CDNs
+        - Social platforms: Instagram, Bluesky, Mastodon, X, Threads, TikTok, Reddit, GitHub, LinkedIn
+        - The author's own site, shop, portfolio, newsletter or employer, including a bio or links page that is nothing but these
+
+        SPAM (classify as "spam" only when the links point at an unrelated business the blog is being used to promote):
+        - The same external commercial host repeats across several posts, with filler writing wrapped around the links
+        - Links, anchor text or titles push gambling, pharmacy or pills, crypto trading, loans, essay writing, cheap flights or tickets, escorts, piracy, or SEO, backlink and guest post services
         - Keyword-stuffed anchor text or titles, such as "best cheap movers dubai 2025"
-        - The bio or navigation is a list of commercial links to unrelated businesses
         - Content reads like a press release, product landing page or SEO article rather than personal writing
+        - Title, bio and posts all funnel to one commercial site that is not the author's own personal presence
 
         NOT SPAM (classify as "not_spam"):
-        - Test posts, "hello world", formatting experiments, or a near-empty blog with no outbound links
-        - Personal writing that links out to sources, recipes, tutorials, news, other people's blogs, YouTube or social media
-        - A bio linking to the author's own site, social profiles or employer
+        - Test posts, "hello world", formatting experiments, or a blog with no posts at all
+        - A blog whose only links are in the bio, however commercial they look – that is a new user, not a link farm
+        - Posts that are mostly links, where the destinations are media, social, news, recipes, tutorials or other people's blogs
         - An affiliate or product link inside a post that also contains real personal writing
         - Writing that is unpolished, non-English, or about a commercial subject but written personally
 
-        A blog with no outbound links is not spam, however thin it is. A blog whose posts are mostly links to unrelated commercial hosts is spam even if it is short and politely written.
+        Link density alone is never enough, and neither is a lack of writing. A blog that posts twenty YouTube links with no commentary is a normal blog. A blog that posts three times about the same unrelated online shop is not.
 
-        Use "uncertain" when the links look commercial but there is genuine writing around them, or when there is too little content to tell either way.
+        Use "uncertain" when the destinations look commercial but you cannot tell whether they are the author's own. Prefer "uncertain" to "spam" whenever you are unsure: a wrong "spam" costs a real person their blog.
 
         Return JSON only: {"classification": "spam" | "not_spam" | "uncertain", "reason": "brief explanation naming the deciding signal"}
       PROMPT
@@ -141,10 +147,12 @@ class BlogSpamDetector
     end
 
     # The stored HTML rather than the plain text summary, which strips links out
-    # entirely. Attachment sgids are dropped: they are most of the markup by
-    # volume and are meaningless to the model.
+    # entirely. Attachment sgids are dropped as most of the markup by volume and
+    # meaningless to the model, and src attributes so that an embedded image is
+    # not mistaken for an outbound link.
     def post_html(post)
-      post.content.body.to_html.gsub(/ sgid="[^"]*"/, "").squish.truncate(POST_HTML_LIMIT)
+      post.content.body.to_html
+          .gsub(/ (sgid|src|srcset)="[^"]*"/, "").squish.truncate(POST_HTML_LIMIT)
     end
 
     # Repetition of the same host is the link farm signal, and a small model

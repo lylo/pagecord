@@ -177,9 +177,19 @@ class BlogSpamDetectorTest < ActiveSupport::TestCase
   end
 
   test "prompt ignores links back to pagecord" do
-    @blog.posts.create!(content: '<p><a href="https://someone.example.com/post">A friend</a></p>')
+    blog = Blog.new(subdomain: "quiet", user: users(:joel))
+    blog.save(validate: false)
+    blog.posts.create!(content: '<p><a href="https://someone.example.com/post">A friend</a></p>')
 
-    assert_includes prompt_for(@blog), "no outbound links"
+    assert_includes prompt_for(blog), "no outbound links"
+  end
+
+  test "prompt does not count an embedded image as an outbound link" do
+    blog = Blog.new(subdomain: "quiet", user: users(:joel))
+    blog.save(validate: false)
+    blog.posts.create!(content: '<p>Look at this</p><figure><img src="https://i.imgur.com/abc.jpg"></figure>')
+
+    assert_includes prompt_for(blog), "no outbound links"
   end
 
   test "prompt strips attachment sgids from post html" do
