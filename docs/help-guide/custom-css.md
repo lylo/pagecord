@@ -319,6 +319,17 @@ You can add text next to the upvote icon like this:
 }
 ```
 
+### Make the upvote heart solid
+
+The upvote heart is drawn as an outline, and fills in red once a reader likes the post. If you'd rather it was solid from the start:
+
+```css
+.upvote-heart {
+  fill: currentColor;
+  stroke: none;
+}
+```
+
 ### Stack the post footer items on different lines
 
 If you prefer the post footer items (date, tags, actions) to be stacked vertically instead of side-by-side, use this CSS:
