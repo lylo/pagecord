@@ -105,6 +105,8 @@ class BlogSpamDetector
         - Media and image hosts: YouTube, Vimeo, imgur, gyazo, tenor, giphy, streamable, Apple Music, Spotify, SoundCloud, Bandcamp, Midjourney and similar CDNs
         - Social platforms: Instagram, Bluesky, Mastodon, X, Threads, TikTok, Reddit, GitHub, LinkedIn
         - Sharing sites for photos, film, music and books: glass.photo, Flickr, 500px, VSCO, Behance, Letterboxd, Goodreads and their equivalents
+
+        Apply that as a rule, not a hint: if every outbound link is of those kinds, answer "not_spam" and stop reading. Repetition of such a host across many posts is exactly what a normal blog looks like here, and counts for nothing.
         - The author's own site, shop, portfolio, newsletter or employer, including a bio or links page that is nothing but these
 
         SPAM (classify as "spam" only when the links point at an unrelated business the blog is being used to promote):
