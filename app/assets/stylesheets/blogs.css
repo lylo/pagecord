@@ -1088,6 +1088,8 @@ ul.posts-list {
 /* ============================= */
 
 :where(.blog) button {
+  font-family: inherit;
+  font-size: inherit;
   border: none;
   display: flex;
   cursor: pointer;
