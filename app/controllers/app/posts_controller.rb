@@ -84,7 +84,7 @@ class App::PostsController < AppController
       status = params[:button] == "save_draft" ? :draft : :published
       permitted = [ :title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale ]
       permitted += [ :open_graph_image, :open_graph_image_suppressed ] if Current.user.has_premium_access?
-      permitted += [ :comments_closed ] if @blog.accepts_comments?
+      permitted << :comments_closed if current_features.enabled?(:comments) && @blog.accepts_comments?
       params.require(:post).permit(*permitted).merge(status: status)
     end
 

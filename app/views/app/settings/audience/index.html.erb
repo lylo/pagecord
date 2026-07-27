@@ -85,13 +85,15 @@
         </div>
       <% end %>
 
-      <%= settings_row "Comments", stacked: true do %>
-        <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
-          <div class="flex h-6 shrink-0 items-center">
-            <%= styled_check_box form, :comments_enabled, checked: @blog.comments_enabled, disabled: features_disabled %>
+      <% if current_features.enabled?(:comments) %>
+        <%= settings_row "Comments", stacked: true do %>
+          <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
+            <div class="flex h-6 shrink-0 items-center">
+              <%= styled_check_box form, :comments_enabled, checked: @blog.comments_enabled, disabled: features_disabled %>
+            </div>
+            <%= form.label :comments_enabled, "Let readers comment on your posts, with your approval before anything appears", class: "text-slate-800 dark:text-slate-100" %>
           </div>
-          <%= form.label :comments_enabled, "Let readers comment on your posts, with your approval before anything appears", class: "text-slate-800 dark:text-slate-100" %>
-        </div>
+        <% end %>
       <% end %>
 
       <%= settings_row "Post Likes", stacked: true do %>

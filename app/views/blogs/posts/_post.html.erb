@@ -1,4 +1,4 @@
-<% cache_if(post.post?, [post, @blog.updated_at, local_assigns[:excerpt]]) do %>
+<% cache_if(post.post?, [post, @blog.updated_at, local_assigns[:excerpt], comments_enabled?(@blog)]) do %>
   <article class="<%= post.page? ? 'page' : 'post' %> h-entry">
     <%= render "post_title", post: post %>
 
@@ -8,7 +8,7 @@
   </article>
 
   <%# Loaded on demand, so approved comments never enter the cached page %>
-  <% if post.post? && @blog.accepts_comments? && post.comments_visible? %>
+  <% if post.post? && comments_enabled?(@blog) && post.comments_visible? %>
     <%= turbo_frame_tag comments_frame_id(post) %>
   <% end %>
 <% end %>

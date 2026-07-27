@@ -5,6 +5,7 @@ class App::CommentsController < AppController
 
   helper_method :return_path
 
+  before_action :require_comments_feature
   before_action :ensure_comments_enabled
   before_action :load_comment, only: [ :show, :update, :destroy ]
 
@@ -122,6 +123,10 @@ class App::CommentsController < AppController
 
     def inline_action?
       ActiveModel::Type::Boolean.new.cast(params[:inline])
+    end
+
+    def require_comments_feature
+      render_app_not_found unless current_features.enabled?(:comments)
     end
 
     def ensure_comments_enabled

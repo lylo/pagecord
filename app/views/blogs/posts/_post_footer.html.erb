@@ -8,7 +8,7 @@
   <% end %>
 
   <% reply_enabled = @user.has_premium_access? && @blog.reply_by_email %>
-  <% comments_enabled = @blog.accepts_comments? && post.comments_visible? %>
+  <% comments_enabled = comments_enabled?(@blog) && post.comments_visible? %>
   <% if @blog.show_upvotes? || reply_enabled || comments_enabled %>
     <div class="post-actions">
       <% if comments_enabled %>

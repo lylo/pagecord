@@ -6,6 +6,7 @@ class CommentsTest < ApplicationSystemTestCase
   setup do
     @blog = blogs(:joel)
     @post = posts(:one)
+    @blog.user.update!(features: @blog.user.features | [ "comments" ])
   end
 
   # The feed runs turbo_frame_top_controller, which rewrites links to target

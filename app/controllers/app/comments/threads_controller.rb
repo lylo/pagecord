@@ -1,8 +1,7 @@
 class App::Comments::ThreadsController < AppController
+  before_action :require_comments_feature
   before_action :load_comment
 
-  # Closing doesn't remove anything, so stay on the comment you were reading
-  # rather than dropping back to the list.
   def update
     post = @comment.post
     post.comments_open? ? post.close_comments! : post.reopen_comments!
@@ -12,6 +11,10 @@ class App::Comments::ThreadsController < AppController
   end
 
   private
+
+    def require_comments_feature
+      render_app_not_found unless current_features.enabled?(:comments)
+    end
 
     def load_comment
       @comment = @blog.comments.find(params[:comment_id])

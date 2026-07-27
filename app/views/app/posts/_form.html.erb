@@ -77,7 +77,7 @@
       </div>
     </div>
 
-    <% if @blog.accepts_comments? %>
+    <% if comments_enabled?(@blog) %>
       <div class="<%= 'hidden' unless @post.comments_closed %> mb-8" data-post-attributes-target="section" data-section="comments">
         <div class="mt-4 font-bold">
           Comments

@@ -241,7 +241,9 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "input[type='hidden'][name='user[features][]'][value='']"
-    assert_select "input[type='checkbox'][name='user[features][]']", false
+    assert_select "input[type='checkbox'][name='user[features][]'][value='comments']", count: 1 do |fields|
+      assert_nil fields.first["checked"]
+    end
   end
 
   test "should add a feature to user" do

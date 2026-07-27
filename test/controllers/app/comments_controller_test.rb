@@ -6,6 +6,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:joel)
     @post = posts(:one)
+    @user.update!(features: @user.features | [ "comments" ])
     login_as @user
   end
 
@@ -38,7 +39,9 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     get app_post_comments_path(@post)
 
     assert_response :success
-    assert_select "h1", text: @post.display_title
+    assert_select "a[href=?]", edit_app_post_path(@post), text: @post.display_title
+    assert_select "a[aria-label='View published post'][href=?]",
+      blog_post_url(@post.slug, host: @post.blog.host)
     assert_select "p", text: /Great post/
     assert_select "p", text: /On another post/, count: 0
   end
@@ -151,6 +154,14 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     get app_comments_path
 
     assert_redirected_to app_settings_audience_index_path
+  end
+
+  test "is not found when the comments feature is disabled" do
+    @user.update!(features: [])
+
+    get app_comments_path
+
+    assert_response :not_found
   end
 
   test "approves a comment and updates the public count" do
@@ -316,6 +327,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   test "can't touch another blog's comments" do
     blogs(:annie).update!(comments_enabled: true)
+    users(:annie).update!(features: [ "comments" ])
     login_as users(:annie)
 
     patch app_comment_path(post_comments(:pending))
