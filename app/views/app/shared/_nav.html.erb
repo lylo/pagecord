@@ -13,11 +13,11 @@
     </li>
     <% if comments_enabled?(@blog) %>
       <li>
-        <%= link_to app_comments_path, class: nav_class_for("comments") do %>
+        <%= link_to app_comments_path, class: class_names(nav_class_for("comments"), "inline-flex items-center") do %>
           Comments
           <% pending_count = @blog.comments.pending.count %>
           <span id="comments_nav_pending_count">
-            <%= pill pending_count, class: "ms-1" if pending_count.positive? %>
+            <%= pill pending_count, class: "ms-1 inline-block -translate-y-px" if pending_count.positive? %>
           </span>
         <% end %>
       </li>
