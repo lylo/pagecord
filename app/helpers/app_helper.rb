@@ -1,9 +1,26 @@
 module AppHelper
+  NAV_SECTIONS = %w[ posts pages comments analytics settings ].freeze
+
+  PILL_TONES = {
+    slate: "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300",
+    amber: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+  }.freeze
+
   def show_upgrade_banner?
     !cookies[:upgrade_banner_dismissed].present?
   end
 
+  # Count and status badges: rounded-full, small, low drama.
+  def pill(text, tone: :slate, **options)
+    tag.span text, **options, class: [ "rounded-full px-2 py-0.5 text-xs font-medium", PILL_TONES.fetch(tone), options[:class] ]
+  end
+
   def is_current_path?(path)
+    # When the controller names a section outright it settles the question, so a
+    # nested route like /app/posts/:token/comments highlights Comments alone
+    # rather than matching "posts" and "comments" in the path.
+    return controller_name == path if NAV_SECTIONS.include?(controller_name)
+
     request.path.include?(path) || controller_name =~ /#{path}/
   end
 

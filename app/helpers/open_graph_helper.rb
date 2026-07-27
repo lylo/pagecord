@@ -94,7 +94,7 @@ module OpenGraphHelper
   end
 
     def blog_domain(blog)
-      blog.custom_domain.presence || "#{blog.subdomain}.pagecord.com"
+      blog.host
     end
 
     def generate_og_signature(params, secret)

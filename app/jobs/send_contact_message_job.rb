@@ -5,7 +5,7 @@ class SendContactMessageJob < ApplicationJob
     contact_message = Blog::ContactMessage.find_by(id: contact_message_id)
     return unless contact_message
 
-    if spam?(contact_message)
+    if contact_message.spam?
       Rails.logger.info("[SendContactMessageJob] Spam detected, destroying contact message #{contact_message.id}")
       contact_message.destroy!
       return
@@ -15,25 +15,4 @@ class SendContactMessageJob < ApplicationJob
 
     contact_message.destroy!
   end
-
-  private
-
-    def spam?(contact_message)
-      blog = contact_message.blog
-      host = blog.custom_domain.presence || "#{blog.subdomain}.#{Rails.application.config.x.domain}"
-      detector = MessageSpamDetector.new(
-        name: contact_message.name,
-        email: contact_message.email,
-        message: contact_message.message,
-        page_url: "https://#{host}"
-      )
-      detector.detect
-
-      Rails.logger.info("[SendContactMessageJob] Spam check: #{detector.result.status} - #{detector.result.reason}")
-
-      detector.spam?
-    rescue => e
-      Rails.logger.error("[SendContactMessageJob] Spam check failed: #{e.message}")
-      false
-    end
 end

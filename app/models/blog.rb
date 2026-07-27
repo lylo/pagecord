@@ -15,6 +15,7 @@ class Blog < ApplicationRecord
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
   has_many :pages, -> { where(is_page: true) }, class_name: "Post"
+  has_many :comments, through: :posts
   belongs_to :home_page, class_name: "Post", optional: true
 
   has_many :sender_email_addresses, dependent: :destroy
@@ -52,6 +53,16 @@ class Blog < ApplicationRecord
 
   def display_name
     title.blank? ? "@#{subdomain}" : title
+  end
+
+  def host
+    custom_domain.presence || "#{subdomain}.#{Rails.application.config.x.domain}"
+  end
+
+  # Moderating comments is an ongoing service we carry on the blogger's behalf,
+  # so the stored preference only applies while the plan includes it.
+  def accepts_comments?
+    comments_enabled && user.has_premium_access?
   end
 
   private

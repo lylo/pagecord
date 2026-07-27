@@ -1,0 +1,25 @@
+<% if @pagy.page > 1 %>
+  <%= turbo_frame_tag comments_frame_id(@post, @pagy.page) do %>
+    <%= render "page" %>
+  <% end %>
+<% else %>
+  <%= turbo_frame_tag comments_frame_id(@post) do %>
+    <div class="comments">
+      <h2 class="comments-heading"><%= t("comments.heading") %></h2>
+
+      <% if @rejected %>
+        <p class="comment-notice"><%= t("comments.rejected") %></p>
+      <% elsif @submitted %>
+        <p class="comment-notice"><%= t("comments.submitted") %></p>
+      <% elsif @post.comments_open? %>
+        <%= render "form" %>
+      <% else %>
+        <p class="comment-notice"><%= t("comments.closed") %></p>
+      <% end %>
+
+      <div class="comment-list">
+        <%= render "page" %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

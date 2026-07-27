@@ -1,32 +1,54 @@
+<% show_likes = @blog.show_metrics? && post.upvotes_count.positive? %>
+<% show_comments = @blog.accepts_comments? && post.comments_count.positive? %>
+
 <div class="flex gap-x-2 mb-2">
   <div class="text-slate-500 dark:text-slate-400 <%= local_assigns[:show_year] ? 'w-26' : 'w-16' %> flex-shrink-0">
     <% date = post.display_date.to_date %>
     <%= local_assigns[:show_year] ? date.strftime("%d %b %Y") : date.to_fs(:short) %>
   </div>
-  <div class="flex w-full items-start justify-between gap-x-2">
+
+  <div class="flex w-full items-start justify-between gap-x-4 sm:gap-x-6">
     <div class="flex flex-wrap items-baseline gap-x-2 min-w-0">
       <%= link_to edit_app_post_path(post, page: params[:page]), title: "Click to edit this post", data: { turbo_frame: "_top", turbo_prefetch: false } do %>
         <span class="font-medium hover:underline [overflow-wrap:anywhere]"><%= post.display_title %></span>
       <% end %>
-      <% if post.tag_list.present? %>
+
+      <% if @show_info %>
         <% post.tag_list.each do |tag| %>
-          <span class="hidden text-sm text-slate-400 dark:text-slate-500 sm:inline">#<%= tag %></span>
+          <span class="text-sm text-slate-400 dark:text-slate-500">#<%= tag %></span>
         <% end %>
       <% end %>
     </div>
-    <div class="flex gap-x-2 pt-1 text-slate-400 dark:text-slate-400">
-      <% if post.hidden? %>
-        <%= inline_svg_tag "icons/eye-slash.svg", class: "w-4 h-4", title: "Private post", aria: { label: "Private post" }, role: "img" %>
+
+    <div class="flex shrink-0 items-start gap-x-2 pt-1 text-slate-400 dark:text-slate-400">
+      <% if @show_info %>
+        <% if post.hidden? %>
+          <%= inline_svg_tag "icons/eye-slash.svg", class: "w-4 h-4", title: "Private post", aria: { label: "Private post" }, role: "img" %>
+        <% end %>
+
+        <% if show_comments %>
+          <%# p-1.5/-m-1.5 grows the tap target without moving anything on screen %>
+          <%= link_to app_post_comments_path(post), data: { turbo_frame: "_top" },
+                title: "#{pluralize post.comments_count, "comment"} on this post",
+                class: "-m-1.5 flex items-center gap-x-0.5 p-1.5 hover:text-slate-600 dark:hover:text-slate-200" do %>
+            <span class="text-xs"><%= post.comments_count %></span>
+            <%= inline_svg_tag "icons/comment.svg", class: "w-4 h-4" %>
+          <% end %>
+        <% end %>
+
+        <% if show_likes %>
+          <span class="flex items-center gap-x-0.5" title="<%= pluralize post.upvotes_count, "like" %>">
+            <span class="text-xs"><%= post.upvotes_count %></span>
+            <%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4 fill-current stroke-none" %>
+          </span>
+        <% end %>
+
+        <% if post.emailed? %>
+          <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4", title: "Emailed to subscribers", aria: { label: "Emailed to subscribers" }, role: "img" %>
+        <% end %>
       <% end %>
-      <% if @blog.show_metrics? && post.upvotes_count > 0 %>
-        <span class="flex gap-x-0.5">
-          <span class="text-xs"><%= post.upvotes_count %></span>
-          <%= inline_svg_tag "icons/heart.svg", class: "w-4 h-4 fill-current stroke-none" %>
-        </span>
-      <% end %>
-      <% if post.emailed? %>
-        <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4", title: "Emailed to subscribers", aria: { label: "Emailed to subscribers" }, role: "img" %>
-      <% end %>
+
+      <%# An action rather than a detail, so it survives the toggle %>
       <% if post.draft? || post.pending? %>
         <%= link_to app_post_path(post), title: "Preview draft", aria: { label: "Preview draft" }, target: "_blank", data: { turbo_frame: "_top" } do %>
           <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>

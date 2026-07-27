@@ -1,0 +1,21 @@
+pl:
+  comments:
+    heading: "Komentarze"
+    author_badge: "Autor"
+    closed: "Komentarze są zamknięte."
+    submitted: "Dziękujemy. Twój komentarz pojawi się po zatwierdzeniu."
+    rejected: "Nie udało się wysłać. Spróbuj ponownie."
+    more:
+      one: "Jeszcze %{count} komentarz"
+      other: "Jeszcze %{count} komentarze"
+    form:
+      message_placeholder: "Napisz komentarz…"
+      name_placeholder: "Imię"
+      link_placeholder: "Strona (opcjonalnie)"
+      submit_button: "Opublikuj"
+    mailer:
+      subject: "Masz komentarze do zatwierdzenia"
+      intro:
+        one: "Masz %{count} komentarz do zatwierdzenia."
+        other: "Masz %{count} komentarze do zatwierdzenia."
+      button: "Zobacz komentarze"

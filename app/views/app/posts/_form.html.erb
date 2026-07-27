@@ -77,6 +77,30 @@
       </div>
     </div>
 
+    <% if @blog.accepts_comments? %>
+      <div class="<%= 'hidden' unless @post.comments_closed %> mb-8" data-post-attributes-target="section" data-section="comments">
+        <div class="mt-4 font-bold">
+          Comments
+        </div>
+
+        <div class="mt-4 flex gap-3">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= form.check_box :comments_closed, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" %>
+          </div>
+          <div>
+            <%= form.label :comments_closed, "Close comments on this post", class: "text-sm text-slate-800 dark:text-slate-100" %>
+            <p class="text-slate-500 text-sm">
+              <% if @post.comments_count.positive? %>
+                Readers won't be able to add any more. The <%= pluralize @post.comments_count, "comment" %> already published will stay visible.
+              <% else %>
+                Readers won't be able to comment, and no comment box will appear on this post.
+              <% end %>
+            </p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <div class="<%= 'hidden' unless @post.tag_list.present? %> mb-8" data-post-attributes-target="section" data-section="tags">
       <div class="mt-4 font-bold">
         <%= form.label :tags_string, "Tags" %>

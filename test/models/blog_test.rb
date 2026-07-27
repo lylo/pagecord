@@ -290,6 +290,17 @@ class BlogTest < ActiveSupport::TestCase
     assert_equal original_updated_at, post.reload.updated_at
   end
 
+  # Moderation is an ongoing service, so the stored preference only holds while
+  # the plan pays for it.
+  test "accepts_comments? follows premium access" do
+    assert @blog.accepts_comments?
+
+    @blog.user.subscription.destroy
+    @blog.user.update!(created_at: 30.days.ago)
+
+    assert_not @blog.reload.accepts_comments?
+  end
+
   test "should purge cloudflare cache on update" do
     blog = blogs(:joel)
 

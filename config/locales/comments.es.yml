@@ -1,0 +1,21 @@
+es:
+  comments:
+    heading: "Comentarios"
+    author_badge: "Autor"
+    closed: "Los comentarios están cerrados."
+    submitted: "Gracias. Tu comentario aparecerá cuando se apruebe."
+    rejected: "No se ha podido enviar. Inténtalo de nuevo."
+    more:
+      one: "%{count} comentario más"
+      other: "%{count} comentarios más"
+    form:
+      message_placeholder: "Escribe un comentario…"
+      name_placeholder: "Nombre"
+      link_placeholder: "Sitio web (opcional)"
+      submit_button: "Publicar"
+    mailer:
+      subject: "Tienes comentarios pendientes"
+      intro:
+        one: "Tienes %{count} comentario pendiente de aprobación."
+        other: "Tienes %{count} comentarios pendientes de aprobación."
+      button: "Ver comentarios"

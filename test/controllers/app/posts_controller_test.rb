@@ -205,6 +205,82 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "https://example.com", @user.blog.posts.first.canonical_url
   end
 
+  test "post info shows by default" do
+    login_as users(:joel)
+
+    get app_posts_url
+
+    assert_response :success
+    assert_select "a[href=?]", app_posts_path(info: "off"), text: "Hide details"
+  end
+
+  test "the details toggle survives a search" do
+    login_as users(:joel)
+
+    get app_posts_url(search: "photography")
+
+    assert_response :success
+    assert_select "a[href=?]", app_posts_path(info: "off", search: "photography")
+  end
+
+  test "post info can be turned off and is remembered" do
+    login_as users(:joel)
+
+    get app_posts_url(info: "off")
+    assert_response :success
+    assert_select "a[href=?]", app_posts_path(info: "on")
+
+    get app_posts_url
+    assert_response :success
+    assert_select "a[href=?]", app_posts_path(info: "on"), message: "the preference should survive the next visit"
+  end
+
+  test "turning post info back on clears the preference" do
+    login_as users(:joel)
+
+    get app_posts_url(info: "off")
+    get app_posts_url(info: "on")
+    get app_posts_url
+
+    assert_response :success
+    assert_select "a[href=?]", app_posts_path(info: "off")
+  end
+
+  # The moderation screen can only reach posts that already have a comment, so
+  # closing a thread pre-emptively has to be possible from the editor.
+  test "closes and reopens comments on a post with no comments" do
+    login_as users(:joel)
+    target = posts(:two)
+    assert_equal 0, target.comments_count
+
+    patch app_post_url(target), params: { post: { comments_closed: "1" } }
+    assert_not target.reload.comments_open?
+
+    patch app_post_url(target), params: { post: { comments_closed: "0" } }
+    assert target.reload.comments_open?
+    assert_nil target.comments_closed_at
+  end
+
+  test "re-closing a thread keeps the original closing time" do
+    login_as users(:joel)
+    target = posts(:two)
+    target.close_comments!
+    closed_at = target.comments_closed_at
+
+    patch app_post_url(target), params: { post: { comments_closed: "1" } }
+
+    assert_in_delta closed_at, target.reload.comments_closed_at, 1.second
+  end
+
+  test "ignores comments_closed when the blog has comments off" do
+    login_as users(:joel)
+    blogs(:joel).update!(comments_enabled: false)
+
+    patch app_post_url(posts(:two)), params: { post: { comments_closed: "1" } }
+
+    assert posts(:two).reload.comments_open?
+  end
+
   test "should update post with open graph image" do
     user = users(:joel)
     login_as user

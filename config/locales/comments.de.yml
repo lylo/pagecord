@@ -1,0 +1,21 @@
+de:
+  comments:
+    heading: "Kommentare"
+    author_badge: "Autor"
+    closed: "Kommentare sind geschlossen."
+    submitted: "Danke. Dein Kommentar erscheint, sobald er freigegeben ist."
+    rejected: "Das hat leider nicht geklappt. Bitte versuche es erneut."
+    more:
+      one: "%{count} weiterer Kommentar"
+      other: "%{count} weitere Kommentare"
+    form:
+      message_placeholder: "Kommentar schreiben…"
+      name_placeholder: "Name"
+      link_placeholder: "Website (optional)"
+      submit_button: "Senden"
+    mailer:
+      subject: "Du hast Kommentare zur Freigabe"
+      intro:
+        one: "Du hast %{count} Kommentar zur Freigabe."
+        other: "Du hast %{count} Kommentare zur Freigabe."
+      button: "Kommentare ansehen"

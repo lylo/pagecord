@@ -103,6 +103,7 @@ Rails.application.routes.draw do
         end
         resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
         resource :restoration, only: [ :create ], controller: "posts/restorations"
+        resources :comments, only: [ :index ], module: :posts
       end
 
       namespace :pages do
@@ -116,6 +117,9 @@ Rails.application.routes.draw do
         end
       end
       resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
+      resources :comments, only: [ :index, :show, :create, :update, :destroy ] do
+        resource :thread, only: [ :update ], controller: "comments/threads"
+      end
       resources :settings, only: [ :index ]
 
       resource :onboarding, only: [ :show, :update ], path: "onboarding" do
@@ -314,6 +318,7 @@ Rails.application.routes.draw do
       resources :replies, only: [ :new, :create ], module: :posts do
         get :sent, on: :collection
       end
+      resources :comments, only: [ :index, :create ], module: :posts
     end
 
     # Catch-all for unmatched routes on blog domains

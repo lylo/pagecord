@@ -80,7 +80,8 @@ export default class extends Controller {
         "p": "published-at",
         "c": "canonical-url",
         "l": "locale",
-        "g": "og-image"
+        "g": "og-image",
+        "m": "comments"
       }
 
       const sectionId = shortcuts[event.key.toLowerCase()]

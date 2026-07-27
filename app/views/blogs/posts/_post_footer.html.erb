@@ -8,8 +8,23 @@
   <% end %>
 
   <% reply_enabled = @user.has_premium_access? && @blog.reply_by_email %>
-  <% if @blog.show_upvotes? || reply_enabled %>
+  <% comments_enabled = @blog.accepts_comments? && post.comments_visible? %>
+  <% if @blog.show_upvotes? || reply_enabled || comments_enabled %>
     <div class="post-actions">
+      <% if comments_enabled %>
+        <%= link_to post_comments_path(post),
+                  title: "Comments",
+                  aria: { label: "Comments" },
+                  data: { turbo_frame: comments_frame_id(post) },
+                  rel: "nofollow",
+                  class: "comment-link" do %>
+          <%= inline_svg_tag "icons/comment.svg", class: "icon" %>
+          <% if post.comments_count.positive? %>
+            <span class="comment-count"><%= post.comments_count %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+
       <% if reply_enabled %>
         <%= link_to new_post_reply_path(post),
                   title: "Reply to this post via email",

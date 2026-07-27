@@ -1,0 +1,24 @@
+<article class="comment<%= " comment-by-author" if comment.author? %>">
+  <div class="comment-meta">
+    <span class="comment-name">
+      <% if comment.link.present? %>
+        <%= link_to comment.name, comment.link, rel: "nofollow ugc noopener", target: "_blank" %>
+      <% else %>
+        <%= comment.name %>
+      <% end %>
+    </span>
+    <% if comment.author? %>
+      <span class="comment-badge"><%= t("comments.author_badge") %></span>
+    <% end %>
+    <%= local_time comment.created_at, format: published_at_date_format, class: "comment-date" %>
+  </div>
+
+  <div class="comment-message"><%= simple_format comment.message %></div>
+
+  <% replies = comment.approved_replies %>
+  <% if replies.any? %>
+    <div class="comment-replies">
+      <%= render partial: "comment", collection: replies %>
+    </div>
+  <% end %>
+</article>

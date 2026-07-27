@@ -1,0 +1,11 @@
+<%= render partial: "comment", collection: @comments %>
+
+<% if @pagy.next %>
+  <%= turbo_frame_tag comments_frame_id(@post, @pagy.next) do %>
+    <%= link_to t("comments.more", count: @pagy.count - @pagy.to),
+          post_comments_path(@post, page: @pagy.next),
+          class: "comments-more",
+          rel: "nofollow",
+          data: { turbo_frame: comments_frame_id(@post, @pagy.next) } %>
+  <% end %>
+<% end %>

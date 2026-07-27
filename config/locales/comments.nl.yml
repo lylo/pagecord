@@ -1,0 +1,21 @@
+nl:
+  comments:
+    heading: "Reacties"
+    author_badge: "Auteur"
+    closed: "Reacties zijn gesloten."
+    submitted: "Bedankt. Je reactie verschijnt zodra die is goedgekeurd."
+    rejected: "Verzenden is niet gelukt. Probeer het opnieuw."
+    more:
+      one: "Nog %{count} reactie"
+      other: "Nog %{count} reacties"
+    form:
+      message_placeholder: "Schrijf een reactie…"
+      name_placeholder: "Naam"
+      link_placeholder: "Website (optioneel)"
+      submit_button: "Plaatsen"
+    mailer:
+      subject: "Er wachten reacties op je"
+      intro:
+        one: "Er wacht %{count} reactie op goedkeuring."
+        other: "Er wachten %{count} reacties op goedkeuring."
+      button: "Reacties bekijken"

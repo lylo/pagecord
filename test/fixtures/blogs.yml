@@ -12,6 +12,7 @@ joel:
   updated_at: <%= 2.days.ago %>
   <<: *default
   reply_by_email: true
+  comments_enabled: true
   api_key_digest: <%= Digest::SHA256.hexdigest("test_api_key_for_fixtures") %>
   api_key_hint: ures
 

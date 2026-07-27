@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_14_090000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_26_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -132,6 +132,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_14_090000) do
     t.text "custom_footer_html"
     t.boolean "external_links_in_new_tab", default: false, null: false
     t.text "custom_robots_txt"
+    t.boolean "comments_enabled", default: false, null: false
     t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
@@ -247,6 +248,22 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_14_090000) do
     t.index ["visitor_hash", "post_id", "viewed_at"], name: "index_page_views_on_visitor_hash_and_post_id_and_viewed_at"
   end
 
+  create_table "post_comments", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "parent_id"
+    t.string "name", null: false
+    t.string "link"
+    t.text "message", null: false
+    t.datetime "approved_at"
+    t.boolean "author", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_id"], name: "index_post_comments_on_parent_id"
+    t.index ["parent_id"], name: "index_post_comments_on_author_reply_parent_id", unique: true, where: "author"
+    t.index ["post_id", "approved_at"], name: "index_post_comments_on_post_id_and_approved_at"
+    t.index ["post_id"], name: "index_post_comments_on_post_id"
+  end
+
   create_table "post_digest_deliveries", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "delivered_at"
@@ -297,6 +314,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_14_090000) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.integer "upvotes_count", default: 0, null: false
+    t.integer "comments_count", default: 0, null: false
+    t.datetime "comments_closed_at"
     t.index ["blog_id", "is_page"], name: "index_posts_on_blog_id_and_is_page"
     t.index ["blog_id", "slug"], name: "index_posts_on_blog_id_and_slug", unique: true
     t.index ["blog_id", "status", "published_at"], name: "index_posts_published_lookup", order: { published_at: :desc }, where: "(status = 1)"
@@ -450,6 +469,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_14_090000) do
   add_foreign_key "paddle_events", "users"
   add_foreign_key "page_views", "blogs"
   add_foreign_key "page_views", "posts"
+  add_foreign_key "post_comments", "post_comments", column: "parent_id"
+  add_foreign_key "post_comments", "posts"
   add_foreign_key "post_digest_deliveries", "email_subscribers"
   add_foreign_key "post_digest_deliveries", "post_digests"
   add_foreign_key "post_digests", "blogs"

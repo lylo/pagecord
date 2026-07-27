@@ -1,0 +1,8 @@
+<%= t("comments.mailer.intro", count: @comments.size) %>
+
+<% @comments.each do |comment| -%>
+<%= comment.name %> on <%= comment.post.display_title %>
+<%= comment.message.gsub(/\r?\n/, "\n") %>
+
+<% end -%>
+<%= t("comments.mailer.button") %>: <%= app_comments_url %>

@@ -1,0 +1,18 @@
+<%# Carry the post through so the comment can send you back where you came from %>
+<%= link_to app_comment_path(comment, post: @post&.token), class: "group block px-4 py-4 sm:px-6" do %>
+  <div class="flex items-baseline justify-between gap-3">
+    <div class="flex min-w-0 items-baseline gap-2">
+      <span class="shrink-0 font-medium text-slate-900 group-hover:underline dark:text-slate-100"><%= comment.name %></span>
+      <span class="truncate text-sm text-slate-500 dark:text-slate-400"><%= comment.post.display_title %></span>
+    </div>
+
+    <span class="shrink-0 text-sm text-slate-500 dark:text-slate-400"><%= time_ago_in_words comment.created_at %> ago</span>
+  </div>
+
+  <p class="mt-1 truncate text-slate-600 dark:text-slate-300"><%= comment.message %></p>
+
+  <% reply = comment.author_reply %>
+  <% if reply %>
+    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">You replied <%= time_ago_in_words reply.created_at %> ago</p>
+  <% end %>
+<% end %>

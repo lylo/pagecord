@@ -14,6 +14,10 @@ class CleanTalk
       message: message
     }
 
+    # Comments deliberately collect no email address, so score on nickname and
+    # message alone rather than sending a blank sender.
+    body.delete(:sender_email) if email.blank?
+
     if page_url
       body[:sender_info] = { page_url: page_url, REFERRER: page_url }.to_json
     end

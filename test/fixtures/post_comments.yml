@@ -1,0 +1,24 @@
+_fixture:
+  model_class: Post::Comment
+
+approved:
+  post: one
+  name: Sarah
+  message: Great post, the bit about waiting resonated.
+  approved_at: <%= 1.hour.ago %>
+  created_at: <%= 2.hours.ago %>
+
+pending:
+  post: one
+  name: Tom
+  message: Does this work with a 35mm lens?
+  created_at: <%= 30.minutes.ago %>
+
+author_reply:
+  post: one
+  parent: approved
+  name: Joel
+  message: Thanks Sarah, I nearly cut that section.
+  author: true
+  approved_at: <%= 30.minutes.ago %>
+  created_at: <%= 30.minutes.ago %>

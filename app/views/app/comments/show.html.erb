@@ -1,0 +1,84 @@
+<% comment = @comment.parent || @comment %>
+<% reply = comment.author_reply %>
+<%# The list you came from, carried on every link and button back out %>
+<% origin = { post: params[:post] } %>
+
+<div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50">
+  <div class="my-8">
+    <% status = comment.approved? ? pill("Published", class: "shrink-0") : pill("Waiting for you", tone: :amber, class: "shrink-0") %>
+
+    <%= settings_section link_to(comment.post.display_title, post_url(comment.post), target: "_blank", rel: "noopener", class: "hover:underline"),
+          description: link_to("#{pluralize comment.post.comments_count, "published comment"} on this post", app_post_comments_path(comment.post), class: "underline hover:text-slate-700 dark:hover:text-slate-200"),
+          control: status do %>
+      <div class="px-4 py-5 sm:px-6">
+        <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <% if comment.link.present? %>
+            <%= link_to comment.name, comment.link, target: "_blank", rel: "nofollow noopener", title: comment.link,
+                  class: "font-bold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-300" %>
+          <% else %>
+            <span class="font-bold text-slate-900 dark:text-slate-100"><%= comment.name %></span>
+          <% end %>
+          <span class="text-sm text-slate-500 dark:text-slate-400"><%= time_ago_in_words comment.created_at %> ago</span>
+        </div>
+
+        <p class="mt-2 whitespace-pre-line leading-7 text-slate-800 dark:text-slate-200"><%= comment.message %></p>
+      </div>
+
+      <% if reply %>
+        <%# Shaded with an accent bar, mirroring .comment-by-author on the blog %>
+        <div class="px-4 py-5 sm:px-6">
+          <div class="rounded-e-lg border-s-2 border-[#4fbd9c] bg-slate-50 p-4 dark:bg-slate-800/60">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <span class="font-bold text-slate-900 dark:text-slate-100"><%= reply.name %></span>
+              <%= pill "Your reply" %>
+              <span class="text-sm text-slate-500 dark:text-slate-400"><%= time_ago_in_words reply.created_at %> ago</span>
+            </div>
+
+            <%= button_to app_comment_path(reply, origin), method: :delete,
+                  data: { turbo_confirm: "Delete your reply? You can write another afterwards." },
+                  title: "Delete your reply", aria: { label: "Delete your reply" },
+                  class: "shrink-0 cursor-pointer text-slate-400 hover:text-red-600" do %>
+              <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
+            <% end %>
+          </div>
+
+          <p class="mt-2 whitespace-pre-line leading-7 text-slate-800 dark:text-slate-200"><%= reply.message %></p>
+          </div>
+        </div>
+      <% elsif comment.approved? %>
+        <%= form_with url: app_comments_path(origin), method: :post, class: "px-4 py-5 sm:px-6" do |form| %>
+          <%= hidden_field_tag :parent_id, comment.id %>
+          <h4 class="font-bold text-slate-900 dark:text-slate-100">Reply</h4>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Published straight away, and you can only reply once</p>
+          <%= form.text_area "comment[message]", rows: 3, required: true,
+                class: "form-field mt-3 w-full",
+                placeholder: "Write a public reply…" %>
+          <%= form.submit "Post reply", class: "btn-primary mt-3" %>
+        <% end %>
+      <% else %>
+        <%# Approving and replying are one decision, so they're one form %>
+        <%= form_with url: app_comment_path(comment, origin), method: :patch, class: "px-4 py-5 sm:px-6" do |form| %>
+          <%= form.text_area "comment[message]", rows: 3,
+                class: "form-field w-full",
+                placeholder: "Write an optional public reply…" %>
+          <%= form.submit "Approve", class: "btn-primary mt-3" %>
+        <% end %>
+      <% end %>
+
+      <div class="flex flex-wrap items-center gap-2 px-4 py-5 sm:px-6">
+        <%# Approve lives with the reply box above, since they submit together %>
+        <%= button_to "Delete", app_comment_path(comment, origin), method: :delete,
+              data: { turbo_confirm: "Delete this comment? This can't be undone." },
+              class: "btn-danger" %>
+
+        <%= button_to comment.post.comments_open? ? "Close thread" : "Reopen thread",
+              app_comment_thread_path(comment, origin), method: :patch, class: "btn-optional ms-auto" %>
+      </div>
+    <% end %>
+
+    <div class="mt-12">
+      <%= link_to "Back to comments", return_path(comment), class: "btn-secondary" %>
+    </div>
+  </div>
+</div>

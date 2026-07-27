@@ -1,3 +1,8 @@
+<%# Four tabs have always fitted on a phone. Only when Comments and Analytics are
+    both present does the row outgrow it, and then just Settings moves behind a ». %>
+<% overflow_on_mobile = @blog.accepts_comments? && @blog.show_metrics? %>
+<% secondary_class = overflow_on_mobile ? "hidden sm:block" : "" %>
+
 <div class="mt-2 mb-8 pb-2 border-b border-b-slate-200 dark:border-b-slate-500">
   <ul role="list" class="flex gap-x-6 text-slate-400">
     <li>
@@ -6,13 +11,36 @@
     <li>
       <%= link_to "Pages", app_pages_path, class: nav_class_for("pages") %>
     </li>
+    <% if @blog.accepts_comments? %>
+      <li>
+        <%= link_to app_comments_path, class: nav_class_for("comments") do %>
+          Comments
+          <% pending_count = @blog.comments.pending.count %>
+          <%= pill pending_count, class: "ms-1" if pending_count.positive? %>
+        <% end %>
+      </li>
+    <% end %>
     <% if @blog.show_metrics? %>
       <li>
         <%= link_to "Analytics", app_analytics_path, class: nav_class_for("analytics") %>
       </li>
     <% end %>
-    <li>
+    <li class="<%= secondary_class %>">
       <%= link_to "Settings", app_settings_path, class: nav_class_for("settings") %>
     </li>
+
+    <% if overflow_on_mobile %>
+      <li class="relative sm:hidden" data-controller="toggle">
+        <%= link_to "#", class: "font-medium hover:text-slate-900 dark:hover:text-slate-100",
+              title: "More", aria: { label: "More" },
+              data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
+          &raquo;
+        <% end %>
+
+        <div class="absolute end-0 z-50 mt-2 hidden w-40 rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-600 dark:bg-slate-800" role="menu" data-toggle-target="element">
+          <%= link_to "Settings", app_settings_path, class: "block px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50" %>
+        </div>
+      </li>
+    <% end %>
   </ul>
 </div>

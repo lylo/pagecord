@@ -1,0 +1,21 @@
+fr:
+  comments:
+    heading: "Commentaires"
+    author_badge: "Auteur"
+    closed: "Les commentaires sont fermés."
+    submitted: "Merci. Votre commentaire apparaîtra après validation."
+    rejected: "L'envoi a échoué. Veuillez réessayer."
+    more:
+      one: "%{count} commentaire de plus"
+      other: "%{count} commentaires de plus"
+    form:
+      message_placeholder: "Écrire un commentaire…"
+      name_placeholder: "Nom"
+      link_placeholder: "Site web (facultatif)"
+      submit_button: "Publier"
+    mailer:
+      subject: "Des commentaires vous attendent"
+      intro:
+        one: "Vous avez %{count} commentaire en attente de validation."
+        other: "Vous avez %{count} commentaires en attente de validation."
+      button: "Voir les commentaires"

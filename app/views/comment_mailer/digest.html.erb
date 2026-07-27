@@ -1,0 +1,19 @@
+<p>
+  <%= t("comments.mailer.intro", count: @comments.size) %>
+</p>
+
+<% @comments.each do |comment| %>
+  <div style="background-color: #F3F4F6; padding: 15px; border-radius: 5px; margin: 20px 0;">
+    <p>
+      <strong><%= comment.name %></strong> on <%= comment.post.display_title %>
+    </p>
+
+    <div>
+      <%= simple_format(comment.message) %>
+    </div>
+  </div>
+<% end %>
+
+<p>
+  <%= link_to t("comments.mailer.button"), app_comments_url %>
+</p>

@@ -1,0 +1,21 @@
+en:
+  comments:
+    heading: "Comments"
+    author_badge: "Author"
+    closed: "Comments are closed."
+    submitted: "Thanks. Your comment will appear once it's approved."
+    rejected: "Sorry, that didn't go through. Please try again."
+    more:
+      one: "%{count} more comment"
+      other: "%{count} more comments"
+    form:
+      message_placeholder: "Add a comment…"
+      name_placeholder: "Name"
+      link_placeholder: "Website (optional)"
+      submit_button: "Post"
+    mailer:
+      subject: "You have comments waiting"
+      intro:
+        one: "You have %{count} comment waiting for approval."
+        other: "You have %{count} comments waiting for approval."
+      button: "Review comments"

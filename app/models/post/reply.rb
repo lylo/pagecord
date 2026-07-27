@@ -1,4 +1,6 @@
 class Post::Reply < ApplicationRecord
+  include SpamCheckable
+
   self.table_name = "post_replies"
 
   belongs_to :post
@@ -12,5 +14,9 @@ class Post::Reply < ApplicationRecord
 
   def display_name
     "Reply from #{name}"
+  end
+
+  def spam_check_url
+    "https://#{post.blog.host}/#{post.slug}"
   end
 end
