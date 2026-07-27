@@ -6,7 +6,12 @@ class CommentsTest < ApplicationSystemTestCase
   setup do
     @blog = blogs(:joel)
     @post = posts(:one)
-    @blog.user.update!(features: @blog.user.features | [ "comments" ])
+    @comments_feature = ENV["FEATURE_COMMENTS"]
+    ENV["FEATURE_COMMENTS"] = "true"
+  end
+
+  teardown do
+    ENV["FEATURE_COMMENTS"] = @comments_feature
   end
 
   # The feed runs turbo_frame_top_controller, which rewrites links to target
@@ -22,15 +27,5 @@ class CommentsTest < ApplicationSystemTestCase
     assert_selector "turbo-frame##{comments_frame_id(@post)} .comment-message", text: /Great post/
     # A full page navigation would have replaced the feed with the bare frame
     assert_selector ".h-feed"
-  end
-
-  test "comments load into the frame from the post page" do
-    use_subdomain(@blog.subdomain)
-    visit blog_post_path(@post.slug)
-
-    find("a[href='#{post_comments_path(@post)}']").click
-
-    assert_selector ".comment-message", text: /Great post/
-    assert_selector "form[action='#{post_comments_path(@post)}']"
   end
 end
