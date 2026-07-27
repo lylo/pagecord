@@ -1,0 +1,29 @@
+<%= turbo_frame_tag dom_id(comment) do %>
+  <article class="px-4 py-5 sm:px-6">
+    <div class="rounded-lg bg-slate-50 p-4 dark:bg-slate-800/60">
+      <%= render "comment_header", comment: comment, timestamp_data: { turbo_frame: "_top" } %>
+
+      <p class="mt-3 max-h-44 overflow-y-auto whitespace-pre-line text-base leading-7 text-slate-900 dark:text-slate-100"><%= comment.message %></p>
+    </div>
+
+    <%= form_with url: app_comment_path(comment, post: @post&.token), method: :patch, class: "mt-4" do |form| %>
+      <%= hidden_field_tag :inline, true %>
+
+      <%= form.text_area "comment[message]", rows: 3,
+            class: "form-field w-full",
+            placeholder: "Write an optional public reply before approving…" %>
+
+      <% if local_assigns[:reply_error].present? %>
+        <p class="mt-2 text-sm text-red-600 dark:text-red-400"><%= reply_error %></p>
+      <% end %>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <%= form.submit "Approve", class: "btn-primary", data: { turbo_submits_with: "Approving…" } %>
+
+        <%= link_to "Delete", app_comment_path(comment, post: @post&.token, inline: true),
+              data: { turbo_method: :delete, turbo_confirm: "Delete this comment? This can't be undone.", turbo_submits_with: "Deleting…" },
+              class: "btn-secondary hover:bg-red-500 hover:text-white dark:hover:bg-red-700" %>
+      </div>
+    <% end %>
+  </article>
+<% end %>

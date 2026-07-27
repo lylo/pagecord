@@ -11,17 +11,7 @@ class App::CommentsController < AppController
   # Pending is the work queue, so it stays whole however long it gets. Only the
   # published archive is paged.
   def index
-    @post = scoped_post
-    scope = @post&.comments || @blog.comments
-
-    # :replies because every row asks whether you've already replied
-    @pending = scope.pending.chronologically.includes(:post, :replies)
-    @pagy, @approved = pagy(
-      # Last activity rather than when it arrived, so a thread you've just
-      # approved or replied to is at the top where you can find it again.
-      scope.approved.top_level.order(updated_at: :desc).includes(:post, :replies),
-      limit: PAGE_SIZE
-    )
+    load_comment_collections(scoped_post)
   end
 
   def show
@@ -45,7 +35,11 @@ class App::CommentsController < AppController
     reply = @comment.build_author_reply(reply_message) if reply_message.present?
 
     if reply&.invalid?
-      redirect_to app_comment_path(@comment, post: params[:post]), alert: reply.errors.full_messages.to_sentence
+      if inline_action?
+        render_inline_error(@comment, reply.errors.full_messages.to_sentence)
+      else
+        redirect_to app_comment_path(@comment, post: params[:post]), alert: reply.errors.full_messages.to_sentence
+      end
       return
     end
 
@@ -54,7 +48,7 @@ class App::CommentsController < AppController
       reply&.save!
     end
 
-    redirect_to return_path(@comment), notice: reply ? "Comment approved and your reply posted." : "Comment approved."
+    finish_change(@comment, reply ? "Comment approved and your reply posted." : "Comment approved.")
   end
 
   # Deleting your reply frees you to write another, so go back to the comment
@@ -66,7 +60,7 @@ class App::CommentsController < AppController
     if parent
       redirect_to app_comment_path(parent, post: params[:post]), notice: "Reply deleted."
     else
-      redirect_to return_path(@comment), notice: "Comment deleted."
+      finish_change(@comment, "Comment deleted.")
     end
   end
 
@@ -83,12 +77,52 @@ class App::CommentsController < AppController
       params[:post] == comment.post.token ? app_post_comments_path(params[:post]) : app_comments_path
     end
 
+    def load_comment_collections(post)
+      @post = post
+      scope = @post&.comments || @blog.comments
+
+      # :replies because every row asks whether you've already replied
+      @pending = scope.pending.chronologically.includes(:post, :replies)
+      @pagy, @approved = pagy(
+        # Last activity rather than when it arrived, so a thread you've just
+        # approved or replied to is at the top where you can find it again.
+        scope.approved.top_level.order(updated_at: :desc).includes(:post, :replies),
+        limit: PAGE_SIZE
+      )
+    end
+
+    def finish_change(comment, notice)
+      inline_action? ? refresh_moderation(origin_post_for(comment), notice) : redirect_to(return_path(comment), notice:)
+    end
+
+    def refresh_moderation(post, notice)
+      load_comment_collections(post)
+      flash.now[:notice] = notice
+      render :refresh
+    end
+
+    def render_inline_error(comment, error)
+      render turbo_stream: turbo_stream.replace(
+        comment,
+        partial: "app/comments/pending_comment",
+        locals: { comment:, reply_error: error }
+      )
+    end
+
     def load_comment
       @comment = @blog.comments.includes(:post, :replies).find(params[:id])
     end
 
     def reply_message
       params.dig(:comment, :message)
+    end
+
+    def origin_post_for(comment)
+      params[:post] == comment.post.token ? comment.post : nil
+    end
+
+    def inline_action?
+      ActiveModel::Type::Boolean.new.cast(params[:inline])
     end
 
     def ensure_comments_enabled

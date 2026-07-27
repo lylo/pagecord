@@ -16,7 +16,9 @@
         <%= link_to app_comments_path, class: nav_class_for("comments") do %>
           Comments
           <% pending_count = @blog.comments.pending.count %>
-          <%= pill pending_count, class: "ms-1" if pending_count.positive? %>
+          <span id="comments_nav_pending_count">
+            <%= pill pending_count, class: "ms-1" if pending_count.positive? %>
+          </span>
         <% end %>
       </li>
     <% end %>

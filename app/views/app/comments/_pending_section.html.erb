@@ -1,0 +1,3 @@
+<%= settings_section "Waiting for you", control: pill(@pending.size, tone: :amber) do %>
+  <%= render partial: "pending_comment", collection: @pending, as: :comment %>
+<% end %>

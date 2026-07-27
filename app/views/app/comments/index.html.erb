@@ -11,32 +11,8 @@
       </div>
     <% end %>
 
-    <% if @pending.empty? && @approved.empty? %>
-      <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 sm:p-8 dark:border-slate-700 dark:bg-slate-800/50">
-        <h1 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">No comments yet ✨</h1>
-        <p class="mt-2 leading-7 text-slate-600 dark:text-slate-300">
-          Comments on your posts appear here for you to approve. Nothing is published until you say
-          so, and spam never reaches this page. You can turn comments off again in
-          <%= link_to "Audience settings", app_settings_audience_index_path, class: "font-medium underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:decoration-slate-600 dark:hover:text-slate-300" %>.
-        </p>
-      </div>
-    <% else %>
-      <div class="space-y-8">
-        <% if @pending.any? %>
-          <%= settings_section "Waiting for you" do %>
-            <%= render partial: "row", collection: @pending, as: :comment %>
-          <% end %>
-        <% end %>
-
-        <% if @approved.any? %>
-          <div>
-            <%= settings_section "Published" do %>
-              <%= render partial: "row", collection: @approved, as: :comment %>
-            <% end %>
-            <%= render "app/shared/pagy_nav" %>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
+    <div id="comments_moderation">
+      <%= render "moderation_sections" %>
+    </div>
   </div>
 </div>

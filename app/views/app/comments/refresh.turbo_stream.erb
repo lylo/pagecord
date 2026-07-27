@@ -1,0 +1,8 @@
+<%= turbo_stream.update "comments_moderation" do %>
+  <%= render "moderation_sections" %>
+<% end %>
+
+<%= turbo_stream.update "comments_nav_pending_count" do %>
+  <% pending_count = @blog.comments.pending.count %>
+  <%= pill pending_count, class: "ms-1" if pending_count.positive? %>
+<% end %>

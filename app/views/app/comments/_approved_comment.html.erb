@@ -1,0 +1,15 @@
+<% replied = comment.author_reply.present? %>
+
+<article class="<%= class_names(
+  "-mx-4 border-b border-b-slate-200 px-4 py-4 sm:mx-0 sm:last:rounded-b-lg sm:px-6 dark:border-b-slate-700",
+  "border-s-2 border-s-pagecord-accent bg-slate-50 sm:border-e sm:border-e-slate-200 dark:bg-slate-800/60 dark:sm:border-e-slate-700": replied,
+  "sm:border-x sm:border-x-slate-200 dark:sm:border-x-slate-700": !replied
+) %>">
+  <% if replied %>
+    <span class="sr-only">You replied to this comment.</span>
+  <% end %>
+
+  <%= render "comment_header", comment: comment %>
+
+  <p class="mt-3 max-h-24 overflow-hidden whitespace-pre-line text-base leading-7 text-slate-900 dark:text-slate-100"><%= comment.message %></p>
+</article>

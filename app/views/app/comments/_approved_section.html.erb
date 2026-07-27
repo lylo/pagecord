@@ -1,0 +1,14 @@
+<div>
+  <section>
+    <div class="-mx-4 flex items-start justify-between gap-4 border-y border-slate-200 bg-slate-50 px-4 py-5 sm:mx-0 sm:rounded-t-lg sm:border-x sm:px-6 dark:border-slate-700 dark:bg-slate-800">
+      <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Approved</h3>
+      <%= pill(@pagy.count) %>
+    </div>
+
+    <div>
+      <%= render partial: "approved_comment", collection: @approved, as: :comment %>
+    </div>
+  </section>
+
+  <%= render "app/shared/pagy_nav" %>
+</div>
