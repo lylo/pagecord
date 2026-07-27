@@ -310,17 +310,31 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_comment_path(post_comments(:approved))
   end
 
-  test "closes and reopens a thread without leaving the comment" do
-    patch app_comment_thread_path(post_comments(:approved))
+  test "creating a closure closes comments without leaving the comment" do
+    post app_comment_closure_path(post_comments(:approved))
+
     assert_not @post.reload.comments_open?
     assert_redirected_to app_comment_path(post_comments(:approved))
-
-    patch app_comment_thread_path(post_comments(:approved))
-    assert @post.reload.comments_open?
   end
 
-  test "closing a thread keeps the post you came from" do
-    patch app_comment_thread_path(post_comments(:approved), post: @post.token)
+  test "destroying a closure reopens comments" do
+    @post.close_comments!
+
+    delete app_comment_closure_path(post_comments(:approved))
+
+    assert @post.reload.comments_open?
+    assert_redirected_to app_comment_path(post_comments(:approved))
+  end
+
+  # The property a toggle could never have
+  test "closing twice leaves comments closed" do
+    2.times { post app_comment_closure_path(post_comments(:approved)) }
+
+    assert_not @post.reload.comments_open?
+  end
+
+  test "closing keeps the post you came from" do
+    post app_comment_closure_path(post_comments(:approved), post: @post.token)
 
     assert_redirected_to app_comment_path(post_comments(:approved), post: @post.token)
   end

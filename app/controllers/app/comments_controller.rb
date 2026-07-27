@@ -67,9 +67,9 @@ class App::CommentsController < AppController
 
   private
 
-    # Overridden by App::Posts::CommentsController to scope to one post.
+    # /app/posts/:post_token/comments routes here too, scoped to that post.
     def scoped_post
-      nil
+      @blog.posts.find_by!(token: params[:post_token]) if params[:post_token]
     end
 
     # A comment lives at /app/comments/:id however you got there, so the list you

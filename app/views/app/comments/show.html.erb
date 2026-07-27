@@ -72,8 +72,14 @@
               data: { turbo_confirm: "Delete this comment? This can't be undone." },
               class: "btn-danger" %>
 
-        <%= button_to comment.post.comments_open? ? "Close thread" : "Reopen thread",
-              app_comment_thread_path(comment, origin), method: :patch, class: "btn-optional ms-auto" %>
+        <%# Create a closure to close comments, destroy it to reopen them %>
+        <% if comment.post.comments_open? %>
+          <%= button_to "Close comments", app_comment_closure_path(comment, origin),
+                method: :post, class: "btn-optional ms-auto" %>
+        <% else %>
+          <%= button_to "Reopen comments", app_comment_closure_path(comment, origin),
+                method: :delete, class: "btn-optional ms-auto" %>
+        <% end %>
       </div>
     <% end %>
 

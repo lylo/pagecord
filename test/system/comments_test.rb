@@ -6,12 +6,9 @@ class CommentsTest < ApplicationSystemTestCase
   setup do
     @blog = blogs(:joel)
     @post = posts(:one)
-    @comments_feature = ENV["FEATURE_COMMENTS"]
-    ENV["FEATURE_COMMENTS"] = "true"
-  end
-
-  teardown do
-    ENV["FEATURE_COMMENTS"] = @comments_feature
+    # The flag resolves off the blog owner, so granting it is what turns the
+    # comment UI on — matching Posts::CommentsControllerTest.
+    @blog.user.update!(features: @blog.user.features | [ "comments" ])
   end
 
   # The feed runs turbo_frame_top_controller, which rewrites links to target

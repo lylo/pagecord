@@ -103,7 +103,7 @@ Rails.application.routes.draw do
         end
         resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
         resource :restoration, only: [ :create ], controller: "posts/restorations"
-        resources :comments, only: [ :index ], module: :posts
+        resources :comments, only: [ :index ], controller: "comments"
       end
 
       namespace :pages do
@@ -118,7 +118,7 @@ Rails.application.routes.draw do
       end
       resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
       resources :comments, only: [ :index, :show, :create, :update, :destroy ] do
-        resource :thread, only: [ :update ], controller: "comments/threads"
+        resource :closure, only: [ :create, :destroy ], controller: "comments/closures"
       end
       resources :settings, only: [ :index ]
 
