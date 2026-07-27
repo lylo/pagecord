@@ -12,8 +12,8 @@
           control: status do %>
       <div class="px-4 py-5 sm:px-6">
         <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-          <% if comment.link.present? %>
-            <%= link_to comment.name, comment.link, target: "_blank", rel: "nofollow noopener", title: comment.link,
+          <% if (comment_link = comment_link_url(comment)) %>
+            <%= link_to comment.name, comment_link, target: "_blank", rel: "nofollow noopener", title: comment_link,
                   class: "font-bold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-300" %>
           <% else %>
             <span class="font-bold text-slate-900 dark:text-slate-100"><%= comment.name %></span>
@@ -50,7 +50,7 @@
         <%= form_with url: app_comments_path(origin), method: :post, class: "px-4 py-5 sm:px-6" do |form| %>
           <%= hidden_field_tag :parent_id, comment.id %>
           <h4 class="font-bold text-slate-900 dark:text-slate-100">Reply</h4>
-          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Published straight away, and you can only reply once</p>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Your reply is published straight away. You can only reply once.</p>
           <%= form.text_area "comment[message]", rows: 3, required: true,
                 class: "form-field mt-3 w-full",
                 placeholder: "Write a public reply…" %>

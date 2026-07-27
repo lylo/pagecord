@@ -92,13 +92,12 @@ class App::CommentsController < AppController
     end
 
     def finish_change(comment, notice)
-      inline_action? ? refresh_moderation(origin_post_for(comment), notice) : redirect_to(return_path(comment), notice:)
-    end
-
-    def refresh_moderation(post, notice)
-      load_comment_collections(post)
-      flash.now[:notice] = notice
-      render :refresh
+      if inline_action?
+        load_comment_collections(origin_post_for(comment))
+        render :refresh
+      else
+        redirect_to return_path(comment), notice:
+      end
     end
 
     def render_inline_error(comment, error)
@@ -106,7 +105,7 @@ class App::CommentsController < AppController
         comment,
         partial: "app/comments/pending_comment",
         locals: { comment:, reply_error: error }
-      )
+      ), status: :unprocessable_entity
     end
 
     def load_comment

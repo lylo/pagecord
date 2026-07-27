@@ -1,8 +1,8 @@
 <article class="comment<%= " comment-by-author" if comment.author? %>">
   <div class="comment-meta">
     <span class="comment-name">
-      <% if comment.link.present? %>
-        <%= link_to comment.name, comment.link, rel: "nofollow ugc noopener", target: "_blank" %>
+      <% if (comment_link = comment_link_url(comment)) %>
+        <%= link_to comment.name, comment_link, rel: "nofollow ugc noopener", target: "_blank" %>
       <% else %>
         <%= comment.name %>
       <% end %>

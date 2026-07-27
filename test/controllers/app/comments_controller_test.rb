@@ -9,25 +9,25 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
-  test "lists comments waiting and comments already published" do
+  test "lists comments waiting and comments already approved" do
     get app_comments_path
 
     assert_response :success
     assert_select "a[href=?]", app_comment_path(post_comments(:pending))
     assert_select "a[href=?]", app_comment_path(post_comments(:approved))
     assert_select "p", text: /35mm/
-    assert_select "span", text: posts(:one).display_title, message: "each row should name its post"
+    assert_select "a", text: posts(:one).display_title, message: "each row should name its post"
   end
 
-  test "says when the author already replied" do
+  test "marks comments the author already replied to" do
     get app_comments_path
 
     assert_response :success
-    assert_select "a[href=?]", app_comment_path(post_comments(:approved)) do
-      assert_select "p", text: /\AYou replied .+ ago\z/
+    assert_select "article", text: /Great post/ do
+      assert_select "span.sr-only", text: "You replied to this comment."
     end
-    assert_select "a[href=?]", app_comment_path(post_comments(:pending)) do
-      assert_select "p", text: /You replied/, count: 0
+    assert_select "article#post_comment_#{post_comments(:pending).id}" do
+      assert_select "span.sr-only", count: 0
     end
   end
 
@@ -162,6 +162,32 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_comments_path
     assert comment.reload.approved?
+  end
+
+  test "approves inline and refreshes the moderation list and nav count" do
+    comment = post_comments(:pending)
+
+    patch app_comment_path(comment),
+      params: { inline: true, comment: { message: "" } },
+      as: :turbo_stream
+
+    assert_response :success
+    assert comment.reload.approved?
+    assert_select "turbo-stream[action=update][target=comments_moderation]"
+    assert_select "turbo-stream[action=update][target=comments_nav_pending_count]"
+  end
+
+  test "shows an inline reply error without approving the comment" do
+    comment = post_comments(:pending)
+
+    patch app_comment_path(comment),
+      params: { inline: true, comment: { message: "x" * 9.kilobytes } },
+      as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_not comment.reload.approved?
+    assert_select "turbo-stream[action=replace][target=post_comment_#{comment.id}]"
+    assert_includes response.body, "Message is too long"
   end
 
   # blog.updated_at is what rolls the fragment key, the ETag and the Cloudflare
