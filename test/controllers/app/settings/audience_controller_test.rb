@@ -26,6 +26,8 @@ class App::Settings::AudienceControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "hides comments settings when the feature is disabled" do
+    @user.update!(features: [])
+
     get app_settings_audience_index_url
 
     assert_response :success
@@ -33,8 +35,6 @@ class App::Settings::AudienceControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "shows comments settings when the feature is enabled" do
-    @user.update!(features: [ "comments" ])
-
     get app_settings_audience_index_url
 
     assert_response :success

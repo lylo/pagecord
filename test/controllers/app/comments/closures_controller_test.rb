@@ -6,7 +6,6 @@ class App::Comments::ClosuresControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:joel)
     @post = posts(:one)
-    @user.update!(features: @user.features | [ "comments" ])
     login_as @user
   end
 

@@ -5,7 +5,6 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @post = posts(:one)
-    @post.blog.user.update!(features: @post.blog.user.features | [ "comments" ])
     host! "#{@post.blog.subdomain}.#{Rails.application.config.x.domain}"
   end
 
@@ -14,7 +13,7 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "a.comment-link[href=?]", post_comments_path(@post)
-    assert_select ".comment-count", text: "2"
+    assert_select ".comment-count", text: "3"
     assert_select "turbo-frame##{comments_frame_id(@post)}:empty"
   end
 
@@ -49,7 +48,7 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "turbo-frame##{comments_frame_id(@post)}"
     assert_select "form[action=?]", post_comments_path(@post)
-    assert_select ".comment", 2 # the approved comment and the author's reply
+    assert_select ".comment", 3 # two approved comments and the author's reply
     assert_select ".comment-message", text: /Great post/
   end
 
@@ -140,7 +139,7 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
     get post_comments_path(@post)
 
     assert_response :success
-    assert_select ".comment", 2
+    assert_select ".comment", 3
     assert_select "form[action=?]", post_comments_path(@post), count: 0
   end
 
@@ -152,7 +151,7 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_enqueued_jobs 1, only: CheckPostCommentJob
     assert_not Post::Comment.last.approved?
-    assert_equal 2, @post.reload.comments_count, "a pending comment must not change the public count"
+    assert_equal 3, @post.reload.comments_count, "a pending comment must not change the public count"
   end
 
   test "does not create a comment on a closed thread" do

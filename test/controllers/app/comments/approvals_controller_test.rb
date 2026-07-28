@@ -6,7 +6,6 @@ class App::Comments::ApprovalsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:joel)
     @post = posts(:one)
-    @user.update!(features: @user.features | [ "comments" ])
     login_as @user
   end
 
@@ -33,7 +32,7 @@ class App::Comments::ApprovalsControllerTest < ActionDispatch::IntegrationTest
     assert reply.author?
     assert reply.approved?
     assert_equal "Thanks for this!", reply.message
-    assert_equal 4, @post.reload.comments_count, "both the comment and the reply become public"
+    assert_equal 5, @post.reload.comments_count, "both the comment and the reply become public"
   end
 
   test "a rejected reply leaves the comment unapproved" do
