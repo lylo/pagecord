@@ -7,7 +7,7 @@ class App::Comments::ApprovalsController < AppController
   before_action :load_comment
 
   def create
-    reply = @comment.build_author_reply(params.dig(:comment, :message)) if reply_message?
+    reply = @comment.build_author_reply(reply_message) if reply_message.present?
     return reject(reply) if reply&.invalid?
 
     Post::Comment.transaction do
@@ -19,14 +19,14 @@ class App::Comments::ApprovalsController < AppController
 
     respond_to do |format|
       format.turbo_stream { refresh_moderation notice }
-      format.html { redirect_to return_path(@comment), notice: notice }
+      format.html { redirect_to return_path, notice: notice }
     end
   end
 
   private
 
-    def reply_message?
-      params.dig(:comment, :message).present?
+    def reply_message
+      params.dig(:comment, :message)
     end
 
     def reject(reply)
@@ -34,7 +34,7 @@ class App::Comments::ApprovalsController < AppController
 
       respond_to do |format|
         format.turbo_stream { render_reply_error error }
-        format.html { redirect_to app_comment_path(@comment, post: params[:post]), alert: error }
+        format.html { redirect_to comment_path, alert: error }
       end
     end
 

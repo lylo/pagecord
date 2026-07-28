@@ -14,18 +14,16 @@ class Posts::CommentsController < Blogs::BaseController
 
   before_action :load_post
   before_action :form_token_check, only: [ :create ]
+  before_action :ensure_comments_visible, only: [ :index ]
+  before_action :ensure_comments_open, only: [ :create ]
 
   # Deliberately never calls set_blog_cache_headers: the frame is fetched
   # separately so approved comments stay out of the edge cached post page.
   def index
-    head :not_found and return unless @blog.accepts_comments? && @post.comments_visible?
-
     load_comments
   end
 
   def create
-    head :not_found and return unless @blog.accepts_comments? && @post.comments_open?
-
     @comment = @post.comments.new(comment_params)
     CheckPostCommentJob.perform_later(@comment.id) if @comment.save
 
@@ -37,6 +35,16 @@ class Posts::CommentsController < Blogs::BaseController
 
     def require_comments_feature
       head :not_found unless current_features.enabled?(:comments)
+    end
+
+    # A closed thread still shows what it collected, so reading and writing ask
+    # different questions.
+    def ensure_comments_visible
+      head :not_found unless @blog.accepts_comments? && @post.comments_visible?
+    end
+
+    def ensure_comments_open
+      head :not_found unless @blog.accepts_comments? && @post.comments_open?
     end
 
     def comment_params

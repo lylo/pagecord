@@ -15,9 +15,9 @@
           control: status do %>
       <div class="px-4 py-5 sm:px-6">
         <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-          <% if (comment_link = comment_link_url(comment)) %>
-            <%= link_to comment.name, comment_link, target: "_blank", rel: "nofollow noopener", title: comment_link,
-                  class: "font-bold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-300" %>
+          <% if (link = comment.link_url) %>
+            <%= link_to comment.name, link, target: "_blank", rel: "nofollow noopener", title: link,
+                  class: "link-quiet font-bold text-slate-900 dark:text-slate-100" %>
           <% else %>
             <span class="font-bold text-slate-900 dark:text-slate-100"><%= comment.name %></span>
           <% end %>
@@ -86,7 +86,7 @@
     <% end %>
 
     <div class="mt-12">
-      <%= link_to "Back to comments", return_path(comment), class: "btn-secondary" %>
+      <%= link_to "Back to comments", return_path, class: "btn-secondary" %>
     </div>
   </div>
 </div>

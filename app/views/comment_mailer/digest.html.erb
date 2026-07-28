@@ -8,8 +8,11 @@
       <strong><%= comment.name %></strong> on <%= comment.post.display_title %>
     </p>
 
+    <%# The blog renders this escaped with white-space: pre-line, but email
+        clients can't be trusted with that, so paragraphs are built here.
+        tags: [] because none of the commenter's markup should survive. %>
     <div>
-      <%= simple_format(comment.message) %>
+      <%= simple_format(comment.message, {}, sanitize_options: { tags: [] }) %>
     </div>
   </div>
 <% end %>

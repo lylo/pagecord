@@ -15,7 +15,7 @@ class App::CommentsController < AppController
 
     respond_to do |format|
       format.turbo_stream { refresh_moderation "Comment deleted." }
-      format.html { redirect_to return_path(@comment), notice: "Comment deleted." }
+      format.html { redirect_to return_path, notice: "Comment deleted." }
     end
   end
 

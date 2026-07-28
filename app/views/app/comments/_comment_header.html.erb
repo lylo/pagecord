@@ -1,21 +1,20 @@
 <% timestamp = "#{time_ago_in_words(comment.created_at).delete_prefix("about ")} ago" %>
+<% strong_link = "link-quiet font-semibold text-slate-900 dark:text-slate-100" %>
 
 <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
   <p class="min-w-0 text-base leading-7 text-slate-700 dark:text-slate-300">
-    <% if (comment_link = comment_link_url(comment)) %>
-      <%= link_to comment.name, comment_link, target: "_blank", rel: "nofollow noopener",
-            class: "font-semibold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-300" %>
+    <% if (link = comment.link_url) %>
+      <%= link_to comment.name, link, target: "_blank", rel: "nofollow noopener", class: strong_link %>
     <% else %>
       <span class="font-semibold text-slate-900 dark:text-slate-100"><%= comment.name %></span>
     <% end %>
 
     <% unless @post %>
       on
-      <%= link_to comment.post.display_title, post_url(comment.post), target: "_blank", rel: "noopener",
-            class: "font-semibold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-300" %>
+      <%= link_to comment.post.display_title, post_url(comment.post), target: "_blank", rel: "noopener", class: strong_link %>
     <% end %>
   </p>
 
   <%= link_to timestamp, app_comment_path(comment, post: @post&.token),
-        class: "shrink-0 text-sm text-slate-500 underline decoration-slate-300 underline-offset-2 hover:text-slate-700 hover:decoration-slate-500 dark:text-slate-400 dark:decoration-slate-600 dark:hover:text-slate-200 dark:hover:decoration-slate-300" %>
+        class: "link-quiet shrink-0 text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" %>
 </div>

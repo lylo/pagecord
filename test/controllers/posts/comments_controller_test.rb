@@ -82,6 +82,19 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form", count: 0, message: "the form belongs on the first page only"
   end
 
+  # Nothing turns a comment body into markup, so a spammer can't drop a followed
+  # link into someone else's page.
+  test "renders a comment body as plain text" do
+    @post.comments.create!(name: "Spammer", approved_at: Time.current,
+      message: %(Buy <a href="https://spam.example">cheap pills</a>))
+
+    get post_comments_path(@post)
+
+    assert_response :success
+    assert_select ".comment-message a", count: 0
+    assert_select ".comment-message", text: /<a href="https:\/\/spam\.example">/
+  end
+
   test "does not leak pending comments" do
     get post_comments_path(@post)
 

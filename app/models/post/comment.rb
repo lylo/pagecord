@@ -58,6 +58,14 @@ class Post::Comment < ApplicationRecord
     )
   end
 
+  # The link as an href, or nothing at all. Makes the same check link_format
+  # makes at write time, so a link that arrived any other way can't reach a page.
+  def link_url
+    link if link.present? && URI.parse(link).scheme.in?(%w[http https])
+  rescue URI::InvalidURIError
+    nil
+  end
+
   # Comments collect no email address, so CleanTalk scores on the name and the
   # message alone. See SpamCheckable.
   def email

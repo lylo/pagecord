@@ -1,8 +1,8 @@
 <article class="comment<%= " comment-by-author" if comment.author? %>">
   <div class="comment-meta">
     <span class="comment-name">
-      <% if (comment_link = comment_link_url(comment)) %>
-        <%= link_to comment.name, comment_link, rel: "nofollow ugc noopener", target: "_blank" %>
+      <% if (link = comment.link_url) %>
+        <%= link_to comment.name, link, rel: "nofollow ugc noopener", target: "_blank" %>
       <% else %>
         <%= comment.name %>
       <% end %>
@@ -13,7 +13,7 @@
     <%= local_time comment.created_at, format: published_at_date_format, class: "comment-date" %>
   </div>
 
-  <div class="comment-message"><%= simple_format comment.message %></div>
+  <div class="comment-message"><%= comment.message %></div>
 
   <% replies = comment.approved_replies %>
   <% if replies.any? %>

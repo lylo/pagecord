@@ -4,21 +4,15 @@ class App::Comments::ClosuresController < AppController
 
   before_action :load_comment
 
+  # Closing removes nothing, so both actions return to the comment you were
+  # reading rather than out to the list.
   def create
     @comment.post.close_comments!
-    redirect_to_comment "Comments closed."
+    redirect_to comment_path, notice: "Comments closed."
   end
 
   def destroy
     @comment.post.reopen_comments!
-    redirect_to_comment "Comments reopened."
+    redirect_to comment_path, notice: "Comments reopened."
   end
-
-  private
-
-    # Closing removes nothing, so return to the comment you were reading,
-    # carrying the list origin as every other action on that page does.
-    def redirect_to_comment(notice)
-      redirect_to app_comment_path(@comment, post: params[:post]), notice: notice
-    end
 end

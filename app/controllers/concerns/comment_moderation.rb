@@ -19,17 +19,21 @@ module CommentModeration
 
     # Pending is the work queue, so it stays whole however long it gets. Only the
     # approved archive is paged.
-    def load_comment_collections(post = nil)
+    def load_comment_collections(post)
       @post = post
       scope = @post&.comments || @blog.comments
 
-      # :replies because every row asks whether you've already replied
-      @pending = scope.pending.chronologically.includes(:post, :replies)
+      # :replies because every row asks whether you've already replied. Both are
+      # loaded here rather than left lazy: the view asks each list whether it's
+      # empty and how big it is before rendering it, which is three round trips
+      # apiece for an answer it's about to have anyway.
+      @pending = scope.pending.chronologically.includes(:post, :replies).load
       @pagy, @approved = pagy(
         # Last activity rather than when it arrived, so a thread you've just
         # approved or replied to is at the top where you can find it again.
         scope.approved.top_level.order(updated_at: :desc).includes(:post, :replies)
       )
+      @approved.load
     end
 
     # Re-renders the moderation list in place, staying on the post you were
@@ -42,16 +46,17 @@ module CommentModeration
 
     # A comment lives at /app/comments/:id however you got there, so the list you
     # came from is carried in a param rather than guessed.
-    def return_path(comment)
-      origin_post_token?(comment) ? app_post_comments_path(params[:post]) : app_comments_path
+    def return_path
+      origin_post ? app_post_comments_path(origin_post) : app_comments_path
+    end
+
+    # Back to the comment you were reading, still carrying the list origin.
+    def comment_path
+      app_comment_path(@comment, post: params[:post])
     end
 
     def origin_post
-      @comment && origin_post_token?(@comment) ? @comment.post : nil
-    end
-
-    def origin_post_token?(comment)
-      params[:post] == comment.post.token
+      @comment.post if @comment && params[:post] == @comment.post.token
     end
 
     def require_comments_feature

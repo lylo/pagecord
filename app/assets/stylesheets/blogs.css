@@ -696,12 +696,9 @@ footer.blog-footer #brand svg {
   color: var(--color-accent);
 }
 
-.comment-message p {
-  margin-block: 0 0.5rem;
-}
-
-.comment-message p:last-child {
-  margin-block-end: 0;
+/* Escaped plain text, so newlines are honoured here rather than by markup */
+.comment-message {
+  white-space: pre-line;
 }
 
 .comment-replies {

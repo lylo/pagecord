@@ -301,6 +301,23 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.reload.accepts_comments?
   end
 
+  # Otherwise the moderation queue nags about work that can't be done: approving
+  # publishes nothing and the row links to a post in the trash.
+  test "comments exclude those on trashed posts" do
+    blog = blogs(:joel)
+    post = posts(:one)
+
+    assert_difference -> { blog.comments.pending.count }, -1 do
+      post.discard!
+      blog.reload
+    end
+
+    assert_difference -> { blog.comments.pending.count }, 1 do
+      post.undiscard!
+      blog.reload
+    end
+  end
+
   test "should purge cloudflare cache on update" do
     blog = blogs(:joel)
 

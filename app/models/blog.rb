@@ -15,7 +15,10 @@ class Blog < ApplicationRecord
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
   has_many :pages, -> { where(is_page: true) }, class_name: "Post"
-  has_many :comments, through: :posts
+  # Trashed posts keep their comments, but there's nothing useful to do with
+  # them: approving publishes nothing and the moderation row leads to a post
+  # you've deleted. Restoring the post brings them back.
+  has_many :comments, -> { merge(Post.kept) }, through: :posts
   belongs_to :home_page, class_name: "Post", optional: true
 
   has_many :sender_email_addresses, dependent: :destroy

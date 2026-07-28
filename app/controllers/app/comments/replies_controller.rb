@@ -9,9 +9,9 @@ class App::Comments::RepliesController < AppController
     @reply = @comment.build_author_reply(params.dig(:comment, :message))
 
     if @reply.save
-      redirect_to return_path(@comment), notice: "Reply posted."
+      redirect_to return_path, notice: "Reply posted."
     else
-      redirect_to app_comment_path(@comment, post: params[:post]), alert: @reply.errors.full_messages.to_sentence
+      redirect_to comment_path, alert: @reply.errors.full_messages.to_sentence
     end
   end
 
@@ -20,7 +20,7 @@ class App::Comments::RepliesController < AppController
   def destroy
     @comment.replies.find(params[:id]).destroy!
 
-    redirect_to app_comment_path(@comment, post: params[:post]), notice: "Reply deleted."
+    redirect_to comment_path, notice: "Reply deleted."
   end
 
   private

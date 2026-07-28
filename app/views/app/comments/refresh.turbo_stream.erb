@@ -7,6 +7,5 @@
 <% end %>
 
 <%= turbo_stream.update "comments_nav_pending_count" do %>
-  <% pending_count = @blog.comments.pending.count %>
-  <%= pill pending_count, class: "ms-1" if pending_count.positive? %>
+  <%= render "app/comments/pending_count" %>
 <% end %>

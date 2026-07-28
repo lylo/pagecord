@@ -19,6 +19,14 @@ class Post::CommentTest < ActiveSupport::TestCase
     assert @post.comments.new(name: "T", message: "m", link: "").valid?
   end
 
+  # The last line of defence before the link reaches an href, for rows that
+  # never went through link_format.
+  test "link_url offers nothing but an http url" do
+    assert_equal "https://example.com", @post.comments.new(link: "https://example.com").link_url
+    assert_nil @post.comments.new(link: "javascript:alert(1)").link_url
+    assert_nil @post.comments.new(link: "").link_url
+  end
+
   test "can't comment when the blog has comments disabled" do
     @post.blog.update!(comments_enabled: false)
 

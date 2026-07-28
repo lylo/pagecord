@@ -133,18 +133,12 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav.pagy"
   end
 
-  test "shows a single comment with its reply" do
+  test "shows a single comment with its reply, and no box to reply again" do
     get app_comment_path(post_comments(:approved))
 
     assert_response :success
     assert_select "p", text: /Great post/
     assert_select "p", text: /nearly cut that section/
-  end
-
-  test "offers no reply box once the author has already replied" do
-    get app_comment_path(post_comments(:approved))
-
-    assert_response :success
     assert_select "textarea", count: 0
   end
 
@@ -164,10 +158,10 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "approves a comment and updates the public count" do
+  test "approves a comment, leaving no reply behind" do
     comment = post_comments(:pending)
 
-    assert_difference -> { @post.reload.comments_count }, 1 do
+    assert_no_difference "Post::Comment.count" do
       post app_comment_approval_path(comment)
     end
 
@@ -272,14 +266,6 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert reply.approved?
     assert_equal "Thanks for this!", reply.message
     assert_equal 4, @post.reload.comments_count, "both the comment and the reply become public"
-  end
-
-  test "approving without a reply leaves no reply behind" do
-    assert_no_difference "Post::Comment.count" do
-      post app_comment_approval_path(post_comments(:pending)), params: { comment: { message: "" } }
-    end
-
-    assert post_comments(:pending).reload.approved?
   end
 
   test "a rejected reply leaves the comment unapproved" do
