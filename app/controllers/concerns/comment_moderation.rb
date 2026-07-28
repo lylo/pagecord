@@ -5,8 +5,6 @@ module CommentModeration
 
   include Pagy::Method
 
-  PAGE_SIZE = 25
-
   included do
     before_action :require_comments_feature, :ensure_comments_enabled
     helper_method :return_path
@@ -30,8 +28,7 @@ module CommentModeration
       @pagy, @approved = pagy(
         # Last activity rather than when it arrived, so a thread you've just
         # approved or replied to is at the top where you can find it again.
-        scope.approved.top_level.order(updated_at: :desc).includes(:post, :replies),
-        limit: PAGE_SIZE
+        scope.approved.top_level.order(updated_at: :desc).includes(:post, :replies)
       )
     end
 

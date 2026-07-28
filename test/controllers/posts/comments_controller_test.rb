@@ -68,7 +68,7 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
     get post_comments_path(@post)
 
     assert_response :success
-    assert_select ".comment-list > .comment", Posts::CommentsController::PAGE_SIZE
+    assert_select ".comment-list > .comment", Pagy::OPTIONS[:limit]
     assert_select "a.comments-more", text: /more comments/
   end
 

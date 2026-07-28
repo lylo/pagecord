@@ -128,7 +128,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     get app_comments_path
 
     assert_response :success
-    assert_equal App::CommentsController::PAGE_SIZE, assigns(:approved).size
+    assert_equal Pagy::OPTIONS[:limit], assigns(:approved).size
     assert_equal 6, assigns(:pending).size, "the queue you have to act on is never paged"
     assert_select "nav.pagy"
   end

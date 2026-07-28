@@ -7,8 +7,6 @@ class Posts::CommentsController < Blogs::BaseController
 
   layout false # Responses are Turbo Frames, so the surrounding page is dead weight
 
-  PAGE_SIZE = 20
-
   rate_limit to: 3, within: 1.hour, only: [ :create ]
 
   skip_before_action :authenticate
@@ -29,11 +27,10 @@ class Posts::CommentsController < Blogs::BaseController
     head :not_found and return unless @blog.accepts_comments? && @post.comments_open?
 
     @comment = @post.comments.new(comment_params)
-    @submitted = @comment.save
-    CheckPostCommentJob.perform_later(@comment.id) if @submitted
+    CheckPostCommentJob.perform_later(@comment.id) if @comment.save
 
     load_comments
-    render :index, status: @submitted ? :ok : :unprocessable_entity
+    render :index, status: @comment.persisted? ? :ok : :unprocessable_entity
   end
 
   private
@@ -54,8 +51,7 @@ class Posts::CommentsController < Blogs::BaseController
       @comment ||= @post.comments.new
       @form_token = @post.signed_id(purpose: :comment_form)
       @pagy, @comments = pagy(
-        @post.comments.approved.top_level.chronologically.includes(:replies),
-        limit: PAGE_SIZE
+        @post.comments.approved.top_level.chronologically.includes(:replies)
       )
     end
 

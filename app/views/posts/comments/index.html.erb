@@ -9,7 +9,7 @@
 
       <% if @rejected %>
         <p class="comment-notice"><%= t("comments.rejected") %></p>
-      <% elsif @submitted %>
+      <% elsif @comment.persisted? %>
         <p class="comment-notice"><%= t("comments.submitted") %></p>
       <% elsif @post.comments_open? %>
         <%= render "form" %>
