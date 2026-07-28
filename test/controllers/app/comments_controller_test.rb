@@ -186,6 +186,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert comment.reload.approved?
     assert_select "turbo-stream[action=update][target=comments_moderation]"
     assert_select "turbo-stream[action=update][target=comments_nav_pending_count]"
+    assert_select "turbo-stream[action=update][target=flash]", text: /Comment approved/
   end
 
   test "shows an inline reply error without approving the comment" do

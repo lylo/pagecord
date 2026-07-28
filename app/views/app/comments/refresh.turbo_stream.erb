@@ -1,3 +1,7 @@
+<%= turbo_stream.update "flash" do %>
+  <%= render "app/shared/flash" %>
+<% end %>
+
 <%= turbo_stream.update "comments_moderation" do %>
   <%= render "app/comments/moderation_sections" %>
 <% end %>
