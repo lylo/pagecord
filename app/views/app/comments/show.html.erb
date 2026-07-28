@@ -3,9 +3,15 @@
 <%# The list you came from, carried on every link and button back out %>
 <% origin = { post: params[:post] } %>
 
+<%# Every form here submits with turbo: false, and must keep doing so. The
+    controllers respond turbo_stream to Turbo and html to everyone else, and the
+    stream updates #comments_moderation — a list that only exists on the index.
+    Let Turbo intercept these and the action would succeed server side while the
+    page sat there doing nothing. %>
+
 <div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50">
   <div class="my-8">
-    <% status = comment.approved? ? pill("Approved", class: "shrink-0") : pill("Waiting for you", tone: :amber, class: "shrink-0") %>
+    <% status = comment.approved? ? pill("Approved", class: "shrink-0") : pill("Waiting for you", class: "shrink-0") %>
 
     <%= settings_section link_to(comment.post.display_title, post_url(comment.post), target: "_blank", rel: "noopener", class: "hover:underline"),
           description: link_to("#{pluralize comment.post.comments_count, "published comment"} on this post", app_post_comments_path(comment.post), class: "underline hover:text-slate-700 dark:hover:text-slate-200"),

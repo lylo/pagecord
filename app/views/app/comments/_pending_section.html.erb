@@ -1,3 +1,5 @@
-<%= settings_section "Waiting for you", control: pill(@pending.size, tone: :amber) do %>
+<% heading = tag.span safe_join([ "Waiting for you", pill(@pending.size) ]), class: "inline-flex items-center gap-2" %>
+
+<%= settings_section heading do %>
   <%= render partial: "app/comments/pending_comment", collection: @pending, as: :comment %>
 <% end %>
