@@ -4,7 +4,9 @@ class App::PostsController < AppController
   rescue_from Pagy::RangeError, with: :redirect_to_first_page
 
   def index
-    @show_info = show_info?
+    # Shown unless explicitly turned off, so nobody loses tags or likes without
+    # asking for it.
+    @show_info = cookies.encrypted[:posts_info] != "off"
 
     posts_query = @blog.posts.kept.published.includes(:post_digests).order(published_at: :desc)
     drafts_query = @blog.posts.kept.draft.includes(:post_digests).order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
@@ -90,21 +92,5 @@ class App::PostsController < AppController
 
     def redirect_to_first_page
       redirect_to app_posts_path
-    end
-
-    # Shown unless explicitly turned off, so nobody loses tags or likes without
-    # asking for it. Remembered like the pages sort preference (cookies.encrypted).
-    def show_info?
-      persist_info_preference if params[:info].present?
-
-      cookies.encrypted[:posts_info] != "off"
-    end
-
-    def persist_info_preference
-      if params[:info] == "off"
-        cookies.encrypted[:posts_info] = { value: "off", expires: 1.year.from_now }
-      else
-        cookies.delete(:posts_info)
-      end
     end
 end

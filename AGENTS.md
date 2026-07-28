@@ -9,6 +9,15 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **Reuse existing code**: Before adding a helper, predicate, query object, or host/routing check, search for an existing app concept that already expresses it. Prefer calling the existing method over duplicating the logic.
 - **Idiomatic**: Follow Ruby and Rails conventions throughout. Fat models, skinny controllers, RESTful routes.
 - **Default Rails baseline**: For Rails coding, refactoring, debugging, migrations, and review tasks, apply the `rails-best-practices-core` skill unless a more specific instruction conflicts.
+- **Suggest refactorings**: When you spot something worth improving next to the work in hand, say so. Describe it and let it be chosen, rather than silently widening the change.
+
+## State changes
+
+- **A GET must be safe.** Never write state in response to a GET, not even to a cookie or the session. Turbo prefetches links on hover, so a `link_to` that writes a preference fires just by passing the cursor over it. This is easy to miss because curl and integration tests never hover: the server looks correct in every probe while every browser misbehaves.
+- **Toggles are singular resources.** A preference or state change is `create`/`destroy` on a `resource`, reached with `button_to`. `App::Posts::DetailsController` and `App::Pages::SortController` are the pattern; `routes.rb` has many more (`resource :restoration`, `resource :spotlight_exclusion`, `resource :avatar`).
+- **`button_to` inside a flex or grid container needs `form_class: "contents"`**, or the generated `<form>` becomes the layout child and breaks the arrangement. Inactive buttons need `cursor-pointer`, which links get for free.
+- **`session` vs `cookies.encrypted`**: the session *is* an encrypted cookie, so encryption is not the distinction — lifetime is. The session expires after a year and dies with `sign_out`, so anything that should be remembered indefinitely belongs in `cookies.permanent.encrypted`: display preferences such as `posts_info` and `pages_sort`. Reserve `session` for state that is genuinely scoped to being signed in, and `cookies.encrypted` without `permanent` for values needing their own schedule, such as `upgrade_banner_dismissed` reappearing after 14–30 days.
+- Storing a preference as an explicit value both ways (`"on"` / `"off"`) avoids the `cookies.delete` branch that a single toggle endpoint needs to express "back to default".
 
 ## Code Style
 

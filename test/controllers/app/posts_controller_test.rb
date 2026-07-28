@@ -211,7 +211,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     get app_posts_url
 
     assert_response :success
-    assert_select "a[href=?]", app_posts_path(info: "off"), text: "Hide details"
+    assert_select "form[action=?] button", app_posts_details_path, text: "Hide details"
   end
 
   test "the details toggle survives a search" do
@@ -220,30 +220,42 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     get app_posts_url(search: "photography")
 
     assert_response :success
-    assert_select "a[href=?]", app_posts_path(info: "off", search: "photography")
+    assert_select "form[action=?]", app_posts_details_path(search: "photography")
   end
 
   test "post info can be turned off and is remembered" do
     login_as users(:joel)
 
-    get app_posts_url(info: "off")
-    assert_response :success
-    assert_select "a[href=?]", app_posts_path(info: "on")
+    delete app_posts_details_url
+    assert_redirected_to app_posts_path
 
     get app_posts_url
     assert_response :success
-    assert_select "a[href=?]", app_posts_path(info: "on"), message: "the preference should survive the next visit"
+    assert_select "form[action=?] button", app_posts_details_path, text: "Show details",
+      message: "the preference should survive the next visit"
+  end
+
+  # A GET that wrote the preference was prefetched by Turbo on hover, so the
+  # details turned themselves off as soon as the cursor crossed the button.
+  test "visiting the index never writes the preference" do
+    login_as users(:joel)
+
+    delete app_posts_details_url
+    get app_posts_url(info: "on")
+
+    assert_response :success
+    assert_select "form[action=?] button", app_posts_details_path, text: "Show details"
   end
 
   test "turning post info back on clears the preference" do
     login_as users(:joel)
 
-    get app_posts_url(info: "off")
-    get app_posts_url(info: "on")
+    delete app_posts_details_url
+    post app_posts_details_url
     get app_posts_url
 
     assert_response :success
-    assert_select "a[href=?]", app_posts_path(info: "off")
+    assert_select "form[action=?] button", app_posts_details_path, text: "Hide details"
   end
 
   # The moderation screen can only reach posts that already have a comment, so

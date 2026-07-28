@@ -1,5 +1,6 @@
-<%= link_to @show_info ? "Hide details" : "Show details",
-      app_posts_path(info: @show_info ? "off" : "on", search: @search_term.presence, page: params[:page]),
+<%= button_to @show_info ? "Hide details" : "Show details",
+      app_posts_details_path(search: @search_term.presence, page: params[:page]),
+      method: @show_info ? :delete : :post,
       aria: { pressed: @show_info.to_s },
-      data: { turbo_frame: "_top" },
-      class: "link-quiet shrink-0 text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" %>
+      form_class: "shrink-0",
+      class: "link-quiet cursor-pointer text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" %>
