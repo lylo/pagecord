@@ -626,28 +626,19 @@ footer.blog-footer #brand svg {
   }
 }
 
-/* Themes decorate headings with serif faces and highlight backgrounds, which is
-   wrong for a section label, so this opts out rather than inheriting. */
-.blog .comments-heading {
+/* Themes give headings a display face, which is wrong for a section label, so
+   this opts out. Only the three properties they actually set on a bare h2 need
+   resetting: the section sits outside .post-body, so nothing else reaches it. */
+.comments-heading {
   font-family: inherit;
   font-size: 1em;
   font-weight: 600;
-  letter-spacing: normal;
-  text-transform: none;
-  color: var(--color-text);
-  background: none;
-  box-shadow: none;
-  border: none;
-  padding: 0;
   margin-block: 0 1rem;
 }
 
 /* Occupies the same slot as the form, so it reads as a block rather than
    running into the first comment. */
 .comment-notice {
-  color: var(--color-text);
-  background-color: var(--color-bg-subtle);
-  border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   margin-block: 0 1.75rem;
 }
@@ -661,13 +652,15 @@ footer.blog-footer #brand svg {
 
 /* Separates the first comment from whatever occupies the compose slot above it,
    matching the rhythm between comments. */
-.comment-list:not(:empty) {
+:where(.comment-list):not(:empty) {
   margin-block-start: 1.75rem;
 }
 
 /* Whitespace separates comments, not rules: a thread of hairlines reads as a
-   table rather than a conversation. */
-.comment + .comment {
+   table rather than a conversation. Each further page arrives inside its own
+   turbo-frame, so the sibling rule can't reach across that boundary. */
+.comment + .comment,
+turbo-frame > .comment:first-child {
   margin-block-start: 1.75rem;
 }
 
@@ -705,9 +698,11 @@ footer.blog-footer #brand svg {
   margin-block-start: 0.875rem;
 }
 
-/* The author's voice should be findable at a glance in a long thread. */
+/* The author's voice should be findable at a glance in a long thread. A tint
+   rather than a colour, so themes painting the page with a gradient show
+   through it instead of being covered by a flat panel. */
 .comment-by-author {
-  background-color: var(--color-bg-subtle);
+  background-color: color-mix(in srgb, var(--color-accent) 8%, transparent);
   border-inline-start: 2px solid var(--color-accent);
   border-radius: 0 0.375rem 0.375rem 0;
   padding: 0.75rem 1rem;
@@ -723,16 +718,11 @@ footer.blog-footer #brand svg {
   display: block;
   margin-block-start: 1.75rem;
   padding: 0.625rem 1rem;
-  border-radius: 0.5rem;
-  background-color: var(--color-bg-subtle);
-  color: var(--color-text);
   text-align: center;
-  font-size: 0.9375em;
   font-weight: 500;
 
   &:hover {
-    background-color: var(--color-bg-sunken);
-    color: var(--color-accent);
+    opacity: 0.75;
   }
 }
 

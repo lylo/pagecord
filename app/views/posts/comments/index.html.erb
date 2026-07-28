@@ -8,13 +8,13 @@
       <h2 class="comments-heading"><%= t("comments.heading") %></h2>
 
       <% if @rejected %>
-        <p class="comment-notice"><%= t("comments.rejected") %></p>
+        <p class="form comment-notice"><%= t("comments.rejected") %></p>
       <% elsif @comment.persisted? %>
-        <p class="comment-notice"><%= t("comments.submitted") %></p>
+        <p class="form comment-notice"><%= t("comments.submitted") %></p>
       <% elsif @post.comments_open? %>
         <%= render "form" %>
       <% else %>
-        <p class="comment-notice"><%= t("comments.closed") %></p>
+        <p class="form comment-notice"><%= t("comments.closed") %></p>
       <% end %>
 
       <div class="comment-list">
