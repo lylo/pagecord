@@ -7,12 +7,12 @@ class ReplyMailer < MailpaceMailer
     @post = @reply.post
     @blog = @post.blog
 
-    subject = "Re: #{@post.display_title}"
-
-    mail(
-      to: @blog.user.email,
-      subject: subject,
-      reply_to: @reply.email
-    )
+    I18n.with_locale(@blog.locale) do
+      mail(
+        to: @blog.user.email,
+        subject: "Re: #{@post.display_title}",
+        reply_to: @reply.email
+      )
+    end
   end
 end
