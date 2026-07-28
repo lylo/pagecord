@@ -7,7 +7,7 @@ class Posts::RepliesController < Blogs::BaseController
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
   before_action :load_post
-  before_action :verify, only: [ :create ]
+  before_action :form_token_check, only: [ :create ]
 
   def new
     redirect_to view_context.post_path(@post) and return unless @blog.reply_by_email
@@ -46,10 +46,11 @@ class Posts::RepliesController < Blogs::BaseController
       @post = @blog.posts.with_full_rich_text.includes(blog: :avatar_attachment).find_by!(token: params[:post_token])
     end
 
-    def verify
-      unless Post.find_signed(params[:form_token], purpose: :reply_form) == @post
-        Rails.logger.warn "Reply form token / post mismatch. Request blocked."
-        head :unprocessable_entity
-      end
+    def signed_form_record
+      @post
+    end
+
+    def form_token_purpose
+      :reply_form
     end
 end

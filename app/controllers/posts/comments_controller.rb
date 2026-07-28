@@ -13,7 +13,7 @@ class Posts::CommentsController < Blogs::BaseController
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
   before_action :load_post
-  before_action :verify, only: [ :create ]
+  before_action :form_token_check, only: [ :create ]
 
   # Deliberately never calls set_blog_cache_headers: the frame is fetched
   # separately so approved comments stay out of the edge cached post page.
@@ -55,11 +55,12 @@ class Posts::CommentsController < Blogs::BaseController
       )
     end
 
-    def verify
-      unless Post.find_signed(params[:form_token], purpose: :comment_form) == @post
-        Rails.logger.warn "Comment form token / post mismatch. Request blocked."
-        head :unprocessable_entity
-      end
+    def signed_form_record
+      @post
+    end
+
+    def form_token_purpose
+      :comment_form
     end
 
     # A rejected submission still has to leave a usable frame behind, and 422 is
