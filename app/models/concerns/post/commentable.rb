@@ -38,7 +38,15 @@ module Post::Commentable
 
   # Approved comments only, so this can't be a counter_cache. Touching the post
   # rolls the fragment key, the ETag and the Cloudflare cache tag.
+  # update_columns rather than update!, because a full save would run the post's
+  # validations and re-derive text_summary from the Action Text body — a blob
+  # query per embedded image — to write one integer. It also means an unrelated
+  # validation failure can't make a post's comments unapprovable.
+  #
+  # Skipping callbacks skips touch_blog with them, so the blog is touched here:
+  # that's what rolls the fragment key, the ETag and the Cloudflare cache tag.
   def recount_comments!
-    update!(comments_count: comments.approved.count)
+    update_columns(comments_count: comments.approved.count)
+    blog.touch
   end
 end
