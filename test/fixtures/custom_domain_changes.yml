@@ -1,0 +1,3 @@
+# Deliberately empty. Without a fixture file this table isn't truncated by
+# db:fixtures:load, so its rows outlive the blogs they point at and the
+# foreign key check fails.
