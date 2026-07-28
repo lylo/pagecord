@@ -3,11 +3,8 @@
 <%# The list you came from, carried on every link and button back out %>
 <% origin = { post: params[:post] } %>
 
-<%# Every form here submits with turbo: false, and must keep doing so. The
-    controllers respond turbo_stream to Turbo and html to everyone else, and the
-    stream updates #comments_moderation — a list that only exists on the index.
-    Let Turbo intercept these and the action would succeed server side while the
-    page sat there doing nothing. %>
+<%# Submitted without Turbo so these get the redirect rather than the index's
+    in-place stream %>
 
 <div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50">
   <div class="my-8">
