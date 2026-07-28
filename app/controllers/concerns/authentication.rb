@@ -28,8 +28,7 @@ module Authentication
   end
 
   def sign_out
-    session[:user_id] = nil
-    session[:current_blog_id] = nil
+    reset_session
   end
 
   # Remove after June 2027, once all _pagecord_v2 cookies issued before the v3 rotation have expired.

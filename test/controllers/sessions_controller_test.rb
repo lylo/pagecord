@@ -51,6 +51,18 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
+  # Nilling the keys left the pre-login session identifier valid, which is the
+  # shape session fixation relies on.
+  test "logging out issues a new session" do
+    login_as users(:joel)
+    original = session.id
+
+    delete logout_url
+
+    assert_not_equal original, session.id
+    assert_nil session[:user_id]
+  end
+
   test "should redirect to app root if already logged in" do
     login_as users(:joel)
 
