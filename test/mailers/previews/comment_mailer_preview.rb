@@ -12,7 +12,9 @@ class CommentMailerPreview < ActionMailer::Preview
   private
 
     def blog
-      @blog ||= Blog.find_by(subdomain: "joel") || Blog.first
+      @blog ||= (Blog.find_by(subdomain: "joel") || Blog.first).tap do |blog|
+        blog.locale = params[:locale] if params[:locale]
+      end
     end
 
     def waiting
