@@ -35,8 +35,8 @@
               <span class="text-sm text-slate-500 dark:text-slate-400"><%= time_ago_in_words reply.created_at %> ago</span>
             </div>
 
-            <%= button_to app_comment_path(reply, origin), method: :delete,
-                  data: { turbo_confirm: "Delete your reply? You can write another afterwards." },
+            <%= button_to app_comment_reply_path(comment, reply, origin), method: :delete,
+                  data: { turbo_confirm: "Delete your reply? You can write another afterwards.", turbo: false },
                   title: "Delete your reply", aria: { label: "Delete your reply" },
                   class: "shrink-0 cursor-pointer text-slate-400 hover:text-red-600" do %>
               <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
@@ -47,8 +47,7 @@
           </div>
         </div>
       <% elsif comment.approved? %>
-        <%= form_with url: app_comments_path(origin), method: :post, class: "px-4 py-5 sm:px-6" do |form| %>
-          <%= hidden_field_tag :parent_id, comment.id %>
+        <%= form_with url: app_comment_replies_path(comment, origin), method: :post, data: { turbo: false }, class: "px-4 py-5 sm:px-6" do |form| %>
           <h4 class="font-bold text-slate-900 dark:text-slate-100">Reply</h4>
           <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Your reply is published straight away. You can only reply once.</p>
           <%= form.text_area "comment[message]", rows: 3, required: true,
@@ -58,7 +57,7 @@
         <% end %>
       <% else %>
         <%# Approving and replying are one decision, so they're one form %>
-        <%= form_with url: app_comment_path(comment, origin), method: :patch, class: "px-4 py-5 sm:px-6" do |form| %>
+        <%= form_with url: app_comment_approval_path(comment, origin), method: :post, data: { turbo: false }, class: "px-4 py-5 sm:px-6" do |form| %>
           <%= form.text_area "comment[message]", rows: 3,
                 class: "form-field w-full",
                 placeholder: "Write an optional public reply…" %>
@@ -69,7 +68,7 @@
       <div class="flex flex-wrap items-center gap-2 px-4 py-5 sm:px-6">
         <%# Approve lives with the reply box above, since they submit together %>
         <%= button_to "Delete", app_comment_path(comment, origin), method: :delete,
-              data: { turbo_confirm: "Delete this comment? This can't be undone." },
+              data: { turbo_confirm: "Delete this comment? This can't be undone.", turbo: false },
               class: "btn-danger" %>
 
         <%# Create a closure to close comments, destroy it to reopen them %>

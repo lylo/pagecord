@@ -117,8 +117,10 @@ Rails.application.routes.draw do
         end
       end
       resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
-      resources :comments, only: [ :index, :show, :create, :update, :destroy ] do
-        resource :closure, only: [ :create, :destroy ], controller: "comments/closures"
+      resources :comments, only: [ :index, :show, :destroy ] do
+        resource  :approval, only: [ :create ], controller: "comments/approvals"
+        resource  :closure,  only: [ :create, :destroy ], controller: "comments/closures"
+        resources :replies,  only: [ :create, :destroy ], controller: "comments/replies"
       end
       resources :settings, only: [ :index ]
 

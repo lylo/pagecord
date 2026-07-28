@@ -79,7 +79,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "approving from a post keeps you on that post" do
-    patch app_comment_path(post_comments(:pending), post: @post.token)
+    post app_comment_approval_path(post_comments(:pending), post: @post.token)
 
     assert_redirected_to app_post_comments_path(@post)
   end
@@ -113,7 +113,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     @post.comments.create!(name: "Newer", message: "Posted recently", approved_at: 1.hour.ago, created_at: 1.hour.ago)
 
     # Replying to the older one should float it above the newer
-    post app_comments_path, params: { parent_id: older.id, comment: { message: "Late reply" } }
+    post app_comment_replies_path(older), params: { comment: { message: "Late reply" } }
 
     get app_comments_path
 
@@ -168,7 +168,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     comment = post_comments(:pending)
 
     assert_difference -> { @post.reload.comments_count }, 1 do
-      patch app_comment_path(comment)
+      post app_comment_approval_path(comment)
     end
 
     assert_redirected_to app_comments_path
@@ -178,8 +178,8 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
   test "approves inline and refreshes the moderation list and nav count" do
     comment = post_comments(:pending)
 
-    patch app_comment_path(comment),
-      params: { inline: true, comment: { message: "" } },
+    post app_comment_approval_path(comment),
+      params: { comment: { message: "" } },
       as: :turbo_stream
 
     assert_response :success
@@ -191,8 +191,8 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
   test "shows an inline reply error without approving the comment" do
     comment = post_comments(:pending)
 
-    patch app_comment_path(comment),
-      params: { inline: true, comment: { message: "x" * 9.kilobytes } },
+    post app_comment_approval_path(comment),
+      params: { comment: { message: "x" * 9.kilobytes } },
       as: :turbo_stream
 
     assert_response :unprocessable_entity
@@ -207,7 +207,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     was = blogs(:joel).updated_at
 
     travel 1.second do
-      patch app_comment_path(post_comments(:pending))
+      post app_comment_approval_path(post_comments(:pending))
     end
 
     assert_operator blogs(:joel).reload.updated_at, :>, was
@@ -218,7 +218,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     reply = post_comments(:author_reply)
 
     assert_difference "Post::Comment.count", -1 do
-      delete app_comment_path(reply)
+      delete app_comment_reply_path(post_comments(:approved), reply)
     end
 
     assert_redirected_to app_comment_path(post_comments(:approved))
@@ -239,7 +239,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     parent = @post.comments.create!(name: "Reader", message: "A question", approved_at: Time.current)
 
     assert_difference "Post::Comment.count", 1 do
-      post app_comments_path, params: { parent_id: parent.id, comment: { message: "Thanks!" } }
+      post app_comment_replies_path(parent), params: { comment: { message: "Thanks!" } }
     end
 
     reply = parent.replies.sole
@@ -251,7 +251,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     comment = post_comments(:pending)
 
     assert_no_difference "Post::Comment.count" do
-      post app_comments_path, params: { parent_id: comment.id, comment: { message: "Too soon" } }
+      post app_comment_replies_path(comment), params: { comment: { message: "Too soon" } }
     end
 
     assert_response :not_found
@@ -262,7 +262,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     comment = post_comments(:pending)
 
     assert_difference "Post::Comment.count", 1 do
-      patch app_comment_path(comment), params: { comment: { message: "Thanks for this!" } }
+      post app_comment_approval_path(comment), params: { comment: { message: "Thanks for this!" } }
     end
 
     assert comment.reload.approved?
@@ -275,7 +275,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   test "approving without a reply leaves no reply behind" do
     assert_no_difference "Post::Comment.count" do
-      patch app_comment_path(post_comments(:pending)), params: { comment: { message: "" } }
+      post app_comment_approval_path(post_comments(:pending)), params: { comment: { message: "" } }
     end
 
     assert post_comments(:pending).reload.approved?
@@ -285,7 +285,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     comment = post_comments(:pending)
 
     assert_no_difference "Post::Comment.count" do
-      patch app_comment_path(comment), params: { comment: { message: "x" * 9.kilobytes } }
+      post app_comment_approval_path(comment), params: { comment: { message: "x" * 9.kilobytes } }
     end
 
     assert_not comment.reload.approved?, "approving and replying succeed or fail together"
@@ -296,7 +296,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     get app_comment_path(post_comments(:pending))
 
     assert_response :success
-    assert_select "form[action=?][method=post]", app_comment_path(post_comments(:pending)) do
+    assert_select "form[action=?][method=post]", app_comment_approval_path(post_comments(:pending)) do
       assert_select "textarea"
       assert_select "input[type=submit][value=Approve]"
     end
@@ -304,7 +304,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   test "refuses a second author reply to the same comment" do
     assert_no_difference "Post::Comment.count" do
-      post app_comments_path, params: { parent_id: post_comments(:approved).id, comment: { message: "Again" } }
+      post app_comment_replies_path(post_comments(:approved)), params: { comment: { message: "Again" } }
     end
 
     assert_redirected_to app_comment_path(post_comments(:approved))
@@ -344,7 +344,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     users(:annie).update!(features: [ "comments" ])
     login_as users(:annie)
 
-    patch app_comment_path(post_comments(:pending))
+    post app_comment_approval_path(post_comments(:pending))
 
     assert_response :not_found
     assert_not post_comments(:pending).reload.approved?

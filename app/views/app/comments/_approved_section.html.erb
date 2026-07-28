@@ -5,7 +5,7 @@
       <%= pill(@pagy.count) %>
     </div>
 
-    <%= render partial: "approved_comment", collection: @approved, as: :comment %>
+    <%= render partial: "app/comments/approved_comment", collection: @approved, as: :comment %>
   </section>
 
   <%= render "app/shared/pagy_nav" %>
