@@ -1,5 +1,3 @@
-# Shared by every controller that moderates comments in the app: the feature
-# guards, the comment being acted on, the list behind it, and the way back out.
 module CommentModeration
   extend ActiveSupport::Concern
 
@@ -12,45 +10,32 @@ module CommentModeration
 
   private
 
-    # Nested routes carry :comment_id, the member routes carry :id.
     def load_comment
       @comment = @blog.comments.includes(:post, :replies).find(params[:comment_id] || params[:id])
     end
 
-    # Pending is the work queue, so it stays whole however long it gets. Only the
-    # approved archive is paged.
     def load_comment_collections(post)
       @post = post
       scope = @post&.comments || @blog.comments
 
-      # :replies because every row asks whether you've already replied. Both are
-      # loaded here rather than left lazy: the view asks each list whether it's
-      # empty and how big it is before rendering it, which is three round trips
-      # apiece for an answer it's about to have anyway.
+      # Loaded, not lazy: the view asks each list its size before rendering it.
       @pending = scope.pending.chronologically.includes(:post, :replies).load
       @pagy, @approved = pagy(
-        # Last activity rather than when it arrived, so a thread you've just
-        # approved or replied to is at the top where you can find it again.
         scope.approved.top_level.order(updated_at: :desc).includes(:post, :replies)
       )
       @approved.load
     end
 
-    # Re-renders the moderation list in place, staying on the post you were
-    # filtered to if that's where the action came from.
     def refresh_moderation(notice)
       load_comment_collections(origin_post)
       flash.now[:notice] = notice
       render template: "app/comments/refresh", formats: :turbo_stream
     end
 
-    # A comment lives at /app/comments/:id however you got there, so the list you
-    # came from is carried in a param rather than guessed.
     def return_path
       origin_post ? app_post_comments_path(origin_post) : app_comments_path
     end
 
-    # Back to the comment you were reading, still carrying the list origin.
     def comment_path
       app_comment_path(@comment, post: params[:post])
     end

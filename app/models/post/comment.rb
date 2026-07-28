@@ -6,8 +6,7 @@ class Post::Comment < ApplicationRecord
   MAX_NAME_LENGTH = 100
 
   belongs_to :post
-  # touch so a parent's updated_at tracks its latest activity, which is what the
-  # published list sorts on. Cheaper and steadier than a GREATEST() across a join.
+  # touch: the approved list sorts on the parent's updated_at.
   belongs_to :parent, class_name: "Post::Comment", optional: true, touch: true
   has_many :replies, class_name: "Post::Comment", foreign_key: :parent_id, dependent: :destroy
 
@@ -23,8 +22,6 @@ class Post::Comment < ApplicationRecord
   scope :top_level, -> { where(parent_id: nil) }
   scope :chronologically, -> { order(created_at: :asc, id: :asc) }
 
-  # Not the _commit variants: the count is derived from a COUNT query, so it
-  # should roll back with the transaction that changed the comment.
   after_save :recount_post, if: :saved_change_to_approved_at?
   after_destroy :recount_post
 
@@ -44,13 +41,10 @@ class Post::Comment < ApplicationRecord
     replies.find(&:author?)
   end
 
-  # Threads are one level deep, so a reply has none of its own to go looking for.
   def approved_replies
     top_level? ? replies.select(&:approved?) : []
   end
 
-  # The blogger's own voice: named after the blog, and public the moment it's
-  # saved – there's nobody left to approve it.
   def build_author_reply(message)
     post.comments.new(
       parent: self, author: true, approved_at: Time.current,
@@ -58,16 +52,12 @@ class Post::Comment < ApplicationRecord
     )
   end
 
-  # The link as an href, or nothing at all. Makes the same check link_format
-  # makes at write time, so a link that arrived any other way can't reach a page.
   def link_url
     link if link.present? && URI.parse(link).scheme.in?(%w[http https])
   rescue URI::InvalidURIError
     nil
   end
 
-  # Comments collect no email address, so CleanTalk scores on the name and the
-  # message alone. See SpamCheckable.
   def email
     nil
   end

@@ -1,6 +1,5 @@
 <% comment = @comment.parent || @comment %>
 <% reply = comment.author_reply %>
-<%# The list you came from, carried on every link and button back out %>
 <% origin = { post: params[:post] } %>
 
 <%# Submitted without Turbo so these get the redirect rather than the index's
@@ -28,7 +27,6 @@
       </div>
 
       <% if reply %>
-        <%# Shaded with an accent bar, mirroring .comment-by-author on the blog %>
         <div class="px-4 py-5 sm:px-6">
           <div class="rounded-e-lg border-s-2 border-[#4fbd9c] bg-slate-50 p-4 dark:bg-slate-800/60">
           <div class="flex items-start justify-between gap-3">
@@ -59,7 +57,6 @@
           <%= form.submit "Post reply", class: "btn-primary mt-3" %>
         <% end %>
       <% else %>
-        <%# Approving and replying are one decision, so they're one form %>
         <%= form_with url: app_comment_approval_path(comment, origin), method: :post, data: { turbo: false }, class: "px-4 py-5 sm:px-6" do |form| %>
           <%= form.text_area "comment[message]", rows: 3,
                 class: "form-field w-full",
@@ -69,12 +66,10 @@
       <% end %>
 
       <div class="flex flex-wrap items-center gap-2 px-4 py-5 sm:px-6">
-        <%# Approve lives with the reply box above, since they submit together %>
         <%= button_to "Delete", app_comment_path(comment, origin), method: :delete,
               data: { turbo_confirm: "Delete this comment? This can't be undone.", turbo: false },
               class: "btn-danger" %>
 
-        <%# Create a closure to close comments, destroy it to reopen them %>
         <% if comment.post.comments_open? %>
           <%= button_to "Close comments", app_comment_closure_path(comment, origin),
                 method: :post, class: "btn-optional ms-auto" %>

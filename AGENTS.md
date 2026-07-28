@@ -21,6 +21,28 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - Use `inline_svg_tag "icons/name.svg"` for SVGs — never hardcode `<svg>` elements
 - Avoid N+1 queries: use `.includes()`, `.eager_load()`, or `.preload()`
 
+### Comments
+
+Write almost none. Name things well and let the code speak. A comment is warranted
+only when a future reader would otherwise make a mistake: a non-obvious coupling
+between files, a constant that must be kept in step with something else, a
+deliberate deviation from the obvious approach. One line, ideally.
+
+Never write a comment that:
+
+- restates what the line below it does
+- explains why a decision was made, or argues for it
+- narrates what would break if the code were changed
+- answers a question that came up while writing it
+
+If a change needed explaining, the explanation belongs in the commit message or
+the pull request, where it is attached to the change rather than to the file
+forever. Code review comments are not code comments.
+
+For calibration, `~/dev/fizzy` runs at roughly 1.6% comment lines across all
+models and controllers, and its longest comment warns that a constant must be
+updated when a model is added — a trap the code genuinely can't express.
+
 ## JavaScript & Frontend
 
 - **Importmaps** only (NOT npm/yarn/webpack). Add packages: `bin/importmap pin package-name`
@@ -53,6 +75,12 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 - Minitest with fixtures. Follow Rails conventions for file location.
 - Focused tests for business logic — don't over-test
+- Keep the suite fast. Lean on fixtures rather than creating records in the test,
+  and never loop to build a pile of them to reach a threshold
+- Don't test the framework or a gem. If the assertion would fail only because
+  Pagy or Rails itself broke, delete it
+- System tests are a last resort, for behaviour no other layer can reach. They
+  are slow and prone to flaking; prefer an integration test every time
 - UI review checklist: verify loading/sending/sent/error states, async redirects and background-job timing, and subscriber/count reads after async work completes. Run relevant system tests when they exist.
 - **System test gotchas**:
   - Flash messages are initially hidden; use `assert page.has_content?("Text", wait: 2)` not `assert_text`

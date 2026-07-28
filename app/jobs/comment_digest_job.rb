@@ -1,12 +1,12 @@
 class CommentDigestJob < ApplicationJob
   queue_as :default
 
-  WINDOW = 4.hours
+  # Must match the cron interval in config/schedule.rb. A quiet day sends
+  # nothing at all, so this is only ever a nudge about something new.
+  WINDOW = 1.day
 
-  # Batched by blog rather than by comment: one email per blog is the unit of
-  # work, and batching comments would split a blog across two digests.
   def perform
-    blogs_with_comments_waiting.find_each do |blog|
+    blogs_with_new_comments.find_each do |blog|
       next unless blog.accepts_comments?
       next unless claim_digest_window_for(blog)
 
@@ -20,15 +20,15 @@ class CommentDigestJob < ApplicationJob
 
   private
 
-    def blogs_with_comments_waiting
-      Blog.kept.includes(:user).where(id: waiting.joins(:post).select("posts.blog_id"))
+    def blogs_with_new_comments
+      Blog.kept.includes(:user).where(id: arrived_today.joins(:post).select("posts.blog_id"))
     end
 
     def waiting_for(blog)
-      blog.comments.merge(waiting).chronologically.includes(:post).to_a
+      blog.comments.pending.chronologically.includes(:post).to_a
     end
 
-    def waiting
+    def arrived_today
       Post::Comment.pending.where(created_at: WINDOW.ago..)
     end
 

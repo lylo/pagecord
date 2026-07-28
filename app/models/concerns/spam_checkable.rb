@@ -1,11 +1,8 @@
 module SpamCheckable
   extend ActiveSupport::Concern
 
-  # Reader-submitted messages all go through CleanTalk before we act on them.
-  # Including models supply spam_check_url, and email where they collect one.
-  #
-  # Despite the shape, this is a network call with a five second timeout, not a
-  # cheap predicate — call it from a background job, never a request.
+  # A CleanTalk call with a five second timeout, despite the shape. Background
+  # jobs only. Including models supply spam_check_url, and email if they have one.
   def spam?
     detector = MessageSpamDetector.new(name: name, email: email, message: message, page_url: spam_check_url)
     detector.detect

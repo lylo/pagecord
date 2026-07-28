@@ -63,9 +63,9 @@ every :day, at: "7:00 am" do
   runner "SpamDetectionDigestJob.perform_later"
 end
 
-# Offset from the hour to stay clear of the hourly and daily jobs above.
-# The interval must match CommentDigestJob::WINDOW.
-every "15 */4 * * *" do
+# Once a day, deliberately: a moderation queue shouldn't nag. The interval must
+# match CommentDigestJob::WINDOW.
+every :day, at: "7:30 am" do
   runner "CommentDigestJob.perform_later"
 end
 

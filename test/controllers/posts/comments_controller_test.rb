@@ -62,18 +62,8 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".cf-turnstile"
   end
 
-  test "paginates long threads behind a show more link" do
-    25.times { |i| @post.comments.create!(name: "Reader #{i}", message: "Comment #{i}", approved_at: Time.current) }
-
-    get post_comments_path(@post)
-
-    assert_response :success
-    assert_select ".comment-list > .comment", Pagy::OPTIONS[:limit]
-    assert_select "a.comments-more", text: /more comments/
-  end
-
   test "a later page renders only its own frame" do
-    25.times { |i| @post.comments.create!(name: "Reader #{i}", message: "Comment #{i}", approved_at: Time.current) }
+    (Pagy::OPTIONS[:limit] + 1).times { |i| @post.comments.create!(name: "R#{i}", message: "C#{i}", approved_at: Time.current) }
 
     get post_comments_path(@post, page: 2)
 

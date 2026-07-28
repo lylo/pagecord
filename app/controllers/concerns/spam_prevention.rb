@@ -18,10 +18,8 @@ module SpamPrevention
       nil
     end
 
-    # Cached pages carry no session, so CSRF is skipped and the form carries a
-    # token signed against the record it was rendered for instead. Controllers
-    # that use one name it here and declare `before_action :form_token_check`
-    # themselves, after the record is loaded.
+    # Stands in for CSRF, which is skipped on cached pages. Controllers using one
+    # declare `before_action :form_token_check` after their record is loaded.
     def signed_form_record
       nil
     end
@@ -36,8 +34,7 @@ module SpamPrevention
 
       unless record.class.find_signed(params[:form_token], purpose: form_token_purpose) == record
         Rails.logger.warn "Form token / record mismatch. Request blocked."
-        # Not reject_submission: a mismatched token is a malformed request rather
-        # than a bot signal, and 422 is what Turbo renders back into the frame.
+        # Not reject_submission: a bad token is malformed, not a bot signal.
         head :unprocessable_entity
       end
     end

@@ -7,7 +7,6 @@
     <%= render "post_footer", post: post if post.post? %>
   </article>
 
-  <%# Loaded on demand, so approved comments never enter the cached page %>
   <% if post.post? && comments_enabled?(@blog) && post.comments_visible? %>
     <%= turbo_frame_tag comments_frame_id(post) %>
   <% end %>

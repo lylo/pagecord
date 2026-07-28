@@ -2,7 +2,7 @@
   "ignored_warnings": [
     {
       "fingerprint": "47600cdefbc08d707ca143178deb60d608f173ccfd8c43ec8db633acd641912c",
-      "note": "Admin-only template author URL — entered by admin, not user input"
+      "note": "Admin-only template author URL \u2014 entered by admin, not user input"
     },
     {
       "fingerprint": "0dfbc3bb7da613a4ed55ba90c2b83268e8cb2f4a9cc7885ec66d19738d49c2b2",
@@ -11,6 +11,10 @@
     {
       "fingerprint": "4d27bc375baf7b5892ac53a25bf63c138272cd3aaa5435e762839612f0b07f93",
       "note": "Paddle customer portal URL host is validated against ALLOWED_HOSTS before redirecting"
+    },
+    {
+      "fingerprint": "697d52fdf79ec5271060a98d1e788403f91d0f9d3c3f7df94a32fefdb0eac497",
+      "note": "Post::Comment#link_url returns nil unless URI.parse gives an http or https scheme, so javascript:, data: and friends never reach the href. Brakeman can't trace through the method. Guarded again by the link_format validation on write."
     }
   ],
   "updated": "2026-05-21",

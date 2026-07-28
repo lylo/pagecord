@@ -5,15 +5,12 @@ module AppHelper
     !cookies[:upgrade_banner_dismissed].present?
   end
 
-  # Count and status badges: rounded-full, small, low drama.
   def pill(text, **options)
     tag.span text, **options, class: [ "rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300", options[:class] ]
   end
 
   def is_current_path?(path)
-    # When the controller names a section outright it settles the question, so a
-    # nested route like /app/posts/:token/comments highlights Comments alone
-    # rather than matching "posts" and "comments" in the path.
+    # /app/posts/:token/comments contains two section names, so the controller wins.
     return controller_name == path if NAV_SECTIONS.include?(controller_name)
 
     request.path.include?(path) || controller_name =~ /#{path}/

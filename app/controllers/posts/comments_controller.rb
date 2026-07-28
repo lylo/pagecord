@@ -17,8 +17,6 @@ class Posts::CommentsController < Blogs::BaseController
   before_action :ensure_comments_visible, only: [ :index ]
   before_action :ensure_comments_open, only: [ :create ]
 
-  # Deliberately never calls set_blog_cache_headers: the frame is fetched
-  # separately so approved comments stay out of the edge cached post page.
   def index
     load_comments
   end
@@ -37,8 +35,6 @@ class Posts::CommentsController < Blogs::BaseController
       head :not_found unless current_features.enabled?(:comments)
     end
 
-    # A closed thread still shows what it collected, so reading and writing ask
-    # different questions.
     def ensure_comments_visible
       head :not_found unless @blog.accepts_comments? && @post.comments_visible?
     end
@@ -71,13 +67,8 @@ class Posts::CommentsController < Blogs::BaseController
       :comment_form
     end
 
-    # A rejected submission still has to leave a usable frame behind, and 422 is
-    # the one non-2xx status Turbo reliably renders into a frame. Anything else
-    # (403, 429, or the shared full-page error template) has no matching frame
-    # in it, so the reader is left staring at "Content missing".
-    #
-    # The spam checks are registered when the concern is included, so they run
-    # before load_post and we have to load it ourselves here.
+    # 422 is the one non-2xx status Turbo renders back into a frame. load_post
+    # is called here because the spam checks run before it.
     def reject_submission
       load_post
       @rejected = true

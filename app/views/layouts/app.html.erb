@@ -34,9 +34,6 @@
     </header>
     <main class="container mx-auto px-4 flex flex-grow">
       <div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50">
-        <%# A stable target so Turbo Stream responses can flash too. The partial
-            renders nothing when there's no flash, and fade_controller removes
-            its own element, so this stays empty between messages. %>
         <div id="flash"><%= render "app/shared/flash" %></div>
 
         <%= render "app/shared/heading" %>

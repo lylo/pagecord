@@ -1,6 +1,3 @@
-# Approving and replying are one decision, so a reply can ride along. It's built
-# and validated first, so a rejected reply doesn't leave the comment approved
-# with nothing attached.
 class App::Comments::ApprovalsController < AppController
   include CommentModeration
 

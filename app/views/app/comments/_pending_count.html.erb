@@ -1,4 +1,2 @@
-<%# The nav badge, rendered here and again by refresh.turbo_stream so the two
-    can't drift apart. %>
 <% pending_count = @blog.comments.pending.count %>
 <%= pill pending_count, class: "ms-1 inline-block -translate-y-px" if pending_count.positive? %>

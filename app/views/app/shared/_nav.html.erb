@@ -1,5 +1,3 @@
-<%# Four tabs have always fitted on a phone. Only when Comments and Analytics are
-    both present does the row outgrow it, and then just Settings moves behind a ». %>
 <% comments_enabled = comments_enabled?(@blog) %>
 <% overflow_on_mobile = comments_enabled && @blog.show_metrics? %>
 <% secondary_class = overflow_on_mobile ? "hidden sm:block" : "" %>

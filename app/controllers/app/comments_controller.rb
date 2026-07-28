@@ -21,7 +21,6 @@ class App::CommentsController < AppController
 
   private
 
-    # /app/posts/:post_token/comments routes here too, scoped to that post.
     def scoped_post
       @blog.posts.find_by!(token: params[:post_token]) if params[:post_token]
     end

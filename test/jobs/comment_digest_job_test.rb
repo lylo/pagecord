@@ -13,13 +13,26 @@ class CommentDigestJobTest < ActiveSupport::TestCase
     end
   end
 
-  # Anything older belonged to an earlier run, so reporting it again would nag.
-  test "ignores comments from before the window" do
+  # A backlog you've chosen to sit on shouldn't nag you every day.
+  test "sends nothing when no comment arrived today" do
     post_comments(:pending).update_columns(created_at: (CommentDigestJob::WINDOW + 1.hour).ago)
 
     assert_no_enqueued_emails do
       CommentDigestJob.perform_now
     end
+  end
+
+  # Otherwise the count would claim the backlog was smaller than it is.
+  test "reports the whole queue once a new comment triggers a digest" do
+    posts(:two).comments.create!(name: "Backlog", message: "Waiting since last week")
+      .update_columns(created_at: 1.week.ago)
+    posts(:two).comments.create!(name: "Arrival", message: "Came in today")
+
+    perform_enqueued_jobs { CommentDigestJob.perform_now }
+
+    body = ActionMailer::Base.deliveries.last.text_part.body.to_s
+    assert_match "Backlog", body, "a comment you've sat on still belongs in the count"
+    assert_match "Arrival", body
   end
 
   test "running twice does not enqueue duplicate digests" do

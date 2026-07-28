@@ -15,9 +15,6 @@ class Blog < ApplicationRecord
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
   has_many :pages, -> { where(is_page: true) }, class_name: "Post"
-  # Trashed posts keep their comments, but there's nothing useful to do with
-  # them: approving publishes nothing and the moderation row leads to a post
-  # you've deleted. Restoring the post brings them back.
   has_many :comments, -> { merge(Post.kept) }, through: :posts
   belongs_to :home_page, class_name: "Post", optional: true
 
@@ -62,8 +59,6 @@ class Blog < ApplicationRecord
     custom_domain.presence || "#{subdomain}.#{Rails.application.config.x.domain}"
   end
 
-  # Moderating comments is an ongoing service we carry on the blogger's behalf,
-  # so the stored preference only applies while the plan includes it.
   def accepts_comments?
     comments_enabled && user.has_premium_access?
   end

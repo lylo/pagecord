@@ -27,7 +27,6 @@
         <% end %>
 
         <% if show_comments %>
-          <%# p-1.5/-m-1.5 grows the tap target without moving anything on screen %>
           <%= link_to app_post_comments_path(post), data: { turbo_frame: "_top" },
                 title: "#{pluralize post.comments_count, "comment"} on this post",
                 class: "-m-1.5 flex items-center gap-x-0.5 p-1.5 hover:text-slate-600 dark:hover:text-slate-200" do %>
@@ -48,7 +47,6 @@
         <% end %>
       <% end %>
 
-      <%# An action rather than a detail, so it survives the toggle %>
       <% if post.draft? || post.pending? %>
         <%= link_to app_post_path(post), title: "Preview draft", aria: { label: "Preview draft" }, target: "_blank", data: { turbo_frame: "_top" } do %>
           <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4" %>
