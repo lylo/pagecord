@@ -107,6 +107,7 @@ Rails.application.routes.draw do
 
       namespace :pages do
         resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
+        resource :sort, only: [ :create, :destroy ], controller: "sort"
       end
       resources :pages, except: [ :show ], param: :token do
         resource :restoration, only: [ :create ], controller: "pages/restorations"

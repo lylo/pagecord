@@ -21,21 +21,34 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
     posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
 
-    get app_pages_path(sort: "updated")
+    post app_pages_sort_path
+    follow_redirect!
 
     assert_response :success
     assert_operator response.body.index("Fresh Notes"), :<, response.body.index("Archive Page")
   end
 
-  test "should sort pages by remembered cookie preference" do
+  test "should sort pages by remembered preference" do
     @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
     posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
 
-    get app_pages_path(sort: "updated")
+    post app_pages_sort_path
     get app_pages_path
 
     assert_response :success
     assert_operator response.body.index("Fresh Notes"), :<, response.body.index("Archive Page")
+  end
+
+  # Turbo prefetches links on hover, so a GET that wrote the preference
+  # reordered the list as soon as the cursor crossed the sort buttons.
+  test "visiting the index never writes the sort preference" do
+    @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
+    posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
+
+    get app_pages_path(sort: "updated")
+
+    assert_response :success
+    assert_operator response.body.index("Archive Page"), :<, response.body.index("Fresh Notes")
   end
 
   test "should get new" do
