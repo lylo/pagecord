@@ -27,8 +27,15 @@ class MailParser
     ].freeze
   end
 
+  # Mail clients insert a placeholder when the user leaves the subject empty.
+  # Treated as no subject at all, so it never becomes a post title.
+  PLACEHOLDER_SUBJECTS = [ "(no subject)", "no subject", "(none)", "(sin asunto)" ].freeze
+
   def subject
-    @subject ||= @mail.subject&.strip
+    @subject ||= begin
+      value = @mail.subject&.strip
+      value unless value.blank? || PLACEHOLDER_SUBJECTS.include?(value.downcase)
+    end
   end
 
   def body
@@ -56,8 +63,11 @@ class MailParser
     subject.blank?
   end
 
+  # Judged on the rendered text, not the markup: sanitising a remote image away
+  # leaves empty tags and a literal &nbsp;, which is a non-blank string but a
+  # blank post. Post#content_present sees the decoded text and disagreed.
   def body_blank?
-    sanitized_body.strip.blank? && !has_attachments?
+    body_fragment.text.strip.blank? && body_fragment.css("img").empty? && !has_attachments?
   end
 
   private
@@ -194,6 +204,10 @@ class MailParser
 
       html_parts = chosen_part.parts.select { |p| p.content_type.start_with?("text/html") }
       html_parts.size > 1
+    end
+
+    def body_fragment
+      @body_fragment ||= Nokogiri::HTML5.fragment(sanitized_body)
     end
 
     def sanitized_body

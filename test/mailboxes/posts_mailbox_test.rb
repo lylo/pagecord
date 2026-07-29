@@ -513,4 +513,41 @@ class PostsMailboxTest < ActionMailbox::TestCase
     def format_html(html)
       html.strip.gsub(/^ +/, "").gsub(/\n/, "")
     end
+  # A Proton email whose only content was a remote image: the sanitiser strips
+  # images it can't host, leaving empty tags and a literal &nbsp;. That read as
+  # a body, so a blank post reached create! and raised for three days of retries.
+  test "should ignore mail whose body is only a stripped remote image" do
+    user = users(:joel)
+
+    assert_no_difference -> { user.blog.posts.count } do
+      assert_nothing_raised do
+        receive_inbound_email_from_mail \
+          to: user.blog.delivery_email,
+          from: user.email,
+          reply_to: user.email,
+          subject: "(No Subject)" do |mail|
+            mail.text_part = Mail::Part.new { body "[image]" }
+            mail.html_part = Mail::Part.new do
+              content_type "text/html; charset=utf-8"
+              body '<div><img src="https://example.com/proxied.jpg"></div><div>&nbsp;</div>'
+            end
+          end
+      end
+    end
+  end
+
+  test "should not use a placeholder subject as the post title" do
+    user = users(:joel)
+
+    receive_inbound_email_from_mail \
+      to: user.blog.delivery_email,
+      from: user.email,
+      reply_to: user.email,
+      subject: "(No Subject)",
+      body: "Just the body." do |mail|
+        mail.header["Received-SPF"] = "pass"
+    end
+
+    assert_nil user.blog.posts.last.title
+  end
 end
