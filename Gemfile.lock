@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 30cb58f9157c7e55c0aa6774d447c40203f70193
+  revision: 826840268048a263090b3d2b2e9770f5e69f8dcb
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -402,7 +402,7 @@ GEM
       railties (> 3.1)
     rainbow (3.1.1)
     rake (13.4.2)
-    rbs (4.0.3)
+    rbs (4.1.0)
       logger
       prism (>= 1.6.0)
       tsort
