@@ -27,14 +27,15 @@ class MailParser
     ].freeze
   end
 
-  # Mail clients insert a placeholder when the user leaves the subject empty.
-  # Treated as no subject at all, so it never becomes a post title.
-  PLACEHOLDER_SUBJECTS = [ "(no subject)", "no subject", "(none)", "(sin asunto)" ].freeze
+  # Most clients omit the header when the subject is empty, which subject.blank?
+  # already covers. Proton sends the literal string instead, and it arrives
+  # DKIM-signed like any real subject, so the text is the only signal there is.
+  PLACEHOLDER_SUBJECT = /\A\(?no subject\)?\z/i
 
   def subject
     @subject ||= begin
       value = @mail.subject&.strip
-      value unless value.blank? || PLACEHOLDER_SUBJECTS.include?(value.downcase)
+      value unless value.blank? || value.match?(PLACEHOLDER_SUBJECT)
     end
   end
 
