@@ -126,7 +126,7 @@
         <% if quota.unlimited? %>
           <p class="text-slate-600 dark:text-slate-300">
             Currently using
-            <span class="font-medium text-slate-900 dark:text-slate-100"><%= number_to_human_size(quota.used_bytes) %></span>
+            <span class="font-medium text-slate-900 dark:text-slate-100"><%= number_to_human_size(quota.used_bytes, precision: 2) %></span>
           </p>
         <% else %>
           <p class="tabular-nums text-slate-600 dark:text-slate-300">
