@@ -28,6 +28,7 @@ class SignupsController < ApplicationController
 
       redirect_to thanks_signups_path(attribution)
     else
+      Rails.logger.info "Signup validation failed: #{@user.errors.details}"
       render :new, status: :unprocessable_entity
     end
   end
