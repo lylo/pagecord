@@ -92,6 +92,7 @@ Rails.application.routes.draw do
     get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
 
     namespace :app do
+      resource :upgrade_banner, only: [ :destroy ]
       resources :analytics, only: [ :index ]
       namespace :posts do
         resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
