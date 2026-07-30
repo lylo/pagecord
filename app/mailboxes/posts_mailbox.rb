@@ -38,6 +38,12 @@ class PostsMailbox < ApplicationMailbox
             tag_list: parser.tags,
             published_at: mail.date)
         end
+      rescue ActiveRecord::RecordInvalid => e
+        # Nothing a reader would see survived parsing. Retrying can't change
+        # that, so report it once rather than raising for Sidekiq to try again
+        # every few hours for three days.
+        Rails.logger.error "Unable to create post from email: #{e.message}"
+        report_to_sentry(e, blog, from)
       rescue => e
         Rails.logger.error "Unable to parse email: #{e}"
         raise "Unable to parse email: #{e}"
@@ -48,6 +54,22 @@ class PostsMailbox < ApplicationMailbox
   end
 
   private
+
+    # Tags, not just context: Sentry aggregates tags on the issue page, so the
+    # sender and blog are visible without opening an event and reading the job
+    # arguments to find the inbound email.
+    def report_to_sentry(error, blog, from)
+      return unless Sentry.initialized?
+
+      Sentry.set_tags(email_from: from, blog: blog.subdomain)
+      Sentry.set_context("email", {
+        from: from,
+        subject: mail.subject,
+        blog: blog.subdomain,
+        inbound_email_id: inbound_email.id
+      })
+      Sentry.capture_exception(error)
+    end
 
     def blog_from_email(from_email, delivery_email)
       find_blog_by_user_email(from_email, delivery_email) ||

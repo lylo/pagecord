@@ -28,8 +28,16 @@ class MailParser
     ].freeze
   end
 
+  # Most clients omit the header when the subject is empty, which subject.blank?
+  # already covers. Proton sends the literal string instead, and it arrives
+  # DKIM-signed like any real subject, so the text is the only signal there is.
+  PLACEHOLDER_SUBJECT = /\A\(?no subject\)?\z/i
+
   def subject
-    @subject ||= @mail.subject&.strip
+    @subject ||= begin
+      value = @mail.subject&.strip
+      value unless value.blank? || value.match?(PLACEHOLDER_SUBJECT)
+    end
   end
 
   def body
@@ -57,8 +65,11 @@ class MailParser
     subject.blank?
   end
 
+  # Judged on the rendered text, not the markup: sanitising a remote image away
+  # leaves empty tags and a literal &nbsp;, which is a non-blank string but a
+  # blank post. Post#content_present sees the decoded text and disagreed.
   def body_blank?
-    sanitized_body.strip.blank? && !has_attachments?
+    body_fragment.text.strip.blank? && body_fragment.css("img").empty? && !has_attachments?
   end
 
   private
@@ -195,6 +206,10 @@ class MailParser
 
       html_parts = chosen_part.parts.select { |p| p.content_type.start_with?("text/html") }
       html_parts.size > 1
+    end
+
+    def body_fragment
+      @body_fragment ||= Nokogiri::HTML5.fragment(sanitized_body)
     end
 
     def sanitized_body

@@ -1,18 +1,24 @@
 # Preview all emails at http://localhost:3000/rails/mailers/post_digest_mailer
 class PostDigestMailerPreview < ActionMailer::Preview
   def weekly_digest
-    blog = Blog.find_by(subdomain: "joel")
+    blog = preview_blog
     digest = blog.post_digests.weekly_digest.last || create_weekly_digest(blog)
     PostDigestMailer.with(digest: digest, subscriber: blog.email_subscribers.first).weekly_digest
   end
 
   def individual
-    blog = Blog.find_by(subdomain: "joel")
+    blog = preview_blog
     digest = blog.post_digests.individual.last || create_individual_digest(blog)
     PostDigestMailer.with(digest: digest, subscriber: blog.email_subscribers.first).individual
   end
 
   private
+
+    def preview_blog
+      Blog.find_by(subdomain: "joel").tap do |blog|
+        blog.locale = params[:locale] if params[:locale]
+      end
+    end
 
     def create_weekly_digest(blog)
       posts = blog.posts.visible.order(published_at: :desc).limit(3)
