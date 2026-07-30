@@ -116,7 +116,7 @@ class Blog < ApplicationRecord
 
     def subdomain_valid
       unless Subdomain.valid_format?(subdomain)
-        errors.add(:subdomain, "can only use letters, numbers or underscores")
+        errors.add(:subdomain, "can only contain letters and numbers")
       end
 
       if subdomain_reserved?
