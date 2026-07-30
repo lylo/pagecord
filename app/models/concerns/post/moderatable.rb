@@ -1,7 +1,7 @@
 module Post::Moderatable
   extend ActiveSupport::Concern
 
-  MAX_MODERATION_IMAGES = 10
+  MAX_MODERATION_IMAGES = 5
 
   included do
     has_one :content_moderation, dependent: :destroy
