@@ -33,11 +33,15 @@ class UploadQuota
     !unlimited? && used >= FREE_LIMIT
   end
 
+  def percent_used
+    [ (used * 100.0 / FREE_LIMIT).round, 100 ].min
+  end
+
   # The blobs a save would introduce. Anything already counted stays free to
   # re-save, so a lapsed subscriber can still edit a back catalogue of images
   # and video.
   def uncounted(blob_ids)
-    blob_ids - attachments.where(blob_id: blob_ids).distinct.pluck(:blob_id)
+    blob_ids - attachments.where(blob_id: blob_ids).pluck(:blob_id)
   end
 
   private

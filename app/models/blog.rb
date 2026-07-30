@@ -95,9 +95,7 @@ class Blog < ApplicationRecord
     # The bio editors don't offer attachments, so anything here arrived as
     # hand-crafted HTML.
     def bio_without_attachments
-      if bio.body&.fragment&.find_all("action-text-attachment")&.any?
-        errors.add(:bio, "can't contain attachments")
-      end
+      errors.add(:bio, "can't contain attachments") if bio.body&.fragment&.find_all("action-text-attachment").present?
     end
 
     def avatar_format
