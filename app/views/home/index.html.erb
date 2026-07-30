@@ -63,7 +63,7 @@
       <% end %>
     </div>
 
-    <p class="text-center text-sm text-slate-600 dark:text-slate-400">Trusted by 1000+ independent bloggers. Free forever, with 20 uploads included. Premium $<%= localised_price %>/year or $<%= localised_price(:monthly) %>/month.</p>
+    <p class="text-center text-sm text-slate-600 dark:text-slate-400">Trusted by 1000+ independent bloggers. Free forever, with 20 uploads included. Premium is $<%= localised_price %>/year or $<%= localised_price(:monthly) %>/month, and every new blog starts with a 14-day free trial of it. No card required.</p>
 
    </div>
 </div>
@@ -230,6 +230,10 @@
     Classic is <strong>free forever</strong>: unlimited posts and pages, your own themes and 20 free uploads to get going. Nothing you make is ever taken away if you stop paying. Upgrade any time for custom domains, analytics, email subscribers, video and a bigger upload allowance, Obsidian, API, CLI, and more for <strong>$<%= localised_price %>/year</strong> or <strong>$<%= localised_price(:monthly) %>/month</strong>.
   </p>
 
+  <p class="md:text-xl leading-relaxed mt-5 mb-8">
+    Every new account starts with a <strong>14-day free trial</strong> of Premium, so you can try the lot before you decide. No card required, and when it ends your blog carries on as Classic rather than switching off.
+  </p>
+
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
     <!-- Classic Plan -->
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 p-8 relative transform hover:scale-105 transition-transform duration-200">
@@ -243,6 +247,8 @@
             Get started for free
           </div>
         <% end %>
+
+        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No card, and nothing expires.</p>
       </div>
 
       <ul class="mt-8 space-y-3">
@@ -312,9 +318,11 @@
 
         <%= link_to new_signup_path, class: "block w-full" do %>
           <div class="w-full py-3 px-6 rounded-xl font-medium bg-pagecord-accent text-white transition-colors text-center">
-            Get started for free
+            Start your 14-day free trial
           </div>
         <% end %>
+
+        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No card required.</p>
       </div>
 
       <ul class="mt-8 space-y-3">
