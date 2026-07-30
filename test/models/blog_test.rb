@@ -348,4 +348,13 @@ class BlogTest < ActiveSupport::TestCase
 
     assert_not blog.reload.accepts_replies?
   end
+
+  test "replies are included in the trial" do
+    blog = blogs(:vivian)
+    blog.update!(reply_by_email: true)
+    blog.user.update!(trial_ends_at: 7.days.from_now)
+
+    assert blog.user.on_trial?
+    assert blog.accepts_replies?
+  end
 end

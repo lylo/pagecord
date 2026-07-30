@@ -1,5 +1,5 @@
 <% email_disabled = !Current.user.subscribed? %>
-<% features_disabled = Current.user.on_free_plan? %>
+<% replies_disabled = Current.user.on_free_plan? %>
 
 <% if Current.user.on_free_plan? %>
   <div class="mb-6">
@@ -77,9 +77,9 @@
 
     <%= settings_section "Engagement", description: "Ways for readers to respond to your posts. Your email address is never revealed, and only you can see your numbers" do %>
       <%= settings_row "Reply by Email", stacked: true do %>
-        <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
+        <div class="flex gap-3 <%= 'opacity-50' if replies_disabled %>">
           <div class="flex h-6 shrink-0 items-center">
-            <%= styled_check_box form, :reply_by_email, checked: @blog.accepts_replies?, disabled: features_disabled %>
+            <%= styled_check_box form, :reply_by_email, checked: @blog.accepts_replies?, disabled: replies_disabled %>
           </div>
           <%= form.label :reply_by_email, "Allow readers to reply to your posts via a contact form", class: "text-slate-800 dark:text-slate-100" %>
         </div>
