@@ -48,8 +48,10 @@ If you need to update your payment details:
 After cancelling:
 
 - You keep Premium features until your current billing period ends
-- Your account then reverts to the free tier
-- Your posts and pages remain, but you lose access to premium features
+- Your account then moves to Classic, the free plan
+- Nothing you've made is taken away. Your posts, pages, themes, custom CSS, footer, crawler rules and every upload carry on exactly as they are, though you'll need a subscription to edit the CSS, footer and crawler rules again
+- What stops is the ongoing work: custom domains, email subscribers, analytics, the API, the contact form, reply by email and human customer support
+- The small Pagecord logo returns to the bottom of your blog, and uploads are capped at the Classic allowance with no video
 
 ## Restarting a cancelled subscription
 

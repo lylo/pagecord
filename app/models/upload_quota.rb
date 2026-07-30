@@ -1,5 +1,5 @@
 class UploadQuota
-  FREE_LIMIT = 50
+  FREE_LIMIT = 20
   # Video is premium only: at 50MB a file it is five times the ceiling of
   # anything else, and free accounts are free to create.
   FREE_CONTENT_TYPES = UploadLimits::CONTENT_TYPES.keys.grep_v(/\Avideo\//).freeze

@@ -75,9 +75,9 @@ Want to add more images to an existing gallery? Just drag a new photo over an ex
 
 ### Upload allowance
 
-Classic includes 50 uploads, counted across everything you've written and every blog on your account. Images and audio both count towards it. The editor shows how many you've used, and the count goes down again if you remove one from a post.
+Classic includes 20 uploads, counted across everything you've written and every blog on your account. Images and audio both count towards it. The editor shows how many you've used, and the count goes down again if you remove one from a post.
 
-- A post that takes you past 50 is still saved in full. It's the next upload that's refused
+- A post that takes you past 20 is still saved in full. It's the next upload that's refused
 - Nothing is ever deleted or hidden when you reach the limit, and your avatar doesn't count
 - Removing an upload from a post frees it up again, but deleting the whole post doesn't
 - Images embedded from a URL elsewhere on the web don't count. See [Media embeds](media-embeds.md)
