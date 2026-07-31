@@ -468,6 +468,12 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "Draft Post"
   end
 
+  test "search results count covers drafts as well as published posts" do
+    get app_posts_path(search: "post")
+
+    assert_equal 2, assigns(:search_results_count)
+  end
+
   test "should sort drafts by published_at or updated_at" do
     # Create a draft with an old published date (simulating an unpublished old post)
     # This should appear last because 1.year.ago < Time.current

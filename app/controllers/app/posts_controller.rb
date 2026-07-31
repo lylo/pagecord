@@ -23,9 +23,10 @@ class App::PostsController < AppController
       end
     end
 
-    @search_results_count = @search_term.present? ? posts_query.count + drafts_query.count : nil
     @pagy, @posts = pagy(posts_query, limit: 25)
     @drafts = @pagy.page == 1 ? drafts_query.load : []
+    # pagy has already counted the posts, so only the drafts need counting again.
+    @search_results_count = @search_term.present? ? @pagy.count + drafts_query.count : nil
     @total_posts_count = @blog.posts.kept.published.count
   end
 
