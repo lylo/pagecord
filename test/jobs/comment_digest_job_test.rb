@@ -57,4 +57,15 @@ class CommentDigestJobTest < ActiveSupport::TestCase
       CommentDigestJob.perform_now
     end
   end
+
+  # Losing the beta flag leaves comments_enabled set, and the moderation queue
+  # 404s, so a digest would point at a page they can't open. When the flag goes,
+  # this test and the guard it covers go with it.
+  test "ignores blogs whose beta access has been revoked" do
+    users(:joel).update!(features: [])
+
+    assert_no_enqueued_emails do
+      CommentDigestJob.perform_now
+    end
+  end
 end

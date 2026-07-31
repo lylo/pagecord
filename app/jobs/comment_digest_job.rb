@@ -7,6 +7,9 @@ class CommentDigestJob < ApplicationJob
 
   def perform
     blogs_with_new_comments.find_each do |blog|
+      # comments_enabled outlives the beta flag, so revoking access would
+      # otherwise keep mailing a queue the blogger can no longer open.
+      next unless Rails.features.for(blog: blog).enabled?(:comments)
       next unless blog.accepts_comments?
       next unless claim_digest_window_for(blog)
 

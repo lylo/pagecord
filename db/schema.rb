@@ -258,8 +258,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_26_090000) do
     t.boolean "author", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["parent_id"], name: "index_post_comments_on_parent_id"
     t.index ["parent_id"], name: "index_post_comments_on_author_reply_parent_id", unique: true, where: "author"
+    t.index ["parent_id"], name: "index_post_comments_on_parent_id"
     t.index ["post_id", "approved_at"], name: "index_post_comments_on_post_id_and_approved_at"
     t.index ["post_id"], name: "index_post_comments_on_post_id"
   end
