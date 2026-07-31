@@ -53,6 +53,12 @@ Pagecord was built around email. Premium subscribers can enable people to subscr
 - [Reply by email](reply-by-email.md)
 - [Contact form](contact-form.md)
 
+## Comments
+
+Let readers comment on your posts, with nothing appearing until you approve it.
+
+- [Comments](comments.md)
+
 ## Custom Domains
 
 Use your own domain name instead of yourname.pagecord.com. We'll walk you through the DNS setup.

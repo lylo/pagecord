@@ -1,6 +1,6 @@
 ---
 title: "Comments"
-published: false
+published: true
 published_at: 2026-07-31T12:00:00+00:00
 ---
 
@@ -20,9 +20,9 @@ A comment form then appears at the bottom of each post, along with a comment cou
 Every comment arrives unapproved and stays invisible to everyone but you.
 
 1. Go to **Comments** in the main navigation, which shows a count of comments waiting approval
-2. **Approve** it to publish it, or **delete** it
+2. **Approve** to publish the comment, or **delete** it
 
-If a comment is left waiting, Pagecord emails you a summary the following morning. It's sent once a day at most, and only when something new has arrived, so a quiet day sends nothing at all. A moderation queue shouldn't nag.
+If a comment is left waiting, Pagecord emails you a summary the following morning. It's sent once a day at most, and only when something new has arrived, so a quiet day sends nothing at all.
 
 ## Replying
 
