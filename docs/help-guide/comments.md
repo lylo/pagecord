@@ -26,11 +26,11 @@ If a comment is left waiting, Pagecord emails you a summary the following mornin
 
 ## Replying
 
-You can post one reply to each comment, and it appears indented beneath the original with an **Author** badge so readers can tell it's you. Your reply publishes immediately, since it doesn't need approving.
+You can post one reply to each comment, and it appears indented beneath the original with an **Author** badge so readers can see it's from you.
 
 ## Closing comments on a single post
 
-To stop new comments on one post without turning the feature off everywhere:
+To disable new comments on a specific post:
 
 1. Open the post's **⋯** menu
 2. Choose **Comments**
@@ -45,7 +45,7 @@ Every comment is checked for spam before it reaches your queue, so most of it ne
 
 ## Tips
 
-- Readers only give a name, so treat names as unverified. Two people can use the same one
+- Readers only give a name, and there's no verification of it
 - The optional website link is marked `nofollow`, so approving a comment doesn't pass any SEO value to the linked site and spammers gain nothing from it
 - Deleting a comment also deletes any reply you posted to it
 - Comment counts only include approved comments, so your blog never hints at what's sitting in the queue
