@@ -6,7 +6,7 @@ published_at: 2025-12-18T16:37:19+00:00
 
 Let readers reply to your posts via email. When someone clicks the reply link on a post, they get a form to fill in with their name and email, and a message for you. You will receive this message directly in your inbox. Your email address isn't revealed, unless you choose to reply to the email.
 
-This is a premium feature.
+This is a premium feature. The reply link stops appearing if your subscription lapses, because Pagecord sends the message to you by email on your behalf. Your setting is remembered, so it comes back if you resubscribe.
 
 ## Enabling reply by email
 

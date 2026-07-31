@@ -68,11 +68,11 @@ Choose how posts appear on your home page:
 
 ### Branding
 
-Premium feature. Choose whether to hide the Pagecord logo at the bottom of your blog (please consider keeping it to spread the good word about Pagecord!)
+Premium feature. Choose whether to hide the Pagecord logo at the bottom of your blog (please consider keeping it to spread the good word about Pagecord!). The logo reappears if your subscription lapses.
 
 ### Custom footer
 
-Premium feature. Add a small HTML footer for badges, webring links, or other simple links at the bottom of your blog. See [Adding a custom footer](custom-footer.md) for details.
+Premium feature to set up, and it keeps rendering afterwards whatever plan you're on. Add a small HTML footer for badges, webring links, or other simple links at the bottom of your blog. See [Adding a custom footer](custom-footer.md) for details.
 
 ## Theme Garden
 

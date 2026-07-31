@@ -24,6 +24,8 @@ def import_blog_archive(file_path, blog_subdomain)
       return
     end
 
+    check_import_allowed!(blog)
+
     # Update the blog title to match the "title" field in the JSON
     blog_title = json_data["title"]
     if blog_title.present?

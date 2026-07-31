@@ -18,7 +18,7 @@ Send an email to your posting address:
 
 - **Subject line** becomes the post title (leave it blank for a title-free post)
 - **Email body** becomes the post content
-- **Inline Attachments** are included as images directly in the post. Standard attachments are added as images at the end of a post. Note: only paying customers get attachment support!
+- **Inline Attachments** are included as images directly in the post. Standard attachments are added at the end of a post.
 
 Your post is published immediately.
 
@@ -38,11 +38,11 @@ Every email client does this differently but Pagecord tries its best to figure o
 - Bold and italic formatting is preserved
 - Line breaks and paragraphs are preserved
 - Links are automatically detected
-- Images are included (premium customers only)
+- Images and audio are included
 
 ## Adding images
 
-Paying customers can attach images to an email and these appear in the post.
+Attach images or audio to an email and they appear in the post. On Classic these count towards your free upload allowance. If you're still under the allowance, everything in the email is attached even if it takes you over – but once you're over, further emailed attachments are skipped rather than the whole email being rejected. Video attachments need Premium.
 
 ## Adding tags
 

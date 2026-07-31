@@ -53,7 +53,7 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
     end
 
     def requires_user_subscription
-      head :unprocessable_entity unless @blog.user.subscribed?
+      head :unprocessable_entity unless @blog.accepts_subscribers?
     end
 
     def email_subscriber_params

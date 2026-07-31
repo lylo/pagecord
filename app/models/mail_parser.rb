@@ -2,12 +2,13 @@ class MailParser
   include Html::AttachmentPreview
   include ActionView::Helpers::SanitizeHelper
 
-  def initialize(mail, process_attachments: true)
+  def initialize(mail, allowed_content_types: UploadLimits::CONTENT_TYPES.keys)
     @mail = mail
+    @allowed_content_types = allowed_content_types
     @processed_attachment_ids = Set.new
     @attachments = []
 
-    build_attachments if process_attachments
+    build_attachments
 
     @extract_tags = Html::ExtractTags.new
 
@@ -237,8 +238,9 @@ class MailParser
 
     def media_attachment?(part)
       mime_type = part.content_type&.split(";")&.first&.strip
-      max_size = UploadLimits::CONTENT_TYPES[mime_type]
+      return false unless @allowed_content_types.include?(mime_type)
 
+      max_size = UploadLimits::CONTENT_TYPES[mime_type]
       max_size && part.body.to_s.bytesize <= max_size
     end
 

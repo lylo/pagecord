@@ -130,7 +130,7 @@ Docker: prefix commands with `docker-compose exec web`
 - **Core models**: User has one Blog. Blog has many Posts (posts + pages via `is_page` flag), NavigationItems (STI: Page, Custom, Social), EmailSubscribers, Upvotes, Post::Replies, and SenderEmailAddresses
 - **Auth**: Passwordless login via AccessRequest tokens (1-day expiry). EmailChangeRequest for email updates. Both use Verifiable concern.
 - **Routing**: Constraint-based — pagecord.com for app/auth, subdomains and custom domains for blog content
-- **Storage**: ActiveStorage on Cloudflare R2. Soft deletion with Discard gem. StorageTrackable concern tracks attachment bytes/count per blog.
+- **Storage**: ActiveStorage on Cloudflare R2. Soft deletion with Discard gem. `UploadQuota` (a PORO over User) is the single source of truth for what a user has uploaded – count, bytes, and what their plan still allows. `rake activestorage:users` reports it.
 - **API**: `Api::BaseController` handles token auth via `Blog.find_by_api_key`, premium check, `:api` feature flag, 60 req/min rate limit, `wrap_parameters false`, RFC 5988 `Link` + `X-Total-Count` pagination headers, and shared param handling via `permitted_content_params`. Controllers: `Api::PostsController` (CRUD), `Api::PagesController` (CRUD), `Api::HomePagesController` (CRUD, singular resource, second create returns `422`), `Api::AttachmentsController` (file upload → standalone blob → `attachable_sgid`). `content` is always stored as HTML; `content_format=markdown` first renders via Redcarpet with front matter support, then attachment enrichment runs on the resulting HTML. API rich text attachments are blob-only and canonicalized with the same `ActionText::Attachment.from_attachable(..., url: ...)` path used by MailParser via `Html::AttachmentPreview`. Upload limits live in `UploadLimits::CONTENT_TYPES` (`app/models/upload_limits.rb`).
 - **Caching**: `blog.updated_at` is the single invalidation boundary. Everything that changes visitor-visible state touches the blog. Post fragment caches key on `[post, @blog.updated_at]`. ETags use `@blog.updated_at`. Blog `after_commit :purge_cloudflare_cache` fires `PurgeCloudflareCacheJob` (tag-based purge by subdomain). Edge caching (`s-maxage`, `Cache-Tag`, session skip) only applies to `*.pagecord.com` — custom domains route through Caddy, not Cloudflare. Upvotes don't invalidate caches (display is handled client-side via Stimulus).
 - **Background**: Sidekiq + Redis. Cron via `whenever` gem (see `config/schedule.rb`)
@@ -139,8 +139,11 @@ Docker: prefix commands with `docker-compose exec web`
 ### Billing & Access
 - **Payments**: Paddle webhooks (`Billing::PaddleEventsController`) → Subscription model. Plans: monthly, annual, complimentary
 - **Trial**: 14-day free trial. `has_premium_access?` = subscribed OR on trial. `subscribed?` = paid only.
-- Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains, API access
-- Subscriber-only features: email subscriptions, branding removal
+- Trial-eligible (`has_premium_access?`): analytics, reply by email, contact form, writing custom CSS and footers, API access
+- Subscriber-only (`subscribed?`): custom domains, email subscriptions, branding removal, uncapped uploads, video uploads, custom robots.txt, second blog
+- Free on every plan: avatar, post likes, search, themes, tags, RSS, export, 50 uploads (`UploadQuota::FREE_LIMIT`)
+- **Uploads**: `UploadQuota` (PORO over User) is the single source of truth – count, bytes, and what the plan allows. Enforced by `UploadQuota::Validator` on Post; the direct-upload endpoint check is an advisory pre-check only. A save that crosses the limit is allowed; the next upload is refused. Only blobs a save *introduces* are checked, so a lapsed subscriber can still edit old posts
+- **Lapsing**: content and appearance you made keeps rendering (custom CSS, footer, robots.txt, uploads). Ongoing services stop (newsletter, analytics, API, certificates), and so do `Blog#accepts_replies?` and `#accepts_subscribers?`. `Blog#branding_visible?` brings our branding back
 - Payment failures handled automatically by Paddle Retain – don't email customers about failed payments
 - **Invoices**: customers view past invoices via Paddle's customer portal. `App::Settings::Subscriptions::PaddleInvoicesController#show` mints a portal session (`POST customers/:id/portal-sessions`) and redirects – don't build an inline invoice list
 

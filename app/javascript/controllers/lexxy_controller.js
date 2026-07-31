@@ -30,7 +30,13 @@ export default class extends Controller {
 
     if (this.element.dataset.attachments !== "true") {
       e.preventDefault()
-      alert("Attachments are only available for paying customers")
+      alert("You've used all your free uploads. Subscribe to upload more.")
+      return
+    }
+
+    if (this.element.dataset.videos !== "true" && type.startsWith("video/")) {
+      e.preventDefault()
+      alert("Video uploads need a paid subscription.")
       return
     }
 

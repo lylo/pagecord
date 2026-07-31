@@ -78,4 +78,14 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_not @blog.reload.avatar.attached?
   end
+
+  test "should refuse a hand-crafted bio embed" do
+    user = users(:vivian)
+    login_as user
+
+    patch app_settings_about_url(user.blog), params: { blog: { bio: image_attachment_html(1) } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_predicate user.blog.reload.bio.to_plain_text.strip, :empty?
+  end
 end

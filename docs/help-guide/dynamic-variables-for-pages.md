@@ -332,7 +332,7 @@ To show a heading without adding it to the table of contents, use the `heading` 
 
 ### Email Subscription
 
-Embed an email subscription form for readers to subscribe to your blog (premium customers only).
+Embed an email subscription form for readers to subscribe to your blog (paid subscribers only).
 
 ```javascript
 {{ email_subscription }}
@@ -348,7 +348,7 @@ Embed a contact form so readers can send you a message directly from your blog.
 {{ contact_form }}
 ```
 
-_Note: This is a premium feature and only appears for subscribers and users on a free trial._
+_Note: this only appears for paid subscribers. It isn't included in the free trial._
 
 _Paste it directly into the page content, not inside a code block in the editor._
 

@@ -73,6 +73,17 @@ If you have two or four images, they display in a 2-column grid. For three or mo
 
 Want to add more images to an existing gallery? Just drag a new photo over an existing one and it will be added to the gallery group.
 
+### Upload allowance
+
+Classic includes 20 uploads, counted across everything you've written and every blog on your account. Images and audio both count towards it. The editor shows how many you've used, and the count goes down again if you remove one from a post.
+
+- A post that takes you past 20 is still saved in full. It's the next upload that's refused
+- Nothing is ever deleted or hidden when you reach the limit, and your avatar doesn't count
+- Removing an upload from a post frees it up again, but deleting the whole post doesn't
+- Images embedded from a URL elsewhere on the web don't count. See [Media embeds](media-embeds.md)
+- Video is the exception: uploading it needs Premium
+- Premium has a much bigger allowance
+
 ## Post Titles
 
 Titles are optional on posts, but required on pages (except the home page, which is a special case). Leave the title field blank if you want a title-free post.

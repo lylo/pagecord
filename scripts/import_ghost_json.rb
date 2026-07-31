@@ -19,6 +19,8 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_p
     return
   end
 
+  check_import_allowed!(blog)
+
   # Extract data from the JSON structure
   posts_data = json_data.dig("db", 0, "data", "posts") || []
   tags_data = json_data.dig("db", 0, "data", "tags") || []

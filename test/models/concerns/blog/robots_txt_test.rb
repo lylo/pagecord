@@ -1,7 +1,7 @@
 require "test_helper"
 
 class Blog::RobotsTxtTest < ActiveSupport::TestCase
-  test "custom robots txt is only active for subscribers" do
+  test "custom robots txt stays active whatever the plan" do
     subscribed_blog = blogs(:joel)
     free_blog = blogs(:vivian)
     custom_robots_txt = "User-agent: Bubbles\nAllow: /\n"
@@ -10,7 +10,7 @@ class Blog::RobotsTxtTest < ActiveSupport::TestCase
     free_blog.custom_robots_txt = custom_robots_txt
 
     assert subscribed_blog.custom_robots_txt_active?
-    assert_not free_blog.custom_robots_txt_active?
+    assert free_blog.custom_robots_txt_active?
   end
 
   test "blank custom robots txt normalizes to nil" do

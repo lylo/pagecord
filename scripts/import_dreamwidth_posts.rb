@@ -18,6 +18,8 @@ class DreamwidthImporter
     unless @blog
       raise "Blog with subdomain '#{blog_subdomain}' not found. Available blogs: #{Blog.pluck(:subdomain).join(', ')}"
     end
+
+    check_import_allowed!(@blog)
     @created_count = 0
     @skipped_count = 0
     @error_count = 0

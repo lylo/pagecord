@@ -7,7 +7,7 @@
     <%= local_time post.published_at, format: published_at_date_format, class: "dt-published" %>
   <% end %>
 
-  <% reply_enabled = @user.has_premium_access? && @blog.reply_by_email %>
+  <% reply_enabled = @blog.accepts_replies? %>
   <% comments_enabled = comments_enabled?(@blog) && post.comments_visible? %>
   <% if @blog.show_upvotes? || reply_enabled || comments_enabled %>
     <div class="post-actions">

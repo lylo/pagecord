@@ -27,7 +27,7 @@
         </div>
       <% end %>
 
-      <% if @blog.email_subscriptions_enabled && Current.user.subscribed? && @blog.email_subscribers.confirmed.any? %>
+      <% if @blog.email_subscriptions_enabled && @blog.email_subscribers.confirmed.any? %>
         <%= settings_row "Subscribers" do %>
           <% if @blog.show_metrics? %>
             <p>
@@ -79,7 +79,7 @@
       <%= settings_row "Reply by Email", stacked: true do %>
         <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
           <div class="flex h-6 shrink-0 items-center">
-            <%= styled_check_box form, :reply_by_email, checked: @blog.reply_by_email, disabled: features_disabled %>
+            <%= styled_check_box form, :reply_by_email, checked: @blog.accepts_replies?, disabled: features_disabled %>
           </div>
           <%= form.label :reply_by_email, "Allow readers to reply to your posts via a contact form", class: "text-slate-800 dark:text-slate-100" %>
         </div>

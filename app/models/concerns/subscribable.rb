@@ -23,13 +23,13 @@ module Subscribable
     subscribed? || on_trial?
   end
 
+  def on_free_plan?
+    !has_premium_access?
+  end
+
   def trial_days_remaining
     return 0 unless on_trial?
     (trial_ends_at - Date.current).to_i
-  end
-
-  def on_free_plan?
-    !subscribed? && !on_trial?
   end
 
   def lapsed?

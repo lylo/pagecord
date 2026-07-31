@@ -9,17 +9,18 @@ Manage your Pagecord subscription. Go to **Settings** → **Billing**.
 ## Subscribing to Premium
 
 1. Go to **Settings** → **Billing**
-2. Click **Upgrade Today!**
+2. Click **Subscribe**
 3. Complete payment through Paddle (our payment provider)
 
 Premium includes:
 
-- Image attachments
+- A much bigger upload allowance, including video
 - Custom domains
 - Email subscribers
-- Reply by email
 - Analytics
-- Custom CSS
+- Writing your own custom CSS
+- API access, for the Obsidian plugin and Shortcuts
+- The embeddable contact form
 - Human customer support
 
 ## Viewing your subscription
@@ -47,8 +48,10 @@ If you need to update your payment details:
 After cancelling:
 
 - You keep Premium features until your current billing period ends
-- Your account then reverts to the free tier
-- Your posts and pages remain, but you lose access to premium features
+- Your account then moves to Classic, the free plan
+- Nothing you've made is taken away. Your posts, pages, themes, custom CSS, footer, crawler rules and every upload carry on exactly as they are, though you'll need a subscription to edit the CSS, footer and crawler rules again
+- What stops is the ongoing work: custom domains, email subscribers, analytics, the API, the contact form, reply by email and human customer support
+- The small Pagecord logo returns to the bottom of your blog, and uploads are capped at the Classic allowance with no video
 
 ## Restarting a cancelled subscription
 

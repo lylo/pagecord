@@ -290,7 +290,7 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal 0, user.blog.posts.last.attachments.count
   end
 
-  test "should not parse image attachments for a freemium user" do
+  test "should parse image attachments for a free user under quota" do
     user = users(:vivian)
 
     assert_difference -> { user.blog.posts.count }, 1 do
@@ -316,7 +316,70 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     post = user.blog.posts.last
 
-    assert_equal 0, post.attachments.count, "Post should have no attachments"
+    assert_equal 1, post.attachments.count
+  end
+
+  test "should attach every emailed image when under the allowance" do
+    user = users(:vivian)
+    fill_upload_quota(user, UploadQuota::FREE_LIMIT - 1)
+
+    receive_inbound_email_from_mail \
+      to: user.blog.delivery_email,
+      from: user.email,
+      reply_to: user.email,
+      subject: "Three photos" do |mail|
+        mail.text_part = Mail::Part.new do
+          content_type "text/plain; charset=UTF-8"
+          body "Hello"
+        end
+
+        3.times do |i|
+          mail.attachments["photo-#{i}.jpg"] = File.read(Rails.root.join("test/fixtures/files/space.jpg"))
+        end
+      end
+
+    assert_equal 3, user.blog.posts.last.attachments.count
+  end
+
+  test "should create a post without attachments when the free user is at quota" do
+    user = users(:vivian)
+    fill_upload_quota(user, UploadQuota::FREE_LIMIT)
+
+    assert_difference -> { user.blog.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.blog.delivery_email,
+        from: user.email,
+        reply_to: user.email,
+        subject: "One more photo" do |mail|
+          mail.text_part = Mail::Part.new do
+            content_type "text/plain; charset=UTF-8"
+            body "Hello"
+          end
+
+          mail.attachments["space.jpg"] = File.read(Rails.root.join("test/fixtures/files/space.jpg"))
+        end
+    end
+
+    assert_equal 0, user.blog.posts.last.attachments.count
+  end
+
+  test "should skip video attachments for a free user" do
+    user = users(:vivian)
+
+    receive_inbound_email_from_mail \
+      to: user.blog.delivery_email,
+      from: user.email,
+      reply_to: user.email,
+      subject: "A video" do |mail|
+        mail.text_part = Mail::Part.new do
+          content_type "text/plain; charset=UTF-8"
+          body "Hello"
+        end
+
+        mail.attachments["clip.mp4"] = { content_type: "video/mp4", content: "not really a video" }
+      end
+
+    assert_equal 0, user.blog.posts.last.attachments.count
   end
 
   test "should extract hashtags from plain text email and remove them from content" do
