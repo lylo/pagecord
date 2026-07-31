@@ -90,19 +90,20 @@ If you use an image from another site, ensure you have permission to use it and 
 
 ## Styling your footer
 
-Pagecord keeps the custom footer styling deliberately minimal. Content is centred and images are kept within the page width, but all other styling is left up to you.
+Pagecord keeps the custom footer styling minimal. Content is centred, images are kept within the page width, and links use your theme's accent colour so they match the rest of your blog. Everything else is left up to you.
 
-For example, if you'd like footer links to sit neatly with your blog's theme, add something like this to **Settings** → **Appearance** → **Custom CSS**:
+For example, if you'd prefer quieter footer links, add something like this to **Settings** → **Appearance** → **Custom CSS**:
 
 ```css
 .custom-footer a {
   color: var(--color-text);
-  text-decoration: underline;
+  text-decoration: none;
   font-size: 0.875em;
 }
 
 .custom-footer a:hover {
   color: var(--color-accent);
+  text-decoration: underline;
 }
 ```
 

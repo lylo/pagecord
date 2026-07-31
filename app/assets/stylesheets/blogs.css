@@ -101,6 +101,19 @@ html, body {
   block-size: auto;
 }
 
+:where(.custom-footer) a {
+  color: var(--color-accent);
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--color-accent-hover);
+  }
+
+  &:has(img) {
+    text-decoration: none;
+  }
+}
+
 footer.blog-footer {
   width: 100%;
   display: flex;
