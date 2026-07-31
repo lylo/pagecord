@@ -21,10 +21,17 @@ class CustomDomainsControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
   end
 
-  test "should return not found for custom domain with inactive subscription" do
+  test "should return ok for custom domain within the lapsed grace period" do
     user = users(:annie)
     user.subscription.update(next_billed_at: 1.day.ago)
     assert user.subscription.lapsed?
+
+    get verify_custom_domain_path, params: { domain: "annie.blog" }
+    assert_response :ok
+  end
+
+  test "should return not found for custom domain beyond the lapsed grace period" do
+    users(:annie).subscription.update(next_billed_at: (Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD + 1).days.ago)
 
     get verify_custom_domain_path, params: { domain: "annie.blog" }
     assert_response :unprocessable_content
