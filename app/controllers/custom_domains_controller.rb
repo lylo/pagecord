@@ -9,7 +9,7 @@ class CustomDomainsController < ApplicationController
     return head :bad_request if domain.blank?
 
     blog = Blog.find_by_domain_with_www_fallback(domain)
-    return head :unprocessable_content unless blog&.user&.subscribed?
+    return head :unprocessable_content unless blog&.user&.custom_domain_access?
 
     head :ok
   end
