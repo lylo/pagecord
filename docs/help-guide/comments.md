@@ -4,7 +4,7 @@ published: true
 published_at: 2026-07-31T12:00:00+00:00
 ---
 
-> **Beta:** Comments are in beta and enabled by invitation only. If you'd like to try them on your blog, email [hello@pagecord.com](mailto:hello@pagecord.com) and I'll switch them on for you.
+> **Beta:** Comments are in beta and enabled by invitation only. If you'd like to take part in the beta, please email [hello@pagecord.com](mailto:hello@pagecord.com).
 
 Let readers comment on your posts. Nothing appears on your blog until you approve it, so you decide what shows up. Readers don't need a Pagecord account to comment, and they aren't asked for an email address – just a name and a message, with an optional link to their own site.
 
