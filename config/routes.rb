@@ -284,6 +284,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Available on every domain, so embeds also resolve when previewing a draft in the app.
+  namespace :api do
+    post "embeds/bandcamp", to: "embeds#bandcamp"
+  end
+
   constraints(->(request) { !DomainConstraints.default_domain?(request) }) do
     get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
@@ -298,10 +303,6 @@ Rails.application.routes.draw do
 
     get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
     get "/posts/:slug", to: "blogs/redirects#show"
-
-    namespace :api do
-      post "embeds/bandcamp", to: "embeds#bandcamp"
-    end
 
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 

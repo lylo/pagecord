@@ -78,6 +78,26 @@ class Api::EmbedsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "https://bandcamp.com/EmbeddedPlayer/v=2/album=456/", json_response["embed_url"]
   end
 
+  test "should work on the app domain, where drafts are previewed" do
+    host! "www.example.com"
+
+    mock_html = <<~HTML
+      <html>
+        <head>
+          <meta property="og:video" content="https://bandcamp.com/EmbeddedPlayer/v=2/album=789/"/>
+        </head>
+      </html>
+    HTML
+
+    URI.stubs(:open).with(bandcamp_url, uri_open_options).returns(StringIO.new(mock_html))
+
+    post "/api/embeds/bandcamp", params: { url: bandcamp_url }
+
+    assert_response :success
+    json_response = JSON.parse(response.body)
+    assert_equal "https://bandcamp.com/EmbeddedPlayer/v=2/album=789/", json_response["embed_url"]
+  end
+
   test "should skip CSRF token verification" do
     # This test ensures the endpoint works without CSRF tokens (important for API endpoints)
     URI.stubs(:open).with(bandcamp_url, uri_open_options).returns(StringIO.new("<html></html>"))
