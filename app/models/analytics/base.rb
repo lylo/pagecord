@@ -38,6 +38,7 @@ class Analytics::Base
     def rollup_counts(start_time, end_time)
       Rollup.where(
         name: "unique_views_by_blog",
+        interval: "day",
         time: start_time..end_time,
         dimensions: { blog_id: blog.id }
       ).sum(:value).to_i

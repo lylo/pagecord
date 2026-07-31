@@ -29,6 +29,7 @@ class Analytics::Countries < Analytics::Base
     def countries_from_rollups(start_time, end_time)
       Rollup.where(
         name: "unique_views_by_blog_country",
+        interval: "day",
         time: start_time..end_time
       ).where("dimensions->>'blog_id' = ?", blog.id.to_s)
        .where("dimensions->>'country' IS NOT NULL")

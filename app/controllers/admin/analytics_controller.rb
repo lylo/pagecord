@@ -68,7 +68,7 @@ class Admin::AnalyticsController < AdminController
       relevant_post_ids = Post.where(is_page: is_page).pluck(:id).map(&:to_s)
 
       # Add Rollup counts for the period (filtered to relevant posts)
-      Rollup.where(name: "unique_views_by_blog_post", time: start_time..end_time)
+      Rollup.where(name: "unique_views_by_blog_post", interval: "day", time: start_time..end_time)
         .group("dimensions->>'post_id'")
         .sum(:value)
         .each do |post_id_string, count|
@@ -100,7 +100,7 @@ class Admin::AnalyticsController < AdminController
         .each { |blog_id, count| blog_view_counts[blog_id] = count }
 
       # Add Rollup counts for the period
-      Rollup.where(name: "unique_views_by_blog", time: start_time..end_time)
+      Rollup.where(name: "unique_views_by_blog", interval: "day", time: start_time..end_time)
         .group("dimensions->>'blog_id'")
         .sum(:value)
         .each do |blog_id_string, count|
