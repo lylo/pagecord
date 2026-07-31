@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_26_090000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_31_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -240,7 +240,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_26_090000) do
     t.text "user_agent"
     t.datetime "viewed_at", null: false
     t.string "visitor_hash", null: false
-    t.index ["blog_id", "country", "viewed_at"], name: "index_page_views_on_blog_country_viewed_at"
     t.index ["blog_id", "referrer_domain", "viewed_at"], name: "index_page_views_on_blog_referrer_domain_viewed_at"
     t.index ["blog_id", "viewed_at"], name: "index_page_views_on_blog_id_and_viewed_at"
     t.index ["post_id"], name: "index_page_views_on_post_id"
@@ -258,10 +257,10 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_26_090000) do
     t.boolean "author", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_post_comments_on_pending_created_at", where: "(approved_at IS NULL)"
     t.index ["parent_id"], name: "index_post_comments_on_author_reply_parent_id", unique: true, where: "author"
     t.index ["parent_id"], name: "index_post_comments_on_parent_id"
     t.index ["post_id", "approved_at"], name: "index_post_comments_on_post_id_and_approved_at"
-    t.index ["post_id"], name: "index_post_comments_on_post_id"
   end
 
   create_table "post_digest_deliveries", force: :cascade do |t|
@@ -447,7 +446,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_26_090000) do
     t.string "features", default: [], null: false, array: true
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["password_digest"], name: "index_users_on_password_digest"
   end
 
   add_foreign_key "access_requests", "users"
