@@ -1041,13 +1041,24 @@ aurelia:
     header > .email-subscriber-form { order: 4; }
     header hr { display: none; }
 
-    /* Group the avatar and title together, aligned right */
+    /* Avatar pinned to the right margin. The title sits beside it, and drops
+       below it when the column is too narrow to take both. */
     .titlebar { justify-content: flex-end; margin-bottom: 0.75rem; }
-    .avatar-container { width: auto; align-items: center; }
+    .avatar-container {
+      width: 100%;
+      flex-direction: row-reverse;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 1rem;
+    }
     .avatar, .avatar img { width: 3rem; height: 3rem; }
     .blog-title {
       font-size: 2em;
       text-align: right;
+      flex: 1 1 19rem;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
     nav { gap: 1rem; }
 
