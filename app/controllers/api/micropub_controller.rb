@@ -194,6 +194,9 @@ class Api::MicropubController < Api::BaseController
     # Micropub clients reference uploaded images by blob URL returned from the
     # media endpoint. Convert those <img> tags to Action Text attachments so the
     # blob remains associated with the saved post.
+    #
+    # Markdown gives an image two descriptions: ![alt](url "title"). The alt
+    # becomes the accessible description, the title the visible caption.
     def resolve_blob_images(html)
       return html unless html&.match?(BLOB_URL_PATTERN)
 
@@ -202,7 +205,7 @@ class Api::MicropubController < Api::BaseController
         next unless blob = blob_from_url(img["src"])
 
         node = img.parent&.name == "figure" ? img.parent : img
-        node.replace attachment_preview_node(blob, img["src"], attributes: { caption: img["alt"] })
+        node.replace attachment_preview_node(blob, img["src"], attributes: { caption: img["title"], alt: img["alt"] })
       end
       doc.to_html
     end

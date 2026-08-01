@@ -119,6 +119,7 @@ class Api::BaseController < ActionController::API
     def attachment_preview_attributes_from(node)
       {}.tap do |attributes|
         attributes[:caption] = node["caption"] if node["caption"].present?
+        attributes[:alt] = node["alt"] if node["alt"].present?
         attributes[:presentation] = node["presentation"] if node["presentation"].present?
       end
     end

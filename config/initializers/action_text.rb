@@ -16,4 +16,13 @@ end
 
 ActiveSupport.on_load(:action_text_content) do
   ActionText::ContentHelper.prepend(ActionTextCustomTags)
+
+  # Action Text describes an image only by its caption, which is always visible,
+  # and has no hook for extra attachment attributes. Extending ATTRIBUTES is the
+  # documented workaround (rails/rails discussion #54179) and is needed because
+  # rendering rebuilds each attachment node, dropping anything off the list.
+  # Read it back with attachment.full_attributes["alt"].
+  attributes = (ActionText::Attachment::ATTRIBUTES + %w[alt]).freeze
+  ActionText::Attachment.send(:remove_const, :ATTRIBUTES)
+  ActionText::Attachment.const_set(:ATTRIBUTES, attributes)
 end
