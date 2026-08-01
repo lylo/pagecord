@@ -179,7 +179,55 @@ class Api::MicropubControllerTest < ActionDispatch::IntegrationTest
     created_post = @blog.posts.find_by(slug: "photo-post")
     stored_html = created_post.content.body.to_html
     assert_includes stored_html, "action-text-attachment"
-    assert_includes stored_html, 'caption="Stars"'
+    assert_includes stored_html, 'alt="Stars"'
+  end
+
+  test "markdown image alt describes the image and title captions it" do
+    file = fixture_file_upload("space.jpg", "image/jpeg")
+    post "/micropub/media", params: { file: file }, headers: auth_header
+    media_url = response.headers["Location"]
+
+    post "/micropub",
+      params: {
+        type: [ "h-entry" ],
+        properties: {
+          name: [ "Boat Post" ],
+          content: [ %(![A boat at sunset](#{media_url} "Sunset on the Mekong")) ]
+        }
+      }.to_json,
+      headers: auth_header.merge("Content-Type" => "application/json")
+
+    assert_response :created
+    created_post = @blog.posts.find_by(slug: "boat-post")
+    stored_html = created_post.content.body.to_html
+    assert_includes stored_html, 'alt="A boat at sunset"'
+    assert_includes stored_html, 'caption="Sunset on the Mekong"'
+
+    # Rendering rebuilds the attachment node, so assert the alt survives it
+    rendered = created_post.content.body.to_s
+    assert_includes rendered, 'alt="A boat at sunset"'
+    assert_includes rendered, "Sunset on the Mekong"
+  end
+
+  test "markdown image without a title has no caption" do
+    file = fixture_file_upload("space.jpg", "image/jpeg")
+    post "/micropub/media", params: { file: file }, headers: auth_header
+    media_url = response.headers["Location"]
+
+    post "/micropub",
+      params: {
+        type: [ "h-entry" ],
+        properties: {
+          name: [ "Quiet Post" ],
+          content: [ %(![A boat at sunset](#{media_url})) ]
+        }
+      }.to_json,
+      headers: auth_header.merge("Content-Type" => "application/json")
+
+    assert_response :created
+    stored_html = @blog.posts.find_by(slug: "quiet-post").content.body.to_html
+    assert_includes stored_html, 'alt="A boat at sunset"'
+    assert_not_includes stored_html, "caption="
   end
 
   test "updates a post with replace and returns created when url changes" do
