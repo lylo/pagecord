@@ -1,4 +1,4 @@
-<% comments_enabled = comments_enabled?(@blog) %>
+<% comments_enabled = @blog.accepts_comments? %>
 <% overflow_on_mobile = comments_enabled && @blog.show_metrics? %>
 <% secondary_class = overflow_on_mobile ? "hidden sm:block" : "" %>
 

@@ -1,5 +1,5 @@
 <% show_likes = @blog.show_metrics? && post.upvotes_count.positive? %>
-<% show_comments = comments_enabled?(@blog) && post.comments_count.positive? %>
+<% show_comments = @blog.accepts_comments? && post.comments_count.positive? %>
 
 <div class="flex gap-x-2 mb-2">
   <div class="text-slate-500 dark:text-slate-400 <%= local_assigns[:show_year] ? 'w-26' : 'w-16' %> flex-shrink-0">

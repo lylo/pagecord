@@ -1,8 +1,6 @@
 class Posts::CommentsController < Blogs::BaseController
   include Pagy::Method
 
-  before_action :require_comments_feature
-
   include SpamPrevention
 
   layout false # Responses are Turbo Frames, so the surrounding page is dead weight
@@ -30,10 +28,6 @@ class Posts::CommentsController < Blogs::BaseController
   end
 
   private
-
-    def require_comments_feature
-      head :not_found unless current_features.enabled?(:comments)
-    end
 
     def ensure_comments_visible
       head :not_found unless @blog.accepts_comments? && @post.comments_visible?

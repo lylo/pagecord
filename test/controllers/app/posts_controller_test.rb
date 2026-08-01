@@ -261,7 +261,6 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   # The moderation screen can only reach posts that already have a comment, so
   # closing a thread pre-emptively has to be possible from the editor.
   test "closes and reopens comments on a post with no comments" do
-    users(:joel).update!(features: [ "comments" ])
     login_as users(:joel)
     target = posts(:two)
     assert_equal 0, target.comments_count
@@ -275,7 +274,6 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "re-closing a thread keeps the original closing time" do
-    users(:joel).update!(features: [ "comments" ])
     login_as users(:joel)
     target = posts(:two)
     target.close_comments!
@@ -287,7 +285,6 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "ignores comments_closed when the blog has comments off" do
-    users(:joel).update!(features: [ "comments" ])
     login_as users(:joel)
     blogs(:joel).update!(comments_enabled: false)
 
