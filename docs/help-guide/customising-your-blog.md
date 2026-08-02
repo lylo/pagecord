@@ -24,7 +24,7 @@ Upload an image that appears next to your blog title. It's also used as your blo
 
 ## Appearance
 
-Found in **Settings** → **Appearance**. These settings control how your blog looks. Most changes apply immediately making it easy to see the results. Note that Custom colours and Custom CSS have their own Save buttons.
+Found in **Settings** → **Appearance**. These settings control how your blog looks. Most changes apply immediately making it easy to see the results. Note that Custom colours have their own Save button. Custom CSS has moved to **Settings** → **Custom Code**.
 
 ### Colour scheme
 

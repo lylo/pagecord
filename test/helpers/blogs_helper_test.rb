@@ -74,4 +74,19 @@ class BlogsHelperTest < ActionView::TestCase
 
     assert_equal "My Post Title - #{blog.display_name}", page_title
   end
+
+  test "page_type names every kind of blog page" do
+    @blog = blogs(:joel)
+
+    assert_equal "index", page_type
+
+    @post = posts(:one)
+    assert_equal "post", page_type
+
+    @post.is_page = true
+    assert_equal "page", page_type
+
+    @post.is_home_page = true
+    assert_equal "home-page", page_type
+  end
 end

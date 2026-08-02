@@ -47,8 +47,8 @@ module BlogsHelper
     end
   end
 
-  def content_type_class
-    return "" unless @post
+  def page_type
+    return "index" unless @post
 
     if @post.home_page?
       "home-page"

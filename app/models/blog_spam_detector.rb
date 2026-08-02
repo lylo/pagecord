@@ -96,8 +96,12 @@ class BlogSpamDetector
         Posts (as stored HTML, so you can see the links):
         #{recent_posts_content}
         Outbound link summary: #{link_summary}
+        Custom code, injected into every page of the blog:
+        #{custom_code_content}
 
         Judge this blog on where its links point and what they are for, not on how many there are or how little writing surrounds them. Links to #{domain} are internal to this platform and are not outbound links.
+
+        Custom code is a paid feature for analytics, fonts and widgets, and legitimate use of it is normal. It is not part of the blog's outbound links and never counts towards backlink spam. Answer "uncertain" and say why in your reason if the custom code looks built to harm readers rather than to measure or decorate the blog: reading what they type, impersonating a sign-in or payment form, redirecting them elsewhere, or loading scripts from malware or phishing infrastructure.
 
         Most posts here are short. Sharing a video, image, song or article with a one-line comment, or no comment at all, is the normal shape of a post on this platform. It is never spam on its own, however often the blog does it.
 
@@ -167,6 +171,12 @@ class BlogSpamDetector
 
       "#{link_hosts.size} outbound links, #{hosts.size} distinct hosts – " +
         hosts.sort_by { |_host, count| -count }.first(MAX_HOSTS).map { |host, count| "#{host} x#{count}" }.join(", ")
+    end
+
+    # Sent whole rather than summarised: the dangerous case is inline code with
+    # no external host at all. Validation already caps each field at 8KB.
+    def custom_code_content
+      [ @blog.custom_head_html, @blog.custom_body_html ].compact_blank.join("\n").presence || "(none)"
     end
 
     def link_hosts

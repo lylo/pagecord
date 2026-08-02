@@ -155,6 +155,7 @@ Rails.application.routes.draw do
           end
         end
 
+        resource :custom_code, only: [ :show, :update ], controller: "custom_code"
         resource :api, only: [ :show, :create, :destroy ], controller: "api"
         resources :exports
 

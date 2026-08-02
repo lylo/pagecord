@@ -1,0 +1,156 @@
+<% content_for :head do %>
+  <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css" rel="stylesheet" type="text/css"/>
+  <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/hint/show-hint.css" rel="stylesheet" type="text/css"/>
+  <%= stylesheet_link_tag "css-editor" %>
+<% end %>
+
+<% code_field_classes = "w-full min-h-36 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-mono text-sm focus:border-slate-500 dark:focus:border-slate-400 focus:ring-0 [field-sizing:content]" %>
+
+<div class="space-y-8">
+  <div class="space-y-4">
+    <p>
+      Add your own CSS and HTML to every page of your blog, to restyle it or to add things Pagecord doesn't do itself,
+      like third party analytics or a chat widget.
+    </p>
+
+    <%= callout(:info) do %>
+      <ul class="list-disc list-outside ps-4 space-y-1">
+        <li>It's possible to break your blog with custom code. If that happens, come back here and remove it, or switch it off below.</li>
+        <li>Be careful pasting code from somewhere you don't recognise, and prefer pasting code directly over linking to a third party where you can.</li>
+        <li>Customer support for writing or debugging custom code is not possible, so you're on your own with this one.</li>
+      </ul>
+    <% end %>
+  </div>
+
+  <%= settings_section "Style" do %>
+    <%= settings_row "Custom CSS", stacked: true do %>
+      <div class="space-y-4">
+        <div class="space-y-2">
+          <p>
+            Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
+            You can use <code>@import</code> for Google Fonts or Bunny Fonts.
+          </p>
+
+          <p class="text-sm text-slate-500 italic">
+            Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+          </p>
+        </div>
+
+        <%= form_with url: app_settings_custom_code_path, model: @blog,
+              data: {
+                controller: "save-button css-editor",
+                action: "turbo:submit-end->save-button#showMessage"
+              } do |form| %>
+          <%= form.text_area :custom_css,
+              data: { css_editor_target: "textarea" } %>
+
+          <div id="css-error" class="field-error"><%= @blog.errors[:custom_css].first %></div>
+
+          <div class="mt-4">
+            <%= form.submit "Save custom CSS", data: { save_button_target: "button" }, class: "btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= settings_row "Custom Footer", stacked: true do %>
+      <div class="space-y-4">
+        <div class="space-y-2">
+          <p>
+            Add a small HTML snippet to the bottom of your blog for badges, webrings, links, or copyright text.
+          </p>
+
+          <p class="text-sm text-slate-500 italic">
+            Only basic, safe HTML is supported. Scripts, embeds, forms, iframes, and inline styles are not supported. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-footer", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+          </p>
+        </div>
+
+        <%= form_with url: app_settings_custom_code_path, model: @blog,
+              data: {
+                controller: "save-button",
+                action: "turbo:submit-end->save-button#showMessage"
+              } do |form| %>
+          <%= form.text_area :custom_footer_html, rows: 6, class: code_field_classes %>
+
+          <div id="footer-error" class="field-error"><%= @blog.errors[:custom_footer_html].first %></div>
+
+          <div class="mt-4">
+            <%= form.submit "Save custom footer", data: { save_button_target: "button" }, class: "btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <% if current_features.enabled?(:custom_code) %>
+    <% custom_code_disabled = !@blog.user.subscribed? %>
+
+    <%= settings_section "Scripts" do %>
+      <%= settings_row "Head and body code", stacked: true do %>
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <p>
+              Add your own HTML for analytics, verification tags, fonts or chat widgets. Head code goes just before
+              the closing &lt;head&gt; tag, body code just before the closing &lt;body&gt; tag.
+            </p>
+
+            <p class="text-sm text-slate-500 italic">
+              Anything you add here runs on every page of your blog. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-code", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+            </p>
+          </div>
+
+          <% if custom_code_disabled %>
+            <%= callout(:info) do %>
+              <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add custom code to your blog.
+            <% end %>
+          <% end %>
+
+          <%= form_with url: app_settings_custom_code_path, model: @blog,
+                data: {
+                  controller: "save-button",
+                  action: "turbo:submit-end->save-button#showMessage"
+                } do |form| %>
+            <div class="space-y-4 <%= 'opacity-50' if custom_code_disabled %>">
+              <div>
+                <%= form.label :custom_head_html, "Head code", class: "block mb-1 font-medium text-slate-800 dark:text-slate-100" %>
+                <%= form.text_area :custom_head_html, rows: 6, disabled: custom_code_disabled,
+                    spellcheck: false, autocapitalize: "off", autocorrect: "off", autocomplete: "off",
+                    class: code_field_classes %>
+                <div id="head-error" class="field-error"><%= @blog.errors[:custom_head_html].first %></div>
+              </div>
+
+              <div>
+                <%= form.label :custom_body_html, "Body code", class: "block mb-1 font-medium text-slate-800 dark:text-slate-100" %>
+                <%= form.text_area :custom_body_html, rows: 6, disabled: custom_code_disabled,
+                    spellcheck: false, autocapitalize: "off", autocorrect: "off", autocomplete: "off",
+                    class: code_field_classes %>
+                <div id="body-error" class="field-error"><%= @blog.errors[:custom_body_html].first %></div>
+              </div>
+
+              <div class="flex gap-3">
+                <div class="flex h-6 shrink-0 items-center">
+                  <%= styled_check_box form, :custom_code_enabled, disabled: custom_code_disabled %>
+                </div>
+                <div>
+                  <%= form.label :custom_code_enabled, "Enable custom code", class: "text-slate-800 dark:text-slate-100" %>
+                  <p class="text-slate-500 text-sm">
+                    Uncheck to switch your custom code off without deleting it, which is the quickest way to tell
+                    whether it's causing a problem on your blog.
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <%= form.submit "Save custom code", disabled: custom_code_disabled, data: { save_button_target: "button" }, class: "btn-primary" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="mt-12">
+  <%= link_to "Back to Settings", app_settings_path, class: "btn-secondary" %>
+</div>

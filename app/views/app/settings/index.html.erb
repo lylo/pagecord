@@ -60,6 +60,16 @@
       </div>
     <% end %>
 
+    <%= link_to app_settings_custom_code_path do %>
+      <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
+        <div class="mb-4">
+          <span class="text-4xl font-mono font-bold text-slate-700 dark:text-slate-200">&lt;/&gt;</span>
+        </div>
+        <h3 class="mb-2 text-xl font-bold dark:text-white">Custom Code</h3>
+        <p class="text-slate-500 dark:text-slate-400">Add your own CSS, analytics and scripts</p>
+      </div>
+    <% end %>
+
     <%= link_to app_settings_api_path do %>
       <div class="h-48 hover:bg-slate-100 dark:hover:bg-slate-700 hover:shadow-md border border-slate-200 dark:border-slate-600 p-5 rounded-lg">
         <div class="mb-4">
