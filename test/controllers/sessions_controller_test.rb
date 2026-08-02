@@ -92,10 +92,43 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       rendered_at: signed_rendered_at
     }
 
-    session_cookie = set_cookie_headers.grep(/\A_pagecord_v3=/).join("\n")
+    key = Rails.application.config.session_options[:key]
+    session_cookie = set_cookie_headers.grep(/\A#{Regexp.escape(key)}=/).join("\n")
 
     assert session_cookie.present?
     assert_no_match(/;\s*domain=/i, session_cookie)
+  end
+
+  test "signing in rotates the session so a planted session id cannot be reused" do
+    user = users(:joel)
+    user.update!(password: "TestPass1234", password_confirmation: "TestPass1234")
+
+    get root_url
+    session[:planted] = "attacker-value"
+
+    post sessions_url, params: {
+      user: { subdomain: user.blog.subdomain, password: "TestPass1234" },
+      rendered_at: signed_rendered_at
+    }
+
+    assert_equal user.id, session[:user_id]
+    assert_nil session[:planted]
+  end
+
+  test "signing in keeps signup attribution across the session reset" do
+    user = users(:joel)
+    user.update!(password: "TestPass1234", password_confirmation: "TestPass1234")
+
+    get root_url, params: { utm_source: "reddit", utm_campaign: "obsidian_blog" }
+    assert_equal "reddit", session[:signup_attribution]["utm_source"]
+
+    post sessions_url, params: {
+      user: { subdomain: user.blog.subdomain, password: "TestPass1234" },
+      rendered_at: signed_rendered_at
+    }
+
+    assert_equal user.id, session[:user_id]
+    assert_equal "reddit", session[:signup_attribution]["utm_source"]
   end
 
   test "password login selects the matching blog" do
