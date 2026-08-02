@@ -51,3 +51,4 @@ Every comment is checked for spam before it reaches your queue, so most of it ne
 - The optional website link is marked `nofollow`, so approving a comment doesn't pass any SEO value to the linked site and spammers gain nothing from it
 - Deleting a comment also deletes any reply you posted to it
 - Comment counts only include approved comments, so your blog never hints at what's sitting in the queue
+- If you're on a premium plan, [Custom CSS](custom-css.md) has a class map for the comments section
