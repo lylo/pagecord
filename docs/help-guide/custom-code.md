@@ -202,7 +202,7 @@ Body code accepts any HTML. Each box holds up to 8KB.
 
 ## Switching it off
 
-If your blog starts misbehaving after you add something, untick **Enable custom code** and save. Your code is kept, it just stops running, which makes it easy to confirm whether custom code is the cause.
+If your blog starts misbehaving after you add something, untick **Head and body code enabled**. Your code is kept, it just stops being added to your pages, which makes it easy to rule out as the cause. Custom CSS and your custom footer are not affected.
 
 ## What happens if I cancel
 

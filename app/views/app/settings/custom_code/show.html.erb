@@ -107,7 +107,7 @@
   <% if current_features.enabled?(:custom_code) %>
     <% custom_code_disabled = !@blog.user.subscribed? %>
 
-    <%= settings_section "Advanced" do %>
+    <%= settings_section "Scripts" do %>
       <%= settings_row "Head Code", stacked: true do %>
         <div class="space-y-4">
           <div class="space-y-2">
@@ -188,7 +188,7 @@
         </div>
       <% end %>
 
-      <%= settings_row "Troubleshooting", stacked: true do %>
+      <div class="px-4 py-5 sm:px-6">
         <%= form_with url: app_settings_custom_code_path, model: @blog,
               data: { controller: "checkbox-auto-submit" } do |form| %>
           <div class="flex gap-3 <%= 'opacity-50' if custom_code_disabled %>">
@@ -196,15 +196,15 @@
               <%= styled_check_box form, :custom_code_enabled, disabled: custom_code_disabled %>
             </div>
             <div>
-              <%= form.label :custom_code_enabled, "Run my head and body code", class: "text-slate-800 dark:text-slate-100" %>
+              <%= form.label :custom_code_enabled, "Head and body code enabled", class: "text-slate-800 dark:text-slate-100" %>
               <p class="text-slate-500 text-sm">
-                Uncheck to switch your code off without deleting it, which is the quickest way to tell whether it's
-                causing a problem on your blog.
+                Switch your code off without deleting it, so you can rule it out when something looks wrong on
+                your blog.
               </p>
             </div>
           </div>
         <% end %>
-      <% end %>
+      </div>
     <% end %>
   <% end %>
 </div>
