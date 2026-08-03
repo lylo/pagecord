@@ -33,7 +33,6 @@ class App::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show every field disabled on the free plan" do
-    users(:vivian).update!(features: [ "custom_code" ])
     login_as users(:vivian)
 
     get app_settings_custom_code_url
@@ -46,7 +45,6 @@ class App::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
 
   test "should not update custom css on the free plan" do
     free_user = users(:vivian)
-    free_user.update!(features: [ "custom_code" ])
     login_as free_user
 
     patch app_settings_custom_code_url, params: { blog: { custom_css: ".blog { color: red; }" } }, as: :turbo_stream
@@ -57,7 +55,6 @@ class App::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
 
   test "should not update custom footer on the free plan" do
     free_user = users(:vivian)
-    free_user.update!(features: [ "custom_code" ])
     login_as free_user
 
     patch app_settings_custom_code_url, params: { blog: { custom_footer_html: "<p>hi</p>" } }, as: :turbo_stream
@@ -66,24 +63,7 @@ class App::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
     assert_nil free_user.blog.reload.custom_footer_html
   end
 
-  test "is not reachable without the feature flag" do
-    @user.update!(features: [])
-
-    get app_settings_custom_code_url
-
-    assert_response :not_found
-  end
-
-  test "is not offered in settings without the feature flag" do
-    @user.update!(features: [])
-
-    get app_settings_url
-
-    assert_response :success
-    assert_select "a[href=?]", app_settings_custom_code_path, false
-  end
-
-  test "is offered in settings with the feature flag" do
+  test "is offered in settings" do
     get app_settings_url
 
     assert_response :success
@@ -138,7 +118,7 @@ class App::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
 
     patch app_settings_custom_code_url, params: { blog: { custom_head_html: '<script src="/a.js"></script>' } }, as: :turbo_stream
 
-    assert_response :not_found
+    assert_response :success
     assert_nil @blog.reload.custom_head_html
   end
 
