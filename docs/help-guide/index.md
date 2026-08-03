@@ -33,7 +33,7 @@ Pages are for content that lives outside your blog feed – like an About page, 
 
 - [Creating pages](creating-pages.md)
 - [Setting up navigation](setting-up-navigation.md)
-- [Search](search.md)
+- [Search](blog-search.md)
 - [Dynamic variables for pages](dynamic-variables-for-pages.md)
 
 ## Customisation
