@@ -1,4 +1,3 @@
-<%= turbo_stream.update "css-error", "" %>
-<%= turbo_stream.update "footer-error", "" %>
-<%= turbo_stream.update "head-error", "" %>
-<%= turbo_stream.update "body-error", "" %>
+<% App::Settings::CustomCodeController::CODE_FIELDS.each do |attribute| %>
+  <%= turbo_stream.update "#{attribute}-error", "" %>
+<% end %>

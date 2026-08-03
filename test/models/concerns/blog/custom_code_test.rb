@@ -32,6 +32,21 @@ class Blog::CustomCodeTest < ActiveSupport::TestCase
     assert_includes @blog.errors[:custom_head_html].first, "body code"
   end
 
+  test "head code explains why title and base are not allowed" do
+    @blog.custom_head_html = "<title>My Blog</title>"
+    assert_not @blog.valid?
+    assert_includes @blog.errors[:custom_head_html].first, "Blog Settings"
+    assert_not_includes @blog.errors[:custom_head_html].first, "body code"
+
+    @blog.custom_head_html = %(<base href="/">)
+    assert_not @blog.valid?
+    assert_includes @blog.errors[:custom_head_html].first, "every link on your blog"
+  end
+
+  test "custom code is enabled by default" do
+    assert_predicate Blog.new, :custom_code_enabled?
+  end
+
   test "head code rejects bare text" do
     @blog.custom_head_html = %(paste this: <meta name="verify" content="abc">)
 

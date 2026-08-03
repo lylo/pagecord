@@ -1,4 +1,6 @@
 class App::Settings::CustomCodeController < AppController
+  CODE_FIELDS = %i[ custom_css custom_footer_html custom_head_html custom_body_html ].freeze
+
   def show
   end
 
@@ -12,12 +14,7 @@ class App::Settings::CustomCodeController < AppController
     else
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: [
-            error_stream("css-error", :custom_css),
-            error_stream("footer-error", :custom_footer_html),
-            error_stream("head-error", :custom_head_html),
-            error_stream("body-error", :custom_body_html)
-          ],
+          render turbo_stream: CODE_FIELDS.map { |attribute| error_stream(attribute) },
                  status: :unprocessable_entity
         end
         format.html { render :show, status: :unprocessable_entity }
@@ -29,14 +26,15 @@ class App::Settings::CustomCodeController < AppController
 
     # turbo_stream.update renders a plain String as raw markup, and the custom
     # code errors quote the tags they object to.
-    def error_stream(target, attribute)
-      turbo_stream.update(target, ERB::Util.html_escape(@blog.errors[attribute].first.to_s))
+    def error_stream(attribute)
+      turbo_stream.update("#{attribute}-error", ERB::Util.html_escape(@blog.errors[attribute].first.to_s))
     end
 
     def custom_code_params
       permitted_params = []
       permitted_params += [ :custom_css, :custom_footer_html ] if @blog.user.has_premium_access?
       permitted_params += [ :custom_head_html, :custom_body_html, :custom_code_enabled ] if custom_code_editable?
+
 
       params.require(:blog).permit(permitted_params)
     end
