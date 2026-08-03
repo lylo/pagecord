@@ -3,27 +3,25 @@ title: "Adding custom code"
 published: true
 ---
 
-Premium customers can add their own HTML to every page of their blog. This is useful for things like:
+Premium customers can add their own HTML (including `<script>`) to every page of their blog. This is useful for things like:
 
 - adding support for third party analytics, such as Plausible or Fathom
 - site verification tags for search engines
-- adding dynamic features like a copy button for code blocks, or progress bars
+- adding dynamic features like a copy button for code blocks, or article progress bars
 
 To add custom code, head over to **Settings** → **Custom Code**.
 
-Before you reach for this, it's worth knowing that Pagecord already includes [privacy-friendly analytics](analytics.md) for your blog, so you may not need anything extra.
-
 ### A Quick Note
 
-Custom code is an advanced feature. Anything you add runs on every page of your blog, so a broken snippet can break your whole site. Customer support for writing or debugging custom code is not possible, so you're on your own with this one.
+Custom code is an advanced feature. Anything you add runs on every page of your blog, so a broken snippet can break your whole site. Customer support for writing or debugging custom code is not possible.
 
 ## Head code and body code
 
-There are two boxes, and which one you use depends on the snippet.
+There are two different code blocks you can customise:
 
-**Head code** is added just before the closing `</head>` tag. Most people use it for third party analytics, or for a verification tag another service has asked them to add.
+**Head Code** is added just before the closing `</head>` tag. Most people use it for third party analytics, or for a verification tag another service has asked them to add.
 
-**Body code** is added just before the closing `</body>` tag. Use it for anything visible on the page, like chat widgets and embedded forms.
+**Body Code** is added just before the closing `</body>` tag. Use it for anything visible on the page, like a copy button for code blocks.
 
 The surrounding HTML looks like this:
 
@@ -46,7 +44,7 @@ If you only want to add a badge, a webring link or a line of text to the bottom 
 
 ## An example
 
-Here's a Plausible analytics tag, which goes in the **Head code** box:
+Here's a Plausible analytics tag, which goes in the **Head Code** box:
 
 ```html
 <script defer data-domain="yourblog.pagecord.com" src="https://plausible.io/js/script.js"></script>
@@ -58,7 +56,7 @@ Replace `yourblog.pagecord.com` with your own blog address. If you use a custom 
 
 If you're adding JavaScript that changes the page, there are two things to know about Pagecord.
 
-**Use `turbo:load`, not `DOMContentLoaded`.** Pagecord uses Turbo, so moving between pages doesn't reload the browser. `DOMContentLoaded` fires once and then never again, so your script would stop working as soon as a reader clicks a link.
+**Use `turbo:load`, not `DOMContentLoaded`.** Pagecord uses [Turbo](https://turbo.hotwired.dev/), so moving between pages doesn't reload the browser. `DOMContentLoaded` fires once and then never again, so your script would stop working as soon as a reader clicks a link.
 
 **Make your script safe to run twice.** Because `turbo:load` fires on every page, check whether you've already added your element before adding it again.
 
@@ -94,64 +92,6 @@ Post lists use `.post-stream-item`, `.post-row` or `.post-card`, depending on th
 
 Use your theme's colour variables rather than fixed colours, and your code will follow the reader's light or dark mode automatically. The most useful are `--color-text`, `--color-text-light`, `--color-accent`, `--color-bg`, `--color-bg-subtle` and `--color-border`.
 
-### Example: showing webmentions
-
-[Webmentions](https://indieweb.org/Webmention) let other sites tell you when they've linked to your post. Pagecord already marks your posts up with microformats, so this is a natural fit. There are three steps.
-
-**1. Sign up at [webmention.io](https://webmention.io).** It signs you in using your own blog address, which needs a `rel="me"` link pointing at somewhere it can verify you, like GitHub. Pagecord adds one automatically for every social link in your navigation apart from RSS and Web, so adding a GitHub link in **Settings** → **Navigation** is enough.
-
-**2. Advertise your endpoints.** This goes in **Head code**:
-
-```html
-<link rel="webmention" href="https://webmention.io/yourblog.pagecord.com/webmention">
-<link rel="pingback" href="https://webmention.io/yourblog.pagecord.com/xmlrpc">
-```
-
-Replace `yourblog.pagecord.com` with your own blog address, and use your custom domain if you have one.
-
-**3. Show them on your posts.** webmention.io only collects mentions, so nothing appears on your blog until you ask for them. This goes in **Body code**:
-
-```html
-<script>
-  document.addEventListener("turbo:load", function () {
-    if (document.body.dataset.pageType !== "post") return;
-    if (document.querySelector(".webmentions")) return;
-
-    const footer = document.querySelector("article footer");
-    if (!footer || footer.dataset.webmentions) return;
-    footer.dataset.webmentions = "loading";
-
-    const target = document.querySelector("link[rel=canonical]")?.href || location.href;
-
-    fetch("https://webmention.io/api/mentions.jf2?per-page=50&target=" + encodeURIComponent(target))
-      .then(function (response) { return response.ok ? response.json() : null; })
-      .then(function (feed) {
-        const mentions = (feed && feed.children) || [];
-        if (!mentions.length) return;
-
-        const list = document.createElement("p");
-        list.className = "webmentions";
-        list.style.cssText = "margin-top:1.5rem;font-size:0.875em;color:var(--color-text-light)";
-        list.append(mentions.length === 1 ? "1 mention from around the web: " : mentions.length + " mentions from around the web: ");
-
-        mentions.forEach(function (mention, index) {
-          const link = document.createElement("a");
-          link.href = mention.url;
-          link.rel = "nofollow ugc";
-          link.textContent = (mention.author && mention.author.name) || new URL(mention.url).hostname;
-          list.append(link);
-          if (index < mentions.length - 1) list.append(", ");
-        });
-
-        footer.append(list);
-      })
-      .catch(function () {});
-  });
-</script>
-```
-
-It asks for the canonical address of the post, which is what other sites link to, and adds nothing at all when there are no mentions yet. Some mentions arrive without an author name, so those fall back to the name of the site they came from.
-
 ### Example: a copy button for code blocks
 
 Adds a Copy button to the corner of every code block, which is handy if you write posts containing code. This goes in **Body code**:
@@ -185,6 +125,76 @@ Adds a Copy button to the corner of every code block, which is handy if you writ
 ```
 
 The code is read before the button is added, so the word "Copy" never ends up on the clipboard.
+
+### Example: showing webmentions
+
+[Webmentions](https://indieweb.org/Webmention) let other sites tell you when they've linked to your post. Pagecord already marks your posts up with microformats, so this is a natural fit. There are three steps.
+
+**1. Sign up at [webmention.io](https://webmention.io).** It signs you in using your own blog address, which needs a `rel="me"` link pointing at somewhere it can verify you, like GitHub. Pagecord adds one automatically for every social link in your navigation apart from RSS and Web, so adding a GitHub link in **Settings** → **Navigation** is enough.
+
+**2. Advertise your endpoints.** This goes in **Head code**:
+
+```html
+<link rel="webmention" href="https://webmention.io/yourblog.pagecord.com/webmention">
+<link rel="pingback" href="https://webmention.io/yourblog.pagecord.com/xmlrpc">
+```
+
+Replace `yourblog.pagecord.com` with your own blog address, and use your custom domain if you have one.
+
+**3. Show them on your posts.** webmention.io only collects mentions, so nothing appears on your blog until you ask for them. This goes in **Body code**:
+
+```html
+<script>
+  document.addEventListener("turbo:load", function () {
+    if (document.body.dataset.pageType !== "post") return;
+    if (document.querySelector(".webmentions")) return;
+
+    const footer = document.querySelector("article footer");
+    if (!footer || footer.dataset.webmentions) return;
+    footer.dataset.webmentions = "loading";
+
+    const target = document.querySelector("link[rel=canonical]")?.href || location.href;
+
+    fetch("https://webmention.io/api/mentions.jf2?per-page=100&target=" + encodeURIComponent(target))
+      .then(function (response) { return response.ok ? response.json() : null; })
+      .then(function (feed) {
+        const mentions = (feed && feed.children) || [];
+        if (!mentions.length) return;
+
+        // One entry per person, since the same site often mentions you more than once
+        const people = new Map();
+        mentions.forEach(function (mention) {
+          const name = (mention.author && mention.author.name) || new URL(mention.url).hostname;
+          if (!people.has(name)) people.set(name, mention.url);
+        });
+
+        const names = Array.from(people.keys()).slice(0, 10);
+
+        const list = document.createElement("p");
+        list.className = "webmentions";
+        list.style.cssText = "margin-top:1.5rem;font-size:0.875em;color:var(--color-text-light)";
+        list.append(people.size === 1 ? "1 mention from around the web: " : people.size + " mentions from around the web: ");
+
+        names.forEach(function (name, index) {
+          const link = document.createElement("a");
+          link.href = people.get(name);
+          link.rel = "nofollow ugc";
+          link.textContent = name;
+          list.append(link);
+          if (index < names.length - 1) list.append(", ");
+        });
+
+        if (people.size > names.length) list.append(" and " + (people.size - names.length) + " others");
+
+        // After the footer, not inside it: the footer is a flex row
+        footer.after(list);
+      })
+      .catch(function () {});
+  });
+</script>
+```
+
+It asks for the canonical address of the post, which is what other sites link to, and adds nothing at all when there are no mentions yet. Some mentions arrive without an author name, so those fall back to the name of the site they came from. Repeat mentions from the same person are counted once, and only the first ten are named.
 
 ## What's allowed in head code
 
