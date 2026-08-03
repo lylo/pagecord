@@ -4,6 +4,9 @@
   <%= stylesheet_link_tag "code-editor" %>
 <% end %>
 
+<% premium_disabled = !@blog.user.has_premium_access? %>
+<% style_editor_data = premium_disabled ? {} : { controller: "code-editor" } %>
+<% html_editor_data = premium_disabled ? {} : { controller: "code-editor", code_editor_mode_value: "htmlmixed" } %>
 <% code_field_classes = "w-full min-h-36 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-mono text-sm focus:border-slate-500 dark:focus:border-slate-400 focus:ring-0 [field-sizing:content]" %>
 
 <div class="space-y-8">
@@ -27,7 +30,7 @@
       <div class="space-y-4">
         <div class="space-y-2">
           <p>
-            Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
+            Add custom CSS to style your blog. This CSS will be inserted into the <code>&lt;head&gt;</code> of your blog pages.
             You can use <code>@import</code> for Google Fonts or Bunny Fonts.
           </p>
 
@@ -36,18 +39,27 @@
           </p>
         </div>
 
+        <% if premium_disabled %>
+          <%= callout(:info) do %>
+            <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to style your blog with custom CSS.
+          <% end %>
+        <% end %>
+
         <%= form_with url: app_settings_custom_code_path, model: @blog,
               data: {
-                controller: "save-button code-editor",
+                controller: "save-button",
                 action: "turbo:submit-end->save-button#showMessage"
               } do |form| %>
-          <%= form.text_area :custom_css,
-              data: { code_editor_target: "textarea" } %>
+          <div class="space-y-4 <%= 'opacity-50' if premium_disabled %>">
+            <div <%= tag.attributes(data: style_editor_data) %>>
+              <%= form.text_area :custom_css, rows: 6, disabled: premium_disabled,
+                  class: code_field_classes, data: { code_editor_target: "textarea" } %>
+              <div id="css-error" class="field-error"><%= @blog.errors[:custom_css].first %></div>
+            </div>
 
-          <div id="css-error" class="field-error"><%= @blog.errors[:custom_css].first %></div>
-
-          <div class="mt-4">
-            <%= form.submit "Save custom CSS", data: { save_button_target: "button" }, class: "btn-primary" %>
+            <div>
+              <%= form.submit "Save custom CSS", disabled: premium_disabled, data: { save_button_target: "button" }, class: "btn-primary" %>
+            </div>
           </div>
         <% end %>
       </div>
@@ -65,19 +77,27 @@
           </p>
         </div>
 
+        <% if premium_disabled %>
+          <%= callout(:info) do %>
+            <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add a custom footer to your blog.
+          <% end %>
+        <% end %>
+
         <%= form_with url: app_settings_custom_code_path, model: @blog,
               data: {
-                controller: "save-button code-editor",
-                code_editor_mode_value: "htmlmixed",
+                controller: "save-button",
                 action: "turbo:submit-end->save-button#showMessage"
               } do |form| %>
-          <%= form.text_area :custom_footer_html, rows: 6, class: code_field_classes,
-              data: { code_editor_target: "textarea" } %>
+          <div class="space-y-4 <%= 'opacity-50' if premium_disabled %>">
+            <div <%= tag.attributes(data: html_editor_data) %>>
+              <%= form.text_area :custom_footer_html, rows: 6, disabled: premium_disabled,
+                  class: code_field_classes, data: { code_editor_target: "textarea" } %>
+              <div id="footer-error" class="field-error"><%= @blog.errors[:custom_footer_html].first %></div>
+            </div>
 
-          <div id="footer-error" class="field-error"><%= @blog.errors[:custom_footer_html].first %></div>
-
-          <div class="mt-4">
-            <%= form.submit "Save custom footer", data: { save_button_target: "button" }, class: "btn-primary" %>
+            <div>
+              <%= form.submit "Save custom footer", disabled: premium_disabled, data: { save_button_target: "button" }, class: "btn-primary" %>
+            </div>
           </div>
         <% end %>
       </div>
@@ -86,19 +106,18 @@
 
   <% if current_features.enabled?(:custom_code) %>
     <% custom_code_disabled = !@blog.user.subscribed? %>
-    <% editor_data = custom_code_disabled ? {} : { controller: "code-editor", code_editor_mode_value: "htmlmixed" } %>
 
-    <%= settings_section "Scripts" do %>
-      <%= settings_row "Head and body code", stacked: true do %>
+    <%= settings_section "Advanced" do %>
+      <%= settings_row "Head Code", stacked: true do %>
         <div class="space-y-4">
           <div class="space-y-2">
             <p>
-              Add your own HTML for analytics, verification tags, fonts or chat widgets. Head code goes just before
-              the closing &lt;head&gt; tag, body code just before the closing &lt;body&gt; tag.
+              Added just before the closing <code>&lt;head&gt;</code> tag of every page. Most people use it for third party
+              analytics, or for a verification tag another service has asked them to add.
             </p>
 
             <p class="text-sm text-slate-500 italic">
-              Anything you add here runs on every page of your blog. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-code", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+              Only <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;link&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;noscript&gt;</code> and <code>&lt;template&gt;</code> tags can go here. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-code", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
             </p>
           </div>
 
@@ -114,41 +133,77 @@
                   action: "turbo:submit-end->save-button#showMessage"
                 } do |form| %>
             <div class="space-y-4 <%= 'opacity-50' if custom_code_disabled %>">
-              <div <%= tag.attributes(data: editor_data) %>>
-                <%= form.label :custom_head_html, "Head code", class: "block mb-1 font-medium text-slate-800 dark:text-slate-100" %>
+              <div <%= tag.attributes(data: custom_code_disabled ? {} : html_editor_data) %>>
                 <%= form.text_area :custom_head_html, rows: 6, disabled: custom_code_disabled,
                     spellcheck: false, autocapitalize: "off", autocorrect: "off", autocomplete: "off",
                     class: code_field_classes, data: { code_editor_target: "textarea" } %>
                 <div id="head-error" class="field-error"><%= @blog.errors[:custom_head_html].first %></div>
               </div>
 
-              <div <%= tag.attributes(data: editor_data) %>>
-                <%= form.label :custom_body_html, "Body code", class: "block mb-1 font-medium text-slate-800 dark:text-slate-100" %>
+              <div>
+                <%= form.submit "Save head code", disabled: custom_code_disabled, data: { save_button_target: "button" }, class: "btn-primary" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= settings_row "Body Code", stacked: true do %>
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <p>
+              Added just before the closing <code>&lt;body&gt;</code> tag of every page. Use it for anything your readers can see,
+              like chat widgets and embedded forms.
+            </p>
+
+            <p class="text-sm text-slate-500 italic">
+              Any HTML can go here. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-code", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+            </p>
+          </div>
+
+          <% if custom_code_disabled %>
+            <%= callout(:info) do %>
+              <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add custom code to your blog.
+            <% end %>
+          <% end %>
+
+          <%= form_with url: app_settings_custom_code_path, model: @blog,
+                data: {
+                  controller: "save-button",
+                  action: "turbo:submit-end->save-button#showMessage"
+                } do |form| %>
+            <div class="space-y-4 <%= 'opacity-50' if custom_code_disabled %>">
+              <div <%= tag.attributes(data: custom_code_disabled ? {} : html_editor_data) %>>
                 <%= form.text_area :custom_body_html, rows: 6, disabled: custom_code_disabled,
                     spellcheck: false, autocapitalize: "off", autocorrect: "off", autocomplete: "off",
                     class: code_field_classes, data: { code_editor_target: "textarea" } %>
                 <div id="body-error" class="field-error"><%= @blog.errors[:custom_body_html].first %></div>
               </div>
 
-              <div class="flex gap-3">
-                <div class="flex h-6 shrink-0 items-center">
-                  <%= styled_check_box form, :custom_code_enabled, disabled: custom_code_disabled %>
-                </div>
-                <div>
-                  <%= form.label :custom_code_enabled, "Enable custom code", class: "text-slate-800 dark:text-slate-100" %>
-                  <p class="text-slate-500 text-sm">
-                    Uncheck to switch your custom code off without deleting it, which is the quickest way to tell
-                    whether it's causing a problem on your blog.
-                  </p>
-                </div>
-              </div>
-
               <div>
-                <%= form.submit "Save custom code", disabled: custom_code_disabled, data: { save_button_target: "button" }, class: "btn-primary" %>
+                <%= form.submit "Save body code", disabled: custom_code_disabled, data: { save_button_target: "button" }, class: "btn-primary" %>
               </div>
             </div>
           <% end %>
         </div>
+      <% end %>
+
+      <%= settings_row "Troubleshooting", stacked: true do %>
+        <%= form_with url: app_settings_custom_code_path, model: @blog,
+              data: { controller: "checkbox-auto-submit" } do |form| %>
+          <div class="flex gap-3 <%= 'opacity-50' if custom_code_disabled %>">
+            <div class="flex h-6 shrink-0 items-center">
+              <%= styled_check_box form, :custom_code_enabled, disabled: custom_code_disabled %>
+            </div>
+            <div>
+              <%= form.label :custom_code_enabled, "Run my head and body code", class: "text-slate-800 dark:text-slate-100" %>
+              <p class="text-slate-500 text-sm">
+                Uncheck to switch your code off without deleting it, which is the quickest way to tell whether it's
+                causing a problem on your blog.
+              </p>
+            </div>
+          </div>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>

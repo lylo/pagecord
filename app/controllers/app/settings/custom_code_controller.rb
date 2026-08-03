@@ -1,6 +1,4 @@
 class App::Settings::CustomCodeController < AppController
-  before_action :require_premium
-
   def show
   end
 
@@ -29,10 +27,6 @@ class App::Settings::CustomCodeController < AppController
 
   private
 
-    def require_premium
-      render_app_not_found unless @blog.user.has_premium_access?
-    end
-
     # turbo_stream.update renders a plain String as raw markup, and the custom
     # code errors quote the tags they object to.
     def error_stream(target, attribute)
@@ -40,7 +34,8 @@ class App::Settings::CustomCodeController < AppController
     end
 
     def custom_code_params
-      permitted_params = [ :custom_css, :custom_footer_html ]
+      permitted_params = []
+      permitted_params += [ :custom_css, :custom_footer_html ] if @blog.user.has_premium_access?
       permitted_params += [ :custom_head_html, :custom_body_html, :custom_code_enabled ] if custom_code_editable?
 
       params.require(:blog).permit(permitted_params)

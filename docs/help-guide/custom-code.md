@@ -7,7 +7,6 @@ Subscribers can add their own HTML to every page of their blog. This is useful f
 
 - third party analytics, such as Plausible or Fathom
 - site verification tags for search engines
-- loading a font from an external service
 - chat widgets and embedded forms
 
 To add custom code, head over to **Settings** → **Custom Code**.
@@ -22,7 +21,7 @@ Custom code is an advanced feature. Anything you add runs on every page of your 
 
 There are two boxes, and which one you use depends on the snippet.
 
-**Head code** is added just before the closing `</head>` tag. Use it for analytics, verification meta tags, and fonts.
+**Head code** is added just before the closing `</head>` tag. Most people use it for third party analytics, or for a verification tag another service has asked them to add.
 
 **Body code** is added just before the closing `</body>` tag. Use it for anything visible on the page, like chat widgets and embedded forms.
 

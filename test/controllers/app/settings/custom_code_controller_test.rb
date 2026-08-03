@@ -32,12 +32,35 @@ class App::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", app_settings_subscriptions_path
   end
 
-  test "should not be reachable on the free plan" do
+  test "should show every field disabled on the free plan" do
     login_as users(:vivian)
 
     get app_settings_custom_code_url
 
-    assert_response :not_found
+    assert_response :success
+    assert_select "textarea#blog_custom_css[disabled]"
+    assert_select "textarea#blog_custom_footer_html[disabled]"
+    assert_select "a[href=?]", app_settings_subscriptions_path
+  end
+
+  test "should not update custom css on the free plan" do
+    free_user = users(:vivian)
+    login_as free_user
+
+    patch app_settings_custom_code_url, params: { blog: { custom_css: ".blog { color: red; }" } }, as: :turbo_stream
+
+    assert_response :success
+    assert_nil free_user.blog.reload.custom_css
+  end
+
+  test "should not update custom footer on the free plan" do
+    free_user = users(:vivian)
+    login_as free_user
+
+    patch app_settings_custom_code_url, params: { blog: { custom_footer_html: "<p>hi</p>" } }, as: :turbo_stream
+
+    assert_response :success
+    assert_nil free_user.blog.reload.custom_footer_html
   end
 
   test "should hide head and body code without the feature flag" do
