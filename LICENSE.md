@@ -2,7 +2,7 @@
 
 Version 2.0, September 2025
 
-Copyright (c) 2024–2025 [Olly Headey](https://olly.world), [Pagecord](https://pagecord.com)
+Copyright (c) 2024–2026 [Olly Headey](https://olly.world), [Pagecord](https://pagecord.com)
 
 By using Pagecord software ("Software"), you agree to the terms below.
 
