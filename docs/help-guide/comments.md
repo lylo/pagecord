@@ -13,7 +13,7 @@ This is a premium feature.
 1. Go to **Settings** → **Audience**
 2. Toggle on **Comments**
 
-A comment form then appears at the bottom of each post, along with a comment count.
+A comment icon then appears at the bottom of each post, with a count once there are approved comments. Readers click it to see the comments and leave their own.
 
 ## Approving comments
 
@@ -32,12 +32,15 @@ You can post one reply to each comment, and it appears indented beneath the orig
 
 To disable new comments on a specific post:
 
-1. Open the post's **⋯** menu
+1. Edit the post and open the **⋯** menu
 2. Choose **Comments**
+3. Tick **Close comments on this post** and save
 
-Existing approved comments stay visible, and the form is replaced with "Comments are closed." Use this on an old post that's attracting nothing useful, or on something you'd rather not discuss.
+Untick it to reopen them.
 
-Turning comments off for the whole blog in **Settings** → **Audience** hides the form on every post.
+If the post already has approved comments, they stay visible and the form is replaced with "Comments are closed." If you close a post before anyone has commented, the comments section doesn't appear on it at all. Use this on an old post that's attracting nothing useful, or on something you'd rather not discuss.
+
+Turning comments off for the whole blog in **Settings** → **Audience** hides the whole comments section on every post, including comments you've already published.
 
 ## Spam
 
