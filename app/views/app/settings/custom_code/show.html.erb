@@ -1,7 +1,5 @@
 <% content_for :head do %>
-  <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css" rel="stylesheet" type="text/css"/>
-  <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/hint/show-hint.css" rel="stylesheet" type="text/css"/>
-  <%= stylesheet_link_tag "code-editor" %>
+  <%= stylesheet_link_tag "codemirror", "codemirror-show-hint", "code-editor" %>
 <% end %>
 
 <% premium_disabled = !@blog.user.has_premium_access? %>
@@ -10,12 +8,7 @@
 <% code_field_classes = "w-full min-h-36 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-mono text-sm focus:border-slate-500 dark:focus:border-slate-400 focus:ring-0 [field-sizing:content]" %>
 
 <div class="space-y-8">
-  <div class="space-y-4">
-    <p>
-      Add your own CSS and HTML to every page of your blog, to restyle it or to add things Pagecord doesn't do itself,
-      like third party analytics or a chat widget.
-    </p>
-
+  <div>
     <%= callout(:info) do %>
       <ul class="list-disc list-outside ps-4 space-y-1">
         <li>It's possible to break your blog with custom code. If that happens, come back here and remove it, or switch it off below.</li>
@@ -25,7 +18,7 @@
     <% end %>
   </div>
 
-  <%= settings_section "Style" do %>
+  <%= settings_section "Style", description: "Restyle your blog with your own CSS, and add a snippet to the bottom of every page." do %>
     <%= settings_row "Custom CSS", stacked: true do %>
       <div class="space-y-4">
         <div class="space-y-2">
@@ -107,7 +100,7 @@
   <% if current_features.enabled?(:custom_code) %>
     <% custom_code_disabled = !@blog.user.subscribed? %>
 
-    <%= settings_section "Scripts" do %>
+    <%= settings_section "Scripts", description: "Add code to every page of your blog, for things Pagecord doesn't do itself." do %>
       <%= settings_row "Head Code", stacked: true do %>
         <div class="space-y-4">
           <div class="space-y-2">

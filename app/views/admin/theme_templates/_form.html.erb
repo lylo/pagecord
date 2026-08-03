@@ -1,7 +1,5 @@
 <% content_for :head do %>
-  <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css" rel="stylesheet" type="text/css"/>
-  <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/hint/show-hint.css" rel="stylesheet" type="text/css"/>
-  <%= stylesheet_link_tag "code-editor" %>
+  <%= stylesheet_link_tag "codemirror", "codemirror-show-hint", "code-editor" %>
 <% end %>
 
 <%= form_with model: [:admin, template], class: "space-y-6" do |form| %>
