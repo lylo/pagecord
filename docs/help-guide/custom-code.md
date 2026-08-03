@@ -3,11 +3,11 @@ title: "Adding custom code"
 published: true
 ---
 
-Subscribers can add their own HTML to every page of their blog. This is useful for things like:
+Premium customers can add their own HTML to every page of their blog. This is useful for things like:
 
-- third party analytics, such as Plausible or Fathom
+- adding support for third party analytics, such as Plausible or Fathom
 - site verification tags for search engines
-- chat widgets and embedded forms
+- adding dynamic features like a copy button for code blocks, or progress bars
 
 To add custom code, head over to **Settings** → **Custom Code**.
 

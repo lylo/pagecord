@@ -2,23 +2,32 @@
   <%= stylesheet_link_tag "codemirror", "codemirror-show-hint", "code-editor" %>
 <% end %>
 
+<% style_help = capture do %>
+  <%= render "app/shared/dialog",
+    id: "custom-code-help",
+    title: "Before you add custom code",
+    button_label: "Custom code help",
+    shortcut: "?",
+    content_partial: "app/shared/help/custom_code_content" %>
+<% end %>
+
+<%# Same content, reachable from either section. Only one binds the ? shortcut,
+    otherwise both dialogs open at once. %>
+<% scripts_help = capture do %>
+  <%= render "app/shared/dialog",
+    id: "custom-code-help-scripts",
+    title: "Before you add custom code",
+    button_label: "Custom code help",
+    content_partial: "app/shared/help/custom_code_content" %>
+<% end %>
+
 <% premium_disabled = !@blog.user.has_premium_access? %>
 <% style_editor_data = premium_disabled ? {} : { controller: "code-editor" } %>
 <% html_editor_data = premium_disabled ? {} : { controller: "code-editor", code_editor_mode_value: "htmlmixed" } %>
 <% code_field_classes = "w-full min-h-36 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-mono text-sm focus:border-slate-500 dark:focus:border-slate-400 focus:ring-0 [field-sizing:content]" %>
 
 <div class="space-y-8">
-  <div>
-    <%= callout(:info) do %>
-      <ul class="list-disc list-outside ps-4 space-y-1">
-        <li>It's possible to break your blog with custom code. If that happens, come back here and remove it, or switch it off below.</li>
-        <li>Be careful pasting code from somewhere you don't recognise, and prefer pasting code directly over linking to a third party where you can.</li>
-        <li>Customer support for writing or debugging custom code is not possible, so you're on your own with this one.</li>
-      </ul>
-    <% end %>
-  </div>
-
-  <%= settings_section "Style", description: "Restyle your blog with your own CSS, and add a snippet to the bottom of every page." do %>
+  <%= settings_section "Style", description: "Restyle your blog with your own CSS, and add a snippet to the bottom of every page.", control: style_help do %>
     <%= settings_row "Custom CSS", stacked: true do %>
       <div class="space-y-4">
         <div class="space-y-2">
@@ -28,7 +37,7 @@
           </p>
 
           <p class="text-sm text-slate-500 italic">
-            Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+            Customer support for debugging custom CSS is not possible. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
           </p>
         </div>
 
@@ -100,7 +109,7 @@
   <% if current_features.enabled?(:custom_code) %>
     <% custom_code_disabled = !@blog.user.subscribed? %>
 
-    <%= settings_section "Scripts", description: "Add code to every page of your blog, for things Pagecord doesn't do itself." do %>
+    <%= settings_section "Scripts", description: "Add code to every page of your blog, for things Pagecord doesn't do itself.", control: scripts_help do %>
       <%= settings_row "Head Code", stacked: true do %>
         <div class="space-y-4">
           <div class="space-y-2">
@@ -110,7 +119,7 @@
             </p>
 
             <p class="text-sm text-slate-500 italic">
-              Only <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;link&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;noscript&gt;</code> and <code>&lt;template&gt;</code> tags can go here. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-code", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+              Only <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;link&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;noscript&gt;</code> and <code>&lt;template&gt;</code> tags can go here. Customer support for debugging custom code is not possible. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-code", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
             </p>
           </div>
 
@@ -150,7 +159,7 @@
             </p>
 
             <p class="text-sm text-slate-500 italic">
-              Any HTML can go here. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-code", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+              Any HTML can go here. Customer support for debugging custom code is not possible. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-code", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
             </p>
           </div>
 
