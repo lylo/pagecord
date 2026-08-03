@@ -54,11 +54,17 @@ Replace `yourblog.pagecord.com` with your own blog address. If you use a custom 
 
 ## Writing your own scripts
 
-If you're adding JavaScript that changes the page, there are two things to know about Pagecord.
+If you're adding JavaScript that changes the page, there are a few things to know about Pagecord.
 
 **Use `turbo:load`, not `DOMContentLoaded`.** Pagecord uses [Turbo](https://turbo.hotwired.dev/), so moving between pages doesn't reload the browser. `DOMContentLoaded` fires once and then never again, so your script would stop working as soon as a reader clicks a link.
 
-**Make your script safe to run twice.** Because `turbo:load` fires on every page, check whether you've already added your element before adding it again.
+**Listen for `turbo:frame-load` as well.** Your post list loads more posts as the reader scrolls, and `turbo:load` doesn't fire for those. Without this, your script runs on the first batch of posts and silently skips every one after it. Bind the same function to both events.
+
+**Make your script safe to run twice.** Because both events fire more than once, check whether you've already added your element before adding it again.
+
+**Register your listeners once.** Body code is re-run every time a reader moves to another page, so `document.addEventListener` inside it adds another listener each time. After ten pages you have ten copies of your script running, and anything that fetches from another service will do it ten times over. Set a flag on `window` and only register when it isn't there yet. Both examples below show the pattern.
+
+**Don't add anything inside a code block.** Pagecord highlights code after the page has loaded, and it does so by replacing everything inside each `<pre>` element. Anything you've put in there is destroyed, and any text it contained gets swallowed into the code itself. Add your element next to the `<pre>`, not inside it. The copy button example below shows the pattern.
 
 ### Selectors you can use
 
@@ -98,11 +104,19 @@ Adds a Copy button to the corner of every code block, which is handy if you writ
 
 ```html
 <script>
-  document.addEventListener("turbo:load", function () {
-    document.querySelectorAll(".post-body pre").forEach(function (block) {
-      if (block.querySelector(".copy-code")) return;
+if (!window.copyButtonsReady) {
+  window.copyButtonsReady = true;
 
-      const code = block.innerText;
+  function addCopyButtons() {
+    document.querySelectorAll(".post-body pre").forEach(function (block) {
+      if (block.parentElement.classList.contains("copy-wrapper")) return;
+
+      // Wrap the code block so the button can sit beside it rather than inside it
+      const wrapper = document.createElement("div");
+      wrapper.className = "copy-wrapper";
+      wrapper.style.position = "relative";
+      block.parentNode.insertBefore(wrapper, block);
+      wrapper.append(block);
 
       const button = document.createElement("button");
       button.className = "copy-code";
@@ -112,19 +126,24 @@ Adds a Copy button to the corner of every code block, which is handy if you writ
         "border:1px solid var(--color-border);background:var(--color-bg);color:var(--color-text-light)";
 
       button.addEventListener("click", function () {
-        navigator.clipboard?.writeText(code);
+        navigator.clipboard?.writeText(block.innerText);
         button.textContent = "Copied";
         setTimeout(function () { button.textContent = "Copy"; }, 2000);
       });
 
-      block.style.position = "relative";
-      block.append(button);
+      wrapper.append(button);
     });
-  });
+  }
+
+  document.addEventListener("turbo:load", addCopyButtons);
+  document.addEventListener("turbo:frame-load", addCopyButtons);
+}
 </script>
 ```
 
-The code is read before the button is added, so the word "Copy" never ends up on the clipboard.
+The button lives in a wrapper alongside the code block rather than inside it, so syntax highlighting can't destroy it. The code is read when the button is clicked, which means it always matches what the reader can see, and the word "Copy" never ends up on the clipboard.
+
+If you put the button inside the `<pre>` instead, it works some of the time and not others, depending on whether highlighting happened to run before or after your script. When it loses that race the button disappears and the word "Copy" is left stranded at the end of your code.
 
 ### Example: showing webmentions
 
@@ -145,56 +164,66 @@ Replace `yourblog.pagecord.com` with your own blog address, and use your custom 
 
 ```html
 <script>
-  document.addEventListener("turbo:load", function () {
+if (!window.webmentionsReady) {
+  window.webmentionsReady = true;
+
+  document.addEventListener("turbo:load", async function () {
     if (document.body.dataset.pageType !== "post") return;
     if (document.querySelector(".webmentions")) return;
 
     const footer = document.querySelector("article footer");
-    if (!footer || footer.dataset.webmentions) return;
-    footer.dataset.webmentions = "loading";
+    if (!footer) return;
 
     const target = document.querySelector("link[rel=canonical]")?.href || location.href;
 
-    fetch("https://webmention.io/api/mentions.jf2?per-page=100&target=" + encodeURIComponent(target))
-      .then(function (response) { return response.ok ? response.json() : null; })
-      .then(function (feed) {
-        const mentions = (feed && feed.children) || [];
-        if (!mentions.length) return;
+    try {
+      const response = await fetch("https://webmention.io/api/mentions.jf2?per-page=100&target=" + encodeURIComponent(target));
+      if (!response.ok) return;
 
-        // One entry per person, since the same site often mentions you more than once
-        const people = new Map();
-        mentions.forEach(function (mention) {
-          const name = (mention.author && mention.author.name) || new URL(mention.url).hostname;
-          if (!people.has(name)) people.set(name, mention.url);
-        });
+      const mentions = (await response.json()).children || [];
+      if (!mentions.length) return;
 
-        const names = Array.from(people.keys()).slice(0, 10);
+      // One entry per person, since the same site often mentions you more than once
+      const people = new Map();
+      for (const mention of mentions) {
+        const name = mention.author?.name || new URL(mention.url).hostname;
+        if (!people.has(name)) people.set(name, mention.url);
+      }
 
-        const list = document.createElement("p");
-        list.className = "webmentions";
-        list.style.cssText = "margin-top:1.5rem;font-size:0.875em;color:var(--color-text-light)";
-        list.append(people.size === 1 ? "1 mention from around the web: " : people.size + " mentions from around the web: ");
+      const shown = [...people].slice(0, 10);
+      const hidden = people.size - shown.length;
 
-        names.forEach(function (name, index) {
-          const link = document.createElement("a");
-          link.href = people.get(name);
-          link.rel = "nofollow ugc";
-          link.textContent = name;
-          list.append(link);
-          if (index < names.length - 1) list.append(", ");
-        });
+      const list = document.createElement("p");
+      list.className = "webmentions";
+      list.style.cssText = "margin-top:1.5rem;font-size:0.875em;color:var(--color-text-light)";
+      list.append(people.size === 1 ? "1 mention from around the web: " : people.size + " mentions from around the web: ");
 
-        if (people.size > names.length) list.append(" and " + (people.size - names.length) + " others");
+      // Built up node by node rather than with innerHTML: these names come from
+      // other people's websites, and must never be treated as HTML
+      shown.forEach(function ([name, url], index) {
+        if (index) list.append(", ");
+        const link = document.createElement("a");
+        link.href = url;
+        link.rel = "nofollow ugc";
+        link.textContent = name;
+        list.append(link);
+      });
 
-        // After the footer, not inside it: the footer is a flex row
-        footer.after(list);
-      })
-      .catch(function () {});
+      if (hidden) list.append(" and " + hidden + " others");
+
+      // After the footer, not inside it: the footer is a flex row
+      footer.after(list);
+    } catch (error) {
+      // Leave the post exactly as it was if webmention.io can't be reached
+    }
   });
+}
 </script>
 ```
 
 It asks for the canonical address of the post, which is what other sites link to, and adds nothing at all when there are no mentions yet. Some mentions arrive without an author name, so those fall back to the name of the site they came from. Repeat mentions from the same person are counted once, and only the first ten are named.
+
+Note that the names are added to the page one node at a time rather than with `innerHTML`. They come from other people's websites, so treating them as HTML would let someone else run code on your blog. It's worth keeping that shape if you adapt this.
 
 ## What's allowed in head code
 
