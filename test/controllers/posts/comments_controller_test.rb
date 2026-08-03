@@ -28,20 +28,6 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-frame##{comments_frame_id(@post)}", count: 0
   end
 
-  test "the feature flag hides comments and blocks the comments endpoint" do
-    @post.blog.user.update!(features: [])
-
-    get blog_post_path(@post.slug)
-
-    assert_response :success
-    assert_select "a.comment-link", count: 0
-    assert_select "turbo-frame##{comments_frame_id(@post)}", count: 0
-
-    get post_comments_path(@post)
-
-    assert_response :not_found
-  end
-
   test "loads the comments frame with approved comments and a form" do
     get post_comments_path(@post)
 

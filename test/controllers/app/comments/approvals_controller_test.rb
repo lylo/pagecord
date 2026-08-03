@@ -84,7 +84,6 @@ class App::Comments::ApprovalsControllerTest < ActionDispatch::IntegrationTest
 
   test "can't touch another blog's comments" do
     blogs(:annie).update!(comments_enabled: true)
-    users(:annie).update!(features: [ "comments" ])
     login_as users(:annie)
 
     post app_comment_approval_path(post_comments(:pending))

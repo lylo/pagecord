@@ -119,12 +119,4 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_settings_audience_index_path
   end
-
-  test "is not found when the comments feature is disabled" do
-    @user.update!(features: [])
-
-    get app_comments_path
-
-    assert_response :not_found
-  end
 end

@@ -42,8 +42,7 @@ class App::Settings::BlogsController < AppController
       end
 
       if @blog.user.has_premium_access?
-        permitted_params << :reply_by_email
-        permitted_params << :comments_enabled if current_features.enabled?(:comments)
+        permitted_params += [ :reply_by_email, :comments_enabled ]
       end
 
       params.require(:blog).permit(permitted_params)
