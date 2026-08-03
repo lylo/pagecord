@@ -138,6 +138,13 @@
           </tr>
         <% end %>
         <!-- about.me unique features -->
+        <% if Rails.features.enabled?(:custom_code) %>
+          <tr>
+            <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Custom code</td>
+            <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700"><span class="text-xl">✅</span><br><span class="text-sm">Your own HTML in the head and body of every page</span></td>
+            <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700" text-xl">❌</td>
+          </tr>
+        <% end %>
         <tr>
           <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Privacy-respecting analytics</td>
           <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>

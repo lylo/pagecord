@@ -1,0 +1,87 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "codemirror", "codemirror-show-hint", "code-editor" %>
+<% end %>
+
+<%# Custom CSS and custom footer. Rendered from Appearance while the
+    custom_code feature is off, and from the Custom Code page once it is on. %>
+<% premium_disabled = !@blog.user.has_premium_access? %>
+<% style_editor_data = premium_disabled ? {} : { controller: "code-editor" } %>
+<% html_editor_data = premium_disabled ? {} : { controller: "code-editor", code_editor_mode_value: "htmlmixed" } %>
+<% code_field_classes = "w-full min-h-36 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-mono text-sm focus:border-slate-500 dark:focus:border-slate-400 focus:ring-0 [field-sizing:content]" %>
+
+  <%= settings_row "Custom CSS", stacked: true do %>
+      <div class="space-y-4">
+        <div class="space-y-2">
+          <p>
+            Add custom CSS to style your blog. This CSS will be inserted into the <code>&lt;head&gt;</code> of your blog pages.
+            You can use <code>@import</code> for Google Fonts or Bunny Fonts.
+          </p>
+
+          <p class="text-sm text-slate-500 italic">
+            Customer support for debugging custom CSS is not possible. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+          </p>
+        </div>
+
+        <% if premium_disabled %>
+          <%= callout(:info) do %>
+            <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to style your blog with custom CSS.
+          <% end %>
+        <% end %>
+
+        <%= form_with url: url, model: @blog,
+              data: {
+                controller: "save-button",
+                action: "turbo:submit-end->save-button#showMessage"
+              } do |form| %>
+          <div class="space-y-4 <%= 'opacity-50' if premium_disabled %>">
+            <div <%= tag.attributes(data: style_editor_data) %>>
+              <%= form.text_area :custom_css, rows: 6, disabled: premium_disabled,
+                  class: code_field_classes, data: { code_editor_target: "textarea" } %>
+              <div id="css-error" class="field-error"><%= @blog.errors[:custom_css].first %></div>
+            </div>
+
+            <div>
+              <%= form.submit "Save Custom CSS", disabled: premium_disabled, data: { save_button_target: "button" }, class: "btn-primary" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= settings_row "Custom Footer", stacked: true do %>
+      <div class="space-y-4">
+        <div class="space-y-2">
+          <p>
+            Add a small HTML snippet to the bottom of your blog for badges, webrings, links, or copyright text.
+          </p>
+
+          <p class="text-sm text-slate-500 italic">
+            Only basic, safe HTML is supported. Scripts, embeds, forms, iframes, and inline styles are not supported. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-footer", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
+          </p>
+        </div>
+
+        <% if premium_disabled %>
+          <%= callout(:info) do %>
+            <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to add a custom footer to your blog.
+          <% end %>
+        <% end %>
+
+        <%= form_with url: url, model: @blog,
+              data: {
+                controller: "save-button",
+                action: "turbo:submit-end->save-button#showMessage"
+              } do |form| %>
+          <div class="space-y-4 <%= 'opacity-50' if premium_disabled %>">
+            <div <%= tag.attributes(data: html_editor_data) %>>
+              <%= form.text_area :custom_footer_html, rows: 6, disabled: premium_disabled,
+                  class: code_field_classes, data: { code_editor_target: "textarea" } %>
+              <div id="footer-error" class="field-error"><%= @blog.errors[:custom_footer_html].first %></div>
+            </div>
+
+            <div>
+              <%= form.submit "Save Custom Footer", disabled: premium_disabled, data: { save_button_target: "button" }, class: "btn-primary" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>

@@ -1,4 +1,6 @@
 class App::Settings::CustomCodeController < AppController
+  before_action :require_custom_code_feature
+
   def show
   end
 
@@ -26,6 +28,10 @@ class App::Settings::CustomCodeController < AppController
   end
 
   private
+
+    def require_custom_code_feature
+      render_app_not_found unless current_features.enabled?(:custom_code)
+    end
 
     # turbo_stream.update renders a plain String as raw markup, and the custom
     # code errors quote the tags they object to.

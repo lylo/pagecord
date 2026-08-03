@@ -43,6 +43,29 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert @blog.reload.show_branding
   end
 
+  test "keeps custom css and footer here while the custom code feature is off" do
+    @user.update!(features: [])
+
+    get app_settings_appearance_index_url
+    assert_select "h3", { count: 1, text: "Advanced" }
+    assert_select "textarea#blog_custom_css"
+
+    patch app_settings_appearance_url(@blog), params: { blog: { custom_css: ".blog { color: red; }" } }, as: :turbo_stream
+    assert_response :success
+    assert_equal ".blog { color: red; }", @blog.reload.custom_css
+  end
+
+  test "hands custom css over to the custom code page when the feature is on" do
+    get app_settings_appearance_index_url
+    assert_select "h3", { count: 0, text: "Advanced" }
+    assert_select "textarea#blog_custom_css", false
+    assert_select "a[href=?]", app_settings_custom_code_path
+
+    patch app_settings_appearance_url(@blog), params: { blog: { custom_css: ".blog { color: red; }" } }, as: :turbo_stream
+    assert_response :success
+    assert_nil @blog.reload.custom_css
+  end
+
   test "should update custom theme colors" do
     patch app_settings_appearance_url(@blog), params: {
       blog: {
