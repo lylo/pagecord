@@ -22,7 +22,6 @@ gem "puma", ">= 5.0"
 # database / caching
 gem "dalli"
 gem "pg"
-gem "redis", ">= 4.0.1"
 gem "sidekiq"
 
 # monitoring and alerting

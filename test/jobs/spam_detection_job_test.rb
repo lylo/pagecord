@@ -58,10 +58,37 @@ class SpamDetectionJobTest < ActiveSupport::TestCase
     refute_includes queued_blog_ids, @blog.id
   end
 
+  test "rechecks a new blog as soon as it publishes after a clean verdict" do
+    detect!(detected_at: 1.hour.ago)
+    @blog.posts.create!(content: "links now", published_at: 1.minute.ago)
+
+    assert_includes queued_blog_ids, @blog.id
+  end
+
+  test "does not recheck a new blog that has published nothing since" do
+    detect!(detected_at: 1.hour.ago)
+
+    refute_includes queued_blog_ids, @blog.id
+  end
+
   test "does not recheck before the recheck window" do
     settled_blog
     detect!(detected_at: 5.days.ago)
     @blog.posts.create!(content: "new content", published_at: 1.day.ago)
+
+    refute_includes queued_blog_ids, @blog.id
+  end
+
+  test "checks an unchecked blog that published after the signup window" do
+    settled_blog
+    @blog.posts.create!(content: "new content", published_at: 1.day.ago)
+
+    assert_includes queued_blog_ids, @blog.id
+  end
+
+  test "leaves an unchecked blog alone while it has published nothing recently" do
+    settled_blog
+    @blog.posts.create!(content: "old content", published_at: 50.days.ago)
 
     refute_includes queued_blog_ids, @blog.id
   end
