@@ -34,16 +34,7 @@ class App::Settings::AudienceControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", app_settings_subscribers_path(format: :csv)
   end
 
-  test "hides comments settings when the feature is disabled" do
-    @user.update!(features: [])
-
-    get app_settings_audience_index_url
-
-    assert_response :success
-    assert_select "input[name='blog[comments_enabled]']", count: 0
-  end
-
-  test "shows comments settings when the feature is enabled" do
+  test "shows comments settings" do
     get app_settings_audience_index_url
 
     assert_response :success

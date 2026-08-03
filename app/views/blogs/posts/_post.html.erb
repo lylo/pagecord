@@ -1,4 +1,4 @@
-<% cache_if(post.post?, [post, @blog.updated_at, local_assigns[:excerpt], comments_enabled?(@blog)]) do %>
+<% cache_if(post.post?, [post, @blog.updated_at, local_assigns[:excerpt], @blog.accepts_comments?]) do %>
   <article class="<%= post.page? ? 'page' : 'post' %> h-entry">
     <%= render "post_title", post: post %>
 
@@ -7,7 +7,7 @@
     <%= render "post_footer", post: post if post.post? %>
   </article>
 
-  <% if post.post? && comments_enabled?(@blog) && post.comments_visible? %>
+  <% if post.post? && @blog.accepts_comments? && post.comments_visible? %>
     <%= turbo_frame_tag comments_frame_id(post) %>
   <% end %>
 <% end %>

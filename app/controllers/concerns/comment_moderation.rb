@@ -4,7 +4,7 @@ module CommentModeration
   include Pagy::Method
 
   included do
-    before_action :require_comments_feature, :ensure_comments_enabled
+    before_action :ensure_comments_enabled
     helper_method :return_path
   end
 
@@ -42,10 +42,6 @@ module CommentModeration
 
     def origin_post
       @comment.post if @comment && params[:post] == @comment.post.token
-    end
-
-    def require_comments_feature
-      render_app_not_found unless current_features.enabled?(:comments)
     end
 
     def ensure_comments_enabled

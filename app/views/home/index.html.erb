@@ -50,7 +50,7 @@
 
     <p>Write posts where you like, when you like. Use the editor, post by email, publish from Obsidian, iA Writer, or use the terminal to sync local files.</p>
 
-    <p>All the blog essentials in one tidy package: posts, pages, themes, email subscribers, <%= "comments, " if Rails.features.enabled?(:comments) %>analytics, and a domain of your own.</p>
+    <p>All the blog essentials in one tidy package: posts, pages, themes, email subscribers, comments, analytics, and a domain of your own.</p>
 
     <p>Your own words, written your own way, on your own corner of the web.</p>
 
@@ -125,7 +125,7 @@
         <div class="absolute -left-10 -bottom-10 h-28 w-28 rounded-full bg-[#4fbd9c]/12 blur-2xl"></div>
         <div class="relative">
           <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Complete, not complicated</h3>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord includes posts, pages, themes, analytics, email subscribers, <%= "comments, " if Rails.features.enabled?(:comments) %>custom domains, and full export. Everything you could reasonably need, for a most reasonable price.</p>
+          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord includes posts, pages, themes, analytics, email subscribers, comments, custom domains, and full export. Everything you could reasonably need, for a most reasonable price.</p>
         </div>
       </section>
     </div>
@@ -202,26 +202,24 @@
 </div>
 
 <!-- Comments Section -->
-<% if Rails.features.enabled?(:comments) %>
-  <div id="comments" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-    <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Host a conversation with comments</h2>
+<div id="comments" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Host a conversation with comments</h2>
 
-    <p class="md:text-xl leading-relaxed my-5">
-      With Pagecord Premium you can enable comments on your posts. Readers leave a name and a message: no account needed, no email address revealed. You can post a reply to any of them.
-    </p>
+  <p class="md:text-xl leading-relaxed my-5">
+    With Pagecord Premium you can enable comments on your posts. Readers leave a name and a message: no account needed, no email address revealed. You can post a reply to any of them.
+  </p>
 
-    <p class="md:text-xl leading-relaxed my-5">
-      Comments won't appear until you approve them, and spam is filtered out before it reaches you.
-    </p>
+  <p class="md:text-xl leading-relaxed my-5">
+    Comments won't appear until you approve them, and spam is filtered out before it reaches you.
+  </p>
 
-    <%= image_tag home_image_path("home/comments.webp", width: 1600, quality: 90),
-      srcset: home_image_srcset("home/comments.webp", widths: [ 800, 1600 ], quality: 88),
-      sizes: "(min-width: 56rem) 54rem, 100vw",
-      alt: "A screenshot of comments on a Pagecord blog post",
-      width: "1600",
-      height: "922" %>
-  </div>
-<% end %>
+  <%= image_tag home_image_path("home/comments.webp", width: 1600, quality: 90),
+    srcset: home_image_srcset("home/comments.webp", widths: [ 800, 1600 ], quality: 88),
+    sizes: "(min-width: 56rem) 54rem, 100vw",
+    alt: "A screenshot of comments on a Pagecord blog post",
+    width: "1600",
+    height: "922" %>
+</div>
 
 <!-- Analytics Section -->
 <div id="analytics" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
@@ -368,12 +366,10 @@
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           Email newsletter (250 subscribers)
         </li>
-        <% if Rails.features.enabled?(:comments) %>
-          <li class="flex items-center text-slate-700 dark:text-slate-300">
-            <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
-            Comments
-          </li>
-        <% end %>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Comments
+        </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           Reply by email
@@ -407,7 +403,7 @@
   <h2 class="source-serif font-semibold text-center my-8 text-3xl md:text-4xl tracking-tight">Pagecord has everything you need</h2>
 
   <p class="md:text-xl leading-relaxed my-5">
-     Pagecord gives you everything a personal website actually needs: blog posts, pages, RSS, email subscriptions, <%= "comments, " if Rails.features.enabled?(:comments) %>simple analytics, a custom domain, full site export, and integrations with popular writing tools like Obsidian and iA Writer.
+     Pagecord gives you everything a personal website actually needs: blog posts, pages, RSS, email subscriptions, comments, simple analytics, a custom domain, full site export, and integrations with popular writing tools like Obsidian and iA Writer.
   </p>
 
   <div class="mt-8 bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-xl">
@@ -608,16 +604,14 @@
           </td>
         </tr>
 
-        <% if Rails.features.enabled?(:comments) %>
-          <tr>
-            <td class="py-3 align-middle">
-              <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Comments</div>
-              <div class="hidden sm:block">Readers comment without signing up for anything. Every comment waits for your approval, and spam is filtered out before it reaches you 💬</div>
-            </td>
-            <td></td>
-            <td class="text-center align-middle text-xl">✅</td>
-          </tr>
-        <% end %>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Comments</div>
+            <div class="hidden sm:block">Readers comment without signing up for anything. Every comment waits for your approval, and spam is filtered out before it reaches you 💬</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
 
         <tr>
           <td class="py-3 align-middle">
