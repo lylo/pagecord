@@ -1,11 +1,26 @@
 <div class="space-y-8">
-  <%= settings_section "Theme" do %>
-    <%= settings_row "Colour Scheme", stacked: true do %>
-      <div data-controller="theme-selector">
-        <p>
-          Choose a colour scheme for your blog, or <%= link_to "pick a ready-made design", app_settings_theme_garden_index_path, class: "font-semibold underline" %> from the Theme Garden.
-        </p>
+  <section data-controller="tabs" class="-mx-4 overflow-hidden border-y border-slate-200 bg-white sm:mx-0 sm:rounded-lg sm:border dark:border-slate-700 dark:bg-slate-900"
+    data-tabs-active-class="border-slate-200 bg-white font-bold text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+    data-tabs-inactive-class="border-transparent font-normal text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+    <div class="flex gap-1 border-b border-slate-200 bg-slate-50 px-2 pt-2 sm:px-3 dark:border-slate-700 dark:bg-slate-800">
+      <button type="button"
+        data-tabs-target="tab"
+        data-action="tabs#select"
+        data-tabs-index-param="0"
+        class="-mb-px rounded-t-lg border border-b-0 px-4 py-3 text-sm sm:text-base cursor-pointer transition border-slate-200 bg-white font-bold text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+        Colour scheme
+      </button>
+      <button type="button"
+        data-tabs-target="tab"
+        data-action="tabs#select"
+        data-tabs-index-param="1"
+        class="-mb-px rounded-t-lg border border-b-0 px-4 py-3 text-sm sm:text-base cursor-pointer transition border-transparent font-normal text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+        🪴 Ready-made design
+      </button>
+    </div>
 
+    <div data-tabs-target="panel" class="px-4 py-5 sm:px-6">
+      <div data-controller="theme-selector">
         <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
               data: { controller: "radio-button-auto-submit" } do |form| %>
           <%= render "theme_presets", form: form %>
@@ -24,8 +39,22 @@
           <% end %>
         </div>
       </div>
-    <% end %>
+    </div>
 
+    <div data-tabs-target="panel" class="hidden px-4 py-5 sm:px-6">
+      <p class="mb-6 text-sm text-slate-500 dark:text-slate-400">
+        A design sets your colours, font, width and layout, all of which you can change below. It also adds Custom CSS, which you can edit in <%= link_to "Custom Code", app_settings_custom_code_path, class: "underline font-medium" %>.
+      </p>
+
+      <%= render "app/settings/theme_garden/templates", templates: @templates %>
+
+      <p class="mt-6 text-sm">
+        <%= link_to "Browse all designs in the Theme Garden", app_settings_theme_garden_index_path, class: "font-semibold underline" %>
+      </p>
+    </div>
+  </section>
+
+  <%= settings_section "Finer Details", description: "These apply whichever colour scheme or ready-made design you chose above." do %>
     <%= settings_row "Font", stacked: true do %>
       <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
             data: { controller: "radio-button-auto-submit" } do |form| %>
@@ -40,7 +69,7 @@
       <% end %>
     <% end %>
 
-    <%= settings_row "Layout", stacked: true, hint: "How your posts appear on your home page: a full-content stream, a list of titles, or cards with excerpts" do %>
+    <%= settings_row "Blog Layout", stacked: true, hint: "How your posts appear on your home page: a full-content stream, a list of titles, or cards with excerpts" do %>
       <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
             data: { controller: "radio-button-auto-submit" } do |form| %>
         <%= render "layout_options", form: form %>

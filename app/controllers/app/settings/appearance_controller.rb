@@ -1,4 +1,6 @@
 class App::Settings::AppearanceController < AppController
+  before_action :set_templates, only: :index
+
   def index
   end
 
@@ -9,11 +11,16 @@ class App::Settings::AppearanceController < AppController
         format.html { redirect_to app_settings_path, notice: "Appearance settings updated" }
       end
     else
+      set_templates
       render :index, status: :unprocessable_entity
     end
   end
 
   private
+
+    def set_templates
+      @templates = ThemeTemplate.active.ordered.limit(6)
+    end
 
     def appearance_params
       permitted_params = [
