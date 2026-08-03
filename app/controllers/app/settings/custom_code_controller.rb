@@ -35,7 +35,6 @@ class App::Settings::CustomCodeController < AppController
       permitted_params += [ :custom_css, :custom_footer_html ] if @blog.user.has_premium_access?
       permitted_params += [ :custom_head_html, :custom_body_html, :custom_code_enabled ] if custom_code_editable?
 
-
       params.require(:blog).permit(permitted_params)
     end
 
