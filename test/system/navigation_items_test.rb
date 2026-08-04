@@ -27,6 +27,35 @@ class NavigationItemsTest < ApplicationSystemTestCase
     assert_instance_of CustomNavigationItem, item
   end
 
+  test "can add posts navigation item with the default label" do
+    visit app_settings_navigation_items_path
+
+    assert_difference -> { PostsNavigationItem.count }, 1 do
+      choose "Your posts"
+      assert_equal "Blog", find_field("Label").value
+
+      click_on "Add to Navigation"
+      sleep 1
+    end
+
+    assert_equal "Blog", @blog.navigation_items.find_by(type: "PostsNavigationItem").label
+    assert_no_selector "input[name='nav_type'][value='posts']", visible: :all
+  end
+
+  test "can rename the posts navigation item label" do
+    visit app_settings_navigation_items_path
+
+    assert_difference -> { PostsNavigationItem.count }, 1 do
+      choose "Your posts"
+      fill_in "Label", with: "Artículos"
+
+      click_on "Add to Navigation"
+      sleep 1
+    end
+
+    assert_equal "Artículos", @blog.navigation_items.find_by(type: "PostsNavigationItem").label
+  end
+
   test "can add social navigation item with RSS prepopulation" do
     visit app_settings_navigation_items_path
 

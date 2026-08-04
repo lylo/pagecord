@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["pageFields", "customFields", "socialFields", "searchFields", "pageRadio", "customRadio", "socialRadio", "searchRadio", "platform", "url"]
+  static targets = ["pageFields", "postsFields", "customFields", "socialFields", "searchFields", "pageRadio", "postsRadio", "customRadio", "socialRadio", "searchRadio", "platform", "url"]
   static values = {
     rssFeedUrl: { type: String }
   }
@@ -31,6 +31,8 @@ export default class extends Controller {
   toggleFields() {
     if (this.pageRadioTarget.checked) {
       this.showOnly(this.pageFieldsTarget)
+    } else if (this.hasPostsRadioTarget && this.postsRadioTarget.checked) {
+      this.showOnly(this.postsFieldsTarget)
     } else if (this.customRadioTarget.checked) {
       this.showOnly(this.customFieldsTarget)
     } else if (this.hasSearchRadioTarget && this.searchRadioTarget.checked) {
@@ -41,7 +43,7 @@ export default class extends Controller {
   }
 
   showOnly(activeTarget) {
-    [this.pageFieldsTarget, this.customFieldsTarget, this.socialFieldsTarget, this.searchFieldsTarget].forEach(target => {
+    [this.pageFieldsTarget, this.postsFieldsTarget, this.customFieldsTarget, this.socialFieldsTarget, this.searchFieldsTarget].forEach(target => {
       if (target === activeTarget) {
         target.classList.remove("hidden")
         this.enableFields(target)
