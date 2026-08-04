@@ -32,6 +32,8 @@
           <div class="space-y-3">
             <% selected_type = if @navigation_item.nil? || @navigation_item.is_a?(PageNavigationItem)
                  "page"
+               elsif @navigation_item.is_a?(PostsNavigationItem)
+                 "posts"
                elsif @navigation_item.is_a?(SocialNavigationItem)
                  "social"
                elsif @navigation_item.is_a?(SearchNavigationItem)
@@ -45,6 +47,14 @@
                   data: { navigation_form_target: "pageRadio", action: "change->navigation-form#toggleFields" } %>
               <span class="ml-2">Link to a page</span>
             </label>
+            <% if @navigation_item.is_a?(PostsNavigationItem) || !@blog.navigation_items.exists?(type: "PostsNavigationItem") %>
+              <label class="flex items-center">
+                <%= radio_button_tag :nav_type, "posts", selected_type == "posts",
+                    class: "rounded-full border-slate-300 dark:border-slate-600 text-[#4fbd9c] focus:ring-[#4fbd9c]",
+                    data: { navigation_form_target: "postsRadio", action: "change->navigation-form#toggleFields" } %>
+                <span class="ml-2">Your posts</span>
+              </label>
+            <% end %>
             <label class="flex items-center">
               <%= radio_button_tag :nav_type, "custom", selected_type == "custom",
                   class: "rounded-full border-slate-300 dark:border-slate-600 text-[#4fbd9c] focus:ring-[#4fbd9c]",
@@ -76,11 +86,23 @@
               class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200" %>
         </div>
 
+        <div data-navigation-form-target="postsFields" class="<%= 'hidden' if selected_type != 'posts' %>">
+          <%= form.label :label, "Label", class: "block font-medium mb-2", for: "navigation_item_posts_label" %>
+          <%= form.text_field :label,
+              id: "navigation_item_posts_label",
+              value: @navigation_item&.label || "Blog",
+              class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200" %>
+          <div class="field-error"><%= @navigation_item.errors[:label].to_sentence if @navigation_item&.errors&.[](:label)&.any? %></div>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Links to all your posts. Rename it to suit your blog.
+          </p>
+        </div>
+
         <div data-navigation-form-target="customFields" class="space-y-4 <%= 'hidden' if selected_type != 'custom' %>">
           <fieldset>
             <%= form.label :label, "Label", class: "block font-medium mb-2" %>
             <%= form.text_field :label,
-                placeholder: "e.g., Posts, Archive, Blog",
+                placeholder: "e.g., Archive, Newsletter, Shop",
                 class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200" %>
             <div class="field-error"><%= @navigation_item.errors[:label].to_sentence if @navigation_item&.errors&.[](:label)&.any? %></div>
           </fieldset>
@@ -88,11 +110,11 @@
           <fieldset>
             <%= form.label :url, "URL", class: "block font-medium mb-2" %>
             <%= form.text_field :url,
-                placeholder: "e.g., /posts, /archive, https://example.com",
+                placeholder: "e.g., /archive, https://example.com",
                 class: "w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200" %>
             <div class="field-error"><%= @navigation_item.errors[:url].to_sentence if @navigation_item&.errors&.[](:url)&.any? %></div>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Use relative paths (e.g., /posts) or full URLs (https://...)
+              Use relative paths (e.g., /archive) or full URLs (https://...)
             </p>
           </fieldset>
         </div>

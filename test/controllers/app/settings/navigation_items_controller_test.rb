@@ -79,6 +79,54 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     assert_equal "Pixelfed", item.label
   end
 
+  test "create posts navigation item" do
+    assert_difference -> { PostsNavigationItem.count }, 1 do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "posts",
+        navigation_item: { label: "Blog" }
+      }
+    end
+
+    assert_redirected_to app_settings_navigation_items_path
+
+    item = PostsNavigationItem.last
+    assert_equal @blog, item.blog
+    assert_equal "Blog", item.label
+    assert_equal "/posts", item.link_url
+  end
+
+  test "posts navigation item keeps the label the blog chose" do
+    post app_settings_navigation_items_path, params: {
+      nav_type: "posts",
+      navigation_item: { label: "Artículos" }
+    }
+
+    assert_equal "Artículos", PostsNavigationItem.last.label
+  end
+
+  test "only one posts navigation item allowed per blog" do
+    @blog.navigation_items.create!(type: "PostsNavigationItem", label: "Blog")
+
+    assert_no_difference -> { PostsNavigationItem.count } do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "posts",
+        navigation_item: { label: "Posts" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "posts radio hidden once a posts item exists" do
+    get app_settings_navigation_items_path
+    assert_select "input[name='nav_type'][value='posts']", count: 1
+
+    @blog.navigation_items.create!(type: "PostsNavigationItem", label: "Blog")
+
+    get app_settings_navigation_items_path
+    assert_select "input[name='nav_type'][value='posts']", count: 0
+  end
+
   test "create search navigation item" do
     assert_difference -> { SearchNavigationItem.count }, 1 do
       post app_settings_navigation_items_path, params: {
