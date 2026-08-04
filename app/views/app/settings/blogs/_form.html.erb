@@ -126,7 +126,7 @@
       <%= settings_row "Fediverse Author Attribution" do %>
         <%= styled_text_field(form, :fediverse_author_attribution, placeholder: "e.g. @you@mastodon.social", class: "w-full") %>
         <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-          Your full Fediverse handle, not your profile URL. Mastodon will show you as the author when someone shares one of your posts.
+          Your full Fediverse handle, not your profile URL. Mastodon will show you as the author when someone shares one of your posts. This doesn't verify your blog. The green tick needs a <code>rel="me"</code> link, and the easiest way to get one is to add a social link in <%= link_to "Navigation", app_settings_navigation_items_path, class: "underline font-medium" %>.
         </p>
       <% end %>
 

@@ -7,6 +7,7 @@ Premium customers can add their own HTML (including `<script>`) to every page of
 
 - adding support for third party analytics, such as Plausible or Fathom
 - site verification tags for search engines
+- identity links for verifying your blog on Mastodon, without showing a social icon in your navigation
 - adding dynamic features like a copy button for code blocks, or article progress bars
 
 To add custom code, head over to **Settings** → **Custom Code**.
@@ -51,6 +52,20 @@ Here's a Plausible analytics tag, which goes in the **Head Code** box:
 ```
 
 Replace `yourblog.pagecord.com` with your own blog address. If you use a custom domain, use that instead.
+
+## Verifying your blog on Mastodon
+
+Mastodon puts a green tick next to your website if it can find a `rel="me"` link on your blog pointing back at your profile. Pagecord adds one automatically for every social link in your navigation, so if you're happy to show a Mastodon icon there, you don't need custom code for this at all. See [SEO & Discovery](seo-and-discovery.md).
+
+If you'd rather not have the icon, add the link yourself in **Head code**:
+
+```html
+<link rel="me" href="https://mastodon.social/@you">
+```
+
+Use your own profile URL, not your handle. Then add your blog's address to your Mastodon profile metadata and save it – verification is reciprocal, so both halves have to be in place. Mastodon only re-checks the link when you save your profile, so save it again even if nothing has changed.
+
+The same trick works for anything else that verifies this way, such as Pixelfed.
 
 ## Writing your own scripts
 
@@ -149,7 +164,7 @@ If you put the button inside the `<pre>` instead, it works some of the time and 
 
 [Webmentions](https://indieweb.org/Webmention) let other sites tell you when they've linked to your post. Pagecord already marks your posts up with microformats, so this is a natural fit. There are three steps.
 
-**1. Sign up at [webmention.io](https://webmention.io).** It signs you in using your own blog address, which needs a `rel="me"` link pointing at somewhere it can verify you, like GitHub. Pagecord adds one automatically for every social link in your navigation apart from RSS and Web, so adding a GitHub link in **Settings** → **Navigation** is enough.
+**1. Sign up at [webmention.io](https://webmention.io).** It signs you in using your own blog address, which needs a `rel="me"` link pointing at somewhere it can verify you, like GitHub. Pagecord adds one automatically for every social link in your navigation apart from RSS and Web, so adding a GitHub link in **Settings** → **Navigation** is enough. If you'd rather not show the icon, add the link in **Head code** instead, as above.
 
 **2. Advertise your endpoints.** This goes in **Head code**:
 
