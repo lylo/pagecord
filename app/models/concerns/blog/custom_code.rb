@@ -12,7 +12,9 @@ module Blog::CustomCode
   }.freeze
 
   included do
-    before_validation :normalize_custom_code
+    normalizes :custom_head_html, :custom_body_html,
+      with: -> { it.valid_encoding? ? it.gsub(/\r\n?/, "\n").strip.presence : it }
+
     validate :custom_head_html_valid, if: -> { custom_head_html.present? }
     validate :custom_body_html_valid, if: -> { custom_body_html.present? }
   end
@@ -34,18 +36,6 @@ module Blog::CustomCode
   end
 
   private
-
-    def normalize_custom_code
-      normalize_custom_code_attribute(:custom_head_html)
-      normalize_custom_code_attribute(:custom_body_html)
-    end
-
-    def normalize_custom_code_attribute(name)
-      value = self[name]
-      return if value.nil? || !value.valid_encoding?
-
-      self[name] = value.gsub(/\r\n?/, "\n").strip.presence
-    end
 
     def custom_head_html_valid
       return unless custom_code_valid?(:custom_head_html)
