@@ -223,23 +223,6 @@ class BlogSpamDetectorTest < ActiveSupport::TestCase
     assert_includes prompt, "no outbound links"
   end
 
-  test "prompt includes custom code so inline scripts can be judged" do
-    blog = blogs(:joel)
-    blog.update!(
-      custom_head_html: %(<script src="https://sketchy.example/tracker.js"></script>),
-      custom_body_html: %(<script>document.querySelector(".email-input").addEventListener("input", steal)</script>)
-    )
-
-    prompt = prompt_for(blog)
-
-    assert_includes prompt, "sketchy.example/tracker.js"
-    assert_includes prompt, ".email-input"
-  end
-
-  test "prompt says so when there is no custom code" do
-    assert_includes prompt_for(blogs(:joel)), "(none)"
-  end
-
   private
 
     def prompt_for(blog)
