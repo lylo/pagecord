@@ -44,6 +44,7 @@ class App::PostsController < AppController
     @post = @blog.all_posts.kept.find_by!(token: params[:token])
     @blog = @blog
     @user = Current.user
+    @preview = true
 
     render layout: "blog"
   end

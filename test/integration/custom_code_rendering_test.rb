@@ -1,6 +1,8 @@
 require "test_helper"
 
 class CustomCodeRenderingTest < ActionDispatch::IntegrationTest
+  include AuthenticatedTest
+
   HEAD_CODE = %(<script defer data-domain="joel.pagecord.com" src="https://plausible.io/js/script.js"></script>).freeze
   BODY_CODE = %(<div id="chat-widget"></div>).freeze
 
@@ -44,6 +46,21 @@ class CustomCodeRenderingTest < ActionDispatch::IntegrationTest
 
     get blog_post_url(subdomain: @blog.subdomain, slug: @post.slug)
 
+    assert_response :success
+    assert_not_includes response.body, HEAD_CODE
+    assert_not_includes response.body, BODY_CODE
+  end
+
+  # The app is a different origin to the blog, so custom code must not run there.
+  test "does not run in the app previews" do
+    login_as @blog.user
+
+    get app_post_url(token: @post.token)
+    assert_response :success
+    assert_not_includes response.body, HEAD_CODE
+    assert_not_includes response.body, BODY_CODE
+
+    get preview_app_settings_theme_garden_url(theme_templates(:cardashian))
     assert_response :success
     assert_not_includes response.body, HEAD_CODE
     assert_not_includes response.body, BODY_CODE

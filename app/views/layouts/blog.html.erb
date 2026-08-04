@@ -81,12 +81,12 @@
       </style>
     <% end %>
     <%= yield :head %>
-    <%= @blog&.custom_head_html_for_render %>
+    <%= @blog&.custom_head_html_for_render unless @preview %>
   </head>
 
-  <body class="<%= font_class %>" <%= theme_data_attribute %> data-page-type="<%= page_type %>">
+  <body class="<%= font_class %>" <%= theme_data_attribute %> data-page-type="<%= content_type_class %>">
     <main>
-      <div class="blog blog-container <%= content_width_class %> <%= page_type %>">
+      <div class="blog blog-container <%= content_width_class %> <%= content_type_class %>">
         <%= render "blogs/flash" %>
 
         <%= yield %>
@@ -109,6 +109,6 @@
       </div>
     </main>
 
-    <%= @blog&.custom_body_html_for_render %>
+    <%= @blog&.custom_body_html_for_render unless @preview %>
   </body>
 </html>

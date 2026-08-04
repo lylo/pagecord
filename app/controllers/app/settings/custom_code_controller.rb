@@ -6,7 +6,6 @@ class App::Settings::CustomCodeController < AppController
 
   def update
     if @blog.update(custom_code_params)
-      log_custom_code_change
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to app_settings_custom_code_path, notice: "Custom code updated" }
@@ -40,12 +39,5 @@ class App::Settings::CustomCodeController < AppController
 
     def custom_code_editable?
       @blog.user.subscribed? && current_features.enabled?(:custom_code)
-    end
-
-    def log_custom_code_change
-      changed = @blog.previous_changes.keys & %w[ custom_head_html custom_body_html custom_code_enabled ]
-      return if changed.empty?
-
-      Rails.logger.info "[CustomCode] blog=#{@blog.id} changed=#{changed.join(",")} head=#{@blog.custom_head_html.to_s.bytesize} body=#{@blog.custom_body_html.to_s.bytesize} enabled=#{@blog.custom_code_enabled}"
     end
 end

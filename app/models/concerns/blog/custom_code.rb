@@ -53,10 +53,6 @@ module Blog::CustomCode
       if (disallowed = disallowed_head_node)
         errors.add(:custom_head_html, message_for(disallowed))
       end
-
-      if custom_head_html.scan(/<script\b/i).size != custom_head_html.scan(%r{</script\s*>}i).size
-        errors.add(:custom_head_html, "has an unclosed <script> tag")
-      end
     end
 
     def custom_body_html_valid

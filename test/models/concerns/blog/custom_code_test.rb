@@ -54,11 +54,10 @@ class Blog::CustomCodeTest < ActiveSupport::TestCase
     assert_includes @blog.errors[:custom_head_html].first, "the text outside those tags"
   end
 
-  test "head code rejects an unclosed script tag" do
-    @blog.custom_head_html = %(<script src="https://plausible.io/js/script.js">)
+  test "head code accepts a script that writes another script tag" do
+    @blog.custom_head_html = %(<script>document.write("<script src=x><\\/script>")</script>)
 
-    assert_not @blog.valid?
-    assert_includes @blog.errors[:custom_head_html], "has an unclosed <script> tag"
+    assert @blog.valid?
   end
 
   test "body code accepts arbitrary markup" do
