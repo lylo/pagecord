@@ -103,8 +103,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
     user.update!(password: "TestPass1234", password_confirmation: "TestPass1234")
 
-    get root_url
-    session[:planted] = "attacker-value"
+    get root_url, params: { utm_source: "reddit" }
+    planted = session.id.to_s
+    assert_not_predicate planted, :blank?
 
     post sessions_url, params: {
       user: { subdomain: user.blog.subdomain, password: "TestPass1234" },
@@ -112,7 +113,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_equal user.id, session[:user_id]
-    assert_nil session[:planted]
+    assert_not_equal planted, session.id.to_s
   end
 
   test "signing in keeps signup attribution across the session reset" do
