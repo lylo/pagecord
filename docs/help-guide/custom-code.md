@@ -160,6 +160,64 @@ The button lives in a wrapper alongside the code block rather than inside it, so
 
 If you put the button inside the `<pre>` instead, it works some of the time and not others, depending on whether highlighting happened to run before or after your script. When it loses that race the button disappears and the word "Copy" is left stranded at the end of your code.
 
+### Example: a table of contents
+
+Adds a linked contents list to the top of any post with a few headings in it, which is useful if you write long articles. Pages have a `{{ table_of_contents }}` variable for this, but posts don't, because it would end up in your RSS feed and your newsletter. Building it after the page loads avoids that. This goes in **Body code**:
+
+```html
+<script>
+if (!window.tableOfContentsReady) {
+  window.tableOfContentsReady = true;
+
+  document.addEventListener("turbo:load", function () {
+    if (document.body.dataset.pageType !== "post") return;
+    if (document.querySelector(".toc")) return;
+
+    const headings = document.querySelectorAll(".post-body h2, .post-body h3");
+    if (headings.length < 3) return;
+
+    const toc = document.createElement("details");
+    toc.className = "toc";
+    toc.open = true;
+    toc.style.cssText = "margin:2rem 0;padding:0.75rem 1rem;font-size:0.875em;" +
+      "background:var(--color-bg-subtle);border-radius:0.5rem";
+
+    const summary = document.createElement("summary");
+    summary.textContent = "Contents";
+    summary.style.cssText = "cursor:pointer;color:var(--color-text-light)";
+    toc.append(summary);
+
+    const list = document.createElement("ol");
+    list.style.cssText = "margin:0.5rem 0 0;padding-left:1.25rem";
+
+    headings.forEach(function (heading, index) {
+      // Older posts may not have been given a heading anchor yet
+      if (!heading.id) heading.id = "section-" + (index + 1);
+
+      const item = document.createElement("li");
+      if (heading.tagName === "H3") item.style.marginLeft = "1rem";
+
+      const link = document.createElement("a");
+      link.href = "#" + heading.id;
+      link.textContent = heading.textContent.trim();
+
+      item.append(link);
+      list.append(item);
+    });
+
+    toc.append(list);
+
+    // Above the first heading, so your opening paragraphs stay at the top
+    headings[0].before(toc);
+  });
+}
+</script>
+```
+
+Pagecord gives every heading in a post an `id` when you save it, so the links have something to point at without you doing anything. Posts written a long time ago might not have them, so the script falls back to numbering the sections itself.
+
+It only runs on single posts, which is why there's no `turbo:frame-load` here. Posts with fewer than three headings are left alone, so short posts stay clean. It picks up `h2` and `h3` – add `h4` to the selector if your posts go deeper – and it starts open, so remove `toc.open = true` if you'd rather readers had to click.
+
 ### Example: showing webmentions
 
 [Webmentions](https://indieweb.org/Webmention) let other sites tell you when they've linked to your post. Pagecord already marks your posts up with microformats, so this is a natural fit. There are three steps.
