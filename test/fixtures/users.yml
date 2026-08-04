@@ -3,7 +3,6 @@ joel:
   admin: true
   verified: true
   onboarding_state: completed
-  features: [ custom_code ]
   created_at: <%= 30.days.ago %>
 
 elliot:
