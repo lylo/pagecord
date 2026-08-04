@@ -273,7 +273,7 @@ Rails.application.routes.draw do
         constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }, defaults: { format: :rss }
 
     get "/:name(/*path)", to: redirect { |params, _req|
-      path = params[:path] ? "/#{params[:path]}" : "/"
+      path = params[:path] ? "/#{ActionDispatch::Journey::Router::Utils.escape_path(params[:path])}" : "/"
       subdomain_redirect(path).call(params, _req)
     }, constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }
   end
