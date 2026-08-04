@@ -359,14 +359,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     host_subdomain! "nope"
 
     get blog_posts_path
-    assert_redirected_to "http://www.example.com/"
+    assert_redirected_to "http://example.com/"
   end
 
   test "should redirect to root if blog is discarded" do
     @blog.discard!
 
     get blog_posts_path
-    assert_redirected_to "http://www.example.com/"
+    assert_redirected_to "http://example.com/"
   end
 
   test "should redirect to root if user is unverified" do
@@ -374,14 +374,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     host_subdomain! @blog.subdomain
 
     get blog_posts_path
-    assert_redirected_to "http://www.example.com/"
+    assert_redirected_to "http://example.com/"
   end
 
   test "should redirect to root if user is discarded" do
     @blog.user.discard!
 
     get blog_posts_path
-    assert_redirected_to "http://www.example.com/"
+    assert_redirected_to "http://example.com/"
   end
 
   ## RSS
@@ -632,7 +632,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     get "/#{post.slug}", headers: { "HOST" => "gadzooks.com" }
 
-    assert_redirected_to "http://www.example.com/"
+    assert_redirected_to "http://example.com/"
   end
 
   test "should redirect from default domain index to custom domain" do

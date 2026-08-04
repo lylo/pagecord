@@ -11,10 +11,9 @@ end
 module DomainConstraints
   def self.default_domain?(request)
     if Rails.env.test?
-      [ "www.example.com", "localhost", "lvh.me", "example.com" ].include?(request.host)
+      [ "localhost", "lvh.me", "example.com" ].include?(request.host)
     else
-      default_host = Rails.application.config.x.domain
-      request.host == default_host || request.host == "www.#{default_host}"
+      request.host == Rails.application.config.x.domain
     end
   end
 
@@ -67,6 +66,14 @@ Rails.application.routes.draw do
   namespace :billing do
     resources :paddle_events, only: [ :create ]
     post "/paddle/create_update_payment_method_transaction", to: "paddle#create_update_payment_method_transaction"
+  end
+
+  # The apex is the only host this app serves. www used to serve a full second
+  # copy, which meant uploads failed silently there: only the apex is in the R2
+  # CORS allowlist, and that policy lives in the Cloudflare dashboard rather
+  # than in git, so the drift was invisible. Redirect rather than widen CORS.
+  constraints(->(request) { request.host == "www.#{Rails.application.config.x.domain}" }) do
+    match "(*path)", to: redirect(host: Rails.application.config.x.domain), via: :all
   end
 
   constraints(DomainConstraints.method(:default_domain?)) do

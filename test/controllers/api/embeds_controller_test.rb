@@ -79,7 +79,7 @@ class Api::EmbedsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should work on the app domain, where drafts are previewed" do
-    host! "www.example.com"
+    host! "example.com"
 
     mock_html = <<~HTML
       <html>
