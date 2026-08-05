@@ -56,8 +56,12 @@
     { name: "Chad Moore", url: "https://blog.chadmoore.net/", description: "A personal blog with a custom domain and a natural rhythm for reader updates." },
     { name: "Moonwriting", url: "https://moonwriting.blog", description: "A writer-owned site where posts can be followed without needing a separate newsletter platform." },
     { name: "Focustivity", url: "https://focustivity.blog", description: "A personal site that can publish posts and keep subscribers in the loop." }
-  ],
+  ] %>
+
+<%= render "landing_testimonials",
   testimonials: [
     { name: "Greg", url: "https://iamgregb.io/", quote: "Pagecord is the perfect place to host your own blog, especially if you want to keep things simple without getting lost in modern publishing platforms or newsletter engines." },
     { name: "Eetu", url: "https://moonwriting.blog", quote: "Pagecord has everything I'm looking for. Open source, privacy-respecting, with many customization options. Pricing is competitive." }
   ] %>
+
+<%= render "landing_cta" %>
