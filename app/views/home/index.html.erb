@@ -386,6 +386,12 @@
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           Custom CSS
         </li>
+        <% if Rails.features.enabled?(:custom_code) %>
+          <li class="flex items-center text-slate-700 dark:text-slate-300">
+            <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+            Custom code
+          </li>
+        <% end %>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           API, Obsidian &amp; Shortcuts
@@ -648,6 +654,16 @@
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
         </tr>
+        <% if Rails.features.enabled?(:custom_code) %>
+          <tr>
+            <td class="py-3 align-middle">
+              <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Custom code</div>
+              <div class="hidden sm:block">Add your own HTML and JavaScript to every page for third party analytics, or custom functionality 🛠️</div>
+            </td>
+            <td></td>
+            <td class="text-center align-middle text-xl">✅</td>
+          </tr>
+        <% end %>
 
         <tr>
           <td class="py-3 align-middle">

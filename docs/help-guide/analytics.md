@@ -51,3 +51,7 @@ Pagecord analytics are designed with privacy in mind:
 
 Your readers' privacy is respected while you still get useful insights about your blog's performance.
 
+## Using your own analytics
+
+Already using Plausible, Fathom or something else? You can add their tracking script to your blog with [custom code](custom-code.md).
+

@@ -85,7 +85,7 @@ To help you know which elements to target, here is a visual map of the blog page
 
 ## Where to add the custom CSS
 
-Head to `Settings > Appearance` and scroll to the "Custom CSS" section. Paste your CSS code into the text area provided and click **Save Custom CSS**.
+Head to `Settings > Custom Code` and find the "Custom CSS" section. Paste your CSS code into the text area provided and click **Save custom CSS**.
 
 Writing your own custom CSS is a premium feature. Your CSS is inserted into the `<head>` of your blog pages, and once it's saved it keeps rendering whatever plan you're on.
 

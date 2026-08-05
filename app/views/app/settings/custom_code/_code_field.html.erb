@@ -1,0 +1,36 @@
+<%# One editable code field. The block is the description shown above it. %>
+<% editor_data = disabled ? {} : { controller: "code-editor", code_editor_mode_value: mode } %>
+
+<%= settings_row title, stacked: true do %>
+  <div class="space-y-4">
+    <div class="space-y-2">
+      <%= yield %>
+    </div>
+
+    <% if disabled %>
+      <%= callout(:info) do %>
+        <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> <%= subscribe_prompt %>
+      <% end %>
+    <% end %>
+
+    <%= form_with url: app_settings_custom_code_path, model: @blog,
+          data: {
+            controller: "save-button",
+            action: "turbo:submit-end->save-button#showMessage"
+          } do |form| %>
+      <div class="space-y-4 <%= 'opacity-50' if disabled %>">
+        <div <%= tag.attributes(data: editor_data) %>>
+          <%= form.text_area attribute, rows: 6, disabled: disabled,
+              spellcheck: false, autocapitalize: "off", autocorrect: "off", autocomplete: "off",
+              class: "w-full min-h-36 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-mono text-sm focus:border-slate-500 dark:focus:border-slate-400 focus:ring-0 [field-sizing:content]",
+              data: { code_editor_target: "textarea" } %>
+          <div id="<%= attribute %>-error" class="field-error"><%= @blog.errors[attribute].first %></div>
+        </div>
+
+        <div>
+          <%= form.submit "Save #{title}", disabled: disabled, data: { save_button_target: "button" }, class: "btn-primary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -24,6 +24,14 @@ module Authentication
 
   def sign_in(user)
     Rails.logger.info "Signing in #{user.id}"
+
+    # A fresh session id on every sign in, so a session id planted beforehand
+    # cannot be used afterwards. Attribution is carried over because it is
+    # captured before signup completes.
+    attribution = session[:signup_attribution]
+    reset_session
+    session[:signup_attribution] = attribution if attribution.present?
+
     session[:user_id] = user.id
   end
 

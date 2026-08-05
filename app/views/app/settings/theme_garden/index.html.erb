@@ -1,18 +1,8 @@
-<% confirm_message = @blog.custom_css.present? ? "This will replace your current Custom CSS and appearance settings. Continue?" : nil %>
-
 <div class="space-y-8">
   <%= settings_section "🪴 Theme Garden", description: "Browse our curated selection of theme templates and apply them to your blog with one click." do %>
     <div class="px-6 py-5">
       <% if @templates.any? %>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <% @templates.each do |template| %>
-            <%= render "app/settings/theme_garden/template_card",
-                  template: template,
-                  apply_path: apply_app_settings_theme_garden_path(template),
-                  preview_path: preview_app_settings_theme_garden_path(template),
-                  confirm: confirm_message %>
-          <% end %>
-        </div>
+        <%= render "templates", templates: @templates %>
       <% else %>
         <p class="text-slate-500 dark:text-slate-400">No templates available yet. Check back soon!</p>
       <% end %>

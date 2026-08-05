@@ -1,0 +1,108 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "codemirror", "codemirror-show-hint", "code-editor" %>
+<% end %>
+
+<% premium_disabled = !@blog.user.has_premium_access? %>
+<% code_disabled = !@blog.user.subscribed? %>
+
+<% style_help = capture do %>
+  <%= render "app/shared/dialog",
+    id: "custom-code-help",
+    title: "Before you add custom code",
+    button_label: "Custom code help",
+    shortcut: "?",
+    content_partial: "app/shared/help/custom_code_content" %>
+<% end %>
+
+<%# Same content, reachable from either section. Only one binds the ? shortcut,
+    otherwise both dialogs open at once. %>
+<% scripts_help = capture do %>
+  <%= render "app/shared/dialog",
+    id: "custom-code-help-scripts",
+    title: "Before you add custom code",
+    button_label: "Custom code help",
+    content_partial: "app/shared/help/custom_code_content" %>
+<% end %>
+
+<% help_link = ->(slug) { link_to "the help guide", "https://help.pagecord.com/#{slug}", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" } %>
+
+<div class="space-y-8">
+  <%= settings_section "Style", description: "Restyle your blog with your own CSS, and add a snippet to the bottom of every page.", control: style_help do %>
+    <%= render layout: "code_field", locals: {
+          title: "Custom CSS", attribute: :custom_css, mode: "css",
+          disabled: premium_disabled, subscribe_prompt: "to style your blog with custom CSS." } do %>
+      <p>
+        Add custom CSS to style your blog. This CSS will be inserted into the <code>&lt;head&gt;</code> of your blog pages.
+        You can use <code>@import</code> for Google Fonts or Bunny Fonts.
+      </p>
+
+      <p class="text-sm text-slate-500 italic">
+        Customer support for debugging custom CSS is not possible. Read <%= help_link.call("custom-css") %> to get started.
+      </p>
+    <% end %>
+
+    <%= render layout: "code_field", locals: {
+          title: "Custom Footer", attribute: :custom_footer_html, mode: "htmlmixed",
+          disabled: premium_disabled, subscribe_prompt: "to add a custom footer to your blog." } do %>
+      <p>
+        Add a small HTML snippet to the bottom of your blog for badges, webrings, links, or copyright text.
+      </p>
+
+      <p class="text-sm text-slate-500 italic">
+        Only basic, safe HTML is supported. Scripts, embeds, forms, iframes, and inline styles are not supported. Read <%= help_link.call("custom-footer") %> to get started.
+      </p>
+    <% end %>
+  <% end %>
+
+  <% if current_features.enabled?(:custom_code) %>
+    <%= settings_section "Scripts", description: "Add code to every page of your blog, for things Pagecord doesn't do itself.", control: scripts_help do %>
+      <%= render layout: "code_field", locals: {
+            title: "Head Code", attribute: :custom_head_html, mode: "htmlmixed",
+            disabled: code_disabled, subscribe_prompt: "to add custom code to your blog." } do %>
+        <p>
+          Added just before the closing <code>&lt;head&gt;</code> tag of every page. Most people use it for third party
+          analytics, or for a verification tag another service has asked them to add.
+        </p>
+
+        <p class="text-sm text-slate-500 italic">
+          Only <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;link&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;noscript&gt;</code> and <code>&lt;template&gt;</code> tags can go here. Customer support for debugging custom code is not possible. Read <%= help_link.call("custom-code") %> to get started.
+        </p>
+      <% end %>
+
+      <%= render layout: "code_field", locals: {
+            title: "Body Code", attribute: :custom_body_html, mode: "htmlmixed",
+            disabled: code_disabled, subscribe_prompt: "to add custom code to your blog." } do %>
+        <p>
+          Added just before the closing <code>&lt;body&gt;</code> tag of every page. Use it for anything your readers can
+          see, like chat widgets and embedded forms.
+        </p>
+
+        <p class="text-sm text-slate-500 italic">
+          Any HTML can go here. Customer support for debugging custom code is not possible. Read <%= help_link.call("custom-code") %> to get started.
+        </p>
+      <% end %>
+
+      <div class="px-4 py-5 sm:px-6">
+        <%= form_with url: app_settings_custom_code_path, model: @blog,
+              data: { controller: "checkbox-auto-submit" } do |form| %>
+          <div class="flex gap-3 <%= 'opacity-50' if code_disabled %>">
+            <div class="flex h-6 shrink-0 items-center">
+              <%= styled_check_box form, :custom_code_enabled, disabled: code_disabled %>
+            </div>
+            <div>
+              <%= form.label :custom_code_enabled, "Head and body code enabled", class: "text-slate-800 dark:text-slate-100" %>
+              <p class="text-slate-500 text-sm">
+                Switch your code off without deleting it, so you can rule it out when something looks wrong on
+                your blog.
+              </p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="mt-12">
+  <%= link_to "Back to Settings", app_settings_path, class: "btn-secondary" %>
+</div>

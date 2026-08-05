@@ -11,8 +11,7 @@
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
-    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css"/>
-    <%= stylesheet_link_tag "application", "tailwind", "inter", "tagify", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tagify-base", "application", "tailwind", "inter", "tagify", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "blog-themes", "lexxy", "lexxy-variables", "lexxy-typography", "lexxy-editor-overrides", "lexxy-variable-overrides" %>
     <%= javascript_importmap_tags %>
 

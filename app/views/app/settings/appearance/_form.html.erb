@@ -1,19 +1,26 @@
-<% if @blog.user.has_premium_access? %>
-  <% content_for :head do %>
-    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css" rel="stylesheet" type="text/css"/>
-    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/hint/show-hint.css" rel="stylesheet" type="text/css"/>
-    <%= stylesheet_link_tag "css-editor" %>
-  <% end %>
-<% end %>
-
 <div class="space-y-8">
-  <%= settings_section "Theme" do %>
-    <%= settings_row "Colour Scheme", stacked: true do %>
-      <div data-controller="theme-selector">
-        <p>
-          Choose a colour scheme for your blog, or <%= link_to "pick a ready-made design", app_settings_theme_garden_index_path, class: "font-semibold underline" %> from the Theme Garden.
-        </p>
+  <section data-controller="tabs" class="-mx-4 overflow-hidden border-y border-slate-200 bg-white sm:mx-0 sm:rounded-lg sm:border dark:border-slate-700 dark:bg-slate-900"
+    data-tabs-active-class="border-slate-200 bg-white font-bold text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+    data-tabs-inactive-class="border-transparent font-normal text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+    <div class="flex gap-1 border-b border-slate-200 bg-slate-50 px-2 pt-2 sm:px-3 dark:border-slate-700 dark:bg-slate-800">
+      <button type="button"
+        data-tabs-target="tab"
+        data-action="tabs#select"
+        data-tabs-index-param="0"
+        class="-mb-px rounded-t-lg border border-b-0 px-4 py-3 text-sm sm:text-base cursor-pointer transition border-slate-200 bg-white font-bold text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+        Colour scheme
+      </button>
+      <button type="button"
+        data-tabs-target="tab"
+        data-action="tabs#select"
+        data-tabs-index-param="1"
+        class="-mb-px rounded-t-lg border border-b-0 px-4 py-3 text-sm sm:text-base cursor-pointer transition border-transparent font-normal text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+        🪴 Ready-made design
+      </button>
+    </div>
 
+    <div data-tabs-target="panel" class="px-4 py-5 sm:px-6">
+      <div data-controller="theme-selector">
         <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
               data: { controller: "radio-button-auto-submit" } do |form| %>
           <%= render "theme_presets", form: form %>
@@ -32,8 +39,22 @@
           <% end %>
         </div>
       </div>
-    <% end %>
+    </div>
 
+    <div data-tabs-target="panel" class="hidden px-4 py-5 sm:px-6">
+      <p class="mb-6 text-sm text-slate-500 dark:text-slate-400">
+        A design sets your colours, font, width and layout, all of which you can change below. It also adds Custom CSS, which you can edit in <%= link_to "Custom Code", app_settings_custom_code_path, class: "underline font-medium" %>.
+      </p>
+
+      <%= render "app/settings/theme_garden/templates", templates: @templates %>
+
+      <p class="mt-6 text-sm">
+        <%= link_to "Browse all designs in the Theme Garden", app_settings_theme_garden_index_path, class: "font-semibold underline" %>
+      </p>
+    </div>
+  </section>
+
+  <%= settings_section "Finer Details", description: "These apply whichever colour scheme or ready-made design you chose above." do %>
     <%= settings_row "Font", stacked: true do %>
       <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
             data: { controller: "radio-button-auto-submit" } do |form| %>
@@ -48,7 +69,7 @@
       <% end %>
     <% end %>
 
-    <%= settings_row "Layout", stacked: true, hint: "How your posts appear on your home page: a full-content stream, a list of titles, or cards with excerpts" do %>
+    <%= settings_row "Blog Layout", stacked: true, hint: "How your posts appear on your home page: a full-content stream, a list of titles, or cards with excerpts" do %>
       <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
             data: { controller: "radio-button-auto-submit" } do |form| %>
         <%= render "layout_options", form: form %>
@@ -83,69 +104,10 @@
     <% end %>
   <% end %>
 
-  <% if @blog.user.has_premium_access? %>
-    <%= settings_section "Advanced" do %>
-      <%= settings_row "Custom CSS", stacked: true do %>
-        <div class="space-y-4">
-          <div class="space-y-2">
-            <p>
-              Add custom CSS to style your blog. This CSS will be inserted into the &lt;head&gt; of your blog pages.
-              You can use <code>@import</code> for Google Fonts or Bunny Fonts.
-            </p>
-
-            <p class="text-sm text-slate-500 italic">
-             Custom CSS is an advanced feature. Customer support for creating or debugging custom CSS is not possible - you're on your own with this one! Read <%= link_to "the help guide", "https://help.pagecord.com/custom-css", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
-            </p>
-          </div>
-
-          <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
-                data: {
-                  controller: "save-button css-editor",
-                  action: "turbo:submit-end->save-button#showMessage"
-                } do |form| %>
-            <%= form.text_area :custom_css,
-                data: { css_editor_target: "textarea" } %>
-
-            <div id="css-error" class="field-error"><%= @blog.errors[:custom_css].first if @blog.errors[:custom_css].any? %></div>
-
-            <div class="mt-4">
-              <%= form.submit "Save Custom CSS", data: { save_button_target: "button" }, class: "btn-primary" %>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-
-      <%= settings_row "Custom Footer", stacked: true do %>
-        <div class="space-y-4">
-          <div class="space-y-2">
-            <p>
-              Add a small HTML snippet to the bottom of your blog for badges, webrings, links, or copyright text.
-            </p>
-
-            <p class="text-sm text-slate-500 italic">
-              Only basic, safe HTML is supported. Scripts, embeds, forms, iframes, and inline styles are not supported. Read <%= link_to "the help guide", "https://help.pagecord.com/custom-footer", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" %> to get started.
-            </p>
-          </div>
-
-          <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
-                data: {
-                  controller: "save-button",
-                  action: "turbo:submit-end->save-button#showMessage"
-                } do |form| %>
-            <%= form.text_area :custom_footer_html,
-                rows: 6,
-                class: "w-full min-h-36 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-mono text-sm focus:border-slate-500 dark:focus:border-slate-400 focus:ring-0 [field-sizing:content]" %>
-
-            <div id="footer-error" class="field-error"><%= @blog.errors[:custom_footer_html].first if @blog.errors[:custom_footer_html].any? %></div>
-
-            <div class="mt-4">
-              <%= form.submit "Save custom footer", data: { save_button_target: "button" }, class: "btn-primary" %>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-    <% end %>
-  <% end %>
+  <p class="text-sm text-slate-500 dark:text-slate-400">
+    Looking for Custom CSS and Custom Footer settings? These have moved to
+    <%= link_to "Custom Code", app_settings_custom_code_path, class: "underline font-medium" %>.
+  </p>
 </div>
 
 <div class="mt-12">

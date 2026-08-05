@@ -12,10 +12,22 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get app_settings_appearance_index_url
 
-    assert_select "h3", { count: 1, text: "Theme" }
-    assert_select "h4", { count: 1, text: "Colour Scheme" }
-    assert_select "h4", { count: 1, text: "Layout" }
+    assert_select "h3", { count: 1, text: "Finer Details" }
+    assert_select "h4", { count: 1, text: "Font" }
+    assert_select "h4", { count: 1, text: "Blog Layout" }
     assert_response :success
+  end
+
+  test "index tabs the colour scheme against ready-made designs" do
+    get app_settings_appearance_index_url
+
+    assert_response :success
+    assert_select "[data-controller=tabs] button[data-tabs-target=tab]", count: 2
+    assert_select "a[href=?]", app_settings_theme_garden_index_path
+    ThemeTemplate.active.ordered.first.tap do |template|
+      assert_select "form[action=?]", apply_app_settings_theme_garden_path(template)
+      assert_select "a[href=?]", preview_app_settings_theme_garden_path(template)
+    end
   end
 
   test "should update blog layout" do
@@ -43,79 +55,16 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert @blog.reload.show_branding
   end
 
-  test "should show custom css section if user has premium access" do
+  test "points custom css and footer at the custom code page" do
     get app_settings_appearance_index_url
-
-    assert_select "h3", { count: 1, text: "Advanced" }
-    assert_select "h4", { count: 1, text: "Custom CSS" }
-    assert_select "textarea#blog_custom_css"
+    assert_select "h3", { count: 0, text: "Advanced" }
     assert_response :success
-  end
-
-  test "should not show custom css section if user does not have premium access" do
-    login_as users(:vivian)
-
-    get app_settings_appearance_index_url
-
-    assert_select "h4", { count: 0, text: "Custom CSS" }
     assert_select "textarea#blog_custom_css", false
+    assert_select "a[href=?]", app_settings_custom_code_path
+
+    patch app_settings_appearance_url(@blog), params: { blog: { custom_css: ".blog { color: red; }" } }, as: :turbo_stream
     assert_response :success
-  end
-
-  test "should update custom_css if user has premium access" do
-    custom_css = ".blog { background: red; }"
-
-    patch app_settings_appearance_url(@blog), params: { blog: { custom_css: custom_css } }, as: :turbo_stream
-
-    assert_response :success
-    assert_equal custom_css, @blog.reload.custom_css
-  end
-
-  test "should not update custom_css if user does not have premium access" do
-    login_as users(:vivian)
-    vivian_blog = users(:vivian).blog
-    custom_css = ".blog { background: red; }"
-
-    patch app_settings_appearance_url(vivian_blog), params: { blog: { custom_css: custom_css } }, as: :turbo_stream
-
-    assert_response :success
-    assert_nil vivian_blog.reload.custom_css
-  end
-
-  test "should update custom_footer_html if user has premium access" do
-    custom_footer_html = '<a href="https://example.com" target="_blank">Example</a>'
-
-    patch app_settings_appearance_url(@blog), params: { blog: { custom_footer_html: custom_footer_html } }, as: :turbo_stream
-
-    assert_response :success
-    assert_equal custom_footer_html, @blog.reload.custom_footer_html
-  end
-
-  test "should not update custom_footer_html if user does not have premium access" do
-    login_as users(:vivian)
-    vivian_blog = users(:vivian).blog
-    custom_footer_html = '<a href="https://example.com">Example</a>'
-
-    patch app_settings_appearance_url(vivian_blog), params: { blog: { custom_footer_html: custom_footer_html } }, as: :turbo_stream
-
-    assert_response :success
-    assert_nil vivian_blog.reload.custom_footer_html
-  end
-
-  test "should show validation error for malicious custom css" do
-    malicious_css = ".blog { color: red; }</style><script>alert(1)</script>"
-
-    patch app_settings_appearance_url(@blog), params: { blog: { custom_css: malicious_css } }, as: :turbo_stream
-
-    assert_response :unprocessable_entity
-  end
-
-  test "should show validation error for invalid @import" do
-    invalid_css = '@import url("https://evil.com/steal.css");'
-
-    patch app_settings_appearance_url(@blog), params: { blog: { custom_css: invalid_css } }, as: :turbo_stream
-
-    assert_response :unprocessable_entity
+    assert_nil @blog.reload.custom_css
   end
 
   test "should update custom theme colors" do
