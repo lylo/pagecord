@@ -30,11 +30,28 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
       .with("http://example.com/test%20image.jpg", regexp_matches(/test_image\.jpg$/))
       .raises(StandardError, "Download failed")
 
-    Sentry.expects(:capture_exception)
-      .with(instance_of(StandardError), has_entries(extra: has_entries(post_slug: @post.slug, image_src: "http://example.com/test%20image.jpg")))
-
     assert_nothing_raised do
       @image_handler.process_images(@post.content.body.to_s)
+    end
+  end
+
+  test "does not retry downloads that fail with a client error" do
+    not_found = OpenURI::HTTPError.new("404 Not Found", stub(status: [ "404", "Not Found" ]))
+    URI.expects(:open).once.raises(not_found)
+    @image_handler.expects(:sleep).never
+
+    assert_raises(OpenURI::HTTPError) do
+      @image_handler.send(:download_image, "http://example.com/missing.jpg", "tmp/images_dir/missing.jpg")
+    end
+  end
+
+  test "retries downloads that fail with a server error" do
+    server_error = OpenURI::HTTPError.new("500 Internal Server Error", stub(status: [ "500", "Internal Server Error" ]))
+    URI.expects(:open).times(3).raises(server_error)
+    @image_handler.stubs(:sleep)
+
+    assert_raises(OpenURI::HTTPError) do
+      @image_handler.send(:download_image, "http://example.com/broken.jpg", "tmp/images_dir/broken.jpg")
     end
   end
 

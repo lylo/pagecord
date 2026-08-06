@@ -25,9 +25,7 @@ class Blog::Export::ImageHandler
       download_image(src, local_path)
       update_img_src(img, safe_filename)
     rescue StandardError => e
-      message = "Blog::Export::ImageHandler. Unable to process image #{src} for post #{@post.slug}: #{e.class} - #{e.message}"
-      Rails.logger.error message
-      Sentry.capture_exception(e, extra: { post_slug: @post.slug, image_src: src })
+      Rails.logger.warn "Blog::Export::ImageHandler. Unable to process image #{src} for post #{@post.slug} on blog #{@post.blog.subdomain}: #{e.class} - #{e.message}"
     end
 
     def sanitized_filename(url)
@@ -48,7 +46,7 @@ class Blog::Export::ImageHandler
           File.open(local_path, "wb") { |file| file.write(remote_file.read) }
         end
       rescue StandardError => e
-        if attempts < max_retries
+        if attempts < max_retries && !client_error?(e)
           wait_time = attempts * 2
           Rails.logger.warn "Blog::Export::ImageHandler. Retry #{attempts}/#{max_retries} for #{actual_src}: #{e.message}. Waiting #{wait_time}s..."
           sleep(wait_time)
@@ -57,6 +55,10 @@ class Blog::Export::ImageHandler
           raise
         end
       end
+    end
+
+    def client_error?(error)
+      error.is_a?(OpenURI::HTTPError) && error.io.status.first.to_i.in?(400..499)
     end
 
     def extract_original_url(src)
