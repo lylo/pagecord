@@ -87,6 +87,27 @@
     padding-block: 0.375em;
   }
 
+  /* Obsidian-style callouts. Lives here rather than in blogs.css so the editor
+     and the published post share one definition. Colours come from the
+     [data-callout] mapping at the end of this file. */
+  aside[data-callout] {
+    display: block;
+    margin-block: 0 var(--lexxy-content-margin);
+    border-left: 0.25em solid var(--callout-color);
+    background-color: color-mix(in srgb, var(--callout-color) 8%, transparent);
+    padding: 0.75em 1em;
+    border-radius: 0 0.25em 0.25em 0;
+
+    [data-callout-title] {
+      color: var(--callout-color);
+      font-weight: 600;
+    }
+
+    > :last-child {
+      margin-block-end: 0;
+    }
+  }
+
   details {
     margin-block: 0 var(--lexxy-content-margin);
   }
@@ -161,3 +182,21 @@
     }
   }
 }
+
+/* Callout colours, following Obsidian's grouping: its aliases and related types
+   share a colour. Kept outside .lexxy-content so the editor's type picker, which
+   sits in the toolbar rather than the content, can reuse the same swatches. */
+[data-callout] { --callout-color: var(--color-text-muted, currentColor); }
+[data-callout="note"],
+[data-callout="info"],
+[data-callout="todo"] { --callout-color: #086ddd; }
+[data-callout="abstract"],
+[data-callout="tip"] { --callout-color: #00bfbc; }
+[data-callout="success"] { --callout-color: #08b94e; }
+[data-callout="question"],
+[data-callout="warning"] { --callout-color: #ec7500; }
+[data-callout="failure"],
+[data-callout="danger"],
+[data-callout="bug"] { --callout-color: #e93147; }
+[data-callout="example"] { --callout-color: #7852ee; }
+[data-callout="quote"] { --callout-color: #9e9e9e; }
