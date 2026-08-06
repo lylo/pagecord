@@ -14,7 +14,7 @@
           <div class="content">
 
             <!-- START CENTERED WHITE CONTAINER -->
-            <span class="preheader"><%= @preheader_text %></span>
+            <% if @preheader_text.present? %><span class="preheader"><%= @preheader_text %></span><% end %>
             <table class="main" width="100%">
 
               <!-- START MAIN CONTENT AREA -->
