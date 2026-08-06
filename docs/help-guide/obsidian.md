@@ -26,4 +26,6 @@ Each saved blog connection gets its own pair of publish commands. A post is link
 
 The plugin reads optional YAML frontmatter (`title`, `slug`, `tags`, `published_at`, `canonical_url`, `hidden`, `locale`) and uploads embedded images automatically. After publishing, it manages Pagecord metadata in the note frontmatter so future publishes update the existing post. Existing notes published before multi-blog support continue to work.
 
+Obsidian's callout syntax is supported, so `> [!note] Title` publishes as a styled callout rather than a plain quote. See [Callouts](callouts.md).
+
 Full details are [on the plugin home page](https://community.obsidian.md/plugins/pagecord).
