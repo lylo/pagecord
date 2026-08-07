@@ -24,7 +24,9 @@ class App::Settings::BlogsController < App::BaseController
         :external_links_in_new_tab,
         :show_upvotes,
         :use_password,
-        :password
+        :password,
+        :post_url_format,
+        :post_url_prefix
       ]
 
       if @blog.user.subscribed?
