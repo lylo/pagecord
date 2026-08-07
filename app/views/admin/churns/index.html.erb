@@ -6,11 +6,11 @@
     <div class="grid grid-cols-2 sm:flex sm:items-center sm:gap-8 gap-4">
       <div>
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50"><%= @recent.count %></span>
-        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Left</span>
+        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Churned</span>
       </div>
       <div>
-        <span class="text-2xl font-bold text-slate-900 dark:text-slate-50"><%= number_to_currency(-@recent.select(&:subscription_cancelled?).sum(&:monthly_unit_price) / 100.0) %></span>
-        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">MRR</span>
+        <span class="text-2xl font-bold text-slate-900 dark:text-slate-50"><%= number_to_currency(Churn.mrr_lost(@recent)) %></span>
+        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">MRR lost</span>
       </div>
     </div>
   </div>
@@ -33,7 +33,7 @@
           <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50"><%= l(month, format: "%B %Y") %></td>
           <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end"><%= churns.count(&:subscription_cancelled?) %></td>
           <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end"><%= churns.count(&:account_deleted?) %></td>
-          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end"><%= number_to_currency(churns.select(&:subscription_cancelled?).sum(&:monthly_unit_price) / 100.0) %></td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end"><%= number_to_currency(Churn.mrr_lost(churns)) %></td>
           <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end"><%= @paid_subscribers_at_month_end[month] || "-" %></td>
         </tr>
       <% end %>
@@ -46,41 +46,39 @@
   </table>
 </div>
 
-<%= turbo_frame_tag "stats-content" do %>
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
-    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-      <thead>
-        <tr class="bg-slate-50 dark:bg-slate-700/50">
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Left</th>
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Blog</th>
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Plan</th>
-          <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Tenure</th>
-          <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Posts</th>
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Referrer</th>
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+  <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+    <thead>
+      <tr class="bg-slate-50 dark:bg-slate-700/50">
+        <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Left</th>
+        <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Blog</th>
+        <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Plan</th>
+        <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Tenure (months)</th>
+        <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Posts</th>
+        <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Referrer</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+      <% @churns.each do |churn| %>
+        <tr>
+          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
+            <%= l(churn.occurred_at.to_date, format: :long) %>
+            <span class="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-700 dark:text-slate-300"><%= churn.subscription_cancelled? ? "cancelled" : "deleted" %></span>
+          </td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50"><%= churn.blog_subdomain || "-" %></td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400"><%= churn.plan || "free" %></td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end"><%= churn.tenure_in_months || "-" %></td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end"><%= churn.posts_count || "-" %></td>
+          <td class="py-3 px-6 text-sm text-slate-500 dark:text-slate-400 max-w-xs truncate" title="<%= churn.signup_referrer %>"><%= churn.signup_referrer %></td>
         </tr>
-      </thead>
-      <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-        <% @churns.each do |churn| %>
-          <tr>
-            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
-              <%= l(churn.occurred_at.to_date, format: :long) %>
-              <span class="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-700 dark:text-slate-300"><%= churn.subscription_cancelled? ? "cancelled" : "deleted" %></span>
-            </td>
-            <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50"><%= churn.blog_subdomain || "-" %></td>
-            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400"><%= churn.plan || "free" %></td>
-            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end"><%= churn.tenure_in_months ? "#{churn.tenure_in_months}mo" : "-" %></td>
-            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400 text-end"><%= churn.posts_count || "-" %></td>
-            <td class="py-3 px-6 text-sm text-slate-500 dark:text-slate-400 max-w-xs truncate" title="<%= churn.signup_referrer %>"><%= churn.signup_referrer %></td>
-          </tr>
-        <% end %>
-        <% if @churns.empty? %>
-          <tr>
-            <td colspan="6" class="py-6 px-6 text-sm text-slate-500 dark:text-slate-400 text-center">Nothing recorded yet.</td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+      <% end %>
+      <% if @churns.empty? %>
+        <tr>
+          <td colspan="6" class="py-6 px-6 text-sm text-slate-500 dark:text-slate-400 text-center">Nothing recorded yet.</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
-  <%= render "app/shared/pagy_nav" %>
-<% end %>
+<%= render "app/shared/pagy_nav" %>

@@ -1,10 +1,6 @@
 # A departure, kept forever. Deliberately has no inverse association on User and no
 # foreign key, so it survives accounts:purge_cancellations destroying the account it
 # describes. Everything worth knowing is denormalised here at write time.
-#
-# Revenue churn is Churn.subscription_cancelled.sum(:unit_price). The account_deleted
-# rows also carry plan and unit_price as context, so summing across both kinds double
-# counts.
 class Churn < ApplicationRecord
   belongs_to :user, optional: true
 
@@ -26,6 +22,16 @@ class Churn < ApplicationRecord
       churn.blog_subdomain = blog&.subdomain
       churn.posts_count = blog&.posts&.count
     end
+  rescue ActiveRecord::RecordNotUnique
+    # Those two can also land together, in which case the unique index settles which
+    # one wrote the row.
+    find_by(kind: kind, paddle_subscription_id: subscription&.paddle_subscription_id)
+  end
+
+  # Only cancellations carry revenue. Deleted accounts keep their plan as context, so
+  # counting both would double up.
+  def self.mrr_lost(churns)
+    churns.select(&:subscription_cancelled?).sum(&:monthly_unit_price) / 100.0
   end
 
   # Normalised the way the mrr_cents rollup is, so one annual cancellation doesn't
@@ -33,7 +39,7 @@ class Churn < ApplicationRecord
   def monthly_unit_price
     return 0 if unit_price.blank?
 
-    monthly_plan? ? unit_price : unit_price / 12.0
+    plan == "monthly" ? unit_price : unit_price / 12.0
   end
 
   # Paid tenure where we have it, account tenure otherwise. For a free departure the
@@ -42,12 +48,7 @@ class Churn < ApplicationRecord
     started = subscribed_at || signed_up_at
     return unless started
 
-    ((occurred_at - started) / 1.month).floor
+    months = (occurred_at.year - started.year) * 12 + occurred_at.month - started.month
+    occurred_at.day < started.day ? months - 1 : months
   end
-
-  private
-
-    def monthly_plan?
-      plan == "monthly"
-    end
 end

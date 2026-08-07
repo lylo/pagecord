@@ -48,6 +48,30 @@ class ChurnTest < ActiveSupport::TestCase
     assert_in_delta 3.days.ago, churn.occurred_at, 1.second
   end
 
+  test "mrr_lost takes a twelfth of yearly plans and ignores deleted accounts" do
+    churns = [
+      Churn.new(kind: :subscription_cancelled, plan: "annual", unit_price: 3900),
+      Churn.new(kind: :subscription_cancelled, plan: "monthly", unit_price: 400),
+      Churn.new(kind: :account_deleted, plan: "annual", unit_price: 3900)
+    ]
+
+    assert_in_delta 7.25, Churn.mrr_lost(churns), 0.001
+  end
+
+  test "tenure_in_months counts whole calendar months" do
+    churn = Churn.new(subscribed_at: Time.zone.parse("2025-01-15"), occurred_at: Time.zone.parse("2026-03-14"))
+    assert_equal 13, churn.tenure_in_months
+
+    churn.occurred_at = Time.zone.parse("2026-03-15")
+    assert_equal 14, churn.tenure_in_months
+  end
+
+  test "tenure_in_months falls back to the signup date for a free departure" do
+    churn = Churn.new(signed_up_at: 6.months.ago, occurred_at: Time.current)
+
+    assert_equal 6, churn.tenure_in_months
+  end
+
   test "survives the account it describes being destroyed" do
     churn = Churn.record(@user, :account_deleted)
 

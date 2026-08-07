@@ -2,12 +2,15 @@
 # answer "how many paid subscribers did I have in March" after the fact. Rollup rows are
 # written directly rather than through the gem's relation API, which aggregates historic
 # rows by a time column and is the wrong shape for a point-in-time count.
+#
+# Today only, deliberately. These are all live counts, so running this for a past date
+# would stamp today's numbers on a day they didn't describe.
 class RecordDailyMetricsJob < ApplicationJob
   queue_as :default
 
-  def perform(date = Date.current)
+  def perform
     metrics.each do |name, value|
-      Rollup.find_or_initialize_by(name: name, interval: "day", time: date, dimensions: {}).update!(value: value)
+      Rollup.find_or_initialize_by(name: name, interval: "day", time: Date.current, dimensions: {}).update!(value: value)
     end
   end
 
@@ -15,8 +18,8 @@ class RecordDailyMetricsJob < ApplicationJob
 
     def metrics
       {
-        "users" => User.kept.count,
-        "trialing" => User.kept.where(trial_ends_at: Date.current..).where.missing(:subscription).count,
+        "total_users" => User.kept.count,
+        "trialing_users" => User.kept.where(trial_ends_at: Date.current..).where.missing(:subscription).count,
         "paid_subscribers" => Subscription.active_paid.count,
         "supporters" => Subscription.active_paid.supporter.count,
         "comped_subscribers" => Subscription.comped.count,
