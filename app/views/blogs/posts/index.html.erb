@@ -22,7 +22,10 @@
       <p class="tag-filter-notice-links">
         <%= link_to "Show all posts", blog_posts_list_path, class: "tag-filter-notice-link tag-filter-clear" %>
         <span>&middot;</span>
-        <%= link_to "RSS feed for these posts", rss_feed_url(@blog, request.query_parameters), class: "tag-filter-notice-link tag-filter-rss" %>
+        <%= link_to rss_feed_url(@blog, request.query_parameters), class: "tag-filter-notice-link tag-filter-rss" do %>
+          <span>RSS</span>
+          <%= inline_svg_tag "icons/social/rss.svg", class: "icon" %>
+        <% end %>
       </p>
     </div>
   <% end %>

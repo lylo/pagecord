@@ -1286,17 +1286,34 @@ ul.posts-list {
 .tag-filter-notice-links {
   margin-top: 0.5rem !important;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem 0.5rem;
 }
 
 .tag-filter-notice-link {
   color: var(--color-text-muted);
   text-decoration: underline;
+  white-space: nowrap;
 }
 
 .tag-filter-notice-link:hover {
   color: var(--color-accent);
+}
+
+.tag-filter-rss {
+  text-decoration: none;
+}
+
+.tag-filter-rss span {
+  text-decoration: underline;
+}
+
+.tag-filter-rss .icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.15em;
 }
 
 /* ============================= */
