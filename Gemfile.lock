@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: be96a01be47eeab57954c5a34cde5895a16185f4
+  revision: af95ef17f41fb2ec84904e99b9ac441359868ca5
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -175,7 +175,7 @@ GEM
     discard (2.0.0)
       activerecord (>= 7.0, < 9.0)
     drb (2.2.3)
-    erb (6.0.6)
+    erb (6.0.7)
     erubi (1.13.1)
     event_stream_parser (1.0.0)
     faker (3.8.0)
@@ -415,7 +415,7 @@ GEM
     redis-client (0.30.1)
       connection_pool
     regexp_parser (2.12.0)
-    reline (0.6.3)
+    reline (0.7.0)
       io-console (~> 0.5)
     reverse_markdown (3.0.2)
       nokogiri
