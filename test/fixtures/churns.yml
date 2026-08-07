@@ -1,0 +1,19 @@
+cancelled_annual:
+  user: joel
+  kind: subscription_cancelled
+  occurred_at: <%= 10.days.ago %>
+  plan: annual
+  unit_price: 3900
+  paddle_subscription_id: sub_cancelled_01
+  blog_subdomain: joel
+  signed_up_at: <%= 2.years.ago %>
+  subscribed_at: <%= 14.months.ago %>
+  posts_count: 63
+
+deleted_free:
+  kind: account_deleted
+  occurred_at: <%= 5.days.ago %>
+  blog_subdomain: gone
+  signup_referrer: https://news.ycombinator.com/
+  signed_up_at: <%= 3.months.ago %>
+  posts_count: 0
