@@ -146,6 +146,36 @@
         <% end %>
       <% end %>
 
+      <%= settings_row "Post URLs", stacked: true do %>
+        <div class="group">
+          <p class="mb-3 text-sm text-slate-500 dark:text-slate-400">
+            Where your post URLs live. Pages like <tt>/about</tt> are never affected. Changing this is safe – links to the old URLs redirect automatically.
+          </p>
+          <div class="flex flex-col gap-2">
+            <label class="flex items-center gap-3 text-slate-800 dark:text-slate-100">
+              <%= form.radio_button :post_url_format, "flat", class: "form-radio text-slate-600 border-slate-300 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600" %>
+              <span><tt><%= @blog.host %>/my-post</tt> <span class="text-sm text-slate-500 dark:text-slate-400">(default)</span></span>
+            </label>
+            <label class="flex items-center gap-3 text-slate-800 dark:text-slate-100">
+              <%= form.radio_button :post_url_format, "prefix", id: "post-url-format-prefix", class: "form-radio text-slate-600 border-slate-300 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600" %>
+              <span><tt><%= @blog.host %>/<%= persisted_value(@blog, :post_url_prefix).presence || "blog" %>/my-post</tt></span>
+            </label>
+            <label class="flex items-center gap-3 text-slate-800 dark:text-slate-100">
+              <%= form.radio_button :post_url_format, "dated", class: "form-radio text-slate-600 border-slate-300 focus:ring focus:ring-slate-300 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-700 dark:focus:ring-slate-600" %>
+              <span><tt><%= @blog.host %>/<%= Date.current.strftime("%Y/%m/%d") %>/my-post</tt></span>
+            </label>
+          </div>
+
+          <div class="hidden group-has-[#post-url-format-prefix:checked]:block mt-4">
+            <%= form.label :post_url_prefix, "Folder name", class: "font-bold text-slate-800 dark:text-slate-100" %>
+            <fieldset class="mt-2">
+              <%= styled_text_field(form, :post_url_prefix, value: @blog.post_url_prefix.presence || "blog", maxlength: 30, class: "w-full md:w-80") %>
+              <%= field_error(@blog, :post_url_prefix) %>
+            </fieldset>
+          </div>
+        </div>
+      <% end %>
+
       <%= settings_row "Blog Subdomain" do %>
         <p class="mb-4 text-slate-700 dark:text-slate-300">
           Your current blog subdomain is <strong><%= persisted_value(@blog, :subdomain) %></strong> which means your blog is available at <span class="bg-slate-100 px-1 dark:bg-slate-700">https://<%= persisted_value(@blog, :subdomain) %>.pagecord.com</span>.

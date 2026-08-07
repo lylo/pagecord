@@ -285,4 +285,27 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert blog.show_subscription_in_header
     assert blog.show_subscription_in_footer
   end
+
+  test "non-subscriber can save a post url format" do
+    login_as users(:vivian)
+    blog = users(:vivian).blog
+
+    patch app_settings_blog_url(blog), params: {
+      blog: { post_url_format: "prefix", post_url_prefix: "notes" }
+    }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    blog.reload
+    assert_equal "prefix", blog.post_url_format
+    assert_equal "notes", blog.post_url_prefix
+  end
+
+  test "reserved post url prefix re-renders with an error" do
+    patch app_settings_blog_url(@blog), params: {
+      blog: { post_url_format: "prefix", post_url_prefix: "feed" }
+    }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_equal "flat", @blog.reload.post_url_format
+  end
 end

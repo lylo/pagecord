@@ -1,5 +1,5 @@
 class Blogs::PostsController < Blogs::BaseController
-  include Pagy::Method, RequestHash, PostsHelper
+  include Pagy::Method, RequestHash, PostsHelper, RoutingHelper
 
   STREAM_PAGE_SIZE = 15
   TITLE_PAGE_SIZE = 100
@@ -24,6 +24,12 @@ class Blogs::PostsController < Blogs::BaseController
   end
 
   def posts_list
+    # When posts live in a folder, the archive lives there too: /notes renders
+    # the list (via show) and the old /posts path permanently redirects.
+    if @blog.post_url_format == "prefix" && request.path == "/posts"
+      return redirect_to request.fullpath.sub("/posts", @blog.posts_list_path), status: :moved_permanently
+    end
+
     @current_tags = params[:tag].split(",").map(&:strip) if params[:tag].present?
     @current_lang = params[:lang].to_s.downcase.split("-").first if params[:lang].present?
 
@@ -52,12 +58,18 @@ class Blogs::PostsController < Blogs::BaseController
 
   # Shows a single post or page by its slug.
   def show
+    return posts_list if @blog.post_url_format == "prefix" && blog_params[:slug] == @blog.post_url_prefix
+
     @post = @blog.all_posts
       .kept
       .published
       .released
       .for_blog_render
       .find_by!(slug: blog_params[:slug])
+
+    # Canonicalise: the same slug is recognised under /:slug, /posts/:slug,
+    # /:prefix/:slug and dated paths; only the blog's canonical form renders.
+    return redirect_to post_path(@post), status: :moved_permanently unless request.path == post_path(@post)
 
     return if flash.any? # Don't cache responses with flash — session skip prevents flash clearing
 

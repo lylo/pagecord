@@ -310,7 +310,7 @@ Rails.application.routes.draw do
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 
     get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
-    get "/posts/:slug", to: "blogs/redirects#show"
+    get "/posts/:slug", to: "blogs/posts#show"
 
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
@@ -332,6 +332,10 @@ Rails.application.routes.draw do
       end
       resources :comments, only: [ :index, :create ], module: :posts
     end
+
+    get "/:year/:month/:day/:slug", to: "blogs/posts#show", as: :blog_dated_post,
+        constraints: { year: /\d{4}/, month: /\d{2}/, day: /\d{2}/ }
+    get "/:prefix/:slug", to: "blogs/posts#show", as: :blog_prefixed_post
 
     # Catch-all for unmatched routes on blog domains
     match "*path", to: "blogs/posts#not_found", via: :all

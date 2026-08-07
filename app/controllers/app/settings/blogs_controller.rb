@@ -34,7 +34,9 @@ class App::Settings::BlogsController < AppController
         :locale,
         :show_metrics,
         :external_links_in_new_tab,
-        :show_upvotes
+        :show_upvotes,
+        :post_url_format,
+        :post_url_prefix
       ]
 
       if @blog.user.subscribed?

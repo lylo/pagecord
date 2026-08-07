@@ -3,6 +3,7 @@ module Sluggable
 
   MAX_SLUG_LENGTH = 100
   RESERVED_SLUGS = %w[posts feed guestbook search].freeze
+  SLUG_FORMAT = /\A[a-z0-9]+([-_][a-z0-9]+)*\z/
 
   included do
     before_validation :set_slug
@@ -10,7 +11,7 @@ module Sluggable
       presence: true,
       length: { maximum: 100 },
       format: {
-        with: /\A[a-z0-9]+([-_][a-z0-9]+)*\z/,
+        with: SLUG_FORMAT,
         message: "can only contain lowercase letters, numbers, hyphens, and underscores"
       },
       uniqueness: {

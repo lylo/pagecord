@@ -20,7 +20,7 @@
     <div class="tag-filter-notice">
       <p><%= filter_description %></p>
       <p class="tag-filter-notice-links">
-        <%= link_to "Show all posts", blog_posts_list_path, class: "tag-filter-notice-link tag-filter-clear" %>
+        <%= link_to "Show all posts", @blog.posts_list_path, class: "tag-filter-notice-link tag-filter-clear" %>
         <span>&middot;</span>
         <%= link_to rss_feed_url(@blog, request.query_parameters), class: "tag-filter-notice-link tag-filter-rss" do %>
           <span>RSS</span>

@@ -1,6 +1,18 @@
 module RoutingHelper
   def post_link(post, type)
-    send("blog_post_#{type}", post.slug, host: host(post.blog))
+    blog = post.blog
+
+    case post.page? ? "flat" : blog.post_url_format
+    when "prefix"
+      send("blog_prefixed_post_#{type}", blog.post_url_prefix, post.slug, host: host(blog))
+    when "dated"
+      date = post.published_at
+      return send("blog_post_#{type}", post.slug, host: host(blog)) if date.nil?
+
+      send("blog_dated_post_#{type}", date.strftime("%Y"), date.strftime("%m"), date.strftime("%d"), post.slug, host: host(blog))
+    else
+      send("blog_post_#{type}", post.slug, host: host(blog))
+    end
   end
 
   def post_path(post)
