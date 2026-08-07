@@ -55,6 +55,12 @@ every :day, at: "5:15 am" do
   runner "SendTrialEndedEmailsJob.perform_later"
 end
 
+# Well clear of accounts:purge_cancellations at 4:30, so the counts are taken after the
+# day's departures have been recorded.
+every :day, at: "5:20 am" do
+  runner "RecordDailyMetricsJob.perform_later"
+end
+
 # Spam blogs earn their keep from indexed backlinks, so the sooner they are
 # flagged the less they get out of us. Cheap to run: blogs with a detection drop
 # out, and empty ones are skipped before the model is called.
