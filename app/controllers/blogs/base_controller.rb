@@ -110,10 +110,24 @@ class Blogs::BaseController < ApplicationController
     end
 
     def render_blog_not_found
+      return if redirect_stale_path
+
       respond_to do |format|
         format.html { render "blogs/errors/not_found", status: 404 }
         format.any { head :not_found }
       end
+    end
+
+    # When a blog request 404s, try the blog's redirect rules, then a slug-based
+    # fallback (e.g. /2024/01/my-post -> /my-post). Single hop only.
+    def redirect_stale_path
+      return false unless (request.get? || request.head?) && @blog
+
+      destination = @blog.resolve_redirect(request.path)
+      return false unless destination
+
+      redirect_to destination, status: :moved_permanently
+      true
     end
 
     def render_too_many_requests

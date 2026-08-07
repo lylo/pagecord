@@ -286,6 +286,38 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert blog.show_subscription_in_footer
   end
 
+  test "non-subscriber can save redirect rules" do
+    login_as users(:vivian)
+    blog = users(:vivian).blog
+
+    patch app_settings_blog_url(blog), params: {
+      blog: { redirect_rules: "/old /new\n", use_redirect_rules: "1" }
+    }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal "/old /new\n", blog.reload.redirect_rules
+  end
+
+  test "unticking redirect rules clears them" do
+    @blog.update!(redirect_rules: "/old /new")
+
+    patch app_settings_blog_url(@blog), params: {
+      blog: { redirect_rules: "/old /new", use_redirect_rules: "0" }
+    }, as: :turbo_stream
+
+    assert_nil @blog.reload.redirect_rules
+  end
+
+  test "invalid redirect rules re-render with a line-numbered error" do
+    patch app_settings_blog_url(@blog), params: {
+      blog: { redirect_rules: "/old /new\nbroken-line\n", use_redirect_rules: "1" }
+    }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_match "has an invalid rule on line 2", @response.body
+    assert_nil @blog.reload.redirect_rules
+  end
+
   test "non-subscriber can save a post url format" do
     login_as users(:vivian)
     blog = users(:vivian).blog

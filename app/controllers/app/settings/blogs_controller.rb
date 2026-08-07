@@ -36,7 +36,9 @@ class App::Settings::BlogsController < AppController
         :external_links_in_new_tab,
         :show_upvotes,
         :post_url_format,
-        :post_url_prefix
+        :post_url_prefix,
+        :redirect_rules,
+        :use_redirect_rules
       ]
 
       if @blog.user.subscribed?
