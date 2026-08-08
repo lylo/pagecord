@@ -1,30 +1,79 @@
 <%# landing-page: standalone marketing / SEO page (app/views/public), not part of a user's blog %>
 <%= content_for :title do %>
-  Minimalist Blogging: The best blog is the one you keep using.
+  The Minimalist Blogging Platform for Everyone - Pagecord
 <% end %>
 
 <%= content_for :og_image do %>
-  <%= dynamic_og_image_for_landing_page(title: "Minimalist Blogging for People Who Actually Want to Write") %>
+  <%= dynamic_og_image_for_landing_page(title: "The Minimalist Blogging Platform for Everyone") %>
 <% end %>
 
 <%= content_for :meta_description do %>
-  Pagecord helps you keep a simple personal blog alive by letting you publish from email, Obsidian, the editor, RSS, and your own domain without plugins, popups, or maintenance.
+  Pagecord is a minimalist blogging platform with everything a personal blog needs and none of the bloat. Publish from the editor, email, or Obsidian. Classic is free forever.
 <% end %>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a minimalist blogging platform?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A blogging platform that keeps the focus on writing: fast pages, clean typography, and no bloat, popups, or tracking scripts that weigh the rest of the web down."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does minimalist mean there are fewer features?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No! Pagecord is packed with features, pretty much everything you could need. See the full feature list at https://pagecord.com/#features"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Pagecord free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! Pagecord Classic is free forever. This includes a blog, a rich text editor, publishing by email, and themes. Pagecord Premium gives you everything you need for only $<%= localised_price %>/year."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use my own domain name?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, Premium customers can connect their own custom domain. Classic customers get their own subdomain like yourname.pagecord.com."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Pagecord compare to Bear Blog, Mataroa, Pika, or Write.as?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Firstly, all these products are great! By choosing any you're supporting the indie web movement, and that's the main thing. Pagecord brings together the best of all of these products: a wonderful rich text editor, publishing by email, keeping your files local and publishing from Obsidian or iA Writer, custom CSS and code, letting readers subscribe by email, and so much more. Pagecord is also open source, so you can host it yourself if you wanted to."
+      }
+    }
+  ]
+}
+</script>
 
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
-    The best blog is the one you keep using.
+    The minimalist blogging platform for everyone
   </h1>
 
   <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4 mt-8 md:mt-12">
     <p>
-      Minimalism is not about having fewer features for the sake of it. It is about removing the chores that stop you writing.
+      Pagecord has everything a personal blog needs, without the bloat.
     </p>
     <p>
-      Pagecord gives you the parts a personal blog actually needs: posts, pages, RSS, email publishing, subscribers, themes, custom domains, and export. Then it gets out of the way.
+      Posts, pages, comments, RSS, private analytics, email newsletters, custom themes and CSS, custom domains, API access, and multiple blogs. All in one gorgeous, minimalist package.
     </p>
     <p>
-      No plugins to maintain. No algorithm to feed. No paywall between your words and your readers. Classic is free forever. Premium is $<%= localised_price %>/year.
+      The best blog is the one you keep using. That's Pagecord. Classic is free forever. Premium is only $<%= localised_price %>/year.
     </p>
   </div>
 
@@ -33,12 +82,49 @@
       <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Create your free Pagecord account</div>
     <% end %>
     <p class="mt-4 text-base text-slate-600 dark:text-slate-400">
-      or <%= link_to "find out more on the Pagecord home page", root_path, class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-800 dark:hover:text-slate-200" %>
+      or <%= link_to "learn more on the Pagecord home page", root_path, class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-800 dark:hover:text-slate-200" %>
     </p>
   </div>
 </div>
 
 <%= render "screenshots" %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <section class="my-10 md:my-14">
+    <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">Minimalist blogging FAQ</h2>
+    <div class="mt-6 text-base md:text-lg leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+      <h3 class="source-serif font-semibold text-2xl mt-2">What is a minimalist blogging platform?</h3>
+      <p>
+        A blogging platform that keeps the focus on writing: fast pages, clean typography, and no bloat, popups, or tracking scripts that weigh the rest of the web down.
+      </p>
+
+      <h3 class="source-serif font-semibold text-2xl mt-2">Does minimalist mean there are fewer features?</h3>
+      <p>
+        No! Pagecord is packed with features, pretty much everything you could need. See the <a href="https://pagecord.com/#features" class="home-link">feature page</a> for a full list.
+      </p>
+
+      <h3 class="source-serif font-semibold text-2xl mt-2">Is Pagecord free?</h3>
+      <p>
+        Yes! Pagecord Classic is free forever. This includes a blog, a rich text editor, publishing by email, themes. Pagecord Premium gives you everything you need for only $<%= localised_price %>/year.</p>
+
+      <h3 class="source-serif font-semibold text-2xl mt-2">Can I use my own domain name?</h3>
+      <p>
+        Yes, Premium customers can connect their own custom domain. For classic customers, you get your own subdomain like <span class="font-mono">yourname.pagecord.com</span>.
+      </p>
+
+      <h3 class="source-serif font-semibold text-2xl mt-2">How does Pagecord compare to Bear Blog, Mataroa, Pika, or Write.as?</h3>
+      <p>
+        Firstly, all these products are great! By choosing any you're supporting the indie web movement, and that's the main thing.
+      </p>
+      <p>
+        Pagecord brings together the best of all of these products! It has a wonderful rich text editor, it allows you to publish by email, you can keep your files local and publish from Obsidian or iA Writer, make it your own with Custom CSS and code, allow readers to subscribe by email... and so much more! The <a href="https://pagecord.com/#features" class="home-link">feature list is very long</a>!
+      </p>
+      <p>
+        Pagecord is also <a href="https://github.com/pagecord/pagecord" class="home-link">open source</a>, so you can host it yourself if you wanted to.
+      </p>
+    </div>
+  </section>
+</div>
 
 <%= render "landing_testimonials",
   testimonials: [
