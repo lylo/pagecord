@@ -12,11 +12,13 @@
   <% if @blog.show_upvotes? || reply_enabled || comments_enabled %>
     <div class="post-actions">
       <% if comments_enabled %>
-        <%= link_to post_comments_path(post),
+        <%# A GET form rather than a link so crawlers don't follow the URL %>
+        <%= button_to post_comments_path(post),
+                  method: :get,
                   title: "Comments",
                   aria: { label: "Comments" },
-                  data: { turbo_frame: comments_frame_id(post) },
-                  rel: "nofollow",
+                  form: { data: { turbo_frame: comments_frame_id(post) } },
+                  form_class: "comment-link-form",
                   class: "comment-link" do %>
           <%= inline_svg_tag "icons/comment.svg", class: "icon" %>
           <% if post.comments_count.positive? %>

@@ -449,6 +449,8 @@ footer.blog-footer #brand svg {
       gap: 0.5rem;
 
       a,
+      .comment-link-form,
+      .comment-link,
       .upvote-form,
       .upvote {
         display: flex;
