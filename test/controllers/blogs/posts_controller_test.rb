@@ -752,6 +752,38 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=canonical][href=?]", "https://myblog.net"
   end
 
+  test "should emit BlogPosting structured data on a post page" do
+    post = @blog.posts.visible.first
+
+    get post_path(post)
+
+    assert_response :success
+    data = structured_data_from_response
+    assert_equal "BlogPosting", data["@type"]
+    assert_equal post.title, data["headline"]
+    assert_equal post_url(post), data["url"]
+    assert_equal post.published_at.iso8601, data["datePublished"]
+    assert_equal @blog.display_name, data.dig("author", "name")
+  end
+
+  test "should emit WebSite structured data on the blog index" do
+    get blog_posts_path
+
+    assert_response :success
+    data = structured_data_from_response
+    assert_equal "WebSite", data["@type"]
+    assert_equal blog_home_url(@blog), data["url"]
+  end
+
+  test "should emit valid structured data when the blog title contains a backslash" do
+    @blog.update!(title: 'Notes on C:\\paths and "quotes"')
+
+    get post_path(@blog.posts.visible.first)
+
+    assert_response :success
+    assert_equal "BlogPosting", structured_data_from_response["@type"]
+  end
+
   test "should set the canonical_url to the blog home without query params" do
     get blog_posts_path(ref: "example.com")
 
@@ -1431,6 +1463,10 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   private
+
+    def structured_data_from_response
+      JSON.parse css_select("script[type='application/ld+json']").first.text
+    end
 
     def create_content_with_attachment(blog:, title:, caption:, is_page: false)
       blob = ActiveStorage::Blob.create_and_upload!(
