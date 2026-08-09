@@ -2,6 +2,7 @@ class Blog::Export::ImageHandler
   def initialize(post, root_dir)
     @post = post
     @post_images_dir = File.join(root_dir, @post.slug)
+    @filenames = {}
   end
 
   def process_images(html)
@@ -29,8 +30,35 @@ class Blog::Export::ImageHandler
     end
 
     def sanitized_filename(url)
-      decoded_filename = URI.decode_www_form_component(File.basename(url))
-      decoded_filename.gsub(/[^0-9A-Za-z.\-]/, "_")
+      key = File.basename(url)
+      filename = uploaded_filename(key) || URI.decode_www_form_component(key)
+
+      claim(sanitize(filename), key)
+    end
+
+    # Our images are served under their ActiveStorage key, which carries no
+    # extension, so an exported file can't be opened without one. The name the
+    # image was uploaded under has it, and reads better besides. Nil for images
+    # hosted elsewhere, whose URLs already end in a filename.
+    def uploaded_filename(key)
+      ActiveStorage::Blob.find_by(key: key)&.filename&.to_s
+    end
+
+    def sanitize(filename)
+      filename.gsub(/[^0-9A-Za-z.\-]/, "_")
+    end
+
+    # Two images in one post can share an uploaded filename, so the second to
+    # claim it is suffixed with its storage key, which is unique.
+    def claim(filename, key)
+      filename = "#{File.basename(filename, '.*')}-#{key}#{File.extname(filename)}" if claimed_by_another?(filename, key)
+      @filenames[filename] = key
+
+      filename
+    end
+
+    def claimed_by_another?(filename, key)
+      @filenames.fetch(filename, key) != key
     end
 
     def download_image(src, local_path)

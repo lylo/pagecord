@@ -55,6 +55,43 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
     end
   end
 
+  test "names storage URLs after the uploaded file" do
+    blob = create_blob
+
+    filename = @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{blob.key}")
+
+    assert_equal "space.jpg", filename
+  end
+
+  test "falls back to the storage key when two images share an uploaded filename" do
+    first, second = create_blob, create_blob
+
+    @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{first.key}")
+    filename = @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{second.key}")
+
+    assert_equal "space-#{second.key}.jpg", filename
+  end
+
+  test "reuses the same filename for an image referenced twice" do
+    blob = create_blob
+
+    2.times do
+      assert_equal "space.jpg", @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{blob.key}")
+    end
+  end
+
+  test "leaves filenames with an extension unchanged" do
+    filename = @image_handler.send(:sanitized_filename, "http://example.com/test%20image.jpg")
+
+    assert_equal "test_image.jpg", filename
+  end
+
+  test "leaves unknown extension-less filenames unchanged" do
+    filename = @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/nosuchkey")
+
+    assert_equal "nosuchkey", filename
+  end
+
   test "extracts original URL from Cloudflare CDN image URLs" do
     cloudflare_url = "https://pagecord.com/cdn-cgi/image/width=1600,height=1200,format=webp,quality=90/https://storage.pagecord.com/78v1ct1yskcl66bzrl5zf8bz2rpw"
     original_url = "https://storage.pagecord.com/78v1ct1yskcl66bzrl5zf8bz2rpw"
@@ -90,4 +127,12 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
 
     assert_equal expected, result
   end
+
+  private
+
+    def create_blob
+      ActiveStorage::Blob.create_and_upload!(
+        io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg"
+      )
+    end
 end
