@@ -231,7 +231,7 @@ It only runs on single posts, which is why there's no `turbo:frame-load` here. P
 <link rel="pingback" href="https://webmention.io/yourblog.pagecord.com/xmlrpc">
 ```
 
-Replace `yourblog.pagecord.com` with your own blog address, and use your custom domain if you have one.
+Replace `yourblog.pagecord.com` with your own blog address, and use your custom domain if you have one. It has to be the same address you signed in to webmention.io with, because that's the account mentions are collected under. Sign in with the address your posts are actually published at, or nothing will reach you.
 
 **3. Show them on your posts.** webmention.io only collects mentions, so nothing appears on your blog until you ask for them. This goes in **Body code**:
 
