@@ -566,7 +566,7 @@ namespace :logs do
     # Ambiguous tokens that are common words or short substrings. A match is a
     # signal, not proof, so flag them for human review before adding a Caddy
     # block rather than treating them as confirmed offenders.
-    review = %w[spider scrapy lcc yak]
+    review = %w[lcc yak]
 
     scope = date || "all retained logs"
     puts "#{LogDisplay::BOLD}Scanning #{scope} for #{tokens.size} disallowed AI bots ...#{LogDisplay::RESET}"
@@ -579,6 +579,7 @@ namespace :logs do
       [ token, needle, /(?<![a-z0-9])#{Regexp.escape(needle)}(?![a-z0-9])/ ]
     end
     hits = {}
+    ip_tokens = Hash.new { |h, k| h[k] = {} }
 
     entries.each do |e|
       next unless e.line_type == :started
@@ -588,9 +589,10 @@ namespace :logs do
 
       matchers.each do |token, needle, boundary|
         next unless ua_down.include?(needle) && boundary.match?(ua_down)
-        hit = hits[token] ||= { count: 0, ips: {}, sample: ua }
+        hit = hits[token] ||= { count: 0, ips: Hash.new(0), sample: ua }
         hit[:count] += 1
-        hit[:ips][e.ip] = true
+        hit[:ips][e.ip] += 1
+        ip_tokens[e.ip][token] = true
       end
     end
 
@@ -599,28 +601,37 @@ namespace :logs do
       exit 0
     end
 
+    # An IP wearing three or more different bot identities is not the crawler it
+    # claims to be. Reporting that share stops a token's count reading as
+    # activity by the company whose name is on it.
+    multi_identity = ip_tokens.each_with_object({}) { |(ip, ts), h| h[ip] = true if ts.size >= 3 }
+
     rows = hits.sort_by { |_, hit| -hit[:count] }.map do |token, hit|
       verdict = review.include?(token.downcase) ? "review" : "block"
-      [ token, hit[:count].to_s, hit[:ips].size.to_s, verdict, hit[:sample] ]
+      forged = hit[:ips].sum { |ip, n| multi_identity[ip] ? n : 0 }
+      [ token, hit[:count].to_s, hit[:ips].size.to_s, "#{(100.0 * forged / hit[:count]).round}%", verdict, hit[:sample] ]
     end
 
     puts LogDisplay.table(
-      title: "AI bots ignoring robots.txt (#{scope})",
+      title: "Traffic claiming disallowed AI bot user agents (#{scope})",
       columns: [
-        { label: "Bot", width: 28, align: :left },
+        { label: "Claimed token", width: 28, align: :left },
         { label: "Requests", width: 9, align: :right },
         { label: "IPs", width: 5, align: :right },
+        { label: "Forged", width: 7, align: :right },
         { label: "Verdict", width: 7, align: :left },
-        { label: "Sample user agent", width: 70, align: :left }
+        { label: "Sample user agent", width: 60, align: :left }
       ],
       rows: rows,
-      highlight: ->(row) { row[3] == "block" }
+      highlight: ->(row) { row[4] == "block" }
     )
 
-    to_block = rows.count { |row| row[3] == "block" }
-    to_review = rows.count { |row| row[3] == "review" }
-    puts "#{LogDisplay::BOLD}#{to_block} confident offender(s) to block in Caddy; #{to_review} generic-token match(es) to review.#{LogDisplay::RESET}"
-    puts "#{LogDisplay::DIM}\"block\" = distinctive bot token seen despite robots.txt Disallow. \"review\" = ambiguous token, confirm before blocking.#{LogDisplay::RESET}"
+    to_block = rows.count { |row| row[4] == "block" }
+    to_review = rows.count { |row| row[4] == "review" }
+    puts "#{LogDisplay::BOLD}#{to_block} token(s) worth blocking in Caddy; #{to_review} generic-token match(es) to review.#{LogDisplay::RESET}"
+    puts "#{LogDisplay::DIM}User agents are self-declared and unverified: these counts are what traffic CLAIMED to be, not what it was.#{LogDisplay::RESET}"
+    puts "#{LogDisplay::DIM}\"Forged\" = share of requests from IPs that claimed 3+ different tokens. A high share means the count says nothing about the named company.#{LogDisplay::RESET}"
+    puts "#{LogDisplay::DIM}Counts include the bots' own robots.txt fetches, which are compliance rather than violations.#{LogDisplay::RESET}"
   end
 
   desc "Live tail of production.log with per-minute request counter"
