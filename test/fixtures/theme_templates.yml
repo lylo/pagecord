@@ -1099,8 +1099,10 @@ aurelia:
     }
 
     footer a { text-decoration: none; }
+    footer .comment-link,
     footer .upvote { color: var(--color-text); }
     footer a:hover,
+    footer .comment-link:hover,
     footer .upvote:hover {
       color: var(--color-accent);
       fill: var(--color-accent);
