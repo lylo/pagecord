@@ -47,7 +47,7 @@ The 8KB limit applies to the whole box rather than to each snippet. Every body c
 
 Adds a Copy button to the corner of every code block, which is handy if you write posts containing code. This goes in **Body code**:
 
-```html
+```javascript
 <script>
 if (!window.copyButtonsReady) {
   window.copyButtonsReady = true;
@@ -94,7 +94,7 @@ If you put the button inside the `<pre>` instead, it works some of the time and 
 
 Adds a linked contents list to the top of any post with a few headings in it, which is useful if you write long articles. Pages have a `{{ table_of_contents }}` variable for this, but posts don't, because it would end up in your RSS feed and your newsletter. Building it after the page loads avoids that. This goes in **Body code**:
 
-```html
+```javascript
 <script>
 if (!window.tableOfContentsReady) {
   window.tableOfContentsReady = true;
@@ -164,7 +164,7 @@ Replace `yourblog.pagecord.com` with your own blog address, and use your custom 
 
 **3. Show them on your posts.** webmention.io only collects mentions, so nothing appears on your blog until you ask for them. This goes in **Body code**:
 
-```html
+```javascript
 <script>
 if (!window.webmentionsReady) {
   window.webmentionsReady = true;
