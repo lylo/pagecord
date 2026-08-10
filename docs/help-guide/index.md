@@ -44,6 +44,7 @@ Make your blog your own. Choose a theme, tweak colours, change layouts, add cust
 - [Custom CSS Guide](custom-css.md)
 - [Adding a custom footer](custom-footer.md)
 - [Adding custom code](custom-code.md)
+- [Custom code recipes](custom-code-recipes.md)
 - [SEO & Discovery](seo-and-discovery.md)
 
 ## Email

@@ -169,7 +169,7 @@ namespace :help do
 
   def help_rewrite_links(raw)
     parts = raw.start_with?("---") ? raw.split("---", 3) : [ nil, nil, raw ]
-    body = parts[2].gsub(/\]\(index\.md\)/, "](/)").gsub(/\]\(([^)]+)\.md\)/, '](/\1)')
+    body = parts[2].gsub(/\]\(index\.md(#[^)]*)?\)/, '](/\1)').gsub(/\]\((?!\w+:|\/)([^)#]+)\.md(#[^)]*)?\)/, '](/\1\2)')
     parts[1] ? "---#{parts[1]}---#{body}" : body
   end
 
