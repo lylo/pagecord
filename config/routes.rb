@@ -207,6 +207,7 @@ Rails.application.routes.draw do
         get :fixtures, on: :collection
       end
       resources :analytics, only: [ :index ]
+      resources :churns, only: [ :index ]
       resources :posts, only: [ :index ]
       resources :suppressions, only: [ :index ] do
         collection do

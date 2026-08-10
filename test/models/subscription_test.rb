@@ -125,4 +125,38 @@ class SubscriptionTest < ActiveSupport::TestCase
     subscription.update!(plan: :complimentary)
     assert_includes Subscription.comped, subscription
   end
+
+  test "churning scope should return cancelled subscriptions still inside their paid period" do
+    subscription = subscriptions(:one)
+    subscription.update!(cancelled_at: Time.current)
+
+    assert_includes Subscription.churning, subscription
+    assert_not_includes Subscription.churning, subscriptions(:two)
+  end
+
+  test "cancelling should record a churn" do
+    assert_difference -> { Churn.count } do
+      subscriptions(:one).update!(cancelled_at: Time.current)
+    end
+
+    assert_equal "subscription_cancelled", Churn.last.kind
+  end
+
+  test "cancelling twice should record one churn" do
+    subscription = subscriptions(:one)
+    subscription.update!(cancelled_at: Time.current)
+
+    assert_no_difference -> { Churn.count } do
+      subscription.update!(cancelled_at: 1.month.from_now)
+    end
+  end
+
+  test "resuming should not record a churn" do
+    subscription = subscriptions(:one)
+    subscription.update!(cancelled_at: Time.current)
+
+    assert_no_difference -> { Churn.count } do
+      subscription.update!(cancelled_at: nil)
+    end
+  end
 end

@@ -13,8 +13,11 @@
         <%= link_to "Analytics", admin_analytics_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'analytics'}" %>
 
         <details class="relative">
-          <summary class="text-sm font-semibold cursor-pointer list-none text-slate-900 dark:text-slate-100 hover:underline select-none #{'home-link' if controller_name == 'suppressions'}">More ▾</summary>
+          <summary class="text-sm font-semibold cursor-pointer list-none text-slate-900 dark:text-slate-100 hover:underline select-none #{'home-link' if controller_name.in?(%w[suppressions churns])}">More ▾</summary>
           <div class="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg py-1 z-10">
+            <%= link_to "Churn", admin_churns_path,
+                class: "block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 #{'font-semibold' if controller_name == 'churns'}",
+                onclick: "this.closest('details').removeAttribute('open')" %>
             <%= link_to "Suppressions", admin_suppressions_path,
                 class: "block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 #{'font-semibold' if controller_name == 'suppressions'}",
                 onclick: "this.closest('details').removeAttribute('open')" %>

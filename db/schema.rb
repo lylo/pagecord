@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_08_02_090000) do
+ActiveRecord::Schema[8.2].define(version: 2026_08_07_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -141,6 +141,25 @@ ActiveRecord::Schema[8.2].define(version: 2026_08_02_090000) do
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
+  end
+
+  create_table "churns", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "kind", null: false
+    t.datetime "occurred_at", null: false
+    t.string "plan"
+    t.integer "unit_price"
+    t.string "paddle_subscription_id"
+    t.string "blog_subdomain"
+    t.string "signup_referrer"
+    t.datetime "signed_up_at"
+    t.datetime "subscribed_at"
+    t.integer "posts_count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["kind", "paddle_subscription_id"], name: "index_churns_on_kind_and_paddle_subscription_id", unique: true
+    t.index ["occurred_at"], name: "index_churns_on_occurred_at"
+    t.index ["user_id"], name: "index_churns_on_user_id"
   end
 
   create_table "contact_messages", force: :cascade do |t|
