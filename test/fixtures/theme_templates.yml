@@ -719,6 +719,7 @@ mozake:
 
     /* Post footer */
     article footer { display: block; font-size: revert; }
+    article footer .comment-link,
     article footer .upvote { color: LinkText; }
     .icon { width: 1em; height: 1em; }
 
