@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: be96a01be47eeab57954c5a34cde5895a16185f4
+  revision: e1375057e1a0765178e6ac9cf2820503c25d2f27
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -137,8 +137,8 @@ GEM
     bcrypt (3.1.22)
     bigdecimal (4.1.2)
     bindex (0.8.1)
-    bootsnap (1.24.6)
-      msgpack (~> 1.2)
+    bootsnap (1.25.0)
+      msgpack (~> 1.5)
     brakeman (8.0.5)
       racc
     builder (3.3.0)
@@ -261,7 +261,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (0.9.28)
+    lexxy (0.9.29)
       rails (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
