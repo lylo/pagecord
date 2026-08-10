@@ -55,7 +55,7 @@
   </section>
 
   <%= settings_section "Finer Details", description: "These apply whichever colour scheme or ready-made design you chose above." do %>
-    <%= settings_row "Font", stacked: true do %>
+    <%= settings_row "Font family", stacked: true do %>
       <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
             data: { controller: "radio-button-auto-submit" } do |form| %>
         <%= render "theme_font", form: form %>

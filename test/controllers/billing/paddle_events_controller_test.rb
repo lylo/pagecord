@@ -67,6 +67,42 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert subscription.reload.cancelled?
     assert_equal cancellation_date.to_i, subscription.cancelled_at.to_i
+    assert_equal cancellation_date.to_i, subscription.next_billed_at.to_i
+    assert_not subscription.user.subscribed?, "access should end when the cancellation takes effect"
+  end
+
+  # Paddle cancels immediately when it refunds, and sends subscription.updated
+  # alongside subscription.canceled with no next_billed_at of its own.
+  test "should not restore access when subscription.updated follows a cancellation" do
+    subscription = subscriptions(:one)
+
+    cancellation_date = Time.current
+
+    cancelled = payload_for("subscription.canceled", subscription.user)
+    cancelled["data"]["canceled_at"] = cancellation_date.iso8601
+
+    updated = payload_for("subscription.updated.cancellation", subscription.user)
+    updated["data"]["id"] = "sub_01hvrk1481njzb874tn7wyrksv"
+    updated["data"]["status"] = "canceled"
+    updated["data"]["canceled_at"] = cancellation_date.iso8601
+    updated["data"]["scheduled_change"] = nil
+
+    [ cancelled, updated ].each do |payload|
+      json_payload = payload.to_json
+
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+
+      assert_response :success
+    end
+
+    subscription.reload
+    assert_equal cancellation_date.to_i, subscription.next_billed_at.to_i
+    assert_not subscription.user.subscribed?
   end
 
   test "should not create subscription on transaction.payment_failed event" do

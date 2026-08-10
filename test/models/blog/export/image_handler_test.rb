@@ -30,12 +30,66 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
       .with("http://example.com/test%20image.jpg", regexp_matches(/test_image\.jpg$/))
       .raises(StandardError, "Download failed")
 
-    Sentry.expects(:capture_exception)
-      .with(instance_of(StandardError), has_entries(extra: has_entries(post_slug: @post.slug, image_src: "http://example.com/test%20image.jpg")))
-
     assert_nothing_raised do
       @image_handler.process_images(@post.content.body.to_s)
     end
+  end
+
+  test "does not retry downloads that fail with a client error" do
+    not_found = OpenURI::HTTPError.new("404 Not Found", stub(status: [ "404", "Not Found" ]))
+    URI.expects(:open).once.raises(not_found)
+    @image_handler.expects(:sleep).never
+
+    assert_raises(OpenURI::HTTPError) do
+      @image_handler.send(:download_image, "http://example.com/missing.jpg", "tmp/images_dir/missing.jpg")
+    end
+  end
+
+  test "retries downloads that fail with a server error" do
+    server_error = OpenURI::HTTPError.new("500 Internal Server Error", stub(status: [ "500", "Internal Server Error" ]))
+    URI.expects(:open).times(3).raises(server_error)
+    @image_handler.stubs(:sleep)
+
+    assert_raises(OpenURI::HTTPError) do
+      @image_handler.send(:download_image, "http://example.com/broken.jpg", "tmp/images_dir/broken.jpg")
+    end
+  end
+
+  test "names storage URLs after the uploaded file" do
+    blob = create_blob
+
+    filename = @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{blob.key}")
+
+    assert_equal "space.jpg", filename
+  end
+
+  test "falls back to the storage key when two images share an uploaded filename" do
+    first, second = create_blob, create_blob
+
+    @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{first.key}")
+    filename = @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{second.key}")
+
+    assert_equal "space-#{second.key}.jpg", filename
+  end
+
+  test "reuses the same filename for an image referenced twice" do
+    blob = create_blob
+
+    2.times do
+      assert_equal "space.jpg", @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{blob.key}")
+    end
+  end
+
+  test "leaves filenames with an extension unchanged" do
+    filename = @image_handler.send(:sanitized_filename, "http://example.com/test%20image.jpg")
+
+    assert_equal "test_image.jpg", filename
+  end
+
+  test "leaves unknown extension-less filenames unchanged" do
+    filename = @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/nosuchkey")
+
+    assert_equal "nosuchkey", filename
   end
 
   test "extracts original URL from Cloudflare CDN image URLs" do
@@ -73,4 +127,12 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
 
     assert_equal expected, result
   end
+
+  private
+
+    def create_blob
+      ActiveStorage::Blob.create_and_upload!(
+        io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg"
+      )
+    end
 end

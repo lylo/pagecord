@@ -8,6 +8,8 @@ class SpamDetectionJobTest < ActiveSupport::TestCase
     SpamDetection.delete_all
     @blog = blogs(:elliot)
     @blog.update_column(:created_at, 1.day.ago)
+    # Fixture content sits on the CHECK_WINDOW boundary, so each test states its own.
+    @blog.all_posts.update_all(published_at: 1.year.ago, updated_at: 1.year.ago)
   end
 
   test "checks a newly created blog that has never been checked" do
@@ -26,34 +28,31 @@ class SpamDetectionJobTest < ActiveSupport::TestCase
     refute_includes queued_blog_ids, @blog.id
   end
 
-  test "rechecks a clean blog that has published since it was checked" do
-    settled_blog
-    detect!(detected_at: 40.days.ago)
-    @blog.posts.create!(content: "new content", published_at: 1.day.ago)
-
-    assert_includes queued_blog_ids, @blog.id
-  end
-
-  test "does not recheck a clean blog with nothing published since" do
-    settled_blog
-    detect!(detected_at: 40.days.ago)
-    @blog.posts.create!(content: "old content", published_at: 50.days.ago)
+  test "does not recheck a clean blog with nothing changed since" do
+    detect!(detected_at: 1.hour.ago)
+    untouched_post(published_at: 2.days.ago)
 
     refute_includes queued_blog_ids, @blog.id
   end
 
+  test "rechecks a clean blog whose existing post was edited since it was checked" do
+    post = untouched_post(published_at: 2.days.ago)
+    detect!(detected_at: 1.hour.ago)
+    post.update!(content: "now with links")
+
+    assert_includes queued_blog_ids, @blog.id
+  end
+
   test "does not recheck a blog an admin has reviewed" do
-    settled_blog
-    detect!(detected_at: 40.days.ago, reviewed_at: Time.current)
-    @blog.posts.create!(content: "new content", published_at: 1.day.ago)
+    detect!(detected_at: 1.hour.ago, reviewed_at: Time.current)
+    @blog.posts.create!(content: "new content", published_at: 1.minute.ago)
 
     refute_includes queued_blog_ids, @blog.id
   end
 
   test "does not recheck a blog already flagged and awaiting review" do
-    settled_blog
-    detect!(detected_at: 40.days.ago, status: :spam)
-    @blog.posts.create!(content: "new content", published_at: 1.day.ago)
+    detect!(detected_at: 1.hour.ago, status: :spam)
+    @blog.posts.create!(content: "new content", published_at: 1.minute.ago)
 
     refute_includes queued_blog_ids, @blog.id
   end
@@ -71,10 +70,10 @@ class SpamDetectionJobTest < ActiveSupport::TestCase
     refute_includes queued_blog_ids, @blog.id
   end
 
-  test "does not recheck before the recheck window" do
+  test "does not recheck a blog past the watch window" do
     settled_blog
-    detect!(detected_at: 5.days.ago)
-    @blog.posts.create!(content: "new content", published_at: 1.day.ago)
+    detect!(detected_at: 1.hour.ago)
+    @blog.posts.create!(content: "new content", published_at: 1.minute.ago)
 
     refute_includes queued_blog_ids, @blog.id
   end
@@ -93,6 +92,20 @@ class SpamDetectionJobTest < ActiveSupport::TestCase
     refute_includes queued_blog_ids, @blog.id
   end
 
+  test "checks an unchecked blog whose only recent content is a page" do
+    settled_blog
+    @blog.pages.create!(title: "Links", content: "new content", published_at: 1.day.ago)
+
+    assert_includes queued_blog_ids, @blog.id
+  end
+
+  test "rechecks a clean blog that has published a page since it was checked" do
+    detect!(detected_at: 1.hour.ago)
+    @blog.pages.create!(title: "Links", content: "new content", published_at: 1.minute.ago)
+
+    assert_includes queued_blog_ids, @blog.id
+  end
+
   test "queues a blog only once when it is both new and due a recheck" do
     detect!(detected_at: 40.days.ago)
     @blog.posts.create!(content: "new content", published_at: 1.day.ago)
@@ -105,6 +118,13 @@ class SpamDetectionJobTest < ActiveSupport::TestCase
     # Puts the blog outside the new-signup window, so only recheck rules apply.
     def settled_blog
       @blog.update_column(:created_at, 60.days.ago)
+    end
+
+    # Published and left alone since, so updated_at is no fresher than published_at.
+    def untouched_post(published_at:)
+      @blog.posts.create!(content: "old content", published_at: published_at).tap do |post|
+        post.update_columns(updated_at: published_at)
+      end
     end
 
     def detect!(attributes)

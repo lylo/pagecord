@@ -10,7 +10,10 @@ class SpamDetectionCheckJob < ApplicationJob
 
     Rails.logger.info "[SpamDetection] #{blog.subdomain}: #{detector.result.status} - #{detector.result.reason}"
 
-    save_detection_result!(blog, detector.result) unless detector.result.status == :no_content
+    # An error is not a verdict. Saving one would leave the blog looking judged:
+    # out of never_checked because a detection exists, and out of due_for_recheck
+    # because it is not clean. One OpenAI outage would hide every blog it touched.
+    save_detection_result!(blog, detector.result) unless detector.result.status.in?(%i[no_content error])
   end
 
   private

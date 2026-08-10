@@ -1,0 +1,18 @@
+<section class="my-10 md:my-14 mx-auto max-w-4xl px-4">
+  <h2 class="source-serif text-center font-semibold mb-8 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">What people are saying</h2>
+  <div class="grid md:grid-cols-2 gap-4">
+    <% testimonials.each do |testimonial| %>
+      <figure class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
+        <blockquote class="text-lg leading-relaxed text-slate-800 dark:text-slate-200">
+          “<%= testimonial[:quote] %>”
+        </blockquote>
+        <figcaption class="mt-4 text-sm text-slate-500 dark:text-slate-400">
+          <span class="font-semibold text-slate-700 dark:text-slate-300"><%= testimonial[:name] %></span>
+          <% if testimonial[:url].present? %>
+            · <a href="<%= testimonial[:url] %>" class="underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300"><%= testimonial[:url].delete_prefix("https://").delete_suffix("/") %></a>
+          <% end %>
+        </figcaption>
+      </figure>
+    <% end %>
+  </div>
+</section>

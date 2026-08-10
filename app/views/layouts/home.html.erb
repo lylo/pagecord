@@ -13,7 +13,7 @@
 
     <% og_title = (content_for?(:title) ? content_for(:title) : "Pagecord: A blog you'll actually keep updated").strip %>
     <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : default_meta_description).strip %>
-    <% og_image = (content_for?(:og_image) ? content_for(:og_image) : image_url("social/open-graph.webp")).strip %>
+    <% og_image = content_for?(:og_image) ? content_for(:og_image).strip.html_safe : image_url("social/open-graph.webp") %>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -57,7 +57,7 @@
       }
 
       .source-serif {
-        font-family: "SourceSerif4Variable", sans-serif;
+        font-family: "SourceSerif4Variable", Georgia, serif;
       }
     </style>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>

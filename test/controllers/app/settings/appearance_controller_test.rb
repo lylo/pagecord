@@ -13,7 +13,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     get app_settings_appearance_index_url
 
     assert_select "h3", { count: 1, text: "Finer Details" }
-    assert_select "h4", { count: 1, text: "Font" }
+    assert_select "h4", { count: 1, text: "Font family" }
     assert_select "h4", { count: 1, text: "Blog Layout" }
     assert_response :success
   end

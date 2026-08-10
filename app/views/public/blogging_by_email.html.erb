@@ -1,10 +1,10 @@
 <%# landing-page: standalone marketing / SEO page (app/views/public), not part of a user's blog %>
 <%= content_for :title do %>
-  Blog By Email: Your inbox is already a writing app.
+  Blog By Email: Your inbox is a writing app that you're already familiar with
 <% end %>
 
 <%= content_for :meta_description do %>
-  Blog by sending an email. Pagecord works with Gmail, Outlook, Fastmail, Proton Mail, HEY, iCloud, or any email provider. Write anywhere, hit send, and publish.
+  Blog by sending an email. Pagecord works with Gmail, Outlook, Fastmail, Proton Mail, HEY, iCloud, or any email provider. Write anywhere, hit send, and publish!
 <% end %>
 
 <%= content_for :og_image do %>
@@ -13,18 +13,15 @@
 
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
-    Your inbox is already a writing app.
+    Your inbox is already a writing app
   </h1>
 
   <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4 mt-8 md:mt-12">
     <p>
-      Blogging by email works because it starts where writing already happens. No dashboard, no blank CMS screen, no special app to remember.
+      Blogging by email is the most effortless way to blog. It's there on all your devices, and you're familiar with the editor.
     </p>
     <p>
-      Compose a message in Gmail, Fastmail, iCloud, Proton Mail, Outlook, HEY, or any email client. Send it to your private Pagecord address. The email becomes a post.
-    </p>
-    <p>
-      Use the web editor when you want it. Use email when you want momentum. Either way, your site gets a real post, a real URL, RSS, and an archive you own.
+      Compose a message in your favourite client, whether that's Gmail, Fastmail, iCloud, Proton Mail, Outlook, HEY... Pagecord works with all of them. Send a post to your private Pagecord address and it appears on your blog within seconds.
     </p>
   </div>
 
@@ -47,13 +44,10 @@
   <%= image_tag "public/protonmail.webp", class: "h-10 sm:h-16 rounded-md", alt: "Proton Mail logo" %>
 </div>
 
-<%= render "landing_examples",
-  examples: [
-    { name: "Noodlings", url: "https://noodlings.pagecord.com/what-s-so-great-about-posting-by-email", description: "A Pagecord post about why publishing from email feels so different." },
-    { name: "Focustivity", url: "https://focustivity.blog", description: "A personal blog where quick publishing helps posts make it out of drafts." },
-    { name: "Chad Moore", url: "https://blog.chadmoore.net/", description: "A custom-domain blog where email makes writing and publishing feel frictionless." }
-  ],
+<%= render "landing_testimonials",
   testimonials: [
     { name: "Eric", url: "https://focustivity.blog", quote: "I was drawn to Pagecord because it allows me to post simply by sending an email. I was blown away by the other great features." },
     { name: "Chad", url: "https://blog.chadmoore.net/", quote: "The ability to post by email was such a relief. Write, send, publish. Frictionless!" }
   ] %>
+
+<%= render "landing_cta" %>

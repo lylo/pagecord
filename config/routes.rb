@@ -260,7 +260,6 @@ Rails.application.routes.draw do
     get "/personal-website", to: "public#personal_website"
     get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
-    get "/blog-with-newsletter", to: "public#blog_with_newsletter"
     get "/blogger-alternative", to: "public#blogger_alternative"
     get "/indie-blogging-platform", to: "public#indie_blogging_platform"
 

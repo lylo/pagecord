@@ -380,7 +380,7 @@ The structure looks like this:
     .comments-more         The "load more comments" link
 ```
 
-In the post footer, `.comment-link` is the icon and `.comment-count` is the number beside it.
+In the post footer, `.comment-link` is the button showing the icon (wrapped in a small form with the class `.comment-link-form`) and `.comment-count` is the number beside it. Style it with the bare class rather than an element selector like `a.comment-link`.
 
 Comments you leave on your own posts also get a `.comment-by-author` class, which tints them with your theme's accent colour. To turn that off:
 

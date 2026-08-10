@@ -7,6 +7,7 @@ class Admin::AnalyticsController < AdminController
     @top_pages = top_pages_with_view_counts
     @top_blogs = top_blogs_with_view_counts
     @top_blogs_by_subscribers = top_blogs_with_subscriber_counts
+    @top_posts_by_comments = top_posts_with_comment_counts
     @trending_posts = Analytics::Trending.new.top_posts(limit: 10)
   end
 
@@ -115,6 +116,22 @@ class Admin::AnalyticsController < AdminController
       # Fetch the actual Blog objects
       blogs_with_counts = Blog.where(id: top_blog_ids)
         .map { |blog| { blog: blog, count: blog_view_counts[blog.id] || 0 } }
+        .sort_by { |item| -item[:count] }
+    end
+
+    def top_posts_with_comment_counts
+      start_time, end_time = date_range_for_view_type
+
+      comment_counts = Post::Comment.approved
+        .where(author: false, created_at: start_time..end_time)
+        .group(:post_id)
+        .order(count_all: :desc)
+        .limit(10)
+        .count
+
+      Post.includes(:blog)
+        .where(id: comment_counts.keys)
+        .map { |post| { post: post, count: comment_counts[post.id] } }
         .sort_by { |item| -item[:count] }
     end
 

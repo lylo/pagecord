@@ -2,6 +2,7 @@ class Blog::Export::ImageHandler
   def initialize(post, root_dir)
     @post = post
     @post_images_dir = File.join(root_dir, @post.slug)
+    @filenames = {}
   end
 
   def process_images(html)
@@ -25,14 +26,39 @@ class Blog::Export::ImageHandler
       download_image(src, local_path)
       update_img_src(img, safe_filename)
     rescue StandardError => e
-      message = "Blog::Export::ImageHandler. Unable to process image #{src} for post #{@post.slug}: #{e.class} - #{e.message}"
-      Rails.logger.error message
-      Sentry.capture_exception(e, extra: { post_slug: @post.slug, image_src: src })
+      Rails.logger.warn "Blog::Export::ImageHandler. Unable to process image #{src} for post #{@post.slug} on blog #{@post.blog.subdomain}: #{e.class} - #{e.message}"
     end
 
     def sanitized_filename(url)
-      decoded_filename = URI.decode_www_form_component(File.basename(url))
-      decoded_filename.gsub(/[^0-9A-Za-z.\-]/, "_")
+      key = File.basename(url)
+      filename = uploaded_filename(key) || URI.decode_www_form_component(key)
+
+      claim(sanitize(filename), key)
+    end
+
+    # Our images are served under their ActiveStorage key, which carries no
+    # extension, so an exported file can't be opened without one. The name the
+    # image was uploaded under has it, and reads better besides. Nil for images
+    # hosted elsewhere, whose URLs already end in a filename.
+    def uploaded_filename(key)
+      ActiveStorage::Blob.find_by(key: key)&.filename&.to_s
+    end
+
+    def sanitize(filename)
+      filename.gsub(/[^0-9A-Za-z.\-]/, "_")
+    end
+
+    # Two images in one post can share an uploaded filename, so the second to
+    # claim it is suffixed with its storage key, which is unique.
+    def claim(filename, key)
+      filename = "#{File.basename(filename, '.*')}-#{key}#{File.extname(filename)}" if claimed_by_another?(filename, key)
+      @filenames[filename] = key
+
+      filename
+    end
+
+    def claimed_by_another?(filename, key)
+      @filenames.fetch(filename, key) != key
     end
 
     def download_image(src, local_path)
@@ -48,7 +74,7 @@ class Blog::Export::ImageHandler
           File.open(local_path, "wb") { |file| file.write(remote_file.read) }
         end
       rescue StandardError => e
-        if attempts < max_retries
+        if attempts < max_retries && !client_error?(e)
           wait_time = attempts * 2
           Rails.logger.warn "Blog::Export::ImageHandler. Retry #{attempts}/#{max_retries} for #{actual_src}: #{e.message}. Waiting #{wait_time}s..."
           sleep(wait_time)
@@ -57,6 +83,10 @@ class Blog::Export::ImageHandler
           raise
         end
       end
+    end
+
+    def client_error?(error)
+      error.is_a?(OpenURI::HTTPError) && error.io.status.first.to_i.in?(400..499)
     end
 
     def extract_original_url(src)

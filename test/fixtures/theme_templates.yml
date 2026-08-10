@@ -719,6 +719,7 @@ mozake:
 
     /* Post footer */
     article footer { display: block; font-size: revert; }
+    article footer .comment-link,
     article footer .upvote { color: LinkText; }
     .icon { width: 1em; height: 1em; }
 
@@ -1099,8 +1100,10 @@ aurelia:
     }
 
     footer a { text-decoration: none; }
+    footer .comment-link,
     footer .upvote { color: var(--color-text); }
     footer a:hover,
+    footer .comment-link:hover,
     footer .upvote:hover {
       color: var(--color-accent);
       fill: var(--color-accent);
