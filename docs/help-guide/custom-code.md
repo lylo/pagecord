@@ -14,13 +14,12 @@ Custom code needs an active subscription. Unlike custom CSS and the custom foote
 
 To add custom code, head over to **Settings** → **Custom Code**.
 
+> Note: Custom code is an advanced feature. Anything you add runs on every page of your blog, so a broken snippet can break your whole site. Customer support for writing or debugging custom code is not possible.
+
+
 <div>
 {{ table_of_contents | heading: "Table of Contents" }}
 </div>
-
-### A Quick Note
-
-Custom code is an advanced feature. Anything you add runs on every page of your blog, so a broken snippet can break your whole site. Customer support for writing or debugging custom code is not possible.
 
 ---
 

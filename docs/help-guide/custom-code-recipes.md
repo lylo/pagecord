@@ -9,15 +9,39 @@ Read [Adding custom code](custom-code.md) first if you haven't already, particul
 
 If you build a fun recipe, [please let me know](https://help.pagecord.com/support) and I'll consider adding it to this page.
 
+> Note: These recipes run on every page of your blog. If one of them misbehaves, untick **Head and body code enabled** to switch your code off without deleting it. Customer support for writing or debugging custom code is not possible.
+
 <div>
 {{ table_of_contents | heading: "Table of Contents" }}
 </div>
 
-### A Quick Note
-
-These recipes run on every page of your blog. If one of them misbehaves, untick **Head and body code enabled** to switch your code off without deleting it. Customer support for writing or debugging custom code is not possible.
-
 ---
+
+## Using more than one recipe
+
+Recipes stack. Paste them one after another, each keeping its own `<script>` tags:
+
+```html
+<script>
+if (!window.copyButtonsReady) {
+  // the first recipe
+}
+</script>
+
+<script>
+if (!window.tableOfContentsReady) {
+  // the second recipe
+}
+</script>
+```
+
+Browsers run the blocks in the order you paste them, and separate blocks share the same global scope, so the `window` flag each recipe sets to avoid running twice still does its job.
+
+You could merge everything into one `<script>` block instead, and it would work, but keeping them separate is safer. Each block is compiled on its own, so a typo in one recipe stops that recipe rather than all of them.
+
+Don't put a `<script>` inside another one. The browser ends the outer block at the first `</script>` it finds, and the rest of your code spills onto the page as text.
+
+The 8KB limit applies to the whole box rather than to each snippet. Every body code recipe here, pasted together, comes to just under 5KB.
 
 ## A copy button for code blocks
 
