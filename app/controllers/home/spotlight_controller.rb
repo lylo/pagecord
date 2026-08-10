@@ -59,7 +59,7 @@ class Home::SpotlightController < ApplicationController
 
     def recent_posts
       latest_per_blog = Blog.spotlit_posts
-        .where(published_at: ..15.minutes.ago)
+        .where(published_at: 30.days.ago..15.minutes.ago)
         .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
         .select("DISTINCT ON (posts.blog_id) posts.*")
         .order("posts.blog_id, posts.published_at DESC")
