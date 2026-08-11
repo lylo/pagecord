@@ -480,6 +480,49 @@ By default, image galleries render in 2 or 3 columns depending on how many image
 
 Adjust `600px` to your preferred breakpoint.
 
+### PDF attachments: changing the layout
+
+A PDF attachment renders its first page as a thumbnail, with a download link and the file size below. You can target the following classes:
+
+- `.attachment--pdf` – the container
+- `.attachment__page` – the rendered first page
+- `.attachment__caption` – the line beneath it
+- `.attachment__title` – the caption you typed in the editor, if any
+- `.attachment__link` – the download link
+- `.attachment__size` – the file size
+
+**Show it as a compact row** instead of a full-size page:
+
+```css
+.attachment--pdf {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.attachment--pdf .attachment__page { max-block-size: 6rem; }
+.attachment--pdf .attachment__caption { justify-content: flex-start; }
+```
+
+**Change how large the page appears:**
+
+```css
+.attachment--pdf .attachment__page { max-block-size: 300px; }
+```
+
+**Hide the file size:**
+
+```css
+.attachment--pdf .attachment__size { display: none; }
+```
+
+The separator dots are attached to the items either side of the download link, so hiding an item hides its dot too. The one exception is hiding the download link itself, which needs an extra line:
+
+```css
+.attachment--pdf .attachment__link { display: none; }
+.attachment--pdf .attachment__size::before { content: none; }
+```
+
 ### Posts gallery: customising the layout
 
 The `{{ posts | style: gallery }}` dynamic variable renders posts as a grid of square thumbnails. You can target the following classes:

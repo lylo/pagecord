@@ -387,6 +387,59 @@ footer.blog-footer #brand svg {
       }
     }
 
+    /* A PDF's rendered first page stands in for the document, sized like an
+       image. Every part carries its own class so a blog can restyle this from
+       custom CSS: a flex row on .attachment--pdf gives the compact chip
+       layout, and either caption element can be hidden on its own. The caption
+       uses gap rather than a separator glyph so hiding one leaves no orphan.
+       Until the preview job has run there is no page, and .attachment__icon
+       renders instead. */
+    .attachment--pdf {
+      .attachment__page {
+        border: 1px solid var(--color-border);
+        inline-size: auto;
+        max-block-size: 600px;
+      }
+
+      /* A little document: portrait card, thick top edge, uppercase extension. */
+      .attachment__icon {
+        aspect-ratio: 4 / 5;
+        block-size: 2.5lh;
+        border: 2px solid var(--color-text-muted);
+        border-block-start-width: 1ch;
+        border-radius: 0.5ch;
+        color: var(--color-text-muted);
+        display: grid;
+        font-size: 0.875em;
+        font-weight: bold;
+        margin-inline: auto;
+        padding-inline: 0.5ch;
+        place-content: center;
+        text-transform: uppercase;
+      }
+
+      .attachment__caption {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75ch;
+        justify-content: center;
+      }
+
+      /* Separators sit on the items either side of the Download link, never on
+         the link itself, where they would be underlined and clickable. Each
+         one disappears with its owner, so an attachment with no caption title
+         starts cleanly and hiding the size from custom CSS takes its dot too. */
+      .attachment__title::after {
+        content: "·";
+        margin-inline-start: 0.75ch;
+      }
+
+      .attachment__size::before {
+        content: "·";
+        margin-inline-end: 0.75ch;
+      }
+    }
+
     code,
     pre {
       background-color: var(--color-bg-subtle);

@@ -18,3 +18,11 @@ ActiveSupport.on_load(:active_storage_attachment) do
     validate { errors.add(:record, :blank) if record.nil? }
   end
 end
+
+# Hook the attachment rather than the upload so every route in covers itself:
+# the editor, the API, Micropub and inbound email all end up attaching a blob.
+# This is where Rails runs analyze_blob_later for the same reason.
+ActiveSupport.on_load(:active_storage_attachment) do
+  after_create_commit -> { GeneratePdfPreviewJob.perform_later(blob) },
+    if: -> { blob.content_type == "application/pdf" }
+end

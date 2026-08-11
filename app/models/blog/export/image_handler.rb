@@ -8,23 +8,46 @@ class Blog::Export::ImageHandler
   def process_images(html)
     doc = Nokogiri::HTML::DocumentFragment.parse(html)
     doc.css("img").each do |img|
-      process_image(img)
+      process_node(img, "src")
+    end
+    hosted_links(doc).each do |link|
+      process_node(link, "href")
     end
     doc.to_html
   end
 
   private
 
-    def process_image(img)
-      src = img["src"]
+    # A PDF attachment is a link, not an image, so it needs bundling too. Only
+    # our own storage qualifies: Html::Sanitize has already stripped the
+    # classes that would otherwise identify the attachment, and a post's other
+    # links belong to whoever they point at.
+    def hosted_links(doc)
+      doc.css("a[href]").select { |link| own_storage?(link["href"]) }
+    end
+
+    # In production blobs live behind the public asset host; in development
+    # the app serves them itself, so recognise its Active Storage routes.
+    def own_storage?(href)
+      if (host = ENV["ACTIVE_STORAGE_ASSET_HOST"]).present?
+        href.start_with?(host)
+      else
+        href.include?("/rails/active_storage/")
+      end
+    end
+
+    def process_node(node, attribute)
+      src = node[attribute]
       return unless src
 
       FileUtils.mkdir_p(@post_images_dir)
       safe_filename = sanitized_filename(src)
       local_path = File.join(@post_images_dir, safe_filename)
 
-      download_image(src, local_path)
-      update_img_src(img, safe_filename)
+      # The same href can appear twice in one post, and claim() hands both the
+      # same local name, so only the first occurrence downloads.
+      download_image(src, local_path) unless File.exist?(local_path)
+      node[attribute] = "images/#{@post.slug}/#{safe_filename}"
     rescue StandardError => e
       Rails.logger.warn "Blog::Export::ImageHandler. Unable to process image #{src} for post #{@post.slug} on blog #{@post.blog.subdomain}: #{e.class} - #{e.message}"
     end
@@ -93,9 +116,5 @@ class Blog::Export::ImageHandler
       # Extract original URL from Cloudflare CDN image URLs like:
       # https://pagecord.com/cdn-cgi/image/width=1600,height=1200,format=webp,quality=90/https://storage.pagecord.com/78v1ct1yskcl66bzrl5zf8bz2rpw
       src.gsub(%r{https://pagecord\.com/cdn-cgi/image/[^/]+/}, "")
-    end
-
-    def update_img_src(img, safe_filename)
-      img["src"] = "images/#{@post.slug}/#{safe_filename}"
     end
 end
