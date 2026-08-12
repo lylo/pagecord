@@ -223,6 +223,15 @@ if (!window.webmentionsReady) {
 </script>
 ```
 
+It asks for the canonical address of the post, which is what other sites link to, and adds nothing at all when there are no mentions yet. Some mentions arrive without an author name, so those fall back to the name of the site they came from. Repeat mentions from the same person are counted once, and only the first ten are named.
+
+Note that the names are added to the page one node at a time rather than with `innerHTML`. They come from other people's websites, so treating them as HTML would let someone else run code on your blog. It's worth keeping that shape if you adapt this.
+
+**Where mentions actually come from.** Once all this is in place your posts will still look exactly the same, because a webmention has to be sent to you by another site, and most sites don't send them. Other blogs that support webmentions will do it on their own. Social networks won't, so you need [Bridgy](https://brid.gy), which watches your account and forwards responses to your posts as webmentions. Connect the account you already have, and ignore the option to connect your site directly to the fediverse – that's a different service that turns your blog into its own social account. Bridgy supports Mastodon, Bluesky, Flickr, GitHub and Reddit. It no longer supports Twitter/X, and LinkedIn was never supported.
+
+Posting a link to your blog doesn't create a mention by itself. Bridgy sends one when somebody likes, boosts or replies to that post, so nothing appears until someone responds. If you want to see it working without waiting, like your own post from a second account.
+
+
 ## A reading progress bar
 
 Show a bar at the top of the page that shows how far the reader has scrolled down. This goes in **Body code**:
@@ -260,11 +269,3 @@ if (!window.readingProgressReady) {
 }
 </script>
 ```
-
-It asks for the canonical address of the post, which is what other sites link to, and adds nothing at all when there are no mentions yet. Some mentions arrive without an author name, so those fall back to the name of the site they came from. Repeat mentions from the same person are counted once, and only the first ten are named.
-
-Note that the names are added to the page one node at a time rather than with `innerHTML`. They come from other people's websites, so treating them as HTML would let someone else run code on your blog. It's worth keeping that shape if you adapt this.
-
-**Where mentions actually come from.** Once all this is in place your posts will still look exactly the same, because a webmention has to be sent to you by another site, and most sites don't send them. Other blogs that support webmentions will do it on their own. Social networks won't, so you need [Bridgy](https://brid.gy), which watches your account and forwards responses to your posts as webmentions. Connect the account you already have, and ignore the option to connect your site directly to the fediverse – that's a different service that turns your blog into its own social account. Bridgy supports Mastodon, Bluesky, Flickr, GitHub and Reddit. It no longer supports Twitter/X, and LinkedIn was never supported.
-
-Posting a link to your blog doesn't create a mention by itself. Bridgy sends one when somebody likes, boosts or replies to that post, so nothing appears until someone responds. If you want to see it working without waiting, like your own post from a second account.
