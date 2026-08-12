@@ -188,7 +188,7 @@ lexxy-toolbar {
 /* Minimal Toolbar Buttons Hidden      */
 /* ================================== */
 .lexxy-minimal lexxy-toolbar {
-  button:is([name="quote"], [name="code"], [name="table"], [name="divider"], [name="image"], [name="file"], [name="unordered-list"], [name="ordered-list"]),
+  button:is([name="quote"], [name="code"], [name="table"], [name="divider"], [name="image"], [name="file"], [name="unordered-list"], [name="ordered-list"], [name="footnote"]),
   :is(lexxy-toolbar-dropdown, lexxy-highlight-dropdown):has(> .lexxy-editor__toolbar-button:is([name="format"], [name="highlight"])) {
     display: none;
   }
@@ -298,4 +298,22 @@ lexxy-link-dropdown {
 .lexxy-callout-types {
   display: flex;
   gap: var(--lexxy-toolbar-gap);
+}
+
+/* ================================== */
+/* Footnote Markers                   */
+/* ================================== */
+
+/* The marker is an anchor in both the editor and the published post, so a blog picks
+   it up through the theme's link colour. In the editor it takes the link treatment
+   without the link colour: Lexxy's accent would put a lone blue number in the middle
+   of a paragraph, where semi-bold and underlined reads as a reference just as well.
+
+   Colour, weight and decoration only, deliberately. A background, padding or paint
+   layer of its own would sit exactly where the caret is drawn and hide it, which is
+   what made typing after a marker impossible. */
+.lexxy-editor__content sup[data-footnote-ref] a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
 }

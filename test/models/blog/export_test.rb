@@ -140,4 +140,25 @@ end</pre>
       assert_includes content, 'puts "world"'
     end
   end
+
+  test "markdown export restores footnote syntax" do
+    post = @blog.posts.new(title: "Footnote Test")
+    post.content = ActionText::Content.new(<<~HTML)
+      <p>Some text<sup data-footnote-ref="1" id="fnref-1"><a href="#fn-1">1</a></sup>.</p>
+      <ol data-footnotes><li id="fn-1"><p>The note.</p></li></ol>
+    HTML
+    post.save!
+
+    export = Blog::Export.create!(blog: @blog, format: :markdown)
+
+    Dir.mktmpdir do |dir|
+      export.send(:export_posts, dir)
+
+      content = File.read(File.join(dir, "#{post.slug}.md"))
+
+      assert_includes content, "Some text[^1]."
+      assert_includes content, "[^1]: The note."
+      assert_not_includes content, "<sup"
+    end
+  end
 end

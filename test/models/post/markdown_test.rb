@@ -179,4 +179,84 @@ class Post::MarkdownTest < ActiveSupport::TestCase
     assert_includes html, %(<aside data-callout="note">)
     assert_includes html, %(<p data-callout-title>Bogus</p>)
   end
+
+  test "renders a footnote reference and its note" do
+    _attrs, html = Post::Markdown.render("Some text[^1].\n\n[^1]: The note.")
+
+    assert_includes html, %(<sup data-footnote-ref="1" id="fnref-1"><a href="#fn-1">1</a></sup>)
+    assert_includes html, %(<ol data-footnotes>)
+    assert_includes html, %(<li id="fn-1"><p>The note.</p>)
+  end
+
+  test "numbers footnotes in the order they are referenced" do
+    _attrs, html = Post::Markdown.render("First[^b] then[^a].\n\n[^a]: Note A.\n[^b]: Note B.")
+    doc = Nokogiri::HTML::DocumentFragment.parse(html)
+
+    assert_equal [ "1", "2" ], doc.css("sup[data-footnote-ref]").map(&:text)
+    assert_equal [ "Note B.", "Note A." ], doc.css("ol[data-footnotes] li p").map(&:text)
+  end
+
+  test "renders markdown inside a footnote" do
+    _attrs, html = Post::Markdown.render("Text[^1].\n\n[^1]: A **bold** note.")
+    assert_includes html, "<strong>bold</strong>"
+  end
+
+  test "keeps every paragraph of a multi paragraph footnote" do
+    _attrs, html = Post::Markdown.render("Text[^1].\n\n[^1]: First para.\n\n    Second para.")
+    doc = Nokogiri::HTML::DocumentFragment.parse(html)
+
+    assert_equal [ "First para.", "Second para." ], doc.css("ol[data-footnotes] li p").map(&:text)
+  end
+
+  test "renders a footnote referenced twice as two markers sharing one note" do
+    _attrs, html = Post::Markdown.render("Once[^1] and again[^1].\n\n[^1]: The shared note.")
+    doc = Nokogiri::HTML::DocumentFragment.parse(html)
+
+    assert_equal 2, doc.css("sup[data-footnote-ref='1']").size
+    assert_equal 1, doc.css("ol[data-footnotes] li").size
+  end
+
+  test "leaves a reference with no definition as written" do
+    _attrs, html = Post::Markdown.render("Text[^missing] here.")
+
+    assert_includes html, "[^missing]"
+    assert_not_includes html, "data-footnote-ref"
+  end
+
+  test "drops a definition that is never referenced" do
+    _attrs, html = Post::Markdown.render("Just text.\n\n[^unused]: Never referenced.")
+
+    assert_not_includes html, "data-footnotes"
+    assert_not_includes html, "Never referenced"
+  end
+
+  test "renders a footnote inside a callout" do
+    _attrs, html = Post::Markdown.render("> [!note] Heads up\n> Body[^1].\n\n[^1]: The note.")
+    doc = Nokogiri::HTML::DocumentFragment.parse(html)
+
+    assert_equal 1, doc.css("aside[data-callout] sup[data-footnote-ref]").size
+    assert_equal 1, doc.css("ol[data-footnotes] li").size
+  end
+
+  test "leaves an ordinary numbered list alone" do
+    _attrs, html = Post::Markdown.render("1. one\n2. two")
+
+    assert_includes html, "<ol>"
+    assert_not_includes html, "data-footnotes"
+  end
+
+  test "footnote attributes survive sanitizing" do
+    _attrs, html = Post::Markdown.render("Text[^1].\n\n[^1]: The note.")
+    rendered = ActionText::Content.new(html).to_rendered_html_with_layout
+
+    assert_includes rendered, %(data-footnote-ref="1")
+    assert_includes rendered, %(id="fnref-1")
+    assert_includes rendered, %(id="fn-1")
+    assert_includes rendered, "data-footnotes"
+
+    sanitized = Html::Sanitize.new.transform(html)
+    assert_includes sanitized, %(data-footnote-ref="1")
+    assert_includes sanitized, %(id="fn-1")
+    assert_includes sanitized, "data-footnotes"
+  end
 end

@@ -28,4 +28,6 @@ The plugin reads optional YAML frontmatter (`title`, `slug`, `tags`, `published_
 
 Obsidian's callout syntax is supported, so `> [!note] Title` publishes as a styled callout rather than a plain quote. See [Callouts](callouts.md).
 
+Footnotes are supported too, so `[^1]` markers and their definitions publish as a numbered list at the foot of the post. See [Footnotes](footnotes.md).
+
 Full details are [on the plugin home page](https://community.obsidian.md/plugins/pagecord).
