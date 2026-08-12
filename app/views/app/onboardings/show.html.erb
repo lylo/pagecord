@@ -65,7 +65,7 @@
           autocorrect: "on",
           autocapitalize: "sentences",
           attachments: false,
-          data: { controller: "autogrow", subscribed: false } %>
+          data: { subscribed: false } %>
 
         <div id="bio_error" class="field-error"><%= render "bio_error" if @blog.errors[:bio].any? %></div>
       </fieldset>
