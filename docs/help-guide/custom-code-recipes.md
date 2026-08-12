@@ -223,6 +223,44 @@ if (!window.webmentionsReady) {
 </script>
 ```
 
+## A reading progress bar
+
+Show a bar at the top of the page that shows how far the reader has scrolled down. This goes in **Body code**:
+
+```javascript
+<script>
+if (!window.readingProgressReady) {
+  window.readingProgressReady = true;
+
+  // Which page types get a progress bar: "post", "page", "home-page", "index"
+  const showOn = ["post", "page"];
+
+  const bar = document.createElement("div");
+  bar.className = "reading-progress";
+  bar.style.cssText = "position:fixed;top:0;left:0;width:100%;height:4px;z-index:100;" +
+    "background:var(--color-accent);transform:scaleX(0);transform-origin:left;pointer-events:none";
+
+  function update() {
+    // Turbo swaps the whole body, so the bar needs re-attaching after a visit
+    if (!showOn.includes(document.body.dataset.pageType)) {
+      if (bar.isConnected) bar.remove();
+      return;
+    }
+    if (!bar.isConnected) document.body.append(bar);
+
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollable > 0 ? window.scrollY / scrollable : 0;
+    bar.style.transform = "scaleX(" + Math.min(1, Math.max(0, progress)) + ")";
+  }
+
+  addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update);
+  document.addEventListener("turbo:load", update);
+  update();
+}
+</script>
+```
+
 It asks for the canonical address of the post, which is what other sites link to, and adds nothing at all when there are no mentions yet. Some mentions arrive without an author name, so those fall back to the name of the site they came from. Repeat mentions from the same person are counted once, and only the first ten are named.
 
 Note that the names are added to the page one node at a time rather than with `innerHTML`. They come from other people's websites, so treating them as HTML would let someone else run code on your blog. It's worth keeping that shape if you adapt this.
