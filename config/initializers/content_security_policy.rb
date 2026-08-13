@@ -1,9 +1,17 @@
 # config/initializers/content_security_policy.rb
+#
+# This is the app-side policy (dashboard, settings, admin, marketing).
+# Public blog pages get a permissive policy in Blogs::BaseController instead,
+# because custom code means readers can be served any https script or iframe.
+# The embed hosts below are still needed here for the post preview.
 
 Rails.application.configure do
   config.content_security_policy do |policy|
     # Base policy
     policy.default_src :self
+
+    # A rogue <base> tag would rewrite every relative URL on the page
+    policy.base_uri :self
 
     # Fonts
     policy.font_src :self, :https, :data
@@ -55,6 +63,7 @@ Rails.application.configure do
                      "*.bandcamp.com",
                      "https://strava-embeds.com",
                      "https://share.transistor.fm",
+                     "https://embed.tidal.com",
                      "https://embed.bsky.app",
                      "https://paddle.com",
                      "*.paddle.com"
