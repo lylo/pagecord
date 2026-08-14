@@ -62,7 +62,7 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     get robots_path
     assert_response :success
     assert_equal "text/plain; charset=utf-8", @response.content_type
-    assert_includes @response.body, "Blog robots.txt for Pagecord"
+    assert_includes @response.body, "Marketing site robots.txt for Pagecord"
     assert_includes @response.body, "sitemap.xml"
     refute_includes @response.body, "Disallow"
   end
