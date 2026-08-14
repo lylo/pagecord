@@ -1,5 +1,8 @@
 <% content_for(:title, "Supporters – Pagecord") %>
 <% content_for(:meta_description, "A list of the generous people who go the extra mile to support Pagecord's independence") %>
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "Pagecord Supporters") %>
+<% end %>
 
 <div class="md:mt-4 mb-8 mx-auto max-w-2xl w-full px-4">
   <h1 class="source-serif font-semibold text-center text-4xl md:text-5xl tracking-tight">

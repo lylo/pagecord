@@ -1,5 +1,8 @@
 <% content_for(:title, "Spotlight – Pagecord") %>
 <% content_for(:meta_description, "Spotlight surfaces trending and recent posts from independent bloggers on Pagecord.") %>
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "Pagecord Spotlight") %>
+<% end %>
 <% content_for(:head) do %>
   <%= tag :link, rel: "alternate", type: "application/rss+xml", title: "Pagecord Spotlight", href: spotlight_trending_feed_url %>
 <% end %>
