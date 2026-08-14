@@ -1,0 +1,50 @@
+<% content_for(:title, "Supporters – Pagecord") %>
+<% content_for(:meta_description, "A list of the generous people who go the extra mile to support Pagecord's independence") %>
+
+<div class="md:mt-4 mb-8 mx-auto max-w-2xl w-full px-4">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-5xl tracking-tight">
+    Supporters
+  </h1>
+
+  <div class="mt-4 flex flex-col items-center gap-2 text-center text-slate-600 dark:text-slate-400">
+    <p>A showcase of the bloggers who go the extra mile to keep Pagecord independent.</p>
+  </div>
+
+  <p class="mt-8 leading-relaxed text-slate-800 dark:text-slate-200">
+    Pagecord is funded entirely by its Premium subscribers – thank you so much! Supporters are customers who choose
+    to pay a bit more for their subscription each year, simply to back Pagecord's development. They don't get additional features,
+    just a huge thank you and a special mention on this page. It's super-kind, so please take a
+    couple of minutes to check out their blogs!
+  </p>
+
+  <ul class="mt-10 md:px-20">
+    <% @blogs.each do |blog| %>
+      <li class="py-4">
+        <a href="<%= blog_home_url(blog) %>" target="_blank" class="group flex items-center gap-x-3">
+          <%= render "app/shared/blog_avatar", blog: blog %>
+          <div class="min-w-0">
+            <div class="font-medium text-slate-900 dark:text-slate-100 group-hover:text-[#4fbd9c] transition-colors"><%= blog.display_name %></div>
+            <div class="text-sm text-slate-400 dark:text-slate-500 truncate"><%= blog.host %></div>
+          </div>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+
+  <p class="mt-4 md:px-20 text-sm text-slate-400 dark:text-slate-500">
+    <em>(This list is in no particular order and it shuffles occasionally).</em>
+  </p>
+
+  <div class="mt-12">
+    <h2 class="source-serif font-semibold text-center text-2xl md:text-3xl tracking-tight">Consider becoming a supporter</h2>
+    <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-400">
+      The Supporter plan costs $<%= localised_price(:supporter) %>/year. It helps to keep Pagecord independent,
+      and the general price as low as possible. You can upgrade to Supporter status at any time from <%= link_to "your subscription settings", app_settings_subscriptions_path, class: "font-medium text-slate-700 dark:text-slate-300 hover:text-[#4fbd9c] transition-colors underline" %>.
+    </p>
+    <div class="mt-6 text-center">
+      <%= link_to new_signup_path, class: "inline-flex font-medium px-6 py-3 rounded-xl shadow-sm btn-primary text-lg" do %>
+        Create a Pagecord account for free!
+      <% end %>
+    </div>
+  </div>
+</div>
