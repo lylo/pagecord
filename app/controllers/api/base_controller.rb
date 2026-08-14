@@ -81,7 +81,7 @@ class Api::BaseController < ActionController::API
         ActionText::Fragment.wrap(
           attachment_preview_node(
             blob,
-            Rails.application.routes.url_helpers.rails_blob_url(blob, only_path: true),
+            attachment_url(blob),
             attributes: attachment_preview_attributes_from(node)
           )
         ).to_html.then { |attachment_html| Nokogiri::HTML::DocumentFragment.parse(attachment_html).children.first }
@@ -114,6 +114,22 @@ class Api::BaseController < ActionController::API
 
     def set_pagination_headers(pagy)
       response.headers.merge!(pagy.headers_hash(headers_map: { page: nil, limit: nil, count: "X-Total-Count", pages: nil }))
+    end
+
+    # The editor renders a previewable attachment as an <img> pointed at this url,
+    # so a PDF needs its first-page representation here rather than the file
+    # itself, which would just fail to load and drop back to a plain file chip.
+    # Same size lexxy uses, so API-created attachments match editor-created ones.
+    def attachment_url(blob)
+      url_helpers = Rails.application.routes.url_helpers
+
+      if blob.previewable?
+        url_helpers.rails_representation_path(
+          blob.preview(resize_to_limit: ActiveStorage::BlobWithPreviewUrl::PREVIEW_SIZE), only_path: true
+        )
+      else
+        url_helpers.rails_blob_url(blob, only_path: true)
+      end
     end
 
     def attachment_preview_attributes_from(node)
