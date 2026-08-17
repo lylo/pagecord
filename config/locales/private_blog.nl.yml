@@ -1,5 +1,5 @@
 nl:
-  unlock:
+  private_blog:
     intro: "Voer het wachtwoord in om deze blog te lezen"
     placeholder: "Wachtwoord"
     submit: "Verzenden"

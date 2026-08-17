@@ -605,9 +605,9 @@ footer.blog-footer #brand svg {
     }
   }
 
-  /* Password gate. None of the blog's chrome renders here, so the box is the
-     whole page and sits in the middle of it. */
-  .form.blog-gate {
+  /* None of the blog's chrome renders here, so the box is the whole page and
+     sits in the middle of it. */
+  .form.private-blog-login {
     padding: 0;
     background-color: transparent;
     min-height: 70dvh;

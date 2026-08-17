@@ -1,5 +1,5 @@
 ja:
-  unlock:
+  private_blog:
     intro: "このブログを読むにはパスワードを入力してください"
     placeholder: "パスワード"
     submit: "送信"

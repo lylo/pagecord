@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Blogs::UnlockControllerTest < ActionDispatch::IntegrationTest
+class Blogs::AccessControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
     host_subdomain! @blog.subdomain
@@ -14,14 +14,14 @@ class Blogs::UnlockControllerTest < ActionDispatch::IntegrationTest
   end
 
   # The gate renders over the requested page rather than redirecting, so the
-  # visitor keeps their URL and never sees /unlock.
+  # visitor keeps their URL and never sees the access path.
   test "protected blog shows the gate in place of the index" do
     @blog.update!(password: "letmein")
 
     get blog_posts_path
 
     assert_response :unauthorized
-    assert_select "form[action=?]", blog_unlock_path
+    assert_select "form[action=?]", blog_access_path
   end
 
   test "protected blog shows the gate in place of a post" do
@@ -35,31 +35,31 @@ class Blogs::UnlockControllerTest < ActionDispatch::IntegrationTest
     assert_no_match post.title, response.body
   end
 
-  test "correct password unlocks the blog for subsequent requests" do
+  test "correct password grants access for subsequent requests" do
     @blog.update!(password: "letmein")
 
-    post blog_unlock_path, params: { password: "letmein", return_to: "/" }
+    post blog_access_path, params: { password: "letmein", return_to: "/" }
     assert_redirected_to "/"
 
     get blog_posts_path
     assert_response :success
   end
 
-  test "wrong password returns to the page and does not unlock" do
+  test "wrong password returns to the page and grants nothing" do
     @blog.update!(password: "letmein")
 
-    post blog_unlock_path, params: { password: "nope", return_to: "/" }
+    post blog_access_path, params: { password: "nope", return_to: "/" }
 
     assert_redirected_to "/"
-    assert_equal I18n.t("unlock.incorrect"), flash[:alert]
+    assert_equal I18n.t("private_blog.incorrect"), flash[:alert]
 
     get blog_posts_path
     assert_response :unauthorized
   end
 
-  test "changing the password invalidates an existing unlock" do
+  test "changing the password invalidates existing access" do
     @blog.update!(password: "letmein")
-    post blog_unlock_path, params: { password: "letmein", return_to: "/" }
+    post blog_access_path, params: { password: "letmein", return_to: "/" }
 
     get blog_posts_path
     assert_response :success
@@ -70,7 +70,7 @@ class Blogs::UnlockControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
-  test "removing the password unlocks the blog for everyone" do
+  test "removing the password opens the blog to everyone" do
     @blog.update!(password: "letmein")
     @blog.update!(use_password: false)
 
@@ -79,27 +79,27 @@ class Blogs::UnlockControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "unlock create only redirects to local paths" do
+  test "granting access only redirects to local paths" do
     @blog.update!(password: "letmein")
 
     [ "https://evil.example.com", "//evil.example.com", "/\\evil.example.com" ].each do |hostile|
-      post blog_unlock_path, params: { password: "letmein", return_to: hostile }
+      post blog_access_path, params: { password: "letmein", return_to: hostile }
 
       assert_redirected_to "/"
     end
   end
 
-  test "unlock returns the visitor to the page they asked for" do
+  test "access returns the visitor to the page they asked for" do
     @blog.update!(password: "letmein")
     post = posts(:one)
 
-    post blog_unlock_path, params: { password: "letmein", return_to: "/#{post.slug}" }
+    post blog_access_path, params: { password: "letmein", return_to: "/#{post.slug}" }
 
     assert_redirected_to "/#{post.slug}"
   end
 
-  test "unlocking an unprotected blog is a no-op rather than an error" do
-    post blog_unlock_path, params: { password: "anything", return_to: "/" }
+  test "posting access to an unprotected blog is a no-op rather than an error" do
+    post blog_access_path, params: { password: "anything", return_to: "/" }
 
     assert_redirected_to "/"
   end
@@ -116,9 +116,9 @@ class Blogs::UnlockControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?]", email_subscribers_path, false
   end
 
-  test "an unlocked visitor can subscribe by email" do
+  test "a visitor with access can subscribe by email" do
     @blog.update!(password: "letmein", email_subscriptions_enabled: true)
-    post blog_unlock_path, params: { password: "letmein", return_to: "/" }
+    post blog_access_path, params: { password: "letmein", return_to: "/" }
 
     assert_difference -> { @blog.email_subscribers.count }, 1 do
       post email_subscribers_url(subdomain: @blog.subdomain),
@@ -130,7 +130,7 @@ class Blogs::UnlockControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Confirmation and unsubscribe links arrive by email, so they have to work
-  # without the unlock cookie – one-click unsubscribe especially.
+  # without the access cookie – one-click unsubscribe especially.
   test "subscription links stay reachable while the blog is locked" do
     @blog.update!(password: "letmein")
     subscriber = email_subscribers(:two)
@@ -166,7 +166,7 @@ class Blogs::UnlockControllerTest < ActionDispatch::IntegrationTest
   end
 
   # The token rides in a URL, so it must never be a way into the blog itself.
-  test "the feed token does not unlock anything but the feed" do
+  test "the feed token opens nothing but the feed" do
     @blog.update!(password: "letmein")
 
     get blog_posts_path(key: @blog.feed_token)
@@ -184,9 +184,9 @@ class Blogs::UnlockControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[type='application/rss+xml']", false
   end
 
-  test "an unlocked visitor gets a feed link that works in a reader" do
+  test "a visitor with access gets a feed link that works in a reader" do
     @blog.update!(password: "letmein")
-    post blog_unlock_path, params: { password: "letmein", return_to: "/" }
+    post blog_access_path, params: { password: "letmein", return_to: "/" }
 
     get blog_posts_path
 

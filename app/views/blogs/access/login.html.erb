@@ -1,0 +1,15 @@
+<div class="form private-blog-login">
+  <p><%= t("private_blog.intro") %></p>
+
+  <%= form_with url: blog_access_path, method: :post do |form| %>
+    <%= hidden_field_tag :return_to, request.fullpath %>
+
+    <%= form.password_field :password,
+          placeholder: t("private_blog.placeholder"),
+          autocomplete: "current-password",
+          autofocus: true,
+          required: true %>
+
+    <%= form.submit t("private_blog.submit") %>
+  <% end %>
+</div>

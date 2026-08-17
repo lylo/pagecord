@@ -1,5 +1,5 @@
 es:
-  unlock:
+  private_blog:
     intro: "Introduce la contraseña para leer este blog"
     placeholder: "Contraseña"
     submit: "Enviar"

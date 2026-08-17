@@ -1,18 +1,20 @@
-class Blogs::UnlockController < Blogs::BaseController
-  UNLOCK_DURATION = 30.days
+class Blogs::AccessController < Blogs::BaseController
+  ACCESS_DURATION = 30.days
 
-  skip_before_action :require_blog_password
+  skip_before_action :require_blog_access
   rate_limit to: 10, within: 1.minute, only: :create
 
-  # Both outcomes go back where the visitor started, so the gate is the only
-  # thing they ever see at their own URL and /unlock never reaches the address
-  # bar.
   def create
     if @blog.password_protected? && @blog.authenticate(params[:password])
-      cookies.encrypted[:blog_unlock] = { value: @blog.password_digest, expires: UNLOCK_DURATION, httponly: true }
+      cookies.encrypted[ACCESS_COOKIE] = {
+        value: @blog.password_digest,
+        expires: ACCESS_DURATION,
+        httponly: true,
+        secure: Rails.application.config.force_ssl
+      }
       redirect_to safe_return_to
     else
-      redirect_to safe_return_to, alert: t("unlock.incorrect")
+      redirect_to safe_return_to, alert: t("private_blog.incorrect")
     end
   end
 

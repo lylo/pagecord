@@ -24,12 +24,13 @@ class Blog::PasswordProtectedTest < ActiveSupport::TestCase
     assert @blog.authenticate("letmein")
   end
 
-  test "unticking the box removes the password" do
+  test "unticking the box clears the digest from the database" do
     @blog.update!(password: "letmein")
 
     @blog.update!(use_password: false)
 
-    assert_not @blog.reload.password_protected?
+    assert_nil @blog.reload.password_digest
+    assert_not @blog.password_protected?
   end
 
   test "ticking the box without a password is rejected" do
@@ -37,6 +38,22 @@ class Blog::PasswordProtectedTest < ActiveSupport::TestCase
 
     assert_not @blog.valid?
     assert_equal "Password can't be blank", @blog.errors.full_messages_for(:password).first
+  end
+
+  test "a password has to be long enough to be worth having" do
+    @blog.password = "a" * (Blog::PasswordProtected::PASSWORD_RANGE.min - 1)
+    assert_not @blog.valid?
+
+    @blog.password = "a" * Blog::PasswordProtected::PASSWORD_RANGE.min
+    assert @blog.valid?
+  end
+
+  # bcrypt silently truncates past 72 bytes, which would quietly make two
+  # different long passwords interchangeable.
+  test "a password has to be short enough for bcrypt" do
+    @blog.password = "a" * (Blog::PasswordProtected::PASSWORD_RANGE.max + 1)
+
+    assert_not @blog.valid?
   end
 
   test "ticking the box leaves an existing password alone" do
@@ -87,11 +104,11 @@ class Blog::PasswordProtectedTest < ActiveSupport::TestCase
     assert_not @blog.valid_feed_token?(was)
   end
 
-  test "publicly_viewable excludes protected blogs" do
-    assert_includes Blog.publicly_viewable, @blog
+  test "not_password_protected excludes protected blogs" do
+    assert_includes Blog.not_password_protected, @blog
 
     @blog.update!(password: "letmein")
 
-    assert_not_includes Blog.publicly_viewable, @blog
+    assert_not_includes Blog.not_password_protected, @blog
   end
 end

@@ -1,5 +1,5 @@
 fi:
-  unlock:
+  private_blog:
     intro: "Syötä salasana lukeaksesi tätä blogia"
     placeholder: "Salasana"
     submit: "Lähetä"

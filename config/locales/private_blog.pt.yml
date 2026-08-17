@@ -1,5 +1,5 @@
 pt:
-  unlock:
+  private_blog:
     intro: "Introduza a palavra-passe para ler este blog"
     placeholder: "Palavra-passe"
     submit: "Enviar"

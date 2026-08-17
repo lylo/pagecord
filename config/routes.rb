@@ -303,7 +303,7 @@ Rails.application.routes.draw do
     get "/", to: "blogs/posts#index", as: :blog_posts
     get "/posts", to: "blogs/posts#posts_list", as: :blog_posts_list
     get "/search", to: "blogs/searches#show", as: :blog_search
-    post "/unlock", to: "blogs/unlock#create", as: :blog_unlock
+    post "/access", to: "blogs/access#create", as: :blog_access
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")

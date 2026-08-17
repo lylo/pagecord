@@ -3,10 +3,15 @@ class Blogs::BaseController < ApplicationController
 
   layout "blog"
 
+  # Blog owners can run their own JavaScript on *.pagecord.com, so the __Host-
+  # prefix is what stops one blog writing an access cookie that reaches another.
+  # It demands the Secure flag, so plain-HTTP development keeps the bare name.
+  ACCESS_COOKIE = Rails.application.config.force_ssl ? "__Host-blog_access" : "blog_access"
+
   blog_content_security_policy
 
   skip_before_action :domain_check
-  before_action :load_blog, :validate_user, :enforce_custom_domain, :require_blog_password, :set_locale, :reject_malicious_params
+  before_action :load_blog, :validate_user, :enforce_custom_domain, :require_blog_access, :set_locale, :reject_malicious_params
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_blog_not_found
   rescue_from ActionController::TooManyRequests, with: :render_too_many_requests
@@ -42,21 +47,20 @@ class Blogs::BaseController < ApplicationController
       redirect_to_app_home unless @blog.user&.verified? && @blog.user&.kept?
     end
 
-    # The gate renders over whatever was asked for rather than redirecting, so
-    # the visitor keeps the URL they came for and /unlock stays a POST-only
-    # detail. Views read @unlocked to decide whether any of the blog may show.
-    def require_blog_password
-      if blog_readable?
-        @unlocked = true
+    # The login page renders over whatever was asked for rather than
+    # redirecting, so the visitor keeps the URL they came for.
+    def require_blog_access
+      if blog_access_granted?
+        @blog&.access_granted = true
       else
-        render_blog_gate
+        render_private_blog_login
       end
     end
 
-    def blog_readable?
+    def blog_access_granted?
       return true unless @blog&.password_protected?
 
-      cookies.encrypted[:blog_unlock] == @blog.password_digest || feed_key_request?
+      cookies.encrypted[ACCESS_COOKIE] == @blog.password_digest || feed_key_request?
     end
 
     # The feed token travels in a URL, where it's far easier to leak than the
@@ -65,9 +69,9 @@ class Blogs::BaseController < ApplicationController
       request.format.rss? && @blog.valid_feed_token?(params[:key])
     end
 
-    def render_blog_gate
+    def render_private_blog_login
       if request.format.html?
-        render "blogs/unlock/gate", status: :unauthorized
+        render "blogs/access/login", status: :unauthorized
       else
         head :unauthorized
       end
