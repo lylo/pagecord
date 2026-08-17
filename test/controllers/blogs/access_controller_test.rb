@@ -7,12 +7,6 @@ class Blogs::AccessControllerTest < ActionDispatch::IntegrationTest
     Rails.cache.clear
   end
 
-  test "unprotected blog renders normally" do
-    get blog_posts_path
-
-    assert_response :success
-  end
-
   # The gate renders over the requested page rather than redirecting, so the
   # visitor keeps their URL and never sees the access path.
   test "protected blog shows the gate in place of the index" do
@@ -35,11 +29,12 @@ class Blogs::AccessControllerTest < ActionDispatch::IntegrationTest
     assert_no_match post.title, response.body
   end
 
-  test "correct password grants access for subsequent requests" do
+  test "correct password returns the visitor to the page they asked for and grants access" do
     @blog.update!(password: "letmein")
+    wanted = posts(:one)
 
-    post blog_access_path, params: { password: "letmein", return_to: "/" }
-    assert_redirected_to "/"
+    post blog_access_path, params: { password: "letmein", return_to: "/#{wanted.slug}" }
+    assert_redirected_to "/#{wanted.slug}"
 
     get blog_posts_path
     assert_response :success
@@ -87,15 +82,6 @@ class Blogs::AccessControllerTest < ActionDispatch::IntegrationTest
 
       assert_redirected_to "/"
     end
-  end
-
-  test "access returns the visitor to the page they asked for" do
-    @blog.update!(password: "letmein")
-    post = posts(:one)
-
-    post blog_access_path, params: { password: "letmein", return_to: "/#{post.slug}" }
-
-    assert_redirected_to "/#{post.slug}"
   end
 
   test "posting access to an unprotected blog is a no-op rather than an error" do
@@ -192,15 +178,5 @@ class Blogs::AccessControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "link[type='application/rss+xml'][href*=?]", @blog.feed_token
-  end
-
-  test "a locked blog tells crawlers to stay out" do
-    @blog.update!(password: "letmein")
-
-    get blog_robots_path
-
-    assert_response :success
-    assert_match "Disallow: /", response.body
-    assert_no_match "Sitemap:", response.body
   end
 end

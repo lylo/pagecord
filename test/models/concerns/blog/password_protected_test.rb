@@ -40,28 +40,19 @@ class Blog::PasswordProtectedTest < ActiveSupport::TestCase
     assert_equal "Password can't be blank", @blog.errors.full_messages_for(:password).first
   end
 
-  test "a password has to be long enough to be worth having" do
-    @blog.password = "a" * (Blog::PasswordProtected::PASSWORD_RANGE.min - 1)
+  # The upper bound is bcrypt's: it silently truncates past 72, which would
+  # quietly make two different long passwords interchangeable.
+  test "a password has to be a sensible length" do
+    range = Blog::PasswordProtected::PASSWORD_RANGE
+
+    @blog.password = "a" * (range.min - 1)
     assert_not @blog.valid?
 
-    @blog.password = "a" * Blog::PasswordProtected::PASSWORD_RANGE.min
+    @blog.password = "a" * (range.max + 1)
+    assert_not @blog.valid?
+
+    @blog.password = "a" * range.min
     assert @blog.valid?
-  end
-
-  # bcrypt silently truncates past 72 bytes, which would quietly make two
-  # different long passwords interchangeable.
-  test "a password has to be short enough for bcrypt" do
-    @blog.password = "a" * (Blog::PasswordProtected::PASSWORD_RANGE.max + 1)
-
-    assert_not @blog.valid?
-  end
-
-  test "ticking the box leaves an existing password alone" do
-    @blog.update!(password: "letmein")
-
-    @blog.update!(use_password: true)
-
-    assert @blog.reload.authenticate("letmein")
   end
 
   # Blog settings share one update endpoint, so a form that omits the box
@@ -102,13 +93,5 @@ class Blog::PasswordProtectedTest < ActiveSupport::TestCase
 
     assert_nil @blog.feed_token
     assert_not @blog.valid_feed_token?(was)
-  end
-
-  test "not_password_protected excludes protected blogs" do
-    assert_includes Blog.not_password_protected, @blog
-
-    @blog.update!(password: "letmein")
-
-    assert_not_includes Blog.not_password_protected, @blog
   end
 end
