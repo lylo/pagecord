@@ -8,7 +8,7 @@
 
   <% unless Current.user.subscribed? %>
     <%= callout(:info) do %>
-      <%= link_to "Subscribe to Pagecord Premium", app_settings_subscriptions_path, class: "underline font-medium" %> to add up to <%= Blog::MAX_BLOGS_PAID %> blogs to your account. Handy for a separate photo blog, microblog, or a private journal!
+      <%= link_to "Subscribe to Pagecord Premium", app_settings_subscriptions_path, class: "underline font-medium" %> to add a second blog to your account. Handy for a separate photo blog or microblog!
     <% end %>
   <% end %>
 

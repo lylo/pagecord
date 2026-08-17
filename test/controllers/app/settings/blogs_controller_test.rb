@@ -287,6 +287,8 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should set a blog password" do
+    @user.update!(features: [ "private_blogs" ])
+
     patch app_settings_blog_url(@blog), params: { blog: { use_password: "1", password: "letmein" } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
@@ -295,6 +297,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should remove a blog password" do
+    @user.update!(features: [ "private_blogs" ])
     @blog.update!(password: "letmein")
 
     patch app_settings_blog_url(@blog), params: { blog: { use_password: "0" } }, as: :turbo_stream
@@ -304,6 +307,8 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should reject password protection with no password" do
+    @user.update!(features: [ "private_blogs" ])
+
     patch app_settings_blog_url(@blog), params: { blog: { use_password: "1", password: "" } }, as: :turbo_stream
 
     assert_response :unprocessable_entity

@@ -14,7 +14,7 @@ attachments:
     sgid: "eyJfcmFpbHMiOnsiZGF0YSI6ImdpZDovL3BhZ2Vjb3JkL0FjdGl2ZVN0b3JhZ2U6OkJsb2IvMjIwNjk_ZXhwaXJlc19pbiIsInB1ciI6ImF0dGFjaGFibGUifX0=--c1d7b02ca5b5fe85decd0fa6984cad4cb017462c"
 ---
 
-Premium subscribers can run three blogs from the same Pagecord account. This is useful if you want separate spaces for different projects, audiences, or writing styles – or a [private blog](private-blogs.md) just for family.
+Premium subscribers can run two blogs from the same Pagecord account. This is useful if you want separate spaces for different projects, audiences, or writing styles.
 
 ## Opening Manage blogs
 
@@ -60,6 +60,6 @@ You must always keep at least one blog on your account.
 
 ## Blog limits
 
-Free accounts can have one blog. Premium subscribers can have three blogs.
+Free accounts can have one blog. Premium subscribers can have two blogs.
 
-If you are on the free plan, upgrade to Premium from **Settings** → **Billing** to add another blog.
+If you are on the free plan, upgrade to Premium from **Settings** → **Billing** to add a second blog.

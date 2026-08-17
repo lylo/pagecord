@@ -36,12 +36,6 @@ Pages are for content that lives outside your blog feed – like an About page, 
 - [Search](blog-search.md)
 - [Dynamic variables for pages](dynamic-variables-for-pages.md)
 
-## Privacy
-
-Keep a blog to yourself, or to the people you choose.
-
-- [Private blogs](private-blogs.md)
-
 ## Customisation
 
 Make your blog your own. Choose a theme, tweak colours, change layouts, add custom CSS, and pick the perfect font.
