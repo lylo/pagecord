@@ -90,7 +90,7 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
     return
   end
 
-  check_import_allowed!(blog)
+  check_import_allowed!(blog, dry_run: dry_run)
 
   unless File.file?(path)
     puts "File not found: #{path}"

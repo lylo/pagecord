@@ -13,7 +13,7 @@ def import_markdown(path, blog_subdomain, assets_root: nil, dry_run: false)
     return
   end
 
-  check_import_allowed!(blog)
+  check_import_allowed!(blog, dry_run: dry_run)
 
   if assets_root
     puts "Using assets root: #{assets_root}"
