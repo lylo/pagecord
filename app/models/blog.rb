@@ -7,7 +7,7 @@ class Blog < ApplicationRecord
   belongs_to :user, inverse_of: :blogs
 
   MAX_BLOGS_FREE = 1
-  MAX_BLOGS_PAID = 2
+  MAX_BLOGS_PAID = 3
 
   AVATAR_CONTENT_TYPES = %w[ image/jpeg image/png image/webp ].freeze
   AVATAR_MAX_SIZE = 5.megabytes
