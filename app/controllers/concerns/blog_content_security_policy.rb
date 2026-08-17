@@ -15,7 +15,13 @@ module BlogContentSecurityPolicy
         policy.script_src  :self, :https, :unsafe_inline
         policy.style_src   :self, :https, :unsafe_inline
         policy.frame_src   :self, :https
-        policy.img_src     :self, :https, :data, :blob
+        # In development ActiveStorage URLs use the default host, a different
+        # origin to the blog subdomain
+        if Rails.env.development?
+          policy.img_src :self, :https, :data, :blob, "http://localhost:3000", "http://lvh.me:3000"
+        else
+          policy.img_src :self, :https, :data, :blob
+        end
         policy.object_src  :none
         policy.base_uri    :self
         policy.form_action :self, :https
