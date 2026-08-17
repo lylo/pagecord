@@ -66,17 +66,32 @@ class Blog::CustomCodeTest < ActiveSupport::TestCase
     assert @blog.valid?
   end
 
-  test "both fields reject content over the size limit by bytes" do
-    oversized = "é" * (Blog::CustomCode::MAX_SIZE / 2)
-    assert_equal Blog::CustomCode::MAX_SIZE, oversized.bytesize
-    assert_operator oversized.length, :<, Blog::CustomCode::MAX_SIZE
+  test "body code rejects content over its size limit by bytes" do
+    max_size = Blog::CustomCode::MAX_SIZES.fetch(:custom_body_html)
+    oversized = "é" * (max_size / 2)
+    assert_equal max_size, oversized.bytesize
+    assert_operator oversized.length, :<, max_size
 
     @blog.custom_body_html = oversized
-    assert @blog.valid?, "expected exactly MAX_SIZE bytes to be allowed"
+    assert @blog.valid?, "expected exactly #{max_size} bytes to be allowed"
 
     @blog.custom_body_html = oversized + "!"
     assert_not @blog.valid?
     assert_includes @blog.errors[:custom_body_html].first, "too large"
+  end
+
+  test "head code has a smaller size limit than body code" do
+    max_size = Blog::CustomCode::MAX_SIZES.fetch(:custom_head_html)
+    assert_operator max_size, :<, Blog::CustomCode::MAX_SIZES.fetch(:custom_body_html)
+
+    # Padded inside a <style> tag, so only the size is under test
+    @blog.custom_head_html = "<style>#{"a" * (max_size - 15)}</style>"
+    assert_equal max_size, @blog.custom_head_html.bytesize
+    assert @blog.valid?, "expected exactly #{max_size} bytes to be allowed"
+
+    @blog.custom_head_html = "<style>#{"a" * (max_size - 14)}</style>"
+    assert_not @blog.valid?
+    assert_includes @blog.errors[:custom_head_html].first, "too large"
   end
 
   test "normalises line endings and blanks out whitespace-only values" do

@@ -212,6 +212,25 @@ class BlogSpamDetectorTest < ActiveSupport::TestCase
     refute_includes prompt, "Post number #{BlogSpamDetector::POST_SAMPLE_SIZE + 1}"
   end
 
+  test "link summary counts links past the excerpt limit" do
+    filler = "<p>#{"padding " * 200}</p>"
+    @blog.posts.create!(content: %(#{filler}<p><a href="https://casino.example/bonus">deal</a></p>))
+
+    prompt = prompt_for(@blog)
+
+    assert_includes prompt, "casino.example x1"
+    refute_includes prompt, "casino.example/bonus"
+  end
+
+  test "prompt includes page content and its links" do
+    @blog.pages.create!(title: "My Links", content: '<p><a href="https://casino.example/bonus">click here</a></p>')
+
+    prompt = prompt_for(@blog)
+
+    assert_includes prompt, "My Links"
+    assert_includes prompt, "casino.example x1"
+  end
+
   test "prompt renders a blog with no posts or links" do
     blog = Blog.new(subdomain: "quiet", user: users(:joel))
     blog.save(validate: false)

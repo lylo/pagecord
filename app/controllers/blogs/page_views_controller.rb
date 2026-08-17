@@ -4,7 +4,6 @@ class Blogs::PageViewsController < Blogs::BaseController
 
   def create
     return head :no_content if params[:referrer]&.match?(%r{pagecord\.com/app})
-    return head :no_content if Current.user == @blog.user
     return head :no_content if PageView.bot_user_agent?(request.user_agent)
 
     TrackPageViewJob.perform_later(

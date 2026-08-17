@@ -92,6 +92,18 @@ class SpamDetectionCheckJobTest < ActiveSupport::TestCase
     assert_nil empty_blog.reload.spam_detection
   end
 
+  # An error is not a verdict: saving one would leave the blog looking judged and
+  # drop it out of both selection queries for good.
+  test "does not save an error result" do
+    OpenAI::Client.any_instance.stubs(:chat).raises(StandardError.new("API Error"))
+
+    assert_no_difference "SpamDetection.count" do
+      SpamDetectionCheckJob.perform_now(@blog.id)
+    end
+
+    assert_nil @blog.reload.spam_detection
+  end
+
   test "updates existing detection instead of creating new one" do
     @blog.create_spam_detection!(status: :clean, reason: "Old", detected_at: 1.day.ago)
 

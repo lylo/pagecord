@@ -8,11 +8,21 @@ class PostDigestMailerPreview < ActionMailer::Preview
 
   def individual
     blog = preview_blog
-    digest = blog.post_digests.individual.last || create_individual_digest(blog)
+    digest = digest_for_param(blog) || blog.post_digests.individual.last || create_individual_digest(blog)
     PostDigestMailer.with(digest: digest, subscriber: blog.email_subscribers.first).individual
   end
 
   private
+
+    # ?post=<token> previews a specific post rather than the latest, reusing
+    # its digest if one already exists.
+    def digest_for_param(blog)
+      return unless params[:post]
+
+      post = blog.all_posts.find_by!(token: params[:post])
+      blog.post_digests.individual.joins(:digest_posts).find_by(digest_posts: { post_id: post.id }) ||
+        PostDigest.create!(blog: blog, kind: :individual).tap { |digest| digest.digest_posts.create!(post: post) }
+    end
 
     def preview_blog
       Blog.find_by(subdomain: "joel").tap do |blog|

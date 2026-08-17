@@ -54,52 +54,50 @@
     <% end %>
   <% end %>
 
-  <% if current_features.enabled?(:custom_code) %>
-    <%= settings_section "Scripts", description: "Add code to every page of your blog, for things Pagecord doesn't do itself.", control: scripts_help do %>
-      <%= render layout: "code_field", locals: {
-            title: "Head Code", attribute: :custom_head_html, mode: "htmlmixed",
-            disabled: code_disabled, subscribe_prompt: "to add custom code to your blog." } do %>
-        <p>
-          Added just before the closing <code>&lt;head&gt;</code> tag of every page. Most people use it for third party
-          analytics, or for a verification tag another service has asked them to add.
-        </p>
+  <%= settings_section "Scripts", description: "Add code to every page of your blog, for things Pagecord doesn't do itself.", control: scripts_help do %>
+    <%= render layout: "code_field", locals: {
+          title: "Head Code", attribute: :custom_head_html, mode: "htmlmixed",
+          disabled: code_disabled, subscribe_prompt: "to add custom code to your blog." } do %>
+      <p>
+        Added just before the closing <code>&lt;head&gt;</code> tag of every page. Most people use it for third party
+        analytics, or for a verification tag another service has asked them to add.
+      </p>
 
-        <p class="text-sm text-slate-500 italic">
-          Only <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;link&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;noscript&gt;</code> and <code>&lt;template&gt;</code> tags can go here. Customer support for debugging custom code is not possible. Read <%= help_link.call("custom-code") %> to get started.
-        </p>
-      <% end %>
-
-      <%= render layout: "code_field", locals: {
-            title: "Body Code", attribute: :custom_body_html, mode: "htmlmixed",
-            disabled: code_disabled, subscribe_prompt: "to add custom code to your blog." } do %>
-        <p>
-          Added just before the closing <code>&lt;body&gt;</code> tag of every page. Use it for anything your readers can
-          see, like chat widgets and embedded forms.
-        </p>
-
-        <p class="text-sm text-slate-500 italic">
-          Any HTML can go here. Customer support for debugging custom code is not possible. Read <%= help_link.call("custom-code") %> to get started.
-        </p>
-      <% end %>
-
-      <div class="px-4 py-5 sm:px-6">
-        <%= form_with url: app_settings_custom_code_path, model: @blog,
-              data: { controller: "checkbox-auto-submit" } do |form| %>
-          <div class="flex gap-3 <%= 'opacity-50' if code_disabled %>">
-            <div class="flex h-6 shrink-0 items-center">
-              <%= styled_check_box form, :custom_code_enabled, disabled: code_disabled %>
-            </div>
-            <div>
-              <%= form.label :custom_code_enabled, "Head and body code enabled", class: "text-slate-800 dark:text-slate-100" %>
-              <p class="text-slate-500 text-sm">
-                Switch your code off without deleting it, so you can rule it out when something looks wrong on
-                your blog.
-              </p>
-            </div>
-          </div>
-        <% end %>
-      </div>
+      <p class="text-sm text-slate-500 italic">
+        Only <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;link&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;noscript&gt;</code> and <code>&lt;template&gt;</code> tags can go here. Customer support for debugging custom code is not possible. Read <%= help_link.call("custom-code") %> to get started.
+      </p>
     <% end %>
+
+    <%= render layout: "code_field", locals: {
+          title: "Body Code", attribute: :custom_body_html, mode: "htmlmixed",
+          disabled: code_disabled, subscribe_prompt: "to add custom code to your blog." } do %>
+      <p>
+        Added just before the closing <code>&lt;body&gt;</code> tag of every page. Use it for anything your readers can
+        see, like chat widgets and embedded forms.
+      </p>
+
+      <p class="text-sm text-slate-500 italic">
+        Any HTML can go here. Customer support for debugging custom code is not possible. Read <%= help_link.call("custom-code") %> to get started.
+      </p>
+    <% end %>
+
+    <div class="px-4 py-5 sm:px-6">
+      <%= form_with url: app_settings_custom_code_path, model: @blog,
+            data: { controller: "checkbox-auto-submit" } do |form| %>
+        <div class="flex gap-3 <%= 'opacity-50' if code_disabled %>">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= styled_check_box form, :custom_code_enabled, disabled: code_disabled %>
+          </div>
+          <div>
+            <%= form.label :custom_code_enabled, "Head and body code enabled", class: "text-slate-800 dark:text-slate-100" %>
+            <p class="text-slate-500 text-sm">
+              Switch your code off without deleting it, so you can rule it out when something looks wrong on
+              your blog.
+            </p>
+          </div>
+        </div>
+      <% end %>
+    </div>
   <% end %>
 </div>
 

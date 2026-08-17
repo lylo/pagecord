@@ -386,12 +386,10 @@
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           Custom CSS
         </li>
-        <% if Rails.features.enabled?(:custom_code) %>
-          <li class="flex items-center text-slate-700 dark:text-slate-300">
-            <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
-            Custom code
-          </li>
-        <% end %>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Custom code
+        </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           API, Obsidian &amp; Shortcuts
@@ -403,6 +401,10 @@
       </ul>
     </div>
   </div>
+
+  <p class="mt-8 text-center md:text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+    If you're a Pagecord super-fan and have deeper pockets, please consider becoming a <%= link_to "Supporter", supporters_path, class: "underline font-medium" %> for $<%= localised_price(:supporter) %>/year!
+  </p>
 </div>
 
 <div id="features" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200 ">
@@ -654,16 +656,14 @@
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
         </tr>
-        <% if Rails.features.enabled?(:custom_code) %>
-          <tr>
-            <td class="py-3 align-middle">
-              <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Custom code</div>
-              <div class="hidden sm:block">Add your own HTML and JavaScript to every page for third party analytics, or custom functionality 🛠️</div>
-            </td>
-            <td></td>
-            <td class="text-center align-middle text-xl">✅</td>
-          </tr>
-        <% end %>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Custom code</div>
+            <div class="hidden sm:block">Add your own HTML and JavaScript to every page for third party analytics, or custom functionality 🛠️</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
 
         <tr>
           <td class="py-3 align-middle">
@@ -707,7 +707,9 @@
 <div id="walkthrough" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
   <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Watch a Pagecord walkthrough</h2>
   <p class="md:text-xl leading-relaxed mb-8">
-    Join Pagecord creator Olly for a 20-minute tour of everything Pagecord can do.
+    Join Pagecord creator Olly for a 20-minute tour of everything Pagecord can do, or work through the
+    <%= link_to "tutorial playlist", "https://www.youtube.com/playlist?list=PLWmBHyKikHFs", class: "home-link" %>
+    for shorter videos on individual features.
   </p>
   <video controls preload="none" poster="<%= asset_path("home/pagecord-walkthrough-poster.jpg") %>" class="aspect-video w-full rounded-xl shadow-lg">
     <source src="https://media.pagecord.com/pagecord-walkthrough-jan-2026.mp4" type="video/mp4">
