@@ -1,21 +1,9 @@
 class Blogs::BaseController < ApplicationController
+  include BlogContentSecurityPolicy
+
   layout "blog"
 
-  # Blog pages carry customer custom code, so a host allowlist can't work here.
-  # This policy is a floor, not a fence: any https source is fine, while data:,
-  # javascript: and plain-http vectors and <base> injection stay blocked.
-  # Enforced, unlike the app-side policy, which is still report-only.
-  content_security_policy do |policy|
-    policy.default_src :self, :https
-    policy.script_src  :self, :https, :unsafe_inline
-    policy.style_src   :self, :https, :unsafe_inline
-    policy.frame_src   :self, :https
-    policy.img_src     :self, :https, :data, :blob
-    policy.object_src  :none
-    policy.base_uri    :self
-    policy.form_action :self, :https
-  end
-  content_security_policy_report_only false
+  blog_content_security_policy
 
   skip_before_action :domain_check
   before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale, :reject_malicious_params

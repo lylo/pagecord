@@ -1,6 +1,11 @@
 class App::Settings::ThemeGardenController < AppController
+  include BlogContentSecurityPolicy
+
   skip_before_action :onboarding_check
   before_action :set_template, only: [ :preview, :apply ]
+
+  # The preview renders blog content, embeds included, under the blog layout
+  blog_content_security_policy only: :preview
 
   def index
     @templates = ThemeTemplate.active.ordered

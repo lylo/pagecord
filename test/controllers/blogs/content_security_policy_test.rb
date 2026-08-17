@@ -33,3 +33,29 @@ class Blogs::ContentSecurityPolicyTest < ActionDispatch::IntegrationTest
     assert_nil response.headers["Content-Security-Policy"]
   end
 end
+
+class App::PreviewContentSecurityPolicyTest < ActionDispatch::IntegrationTest
+  include AuthenticatedTest
+
+  setup do
+    @blog = blogs(:joel)
+
+    login_as @blog.user
+  end
+
+  test "post preview enforces the permissive policy" do
+    get app_post_path(@blog.posts.first)
+
+    assert_response :success
+    assert_includes response.headers["Content-Security-Policy"], "frame-src 'self' https:"
+    assert_nil response.headers["Content-Security-Policy-Report-Only"]
+  end
+
+  test "theme garden preview enforces the permissive policy" do
+    get preview_app_settings_theme_garden_path(theme_templates(:minimal_mono))
+
+    assert_response :success
+    assert_includes response.headers["Content-Security-Policy"], "frame-src 'self' https:"
+    assert_nil response.headers["Content-Security-Policy-Report-Only"]
+  end
+end
