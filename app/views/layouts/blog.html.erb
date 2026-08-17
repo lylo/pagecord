@@ -33,7 +33,7 @@
 
     <%= render "layouts/structured_data" %>
 
-    <%= render "layouts/fediverse_identity" %>
+    <%= render "layouts/identity_links" %>
     <%= yield :fediverse %>
 
     <link rel="canonical" href="<%= canonical_url %>" />
@@ -47,7 +47,7 @@
     <%= font_preload_links %>
     <%= stylesheet_link_tag "blog-themes", "lexxy-content", "lexxy-variables", "lexxy-variable-overrides", "lexxy-typography", font_stylesheet, "blogs", "lightbox", "animations", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags "blog" %>
+    <%= javascript_importmap_tags "blog", importmap: Rails.application.config.importmap_blog %>
 
     <% if @blog.present? %>
       <% unless @blog.user.search_indexable? %>
@@ -75,22 +75,23 @@
       </style>
     <% end %>
 
-    <% if @blog.present? && @blog.user.has_premium_access? && @blog.custom_css.present? %>
+    <% if @blog.present? && @blog.custom_css.present? %>
       <style>
         <%= @blog.sanitized_custom_css %>
       </style>
     <% end %>
     <%= yield :head %>
+    <%= @blog&.custom_head_html_for_render unless @preview %>
   </head>
 
-  <body class="<%= font_class %>" <%= theme_data_attribute %>>
+  <body class="<%= font_class %>" <%= theme_data_attribute %> data-page-type="<%= content_type_class %>">
     <main>
       <div class="blog blog-container <%= content_width_class %> <%= content_type_class %>">
         <%= render "blogs/flash" %>
 
         <%= yield %>
 
-        <% if @blog.custom_footer? || @blog.show_branding? %>
+        <% if @blog.custom_footer? || @blog.branding_visible? %>
           <footer class="blog-footer">
             <% if @blog.custom_footer? %>
               <div class="custom-footer">
@@ -98,14 +99,16 @@
               </div>
             <% end %>
 
-            <% if @blog.show_branding? %>
+            <% if @blog.branding_visible? %>
               <%= link_to "https://pagecord.com", id: "brand", aria: { label: "Pagecord Home" } do %>
-                <%= inline_svg_tag "logo-black.svg" %>
+                <%= inline_svg_tag "logo-black.svg", title: "Pagecord" %>
               <% end %>
             <% end %>
           </footer>
         <% end %>
       </div>
     </main>
+
+    <%= @blog&.custom_body_html_for_render unless @preview %>
   </body>
 </html>

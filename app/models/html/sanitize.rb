@@ -1,10 +1,10 @@
 module Html
   class Sanitize < Transformation
     ALLOWED_TAGS = %w[
-      a abbr action-text-attachment b blockquote br cite code del div em figure figcaption h1 h2 h3 h4 h5 h6 hr i img li mark ol p pre s span strike strong sub sup u ul
+      a abbr action-text-attachment b blockquote br cite code del details div em figure figcaption h1 h2 h3 h4 h5 h6 hr i img li mark ol p pre s span strike strong sub summary sup u ul
     ]
     ALLOWED_ATTRIBUTES = %w[
-      href src sgid url content-type name filename previewable filesize alt data-language
+      href src sgid url content-type name filename previewable filesize alt data-language open
     ]
 
     def transform(html)

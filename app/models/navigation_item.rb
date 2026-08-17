@@ -14,6 +14,10 @@ class NavigationItem < ApplicationRecord
     raise NotImplementedError, "Subclass must implement link_url"
   end
 
+  def icon
+    nil
+  end
+
   def reorder(new_position)
     old_position = position
 

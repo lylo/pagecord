@@ -22,7 +22,6 @@ gem "puma", ">= 5.0"
 # database / caching
 gem "dalli"
 gem "pg"
-gem "redis", ">= 4.0.1"
 gem "sidekiq"
 
 # monitoring and alerting
@@ -42,7 +41,7 @@ gem "premailer-rails", "~> 1.12"
 gem "ruby-openai", "~> 8.3"
 
 # everything else
-gem "aws-sdk-s3"
+gem "aws-sdk-s3", require: false
 gem "bcrypt", "~> 3.1.7"
 gem "discard", "~> 2.0"
 gem "redcarpet"

@@ -236,12 +236,13 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "show renders feature fields as an array" do
     user = users(:vivian)
+    user.update!(features: [ "custom_feature" ])
 
     get admin_user_url(user)
 
     assert_response :success
     assert_select "input[type='hidden'][name='user[features][]'][value='']"
-    assert_select "input[type='checkbox'][name='user[features][]']", false
+    assert_select "input[type='checkbox'][name='user[features][]'][value='custom_feature']", count: 1
   end
 
   test "should add a feature to user" do

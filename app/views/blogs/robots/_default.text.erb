@@ -1,0 +1,11 @@
+# Blog robots.txt for <%= @blog.subdomain %>
+
+# Allow all user agents
+User-agent: *
+Allow: /
+Disallow: /posts/*/upvotes
+Disallow: /posts/*/comments
+Disallow: /upvotes/
+
+# Sitemap location
+Sitemap: <%= sitemap_url_for(@blog) %>

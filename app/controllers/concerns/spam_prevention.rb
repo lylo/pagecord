@@ -1,91 +1,99 @@
 module SpamPrevention
   extend ActiveSupport::Concern
 
+  include TurnstileHelper
+
   DEFAULT_MINIMUM_FORM_COMPLETION_TIME = 3.seconds
 
   included do
-    before_action :form_complete_time_check, :honeypot_check, :ip_reputation_check, :suspicious_email_check, only: [ :create ]
+    before_action :form_complete_time_check, :honeypot_check, :suspicious_email_check,
+                  :turnstile_check, only: [ :create ]
   end
 
-  # Override in controllers that need stricter timing (e.g., contact forms)
-  def minimum_form_completion_time
-    DEFAULT_MINIMUM_FORM_COMPLETION_TIME
-  end
+  private
 
-  def honeypot_check
-    if params[:email_confirmation].present?
-      Rails.logger.warn "Honeypot field completed. Request blocked."
-      fail
-    end
-  end
-
-  def ip_reputation_check
-    # Uncomment to test in development:
-    # fail and return
-
-    return true unless Rails.env.production?
-
-    unless IpReputation.valid?(request.remote_ip)
-      # Soft fail: log but don't block (too many false positives from CDN IPs)
-      Rails.logger.warn "IP reputation check failed for #{request.remote_ip}. Logged but not blocked."
-    end
-  end
-
-  def form_complete_time_check
-    timestamp = Rails.application.message_verifier(:spam_prevention).verified(params[:rendered_at])
-
-    if timestamp.nil?
-      Rails.logger.warn "Invalid or missing form token. Request blocked."
-      return fail
+    # The email the visitor typed, for the suspicious email check. Override in
+    # each controller; the concern can't know the form's param shape.
+    def submitted_email
+      nil
     end
 
-    if (Time.current.to_i - timestamp) < minimum_form_completion_time
-      Rails.logger.warn "Form completed too quickly. Request blocked."
-      fail
+    # Stands in for CSRF, which is skipped on cached pages. Controllers using one
+    # declare `before_action :form_token_check` after their record is loaded.
+    def signed_form_record
+      nil
     end
-  end
 
-  def suspicious_email_check
-    email = params.dig(:email_subscriber, :email) || params.dig(:signup, :email) || params[:email]
-    return if email.blank?
-
-    local, domain = email.split("@", 2)
-    if domain&.downcase == "gmail.com" && local.count(".") >= 3
-      Rails.logger.warn "Dotted Gmail address blocked: #{email}"
-      fail
+    def form_token_purpose
+      nil
     end
-  end
 
-  def turnstile_check
-    return true unless turnstile_enabled?
-    fail unless valid_turnstile_token?(params["cf-turnstile-response"])
-  end
+    def form_token_check
+      record = signed_form_record
+      return if record.nil?
 
-  def valid_turnstile_token?(token)
-    return true if Rails.env.test?
-    return false if token.blank?
+      unless record.class.find_signed(params[:form_token], purpose: form_token_purpose) == record
+        Rails.logger.warn "Form token / record mismatch. Request blocked."
+        # Not reject_submission: a bad token is malformed, not a bot signal.
+        head :unprocessable_entity
+      end
+    end
 
-    response = HTTParty.post(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-      body: {
-        secret: ENV["TURNSTILE_SECRET_KEY"],
-        response: token,
-        remoteip: request.remote_ip
-      }
-    )
+    # Override in controllers that need stricter timing (e.g., contact forms)
+    def minimum_form_completion_time
+      DEFAULT_MINIMUM_FORM_COMPLETION_TIME
+    end
 
-    response.parsed_response["success"] == true
-  rescue HTTParty::Error => e
-    Rails.logger.error "Turnstile verification failed: #{e.message}"
-    false
-  end
+    # Override to say how a rejected submission responds.
+    def reject_submission
+      head :forbidden
+    end
 
-  def turnstile_enabled?
-    ENV["TURNSTILE_ENABLED"].present? && default_domain_request?
-  end
+    # A failed challenge isn't the same as looking like a bot: it's usually a
+    # real person who can retry. Override to say so.
+    def reject_turnstile
+      reject_submission
+    end
 
-  def fail
-    @spammer_detected = true
-    head :forbidden
-  end
+    def honeypot_check
+      if params[:email_confirmation].present?
+        Rails.logger.warn "Honeypot field completed. Request blocked."
+        reject_submission
+      end
+    end
+
+    # The timestamp is signed and rendered into the form, so this is inert on
+    # edge cached blog pages: a cached timestamp is always old enough to pass.
+    # That's the surface Turnstile covers, and where no spam turns up. It does
+    # the work on custom domains, which are never cached and can't use Turnstile.
+    def form_complete_time_check
+      timestamp = Rails.application.message_verifier(:spam_prevention).verified(params[:rendered_at])
+
+      if timestamp.nil?
+        Rails.logger.warn "Invalid or missing form token. Request blocked."
+        return reject_submission
+      end
+
+      if (Time.current.to_i - timestamp) < minimum_form_completion_time
+        Rails.logger.warn "Form completed too quickly. Request blocked."
+        reject_submission
+      end
+    end
+
+    def suspicious_email_check
+      return if submitted_email.blank?
+
+      if SuspiciousEmail.new(submitted_email).suspicious?
+        Rails.logger.warn "Suspicious email blocked: #{submitted_email}"
+        reject_submission
+      end
+    end
+
+    def turnstile_check
+      return unless turnstile_enabled?
+      return if Turnstile.verify?(params["cf-turnstile-response"], remote_ip: request.remote_ip)
+
+      Rails.logger.warn "Turnstile check failed. Request blocked."
+      reject_turnstile
+    end
 end

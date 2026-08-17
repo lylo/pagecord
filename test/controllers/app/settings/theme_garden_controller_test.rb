@@ -14,13 +14,13 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
     get app_settings_theme_garden_index_url
 
     assert_response :success
-    assert_select "h2", /Theme Garden/
+    assert_select "h3", /Theme Garden/
   end
 
   test "should show active templates" do
     get app_settings_theme_garden_index_url
 
-    assert_select "h3", text: "Minimal Mono"
+    assert_select "h4", text: "Minimal Mono"
   end
 
   test "should show apply buttons for free users" do

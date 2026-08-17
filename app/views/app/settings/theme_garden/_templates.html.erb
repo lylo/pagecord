@@ -1,0 +1,11 @@
+<% confirm_message = @blog.custom_css.present? ? "This will replace your Custom CSS and appearance settings. Continue?" : nil %>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <% templates.each do |template| %>
+    <%= render "app/settings/theme_garden/template_card",
+          template: template,
+          apply_path: apply_app_settings_theme_garden_path(template),
+          preview_path: preview_app_settings_theme_garden_path(template),
+          confirm: confirm_message %>
+  <% end %>
+</div>

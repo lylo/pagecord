@@ -18,7 +18,7 @@
       "name": "How does Pagecord work?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Create an account by choosing a subdomain for your blog and supplying your email address. Once you verify your email, you'll receive a secret email address. Emails sent to this secret address from the email address you give us will appear as posts on your Pagecord page. If you prefer, you can log in to your account and create posts directly in the app."
+        "text": "Create an account by choosing a subdomain for your blog and supplying your email address. Verify your email, then your blog is live at yourname.pagecord.com. Premium subscribers can connect a domain name of their own. Write posts in the editor, or publish from wherever you already write: every account gets a private delivery address, so anything you email to it becomes a post, and you can also publish from Obsidian, iA Writer, the command line, or the API."
       }
     },
     {
@@ -35,6 +35,14 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Yes. Just append /feed.xml to any blog's domain, e.g. https://blog.pagecord.com/feed.xml"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my blog good for SEO?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Every blog gets a sitemap at /sitemap.xml that updates itself as you publish, a robots.txt that points search engines to it, clean readable URLs, fast server-rendered pages, canonical link tags, structured data, Open Graph and Twitter cards for social previews, and an RSS feed. Per post you can set the slug, and a canonical URL if the post was first published elsewhere. Per blog you can set an SEO title and a Google Search Console verification code. Pagecord doesn't submit your posts to Google – no platform can force indexing – but the sitemap means you don't have to submit anything by hand either. Verify your blog in Google Search Console once and Google will crawl it from there."
       }
     },
     {
@@ -63,6 +71,22 @@
     },
     {
       "@type": "Question",
+      "name": "How much can I upload on the free plan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Classic, the free plan, includes 20 uploads across everything you write. Images and audio both count; your avatar does not, and neither do images you embed from a URL elsewhere on the web. A post that takes you past 20 is still saved in full, and nothing is ever deleted \u2013 it is the next upload that is refused. Video needs Premium, which also has a much bigger allowance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does the free trial include?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "New accounts get a 14 day trial of the premium features that are yours to use straight away: analytics, writing your own custom CSS and footer, reply by email, the embeddable contact form and API access. Custom domains and email subscribers need a paid subscription rather than a trial. Uploads follow the free allowance of 20 during the trial. When the trial ends nothing you have made is taken away: your posts, pages, themes, custom CSS, footer and every upload carry on exactly as they are, though editing the CSS and footer again needs a subscription. What stops is the ongoing work: analytics, the API, the contact form and reply by email."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "How many email subscribers are included?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -74,7 +98,7 @@
       "name": "Where is my data stored?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Pagecord is hosted on servers run by Hetzner, in their Nuremberg, Germany data centre. Blog posts are stored in a database there. Images are stored in Cloudflare's R2 Object Storage in their Western Europe data centre. Pagecord traffic is proxied through Cloudflare for additional security and performance."
+        "text": "Pagecord is hosted on servers run by Hetzner, in their Falkenstein, Germany data centre. Blog posts are stored in a managed Postgres database (Ubicloud) in the same region. Images are stored in Cloudflare's R2 Object Storage in their Western Europe data centre. Pagecord traffic is proxied through Cloudflare for additional security and performance."
       }
     }
   ]
@@ -95,12 +119,11 @@
 
   <h3 id="how-does-pagecord-work" class="source-serif font-semibold text-2xl">How does Pagecord work?</h3>
   <p>
-    <%= link_to "Create an account", new_signup_path, class: "home-link" %> by choosing a subdomain for your blog and supplying your email address. Once you verify
-    your email, you'll receive a secret email address. Emails sent to this secret address from the email address you give us will
-    appear as posts on your Pagecord page. If you prefer, you can log in to your account and create posts directly in the app.
+    <%= link_to "Create an account", new_signup_path, class: "home-link" %> by choosing a subdomain for your blog and supplying your email address. Verify your email, then your blog is live at <span class="font-mono">yourname.pagecord.com</span>. Premium subscribers can connect a domain name of their own.
   </p>
   <p>
-    Your Pagecord page is a public profile that anyone can view. It looks like <a href="https://pagecord.com/blog" class="home-link">https://pagecord.com/blog</a>.
+    Write posts in the editor, or publish from wherever you already write. Every account gets a private delivery address, so anything you email to it becomes a post.
+    You can also publish from <a href="https://help.pagecord.com/obsidian" class="home-link">Obsidian</a>, iA Writer, the <a href="https://help.pagecord.com/pagecord-cli" class="home-link">command line</a>, or the <a href="https://help.pagecord.com/api" class="home-link">API</a>.
   </p>
   <p>
     <a href="https://help.pagecord.com/getting-started-with-pagecord" class="home-link">Read the Getting Started guide</a>
@@ -116,7 +139,21 @@
     Yes. Just append <span class="font-mono">/feed.xml</span> to any blog's domain, e.g. <a href="https://blog.pagecord.com/feed.xml" class="home-link">https://blog.pagecord.com/feed.xml</a>
   </p>
   <p>
-    <a href="https://help.pagecord.com/rss" class="home-link">Learn more about RSS feeds</a>
+    <a href="https://help.pagecord.com/rss-feeds" class="home-link">Learn more about RSS feeds</a>
+  </p>
+
+  <h3 id="seo" class="source-serif text-2xl font-semibold">Is my blog good for SEO?</h3>
+  <p>
+    Yes. Every blog gets a sitemap at <span class="font-mono">/sitemap.xml</span> that updates itself as you publish, and a <span class="font-mono">robots.txt</span> that points search engines to it. Pages are server-rendered and fast, with clean readable URLs, canonical link tags, structured data, Open Graph and Twitter cards for social previews, and an RSS feed.
+  </p>
+  <p>
+    Per post you can set the slug, and a canonical URL if the post was first published somewhere else. Per blog you can set an SEO title and a Google Search Console verification code.
+  </p>
+  <p>
+    Pagecord doesn't submit your posts to Google – no platform can force indexing – but the sitemap means you don't have to submit anything by hand either. Verify your blog in Search Console once and Google will crawl it from there.
+  </p>
+  <p>
+    <a href="https://help.pagecord.com/seo-and-discovery" class="home-link">Learn more about SEO &amp; discovery</a>
   </p>
 
   <h3 id="importing-blog" class="source-serif text-2xl font-semibold">Can I import my blog from another platform?</h3>
@@ -124,7 +161,7 @@
     Yes, but it's not self-serve. <a href="mailto:hello@pagecord.com?subject=Blog%20Import%20Request" class="home-link">Contact support</a> and we'll look into it for you. We've already done this from WordPress, Ghost, static sites and others. A premium subscription is required to proceed with an import.
   </p>
   <p>
-    <a href="https://help.pagecord.com/importing-your-blog" class="home-link">Learn more about importing</a>
+    <a href="https://help.pagecord.com/importing-an-existing-blog" class="home-link">Learn more about importing</a>
   </p>
 
   <h3 id="refund-policy" class="source-serif text-2xl font-semibold">What is your refund policy?</h3>
@@ -142,6 +179,22 @@
     To switch from annual to monthly, let your annual subscription run out and then resubscribe on the monthly plan.
   </p>
 
+  <h3 id="images" class="source-serif text-2xl font-semibold">How much can I upload on the free plan?</h3>
+  <p>
+    Classic, the free plan, includes 20 uploads across everything you write. Images and audio both count towards it. Your avatar doesn't count, and neither do images you embed from a URL elsewhere on the web.
+  </p>
+  <p>
+    A post that takes you past 20 is still saved in full – it's the next upload that's refused. Nothing is ever deleted or hidden, and the count goes down again if you remove an image from a post. Video needs Premium, which also has a much bigger allowance.
+  </p>
+
+  <h3 id="trial" class="source-serif text-2xl font-semibold">What does the free trial include?</h3>
+  <p>
+    New accounts get a 14 day trial of the premium features that are yours to use straight away: analytics, writing your own custom CSS and footer, reply by email, the embeddable contact form and API access. Custom domains and email subscribers need a paid subscription rather than a trial, and uploads follow the free allowance of 20 during the trial.
+  </p>
+  <p>
+    When the trial ends, nothing you've made is taken away. Your posts, pages, themes, custom CSS, footer and every upload carry on exactly as they are, though you'll need a subscription to edit the CSS and footer again. What stops is the ongoing work: analytics, the API, the contact form and reply by email. The small Pagecord logo returns to the bottom of your blog.
+  </p>
+
   <h3 id="subscribers" class="source-serif text-2xl font-semibold">How many email subscribers are included?</h3>
   <p>
     Pagecord Premium includes up to 250 email subscribers.
@@ -152,7 +205,7 @@
 
   <h3 id="data-storage" class="source-serif text-2xl font-semibold">Where is my data stored?</h3>
   <p>
-    Pagecord is hosted on servers run by <a href="https://hetzner.cloud/?ref=cZJ4pqOEU3g9" class="home-link">Hetzner</a>, in their <a href="https://www.hetzner.com/unternehmen/rechenzentrum/" class="home-link">Nuremberg, Germany data centre</a>. Your blogs posts are stored in a database here. Any images you attach to your posts (Premium customers) are stored in <a href="https://www.cloudflare.com/en-gb/developer-platform/products/r2/" class="home-link">Cloudflare's R2 Object Storage</a>, in their Western Europe (WEUR) data centre. Database backups are also stored in R2.
+    Pagecord is hosted on servers run by <a href="https://hetzner.cloud/?ref=cZJ4pqOEU3g9" class="home-link">Hetzner</a>, in their <a href="https://www.hetzner.com/unternehmen/rechenzentrum/" class="home-link">Falkenstein, Germany data centre</a>. Your blog posts are stored in a managed Postgres database, run by <a href="https://www.ubicloud.com" class="home-link">Ubicloud</a> in the same region. Anything you upload to your posts is stored in <a href="https://www.cloudflare.com/en-gb/developer-platform/products/r2/" class="home-link">Cloudflare's R2 Object Storage</a>, in their Western Europe (WEUR) data centre. Database backups are also stored in R2.
   </p>
   <p>
     Pagecord traffic is proxied through Cloudflare to provide additional security and performance benefits for

@@ -1,0 +1,21 @@
+pt:
+  comments:
+    heading: "Comentários"
+    author_badge: "Autor"
+    closed: "Os comentários estão fechados."
+    submitted: "Obrigado. Seu comentário aparece depois de aprovado."
+    rejected: "Não foi possível enviar. Tente novamente."
+    more:
+      one: "Mais %{count} comentário"
+      other: "Mais %{count} comentários"
+    form:
+      message_placeholder: "Escreva um comentário…"
+      name_placeholder: "Nome"
+      link_placeholder: "Site (opcional)"
+      submit_button: "Publicar"
+    mailer:
+      subject: "Você tem comentários aguardando"
+      intro:
+        one: "Você tem %{count} comentário aguardando aprovação."
+        other: "Você tem %{count} comentários aguardando aprovação."
+      button: "Ver comentários"

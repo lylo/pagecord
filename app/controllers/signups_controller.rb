@@ -1,7 +1,7 @@
 class SignupsController < ApplicationController
   include AttributionTrackable, SpamPrevention, TimezoneTranslation
 
-  rate_limit to: 3, within: 1.hour, only: [ :create ], name: "signup-create"
+  rate_limit to: 10, within: 1.hour, only: [ :create ], name: "signup-create"
   rate_limit to: 20, within: 1.minute, only: [ :new ], name: "signup-new"
 
   layout "sessions"
@@ -16,19 +16,11 @@ class SignupsController < ApplicationController
   end
 
   def create
-    if turnstile_enabled? && !valid_turnstile_token?(params["cf-turnstile-response"])
-      flash.now[:error] = "Please complete the security check"
-      @user = User.new
-      @user.blogs.build
-      render :new and return
-    end
-
     @user = User.new(user_params)
 
-    # New users should get Lexxy if configured
-    @user.features = [ "lexxy" ] if ENV["LEXXY_FOR_NEW_USERS"]
+    return reject_submission unless signup_from_allowed_timezone
 
-    if signup_from_allowed_timezone && @user.save
+    if @user.save
       attribution = signup_attribution
       session.delete(:signup_attribution)
 
@@ -36,15 +28,29 @@ class SignupsController < ApplicationController
 
       redirect_to thanks_signups_path(attribution)
     else
+      Rails.logger.info "Signup validation failed: #{@user.errors.details}"
       render :new, status: :unprocessable_entity
     end
   end
 
   private
 
-    def fail
-      flash[:error] = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."
-      redirect_to new_signup_path
+    def submitted_email
+      params.dig(:user, :email)
+    end
+
+    def reject_submission
+      @error_message = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."
+      @user = User.new
+      @user.blogs.build
+      render :new, status: :unprocessable_entity
+    end
+
+    def reject_turnstile
+      @error_message = "Please complete the security check"
+      @user = User.new
+      @user.blogs.build
+      render :new, status: :unprocessable_entity
     end
 
     def user_params

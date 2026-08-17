@@ -30,7 +30,7 @@ class DigestReplyMailerTest < ActionMailer::TestCase
     assert_match(/text\/plain/, email.content_type)
   end
 
-  test "forward_reply preserves HTML content type" do
+  test "forward_reply converts an HTML-only reply to plain text" do
     digest = post_digests(:one)
 
     original_mail = Mail.new do
@@ -45,8 +45,64 @@ class DigestReplyMailerTest < ActionMailer::TestCase
       original_mail: original_mail
     ).forward_reply
 
-    assert_match(/text\/html/, email.content_type)
-    assert_equal "<p>Great <strong>content</strong>!</p>", email.body.to_s
+    assert_match(/text\/plain/, email.content_type)
+    assert_equal "Great content!", email.body.to_s
+  end
+
+  test "forward_reply prefers the text part of a multipart reply" do
+    digest = post_digests(:one)
+
+    original_mail = Mail.new do
+      from "subscriber@example.com"
+      subject "Thanks!"
+      text_part { body "Plain version" }
+      html_part { body "<p>HTML <em>version</em></p>" }
+    end
+
+    email = DigestReplyMailer.with(
+      digest: digest,
+      original_mail: original_mail
+    ).forward_reply
+
+    assert_match(/text\/plain/, email.content_type)
+    assert_equal "Plain version", email.body.to_s
+  end
+
+  test "forward_reply falls back to the html part when there is no text part" do
+    digest = post_digests(:one)
+
+    original_mail = Mail.new do
+      from "subscriber@example.com"
+      subject "Thanks!"
+      html_part { body "<p>Only <em>HTML</em> here</p>" }
+    end
+
+    email = DigestReplyMailer.with(
+      digest: digest,
+      original_mail: original_mail
+    ).forward_reply
+
+    assert_match(/text\/plain/, email.content_type)
+    assert_equal "Only HTML here", email.body.to_s
+  end
+
+  test "forward_reply drops inline attachments" do
+    digest = post_digests(:one)
+
+    original_mail = Mail.new do
+      from "subscriber@example.com"
+      subject "Thanks!"
+      text_part { body "See the logo" }
+      add_file filename: "space.jpg", content: File.read(Rails.root.join("test/fixtures/files/space.jpg"))
+    end
+
+    email = DigestReplyMailer.with(
+      digest: digest,
+      original_mail: original_mail
+    ).forward_reply
+
+    assert_empty email.attachments
+    assert_equal "See the logo", email.body.to_s
   end
 
   test "forward_reply does not send if no from address" do

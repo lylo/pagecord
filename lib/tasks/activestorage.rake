@@ -277,27 +277,28 @@ namespace :activestorage do
     end
   end
 
-  desc "Storage usage by blog"
-  task blogs: :environment do
-    blogs = Blog.all.filter_map { |b|
-      count = b.attachment_count
-      next if count == 0
-      [ b.subdomain, count, b.attachment_storage_bytes ]
+  desc "Storage usage by user"
+  task users: :environment do
+    users = User.joins(:blogs).distinct.filter_map { |user|
+      quota = user.upload_quota
+      count = quota.used
+      next if count.zero?
+      [ user.email, count, quota.used_bytes ]
     }.sort_by { |_, _, bytes| -bytes }
 
-    if blogs.empty?
-      puts "No blogs with attachments."
+    if users.empty?
+      puts "No users with uploads."
       next
     end
 
-    puts "%-30s %7s  %s" % [ "Blog", "Files", "Storage" ]
-    puts "-" * 55
+    puts "%-40s %7s  %s" % [ "User", "Files", "Storage" ]
+    puts "-" * 65
 
-    blogs.each do |subdomain, count, bytes|
-      puts "%-30s %7d  %s" % [ subdomain, count, ActiveSupport::NumberHelper.number_to_human_size(bytes) ]
+    users.each do |email, count, bytes|
+      puts "%-40s %7d  %s" % [ email, count, ActiveSupport::NumberHelper.number_to_human_size(bytes) ]
     end
 
-    puts "-" * 55
-    puts "%-30s %7d  %s" % [ "Total", blogs.sum { |_, c, _| c }, ActiveSupport::NumberHelper.number_to_human_size(blogs.sum { |_, _, b| b }) ]
+    puts "-" * 65
+    puts "%-40s %7d  %s" % [ "Total", users.sum { |_, c, _| c }, ActiveSupport::NumberHelper.number_to_human_size(users.sum { |_, _, b| b }) ]
   end
 end

@@ -12,11 +12,14 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 1, text: "Custom Domain" }
-    assert_select "h3", { count: 1, text: "Discoverability" }
-    assert_select "h3", { count: 1, text: "Google Site Verification" }
-    assert_select "h3", { count: 1, text: "Fediverse Author Attribution" }
-    assert_select "p", text: /Use the full handle, not your profile URL/
+    assert_select "h3", { count: 1, text: "Blog Settings" }
+    assert_select "h3", { count: 1, text: "Advanced" }
+    assert_select "h4", { count: 1, text: "Custom Domain" }
+    assert_select "h4", { count: 1, text: "Discoverability" }
+    assert_select "h4", { count: 1, text: "Google Site Verification" }
+    assert_select "h4", { count: 1, text: "Links" }
+    assert_select "h4", { count: 1, text: "Fediverse Author Attribution" }
+    assert_select "p", text: /Your full Fediverse handle, not your profile URL/
     assert_select "input[name='blog[fediverse_author_attribution]'][placeholder='e.g. @you@mastodon.social']"
     assert_response :success
   end
@@ -26,7 +29,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 1, text: "Custom Domain" }
+    assert_select "h4", { count: 1, text: "Custom Domain" }
     assert_select "input[name='blog[custom_domain]'][disabled]"
     assert_response :success
   end
@@ -119,6 +122,75 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_equal false, @blog.reload.allow_search_indexing
   end
 
+  test "should show custom robots controls for subscriber" do
+    get app_settings_blogs_url
+
+    assert_select "input[type='checkbox'][name='blog[use_custom_robots_txt]']:not([disabled])", count: 1
+    assert_select "textarea#blog_custom_robots_txt", count: 1
+  end
+
+  test "should show disabled custom robots controls for non-subscriber" do
+    login_as users(:vivian)
+
+    get app_settings_blogs_url
+
+    assert_select "input[type='checkbox'][name='blog[use_custom_robots_txt]'][disabled]", count: 1
+    assert_select "p", /Customising crawler rules is available with a subscription/
+  end
+
+  test "subscriber should save custom robots txt" do
+    custom_robots_txt = "User-agent: Bubbles\nAllow: /\n"
+
+    patch app_settings_blog_url(@blog), params: {
+      blog: { custom_robots_txt: custom_robots_txt, use_custom_robots_txt: "1" }
+    }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal custom_robots_txt, @blog.reload.custom_robots_txt
+  end
+
+  test "subscriber should clear custom robots txt by unticking" do
+    @blog.update!(custom_robots_txt: "User-agent: Bubbles\nAllow: /\n")
+
+    patch app_settings_blog_url(@blog), params: {
+      blog: { custom_robots_txt: "User-agent: Bubbles\nAllow: /\n", use_custom_robots_txt: "0" }
+    }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_nil @blog.reload.custom_robots_txt
+  end
+
+  test "updating from a form without the robots checkbox preserves custom robots txt" do
+    custom_robots_txt = "User-agent: Bubbles\nAllow: /\n"
+    @blog.update!(custom_robots_txt: custom_robots_txt)
+
+    patch app_settings_blog_url(@blog), params: {
+      blog: { allow_search_indexing: true }
+    }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal custom_robots_txt, @blog.reload.custom_robots_txt
+  end
+
+  test "subscriber save with invalid custom robots txt renders errors" do
+    patch app_settings_blog_url(@blog), params: {
+      blog: { custom_robots_txt: "Host: example.com\n", use_custom_robots_txt: "1" }
+    }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_select ".field-error", /unsupported directive/
+  end
+
+  test "non-subscriber custom robots txt is ignored" do
+    login_as users(:vivian)
+
+    patch app_settings_blog_url(users(:vivian).blog), params: {
+      blog: { custom_robots_txt: "User-agent: Bubbles\nAllow: /\n", use_custom_robots_txt: "1" }
+    }, as: :turbo_stream
+
+    assert_nil users(:vivian).blog.reload.custom_robots_txt
+  end
+
   test "should update fediverse author attribution" do
     patch app_settings_blog_url(@blog), params: { blog: { fediverse_author_attribution: "@example@mastodon.social" } }, as: :turbo_stream
 
@@ -166,7 +238,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   test "should show language section" do
     get app_settings_blogs_url
 
-    assert_select "h3", { count: 1, text: "Language" }
+    assert_select "h4", { count: 1, text: "Language" }
     assert_select "select[name='blog[locale]']", count: 1
     assert_response :success
   end
@@ -190,6 +262,13 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_settings_url
     assert_equal false, @blog.reload.show_metrics
+  end
+
+  test "should update external links in new tab" do
+    patch app_settings_blog_url(@blog), params: { blog: { external_links_in_new_tab: true } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal true, @blog.reload.external_links_in_new_tab
   end
 
   test "should not allow non-subscribed user to update subscription location settings" do

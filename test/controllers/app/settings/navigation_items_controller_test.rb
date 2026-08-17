@@ -12,7 +12,7 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
   test "index shows all navigation items" do
     get app_settings_navigation_items_path
     assert_response :success
-    assert_select "h2", "Navigation"
+    assert_select "h3", "Navigation"
     assert_select "button[aria-label='Navigation help']"
     assert_select "[data-dialog-shortcut-value='?']"
     assert_includes response.body, "/posts"
@@ -77,6 +77,113 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     assert_equal "Pixelfed", item.platform
     assert_equal "https://pixelfed.social/user", item.url
     assert_equal "Pixelfed", item.label
+  end
+
+  test "create posts navigation item" do
+    assert_difference -> { PostsNavigationItem.count }, 1 do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "posts",
+        navigation_item: { label: "Blog" }
+      }
+    end
+
+    assert_redirected_to app_settings_navigation_items_path
+
+    item = PostsNavigationItem.last
+    assert_equal @blog, item.blog
+    assert_equal "Blog", item.label
+    assert_equal "/posts", item.link_url
+  end
+
+  test "posts navigation item keeps the label the blog chose" do
+    post app_settings_navigation_items_path, params: {
+      nav_type: "posts",
+      navigation_item: { label: "Artículos" }
+    }
+
+    assert_equal "Artículos", PostsNavigationItem.last.label
+  end
+
+  test "only one posts navigation item allowed per blog" do
+    @blog.navigation_items.create!(type: "PostsNavigationItem", label: "Blog")
+
+    assert_no_difference -> { PostsNavigationItem.count } do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "posts",
+        navigation_item: { label: "Posts" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "posts radio hidden once a posts item exists" do
+    get app_settings_navigation_items_path
+    assert_select "input[name='nav_type'][value='posts']", count: 1
+
+    @blog.navigation_items.create!(type: "PostsNavigationItem", label: "Blog")
+
+    get app_settings_navigation_items_path
+    assert_select "input[name='nav_type'][value='posts']", count: 0
+  end
+
+  test "create search navigation item" do
+    assert_difference -> { SearchNavigationItem.count }, 1 do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "search",
+        navigation_item: { label: "Search" }
+      }
+    end
+
+    assert_redirected_to app_settings_navigation_items_path
+
+    item = SearchNavigationItem.last
+    assert_equal @blog, item.blog
+    assert_equal "Search", item.label
+    assert_equal "/search", item.link_url
+  end
+
+  test "only one search navigation item allowed per blog" do
+    @blog.navigation_items.create!(type: "SearchNavigationItem")
+
+    assert_no_difference -> { SearchNavigationItem.count } do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "search",
+        navigation_item: { label: "Search" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "search radio shown for free user" do
+    login_as users(:vivian)
+
+    get app_settings_navigation_items_path
+    assert_select "input[name='nav_type'][value='search']", count: 1
+  end
+
+  test "creates search navigation item for free user" do
+    login_as users(:vivian)
+
+    assert_difference -> { SearchNavigationItem.count }, 1 do
+      post app_settings_navigation_items_path, params: {
+        nav_type: "search",
+        navigation_item: { label: "Search" }
+      }
+    end
+
+    assert_redirected_to app_settings_navigation_items_path
+  end
+
+  test "search radio hidden once a search item exists" do
+    get app_settings_navigation_items_path
+    assert_select "input[name='nav_type'][value='search']", count: 1
+
+    @blog.navigation_items.create!(type: "SearchNavigationItem")
+
+    get app_settings_navigation_items_path
+    assert_select "input[name='nav_type'][value='search']", count: 0
   end
 
   test "create with validation errors re-renders form" do

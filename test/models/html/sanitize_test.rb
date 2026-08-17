@@ -26,6 +26,16 @@ class Html::SanitizeTest < ActiveSupport::TestCase
     assert_includes transformed_html, "x<sup>2</sup>"
   end
 
+  test "preserves collapsible details sections" do
+    html = "<details open><summary>More</summary><p>Hidden detail.</p></details>"
+
+    transformed_html = Html::Sanitize.new.transform(html)
+
+    assert_includes transformed_html, "<details open"
+    assert_includes transformed_html, "<summary>More</summary>"
+    assert_includes transformed_html, "<p>Hidden detail.</p>"
+  end
+
   test "strips inline styles" do
     html = <<~HTML
       <div class="align-right" style="font-size: 2em; text-align: right; color: red;">Right</div>

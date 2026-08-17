@@ -24,14 +24,10 @@ if Rails.env.production?
       event
     end
 
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    config.traces_sample_rate = 1.0
-    # or
-    config.traces_sampler = lambda do |context|
-      true
-    end
+    # Sampled rather than 100% – every web request and Active Job run counts
+    # against the tracing quota, and exhausting it early leaves no traces for
+    # the rest of the month.
+    config.traces_sample_rate = 0.1
 
     # Remove ActionController::BadRequest from sentry-rails' default IGNORE_DEFAULT
     # so unhandled bad requests (not caught by BotErrorFilter) get reported

@@ -1,6 +1,6 @@
 class Blog < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, StorageTrackable, Blog::Contactable, Blog::ApiKey, Blog::Spotlit
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, Blog::CustomCode, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::Spotlit
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
@@ -11,9 +11,13 @@ class Blog < ApplicationRecord
   MAX_BLOGS_FREE = 1
   MAX_BLOGS_PAID = 2
 
+  AVATAR_CONTENT_TYPES = %w[ image/jpeg image/png image/webp ].freeze
+  AVATAR_MAX_SIZE = 5.megabytes
+
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
   has_many :pages, -> { where(is_page: true) }, class_name: "Post"
+  has_many :comments, -> { merge(Post.kept) }, through: :posts
   belongs_to :home_page, class_name: "Post", optional: true
 
   has_many :sender_email_addresses, dependent: :destroy
@@ -30,7 +34,8 @@ class Blog < ApplicationRecord
   end
 
   has_rich_text :bio
-  validate :bio_length
+  validate :bio_length, :bio_without_attachments
+  validate :avatar_format
   validate :within_blog_limit, on: :create
 
   before_validation :downcase_subdomain
@@ -52,8 +57,32 @@ class Blog < ApplicationRecord
     title.blank? ? "@#{subdomain}" : title
   end
 
+  def host
+    custom_domain.presence || "#{subdomain}.#{Rails.application.config.x.domain}"
+  end
+
   def password_protected?
     password_digest.present?
+  end
+
+  # Perks of paying rather than things the blogger made, so the stored
+  # preference only applies while the plan includes it. Replies are an ongoing
+  # service – we mail the owner on their behalf – and branding removal
+  # suppresses our own mark.
+  def accepts_replies?
+    reply_by_email && user.has_premium_access?
+  end
+
+  def branding_visible?
+    !user.subscribed? || show_branding
+  end
+
+  def accepts_subscribers?
+    email_subscriptions_enabled && user.subscribed?
+  end
+
+  def accepts_comments?
+    comments_enabled && user.has_premium_access?
   end
 
   private
@@ -78,13 +107,31 @@ class Blog < ApplicationRecord
       end
     end
 
+    # The bio editors don't offer attachments, so anything here arrived as
+    # hand-crafted HTML.
+    def bio_without_attachments
+      errors.add(:bio, "can't contain attachments") if bio.body&.fragment&.find_all("action-text-attachment").present?
+    end
+
+    def avatar_format
+      return unless avatar.attachment&.new_record?
+
+      unless AVATAR_CONTENT_TYPES.include?(avatar.blob.content_type)
+        errors.add(:avatar, "must be a JPEG, PNG or WebP image")
+      end
+
+      if avatar.blob.byte_size > AVATAR_MAX_SIZE
+        errors.add(:avatar, "is too big (maximum 5MB)")
+      end
+    end
+
     def downcase_subdomain
       self.subdomain = self.subdomain.downcase.strip if self.subdomain.present?
     end
 
     def subdomain_valid
       unless Subdomain.valid_format?(subdomain)
-        errors.add(:subdomain, "can only use letters, numbers or underscores")
+        errors.add(:subdomain, "can only contain letters and numbers")
       end
 
       if subdomain_reserved?
@@ -99,6 +146,8 @@ class Blog < ApplicationRecord
     def purge_cloudflare_cache
       return unless Rails.env.production?
       return unless Rails.cache.write("cf_purge:#{id}", true, expires_in: 5.seconds, unless_exist: true)
-      PurgeCloudflareCacheJob.perform_later(id)
+      # Trailing debounce: coalesce rapid updates (a bulk sync/import) into one
+      # purge that fires after the burst, so the final state is never left stale.
+      PurgeCloudflareCacheJob.set(wait: 5.seconds).perform_later(id)
     end
 end

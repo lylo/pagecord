@@ -1,9 +1,17 @@
 class App::PostsController < AppController
   include Pagy::Method
+  include BlogContentSecurityPolicy
+
+  # The preview renders blog content, embeds included, under the blog layout
+  blog_content_security_policy only: :show
 
   rescue_from Pagy::RangeError, with: :redirect_to_first_page
 
   def index
+    # Shown unless explicitly turned off, so nobody loses tags or likes without
+    # asking for it.
+    @show_info = cookies.encrypted[:posts_info] != "off"
+
     posts_query = @blog.posts.kept.published.includes(:post_digests).order(published_at: :desc)
     drafts_query = @blog.posts.kept.draft.includes(:post_digests).order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
 
@@ -19,9 +27,10 @@ class App::PostsController < AppController
       end
     end
 
-    @search_results_count = @search_term.present? ? posts_query.count + drafts_query.count : nil
     @pagy, @posts = pagy(posts_query, limit: 25)
     @drafts = @pagy.page == 1 ? drafts_query.load : []
+    # pagy has already counted the posts, so only the drafts need counting again.
+    @search_results_count = @search_term.present? ? @pagy.count + drafts_query.count : nil
     @total_posts_count = @blog.posts.kept.published.count
   end
 
@@ -39,6 +48,7 @@ class App::PostsController < AppController
     @post = @blog.all_posts.kept.find_by!(token: params[:token])
     @blog = @blog
     @user = Current.user
+    @preview = true
 
     render layout: "blog"
   end
@@ -82,6 +92,7 @@ class App::PostsController < AppController
       status = params[:button] == "save_draft" ? :draft : :published
       permitted = [ :title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale ]
       permitted += [ :open_graph_image, :open_graph_image_suppressed ] if Current.user.has_premium_access?
+      permitted << :comments_closed if @blog.accepts_comments?
       params.require(:post).permit(*permitted).merge(status: status)
     end
 

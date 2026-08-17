@@ -1,5 +1,8 @@
 class EmailSubscriptionConfirmationMailerPreview < ActionMailer::Preview
   def confirm
-    EmailSubscriptionConfirmationMailer.with(subscriber: EmailSubscriber.first).confirm
+    subscriber = EmailSubscriber.first
+    subscriber.blog.locale = params[:locale] if params[:locale]
+
+    EmailSubscriptionConfirmationMailer.with(subscriber: subscriber).confirm
   end
 end

@@ -29,6 +29,7 @@ class Analytics::Referrers < Analytics::Base
     def referrers_from_rollups(start_time, end_time)
       Rollup.where(
         name: "unique_views_by_blog_referrer",
+        interval: "day",
         time: start_time..end_time
       ).where("dimensions->>'blog_id' = ?", blog.id.to_s)
        .group("dimensions->>'referrer_domain'").sum(:value)

@@ -1,0 +1,21 @@
+ja:
+  comments:
+    heading: "コメント"
+    author_badge: "投稿者"
+    closed: "コメントは締め切りました。"
+    submitted: "ありがとうございます。承認後に表示されます。"
+    rejected: "送信できませんでした。もう一度お試しください。"
+    more:
+      one: "他 %{count} 件のコメント"
+      other: "他 %{count} 件のコメント"
+    form:
+      message_placeholder: "コメントを書く…"
+      name_placeholder: "名前"
+      link_placeholder: "ウェブサイト（任意）"
+      submit_button: "送信"
+    mailer:
+      subject: "承認待ちのコメントがあります"
+      intro:
+        one: "承認待ちのコメントが %{count} 件あります。"
+        other: "承認待ちのコメントが %{count} 件あります。"
+      button: "コメントを確認"

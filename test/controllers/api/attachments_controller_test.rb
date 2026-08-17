@@ -72,7 +72,51 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
+  test "the trial can upload within the allowance" do
+    start_trial
+
+    file = fixture_file_upload("space.jpg", "image/jpeg")
+
+    assert_difference -> { ActiveStorage::Blob.count } do
+      post "/attachments", params: { file: file }, headers: auth_header
+    end
+
+    assert_response :created
+  end
+
+  test "refuses uploads once the allowance is used up" do
+    start_trial
+    fill_upload_quota(@user, UploadQuota::FREE_LIMIT)
+
+    file = fixture_file_upload("space.jpg", "image/jpeg")
+
+    assert_no_difference -> { ActiveStorage::Blob.count } do
+      post "/attachments", params: { file: file }, headers: auth_header
+    end
+
+    assert_response :forbidden
+    assert_match "free uploads", JSON.parse(response.body)["error"]
+  end
+
+  test "refuses video without a subscription" do
+    start_trial
+
+    file = fixture_file_upload("space.jpg", "video/mp4")
+
+    assert_no_difference -> { ActiveStorage::Blob.count } do
+      post "/attachments", params: { file: file }, headers: auth_header
+    end
+
+    assert_response :forbidden
+    assert_match "Video uploads", JSON.parse(response.body)["error"]
+  end
+
   private
+
+    def start_trial
+      @user.subscription.destroy!
+      @user.update!(trial_ends_at: 7.days.from_now)
+    end
 
     def auth_header(token = "test_api_key_for_fixtures")
       { "Authorization" => "Bearer #{token}" }

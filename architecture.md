@@ -1,18 +1,18 @@
 # Pagecord Architecture
 
-Pagecord is a minimal blogging app where you create posts simply by sending emails. It's a Rails app hosted on a single Hetzner instance via [Hatchbox](https://hatchbox.io). This is not super-scalable, but it's currently a side project so 🤷‍♂️
+Pagecord is a fully featured personal website and blogging app. It's a Rails app hosted by Hetzner, in Falkenstein, Germany.
 
 ## Web app
 
-Pagecord is a web app that uses [Rails](https://rubyonrails.org) 8 and associated tech like Turbo, Stimulus and Import Maps. It uses [Tailwind CSS](https://tailwindcss.com) for styling. It runs on Ruby 4.0.5.
+Pagecord is a web app that uses [Rails](https://rubyonrails.org) 8 and associated tech like Turbo, Stimulus and Import Maps. It runs on Ruby 4.0.5. It uses Memcached for caching.
 
 ## Database
 
-Currently the database is Postgres which runs on a Hetzner server, thanks to Hatchbox. It's not a managed service, but WAL files are continuously replicated to Cloudflare R2 via WAL-G, enabling point-in-time recovery.
+The database is managed Postgres 18 on [Ubicloud](https://www.ubicloud.com), running in the same Falkenstein region as the app. Ubicloud handles daily backups and 7-day point-in-time recovery.A weekly `pg_dump` is pushed to Cloudflare R2 for good measure.
 
 ## Background Jobs
 
-Pagecord uses ActiveJob for background jobs, which are configured to use Sidekiq, which requires Redis. I'll probably move this to SolidQueue at some point.
+Pagecord uses ActiveJob for background jobs, which are configured to use Sidekiq, which requires Redis.
 
 ### Cloudflare R2
 
@@ -20,13 +20,11 @@ Images are processed by ActiveStorage and stored on [Cloudflare R2](https://deve
 
 ### Hatchbox
 
-Pagecord uses Hatchbox to manage deployments. Everything runs on a single Hetzner server. As Pagecord makes more profit, I might move the app to DigitalOcean droplets and use a managed database.
+Pagecord uses Hatchbox to manage deployments.
 
 ### Custom domains / SSL
 
-Premium accounts can apply a custom domain to their blog. Pagecord does this by using the Hatchbox API. Internally, Hatchbox uses [Caddy](https://caddyserver.com/).
-
-Ideally I would run a separate server and create a reverse proxy using Caddy, detaching custom domains from the underlying app hosting. I'm avoiding the overhead of hosting costs and sysadmin work, but it'll bite me at some point I know.
+Premium accounts can apply a custom domain to their blog. SSL certification is handled by [Caddy](https://caddyserver.com/).
 
 ### DNS & Edge Caching
 

@@ -2,6 +2,9 @@ require "test_helper"
 
 class RackAttackTest < ActionDispatch::IntegrationTest
   setup do
+    # Freeze time so request counts can't straddle a throttle period boundary
+    freeze_time
+
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.cache.store.clear
   end

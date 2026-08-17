@@ -21,6 +21,21 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "email", user.blog.posts.last.source
   end
 
+  test "should save as draft when delivered to the +draft address" do
+    user = users(:joel)
+
+    assert_difference -> { user.blog.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.blog.delivery_email.sub("@", "+draft@"),
+        from: user.email,
+        reply_to: user.email,
+        subject: "Hello world!",
+        body: "Hello?"
+    end
+
+    assert user.blog.posts.last.draft?
+  end
+
   test "should receive valid HTML mail from HEY" do
     user = users(:joel)
     raw_mail = File.read(Rails.root.join("test/fixtures/emails/hey.eml"))
@@ -248,7 +263,34 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_equal "baby-yoda.webp", post.attachments.first.filename.to_s
   end
 
-  test "should not parse image attachments for a freemium user" do
+  test "should skip an image attachment that exceeds the upload limit" do
+    user = users(:joel)
+    oversized = "x" * (UploadLimits::CONTENT_TYPES["image/jpeg"] + 1)
+
+    assert_difference -> { user.blog.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.blog.delivery_email,
+        from: user.email,
+        reply_to: user.email,
+        subject: "Hello, world" do |mail|
+          mail.text_part = Mail::Part.new do
+            content_type "text/plain; charset=UTF-8"
+            body "Hello"
+          end
+
+          mail.html_part = Mail::Part.new do
+            content_type "text/html; charset=UTF-8"
+            body "<p>Hello</p>"
+          end
+
+          mail.attachments["huge.jpg"] = { content_type: "image/jpeg", content: oversized }
+        end
+    end
+
+    assert_equal 0, user.blog.posts.last.attachments.count
+  end
+
+  test "should parse image attachments for a free user under quota" do
     user = users(:vivian)
 
     assert_difference -> { user.blog.posts.count }, 1 do
@@ -274,7 +316,70 @@ class PostsMailboxTest < ActionMailbox::TestCase
 
     post = user.blog.posts.last
 
-    assert_equal 0, post.attachments.count, "Post should have no attachments"
+    assert_equal 1, post.attachments.count
+  end
+
+  test "should attach every emailed image when under the allowance" do
+    user = users(:vivian)
+    fill_upload_quota(user, UploadQuota::FREE_LIMIT - 1)
+
+    receive_inbound_email_from_mail \
+      to: user.blog.delivery_email,
+      from: user.email,
+      reply_to: user.email,
+      subject: "Three photos" do |mail|
+        mail.text_part = Mail::Part.new do
+          content_type "text/plain; charset=UTF-8"
+          body "Hello"
+        end
+
+        3.times do |i|
+          mail.attachments["photo-#{i}.jpg"] = File.read(Rails.root.join("test/fixtures/files/space.jpg"))
+        end
+      end
+
+    assert_equal 3, user.blog.posts.last.attachments.count
+  end
+
+  test "should create a post without attachments when the free user is at quota" do
+    user = users(:vivian)
+    fill_upload_quota(user, UploadQuota::FREE_LIMIT)
+
+    assert_difference -> { user.blog.posts.count }, 1 do
+      receive_inbound_email_from_mail \
+        to: user.blog.delivery_email,
+        from: user.email,
+        reply_to: user.email,
+        subject: "One more photo" do |mail|
+          mail.text_part = Mail::Part.new do
+            content_type "text/plain; charset=UTF-8"
+            body "Hello"
+          end
+
+          mail.attachments["space.jpg"] = File.read(Rails.root.join("test/fixtures/files/space.jpg"))
+        end
+    end
+
+    assert_equal 0, user.blog.posts.last.attachments.count
+  end
+
+  test "should skip video attachments for a free user" do
+    user = users(:vivian)
+
+    receive_inbound_email_from_mail \
+      to: user.blog.delivery_email,
+      from: user.email,
+      reply_to: user.email,
+      subject: "A video" do |mail|
+        mail.text_part = Mail::Part.new do
+          content_type "text/plain; charset=UTF-8"
+          body "Hello"
+        end
+
+        mail.attachments["clip.mp4"] = { content_type: "video/mp4", content: "not really a video" }
+      end
+
+    assert_equal 0, user.blog.posts.last.attachments.count
   end
 
   test "should extract hashtags from plain text email and remove them from content" do
@@ -471,4 +576,41 @@ class PostsMailboxTest < ActionMailbox::TestCase
     def format_html(html)
       html.strip.gsub(/^ +/, "").gsub(/\n/, "")
     end
+  # A Proton email whose only content was a remote image: the sanitiser strips
+  # images it can't host, leaving empty tags and a literal &nbsp;. That read as
+  # a body, so a blank post reached create! and raised for three days of retries.
+  test "should ignore mail whose body is only a stripped remote image" do
+    user = users(:joel)
+
+    assert_no_difference -> { user.blog.posts.count } do
+      assert_nothing_raised do
+        receive_inbound_email_from_mail \
+          to: user.blog.delivery_email,
+          from: user.email,
+          reply_to: user.email,
+          subject: "(No Subject)" do |mail|
+            mail.text_part = Mail::Part.new { body "[image]" }
+            mail.html_part = Mail::Part.new do
+              content_type "text/html; charset=utf-8"
+              body '<div><img src="https://example.com/proxied.jpg"></div><div>&nbsp;</div>'
+            end
+          end
+      end
+    end
+  end
+
+  test "should not use a placeholder subject as the post title" do
+    user = users(:joel)
+
+    receive_inbound_email_from_mail \
+      to: user.blog.delivery_email,
+      from: user.email,
+      reply_to: user.email,
+      subject: "(No Subject)",
+      body: "Just the body." do |mail|
+        mail.header["Received-SPF"] = "pass"
+    end
+
+    assert_nil user.blog.posts.last.title
+  end
 end

@@ -33,6 +33,7 @@ Pages are for content that lives outside your blog feed – like an About page, 
 
 - [Creating pages](creating-pages.md)
 - [Setting up navigation](setting-up-navigation.md)
+- [Search](blog-search.md)
 - [Dynamic variables for pages](dynamic-variables-for-pages.md)
 
 ## Customisation
@@ -42,15 +43,23 @@ Make your blog your own. Choose a theme, tweak colours, change layouts, add cust
 - [Customising your blog](customising-your-blog.md)
 - [Custom CSS Guide](custom-css.md)
 - [Adding a custom footer](custom-footer.md)
+- [Adding custom code](custom-code.md)
+- [Custom code recipes](custom-code-recipes.md)
 - [SEO & Discovery](seo-and-discovery.md)
 
 ## Email
 
-Pagecord was built around email. Premium subscribers can enable people to subscribe to their blog via email, and enable the Reply by Email and Contact Form features.
+Email is at the heart of Pagecord. Premium subscribers can let readers subscribe to their blog, reply privately to a post, and get in touch through a contact form.
 
 - [Email subscriptions](email-subscriptions.md)
 - [Reply by email](reply-by-email.md)
 - [Contact form](contact-form.md)
+
+## Comments
+
+Let readers comment on your posts, with nothing appearing until you approve it.
+
+- [Comments](comments.md)
 
 ## Custom Domains
 
@@ -69,6 +78,12 @@ See who's reading your blog. Pagecord provides privacy-focused analytics with no
 Let readers subscribe to your blog using an RSS reader.
 
 - [RSS feeds](rss-feeds.md)
+
+## IndieWeb
+
+Pagecord blogs are marked up with microformats so that IndieWeb tools can understand your content.
+
+- [Microformats](microformats.md)
 
 ## API & Integrations
 

@@ -1,0 +1,5 @@
+pl:
+  contact_form:
+    mailer:
+      subject: "Nowa wiadomość od %{name}"
+      intro: "Otrzymałeś wiadomość przez formularz kontaktowy bloga %{blog_name}."

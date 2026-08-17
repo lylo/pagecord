@@ -30,4 +30,13 @@ class ReplyMailerTest < ActionMailer::TestCase
     text_part = email.body.parts.find { |p| p.content_type =~ /text\/plain/ }
     assert_match "Great post! Keep it up.\r\n\r\nI especially liked", text_part.body.encoded
   end
+
+  test "renders in the blog's language" do
+    reply = post_replies(:test)
+    reply.post.blog.update!(locale: "es")
+
+    email = ReplyMailer.with(reply: reply).new_reply
+
+    assert_match I18n.t("replies.mailer.intro", locale: :es), email.text_part.body.to_s
+  end
 end

@@ -1,6 +1,8 @@
 require "test_helper"
 
 class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
+  include ActiveJob::TestHelper
+
   test "should handle subscription.created event" do
     user = users(:vivian)
     payload = payload_for("subscription.created", user)
@@ -65,6 +67,42 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert subscription.reload.cancelled?
     assert_equal cancellation_date.to_i, subscription.cancelled_at.to_i
+    assert_equal cancellation_date.to_i, subscription.next_billed_at.to_i
+    assert_not subscription.user.subscribed?, "access should end when the cancellation takes effect"
+  end
+
+  # Paddle cancels immediately when it refunds, and sends subscription.updated
+  # alongside subscription.canceled with no next_billed_at of its own.
+  test "should not restore access when subscription.updated follows a cancellation" do
+    subscription = subscriptions(:one)
+
+    cancellation_date = Time.current
+
+    cancelled = payload_for("subscription.canceled", subscription.user)
+    cancelled["data"]["canceled_at"] = cancellation_date.iso8601
+
+    updated = payload_for("subscription.updated.cancellation", subscription.user)
+    updated["data"]["id"] = "sub_01hvrk1481njzb874tn7wyrksv"
+    updated["data"]["status"] = "canceled"
+    updated["data"]["canceled_at"] = cancellation_date.iso8601
+    updated["data"]["scheduled_change"] = nil
+
+    [ cancelled, updated ].each do |payload|
+      json_payload = payload.to_json
+
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+
+      assert_response :success
+    end
+
+    subscription.reload
+    assert_equal cancellation_date.to_i, subscription.next_billed_at.to_i
+    assert_not subscription.user.subscribed?
   end
 
   test "should not create subscription on transaction.payment_failed event" do
@@ -216,6 +254,109 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     subscription.reload
     assert subscription.annual?, "Expected subscription to be annual after plan change"
     assert_equal SubscriptionsHelper.price_id(:annual), subscription.paddle_price_id
+  end
+
+  test "should store the new plan's recurring price, not the prorated transaction total, on a small-proration plan change" do
+    subscription = subscriptions(:one)
+    assert subscription.annual?
+
+    payload = payload_for("transaction.completed.plan_change.small_proration", subscription.user)
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    subscription.reload
+    assert subscription.supporter?
+    # The transaction's line-item total (758) is the prorated top-up charged today, not
+    # the ongoing recurring price (7500) — the stored unit_price must be the latter.
+    assert_equal 7500, subscription.unit_price
+  end
+
+  test "should set supporter plan and send welcome email on subscription.created" do
+    user = users(:vivian)
+    payload = payload_for("subscription.created", user)
+    payload["data"]["custom_data"]["plan"] = "supporter"
+    json_payload = payload.to_json
+
+    assert_enqueued_emails 1 do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    assert_response :success
+    assert user.subscription.reload.supporter?
+  end
+
+  test "should send supporter welcome email when upgrading to supporter via transaction.completed" do
+    subscription = subscriptions(:one)
+    assert subscription.annual?
+
+    payload = payload_for("transaction.completed.plan_change.supporter", subscription.user)
+    json_payload = payload.to_json
+
+    assert_enqueued_emails 1 do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    assert_response :success
+    assert subscription.reload.supporter?
+  end
+
+  test "should not resend supporter welcome email when plan is already supporter" do
+    subscription = subscriptions(:one)
+    subscription.update!(plan: :supporter)
+
+    payload = payload_for("transaction.completed.plan_change.supporter", subscription.user)
+    json_payload = payload.to_json
+
+    assert_no_enqueued_emails do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    assert_response :success
+    assert subscription.reload.supporter?
+  end
+
+  test "should reconcile plan and unit_price on a subscription.updated downgrade" do
+    subscription = subscriptions(:one)
+    subscription.update!(plan: :supporter, unit_price: 7500)
+
+    payload = payload_for("subscription.updated.plan_change", subscription.user)
+    json_payload = payload.to_json
+
+    assert_no_enqueued_emails do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    assert_response :success
+    subscription.reload
+    assert subscription.annual?, "plan should reconcile to annual from the webhook price id"
+    assert_equal 3900, subscription.unit_price, "unit_price should reconcile from the webhook, not stay at the supporter price"
   end
 
   private

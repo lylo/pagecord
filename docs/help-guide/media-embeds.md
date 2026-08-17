@@ -10,7 +10,8 @@ Pagecord can automatically turn links into rich embeds. Paste a supported URL on
 
 | Service | What embeds |
 |---|---|
-| **YouTube** | Videos, Shorts, and live streams |
+| **YouTube** | Videos, Shorts, live streams, and playlists |
+| **YouTube Music** | Tracks and public playlists (played via the standard YouTube player) |
 | **Spotify** | Tracks, albums, playlists, podcasts, and shows |
 | **Apple Music** | Songs, albums, and playlists |
 | **Tidal** | Tracks, albums, and playlists |
@@ -22,6 +23,8 @@ Pagecord can automatically turn links into rich embeds. Paste a supported URL on
 | **Images** | Direct image URLs (jpg, png, gif, webp, svg) |
 
 ## How it works
+
+Direct image URLs are worth knowing about on Classic: if you host a picture somewhere else, embedding it by URL costs nothing against your upload allowance.
 
 Paste the URL on its own line, with no other text around it. The URL can be a plain link or a hyperlink, as long as the visible text is the URL itself. When a reader views your post, the link is replaced with the embed automatically.
 

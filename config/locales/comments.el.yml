@@ -1,0 +1,21 @@
+el:
+  comments:
+    heading: "Σχόλια"
+    author_badge: "Συντάκτης"
+    closed: "Τα σχόλια είναι κλειστά."
+    submitted: "Ευχαριστούμε. Το σχόλιό σου θα εμφανιστεί μόλις εγκριθεί."
+    rejected: "Δυστυχώς δεν στάλθηκε. Δοκίμασε ξανά."
+    more:
+      one: "%{count} ακόμη σχόλιο"
+      other: "%{count} ακόμη σχόλια"
+    form:
+      message_placeholder: "Γράψε ένα σχόλιο…"
+      name_placeholder: "Όνομα"
+      link_placeholder: "Ιστότοπος (προαιρετικά)"
+      submit_button: "Δημοσίευση"
+    mailer:
+      subject: "Έχεις σχόλια σε αναμονή"
+      intro:
+        one: "Έχεις %{count} σχόλιο σε αναμονή έγκρισης."
+        other: "Έχεις %{count} σχόλια σε αναμονή έγκρισης."
+      button: "Δες τα σχόλια"

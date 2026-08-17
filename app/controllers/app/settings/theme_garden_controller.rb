@@ -1,6 +1,11 @@
 class App::Settings::ThemeGardenController < AppController
+  include BlogContentSecurityPolicy
+
   skip_before_action :onboarding_check
   before_action :set_template, only: [ :preview, :apply ]
+
+  # The preview renders blog content, embeds included, under the blog layout
+  blog_content_security_policy only: :preview
 
   def index
     @templates = ThemeTemplate.active.ordered
@@ -11,6 +16,8 @@ class App::Settings::ThemeGardenController < AppController
     @posts = @blog.posts.visible.with_full_rich_text.includes(:upvotes).order(published_at: :desc).limit(5)
     @pagy = Data.define(:next).new(next: nil)
     @user = @blog.user
+    @preview = true
+
     with_blog_view_context do
       render template: "app/settings/theme_garden/preview", layout: "blog"
     end

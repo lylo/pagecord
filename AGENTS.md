@@ -9,6 +9,15 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **Reuse existing code**: Before adding a helper, predicate, query object, or host/routing check, search for an existing app concept that already expresses it. Prefer calling the existing method over duplicating the logic.
 - **Idiomatic**: Follow Ruby and Rails conventions throughout. Fat models, skinny controllers, RESTful routes.
 - **Default Rails baseline**: For Rails coding, refactoring, debugging, migrations, and review tasks, apply the `rails-best-practices-core` skill unless a more specific instruction conflicts.
+- **Suggest refactorings**: When you spot something worth improving next to the work in hand, say so. Describe it and let it be chosen, rather than silently widening the change.
+
+## State changes
+
+- **A GET must be safe.** Never write state in response to a GET, not even to a cookie or the session. Turbo prefetches links on hover, so a `link_to` that writes a preference fires just by passing the cursor over it. This is easy to miss because curl and integration tests never hover: the server looks correct in every probe while every browser misbehaves.
+- **Toggles are singular resources.** A preference or state change is `create`/`destroy` on a `resource`, reached with `button_to`. `App::Posts::DetailsController` and `App::Pages::SortController` are the pattern; `routes.rb` has many more (`resource :restoration`, `resource :spotlight_exclusion`, `resource :avatar`).
+- **`button_to` inside a flex or grid container needs `form_class: "contents"`**, or the generated `<form>` becomes the layout child and breaks the arrangement. Inactive buttons need `cursor-pointer`, which links get for free.
+- **`session` vs `cookies.encrypted`**: the session *is* an encrypted cookie, so encryption is not the distinction — lifetime is. The session expires after a year and dies with `sign_out`, so anything that should be remembered indefinitely belongs in `cookies.permanent.encrypted`: display preferences such as `posts_info` and `pages_sort`. Reserve `session` for state that is genuinely scoped to being signed in, and `cookies.encrypted` without `permanent` for values needing their own schedule, such as `upgrade_banner_dismissed` reappearing after 14–30 days.
+- Storing a preference as an explicit value both ways (`"on"` / `"off"`) avoids the `cookies.delete` branch that a single toggle endpoint needs to express "back to default".
 
 ## Code Style
 
@@ -20,6 +29,28 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - Prefer ternary operators over case statements for 2-option logic
 - Use `inline_svg_tag "icons/name.svg"` for SVGs — never hardcode `<svg>` elements
 - Avoid N+1 queries: use `.includes()`, `.eager_load()`, or `.preload()`
+
+### Comments
+
+Write almost none. Name things well and let the code speak. A comment is warranted
+only when a future reader would otherwise make a mistake: a non-obvious coupling
+between files, a constant that must be kept in step with something else, a
+deliberate deviation from the obvious approach. One line, ideally.
+
+Never write a comment that:
+
+- restates what the line below it does
+- explains why a decision was made, or argues for it
+- narrates what would break if the code were changed
+- answers a question that came up while writing it
+
+If a change needed explaining, the explanation belongs in the commit message or
+the pull request, where it is attached to the change rather than to the file
+forever. Code review comments are not code comments.
+
+For calibration, `~/dev/fizzy` runs at roughly 1.6% comment lines across all
+models and controllers, and its longest comment warns that a constant must be
+updated when a model is added — a trap the code genuinely can't express.
 
 ## JavaScript & Frontend
 
@@ -53,6 +84,12 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 
 - Minitest with fixtures. Follow Rails conventions for file location.
 - Focused tests for business logic — don't over-test
+- Keep the suite fast. Lean on fixtures rather than creating records in the test,
+  and never loop to build a pile of them to reach a threshold
+- Don't test the framework or a gem. If the assertion would fail only because
+  Pagy or Rails itself broke, delete it
+- System tests are a last resort, for behaviour no other layer can reach. They
+  are slow and prone to flaking; prefer an integration test every time
 - UI review checklist: verify loading/sending/sent/error states, async redirects and background-job timing, and subscriber/count reads after async work completes. Run relevant system tests when they exist.
 - **System test gotchas**:
   - Flash messages are initially hidden; use `assert page.has_content?("Text", wait: 2)` not `assert_text`
@@ -72,6 +109,7 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **CI skill** (`/ci`): runs brakeman, rubocop, importmap audit, and tests locally
 - **Sentry skill** (`/sentry`): investigate and fix Sentry errors
 - **Support skill** (`/support`): investigate customer issues and draft responses
+- **Fizzy skill** (`/fizzy`): list, create, update, move, comment on, and inspect Fizzy tracker cards. Use it for any tracker work rather than hand-rolling the API
 - **Pagecord blog drafts**: write reviewable Obsidian posts to `/Users/olly/Notes/Personal/Pagecord Blog Posts`
 
 ## Commands
@@ -92,7 +130,7 @@ Docker: prefix commands with `docker-compose exec web`
 - **Core models**: User has one Blog. Blog has many Posts (posts + pages via `is_page` flag), NavigationItems (STI: Page, Custom, Social), EmailSubscribers, Upvotes, Post::Replies, and SenderEmailAddresses
 - **Auth**: Passwordless login via AccessRequest tokens (1-day expiry). EmailChangeRequest for email updates. Both use Verifiable concern.
 - **Routing**: Constraint-based — pagecord.com for app/auth, subdomains and custom domains for blog content
-- **Storage**: ActiveStorage on Cloudflare R2. Soft deletion with Discard gem. StorageTrackable concern tracks attachment bytes/count per blog.
+- **Storage**: ActiveStorage on Cloudflare R2. Soft deletion with Discard gem. `UploadQuota` (a PORO over User) is the single source of truth for what a user has uploaded – count, bytes, and what their plan still allows. `rake activestorage:users` reports it.
 - **API**: `Api::BaseController` handles token auth via `Blog.find_by_api_key`, premium check, `:api` feature flag, 60 req/min rate limit, `wrap_parameters false`, RFC 5988 `Link` + `X-Total-Count` pagination headers, and shared param handling via `permitted_content_params`. Controllers: `Api::PostsController` (CRUD), `Api::PagesController` (CRUD), `Api::HomePagesController` (CRUD, singular resource, second create returns `422`), `Api::AttachmentsController` (file upload → standalone blob → `attachable_sgid`). `content` is always stored as HTML; `content_format=markdown` first renders via Redcarpet with front matter support, then attachment enrichment runs on the resulting HTML. API rich text attachments are blob-only and canonicalized with the same `ActionText::Attachment.from_attachable(..., url: ...)` path used by MailParser via `Html::AttachmentPreview`. Upload limits live in `UploadLimits::CONTENT_TYPES` (`app/models/upload_limits.rb`).
 - **Caching**: `blog.updated_at` is the single invalidation boundary. Everything that changes visitor-visible state touches the blog. Post fragment caches key on `[post, @blog.updated_at]`. ETags use `@blog.updated_at`. Blog `after_commit :purge_cloudflare_cache` fires `PurgeCloudflareCacheJob` (tag-based purge by subdomain). Edge caching (`s-maxage`, `Cache-Tag`, session skip) only applies to `*.pagecord.com` — custom domains route through Caddy, not Cloudflare. Upvotes don't invalidate caches (display is handled client-side via Stimulus).
 - **Background**: Sidekiq + Redis. Cron via `whenever` gem (see `config/schedule.rb`)
@@ -101,8 +139,11 @@ Docker: prefix commands with `docker-compose exec web`
 ### Billing & Access
 - **Payments**: Paddle webhooks (`Billing::PaddleEventsController`) → Subscription model. Plans: monthly, annual, complimentary
 - **Trial**: 14-day free trial. `has_premium_access?` = subscribed OR on trial. `subscribed?` = paid only.
-- Trial-eligible features: analytics, image uploads, avatar, reply by email, upvotes, custom domains, API access
-- Subscriber-only features: email subscriptions, branding removal
+- Trial-eligible (`has_premium_access?`): analytics, reply by email, contact form, writing custom CSS and footers, API access
+- Subscriber-only (`subscribed?`): custom domains, email subscriptions, branding removal, uncapped uploads, video uploads, custom robots.txt, second blog
+- Free on every plan: avatar, post likes, search, themes, tags, RSS, export, 50 uploads (`UploadQuota::FREE_LIMIT`)
+- **Uploads**: `UploadQuota` (PORO over User) is the single source of truth – count, bytes, and what the plan allows. Enforced by `UploadQuota::Validator` on Post; the direct-upload endpoint check is an advisory pre-check only. A save that crosses the limit is allowed; the next upload is refused. Only blobs a save *introduces* are checked, so a lapsed subscriber can still edit old posts
+- **Lapsing**: content and appearance you made keeps rendering (custom CSS, footer, robots.txt, uploads). Ongoing services stop (newsletter, analytics, API, certificates), and so do `Blog#accepts_replies?` and `#accepts_subscribers?`. `Blog#branding_visible?` brings our branding back
 - Payment failures handled automatically by Paddle Retain – don't email customers about failed payments
 - **Invoices**: customers view past invoices via Paddle's customer portal. `App::Settings::Subscriptions::PaddleInvoicesController#show` mints a portal session (`POST customers/:id/portal-sessions`) and redirects – don't build an inline invoice list
 
@@ -182,6 +223,7 @@ CSP `frame-src` in `config/initializers/content_security_policy.rb` must be upda
 ## Key Gotchas
 
 - **ActionText before_save**: Read from `content.to_s` directly — ActionText changes aren't persisted until callback completes
+- **Rich text save N²**: `ActiveStorage::Attachment`'s auto-generated presence validator on `:record` calls `RichText#blank?`, which re-renders the whole body and re-resolves every attachment's SGID – one full render per embedded attachment, so N photos cost N² blob queries (~1,161 for a 33-photo post). `config/initializers/active_storage.rb` swaps the validator for a cheap nil check; a query-budget test in `test/models/post_test.rb` guards it. Never add an `EachValidator` to an attribute that returns a `RichText` – `value.blank?` renders.
 - **API Markdown attachments**: Redcarpet wraps standalone raw `<action-text-attachment>` tags in `<p>` tags. `Api::BaseController#enrich_attachments` must unwrap attachment-only paragraphs after Markdown conversion or rendered blog HTML loses the outer `<action-text-attachment>` wrapper.
 - **Safari**: Doesn't support `*.localhost` — use Chrome/Firefox for subdomain testing
 - **Blog views**: No Tailwind, use semantic CSS. Check `lexxy-typography.css`, `components.css`, `themes/*.css`

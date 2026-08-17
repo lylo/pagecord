@@ -67,6 +67,16 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ └──────────────────────────────────────────────────┘ │ │
 │ │                                                      │ │
 │ │ ┌──────────────────────────────────────────────────┐ │ │
+│ │ │ .comments (Loaded when a reader opens them)      │ │ │
+│ │ │ ┌──────────────────────────────────────────────┐ │ │ │
+│ │ │ │ .comment-form                                │ │ │ │
+│ │ │ └──────────────────────────────────────────────┘ │ │ │
+│ │ │ ┌──────────────────────────────────────────────┐ │ │ │
+│ │ │ │ .comment-list (One .comment per comment)     │ │ │ │
+│ │ │ └──────────────────────────────────────────────┘ │ │ │
+│ │ └──────────────────────────────────────────────────┘ │ │
+│ │                                                      │ │
+│ │ ┌──────────────────────────────────────────────────┐ │ │
 │ │ │ .blog-footer (Custom footer and Pagecord logo)   │ │ │
 │ │ └──────────────────────────────────────────────────┘ │ │
 │ └──────────────────────────────────────────────────────┘ │
@@ -75,9 +85,9 @@ To help you know which elements to target, here is a visual map of the blog page
 
 ## Where to add the custom CSS
 
-Head to `Settings > Appearance` and scroll to the "Custom CSS" section. Paste your CSS code into the text area provided and click **Save Custom CSS**.
+Head to `Settings > Custom Code` and find the "Custom CSS" section. Paste your CSS code into the text area provided and click **Save custom CSS**.
 
-Custom CSS is available to customers with premium access. Your CSS is inserted into the `<head>` of your blog pages and is only rendered while your account has premium access.
+Writing your own custom CSS is a premium feature. Your CSS is inserted into the `<head>` of your blog pages, and once it's saved it keeps rendering whatever plan you're on.
 
 For safety, Pagecord validates custom CSS before saving it:
 
@@ -319,6 +329,17 @@ You can add text next to the upvote icon like this:
 }
 ```
 
+### Make the upvote heart solid
+
+The upvote heart is drawn as an outline, and fills in red once a reader likes the post. If you'd rather it was solid from the start:
+
+```css
+.upvote-heart {
+  fill: currentColor;
+  stroke: none;
+}
+```
+
 ### Stack the post footer items on different lines
 
 If you prefer the post footer items (date, tags, actions) to be stacked vertically instead of side-by-side, use this CSS:
@@ -334,6 +355,57 @@ article footer .post-actions {
   flex-direction: column;
   align-items: flex-start;
   gap: 0.25rem;
+}
+```
+
+### Styling comments
+
+Comments are loaded on demand, so until a reader opens them the page source contains nothing but an empty placeholder. To see the markup, open a post, click the comment icon, then right-click a comment and choose "Inspect" – developer tools show the live page rather than the original source.
+
+The structure looks like this:
+
+```text
+.comments                  The whole section
+  .comments-heading        The "Comments" heading
+  .comment-form            The box for leaving a comment
+  .comment-notice          "Awaiting approval" and "comments closed" messages
+  .comment-list
+    .comment               One comment
+      .comment-meta        The name, badge and date row
+        .comment-name
+        .comment-badge     The "Author" label on your own comments
+        .comment-date
+      .comment-message     The comment text
+      .comment-replies     Nested replies, each also a .comment
+    .comments-more         The "load more comments" link
+```
+
+In the post footer, `.comment-link` is the button showing the icon (wrapped in a small form with the class `.comment-link-form`) and `.comment-count` is the number beside it. Style it with the bare class rather than an element selector like `a.comment-link`.
+
+Comments you leave on your own posts also get a `.comment-by-author` class, which tints them with your theme's accent colour. To turn that off:
+
+```css
+.comment-by-author {
+  background: none;
+  border-inline-start: none;
+  padding: 0;
+}
+```
+
+The space between comments sits on the gap between them rather than on `.comment` itself, and a second rule covers the comments that arrive when a reader clicks "load more". Change both together so every page of comments is spaced the same:
+
+```css
+.comment + .comment,
+turbo-frame > .comment:first-child {
+  margin-block-start: 1.75rem;
+}
+```
+
+The section is set slightly smaller than your body text, and everything inside is sized relative to that. To opt out:
+
+```css
+.comments {
+  font-size: 1rem;
 }
 ```
 
@@ -407,6 +479,49 @@ By default, image galleries render in 2 or 3 columns depending on how many image
 ```
 
 Adjust `600px` to your preferred breakpoint.
+
+### PDF attachments: changing the layout
+
+A PDF attachment renders its first page as a thumbnail, with a download link and the file size below. You can target the following classes:
+
+- `.attachment--pdf` – the container
+- `.attachment__page` – the rendered first page
+- `.attachment__caption` – the line beneath it
+- `.attachment__title` – the caption you typed in the editor, if any
+- `.attachment__link` – the download link
+- `.attachment__size` – the file size
+
+**Show it as a compact row** instead of a full-size page:
+
+```css
+.attachment--pdf {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.attachment--pdf .attachment__page { max-block-size: 6rem; }
+.attachment--pdf .attachment__caption { justify-content: flex-start; }
+```
+
+**Change how large the page appears:**
+
+```css
+.attachment--pdf .attachment__page { max-block-size: 300px; }
+```
+
+**Hide the file size:**
+
+```css
+.attachment--pdf .attachment__size { display: none; }
+```
+
+The separator dots are attached to the items either side of the download link, so hiding an item hides its dot too. The one exception is hiding the download link itself, which needs an extra line:
+
+```css
+.attachment--pdf .attachment__link { display: none; }
+.attachment--pdf .attachment__size::before { content: none; }
+```
 
 ### Posts gallery: customising the layout
 

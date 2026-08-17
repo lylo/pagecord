@@ -1,0 +1,13 @@
+<% if @pending.empty? && @approved.empty? %>
+  <%= render "app/comments/blank_slate" %>
+<% else %>
+  <div class="space-y-8">
+    <% if @pending.any? %>
+      <%= render "app/comments/pending_section" %>
+    <% end %>
+
+    <% if @approved.any? %>
+      <%= render "app/comments/approved_section" %>
+    <% end %>
+  </div>
+<% end %>

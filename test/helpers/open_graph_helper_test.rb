@@ -80,11 +80,11 @@ class OpenGraphHelperTest < ActionView::TestCase
     end
   end
 
-  test "text-only post for free account should not have custom open graph image" do
+  test "text-only post for free account has a dynamic open graph image" do
     with_og_env_vars do
       @post = posts(:three)
 
-      assert_nil open_graph_image
+      assert_includes open_graph_image, "https://og.example.com/og"
     end
   end
 

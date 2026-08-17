@@ -8,8 +8,10 @@ class App::Settings::NavigationItemsController < AppController
   def create
     klass = case params[:nav_type]
     when "page" then PageNavigationItem
+    when "posts" then PostsNavigationItem
     when "custom" then CustomNavigationItem
     when "social" then SocialNavigationItem
+    when "search" then SearchNavigationItem
     else NavigationItem
     end
 

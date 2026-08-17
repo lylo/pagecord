@@ -1,0 +1,3 @@
+<% @blog.social_navigation_items.rel_me.ordered.each do |link| %>
+  <link href="<%= link.link_url %>" rel="me">
+<% end %>

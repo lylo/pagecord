@@ -132,6 +132,41 @@ class CustomNavigationItemTest < ActiveSupport::TestCase
   end
 end
 
+class PostsNavigationItemTest < ActiveSupport::TestCase
+  setup do
+    @blog = blogs(:joel)
+  end
+
+  test "valid with label" do
+    item = PostsNavigationItem.new(blog: @blog, label: "Blog")
+    assert item.valid?
+  end
+
+  test "invalid without label" do
+    item = PostsNavigationItem.new(blog: @blog)
+    assert_not item.valid?
+    assert_includes item.errors[:label], "can't be blank"
+  end
+
+  test "label can be translated" do
+    item = PostsNavigationItem.create!(blog: @blog, label: "Artículos")
+    assert_equal "Artículos", item.reload.label
+  end
+
+  test "only one allowed per blog" do
+    PostsNavigationItem.create!(blog: @blog, label: "Blog")
+
+    item = PostsNavigationItem.new(blog: @blog, label: "Posts")
+    assert_not item.valid?
+    assert_includes item.errors[:type], "has already been taken"
+  end
+
+  test "link_url returns the posts list path" do
+    item = PostsNavigationItem.new(blog: @blog, label: "Blog")
+    assert_equal Rails.application.routes.url_helpers.blog_posts_list_path, item.link_url
+  end
+end
+
 class SocialNavigationItemTest < ActiveSupport::TestCase
   setup do
     @blog = blogs(:joel)

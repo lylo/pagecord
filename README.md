@@ -93,6 +93,46 @@ folder and create posts for the first user account in the seed data (`joel@pagec
 DIR=tmp/emails rake email:load
 ```
 
+## Testing billing locally
+
+Billing runs on Paddle Billing. When a subscription is created or changed, Paddle
+sends webhooks to `/billing/paddle_events`, and those webhook handlers are what
+actually set the plan, price, billing dates and send emails. The `paddle:simulate`
+rake tasks replay those webhooks against your running dev server with a valid
+signature, so you can exercise the whole subscription lifecycle without driving the
+Paddle sandbox by hand.
+
+This covers everything **after** Paddle. The outbound side (the `change_plan`
+controller calling Paddle to switch a plan) is a real API call, so verifying Paddle's
+own proration still needs the sandbox.
+
+The dev server must be running (`bin/dev`). Then:
+
+```bash
+# List the ready-made scenarios and the raw fixtures
+bin/rails "paddle:scenarios"
+
+# Run a named scenario against a user (blog subdomain, id, or email)
+bin/rails "paddle:flow[signup_supporter,joel]"
+bin/rails "paddle:flow[upgrade_to_supporter,joel]"
+bin/rails "paddle:flow[downgrade_from_supporter,joel]"
+bin/rails "paddle:flow[cancel,joel]"
+
+# Replay a single webhook fixture, optionally overriding the plan in custom_data
+bin/rails "paddle:simulate[subscription.created,joel,supporter]"
+bin/rails "paddle:simulate[transaction.completed.plan_change.supporter,joel]"
+```
+
+Each run prints the subscription state before and after, so watch that rather than the
+HTTP status (the endpoint always returns `200`). Fixtures live in
+`test/fixtures/billing/`; target a non-default host with `PADDLE_SIMULATE_URL`.
+
+Signature verification needs a shared `webhook_secret_key`. In development this falls
+back to a fixed value (`config/paddle.yml`) when `PADDLE_SANDBOX_WEBHOOK_SECRET_KEY`
+is unset, so both the server and the simulator sign with the same key. Restart the dev
+server after changing that config. Supporter welcome emails are sent with
+`deliver_later`, so to see one you need your local mail catcher and job worker running.
+
 ## Open Graph Images
 
 Pagecord can optionally generate dynamic Open Graph images for blog posts using a separate Cloudflare Worker service. This worker is currently **closed source** and not required to run Pagecord locally.
@@ -109,7 +149,7 @@ OG_SIGNING_SECRET=your-secret-key
 
 ## Log Analysis
 
-Rake tasks for analysing production logs on the server. No external gems required.
+Rake tasks for analysing production logs. They read `log/production.log*` in the repo, so they run the same on the server or locally against logs copied down (see below). No external gems required.
 
 ```bash
 # Per-hour request overview — highlights anomalous traffic spikes
@@ -131,6 +171,10 @@ rake "logs:performance[2026-02-23,21]"
 HOST=joel rake "logs:performance[2026-02-23]"
 HOST=example.com rake "logs:performance[2026-02-23,21]"
 
+# AI bot robots.txt compliance — disallowed crawlers still hitting the site
+rake logs:bots              # all retained logs
+rake "logs:bots[2026-02-23]"  # a single day
+
 # Live tail with per-minute request counter (alerts at >500 req/min)
 rake logs:watch
 
@@ -146,6 +190,16 @@ rake "logs:blog[joel,2026-02-23,21]"
 # Works with custom domains too
 rake "logs:blog[example.com]"
 ```
+
+### Running locally
+
+Copy the production logs into the repo's `log/` directory, then run any of the tasks above:
+
+```bash
+scp 'pagecord:pagecord/current/log/production.log*' log/
+```
+
+The parser reads every `production.log*` file, including rotated `.gz`, so this gives you the full retained window (a couple of weeks). Rotation maps as `production.log` (today), `production.log.1.gz` (yesterday), and so on, so grab a single file if you only need one day.
 
 ## More info
 

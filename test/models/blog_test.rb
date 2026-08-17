@@ -58,6 +58,28 @@ class BlogTest < ActiveSupport::TestCase
     assert_not @blog.valid?
   end
 
+  test "should accept a valid avatar" do
+    @blog.avatar = { io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png" }
+
+    assert @blog.valid?
+  end
+
+  test "should reject an avatar disguised as an image" do
+    @blog.avatar = { io: StringIO.new("<svg xmlns='http://www.w3.org/2000/svg'><script>alert(1)</script></svg>"),
+                     filename: "avatar.png", content_type: "image/png" }
+
+    assert_not @blog.valid?
+    assert_includes @blog.errors[:avatar], "must be a JPEG, PNG or WebP image"
+  end
+
+  test "should reject an avatar that is too big" do
+    @blog.avatar = { io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png" }
+    @blog.avatar.blob.stubs(:byte_size).returns(Blog::AVATAR_MAX_SIZE + 1)
+
+    assert_not @blog.valid?
+    assert_includes @blog.errors[:avatar], "is too big (maximum 5MB)"
+  end
+
   test "should store subdomain in lowercase" do
     @blog.subdomain = "JOEL"
     @blog.save
@@ -268,11 +290,42 @@ class BlogTest < ActiveSupport::TestCase
     assert_equal original_updated_at, post.reload.updated_at
   end
 
+  # Moderation is an ongoing service, so the stored preference only holds while
+  # the plan pays for it.
+  test "accepts_comments? follows premium access" do
+    assert @blog.accepts_comments?
+
+    @blog.user.subscription.destroy
+    @blog.user.update!(created_at: 30.days.ago)
+
+    assert_not @blog.reload.accepts_comments?
+  end
+
+  # Otherwise the moderation queue nags about work that can't be done: approving
+  # publishes nothing and the row links to a post in the trash.
+  test "comments exclude those on trashed posts" do
+    blog = blogs(:joel)
+    post = posts(:one)
+
+    assert_difference -> { blog.comments.pending.count }, -1 do
+      post.discard!
+      blog.reload
+    end
+
+    assert_difference -> { blog.comments.pending.count }, 1 do
+      post.undiscard!
+      blog.reload
+    end
+  end
+
   test "should purge cloudflare cache on update" do
     blog = blogs(:joel)
 
-    PurgeCloudflareCacheJob.expects(:perform_later).with(blog.id).once
     Rails.stubs(:env).returns(ActiveSupport::EnvironmentInquirer.new("production"))
+
+    job = mock
+    job.expects(:perform_later).with(blog.id).once
+    PurgeCloudflareCacheJob.expects(:set).with(wait: 5.seconds).returns(job)
 
     blog.update!(title: "New Title")
   end
@@ -302,5 +355,61 @@ class BlogTest < ActiveSupport::TestCase
     @blog.save!
 
     assert_not @blog.reload.password_protected?
+  end
+
+  test "a bio cannot contain attachments, whatever the plan" do
+    blog = blogs(:vivian)
+    blog.bio = image_attachment_html(1)
+
+    assert_not blog.valid?
+    assert_equal "can't contain attachments", blog.errors[:bio].first
+
+    subscriber = blogs(:joel)
+    subscriber.bio = image_attachment_html(1)
+
+    assert_not subscriber.valid?
+  end
+
+
+  test "branding reappears when a subscription lapses" do
+    blog = blogs(:joel)
+    blog.update!(show_branding: false)
+
+    assert_not blog.branding_visible?
+
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+
+    assert blog.reload.branding_visible?
+  end
+
+  test "branding stays hidden for a subscriber who turned it off" do
+    blog = blogs(:joel)
+    blog.update!(show_branding: false)
+
+    assert_not blog.reload.branding_visible?
+  end
+
+  test "branding shows for a free blog" do
+    assert blogs(:vivian).branding_visible?
+  end
+
+  test "replies stop when premium access lapses" do
+    blog = blogs(:joel)
+    blog.update!(reply_by_email: true)
+
+    assert blog.accepts_replies?
+
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+
+    assert_not blog.reload.accepts_replies?
+  end
+
+  test "replies are included in the trial" do
+    blog = blogs(:vivian)
+    blog.update!(reply_by_email: true)
+    blog.user.update!(trial_ends_at: 7.days.from_now)
+
+    assert blog.user.on_trial?
+    assert blog.accepts_replies?
   end
 end

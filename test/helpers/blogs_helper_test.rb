@@ -74,4 +74,27 @@ class BlogsHelperTest < ActionView::TestCase
 
     assert_equal "My Post Title - #{blog.display_name}", page_title
   end
+
+  test "content_type_class names every kind of blog page" do
+    @blog = blogs(:joel)
+
+    assert_equal "index", content_type_class
+
+    @post = posts(:one)
+    assert_equal "post", content_type_class
+
+    @post.is_page = true
+    assert_equal "page", content_type_class
+
+    @post.is_home_page = true
+    assert_equal "home-page", content_type_class
+  end
+
+  test "open graph type stays a valid og:type" do
+    @blog = blogs(:joel)
+    assert_equal "website", page_type
+
+    @post = posts(:one)
+    assert_equal "article", page_type
+  end
 end

@@ -7,6 +7,7 @@ class Admin::AnalyticsController < AdminController
     @top_pages = top_pages_with_view_counts
     @top_blogs = top_blogs_with_view_counts
     @top_blogs_by_subscribers = top_blogs_with_subscriber_counts
+    @top_posts_by_comments = top_posts_with_comment_counts
     @trending_posts = Analytics::Trending.new.top_posts(limit: 10)
   end
 
@@ -68,7 +69,7 @@ class Admin::AnalyticsController < AdminController
       relevant_post_ids = Post.where(is_page: is_page).pluck(:id).map(&:to_s)
 
       # Add Rollup counts for the period (filtered to relevant posts)
-      Rollup.where(name: "unique_views_by_blog_post", time: start_time..end_time)
+      Rollup.where(name: "unique_views_by_blog_post", interval: "day", time: start_time..end_time)
         .group("dimensions->>'post_id'")
         .sum(:value)
         .each do |post_id_string, count|
@@ -100,7 +101,7 @@ class Admin::AnalyticsController < AdminController
         .each { |blog_id, count| blog_view_counts[blog_id] = count }
 
       # Add Rollup counts for the period
-      Rollup.where(name: "unique_views_by_blog", time: start_time..end_time)
+      Rollup.where(name: "unique_views_by_blog", interval: "day", time: start_time..end_time)
         .group("dimensions->>'blog_id'")
         .sum(:value)
         .each do |blog_id_string, count|
@@ -115,6 +116,22 @@ class Admin::AnalyticsController < AdminController
       # Fetch the actual Blog objects
       blogs_with_counts = Blog.where(id: top_blog_ids)
         .map { |blog| { blog: blog, count: blog_view_counts[blog.id] || 0 } }
+        .sort_by { |item| -item[:count] }
+    end
+
+    def top_posts_with_comment_counts
+      start_time, end_time = date_range_for_view_type
+
+      comment_counts = Post::Comment.approved
+        .where(author: false, created_at: start_time..end_time)
+        .group(:post_id)
+        .order(count_all: :desc)
+        .limit(10)
+        .count
+
+      Post.includes(:blog)
+        .where(id: comment_counts.keys)
+        .map { |post| { post: post, count: comment_counts[post.id] } }
         .sort_by { |item| -item[:count] }
     end
 

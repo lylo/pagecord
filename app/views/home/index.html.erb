@@ -50,9 +50,9 @@
 
     <p>Write posts where you like, when you like. Use the editor, post by email, publish from Obsidian, iA Writer, or use the terminal to sync local files.</p>
 
-    <p>All the blog essentials in one tidy package: posts, pages, themes, email subscribers, analytics, and a domain of your own.</p>
+    <p>All the blog essentials in one tidy package: posts, pages, themes, email subscribers, comments, analytics, and a domain of your own.</p>
 
-    <p>No lock-in, no AI, no bloat. Just your words, written your way, on your own corner of the web.</p>
+    <p>Your own words, written your own way, on your own corner of the web.</p>
 
     <div class="text-center mt-2 mb-2 md:text-xl flex flex-col sm:flex-row gap-3 justify-center items-center">
       <%= link_to new_signup_path do %>
@@ -63,7 +63,7 @@
       <% end %>
     </div>
 
-    <p class="text-center text-sm text-slate-600 dark:text-slate-400">Trusted by 900+ independent bloggers. Free forever, Premium $<%= localised_price %>/year or $<%= localised_price(:monthly) %>/month.</p>
+    <p class="text-center text-sm text-slate-600 dark:text-slate-400">Trusted by 1000+ independent bloggers. Pagecord Classic is free forever. Every new account starts with a 14-day free trial of Pagecord Premium. No card required.</p>
 
    </div>
 </div>
@@ -125,7 +125,7 @@
         <div class="absolute -left-10 -bottom-10 h-28 w-28 rounded-full bg-[#4fbd9c]/12 blur-2xl"></div>
         <div class="relative">
           <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Complete, not complicated</h3>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord includes posts, pages, themes, analytics, email subscribers, custom domains, and full export. Everything you could reasonably need, for a most reasonable price.</p>
+          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord includes posts, pages, themes, analytics, email subscribers, comments, custom domains, and full export. Everything you could reasonably need, for a most reasonable price.</p>
         </div>
       </section>
     </div>
@@ -201,6 +201,26 @@
     height: "967" %>
 </div>
 
+<!-- Comments Section -->
+<div id="comments" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Host a conversation with comments</h2>
+
+  <p class="md:text-xl leading-relaxed my-5">
+    With Pagecord Premium you can enable comments on your posts. Readers leave a name and a message: no account needed, no email address revealed. You can post a reply to any of them.
+  </p>
+
+  <p class="md:text-xl leading-relaxed my-5">
+    Comments won't appear until you approve them, and spam is filtered out before it reaches you.
+  </p>
+
+  <%= image_tag home_image_path("home/comments.webp", width: 1600, quality: 90),
+    srcset: home_image_srcset("home/comments.webp", widths: [ 800, 1600 ], quality: 88),
+    sizes: "(min-width: 56rem) 54rem, 100vw",
+    alt: "A screenshot of comments on a Pagecord blog post",
+    width: "1600",
+    height: "922" %>
+</div>
+
 <!-- Analytics Section -->
 <div id="analytics" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
   <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Privacy-respecting analytics built in</h2>
@@ -227,7 +247,11 @@
   <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Pricing</h2>
 
   <p class="md:text-xl leading-relaxed mt-5 mb-8">
-    The blogging basics are <strong>free forever</strong>. Upgrade any time for custom domains, analytics, email subscribers, hosted images, Obsidian, API, CLI, and more for <strong>$<%= localised_price %>/year</strong> or <strong>$<%= localised_price(:monthly) %>/month</strong>.
+    Classic is <strong>free forever</strong>: unlimited posts and pages, your own themes and 20 free uploads to get going. Nothing you make is ever taken away if you stop paying. Upgrade any time for custom domains, analytics, email subscribers, video and a bigger upload allowance, Obsidian, API, CLI, and more for <strong>$<%= localised_price %>/year</strong> or <strong>$<%= localised_price(:monthly) %>/month</strong>.
+  </p>
+
+  <p class="md:text-xl leading-relaxed mt-5 mb-8">
+    Every new account starts with a <strong>14-day free trial</strong> of Premium, so you can try everything before you decide. No credit card required!
   </p>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -243,6 +267,8 @@
             Get started for free
           </div>
         <% end %>
+
+        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No card, and nothing expires.</p>
       </div>
 
       <ul class="mt-8 space-y-3">
@@ -264,6 +290,10 @@
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          An avatar for your blog
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           Create pages as well as blog posts
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
@@ -277,6 +307,22 @@
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           Full site HTML export
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Dynamic open graph images
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Post likes
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          20 uploads: images and audio
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Search your blog
         </li>
       </ul>
     </div>
@@ -292,9 +338,11 @@
 
         <%= link_to new_signup_path, class: "block w-full" do %>
           <div class="w-full py-3 px-6 rounded-xl font-medium bg-pagecord-accent text-white transition-colors text-center">
-            Get started for free
+            Start your 14-day free trial
           </div>
         <% end %>
+
+        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No card required.</p>
       </div>
 
       <ul class="mt-8 space-y-3">
@@ -312,7 +360,7 @@
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
-          Image hosting &amp; avatar
+          Images, audio and video
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
@@ -320,15 +368,15 @@
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
-          Reply by email & post likes
+          Comments
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Reply by email
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           Embeddable contact form
-        </li>
-        <li class="flex items-center text-slate-700 dark:text-slate-300">
-          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
-          Dynamic open graph images
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
@@ -337,6 +385,10 @@
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
           Custom CSS
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Custom code
         </li>
         <li class="flex items-center text-slate-700 dark:text-slate-300">
           <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
@@ -349,13 +401,17 @@
       </ul>
     </div>
   </div>
+
+  <p class="mt-8 text-center md:text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+    If you're a Pagecord super-fan and have deeper pockets, please consider becoming a <%= link_to "Supporter", supporters_path, class: "underline font-medium" %> for $<%= localised_price(:supporter) %>/year!
+  </p>
 </div>
 
 <div id="features" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200 ">
   <h2 class="source-serif font-semibold text-center my-8 text-3xl md:text-4xl tracking-tight">Pagecord has everything you need</h2>
 
   <p class="md:text-xl leading-relaxed my-5">
-     Pagecord gives you everything a personal website actually needs: blog posts, pages, RSS, email subscriptions, simple analytics, a custom domain, full site export, and integrations with popular writing tools like Obsidian and iA Writer.
+     Pagecord gives you everything a personal website actually needs: blog posts, pages, RSS, email subscriptions, comments, simple analytics, a custom domain, full site export, and integrations with popular writing tools like Obsidian and iA Writer.
   </p>
 
   <div class="mt-8 bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-xl">
@@ -487,11 +543,46 @@
           <td class="text-center align-middle text-xl">✅</td>
           <td class="text-center align-middle text-xl">✅</td>
         </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Post Likes</div>
+            <div class="hidden sm:block">Visitors can 'like' your posts. You track the stats in the app ❤️</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Image Hosting</div>
-            <div class="hidden sm:block">Upload images and image galleries for your posts, via email attachments or using the editor 🖼️</div>
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Search</div>
+            <div class="hidden sm:block">Readers can search your site to find what they're looking for 🔍</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Avatar</div>
+            <div class="hidden sm:block">Add a touch of your own personality while retaining that classic Pagecord minimal look 🧑‍🎨</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Image &amp; Audio Hosting</div>
+            <div class="hidden sm:block">Upload images, galleries and audio for your posts, via email attachments or using the editor 🖼️</div>
+          </td>
+          <td class="text-center align-middle text-base">20 for free</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Video Hosting</div>
+            <div class="hidden sm:block">Upload video straight into a post, up to 50MB a file 🎬</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -523,6 +614,15 @@
 
         <tr>
           <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Comments</div>
+            <div class="hidden sm:block">Readers comment without signing up for anything. Every comment waits for your approval, and spam is filtered out before it reaches you 💬</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+
+        <tr>
+          <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Reply by email</div>
             <div class="hidden sm:block">Readers reply to your posts by email. Your email address is never revealed!</div>
           </td>
@@ -541,24 +641,6 @@
 
         <tr>
           <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Post Likes</div>
-            <div class="hidden sm:block">Visitors can 'like' your posts. You track the stats in the app ❤️</div>
-          </td>
-          <td></td>
-          <td class="text-center align-middle text-xl">✅</td>
-        </tr>
-
-        <tr>
-          <td class="py-3 align-middle">
-            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Avatar</div>
-            <div class="hidden sm:block">Add a touch of your own personality while retaining that classic Pagecord minimal look 🧑‍🎨</div>
-          </td>
-          <td></td>
-          <td class="text-center align-middle text-xl">✅</td>
-        </tr>
-
-        <tr>
-          <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Custom Domains</div>
             <div class="hidden sm:block">If you'd prefer to use your own domain name for your site, set it up in one click 🌐</div>
           </td>
@@ -570,6 +652,14 @@
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Custom CSS</div>
             <div class="hidden sm:block">Add your own CSS to customise the look of your blog beyond the built-in themes 🎨</div>
+          </td>
+          <td></td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Custom code</div>
+            <div class="hidden sm:block">Add your own HTML and JavaScript to every page for third party analytics, or custom functionality 🛠️</div>
           </td>
           <td></td>
           <td class="text-center align-middle text-xl">✅</td>
@@ -617,7 +707,9 @@
 <div id="walkthrough" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
   <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Watch a Pagecord walkthrough</h2>
   <p class="md:text-xl leading-relaxed mb-8">
-    Join Pagecord creator Olly for a 20-minute tour of everything Pagecord can do.
+    Join Pagecord creator Olly for a 20-minute tour of everything Pagecord can do, or work through the
+    <%= link_to "tutorial playlist", "https://www.youtube.com/playlist?list=PLWmBHyKikHFs", class: "home-link" %>
+    for shorter videos on individual features.
   </p>
   <video controls preload="none" poster="<%= asset_path("home/pagecord-walkthrough-poster.jpg") %>" class="aspect-video w-full rounded-xl shadow-lg">
     <source src="https://media.pagecord.com/pagecord-walkthrough-jan-2026.mp4" type="video/mp4">
@@ -634,7 +726,7 @@
     <%= link_to new_signup_path do %>
       <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Start writing for free</div>
     <% end %>
-    <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Trusted by 900+ independent bloggers</p>
+    <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Trusted by 1000+ independent bloggers</p>
   </div>
 
   <h2 class="source-serif font-semibold my-8 text-center text-3xl md:text-4xl tracking-tight">Independent and open source</h2>

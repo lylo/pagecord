@@ -1,0 +1,87 @@
+<% comment = @comment.parent || @comment %>
+<% reply = comment.author_reply %>
+<% origin = { post: params[:post] } %>
+
+<%# Submitted without Turbo so these get the redirect rather than the index's
+    in-place stream %>
+
+<div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50">
+  <div class="my-8">
+    <% status = comment.approved? ? pill("Approved", class: "shrink-0") : pill("Waiting for you", class: "shrink-0") %>
+
+    <%= settings_section link_to(comment.post.display_title, post_url(comment.post), target: "_blank", rel: "noopener", class: "hover:underline"),
+          description: link_to("#{pluralize comment.post.comments_count, "published comment"} on this post", app_post_comments_path(comment.post), class: "underline hover:text-slate-700 dark:hover:text-slate-200"),
+          control: status do %>
+      <div class="px-4 py-5 sm:px-6">
+        <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <% if (link = comment.link_url) %>
+            <%= link_to comment.name, link, target: "_blank", rel: "nofollow noopener", title: link,
+                  class: "link-quiet font-bold text-slate-900 dark:text-slate-100" %>
+          <% else %>
+            <span class="font-bold text-slate-900 dark:text-slate-100"><%= comment.name %></span>
+          <% end %>
+          <span class="text-sm text-slate-500 dark:text-slate-400"><%= time_ago_in_words comment.created_at %> ago</span>
+        </div>
+
+        <p class="mt-2 whitespace-pre-line leading-7 text-slate-800 dark:text-slate-200"><%= comment.message %></p>
+      </div>
+
+      <% if reply %>
+        <div class="px-4 py-5 sm:px-6">
+          <div class="rounded-e-lg border-s-2 border-[#4fbd9c] bg-slate-50 p-4 dark:bg-slate-800/60">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <span class="font-bold text-slate-900 dark:text-slate-100"><%= reply.name %></span>
+              <%= pill "Your reply" %>
+              <span class="text-sm text-slate-500 dark:text-slate-400"><%= time_ago_in_words reply.created_at %> ago</span>
+            </div>
+
+            <%= button_to app_comment_reply_path(comment, reply, origin), method: :delete,
+                  data: { turbo_confirm: "Delete your reply? You can write another afterwards.", turbo: false },
+                  title: "Delete your reply", aria: { label: "Delete your reply" },
+                  class: "shrink-0 cursor-pointer text-slate-400 hover:text-red-600" do %>
+              <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
+            <% end %>
+          </div>
+
+          <p class="mt-2 whitespace-pre-line leading-7 text-slate-800 dark:text-slate-200"><%= reply.message %></p>
+          </div>
+        </div>
+      <% elsif comment.approved? %>
+        <%= form_with url: app_comment_replies_path(comment, origin), method: :post, data: { turbo: false }, class: "px-4 py-5 sm:px-6" do |form| %>
+          <h4 class="font-bold text-slate-900 dark:text-slate-100">Reply</h4>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Your reply is published straight away. You can only reply once.</p>
+          <%= form.text_area "comment[message]", rows: 3, required: true,
+                class: "form-field mt-3 w-full",
+                placeholder: "Write a public reply…" %>
+          <%= form.submit "Post reply", class: "btn-primary mt-3" %>
+        <% end %>
+      <% else %>
+        <%= form_with url: app_comment_approval_path(comment, origin), method: :post, data: { turbo: false }, class: "px-4 py-5 sm:px-6" do |form| %>
+          <%= form.text_area "comment[message]", rows: 3,
+                class: "form-field w-full",
+                placeholder: "Write an optional public reply…" %>
+          <%= form.submit "Approve", class: "btn-primary mt-3" %>
+        <% end %>
+      <% end %>
+
+      <div class="flex flex-wrap items-center gap-2 px-4 py-5 sm:px-6">
+        <%= button_to "Delete", app_comment_path(comment, origin), method: :delete,
+              data: { turbo_confirm: "Delete this comment? This can't be undone.", turbo: false },
+              class: "btn-danger" %>
+
+        <% if comment.post.comments_open? %>
+          <%= button_to "Close comments", app_comment_closure_path(comment, origin),
+                method: :post, class: "btn-optional ms-auto" %>
+        <% else %>
+          <%= button_to "Reopen comments", app_comment_closure_path(comment, origin),
+                method: :delete, class: "btn-optional ms-auto" %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="mt-12">
+      <%= link_to "Back to comments", return_path, class: "btn-secondary" %>
+    </div>
+  </div>
+</div>

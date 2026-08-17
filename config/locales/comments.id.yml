@@ -1,0 +1,21 @@
+id:
+  comments:
+    heading: "Komentar"
+    author_badge: "Penulis"
+    closed: "Komentar ditutup."
+    submitted: "Terima kasih. Komentarmu akan tampil setelah disetujui."
+    rejected: "Maaf, gagal terkirim. Silakan coba lagi."
+    more:
+      one: "%{count} komentar lainnya"
+      other: "%{count} komentar lainnya"
+    form:
+      message_placeholder: "Tulis komentar…"
+      name_placeholder: "Nama"
+      link_placeholder: "Situs web (opsional)"
+      submit_button: "Kirim"
+    mailer:
+      subject: "Ada komentar menunggu"
+      intro:
+        one: "Ada %{count} komentar menunggu persetujuan."
+        other: "Ada %{count} komentar menunggu persetujuan."
+      button: "Lihat komentar"

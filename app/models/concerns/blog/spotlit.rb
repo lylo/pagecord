@@ -3,6 +3,9 @@ module Blog::Spotlit
 
   MINIMUM_ACCOUNT_AGE = 7.days
 
+  # Posts shorter than this (plain-text length) are too slight to spotlight.
+  MINIMUM_POST_LENGTH = 280
+
   included do
     has_one :spotlight_exclusion, dependent: :destroy, class_name: "Blog::SpotlightExclusion"
 
@@ -13,6 +16,14 @@ module Blog::Spotlit
         .where("users.created_at <= ?", MINIMUM_ACCOUNT_AGE.ago)
         .where.missing(:spotlight_exclusion)
     }
+  end
+
+  class_methods do
+    # Posts eligible for the Spotlight: from spotlit blogs and long enough to be worth featuring.
+    def spotlit_posts
+      Post.visible.posts.joins(:blog).merge(spotlit)
+        .where("length(posts.text_summary) >= ?", MINIMUM_POST_LENGTH)
+    end
   end
 
   def spotlit?

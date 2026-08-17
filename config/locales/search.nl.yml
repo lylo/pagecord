@@ -1,0 +1,8 @@
+nl:
+  search:
+    placeholder: "Deze site doorzoeken"
+    submit: "Zoeken"
+    no_results: "Geen berichten gevonden ✨"
+    results_count_html:
+      one: "%{count} bericht dat overeenkomt met <strong>%{query}</strong>"
+      other: "%{count} berichten die overeenkomen met <strong>%{query}</strong>"

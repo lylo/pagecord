@@ -83,13 +83,20 @@ module Billing
           next_billed_at: Time.parse(data.next_billed_at),
           plan: plan
         )
+
+        Subscription::SupporterWelcomeMailer.welcome(@subscription).deliver_later if @subscription.supporter?
       end
 
       def subscription_canceled
-        Rails.logger.info "Subscription #{@subscription.id} cancelled"
-        @subscription.update!(
-          cancelled_at: Time.parse(data.canceled_at)
-        )
+        cancelled_at = Time.parse(data.canceled_at)
+
+        Rails.logger.info "Subscription #{@subscription.id} cancelled at #{cancelled_at}"
+
+        # Paddle only sends this once the cancellation has taken effect, so access ends
+        # now. Cancellations scheduled for the end of the term arrive as
+        # subscription.updated with a scheduled_change and keep their billing period
+        # until this event follows.
+        @subscription.update!(cancelled_at: cancelled_at, next_billed_at: cancelled_at)
       end
 
       def subscription_updated
@@ -106,9 +113,12 @@ module Billing
         Rails.logger.info "Subscription next billed at updated to #{next_billed_at}, plan: #{new_plan}"
         @subscription.update!(
           paddle_price_id: new_price_id,
+          unit_price: base_unit_price,
           next_billed_at: next_billed_at,
           plan: new_plan
         )
+
+        notify_supporter_upgrade
 
         # this webhook is also called when a subscription is cancelled, with the
         # scheduled_change action set to cancel.
@@ -143,11 +153,10 @@ module Billing
 
         if @subscription.present?
           next_billed_at = Time.parse(billing_period_ends_at)
-          actual_unit_price = transaction_unit_price
 
           updates = {
             next_billed_at: next_billed_at,
-            unit_price: actual_unit_price
+            unit_price: transaction_unit_price
           }
 
           # Plan change: find the new plan item (quantity > 0)
@@ -157,13 +166,19 @@ module Billing
               new_price_id = new_item.price.id
               updates[:paddle_price_id] = new_price_id
               updates[:plan] = Subscription.plan_from_price_id(new_price_id)
+              # On a plan switch, the transaction's line-item total is the prorated
+              # top-up charged today, not the ongoing recurring price. Store the new
+              # price's list price instead, so it matches what the next full renewal bills.
+              updates[:unit_price] = new_item.price.unit_price.amount.to_i
               Rails.logger.info "Plan changed to #{updates[:plan]} (price_id: #{new_price_id})"
             end
           end
 
           @subscription.update!(updates)
 
-          Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}, unit_price: #{actual_unit_price}"
+          notify_supporter_upgrade
+
+          Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}, unit_price: #{updates[:unit_price]}"
         else
           raise "Subscription not found for transaction_completed event for #{@user.id} (#{@user.blog.subdomain})"
         end
@@ -171,6 +186,14 @@ module Billing
 
       def transaction_payment_failed
         Rails.logger.warn "Payment failed for user #{@user.id} (#{@user.blog.subdomain}) - Paddle Retain will retry automatically"
+      end
+
+      # Fires only on the save that actually flips the plan to supporter, so the
+      # two webhooks Paddle sends for a single plan change do not double-send.
+      def notify_supporter_upgrade
+        return unless @subscription.saved_change_to_plan? && @subscription.supporter?
+
+        Subscription::SupporterWelcomeMailer.welcome(@subscription).deliver_later
       end
 
       def base_unit_price

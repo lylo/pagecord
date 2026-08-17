@@ -1,0 +1,42 @@
+<div class="form comment-form">
+<%= form_with model: @comment,
+          url: post_comments_path(@post),
+          method: :post,
+          scope: :comment,
+          class: "form-container" do |form| %>
+
+  <%= hidden_field_tag :form_token, @form_token %>
+  <%= render "/shared/spam_prevention" %>
+
+  <div class="form-field">
+    <%= form.text_area :message, rows: 3, required: true, class: "compact",
+          placeholder: t("comments.form.message_placeholder") %>
+    <% if @comment.errors[:message].any? %>
+      <span class="form-error"><%= @comment.errors.full_messages_for(:message).first %></span>
+    <% end %>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <%= form.text_field :name, required: true, maxlength: Post::Comment::MAX_NAME_LENGTH,
+            placeholder: t("comments.form.name_placeholder") %>
+      <% if @comment.errors[:name].any? %>
+        <span class="form-error"><%= @comment.errors.full_messages_for(:name).first %></span>
+      <% end %>
+    </div>
+
+    <div class="form-field">
+      <%= form.url_field :link, placeholder: t("comments.form.link_placeholder") %>
+      <% if @comment.errors[:link].any? %>
+        <span class="form-error"><%= @comment.errors.full_messages_for(:link).first %></span>
+      <% end %>
+    </div>
+  </div>
+
+  <%= render "/shared/turnstile" %>
+
+  <div class="form-actions">
+    <%= form.submit t("comments.form.submit_button"), class: "button" %>
+  </div>
+<% end %>
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
+ActiveRecord::Schema[8.2].define(version: 2026_08_17_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -131,6 +131,11 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
     t.string "width", default: "standard", null: false
     t.text "custom_footer_html"
     t.boolean "external_links_in_new_tab", default: false, null: false
+    t.text "custom_robots_txt"
+    t.boolean "comments_enabled", default: false, null: false
+    t.text "custom_head_html"
+    t.text "custom_body_html"
+    t.boolean "custom_code_enabled", default: true, null: false
     t.string "password_digest"
     t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
@@ -239,7 +244,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
     t.text "user_agent"
     t.datetime "viewed_at", null: false
     t.string "visitor_hash", null: false
-    t.index ["blog_id", "country", "viewed_at"], name: "index_page_views_on_blog_country_viewed_at"
     t.index ["blog_id", "referrer_domain", "viewed_at"], name: "index_page_views_on_blog_referrer_domain_viewed_at"
     t.index ["blog_id", "viewed_at"], name: "index_page_views_on_blog_id_and_viewed_at"
     t.index ["post_id"], name: "index_page_views_on_post_id"
@@ -247,24 +251,20 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
     t.index ["visitor_hash", "post_id", "viewed_at"], name: "index_page_views_on_visitor_hash_and_post_id_and_viewed_at"
   end
 
-  create_table "pghero_query_stats", force: :cascade do |t|
-    t.bigint "calls"
-    t.datetime "captured_at", precision: nil
-    t.text "database"
-    t.text "query"
-    t.bigint "query_hash"
-    t.float "total_time"
-    t.text "user"
-    t.index ["database", "captured_at"], name: "index_pghero_query_stats_on_database_and_captured_at"
-  end
-
-  create_table "pghero_space_stats", force: :cascade do |t|
-    t.datetime "captured_at", precision: nil
-    t.text "database"
-    t.text "relation"
-    t.text "schema"
-    t.bigint "size"
-    t.index ["database", "captured_at"], name: "index_pghero_space_stats_on_database_and_captured_at"
+  create_table "post_comments", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "parent_id"
+    t.string "name", null: false
+    t.string "link"
+    t.text "message", null: false
+    t.datetime "approved_at"
+    t.boolean "author", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_post_comments_on_pending_created_at", where: "(approved_at IS NULL)"
+    t.index ["parent_id"], name: "index_post_comments_on_author_reply_parent_id", unique: true, where: "author"
+    t.index ["parent_id"], name: "index_post_comments_on_parent_id"
+    t.index ["post_id", "approved_at"], name: "index_post_comments_on_post_id_and_approved_at"
   end
 
   create_table "post_digest_deliveries", force: :cascade do |t|
@@ -303,7 +303,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
     t.string "canonical_url"
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
-    t.text "excerpt"
     t.boolean "hidden", default: false, null: false
     t.boolean "is_page", default: false, null: false
     t.string "locale"
@@ -318,6 +317,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.integer "upvotes_count", default: 0, null: false
+    t.integer "comments_count", default: 0, null: false
+    t.datetime "comments_closed_at"
     t.index ["blog_id", "is_page"], name: "index_posts_on_blog_id_and_is_page"
     t.index ["blog_id", "slug"], name: "index_posts_on_blog_id_and_slug", unique: true
     t.index ["blog_id", "status", "published_at"], name: "index_posts_published_lookup", order: { published_at: :desc }, where: "(status = 1)"
@@ -367,46 +368,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
     t.datetime "updated_at", null: false
     t.index ["blog_id", "detected_at"], name: "index_spam_detections_on_blog_id_and_detected_at", order: { detected_at: :desc }
     t.index ["status"], name: "index_spam_detections_on_status"
-  end
-
-  create_table "standard_site_accounts", force: :cascade do |t|
-    t.bigint "blog_id", null: false
-    t.string "handle", null: false
-    t.string "did", null: false
-    t.string "pds_url", default: "https://bsky.social", null: false
-    t.text "access_jwt_ciphertext"
-    t.text "refresh_jwt_ciphertext"
-    t.datetime "connected_at"
-    t.datetime "disconnected_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["blog_id"], name: "index_standard_site_accounts_on_blog_id", unique: true
-  end
-
-  create_table "standard_site_documents", force: :cascade do |t|
-    t.bigint "post_id", null: false
-    t.string "at_uri"
-    t.string "cid"
-    t.string "rkey", null: false
-    t.integer "sync_status", default: 0, null: false
-    t.datetime "last_synced_at"
-    t.text "sync_error"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["post_id"], name: "index_standard_site_documents_on_post_id", unique: true
-  end
-
-  create_table "standard_site_publications", force: :cascade do |t|
-    t.bigint "blog_id", null: false
-    t.string "at_uri"
-    t.string "cid"
-    t.string "rkey", default: "self", null: false
-    t.integer "sync_status", default: 0, null: false
-    t.datetime "last_synced_at"
-    t.text "sync_error"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["blog_id"], name: "index_standard_site_publications_on_blog_id", unique: true
   end
 
   create_table "subscription_renewal_reminders", force: :cascade do |t|
@@ -489,7 +450,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
     t.string "features", default: [], null: false, array: true
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["password_digest"], name: "index_users_on_password_digest"
   end
 
   add_foreign_key "access_requests", "users"
@@ -511,6 +471,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
   add_foreign_key "paddle_events", "users"
   add_foreign_key "page_views", "blogs"
   add_foreign_key "page_views", "posts"
+  add_foreign_key "post_comments", "post_comments", column: "parent_id"
+  add_foreign_key "post_comments", "posts"
   add_foreign_key "post_digest_deliveries", "email_subscribers"
   add_foreign_key "post_digest_deliveries", "post_digests"
   add_foreign_key "post_digests", "blogs"
@@ -518,9 +480,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_02_145149) do
   add_foreign_key "posts", "blogs"
   add_foreign_key "sender_email_addresses", "blogs"
   add_foreign_key "spam_detections", "blogs"
-  add_foreign_key "standard_site_accounts", "blogs"
-  add_foreign_key "standard_site_documents", "posts"
-  add_foreign_key "standard_site_publications", "blogs"
   add_foreign_key "subscription_renewal_reminders", "subscriptions"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "unengaged_follow_ups", "users"

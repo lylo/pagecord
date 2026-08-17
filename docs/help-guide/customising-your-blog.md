@@ -20,11 +20,11 @@ By default, your blog title is your username (e.g. @joel). You can change it to 
 
 ### Avatar
 
-Premium feature. Upload an image that appears next to your blog title.
+Upload an image that appears next to your blog title. It's also used as your blog's favicon. JPEG, PNG or WebP, up to 5MB.
 
 ## Appearance
 
-Found in **Settings** → **Appearance**. These settings control how your blog looks. Most changes apply immediately making it easy to see the results. Note that Custom colours and Custom CSS have their own Save buttons.
+Found in **Settings** → **Appearance**. These settings control how your blog looks. Most changes apply immediately making it easy to see the results. Note that Custom colours have their own Save button. Custom CSS has moved to **Settings** → **Custom Code**.
 
 ### Colour scheme
 
@@ -68,11 +68,11 @@ Choose how posts appear on your home page:
 
 ### Branding
 
-Premium feature. Choose whether to hide the Pagecord logo at the bottom of your blog (please consider keeping it to spread the good word about Pagecord!)
+Premium feature. Choose whether to hide the Pagecord logo at the bottom of your blog (please consider keeping it to spread the good word about Pagecord!). The logo reappears if your subscription lapses.
 
 ### Custom footer
 
-Premium feature. Add a small HTML footer for badges, webring links, or other simple links at the bottom of your blog. See [Adding a custom footer](custom-footer.md) for details.
+Premium feature to set up, and it keeps rendering afterwards whatever plan you're on. Add a small HTML footer for badges, webring links, or other simple links at the bottom of your blog. See [Adding a custom footer](custom-footer.md) for details.
 
 ## Theme Garden
 

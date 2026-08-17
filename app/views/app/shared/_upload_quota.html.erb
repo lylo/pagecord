@@ -1,0 +1,20 @@
+<% unless quota.unlimited? %>
+  <div class="mt-6 flex justify-end">
+    <div class="rounded-lg bg-slate-50 px-4 py-3 text-right dark:bg-slate-800/60">
+      <p class="text-sm tabular-nums text-slate-600 dark:text-slate-300">
+        <% if quota.exceeded? %>
+          No uploads left.
+          <%= link_to "Subscribe", app_settings_subscriptions_path, class: "font-medium underline hover:text-slate-900 dark:hover:text-slate-100" %>
+          to add more.
+        <% else %>
+          <span class="font-medium text-slate-900 dark:text-slate-100"><%= quota.used %> of <%= UploadQuota::FREE_LIMIT %></span>
+          uploads used
+        <% end %>
+      </p>
+
+      <div class="mt-2 ms-auto h-1.5 w-32 rounded-full bg-slate-200 dark:bg-slate-700">
+        <div class="h-full rounded-full bg-[#4fbd9c]" style="width: <%= quota.percent_used %>%"></div>
+      </div>
+    </div>
+  </div>
+<% end %>

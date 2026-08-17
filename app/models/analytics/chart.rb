@@ -53,6 +53,7 @@ class Analytics::Chart < Analytics::Base
 
       unique_rollups = Rollup.where(
         name: "unique_views_by_blog",
+        interval: "day",
         time: start_time_utc..end_time_utc,
         dimensions: { blog_id: blog.id }
       ).group(:time).sum(:value)
@@ -94,6 +95,7 @@ class Analytics::Chart < Analytics::Base
 
       unique_rollups = Rollup.where(
         name: "unique_views_by_blog",
+        interval: "day",
         time: start_time_utc..cutoff_time,
         dimensions: { blog_id: blog.id }
       ).group(:time).sum(:value)
@@ -157,6 +159,7 @@ class Analytics::Chart < Analytics::Base
 
       unique_rollups = Rollup.where(
         name: "unique_views_by_blog",
+        interval: "day",
         time: start_time_utc..end_time_utc,
         dimensions: { blog_id: blog.id }
       ).group(:time).sum(:value)

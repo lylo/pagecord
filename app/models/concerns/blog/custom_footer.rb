@@ -14,7 +14,7 @@ module Blog::CustomFooter
   end
 
   def custom_footer?
-    user.has_premium_access? && custom_footer_html.present?
+    custom_footer_html.present?
   end
 
   private

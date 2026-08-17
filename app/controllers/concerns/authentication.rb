@@ -24,12 +24,19 @@ module Authentication
 
   def sign_in(user)
     Rails.logger.info "Signing in #{user.id}"
+
+    # A fresh session id on every sign in, so a session id planted beforehand
+    # cannot be used afterwards. Attribution is carried over because it is
+    # captured before signup completes.
+    attribution = session[:signup_attribution]
+    reset_session
+    session[:signup_attribution] = attribution if attribution.present?
+
     session[:user_id] = user.id
   end
 
   def sign_out
-    session[:user_id] = nil
-    session[:current_blog_id] = nil
+    reset_session
   end
 
   # Remove after June 2027, once all _pagecord_v2 cookies issued before the v3 rotation have expired.

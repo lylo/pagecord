@@ -1,12 +1,8 @@
-<div class="rounded-lg bg-slate-50 p-6 dark:bg-slate-800">
-  <div class="max-w-xl">
-    <h1 class="text-xl font-semibold text-slate-900 dark:text-slate-50">Pages</h1>
-    <p class="mt-3 leading-7 text-slate-600 dark:text-slate-300">
-      Create an About page, a Contact page, a Now page, or any other dedicated page on your site.
-
-      You can add these Pages to your site navigation in the <%= link_to "Navigation settings", app_settings_navigation_items_path, class: "font-medium underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:decoration-slate-600 dark:hover:decoration-slate-300" %>.
-    </p>
-  </div>
+<div class="rounded-xl border border-slate-200 bg-slate-50 p-6 sm:p-8 dark:border-slate-700 dark:bg-slate-800/50">
+  <h1 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Create your first page ✨</h1>
+  <p class="mt-2 leading-7 text-slate-600 dark:text-slate-300">
+    Pages are for standalone parts of your site, like an About, Contact, or Now page. Once you've created a page, you can add it to your navigation in <%= link_to "Navigation settings", app_settings_navigation_items_path, class: "font-medium underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:decoration-slate-600 dark:hover:text-slate-300" %>.
+  </p>
 
   <div class="mt-5 flex flex-wrap gap-2">
     <%= link_to "✏️ New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>

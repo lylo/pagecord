@@ -15,6 +15,8 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
     return
   end
 
+  check_import_allowed!(blog)
+
   # Detect format and process accordingly
   if File.file?(path)
     if path.end_with?('.json')

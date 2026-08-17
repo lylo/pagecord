@@ -6,6 +6,21 @@ require "cgi"
 module ImportHelpers
   include ActionView::Helpers::NumberHelper
 
+  # Imports upload every image before the post is saved, so an unsubscribed
+  # owner would orphan most of them on R2 as each post failed the upload quota.
+  # Importing requires a subscription anyway – see docs/help-guide/importing-an-existing-blog.md.
+  def check_import_allowed!(blog)
+    return if blog.user.upload_quota.unlimited?
+
+    abort <<~MESSAGE
+      #{blog.user.email} is not subscribed, so the #{UploadQuota::FREE_LIMIT} upload limit applies.
+      Importing now would upload every image and then fail to attach most of them.
+
+      Subscribe them, or comp the account by hand first:
+        User.find(#{blog.user.id}).create_subscription!(plan: :complimentary, paddle_subscription_id: "comp_#{blog.user.id}", paddle_price_id: "comp", unit_price: 0)
+    MESSAGE
+  end
+
   # Process all img and video tags in HTML content: download media and create ActionText attachments
   # If skip_on_error is true, failed downloads will leave the original tag intact instead of raising
   def process_images_to_actiontext(html_content, assets_root: nil, dry_run: false, skip_on_error: false)

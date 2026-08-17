@@ -1,0 +1,6 @@
+<%= button_to @show_info ? "Hide details" : "Show details",
+      app_posts_details_path(search: @search_term.presence, page: params[:page]),
+      method: @show_info ? :delete : :post,
+      aria: { pressed: @show_info.to_s },
+      form_class: "shrink-0",
+      class: "link-quiet cursor-pointer text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" %>

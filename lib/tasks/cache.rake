@@ -89,7 +89,8 @@ namespace :cache do
         "/pagecord-vs-medium",
         "/pagecord-vs-about-me",
         "/blogging-by-email",
-        "/minimalist-blogging"
+        "/minimalist-blogging",
+        "/llms.txt"
       ]
     end
 end

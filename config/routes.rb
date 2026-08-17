@@ -11,10 +11,9 @@ end
 module DomainConstraints
   def self.default_domain?(request)
     if Rails.env.test?
-      [ "www.example.com", "localhost", "lvh.me", "example.com" ].include?(request.host)
+      [ "localhost", "lvh.me", "example.com" ].include?(request.host)
     else
-      default_host = Rails.application.config.x.domain
-      request.host == default_host || request.host == "www.#{default_host}"
+      request.host == Rails.application.config.x.domain
     end
   end
 
@@ -69,6 +68,14 @@ Rails.application.routes.draw do
     post "/paddle/create_update_payment_method_transaction", to: "paddle#create_update_payment_method_transaction"
   end
 
+  # The apex is the only host this app serves. www used to serve a full second
+  # copy, which meant uploads failed silently there: only the apex is in the R2
+  # CORS allowlist, and that policy lives in the Cloudflare dashboard rather
+  # than in git, so the drift was invisible. Redirect rather than widen CORS.
+  constraints(->(request) { request.host == "www.#{Rails.application.config.x.domain}" }) do
+    match "(*path)", to: redirect(host: Rails.application.config.x.domain), via: :all
+  end
+
   constraints(DomainConstraints.method(:default_domain?)) do
     constraints AdminConstraint.new do
       mount Sidekiq::Web, at: "/admin/sidekiq"
@@ -96,6 +103,7 @@ Rails.application.routes.draw do
       resources :analytics, only: [ :index ]
       namespace :posts do
         resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
+        resource :details, only: [ :create, :destroy ], controller: "details"
       end
       resources :posts, param: :token do
         resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
@@ -103,10 +111,12 @@ Rails.application.routes.draw do
         end
         resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
         resource :restoration, only: [ :create ], controller: "posts/restorations"
+        resources :comments, only: [ :index ], controller: "comments"
       end
 
       namespace :pages do
         resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
+        resource :sort, only: [ :create, :destroy ], controller: "sort"
       end
       resources :pages, except: [ :show ], param: :token do
         resource :restoration, only: [ :create ], controller: "pages/restorations"
@@ -115,17 +125,24 @@ Rails.application.routes.draw do
         end
       end
       resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
+      resources :comments, only: [ :index, :show, :destroy ] do
+        resource  :approval, only: [ :create ], controller: "comments/approvals"
+        resource  :closure,  only: [ :create, :destroy ], controller: "comments/closures"
+        resources :replies,  only: [ :create, :destroy ], controller: "comments/replies"
+      end
       resources :settings, only: [ :index ]
 
       resource :onboarding, only: [ :show, :update ], path: "onboarding" do
         member do
           post :complete
+          post :apply_theme
         end
       end
 
       namespace :settings do
         resources :about, only: [ :index, :update ]
         resources :audience, only: [ :index ]
+        resources :subscribers, only: [ :index ]
         resources :users, only: [ :update, :destroy ]
         resources :blogs, only: [ :index, :update ]
         resources :appearance, only: [ :index, :update ]
@@ -145,6 +162,7 @@ Rails.application.routes.draw do
           end
         end
 
+        resource :custom_code, only: [ :show, :update ], controller: "custom_code"
         resource :api, only: [ :show, :create, :destroy ], controller: "api"
         resources :exports
 
@@ -232,6 +250,7 @@ Rails.application.routes.draw do
     get "/terms", to: "public#terms", as: :terms
     get "/privacy", to: "public#privacy", as: :privacy
     get "/faq", to: "public#faq", as: :faq
+    get "/pricing", to: redirect("/#pricing"), as: :pricing
     get "/brand", to: "public#brand", as: :brand
     get "/pagecord-vs-about-me", to: "public#pagecord_vs_about_me"
     get "/pagecord-vs-medium", to: "public#pagecord_vs_medium"
@@ -241,10 +260,10 @@ Rails.application.routes.draw do
     get "/personal-website", to: "public#personal_website"
     get "/minimalist-blogging", to: "public#minimalist_blogging"
     get "/blogging-by-email", to: "public#blogging_by_email"
-    get "/blog-with-newsletter", to: "public#blog_with_newsletter"
     get "/blogger-alternative", to: "public#blogger_alternative"
     get "/indie-blogging-platform", to: "public#indie_blogging_platform"
 
+    get "/supporters", to: "home/supporters#show"
     get "/spotlight", to: "home/spotlight#show"
     get "/spotlight/trending.xml", to: "home/spotlight#show", defaults: { format: :rss }, as: :spotlight_trending_feed
     get "/shuffle", to: "posts/shuffle#show"
@@ -255,7 +274,7 @@ Rails.application.routes.draw do
         constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }, defaults: { format: :rss }
 
     get "/:name(/*path)", to: redirect { |params, _req|
-      path = params[:path] ? "/#{params[:path]}" : "/"
+      path = params[:path] ? "/#{ActionDispatch::Journey::Router::Utils.escape_path(params[:path])}" : "/"
       subdomain_redirect(path).call(params, _req)
     }, constraints: { name: /(?!rails|admin|app|api)[a-z0-9]+/i }
   end
@@ -273,11 +292,19 @@ Rails.application.routes.draw do
     end
   end
 
+  # Available on every domain, so embeds also resolve when previewing a draft in the app.
+  namespace :api do
+    post "embeds/bandcamp", to: "embeds#bandcamp"
+  end
+
   constraints(->(request) { !DomainConstraints.default_domain?(request) }) do
     get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
     get "/", to: "blogs/posts#index", as: :blog_posts
     get "/posts", to: "blogs/posts#posts_list", as: :blog_posts_list
+    get "/search", to: "blogs/searches#show", as: :blog_search
+    get  "/unlock", to: "blogs/unlock#new", as: :blog_unlock
+    post "/unlock", to: "blogs/unlock#create"
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")
@@ -286,13 +313,6 @@ Rails.application.routes.draw do
 
     get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
     get "/posts/:slug", to: "blogs/redirects#show"
-
-    namespace :api do
-      post "embeds/bandcamp", to: "embeds#bandcamp"
-    end
-
-    get  "/unlock", to: "blogs/unlock#new", as: :blog_unlock
-    post "/unlock", to: "blogs/unlock#create"
 
     get "/:slug", to: "blogs/posts#show", as: :blog_post
 
@@ -312,6 +332,7 @@ Rails.application.routes.draw do
       resources :replies, only: [ :new, :create ], module: :posts do
         get :sent, on: :collection
       end
+      resources :comments, only: [ :index, :create ], module: :posts
     end
 
     # Catch-all for unmatched routes on blog domains

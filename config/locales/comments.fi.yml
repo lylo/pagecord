@@ -1,0 +1,21 @@
+fi:
+  comments:
+    heading: "Kommentit"
+    author_badge: "Kirjoittaja"
+    closed: "Kommentointi on suljettu."
+    submitted: "Kiitos. Kommenttisi näkyy, kun se on hyväksytty."
+    rejected: "Lähetys ei onnistunut. Yritä uudelleen."
+    more:
+      one: "%{count} kommentti lisää"
+      other: "%{count} kommenttia lisää"
+    form:
+      message_placeholder: "Kirjoita kommentti…"
+      name_placeholder: "Nimi"
+      link_placeholder: "Verkkosivu (valinnainen)"
+      submit_button: "Lähetä"
+    mailer:
+      subject: "Sinulla on kommentteja odottamassa"
+      intro:
+        one: "Sinulla on %{count} kommentti odottamassa hyväksyntää."
+        other: "Sinulla on %{count} kommenttia odottamassa hyväksyntää."
+      button: "Katso kommentit"

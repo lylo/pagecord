@@ -7,9 +7,27 @@
     <%= local_time post.published_at, format: published_at_date_format, class: "dt-published" %>
   <% end %>
 
-  <% if @user.has_premium_access? %>
+  <% reply_enabled = @blog.accepts_replies? %>
+  <% comments_enabled = @blog.accepts_comments? && post.comments_visible? %>
+  <% if @blog.show_upvotes? || reply_enabled || comments_enabled %>
     <div class="post-actions">
-      <% if @blog.reply_by_email %>
+      <% if comments_enabled %>
+        <%# A GET form rather than a link so crawlers don't follow the URL %>
+        <%= button_to post_comments_path(post),
+                  method: :get,
+                  title: "Comments",
+                  aria: { label: "Comments" },
+                  form: { data: { turbo_frame: comments_frame_id(post) } },
+                  form_class: "comment-link-form",
+                  class: "comment-link" do %>
+          <%= inline_svg_tag "icons/comment.svg", class: "icon" %>
+          <% if post.comments_count.positive? %>
+            <span class="comment-count"><%= post.comments_count %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% if reply_enabled %>
         <%= link_to new_post_reply_path(post),
                   title: "Reply to this post via email",
                   aria: { label: "Reply to this post via email" },

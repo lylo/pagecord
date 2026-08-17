@@ -547,6 +547,93 @@ namespace :logs do
     )
   end
 
+  desc "AI bot robots.txt compliance: which disallowed crawlers still hit the site. rake \"logs:bots\" or rake \"logs:bots[2026-07-21]\""
+  task :bots, [ :date ] do |_t, args|
+    date = args[:date]
+
+    blocklist_path = File.join(Dir.pwd, "app/views/blogs/robots/_ai_training_crawlers.text.erb")
+    unless File.exist?(blocklist_path)
+      puts "#{LogDisplay::RED}AI crawler blocklist not found at #{blocklist_path}#{LogDisplay::RESET}"
+      exit 1
+    end
+
+    tokens = File.readlines(blocklist_path).filter_map { |line| line[/^\s*User-agent:\s*(.+?)\s*$/, 1] }
+    if tokens.empty?
+      puts "#{LogDisplay::YELLOW}No User-agent tokens found in blocklist.#{LogDisplay::RESET}"
+      exit 0
+    end
+
+    # Ambiguous tokens that are common words or short substrings. A match is a
+    # signal, not proof, so flag them for human review before adding a Caddy
+    # block rather than treating them as confirmed offenders.
+    review = %w[lcc yak]
+
+    scope = date || "all retained logs"
+    puts "#{LogDisplay::BOLD}Scanning #{scope} for #{tokens.size} disallowed AI bots ...#{LogDisplay::RESET}"
+
+    entries = date ? LogParser.each_entry_for_date(date) : LogParser.each_entry
+    # needle is a cheap prefilter; boundary confirms the token isn't buried
+    # inside a longer word (e.g. ExaBot inside VirexaBot).
+    matchers = tokens.map do |token|
+      needle = token.downcase
+      [ token, needle, /(?<![a-z0-9])#{Regexp.escape(needle)}(?![a-z0-9])/ ]
+    end
+    hits = {}
+    ip_tokens = Hash.new { |h, k| h[k] = {} }
+
+    entries.each do |e|
+      next unless e.line_type == :started
+      ua = e.user_agent.to_s
+      next if ua.empty?
+      ua_down = ua.downcase
+
+      matchers.each do |token, needle, boundary|
+        next unless ua_down.include?(needle) && boundary.match?(ua_down)
+        hit = hits[token] ||= { count: 0, ips: Hash.new(0), sample: ua }
+        hit[:count] += 1
+        hit[:ips][e.ip] += 1
+        ip_tokens[e.ip][token] = true
+      end
+    end
+
+    if hits.empty?
+      puts "#{LogDisplay::GREEN}No disallowed AI bots seen in #{scope}. All quiet.#{LogDisplay::RESET}"
+      exit 0
+    end
+
+    # An IP wearing three or more different bot identities is not the crawler it
+    # claims to be. Reporting that share stops a token's count reading as
+    # activity by the company whose name is on it.
+    multi_identity = ip_tokens.each_with_object({}) { |(ip, ts), h| h[ip] = true if ts.size >= 3 }
+
+    rows = hits.sort_by { |_, hit| -hit[:count] }.map do |token, hit|
+      verdict = review.include?(token.downcase) ? "review" : "block"
+      forged = hit[:ips].sum { |ip, n| multi_identity[ip] ? n : 0 }
+      [ token, hit[:count].to_s, hit[:ips].size.to_s, "#{(100.0 * forged / hit[:count]).round}%", verdict, hit[:sample] ]
+    end
+
+    puts LogDisplay.table(
+      title: "Traffic claiming disallowed AI bot user agents (#{scope})",
+      columns: [
+        { label: "Claimed token", width: 28, align: :left },
+        { label: "Requests", width: 9, align: :right },
+        { label: "IPs", width: 5, align: :right },
+        { label: "Forged", width: 7, align: :right },
+        { label: "Verdict", width: 7, align: :left },
+        { label: "Sample user agent", width: 60, align: :left }
+      ],
+      rows: rows,
+      highlight: ->(row) { row[4] == "block" }
+    )
+
+    to_block = rows.count { |row| row[4] == "block" }
+    to_review = rows.count { |row| row[4] == "review" }
+    puts "#{LogDisplay::BOLD}#{to_block} token(s) worth blocking in Caddy; #{to_review} generic-token match(es) to review.#{LogDisplay::RESET}"
+    puts "#{LogDisplay::DIM}User agents are self-declared and unverified: these counts are what traffic CLAIMED to be, not what it was.#{LogDisplay::RESET}"
+    puts "#{LogDisplay::DIM}\"Forged\" = share of requests from IPs that claimed 3+ different tokens. A high share means the count says nothing about the named company.#{LogDisplay::RESET}"
+    puts "#{LogDisplay::DIM}Counts include the bots' own robots.txt fetches, which are compliance rather than violations.#{LogDisplay::RESET}"
+  end
+
   desc "Live tail of production.log with per-minute request counter"
   task :watch do
     log_path = File.join(Dir.pwd, "log", "production.log")

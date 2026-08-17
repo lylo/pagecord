@@ -205,6 +205,94 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "https://example.com", @user.blog.posts.first.canonical_url
   end
 
+  test "post info shows by default" do
+    login_as users(:joel)
+
+    get app_posts_url
+
+    assert_response :success
+    assert_select "form[action=?] button", app_posts_details_path, text: "Hide details"
+  end
+
+  test "the details toggle survives a search" do
+    login_as users(:joel)
+
+    get app_posts_url(search: "photography")
+
+    assert_response :success
+    assert_select "form[action=?]", app_posts_details_path(search: "photography")
+  end
+
+  test "post info can be turned off and is remembered" do
+    login_as users(:joel)
+
+    delete app_posts_details_url
+    assert_redirected_to app_posts_path
+
+    get app_posts_url
+    assert_response :success
+    assert_select "form[action=?] button", app_posts_details_path, text: "Show details",
+      message: "the preference should survive the next visit"
+  end
+
+  # A GET that wrote the preference was prefetched by Turbo on hover, so the
+  # details turned themselves off as soon as the cursor crossed the button.
+  test "visiting the index never writes the preference" do
+    login_as users(:joel)
+
+    delete app_posts_details_url
+    get app_posts_url(info: "on")
+
+    assert_response :success
+    assert_select "form[action=?] button", app_posts_details_path, text: "Show details"
+  end
+
+  test "turning post info back on clears the preference" do
+    login_as users(:joel)
+
+    delete app_posts_details_url
+    post app_posts_details_url
+    get app_posts_url
+
+    assert_response :success
+    assert_select "form[action=?] button", app_posts_details_path, text: "Hide details"
+  end
+
+  # The moderation screen can only reach posts that already have a comment, so
+  # closing a thread pre-emptively has to be possible from the editor.
+  test "closes and reopens comments on a post with no comments" do
+    login_as users(:joel)
+    target = posts(:two)
+    assert_equal 0, target.comments_count
+
+    patch app_post_url(target), params: { post: { comments_closed: "1" } }
+    assert_not target.reload.comments_open?
+
+    patch app_post_url(target), params: { post: { comments_closed: "0" } }
+    assert target.reload.comments_open?
+    assert_nil target.comments_closed_at
+  end
+
+  test "re-closing a thread keeps the original closing time" do
+    login_as users(:joel)
+    target = posts(:two)
+    target.close_comments!
+    closed_at = target.comments_closed_at
+
+    patch app_post_url(target), params: { post: { comments_closed: "1" } }
+
+    assert_in_delta closed_at, target.reload.comments_closed_at, 1.second
+  end
+
+  test "ignores comments_closed when the blog has comments off" do
+    login_as users(:joel)
+    blogs(:joel).update!(comments_enabled: false)
+
+    patch app_post_url(posts(:two)), params: { post: { comments_closed: "1" } }
+
+    assert posts(:two).reload.comments_open?
+  end
+
   test "should update post with open graph image" do
     user = users(:joel)
     login_as user
@@ -377,6 +465,12 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "Draft Post"
   end
 
+  test "search results count covers drafts as well as published posts" do
+    get app_posts_path(search: "post")
+
+    assert_equal 2, assigns(:search_results_count)
+  end
+
   test "should sort drafts by published_at or updated_at" do
     # Create a draft with an old published date (simulating an unpublished old post)
     # This should appear last because 1.year.ago < Time.current
@@ -475,5 +569,18 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     get app_post_url(other_user_post)
 
     assert_response :not_found
+  end
+
+  test "should refuse hand-crafted attachment HTML once the upload allowance is used" do
+    fill_upload_quota(@user, UploadQuota::FREE_LIMIT)
+
+    assert_no_difference("@user.blog.posts.count") do
+      post app_posts_url, params: {
+        context_blog_id: @user.blog.id,
+        post: { title: "Sneaky", content: image_attachment_html(1) }
+      }
+    end
+
+    assert_response :unprocessable_entity
   end
 end

@@ -30,6 +30,7 @@ class Analytics::Leaderboard < Analytics::Base
     def post_popularity_from_rollups(start_time, end_time)
       Rollup.where(
         name: "unique_views_by_blog_post",
+        interval: "day",
         time: start_time..end_time
       ).where("dimensions->>'blog_id' = ?", blog.id.to_s)
        .group("dimensions->>'post_id'").sum(:value)

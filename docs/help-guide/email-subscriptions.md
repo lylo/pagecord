@@ -49,11 +49,8 @@ You can also embed the form on any page using the `{{ email_subscription }}` [dy
 
 ## Viewing your subscribers
 
-Go to **Settings** → **Audience** to see how many confirmed subscribers you have. For privacy reasons there's no option to view or download your list of subscribers. If you want to migrate elsewhere, submit a support ticket for an export.
+Go to **Settings** → **Audience** to see how many confirmed subscribers you have, and to download them as a CSV. The download stays available if your subscription lapses, so your list is always yours to take elsewhere.
 
 ## Subscriber limits
 
-The current limits are:
-
-- Premium accounts include 250 email subscribers
-- Pro accounts ($99/year) include 2,000 subscribers
+Premium includes up to 250 email subscribers. If you need more, [contact support](support.md) and we'll sort out a larger allowance for an additional fee.

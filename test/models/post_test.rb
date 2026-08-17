@@ -129,6 +129,24 @@ class PostTest < ActiveSupport::TestCase
     assert_equal manual_date, post.published_at
   end
 
+  test "should clamp a future published_at for the home page" do
+    blog = blogs(:joel)
+    page = blog.pages.create!(title: "Home", content: "welcome", is_home_page: true)
+    blog.update!(home_page: page)
+
+    page.update!(published_at: 1.week.from_now)
+
+    assert_not page.pending?
+    assert page.published_at <= Time.current
+  end
+
+  test "should not clamp a future published_at for a normal post" do
+    published_at = 1.week.from_now
+    post = blogs(:joel).posts.create!(title: "scheduled", content: "later", published_at:)
+
+    assert_equal published_at.to_time.to_i, post.published_at.to_time.to_i
+  end
+
   test "summary should return truncated text content" do
     blog = blogs(:joel)
     post = blog.posts.create!(
@@ -171,6 +189,99 @@ class PostTest < ActiveSupport::TestCase
     )
 
     assert_equal "", post.text_summary
+  end
+
+  # Each embedded attachment used to trigger a full re-render of the rich text
+  # body via ActiveStorage::Attachment's presence validator on :record, making
+  # saves scale quadratically (~450 queries for 20 attachments).
+  test "creating a post with many attachments stays within a query budget" do
+    blobs = 20.times.map do |i|
+      ActiveStorage::Blob.create_and_upload!(
+        io: StringIO.new("image #{i}"),
+        filename: "photo#{i}.jpg",
+        content_type: "image/jpeg"
+      )
+    end
+    content = "<p>Photos</p>" + blobs.map { |blob| %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>) }.join
+
+    query_count = 0
+    counter = ->(name, started, finished, unique_id, payload) {
+      query_count += 1 unless payload[:name].in?([ "SCHEMA", "TRANSACTION" ]) || payload[:cached]
+    }
+
+    post = blogs(:joel).posts.build(content: content, status: :published)
+    ActiveSupport::Notifications.subscribed(counter, "sql.active_record") { post.save! }
+
+    assert_operator query_count, :<, 100, "Expected bounded query count, got #{query_count}"
+  end
+
+  test "a save that crosses the allowance is allowed, the next one is not" do
+    blog = blogs(:vivian)
+    fill_upload_quota(blog.user, UploadQuota::FREE_LIMIT - 1)
+
+    assert blog.posts.create!(content: image_attachment_html(3), status: :published).persisted?
+    assert blog.user.upload_quota.exceeded?
+    assert_not blog.posts.build(content: image_attachment_html(1), status: :published).valid?
+  end
+
+  test "a trial user is capped like a free user" do
+    blog = blogs(:vivian)
+    blog.user.update!(trial_ends_at: 7.days.from_now)
+    fill_upload_quota(blog.user, UploadQuota::FREE_LIMIT)
+
+    post = blog.posts.build(content: image_attachment_html(1), status: :published)
+
+    assert_not post.valid?
+    assert_match(/free uploads/, post.errors[:content].first)
+  end
+
+  test "an over quota user can still save a post without adding images" do
+    blog = blogs(:vivian)
+    post = blog.posts.create!(content: image_attachment_html(2), status: :published)
+    fill_upload_quota(blog.user, UploadQuota::FREE_LIMIT - 2)
+
+    assert blog.user.upload_quota.exceeded?
+    assert post.update(title: "Renamed")
+  end
+
+  test "an over quota user can remove an image and save" do
+    blog = blogs(:vivian)
+    post = blog.posts.create!(content: image_attachment_html(2), status: :published)
+    fill_upload_quota(blog.user, UploadQuota::FREE_LIMIT - 2)
+
+    assert post.update(content: "<p>No pictures any more</p>")
+  end
+
+  test "a free user cannot attach video" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("video"), filename: "clip.mp4", content_type: "video/mp4")
+    post = blogs(:vivian).posts.build(content: attachment_node_for(blob), status: :published)
+
+    assert_not post.valid?
+    assert_equal "Video uploads need a paid subscription", post.errors[:content].first
+  end
+
+  test "a forged sgid does not count against the allowance" do
+    blog = blogs(:vivian)
+    fill_upload_quota(blog.user, UploadQuota::FREE_LIMIT)
+
+    post = blog.posts.build(content: %(<p>Hi</p><action-text-attachment sgid="not-a-real-sgid"></action-text-attachment>), status: :published)
+
+    assert post.valid?
+  end
+
+  test "validating the allowance does not resolve one blob per embed" do
+    blog = blogs(:vivian)
+    content = image_attachment_html(10)
+
+    query_count = 0
+    counter = ->(name, started, finished, unique_id, payload) {
+      query_count += 1 unless payload[:name].in?([ "SCHEMA", "TRANSACTION" ]) || payload[:cached]
+    }
+
+    post = blog.posts.build(content: content, status: :published)
+    ActiveSupport::Notifications.subscribed(counter, "sql.active_record") { post.save! }
+
+    assert_operator query_count, :<, 40, "Expected bounded query count, got #{query_count}"
   end
 
   test "first_media returns first image or video attachment" do
@@ -479,4 +590,76 @@ class PostTest < ActiveSupport::TestCase
 
     assert_not_equal original_updated_at, blog.reload.updated_at
   end
+
+  test "plain_text_from strips attachment markers, urls, and dynamic variables" do
+    html = %(<h1>Trip</h1><p>Photos [beach.jpg] from https://example.com {{author}}</p>)
+    assert_equal "Trip Photos from", Post.new(blog: blogs(:joel)).send(:plain_text_from, html)
+  end
+
+  test "plain_text_from drops figcaptions and treats breaks and blocks as spaces" do
+    html = %(<figure><img><figcaption>caption</figcaption></figure><p>One</p><p>Two<br>Three</p>)
+    assert_equal "One Two Three", Post.new(blog: blogs(:joel)).send(:plain_text_from, html)
+  end
+
+  test "plain_text_content returns the text and ignores attachment tags" do
+    post = blogs(:joel).posts.build(content: "<p>Caption</p>#{attachment_tag("gid://unresolved")}")
+    assert_equal "Caption", post.plain_text_content
+  end
+
+  test "content_present accepts text or attachments and rejects empty content" do
+    assert blogs(:joel).posts.build(content: "Just words").valid?
+    assert blogs(:joel).posts.build(content: attachment_tag("gid://unresolved")).valid?
+
+    empty = blogs(:joel).posts.build(content: "<div></div>")
+    assert_not empty.valid?
+    assert_includes empty.errors[:content], "can't be blank"
+  end
+
+  # These run on every post save, so they must check presence and extract text
+  # from the parsed HTML without resolving the embeds - one blob query each is
+  # an N+1 on image-heavy posts. Keep the sgid real: a fake one never resolves,
+  # so assert_no_queries would pass without guarding anything.
+  test "content_present and plain_text_content never resolve attachment sgids" do
+    blob = ActiveStorage::Blob.create_before_direct_upload!(
+      filename: "photo.jpg", byte_size: 1, checksum: "x", content_type: "image/jpeg"
+    )
+    post = blogs(:joel).posts.build(content: attachment_tag(blob.attachable_sgid) * 3)
+
+    assert_no_queries do
+      post.content_present
+      post.plain_text_content
+    end
+  end
+
+  test "a free user can attach audio" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("audio"), filename: "track.mp3", content_type: "audio/mpeg")
+
+    assert blogs(:vivian).posts.build(content: attachment_node_for(blob), status: :published).valid?
+  end
+
+  test "a lapsed subscriber can still edit a post containing their video" do
+    blog = blogs(:joel)
+    video = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("video"), filename: "clip.mp4", content_type: "video/mp4")
+    post = blog.posts.create!(title: "Has video", content: attachment_node_for(video), status: :published)
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+
+    assert post.reload.update(title: "Renamed")
+  end
+
+  test "a lapsed subscriber cannot add a new video" do
+    blog = blogs(:joel)
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+    video = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("video"), filename: "clip.mp4", content_type: "video/mp4")
+
+    post = blog.posts.build(content: attachment_node_for(video), status: :published)
+
+    assert_not post.valid?
+    assert_equal "Video uploads need a paid subscription", post.errors[:content].first
+  end
+
+  private
+
+    def attachment_tag(sgid)
+      %(<action-text-attachment sgid="#{sgid}" content-type="image/jpeg"></action-text-attachment>)
+    end
 end

@@ -4,7 +4,8 @@ const maxFileSizes = {
   "image/jpeg": 10, "image/jpg": 10, "image/png": 10,
   "image/gif": 10, "image/webp": 10,
   "video/mp4": 50, "video/quicktime": 50,
-  "audio/mpeg": 20, "audio/wav": 20
+  "audio/mpeg": 20, "audio/wav": 20,
+  "application/pdf": 10
 }
 
 const typingAttributes = ["autocapitalize", "autocorrect", "spellcheck"]
@@ -30,7 +31,13 @@ export default class extends Controller {
 
     if (this.element.dataset.attachments !== "true") {
       e.preventDefault()
-      alert("Attachments are only available for paying customers")
+      alert("You've used all your free uploads. Subscribe to upload more.")
+      return
+    }
+
+    if (this.element.dataset.videos !== "true" && type.startsWith("video/")) {
+      e.preventDefault()
+      alert("Video uploads need a paid subscription.")
       return
     }
 
@@ -46,8 +53,18 @@ export default class extends Controller {
 
     if (size > limitMB * 1024 * 1024) {
       e.preventDefault()
-      const category = type.startsWith("video/") ? "Videos" : type.startsWith("audio/") ? "Audio files" : "Images"
-      alert(`This file is too large. ${category} are limited to ${limitMB}MB.`)
+      alert(`This file is too large. ${this.#categoryFor(type)} are limited to ${limitMB}MB.`)
+    }
+  }
+
+  // PDF is the only application/* type in maxFileSizes, so the media type is
+  // enough to name the category back to the writer.
+  #categoryFor(type) {
+    switch (type.split("/")[0]) {
+      case "video": return "Videos"
+      case "audio": return "Audio files"
+      case "application": return "PDFs"
+      default: return "Images"
     }
   }
 

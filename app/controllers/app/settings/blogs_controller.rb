@@ -35,16 +35,17 @@ class App::Settings::BlogsController < AppController
         :seo_title,
         :locale,
         :show_metrics,
-        :password,
-        :password_confirmation
+        :external_links_in_new_tab,
+        :show_upvotes,
+        :password
       ]
 
       if @blog.user.subscribed?
-        permitted_params += [ :custom_domain, :email_subscriptions_enabled, :show_subscription_in_header, :show_subscription_in_footer, :email_delivery_mode ]
+        permitted_params += [ :custom_domain, :custom_robots_txt, :use_custom_robots_txt, :email_subscriptions_enabled, :show_subscription_in_header, :show_subscription_in_footer, :email_delivery_mode ]
       end
 
       if @blog.user.has_premium_access?
-        permitted_params += [ :reply_by_email, :show_upvotes ]
+        permitted_params += [ :reply_by_email, :comments_enabled ]
       end
 
       params.require(:blog).permit(permitted_params)

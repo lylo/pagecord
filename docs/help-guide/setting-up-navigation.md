@@ -19,15 +19,20 @@ Add links to your blog's header so readers can find their way around.
 
 Links to one of your published pages. The label is automatically set to the page title.
 
+### Your posts
+
+Links to the list of all your posts. It's labelled "Blog" by default, but you can change that to whatever suits your blog. You can only add one.
+
+This is useful when you've set a page as your home page, since your posts then live at `/posts` rather than at the root of your blog.
+
 ### Custom link
 
 A manual link with your own label and URL. Use this for:
 
-- A link to `/posts` (all your posts)
 - External links (e.g., your portfolio or shop)
 - Any URL you want
 
-You can use relative paths (like `/posts`) or full URLs (like `https://example.com`).
+You can use relative paths (like `/archive`) or full URLs (like `https://example.com`).
 
 ### Social link
 
@@ -54,6 +59,10 @@ Adds a social media icon to your header. Choose from:
 - YouTube
 
 Enter the URL to your profile, or an email address for Email links, and the appropriate icon will be displayed.
+
+### Search
+
+Adds a search icon that links to your blog's [search page](blog-search.md), so readers can find your posts and pages. You can only add one.
 
 ## Reordering navigation items
 

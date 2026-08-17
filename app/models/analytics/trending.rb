@@ -13,8 +13,7 @@ class Analytics::Trending
 
     eligible_post_ids = view_counts.select { |_, count| count >= MIN_VIEWS }.keys
 
-    Post.visible.posts
-      .joins(:blog).merge(Blog.spotlit)
+    Blog.spotlit_posts
       .where(published_at: WINDOW_DAYS.days.ago..)
       .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
       .where(id: eligible_post_ids)

@@ -29,7 +29,7 @@ Rails.application.configure do
   # Show full error reports and disable caching.
   config.consider_all_requests_local = true
   config.action_controller.perform_caching = false
-  config.action_controller.default_url_options = { host: "www.example.com", protocol: "http" }
+  config.action_controller.default_url_options = { host: "example.com", protocol: "http" }
   config.cache_store = :null_store
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.

@@ -15,8 +15,11 @@ class Home::SpotlightController < ApplicationController
         @posts = spotlight_items
       end
       format.rss do
-        @posts = feed_posts
-        render :show, layout: false
+        body = Rails.cache.fetch([ "spotlight_rss", selected_tab, spotlight_refresh_window ], expires_in: CACHE_TTL) do
+          @posts = feed_posts
+          render_to_string :show, layout: false
+        end
+        render xml: body, content_type: "application/rss+xml"
       end
     end
   end
@@ -30,7 +33,7 @@ class Home::SpotlightController < ApplicationController
     def feed_posts
       # Trending stores score hashes; RSS needs render-ready posts with rich text loaded.
       posts = spotlight_items.map { |item| item[:post] }
-      posts_by_id = Post.where(id: posts.map(&:id)).for_blog_render.includes(:blog).index_by(&:id)
+      posts_by_id = Post.where(id: posts.map(&:id)).for_blog_render.includes(blog: :user).index_by(&:id)
 
       posts.filter_map { |post| posts_by_id[post.id] }
     end
@@ -55,8 +58,8 @@ class Home::SpotlightController < ApplicationController
     end
 
     def recent_posts
-      latest_per_blog = spotlight_posts_scope
-        .where(published_at: ..15.minutes.ago)
+      latest_per_blog = Blog.spotlit_posts
+        .where(published_at: 30.days.ago..15.minutes.ago)
         .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
         .select("DISTINCT ON (posts.blog_id) posts.*")
         .order("posts.blog_id, posts.published_at DESC")
@@ -73,9 +76,5 @@ class Home::SpotlightController < ApplicationController
       Analytics::Trending.new.top_posts(limit: 100)
         .select { |item| item[:post].published_at <= 15.minutes.ago }
         .first(20)
-    end
-
-    def spotlight_posts_scope
-      Post.visible.posts.joins(:blog).merge(Blog.spotlit)
     end
 end

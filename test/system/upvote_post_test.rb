@@ -11,13 +11,13 @@ class UpvotePostTest < ApplicationSystemTestCase
     use_subdomain(blog.subdomain)
     visit blog_post_path(post.slug)
 
-    find("a.upvote").click
+    find("button.upvote").click
     assert_selector ".upvote-heart[style*='fill']"  # JS sets fill color immediately
     sleep 0.5  # Allow request to complete
     assert_equal 1, post.upvotes.reload.count
 
     # Second click has no effect (already upvoted)
-    find("a.upvote").click
+    find("button.upvote").click
     sleep 0.5
     assert_equal 1, post.upvotes.reload.count
 

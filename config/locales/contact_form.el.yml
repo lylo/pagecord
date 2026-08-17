@@ -1,0 +1,5 @@
+el:
+  contact_form:
+    mailer:
+      subject: "Νέο μήνυμα από %{name}"
+      intro: "Λάβατε ένα μήνυμα μέσω της φόρμας επικοινωνίας του %{blog_name}."

@@ -263,6 +263,8 @@ Returns `201 Created` with:
 }
 ```
 
+Uploads here count towards your upload allowance exactly as the editor and emailed attachments do. Without a paid subscription, that means the Classic allowance applies during the free trial, and video is refused. Once the allowance is used up, uploads return `403 Forbidden` and nothing is stored. See [Writing posts](writing-posts.md) for how the allowance works.
+
 ### Using attachments in posts
 
 Use the returned `attachable_sgid` in your post content with an Action Text attachment tag:
@@ -359,7 +361,7 @@ Validation errors use `errors`:
 |--------|---------|
 | 400 | Bad request – invalid timestamp, out-of-range page, invalid status value, or invalid attachment sgid |
 | 401 | Missing or invalid API key |
-| 403 | Premium subscription required |
+| 403 | Premium subscription required, or the upload allowance is used up |
 | 404 | Resource not found |
 | 422 | Validation failed, invalid front matter, missing file, unsupported file type, or oversized file |
 | 429 | Rate limit exceeded |

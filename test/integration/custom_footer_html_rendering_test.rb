@@ -18,7 +18,7 @@ class CustomFooterHtmlRenderingTest < ActionDispatch::IntegrationTest
     assert response.body.index('class="custom-footer"') < response.body.index('id="brand"')
   end
 
-  test "does not render custom footer for non-premium users" do
+  test "renders custom footer for non-premium users" do
     user = users(:vivian)
     user.blog.update!(custom_footer_html: '<a href="https://example.com">Example</a>')
     post = user.blog.posts.first
@@ -26,6 +26,6 @@ class CustomFooterHtmlRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: user.blog.subdomain, slug: post.slug)
 
     assert_response :success
-    assert_select ".custom-footer", count: 0
+    assert_select ".custom-footer", count: 1
   end
 end

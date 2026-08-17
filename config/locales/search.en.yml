@@ -1,0 +1,8 @@
+en:
+  search:
+    placeholder: "Search this site"
+    submit: "Search"
+    no_results: "No posts found ✨"
+    results_count_html:
+      one: "%{count} post matching <strong>%{query}</strong>"
+      other: "%{count} posts matching <strong>%{query}</strong>"

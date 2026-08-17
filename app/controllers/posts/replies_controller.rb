@@ -3,25 +3,23 @@ class Posts::RepliesController < Blogs::BaseController
 
   rate_limit to: 3, within: 1.hour, only: [ :create ]
 
-  before_action :turnstile_check, only: [ :create ]
-
-  skip_before_action :authenticate, :ip_reputation_check
+  skip_before_action :authenticate
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
   before_action :load_post
-  before_action :verify, only: [ :create ]
+  before_action :form_token_check, only: [ :create ]
 
   def new
-    redirect_to view_context.post_path(@post) and return unless @blog.reply_by_email
+    redirect_to view_context.post_path(@post) and return unless @blog.accepts_replies?
 
     @reply = @post.replies.new(subject: "Re: #{@post.display_title}")
 
-    @form_token = encryptor.encrypt_and_sign({
-      post_id: @post.id
-    })
+    @form_token = @post.signed_id(purpose: :reply_form)
   end
 
   def create
+    redirect_to view_context.post_path(@post) and return unless @blog.accepts_replies?
+
     @reply = @post.replies.new(reply_params)
 
     if @reply.save
@@ -38,24 +36,23 @@ class Posts::RepliesController < Blogs::BaseController
 
   private
 
+    def submitted_email
+      params.dig(:reply, :email)
+    end
+
     def reply_params
       params.require(:reply).permit(:name, :email, :subject, :message)
     end
 
     def load_post
-      @post = @blog.posts.includes(blog: :avatar_attachment).find_by!(token: params[:post_token])
+      @post = @blog.posts.with_full_rich_text.includes(blog: :avatar_attachment).find_by!(token: params[:post_token])
     end
 
-    def verify
-      token_data = encryptor.decrypt_and_verify(params[:form_token])
-      raise "Form token / post_id mismatch" if token_data["post_id"] != @post.id
-    rescue => e
-      Rails.logger.warn("Reply spam check failed: #{e.message}")
-      head :unprocessable_entity
+    def signed_form_record
+      @post
     end
 
-    def encryptor
-      key = ActiveSupport::KeyGenerator.new(Rails.application.secret_key_base).generate_key("form-token", 32)
-      ActiveSupport::MessageEncryptor.new(key)
+    def form_token_purpose
+      :reply_form
     end
 end

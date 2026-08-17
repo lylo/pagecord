@@ -2,12 +2,13 @@ class MailParser
   include Html::AttachmentPreview
   include ActionView::Helpers::SanitizeHelper
 
-  def initialize(mail, process_attachments: true)
+  def initialize(mail, allowed_content_types: UploadLimits::CONTENT_TYPES.keys)
     @mail = mail
+    @allowed_content_types = allowed_content_types
     @processed_attachment_ids = Set.new
     @attachments = []
 
-    build_attachments if process_attachments
+    build_attachments
 
     @extract_tags = Html::ExtractTags.new
 
@@ -27,8 +28,16 @@ class MailParser
     ].freeze
   end
 
+  # Most clients omit the header when the subject is empty, which subject.blank?
+  # already covers. Proton sends the literal string instead, and it arrives
+  # DKIM-signed like any real subject, so the text is the only signal there is.
+  PLACEHOLDER_SUBJECT = /\A\(?no subject\)?\z/i
+
   def subject
-    @subject ||= @mail.subject&.strip
+    @subject ||= begin
+      value = @mail.subject&.strip
+      value unless value.blank? || value.match?(PLACEHOLDER_SUBJECT)
+    end
   end
 
   def body
@@ -56,8 +65,11 @@ class MailParser
     subject.blank?
   end
 
+  # Judged on the rendered text, not the markup: sanitising a remote image away
+  # leaves empty tags and a literal &nbsp;, which is a non-blank string but a
+  # blank post. Post#content_present sees the decoded text and disagreed.
   def body_blank?
-    sanitized_body.strip.blank? && !has_attachments?
+    body_fragment.text.strip.blank? && body_fragment.css("img").empty? && !has_attachments?
   end
 
   private
@@ -196,6 +208,10 @@ class MailParser
       html_parts.size > 1
     end
 
+    def body_fragment
+      @body_fragment ||= Nokogiri::HTML5.fragment(sanitized_body)
+    end
+
     def sanitized_body
       @sanitized_body ||= sanitize(body, tags: %w[img], attributes: %w[src alt])
     end
@@ -222,7 +238,10 @@ class MailParser
 
     def media_attachment?(part)
       mime_type = part.content_type&.split(";")&.first&.strip
-      UploadLimits::CONTENT_TYPES.key?(mime_type)
+      return false unless @allowed_content_types.include?(mime_type)
+
+      max_size = UploadLimits::CONTENT_TYPES[mime_type]
+      max_size && part.body.to_s.bytesize <= max_size
     end
 
     def append_unreferenced_attachments(html_content)

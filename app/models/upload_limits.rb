@@ -8,6 +8,7 @@ class UploadLimits
     "video/mp4" => 50.megabytes,
     "video/quicktime" => 50.megabytes,
     "audio/mpeg" => 20.megabytes,
-    "audio/wav" => 20.megabytes
+    "audio/wav" => 20.megabytes,
+    "application/pdf" => 10.megabytes
   }.freeze
 end

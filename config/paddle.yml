@@ -5,6 +5,7 @@ default: &default
 
 development:
   <<: *default
+  webhook_secret_key: <%= ENV.fetch("PADDLE_SANDBOX_WEBHOOK_SECRET_KEY", "local_development_webhook_secret") %>
 
 test:
   <<: *default

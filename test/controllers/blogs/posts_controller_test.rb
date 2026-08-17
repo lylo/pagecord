@@ -19,6 +19,19 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".stream_layout", count: 1
   end
 
+  test "should render the avatar for a blog on the free plan" do
+    free_blog = blogs(:vivian)
+    assert free_blog.user.on_free_plan?
+
+    free_blog.avatar.attach(io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png")
+    host_subdomain! free_blog.subdomain
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select ".avatar-container .avatar img", count: 1
+  end
+
   test "should render a list of post titles" do
     @blog.title_layout!
 
@@ -193,6 +206,20 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "{{ more }}"
   end
 
+  test "show should render a collapsible details section" do
+    post = @blog.posts.create!(
+      title: "Collapsible Show Post",
+      content: "<details open><summary>Read more</summary><p>Hidden detail.</p></details>",
+      status: :published
+    )
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "details[open] > summary", text: "Read more"
+    assert_select "details > p", text: "Hidden detail."
+  end
+
   test "should treat app as a post slug on blog subdomains" do
     post = @blog.posts.create!(
       title: "App slug",
@@ -332,14 +359,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     host_subdomain! "nope"
 
     get blog_posts_path
-    assert_redirected_to "http://www.example.com/"
+    assert_redirected_to "http://example.com/"
   end
 
   test "should redirect to root if blog is discarded" do
     @blog.discard!
 
     get blog_posts_path
-    assert_redirected_to "http://www.example.com/"
+    assert_redirected_to "http://example.com/"
   end
 
   test "should redirect to root if user is unverified" do
@@ -347,14 +374,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     host_subdomain! @blog.subdomain
 
     get blog_posts_path
-    assert_redirected_to "http://www.example.com/"
+    assert_redirected_to "http://example.com/"
   end
 
   test "should redirect to root if user is discarded" do
     @blog.user.discard!
 
     get blog_posts_path
-    assert_redirected_to "http://www.example.com/"
+    assert_redirected_to "http://example.com/"
   end
 
   ## RSS
@@ -605,7 +632,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     get "/#{post.slug}", headers: { "HOST" => "gadzooks.com" }
 
-    assert_redirected_to "http://www.example.com/"
+    assert_redirected_to "http://example.com/"
   end
 
   test "should redirect from default domain index to custom domain" do
@@ -725,6 +752,38 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=canonical][href=?]", "https://myblog.net"
   end
 
+  test "should emit BlogPosting structured data on a post page" do
+    post = @blog.posts.visible.first
+
+    get post_path(post)
+
+    assert_response :success
+    data = structured_data_from_response
+    assert_equal "BlogPosting", data["@type"]
+    assert_equal post.title, data["headline"]
+    assert_equal post_url(post), data["url"]
+    assert_equal post.published_at.iso8601, data["datePublished"]
+    assert_equal @blog.display_name, data.dig("author", "name")
+  end
+
+  test "should emit WebSite structured data on the blog index" do
+    get blog_posts_path
+
+    assert_response :success
+    data = structured_data_from_response
+    assert_equal "WebSite", data["@type"]
+    assert_equal blog_home_url(@blog), data["url"]
+  end
+
+  test "should emit valid structured data when the blog title contains a backslash" do
+    @blog.update!(title: 'Notes on C:\\paths and "quotes"')
+
+    get post_path(@blog.posts.visible.first)
+
+    assert_response :success
+    assert_equal "BlogPosting", structured_data_from_response["@type"]
+  end
+
   test "should set the canonical_url to the blog home without query params" do
     get blog_posts_path(ref: "example.com")
 
@@ -810,22 +869,42 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'meta[name="fediverse:creator"][content="@joel@pagecord.com"]'
   end
 
-  test "should include rel='me' link if Mastodon social navigation item is present" do
-    mastodon_link = SocialNavigationItem.create!(
-      blog: @blog,
-      platform: "Mastodon",
-      url: "https://mas.to/@joel_on_pagecord"
-    )
+  test "should include rel='me' links for social navigation items" do
+    blog = blogs(:saul)
+    host_subdomain! blog.subdomain
 
     get blog_posts_path
 
-    assert_select "link[rel=\"me\"][href=\"#{mastodon_link.url}\"]"
+    assert_select "link[rel=\"me\"]", count: 4
+    assert_select "link[rel=\"me\"][href=\"https://mas.to/@saul\"]"
+    assert_select "link[rel=\"me\"][href=\"https://github.com/saul\"]"
+    assert_select "link[rel=\"me\"][href=\"mailto:saul@example.com\"]"
+    assert_select "link[rel=\"me\"][href=\"https://x.com/saul\"]"
   end
 
-  test "should not include rel='me' link if Mastodon social navigation item is not present" do
+  test "should include rel='me' link for any social profile platform" do
+    # joel's only social navigation item is Bluesky
+    get blog_posts_path
+
+    assert_select "link[rel=\"me\"][href=\"https://bsky.app/profile/joel.example.com\"]"
+  end
+
+  test "should not include rel='me' link if no social navigation items are present" do
+    @blog.social_navigation_items.destroy_all
+
     get blog_posts_path
 
     assert_select "link[rel=\"me\"]", count: 0
+  end
+
+  test "should render the search navigation item for a free blog" do
+    blog = blogs(:vivian)
+    blog.navigation_items.create!(type: "SearchNavigationItem")
+    host_subdomain! blog.subdomain
+
+    get blog_posts_path
+
+    assert_select "nav a[href=?]", "/search"
   end
 
   test "should render avatar favicon when blog has an avatar" do
@@ -854,17 +933,20 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "a.upvote"
+    assert_select "button.upvote"
+    # A GET-shaped href to the POST-only upvotes route draws 404s from browsers
+    # following the link, so the button must never be an anchor.
+    assert_select "a[href*='/upvotes']", false
   end
 
-  test "should not render upvotes for a non-subscriber" do
+  test "should render upvotes for a non-subscriber" do
     @blog = blogs(:vivian)
     host_subdomain! "vivian"
 
     get blog_posts_path
 
     assert_response :success
-    assert_select "a.upvote", count: 0
+    assert_select "button.upvote"
   end
 
   test "should not render upvotes if show_upvotes is false" do
@@ -873,7 +955,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select "a.upvote", count: 0
+    assert_select "button.upvote", count: 0
   end
 
   test "post published_at is stored and rendered correctly in UTC" do
@@ -1014,7 +1096,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "p", text: /Posts tagged with/
     assert_select "a.tag-filter-clear[href='#{blog_posts_list_path}']", text: "Show all posts"
-    assert_select "a.tag-filter-rss", text: "RSS feed for these posts"
+    assert_select "a.tag-filter-rss", text: /RSS/
   end
 
   test "should show no posts message when tag has no matches" do
@@ -1360,7 +1442,31 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes(@response.headers["Cache-Control"] || "", "s-maxage")
   end
 
+  test "should not render the reply button for a free blog" do
+    blog = blogs(:vivian)
+    blog.update!(reply_by_email: true)
+    host_subdomain! blog.subdomain
+
+    get blog_post_path(blog.posts.visible.first.slug)
+
+    assert_select "a.reply-by-email", count: 0
+  end
+
+  test "should render the custom footer for a lapsed subscriber" do
+    blog = blogs(:joel)
+    blog.user.subscription.update!(next_billed_at: 1.day.ago)
+    blog.update!(custom_footer_html: %(<a href="https://example.com">Example</a>))
+
+    get blog_posts_path
+
+    assert_select ".custom-footer a[href=?]", "https://example.com"
+  end
+
   private
+
+    def structured_data_from_response
+      JSON.parse css_select("script[type='application/ld+json']").first.text
+    end
 
     def create_content_with_attachment(blog:, title:, caption:, is_page: false)
       blob = ActiveStorage::Blob.create_and_upload!(

@@ -16,6 +16,12 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "pricing redirects to the home page pricing section" do
+    get pricing_path
+
+    assert_redirected_to "/#pricing"
+  end
+
   test "should get pagecord vs hey world page" do
     get pagecord_vs_hey_world_path
     assert_response :success
@@ -44,7 +50,6 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
       personal_website_path,
       minimalist_blogging_path,
       blogging_by_email_path,
-      blog_with_newsletter_path,
       blogger_alternative_path,
       indie_blogging_platform_path
     ].each do |path|
@@ -57,8 +62,9 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     get robots_path
     assert_response :success
     assert_equal "text/plain; charset=utf-8", @response.content_type
-    assert_includes @response.body, "Blog robots.txt for Pagecord"
+    assert_includes @response.body, "Marketing site robots.txt for Pagecord"
     assert_includes @response.body, "sitemap.xml"
+    refute_includes @response.body, "Disallow"
   end
 
   test "sitemap includes topic landing pages" do
@@ -66,7 +72,6 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes @response.body, "https://pagecord.com/personal-website"
     assert_includes @response.body, "https://pagecord.com/minimalist-blogging"
-    assert_includes @response.body, "https://pagecord.com/blog-with-newsletter"
     assert_includes @response.body, "https://pagecord.com/blogger-alternative"
     assert_includes @response.body, "https://pagecord.com/indie-blogging-platform"
   end

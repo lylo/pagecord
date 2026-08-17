@@ -55,6 +55,7 @@ module Css
 
         def extra_properties
           %w[
+            row-gap
             scroll-behavior
             -moz-osx-font-smoothing
             initial-letter

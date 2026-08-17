@@ -3,13 +3,17 @@ import MediaSite from "media_site"
 class YouTube extends MediaSite {
   constructor() {
     super(
-      /(?:https:\/\/(?:www\.)?youtube\.com\/(?:watch\?v=|live\/|shorts\/)|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]+)/,
+      /(?:https:\/\/(?:www\.|music\.)?youtube\.com\/(?:watch\?v=|live\/|shorts\/|playlist\?list=)|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]+)/,
 
       async (url) => {
+        const list = new URL(url).searchParams.get("list")
+        if (list) {
+          return `https://www.youtube-nocookie.com/embed?listType=playlist&list=${list}`
+        }
+
         const match = url.match(this.regex)
         if (match) {
-          const videoId = match[1]
-          return `https://www.youtube-nocookie.com/embed/${videoId}`
+          return `https://www.youtube-nocookie.com/embed/${match[1]}`
         }
         return null
       },

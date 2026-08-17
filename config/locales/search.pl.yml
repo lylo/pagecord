@@ -1,0 +1,8 @@
+pl:
+  search:
+    placeholder: "Szukaj w tej witrynie"
+    submit: "Szukaj"
+    no_results: "Nie znaleziono wpisów ✨"
+    results_count_html:
+      one: "%{count} wpis pasujący do <strong>%{query}</strong>"
+      other: "%{count} wpisy pasujące do <strong>%{query}</strong>"
