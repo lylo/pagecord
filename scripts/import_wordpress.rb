@@ -3,6 +3,81 @@ require "nokogiri"
 require "cgi"
 require_relative "import_helpers"
 
+INLINE_TAGS = %w[a abbr b br cite code del em i img ins kbd mark q s small span strong sub sup u var].freeze
+
+# Containers whose own contents WordPress paragraph-wraps in turn. Everything else
+# is still descended into, but its text is left bare: a list item or heading must
+# not have its contents lifted into a paragraph of its own.
+PARAGRAPH_CONTAINER_TAGS = %w[blockquote div].freeze
+
+# Whitespace here is content, so it is the one element left exactly as it is.
+PREFORMATTED_TAG = "pre".freeze
+
+# WordPress stores post bodies with blank lines rather than <p> tags and applies
+# wpautop when rendering, so an importer has to do the same job: runs of text
+# become paragraphs, and block elements are left alone rather than padded with <br>.
+def wrap_paragraphs(html)
+  fragment = Nokogiri::HTML::DocumentFragment.parse(html)
+
+  # Paragraphs are rebuilt from scratch rather than kept: WordPress bodies use <p>
+  # loosely, and one left open across several blank-line-separated paragraphs would
+  # otherwise swallow all of them.
+  fragment.css("p").to_a.each { |paragraph| paragraph.replace("\n\n#{paragraph.inner_html}\n\n") }
+
+  paragraphize(fragment)
+  fragment.to_html
+end
+
+def paragraphize(container, wrap: true)
+  run = []
+
+  (container.children.to_a + [ nil ]).each do |node|
+    if node && (node.text? || INLINE_TAGS.include?(node.name))
+      run << node
+      next
+    end
+
+    flush_paragraphs(run, wrap: wrap)
+    next unless node && node.name != PREFORMATTED_TAG
+
+    paragraphize(node, wrap: PARAGRAPH_CONTAINER_TAGS.include?(node.name))
+  end
+end
+
+def flush_paragraphs(run, wrap:)
+  return if run.empty?
+
+  paragraphs = run.map(&:to_html).join
+    .split(/\n[[:blank:]]*\n/)
+    .map { |paragraph| paragraph.gsub("\n", "<br>").gsub(%r{\A(?:\s*<br\s*/?>)+|(?:<br\s*/?>\s*)+\z}i, "").strip }
+    .reject(&:empty?)
+
+  if paragraphs.any?
+    run.first.before(wrap ? paragraphs.map { |paragraph| "<p>#{paragraph}</p>" }.join : paragraphs.join("<br><br>"))
+  end
+
+  run.each(&:remove)
+  run.clear
+end
+
+# WordPress assigns every uncategorised post to one category, so whatever it has been
+# renamed to carries no meaning. It is always term 1.
+def default_category_nicename(doc)
+  doc.xpath("//channel/category").find { |category| category.at_xpath("term_id")&.text&.strip == "1" }
+    &.at_xpath("category_nicename")&.text&.strip
+end
+
+# A WordPress slug is only worth keeping if Pagecord can store it as-is; anything
+# else falls back to one derived from the title.
+def usable_slug(post_name)
+  return if post_name.blank?
+  return unless post_name.match?(/\A[a-z0-9]+([-_][a-z0-9]+)*\z/)
+  return if post_name.length > Sluggable::MAX_SLUG_LENGTH
+  return if Sluggable::RESERVED_SLUGS.include?(post_name)
+
+  post_name
+end
+
 # Import WordPress WXR exported XML files into Pagecord posts
 # Usage: ruby import_wordpress.rb path/to/export.xml blog_subdomain [--dry-run]
 def import_wordpress(path, blog_subdomain, dry_run: false, include_private: false, skip_images: false)
@@ -38,6 +113,8 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
   items = doc.xpath("//item")
   puts "Found #{items.length} total items in WordPress export"
   puts "Note: Images will be downloaded if available, otherwise original URLs will be preserved"
+
+  default_category = default_category_nicename(doc)
 
   success_count = 0
   failed_count = 0
@@ -84,10 +161,12 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
     # Parse publication date
     published_at = parse_datetime(post_date, fallback_message: "Warning: Could not parse datetime '#{post_date}' for '#{title}'")
 
-    # Extract categories AND tags as tag list (excluding "uncategorized")
-    categories = item.xpath("category[@domain='category']").map { |cat| cat.text.strip }
+    # Extract categories AND tags as tag list, dropping the category WordPress
+    # assigns by default: it sits on every post, so it says nothing about any of them
+    categories = item.xpath("category[@domain='category']")
+      .reject { |cat| cat["nicename"] == default_category }
+      .map { |cat| cat.text.strip }
     post_tags = item.xpath("category[@domain='post_tag']").map { |tag| tag.text.strip }
-    # Combine and clean/normalize tags, filtering out WordPress default "uncategorized"
     tag_list = (categories + post_tags)
       .reject { |t| t.downcase == "uncategorized" }
       .uniq
@@ -97,8 +176,12 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
     # Determine is_page from WordPress post_type
     is_page = post_type == "page"
 
-    # Check if post already exists by title (case-insensitive) or slug
-    existing_post = title.present? ? post_exists?(blog, title) : nil
+    # Keep the WordPress URL so existing links and search results still resolve
+    slug = usable_slug(item.at_xpath("post_name")&.text&.strip)
+
+    # Check if post already exists by slug, or by title (case-insensitive)
+    existing_post = slug ? blog.all_posts.find_by(slug: slug) : nil
+    existing_post ||= post_exists?(blog, title) if title.present?
 
     if existing_post
       skipped_duplicate += 1
@@ -114,6 +197,7 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
     # Create the Post object (without content yet, so we don't trigger ActionText parsing of <img>)
     post = blog.all_posts.new(
       title: title.presence,  # nil if empty, Pagecord handles titleless posts
+      slug: slug,
       published_at: published_at,
       tag_list: tag_list,
       is_page: is_page,
@@ -122,11 +206,7 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
     )
 
     # Parse and clean HTML content
-    # Strip Windows line endings
-    cleaned_content = content_encoded.gsub("\r", "")
-
-    # Convert double newlines to paragraph breaks
-    cleaned_content = cleaned_content.gsub(/\n\n+/, "<br><br>")
+    cleaned_content = wrap_paragraphs(content_encoded.gsub("\r", ""))
 
     content_doc = Nokogiri::HTML::DocumentFragment.parse(cleaned_content)
 
@@ -256,7 +336,9 @@ if __FILE__ == $PROGRAM_NAME
     puts ""
     puts "Notes:"
     puts "  - Post type (post vs page) is determined from the WordPress export"
-    puts "  - Both categories and tags from WordPress are imported as Pagecord tags"
+    puts "  - WordPress slugs are kept, so existing post URLs still work"
+    puts "  - Both categories and tags from WordPress are imported as Pagecord tags,"
+    puts "    apart from the default category WordPress puts on every post"
     puts "  - Draft posts are imported as drafts"
     puts "  - Password-protected posts are always skipped"
     puts "  - Titleless posts are supported"
