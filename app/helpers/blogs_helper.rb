@@ -47,6 +47,36 @@ module BlogsHelper
     end
   end
 
+  def structured_data
+    if @post&.post? && !@post.home_page?
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: @post.title.presence || page_title,
+        url: canonical_url,
+        datePublished: @post.published_at&.iso8601,
+        dateModified: @post.updated_at&.iso8601,
+        description: meta_description,
+        author: { "@type": "Person", name: @blog.display_name },
+        mainEntityOfPage: { "@type": "WebPage", "@id": canonical_url }
+      }.compact
+    else
+      url = @blog.present? ? blog_home_url(@blog) : "https://pagecord.com/"
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        url: url,
+        name: @blog.present? ? @blog.title : "Pagecord",
+        description: meta_description,
+        publisher: {
+          "@type": "Organization",
+          name: @blog.present? ? @blog.display_name : "Pagecord",
+          url: url
+        }
+      }
+    end
+  end
+
   def content_type_class
     return "index" unless @post
 

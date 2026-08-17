@@ -41,8 +41,7 @@ class BlogSpamDetector
 
     def should_skip?
       @blog.bio.to_plain_text.blank? &&
-        @blog.posts.published.none? &&
-        @blog.pages.published.none? &&
+        @blog.all_posts.published.none? &&
         @blog.navigation_items.none?
     end
 
@@ -93,9 +92,9 @@ class BlogSpamDetector
         Subdomain: #{@blog.subdomain}
         Bio: #{bio_content}
         Navigation links: #{@blog.navigation_items.map(&:link_url).join(", ").presence || "(none)"}
-        Posts (as stored HTML, so you can see the links):
+        Posts and pages (as stored HTML, so you can see the links):
         #{recent_posts_content}
-        Outbound link summary: #{link_summary}
+        Outbound link summary (counted across the full content, which the excerpts above may cut short): #{link_summary}
 
         Judge this blog on where its links point and what they are for, not on how many there are or how little writing surrounds them. Links to #{domain} are internal to this platform and are not outbound links.
 
@@ -106,12 +105,13 @@ class BlogSpamDetector
         - Social platforms: Instagram, Bluesky, Mastodon, X, Threads, TikTok, Reddit, GitHub, LinkedIn
         - Sharing sites for photos, film, music and books: glass.photo, Flickr, 500px, VSCO, Behance, Letterboxd, Goodreads and their equivalents
         - News sites, magazines, articles and other people's blogs. Collecting links to these with no commentary at all is link blogging, a normal form here
-
-        Apply that as a rule, not a hint: if every outbound link is of those kinds, answer "not_spam" and stop reading. Repetition of such a host across many posts is exactly what a normal blog looks like here, and counts for nothing.
         - The author's own site, shop, portfolio, newsletter or employer, including a bio or links page that is nothing but these
+
+        Apply that as a rule, not a hint: repetition of those hosts across many posts is exactly what a normal blog looks like here, and counts for nothing. A blog whose outbound links are all of those kinds is not a link farm. Read the rest before answering all the same.
 
         SPAM (classify as "spam" only when the links point at an unrelated business the blog is being used to promote):
         - The same external commercial host repeats across several posts, with filler writing wrapped around the links
+        - A single post or page carries many links to unrelated commercial sites, such as a "links" or "resources" page that is really a business directory. Concentration in one place counts as much as repetition across several
         - Links, anchor text or titles push gambling, pharmacy or pills, crypto trading, loans, essay writing, cheap flights or tickets, escorts, piracy, or SEO, backlink and guest post services
         - Keyword-stuffed anchor text or titles, such as "best cheap movers dubai 2025"
         - Content reads like a press release, product landing page or SEO article rather than personal writing
@@ -122,11 +122,11 @@ class BlogSpamDetector
         - A blog whose only links are in the bio, however commercial they look – that is a new user, not a link farm
         - Posts that are mostly links, where the destinations are media, social, news, recipes, tutorials or other people's blogs
         - An affiliate or product link inside a post that also contains real personal writing
-        - Writing that is unpolished, non-English, or about a commercial subject but written personally
+        - Writing that is unpolished, or about a commercial subject but written personally. Language is not a signal either way: judge writing in any language on the same criteria
 
         Link density alone is never enough, and neither is a lack of writing. A blog that posts twenty YouTube links with no commentary is a normal blog. A blog that posts three times about the same unrelated online shop is not.
 
-        Use "uncertain" when the destinations look commercial but you cannot tell whether they are the author's own. Prefer "uncertain" to "spam" whenever you are unsure: a wrong "spam" costs a real person their blog.
+        Both "spam" and "uncertain" send the blog to a human moderator, who decides what happens to it. Neither removes anything on its own, and the difference between them is small. "not_spam" closes the case with nobody looking, so it is the only answer that is expensive to get wrong. When you cannot tell, answer "uncertain" – in particular when the destinations look commercial but you cannot tell whether they are the author's own.
 
         Return JSON only: {"classification": "spam" | "not_spam" | "uncertain", "reason": "brief explanation naming the deciding signal"}
       PROMPT
@@ -138,7 +138,7 @@ class BlogSpamDetector
     end
 
     def recent_posts
-      @recent_posts ||= @blog.posts.published.with_rich_text_content
+      @recent_posts ||= @blog.all_posts.published.with_rich_text_content
                              .order(published_at: :desc).limit(POST_SAMPLE_SIZE).to_a
     end
 
@@ -154,9 +154,15 @@ class BlogSpamDetector
     # entirely. Attachment sgids are dropped as most of the markup by volume and
     # meaningless to the model, and src attributes so that an embedded image is
     # not mistaken for an outbound link.
+    def stripped_html(post)
+      post.content.body.to_html.gsub(/ (sgid|src|srcset)="[^"]*"/, "").squish
+    end
+
+    # Only the excerpt shown to the model is truncated. Counting links from a
+    # truncated body would miss exactly the shape we are looking for: filler
+    # writing first, then the links.
     def post_html(post)
-      post.content.body.to_html
-          .gsub(/ (sgid|src|srcset)="[^"]*"/, "").squish.truncate(POST_HTML_LIMIT)
+      stripped_html(post).truncate(POST_HTML_LIMIT)
     end
 
     # Repetition of the same host is the link farm signal, and a small model
@@ -171,7 +177,7 @@ class BlogSpamDetector
 
     def link_hosts
       @link_hosts ||= begin
-        sources = [ @blog.bio.body&.to_html.to_s, *@blog.navigation_items.map(&:link_url), *recent_posts.map { |post| post_html(post) } ]
+        sources = [ @blog.bio.body&.to_html.to_s, *@blog.navigation_items.map(&:link_url), *recent_posts.map { |post| stripped_html(post) } ]
 
         sources.join(" ").scan(%r{https?://(?:www\.)?([^/"'\s<>]+)}i).flatten.map(&:downcase)
                .reject { |host| host == domain || host.end_with?(".#{domain}") }

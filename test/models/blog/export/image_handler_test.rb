@@ -55,6 +55,43 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
     end
   end
 
+  test "names storage URLs after the uploaded file" do
+    blob = create_blob
+
+    filename = @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{blob.key}")
+
+    assert_equal "space.jpg", filename
+  end
+
+  test "falls back to the storage key when two images share an uploaded filename" do
+    first, second = create_blob, create_blob
+
+    @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{first.key}")
+    filename = @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{second.key}")
+
+    assert_equal "space-#{second.key}.jpg", filename
+  end
+
+  test "reuses the same filename for an image referenced twice" do
+    blob = create_blob
+
+    2.times do
+      assert_equal "space.jpg", @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/#{blob.key}")
+    end
+  end
+
+  test "leaves filenames with an extension unchanged" do
+    filename = @image_handler.send(:sanitized_filename, "http://example.com/test%20image.jpg")
+
+    assert_equal "test_image.jpg", filename
+  end
+
+  test "leaves unknown extension-less filenames unchanged" do
+    filename = @image_handler.send(:sanitized_filename, "https://storage.pagecord.com/nosuchkey")
+
+    assert_equal "nosuchkey", filename
+  end
+
   test "extracts original URL from Cloudflare CDN image URLs" do
     cloudflare_url = "https://pagecord.com/cdn-cgi/image/width=1600,height=1200,format=webp,quality=90/https://storage.pagecord.com/78v1ct1yskcl66bzrl5zf8bz2rpw"
     original_url = "https://storage.pagecord.com/78v1ct1yskcl66bzrl5zf8bz2rpw"
@@ -90,4 +127,78 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
 
     assert_equal expected, result
   end
+
+  test "bundles a PDF linked from the storage host" do
+    blob = create_pdf_blob
+    handler = isolated_handler
+    handler.stubs(:download_image)
+
+    processed_html = with_asset_host do
+      handler.process_images(%(<a href="https://storage.pagecord.com/#{blob.key}">Download</a>))
+    end
+
+    assert_match %r{href="images/[^/]+/document\.pdf"}, processed_html
+  end
+
+  test "bundles a PDF served by the app when no asset host is set" do
+    handler = isolated_handler
+    handler.stubs(:download_image)
+
+    processed_html = handler.process_images(%(<a href="http://localhost:3000/rails/active_storage/blobs/redirect/abc123/document.pdf">Download</a>))
+
+    assert_match %r{href="images/[^/]+/document\.pdf"}, processed_html
+  end
+
+  test "leaves links to other hosts alone" do
+    handler = isolated_handler
+    handler.expects(:download_image).never
+
+    processed_html = with_asset_host do
+      handler.process_images(%(<a href="https://example.com/paper.pdf">Paper</a>))
+    end
+
+    assert_match %r{href="https://example\.com/paper\.pdf"}, processed_html
+  end
+
+  test "downloads a file linked twice only once" do
+    blob = create_pdf_blob
+    href = "https://storage.pagecord.com/#{blob.key}"
+    downloaded = []
+    handler = isolated_handler
+    handler.define_singleton_method(:download_image) do |src, path|
+      downloaded << src
+      FileUtils.touch(path)
+    end
+
+    with_asset_host do
+      handler.process_images(%(<a href="#{href}">One</a><a href="#{href}">Two</a>))
+    end
+
+    assert_equal 1, downloaded.size
+  end
+
+  private
+
+    # The shared tmp/images_dir persists between runs, which the download-once
+    # guard would otherwise read as "already fetched".
+    def isolated_handler
+      Blog::Export::ImageHandler.new(@post, Dir.mktmpdir("image-handler-test"))
+    end
+
+    def with_asset_host(host = "https://storage.pagecord.com", &block)
+      ENV.stubs(:[]).with("ACTIVE_STORAGE_ASSET_HOST").returns(host)
+      yield
+    end
+
+    def create_pdf_blob
+      ActiveStorage::Blob.create_and_upload!(
+        io: file_fixture("document.pdf").open, filename: "document.pdf", content_type: "application/pdf"
+      )
+    end
+
+    def create_blob
+      ActiveStorage::Blob.create_and_upload!(
+        io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg"
+      )
+    end
 end

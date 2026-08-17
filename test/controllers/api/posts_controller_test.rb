@@ -328,6 +328,29 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes json["content"], "<img"
   end
 
+  test "create with pdf attachment points url at the first-page preview" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("document.pdf").open,
+      filename: "document.pdf",
+      content_type: "application/pdf"
+    )
+
+    post "/posts", params: {
+      title: "With PDF",
+      content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      content_format: "markdown",
+      status: "published"
+    }, headers: auth_header
+
+    assert_response :created
+    json = JSON.parse(response.body)
+    # The editor renders this url as an <img>, so it has to be the preview, not
+    # the PDF itself, or it falls back to a plain file chip.
+    assert_includes json["content"], 'url="/rails/active_storage/representations/redirect/'
+    assert_includes json["content"], 'content-type="application/pdf"'
+    assert_includes json["content"], 'previewable="true"'
+  end
+
   test "create with invalid attachment sgid returns bad request" do
     post "/posts", params: {
       title: "Bad Image",

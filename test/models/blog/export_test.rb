@@ -116,6 +116,23 @@ class Blog::ExportTest < ActiveSupport::TestCase
     end
   end
 
+  test "markdown export keeps links inside figure captions" do
+    html = <<~HTML
+      <figure>
+        <img src="doc.png">
+        <figcaption>
+          <span>Worksheet</span>
+          <a href="doc.pdf">Download</a>
+          <span>89.4 KB</span>
+        </figcaption>
+      </figure>
+    HTML
+
+    markdown = Blog::Export.new(blog: @blog).send(:html_to_markdown, html)
+
+    assert_includes markdown, "_Worksheet [Download](doc.pdf) 89.4 KB_"
+  end
+
   test "markdown export preserves code block language" do
     post = @blog.posts.new(title: "Code Test")
     post.content = ActionText::Content.new(<<~HTML)

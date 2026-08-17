@@ -21,7 +21,7 @@ class App::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
 
   test "should show css and footer but disable code for a trialist" do
     trialist = users(:vivian)
-    trialist.update!(trial_ends_at: 1.week.from_now, features: [ "custom_code" ])
+    trialist.update!(trial_ends_at: 1.week.from_now)
     login_as trialist
 
     get app_settings_custom_code_url
@@ -104,22 +104,13 @@ class App::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
 
   test "should not update custom code for a trialist" do
     trialist = users(:vivian)
-    trialist.update!(trial_ends_at: 1.week.from_now, features: [ "custom_code" ])
+    trialist.update!(trial_ends_at: 1.week.from_now)
     login_as trialist
 
     patch app_settings_custom_code_url, params: { blog: { custom_head_html: '<script src="/evil.js"></script>' } }, as: :turbo_stream
 
     assert_response :success
     assert_nil trialist.blog.reload.custom_head_html
-  end
-
-  test "should not update custom code without the feature flag" do
-    @user.update!(features: [])
-
-    patch app_settings_custom_code_url, params: { blog: { custom_head_html: '<script src="/a.js"></script>' } }, as: :turbo_stream
-
-    assert_response :success
-    assert_nil @blog.reload.custom_head_html
   end
 
   test "should show validation error for markup that does not belong in head" do

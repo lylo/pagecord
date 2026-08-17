@@ -88,10 +88,15 @@ module Billing
       end
 
       def subscription_canceled
-        Rails.logger.info "Subscription #{@subscription.id} cancelled"
-        @subscription.update!(
-          cancelled_at: Time.parse(data.canceled_at)
-        )
+        cancelled_at = Time.parse(data.canceled_at)
+
+        Rails.logger.info "Subscription #{@subscription.id} cancelled at #{cancelled_at}"
+
+        # Paddle only sends this once the cancellation has taken effect, so access ends
+        # now. Cancellations scheduled for the end of the term arrive as
+        # subscription.updated with a scheduled_change and keep their billing period
+        # until this event follows.
+        @subscription.update!(cancelled_at: cancelled_at, next_billed_at: cancelled_at)
       end
 
       def subscription_updated

@@ -1,7 +1,7 @@
 module Blog::CustomCode
   extend ActiveSupport::Concern
 
-  MAX_SIZE = 8.kilobytes
+  MAX_SIZES = { custom_head_html: 4.kilobytes, custom_body_html: 16.kilobytes }.freeze
   HEAD_ELEMENTS = %w[ script style link meta noscript template ].freeze
 
   # Belong in a head, but Pagecord owns the title and a <base> would rewrite
@@ -76,8 +76,10 @@ module Blog::CustomCode
         return false
       end
 
-      if value.bytesize > MAX_SIZE
-        errors.add(name, "is too large (maximum is #{MAX_SIZE / 1.kilobyte}KB)")
+      max_size = MAX_SIZES.fetch(name)
+
+      if value.bytesize > max_size
+        errors.add(name, "is too large (maximum is #{max_size / 1.kilobyte}KB)")
         return false
       end
 

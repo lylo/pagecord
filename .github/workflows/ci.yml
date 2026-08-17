@@ -76,7 +76,8 @@ jobs:
             libjemalloc2 \
             libsqlite3-0 \
             libvips \
-            libvips-dev
+            libvips-dev \
+            poppler-utils
 
       - name: Checkout code
         uses: actions/checkout@v7

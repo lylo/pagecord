@@ -1,4 +1,4 @@
-<figure class="attachment attachment--<%= blob.representable? ? "preview" : "file" %> attachment--<%= blob.filename.extension %>">
+<figure class="attachment attachment--<%= blob.representable? ? "preview" : "file" %> attachment--<%= blob.filename.extension.downcase %>">
   <% if blob.video? %>
     <%= video_tag rails_public_blob_url(blob), preload: "auto", controls: "controls", class: "attachment__video max-h-[600px] mx-auto" %>
   <% elsif blob.audio? %>
@@ -12,9 +12,23 @@
       <% lightbox_image_url = resized_image_url(blob, width: 1600, height: 1200) %>
       <%= image_tag resized_image_url(blob, width: width, height: height), alt: image_alt, data: { lightbox_full_url: lightbox_image_url } %>
     <% end %>
+  <% elsif blob.content_type == "application/pdf" %>
+    <% if blob.preview_image.attached? %>
+      <%= image_tag resized_image_url(blob.preview_image.blob, width: 1600, height: 1200), alt: "First page of #{blob.filename}", class: "attachment__page" %>
+    <% else %>
+      <span class="attachment__icon">pdf</span>
+    <% end %>
   <% end %>
 
-  <% if caption = blob.try(:caption) %>
+  <% if blob.content_type == "application/pdf" %>
+    <figcaption class="attachment__caption">
+      <% if pdf_caption = blob.try(:caption).presence %>
+        <span class="attachment__title"><%= pdf_caption %></span>
+      <% end %>
+      <%= link_to "Download", rails_public_blob_url(blob), target: "_blank", rel: "noopener", download: blob.filename.to_s, class: "attachment__link" %>
+      <span class="attachment__size"><%= number_to_human_size blob.byte_size %></span>
+    </figcaption>
+  <% elsif caption = blob.try(:caption) %>
     <figcaption class="attachment__caption">
       <%= caption %>
     </figcaption>

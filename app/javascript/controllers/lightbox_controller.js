@@ -19,6 +19,9 @@ export default class extends Controller {
 
   lightboxEnabledFor(img) {
     if (img.closest(".posts-gallery")) return false
+    // A PDF's first page is a stand-in for the document, not an image in its
+    // own right. Zooming it would show the same page back at the same size.
+    if (img.closest(".attachment--pdf")) return false
     return !this.isMobile() || img.closest(".attachment-gallery")
   }
 

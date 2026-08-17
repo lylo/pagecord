@@ -12,7 +12,9 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
     get blog_post_path(@post.slug)
 
     assert_response :success
-    assert_select "a.comment-link[href=?]", post_comments_path(@post)
+    assert_select "a[href=?]", post_comments_path(@post), count: 0 # crawlable links invite Googlebot
+    assert_select "form.comment-link-form[action=?][method=get]", post_comments_path(@post)
+    assert_select "button.comment-link"
     assert_select ".comment-count", text: "3"
     assert_select "turbo-frame##{comments_frame_id(@post)}:empty"
   end
@@ -24,7 +26,7 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
     get blog_post_path(@post.slug)
 
     assert_response :success
-    assert_select "a.comment-link", count: 0
+    assert_select ".comment-link", count: 0
     assert_select "turbo-frame##{comments_frame_id(@post)}", count: 0
   end
 
