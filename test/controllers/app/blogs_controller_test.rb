@@ -25,7 +25,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Your blogs"
     assert_select "a[href='#{new_app_blog_path}']", count: 0
-    assert_match "add a second blog", response.body
+    assert_match "add up to #{Blog::MAX_BLOGS_PAID} blogs", response.body
     assert_select "a[href='#{app_settings_subscriptions_path}']", text: "Subscribe to Pagecord Premium"
   end
 
@@ -40,7 +40,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Your blogs"
     assert_select "a[href='#{new_app_blog_path}']", count: 0
-    assert_match "add a second blog", response.body
+    assert_match "add up to #{Blog::MAX_BLOGS_PAID} blogs", response.body
   end
 
   test "delete blog buttons require confirmation" do
