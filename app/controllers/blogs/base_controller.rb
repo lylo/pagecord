@@ -1,5 +1,9 @@
 class Blogs::BaseController < ApplicationController
+  include BlogContentSecurityPolicy
+
   layout "blog"
+
+  blog_content_security_policy
 
   skip_before_action :domain_check
   before_action :load_blog, :validate_user, :enforce_custom_domain, :set_locale, :reject_malicious_params

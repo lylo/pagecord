@@ -1,9 +1,17 @@
 # config/initializers/content_security_policy.rb
+#
+# This is the app-side policy (dashboard, settings, admin, marketing).
+# Public blog pages get a permissive policy instead, because custom code means
+# readers can be served any https script or iframe. The app-side previews
+# render blog content too, so they share it – see BlogContentSecurityPolicy.
 
 Rails.application.configure do
   config.content_security_policy do |policy|
     # Base policy
     policy.default_src :self
+
+    # A rogue <base> tag would rewrite every relative URL on the page
+    policy.base_uri :self
 
     # Fonts
     policy.font_src :self, :https, :data
@@ -12,9 +20,7 @@ Rails.application.configure do
     policy.img_src :self, :data, :blob, :https,
                    "http://localhost:3000",
                    "http://lvh.me:3000",
-                   "https://storage.pagecord.com",
-                   "https://githubusercontent.com",
-                   "https://github.githubassets.com"
+                   "https://storage.pagecord.com"
 
     # Object embeds – block entirely
     policy.object_src :none
@@ -23,11 +29,6 @@ Rails.application.configure do
     policy.script_src :self, :https,
                       "https://challenges.cloudflare.com",
                       "https://static.cloudflareinsights.com",
-                      "https://strava-embeds.com",
-                      "https://gist.github.com",
-                      "https://github.githubassets.com",
-                      "https://assets-cdn.github.com",
-                      "https://githubusercontent.com",
                       "https://plausible.io",
                       "https://paddle.com",
                       "*.paddle.com",
@@ -35,27 +36,12 @@ Rails.application.configure do
 
     # Styles
     policy.style_src :self, :https,
-                     "https://gist.github.com",
-                     "https://github.githubassets.com",
-                     "https://assets-cdn.github.com",
                      "https://challenges.cloudflare.com",
                      :unsafe_inline
 
     # Frames and embeds
     policy.frame_src :self,
                      "https://challenges.cloudflare.com",
-                     "https://open.spotify.com",
-                     "https://player.vimeo.com",
-                     "https://www.youtube.com",
-                     "https://www.youtube-nocookie.com",
-                     "https://youtube.com",
-                     "https://embed.music.apple.com",
-                     "https://gist.github.com",
-                     "https://bandcamp.com",
-                     "*.bandcamp.com",
-                     "https://strava-embeds.com",
-                     "https://share.transistor.fm",
-                     "https://embed.bsky.app",
                      "https://paddle.com",
                      "*.paddle.com"
 
