@@ -1,0 +1,15 @@
+<div class="form blog-gate">
+  <p><%= t("unlock.intro") %></p>
+
+  <%= form_with url: blog_unlock_path, method: :post do |form| %>
+    <%= hidden_field_tag :return_to, request.fullpath %>
+
+    <%= form.password_field :password,
+          placeholder: t("unlock.placeholder"),
+          autocomplete: "current-password",
+          autofocus: true,
+          required: true %>
+
+    <%= form.submit t("unlock.submit") %>
+  <% end %>
+</div>

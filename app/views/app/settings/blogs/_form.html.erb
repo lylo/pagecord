@@ -62,6 +62,33 @@
         </div>
       <% end %>
 
+      <%= settings_row "Privacy", stacked: true do %>
+        <div class="group">
+          <div class="flex gap-3">
+            <div class="flex h-6 shrink-0 items-center">
+              <%= styled_check_box form, :use_password, checked: @blog.password_protected?, id: "use-password" %>
+            </div>
+            <div>
+              <%= form.label :use_password, "Password protect this blog", for: "use-password", class: "text-slate-800 dark:text-slate-100" %>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Visitors must enter the password before they can read any posts or pages – handy for a family journal or travelogue. Readers you've shared the password with can still subscribe by email. A protected blog is kept out of search engines and the Pagecord Spotlight.
+              </p>
+            </div>
+          </div>
+
+          <div class="hidden group-has-[#use-password:checked]:block mt-4">
+            <fieldset>
+              <%= form.label :password, "Password", class: "sr-only" %>
+              <%= form.password_field :password,
+                    placeholder: @blog.password_protected? ? "Enter a new password to change it" : "Choose a password",
+                    autocomplete: "new-password",
+                    class: "form-field w-full md:w-80" %>
+              <%= field_error(@blog, :password) %>
+            </fieldset>
+          </div>
+        </div>
+      <% end %>
+
       <% saved_robots = @blog.custom_robots_txt.present? %>
       <%= settings_row "Discoverability", stacked: true do %>
         <div class="group">

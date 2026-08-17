@@ -17,6 +17,13 @@ class Blog::SpotlitTest < ActiveSupport::TestCase
     assert_not_includes Blog.spotlit, @blog
   end
 
+  test "excludes password protected blogs" do
+    @blog.update!(password: "letmein")
+
+    assert_not @blog.spotlit?
+    assert_not_includes Blog.spotlit, @blog
+  end
+
   test "excludes blogs whose user is discarded" do
     @blog.user.discard!
 

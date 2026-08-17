@@ -1,10 +1,8 @@
 class Blog < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, Blog::CustomCode, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::Spotlit
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, Blog::CustomCode, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::PasswordProtected, Blog::Spotlit
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
-
-  has_secure_password validations: false
 
   belongs_to :user, inverse_of: :blogs
 
@@ -59,10 +57,6 @@ class Blog < ApplicationRecord
 
   def host
     custom_domain.presence || "#{subdomain}.#{Rails.application.config.x.domain}"
-  end
-
-  def password_protected?
-    password_digest.present?
   end
 
   # Perks of paying rather than things the blogger made, so the stored

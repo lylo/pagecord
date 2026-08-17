@@ -91,9 +91,10 @@
 
         <%= yield %>
 
-        <% if @blog.custom_footer? || @blog.branding_visible? %>
+        <% custom_footer = @blog.custom_footer? && @unlocked %>
+        <% if custom_footer || @blog.branding_visible? %>
           <footer class="blog-footer">
-            <% if @blog.custom_footer? %>
+            <% if custom_footer %>
               <div class="custom-footer">
                 <%= custom_footer_html(@blog) %>
               </div>

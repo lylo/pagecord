@@ -1,0 +1,6 @@
+fr:
+  unlock:
+    intro: "Saisissez le mot de passe pour lire ce blog"
+    placeholder: "Mot de passe"
+    submit: "Envoyer"
+    incorrect: "Ce mot de passe est incorrect. Veuillez réessayer."

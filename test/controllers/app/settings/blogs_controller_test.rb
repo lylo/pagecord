@@ -287,7 +287,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should set a blog password" do
-    patch app_settings_blog_url(@blog), params: { blog: { password: "letmein" } }, as: :turbo_stream
+    patch app_settings_blog_url(@blog), params: { blog: { use_password: "1", password: "letmein" } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
     assert @blog.reload.password_protected?
@@ -297,9 +297,16 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   test "should remove a blog password" do
     @blog.update!(password: "letmein")
 
-    patch app_settings_blog_url(@blog), params: { blog: { remove_password: "1" } }, as: :turbo_stream
+    patch app_settings_blog_url(@blog), params: { blog: { use_password: "0" } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
+    assert_not @blog.reload.password_protected?
+  end
+
+  test "should reject password protection with no password" do
+    patch app_settings_blog_url(@blog), params: { blog: { use_password: "1", password: "" } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
     assert_not @blog.reload.password_protected?
   end
 end

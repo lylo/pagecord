@@ -1,0 +1,6 @@
+en:
+  unlock:
+    intro: "Enter the password to read this blog"
+    placeholder: "Password"
+    submit: "Submit"
+    incorrect: "That password isn't right. Please try again."

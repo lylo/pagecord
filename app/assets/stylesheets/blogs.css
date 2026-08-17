@@ -548,6 +548,7 @@ footer.blog-footer #brand svg {
 
     input[type="text"],
     input[type="email"],
+    input[type="password"],
     input[type="url"],
     textarea {
       font-family: inherit;
@@ -582,6 +583,7 @@ footer.blog-footer #brand svg {
     }
 
     input[type="email"]::placeholder,
+    input[type="password"]::placeholder,
     input[type="url"]::placeholder,
     textarea::placeholder {
       color: var(--color-placeholder);
@@ -600,6 +602,28 @@ footer.blog-footer #brand svg {
       &:hover {
         background-color: var(--color-button-hover);
       }
+    }
+  }
+
+  /* Password gate. None of the blog's chrome renders here, so the box is the
+     whole page and sits in the middle of it. */
+  .form.blog-gate {
+    padding: 0;
+    background-color: transparent;
+    min-height: 70dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 100%;
+      max-width: 18rem;
     }
   }
 

@@ -42,11 +42,35 @@ class Blogs::BaseController < ApplicationController
       redirect_to_app_home unless @blog.user&.verified? && @blog.user&.kept?
     end
 
+    # The gate renders over whatever was asked for rather than redirecting, so
+    # the visitor keeps the URL they came for and /unlock stays a POST-only
+    # detail. Views read @unlocked to decide whether any of the blog may show.
     def require_blog_password
-      return unless @blog&.password_protected?
-      return if cookies.encrypted[:blog_unlock] == @blog.password_digest
+      if blog_readable?
+        @unlocked = true
+      else
+        render_blog_gate
+      end
+    end
 
-      redirect_to blog_unlock_path(return_to: request.fullpath)
+    def blog_readable?
+      return true unless @blog&.password_protected?
+
+      cookies.encrypted[:blog_unlock] == @blog.password_digest || feed_key_request?
+    end
+
+    # The feed token travels in a URL, where it's far easier to leak than the
+    # password, so it opens the feed and nothing else.
+    def feed_key_request?
+      request.format.rss? && @blog.valid_feed_token?(params[:key])
+    end
+
+    def render_blog_gate
+      if request.format.html?
+        render "blogs/unlock/gate", status: :unauthorized
+      else
+        head :unauthorized
+      end
     end
 
     def blog_from_custom_domain

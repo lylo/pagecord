@@ -1,0 +1,6 @@
+fi:
+  unlock:
+    intro: "Syötä salasana lukeaksesi tätä blogia"
+    placeholder: "Salasana"
+    submit: "Lähetä"
+    incorrect: "Salasana ei ole oikein. Yritä uudelleen."

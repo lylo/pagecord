@@ -1,0 +1,6 @@
+id:
+  unlock:
+    intro: "Masukkan kata sandi untuk membaca blog ini"
+    placeholder: "Kata sandi"
+    submit: "Kirim"
+    incorrect: "Kata sandi itu salah. Silakan coba lagi."
