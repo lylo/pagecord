@@ -50,11 +50,7 @@ class Blogs::BaseController < ApplicationController
     # The login page renders over whatever was asked for rather than
     # redirecting, so the visitor keeps the URL they came for.
     def require_blog_access
-      if blog_access_granted?
-        @blog&.access_granted = true
-      else
-        render_private_blog_login
-      end
+      render_private_blog_login unless blog_access_granted?
     end
 
     def blog_access_granted?

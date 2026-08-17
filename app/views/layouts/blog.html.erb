@@ -91,7 +91,7 @@
 
         <%= yield %>
 
-        <% custom_footer = @blog.custom_footer? && @blog.access_granted? %>
+        <% custom_footer = @blog.custom_footer? && blog_access_granted? %>
         <% if custom_footer || @blog.branding_visible? %>
           <footer class="blog-footer">
             <% if custom_footer %>

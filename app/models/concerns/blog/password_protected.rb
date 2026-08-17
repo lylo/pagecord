@@ -7,7 +7,6 @@ module Blog::PasswordProtected
     has_secure_password validations: false
 
     attribute :use_password, :boolean
-    attr_writer :access_granted
 
     scope :not_password_protected, -> { where(password_digest: nil) }
 
@@ -18,12 +17,6 @@ module Blog::PasswordProtected
 
   def password_protected?
     password_digest.present?
-  end
-
-  # Set per request once the visitor is past the login page. A blog with no
-  # password has nothing to grant.
-  def access_granted?
-    !password_protected? || @access_granted.present?
   end
 
   # Derived from the digest rather than stored, so it cycles with the password

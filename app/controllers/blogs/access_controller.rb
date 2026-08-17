@@ -5,7 +5,7 @@ class Blogs::AccessController < Blogs::BaseController
   rate_limit to: 10, within: 1.minute, only: :create
 
   def create
-    if @blog.password_protected? && @blog.authenticate(params[:password])
+    if @blog.authenticate(params[:password])
       cookies.encrypted[ACCESS_COOKIE] = {
         value: @blog.password_digest,
         expires: ACCESS_DURATION,
@@ -20,10 +20,8 @@ class Blogs::AccessController < Blogs::BaseController
 
   private
 
-    # Browsers read both "//host" and "/\host" as scheme-relative, so an
-    # open redirect needs only the leading slash to look local.
     def safe_return_to
       path = params[:return_to].to_s
-      path.match?(/\A\/($|[^\/\\])/) ? path : root_path
+      path.start_with?("/") && !path.start_with?("//", "/\\") ? path : root_path
     end
 end

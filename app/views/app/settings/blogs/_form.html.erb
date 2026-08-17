@@ -62,11 +62,12 @@
         </div>
       <% end %>
 
+      <% saved_password = persisted_value(@blog, :password_digest).present? %>
       <%= settings_row "Privacy", stacked: true do %>
         <div class="group">
           <div class="flex gap-3">
             <div class="flex h-6 shrink-0 items-center">
-              <%= styled_check_box form, :use_password, checked: @blog.password_protected?, id: "use-password" %>
+              <%= styled_check_box form, :use_password, checked: saved_password, id: "use-password" %>
             </div>
             <div>
               <%= form.label :use_password, "Password protect this blog", for: "use-password", class: "text-slate-800 dark:text-slate-100" %>
@@ -80,7 +81,7 @@
             <fieldset>
               <%= form.label :password, "Password", class: "sr-only" %>
               <%= form.password_field :password,
-                    placeholder: @blog.password_protected? ? "Enter a new password to change it" : "Choose a password",
+                    placeholder: saved_password ? "Enter a new password to change it" : "Choose a password",
                     autocomplete: "new-password",
                     class: "form-field w-full md:w-80" %>
               <%= field_error(@blog, :password) %>
