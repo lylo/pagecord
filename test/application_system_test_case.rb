@@ -9,8 +9,18 @@ Capybara::Selenium::Driver.class_eval do
   end
 end
 
+# In Docker, use the Chromium and driver installed by the Dockerfile's dev stage
+# rather than letting Selenium Manager download a browser at test time.
+Selenium::WebDriver::Chrome::Service.driver_path = "/usr/bin/chromedriver" if ENV["RUNNING_IN_DOCKER"]
+
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-  driven_by :selenium, using: :headless_chrome
+  driven_by :selenium, using: :headless_chrome do |options|
+    if ENV["RUNNING_IN_DOCKER"]
+      options.binary = "/usr/bin/chromium"
+      # Chromium's sandbox needs privileges the container doesn't have
+      options.add_argument("--no-sandbox")
+    end
+  end
 
   setup do
     Capybara.always_include_port = true
