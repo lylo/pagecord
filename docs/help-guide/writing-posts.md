@@ -45,6 +45,8 @@ The editor recognises Markdown as you type:
 `inline code`
 ```
 
+Callouts and footnotes are supported too, in the editor and in Markdown. Each has its own guide: see [Callouts](callouts.md) and [Footnotes](footnotes.md).
+
 For code blocks, use triple backticks. You can specify a language for syntax highlighting:
 
 ```ruby

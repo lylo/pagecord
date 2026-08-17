@@ -41,7 +41,7 @@ The measurement was repeated[^method].
 
 ## Using the editor
 
-In the Pagecord editor, the footnote button sits next to the link button in the toolbar.
+In the Pagecord editor, the footnote button sits next to the callout button in the toolbar.
 
 - Put the cursor where you want the marker and press the button. The marker is inserted and the cursor moves to the new note at the foot of the post, ready for you to type
 - Delete a marker to delete its note, and delete a note to delete its marker. The two always travel together
