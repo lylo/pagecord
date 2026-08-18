@@ -99,6 +99,15 @@ contact:
   is_page: true
   <<: *default
 
+archive:
+  title: Archive
+  blog: joel
+  published_at: <%= 1.week.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: archive
+  is_page: true
+  <<: *default
+
 draft_page:
   title: Draft Page
   blog: joel

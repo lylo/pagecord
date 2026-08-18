@@ -86,6 +86,14 @@ contact:
 
     <p>Email: joel@pagecord.com</p>
 
+archive:
+  record: archive (Post)
+  name: content
+  body: |
+    <p>Everything I've published, newest first.</p>
+
+    <p>{{ posts | style: stream }}</p>
+
 joel_draft:
   record: joel_draft (Post)
   name: content
