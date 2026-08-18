@@ -5,7 +5,7 @@ require "erb"
 
 # Raised when a single file's API call fails, so the sync can report it and
 # carry on with the remaining files rather than aborting the whole run.
-HelpSyncError = Class.new(StandardError)
+class HelpSyncError < StandardError; end
 
 namespace :help do
   desc "Sync help guide markdown files to help.pagecord.com pages via API"
