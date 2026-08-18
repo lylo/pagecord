@@ -27,7 +27,7 @@ By default, your blog's home page shows your posts. You can replace this with a 
 2. Publish it
 3. From the drop-down menu, select **Set as Home Page**
 
-Your custom home page can include [dynamic variables](https://help.pagecord.com/dynamic-variables-for-pages) to display post lists, tags, and more.
+Your custom home page can include [dynamic variables](https://help.pagecord.com/dynamic-variables-for-pages) to display post lists, tags, a search box, and more.
 
 ## Adding pages to your navigation
 
