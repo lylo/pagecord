@@ -1,6 +1,7 @@
 ---
 title: "Adding a custom footer"
 published: true
+published_at: 2026-05-29T17:22:59+00:00
 ---
 
 Premium customers can add an HTML snippet to the footer of their blog, and it keeps rendering afterwards whatever plan you're on. This is useful for things like:

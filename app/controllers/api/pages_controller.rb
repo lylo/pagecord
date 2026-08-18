@@ -18,7 +18,7 @@ class Api::PagesController < Api::BaseController
     pages = pages.where("published_at >= ?", parse_iso8601_timestamp(params[:published_after])) if params[:published_after]
     pages = pages.where("published_at <= ?", parse_iso8601_timestamp(params[:published_before])) if params[:published_before]
 
-    @pagy, @pages = pagy(pages.order(published_at: :desc))
+    @pagy, @pages = pagy(pages.order(published_at: :desc, id: :desc))
     set_pagination_headers(@pagy)
 
     render json: @pages.map { |page| page_json(page) }

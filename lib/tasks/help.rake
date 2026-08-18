@@ -3,6 +3,10 @@ require "json"
 require "yaml"
 require "erb"
 
+# Raised when a single file's API call fails, so the sync can report it and
+# carry on with the remaining files rather than aborting the whole run.
+HelpSyncError = Class.new(StandardError)
+
 namespace :help do
   desc "Sync help guide markdown files to help.pagecord.com pages via API"
   task :sync do
@@ -28,6 +32,7 @@ namespace :help do
     home_token = home_res.code == "200" ? JSON.parse(home_res.body)["token"] : nil
 
     docs_dir = help_docs_dir
+    failures = []
     Dir.glob("#{docs_dir}/*.md").each do |file|
       slug = File.basename(file, ".md")
       next if ENV["SLUG"] && ENV["SLUG"] != slug
@@ -55,6 +60,13 @@ namespace :help do
         help_api_call(:post, base_url, api_key, "/pages",
           content: content, content_format: "markdown", status: status, slug: slug) unless dry_run
       end
+    rescue HelpSyncError => e
+      puts "  FAILED: #{slug}: #{e.message}"
+      failures << slug
+    end
+
+    unless failures.empty?
+      abort "\n#{failures.size} file(s) failed: #{failures.join(", ")}"
     end
   end
 
@@ -132,7 +144,7 @@ namespace :help do
     req["Authorization"] = "Bearer #{api_key}"
     req.set_form_data(params)
     res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") { |http| http.request(req) }
-    abort "API error #{res.code}: #{res.body}" unless res.code.start_with?("2")
+    raise HelpSyncError, "API error #{res.code}: #{res.body}" unless res.code.start_with?("2")
     res
   end
 
