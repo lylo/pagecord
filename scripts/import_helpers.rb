@@ -9,7 +9,10 @@ module ImportHelpers
   # Imports upload every image before the post is saved, so an unsubscribed
   # owner would orphan most of them on R2 as each post failed the upload quota.
   # Importing requires a subscription anyway – see docs/help-guide/importing-an-existing-blog.md.
-  def check_import_allowed!(blog)
+  # A dry run uploads nothing, and the help guide has the customer verify the import
+  # before subscribing, so it must not be the step that demands a subscription.
+  def check_import_allowed!(blog, dry_run: false)
+    return if dry_run
     return if blog.user.upload_quota.unlimited?
 
     abort <<~MESSAGE

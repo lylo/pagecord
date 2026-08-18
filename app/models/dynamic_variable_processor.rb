@@ -8,6 +8,7 @@ class DynamicVariableProcessor
     "table_of_contents"  => :render_table_of_contents_tag,
     "email_subscription" => DynamicVariable::EmailSubscriptionTag,
     "contact_form"       => DynamicVariable::ContactFormTag,
+    "search"             => DynamicVariable::SearchTag,
     "updated_at"         => :render_updated_at_tag
   }.freeze
 
