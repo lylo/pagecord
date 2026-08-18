@@ -400,6 +400,14 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_includes lazy_frame_src, "sort=asc"
   end
 
+  test "a page embedding a stream of posts declares a single lightbox controller" do
+    get blog_post_url(subdomain: @blog.subdomain, slug: posts(:archive).slug)
+
+    assert_response :success
+    assert_select ".post-stream-item", minimum: 1
+    assert_select "[data-controller~='lightbox']", count: 1
+  end
+
   test "renders posts tag with gallery style and skips posts without images" do
     @blog.posts.visible.each { |p| p.update!(status: :draft) }
 
