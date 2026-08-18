@@ -1,6 +1,7 @@
 ---
 title: "Custom code recipes"
 published: true
+published_at: 2026-08-10T08:10:57+00:00
 ---
 
 These are custom code snippets you can paste straight into **Settings** → **Custom Code**. Each one is self-contained, so take only the ones you want.
