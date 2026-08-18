@@ -1,0 +1,7 @@
+<%# locals: (query: nil, autofocus: false) %>
+<div class="form search-form">
+  <%= form_with url: blog_search_path, method: :get do %>
+    <%= text_field_tag :q, query, placeholder: t("search.placeholder"), autofocus: autofocus %>
+    <%= submit_tag t("search.submit"), name: nil %>
+  <% end %>
+</div>
