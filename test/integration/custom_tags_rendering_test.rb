@@ -736,4 +736,25 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "body", text: /Portuguese Post/
   end
+
+  test "renders search tag" do
+    page = @blog.pages.create!(title: "Archive", content: "{{ search }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".search-form"
+    assert_select "form[action='#{blog_search_path}']"
+    assert_select "input[name='q']"
+  end
+
+  test "search tag renders the field unfocused and empty" do
+    page = @blog.pages.create!(title: "Archive", content: "{{ search }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "input[name='q'][autofocus]", count: 0
+    assert_select "input[name='q'][value]", count: 0
+  end
 end
