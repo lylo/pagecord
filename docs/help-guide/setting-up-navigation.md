@@ -64,6 +64,8 @@ Enter the URL to your profile, or an email address for Email links, and the appr
 
 Adds a search icon that links to your blog's [search page](blog-search.md), so readers can find your posts and pages. You can only add one.
 
+You can also embed a search box in a page with the `{{ search }}` dynamic variable, instead of or as well as the navigation icon. See [Search](blog-search.md).
+
 ## Reordering navigation items
 
 Drag items to change their order. The order you see in settings is the order they'll appear on your blog.
