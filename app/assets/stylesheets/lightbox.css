@@ -1,3 +1,15 @@
+/* Zoom cursor on images the lightbox will open. Done in CSS rather than JS so
+   lazily-loaded stream pages get it too. Mirrors lightboxEnabledFor(). */
+[data-controller~="lightbox"] article img:not(.posts-gallery *, .attachment--pdf *) {
+  cursor: zoom-in;
+}
+
+@media (max-width: 768px) {
+  [data-controller~="lightbox"] article img:not(.attachment-gallery *) {
+    cursor: auto;
+  }
+}
+
 /* Lightbox Component */
 .lightbox {
   position: fixed;
