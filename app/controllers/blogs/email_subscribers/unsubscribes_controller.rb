@@ -1,6 +1,6 @@
 class Blogs::EmailSubscribers::UnsubscribesController < Blogs::BaseController
-  before_action :load_subscriber
-  skip_before_action :load_blog, :validate_user, :enforce_custom_domain
+  before_action :load_subscriber, :set_locale
+  skip_before_action :load_blog, :validate_user, :enforce_custom_domain, :require_blog_access
   skip_forgery_protection only: [ :one_click ]
 
   def show
