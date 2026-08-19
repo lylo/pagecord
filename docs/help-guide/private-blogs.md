@@ -4,13 +4,13 @@ published: true
 published_at: 2026-08-17T10:00:00+00:00
 ---
 
-Put a password on your blog so only the people you share it with can read it. Handy for a family journal, a travelogue you'd rather not have indexed, or notes meant for a small group.
+Put a password on your blog so only the people you share it with can read it. Handy for a travelogue, a family newsletter, a garden diary, a book club, or anything else that doesn't need to be fully public.
 
 ## Turning on password protection
 
-1. Go to **Settings** → **Blog**
+1. Go to **Settings** → **Blog Settings**
 2. Tick **Password protect this blog**
-3. Choose a password, then click **Update**
+3. Choose a password of 6 characters or more, then click **Update**
 
 Anyone visiting your blog now sees a password box instead of your posts. Once they enter the password they can read everything as normal, and they stay signed in on that device for 30 days.
 
@@ -38,13 +38,19 @@ Readers who have the password can subscribe by email in the usual way, which is 
 
 The subscribe form only appears once someone has entered the password, so a stranger can't sign up to receive your posts.
 
+## RSS
+
+A private blog still has an [RSS feed](rss-feeds.md), but the usual `/feed.xml` address won't work on its own. Instead the feed gets a private address with a key in it, which readers can pick up from their RSS reader once they've entered the password, in the same way as any other blog.
+
+Changing your blog's password changes the feed address too, so anyone following along in a reader will need to add it again.
+
 ## A shared family blog
 
 A private blog works nicely as a blog the whole family writes to, not just reads.
 
 Each blog can have up to three additional sender addresses alongside your own, and anyone posting from a verified address can publish by [email](posting-by-email.md). Add your partner or a relative as a sender, and they can contribute simply by sending an email – no account to create and nothing to log in to.
 
-Add sender addresses in **Settings** → **Blog**. Each one is sent a short verification email before it can post.
+Add sender addresses in **Settings** → **Blog Settings**. Each one is sent a short verification email before it can post.
 
 ## Things worth knowing
 
