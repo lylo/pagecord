@@ -1,7 +1,7 @@
 <%= form_with url: app_settings_blog_path(@blog), model: @blog do |form| %>
   <% disabled = !@blog.user.subscribed? %>
 
-  <div class="space-y-8">
+  <div class="space-y-8 group/privacy">
     <%= settings_section "Blog Settings" do %>
       <%= settings_row "Post by Email" do %>
         <p class="text-slate-700 dark:text-slate-300">
@@ -73,7 +73,7 @@
             <div>
               <%= form.label :use_password, "Password protect this blog", for: "use-password", class: "text-slate-800 dark:text-slate-100" %>
               <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Visitors must enter the password before they can read any posts or pages – handy for a family journal or travelogue. Readers you've shared the password with can still subscribe by email. A protected blog is kept out of search engines and the Pagecord Spotlight.
+                When checked, visitors will need to enter a password to read and subscribe to your blog.
               </p>
             </div>
           </div>
@@ -94,7 +94,11 @@
 
       <% saved_robots = @blog.custom_robots_txt.present? %>
       <%= settings_row "Discoverability", stacked: true do %>
-        <div class="group">
+        <p class="hidden group-has-[#use-password:checked]/privacy:block text-sm text-slate-500 dark:text-slate-400">
+          Password protected blogs are always kept out of search engines, the Pagecord Spotlight and Shuffle.
+        </p>
+
+        <div class="group group-has-[#use-password:checked]/privacy:hidden">
           <div class="flex gap-3">
             <div class="flex h-6 shrink-0 items-center">
               <%= styled_check_box form, :allow_search_indexing, checked: @blog.allow_search_indexing %>
