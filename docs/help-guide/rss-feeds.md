@@ -20,6 +20,8 @@ If you're using a custom domain:
 https://yourdomain.com/feed.xml
 ```
 
+If your blog is [password protected](private-blogs.md), the feed lives at a private address with a key in it instead. Readers can pick it up from their RSS reader once they've entered the password.
+
 ## Filtered feeds
 
 You can filter your RSS feed using query parameters. This is useful for readers who only want to follow specific topics or languages on your blog.

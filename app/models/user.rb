@@ -37,10 +37,7 @@ class User < ApplicationRecord
   end
 
   def blog_limit
-    return Blog::MAX_BLOGS_FREE unless subscribed?
-    return Blog::MAX_BLOGS_PAID_WITH_PRIVATE if Rails.features.enabled?(:private_blogs, user: self)
-
-    Blog::MAX_BLOGS_PAID
+    subscribed? ? Blog::MAX_BLOGS_PAID : Blog::MAX_BLOGS_FREE
   end
 
   # Fresh each call: a quota read after a save that attached images must not
