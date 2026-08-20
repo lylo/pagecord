@@ -11,6 +11,10 @@ module Blog::RobotsTxt
     validate :custom_robots_txt_valid
   end
 
+  def crawlable?
+    allow_search_indexing? && !password_protected? && user.search_indexable?
+  end
+
   def custom_robots_txt_active?
     custom_robots_txt.present?
   end

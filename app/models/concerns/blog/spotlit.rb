@@ -12,6 +12,7 @@ module Blog::Spotlit
     scope :spotlit, -> {
       joins(:user)
         .where(allow_search_indexing: true)
+        .not_password_protected
         .where(users: { discarded_at: nil })
         .where("users.created_at <= ?", MINIMUM_ACCOUNT_AGE.ago)
         .where.missing(:spotlight_exclusion)
@@ -28,6 +29,7 @@ module Blog::Spotlit
 
   def spotlit?
     allow_search_indexing? &&
+      !password_protected? &&
       user.created_at <= MINIMUM_ACCOUNT_AGE.ago &&
       user.discarded_at.nil? &&
       spotlight_exclusion.nil?

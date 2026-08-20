@@ -8,8 +8,8 @@
     <% if blob.content_type == "image/gif" %>
       <%= image_tag rails_public_blob_url(blob), alt: image_alt %>
     <% else %>
-      <% width, height = local_assigns[:in_gallery] ? [800, 600] : [1600, 1200] %>
-      <% lightbox_image_url = resized_image_url(blob, width: 1600, height: 1200) %>
+      <% width, height = local_assigns[:in_gallery] ? [800, 800] : [1600, 1600] %>
+      <% lightbox_image_url = resized_image_url(blob, width: 1600, height: 1600) %>
       <%= image_tag resized_image_url(blob, width: width, height: height), alt: image_alt, data: { lightbox_full_url: lightbox_image_url } %>
     <% end %>
   <% elsif blob.content_type == "application/pdf" %>

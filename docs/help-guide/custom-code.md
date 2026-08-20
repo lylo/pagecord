@@ -1,6 +1,7 @@
 ---
 title: "Adding custom code"
 published: true
+published_at: 2026-08-02T20:48:29+00:00
 ---
 
 Premium customers can add their own HTML (including `<script>`) to every page of their blog. This is useful for things like:

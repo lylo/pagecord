@@ -40,12 +40,17 @@ Your local files are mounted into the container, so changes to `.erb` views and 
 
 ### Running commands in Docker
 
-With `docker compose up` running in one terminal, use a second terminal for one-off commands:
+With `docker compose up` running in one terminal, use a second terminal for one-off commands. The everyday equivalents:
+
+| Native | Docker |
+| --- | --- |
+| `bin/dev` | `docker compose up` |
+| `bin/rails c` | `docker compose exec web bin/rails c` |
+| `bin/rails ci` | `docker compose exec web bin/rails ci` |
+
+Anything else follows the same `docker compose exec web ...` pattern:
 
 ```bash
-# Rails console
-docker compose exec web bin/rails console
-
 # Run tests
 docker compose exec web bin/rails test
 docker compose exec web bin/rails test:system
@@ -55,7 +60,12 @@ docker compose exec web bin/rails db:migrate
 
 # Process emails (debug)
 docker compose exec web bash -c "DIR=tmp/emails rake email:load"
+
+# Stop everything
+docker compose down
 ```
+
+System tests run against the Chromium installed in the image's `dev` build stage, which is why `docker-compose.yml` builds with `target: dev`. Everyday app images built without a target stay slim.
 
 ### Native Development (Alternative)
 
@@ -64,7 +74,7 @@ If you prefer to run Rails natively without Docker:
 <details>
 <summary>Click to expand native setup instructions</summary>
 
-Install Ruby 3.4.5+ using [HomeBrew](https://brew.sh/) and [rbenv](https://github.com/rbenv/rbenv).
+Install the Ruby version in `.ruby-version` using [HomeBrew](https://brew.sh/) and [rbenv](https://github.com/rbenv/rbenv).
 
 ```bash
 bundle install

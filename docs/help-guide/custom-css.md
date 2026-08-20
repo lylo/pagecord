@@ -1,6 +1,7 @@
 ---
 title: "Using Custom CSS for advanced customisation"
 published: true
+published_at: 2026-01-31T11:54:29+00:00
 attachments:
   gallery-title-below:
     file: images/dynamic-variables/gallery-title-below.webp

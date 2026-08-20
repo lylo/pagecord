@@ -5,11 +5,6 @@ export default class extends Controller {
     this.handleImageClick = this.handleImageClick.bind(this)
     this.handleKeydown = this.handleKeydown.bind(this)
 
-    this.element.querySelectorAll("article img").forEach((img) => {
-      if (!this.lightboxEnabledFor(img)) return
-      img.style.cursor = "zoom-in"
-    })
-
     this.element.addEventListener("click", this.handleImageClick)
   }
 

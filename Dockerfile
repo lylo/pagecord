@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=4.0.5
+ARG RUBY_VERSION=4.0.6
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
 
 
@@ -41,13 +41,13 @@ RUN bundle exec bootsnap precompile app/ lib/
 
 
 # Final stage for app image
-FROM base
+FROM base AS app
 
 # Install packages needed for deployment
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl postgresql-client libvips && \
+    apt-get install --no-install-recommends -y curl postgresql-client libvips poppler-utils && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
@@ -65,3 +65,15 @@ ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
 CMD ["./bin/rails", "server"]
+
+
+# Development stage, adds Chromium for system tests. docker-compose builds this.
+FROM app AS dev
+
+USER root:root
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update -qq && \
+    apt-get install --no-install-recommends -y chromium chromium-driver fonts-liberation && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+USER rails:rails

@@ -20,7 +20,7 @@ class App::Blogs::RestorationsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
     blog = blogs(:joel_notes)
     blog.discard!
-    user.blogs.create!(subdomain: "joelphotos")
+    (Blog::MAX_BLOGS_PAID - user.blogs.count).times { |i| user.blogs.create!(subdomain: "joelspare#{i}") }
     login_as user
 
     post app_blog_restoration_url(blog)

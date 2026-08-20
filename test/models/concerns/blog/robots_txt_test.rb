@@ -66,4 +66,19 @@ class Blog::RobotsTxtTest < ActiveSupport::TestCase
     assert_not blog.valid?
     assert_includes blog.errors[:custom_robots_txt], "is too long (maximum 32 KB)"
   end
+
+  test "crawlable? covers every reason to keep crawlers out" do
+    blog = blogs(:joel)
+    assert blog.crawlable?
+
+    blog.update!(password: "letmein")
+    assert_not blog.crawlable?
+
+    blog.update!(use_password: false, allow_search_indexing: false)
+    assert_not blog.crawlable?
+
+    blog.update!(allow_search_indexing: true)
+    blog.user.stubs(:search_indexable?).returns(false)
+    assert_not blog.crawlable?
+  end
 end

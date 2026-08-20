@@ -1,4 +1,4 @@
-<div id="embedded-posts-<%= frame_id %>" class="h-feed" data-controller="media-embeds lightbox">
+<div id="embedded-posts-<%= frame_id %>" class="h-feed" data-controller="media-embeds">
   <%= render partial: "blogs/posts/stream_post", collection: posts, as: :post %>
 </div>
 <% if has_next %>
