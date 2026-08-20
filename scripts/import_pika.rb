@@ -15,7 +15,7 @@ def import_pika(path, blog_subdomain, dry_run = false, as_pages = false, title_s
     return
   end
 
-  check_import_allowed!(blog)
+  check_import_allowed!(blog, dry_run: dry_run)
 
   # Detect format and process accordingly
   if File.file?(path)

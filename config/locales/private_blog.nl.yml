@@ -1,0 +1,6 @@
+nl:
+  private_blog:
+    intro: "Voer het wachtwoord in om deze blog te lezen"
+    placeholder: "Wachtwoord"
+    submit: "Verzenden"
+    incorrect: "Dat wachtwoord klopt niet. Probeer het opnieuw."

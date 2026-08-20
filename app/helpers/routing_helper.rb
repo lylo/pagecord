@@ -20,11 +20,11 @@ module RoutingHelper
   end
 
   def rss_feed_path(blog)
-    route_for_blog(blog, "blog_feed_xml", "path")
+    route_for_blog(blog, "blog_feed_xml", "path", blog.feed_params)
   end
 
   def rss_feed_url(blog, options = {})
-    route_for_blog(blog, "blog_feed_xml", "url", options)
+    route_for_blog(blog, "blog_feed_xml", "url", options.merge(blog.feed_params))
   end
 
   def sitemap_url_for(blog)

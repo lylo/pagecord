@@ -174,6 +174,17 @@
     margin: 0;
   }
 
+  /* Lexxy caps content images at 32rem. With inline-size: auto that acts as a
+     width limit, so anything squarer than 9:8 renders narrower than the column
+     and the edge goes ragged. 48rem is the widest column we offer, so at this
+     height only images taller than 2:3 are still narrowed. Blogs can override
+     with --content-image-max-height (none for no cap at all).
+     Keep any cap paired with inline-size: auto: against a fixed width it
+     squashes the image instead of narrowing it, hence mobile clearing it. */
+  img, video {
+    max-block-size: var(--content-image-max-height, 48rem);
+  }
+
   @media (max-width: 640px) {
     img {
       width: 100%;

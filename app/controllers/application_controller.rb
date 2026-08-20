@@ -3,10 +3,16 @@ class ApplicationController < ActionController::Base
 
   before_action :domain_check
 
-  helper_method :current_features
+  helper_method :current_features, :blog_access_granted?
 
   def current_features
     Rails.features.for(user: Current.user, blog: @blog)
+  end
+
+  # The blog layout is shared with app-side previews, where the viewer is the
+  # owner. Only the public blog gates its content, so it overrides this.
+  def blog_access_granted?
+    true
   end
 
   protected

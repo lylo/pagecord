@@ -30,6 +30,24 @@ class Blogs::EmailSubscribers::UnsubscribesControllerTest < ActionDispatch::Inte
     assert_includes @response.body, "You&#39;re now unsubscribed"
   end
 
+  test "should show unsubscribe page for a password protected blog without the password" do
+    @blog.update!(password: "letmein")
+
+    get email_subscriber_unsubscribe_path(token: @blog.email_subscribers.first.token)
+
+    assert_response :success
+  end
+
+  test "should unsubscribe from a password protected blog without the password" do
+    @blog.update!(password: "letmein")
+
+    assert_difference -> { @blog.email_subscribers.count }, -1 do
+      post email_subscriber_one_click_unsubscribe_path(token: @blog.email_subscribers.first.token)
+    end
+
+    assert_response :success
+  end
+
   test "should fail gracefully with invalid token for one click" do
     post email_subscriber_one_click_unsubscribe_path(token: "unknown")
     assert_redirected_to root_path

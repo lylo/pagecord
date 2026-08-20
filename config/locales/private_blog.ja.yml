@@ -1,0 +1,6 @@
+ja:
+  private_blog:
+    intro: "このブログを読むにはパスワードを入力してください"
+    placeholder: "パスワード"
+    submit: "送信"
+    incorrect: "パスワードが正しくありません。もう一度お試しください。"

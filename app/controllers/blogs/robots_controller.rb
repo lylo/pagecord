@@ -7,6 +7,10 @@ module Blogs
     skip_forgery_protection only: [ :show ]
     skip_before_action :authenticate
 
+    # A private blog still answers robots.txt – withholding it reads as "no
+    # rules" to a crawler, when what we mean is "none of this".
+    skip_before_action :require_blog_access
+
     def show
       render formats: :text, content_type: "text/plain"
     end

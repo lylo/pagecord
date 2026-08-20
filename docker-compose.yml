@@ -8,6 +8,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
 
   redis:
     image: redis:latest
@@ -20,13 +25,20 @@ services:
       - "11211:11211"
 
   web:
-    build: .
+    build:
+      context: .
+      target: dev
     ports:
       - "3000:3000"
+    # Chromium needs more than the default 64MB of /dev/shm for system tests
+    shm_size: "1gb"
     depends_on:
-      - db
-      - redis
-      - memcached
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      memcached:
+        condition: service_started
     environment:
       DATABASE_HOST: db
       DATABASE_USERNAME: postgres
@@ -34,6 +46,8 @@ services:
       REDIS_URL: redis://redis:6379/0
       MEMCACHE_SERVERS: memcached:11211
       RAILS_ENV: development
+      # Tells the system tests to use the container's Chromium
+      RUNNING_IN_DOCKER: "true"
     volumes:
       - .:/rails
     stdin_open: true

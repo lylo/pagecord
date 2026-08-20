@@ -1,0 +1,42 @@
+<% if issues.any? %>
+  <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+    <thead>
+      <tr>
+        <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Email</th>
+        <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Issue</th>
+        <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Last seen</th>
+        <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Subscribed to</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+      <% issues.each do |issue| %>
+        <tr>
+          <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50">
+            <!--email_off--><%= issue.email %><!--/email_off-->
+          </td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm">
+            <span class="px-2.5 py-1 rounded-full text-xs font-medium <%= deliverability_badge_class(issue) %>">
+              <%= issue.label %>
+            </span>
+          </td>
+          <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
+            <%= issue.last_seen_at&.to_date&.strftime("%-d %b %Y") %>
+          </td>
+          <td class="py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
+            <%= safe_join(issue.subscribers.map { |sub| link_to "@#{sub.blog.subdomain}", admin_user_path(sub.blog.user), class: "underline" }, ", ") %>
+          </td>
+          <td class="whitespace-nowrap py-3 px-6 text-end">
+            <%= button_to "Delete",
+                admin_deliverability_issue_path(issue.email),
+                method: :delete,
+                data: { turbo_confirm: "Delete all #{issue.subscribers.size} #{"subscription".pluralize(issue.subscribers.size)} for #{issue.email}? This cannot be undone." },
+                class: "btn-danger py-1" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="px-6 py-8 text-sm text-slate-500 dark:text-slate-400 text-center"><%= empty_message %></p>
+<% end %>

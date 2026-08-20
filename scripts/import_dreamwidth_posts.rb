@@ -19,7 +19,7 @@ class DreamwidthImporter
       raise "Blog with subdomain '#{blog_subdomain}' not found. Available blogs: #{Blog.pluck(:subdomain).join(', ')}"
     end
 
-    check_import_allowed!(@blog)
+    check_import_allowed!(@blog, dry_run: @dry_run)
     @created_count = 0
     @skipped_count = 0
     @error_count = 0

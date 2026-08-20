@@ -285,4 +285,33 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert blog.show_subscription_in_header
     assert blog.show_subscription_in_footer
   end
+
+  test "should set a blog password" do
+    @user.update!(features: [ "private_blogs" ])
+
+    patch app_settings_blog_url(@blog), params: { blog: { use_password: "1", password: "letmein" } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert @blog.reload.password_protected?
+    assert @blog.authenticate("letmein")
+  end
+
+  test "should remove a blog password" do
+    @user.update!(features: [ "private_blogs" ])
+    @blog.update!(password: "letmein")
+
+    patch app_settings_blog_url(@blog), params: { blog: { use_password: "0" } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_not @blog.reload.password_protected?
+  end
+
+  test "should reject password protection with no password" do
+    @user.update!(features: [ "private_blogs" ])
+
+    patch app_settings_blog_url(@blog), params: { blog: { use_password: "1", password: "" } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_not @blog.reload.password_protected?
+  end
 end

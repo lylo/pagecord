@@ -15,7 +15,7 @@ def import_substack(path, blog_subdomain, dry_run: false, include_drafts: false,
     return
   end
 
-  check_import_allowed!(blog)
+  check_import_allowed!(blog, dry_run: dry_run)
 
   export_root = File.expand_path(path)
   posts_csv_path = File.join(export_root, "posts.csv")

@@ -40,6 +40,16 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     assert response.headers["link"].present?
   end
 
+  test "index breaks published_at ties by id so pagination is stable" do
+    get "/pages", headers: auth_header
+
+    assert_response :success
+    tokens = JSON.parse(response.body).map { |p| p["token"] }
+    expected = @blog.pages.kept.published.order(published_at: :desc, id: :desc).limit(tokens.size).pluck(:token)
+
+    assert_equal expected, tokens
+  end
+
   test "index does not include posts" do
     get "/pages", headers: auth_header
 

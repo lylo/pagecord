@@ -208,12 +208,9 @@ Rails.application.routes.draw do
       end
       resources :analytics, only: [ :index ]
       resources :posts, only: [ :index ]
-      resources :suppressions, only: [ :index ] do
-        collection do
-          delete :destroy
-          delete :destroy_all
-        end
-      end
+      resources :deliverability_issues, only: [ :index, :destroy ],
+                param: :email, constraints: { email: /[^\/]+/ }
+      resource :deliverability_purge, only: [ :create ]
       resources :users, only: [ :index, :show, :destroy, :new, :create, :update ] do
         member do
           post :restore
@@ -303,6 +300,7 @@ Rails.application.routes.draw do
     get "/", to: "blogs/posts#index", as: :blog_posts
     get "/posts", to: "blogs/posts#posts_list", as: :blog_posts_list
     get "/search", to: "blogs/searches#show", as: :blog_search
+    post "/access", to: "blogs/access#create", as: :blog_access
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")

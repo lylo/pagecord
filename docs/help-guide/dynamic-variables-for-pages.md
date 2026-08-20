@@ -352,6 +352,16 @@ _Note: this only appears for paid subscribers. It isn't included in the free tri
 
 _Paste it directly into the page content, not inside a code block in the editor._
 
+### Search
+
+Embed a search box so readers can search your posts and pages from anywhere on your blog.
+
+```javascript
+{{ search }}
+```
+
+_Note: this is the same search used by the search item in your navigation, so you don't need to add both._
+
 ## Examples
 
 ### Simple Archive Page
@@ -360,6 +370,8 @@ Create a page called "Archive" with this content:
 
 ```javascript
 Here's everything I've written:
+
+{{ search }}
 
 {{ posts_by_year }}
 ```

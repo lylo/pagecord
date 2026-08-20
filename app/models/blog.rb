@@ -1,6 +1,6 @@
 class Blog < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, Blog::CustomCode, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::Spotlit
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, Blog::CustomCode, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::PasswordProtected, Blog::Spotlit
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
@@ -8,6 +8,8 @@ class Blog < ApplicationRecord
 
   MAX_BLOGS_FREE = 1
   MAX_BLOGS_PAID = 2
+  # The extra slot exists so a private blog can sit alongside a public one.
+  MAX_BLOGS_PAID_WITH_PRIVATE = 3
 
   AVATAR_CONTENT_TYPES = %w[ image/jpeg image/png image/webp ].freeze
   AVATAR_MAX_SIZE = 5.megabytes
