@@ -58,14 +58,12 @@ class Admin::AnalyticsController < AdminController
       post_view_counts = {}
       start_time, end_time = date_range_for_view_type
 
-      # Add PageView counts for the period
       PageView.joins(:post)
         .where(posts: { is_page: is_page }, is_unique: true, viewed_at: start_time..end_time)
         .group("posts.id")
         .count
         .each { |post_id, count| post_view_counts[post_id] = count }
 
-      # Get relevant post IDs for filtering rollups
       relevant_post_ids = Post.where(is_page: is_page).pluck(:id).map(&:to_s)
 
       # Add Rollup counts for the period (filtered to relevant posts)
@@ -78,10 +76,8 @@ class Admin::AnalyticsController < AdminController
           post_view_counts[post_id] = (post_view_counts[post_id] || 0) + count.to_i
         end
 
-      # Get top 10 post IDs by view count
       top_post_ids = post_view_counts.sort_by { |_, count| -count }.first(10).map(&:first)
 
-      # Fetch the actual Post objects with their blogs
       Post.includes(:blog)
         .where(id: top_post_ids)
         .map { |post| { post: post, count: post_view_counts[post.id] || 0 } }
@@ -93,7 +89,6 @@ class Admin::AnalyticsController < AdminController
       blog_view_counts = {}
       start_time, end_time = date_range_for_view_type
 
-      # Add PageView counts for the period
       PageView.joins(:blog)
         .where(is_unique: true, viewed_at: start_time..end_time)
         .group("blogs.id")
@@ -110,10 +105,8 @@ class Admin::AnalyticsController < AdminController
           blog_view_counts[blog_id] = (blog_view_counts[blog_id] || 0) + count.to_i
         end
 
-      # Get top 10 blog IDs by view count
       top_blog_ids = blog_view_counts.sort_by { |_, count| -count }.first(10).map(&:first)
 
-      # Fetch the actual Blog objects
       blogs_with_counts = Blog.where(id: top_blog_ids)
         .map { |blog| { blog: blog, count: blog_view_counts[blog.id] || 0 } }
         .sort_by { |item| -item[:count] }

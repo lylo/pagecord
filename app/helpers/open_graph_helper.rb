@@ -80,7 +80,6 @@ module OpenGraphHelper
         end
       end
 
-      # Colors from blog theme
       colors = blog.og_theme_colors
       params[:bgColor] = colors[:bg]
       params[:textColor] = colors[:text]
@@ -108,7 +107,6 @@ module OpenGraphHelper
         params[:accentColor]
       ].join("|")
 
-      # Generate HMAC-SHA256 signature
       OpenSSL::HMAC.hexdigest(
         "SHA256",
         secret,

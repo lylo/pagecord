@@ -1,5 +1,3 @@
-# config/initializers/content_security_policy.rb
-#
 # This is the app-side policy (dashboard, settings, admin, marketing).
 # Public blog pages get a permissive policy instead, because custom code means
 # readers can be served any https script or iframe. The app-side previews
@@ -58,19 +56,15 @@ Rails.application.configure do
 
     policy.manifest_src :self, :https,
                         "https://d2rvfk326kpipd.cloudfront.net"
-
-    # Optional: CSP violation reports
-    # policy.report_uri "/csp-violation-report-endpoint"
   end
 
-  # Optional: better nonce generator if needed later
-  # (not used here because unsafe_inline is enabled)
+  # Inert while nonce_directives is empty; nonces aren't used because
+  # unsafe_inline is enabled.
   config.content_security_policy_nonce_generator = ->(request) { SecureRandom.base64(16) }
 
   # Don't apply nonce directives because unsafe_inline is used
   config.content_security_policy_nonce_directives = []
 
-  # Enable CSP enforcement
-  # For debugging: set to true for report-only mode first
+  # Report-only: violations are logged, not blocked.
   config.content_security_policy_report_only = true
 end
