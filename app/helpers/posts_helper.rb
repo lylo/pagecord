@@ -75,7 +75,8 @@ module PostsHelper
 
     processor = DynamicVariableProcessor.new(post: post, view: self)
     processor.process(post.content.to_s)
-  rescue
+  rescue StandardError => e
+    Rails.logger.error "Dynamic variable processing failed for post #{post.id}: #{e.class}: #{e.message}"
     post.content.to_s
   end
 
