@@ -21,4 +21,13 @@ class AdminMailer < CloudflareMailer
       subject: "Content Moderation: #{@count} posts need review"
     )
   end
+
+  def deliverability_digest(count)
+    @count = count
+
+    mail(
+      to: "hello@pagecord.com",
+      subject: "Deliverability: #{@count} #{"address".pluralize(@count)} to review"
+    )
+  end
 end

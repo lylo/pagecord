@@ -1,0 +1,6 @@
+pl:
+  private_blog:
+    intro: "Wpisz hasło, aby przeczytać tego bloga"
+    placeholder: "Hasło"
+    submit: "Wyślij"
+    incorrect: "To hasło jest nieprawidłowe. Spróbuj ponownie."

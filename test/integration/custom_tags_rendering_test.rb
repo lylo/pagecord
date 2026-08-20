@@ -400,6 +400,14 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_includes lazy_frame_src, "sort=asc"
   end
 
+  test "a page embedding a stream of posts declares a single lightbox controller" do
+    get blog_post_url(subdomain: @blog.subdomain, slug: posts(:archive).slug)
+
+    assert_response :success
+    assert_select ".post-stream-item", minimum: 1
+    assert_select "[data-controller~='lightbox']", count: 1
+  end
+
   test "renders posts tag with gallery style and skips posts without images" do
     @blog.posts.visible.each { |p| p.update!(status: :draft) }
 
@@ -735,5 +743,26 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "body", text: /Portuguese Post/
+  end
+
+  test "renders search tag" do
+    page = @blog.pages.create!(title: "Archive", content: "{{ search }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select ".search-form"
+    assert_select "form[action='#{blog_search_path}']"
+    assert_select "input[name='q']"
+  end
+
+  test "search tag renders the field unfocused and empty" do
+    page = @blog.pages.create!(title: "Archive", content: "{{ search }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "input[name='q'][autofocus]", count: 0
+    assert_select "input[name='q'][value]", count: 0
   end
 end

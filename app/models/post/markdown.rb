@@ -30,7 +30,7 @@ class Post::Markdown
     def markdown
       Redcarpet::Markdown.new(
         Renderer,
-        autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true
+        autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true, footnotes: true
       )
     end
 
@@ -70,6 +70,25 @@ class Post::Markdown
       segments = fragment.element_children.slice_before { |block| marker_for(block) }
 
       segments.map { |blocks| render_segment(blocks) }.join
+    end
+
+    # Redcarpet's own footnote markup is a <div class="footnotes">, but class is not
+    # something we allowlist in Html::Sanitize, so the list is marked with a data
+    # attribute instead. A bare <ol> also numbers itself, which saves a counter, and
+    # the rule above it is a CSS border rather than the <hr> Redcarpet emits.
+    def footnotes(content)
+      %(<ol data-footnotes>\n#{content}</ol>\n)
+    end
+
+    def footnote_def(content, number)
+      %(<li id="fn-#{number}">#{content}</li>\n)
+    end
+
+    # No backlink to the reference: stored inside the body it would have to be
+    # stripped on import and re-added on export, or it accumulates on every trip
+    # through the editor.
+    def footnote_ref(number)
+      %(<sup data-footnote-ref="#{number}" id="fnref-#{number}"><a href="#fn-#{number}">#{number}</a></sup>)
     end
 
     private

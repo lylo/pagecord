@@ -60,6 +60,7 @@ module PostsHelper
 
   def render_post_excerpt(post)
     content = Html::StripActionTextAttachments.new.transform(post.excerpt_html)
+    content = Html::StripFootnotes.new.transform(content)
     process_blog_links(content, post.blog).html_safe
   end
 

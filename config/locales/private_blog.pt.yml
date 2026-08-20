@@ -1,0 +1,6 @@
+pt:
+  private_blog:
+    intro: "Introduza a palavra-passe para ler este blog"
+    placeholder: "Palavra-passe"
+    submit: "Enviar"
+    incorrect: "Essa palavra-passe não está correta. Tente novamente."
