@@ -21,7 +21,7 @@ class Admin::DeliverabilityPurgesControllerTest < ActionDispatch::IntegrationTes
   test "create deletes suppressed subscribers but spares an occasional soft bounce" do
     stub_postmark(
       suppressions: [ { email_address: "fred@example.com", suppression_reason: "HardBounce", created_at: 1.day.ago } ],
-      bounces: [ { email: "geoff@gmail.com", bounced_at: 1.day.ago } ]
+      bounces: [ { email: "geoff@gmail.com", type: "Transient", bounced_at: 1.day.ago } ]
     )
 
     assert_difference "EmailSubscriber.count", -1 do
@@ -34,8 +34,8 @@ class Admin::DeliverabilityPurgesControllerTest < ActionDispatch::IntegrationTes
   end
 
   test "create deletes addresses that have bounced past the threshold" do
-    stub_postmark(bounces: Array.new(DeliverabilityReport::BOUNCE_THRESHOLD) {
-      { email: "fred@example.com", bounced_at: 1.day.ago }
+    stub_postmark(bounces: Array.new(DeliverabilityReport::BOUNCE_THRESHOLD) { |i|
+      { email: "fred@example.com", type: "Transient", bounced_at: 1.day.ago, message_id: "m#{i}" }
     })
 
     assert_difference "EmailSubscriber.count", -1 do

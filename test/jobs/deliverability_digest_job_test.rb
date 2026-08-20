@@ -18,8 +18,8 @@ class DeliverabilityDigestJobTest < ActiveSupport::TestCase
     end
   end
 
-  test "does not send a digest for a one-off soft bounce" do
-    stub_postmark(bounces: [ { email: "fred@example.com", bounced_at: 1.day.ago } ])
+  test "does not send a digest for a one-off recoverable failure" do
+    stub_postmark(bounces: [ { email: "fred@example.com", type: "Transient", bounced_at: 1.day.ago } ])
 
     assert_no_enqueued_emails do
       DeliverabilityDigestJob.perform_now

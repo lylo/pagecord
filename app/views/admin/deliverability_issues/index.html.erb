@@ -12,7 +12,7 @@
         <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300"><%= actionable.size %></span>
       </div>
       <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-        Suppressed by Postmark, or undeliverable <%= DeliverabilityReport::BOUNCE_THRESHOLD %> times or more
+        Suppressed by Postmark, hard bounced or blocked, or failing <%= DeliverabilityReport::BOUNCE_THRESHOLD %> times or more
       </p>
     </div>
     <%= button_to "Delete All",
@@ -33,7 +33,7 @@
         <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300"><%= occasional.size %></span>
       </div>
       <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-        Undeliverable once or twice. A full mailbox usually recovers, so leave these alone for now
+        Delayed or undeliverable once or twice. These usually recover, so leave them alone for now
       </p>
     </div>
 

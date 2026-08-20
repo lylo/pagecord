@@ -9,8 +9,8 @@ class DeliverabilityReportTest < ActiveSupport::TestCase
     { email_address: email, suppression_reason: reason, created_at: created_at }
   end
 
-  def bounce(email, bounced_at: 1.day.ago)
-    { email: email, bounced_at: bounced_at }
+  def bounce(email, type: "Transient", bounced_at: 1.day.ago, message_id: SecureRandom.uuid)
+    { email: email, type: type, bounced_at: bounced_at, message_id: message_id }
   end
 
   test "suppressions carry their reason and their local subscribers" do
@@ -22,7 +22,7 @@ class DeliverabilityReportTest < ActiveSupport::TestCase
     assert issue.actionable?, "a suppression is always worth acting on"
   end
 
-  test "soft bounces are grouped by address and counted" do
+  test "bounces are grouped by address and counted" do
     issue = report(bounces: [
       bounce("fred@example.com", bounced_at: 5.days.ago),
       bounce("FRED@example.com", bounced_at: 2.days.ago),
@@ -30,8 +30,37 @@ class DeliverabilityReportTest < ActiveSupport::TestCase
     ]).issues.sole
 
     assert_nil issue.reason
+    assert_equal "Transient", issue.bounce_type
     assert_equal 3, issue.bounce_count
     assert_in_delta 2.days.ago, issue.last_seen_at, 1.second
+  end
+
+  test "retries of one message count once, not once per attempt" do
+    issue = report(bounces: Array.new(5) { bounce("fred@example.com", message_id: "same-message") }).issues.sole
+
+    assert_equal 1, issue.bounce_count
+    assert_equal "Transient", issue.label
+    assert_not issue.actionable?
+  end
+
+  test "the badge follows the most recent bounce type" do
+    issue = report(bounces: [
+      bounce("fred@example.com", type: "Transient", bounced_at: 1.day.ago),
+      bounce("fred@example.com", type: "DnsError", bounced_at: 6.days.ago)
+    ]).issues.sole
+
+    assert_equal "Transient", issue.type
+  end
+
+  test "a single hard failure is actionable, however few times it happened" do
+    %w[ HardBounce Blocked BadEmailAddress ].each do |type|
+      issue = report(bounces: [ bounce("fred@example.com", type: type) ]).issues.sole
+      assert issue.actionable?, "#{type} should be actionable on its own"
+    end
+  end
+
+  test "a lone transient failure is not actionable" do
+    assert_empty report(bounces: [ bounce("fred@example.com", type: "Transient") ]).actionable
   end
 
   test "bounce timestamps arrive from Postmark as strings" do
@@ -57,7 +86,7 @@ class DeliverabilityReportTest < ActiveSupport::TestCase
     ).issues
   end
 
-  test "soft bounces are only actionable once they reach the threshold" do
+  test "recoverable failures are only actionable once they reach the threshold" do
     below = report(bounces: Array.new(DeliverabilityReport::BOUNCE_THRESHOLD - 1) { bounce("fred@example.com") })
     at_threshold = report(bounces: Array.new(DeliverabilityReport::BOUNCE_THRESHOLD) { bounce("fred@example.com") })
 

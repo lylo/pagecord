@@ -30,28 +30,28 @@ class Admin::DeliverabilityIssuesControllerTest < ActionDispatch::IntegrationTes
     assert_select "td", text: /joel/ # subscriber's blog
   end
 
-  test "index shows soft bounces with a count" do
-    stub_postmark(bounces: Array.new(3) { { email: "fred@example.com", bounced_at: 1.day.ago } })
+  test "index shows repeated bounces with their type and count" do
+    stub_postmark(bounces: Array.new(3) { |i| { email: "fred@example.com", type: "Transient", bounced_at: 1.day.ago, message_id: "m#{i}" } })
 
     get admin_deliverability_issues_url
     assert_response :success
-    assert_select "span", text: /Undeliverable ×3/
+    assert_select "span", text: /Transient ×3/
   end
 
   test "index lists an address once when it is both suppressed and bouncing" do
     stub_postmark(
       suppressions: [ { email_address: "fred@example.com", suppression_reason: "HardBounce", created_at: 1.day.ago } ],
-      bounces: Array.new(4) { { email: "fred@example.com", bounced_at: 1.day.ago } }
+      bounces: Array.new(4) { |i| { email: "fred@example.com", type: "Transient", bounced_at: 1.day.ago, message_id: "m#{i}" } }
     )
 
     get admin_deliverability_issues_url
     assert_response :success
     assert_select "td", text: /fred@example.com/, count: 1
-    assert_select "span", text: /Undeliverable/, count: 0
+    assert_select "span", text: /Transient/, count: 0
   end
 
   test "index keeps occasional bounces out of the table Delete All acts on" do
-    stub_postmark(bounces: [ { email: "fred@example.com", bounced_at: 1.day.ago } ])
+    stub_postmark(bounces: [ { email: "fred@example.com", type: "Transient", bounced_at: 1.day.ago } ])
 
     get admin_deliverability_issues_url
     assert_response :success
