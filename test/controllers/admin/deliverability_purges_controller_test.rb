@@ -29,8 +29,22 @@ class Admin::DeliverabilityPurgesControllerTest < ActionDispatch::IntegrationTes
     end
 
     assert_redirected_to admin_deliverability_issues_path
-    assert_match(/Deleted 1 subscriber/, flash[:notice])
+    assert_equal "Deleted 1 subscription across 1 address.", flash[:notice]
     assert EmailSubscriber.exists?(email: "geoff@gmail.com")
+  end
+
+  test "create counts subscriptions and addresses separately" do
+    EmailSubscriber.create!(blog: blogs(:vivian), email: "fred@example.com", confirmed_at: 1.day.ago)
+    stub_postmark(suppressions: [
+      { email_address: "fred@example.com", suppression_reason: "HardBounce", created_at: 1.day.ago },
+      { email_address: "geoff@gmail.com", suppression_reason: "HardBounce", created_at: 1.day.ago }
+    ])
+
+    assert_difference "EmailSubscriber.count", -3 do
+      post admin_deliverability_purge_url
+    end
+
+    assert_equal "Deleted 3 subscriptions across 2 addresses.", flash[:notice]
   end
 
   test "create deletes addresses that have bounced past the threshold" do

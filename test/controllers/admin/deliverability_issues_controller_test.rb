@@ -86,12 +86,14 @@ class Admin::DeliverabilityIssuesControllerTest < ActionDispatch::IntegrationTes
     assert_select "div", text: /Couldn't load Postmark data/
   end
 
-  test "destroy deletes every subscription for the address" do
-    assert_difference "EmailSubscriber.count", -1 do
+  test "destroy deletes every subscription for the address and counts them" do
+    EmailSubscriber.create!(blog: blogs(:vivian), email: "fred@example.com", confirmed_at: 1.day.ago)
+
+    assert_difference "EmailSubscriber.count", -2 do
       delete admin_deliverability_issue_url("fred@example.com")
     end
 
     assert_redirected_to admin_deliverability_issues_path
-    assert_equal "Subscriber deleted.", flash[:notice]
+    assert_equal "Deleted 2 subscriptions.", flash[:notice]
   end
 end
