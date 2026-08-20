@@ -38,10 +38,10 @@ class App::Settings::ThemeGardenController < AppController
     end
 
     def with_blog_view_context
-      original = lookup_context.prefixes.dup
-      lookup_context.prefixes.unshift("blogs/posts", "blogs")
+      original = lookup_context.prefixes
+      lookup_context.prefixes = [ "blogs/posts", "blogs", *original ]
       yield
     ensure
-      lookup_context.prefixes.replace(original)
+      lookup_context.prefixes = original
     end
 end
