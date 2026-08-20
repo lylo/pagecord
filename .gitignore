@@ -49,3 +49,6 @@
 node_modules
 .claude.json
 .poolside
+
+# GeoIP database is fetched via rake geoip:update, not tracked in git
+db/dbip-country-lite.mmdb
