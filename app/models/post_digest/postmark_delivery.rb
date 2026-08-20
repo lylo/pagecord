@@ -3,7 +3,7 @@ class PostDigest::PostmarkDelivery
 
   def initialize(digest)
     @digest = digest
-    @client = Postmark::ApiClient.new(api_token)
+    @client = DeliverabilityReport.client
   end
 
   def deliver_all
@@ -43,9 +43,5 @@ class PostDigest::PostmarkDelivery
           Rails.logger.error "Digest delivery failed for subscriber #{subscriber.id}: #{result[:message]}"
         end
       end
-    end
-
-    def api_token
-      Rails.application.config.action_mailer.postmark_settings&.dig(:api_token) || ENV["POSTMARK_API_TOKEN"]
     end
 end

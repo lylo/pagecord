@@ -80,6 +80,11 @@ every :day, at: "8:00 am" do
   runner "ContentModerationDigestJob.perform_later"
 end
 
+# Digests go out on Tuesdays, so sweep Postmark the morning after while the bounces are fresh.
+every :wednesday, at: "8:15 am" do
+  runner "DeliverabilityDigestJob.perform_later"
+end
+
 every :day, at: "3:30 am" do
   runner "Posts::EmptyTrashJob.perform_later"
 end
