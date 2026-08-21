@@ -94,9 +94,3 @@ end
 every :sunday, at: "4:20 am" do
   rake "db:backup"
 end
-
-# Refresh the DB-IP country database (no longer tracked in git). DB-IP publishes
-# a new dated file each month; GeoIp.lookup returns nil until the file exists.
-every "15 4 3 * *" do
-  rake "geoip:update"
-end
