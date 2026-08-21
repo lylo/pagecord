@@ -23,18 +23,6 @@ module Themeable
               color_format: true, if: :custom_theme?
   end
 
-  def serif?
-    font == "serif"
-  end
-
-  def sans_serif?
-    font == "sans-serif"
-  end
-
-  def mono?
-    font == "mono"
-  end
-
   def font_class
     case font
     when "serif"

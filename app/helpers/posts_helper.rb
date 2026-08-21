@@ -7,7 +7,6 @@ module PostsHelper
     doc.to_html
   end
 
-  # Generate URL for filtering posts by tag
   def tag_filter_url(tag)
     if @blog
       # For public blog views

@@ -41,7 +41,6 @@ class PageView < ApplicationRecord
 
     return if existing_view
 
-    # Extract referrer domain
     referrer_domain = Referrer.new(referrer).domain
 
     # Normalize country (nil or "XX" means unknown)
