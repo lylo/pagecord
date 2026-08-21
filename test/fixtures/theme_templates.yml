@@ -718,7 +718,8 @@ mozake:
     hr { border: revert; margin-block: 1em; }
 
     /* Post footer */
-    article footer { display: block; font-size: revert; }
+    article footer { justify-content: flex-start; gap: 0.5em; font-size: revert; }
+    article footer .post-actions::before { content: "\00b7"; }
     article footer .comment-link,
     article footer .upvote { color: LinkText; }
     .icon { width: 1em; height: 1em; }
@@ -763,6 +764,8 @@ mozake:
 
     .blog input[type="text"],
     .blog input[type="email"],
+    .blog input[type="password"],
+    .blog input[type="url"],
     .blog textarea {
       border: revert;
       border-radius: 0;
