@@ -4,7 +4,7 @@ class App::Blogs::TrashController < AppController
   end
 
   def destroy
-    Current.user.all_blogs.discarded.destroy_all
-    redirect_to app_blogs_trash_path, notice: "Trash was successfully emptied"
+    Current.user.all_blogs.discarded.ids.each { Blogs::DestroyJob.perform_later(it) }
+    redirect_to app_blogs_trash_path, notice: "Trash is being emptied"
   end
 end

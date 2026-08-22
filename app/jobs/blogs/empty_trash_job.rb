@@ -2,7 +2,9 @@ class Blogs::EmptyTrashJob < ApplicationJob
   queue_as :default
 
   def perform
-    count = Blog.discarded.where("discarded_at < ?", 30.days.ago).destroy_all.count
-    Rails.logger.info "Emptied #{count} #{"blog".pluralize(count)} from trash"
+    blog_ids = Blog.discarded.where("discarded_at < ?", 30.days.ago).ids
+    blog_ids.each { Blogs::DestroyJob.perform_later(it) }
+
+    Rails.logger.info "Queued #{blog_ids.size} #{"blog".pluralize(blog_ids.size)} for deletion"
   end
 end

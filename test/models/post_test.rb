@@ -579,6 +579,22 @@ class PostTest < ActiveSupport::TestCase
     assert_not_equal original_updated_at, blog.reload.updated_at
   end
 
+  test "should not touch the blog for every post when the blog is destroyed" do
+    blog = blogs(:joel)
+    Blog.any_instance.expects(:touch).never
+
+    blog.destroy!
+  end
+
+  test "should purge attachment blobs when a post is destroyed" do
+    post = blogs(:joel).posts.create!(content: "With a file", status: :published)
+    post.attachments.attach(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+
+    assert_difference -> { ActiveStorage::Blob.count }, -1 do
+      perform_enqueued_jobs { post.destroy! }
+    end
+  end
+
   test "should touch blog when post status changes to published" do
     blog = blogs(:joel)
     post = blog.posts.create!(content: "Draft post", status: :draft)

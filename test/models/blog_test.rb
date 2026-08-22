@@ -138,6 +138,22 @@ class BlogTest < ActiveSupport::TestCase
     end
   end
 
+  test "should take its posts, comments, page views and subscribers with it" do
+    @blog.page_views.create!(path: "/", viewed_at: Time.current, visitor_hash: "abc123")
+    post_ids = @blog.all_posts.ids
+    assert_not_empty post_ids
+    assert_not_empty Post::Comment.where(post_id: post_ids)
+    assert_not_empty PageView.where(blog: @blog)
+    assert_not_empty EmailSubscriber.where(blog: @blog)
+
+    @blog.destroy!
+
+    assert_empty Post.with_discarded.where(id: post_ids)
+    assert_empty Post::Comment.where(post_id: post_ids)
+    assert_empty PageView.where(blog_id: @blog.id)
+    assert_empty EmailSubscriber.where(blog_id: @blog.id)
+  end
+
   test "should validate google site verification" do
     @blog.google_site_verification = "GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44"
     assert @blog.valid?

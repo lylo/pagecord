@@ -24,9 +24,8 @@ class App::BlogsController < AppController
     blog = Current.user.all_blogs.find(params[:id])
 
     if blog.discarded?
-      display_name = blog.display_name
-      blog.destroy!
-      redirect_to app_blogs_trash_path, notice: "#{display_name} was permanently deleted"
+      Blogs::DestroyJob.perform_later(blog.id)
+      redirect_to app_blogs_trash_path, notice: "#{blog.display_name} is being permanently deleted"
       return
     end
 

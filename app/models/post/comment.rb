@@ -23,7 +23,7 @@ class Post::Comment < ApplicationRecord
   scope :chronologically, -> { order(created_at: :asc, id: :asc) }
 
   after_save :recount_post, if: :saved_change_to_approved_at?
-  after_destroy :recount_post
+  after_destroy :recount_post, unless: :destroyed_by_association
 
   def approved?
     approved_at.present?

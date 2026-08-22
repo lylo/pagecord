@@ -162,12 +162,12 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     blog.discard!
     login_as user
 
-    assert_difference -> { Blog.with_discarded.count }, -1 do
+    assert_enqueued_with(job: Blogs::DestroyJob, args: [ blog.id ]) do
       delete app_blog_url(blog)
     end
 
     assert_redirected_to app_blogs_trash_url
-    assert_equal "#{blog.display_name} was permanently deleted", flash[:notice]
+    assert_equal "#{blog.display_name} is being permanently deleted", flash[:notice]
   end
 
   test "does not permanently delete another user's trashed blog" do
@@ -176,7 +176,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     other_blog.discard!
     login_as user
 
-    assert_no_difference -> { Blog.with_discarded.count } do
+    assert_no_enqueued_jobs only: Blogs::DestroyJob do
       delete app_blog_url(other_blog)
     end
 
