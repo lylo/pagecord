@@ -359,6 +359,99 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 3900, subscription.unit_price, "unit_price should reconcile from the webhook, not stay at the supporter price"
   end
 
+  test "should not dispatch an event type that names an internal method" do
+    user = users(:vivian)
+    payload = payload_for("subscription.created", user)
+    payload["event_type"] = "load_user"
+    json_payload = payload.to_json
+
+    assert_difference "user.paddle_events.count", 1 do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    assert_response :success
+    assert_nil user.reload.subscription
+  end
+
+  # "subscription_created" is not a Paddle event type, but under send-based dispatch
+  # it names the handler method directly. The HANDLERS hash must only match the
+  # dotted event names, so this must not create a subscription.
+  test "should not dispatch an event type that names a handler method directly" do
+    user = users(:vivian)
+    payload = payload_for("subscription.created", user)
+    payload["event_type"] = "subscription_created"
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert_nil user.reload.subscription
+  end
+
+  test "should ignore a request with no Paddle-Signature header" do
+    user = users(:vivian)
+    json_payload = payload_for("subscription.created", user).to_json
+
+    assert_no_difference "PaddleEvent.count" do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: { "Content-Type" => "application/json" }
+    end
+
+    assert_response :success
+    assert_nil user.reload.subscription
+  end
+
+  test "should ignore a request with a malformed or forged Paddle-Signature header" do
+    user = users(:vivian)
+    json_payload = payload_for("subscription.created", user).to_json
+
+    [ "", "garbage", "ts=123", "h1=abc", "ts=123;h1=deadbeef" ].each do |signature|
+      assert_no_difference "PaddleEvent.count" do
+        post billing_paddle_events_url,
+          params: json_payload,
+          headers: {
+            "Content-Type" => "application/json",
+            "Paddle-Signature" => signature
+          }
+      end
+
+      assert_response :success
+    end
+
+    assert_nil user.reload.subscription
+  end
+
+  test "should fall back to customer_id when custom_data carries no user_id" do
+    subscription = subscriptions(:one)
+    subscription.update!(paddle_customer_id: "ctm_01hvnxx8katrjdh3xjph09mef7")
+
+    payload = payload_for("transaction.completed", subscription.user)
+    payload["data"]["custom_data"].delete("user_id")
+    payload["data"]["customer_id"] = subscription.paddle_customer_id
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert_equal Time.parse(payload["data"]["billing_period"]["ends_at"]), subscription.reload.next_billed_at
+  end
+
   private
 
     def payload_for(event_type, user)

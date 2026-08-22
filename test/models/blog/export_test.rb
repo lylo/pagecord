@@ -178,4 +178,37 @@ end</pre>
       assert_not_includes content, "<sup"
     end
   end
+
+  test "markdown export includes approved comments and their replies" do
+    post = posts(:one)
+    export = Blog::Export.create!(blog: @blog, format: :markdown)
+
+    Dir.mktmpdir do |dir|
+      export.send(:export_posts, dir)
+
+      content = File.read(File.join(dir, "#{post.slug}.md"))
+
+      assert_includes content, "## Comments"
+      assert_includes content, "**Sarah**"
+      assert_includes content, "Great post, the bit about waiting resonated."
+      assert_includes content, "**Joel** (Author)"
+      assert_includes content, "in reply to Sarah"
+      assert_not_includes content, "Does this work with a 35mm lens?"
+    end
+  end
+
+  test "html export includes approved comments" do
+    post = posts(:one)
+    export = Blog::Export.create!(blog: @blog, format: :html)
+
+    Dir.mktmpdir do |dir|
+      export.send(:export_posts, dir)
+
+      content = File.read(File.join(dir, "#{post.slug}.html"))
+
+      assert_includes content, "<h2>Comments</h2>"
+      assert_includes content, "Great post, the bit about waiting resonated."
+      assert_not_includes content, "Does this work with a 35mm lens?"
+    end
+  end
 end
