@@ -14,3 +14,17 @@ tags: [<%= post.tag_list.map { |tag| "\"#{tag}\"" }.join(", ") %>]
 
 <% end -%>
 <%= @post_content %>
+<% comments = post.comments.approved.top_level.chronologically.includes(:replies) -%>
+<% if comments.any? -%>
+
+## Comments
+
+<% comments.each do |comment| -%>
+<% [ comment, *comment.approved_replies ].each do |c| -%>
+**<%= c.link_url ? "[#{c.name}](#{c.link_url})" : c.name %>**<%= " (Author)" if c.author? %> · <%= c.created_at.strftime("%d %b %Y") %><%= " · in reply to #{comment.name}" if c.parent_id %>
+
+<%= c.message.strip %>
+
+<% end -%>
+<% end -%>
+<% end -%>
