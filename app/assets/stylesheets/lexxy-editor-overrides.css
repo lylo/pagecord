@@ -269,3 +269,33 @@ lexxy-link-dropdown {
     }
   }
 }
+
+
+
+
+/* Compact callout type picker: a row of colour swatches with a reset beneath.
+   position: relative anchors the panel to the trigger rather than the toolbar,
+   the same way the highlight dropdown does. Colours come from the [data-callout]
+   mapping in lexxy-typography.css, so the swatches cannot drift. */
+.lexxy-editor__toolbar-dropdown--callout {
+  position: relative;
+}
+
+.lexxy-editor__toolbar-dropdown--callout [data-dropdown-panel] {
+  flex-direction: column;
+  gap: var(--lexxy-toolbar-spacing);
+  inline-size: max-content;
+  inset-inline-start: 0;
+}
+
+/* Flip to the trigger's right edge when the toolbar is cramped, so a picker near
+   the end of the bar opens leftwards instead of off-screen. */
+[overflowing] .lexxy-editor__toolbar-dropdown--callout [data-dropdown-panel] {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+
+.lexxy-callout-types {
+  display: flex;
+  gap: var(--lexxy-toolbar-gap);
+}
