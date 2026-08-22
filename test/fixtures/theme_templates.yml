@@ -822,6 +822,7 @@ minimal_mono:
     h1.post-title, article footer,
     .post-card-date, .post-card-summary, .post-card-title,
     .tag-link, .tag-filter-notice, .tag-filter-notice-links, .tag-filter-notice-link,
+    .comment-date, .comment-badge, .comment-count,
     .email-subscriber-form, figcaption, .post-body figcaption { font-size: 0.75rem; }
 
     /* Header */
