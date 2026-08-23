@@ -3,6 +3,10 @@ class AppController < ApplicationController
 
   include Authorization
 
+  # Only the signed-in app. Public blogs inherit from ApplicationController and must
+  # stay readable on whatever browser the reader happens to have.
+  allow_browser versions: :modern
+
   before_action :load_user, :onboarding_check
   around_action :set_timezone, if: -> { Current.user.present? }
 

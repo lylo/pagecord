@@ -11,7 +11,7 @@ class Blogs::EmptyTrashJobTest < ActiveJob::TestCase
     recent_blog.update_columns(discarded_at: 29.days.ago)
 
     assert_difference("Blog.with_discarded.count", -1) do
-      Blogs::EmptyTrashJob.perform_now
+      perform_enqueued_jobs { Blogs::EmptyTrashJob.perform_now }
     end
 
     assert_not Blog.with_discarded.exists?(old_blog.id)
@@ -22,7 +22,7 @@ class Blogs::EmptyTrashJobTest < ActiveJob::TestCase
     blog = blogs(:joel)
 
     assert_no_difference("Blog.with_discarded.count") do
-      Blogs::EmptyTrashJob.perform_now
+      perform_enqueued_jobs { Blogs::EmptyTrashJob.perform_now }
     end
 
     assert Blog.with_discarded.exists?(blog.id)
@@ -36,7 +36,7 @@ class Blogs::EmptyTrashJobTest < ActiveJob::TestCase
 
     assert_not Blog.new(user: user, subdomain: "freedtrash").valid?
 
-    Blogs::EmptyTrashJob.perform_now
+    perform_enqueued_jobs { Blogs::EmptyTrashJob.perform_now }
 
     replacement_blog = Blog.new(user: user, subdomain: "freedtrash")
     assert replacement_blog.valid?

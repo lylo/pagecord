@@ -59,6 +59,7 @@ module PostsHelper
 
   def render_post_excerpt(post)
     content = Html::StripActionTextAttachments.new.transform(post.excerpt_html)
+    content = Html::StripFootnotes.new.transform(content)
     process_blog_links(content, post.blog).html_safe
   end
 
@@ -74,7 +75,8 @@ module PostsHelper
 
     processor = DynamicVariableProcessor.new(post: post, view: self)
     processor.process(post.content.to_s)
-  rescue
+  rescue StandardError => e
+    Rails.logger.error "Dynamic variable processing failed for post #{post.id}: #{e.class}: #{e.message}"
     post.content.to_s
   end
 

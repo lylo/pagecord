@@ -9,7 +9,7 @@ class Post < ApplicationRecord
   belongs_to :blog, inverse_of: nil
 
   has_rich_text :content
-  has_many_attached :attachments, dependent: :destroy
+  has_many_attached :attachments, dependent: :purge_later
   has_one_attached :open_graph_image
 
   has_many :digest_posts, dependent: :destroy

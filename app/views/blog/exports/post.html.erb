@@ -14,5 +14,32 @@
     <h1><%= post.title %></h1>
   <% end %>
   <%= @post_content %>
+  <% comments = post.comments.approved.top_level.chronologically.includes(:replies) -%>
+  <% if comments.any? -%>
+    <h2>Comments</h2>
+    <% comments.each do |comment| -%>
+      <% [ comment, *comment.approved_replies ].each do |c| -%>
+        <article class="comment<%= " comment-by-author" if c.author? %>">
+          <div class="comment-meta">
+            <span class="comment-name">
+              <% if c.link_url -%>
+                <a href="<%= CGI.escapeHTML(c.link_url) %>" rel="nofollow ugc noopener"><%= CGI.escapeHTML(c.name) %></a>
+              <% else -%>
+                <%= CGI.escapeHTML(c.name) %>
+              <% end -%>
+            </span>
+            <% if c.author? -%>
+              <span class="comment-badge">Author</span>
+            <% end -%>
+            <span class="comment-date"><%= c.created_at.strftime("%d %b %Y") %></span>
+            <% if c.parent_id -%>
+              <span class="comment-reply-to">in reply to <%= CGI.escapeHTML(comment.name) %></span>
+            <% end -%>
+          </div>
+          <div class="comment-message"><%= CGI.escapeHTML(c.message).gsub("\n", "<br>") %></div>
+        </article>
+      <% end -%>
+    <% end -%>
+  <% end -%>
 </body>
 </html>

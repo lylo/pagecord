@@ -29,7 +29,7 @@
       </div>
     <% end %>
 
-    <%= turbo_frame_tag "posts" do %>
+    <%= turbo_frame_tag "posts", data: { turbo_action: "advance" } do %>
       <%= render "posts_list" %>
       <%= render "app/shared/pagy_nav" %>
     <% end %>

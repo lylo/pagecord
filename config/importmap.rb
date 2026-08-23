@@ -14,6 +14,9 @@ pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 # Controllers - lazy loaded, no preload needed
 pin_all_from "app/javascript/controllers", under: "controllers", preload: false
 
+# Lexxy editor extensions
+pin_all_from "app/javascript/editor", under: "editor"
+
 # App-only dependencies (editor, file uploads, etc.)
 pin "lexxy", to: "lexxy.min.js"
 pin "@rails/actiontext", to: "actiontext.esm.js"

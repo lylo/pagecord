@@ -582,6 +582,7 @@ footer.blog-footer #brand svg {
       }
     }
 
+    input[type="text"]::placeholder,
     input[type="email"]::placeholder,
     input[type="password"]::placeholder,
     input[type="url"]::placeholder,
