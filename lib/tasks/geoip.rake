@@ -1,5 +1,9 @@
+# The .mmdb is tracked in git deliberately: Rails.root on Hatchbox points at the
+# current release, so a cron-written file would vanish on the next deploy. That
+# makes this a MANUAL refresh — run it and commit the result every few months.
+# DB-IP publish a new Lite build monthly.
 namespace :geoip do
-  desc "Download latest DB-IP Lite country database"
+  desc "Download latest DB-IP Lite country database (manual; commit the result)"
   task update: :environment do
     require "zlib"
 
