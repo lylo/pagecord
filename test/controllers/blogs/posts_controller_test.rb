@@ -191,6 +191,22 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal post, assigns(:post)
   end
 
+  test "show should emit the post slug on the body element" do
+    post = @blog.posts.visible.first
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select "body[data-slug=?]", post.slug
+  end
+
+  test "index should not emit a slug on the body element" do
+    get blog_posts_path
+
+    assert_response :success
+    assert_select "body[data-slug]", count: 0
+  end
+
   test "show should render full content without excerpt marker" do
     post = @blog.posts.create!(
       title: "Excerpted Show Post",
