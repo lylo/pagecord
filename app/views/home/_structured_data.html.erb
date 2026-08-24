@@ -1,0 +1,39 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Pagecord",
+  "url": "https://pagecord.com",
+  "description": "The personal blog you'll actually keep updated. Publish from the editor, email, Obsidian, iA Writer, API, or CLI, and keep your words on a site you own.",
+  "applicationCategory": "BloggingApplication",
+  "operatingSystem": "Any (web-based)",
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Classic",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    {
+      "@type": "Offer",
+      "name": "Premium (Annual)",
+      "price": "<%= Subscription.price(:annual) %>",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "billingDuration": "P1Y"
+      }
+    },
+    {
+      "@type": "Offer",
+      "name": "Premium (Monthly)",
+      "price": "<%= Subscription.price(:monthly) %>",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "billingDuration": "P1M"
+      }
+    }
+  ]
+}
+</script>

@@ -202,24 +202,12 @@ Rails.application.routes.draw do
       end
     end
 
-    get "/sitemap.xml", to: "public#sitemap", as: :public_sitemap, format: :xml
-    get "/robots.txt", to: "public#robots", as: :robots, format: :text
+    get "/sitemap.xml", to: "public/sitemaps#show", as: :public_sitemap, format: :xml
+    get "/robots.txt", to: "public/robots#show", as: :robots, format: :text
     get "/llms.txt", to: "public/llms#show", as: :llms_txt, format: :text
-    get "/terms", to: "public#terms", as: :terms
-    get "/privacy", to: "public#privacy", as: :privacy
-    get "/faq", to: "public#faq", as: :faq
     get "/pricing", to: redirect("/#pricing"), as: :pricing
-    get "/brand", to: "public#brand", as: :brand
-    get "/pagecord-vs-about-me", to: "public#pagecord_vs_about_me"
-    get "/pagecord-vs-medium", to: "public#pagecord_vs_medium"
-    get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"
-    get "/pagecord-vs-wordpress", to: "public#pagecord_vs_wordpress"
-    get "/pagecord-vs-substack", to: "public#pagecord_vs_substack"
-    get "/personal-website", to: "public#personal_website"
-    get "/minimalist-blogging", to: "public#minimalist_blogging"
-    get "/blogging-by-email", to: "public#blogging_by_email"
-    get "/blogger-alternative", to: "public#blogger_alternative"
-    get "/indie-blogging-platform", to: "public#indie_blogging_platform"
+    get "/:slug", to: "public/pages#show", as: :public_page,
+        constraints: { slug: Regexp.union(Public::PagesController::PAGES) }
 
     get "/supporters", to: "home/supporters#show"
     get "/spotlight", to: "home/spotlight#show"

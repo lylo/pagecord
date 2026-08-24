@@ -1,0 +1,163 @@
+<div id="pricing" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Pricing</h2>
+
+  <p class="md:text-xl leading-relaxed mt-5 mb-8">
+    Classic is <strong>free forever</strong>: unlimited posts and pages, your own themes and 20 free uploads to get going. Nothing you make is ever taken away if you stop paying. Upgrade any time for custom domains, analytics, email subscribers, video and a bigger upload allowance, Obsidian, API, CLI, and more for <strong>$<%= localised_price %>/year</strong> or <strong>$<%= localised_price(:monthly) %>/month</strong>.
+  </p>
+
+  <p class="md:text-xl leading-relaxed mt-5 mb-8">
+    Every new account starts with a <strong>14-day free trial</strong> of Premium, so you can try everything before you decide. No credit card required!
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+    <!-- Classic Plan -->
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 p-8 relative transform hover:scale-105 transition-transform duration-200">
+      <div class="text-center">
+        <h3 class="text-2xl font-semibold mb-2">Classic</h3>
+        <div class="text-4xl font-bold text-pagecord-accent dark:text-pagecord-accent mb-1">FREE</div>
+        <p class="text-slate-600 dark:text-slate-400 mb-6">Your blogging basics. Free forever!</p>
+
+        <%= link_to new_signup_path, class: "block w-full" do %>
+          <div class="w-full py-3 px-6 rounded-xl font-medium bg-pagecord-accent text-white transition-colors text-center">
+            Get started for free
+          </div>
+        <% end %>
+
+        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No card, and nothing expires.</p>
+      </div>
+
+      <ul class="mt-8 space-y-3">
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Unlimited posts and pages
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Write by email or rich text editor
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Custom home pages
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          A choice of colourful themes
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          An avatar for your blog
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Create pages as well as blog posts
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Tags for your posts
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          RSS feeds &amp; media embeds
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Full site HTML export
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Dynamic open graph images
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Post likes
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          20 uploads: images and audio
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Search your blog
+        </li>
+      </ul>
+    </div>
+
+    <!-- Premium Plan -->
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 p-8 relative transform hover:scale-105 transition-transform duration-200">
+      <div class="text-center">
+        <h3 class="text-2xl font-semibold mb-2">Premium</h3>
+        <div class="text-4xl font-bold text-pagecord-accent dark:text-pagecord-accent mb-1">
+          $<%= localised_price %><span class="text-lg font-normal text-slate-600 dark:text-slate-400"> /year or $<%= localised_price(:monthly) %>/mo</span>
+        </div>
+        <p class="text-slate-600 dark:text-slate-400 mb-6">Everything you could possibly need.</p>
+
+        <%= link_to new_signup_path, class: "block w-full" do %>
+          <div class="w-full py-3 px-6 rounded-xl font-medium bg-pagecord-accent text-white transition-colors text-center">
+            Start your 14-day free trial
+          </div>
+        <% end %>
+
+        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No card required.</p>
+      </div>
+
+      <ul class="mt-8 space-y-3">
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          <span><strong>Everything in Classic</strong></span>
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Custom domain
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Page view analytics
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Images, audio and video
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Email newsletter (250 subscribers)
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Comments
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Reply by email
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Embeddable contact form
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Three blogs from one account
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Custom CSS
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Custom code
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          API, Obsidian &amp; Shortcuts
+        </li>
+        <li class="flex items-center text-slate-700 dark:text-slate-300">
+          <%= inline_svg_tag "icons/check.svg", class: "w-5 h-5 text-green-500 mr-3" %>
+          Support independent software
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="mt-8 text-center md:text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+    If you're a Pagecord super-fan and have deeper pockets, please consider becoming a <%= link_to "Supporter", supporters_path, class: "underline font-medium" %> for $<%= localised_price(:supporter) %>/year!
+  </p>
+</div>

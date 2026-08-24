@@ -9,7 +9,7 @@
       "note": "Paddle customer portal URL host is validated against ALLOWED_HOSTS before redirecting"
     },
     {
-      "fingerprint": "697d52fdf79ec5271060a98d1e788403f91d0f9d3c3f7df94a32fefdb0eac497",
+      "fingerprint": "e4f497307efaa02fcef27c926a9f09c8e37d563e2537ff9050f1349b27c92cf3",
       "note": "Post::Comment#link_url returns nil unless URI.parse gives an http or https scheme, so javascript:, data: and friends never reach the href. Brakeman can't trace through the method. Guarded again by the link_format validation on write."
     }
   ],
