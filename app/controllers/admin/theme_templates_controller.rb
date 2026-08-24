@@ -5,16 +5,6 @@ class Admin::ThemeTemplatesController < Admin::BaseController
     @templates = ThemeTemplate.ordered
   end
 
-  def fixtures
-    yaml = ThemeTemplate.ordered.each_with_object({}) do |t, hash|
-      key = t.name.parameterize(separator: "_")
-      attrs = t.attributes.except("id", "created_at", "updated_at")
-      attrs.compact_blank!
-      hash[key] = attrs
-    end
-    send_data yaml.to_yaml, filename: "theme_templates.yml", type: "text/yaml"
-  end
-
   def show
   end
 

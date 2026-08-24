@@ -29,7 +29,7 @@
     </p>
     <p class="mt-2">Changed your mind?</p>
     <div class="mt-4">
-      <%= button_to "Resume Subscription", resume_app_settings_subscriptions_path, class: "btn-primary" %>
+      <%= button_to "Resume Subscription", app_settings_subscriptions_resumption_path, class: "btn-primary" %>
     </div>
 
     <% if @subscription.paddle_customer_id.present? %>
@@ -87,7 +87,7 @@
         <h3 class="font-semibold text-lg">Annual</h3>
         <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500">/year</span></p>
         <div class="mt-4">
-          <%= button_to "Switch to Annual", change_plan_app_settings_subscriptions_path(plan: "annual"), class: "btn-optional w-full justify-center", data: { turbo_confirm: "Switch to the standard annual plan? You won't be charged or refunded now: it takes effect at your next renewal." } %>
+          <%= button_to "Switch to Annual", app_settings_subscriptions_plan_path(plan: "annual"), method: :patch, class: "btn-optional w-full justify-center", data: { turbo_confirm: "Switch to the standard annual plan? You won't be charged or refunded now: it takes effect at your next renewal." } %>
         </div>
       </div>
     <% elsif @subscription.monthly? %>
@@ -104,7 +104,7 @@
           <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500">/year</span></p>
           <p class="text-sm text-slate-500 mt-1">Save vs monthly</p>
           <div class="mt-4">
-            <%= button_to "Switch to Annual", change_plan_app_settings_subscriptions_path(plan: "annual"), class: "btn-primary w-full justify-center", data: { turbo_confirm: "Switch to annual billing? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
+            <%= button_to "Switch to Annual", app_settings_subscriptions_plan_path(plan: "annual"), method: :patch, class: "btn-primary w-full justify-center", data: { turbo_confirm: "Switch to annual billing? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
           </div>
         </div>
       </div>
@@ -117,7 +117,7 @@
           Love Pagecord? Back its independent development for <strong>$<%= localised_price(:supporter) %>/year</strong>. No extra features, just buckets of thanks and a spot for your blog on the upcoming supporters page 🙏💖
         </p>
         <div class="mt-4">
-          <%= button_to "Support Pagecord", change_plan_app_settings_subscriptions_path(plan: "supporter"), class: "btn-primary", data: { turbo_confirm: "Become a Pagecord Supporter for $#{localised_price(:supporter)}/year? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
+          <%= button_to "Support Pagecord", app_settings_subscriptions_plan_path(plan: "supporter"), method: :patch, class: "btn-primary", data: { turbo_confirm: "Become a Pagecord Supporter for $#{localised_price(:supporter)}/year? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
         </div>
       </div>
     <% end %>
@@ -133,7 +133,7 @@
           <span aria-hidden="true" class="text-slate-400">&rsaquo;</span>
         <% end %>
       <% end %>
-      <%= link_to cancel_confirm_app_settings_subscriptions_path, class: "flex items-center justify-between py-3 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white" do %>
+      <%= link_to new_app_settings_subscriptions_cancellation_path, class: "flex items-center justify-between py-3 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white" do %>
         <span>Cancel subscription</span>
         <span aria-hidden="true" class="text-slate-400">&rsaquo;</span>
       <% end %>

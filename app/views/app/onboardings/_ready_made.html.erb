@@ -2,7 +2,8 @@
   <% templates.each do |template| %>
     <%= render "app/settings/theme_garden/template_card",
           template: template,
-          apply_path: apply_theme_app_onboarding_path,
+          apply_path: app_onboarding_theme_path,
+          apply_method: :patch,
           apply_params: { template_id: template.id },
           save_message: "✅ Applied!" %>
   <% end %>

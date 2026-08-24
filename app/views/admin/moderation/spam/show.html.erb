@@ -52,11 +52,11 @@
   <div class="flex gap-2">
     <% unless @spam_detection.reviewed? %>
       <%= button_to "Mark Clean",
-          dismiss_admin_moderation_spam_path(@spam_detection),
+          admin_moderation_spam_dismissal_path(@spam_detection),
           method: :post,
           class: "btn-primary py-1.5" %>
       <%= button_to "Confirm Spam",
-          confirm_admin_moderation_spam_path(@spam_detection),
+          admin_moderation_spam_confirmation_path(@spam_detection),
           method: :post,
           class: "btn-danger py-1.5" %>
     <% end %>

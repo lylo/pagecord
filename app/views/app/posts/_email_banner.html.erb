@@ -23,7 +23,7 @@
           <span>Send this post to your <%= @blog.show_metrics? ? pluralize(subscriber_count, "subscriber") : "subscribers" %>.</span>
         </div>
         <div class="flex flex-row-reverse justify-between items-center gap-3 sm:flex-row sm:justify-start">
-          <%= link_to "Send a test email", test_app_post_broadcast_path(@post), data: { turbo_method: :post, turbo_confirm: "Send a test email to #{Current.user.email}?" }, class: "text-xs underline" %>
+          <%= link_to "Send a test email", app_post_broadcast_test_path(@post), data: { turbo_method: :post, turbo_confirm: "Send a test email to #{Current.user.email}?" }, class: "text-xs underline" %>
           <%= button_to "Send to subscribers",
             app_post_broadcast_path(@post),
             method: :post,

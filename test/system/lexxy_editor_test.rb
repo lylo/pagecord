@@ -6,7 +6,7 @@ class LexxyEditorTest < ApplicationSystemTestCase
     @user = users(:vivian)
 
     access_request = @user.access_requests.create!
-    visit verify_access_request_path(token: access_request.token_digest)
+    visit access_request_verification_path(token: access_request.token_digest)
   end
 
   test "editor content uses sentence capitalisation" do

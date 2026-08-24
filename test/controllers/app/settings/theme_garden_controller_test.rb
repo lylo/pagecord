@@ -33,13 +33,13 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "preview should render blog layout with template styling" do
-    get preview_app_settings_theme_garden_url(@template)
+    get app_settings_theme_garden_preview_url(@template)
 
     assert_response :success
   end
 
   test "apply should update blog with template attributes" do
-    post apply_app_settings_theme_garden_url(@template)
+    post app_settings_theme_garden_application_url(@template)
 
     assert_redirected_to app_settings_appearance_path
     @blog.reload
@@ -53,7 +53,7 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
   test "apply should work for free users" do
     login_as users(:vivian)
 
-    post apply_app_settings_theme_garden_url(@template)
+    post app_settings_theme_garden_application_url(@template)
 
     assert_redirected_to app_settings_appearance_path
   end

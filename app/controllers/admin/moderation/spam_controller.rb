@@ -17,25 +17,4 @@ class Admin::Moderation::SpamController < Admin::BaseController
     @spam_detection = SpamDetection.includes(blog: :user).find(params[:id])
     @blog = @spam_detection.blog
   end
-
-  def dismiss
-    @spam_detection = SpamDetection.find(params[:id])
-    @spam_detection.update!(status: :clean, reviewed_at: Time.current)
-    redirect_to admin_moderation_spam_index_path, notice: "Blog marked as clean"
-  end
-
-  def confirm
-    @spam_detection = SpamDetection.find(params[:id])
-    @spam_detection.mark_as_reviewed!
-
-    user = @spam_detection.blog.user
-    DestroyUserJob.perform_later(user.id, spam: true)
-
-    redirect_to admin_moderation_spam_index_path, notice: "Spam confirmed and user will be discarded"
-  end
-
-  def run_detection
-    SpamDetectionJob.perform_later
-    redirect_to admin_moderation_spam_index_path, notice: "Spam detection job queued"
-  end
 end

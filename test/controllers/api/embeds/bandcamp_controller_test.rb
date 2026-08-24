@@ -1,7 +1,7 @@
 require "test_helper"
 require "mocha/minitest"
 
-class Api::EmbedsControllerTest < ActionDispatch::IntegrationTest
+class Api::Embeds::BandcampControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
     host_subdomain! @blog.subdomain

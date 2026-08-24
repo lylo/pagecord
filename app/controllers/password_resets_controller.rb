@@ -20,7 +20,7 @@ class PasswordResetsController < ApplicationController
 
     PasswordResetMailer.with(user: user).reset.deliver_later if user
 
-    redirect_to thanks_password_resets_path
+    redirect_to password_resets_thanks_path
   end
 
   def edit

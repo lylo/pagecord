@@ -8,7 +8,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    assert_redirected_to thanks_signups_path
+    assert_redirected_to signups_thanks_path
 
     assert_equal "testuser", User.last.blog.subdomain
     assert_equal "test@example.com", User.last.email
@@ -31,7 +31,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    assert_redirected_to thanks_signups_path(utm_source: "reddit", utm_campaign: "obsidian_blog")
+    assert_redirected_to signups_thanks_path(utm_source: "reddit", utm_campaign: "obsidian_blog")
 
     assert_difference("User.count") do
       assert_emails 1 do
@@ -42,7 +42,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    assert_redirected_to thanks_signups_path
+    assert_redirected_to signups_thanks_path
   end
 
   test "should keep signup attribution after validation failure" do
@@ -68,7 +68,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    assert_redirected_to thanks_signups_path(utm_source: "reddit", utm_campaign: "obsidian_blog")
+    assert_redirected_to signups_thanks_path(utm_source: "reddit", utm_campaign: "obsidian_blog")
   end
 
   test "should capture signup attribution fields" do
@@ -87,7 +87,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    assert_redirected_to thanks_signups_path
+    assert_redirected_to signups_thanks_path
     assert User.last.marketing_consent
   end
 
@@ -98,7 +98,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    assert_redirected_to thanks_signups_path
+    assert_redirected_to signups_thanks_path
     assert User.last.marketing_consent
     assert_equal "Warsaw", User.last.timezone
   end

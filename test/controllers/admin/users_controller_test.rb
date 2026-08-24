@@ -155,33 +155,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert user.reload.discarded?
   end
 
-  test "should restore user" do
-    user = users(:vivian)
-    user.discard!
-
-    assert_difference("User.kept.count", 1) do
-      post restore_admin_user_path(user)
-    end
-
-    assert_redirected_to admin_users_path
-    assert_equal "User was successfully restored", flash[:notice]
-    assert_not user.reload.discarded?
-  end
-
-  test "should touch all blogs when restoring user" do
-    user = users(:annie)
-    second_blog = user.blogs.create!(subdomain: "anniecache")
-    old_time = 2.days.ago
-    user.blogs.update_all(updated_at: old_time)
-    user.discard!
-
-    post restore_admin_user_path(user)
-
-    assert_redirected_to admin_users_path
-    assert_operator user.blog.reload.updated_at, :>, old_time
-    assert_operator second_blog.reload.updated_at, :>, old_time
-  end
-
   test "should get new" do
     get new_admin_user_url
     assert_response :success

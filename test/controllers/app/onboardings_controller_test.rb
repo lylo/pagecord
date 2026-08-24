@@ -43,25 +43,4 @@ class App::OnboardingsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "title_layout", @user.blog.reload.layout
   end
-
-  test "should apply a theme template" do
-    template = theme_templates(:minimal_mono)
-
-    post apply_theme_app_onboarding_path, params: { template_id: template.id }, as: :turbo_stream
-
-    assert_response :no_content
-    @blog = @user.blog.reload
-    assert_includes @blog.custom_css, "12px monospace journal"
-    assert_equal "mono", @blog.font
-    assert_equal "narrow", @blog.width
-    assert_equal "stream_layout", @blog.layout
-  end
-
-  test "should complete onboarding" do
-    post complete_app_onboarding_path
-
-    assert_redirected_to app_root_path
-    assert_equal "Welcome to Pagecord!", flash[:notice]
-    assert @user.reload.onboarding_complete?
-  end
 end

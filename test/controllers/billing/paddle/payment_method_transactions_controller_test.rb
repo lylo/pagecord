@@ -1,7 +1,7 @@
 require "test_helper"
 require "mocha/minitest"
 
-class Billing::PaddleControllerTest < ActionDispatch::IntegrationTest
+class Billing::Paddle::PaymentMethodTransactionsControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
   setup do
@@ -16,7 +16,7 @@ class Billing::PaddleControllerTest < ActionDispatch::IntegrationTest
       .returns({ "data" => { "id" => "txn_01hvrk1481njzb874tn7wyrksv" } })
     PaddleApi.stubs(:new).returns(mock_api)
 
-    post billing_paddle_create_update_payment_method_transaction_path
+    post billing_paddle_payment_method_transaction_path
 
     assert_response :success
     assert_equal "txn_01hvrk1481njzb874tn7wyrksv", response.parsed_body["transaction_id"]
@@ -29,7 +29,7 @@ class Billing::PaddleControllerTest < ActionDispatch::IntegrationTest
       .returns({ "error" => { "code" => "subscription_update_when_canceled" } })
     PaddleApi.stubs(:new).returns(mock_api)
 
-    post billing_paddle_create_update_payment_method_transaction_path
+    post billing_paddle_payment_method_transaction_path
 
     assert_response :unprocessable_content
   end
@@ -38,7 +38,7 @@ class Billing::PaddleControllerTest < ActionDispatch::IntegrationTest
     @user.subscription.destroy!
     PaddleApi.expects(:new).never
 
-    post billing_paddle_create_update_payment_method_transaction_path
+    post billing_paddle_payment_method_transaction_path
 
     assert_response :not_found
   end

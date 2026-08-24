@@ -1,7 +1,4 @@
 class App::Settings::SenderEmailAddressesController < App::BaseController
-  before_action :load_sender_email_address, only: [ :verify ]
-  skip_before_action :load_user, :onboarding_check, :require_login, only: [ :verify ]
-
   rate_limit to: 3, within: 1.hour, only: :create, by: -> { Current.user.id }
 
   def create
@@ -22,26 +19,10 @@ class App::Settings::SenderEmailAddressesController < App::BaseController
     redirect_to edit_app_settings_account_path, notice: "Sender email address has been removed."
   end
 
-  def verify
-    redirect_path = Current.user ? edit_app_settings_account_path : login_path
-
-    if @sender_email_address && !@sender_email_address.accepted? && !@sender_email_address.expired?
-      @sender_email_address.accept!
-
-      redirect_to redirect_path, notice: "Sender email address has been verified! You can now send posts to your blog from #{@sender_email_address.email}."
-    else
-      redirect_to redirect_path, alert: "Invalid or expired verification link :("
-    end
-  end
-
   private
 
     def sender_email_address_params
       params.require(:sender_email_address).permit(:email)
-    end
-
-    def load_sender_email_address
-      @sender_email_address = SenderEmailAddress.find_by(token_digest: params[:token])
     end
 
     def send_verification_email(sender_email_address)

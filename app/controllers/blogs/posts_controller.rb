@@ -20,34 +20,7 @@ class Blogs::PostsController < Blogs::BaseController
       end
     end
 
-    posts_list
-  end
-
-  def posts_list
-    @current_tags = params[:tag].split(",").map(&:strip) if params[:tag].present?
-    @current_lang = params[:lang].to_s.downcase.split("-").first if params[:lang].present?
-
-    scope = @blog.posts.visible
-      .for_blog_render
-      .ordered_by_published
-    scope = scope.tagged_with_any(@current_tags) if @current_tags
-    scope = scope.tagged_without_any(params[:without_tag].split(",").map(&:strip)) if params[:without_tag].present?
-    scope = scope.titled(params[:title]) if params[:title].present?
-    scope = scope.for_locale(@current_lang, @blog.locale) if @current_lang
-
-    @pagy, @posts = pagy(scope, limit: page_size)
-
-    respond_to do |format|
-      format.html do
-        return unless set_conditional_get_headers
-        render :index
-      end
-      format.rss {
-        return unless set_conditional_get_headers
-        expires_in 5.minutes, public: true
-        render :index, layout: false
-      }
-    end
+    render_posts_list
   end
 
   # Shows a single post or page by its slug.
@@ -69,6 +42,35 @@ class Blogs::PostsController < Blogs::BaseController
   def not_found
     raise ActiveRecord::RecordNotFound
   end
+
+  protected
+
+    def render_posts_list
+      @current_tags = params[:tag].split(",").map(&:strip) if params[:tag].present?
+      @current_lang = params[:lang].to_s.downcase.split("-").first if params[:lang].present?
+
+      scope = @blog.posts.visible
+        .for_blog_render
+        .ordered_by_published
+      scope = scope.tagged_with_any(@current_tags) if @current_tags
+      scope = scope.tagged_without_any(params[:without_tag].split(",").map(&:strip)) if params[:without_tag].present?
+      scope = scope.titled(params[:title]) if params[:title].present?
+      scope = scope.for_locale(@current_lang, @blog.locale) if @current_lang
+
+      @pagy, @posts = pagy(scope, limit: page_size)
+
+      respond_to do |format|
+        format.html do
+          return unless set_conditional_get_headers
+          render :index
+        end
+        format.rss {
+          return unless set_conditional_get_headers
+          expires_in 5.minutes, public: true
+          render :index, layout: false
+        }
+      end
+    end
 
   private
 

@@ -7,7 +7,7 @@
       <span class="text-sm text-slate-500 dark:text-slate-400"><%= "blog".pluralize(@total_unreviewed) %> flagged for review</span>
     </div>
     <%= button_to "Run Detection",
-        run_detection_admin_moderation_spam_index_path,
+        admin_moderation_spam_detection_run_path,
         method: :post,
         class: "btn-secondary py-1.5" %>
   </div>
@@ -45,11 +45,11 @@
             <td class="whitespace-nowrap py-3 px-6 text-end text-sm">
               <div class="flex justify-end space-x-2">
                 <%= button_to "Mark Clean",
-                    dismiss_admin_moderation_spam_path(detection),
+                    admin_moderation_spam_dismissal_path(detection),
                     method: :post,
                     class: "btn-primary py-1" %>
                 <%= button_to "Confirm Spam",
-                    confirm_admin_moderation_spam_path(detection),
+                    admin_moderation_spam_confirmation_path(detection),
                     method: :post,
                     class: "btn-danger py-1" %>
               </div>

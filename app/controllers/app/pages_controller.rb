@@ -42,12 +42,6 @@ class App::PagesController < App::BaseController
     redirect_to app_pages_trash_path, notice: "Page was permanently deleted."
   end
 
-  def set_as_home_page
-    @page = @blog.pages.kept.find_by!(token: params[:token])
-    @blog.update!(home_page_id: @page.id)
-    redirect_to app_pages_path, notice: "Home page set!"
-  end
-
   private
 
     def pages_order

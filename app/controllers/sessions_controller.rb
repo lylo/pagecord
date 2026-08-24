@@ -59,7 +59,7 @@ class SessionsController < ApplicationController
         AccountVerificationMailer.with(user: @user).login.deliver_later
       end
 
-      redirect_to thanks_sessions_path
+      redirect_to sessions_thanks_path
     end
 
     def login_rate_limit_reached

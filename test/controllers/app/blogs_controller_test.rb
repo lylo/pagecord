@@ -89,7 +89,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     blog = blogs(:joel_notes)
     login_as user
 
-    post switch_app_blog_url(blog)
+    post app_blog_selection_url(blog)
     assert_equal blog.id, session[:current_blog_id]
 
     get new_app_post_url
@@ -102,7 +102,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
     blog = blogs(:joel_notes)
     login_as user
-    post switch_app_blog_url(blog)
+    post app_blog_selection_url(blog)
 
     assert_difference -> { blog.posts.reload.count } do
       post app_posts_url, params: {
@@ -119,7 +119,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     blog = blogs(:joel_notes)
     post = blog.posts.create!(title: "Trash me", content: "Hello")
     login_as user
-    post switch_app_blog_url(blog)
+    post app_blog_selection_url(blog)
 
     assert_difference -> { blog.posts.discarded.count } do
       post app_posts_trash_url, params: { post_token: post.token }
@@ -132,7 +132,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     user = users(:joel)
     blog = blogs(:joel_notes)
     login_as user
-    post switch_app_blog_url(blog)
+    post app_blog_selection_url(blog)
 
     delete app_blog_url(blog)
 

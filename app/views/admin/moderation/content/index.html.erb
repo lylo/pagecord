@@ -49,13 +49,13 @@
             <td class="whitespace-nowrap py-3 px-6 text-end text-sm">
               <div class="flex justify-end space-x-2">
                 <% if post.discarded? %>
-                  <%= button_to "Restore", dismiss_admin_moderation_content_path(post),
+                  <%= button_to "Restore", admin_moderation_content_dismissal_path(post),
                       method: :post, class: "btn-primary py-1",
                       data: { turbo_confirm: "Restore this post?" } %>
                 <% else %>
-                  <%= button_to "Dismiss", dismiss_admin_moderation_content_path(post),
+                  <%= button_to "Dismiss", admin_moderation_content_dismissal_path(post),
                       method: :post, class: "btn-secondary py-1" %>
-                  <%= button_to "Discard", discard_admin_moderation_content_path(post),
+                  <%= button_to "Discard", admin_moderation_content_discard_path(post),
                       method: :post, class: "btn-danger py-1",
                       data: { turbo_confirm: "Discard this post?" } %>
                 <% end %>

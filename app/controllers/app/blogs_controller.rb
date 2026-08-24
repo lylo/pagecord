@@ -43,12 +43,6 @@ class App::BlogsController < App::BaseController
     redirect_to app_blogs_path, notice: "#{blog.display_name} was moved to trash"
   end
 
-  def switch
-    blog = Current.user.blogs.find(params[:id])
-    session[:current_blog_id] = blog.id
-    redirect_to app_root_path
-  end
-
   private
 
     def require_subscription

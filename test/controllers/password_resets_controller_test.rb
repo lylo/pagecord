@@ -18,7 +18,7 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to thanks_password_resets_path
+    assert_redirected_to password_resets_thanks_path
   end
 
   test "create does not reveal if user exists" do
@@ -29,7 +29,7 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to thanks_password_resets_path
+    assert_redirected_to password_resets_thanks_path
   end
 
   test "edit shows password form with valid token" do

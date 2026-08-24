@@ -19,19 +19,6 @@ class App::OnboardingsController < App::BaseController
     end
   end
 
-  def complete
-    Current.user.onboarding_complete!
-
-    redirect_to app_root_path, notice: "Welcome to Pagecord!"
-  end
-
-  def apply_theme
-    template = ThemeTemplate.active.find(params[:template_id])
-    @blog.update(template.appearance_attributes)
-
-    head :no_content
-  end
-
   private
 
     def blog_params

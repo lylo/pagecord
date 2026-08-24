@@ -52,7 +52,7 @@ class App::PreviewContentSecurityPolicyTest < ActionDispatch::IntegrationTest
   end
 
   test "theme garden preview enforces the permissive policy" do
-    get preview_app_settings_theme_garden_path(theme_templates(:minimal_mono))
+    get app_settings_theme_garden_preview_path(theme_templates(:minimal_mono))
 
     assert_response :success
     assert_includes response.headers["Content-Security-Policy"], "frame-src 'self' https:"

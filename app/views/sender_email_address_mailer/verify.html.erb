@@ -10,7 +10,7 @@
           <tbody>
             <tr>
               <td>
-                <%= link_to "Verify this email address", verify_app_settings_sender_email_addresses_url(token: @sender_email_address.token_digest) %>
+                <%= link_to "Verify this email address", app_settings_sender_email_addresses_verification_url(token: @sender_email_address.token_digest) %>
               </td>
             </tr>
           </tbody>
