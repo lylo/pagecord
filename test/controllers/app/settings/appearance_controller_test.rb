@@ -9,8 +9,8 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
-  test "should get index" do
-    get app_settings_appearance_index_url
+  test "should get show" do
+    get app_settings_appearance_url
 
     assert_select "h3", { count: 1, text: "Finer Details" }
     assert_select "h4", { count: 1, text: "Font family" }
@@ -18,8 +18,8 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "index tabs the colour scheme against ready-made designs" do
-    get app_settings_appearance_index_url
+  test "show tabs the colour scheme against ready-made designs" do
+    get app_settings_appearance_url
 
     assert_response :success
     assert_select "[data-controller=tabs] button[data-tabs-target=tab]", count: 2
@@ -31,14 +31,14 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update blog layout" do
-    patch app_settings_appearance_url(@blog), params: { blog: { layout: "title_layout" } }, as: :turbo_stream
+    patch app_settings_appearance_url, params: { blog: { layout: "title_layout" } }, as: :turbo_stream
 
     assert_response :success
     assert_equal "title_layout", @blog.reload.layout
   end
 
   test "should update show branding flag for subscriber" do
-    patch app_settings_appearance_url(@blog), params: { blog: { show_branding: false } }, as: :turbo_stream
+    patch app_settings_appearance_url, params: { blog: { show_branding: false } }, as: :turbo_stream
 
     assert_response :success
     assert_not @blog.reload.show_branding
@@ -49,26 +49,26 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     login_as @user
     @blog = @user.blog
 
-    patch app_settings_appearance_url(@blog), params: { blog: { show_branding: false } }, as: :turbo_stream
+    patch app_settings_appearance_url, params: { blog: { show_branding: false } }, as: :turbo_stream
 
     assert_response :success
     assert @blog.reload.show_branding
   end
 
   test "points custom css and footer at the custom code page" do
-    get app_settings_appearance_index_url
+    get app_settings_appearance_url
     assert_select "h3", { count: 0, text: "Advanced" }
     assert_response :success
     assert_select "textarea#blog_custom_css", false
     assert_select "a[href=?]", app_settings_custom_code_path
 
-    patch app_settings_appearance_url(@blog), params: { blog: { custom_css: ".blog { color: red; }" } }, as: :turbo_stream
+    patch app_settings_appearance_url, params: { blog: { custom_css: ".blog { color: red; }" } }, as: :turbo_stream
     assert_response :success
     assert_nil @blog.reload.custom_css
   end
 
   test "should update custom theme colors" do
-    patch app_settings_appearance_url(@blog), params: {
+    patch app_settings_appearance_url, params: {
       blog: {
         custom_theme_bg_light: "#111111",
         custom_theme_text_light: "#222222",

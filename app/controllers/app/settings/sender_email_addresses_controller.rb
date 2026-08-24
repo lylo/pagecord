@@ -9,9 +9,9 @@ class App::Settings::SenderEmailAddressesController < App::BaseController
     if @sender_email_address.save
       send_verification_email(@sender_email_address)
 
-      redirect_to app_settings_account_edit_path, notice: "Verification email has been sent to #{@sender_email_address.email}."
+      redirect_to edit_app_settings_account_path, notice: "Verification email has been sent to #{@sender_email_address.email}."
     else
-      redirect_to app_settings_account_edit_path, alert: @sender_email_address.errors.full_messages.join(", ")
+      redirect_to edit_app_settings_account_path, alert: @sender_email_address.errors.full_messages.join(", ")
     end
   end
 
@@ -19,11 +19,11 @@ class App::Settings::SenderEmailAddressesController < App::BaseController
     @sender_email_address = @blog.sender_email_addresses.find(params[:id])
     @sender_email_address&.destroy
 
-    redirect_to app_settings_account_edit_path, notice: "Sender email address has been removed."
+    redirect_to edit_app_settings_account_path, notice: "Sender email address has been removed."
   end
 
   def verify
-    redirect_path = Current.user ? app_settings_account_edit_path : login_path
+    redirect_path = Current.user ? edit_app_settings_account_path : login_path
 
     if @sender_email_address && !@sender_email_address.accepted? && !@sender_email_address.expired?
       @sender_email_address.accept!

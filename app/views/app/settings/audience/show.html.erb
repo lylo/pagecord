@@ -15,7 +15,7 @@
   </div>
 <% end %>
 
-<%= form_with url: app_settings_blog_path(@blog), model: @blog, data: { controller: "subscription-settings" } do |form| %>
+<%= form_with url: app_settings_blog_path, model: @blog, data: { controller: "subscription-settings" } do |form| %>
   <div class="space-y-8">
     <%= settings_section "Email Subscriptions", description: "Let readers subscribe to get your posts by email" do %>
       <%= settings_row "Status" do %>

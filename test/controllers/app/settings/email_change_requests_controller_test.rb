@@ -15,7 +15,7 @@ class App::Settings::EmailChangeRequestsControllerTest < ActionDispatch::Integra
       }
     end
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
     assert_not_nil @user.pending_email_change_request
     assert_equal "new_email@example.com", @user.pending_email_change_request.new_email
   end
@@ -27,7 +27,7 @@ class App::Settings::EmailChangeRequestsControllerTest < ActionDispatch::Integra
       }
     end
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
   end
 
   test "should resend verification email" do
@@ -37,7 +37,7 @@ class App::Settings::EmailChangeRequestsControllerTest < ActionDispatch::Integra
       post resend_app_settings_email_change_request_path(request)
     end
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
   end
 
   test "should destroy email change request" do
@@ -52,7 +52,7 @@ class App::Settings::EmailChangeRequestsControllerTest < ActionDispatch::Integra
 
     get verify_app_settings_email_change_requests_path(request.token_digest)
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
     assert_equal request.new_email, @user.reload.email
     assert_not_nil request.reload.accepted_at
   end

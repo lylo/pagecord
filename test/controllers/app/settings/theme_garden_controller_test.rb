@@ -41,7 +41,7 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
   test "apply should update blog with template attributes" do
     post apply_app_settings_theme_garden_url(@template)
 
-    assert_redirected_to app_settings_appearance_index_path
+    assert_redirected_to app_settings_appearance_path
     @blog.reload
     assert_includes @blog.custom_css, "12px monospace journal"
     assert_equal "mono", @blog.font
@@ -55,6 +55,6 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
 
     post apply_app_settings_theme_garden_url(@template)
 
-    assert_redirected_to app_settings_appearance_index_path
+    assert_redirected_to app_settings_appearance_path
   end
 end

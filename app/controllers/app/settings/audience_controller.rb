@@ -1,4 +1,4 @@
 class App::Settings::AudienceController < App::BaseController
-  def index
+  def show
   end
 end

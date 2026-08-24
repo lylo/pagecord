@@ -103,12 +103,12 @@ Rails.application.routes.draw do
       end
 
       namespace :settings do
-        resources :about, only: [ :index, :update ]
-        resources :audience, only: [ :index ]
+        resource :about, only: [ :show, :update ], controller: "about"
+        resource :audience, only: :show, controller: "audience"
         resources :subscribers, only: [ :index ]
         resources :users, only: [ :update, :destroy ]
-        resources :blogs, only: [ :index, :update ]
-        resources :appearance, only: [ :index, :update ]
+        resource :blog, only: [ :show, :update ], controller: "blogs"
+        resource :appearance, only: [ :show, :update ], controller: "appearance"
         resources :theme_garden, only: [ :index ] do
           member do
             get :preview
@@ -135,7 +135,7 @@ Rails.application.routes.draw do
           end
         end
 
-        get "/account/edit", to: "account#edit"
+        resource :account, only: :edit, controller: "account"
 
         resources :subscriptions, only: [ :index, :destroy ] do
           get :thanks, on: :collection
@@ -157,8 +157,6 @@ Rails.application.routes.draw do
         resource :restoration, only: [ :create ], controller: "blogs/restorations"
         resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
       end
-
-      get "/account", to: "account#index"
 
       root "posts#index"
     end

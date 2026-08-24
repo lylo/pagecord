@@ -204,7 +204,7 @@ class LexxyEditorTest < ApplicationSystemTestCase
   end
 
   test "the bio editor does not offer footnotes" do
-    visit app_settings_about_index_path
+    visit app_settings_about_path
 
     assert_selector ".lexxy-minimal lexxy-toolbar", wait: 2
     assert_no_selector ".lexxy-minimal lexxy-toolbar button[name=footnote]", visible: true

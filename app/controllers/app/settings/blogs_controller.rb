@@ -1,5 +1,5 @@
 class App::Settings::BlogsController < App::BaseController
-  def index
+  def show
   end
 
   def update
@@ -18,7 +18,7 @@ class App::Settings::BlogsController < App::BaseController
 
       redirect_to app_settings_path, notice: "Blog settings updated"
     else
-      render :index, status: :unprocessable_entity
+      render :show, status: :unprocessable_entity
     end
   end
 

@@ -16,7 +16,7 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
       }
     end
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
     assert_match "Verification email has been sent to sender@example.com", flash[:notice]
 
     sender = @blog.sender_email_addresses.last
@@ -39,7 +39,7 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
       }
     end
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
     assert_match "is invalid", flash[:alert]
   end
 
@@ -52,7 +52,7 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
       }
     end
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
     assert_match "has already been taken", flash[:alert]
   end
 
@@ -64,7 +64,7 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
       delete app_settings_sender_email_address_path(sender)
     end
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
     assert_match "Sender email address has been removed", flash[:notice]
   end
 
@@ -73,7 +73,7 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
 
     get verify_app_settings_sender_email_addresses_path(token: sender.token_digest)
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
     assert_match "Sender email address has been verified", flash[:notice]
 
     sender.reload
@@ -83,7 +83,7 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
   test "should not verify sender email address with invalid token" do
     get verify_app_settings_sender_email_addresses_path(token: "invalid_token")
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
     assert_match "Invalid or expired verification link", flash[:alert]
   end
 
@@ -95,7 +95,7 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
 
     get verify_app_settings_sender_email_addresses_path(token: "any_token")
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
     assert_match "Invalid or expired verification link", flash[:alert]
   end
 
@@ -120,7 +120,7 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
     # User is already logged in from setup
     get verify_app_settings_sender_email_addresses_path(token: sender.token_digest)
 
-    assert_redirected_to app_settings_account_edit_path
+    assert_redirected_to edit_app_settings_account_path
     assert_match "Sender email address has been verified", flash[:notice]
 
     sender.reload

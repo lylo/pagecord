@@ -117,6 +117,6 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
 
     get app_comments_path
 
-    assert_redirected_to app_settings_audience_index_path
+    assert_redirected_to app_settings_audience_path
   end
 end

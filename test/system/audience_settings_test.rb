@@ -12,7 +12,7 @@ class AudienceSettingsTest < ApplicationSystemTestCase
   end
 
   test "toggling email subscriptions disables and greys out the dependent rows" do
-    visit app_settings_audience_index_path
+    visit app_settings_audience_path
 
     # Enabled to start: the dependent controls are interactive and not greyed
     assert_selector "#blog_show_subscription_in_header:enabled"
