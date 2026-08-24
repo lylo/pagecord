@@ -1,4 +1,4 @@
-class AppController < ApplicationController
+class App::BaseController < ApplicationController
   layout "app"
 
   include Authorization

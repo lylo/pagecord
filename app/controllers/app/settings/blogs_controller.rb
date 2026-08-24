@@ -1,4 +1,4 @@
-class App::Settings::BlogsController < AppController
+class App::Settings::BlogsController < App::BaseController
   def index
   end
 

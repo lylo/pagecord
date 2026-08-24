@@ -1,4 +1,4 @@
-class Admin::UsersController < AdminController
+class Admin::UsersController < Admin::BaseController
   include Pagy::Method
 
   def index

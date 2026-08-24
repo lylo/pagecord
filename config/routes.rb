@@ -163,7 +163,7 @@ Rails.application.routes.draw do
       root "posts#index"
     end
 
-    get "/admin", to: "admin#index", as: :admin
+    get "/admin", to: redirect("/admin/users"), as: :admin
 
     namespace :admin do
       resources :theme_templates do

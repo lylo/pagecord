@@ -1,4 +1,4 @@
-class Admin::DeliverabilityIssuesController < AdminController
+class Admin::DeliverabilityIssuesController < Admin::BaseController
   def index
     report = DeliverabilityReport.new
     @issues = report.issues

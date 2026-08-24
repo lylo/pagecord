@@ -1,4 +1,4 @@
-class App::Posts::OpenGraphImagesController < AppController
+class App::Posts::OpenGraphImagesController < App::BaseController
   before_action :require_premium
 
   def destroy

@@ -1,4 +1,4 @@
-class App::Settings::ThemeGardenController < AppController
+class App::Settings::ThemeGardenController < App::BaseController
   include BlogContentSecurityPolicy
 
   skip_before_action :onboarding_check

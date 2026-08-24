@@ -1,4 +1,4 @@
-class Admin::Moderation::ContentController < AdminController
+class Admin::Moderation::ContentController < Admin::BaseController
   include Pagy::Method
 
   def index

@@ -1,4 +1,4 @@
-class App::Posts::RestorationsController < AppController
+class App::Posts::RestorationsController < App::BaseController
   def create
     post = @blog.posts.discarded.find_by!(token: params[:post_token])
     post.undiscard!

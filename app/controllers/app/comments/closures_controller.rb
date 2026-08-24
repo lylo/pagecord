@@ -1,4 +1,4 @@
-class App::Comments::ClosuresController < AppController
+class App::Comments::ClosuresController < App::BaseController
   include CommentModeration
 
   before_action :load_comment

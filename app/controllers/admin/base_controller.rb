@@ -1,11 +1,7 @@
-class AdminController < AppController
+class Admin::BaseController < App::BaseController
   layout "admin"
 
   before_action :require_admin
-
-  def index
-    redirect_to admin_users_path
-  end
 
   private
 

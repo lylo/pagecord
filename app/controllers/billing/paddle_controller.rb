@@ -1,5 +1,5 @@
 module Billing
-  class PaddleController < AppController
+  class PaddleController < App::BaseController
     # POST /billing/paddle/create_update_payment_method_transaction
     #
     # Create a new transaction as required by Paddle to update the payment method

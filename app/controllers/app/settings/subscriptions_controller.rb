@@ -1,4 +1,4 @@
-class App::Settings::SubscriptionsController < AppController
+class App::Settings::SubscriptionsController < App::BaseController
   before_action :load_subscription, only: [ :index, :destroy, :cancel_confirm, :change_plan, :resume ]
 
   def index

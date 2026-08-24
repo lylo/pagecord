@@ -1,4 +1,4 @@
-class App::Settings::CustomCodeController < AppController
+class App::Settings::CustomCodeController < App::BaseController
   CODE_FIELDS = %i[ custom_css custom_footer_html custom_head_html custom_body_html ].freeze
 
   def show

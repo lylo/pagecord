@@ -1,4 +1,4 @@
-class App::Settings::AppearanceController < AppController
+class App::Settings::AppearanceController < App::BaseController
   before_action :set_templates, only: :index
 
   def index

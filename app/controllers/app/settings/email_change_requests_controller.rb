@@ -1,4 +1,4 @@
-class App::Settings::EmailChangeRequestsController < AppController
+class App::Settings::EmailChangeRequestsController < App::BaseController
   def create
     @email_change_request = Current.user.email_change_requests.new(change_request_params)
     if @email_change_request.save

@@ -1,4 +1,4 @@
-class App::HomePagesController < AppController
+class App::HomePagesController < App::BaseController
   def new
     @home_page = @blog.pages.build
   end

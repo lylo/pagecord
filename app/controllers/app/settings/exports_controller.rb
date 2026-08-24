@@ -1,4 +1,4 @@
-class App::Settings::ExportsController < AppController
+class App::Settings::ExportsController < App::BaseController
   rate_limit to: 5, within: 1.day, only: :create, with: :export_limit_reached
 
   def index

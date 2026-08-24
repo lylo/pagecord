@@ -1,4 +1,4 @@
-class Admin::ThemeTemplatesController < AdminController
+class Admin::ThemeTemplatesController < Admin::BaseController
   before_action :set_template, only: [ :show, :edit, :update, :destroy ]
 
   def index

@@ -1,4 +1,4 @@
-class App::Posts::DetailsController < AppController
+class App::Posts::DetailsController < App::BaseController
   def create
     show_details "on"
   end

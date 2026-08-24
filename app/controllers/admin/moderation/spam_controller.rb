@@ -1,4 +1,4 @@
-class Admin::Moderation::SpamController < AdminController
+class Admin::Moderation::SpamController < Admin::BaseController
   include Pagy::Method
 
   def index

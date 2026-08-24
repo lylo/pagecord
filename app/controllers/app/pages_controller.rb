@@ -1,4 +1,4 @@
-class App::PagesController < AppController
+class App::PagesController < App::BaseController
   def index
     @sort = cookies.encrypted[:pages_sort] == "updated" ? "updated" : "alpha"
     @pages = @blog.pages.kept.published.order(pages_order)

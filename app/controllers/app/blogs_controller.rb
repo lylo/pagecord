@@ -1,4 +1,4 @@
-class App::BlogsController < AppController
+class App::BlogsController < App::BaseController
   before_action :require_subscription, only: [ :new, :create ]
 
   def index

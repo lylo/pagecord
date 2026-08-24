@@ -1,4 +1,4 @@
-class App::Posts::BroadcastsController < AppController
+class App::Posts::BroadcastsController < App::BaseController
   rate_limit to: 5, within: 5.minutes, only: :test, by: -> { Current.user.id }, with: :test_limit_reached
 
   def create

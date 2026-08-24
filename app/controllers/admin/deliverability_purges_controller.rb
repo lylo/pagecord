@@ -1,4 +1,4 @@
-class Admin::DeliverabilityPurgesController < AdminController
+class Admin::DeliverabilityPurgesController < Admin::BaseController
   def create
     emails = DeliverabilityReport.new.actionable.map(&:email)
     count = EmailSubscriber.where(email: emails).destroy_all.size

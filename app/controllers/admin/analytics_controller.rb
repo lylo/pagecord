@@ -1,4 +1,4 @@
-class Admin::AnalyticsController < AdminController
+class Admin::AnalyticsController < Admin::BaseController
   def index
     @view_type = params[:view_type] || "month"
     @date = parse_date(@view_type, params[:date])

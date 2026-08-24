@@ -1,4 +1,4 @@
-class Admin::VerificationEmailsController < AdminController
+class Admin::VerificationEmailsController < Admin::BaseController
   def create
     @user = User.find(params[:user_id])
     AccountVerificationMailer.with(user: @user).verify.deliver_later

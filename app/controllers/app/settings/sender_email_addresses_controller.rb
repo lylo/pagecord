@@ -1,4 +1,4 @@
-class App::Settings::SenderEmailAddressesController < AppController
+class App::Settings::SenderEmailAddressesController < App::BaseController
   before_action :load_sender_email_address, only: [ :verify ]
   skip_before_action :load_user, :onboarding_check, :require_login, only: [ :verify ]
 

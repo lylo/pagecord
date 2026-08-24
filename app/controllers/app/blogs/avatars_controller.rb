@@ -1,4 +1,4 @@
-class App::Blogs::AvatarsController < AppController
+class App::Blogs::AvatarsController < App::BaseController
   def destroy
     @blog.avatar.purge
     @blog.touch

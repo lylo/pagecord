@@ -1,4 +1,4 @@
-class App::Settings::NavigationItemsController < AppController
+class App::Settings::NavigationItemsController < App::BaseController
   before_action :set_navigation_item, only: [ :update, :destroy ]
 
   def index

@@ -1,4 +1,4 @@
-class Admin::SpotlightExclusionsController < AdminController
+class Admin::SpotlightExclusionsController < Admin::BaseController
   def create
     user = User.find(params[:user_id])
     blog = params[:blog_id] ? user.blogs.find(params[:blog_id]) : user.blog

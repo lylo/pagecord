@@ -1,4 +1,4 @@
-class App::Pages::SortController < AppController
+class App::Pages::SortController < App::BaseController
   def create
     sort_by "updated"
   end

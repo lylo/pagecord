@@ -1,4 +1,4 @@
-class App::UpgradeBannersController < AppController
+class App::UpgradeBannersController < App::BaseController
   def destroy
     dismiss_for_random_period
 
