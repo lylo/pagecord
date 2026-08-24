@@ -5,7 +5,8 @@
       </ul>
     <% end %>
     <h2>
-      <%= local_time post.published_at, "%Y" %>
+      <%# See _title_layout.html.erb: group headings are not local_time. %>
+      <%= post.published_at.year %>
     </h2>
     <ul class="posts-list">
     <% previous_year = post.published_at.year %>

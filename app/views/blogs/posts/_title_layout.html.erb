@@ -5,7 +5,9 @@
       <% post_date = post.is_page? ? post.updated_at : post.published_at %>
       <% if post_date.year != previous_year %>
         <h2 class="year-header <%= 'has-previous' if previous_year %>">
-          <%= local_time post_date, "%Y" %>
+          <%# Rendered server-side, not with local_time: the heading must match the %>
+          <%# year the group was keyed on, or the reader's timezone can relabel it. %>
+          <%= post_date.year %>
         </h2>
         <% previous_year = post_date.year %>
       <% end %>

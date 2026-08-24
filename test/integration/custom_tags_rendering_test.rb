@@ -455,6 +455,9 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select "body", text: /2023 Post/
     assert_select "body", text: /2024 Post A/
     assert_select "body", text: /2024 Post B/
+    # See _title_layout: year headings are grouped server-side, so they must
+    # not be local_time elements.
+    assert_select "article.page h2 time", count: 0
   end
 
   test "renders posts_by_year tag with tag filter" do

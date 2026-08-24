@@ -39,6 +39,10 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select ".title_layout", count: 1
+    assert_select ".year-header", minimum: 1
+    # Year headings are grouped server-side, so they must not be local_time
+    # elements — the reader's timezone would relabel a group it didn't regroup.
+    assert_select ".year-header time", count: 0
   end
 
   test "should render cards" do
