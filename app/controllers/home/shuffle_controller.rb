@@ -1,4 +1,4 @@
-class Posts::ShuffleController < ApplicationController
+class Home::ShuffleController < ApplicationController
   include RoutingHelper
 
   def show

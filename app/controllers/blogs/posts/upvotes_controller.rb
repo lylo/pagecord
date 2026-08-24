@@ -1,4 +1,4 @@
-class Posts::UpvotesController < Blogs::BaseController
+class Blogs::Posts::UpvotesController < Blogs::BaseController
   include RequestHash
 
   rate_limit to: 10, within: 1.minute

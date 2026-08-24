@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
+class Blogs::Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
   include CommentsHelper
 
   setup do
@@ -203,7 +203,7 @@ class Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
   # The shared too_many_requests page has no turbo-frame in it, so without an
   # override the reader is left with an empty frame.
   test "a rate limited submission still returns a usable frame" do
-    Posts::CommentsController.any_instance.stubs(:create).raises(ActionController::TooManyRequests)
+    Blogs::Posts::CommentsController.any_instance.stubs(:create).raises(ActionController::TooManyRequests)
 
     post post_comments_path(@post), params: comment_params.merge(spam_prevention_params(@post))
 

@@ -1,4 +1,4 @@
-class Posts::CommentsController < Blogs::BaseController
+class Blogs::Posts::CommentsController < Blogs::BaseController
   include Pagy::Method
 
   include SpamPrevention

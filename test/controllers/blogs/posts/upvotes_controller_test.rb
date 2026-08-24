@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Posts::UpvotesControllerTest < ActionDispatch::IntegrationTest
+class Blogs::Posts::UpvotesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @post = posts(:one)
     host! "#{@post.blog.subdomain}.#{Rails.application.config.x.domain}"

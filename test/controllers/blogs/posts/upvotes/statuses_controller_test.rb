@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Posts::Upvotes::StatusesControllerTest < ActionDispatch::IntegrationTest
+class Blogs::Posts::Upvotes::StatusesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
     @post_one = posts(:one)

@@ -1,4 +1,4 @@
-class Posts::Upvotes::StatusesController < Blogs::BaseController
+class Blogs::Posts::Upvotes::StatusesController < Blogs::BaseController
   include RequestHash
 
   skip_before_action :authenticate

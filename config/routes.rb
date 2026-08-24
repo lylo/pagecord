@@ -226,7 +226,7 @@ Rails.application.routes.draw do
     get "/supporters", to: "home/supporters#show"
     get "/spotlight", to: "home/spotlight#show"
     get "/spotlight/trending.xml", to: "home/spotlight#show", defaults: { format: :rss }, as: :spotlight_trending_feed
-    get "/shuffle", to: "posts/shuffle#show"
+    get "/shuffle", to: "home/shuffle#show"
 
     get "/@:name", to: redirect("/%{name}")
 
@@ -283,14 +283,14 @@ Rails.application.routes.draw do
     post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
     post "/email_subscribers/:token/one_click_unsubscribe", to: "blogs/email_subscribers/unsubscribes#one_click", as: :email_subscriber_one_click_unsubscribe
 
-    get "/upvotes/statuses", to: "posts/upvotes/statuses#show", as: :upvotes_statuses
+    get "/upvotes/statuses", to: "blogs/posts/upvotes/statuses#show", as: :upvotes_statuses
 
     resources :posts, only: [], param: :token do
-      resources :upvotes, only: [ :create ], module: :posts
-      resources :replies, only: [ :new, :create ], module: :posts do
+      resources :upvotes, only: [ :create ], module: "blogs/posts"
+      resources :replies, only: [ :new, :create ], module: "blogs/posts" do
         get :sent, on: :collection
       end
-      resources :comments, only: [ :index, :create ], module: :posts
+      resources :comments, only: [ :index, :create ], module: "blogs/posts"
     end
 
     # Catch-all for unmatched routes on blog domains

@@ -1,4 +1,4 @@
-class Posts::RepliesController < Blogs::BaseController
+class Blogs::Posts::RepliesController < Blogs::BaseController
   include SpamPrevention
 
   rate_limit to: 3, within: 1.hour, only: [ :create ]

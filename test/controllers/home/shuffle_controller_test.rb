@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Posts::ShuffleControllerTest < ActionDispatch::IntegrationTest
+class Home::ShuffleControllerTest < ActionDispatch::IntegrationTest
   setup do
     host! Rails.application.config.x.domain
   end
