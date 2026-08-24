@@ -11,7 +11,6 @@ import Tidal from "tidal"
 import Transistor from "transistor"
 import YouTube from "youtube"
 
-// Connects to data-controller="media-embed"
 export default class extends Controller {
   connect() {
     this.mediaSites = [new AppleMusic(), new Spotify(), new YouTube(), new Bandcamp(), new Bluesky(), new Strava(), new GitHub(), new Image(), new Transistor(), new Checkvist(), new Tidal()]

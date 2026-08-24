@@ -18,7 +18,6 @@ module ActiveSupport
       I18n.locale = :en
     end
 
-    # Add more helper methods to be used by all tests here...
 
 
     # Removes new lines and whitespace between HTML tags for comparison

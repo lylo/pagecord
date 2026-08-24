@@ -108,6 +108,39 @@
     }
   }
 
+  /* Footnotes. Also shared between the editor and the published post. */
+  /* Size only. The anchor inside is left alone so the marker picks up Lexxy's own
+     link styling, and a plain <sup> already raises itself. Anything more gets in the
+     caret's way in the editor: line-height: 0 leaves it no height to draw, and a
+     background, padding or position: relative covers or paints over its spot. */
+  sup[data-footnote-ref] {
+    font-size: 0.75em;
+  }
+
+  /* The number is a counter on the note's own first line rather than a list
+     marker, so nothing is indented and a wrapped note lines up under its own
+     text. The <ol> is still an <ol>, so anywhere this CSS does not reach (feed
+     readers, mail clients) falls back to native numbering. */
+  ol[data-footnotes] {
+    margin-block: calc(var(--lexxy-content-margin) * 2) 0;
+    padding-inline-start: 0;
+    list-style: none;
+    counter-reset: footnote;
+    font-size: 0.875em;
+
+    li {
+      counter-increment: footnote;
+
+      > :first-child::before {
+        content: counter(footnote) ". ";
+      }
+
+      > :last-child {
+        margin-block-end: 0;
+      }
+    }
+  }
+
   details {
     margin-block: 0 var(--lexxy-content-margin);
   }

@@ -115,4 +115,10 @@ class Post::CommentTest < ActiveSupport::TestCase
       post_comments(:pending).destroy!
     end
   end
+
+  test "destroying the post does not recount it for every comment" do
+    Post.any_instance.expects(:recount_comments!).never
+
+    @post.destroy!
+  end
 end

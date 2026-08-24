@@ -13,7 +13,6 @@
 /* Shared animations (imported from stylesheets, not in @layer to work everywhere) */
 @import "../stylesheets/animations.css";
 
-/* Rest of your CSS for layout, utilities, etc. */
 @layer utilities {
   /* Theme width utility classes */
   .max-w-content-narrow {

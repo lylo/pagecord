@@ -8,12 +8,21 @@ module Billing
 
     PADDLE_CONFIG = Rails.application.config_for(:paddle)
 
+    HANDLERS = {
+      "subscription.created" => :subscription_created,
+      "subscription.updated" => :subscription_updated,
+      "subscription.canceled" => :subscription_canceled,
+      "subscription.past_due" => :subscription_past_due,
+      "transaction.completed" => :transaction_completed,
+      "transaction.payment_failed" => :transaction_payment_failed
+    }.freeze
+
     def create
       if verify_signature
         if @user = load_user
           process_event params[:event_type]
         else
-          Rails.logger.warn("Unable to find user for Paddle Event")
+          Rails.logger.warn("Unable to find user for Paddle #{params[:event_type]} (customer #{params.dig(:data, :customer_id)})")
         end
       else
         Rails.logger.error("Unable to verify Paddle request signature")
@@ -26,9 +35,10 @@ module Billing
 
       def verify_signature
         paddle_signature = request.headers["Paddle-Signature"]
-        ts_part, h1_part = paddle_signature.split(";")
-        var, ts = ts_part.split("=")
-        var, h1 = h1_part.split("=")
+        ts_part, h1_part = paddle_signature.to_s.split(";")
+        var, ts = ts_part.to_s.split("=")
+        var, h1 = h1_part.to_s.split("=")
+        return false if ts.blank? || h1.blank?
 
         signed_payload = "#{ts}:#{request.raw_post}"
 
@@ -37,14 +47,18 @@ module Billing
         digest = OpenSSL::Digest.new("sha256")
         hmac = OpenSSL::HMAC.hexdigest(digest, key, data)
 
-        hmac == h1
+        ActiveSupport::SecurityUtils.secure_compare(hmac, h1)
       end
 
       def load_user
-        if data.custom_data.present?
-          @user = User.find_by(id: data.custom_data.user_id.to_i)
+        if (user_id = data.custom_data&.user_id).present?
+          @user = User.find_by(id: user_id.to_i)
           @subscription = @user&.subscription
-        elsif data.customer_id
+        end
+
+        # Fall back to the customer when custom_data is missing or does not resolve,
+        # rather than dropping the event and leaving the subscription stale.
+        if @user.nil? && data.customer_id.present?
           @subscription = Subscription.find_by(paddle_customer_id: data.customer_id)
           @user = @subscription&.user
         end
@@ -57,8 +71,8 @@ module Billing
 
         Rails.logger.info "Paddle #{event} for user #{@user.id}"
 
-        method_name = event.gsub(".", "_")
-        send(method_name) if respond_to?(method_name, true)
+        handler = HANDLERS[event]
+        send(handler) if handler
       end
 
       def subscription_created
@@ -122,11 +136,9 @@ module Billing
 
         # this webhook is also called when a subscription is cancelled, with the
         # scheduled_change action set to cancel.
-        if data.scheduled_change.present? &&
-          if data.scheduled_change.action == "cancel"
-            Rails.logger.info "Subscription is being cancelled"
-            @subscription.update!(cancelled_at: Time.parse(data.scheduled_change.effective_at))
-          end
+        if data.scheduled_change.present? && data.scheduled_change.action == "cancel"
+          Rails.logger.info "Subscription is being cancelled"
+          @subscription.update!(cancelled_at: Time.parse(data.scheduled_change.effective_at))
         end
       end
 

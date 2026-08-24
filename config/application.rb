@@ -22,10 +22,14 @@ module Pagecord
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras"
     config.active_storage.variant_processor = :vips
 
     config.active_record.automatically_invert_plural_associations = true
+
+    # Helpers live in named modules, so skip the empty per-controller stubs.
+    config.generators do |g|
+      g.helper false
+    end
 
     # Configure available locales
     config.i18n.available_locales = [ :en, :id, :de, :es, :fr, :nl, :pl, :pt, :fi, :ja, :el ]

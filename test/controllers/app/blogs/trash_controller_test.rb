@@ -35,11 +35,11 @@ class App::Blogs::TrashControllerTest < ActionDispatch::IntegrationTest
     login_as user
 
     assert_difference -> { Blog.with_discarded.count }, -1 do
-      delete app_blogs_trash_url
+      perform_enqueued_jobs { delete app_blogs_trash_url }
     end
 
     assert_redirected_to app_blogs_trash_url
-    assert_equal "Trash was successfully emptied", flash[:notice]
+    assert_equal "Trash is being emptied", flash[:notice]
   end
 
   test "empty trash only removes current user's discarded blogs" do
@@ -50,7 +50,7 @@ class App::Blogs::TrashControllerTest < ActionDispatch::IntegrationTest
     other_blog.discard!
     login_as user
 
-    delete app_blogs_trash_url
+    perform_enqueued_jobs { delete app_blogs_trash_url }
 
     assert_not Blog.with_discarded.exists?(blog.id)
     assert other_blog.reload.discarded?

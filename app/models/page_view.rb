@@ -41,7 +41,6 @@ class PageView < ApplicationRecord
 
     return if existing_view
 
-    # Extract referrer domain
     referrer_domain = Referrer.new(referrer).domain
 
     # Normalize country (nil or "XX" means unknown)
@@ -67,7 +66,11 @@ class PageView < ApplicationRecord
     def self.parse_path_and_query(full_path)
       return [ nil, nil ] if full_path.blank?
 
-      uri = URI.parse(full_path) rescue nil
+      uri = begin
+        URI.parse(full_path)
+      rescue URI::InvalidURIError
+        nil
+      end
       return [ full_path, nil ] if uri.nil?
 
       clean_path = uri.path.presence&.chomp("/").presence || "/"

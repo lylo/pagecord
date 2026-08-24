@@ -22,7 +22,6 @@ module Taggable
     self.tag_list = value.blank? ? [] : parse_tags(value)
   end
 
-  # Get all unique tags across all posts (class method when included)
   module ClassMethods
     def all_tags
       where.not(tag_list: []).pluck(:tag_list).flatten.uniq.sort

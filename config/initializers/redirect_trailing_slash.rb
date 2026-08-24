@@ -8,7 +8,11 @@ class RedirectTrailingSlash
     # Reject requests with invalid UTF-8 encoding (typically bot scanners)
     # URL-decode first since percent-encoded bytes may decode to invalid UTF-8
     path_info = env["PATH_INFO"].to_s
-    decoded_path = Rack::Utils.unescape_path(path_info) rescue path_info
+    decoded_path = begin
+      Rack::Utils.unescape_path(path_info)
+    rescue ArgumentError
+      path_info
+    end
     unless decoded_path.force_encoding("UTF-8").valid_encoding?
       return [ 400, { "Content-Type" => "text/plain" }, [ "Bad Request" ] ]
     end

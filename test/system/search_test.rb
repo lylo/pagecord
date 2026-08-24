@@ -135,13 +135,4 @@ class SearchTest < ApplicationSystemTestCase
     assert_text "Bill Gates Biography"
     assert_no_text "About Bill"
   end
-
-  private
-
-  def login_as(user)
-    visit new_session_path
-    fill_in "session[email]", with: user.email
-    fill_in "session[access_token]", with: "test-token"
-    click_on "Sign in"
-  end
 end

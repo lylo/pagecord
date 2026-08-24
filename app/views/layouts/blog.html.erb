@@ -84,7 +84,7 @@
     <%= @blog&.custom_head_html_for_render unless @preview %>
   </head>
 
-  <body class="<%= font_class %>" <%= theme_data_attribute %> data-page-type="<%= content_type_class %>">
+  <body class="<%= font_class %>" <%= theme_data_attribute %> data-page-type="<%= content_type_class %>" <%= tag.attributes(data: { slug: @post.slug }) if @post %>>
     <main>
       <div class="blog blog-container <%= content_width_class %> <%= content_type_class %>">
         <%= render "blogs/flash" %>

@@ -420,6 +420,33 @@ Posts with tags include a `data-tags` attribute on their wrapper element. You ca
 }
 ```
 
+### Styling one page, or one kind of page
+
+Every blog page carries two attributes on `<body>` that let you scope CSS to part of your blog.
+
+`data-page-type` tells you what kind of page a reader is on:
+
+- `index` – your list of posts
+- `home-page` – your custom home page
+- `page` – a page
+- `post` – a post
+
+```css
+[data-page-type="index"] .titlebar {
+  margin-block-end: 3rem;
+}
+```
+
+`data-slug` is the slug of the post or page being viewed – the last part of its URL. It only appears on a single post or page, so you can use it to style just one of them:
+
+```css
+[data-slug="about"] .post-body {
+  max-width: 60ch;
+}
+```
+
+Renaming a post or page changes its slug, and CSS targeting the old slug quietly stops applying, so update both together.
+
 ### Non-italic blockquotes
 
 Blockquotes are styled in italics by default. If you prefer upright text, use this snippet. The second rule ensures that any emphasised text inside the quote still appears italic:

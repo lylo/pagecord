@@ -9,7 +9,7 @@ class Post < ApplicationRecord
   belongs_to :blog, inverse_of: nil
 
   has_rich_text :content
-  has_many_attached :attachments, dependent: :destroy
+  has_many_attached :attachments, dependent: :purge_later
   has_one_attached :open_graph_image
 
   has_many :digest_posts, dependent: :destroy
@@ -213,12 +213,8 @@ class Post < ApplicationRecord
       @raw_excerpt_html = content.body.present? ? ExcerptBreak.extract(content.body.to_html) : nil
     end
 
-    def text_content
-      plain_text_content
-    end
-
     def set_text_summary
-      self.text_summary = text_content.truncate(512, separator: /\s/, omission: "")
+      self.text_summary = plain_text_content.truncate(512, separator: /\s/, omission: "")
     end
 
     # Sets published_at to Time.current if the post is being published but no date was provided.
