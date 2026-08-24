@@ -227,6 +227,22 @@
   }
 }
 
+/* Nothing sits above the first block, so it never needs a top margin: the
+   mirror of Lexxy's `> :last-child`. Bare classes to outrank the symmetric
+   margins above and the image margins in blogs.css. lexxy-editor carries
+   .lexxy-content itself, hence the contenteditable root. */
+.lexxy-content:not(lexxy-editor),
+.lexxy-editor__content {
+  > :first-child {
+    margin-block-start: 0;
+  }
+
+  /* The list has no top margin, but its first item's leaks out through it. */
+  > :is(ul, ol):first-child > li:first-child {
+    margin-block-start: 0;
+  }
+}
+
 /* Callout colours, following Obsidian's grouping: its aliases and related types
    share a colour. Kept outside .lexxy-content so the editor's type picker, which
    sits in the toolbar rather than the content, can reuse the same swatches. */
