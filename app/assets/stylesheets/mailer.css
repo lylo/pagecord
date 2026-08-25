@@ -148,6 +148,11 @@ a {
 /* -------------------------------------
     DIGEST
 ------------------------------------- */
+.digest {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
 .digest .post-content h1 {
   font-weight: 700;
   text-align: left;
