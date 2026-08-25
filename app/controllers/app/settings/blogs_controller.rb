@@ -34,12 +34,10 @@ class App::Settings::BlogsController < AppController
         :locale,
         :show_metrics,
         :external_links_in_new_tab,
-        :show_upvotes
+        :show_upvotes,
+        :use_password,
+        :password
       ]
-
-      if current_features.enabled?(:private_blogs)
-        permitted_params += [ :use_password, :password ]
-      end
 
       if @blog.user.subscribed?
         permitted_params += [ :custom_domain, :custom_robots_txt, :use_custom_robots_txt, :email_subscriptions_enabled, :show_subscription_in_header, :show_subscription_in_footer, :email_delivery_mode ]
