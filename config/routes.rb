@@ -155,6 +155,10 @@ Rails.application.routes.draw do
       end
 
       root "posts#index"
+
+      # The blog settings page was /app/settings/blogs before it became a
+      # singular resource. Keep old bookmarks and support links working.
+      get "/settings/blogs", to: redirect("/app/settings/blog")
     end
 
     get "/admin", to: redirect("/admin/users"), as: :admin

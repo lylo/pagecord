@@ -9,6 +9,12 @@ class Public::PagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "non-html formats are not acceptable" do
+    get public_page_path("faq", format: :json)
+
+    assert_response :not_acceptable
+  end
+
   test "pricing redirects to the home page pricing section" do
     get pricing_path
 

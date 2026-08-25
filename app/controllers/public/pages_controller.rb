@@ -16,7 +16,13 @@ module Public
     caches_page :show
 
     def show
-      render PAGES.fetch(PAGES.index(params[:slug])).tr("-", "_")
+      # The template name is re-read from PAGES rather than taken from params,
+      # so nothing user-supplied ever reaches render.
+      template = PAGES.fetch(PAGES.index(params[:slug])).tr("-", "_")
+
+      respond_to do |format|
+        format.html { render template }
+      end
     end
   end
 end
