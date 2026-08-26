@@ -369,6 +369,20 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "This content should be cached.", post.text_summary
   end
 
+  test "should reject content over the size limit rather than truncating it" do
+    post = blogs(:joel).posts.build(content: "<p>#{"a" * Post::MAX_CONTENT_SIZE}</p>")
+
+    assert_not post.valid?
+    assert_includes post.errors[:content], "is too long (maximum 64 KB)"
+  end
+
+  test "should leave an oversized legacy post editable when its content is untouched" do
+    post = blogs(:joel).posts.create!(title: "Legacy", content: "small")
+    post.rich_text_content.update_column(:body, "<p>#{"a" * Post::MAX_CONTENT_SIZE}</p>")
+
+    assert post.reload.update(title: "Renamed")
+  end
+
   test "text_summary strips WordPress-style excerpt marker" do
     blog = blogs(:joel)
     post = blog.posts.create!(content: "<p>Before</p><!--more--><p>After</p>")
