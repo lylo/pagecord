@@ -1,5 +1,4 @@
 require "openssl"
-require "ostruct"
 
 module Billing
   class PaddleEventsController < ApplicationController
@@ -51,15 +50,15 @@ module Billing
       end
 
       def load_user
-        if (user_id = data.custom_data&.user_id).present?
+        if (user_id = payload.user_id).present?
           @user = User.find_by(id: user_id.to_i)
           @subscription = @user&.subscription
         end
 
         # Fall back to the customer when custom_data is missing or does not resolve,
         # rather than dropping the event and leaving the subscription stale.
-        if @user.nil? && data.customer_id.present?
-          @subscription = Subscription.find_by(paddle_customer_id: data.customer_id)
+        if @user.nil? && payload.customer_id.present?
+          @subscription = Subscription.find_by(paddle_customer_id: payload.customer_id)
           @user = @subscription&.user
         end
 
@@ -90,11 +89,11 @@ module Billing
         end
 
         @subscription.update!(
-          paddle_subscription_id: data.id,
-          paddle_customer_id: data.customer_id,
-          paddle_price_id: data.items[0].price.id,
-          unit_price: base_unit_price,
-          next_billed_at: Time.parse(data.next_billed_at),
+          paddle_subscription_id: payload.subscription_id,
+          paddle_customer_id: payload.customer_id,
+          paddle_price_id: payload.price_id,
+          unit_price: payload.unit_price,
+          next_billed_at: Time.parse(payload.next_billed_at),
           plan: plan
         )
 
@@ -102,7 +101,7 @@ module Billing
       end
 
       def subscription_canceled
-        cancelled_at = Time.parse(data.canceled_at)
+        cancelled_at = Time.parse(payload.canceled_at)
 
         Rails.logger.info "Subscription #{@subscription.id} cancelled at #{cancelled_at}"
 
@@ -117,28 +116,26 @@ module Billing
         Rails.logger.info "Subscription #{@subscription.id} updated"
 
         next_billed_at = @subscription.next_billed_at
-        if data.next_billed_at.present?
-          next_billed_at = Time.parse(data.next_billed_at)
+        if payload.next_billed_at.present?
+          next_billed_at = Time.parse(payload.next_billed_at)
         end
 
-        new_price_id = data.items[0].price.id
+        new_price_id = payload.price_id
         new_plan = Subscription.plan_from_price_id(new_price_id)
 
         Rails.logger.info "Subscription next billed at updated to #{next_billed_at}, plan: #{new_plan}"
         @subscription.update!(
           paddle_price_id: new_price_id,
-          unit_price: base_unit_price,
+          unit_price: payload.unit_price,
           next_billed_at: next_billed_at,
           plan: new_plan
         )
 
         notify_supporter_upgrade
 
-        # this webhook is also called when a subscription is cancelled, with the
-        # scheduled_change action set to cancel.
-        if data.scheduled_change.present? && data.scheduled_change.action == "cancel"
+        if (cancelling_at = payload.cancellation_scheduled_at)
           Rails.logger.info "Subscription is being cancelled"
-          @subscription.update!(cancelled_at: Time.parse(data.scheduled_change.effective_at))
+          @subscription.update!(cancelled_at: Time.parse(cancelling_at))
         end
       end
 
@@ -150,13 +147,9 @@ module Billing
       def transaction_completed
         Rails.logger.info "Transaction completed. Updating next_billed_at and unit_price"
 
-        return if data.origin == "subscription_payment_method_change"
+        return if payload.origin == "subscription_payment_method_change"
 
-        billing_period_ends_at = if data.billing_period.present?
-          data.billing_period.ends_at
-        else
-          nil
-        end
+        billing_period_ends_at = payload.billing_period_ends_at
 
         unless billing_period_ends_at.present?
           Rails.logger.error "No next_billed_at in transaction_completed event"
@@ -168,22 +161,17 @@ module Billing
 
           updates = {
             next_billed_at: next_billed_at,
-            unit_price: transaction_unit_price
+            unit_price: payload.transaction_unit_price
           }
 
-          # Plan change: find the new plan item (quantity > 0)
-          if data.origin == "subscription_update"
-            new_item = data.items.find { |item| item.quantity.to_i > 0 }
-            if new_item
-              new_price_id = new_item.price.id
-              updates[:paddle_price_id] = new_price_id
-              updates[:plan] = Subscription.plan_from_price_id(new_price_id)
-              # On a plan switch, the transaction's line-item total is the prorated
-              # top-up charged today, not the ongoing recurring price. Store the new
-              # price's list price instead, so it matches what the next full renewal bills.
-              updates[:unit_price] = new_item.price.unit_price.amount.to_i
-              Rails.logger.info "Plan changed to #{updates[:plan]} (price_id: #{new_price_id})"
-            end
+          if payload.origin == "subscription_update" && (new_price_id = payload.changed_plan_price_id)
+            updates[:paddle_price_id] = new_price_id
+            updates[:plan] = Subscription.plan_from_price_id(new_price_id)
+            # On a plan switch, the transaction's line-item total is the prorated
+            # top-up charged today, not the ongoing recurring price. Store the new
+            # price's list price instead, so it matches what the next full renewal bills.
+            updates[:unit_price] = payload.changed_plan_unit_price
+            Rails.logger.info "Plan changed to #{updates[:plan]} (price_id: #{new_price_id})"
           end
 
           @subscription.update!(updates)
@@ -208,31 +196,14 @@ module Billing
         Subscription::SupporterWelcomeMailer.welcome(@subscription).deliver_later
       end
 
-      def base_unit_price
-        data.items[0].price.unit_price.amount.to_i
-      end
-
       def detect_plan
-        # First check if plan is specified in custom_data (from checkout)
-        if data.custom_data&.plan.present?
-          return data.custom_data.plan
-        end
+        return payload.checkout_plan if payload.checkout_plan.present?
 
-        # Fall back to detecting from billing cycle
-        billing_cycle = data.billing_cycle || data.items[0]&.price&.billing_cycle
-        if billing_cycle&.interval == "month" && billing_cycle&.frequency == 1
-          "monthly"
-        else
-          "annual"
-        end
+        payload.monthly_billing_cycle? ? "monthly" : "annual"
       end
 
-      def transaction_unit_price
-        data.details.line_items[0].unit_totals.total.to_i
-      end
-
-      def data
-        @data ||= JSON.parse(params[:data].to_json, object_class: OpenStruct)
+      def payload
+        @payload ||= PaddlePayload.new(params[:data], params[:event_type])
       end
   end
 end
