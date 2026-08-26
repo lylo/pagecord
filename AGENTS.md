@@ -9,6 +9,8 @@ Ruby on Rails blogging app (Pagecord). Ruby, CSS, YAML, JavaScript.
 - **Reuse existing code**: Before adding a helper, predicate, query object, or host/routing check, search for an existing app concept that already expresses it. Prefer calling the existing method over duplicating the logic.
 - **Idiomatic**: Follow Ruby and Rails conventions throughout. Fat models, skinny controllers, RESTful routes.
 - **Default Rails baseline**: For Rails coding, refactoring, debugging, migrations, and review tasks, apply the `rails-best-practices-core` skill unless a more specific instruction conflicts.
+- **Extractions must be paid for**: a new class, concern, or scope earns its place with a second caller, a net deletion, or a bug it fixes. Tidiness is not a payer; single-caller logic stays with its caller.
+- **Refactoring plans are hypotheses**: verify each claimed fact and claimed benefit against the code before building it. A plan's confidence is not evidence.
 - **Suggest refactorings**: When you spot something worth improving next to the work in hand, say so. Describe it and let it be chosen, rather than silently widening the change.
 
 ## State changes

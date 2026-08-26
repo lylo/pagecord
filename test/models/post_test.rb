@@ -178,6 +178,15 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "Intro text for cards.", post.excerpt_text
   end
 
+  test "should not rebuild text_summary when content has not changed" do
+    post = blogs(:joel).posts.create!(title: "Guarded", content: "Original content.")
+    post.stubs(:plain_text_content).raises("text summary should not be rebuilt")
+
+    post.update!(title: "Renamed")
+
+    assert_equal "Original content.", post.text_summary
+  end
+
   test "text summary ignores video attachment filenames" do
     blob = ActiveStorage::Blob.create_and_upload!(
       io: StringIO.new("video"),
@@ -358,6 +367,20 @@ class PostTest < ActiveSupport::TestCase
     post = blog.posts.create!(title: "My Title", content: "This content should be cached.")
 
     assert_equal "This content should be cached.", post.text_summary
+  end
+
+  test "should reject content over the size limit rather than truncating it" do
+    post = blogs(:joel).posts.build(content: "<p>#{"a" * Post::MAX_CONTENT_SIZE}</p>")
+
+    assert_not post.valid?
+    assert_includes post.errors[:content], "is too long (maximum 64 KB)"
+  end
+
+  test "should leave an oversized legacy post editable when its content is untouched" do
+    post = blogs(:joel).posts.create!(title: "Legacy", content: "small")
+    post.rich_text_content.update_column(:body, "<p>#{"a" * Post::MAX_CONTENT_SIZE}</p>")
+
+    assert post.reload.update(title: "Renamed")
   end
 
   test "text_summary strips WordPress-style excerpt marker" do

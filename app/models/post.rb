@@ -4,6 +4,8 @@ class Post < ApplicationRecord
 
   enum :source, [ :editor, :email, :api ]
 
+  MAX_CONTENT_SIZE = 64.kilobytes
+
   self.locale_optional = true
 
   belongs_to :blog, inverse_of: nil
@@ -18,10 +20,11 @@ class Post < ApplicationRecord
   has_many :page_views, dependent: :destroy
   has_many :navigation_items, dependent: :destroy
 
-  before_create :limit_content_size
-  before_save :set_text_summary, :set_published_at
+  before_save :set_text_summary, if: -> { content.changed? }
+  before_save :set_published_at
 
   validate :content_present
+  validate :content_size_within_limit, if: -> { content.changed? }
   validates_with UploadQuota::Validator
   validate :title_present_for_pages
   validate :one_home_page, on: :create
@@ -230,9 +233,9 @@ class Post < ApplicationRecord
       self.published_at = Time.current if home_page? && published_at&.future?
     end
 
-    def limit_content_size
-      if content && content.body.to_html.bytesize > 64.kilobytes
-        self.content = content.body.to_html.byteslice(0, 64.kilobytes)
+    def content_size_within_limit
+      if content.body.present? && content.body.to_html.bytesize > MAX_CONTENT_SIZE
+        errors.add(:content, "is too long (maximum #{MAX_CONTENT_SIZE / 1.kilobyte} KB)")
       end
     end
 

@@ -27,10 +27,14 @@ class DynamicVariableProcessor
   end
 
   def process(content)
+    # The placeholder carries a per-run nonce so a post containing the literal
+    # placeholder text cannot collide with it.
+    nonce = SecureRandom.hex(8)
+
     code_blocks = []
     protected_content = content.gsub(%r{<(pre|code)[^>]*>.*?</\1>}m) do |match|
       code_blocks << match
-      "___CODE_BLOCK_#{code_blocks.length - 1}___"
+      "___CODE_BLOCK_#{nonce}_#{code_blocks.length - 1}___"
     end
 
     processed = protected_content.gsub(tag_pattern) do
@@ -38,7 +42,8 @@ class DynamicVariableProcessor
     end
 
     code_blocks.each_with_index do |block, i|
-      processed = processed.sub("___CODE_BLOCK_#{i}___", block)
+      # Block form, so backreference sequences in code content stay literal.
+      processed = processed.sub("___CODE_BLOCK_#{nonce}_#{i}___") { block }
     end
 
     processed
@@ -58,6 +63,9 @@ class DynamicVariableProcessor
         "{{ #{unknown_tag} }}"
       end
     rescue StandardError => e
+      # The page still renders, minus the tag, but the failure is a real error:
+      # silent empty output is how a broken tag goes unnoticed for months.
+      Sentry.capture_exception(e, extra: { tag: tag_name, post_id: @post.id }) if Sentry.initialized?
       Rails.logger.error(
         "[DynamicVariableProcessor] Failed to render #{tag_name} " \
         "for post #{@post.id}: #{e.class} - #{e.message}"
