@@ -202,8 +202,10 @@ Rails.application.routes.draw do
     get "/robots.txt", to: "public/robots#show", as: :robots, format: :text
     get "/llms.txt", to: "public/llms#show", as: :llms_txt, format: :text
     get "/pricing", to: redirect("/#pricing"), as: :pricing
-    get "/:slug", to: "public/pages#show", as: :public_page,
-        constraints: { slug: Regexp.union(Public::PagesController::PAGES) }
+    MARKETING_PAGES.each_key do |slug|
+      get "/#{slug}", to: "public/pages#show", as: slug.tr("-", "_"),
+          defaults: { slug: slug }
+    end
 
     get "/supporters", to: "home/supporters#show"
     get "/spotlight", to: "home/spotlight#show"

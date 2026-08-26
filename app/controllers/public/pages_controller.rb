@@ -1,14 +1,5 @@
 module Public
   class PagesController < ApplicationController
-    # Kept in step with the slug constraint on the "/:slug" route.
-    PAGES = %w[
-      terms privacy faq brand
-      pagecord-vs-about-me pagecord-vs-medium pagecord-vs-hey-world
-      pagecord-vs-wordpress pagecord-vs-substack
-      personal-website minimalist-blogging blogging-by-email
-      blogger-alternative indie-blogging-platform
-    ].freeze
-
     layout "home"
 
     # caches_page writes the rendered page into public/, so nothing here may
@@ -16,9 +7,8 @@ module Public
     caches_page :show
 
     def show
-      # The template name is re-read from PAGES rather than taken from params,
-      # so nothing user-supplied ever reaches render.
-      template = PAGES.fetch(PAGES.index(params[:slug])).tr("-", "_")
+      # A query string can override a route default in params. Not here.
+      template = MARKETING_PAGES.fetch(request.path_parameters[:slug])
 
       respond_to do |format|
         format.html { render template }
