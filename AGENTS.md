@@ -44,6 +44,12 @@ Never write a comment that:
 - narrates what would break if the code were changed
 - answers a question that came up while writing it
 
+When one is warranted, say plainly what the thing is for or how it works, in the
+words you'd use explaining it to someone at the next desk: "a password protected
+blog is unlocked by storing its digest in the access cookie". Not what it defends
+against, not what happens to whom if it changes. If the method name already says
+it, write nothing.
+
 If a change needed explaining, the explanation belongs in the commit message or
 the pull request, where it is attached to the change rather than to the file
 forever. Code review comments are not code comments.
