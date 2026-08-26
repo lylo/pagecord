@@ -14,7 +14,9 @@ class NavigationItemsTest < ApplicationSystemTestCase
     choose "Social link"
     select "RSS", from: "Platform"
 
-    assert_match "/feed.xml", find_field("URL").value
+    # A retrying matcher, not find_field().value: the Stimulus controller
+    # replaces the field while prepopulating, so a held reference goes stale.
+    assert_field "URL", with: %r{/feed\.xml}
 
     click_on "Add to Navigation"
     assert_selector "form[action*='navigation_items']", count: forms_before + 1
