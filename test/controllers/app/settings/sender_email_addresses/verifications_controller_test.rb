@@ -43,7 +43,6 @@ class App::Settings::SenderEmailAddresses::VerificationsControllerTest < ActionD
   test "should verify sender email address when logged out" do
     sender = @blog.sender_email_addresses.create!(email: "sender@example.com")
 
-    # Sign out user
     delete logout_path
 
     get app_settings_sender_email_addresses_verification_path(token: sender.token_digest)
@@ -69,7 +68,6 @@ class App::Settings::SenderEmailAddresses::VerificationsControllerTest < ActionD
   end
 
   test "should redirect to login for invalid token when logged out" do
-    # Sign out user
     delete logout_path
 
     get app_settings_sender_email_addresses_verification_path(token: "invalid_token")
