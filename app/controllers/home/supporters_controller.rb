@@ -1,4 +1,6 @@
 class Home::SupportersController < ApplicationController
+  include PubliclyCached
+
   layout "home"
 
   CACHE_TTL = 15.minutes
@@ -12,8 +14,7 @@ class Home::SupportersController < ApplicationController
   private
 
     def set_cache_headers
-      request.session_options[:skip] = true
-      expires_in 0, public: true, "s-maxage": CACHE_TTL.to_i, "stale-while-revalidate": 1.minute.to_i
+      cache_publicly(maxage: CACHE_TTL, stale: 1.minute)
     end
 
     def supporter_blogs

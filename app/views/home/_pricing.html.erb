@@ -2,7 +2,7 @@
   <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Pricing</h2>
 
   <p class="md:text-xl leading-relaxed mt-5 mb-8">
-    Classic is <strong>free forever</strong>: unlimited posts and pages, your own themes and 20 free uploads to get going. Nothing you make is ever taken away if you stop paying. Upgrade any time for custom domains, analytics, email subscribers, video and a bigger upload allowance, Obsidian, API, CLI, and more for <strong>$<%= price_tag %>/year</strong> or <strong>$<%= price_tag(:monthly) %>/month</strong>.
+    Classic is <strong>free forever</strong>: unlimited posts and pages, your own themes and 20 free uploads to get going. Nothing you make is ever taken away if you stop paying. Upgrade any time for custom domains, analytics, email subscribers, video and a bigger upload allowance, Obsidian, API, CLI, and more for <strong>$<%= localised_price %>/year</strong> or <strong>$<%= localised_price(:monthly) %>/month</strong>.
   </p>
 
   <p class="md:text-xl leading-relaxed mt-5 mb-8">
@@ -89,7 +89,7 @@
       <div class="text-center">
         <h3 class="text-2xl font-semibold mb-2">Premium</h3>
         <div class="text-4xl font-bold text-pagecord-accent dark:text-pagecord-accent mb-1">
-          $<%= price_tag %><span class="text-lg font-normal text-slate-600 dark:text-slate-400"> /year or $<%= price_tag(:monthly) %>/mo</span>
+          $<%= localised_price %><span class="text-lg font-normal text-slate-600 dark:text-slate-400"> /year or $<%= localised_price(:monthly) %>/mo</span>
         </div>
         <p class="text-slate-600 dark:text-slate-400 mb-6">Everything you could possibly need.</p>
 
@@ -160,6 +160,6 @@
   </div>
 
   <p class="mt-8 text-center md:text-lg leading-relaxed text-slate-600 dark:text-slate-400">
-    If you're a Pagecord super-fan and have deeper pockets, please consider becoming a <%= link_to "Supporter", supporters_path, class: "underline font-medium" %> for $<%= price_tag(:supporter) %>/year!
+    If you're a Pagecord super-fan and have deeper pockets, please consider becoming a <%= link_to "Supporter", supporters_path, class: "underline font-medium" %> for $<%= localised_price(:supporter) %>/year!
   </p>
 </div>

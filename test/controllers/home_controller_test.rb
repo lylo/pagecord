@@ -35,14 +35,13 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_equal signed_out, css_select("nav a").map(&:text)
   end
 
-  # The page is publicly cached, so it renders the standard price for everyone
-  # and the price controller swaps in the visitor's own.
-  test "should render the standard price whatever the country" do
+  test "should render the localised price and declare what it varies on" do
     Pricing::DISCOUNTED_COUNTRIES.each do |country_code|
       get root_path, headers: { "CF-IPCountry" => country_code }
 
       assert_response :success
-      assert_select "[data-price-target=amount]", text: Subscription.price
+      assert_select "body", text: /\$25/
+      assert_includes @response.headers["Vary"], "CF-IPCountry"
     end
   end
 
