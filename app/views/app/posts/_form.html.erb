@@ -23,6 +23,7 @@
 
   <%= form_with(model: [:app, @post], html: { id: "post-form" }) do |form| %>
     <%= hidden_field_tag :context_blog_id, @blog.id if is_new %>
+    <%= hidden_field_tag :page, params[:page] if params[:page].present? %>
 
     <div class="hidden mb-8" data-post-attributes-target="section" data-section="published-at">
       <div class="mt-4 font-bold">
@@ -156,12 +157,12 @@
       <div>
         <%= form.submit publish_button_text(@post), class: "btn-primary" %>
         <%= link_to (is_new ? "Discard" : "Cancel"),
-              app_posts_path(page: session[:return_to_page]),
+              app_posts_path(page: params[:page].presence),
               class: "btn-secondary",
               data: { action: "click->autosave#cancel" } %>
       </div>
       <div>
-        <%= form.button draft_button_text(@post), value: "save_draft", class: "btn-optional" %>
+        <%= form.button draft_button_text(@post), name: "post[status]", value: "draft", class: "btn-optional" %>
       </div>
     </div>
 

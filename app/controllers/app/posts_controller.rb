@@ -40,8 +40,6 @@ class App::PostsController < App::BaseController
 
   def edit
     @post = @blog.posts.kept.find_by!(token: params[:token])
-
-    session[:return_to_page] = params[:page].presence
   end
 
   def show
@@ -68,10 +66,7 @@ class App::PostsController < App::BaseController
     @post = @blog.posts.kept.find_by!(token: params[:token])
 
     if @post.update(post_params)
-      page = session.delete(:return_to_page)
-      options = page.present? ? { page: page } : {}
-
-      redirect_to app_posts_path(options), notice: "Post was successfully updated"
+      redirect_to app_posts_path(page: params[:page].presence), notice: "Post was successfully updated"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -88,7 +83,7 @@ class App::PostsController < App::BaseController
 
 
     def post_params
-      status = params[:button] == "save_draft" ? :draft : :published
+      status = params.dig(:post, :status) == "draft" ? :draft : :published
       permitted = [ :title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale ]
       permitted += [ :open_graph_image, :open_graph_image_suppressed ] if Current.user.has_premium_access?
       permitted << :comments_closed if @blog.accepts_comments?
