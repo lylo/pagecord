@@ -20,15 +20,6 @@ class Blogs::ClearLapsedCustomDomainsJobTest < ActiveJob::TestCase
     assert_equal "annie.blog", blog.reload.custom_domain
   end
 
-  test "enqueues RemoveCustomDomainJob for each cleared domain" do
-    blog = blogs(:vivian)
-    blog.update!(custom_domain: "gone.example.com")
-
-    assert_enqueued_with(job: RemoveCustomDomainJob, args: [ blog.id, "gone.example.com" ]) do
-      Blogs::ClearLapsedCustomDomainsJob.perform_now
-    end
-  end
-
   test "records a custom domain change when clearing" do
     blog = blogs(:vivian)
     blog.update!(custom_domain: "gone.example.com")

@@ -125,6 +125,14 @@ class BlogTest < ActiveSupport::TestCase
     assert_equal 1, @blog.custom_domain_changes.count
   end
 
+  test "should not record a custom domain change when a nil domain is set to blank" do
+    assert_nil @blog.custom_domain
+
+    assert_no_difference -> { @blog.custom_domain_changes.count } do
+      @blog.update!(custom_domain: "")
+    end
+  end
+
   test "should normalize custom domain" do
     @blog.custom_domain = ""
     @blog.save!

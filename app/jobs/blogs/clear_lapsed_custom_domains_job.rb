@@ -7,7 +7,6 @@ class Blogs::ClearLapsedCustomDomainsJob < ApplicationJob
 
       domain = blog.custom_domain
       blog.update!(custom_domain: nil)
-      RemoveCustomDomainJob.perform_later(blog.id, domain) unless ENV["ON_DEMAND_TLS"].present?
 
       Rails.logger.info "Cleared lapsed custom domain #{domain} for blog #{blog.id}"
     end
