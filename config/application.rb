@@ -37,13 +37,11 @@ module Pagecord
 
     config.filter_parameters += [ :RawEmail, :Attachments, :HtmlBody, :TextBody, :Headers ]
 
-    Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_tags += [ "s", "u", "video", "source" ]
-    Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_attributes += [ "style", "controls", "poster", "playsinline" ]
-
     config.exceptions_app = self.routes
 
-    # ignore mismatches between HTTP_CLIENT_IP and HTTP_X_FORWARDED_FOR
+    # Cloudflare fronts the app and cloudflare-rails walks X-Forwarded-For past
+    # its edges, so a Client-IP header disagreeing with it is routine, not an
+    # attack. See config/initializers/rack_request.rb for the companion setting.
     config.action_dispatch.ip_spoofing_check = false
-
   end
 end
