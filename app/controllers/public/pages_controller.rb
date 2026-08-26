@@ -1,10 +1,10 @@
 module Public
   class PagesController < ApplicationController
+    include PubliclyCached
+
     layout "home"
 
-    # caches_page writes the rendered page into public/, so nothing here may
-    # depend on the current user or a feature flag.
-    caches_page :show
+    before_action :set_cache_headers
 
     def show
       # A query string can override a route default in params. Not here.
@@ -14,5 +14,11 @@ module Public
         format.html { render template }
       end
     end
+
+    private
+
+      def set_cache_headers
+        cache_publicly(maxage: 1.hour)
+      end
   end
 end

@@ -40,11 +40,12 @@ class Api::HomePagesController < Api::BaseController
     end
 
     def home_page_params
-      permitted_content_params(
+      Api::PostParams.new(
+        params,
         :title, :content, :slug, :published_at, :canonical_url,
         :tags, :hidden, :locale, :status, :content_format,
         except_token: false
-      ).merge(is_page: true, is_home_page: true)
+      ).to_h.merge(is_page: true, is_home_page: true)
     end
 
     def page_json(page)

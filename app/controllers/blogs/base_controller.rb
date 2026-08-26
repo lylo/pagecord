@@ -1,16 +1,18 @@
 class Blogs::BaseController < ApplicationController
   include BlogContentSecurityPolicy
+  include Blogs::DomainRedirection
+  include Blogs::AccessControl
 
   layout "blog"
 
-  # Blog owners can run their own JavaScript on *.pagecord.com, so the __Host-
-  # prefix is what stops one blog writing an access cookie that reaches another.
-  # It demands the Secure flag, so plain-HTTP development keeps the bare name.
-  ACCESS_COOKIE = Rails.application.config.force_ssl ? "__Host-blog_access" : "blog_access"
-
   blog_content_security_policy
 
-  skip_before_action :domain_check
+  # Nothing on a public blog page reads Current.user.
+  skip_before_action :domain_check, :authenticate
+
+  # The order is load bearing. load_blog sets @blog for everything after it, and
+  # the domain redirects run before the access check so a request on the wrong
+  # host is moved on rather than shown a password form.
   before_action :load_blog, :validate_user, :enforce_custom_domain, :require_blog_access, :set_locale, :reject_malicious_params
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_blog_not_found
@@ -47,85 +49,20 @@ class Blogs::BaseController < ApplicationController
       redirect_to_app_home unless @blog.user&.verified? && @blog.user&.kept?
     end
 
-    # The login page renders over whatever was asked for rather than
-    # redirecting, so the visitor keeps the URL they came for.
-    def require_blog_access
-      render_private_blog_login unless blog_access_granted?
-    end
-
-    def blog_access_granted?
-      return true unless @blog&.password_protected?
-
-      cookies.encrypted[ACCESS_COOKIE] == @blog.password_digest || feed_key_request?
-    end
-
-    # The feed token travels in a URL, where it's far easier to leak than the
-    # password, so it opens the feed and nothing else.
-    def feed_key_request?
-      request.format.rss? && @blog.valid_feed_token?(params[:key])
-    end
-
-    def render_private_blog_login
-      if request.format.html?
-        render "blogs/access/login", status: :unauthorized
-      else
-        head :unauthorized
-      end
-    end
-
     def blog_from_custom_domain
       Blog.find_by_domain_with_www_fallback(request.host)
-    end
-
-    def enforce_custom_domain
-      redirect_from_lapsed_custom_domain || redirect_from_default_domain || redirect_to_canonical_custom_domain
-    end
-
-    # Redirects requests from the default pagecord.com subdomain to the blog's custom domain
-    # Example: joel.pagecord.com/about -> example.com/about
-    def redirect_from_default_domain
-      return false unless default_domain_request? && @blog.custom_domain.present?
-      return false unless @blog.user.custom_domain_access?
-
-      escaped_subdomain = Regexp.escape(@blog.subdomain)
-      request_path = request.path.gsub(/^\/@?#{escaped_subdomain}\/?/, "")
-      full_url = root_url(host: @blog.custom_domain, protocol: request.protocol, port: request.port, only_path: false)
-
-      request_path = request_path.sub(/^\//, "") if full_url.end_with?("/")
-      new_url = "#{full_url}#{request_path}"
-
-      redirect_to new_url, status: :moved_permanently, allow_other_host: true
-      true
-    end
-
-    def redirect_from_lapsed_custom_domain
-      return false unless custom_domain_request? && @blog.custom_domain.present?
-      return false if @blog.user.custom_domain_access?
-
-      new_url = "#{request.protocol}#{@blog.subdomain}.#{Rails.application.config.x.domain}#{request.fullpath}"
-      redirect_to new_url, status: :moved_permanently, allow_other_host: true
-      true
-    end
-
-    # Redirects requests to the canonical custom domain when accessed via www/non-www variant
-    # Example: www.example.com/about -> example.com/about (if blog.custom_domain is "example.com")
-    def redirect_to_canonical_custom_domain
-      return false unless custom_domain_request? && @blog.custom_domain.present?
-      return false if @blog.custom_domain == request.host
-
-      new_url = "#{request.protocol}#{@blog.custom_domain}#{request.fullpath}"
-      redirect_to new_url, status: :moved_permanently, allow_other_host: true
-      true
     end
 
     def set_locale
       I18n.locale = @blog&.locale || I18n.default_locale
     end
 
+    # Rejects null bytes and CRLF in routing params, which are header and log
+    # injection attempts. Nested values are left alone so that comment, reply
+    # and contact message bodies keep their newlines.
     def reject_malicious_params
       params.each do |key, value|
         next unless value.is_a?(String)
-        # Reject null bytes and CRLF characters to prevent injection attacks
         raise ActiveRecord::RecordNotFound if value.match?(/[\x00\r\n]/)
       end
     end

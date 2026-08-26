@@ -44,6 +44,12 @@ Never write a comment that:
 - narrates what would break if the code were changed
 - answers a question that came up while writing it
 
+When one is warranted, say plainly what the thing is for or how it works, in the
+words you'd use explaining it to someone at the next desk: "a password protected
+blog is unlocked by storing its digest in the access cookie". Not what it defends
+against, not what happens to whom if it changes. If the method name already says
+it, write nothing.
+
 If a change needed explaining, the explanation belongs in the commit message or
 the pull request, where it is attached to the change rather than to the file
 forever. Code review comments are not code comments.
@@ -131,7 +137,7 @@ Docker: prefix commands with `docker-compose exec web`
 - **Auth**: Passwordless login via AccessRequest tokens (1-day expiry). EmailChangeRequest for email updates. Both use Verifiable concern.
 - **Routing**: Constraint-based — pagecord.com for app/auth, subdomains and custom domains for blog content
 - **Storage**: ActiveStorage on Cloudflare R2. Soft deletion with Discard gem. `UploadQuota` (a PORO over User) is the single source of truth for what a user has uploaded – count, bytes, and what their plan still allows. `rake activestorage:users` reports it.
-- **API**: `Api::BaseController` handles token auth via `Blog.find_by_api_key`, premium check, `:api` feature flag, 60 req/min rate limit, `wrap_parameters false`, RFC 5988 `Link` + `X-Total-Count` pagination headers, and shared param handling via `permitted_content_params`. Controllers: `Api::PostsController` (CRUD), `Api::PagesController` (CRUD), `Api::HomePagesController` (CRUD, singular resource, second create returns `422`), `Api::AttachmentsController` (file upload → standalone blob → `attachable_sgid`). `content` is always stored as HTML; `content_format=markdown` first renders via Redcarpet with front matter support, then attachment enrichment runs on the resulting HTML. API rich text attachments are blob-only and canonicalized with the same `ActionText::Attachment.from_attachable(..., url: ...)` path used by MailParser via `Html::AttachmentPreview`. Upload limits live in `UploadLimits::CONTENT_TYPES` (`app/models/upload_limits.rb`).
+- **API**: `Api::BaseController` handles token auth via `Blog.find_by_api_key`, premium check, 60 req/min rate limit, `wrap_parameters false`, and RFC 5988 `Link` + `X-Total-Count` pagination headers. Post and page params are built by `Api::PostParams` (markdown rendering, status validation, attachment enrichment); `Api::BadRequestError` is the 400. Controllers: `Api::PostsController` (CRUD), `Api::PagesController` (CRUD), `Api::HomePagesController` (CRUD, singular resource, second create returns `422`), `Api::AttachmentsController` (file upload → standalone blob → `attachable_sgid`). `content` is always stored as HTML; `content_format=markdown` first renders via Redcarpet with front matter support, then attachment enrichment runs on the resulting HTML. API rich text attachments are blob-only and canonicalized with the same `ActionText::Attachment.from_attachable(..., url: ...)` path used by MailParser via `Html::AttachmentPreview`. Upload limits live in `UploadLimits::CONTENT_TYPES` (`app/models/upload_limits.rb`).
 - **Caching**: `blog.updated_at` is the single invalidation boundary. Everything that changes visitor-visible state touches the blog. Post fragment caches key on `[post, @blog.updated_at]`. ETags use `@blog.updated_at`. Blog `after_commit :purge_cloudflare_cache` fires `PurgeCloudflareCacheJob` (tag-based purge by subdomain). Edge caching (`s-maxage`, `Cache-Tag`, session skip) only applies to `*.pagecord.com` — custom domains route through Caddy, not Cloudflare. Upvotes don't invalidate caches (display is handled client-side via Stimulus).
 - **Background**: Sidekiq + Redis. Cron via `whenever` gem (see `config/schedule.rb`)
 - **External services**: Postmark + Mailpace (email, dual provider), Sentry (errors), AppSignal (observability), Hatchbox (hosting/custom domains), Paddle (billing)
@@ -158,6 +164,7 @@ Docker: prefix commands with `docker-compose exec web`
 ### Analytics
 - PageView model (raw, recent) + Rollup model (aggregated, historical). Mixed data approach. Monthly rollup via `RollupAndCleanupPageViewsJob`.
 - `Analytics::Base` (cutoff_time), `Analytics::Summary`, `Analytics::Chart`, `Analytics::Referrers`, `Analytics::Trending`, `Analytics::Leaderboard`, `Analytics::Countries`
+- `Analytics::AdminReport` backs the site-wide admin dashboard (no blog); `Analytics::DemoData` is the sample data non-premium users see
 - Privacy: visitor_hash (SHA256 of IP+UA+date), no raw IPs
 - Referrer tracking with domain normalization, search/social classification via `Referrer` model
 
@@ -224,7 +231,7 @@ CSP `frame-src` in `config/initializers/content_security_policy.rb` must be upda
 
 - **ActionText before_save**: Read from `content.to_s` directly — ActionText changes aren't persisted until callback completes
 - **Rich text save N²**: `ActiveStorage::Attachment`'s auto-generated presence validator on `:record` calls `RichText#blank?`, which re-renders the whole body and re-resolves every attachment's SGID – one full render per embedded attachment, so N photos cost N² blob queries (~1,161 for a 33-photo post). `config/initializers/active_storage.rb` swaps the validator for a cheap nil check; a query-budget test in `test/models/post_test.rb` guards it. Never add an `EachValidator` to an attribute that returns a `RichText` – `value.blank?` renders.
-- **API Markdown attachments**: Redcarpet wraps standalone raw `<action-text-attachment>` tags in `<p>` tags. `Api::BaseController#enrich_attachments` must unwrap attachment-only paragraphs after Markdown conversion or rendered blog HTML loses the outer `<action-text-attachment>` wrapper.
+- **API Markdown attachments**: Redcarpet wraps standalone raw `<action-text-attachment>` tags in `<p>` tags. `Api::PostParams` must unwrap attachment-only paragraphs after Markdown conversion or rendered blog HTML loses the outer `<action-text-attachment>` wrapper.
 - **Safari**: Doesn't support `*.localhost` — use Chrome/Firefox for subdomain testing
 - **Blog views**: No Tailwind, use semantic CSS. Check `lexxy-typography.css`, `components.css`, `themes/*.css`
 - **Post text_summary**: Cached plain text column updated via before_save. Use `display_title`, `summary(limit:)` — don't parse ActionText in loops

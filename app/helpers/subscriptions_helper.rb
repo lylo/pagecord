@@ -1,26 +1,4 @@
 module SubscriptionsHelper
-  PRICE_IDS = {
-    monthly: {
-      production: "pri_01kgcczhfsbxrbq17q139s2nc6",
-      development: "pri_01kgccx380dyd8sv1c5mr7qgh4",
-      test: "pri_01kgccx380dyd8sv1c5mr7qgh4"
-    },
-    annual: {
-      production: "pri_01kj7dvn8xc1yee6ppwzda5ykk",
-      development: "pri_01jxfe5399nzanxj57bbqk28t4",
-      test: "pri_01jxfe5399nzanxj57bbqk28t4"
-    },
-    supporter: {
-      production: "pri_01ky75g6xy1tyddwrax0r3wge4",
-      development: "pri_01ky7775szgjfcrvsaf4pxtnyf",
-      test: "pri_01ky7775szgjfcrvsaf4pxtnyf"
-    }
-  }.freeze
-
-  def self.price_id(plan)
-    PRICE_IDS[plan.to_sym][Rails.env.to_sym]
-  end
-
   def paddle_environment
     Rails.env.development? ? "sandbox" : "production"
   end
@@ -48,7 +26,7 @@ module SubscriptionsHelper
   end
 
   def price_id(plan)
-    SubscriptionsHelper.price_id(plan)
+    Subscription.price_id(plan)
   end
 
   private

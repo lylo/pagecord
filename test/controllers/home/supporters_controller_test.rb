@@ -50,4 +50,12 @@ class Home::SupportersControllerTest < ActionDispatch::IntegrationTest
     assert_match blogs(:annie).custom_domain, response.body
     assert_no_match second_blog.subdomain, response.body
   end
+
+  test "localises the supporter price and declares what it varies on" do
+    get supporters_path, headers: { "CF-IPCountry" => "IN" }
+
+    assert_match(/\$50/, response.body)
+    assert_includes @response.headers["Vary"], "CF-IPCountry"
+    assert_includes @response.headers["Cache-Control"], "s-maxage"
+  end
 end

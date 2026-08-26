@@ -5,52 +5,52 @@
       <!-- View Type Buttons -->
       <div class="flex space-x-2 justify-center md:justify-start">
         <% 
-          context_month = case @view_type
+          context_month = case @report.view_type
             when "year"
-              Date.new(@date.year, Date.current.month, 1)
+              Date.new(@report.date.year, Date.current.month, 1)
             else 
-              @date
+              @report.date
           end
           
-          context_year = @date.beginning_of_year
+          context_year = @report.date.beginning_of_year
         %>
         <%= link_to admin_analytics_path(view_type: "month", date: context_month.strftime("%Y-%m")),
-            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@view_type == 'month' ? 'bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}" do %>
+            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@report.view_type == 'month' ? 'bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}" do %>
           Month
         <% end %>
         <%= link_to admin_analytics_path(view_type: "year", date: context_year.strftime("%Y")),
-            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@view_type == 'year' ? 'bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}" do %>
+            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@report.view_type == 'year' ? 'bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}" do %>
           Year
         <% end %>
       </div>
 
       <!-- Date Navigation -->
       <div class="flex justify-center items-center space-x-3">
-        <% if @view_type == "month" %>
-          <%= link_to admin_analytics_path(view_type: @view_type, date: (@date - 1.month).strftime("%Y-%m")), 
+        <% if @report.view_type == "month" %>
+          <%= link_to admin_analytics_path(view_type: @report.view_type, date: (@report.date - 1.month).strftime("%Y-%m")), 
               class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
             <%= inline_svg_tag "icons/chevron-left.svg", class: "w-4 h-4" %>
           <% end %>
           
           <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[8rem] text-center">
-            <%= @date.strftime("%B %Y") %>
+            <%= @report.date.strftime("%B %Y") %>
           </span>
           
-          <%= link_to admin_analytics_path(view_type: @view_type, date: (@date + 1.month).strftime("%Y-%m")), 
+          <%= link_to admin_analytics_path(view_type: @report.view_type, date: (@report.date + 1.month).strftime("%Y-%m")), 
               class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
             <%= inline_svg_tag "icons/chevron-right.svg", class: "w-4 h-4" %>
           <% end %>
         <% else %>
-          <%= link_to admin_analytics_path(view_type: @view_type, date: (@date - 1.year).strftime("%Y")), 
+          <%= link_to admin_analytics_path(view_type: @report.view_type, date: (@report.date - 1.year).strftime("%Y")), 
               class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
             <%= inline_svg_tag "icons/chevron-left.svg", class: "w-4 h-4" %>
           <% end %>
           
           <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[8rem] text-center">
-            <%= @date.strftime("%Y") %>
+            <%= @report.date.strftime("%Y") %>
           </span>
           
-          <%= link_to admin_analytics_path(view_type: @view_type, date: (@date + 1.year).strftime("%Y")), 
+          <%= link_to admin_analytics_path(view_type: @report.view_type, date: (@report.date + 1.year).strftime("%Y")), 
               class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
             <%= inline_svg_tag "icons/chevron-right.svg", class: "w-4 h-4" %>
           <% end %>
@@ -60,39 +60,39 @@
   </div>
 
   <%
-    date_subtitle = @view_type == "month" ? @date.strftime("%B %Y") : @date.strftime("%Y")
+    date_subtitle = @report.view_type == "month" ? @report.date.strftime("%B %Y") : @report.date.strftime("%Y")
 
-    post_items = @top_posts.map do |data|
+    post_items = @report.top_posts.map do |data|
       { name: data[:post].display_title, url: post_url(data[:post]),
         subtitle: blog_home_url(data[:post].blog), subtitle_url: blog_home_url(data[:post].blog),
         count: data[:count] }
     end
 
-    page_items = @top_pages.map do |data|
+    page_items = @report.top_pages.map do |data|
       { name: data[:post].display_title, url: post_url(data[:post]),
         subtitle: blog_home_url(data[:post].blog), subtitle_url: blog_home_url(data[:post].blog),
         count: data[:count] }
     end
 
-    blog_items = @top_blogs.map do |data|
+    blog_items = @report.top_blogs.map do |data|
       { name: data[:blog].display_name, url: blog_home_url(data[:blog]),
         subtitle: blog_home_url(data[:blog]), subtitle_url: blog_home_url(data[:blog]),
         count: data[:count] }
     end
 
-    subscriber_items = @top_blogs_by_subscribers.map do |data|
+    subscriber_items = @report.top_blogs_by_subscribers.map do |data|
       { name: data[:blog].display_name, url: blog_home_url(data[:blog]),
         subtitle: blog_home_url(data[:blog]), subtitle_url: blog_home_url(data[:blog]),
         count: data[:count] }
     end
 
-    comment_items = @top_posts_by_comments.map do |data|
+    comment_items = @report.top_posts_by_comments.map do |data|
       { name: data[:post].display_title, url: post_url(data[:post]),
         subtitle: blog_home_url(data[:post].blog), subtitle_url: blog_home_url(data[:post].blog),
         count: data[:count] }
     end
 
-    trending_items = @trending_posts.map do |data|
+    trending_items = @report.trending_posts.map do |data|
       { name: data[:post].display_title, url: post_url(data[:post]),
         subtitle: blog_home_url(data[:post].blog), subtitle_url: blog_home_url(data[:post].blog),
         meta: "#{time_ago_in_words(data[:post].published_at)} ago · #{number_with_delimiter(data[:views])} views · #{data[:upvotes]} upvotes",

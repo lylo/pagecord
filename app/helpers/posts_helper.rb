@@ -22,10 +22,6 @@ module PostsHelper
     item.link_url
   end
 
-  def filtered?
-    params[:tag].present? || params[:title].present? || params[:lang].present?
-  end
-
   def filter_description
     parts = []
     parts << "tagged with <strong>#{h @current_tags.join(", ")}</strong>" if @current_tags.present?

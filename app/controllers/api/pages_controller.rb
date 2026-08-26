@@ -63,10 +63,11 @@ class Api::PagesController < Api::BaseController
     end
 
     def page_params
-      permitted_content_params(
+      Api::PostParams.new(
+        params,
         :title, :content, :slug, :published_at, :canonical_url,
         :tags, :hidden, :locale, :status, :content_format
-      ).merge(is_page: true)
+      ).to_h.merge(is_page: true)
     end
 
     def page_json(page)

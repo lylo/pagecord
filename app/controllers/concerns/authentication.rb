@@ -11,9 +11,9 @@ module Authentication
 
   def authenticate
     return unless DomainConstraints.default_domain?(request)
+    return if session[:user_id].blank?
 
     if user = User.kept.find_by(id: session[:user_id])
-      Rails.logger.info "Authenticated #{user.id}"
       Current.user = user
     end
   end

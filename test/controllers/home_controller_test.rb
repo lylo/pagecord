@@ -23,30 +23,26 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.headers["Cache-Control"] || "", "s-maxage"
   end
 
-  test "should render home page when logged in" do
-    user = users(:joel)
-    login_as user
-
+  # The header is the same whoever is looking, so the page stays cacheable.
+  test "should render the same header when logged in" do
     get root_path
+    signed_out = css_select("nav a").map(&:text)
+
+    login_as users(:joel)
+    get root_path
+
     assert_response :success
-    assert_select "a", text: "Dashboard"
+    assert_equal signed_out, css_select("nav a").map(&:text)
   end
 
-  test "should render localized price for discounted countries" do
-    PricingHelper::DISCOUNTED_COUNTRIES.each do |country_code|
+  test "should render the localised price and declare what it varies on" do
+    Pricing::DISCOUNTED_COUNTRIES.each do |country_code|
       get root_path, headers: { "CF-IPCountry" => country_code }
 
       assert_response :success
       assert_select "body", text: /\$25/
+      assert_includes @response.headers["Vary"], "CF-IPCountry"
     end
-  end
-
-  test "should render default price for other countries" do
-    # Inject the CF-IPCountry header with US value
-    get root_path, headers: { "CF-IPCountry" => "US" }
-
-    assert_response :success
-    assert_select "body", text: /\$39/
   end
 
   test "should render default price when no country header" do

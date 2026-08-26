@@ -105,8 +105,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
         context_blog_id: @user.blog.id,
-        post: { title: "New Post", content: "New content" },
-        button: "save_draft"
+        post: { title: "New Post", content: "New content", status: "draft" }
       }
     end
 
@@ -316,10 +315,15 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert post.reload.open_graph_image_suppressed?
   end
 
-  test "should update post and preserve page via session" do
+  test "should carry the page through the edit form rather than the session" do
     get edit_app_post_url(@user.blog.posts.first, page: 3)
 
+    assert_select "input[type=hidden][name=page][value='3']"
+  end
+
+  test "should update post and return to the page it was edited from" do
     patch app_post_url(@user.blog.posts.first), params: {
+      page: 3,
       post: {
         title: "Updated Title",
         content: "Updated content"

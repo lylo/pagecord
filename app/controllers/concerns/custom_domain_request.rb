@@ -1,4 +1,6 @@
-module CustomDomainHelper
+module CustomDomainRequest
+  extend ActiveSupport::Concern
+
   def custom_domain_request?
     if Rails.env.test?
       alloweds_ip_addresses = [ "127.0.0.1" ]
