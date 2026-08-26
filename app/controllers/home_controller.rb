@@ -10,7 +10,6 @@ class HomeController < ApplicationController
   private
 
     def set_cache_headers
-      return if logged_in?
       return if signup_attribution.present?
 
       expires_in 0, public: true, "s-maxage": 1.hour.to_i, "stale-while-revalidate": 10.minutes.to_i

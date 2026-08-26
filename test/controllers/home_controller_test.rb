@@ -23,13 +23,16 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.headers["Cache-Control"] || "", "s-maxage"
   end
 
-  test "should render home page when logged in" do
-    user = users(:joel)
-    login_as user
-
+  # The header is the same whoever is looking, so the page stays cacheable.
+  test "should render the same header when logged in" do
     get root_path
+    signed_out = css_select("nav a").map(&:text)
+
+    login_as users(:joel)
+    get root_path
+
     assert_response :success
-    assert_select "a", text: "Dashboard"
+    assert_equal signed_out, css_select("nav a").map(&:text)
   end
 
   # The page is publicly cached, so it renders the standard price for everyone
