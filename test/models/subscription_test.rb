@@ -31,9 +31,9 @@ class SubscriptionTest < ActiveSupport::TestCase
   end
 
   test "plan_from_price_id maps each plan's price id back to its plan" do
-    assert_equal "monthly", Subscription.plan_from_price_id(SubscriptionsHelper.price_id(:monthly))
-    assert_equal "annual", Subscription.plan_from_price_id(SubscriptionsHelper.price_id(:annual))
-    assert_equal "supporter", Subscription.plan_from_price_id(SubscriptionsHelper.price_id(:supporter))
+    assert_equal "monthly", Subscription.plan_from_price_id(Subscription.price_id(:monthly))
+    assert_equal "annual", Subscription.plan_from_price_id(Subscription.price_id(:annual))
+    assert_equal "supporter", Subscription.plan_from_price_id(Subscription.price_id(:supporter))
   end
 
   test "plan_from_price_id falls back to annual for unknown price id" do

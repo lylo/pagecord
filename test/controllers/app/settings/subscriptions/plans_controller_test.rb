@@ -27,7 +27,7 @@ class App::Settings::Subscriptions::PlansControllerTest < ActionDispatch::Integr
     mock_response.stubs(:success?).returns(true)
     mock_api = mock
     mock_api.expects(:update_subscription_items)
-      .with(@user.subscription.paddle_subscription_id, SubscriptionsHelper.price_id(:annual), proration_billing_mode: "prorated_immediately")
+      .with(@user.subscription.paddle_subscription_id, Subscription.price_id(:annual), proration_billing_mode: "prorated_immediately")
       .returns(mock_response)
     PaddleApi.stubs(:new).returns(mock_api)
 
@@ -42,7 +42,7 @@ class App::Settings::Subscriptions::PlansControllerTest < ActionDispatch::Integr
     mock_response.stubs(:success?).returns(true)
     mock_api = mock
     mock_api.expects(:update_subscription_items)
-      .with(@user.subscription.paddle_subscription_id, SubscriptionsHelper.price_id(:supporter), proration_billing_mode: "prorated_immediately")
+      .with(@user.subscription.paddle_subscription_id, Subscription.price_id(:supporter), proration_billing_mode: "prorated_immediately")
       .returns(mock_response)
     PaddleApi.stubs(:new).returns(mock_api)
 
@@ -58,7 +58,7 @@ class App::Settings::Subscriptions::PlansControllerTest < ActionDispatch::Integr
     mock_response.stubs(:success?).returns(true)
     mock_api = mock
     mock_api.expects(:update_subscription_items)
-      .with(@user.subscription.paddle_subscription_id, SubscriptionsHelper.price_id(:supporter), proration_billing_mode: "prorated_immediately")
+      .with(@user.subscription.paddle_subscription_id, Subscription.price_id(:supporter), proration_billing_mode: "prorated_immediately")
       .returns(mock_response)
     PaddleApi.stubs(:new).returns(mock_api)
 
@@ -74,7 +74,7 @@ class App::Settings::Subscriptions::PlansControllerTest < ActionDispatch::Integr
     mock_response.stubs(:success?).returns(true)
     mock_api = mock
     mock_api.expects(:update_subscription_items)
-      .with(@user.subscription.paddle_subscription_id, SubscriptionsHelper.price_id(:annual), proration_billing_mode: "do_not_bill")
+      .with(@user.subscription.paddle_subscription_id, Subscription.price_id(:annual), proration_billing_mode: "do_not_bill")
       .returns(mock_response)
     PaddleApi.stubs(:new).returns(mock_api)
 
@@ -83,7 +83,7 @@ class App::Settings::Subscriptions::PlansControllerTest < ActionDispatch::Integr
     assert_redirected_to app_settings_path
     assert_equal "Your plan has been updated to annual!", flash[:notice]
     assert @user.subscription.reload.annual?, "expected plan to be optimistically updated to annual"
-    assert_equal SubscriptionsHelper.price_id(:annual), @user.subscription.paddle_price_id
+    assert_equal Subscription.price_id(:annual), @user.subscription.paddle_price_id
   end
 
   test "should reject invalid plan" do

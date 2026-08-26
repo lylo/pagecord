@@ -253,7 +253,7 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     subscription.reload
     assert subscription.annual?, "Expected subscription to be annual after plan change"
-    assert_equal SubscriptionsHelper.price_id(:annual), subscription.paddle_price_id
+    assert_equal Subscription.price_id(:annual), subscription.paddle_price_id
   end
 
   test "should store the new plan's recurring price, not the prorated transaction total, on a small-proration plan change" do
