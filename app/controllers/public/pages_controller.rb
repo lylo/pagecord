@@ -3,7 +3,7 @@ module Public
     layout "home"
 
     # caches_page writes the rendered page into public/, so nothing here may
-    # depend on the current user or a feature flag.
+    # depend on the current user, a feature flag, or the visitor's country.
     caches_page :show
 
     def show

@@ -202,6 +202,7 @@ Rails.application.routes.draw do
     get "/robots.txt", to: "public/robots#show", as: :robots, format: :text
     get "/llms.txt", to: "public/llms#show", as: :llms_txt, format: :text
     get "/pricing", to: redirect("/#pricing"), as: :pricing
+    get "/prices", to: "public/prices#show", as: :prices, defaults: { format: :json }
     MARKETING_PAGES.each_key do |slug|
       get "/#{slug}", to: "public/pages#show", as: slug.tr("-", "_"),
           defaults: { slug: slug }

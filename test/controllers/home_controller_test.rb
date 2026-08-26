@@ -32,21 +32,15 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: "Dashboard"
   end
 
-  test "should render localized price for discounted countries" do
+  # The page is publicly cached, so it renders the standard price for everyone
+  # and the price controller swaps in the visitor's own.
+  test "should render the standard price whatever the country" do
     Pricing::DISCOUNTED_COUNTRIES.each do |country_code|
       get root_path, headers: { "CF-IPCountry" => country_code }
 
       assert_response :success
-      assert_select "body", text: /\$25/
+      assert_select "[data-price-target=amount]", text: Subscription.price
     end
-  end
-
-  test "should render default price for other countries" do
-    # Inject the CF-IPCountry header with US value
-    get root_path, headers: { "CF-IPCountry" => "US" }
-
-    assert_response :success
-    assert_select "body", text: /\$39/
   end
 
   test "should render default price when no country header" do

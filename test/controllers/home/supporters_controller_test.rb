@@ -50,4 +50,15 @@ class Home::SupportersControllerTest < ActionDispatch::IntegrationTest
     assert_match blogs(:annie).custom_domain, response.body
     assert_no_match second_blog.subdomain, response.body
   end
+
+  # Edge cached, so one rendering is shared by every visitor.
+  test "shows the same supporter price in every country" do
+    get supporters_path, headers: { "CF-IPCountry" => "IN" }
+    discounted = response.body.scan(/\$\d+/)
+
+    get supporters_path, headers: { "CF-IPCountry" => "US" }
+
+    assert_equal discounted, response.body.scan(/\$\d+/)
+    assert_includes @response.headers["Cache-Control"], "s-maxage"
+  end
 end
