@@ -101,7 +101,7 @@ updated when a model is added — a trap the code genuinely can't express.
 - UI review checklist: verify loading/sending/sent/error states, async redirects and background-job timing, and subscriber/count reads after async work completes. Run relevant system tests when they exist.
 - **System test gotchas**:
   - Flash messages are initially hidden; use `assert page.has_content?("Text", wait: 2)` not `assert_text`
-  - Allow `sleep 1` after form submissions for async operations
+  - Never `sleep`. Wait on the observable outcome: a Capybara waiting assertion for the DOM, or a bounded early-exit poll for a database write
   - Tests set `I18n.locale = :en` in setup to avoid parallel locale issues
 
 ## Git Commits

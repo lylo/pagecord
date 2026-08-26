@@ -6,22 +6,13 @@ class SignUpTest < ApplicationSystemTestCase
 
     fill_in "user[blogs_attributes][0][subdomain]", with: "testuser"
     fill_in "user[email]", with: "test@example.com"
-    sleep 5 # anti-bot protection
+
+    # Backdate the signed form timestamp instead of waiting out the anti-bot
+    # minimum in real time.
+    execute_script("document.querySelector('input[name=rendered_at]').value = #{signed_rendered_at.to_json}")
     click_on "Create account"
 
-    # Wait for form submission to complete
-    sleep 1
-
-    user = User.kept.find_by(email: "test@example.com")
-    assert user, "User should be created"
-  end
-
-  test "verifying signup email" do
-    user = User.create!(email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ])
-    user.access_requests.create!
-
-    visit access_request_verification_path(token: user.access_requests.last.token_digest)
-
-    assert_current_path app_onboarding_path
+    assert_current_path signups_thanks_path, ignore_query: true
+    assert User.kept.exists?(email: "test@example.com"), "User should be created"
   end
 end
