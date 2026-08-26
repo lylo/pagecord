@@ -57,7 +57,7 @@ module SubscriptionsHelper
       {
         items: [ { priceId: price_id(plan), quantity: 1 } ].to_json,
         allow_logout: false,
-        success_url: thanks_app_settings_subscriptions_url(plan: plan),
+        success_url: app_settings_subscriptions_thanks_url(plan: plan),
         custom_data: { user_id: Current.user.id, blog_subdomain: Current.blog.subdomain, plan: plan }.to_json
       }
     end

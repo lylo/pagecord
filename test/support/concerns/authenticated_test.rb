@@ -7,7 +7,7 @@ module AuthenticatedTest
 
     host! Rails.application.config.action_controller.default_url_options[:host]
 
-    get verify_access_request_url(access_request.token_digest)
+    get access_request_verification_url(access_request.token_digest)
 
     host! original_host
     Current.user = user

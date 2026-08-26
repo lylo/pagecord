@@ -1,4 +1,4 @@
-class App::Blogs::TrashController < AppController
+class App::Blogs::TrashController < App::BaseController
   def show
     @trashed_blogs = Current.user.all_blogs.discarded.order(discarded_at: :desc)
   end

@@ -1,4 +1,4 @@
-class App::Settings::Subscriptions::PaddleInvoicesController < AppController
+class App::Settings::Subscriptions::PaddleInvoicesController < App::BaseController
   ALLOWED_HOSTS = %w[customer-portal.paddle.com sandbox-customer-portal.paddle.com].freeze
 
   def show

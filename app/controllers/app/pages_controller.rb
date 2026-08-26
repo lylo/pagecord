@@ -1,4 +1,4 @@
-class App::PagesController < AppController
+class App::PagesController < App::BaseController
   def index
     @sort = cookies.encrypted[:pages_sort] == "updated" ? "updated" : "alpha"
     @pages = @blog.pages.kept.published.order(pages_order)
@@ -40,12 +40,6 @@ class App::PagesController < AppController
     @blog.update!(home_page_id: nil) if @page.home_page?
     @page.destroy!
     redirect_to app_pages_trash_path, notice: "Page was permanently deleted."
-  end
-
-  def set_as_home_page
-    @page = @blog.pages.kept.find_by!(token: params[:token])
-    @blog.update!(home_page_id: @page.id)
-    redirect_to app_pages_path, notice: "Home page set!"
   end
 
   private

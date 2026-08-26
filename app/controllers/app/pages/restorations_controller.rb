@@ -1,4 +1,4 @@
-class App::Pages::RestorationsController < AppController
+class App::Pages::RestorationsController < App::BaseController
   def create
     page = @blog.pages.discarded.find_by!(token: params[:page_token])
     page.undiscard!

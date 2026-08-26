@@ -1,0 +1,161 @@
+<%# landing-page: standalone marketing / SEO page (app/views/public), not part of a user's blog %>
+<%= content_for :title do %>
+  about.me alternative with a blog and custom domain — Pagecord
+<% end %>
+
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "A Better about.me Alternative") %>
+<% end %>
+
+<%= content_for :meta_description do %>
+  An about.me alternative with a homepage, blog, pages, RSS, email subscribers, custom domains, and export. Free forever or $39/year.
+<% end %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h1 class="source-serif font-semibold text-center text-4xl md:text-6xl tracking-tight text-slate-800 dark:text-slate-200">
+    about.me is a profile page. Pagecord is a whole personal site.
+  </h1>
+
+  <div class="md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
+    <p class="mt-8 md:mt-12">
+      A profile page is useful when all you need is a name, a photo, and a handful of links. But people are more than links.
+    </p>
+    <p>
+      Pagecord gives you the profile page, then lets it grow: a homepage, a blog, pages for About, Now, Contact, or Portfolio, RSS, email subscribers, themes, custom domains, and publishing from your inbox.
+    </p>
+    <p>
+      If you are starting from scratch, see how Pagecord works as a <%= link_to "personal website with a blog", public_page_path("personal-website"), class: "home-link" %>.
+    </p>
+    <p>
+      Classic is free forever, with 20 free uploads included. Premium is $<%= localised_price %>/year.
+    </p>
+  </div>
+
+  <div class="text-center mt-8 mb-4 md:text-xl">
+    <%= link_to new_signup_path do %>
+      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Create your free Pagecord account</div>
+    <% end %>
+  </div>
+</div>
+
+<%= render "screenshots" %>
+
+<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
+  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">Feature Comparison</h2>
+
+  <div class="bg-slate-50 dark:bg-slate-800 px-6 py-8 rounded-xl overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr>
+          <th class="text-left py-3 px-4 border-b-2 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200">Feature</th>
+          <th class="text-center py-3 px-4 border-b-2 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200">Pagecord</th>
+          <th class="text-center py-3 px-4 border-b-2 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200">about.me</th>
+        </tr>
+      </thead>
+      <tbody class="text-slate-700 dark:text-slate-300">
+        <!-- Both platforms have these -->
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Personal landing page</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Custom domains</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Multiple blogs from one account (Premium includes 3)</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Social links</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Free version</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+        </tr>
+        <!-- Pagecord advantages -->
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Search your posts</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Full blogging platform</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Create posts by sending an email</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Tags and categories</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Email newsletter</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700"><span class="text-xl">✅</span><br><span class="text-sm">Weekly digest or per-post delivery</span></td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Embeddable contact form</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">RSS feeds</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Full site HTML export</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">API</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Open source</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Comments</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700"><span class="text-xl">✅</span><br><span class="text-sm">Moderated, with spam filtering</span></td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <!-- about.me unique features -->
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Custom code</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700"><span class="text-xl">✅</span><br><span class="text-sm">Your own HTML in the head and body of every page</span></td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <tr>
+          <td class="py-3 px-4 border-b border-slate-200 dark:border-slate-700">Privacy-respecting analytics</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">✅</td>
+          <td class="text-center py-3 px-4 border-b border-slate-200 dark:border-slate-700 text-xl">❌</td>
+        </tr>
+        <!-- Pricing -->
+        <tr>
+          <td class="py-3 px-4">Premium version</td>
+          <td class="text-center py-3 px-4">$<%= localised_price %>/year</td>
+          <td class="text-center py-3 px-4">$72-90/year</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<%= render "comparison_after_table" %>

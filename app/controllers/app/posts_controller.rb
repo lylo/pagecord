@@ -1,4 +1,4 @@
-class App::PostsController < AppController
+class App::PostsController < App::BaseController
   include Pagy::Method
   include BlogContentSecurityPolicy
 

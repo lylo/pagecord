@@ -1,4 +1,4 @@
-class App::Settings::SubscribersController < AppController
+class App::Settings::SubscribersController < App::BaseController
   def index
     send_data @blog.email_subscribers.confirmed.to_csv,
       filename: "#{@blog.subdomain}-subscribers-#{Date.current.iso8601}.csv",

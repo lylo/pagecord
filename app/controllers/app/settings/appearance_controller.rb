@@ -1,7 +1,7 @@
-class App::Settings::AppearanceController < AppController
-  before_action :set_templates, only: :index
+class App::Settings::AppearanceController < App::BaseController
+  before_action :set_templates, only: :show
 
-  def index
+  def show
   end
 
   def update
@@ -12,7 +12,7 @@ class App::Settings::AppearanceController < AppController
       end
     else
       set_templates
-      render :index, status: :unprocessable_entity
+      render :show, status: :unprocessable_entity
     end
   end
 

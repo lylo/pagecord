@@ -1,4 +1,4 @@
-class App::CommentsController < AppController
+class App::CommentsController < App::BaseController
   include CommentModeration
 
   before_action :load_comment, only: [ :show, :destroy ]

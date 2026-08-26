@@ -1,4 +1,4 @@
-class App::OnboardingsController < AppController
+class App::OnboardingsController < App::BaseController
   skip_before_action :onboarding_check
 
   def show
@@ -17,19 +17,6 @@ class App::OnboardingsController < AppController
         end
       end
     end
-  end
-
-  def complete
-    Current.user.onboarding_complete!
-
-    redirect_to app_root_path, notice: "Welcome to Pagecord!"
-  end
-
-  def apply_theme
-    template = ThemeTemplate.active.find(params[:template_id])
-    @blog.update(template.appearance_attributes)
-
-    head :no_content
   end
 
   private

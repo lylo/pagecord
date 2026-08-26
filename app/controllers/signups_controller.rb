@@ -26,7 +26,7 @@ class SignupsController < ApplicationController
 
       AccountVerificationMailer.with(user: @user).verify.deliver_later
 
-      redirect_to thanks_signups_path(attribution)
+      redirect_to signups_thanks_path(attribution)
     else
       Rails.logger.info "Signup validation failed: #{@user.errors.details}"
       render :new, status: :unprocessable_entity

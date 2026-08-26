@@ -68,7 +68,8 @@
               </div>
 
               <div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-sm dark:border-slate-700 dark:bg-slate-800">
-                <%= button_to app_pages_sort_path, method: :delete,
+                <%= button_to app_pages_sort_order_path, method: :patch,
+                      params: { sort_order: { by: "alpha" } },
                       form_class: "contents",
                       title: "Sort alphabetically",
                       aria: { current: (@sort == "alpha" ? "page" : nil) },
@@ -77,7 +78,8 @@
                   <span>A–Z</span>
                 <% end %>
 
-                <%= button_to app_pages_sort_path, method: :post,
+                <%= button_to app_pages_sort_order_path, method: :patch,
+                      params: { sort_order: { by: "updated" } },
                       form_class: "contents",
                       title: "Sort by recently updated",
                       aria: { current: (@sort == "updated" ? "page" : nil) },

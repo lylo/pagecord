@@ -7,12 +7,12 @@ class AudienceSettingsTest < ApplicationSystemTestCase
     @blog.update!(email_subscriptions_enabled: true)
 
     access_request = @user.access_requests.create!
-    visit verify_access_request_path(token: access_request.token_digest)
+    visit access_request_verification_path(token: access_request.token_digest)
     assert_current_path app_posts_path
   end
 
   test "toggling email subscriptions disables and greys out the dependent rows" do
-    visit app_settings_audience_index_path
+    visit app_settings_audience_path
 
     # Enabled to start: the dependent controls are interactive and not greyed
     assert_selector "#blog_show_subscription_in_header:enabled"

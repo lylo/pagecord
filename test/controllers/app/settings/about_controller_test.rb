@@ -9,8 +9,8 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
-  test "should get index" do
-    get app_settings_about_index_url
+  test "should get show" do
+    get app_settings_about_url
 
     assert_select "h3", { count: 1, text: "About" }
     assert_select "h4", { count: 1, text: "Bio" }
@@ -19,7 +19,7 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show avatar section" do
-    get app_settings_about_index_url
+    get app_settings_about_url
 
     assert_select "h4", { count: 1, text: "Avatar" }
     assert_response :success
@@ -28,7 +28,7 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
   test "should show enabled avatar section even when not subscribed" do
     login_as users(:vivian)
 
-    get app_settings_about_index_url
+    get app_settings_about_url
 
     assert_select "h4", { count: 1, text: "Avatar" }
     assert_select ".opacity-50.pointer-events-none", count: 0
@@ -36,14 +36,14 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update blog bio" do
-    patch app_settings_about_url(@blog), params: { blog: { bio: "New bio" } }, as: :turbo_stream
+    patch app_settings_about_url, params: { blog: { bio: "New bio" } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
     assert_equal "New bio", @blog.reload.bio.to_plain_text
   end
 
   test "should update blog title" do
-    patch app_settings_about_url(@blog), params: { blog: { title: "New Title" } }, as: :turbo_stream
+    patch app_settings_about_url, params: { blog: { title: "New Title" } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
     assert_equal "New Title", @blog.reload.title
@@ -51,7 +51,7 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
 
   test "should update avatar" do
     file = fixture_file_upload("avatar.png", "image/png")
-    patch app_settings_about_url(@blog), params: { blog: { avatar: file } }, as: :turbo_stream
+    patch app_settings_about_url, params: { blog: { avatar: file } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
     assert @blog.reload.avatar.attached?
@@ -62,7 +62,7 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     non_subscribed_blog = users(:vivian).blog
 
     file = fixture_file_upload("avatar.png", "image/png")
-    patch app_settings_about_url(non_subscribed_blog), params: { blog: { avatar: file } }, as: :turbo_stream
+    patch app_settings_about_url, params: { blog: { avatar: file } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
     assert non_subscribed_blog.reload.avatar.attached?
@@ -73,7 +73,7 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
       StringIO.new("<svg xmlns='http://www.w3.org/2000/svg'><script>alert(1)</script></svg>"),
       "image/png", original_filename: "avatar.png"
     )
-    patch app_settings_about_url(@blog), params: { blog: { avatar: file } }, as: :turbo_stream
+    patch app_settings_about_url, params: { blog: { avatar: file } }, as: :turbo_stream
 
     assert_response :unprocessable_entity
     assert_not @blog.reload.avatar.attached?
@@ -83,7 +83,7 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     user = users(:vivian)
     login_as user
 
-    patch app_settings_about_url(user.blog), params: { blog: { bio: image_attachment_html(1) } }, as: :turbo_stream
+    patch app_settings_about_url, params: { blog: { bio: image_attachment_html(1) } }, as: :turbo_stream
 
     assert_response :unprocessable_entity
     assert_predicate user.blog.reload.bio.to_plain_text.strip, :empty?

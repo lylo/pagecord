@@ -1,0 +1,121 @@
+<% email_disabled = !Current.user.subscribed? %>
+<% features_disabled = Current.user.on_free_plan? %>
+
+<% if Current.user.on_free_plan? %>
+  <div class="mb-6">
+    <%= callout(:info) do %>
+      <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to enable email subscriptions and reply by email for your blog.
+    <% end %>
+  </div>
+<% elsif Current.user.on_trial? %>
+  <div class="mb-6">
+    <%= callout(:info) do %>
+      Email subscriptions are a subscriber-only feature. <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %> to enable email subscriptions for your blog.
+    <% end %>
+  </div>
+<% end %>
+
+<%= form_with url: app_settings_blog_path, model: @blog, data: { controller: "subscription-settings" } do |form| %>
+  <div class="space-y-8">
+    <%= settings_section "Email Subscriptions", description: "Let readers subscribe to get your posts by email" do %>
+      <%= settings_row "Status" do %>
+        <div class="flex gap-3 <%= 'opacity-50' if email_disabled %>">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= styled_check_box form, :email_subscriptions_enabled, checked: @blog.email_subscriptions_enabled, disabled: email_disabled, data: { subscription_settings_target: "primary", action: "change->subscription-settings#toggleDependents" } %>
+          </div>
+          <%= form.label :email_subscriptions_enabled, "Email subscriptions enabled", class: "text-slate-800 dark:text-slate-100" %>
+        </div>
+      <% end %>
+
+      <% if @blog.email_subscriptions_enabled && @blog.email_subscribers.confirmed.any? %>
+        <%= settings_row "Subscribers" do %>
+          <% if @blog.show_metrics? %>
+            <p>
+              Your blog has <%= pluralize @blog.email_subscribers.confirmed.count, "email subscriber" %>.
+            </p>
+          <% end %>
+          <%= link_to app_settings_subscribers_path(format: :csv), class: "btn-optional #{'mt-3' if @blog.show_metrics?}" do %>
+            <%= inline_svg_tag "icons/download.svg", class: "w-4 h-4" %>
+            <span class="ml-2">Download CSV</span>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <%= settings_row "Delivery", class: ("opacity-50" if email_disabled), data: { subscription_settings_target: "dependent" } do %>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <label class="flex-1 cursor-pointer rounded-lg border p-4 has-[:checked]:border-[#4fbd9c] has-[:checked]:bg-emerald-50 dark:has-[:checked]:bg-emerald-900/20 border-slate-200 dark:border-slate-700 transition-colors">
+            <%= form.radio_button :email_delivery_mode, "digest", disabled: email_disabled, class: "sr-only" %>
+            <span class="block font-medium text-sm text-slate-800 dark:text-slate-200">Weekly Digest</span>
+            <span class="block text-xs text-slate-500 dark:text-slate-400 mt-1">Subscribers receive a weekly roundup of your latest posts on Tuesday mornings.</span>
+          </label>
+          <label class="flex-1 cursor-pointer rounded-lg border p-4 has-[:checked]:border-[#4fbd9c] has-[:checked]:bg-emerald-50 dark:has-[:checked]:bg-emerald-900/20 border-slate-200 dark:border-slate-700 transition-colors">
+            <%= form.radio_button :email_delivery_mode, "individual", disabled: email_disabled, class: "sr-only" %>
+            <span class="block font-medium text-sm text-slate-800 dark:text-slate-200">Individual</span>
+            <span class="block text-xs text-slate-500 dark:text-slate-400 mt-1">You choose which posts to send, one at a time, whenever you like.</span>
+          </label>
+        </div>
+      <% end %>
+
+      <%= settings_row "Subscription Forms", class: ("opacity-50" if email_disabled), data: { subscription_settings_target: "dependent" } do %>
+        <div class="space-y-3">
+          <div class="flex gap-3">
+            <div class="flex h-6 shrink-0 items-center">
+              <%= styled_check_box form, :show_subscription_in_header, checked: @blog.show_subscription_in_header, disabled: email_disabled, data: { subscription_settings_target: "dependent" } %>
+            </div>
+            <%= form.label :show_subscription_in_header, "Show the form in the blog header on the home page only", class: "text-slate-800 dark:text-slate-100" %>
+          </div>
+
+          <div class="flex gap-3">
+            <div class="flex h-6 shrink-0 items-center">
+              <%= styled_check_box form, :show_subscription_in_footer, checked: @blog.show_subscription_in_footer, disabled: email_disabled, data: { subscription_settings_target: "dependent" } %>
+            </div>
+            <%= form.label :show_subscription_in_footer, "Show the form in the footer of each post", class: "text-slate-800 dark:text-slate-100" %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+
+    <%= settings_section "Engagement", description: "Ways for readers to respond to your posts. Your email address is never revealed, and only you can see your numbers" do %>
+      <%= settings_row "Reply by Email", stacked: true do %>
+        <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= styled_check_box form, :reply_by_email, checked: @blog.accepts_replies?, disabled: features_disabled %>
+          </div>
+          <%= form.label :reply_by_email, "Allow readers to reply to your posts via a contact form", class: "text-slate-800 dark:text-slate-100" %>
+        </div>
+      <% end %>
+
+      <%= settings_row "Comments", stacked: true do %>
+        <div class="flex gap-3 <%= 'opacity-50' if features_disabled %>">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= styled_check_box form, :comments_enabled, checked: @blog.comments_enabled, disabled: features_disabled %>
+          </div>
+          <%= form.label :comments_enabled, "Let readers comment on your posts, with your approval before anything appears", class: "text-slate-800 dark:text-slate-100" %>
+        </div>
+      <% end %>
+
+      <%= settings_row "Post Likes", stacked: true do %>
+        <div class="flex gap-3">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= styled_check_box form, :show_upvotes, checked: @blog.show_upvotes %>
+          </div>
+          <%= form.label :show_upvotes, "Show a ❤️ button next to each post to receive appreciation", class: "text-slate-800 dark:text-slate-100" %>
+        </div>
+      <% end %>
+
+      <%= settings_row "Analytics", stacked: true do %>
+        <div class="flex gap-3">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= styled_check_box form, :show_metrics, checked: @blog.show_metrics %>
+          </div>
+          <%= form.label :show_metrics, "Show metrics and the Analytics page", class: "text-slate-800 dark:text-slate-100" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="mt-12 flex items-center gap-x-2">
+    <%= form.submit "Update", class: "btn-primary" %>
+    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+  </div>
+<% end %>

@@ -1,4 +1,4 @@
-class App::BlogsController < AppController
+class App::BlogsController < App::BaseController
   before_action :require_subscription, only: [ :new, :create ]
 
   def index
@@ -41,12 +41,6 @@ class App::BlogsController < AppController
     end
 
     redirect_to app_blogs_path, notice: "#{blog.display_name} was moved to trash"
-  end
-
-  def switch
-    blog = Current.user.blogs.find(params[:id])
-    session[:current_blog_id] = blog.id
-    redirect_to app_root_path
   end
 
   private

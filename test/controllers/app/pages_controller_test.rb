@@ -21,7 +21,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
     posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
 
-    post app_pages_sort_path
+    patch app_pages_sort_order_path, params: { sort_order: { by: "updated" } }
     follow_redirect!
 
     assert_response :success
@@ -32,7 +32,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
     posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
 
-    post app_pages_sort_path
+    patch app_pages_sort_order_path, params: { sort_order: { by: "updated" } }
     get app_pages_path
 
     assert_response :success
@@ -195,7 +195,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should set page as home page" do
     assert_nil @blog.home_page_id
 
-    post set_as_home_page_app_page_path(@page)
+    post app_page_home_page_path(@page)
 
     @blog.reload
     assert_equal @page.id, @blog.home_page_id
@@ -212,7 +212,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
       status: :published
     )
 
-    post set_as_home_page_app_page_path(other_page.token)
+    post app_page_home_page_path(other_page.token)
 
     assert_response :not_found
     @blog.reload
@@ -222,7 +222,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
   test "should set draft page as home page" do
     assert_nil @blog.home_page_id
 
-    post set_as_home_page_app_page_path(@draft_page)
+    post app_page_home_page_path(@draft_page)
 
     @blog.reload
     assert_equal @draft_page.id, @blog.home_page_id

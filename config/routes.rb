@@ -1,42 +1,5 @@
 require "sidekiq/web"
 
-class AdminConstraint
-  def matches?(request)
-    return false unless request.session[:user_id]
-    user = User.kept.find_by(id: request.session[:user_id])
-    user&.admin?
-  end
-end
-
-module DomainConstraints
-  def self.default_domain?(request)
-    if Rails.env.test?
-      [ "localhost", "lvh.me", "example.com" ].include?(request.host)
-    else
-      request.host == Rails.application.config.x.domain
-    end
-  end
-
-  def self.api_domain?(request)
-    if Rails.env.test?
-      request.host == "api.example.com"
-    elsif Rails.env.production?
-      request.host == "api.#{Rails.application.config.x.domain}"
-    else
-      request.host.start_with?("api.")
-    end
-  end
-end
-
-
-module Constraints
-  class RssFormat
-    def matches?(request)
-      request.format.rss?
-    end
-  end
-end
-
 Rails.application.routes.draw do
   # Helper method for subdomain redirects
   def subdomain_redirect(path = "/")
@@ -51,7 +14,7 @@ Rails.application.routes.draw do
   end
 
   get "up", to: "rails/health#show", as: :rails_health_check
-  get "verify_domain", to: "custom_domains#verify", as: :verify_custom_domain
+  get "verify_domain", to: "custom_domains/verifications#show", as: :custom_domain_verification
 
   # PWA routes
   get "manifest", to: "rails/pwa#manifest", as: :pwa_manifest, defaults: { format: :json }, constraints: { format: :json }
@@ -65,7 +28,10 @@ Rails.application.routes.draw do
 
   namespace :billing do
     resources :paddle_events, only: [ :create ]
-    post "/paddle/create_update_payment_method_transaction", to: "paddle#create_update_payment_method_transaction"
+
+    namespace :paddle do
+      resource :payment_method_transaction, only: [ :create ]
+    end
   end
 
   # The apex is the only host this app serves. www used to serve a full second
@@ -82,21 +48,24 @@ Rails.application.routes.draw do
       mount PgHero::Engine, at: "/admin/pghero"
     end
 
-    resources :signups, only: [ :index, :new, :create ] do
-      get :thanks, on: :collection
+    resources :signups, only: [ :index, :new, :create ]
+    namespace :signups do
+      resource :thanks, only: [ :show ], controller: "thanks"
     end
 
     get "/login", to: "sessions#new"
     delete "/logout", to: "sessions#destroy"
-    resources :sessions, only: [ :create ] do
-      get :thanks, on: :collection
+    resources :sessions, only: [ :create ]
+    namespace :sessions do
+      resource :thanks, only: [ :show ], controller: "thanks"
     end
 
-    resources :password_resets, only: [ :new, :create, :edit, :update ], param: :token do
-      get :thanks, on: :collection
+    resources :password_resets, only: [ :new, :create, :edit, :update ], param: :token
+    namespace :password_resets do
+      resource :thanks, only: [ :show ], controller: "thanks"
     end
 
-    get "/verify/:token", to: "access_requests#verify", as: :verify_access_request
+    get "/verify/:token", to: "access_requests/verifications#show", as: :access_request_verification
 
     namespace :app do
       resource :upgrade_banner, only: [ :destroy ]
@@ -107,7 +76,7 @@ Rails.application.routes.draw do
       end
       resources :posts, param: :token do
         resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
-          post :test
+          resource :test, only: [ :create ], controller: "posts/broadcasts/tests"
         end
         resource :open_graph_image, only: [ :destroy ], controller: "posts/open_graph_images"
         resource :restoration, only: [ :create ], controller: "posts/restorations"
@@ -116,13 +85,11 @@ Rails.application.routes.draw do
 
       namespace :pages do
         resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
-        resource :sort, only: [ :create, :destroy ], controller: "sort"
+        resource :sort_order, only: :update
       end
       resources :pages, except: [ :show ], param: :token do
         resource :restoration, only: [ :create ], controller: "pages/restorations"
-        member do
-          post :set_as_home_page
-        end
+        resource :home_page, only: [ :create ], controller: "pages/home_pages"
       end
       resource :home_page, only: [ :new, :create, :edit, :update, :destroy ]
       resources :comments, only: [ :index, :show, :destroy ] do
@@ -133,52 +100,46 @@ Rails.application.routes.draw do
       resources :settings, only: [ :index ]
 
       resource :onboarding, only: [ :show, :update ], path: "onboarding" do
-        member do
-          post :complete
-          post :apply_theme
-        end
+        resource :completion, only: [ :create ], controller: "onboardings/completions"
+        resource :theme, only: [ :update ], controller: "onboardings/themes"
       end
 
       namespace :settings do
-        resources :about, only: [ :index, :update ]
-        resources :audience, only: [ :index ]
+        resource :about, only: [ :show, :update ], controller: "about"
+        resource :audience, only: :show, controller: "audience"
         resources :subscribers, only: [ :index ]
         resources :users, only: [ :update, :destroy ]
-        resources :blogs, only: [ :index, :update ]
-        resources :appearance, only: [ :index, :update ]
+        resource :blog, only: [ :show, :update ], controller: "blogs"
+        resource :appearance, only: [ :show, :update ], controller: "appearance"
         resources :theme_garden, only: [ :index ] do
-          member do
-            get :preview
-            post :apply
-          end
+          resource :preview, only: [ :show ], controller: "theme_garden/previews"
+          resource :application, only: [ :create ], controller: "theme_garden/applications"
         end
         resources :navigation_items, only: [ :index, :create, :update, :destroy ]
         resources :email_change_requests, only: [ :create, :destroy ] do
-          member do
-            post :resend
-          end
-          collection do
-            get "verify/:token", to: "email_change_requests#verify", as: :verify
-          end
+          resource :resend, only: [ :create ], controller: "email_change_requests/resends"
+        end
+        namespace :email_change_requests do
+          get "verify/:token", to: "verifications#show", as: :verification
         end
 
         resource :custom_code, only: [ :show, :update ], controller: "custom_code"
         resource :api, only: [ :show, :create, :destroy ], controller: "api"
         resources :exports
 
-        resources :sender_email_addresses, only: [ :create, :destroy ] do
-          collection do
-            get "verify/:token", to: "sender_email_addresses#verify", as: :verify
-          end
+        resources :sender_email_addresses, only: [ :create, :destroy ]
+        namespace :sender_email_addresses do
+          get "verify/:token", to: "verifications#show", as: :verification
         end
 
-        get "/account/edit", to: "account#edit"
+        resource :account, only: :edit, controller: "account"
 
-        resources :subscriptions, only: [ :index, :destroy ] do
-          get :thanks, on: :collection
-          get :cancel_confirm, on: :collection
-          post :change_plan, on: :collection
-          post :resume, on: :collection
+        resources :subscriptions, only: [ :index ]
+        namespace :subscriptions do
+          resource :thanks, only: [ :show ], controller: "thanks"
+          resource :cancellation, only: [ :new, :create ]
+          resource :plan, only: [ :update ]
+          resource :resumption, only: [ :create ]
         end
         resource :paddle_invoices, only: :show, controller: "subscriptions/paddle_invoices"
       end
@@ -188,33 +149,32 @@ Rails.application.routes.draw do
       end
 
       resources :blogs, only: [ :index, :new, :create, :destroy ] do
-        member do
-          post :switch
-        end
+        resource :selection, only: [ :create ], controller: "blogs/selections"
         resource :restoration, only: [ :create ], controller: "blogs/restorations"
         resource :avatar, only: [ :destroy ], controller: "blogs/avatars"
       end
 
-      get "/account", to: "account#index"
-
       root "posts#index"
+
+      # The blog settings page was /app/settings/blogs before it became a
+      # singular resource. Keep old bookmarks and support links working.
+      get "/settings/blogs", to: redirect("/app/settings/blog")
     end
 
-    get "/admin", to: "admin#index", as: :admin
+    get "/admin", to: redirect("/admin/users"), as: :admin
 
     namespace :admin do
-      resources :theme_templates do
-        get :fixtures, on: :collection
+      namespace :theme_templates do
+        resources :fixtures, only: :index
       end
+      resources :theme_templates
       resources :analytics, only: [ :index ]
       resources :posts, only: [ :index ]
       resources :deliverability_issues, only: [ :index, :destroy ],
                 param: :email, constraints: { email: /[^\/]+/ }
       resource :deliverability_purge, only: [ :create ]
       resources :users, only: [ :index, :show, :destroy, :new, :create, :update ] do
-        member do
-          post :restore
-        end
+        resource :restoration, only: [ :create ], controller: "users/restorations"
         resource :subscription, only: [ :update ]
         resource :verification_email, only: [ :create ]
         resource :spotlight_exclusion, only: [ :create, :destroy ]
@@ -223,47 +183,32 @@ Rails.application.routes.draw do
         root to: redirect("/admin/moderation/spam")
 
         resources :content, only: [ :index, :show ] do
-          member do
-            post :dismiss
-            post :discard
-          end
+          resource :dismissal, only: [ :create ], controller: "content/dismissals"
+          resource :discard, only: [ :create ], controller: "content/discards"
+        end
+
+        namespace :spam do
+          resource :detection_run, only: [ :create ]
         end
 
         resources :spam, only: [ :index, :show ] do
-          collection do
-            post :run_detection
-          end
-          member do
-            post :dismiss
-            post :confirm
-          end
+          resource :dismissal, only: [ :create ], controller: "spam/dismissals"
+          resource :confirmation, only: [ :create ], controller: "spam/confirmations"
         end
       end
     end
 
-    get "/sitemap.xml", to: "public#sitemap", as: :public_sitemap, format: :xml
-    get "/robots.txt", to: "public#robots", as: :robots, format: :text
+    get "/sitemap.xml", to: "public/sitemaps#show", as: :public_sitemap, format: :xml
+    get "/robots.txt", to: "public/robots#show", as: :robots, format: :text
     get "/llms.txt", to: "public/llms#show", as: :llms_txt, format: :text
-    get "/terms", to: "public#terms", as: :terms
-    get "/privacy", to: "public#privacy", as: :privacy
-    get "/faq", to: "public#faq", as: :faq
     get "/pricing", to: redirect("/#pricing"), as: :pricing
-    get "/brand", to: "public#brand", as: :brand
-    get "/pagecord-vs-about-me", to: "public#pagecord_vs_about_me"
-    get "/pagecord-vs-medium", to: "public#pagecord_vs_medium"
-    get "/pagecord-vs-hey-world", to: "public#pagecord_vs_hey_world"
-    get "/pagecord-vs-wordpress", to: "public#pagecord_vs_wordpress"
-    get "/pagecord-vs-substack", to: "public#pagecord_vs_substack"
-    get "/personal-website", to: "public#personal_website"
-    get "/minimalist-blogging", to: "public#minimalist_blogging"
-    get "/blogging-by-email", to: "public#blogging_by_email"
-    get "/blogger-alternative", to: "public#blogger_alternative"
-    get "/indie-blogging-platform", to: "public#indie_blogging_platform"
+    get "/:slug", to: "public/pages#show", as: :public_page,
+        constraints: { slug: Regexp.union(Public::PagesController::PAGES) }
 
     get "/supporters", to: "home/supporters#show"
     get "/spotlight", to: "home/spotlight#show"
     get "/spotlight/trending.xml", to: "home/spotlight#show", defaults: { format: :rss }, as: :spotlight_trending_feed
-    get "/shuffle", to: "posts/shuffle#show"
+    get "/shuffle", to: "home/shuffle#show"
 
     get "/@:name", to: redirect("/%{name}")
 
@@ -283,6 +228,7 @@ Rails.application.routes.draw do
       resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
       resource :home_page, only: [ :show, :create, :update, :destroy ]
       resources :attachments, only: [ :create ]
+      # The Micropub spec mandates a single endpoint, so these two stay as they are.
       post "/micropub", to: "micropub#create"
       get "/micropub", to: "micropub#query", as: nil
       post "/micropub/media", to: "micropub/media#create"
@@ -291,14 +237,16 @@ Rails.application.routes.draw do
 
   # Available on every domain, so embeds also resolve when previewing a draft in the app.
   namespace :api do
-    post "embeds/bandcamp", to: "embeds#bandcamp"
+    namespace :embeds do
+      resource :bandcamp, only: [ :create ], controller: "bandcamp"
+    end
   end
 
   constraints(->(request) { !DomainConstraints.default_domain?(request) }) do
     get "/robots.txt", to: "blogs/robots#show", as: :blog_robots, format: :text
     get "/sitemap.xml", to: "blogs/sitemaps#show", as: :blog_sitemap, format: :xml
     get "/", to: "blogs/posts#index", as: :blog_posts
-    get "/posts", to: "blogs/posts#posts_list", as: :blog_posts_list
+    get "/posts", to: "blogs/posts/lists#index", as: :blog_posts_list
     get "/search", to: "blogs/searches#show", as: :blog_search
     post "/access", to: "blogs/access#create", as: :blog_access
     get "/feed.xml", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed_xml
@@ -320,14 +268,14 @@ Rails.application.routes.draw do
     post "/email_subscribers/:token/unsubscribe", to: "blogs/email_subscribers/unsubscribes#create"
     post "/email_subscribers/:token/one_click_unsubscribe", to: "blogs/email_subscribers/unsubscribes#one_click", as: :email_subscriber_one_click_unsubscribe
 
-    get "/upvotes/statuses", to: "posts/upvotes/statuses#show", as: :upvotes_statuses
+    get "/upvotes/statuses", to: "blogs/posts/upvotes/statuses#show", as: :upvotes_statuses
 
     resources :posts, only: [], param: :token do
-      resources :upvotes, only: [ :create ], module: :posts
-      resources :replies, only: [ :new, :create ], module: :posts do
+      resources :upvotes, only: [ :create ], module: "blogs/posts"
+      resources :replies, only: [ :new, :create ], module: "blogs/posts" do
         get :sent, on: :collection
       end
-      resources :comments, only: [ :index, :create ], module: :posts
+      resources :comments, only: [ :index, :create ], module: "blogs/posts"
     end
 
     # Catch-all for unmatched routes on blog domains

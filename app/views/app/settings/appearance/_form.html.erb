@@ -21,13 +21,13 @@
 
     <div data-tabs-target="panel" class="px-4 py-5 sm:px-6">
       <div data-controller="theme-selector">
-        <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+        <%= form_with url: app_settings_appearance_path, model: @blog,
               data: { controller: "radio-button-auto-submit" } do |form| %>
           <%= render "theme_presets", form: form %>
         <% end %>
 
         <div data-theme-selector-target="customThemeFields" class="<%= 'hidden' unless @blog.custom_theme? %>">
-          <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+          <%= form_with url: app_settings_appearance_path, model: @blog,
                 data: {
                   controller: "save-button",
                   action: "turbo:submit-end->save-button#showMessage"
@@ -56,21 +56,21 @@
 
   <%= settings_section "Finer Details", description: "These apply whichever colour scheme or ready-made design you chose above." do %>
     <%= settings_row "Font family", stacked: true do %>
-      <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+      <%= form_with url: app_settings_appearance_path, model: @blog,
             data: { controller: "radio-button-auto-submit" } do |form| %>
         <%= render "theme_font", form: form %>
       <% end %>
     <% end %>
 
     <%= settings_row "Content Width", stacked: true do %>
-      <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+      <%= form_with url: app_settings_appearance_path, model: @blog,
             data: { controller: "radio-button-auto-submit" } do |form| %>
         <%= render "layout_width", form: form %>
       <% end %>
     <% end %>
 
     <%= settings_row "Blog Layout", stacked: true, hint: "How your posts appear on your home page: a full-content stream, a list of titles, or cards with excerpts" do %>
-      <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+      <%= form_with url: app_settings_appearance_path, model: @blog,
             data: { controller: "radio-button-auto-submit" } do |form| %>
         <%= render "layout_options", form: form %>
       <% end %>
@@ -86,7 +86,7 @@
         </div>
       <% end %>
 
-      <%= form_with url: app_settings_appearance_path(@blog), model: @blog,
+      <%= form_with url: app_settings_appearance_path, model: @blog,
             data: { controller: "checkbox-auto-submit" } do |form| %>
         <div class="flex gap-3 <%= 'opacity-50' if branding_disabled %>">
           <div class="flex h-6 shrink-0 items-center">

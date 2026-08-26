@@ -1,4 +1,4 @@
-class App::Comments::RepliesController < AppController
+class App::Comments::RepliesController < App::BaseController
   include CommentModeration
 
   before_action :load_comment

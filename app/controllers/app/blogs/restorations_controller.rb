@@ -1,4 +1,4 @@
-class App::Blogs::RestorationsController < AppController
+class App::Blogs::RestorationsController < App::BaseController
   def create
     blog = Current.user.all_blogs.discarded.find(params[:blog_id])
 

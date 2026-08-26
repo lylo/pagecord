@@ -1,5 +1,5 @@
-class App::Settings::AboutController < AppController
-  def index
+class App::Settings::AboutController < App::BaseController
+  def show
   end
 
   def update
@@ -8,7 +8,7 @@ class App::Settings::AboutController < AppController
     else
       # Discard the rejected upload so the form renders the existing avatar
       @blog.attachment_changes.delete("avatar")
-      render :index, status: :unprocessable_entity
+      render :show, status: :unprocessable_entity
     end
   end
 

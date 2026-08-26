@@ -6,7 +6,7 @@ class WelcomeMailer < MailpaceMailer
 
   before_action :set_user_and_blog
 
-  # Sent immediately after a user completes signup (via AccessRequestsController).
+  # Sent immediately after a user completes signup (via AccessRequests::VerificationsController).
   def welcome_email
     @preheader_text = "Pick a theme, add a Home or About page, then publish your first post."
 

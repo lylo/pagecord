@@ -60,7 +60,7 @@ class CustomCodeRenderingTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, HEAD_CODE
     assert_not_includes response.body, BODY_CODE
 
-    get preview_app_settings_theme_garden_url(theme_templates(:cardashian))
+    get app_settings_theme_garden_preview_url(theme_templates(:cardashian))
     assert_response :success
     assert_not_includes response.body, HEAD_CODE
     assert_not_includes response.body, BODY_CODE

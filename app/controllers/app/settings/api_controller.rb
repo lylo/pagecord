@@ -1,4 +1,4 @@
-class App::Settings::ApiController < AppController
+class App::Settings::ApiController < App::BaseController
   before_action :require_premium, only: [ :create, :destroy ]
 
   def show

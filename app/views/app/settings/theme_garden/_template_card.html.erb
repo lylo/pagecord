@@ -25,7 +25,7 @@
         <%= link_to "Preview", preview_path, class: "btn-secondary text-sm", target: "_blank" %>
       <% end %>
       <% if local_assigns[:save_message].present? %>
-        <%= form_with url: apply_path, method: :post,
+        <%= form_with url: apply_path, method: local_assigns.fetch(:apply_method, :post),
               data: { controller: "save-button", action: "turbo:submit-end->save-button#showMessage" } do |form| %>
           <% local_assigns.fetch(:apply_params, {}).each do |name, value| %>
             <%= form.hidden_field name, value: value %>
@@ -35,7 +35,7 @@
                 class: "btn-primary text-sm" %>
         <% end %>
       <% else %>
-        <%= button_to "Apply", apply_path, params: local_assigns.fetch(:apply_params, {}), class: "btn-primary text-sm", form: { data: { turbo_confirm: local_assigns[:confirm] } } %>
+        <%= button_to "Apply", apply_path, method: local_assigns.fetch(:apply_method, :post), params: local_assigns.fetch(:apply_params, {}), class: "btn-primary text-sm", form: { data: { turbo_confirm: local_assigns[:confirm] } } %>
       <% end %>
     </div>
   </div>

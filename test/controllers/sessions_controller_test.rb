@@ -15,7 +15,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       post sessions_url, params: { user: { subdomain: user.blog.subdomain, email: user.email }, rendered_at: signed_rendered_at }
     end
 
-    assert_redirected_to thanks_sessions_path
+    assert_redirected_to sessions_thanks_path
   end
 
   test "should send verification email for valid credentials with whitespace" do
@@ -25,7 +25,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       post sessions_url, params: { user: { subdomain: "#{user.blog.subdomain} ", email: "#{user.email} " }, rendered_at: signed_rendered_at }
     end
 
-    assert_redirected_to thanks_sessions_path
+    assert_redirected_to sessions_thanks_path
   end
 
   test "should send verification email for valid credentials regardless of case" do
@@ -35,7 +35,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       post sessions_url, params: { user: { subdomain: user.blog.subdomain.upcase, email: user.email.upcase }, rendered_at: signed_rendered_at }
     end
 
-    assert_redirected_to thanks_sessions_path
+    assert_redirected_to sessions_thanks_path
   end
 
   test "should not send verification email for invalid credentials" do
@@ -43,7 +43,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       post sessions_url, params: { user: { subdomain: "nope", email: "nope@nope.com" }, rendered_at: signed_rendered_at }
     end
 
-    assert_redirected_to thanks_sessions_path
+    assert_redirected_to sessions_thanks_path
   end
 
   test "should destroy session" do
@@ -157,7 +157,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
         rendered_at: signed_rendered_at
       }
     end
-    get verify_access_request_url(user.access_requests.last.token_digest)
+    get access_request_verification_url(user.access_requests.last.token_digest)
 
     assert_redirected_to app_posts_path
     assert_equal user.id, session[:user_id]

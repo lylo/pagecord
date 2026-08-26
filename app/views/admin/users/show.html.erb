@@ -227,7 +227,7 @@
   <% if @user != Current.user %>
     <% if @user.discarded? %>
       <div class="flex mt-8 sm:mt-0 space-x-4 items-center">
-        <%= button_to restore_admin_user_path(@user), class: "btn-primary" do %>
+        <%= button_to admin_user_restoration_path(@user), class: "btn-primary" do %>
           Restore
         <% end %>
       </div>

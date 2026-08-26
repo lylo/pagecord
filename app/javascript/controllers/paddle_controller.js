@@ -11,7 +11,7 @@ export default class extends Controller {
   }
 
   updatePayment() {
-    fetch("/billing/paddle/create_update_payment_method_transaction", {
+    fetch("/billing/paddle/payment_method_transaction", {
       method: 'POST',
       headers: {
         'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,

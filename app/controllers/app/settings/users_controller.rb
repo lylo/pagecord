@@ -1,4 +1,4 @@
-class App::Settings::UsersController < AppController
+class App::Settings::UsersController < App::BaseController
   def update
     if Current.user.update(user_params)
       redirect_to app_settings_path, notice: "Account settings updated"

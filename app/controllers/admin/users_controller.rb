@@ -1,4 +1,4 @@
-class Admin::UsersController < AdminController
+class Admin::UsersController < Admin::BaseController
   include Pagy::Method
 
   def index
@@ -74,18 +74,6 @@ class Admin::UsersController < AdminController
     else
       flash[:notice] = "User was successfully discarded"
       DestroyUserJob.perform_now(@user.id)
-    end
-
-    redirect_to admin_users_path
-  end
-
-  def restore
-    @user = User.find(params[:id])
-
-    if @user.discarded?
-      @user.undiscard!
-      @user.blogs.find_each(&:touch)
-      flash[:notice] = "User was successfully restored"
     end
 
     redirect_to admin_users_path

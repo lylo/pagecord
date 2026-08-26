@@ -1,4 +1,4 @@
-class Admin::SubscriptionsController < AdminController
+class Admin::SubscriptionsController < Admin::BaseController
   def update
     user = User.find(params[:user_id])
 

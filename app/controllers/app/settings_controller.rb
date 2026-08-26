@@ -1,4 +1,4 @@
-class App::SettingsController < AppController
+class App::SettingsController < App::BaseController
   def index
   end
 end

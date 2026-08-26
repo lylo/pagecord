@@ -29,7 +29,7 @@ class PasswordAuthenticationTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_nil session[:user_id]
 
-    get verify_access_request_url(user.access_requests.last.token_digest)
+    get access_request_verification_url(user.access_requests.last.token_digest)
 
     assert_redirected_to app_posts_path
     assert user.reload.verified?

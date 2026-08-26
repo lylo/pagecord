@@ -1,4 +1,4 @@
-class App::AnalyticsController < AppController
+class App::AnalyticsController < App::BaseController
   before_action :redirect_if_metrics_hidden
 
   def index

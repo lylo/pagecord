@@ -45,6 +45,6 @@ module CommentModeration
     end
 
     def ensure_comments_enabled
-      redirect_to app_settings_audience_index_path unless @blog.accepts_comments?
+      redirect_to app_settings_audience_path unless @blog.accepts_comments?
     end
 end
