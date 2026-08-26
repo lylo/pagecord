@@ -213,17 +213,9 @@
      height only images taller than 2:3 are still narrowed. Blogs can override
      with --content-image-max-height (none for no cap at all).
      Keep any cap paired with inline-size: auto: against a fixed width it
-     squashes the image instead of narrowing it, hence mobile clearing it. */
+     squashes the image instead of narrowing it. */
   img, video {
     max-block-size: var(--content-image-max-height, 48rem);
-  }
-
-  @media (max-width: 640px) {
-    img {
-      width: 100%;
-      height: auto;
-      max-block-size: none;
-    }
   }
 }
 
