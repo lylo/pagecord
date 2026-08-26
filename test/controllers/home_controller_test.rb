@@ -33,7 +33,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should render localized price for discounted countries" do
-    PricingHelper::DISCOUNTED_COUNTRIES.each do |country_code|
+    Pricing::DISCOUNTED_COUNTRIES.each do |country_code|
       get root_path, headers: { "CF-IPCountry" => country_code }
 
       assert_response :success

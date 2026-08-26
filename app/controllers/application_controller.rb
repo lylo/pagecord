@@ -1,12 +1,17 @@
 class ApplicationController < ActionController::Base
-  include Authentication, CustomDomainHelper
+  include Authentication, CustomDomainRequest
 
   before_action :domain_check
 
-  helper_method :current_features, :blog_access_granted?
+  helper_method :current_features, :blog_access_granted?, :custom_domain_request?, :default_domain_request?, :localised_price
 
   def current_features
     Rails.features.for(user: Current.user, blog: @blog)
+  end
+
+  # Cloudflare geolocates the visitor and sets the header.
+  def localised_price(plan = :annual)
+    Pricing.for(request.headers["CF-IPCountry"], plan)
   end
 
   # The blog layout is shared with app-side previews, where the viewer is the

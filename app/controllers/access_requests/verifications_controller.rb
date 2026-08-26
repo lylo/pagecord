@@ -1,6 +1,4 @@
 class AccessRequests::VerificationsController < ApplicationController
-  include PricingHelper
-
   def show
     access_request = AccessRequest.login.active.pending.find_by(token_digest: params[:token]) ||
                      AccessRequest.login.active.recently_accepted.find_by(token_digest: params[:token])

@@ -1,9 +1,11 @@
 class Blogs::PostsController < Blogs::BaseController
-  include Pagy::Method, RequestHash, PostsHelper
+  include Pagy::Method, RequestHash
 
   STREAM_PAGE_SIZE = 15
   TITLE_PAGE_SIZE = 100
   RSS_PAGE_SIZE = STREAM_PAGE_SIZE
+
+  helper_method :filtered?
 
   rate_limit to: 60, within: 1.minute
 
@@ -73,6 +75,10 @@ class Blogs::PostsController < Blogs::BaseController
     end
 
   private
+
+    def filtered?
+      params[:tag].present? || params[:title].present? || params[:lang].present?
+    end
 
     def redirect_to_last_page(exception)
       redirect_to url_for(page: exception.pagy.last, host: request.host)
