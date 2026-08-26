@@ -20,3 +20,4 @@ production:
     - Rack::Multipart::BoundaryTooLongError
     - Rack::Multipart::EmptyContentError
     - Encoding::CompatibilityError
+    - ActionController::BadRequest
