@@ -43,8 +43,8 @@
             <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Number of blogs</div>
             <div class="hidden sm:block">Run a main blog and a side project, newsletter, or microblog from the same account</div>
           </td>
-          <td class="text-center align-middle text-base">1</td>
-          <td class="text-center align-middle text-base">2</td>
+          <td class="text-center align-middle text-base"><%= Blog::MAX_BLOGS_FREE %></td>
+          <td class="text-center align-middle text-base"><%= Blog::MAX_BLOGS_PAID %></td>
         </tr>
         <tr>
           <td class="py-3 align-middle">
@@ -98,6 +98,14 @@
           <td class="py-3 align-middle">
             <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Tags</div>
             <div class="hidden sm:block">Tag your posts to keep things organised 🏷</div>
+          </td>
+          <td class="text-center align-middle text-xl">✅</td>
+          <td class="text-center align-middle text-xl">✅</td>
+        </tr>
+        <tr>
+          <td class="py-3 align-middle">
+            <div class="text-base md:font-bold text-slate-800 dark:text-slate-200">Password protected blog</div>
+            <div class="hidden sm:block">Put a password on a blog so only the people you share it with can read it 🔒</div>
           </td>
           <td class="text-center align-middle text-xl">✅</td>
           <td class="text-center align-middle text-xl">✅</td>
