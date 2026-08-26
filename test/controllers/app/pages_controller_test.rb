@@ -84,9 +84,9 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
         context_blog_id: @blog.id,
         post: {
           title: "Test Draft Page",
-          content: "Draft content"
-        },
-        button: "save_draft"
+          content: "Draft content",
+          status: "draft"
+        }
       }
     end
 
@@ -134,9 +134,9 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     patch app_page_path(@page), params: {
       post: {
         title: "Draft Update",
-        content: "Draft content"
-      },
-      button: "save_draft"
+        content: "Draft content",
+        status: "draft"
+      }
     }
 
     @page.reload

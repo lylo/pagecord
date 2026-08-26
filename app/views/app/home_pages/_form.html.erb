@@ -61,7 +61,7 @@
         <%= link_to "Cancel", app_pages_path, class: "btn-secondary" %>
       </div>
       <div class="flex flex-wrap gap-2">
-        <%= form.button draft_button_text(home_page, model_name: "Home Page"), value: "save_draft", class: "btn-optional" %>
+        <%= form.button draft_button_text(home_page, model_name: "Home Page"), name: "post[status]", value: "draft", class: "btn-optional" %>
         <% if show_unlink %>
           <%= link_to "Unlink Home Page", app_home_page_path, method: :delete, class: "btn-optional", data: { turbo_method: :delete, turbo_confirm: "Remove this page as your home page?" } %>
         <% end %>

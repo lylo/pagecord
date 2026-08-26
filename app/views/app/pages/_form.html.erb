@@ -133,7 +133,7 @@
         <%= link_to "Cancel", app_pages_path, class: "btn-secondary" %>
       </div>
       <div class="flex flex-wrap gap-2">
-        <%= form.button draft_button_text(@page), value: "save_draft", class: "btn-optional" %>
+        <%= form.button draft_button_text(@page), name: "post[status]", value: "draft", class: "btn-optional" %>
         <% if show_make_home_page %>
           <%= link_to "Make Home Page", app_page_home_page_path(@page.token), data: { turbo_method: :post }, class: "btn-optional" %>
         <% end %>
