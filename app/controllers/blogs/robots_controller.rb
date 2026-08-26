@@ -5,7 +5,6 @@ module Blogs
     rate_limit to: 60, within: 1.minute
 
     skip_forgery_protection only: [ :show ]
-    skip_before_action :authenticate
 
     # A private blog still answers robots.txt – withholding it reads as "no
     # rules" to a crawler, when what we mean is "none of this".

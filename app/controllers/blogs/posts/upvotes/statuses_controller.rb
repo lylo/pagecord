@@ -1,7 +1,6 @@
 class Blogs::Posts::Upvotes::StatusesController < Blogs::BaseController
   include RequestHash
 
-  skip_before_action :authenticate
 
   def show
     tokens = Array(params[:tokens]).first(Blogs::PostsController::STREAM_PAGE_SIZE)

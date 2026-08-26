@@ -7,7 +7,8 @@ class Blogs::BaseController < ApplicationController
 
   blog_content_security_policy
 
-  skip_before_action :domain_check
+  # Nothing on a public blog page reads Current.user.
+  skip_before_action :domain_check, :authenticate
 
   # The order is load bearing. load_blog sets @blog for everything after it, and
   # the domain redirects run before the access check so a request on the wrong

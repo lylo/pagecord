@@ -7,7 +7,6 @@ class Blogs::Posts::CommentsController < Blogs::BaseController
 
   rate_limit to: 3, within: 1.hour, only: [ :create ]
 
-  skip_before_action :authenticate
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
   before_action :load_post
