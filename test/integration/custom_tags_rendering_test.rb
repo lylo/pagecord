@@ -250,7 +250,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_response :success
-    assert_select "code", text: /\\0 and \\' stay literal/
+    assert_select "code", text: /\\\\0 and \\\\' stay literal/
   end
 
   test "handles malformed tags gracefully" do

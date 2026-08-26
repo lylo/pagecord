@@ -27,6 +27,14 @@ class PostsHelperTest < ActionView::TestCase
     assert_equal "noopener", link["rel"]
   end
 
+  test "render_post_content keeps backslash sequences in code blocks intact through auto-linking" do
+    post = @blog.posts.build(content: "<p>Visit https://example.org</p><pre><code>puts('hi\\') # \\' stays literal</code></pre>")
+
+    rendered = render_post_content(post)
+
+    assert_includes rendered, "\\' stays literal"
+  end
+
   test "render_post_excerpt opens external links in new tab" do
     @blog.update!(external_links_in_new_tab: true)
     post = @blog.posts.build(content: "<p>Visit https://example.org</p><p>{{ more }}</p><p>Rest</p>")

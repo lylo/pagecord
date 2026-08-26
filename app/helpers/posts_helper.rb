@@ -79,16 +79,21 @@ module PostsHelper
   private
 
     def safe_auto_link(content, options = {})
+      # The placeholder carries a per-run nonce so post text containing the
+      # literal placeholder cannot collide with it.
+      nonce = SecureRandom.hex(8)
+
       code_blocks = []
       protected = content.gsub(%r{<(pre|code)[^>]*>.*?</\1>}m) do |match|
         code_blocks << match
-        "___CODE_BLOCK_#{code_blocks.length - 1}___"
+        "___CODE_BLOCK_#{nonce}_#{code_blocks.length - 1}___"
       end
 
       linked = auto_link(protected, options)
 
       code_blocks.each_with_index do |block, i|
-        linked = linked.sub("___CODE_BLOCK_#{i}___", block)
+        # Block form, so backreference sequences in code content stay literal.
+        linked = linked.sub("___CODE_BLOCK_#{nonce}_#{i}___") { block }
       end
 
       linked
