@@ -87,7 +87,7 @@ class App::PostsController < App::BaseController
       permitted = [ :title, :content, :slug, :published_at, :canonical_url, :tags_string, :hidden, :locale ]
       permitted += [ :open_graph_image, :open_graph_image_suppressed ] if Current.user.has_premium_access?
       permitted << :comments_closed if @blog.accepts_comments?
-      params.require(:post).permit(*permitted).merge(status: status)
+      params.require(:post).permit(*permitted, :status).merge(status: status)
     end
 
     def redirect_to_first_page

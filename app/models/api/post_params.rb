@@ -14,7 +14,7 @@ class Api::PostParams
       render_markdown(attrs)
       validate_status(attrs)
       enrich_attachments(attrs)
-    end
+    end.to_h
   end
 
   private

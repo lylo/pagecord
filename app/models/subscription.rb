@@ -53,7 +53,7 @@ class Subscription < ApplicationRecord
     return :unknown_plan unless PLANS.include?(new_plan)
 
     # Moving from a yearly plan to monthly changes the billing interval, which Paddle reschedules
-    # immediately (billing next month) rather than at the current term's end — it would forfeit
+    # immediately (billing next month) rather than at the current term's end – it would forfeit
     # already-paid time. Not offered; monthly is only chosen at signup.
     return :monthly_from_yearly if new_plan == "monthly" && !monthly?
 
