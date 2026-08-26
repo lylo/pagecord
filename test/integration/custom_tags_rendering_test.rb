@@ -226,6 +226,33 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select "body", text: /hidden/, count: 0
   end
 
+  test "placeholder-like text in the page cannot corrupt code block protection" do
+    page = @blog.pages.create!(
+      title: "Sentinel Page",
+      content: "<p>___CODE_BLOCK_0___</p><pre><code>{{ posts }}</code></pre>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "body", text: /___CODE_BLOCK_0___/
+    assert_select "code", text: /\{\{ posts \}\}/
+  end
+
+  test "backslash sequences in code blocks survive tag processing" do
+    page = @blog.pages.create!(
+      title: "Backslash Page",
+      content: "<p>{{ tags }}</p><pre><code>puts \"\\\\0 and \\\\' stay literal\"</code></pre>",
+      status: :published
+    )
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "code", text: /\\0 and \\' stay literal/
+  end
+
   test "handles malformed tags gracefully" do
     page = @blog.pages.create!(title: "Bad Syntax", content: "{{ posts", status: :published)
 
