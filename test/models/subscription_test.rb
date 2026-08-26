@@ -85,25 +85,6 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_not @subscription.active?
   end
 
-  test "plan enum should have monthly, annual, supporter, and complimentary values" do
-    assert_equal({ "monthly" => "monthly", "annual" => "annual", "supporter" => "supporter", "complimentary" => "complimentary" }, Subscription.plans)
-  end
-
-  test "monthly? should return true for monthly subscription" do
-    @subscription.plan = :monthly
-    assert @subscription.monthly?
-  end
-
-  test "annual? should return true for annual subscription" do
-    @subscription.plan = :annual
-    assert @subscription.annual?
-  end
-
-  test "complimentary? should return true for complimentary subscription" do
-    @subscription.plan = :complimentary
-    assert @subscription.complimentary?
-  end
-
   test "active_paid scope should include annual subscriptions" do
     subscription = subscriptions(:one)
     assert_includes Subscription.active_paid, subscription

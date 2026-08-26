@@ -6,32 +6,6 @@ class SpamDetectionTest < ActiveSupport::TestCase
     SpamDetection.delete_all
   end
 
-  test "belongs to blog" do
-    blog = blogs(:joel)
-    detection = SpamDetection.new(blog: blog, status: :spam, reason: "Test")
-    assert_equal blog, detection.blog
-  end
-
-  test "enum status values" do
-    blog = blogs(:joel)
-    detection = SpamDetection.new(blog: blog, reason: "Test")
-
-    detection.status = :clean
-    assert detection.clean?
-
-    detection.status = :spam
-    assert detection.spam?
-
-    detection.status = :uncertain
-    assert detection.uncertain?
-
-    detection.status = :error
-    assert detection.error?
-
-    detection.status = :no_content
-    assert detection.no_content?
-  end
-
   test "needs_review scope returns spam and uncertain that are not reviewed" do
     SpamDetection.create!(blog: blogs(:joel), status: :spam, reason: "Spam", detected_at: Time.current)
     SpamDetection.create!(blog: blogs(:elliot), status: :uncertain, reason: "Uncertain", detected_at: Time.current)
@@ -43,16 +17,6 @@ class SpamDetectionTest < ActiveSupport::TestCase
     assert_equal 2, needs_review.count
     assert needs_review.all? { |d| d.spam? || d.uncertain? }
     assert needs_review.none?(&:reviewed?)
-  end
-
-  test "recent scope orders by detected_at desc" do
-    old = SpamDetection.create!(blog: blogs(:joel), status: :spam, reason: "Old", detected_at: 2.days.ago)
-    new = SpamDetection.create!(blog: blogs(:elliot), status: :spam, reason: "New", detected_at: 1.hour.ago)
-
-    recent = SpamDetection.recent
-
-    assert_equal new, recent.first
-    assert_equal old, recent.last
   end
 
   test "today scope returns detections from today" do

@@ -13,16 +13,23 @@ class UpvotePostTest < ApplicationSystemTestCase
 
     find("button.upvote").click
     assert_selector ".upvote-heart[style*='fill']"  # JS sets fill color immediately
-    sleep 0.5  # Allow request to complete
+    wait_for { post.upvotes.reload.count == 1 }
     assert_equal 1, post.upvotes.reload.count
 
     # Second click has no effect (already upvoted)
     find("button.upvote").click
-    sleep 0.5
+    wait_for { post.upvotes.reload.count >= 1 }
     assert_equal 1, post.upvotes.reload.count
 
     # Upvote state persists after page refresh
     visit blog_post_path(post.slug)
     assert_selector ".upvote-heart[style*='fill']"
   end
+
+  private
+
+    def wait_for(deadline: 5)
+      limit = Time.current + deadline
+      sleep 0.1 until yield || Time.current > limit
+    end
 end

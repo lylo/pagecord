@@ -10,9 +10,10 @@ module UploadQuotaHelpers
   end
 
   def create_image_blob
+    # Quota counts blobs, not bytes, and this uploads up to fifty per test.
     ActiveStorage::Blob.create_and_upload!(
-      io: File.open(Rails.root.join("test/fixtures/files/space.jpg")),
-      filename: "space.jpg",
+      io: File.open(Rails.root.join("test/fixtures/files/tiny.jpg")),
+      filename: "tiny.jpg",
       content_type: "image/jpeg"
     )
   end

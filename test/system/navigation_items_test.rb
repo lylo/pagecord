@@ -1,88 +1,24 @@
 require "application_system_test_case"
 
 class NavigationItemsTest < ApplicationSystemTestCase
-  setup do
-    @user = users(:joel)
-    @blog = @user.blog
-
-    access_request = @user.access_requests.create!
+  # Everything else on this page is plain form CRUD, covered by the controller
+  # and model tests. The platform-to-URL prepopulation is Stimulus.
+  test "social platform selection prepopulates the URL" do
+    user = users(:joel)
+    access_request = user.access_requests.create!
     visit access_request_verification_path(token: access_request.token_digest)
 
-    assert_current_path app_posts_path
-  end
-
-  test "can add custom navigation item" do
     visit app_settings_navigation_items_path
-
-    assert_difference -> { CustomNavigationItem.count }, 1 do
-      choose "Custom link"
-      fill_in "Label", with: "Archive"
-      fill_in "URL", with: "/archive"
-
-      click_on "Add to Navigation"
-      sleep 1
-    end
-
-    item = @blog.navigation_items.find_by(label: "Archive", url: "/archive")
-    assert_instance_of CustomNavigationItem, item
-  end
-
-  test "can add posts navigation item with the default label" do
-    visit app_settings_navigation_items_path
-
-    assert_difference -> { PostsNavigationItem.count }, 1 do
-      choose "Your posts"
-      assert_equal "Blog", find_field("Label").value
-
-      click_on "Add to Navigation"
-      sleep 1
-    end
-
-    assert_equal "Blog", @blog.navigation_items.find_by(type: "PostsNavigationItem").label
-    assert_no_selector "input[name='nav_type'][value='posts']", visible: :all
-  end
-
-  test "can rename the posts navigation item label" do
-    visit app_settings_navigation_items_path
-
-    assert_difference -> { PostsNavigationItem.count }, 1 do
-      choose "Your posts"
-      fill_in "Label", with: "Artículos"
-
-      click_on "Add to Navigation"
-      sleep 1
-    end
-
-    assert_equal "Artículos", @blog.navigation_items.find_by(type: "PostsNavigationItem").label
-  end
-
-  test "can add social navigation item with RSS prepopulation" do
-    visit app_settings_navigation_items_path
+    forms_before = user.blog.navigation_items.count + 1
 
     choose "Social link"
     select "RSS", from: "Platform"
-    sleep 0.1
 
-    url_field = find_field("URL")
-    assert_match "/feed.xml", url_field.value
+    assert_match "/feed.xml", find_field("URL").value
 
-    assert_difference -> { SocialNavigationItem.count }, 1 do
-      click_on "Add to Navigation"
-      sleep 1
-    end
+    click_on "Add to Navigation"
+    assert_selector "form[action*='navigation_items']", count: forms_before + 1
 
-    item = @blog.navigation_items.find_by(platform: "RSS")
-    assert_instance_of SocialNavigationItem, item
-  end
-
-  test "can delete navigation item" do
-    visit app_settings_navigation_items_path
-
-    assert_difference -> { @blog.navigation_items.count }, -1 do
-      accept_confirm do
-        first("form[action*='navigation_items'] button[type='submit']").click
-      end
-      sleep 1
-    end
+    assert_instance_of SocialNavigationItem, user.blog.navigation_items.find_by(platform: "RSS")
   end
 end

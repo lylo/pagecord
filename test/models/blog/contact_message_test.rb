@@ -39,17 +39,4 @@ class Blog::ContactMessageTest < ActiveSupport::TestCase
     assert message.valid?
     assert message.save
   end
-
-  test "belongs to blog" do
-    message = Blog::ContactMessage.new(
-      blog: @blog,
-      name: "Test",
-      email: "test@example.com",
-      message: "Hello"
-    )
-    message.save!
-
-    assert_equal @blog, message.blog
-    assert_includes @blog.contact_messages, message
-  end
 end

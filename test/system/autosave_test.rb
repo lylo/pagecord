@@ -139,8 +139,8 @@ class AutosaveTest < ApplicationSystemTestCase
     end
 
     def wait_for_editor
-      assert_selector "lexxy-editor", wait: 2
-      sleep 1
+      # The inner content node appears once the web component has initialised.
+      assert_selector "lexxy-editor .lexxy-editor__content", wait: 5
     end
 
     def editor_value

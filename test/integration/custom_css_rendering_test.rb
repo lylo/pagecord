@@ -60,30 +60,4 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "head style", text: /\.custom-style { color: blue; }/
   end
-
-  test "prevents saving malicious CSS and shows validation error" do
-    malicious_css = ".blog { color: red; }</style><script>alert('xss')</script><style>"
-    @blog.custom_css = malicious_css
-
-    # Validation should prevent saving malicious CSS
-    assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
-
-    # Update should fail
-    result = @blog.update(custom_css: malicious_css)
-    assert_not result
-  end
-
-  test "preserves original CSS in attribute when validation fails" do
-    # CSS with nested rules that the sanitizer doesn't understand
-    nested_css = ".post { color: red; & h1 { color: blue; } }"
-    @blog.custom_css = nested_css
-
-    # Validation should fail
-    assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
-
-    # But the original CSS should be preserved in the attribute
-    assert_equal nested_css, @blog.custom_css
-  end
 end

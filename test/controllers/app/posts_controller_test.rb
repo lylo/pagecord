@@ -433,6 +433,26 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, "Draft Rails Post"
   end
 
+  test "should match only posts containing every search word" do
+    login_as users(:joel)
+
+    get app_posts_path(search: "Street Photography")
+
+    assert_response :success
+    assert_select "body", text: /The Art of Street Photography/
+    assert_select "body", text: /The Beauty of Landscape Photography/, count: 0
+  end
+
+  test "should match only the exact phrase when the search is quoted" do
+    login_as users(:joel)
+
+    get app_posts_path(search: '"Landscape Photography"')
+
+    assert_response :success
+    assert_select "body", text: /The Beauty of Landscape Photography/
+    assert_select "body", text: /The Art of Street Photography/, count: 0
+  end
+
   test "should return empty results for non-matching search" do
     @user.blog.posts.create!(title: "Rails Post", content: "About Rails")
 

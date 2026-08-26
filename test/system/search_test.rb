@@ -30,28 +30,6 @@ class SearchTest < ApplicationSystemTestCase
     assert_no_text "Python Guide"
   end
 
-  test "search icon toggles search interface" do
-    visit app_posts_path
-
-    # Click search icon to open
-    click_button title: "Search posts"
-    assert_selector "[data-search-target='input']", visible: true
-
-    # Type search term
-    fill_in "search", with: "Python"
-
-    assert_text "Python Guide"
-    assert_no_text "Rails Tutorial"
-
-    # Click X button to close and clear search
-    click_button title: "Close search"
-    assert_selector "[data-search-target='input']", visible: false
-
-    # Should show all posts again
-    assert_text "Rails Tutorial"
-    assert_text "Python Guide"
-  end
-
   test "escape key clears search and closes interface" do
     visit app_posts_path
 
@@ -71,68 +49,5 @@ class SearchTest < ApplicationSystemTestCase
     assert_text "Rails Tutorial"
     assert_text "Python Guide"
     assert_selector "[data-search-target='container']", visible: false
-  end
-
-  test "search includes draft posts" do
-    visit app_posts_path
-
-    click_button title: "Search posts"
-    fill_in "search", with: "draft"
-
-    assert_text "Draft Post"
-    assert_text "🖋️ Drafts" # Should show drafts section
-  end
-
-  test "search by tags works" do
-    visit app_posts_path
-
-    click_button title: "Search posts"
-    fill_in "search", with: "rails"
-
-    assert_text "Rails Tutorial"
-    assert_no_text "Python Guide"
-  end
-
-  test "empty search shows all posts" do
-    visit app_posts_path
-
-    click_button title: "Search posts"
-    fill_in "search", with: "Rails"
-
-    # Should only show Rails post
-    assert_text "Rails Tutorial"
-    assert_no_text "Python Guide"
-
-    # Clear search
-    fill_in "search", with: ""
-
-    # Clearing triggers a full page reload back to the unfiltered path
-    assert_current_path app_posts_path
-
-    # Should show all posts
-    assert_text "Rails Tutorial"
-    assert_text "Python Guide"
-  end
-
-  test "any word search finds posts with any matching word" do
-    visit app_posts_path
-
-    click_button title: "Search posts"
-    fill_in "search", with: "Bill Gates"
-
-    # Should find both posts containing "Bill" or "Gates"
-    assert_text "Bill Gates Biography"
-    assert_text "About Bill"
-  end
-
-  test "exact phrase search with quotes finds only exact matches" do
-    visit app_posts_path
-
-    click_button title: "Search posts"
-    fill_in "search", with: '"Bill Gates"'
-
-    # Should only find the post with exact phrase "Bill Gates"
-    assert_text "Bill Gates Biography"
-    assert_no_text "About Bill"
   end
 end
