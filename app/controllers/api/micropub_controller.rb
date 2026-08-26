@@ -1,5 +1,6 @@
 class Api::MicropubController < Api::BaseController
   include RoutingHelper
+  include Html::AttachmentPreview
 
   BLOB_URL_PATTERN = %r{/active_storage/blobs/(?:redirect|proxy)/([^/]+)/}.freeze
 
@@ -7,7 +8,7 @@ class Api::MicropubController < Api::BaseController
   before_action :advertise_micropub_endpoint, only: :query
   before_action :authenticate_source_query, only: :query, if: :source_query?
 
-  rescue_from BadRequestError do |e|
+  rescue_from Api::BadRequestError do |e|
     invalid_request e.message
   end
 
@@ -222,6 +223,6 @@ class Api::MicropubController < Api::BaseController
       return unless attrs[:status].present?
       return if Post.statuses.key?(attrs[:status])
 
-      raise BadRequestError, "'#{attrs[:status]}' is not a valid status"
+      raise Api::BadRequestError, "'#{attrs[:status]}' is not a valid status"
     end
 end

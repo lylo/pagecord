@@ -62,7 +62,7 @@ class Api::PostsController < Api::BaseController
     end
 
     def post_params
-      permitted_content_params(:title, :content, :slug, :published_at, :canonical_url, :tags, :hidden, :locale, :status, :content_format)
+      Api::PostParams.new(params, :title, :content, :slug, :published_at, :canonical_url, :tags, :hidden, :locale, :status, :content_format).to_h
     end
 
     def post_json(post)
