@@ -6,6 +6,9 @@ require "active_support/core_ext/integer/time"
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  # Tiny limits so the throttle tests can trip them in a handful of requests.
+  config.x.rack_attack = { general_limit: 5, post_limit: 3 }
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.
