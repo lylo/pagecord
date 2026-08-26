@@ -125,6 +125,22 @@ class BlogTest < ActiveSupport::TestCase
     assert_equal 1, @blog.custom_domain_changes.count
   end
 
+  test "should find a post by url on the subdomain and the custom domain" do
+    post = @blog.posts.kept.first
+    @blog.update!(custom_domain: "joel.test")
+
+    assert_equal post, @blog.find_post_by_url("https://#{@blog.subdomain}.#{Rails.application.config.x.domain}/#{post.slug}")
+    assert_equal post, @blog.find_post_by_url("https://joel.test/posts/#{post.slug}")
+  end
+
+  test "should not find a post by url on another host" do
+    post = @blog.posts.kept.first
+
+    assert_nil @blog.find_post_by_url("https://elsewhere.example.com/#{post.slug}")
+    assert_nil @blog.find_post_by_url("not a url")
+    assert_nil @blog.find_post_by_url(nil)
+  end
+
   test "should not record a custom domain change when a nil domain is set to blank" do
     assert_nil @blog.custom_domain
 
