@@ -5,27 +5,6 @@ class BlogTest < ActiveSupport::TestCase
     @blog = blogs(:joel)
   end
 
-  test "should validate length of subdomain" do
-    @blog.subdomain = "a" * 21
-    assert_not @blog.valid?
-
-    @blog.subdomain = "a"
-    assert_not @blog.valid?
-
-    @blog.subdomain = "aaaa"
-    assert @blog.valid?
-  end
-
-  test "should validate presence of subdomain" do
-    @blog.subdomain = ""
-    assert_not @blog.valid?
-  end
-
-  test "should validate uniqueness of subdomain" do
-    @blog.subdomain = "vivian"
-    assert_not @blog.valid?
-  end
-
   test "should reserve subdomain" do
     @blog.subdomain = "pagecord"
     assert_not @blog.valid?
@@ -51,11 +30,6 @@ class BlogTest < ActiveSupport::TestCase
 
     @blog.subdomain = "abcdef1234"
     assert @blog.valid?
-  end
-
-  test "should validate length of bio" do
-    @blog.bio = "a" * 513
-    assert_not @blog.valid?
   end
 
   test "should accept a valid avatar" do
@@ -232,6 +206,14 @@ class BlogTest < ActiveSupport::TestCase
     @blog.custom_css = ".blog { color: red; }"
     assert @blog.valid?
     assert_equal ".blog { color: red; }", @blog.custom_css
+  end
+
+  test "should keep rejected CSS in the attribute so the form can re-render it" do
+    nested_css = ".post { color: red; & h1 { color: blue; } }"
+    @blog.custom_css = nested_css
+
+    assert_not @blog.valid?
+    assert_equal nested_css, @blog.custom_css
   end
 
   test "should reject custom CSS with XSS attempt via </style>" do

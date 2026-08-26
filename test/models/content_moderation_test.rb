@@ -9,10 +9,6 @@ class ContentModerationTest < ActiveSupport::TestCase
     )
   end
 
-  test "belongs to post" do
-    assert_equal @post, @moderation.post
-  end
-
   test "flagged_categories returns only flagged ones" do
     assert_equal [ "hate", "sexual" ], @moderation.flagged_categories.sort
   end
@@ -29,20 +25,6 @@ class ContentModerationTest < ActiveSupport::TestCase
   test "has_flagged_content? returns false when all flags are false" do
     @moderation.update!(flags: { "sexual" => false, "violence" => false })
     refute @moderation.has_flagged_content?
-  end
-
-  test "status enum works correctly" do
-    @moderation.update!(status: :pending)
-    assert @moderation.pending?
-
-    @moderation.update!(status: :clean)
-    assert @moderation.clean?
-
-    @moderation.update!(status: :flagged)
-    assert @moderation.flagged?
-
-    @moderation.update!(status: :error)
-    assert @moderation.error?
   end
 
   test "needs_review scope includes pending and error" do

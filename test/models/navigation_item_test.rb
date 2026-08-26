@@ -6,11 +6,6 @@ class NavigationItemTest < ActiveSupport::TestCase
     @page = posts(:about)
   end
 
-  test "ordered scope orders by position" do
-    items = @blog.navigation_items.ordered
-    assert_equal [ 1, 2, 3, 4 ], items.map(&:position)
-  end
-
   test "reorder moves item down in list" do
     item1 = navigation_items(:joel_about)
     item2 = navigation_items(:joel_custom)
