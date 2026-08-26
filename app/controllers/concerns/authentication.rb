@@ -11,6 +11,7 @@ module Authentication
 
   def authenticate
     return unless DomainConstraints.default_domain?(request)
+    return if session[:user_id].blank?
 
     if user = User.kept.find_by(id: session[:user_id])
       Current.user = user
