@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_08_17_090000) do
+ActiveRecord::Schema[8.2].define(version: 2026_08_26_192016) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -113,8 +113,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_08_17_090000) do
     t.string "fediverse_author_attribution"
     t.string "font", default: "sans", null: false
     t.string "google_site_verification"
-    t.integer "home_page_id"
-    t.integer "layout", default: 0
+    t.bigint "home_page_id"
+    t.integer "layout", default: 0, null: false
     t.string "locale", default: "en", null: false
     t.boolean "reply_by_email", default: false, null: false
     t.string "seo_title"
@@ -155,10 +155,10 @@ ActiveRecord::Schema[8.2].define(version: 2026_08_17_090000) do
   end
 
   create_table "content_moderations", force: :cascade do |t|
-    t.jsonb "category_scores", default: {}
+    t.jsonb "category_scores", default: {}, null: false
     t.datetime "created_at", null: false
     t.string "fingerprint"
-    t.jsonb "flags", default: {}
+    t.jsonb "flags", default: {}, null: false
     t.string "model_version"
     t.datetime "moderated_at"
     t.bigint "post_id", null: false
@@ -173,6 +173,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_08_17_090000) do
     t.datetime "created_at", null: false
     t.string "custom_domain"
     t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_custom_domain_changes_on_blog_id"
   end
 
   create_table "digest_posts", force: :cascade do |t|
@@ -234,7 +235,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_08_17_090000) do
     t.bigint "blog_id", null: false
     t.string "country", limit: 2
     t.datetime "created_at", null: false
-    t.boolean "is_unique", default: false
+    t.boolean "is_unique", default: false, null: false
     t.string "path"
     t.bigint "post_id"
     t.text "query_string"
@@ -289,7 +290,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_08_17_090000) do
   create_table "post_replies", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", null: false
-    t.boolean "email_delivered", default: false, null: false
     t.text "message", null: false
     t.string "name", null: false
     t.bigint "post_id", null: false
@@ -439,12 +439,12 @@ ActiveRecord::Schema[8.2].define(version: 2026_08_17_090000) do
     t.datetime "discarded_at"
     t.string "email", null: false
     t.boolean "marketing_consent", default: false, null: false
-    t.string "onboarding_state", default: "account_created"
+    t.string "onboarding_state", default: "account_created", null: false
     t.string "password_digest"
     t.string "timezone", default: "UTC", null: false
     t.date "trial_ends_at"
     t.datetime "updated_at", null: false
-    t.boolean "verified", default: false
+    t.boolean "verified", default: false, null: false
     t.string "signup_referrer"
     t.string "signup_source_note", limit: 500
     t.string "features", default: [], null: false, array: true
