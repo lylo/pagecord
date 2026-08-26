@@ -19,7 +19,8 @@ class Post < ApplicationRecord
   has_many :navigation_items, dependent: :destroy
 
   before_create :limit_content_size
-  before_save :set_text_summary, :set_published_at
+  before_save :set_text_summary, if: -> { content.changed? }
+  before_save :set_published_at
 
   validate :content_present
   validates_with UploadQuota::Validator

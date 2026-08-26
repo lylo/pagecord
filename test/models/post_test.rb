@@ -178,6 +178,15 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "Intro text for cards.", post.excerpt_text
   end
 
+  test "should not rebuild text_summary when content has not changed" do
+    post = blogs(:joel).posts.create!(title: "Guarded", content: "Original content.")
+    post.stubs(:plain_text_content).raises("text summary should not be rebuilt")
+
+    post.update!(title: "Renamed")
+
+    assert_equal "Original content.", post.text_summary
+  end
+
   test "text summary ignores video attachment filenames" do
     blob = ActiveStorage::Blob.create_and_upload!(
       io: StringIO.new("video"),
