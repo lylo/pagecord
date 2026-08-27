@@ -14,6 +14,3 @@ Lexxy.configure({ global: { extensions: [ CalloutExtension, FootnoteExtension, T
 import LocalTime from "local-time"
 
 LocalTime.start()
-document.addEventListener("turbo:morph", () => {
-  LocalTime.run()
-})

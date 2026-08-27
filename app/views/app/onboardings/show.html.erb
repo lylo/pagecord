@@ -112,7 +112,7 @@
       <div>
         <h3 class="text-lg font-semibold">Pick a colour scheme 🎨</h3>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">The default is the classic Pagecord minimal monochrome.</p>
-        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
           <%= render "/app/settings/appearance/theme_colour", form: form %>
         <% end %>
       </div>
@@ -120,7 +120,7 @@
       <div>
         <h3 class="text-lg font-semibold">Choose a typeface</h3>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Choose whether you'd like a sans-serif font, or serif for that elegant look.</p>
-        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
           <%= render "/app/settings/appearance/theme_font", form: form %>
         <% end %>
       </div>
@@ -128,7 +128,7 @@
       <div>
         <h3 class="text-lg font-semibold">Choose your blog layout</h3>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">The default is a stream of all your posts on the home page. You can also choose a list of post titles and dates, or cards with excerpts.</p>
-        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
           <%= render "/app/settings/appearance/layout_options", form: form %>
         <% end %>
       </div>
@@ -136,7 +136,7 @@
       <div>
         <h3 class="text-lg font-semibold">Choose a page width</h3>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Choose whether you'd like the standard layout, or one that's wider or narrower.</p>
-        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "radio-button-auto-submit" } do |form| %>
+        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
           <%= render "/app/settings/appearance/layout_width", form: form %>
         <% end %>
       </div>
@@ -150,7 +150,7 @@
     Choose the language for your email subscription form and other interface elements.
   </p>
 
-  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "select-auto-submit" } do |form| %>
+  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
     <%= render "/app/settings/blogs/language_select", form: form %>
   <% end %>
 
