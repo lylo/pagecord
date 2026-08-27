@@ -1,7 +1,7 @@
 
-# Pagecord Contributions
+# Contributing
 
-Pagecord isn't currently accepting contributions. The code is shared for curious minds.
+The code is open for curious minds, but I'm not taking code contributions just yet – Pagecord is a solo project and I want to keep it that way a little longer.
 
 Issues can be raised of course, thank you.
 
