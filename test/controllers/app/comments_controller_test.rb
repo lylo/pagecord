@@ -98,7 +98,9 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     get app_comment_path(post_comments(:pending))
 
     assert_response :success
-    assert_select "form[action=?][method=post]", app_comment_approval_path(post_comments(:pending)) do
+    # format: :html, so the show page gets the redirect rather than the
+    # index's turbo_stream moderation refresh.
+    assert_select "form[action=?][method=post]", app_comment_approval_path(post_comments(:pending), format: :html) do
       assert_select "textarea"
       assert_select "input[type=submit][value=Approve]"
     end
