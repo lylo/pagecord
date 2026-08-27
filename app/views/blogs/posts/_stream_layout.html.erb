@@ -1,9 +1,9 @@
-<%= turbo_frame_tag :posts do %>
-  <div class="h-feed" data-controller="media-embeds lightbox turbo-frame-top">
+<%= turbo_frame_tag :posts, target: "_top" do %>
+  <div class="h-feed" data-controller="media-embeds lightbox">
     <%= render partial: "stream_post", collection: @posts, as: :post %>
   </div>
 
   <% if @pagy.next %>
-    <%= turbo_frame_tag :posts, src: url_for(page: @pagy.next, tag: params[:tag], host: request.host), loading: :lazy %>
+    <%= turbo_frame_tag :posts, target: "_top", src: url_for(page: @pagy.next, tag: params[:tag], host: request.host), loading: :lazy %>
   <% end %>
 <% end %>

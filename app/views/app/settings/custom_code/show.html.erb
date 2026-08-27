@@ -83,7 +83,7 @@
 
     <div class="px-4 py-5 sm:px-6">
       <%= form_with url: app_settings_custom_code_path, model: @blog,
-            data: { controller: "checkbox-auto-submit" } do |form| %>
+            data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
         <div class="flex gap-3 <%= 'opacity-50' if code_disabled %>">
           <div class="flex h-6 shrink-0 items-center">
             <%= styled_check_box form, :custom_code_enabled, disabled: code_disabled %>

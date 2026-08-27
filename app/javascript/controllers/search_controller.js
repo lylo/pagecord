@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { Turbo } from "@hotwired/turbo-rails"
 
 export default class extends Controller {
   static targets = ["input", "container", "form"]
@@ -58,9 +59,9 @@ export default class extends Controller {
 
   clearSearch() {
     if (this.hasFormTarget) {
-      window.location.href = this.formTarget.action
+      Turbo.visit(this.formTarget.action)
     } else if (this.hasUrlValue) {
-      window.location.href = this.urlValue
+      Turbo.visit(this.urlValue)
     }
   }
 
