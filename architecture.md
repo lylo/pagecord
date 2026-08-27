@@ -2,9 +2,9 @@
 
 Pagecord is a fully featured personal website and blogging app. It's a Rails app hosted by Hetzner, in Falkenstein, Germany.
 
-## Web app
+## Overview
 
-Pagecord is a web app that uses [Rails](https://rubyonrails.org) 8 and associated tech like Turbo, Stimulus and Import Maps. It runs on the Ruby version pinned in `.ruby-version`. It uses Memcached for caching.
+Pagecord uses [Rails](https://rubyonrails.org) 8 and associated tech like Turbo, Stimulus and Import Maps. It runs on the Ruby version pinned in `.ruby-version`. It uses Memcached for caching and Sidekiq for jobs.
 
 ## The shape of the app
 

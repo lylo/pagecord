@@ -1,4 +1,4 @@
-# Developing Pagecord
+# Running Pagecord locally
 
 Everything you need to run Pagecord locally.
 
@@ -207,8 +207,8 @@ The parser reads every `production.log*` file, including rotated `.gz`, so this 
 
 ## More info
 
-Read about [the Pagecord architecture](architecture.md) or [making contributions](CONTRIBUTIONS.md).
+Read about [the Pagecord architecture](../architecture.md) or [making contributions](../CONTRIBUTING.md).
 
-Follow the [Pagecord blog](https://pagecord.com/blog).
+Follow the [Pagecord blog](https://blog.pagecord.com).
 
 <a href="https://www.buymeacoffee.com/heyolly" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 178px !important;" ></a>
