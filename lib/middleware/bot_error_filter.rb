@@ -42,6 +42,3 @@ class BotErrorFilter
       false
     end
 end
-
-# Insert at the very top of the middleware stack to catch errors before error tracking
-Rails.application.config.middleware.insert(0, BotErrorFilter)

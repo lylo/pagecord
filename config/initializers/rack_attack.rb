@@ -12,8 +12,8 @@ class Rack::Attack
 
   # --- Throttles ---
 
-  GENERAL_LIMIT = Rails.env.test? ? 5 : 300
-  POST_LIMIT = Rails.env.test? ? 3 : 30
+  GENERAL_LIMIT = Rails.application.config.x.rack_attack[:general_limit]
+  POST_LIMIT = Rails.application.config.x.rack_attack[:post_limit]
 
   throttle("req/ip", limit: GENERAL_LIMIT, period: 1.minute) do |req|
     req.ip

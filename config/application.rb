@@ -14,7 +14,7 @@ module Pagecord
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w[ assets tasks ])
+    config.autoload_lib(ignore: %w[ assets tasks middleware ])
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -37,14 +37,11 @@ module Pagecord
 
     config.filter_parameters += [ :RawEmail, :Attachments, :HtmlBody, :TextBody, :Headers ]
 
-    Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_tags += [ "s", "u", "video", "source" ]
-    Rails::HTML5::Sanitizer.safe_list_sanitizer.allowed_attributes += [ "style", "controls", "poster", "playsinline" ]
-
     config.exceptions_app = self.routes
 
-    # ignore mismatches between HTTP_CLIENT_IP and HTTP_X_FORWARDED_FOR
+    # Cloudflare fronts the app and cloudflare-rails walks X-Forwarded-For past
+    # its edges, so a Client-IP header disagreeing with it is routine, not an
+    # attack. See config/initializers/rack_request.rb for the companion setting.
     config.action_dispatch.ip_spoofing_check = false
-
-    config.middleware.use Rack::Attack
   end
 end

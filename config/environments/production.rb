@@ -8,6 +8,8 @@ require "appsignal"
 Appsignal::Hooks.hooks.delete(:action_cable)
 
 Rails.application.configure do
+  config.x.rack_attack = { general_limit: 300, post_limit: 30 }
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.

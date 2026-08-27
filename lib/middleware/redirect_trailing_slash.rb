@@ -34,6 +34,3 @@ class RedirectTrailingSlash
     @app.call(env)
   end
 end
-
-# Insert early in the middleware stack to catch requests before routing/caching
-Rails.application.config.middleware.insert_before(Rack::Runtime, RedirectTrailingSlash)
