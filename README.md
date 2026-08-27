@@ -6,215 +6,39 @@ Publish your writing effortlessly. All you need is email.
 
 ![](https://github.com/lylo/pagecord/actions/workflows/ci.yml/badge.svg)
 
-## Development
+## What this is
 
-### Quick Start with Docker
+Pagecord is a personal blogging platform. Readers get fast, clean blogs on
+their own subdomain or custom domain; writers publish however suits them –
+by emailing their blog, in a rich text editor, from
+[Obsidian](https://help.pagecord.com/obsidian), or through the API. It has
+been in production since 2024, run by one person, and this repository is the
+whole application.
 
-The easiest way to get Pagecord running locally is with Docker. `docker compose up` is the Docker equivalent of `bin/dev` — it starts PostgreSQL, Redis, Memcached, the Rails server, and the Tailwind watcher all in one go.
+## The stack
 
-First, install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and make sure it's running.
+Vanilla Rails, deliberately: Rails 8 (tracking `main`) with Hotwire and
+import maps, no JavaScript build step, Postgres, Sidekiq on Redis, and
+Minitest with fixtures. Fat models, skinny controllers, RESTful routes.
+The conventions the code follows are written down in [AGENTS.md](AGENTS.md).
 
-Then:
+## Finding your way around
+
+- [architecture.md](architecture.md) – how the app is shaped and hosted,
+  from routing to custom-domain SSL
+- [docs/development.md](docs/development.md) – running it locally: Docker or
+  native, processing emails, simulating billing, log analysis
+- [docs/sysadmin/](docs/sysadmin/) – production operations notes
+- [CONTRIBUTING.md](CONTRIBUTING.md) – the state of contributions
+
+## Quick start
 
 ```bash
-git clone https://github.com/lylo/pagecord.git
-cd pagecord
 docker compose up
 ```
 
-This stays running in your terminal. Open a second terminal for running commands.
-
-You can view the app at [http://localhost:3000](http://localhost:3000). You can view individual blogs on their respective subdomains, e.g. [http://joel.localhost:3000](http://joel.localhost:3000). Note: Safari doesn't support `*.localhost` subdomains - use `lvh.me` instead (e.g. [http://joel.lvh.me:3000](http://joel.lvh.me:3000)).
-
-### After pulling changes
-
-```bash
-# Rebuild the image (needed when Gemfile or Dockerfile changes)
-docker compose up --build
-
-# Clear stale CSS (needed when Tailwind output looks wrong or out of date)
-docker compose exec web rake assets:clobber
-```
-
-Your local files are mounted into the container, so changes to `.erb` views and Ruby files take effect immediately. But compiled assets like `app/assets/builds/tailwind.css` can become stale — if the UI looks wrong after pulling, clear them with `assets:clobber` and the Tailwind watcher will regenerate.
-
-### Running commands in Docker
-
-With `docker compose up` running in one terminal, use a second terminal for one-off commands. The everyday equivalents:
-
-| Native | Docker |
-| --- | --- |
-| `bin/dev` | `docker compose up` |
-| `bin/rails c` | `docker compose exec web bin/rails c` |
-| `bin/rails ci` | `docker compose exec web bin/rails ci` |
-
-Anything else follows the same `docker compose exec web ...` pattern:
-
-```bash
-# Run tests
-docker compose exec web bin/rails test
-docker compose exec web bin/rails test:system
-
-# Run migrations
-docker compose exec web bin/rails db:migrate
-
-# Process emails (debug)
-docker compose exec web bash -c "DIR=tmp/emails rake email:load"
-
-# Stop everything
-docker compose down
-```
-
-System tests run against the Chromium installed in the image's `dev` build stage, which is why `docker-compose.yml` builds with `target: dev`. Everyday app images built without a target stay slim.
-
-### Native Development (Alternative)
-
-If you prefer to run Rails natively without Docker:
-
-<details>
-<summary>Click to expand native setup instructions</summary>
-
-Install the Ruby version in `.ruby-version` using [HomeBrew](https://brew.sh/) and [rbenv](https://github.com/rbenv/rbenv).
-
-```bash
-bundle install
-rails db:setup
-brew install redis postgresql
-bin/dev
-```
-
-Run tests:
-```bash
-bin/rails test
-bin/rails test:system
-```
-
-</details>
-
-## Processing an email locally
-
-Sometimes you'll need to debug emails. To do this, save the .eml file(s) to a folder
-such as `tmp/emails`.
-
-You can then run the following command which will parse all the .eml files in that
-folder and create posts for the first user account in the seed data (`joel@pagecord.com`).
-
-```bash
-DIR=tmp/emails rake email:load
-```
-
-## Testing billing locally
-
-Billing runs on Paddle Billing. When a subscription is created or changed, Paddle
-sends webhooks to `/billing/paddle_events`, and those webhook handlers are what
-actually set the plan, price, billing dates and send emails. The `paddle:simulate`
-rake tasks replay those webhooks against your running dev server with a valid
-signature, so you can exercise the whole subscription lifecycle without driving the
-Paddle sandbox by hand.
-
-This covers everything **after** Paddle. The outbound side (the `change_plan`
-controller calling Paddle to switch a plan) is a real API call, so verifying Paddle's
-own proration still needs the sandbox.
-
-The dev server must be running (`bin/dev`). Then:
-
-```bash
-# List the ready-made scenarios and the raw fixtures
-bin/rails "paddle:scenarios"
-
-# Run a named scenario against a user (blog subdomain, id, or email)
-bin/rails "paddle:flow[signup_supporter,joel]"
-bin/rails "paddle:flow[upgrade_to_supporter,joel]"
-bin/rails "paddle:flow[downgrade_from_supporter,joel]"
-bin/rails "paddle:flow[cancel,joel]"
-
-# Replay a single webhook fixture, optionally overriding the plan in custom_data
-bin/rails "paddle:simulate[subscription.created,joel,supporter]"
-bin/rails "paddle:simulate[transaction.completed.plan_change.supporter,joel]"
-```
-
-Each run prints the subscription state before and after, so watch that rather than the
-HTTP status (the endpoint always returns `200`). Fixtures live in
-`test/fixtures/billing/`; target a non-default host with `PADDLE_SIMULATE_URL`.
-
-Signature verification needs a shared `webhook_secret_key`. In development this falls
-back to a fixed value (`config/paddle.yml`) when `PADDLE_SANDBOX_WEBHOOK_SECRET_KEY`
-is unset, so both the server and the simulator sign with the same key. Restart the dev
-server after changing that config. Supporter welcome emails are sent with
-`deliver_later`, so to see one you need your local mail catcher and job worker running.
-
-## Open Graph Images
-
-Pagecord can optionally generate dynamic Open Graph images for blog posts using a separate Cloudflare Worker service. This worker is currently **closed source** and not required to run Pagecord locally.
-
-**What it does**: Generates social media preview images for posts without explicit OG images.
-
-**Local development**: Pagecord gracefully falls back to standard behavior when the worker is not configured. Your local installation will work perfectly fine without it - posts will simply use their first image or no OG image, just like they did originally.
-
-If you're interested in setting up your own OG image worker, you can configure it with these optional environment variables:
-```bash
-OG_WORKER_URL=https://your-worker-url.com/og
-OG_SIGNING_SECRET=your-secret-key
-```
-
-## Log Analysis
-
-Rake tasks for analysing production logs. They read `log/production.log*` in the repo, so they run the same on the server or locally against logs copied down (see below). No external gems required.
-
-```bash
-# Per-hour request overview — highlights anomalous traffic spikes
-rake logs:overview
-
-# Full report for a day (5 tables: requests/hour, endpoints, IPs, user agents, hosts)
-rake "logs:report[2026-02-23]"
-
-# Drill into a specific hour (requests/minute instead of per-hour)
-rake "logs:report[2026-02-23,21]"
-
-# Performance report for a day (response times, ActiveRecord time, query counts)
-rake "logs:performance[2026-02-23]"
-
-# Performance report for a specific hour
-rake "logs:performance[2026-02-23,21]"
-
-# Performance report for one blog or custom domain
-HOST=joel rake "logs:performance[2026-02-23]"
-HOST=example.com rake "logs:performance[2026-02-23,21]"
-
-# AI bot robots.txt compliance — disallowed crawlers still hitting the site
-rake logs:bots              # all retained logs
-rake "logs:bots[2026-02-23]"  # a single day
-
-# Live tail with per-minute request counter (alerts at >500 req/min)
-rake logs:watch
-
-# Traffic report for a specific blog (all available logs)
-rake "logs:blog[joel]"
-
-# Scoped to a specific date
-rake "logs:blog[joel,2026-02-23]"
-
-# Scoped to a specific hour
-rake "logs:blog[joel,2026-02-23,21]"
-
-# Works with custom domains too
-rake "logs:blog[example.com]"
-```
-
-### Running locally
-
-Copy the production logs into the repo's `log/` directory, then run any of the tasks above:
-
-```bash
-scp 'pagecord:pagecord/current/log/production.log*' log/
-```
-
-The parser reads every `production.log*` file, including rotated `.gz`, so this gives you the full retained window (a couple of weeks). Rotation maps as `production.log` (today), `production.log.1.gz` (yesterday), and so on, so grab a single file if you only need one day.
-
-## More info
-
-Read about [the Pagecord architecture](architecture.md) or [making contributions](CONTRIBUTIONS.md).
-
-Follow the [Pagecord blog](https://pagecord.com/blog).
-
-<a href="https://www.buymeacoffee.com/heyolly" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 178px !important;" ></a>
+That starts Postgres, Redis, Memcached, Rails and the Tailwind watcher.
+Visit [http://localhost:3000](http://localhost:3000), or a seeded blog at
+[http://joel.localhost:3000](http://joel.localhost:3000). The full setup,
+including native development without Docker, is in
+[docs/development.md](docs/development.md).
