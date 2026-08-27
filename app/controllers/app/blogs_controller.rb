@@ -2,7 +2,7 @@ class App::BlogsController < App::BaseController
   before_action :require_subscription, only: [ :new, :create ]
 
   def index
-    @blogs = Current.user.blogs.order(:created_at)
+    @blogs = Current.user.blogs
   end
 
   def new
@@ -37,7 +37,7 @@ class App::BlogsController < App::BaseController
     blog.discard!
 
     if session[:current_blog_id].to_s == blog.id.to_s
-      session[:current_blog_id] = Current.user.blogs.order(:created_at).first.id
+      session[:current_blog_id] = Current.user.blog.id
     end
 
     redirect_to app_blogs_path, notice: "#{blog.display_name} was moved to trash"
