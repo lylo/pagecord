@@ -9,11 +9,11 @@ module AppHelper
     tag.span text, **options, class: [ "rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300", options[:class] ]
   end
 
-  def is_current_path?(path)
+  def is_current_path?(section)
     # /app/posts/:token/comments contains two section names, so the controller wins.
-    return controller_name == path if NAV_SECTIONS.include?(controller_name)
+    return controller_name == section if NAV_SECTIONS.include?(controller_name)
 
-    request.path.include?(path) || controller_name =~ /#{path}/
+    request.path.include?(section) || controller_name.include?(section)
   end
 
   def nav_class_for(path)
@@ -63,13 +63,6 @@ module AppHelper
   #   # In a form where @blog.subdomain validation failed
   #   persisted_value(@blog, :subdomain) # Returns the database value, not the invalid input
   def persisted_value(model, attribute)
-    attribute = attribute.to_s
-    was_method = "#{attribute}_was"
-
-    if model.respond_to?(was_method)
-      model.send(was_method) || model.send(attribute)
-    else
-      model.send(attribute)
-    end
+    model.attribute_was(attribute)
   end
 end
