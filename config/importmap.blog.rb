@@ -15,7 +15,6 @@ pin "controllers/lightbox_controller", preload: false
 pin "controllers/media_embeds_controller", preload: false
 pin "controllers/pv_controller", preload: false
 pin "controllers/syntax_highlight_controller", preload: false
-pin "controllers/turbo_frame_top_controller", preload: false
 pin "controllers/upvote_controller", preload: false
 
 # Media embed handlers - lazy loaded

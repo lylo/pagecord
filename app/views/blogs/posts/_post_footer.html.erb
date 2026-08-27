@@ -3,7 +3,7 @@
 <% end %>
 
 <footer>
-  <%= link_to post_path(post), class: "post-date u-url", data: { turbo_frame: "_top" } do %>
+  <%= link_to post_path(post), class: "post-date u-url" do %>
     <%= local_time post.published_at, format: published_at_date_format, class: "dt-published" %>
   <% end %>
 
@@ -31,7 +31,6 @@
         <%= link_to new_post_reply_path(post),
                   title: "Reply to this post via email",
                   aria: { label: "Reply to this post via email" },
-                  data: { turbo_frame: "_top" },
                   rel: "nofollow",
                   class: "reply-by-email" do %>
           <%= inline_svg_tag "icons/reply.svg", class: "icon" %>
