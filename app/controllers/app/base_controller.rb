@@ -30,7 +30,7 @@ class App::BaseController < ApplicationController
     def resolve_current_blog
       if session[:current_blog_id]
         @user.blogs.find_by(id: session[:current_blog_id])
-      end || @user.blogs.order(:created_at).first
+      end || @user.blogs.first
     end
 
     def context_blog_id_matches_current_blog?

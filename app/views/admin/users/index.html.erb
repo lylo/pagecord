@@ -80,7 +80,7 @@
         <tr>
           <td class="py-3 px-6 text-sm text-slate-500 dark:text-slate-400 align-top min-w-[18rem]">
             <div class="space-y-1">
-              <% user.blogs.sort_by(&:created_at).each do |blog| %>
+              <% user.blogs.each do |blog| %>
                 <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 px-2 py-1">
                   <div class="flex min-w-0 items-baseline gap-x-1.5">
                     <%= link_to blog.subdomain, blog_home_url(blog), class: "font-medium text-slate-700 dark:text-slate-200 hover:underline", target: "_blank" %>
