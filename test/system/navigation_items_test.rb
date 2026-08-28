@@ -13,11 +13,13 @@ class NavigationItemsTest < ApplicationSystemTestCase
     choose "Social link"
     select "RSS", from: "Platform"
 
-    # A retrying matcher, not find_field().value: the Stimulus controller
-    # replaces the field while prepopulating, so a held reference goes stale.
     assert_field "URL", with: %r{/feed\.xml}
 
     click_on "Add to Navigation"
+
+    # Wait for the redirect to land first. Reading the list while Turbo is
+    # still swapping the body reads a node that is already gone.
+    assert_text "Navigation item added"
     assert_selector "[data-controller='sortable']", text: "RSS"
 
     assert_instance_of SocialNavigationItem, user.blog.navigation_items.find_by(platform: "RSS")
