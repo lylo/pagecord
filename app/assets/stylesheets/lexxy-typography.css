@@ -117,27 +117,12 @@
     font-size: 0.75em;
   }
 
-  /* The number is a counter on the note's own first line rather than a list
-     marker, so nothing is indented and a wrapped note lines up under its own
-     text. The <ol> is still an <ol>, so anywhere this CSS does not reach (feed
-     readers, mail clients) falls back to native numbering. */
   ol[data-footnotes] {
     margin-block: calc(var(--lexxy-content-margin) * 2) 0;
-    padding-inline-start: 0;
-    list-style: none;
-    counter-reset: footnote;
     font-size: 0.875em;
 
-    li {
-      counter-increment: footnote;
-
-      > :first-child::before {
-        content: counter(footnote) ". ";
-      }
-
-      > :last-child {
-        margin-block-end: 0;
-      }
+    li > :last-child {
+      margin-block-end: 0;
     }
   }
 
