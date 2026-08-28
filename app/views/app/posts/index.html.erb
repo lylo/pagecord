@@ -7,9 +7,15 @@
     <% else %>
       <div data-controller="search" class="mb-8">
         <div class="mb-4 flex flex-wrap items-center justify-end gap-2">
-          <button data-action="click->search#toggle" class="cursor-pointer p-2 text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" title="Search posts" aria-label="Search posts">
-            <%= inline_svg_tag "icons/search.svg", class: "w-5 h-5" %>
-          </button>
+          <div class="flex items-center text-slate-600 dark:text-slate-400">
+            <button data-action="click->search#toggle" class="cursor-pointer rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100" title="Search posts" aria-label="Search posts">
+              <%= inline_svg_tag "icons/search.svg", class: "w-5 h-5" %>
+            </button>
+
+            <%= link_to app_posts_tags_path, class: "rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100", title: "Manage tags", aria: { label: "Manage tags" } do %>
+              <%= inline_svg_tag "icons/tag.svg", class: "w-5 h-5" %>
+            <% end %>
+          </div>
 
           <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
         </div>

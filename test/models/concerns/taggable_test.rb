@@ -253,4 +253,34 @@ class TaggableTest < ActiveSupport::TestCase
     @post.tags_string = ""
     assert_equal [], @post.tag_list
   end
+
+  test "should count posts per tag, alphabetically" do
+    assert_equal({ "photography" => 3, "technology" => 1 }, @blog.posts.tag_counts)
+  end
+
+  test "should rename a tag, keeping the list sorted" do
+    @blog.posts.rename_tag("technology", "zzz")
+
+    assert_equal [ "photography", "zzz" ], posts(:photography_and_tech).reload.tag_list
+  end
+
+  test "should dedupe when renaming onto a tag the post already has" do
+    @blog.posts.rename_tag("technology", "photography")
+
+    assert_equal [ "photography" ], posts(:photography_and_tech).reload.tag_list
+  end
+
+  test "should remove a tag" do
+    @blog.posts.remove_tag("photography")
+
+    assert_empty posts(:one).reload.tag_list
+    assert_equal [ "technology" ], posts(:photography_and_tech).reload.tag_list
+  end
+
+  test "should not bump updated_at when renaming or removing" do
+    assert_no_changes -> { posts(:one).reload.updated_at } do
+      @blog.posts.rename_tag("photography", "photos")
+      @blog.posts.remove_tag("photos")
+    end
+  end
 end

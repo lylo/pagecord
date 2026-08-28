@@ -1,0 +1,51 @@
+<div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50">
+  <div class="my-8">
+    <div class="mb-8 rounded-lg bg-slate-50 p-6 dark:bg-slate-800">
+      <div class="max-w-xl">
+        <h1 class="text-xl font-semibold text-slate-900 dark:text-slate-50">Tags</h1>
+        <p class="mt-3 leading-7 text-slate-600 dark:text-slate-300">
+          Renaming or removing a tag here changes it on every post that uses it. Rename a tag to one that already exists and the two are merged.
+        </p>
+      </div>
+    </div>
+
+    <div class="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900/60">
+      <% if @tag_counts.empty? %>
+        <p class="p-4 text-slate-500 sm:p-5 dark:text-slate-400">
+          You haven't tagged any posts yet.
+        </p>
+      <% else %>
+        <% @tag_counts.each do |tag, count| %>
+          <div class="flex items-center gap-3 border-b border-slate-200 px-4 py-3 last:border-b-0 sm:px-5 dark:border-slate-700" data-controller="inline-edit">
+            <div class="flex min-w-0 flex-1 items-baseline gap-x-2" data-inline-edit-target="display">
+              <span class="font-medium [overflow-wrap:anywhere] text-slate-900 dark:text-slate-100"><%= tag %></span>
+              <%= link_to pluralize(count, "post"), app_posts_path(search: tag), class: "link-quiet shrink-0 text-sm text-slate-500 dark:text-slate-400", title: "Find posts tagged #{tag}" %>
+            </div>
+
+            <%= form_with url: app_posts_tag_path(tag), method: :patch, class: "hidden min-w-0 flex-1", data: { inline_edit_target: "form" } do %>
+              <div class="flex items-center gap-2">
+                <%= text_field_tag :new_name, tag, "aria-label": "Rename #{tag}", class: "form-field -ml-2.5 w-full min-w-0 max-w-56 border px-2.5 py-1 text-sm", data: { inline_edit_target: "input", action: "keydown.esc->inline-edit#cancel" } %>
+                <%= submit_tag "Save", class: "btn-primary border border-transparent py-1", data: { disable_with: false } %>
+                <button type="button" class="cursor-pointer text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200" data-action="inline-edit#cancel">Cancel</button>
+              </div>
+            <% end %>
+
+            <div class="flex shrink-0 items-center gap-1 text-slate-400 dark:text-slate-400" data-inline-edit-target="display">
+              <button type="button" class="cursor-pointer p-1 transition-colors hover:text-slate-700 dark:hover:text-slate-200" title="Rename <%= tag %>" aria-label="Rename <%= tag %>" data-action="inline-edit#edit">
+                <%= inline_svg_tag "icons/edit.svg", class: "w-4 h-4" %>
+              </button>
+
+              <%= button_to app_posts_tag_path(tag), method: :delete, data: { turbo_confirm: "Remove #{tag} from #{pluralize(count, 'post')}? This cannot be undone." }, title: "Remove #{tag}", aria: { label: "Remove #{tag}" }, class: "cursor-pointer p-1 transition-colors hover:text-red-600" do %>
+                <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="mt-12">
+      <%= link_to "Back to posts", app_posts_path, class: "btn-secondary" %>
+    </div>
+  </div>
+</div>
