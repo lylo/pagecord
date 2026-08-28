@@ -40,19 +40,25 @@ class Blog::PasswordProtectedTest < ActiveSupport::TestCase
     assert_equal "Password can't be blank", @blog.errors.full_messages_for(:password).first
   end
 
-  # The upper bound is bcrypt's: it silently truncates past 72, which would
-  # quietly make two different long passwords interchangeable.
   test "a password has to be a sensible length" do
-    range = Blog::PasswordProtected::PASSWORD_RANGE
-
-    @blog.password = "a" * (range.min - 1)
+    @blog.password = "a" * 5
     assert_not @blog.valid?
 
-    @blog.password = "a" * (range.max + 1)
-    assert_not @blog.valid?
-
-    @blog.password = "a" * range.min
+    @blog.password = "a" * 6
     assert @blog.valid?
+  end
+
+  test "a password longer than bcrypt hashes is rejected" do
+    @blog.password = "a" * 73
+    assert_not @blog.valid?
+  end
+
+  # The limit is bcrypt's and it counts bytes, so a password well inside any
+  # character count can still cross it.
+  test "a multibyte password is measured in bytes" do
+    @blog.password = "é" * 72 # 144 bytes
+
+    assert_not @blog.valid?
   end
 
   # Blog settings share one update endpoint, so a form that omits the box

@@ -21,6 +21,7 @@ class User < ApplicationRecord
       )
   }
 
+  validates :password, length: { minimum: 12 }, confirmation: true, allow_blank: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   normalizes :email, with: -> { it.downcase.strip }
 

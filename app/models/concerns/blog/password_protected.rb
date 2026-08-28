@@ -1,17 +1,15 @@
 module Blog::PasswordProtected
   extend ActiveSupport::Concern
 
-  PASSWORD_RANGE = 6..72
+  include PasswordSecured
 
   included do
-    has_secure_password validations: false
-
     attribute :use_password, :boolean
 
     scope :not_password_protected, -> { where(password_digest: nil) }
 
     before_validation :clear_password, if: -> { use_password == false }
-    validates :password, length: { in: PASSWORD_RANGE }, allow_blank: true
+    validates :password, length: { minimum: 6 }, allow_blank: true
     validate :password_set_when_requested
   end
 

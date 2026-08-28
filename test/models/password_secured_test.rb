@@ -17,6 +17,24 @@ class PasswordSecuredTest < ActiveSupport::TestCase
     assert user.errors[:password].present?
   end
 
+  test "password longer than bcrypt hashes is rejected" do
+    password = "a" * 73
+    user = User.new(email: "test@example.com", password: password, password_confirmation: password)
+
+    assert_not user.valid?
+    assert user.errors[:password].present?
+  end
+
+  # The limit is bcrypt's and it counts bytes, so a password well inside any
+  # character count can still cross it.
+  test "multibyte password is measured in bytes" do
+    password = "é" * 72 # 144 bytes
+    user = User.new(email: "test@example.com", password: password, password_confirmation: password)
+
+    assert_not user.valid?
+    assert user.errors[:password].present?
+  end
+
   test "password confirmation must match" do
     user = User.new(email: "test@example.com", password: "password1234", password_confirmation: "different")
     assert_not user.valid?
