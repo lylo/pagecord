@@ -63,4 +63,33 @@ class Blog::PostUrlsTest < ActiveSupport::TestCase
 
     assert @blog.valid?
   end
+
+  test "prefix cannot take a page's slug" do
+    page = posts(:about)
+
+    @blog.post_url_format = "prefix"
+    @blog.post_url_prefix = page.slug
+
+    assert_not @blog.valid?
+    assert_equal [ "is already used by a page" ], @blog.errors[:post_url_prefix]
+  end
+
+  test "prefix may take a post's slug, since posts move into the folder" do
+    post = @blog.posts.first
+
+    @blog.post_url_format = "prefix"
+    @blog.post_url_prefix = post.slug
+
+    assert @blog.valid?
+  end
+
+  test "a discarded page does not block the prefix" do
+    page = posts(:about)
+    page.discard!
+
+    @blog.post_url_format = "prefix"
+    @blog.post_url_prefix = page.slug
+
+    assert @blog.valid?
+  end
 end
