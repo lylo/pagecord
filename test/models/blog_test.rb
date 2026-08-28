@@ -407,4 +407,31 @@ class BlogTest < ActiveSupport::TestCase
     assert blog.user.on_trial?
     assert blog.accepts_replies?
   end
+
+  test "notifications_email defaults to the account email" do
+    blog = blogs(:joel)
+
+    assert_equal blog.user.email, blog.notifications_email
+  end
+
+  test "notifications_email uses the chosen sender email address" do
+    blog = blogs(:joel)
+    blog.update!(notifications_email_address: sender_email_addresses(:joel))
+
+    assert_equal "joel@iamjoel.com", blog.notifications_email
+  end
+
+  test "notifications email address must belong to the blog" do
+    blog = blogs(:vivian)
+    blog.notifications_email_address = sender_email_addresses(:joel)
+
+    assert_not blog.valid?
+  end
+
+  test "notifications email address must be verified" do
+    blog = blogs(:joel)
+    blog.notifications_email_address = blog.sender_email_addresses.create!(email: "pending@example.com")
+
+    assert_not blog.valid?
+  end
 end

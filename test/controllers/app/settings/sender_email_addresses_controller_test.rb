@@ -65,6 +65,6 @@ class App::Settings::SenderEmailAddressesControllerTest < ActionDispatch::Integr
     end
 
     assert_redirected_to edit_app_settings_account_path
-    assert_match "Sender email address has been removed", flash[:notice]
+    assert_match "Email address has been removed", flash[:notice]
   end
 end

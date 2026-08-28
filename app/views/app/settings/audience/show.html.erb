@@ -94,6 +94,19 @@
         </div>
       <% end %>
 
+      <%= settings_row "Email Notifications", stacked: true, hint: "Which of your email addresses to send comments, replies and contact form messages to" do %>
+        <% if @blog.sender_email_addresses.accepted.any? %>
+          <%= form.collection_select :notifications_email_address_id, @blog.sender_email_addresses.accepted, :id, :email,
+                { include_blank: "Account email (#{Current.user.email})" },
+                { class: "w-full md:w-96 form-field" } %>
+        <% else %>
+          <p class="text-slate-800 dark:text-slate-100">
+            These go to your account email. To use a different address, add an
+            <%= link_to "additional email address", edit_app_settings_account_path, class: "underline" %> first.
+          </p>
+        <% end %>
+      <% end %>
+
       <%= settings_row "Post Likes", stacked: true do %>
         <div class="flex gap-3">
           <div class="flex h-6 shrink-0 items-center">

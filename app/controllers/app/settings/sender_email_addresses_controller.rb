@@ -16,7 +16,7 @@ class App::Settings::SenderEmailAddressesController < App::BaseController
     @sender_email_address = @blog.sender_email_addresses.find(params[:id])
     @sender_email_address&.destroy
 
-    redirect_to edit_app_settings_account_path, notice: "Sender email address has been removed."
+    redirect_to edit_app_settings_account_path, notice: "Email address has been removed."
   end
 
   private
