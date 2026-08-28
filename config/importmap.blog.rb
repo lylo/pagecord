@@ -13,7 +13,6 @@ pin "lexxy", to: "lexxy.min.js", preload: false
 pin "controllers/fade_controller", preload: false
 pin "controllers/lightbox_controller", preload: false
 pin "controllers/media_embeds_controller", preload: false
-pin "controllers/turbo_frame_top_controller", preload: false # transitional, see the controller
 pin "controllers/pv_controller", preload: false
 pin "controllers/syntax_highlight_controller", preload: false
 pin "controllers/upvote_controller", preload: false
