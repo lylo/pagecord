@@ -25,10 +25,9 @@
   </nav>
 
   <div class="mt-8">
-    <% items = @tab == "trending" ? @posts.map { |item| item[:post] } : @posts %>
-    <% if items.any? %>
+    <% if @posts.any? %>
       <ol class="divide-y divide-slate-100 dark:divide-slate-800">
-        <% items.each_with_index do |post, index| %>
+        <% @posts.each_with_index do |post, index| %>
           <li class="py-4 flex gap-4 items-start">
             <span class="text-lg font-semibold text-slate-300 dark:text-slate-700 w-8 text-right tabular-nums flex-shrink-0">
               <%= index + 1 %>

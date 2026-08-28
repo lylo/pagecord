@@ -12,7 +12,7 @@ class Home::SpotlightController < ApplicationController
     respond_to do |format|
       format.html do
         @tab = selected_tab
-        @posts = spotlight_items
+        @posts = spotlight_posts
       end
       format.rss do
         body = Rails.cache.fetch([ "spotlight_rss", selected_tab, spotlight_refresh_window ], expires_in: CACHE_TTL) do
@@ -30,12 +30,12 @@ class Home::SpotlightController < ApplicationController
       @selected_tab ||= params[:tab] == "recent" ? "recent" : "trending"
     end
 
-    def feed_posts
-      # Trending stores score hashes; RSS needs render-ready posts with rich text loaded.
-      posts = spotlight_items.map { |item| item[:post] }
-      posts_by_id = Post.where(id: posts.map(&:id)).for_blog_render.includes(blog: :user).index_by(&:id)
+    def spotlight_posts
+      Post.in_order_of(:id, spotlight_post_ids).includes(:blog)
+    end
 
-      posts.filter_map { |post| posts_by_id[post.id] }
+    def feed_posts
+      Post.in_order_of(:id, spotlight_post_ids).for_blog_render.includes(blog: :user)
     end
 
     def spotlight_refresh_window
@@ -51,13 +51,13 @@ class Home::SpotlightController < ApplicationController
       expires_in 0, public: true, "s-maxage": CACHE_TTL.to_i, "stale-while-revalidate": 1.minute.to_i
     end
 
-    def spotlight_items
+    def spotlight_post_ids
       Rails.cache.fetch([ "public_spotlight", selected_tab ], expires_in: CACHE_TTL, race_condition_ttl: 10.seconds) do
-        selected_tab == "recent" ? recent_posts : trending_posts
+        selected_tab == "recent" ? recent_post_ids : trending_post_ids
       end
     end
 
-    def recent_posts
+    def recent_post_ids
       latest_per_blog = Blog.spotlit_posts
         .where(published_at: 30.days.ago..15.minutes.ago)
         .where("posts.locale = 'en' OR (posts.locale IS NULL AND blogs.locale = 'en')")
@@ -67,14 +67,14 @@ class Home::SpotlightController < ApplicationController
       Post.from(latest_per_blog, :posts)
         .order(published_at: :desc)
         .limit(20)
-        .includes(:blog)
-        .to_a
+        .pluck(:id)
     end
 
-    def trending_posts
+    def trending_post_ids
       # Delay Spotlight eligibility briefly so new posts have a short privacy buffer.
       Analytics::Trending.new.top_posts(limit: 100)
         .select { |item| item[:post].published_at <= 15.minutes.ago }
         .first(20)
+        .map { |item| item[:post].id }
     end
 end
