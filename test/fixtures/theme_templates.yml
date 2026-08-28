@@ -233,8 +233,10 @@ archibald:
     /* Links: accent underline, highlight on hover */
     nav a, .post-body a, .posts-titles a, .posts-list a, .subscription-message a {
       color: var(--color-text);
-      border-bottom: 3px solid var(--color-accent);
-      text-decoration: none;
+      text-decoration: underline;
+      text-decoration-color: var(--color-accent);
+      text-decoration-thickness: 3px;
+      text-underline-offset: 0.25em;
       font-weight: normal;
     }
     nav a:hover, .post-body a:hover, .posts-titles a:hover, .posts-list a:hover, .subscription-message a:hover {
