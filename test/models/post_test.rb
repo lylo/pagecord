@@ -379,6 +379,15 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "Before After", post.text_summary
   end
 
+  test "text_summary drops footnote markers" do
+    blog = blogs(:joel)
+    post = blog.posts.create!(
+      content: %(<p>Some text<sup data-footnote-ref="1" id="fnref-1"><a href="#fn-1">1</a></sup>.</p>\n<ol data-footnotes><li id="fn-1"><p>The note.</p></li></ol>)
+    )
+
+    assert_equal "Some text. The note.", post.text_summary
+  end
+
   test "excerpt_html returns teaser HTML while text_summary keeps full content" do
     blog = blogs(:joel)
     post = blog.posts.create!(

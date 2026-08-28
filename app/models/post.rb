@@ -189,7 +189,7 @@ class Post < ApplicationRecord
 
     def plain_text_from(html)
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
-      doc.css("figcaption").remove
+      doc.css("figcaption, sup[data-footnote-ref]").remove
 
       doc.css("br").each do |element|
         element.replace(Nokogiri::XML::Text.new(" ", doc))
