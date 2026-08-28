@@ -1,4 +1,4 @@
-<%= favicon_link_tag resized_image_url(@blog.avatar, width: 160, height: 160), rel: "apple-touch-icon" %>
-<%= favicon_link_tag resized_image_url(@blog.avatar, width: 160, height: 160), rel: "icon" %>
+<%= favicon_link_tag resized_image_url(@blog.avatar, width: 180, height: 180, format: :png), rel: "apple-touch-icon", type: "image/png" %>
+<%= favicon_link_tag resized_image_url(@blog.avatar, width: 160, height: 160), rel: "icon", type: "image/webp" %>
 
 <meta name="apple-mobile-web-app-title" content="<%= @blog.subdomain %> | Pagecord">
