@@ -9,7 +9,6 @@ class NavigationItemsTest < ApplicationSystemTestCase
     visit access_request_verification_path(token: access_request.token_digest)
 
     visit app_settings_navigation_items_path
-    forms_before = user.blog.navigation_items.count + 1
 
     choose "Social link"
     select "RSS", from: "Platform"
@@ -19,7 +18,7 @@ class NavigationItemsTest < ApplicationSystemTestCase
     assert_field "URL", with: %r{/feed\.xml}
 
     click_on "Add to Navigation"
-    assert_selector "form[action*='navigation_items']", count: forms_before + 1
+    assert_selector "[data-controller='sortable']", text: "RSS"
 
     assert_instance_of SocialNavigationItem, user.blog.navigation_items.find_by(platform: "RSS")
   end
