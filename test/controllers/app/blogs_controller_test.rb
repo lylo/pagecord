@@ -16,6 +16,24 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_root_url
   end
 
+  test "the blog switcher only lists saved blogs while a new one is being built" do
+    user = users(:annie)
+    login_as user
+
+    get new_app_blog_url
+
+    assert_select "form[action='#{app_blog_selection_path(user.blogs.first)}']"
+    assert_select "form[action^='/app/blogs/']", count: user.blogs.count
+  end
+
+  test "re-renders the new blog form when the subdomain is taken" do
+    login_as users(:annie)
+
+    post app_blogs_url, params: { blog: { subdomain: blogs(:joel).subdomain } }
+
+    assert_response :unprocessable_entity
+  end
+
   test "free user can see manage blogs upsell" do
     user = users(:vivian)
     login_as user
