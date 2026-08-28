@@ -210,11 +210,141 @@ class LexxyEditorTest < ApplicationSystemTestCase
     assert_no_selector ".lexxy-minimal lexxy-toolbar button[name=footnote]", visible: true
   end
 
+  # The embed extension is a preview: what it shows is an iframe, but what it saves
+  # has to be the link it started from, or every post opened in the editor would be
+  # silently rewritten.
+  test "a media embed renders as an iframe and saves as the original link" do
+    html = %(<p><a href="https://open.spotify.com/track/1234567890abcdef">https://open.spotify.com/track/1234567890abcdef</a></p>)
+    post = @user.blog.posts.create!(title: "Embed", content: html)
+
+    visit edit_app_post_path(post)
+    wait_for_editor
+
+    assert_selector "lexxy-editor .lexxy-editor__content .media-embed iframe", wait: 5
+
+    # Byte for byte, not merely "contains the link". Anything else and Lexxy would
+    # see the value change, fire lexxy:change, and leave an autosave draft behind
+    # for a post nobody edited.
+    assert_equal html, editor_value
+  end
+
+  test "pasting a media link embeds it and leaves room to keep writing" do
+    visit new_app_post_path
+    wait_for_editor
+
+    find("lexxy-editor .lexxy-editor__content").click
+    paste_into_editor("https://open.spotify.com/album/53Rf76kJAhJNtyrxLgKTRa")
+
+    assert_selector "lexxy-editor .lexxy-editor__content .media-embed iframe", wait: 5
+
+    # Pasting arrives as a link node in a live document, so no HTML is parsed and
+    # importDOM never runs. Without the caret paragraph the embed is the last node,
+    # the selection has nowhere to resolve to, and Lexical drops both.
+    find("lexxy-editor .lexxy-editor__content").send_keys("and some words after")
+
+    value = editor_value
+    assert_includes value, %(<a href="https://open.spotify.com/album/53Rf76kJAhJNtyrxLgKTRa">)
+    assert_includes value, "<p>and some words after</p>"
+    assert_not_includes value, "iframe"
+  end
+
+  # Claiming a link that shares its block would make Lexical split the block around
+  # the embed, tearing the sentence into pieces on the next save. Inline wrappers
+  # must not defeat that check: prose beside the <em> is still prose beside the link.
+  test "a media link mid-sentence inside formatting stays a link and the sentence survives" do
+    html = %(<p>Listen to <em><a href="https://open.spotify.com/album/53Rf">https://open.spotify.com/album/53Rf</a></em> today.</p>)
+    post = @user.blog.posts.create!(title: "Embed", content: html)
+
+    visit edit_app_post_path(post)
+    wait_for_editor
+
+    assert_no_selector "lexxy-editor .lexxy-editor__content .media-embed"
+
+    value = editor_value
+    assert_includes value, "Listen to "
+    assert_includes value, " today."
+    assert_equal 1, value.scan("<p>").length
+  end
+
+  # Trix put several lines in one block separated by <br>. Those URLs embed on the
+  # blog, where swapping the <a> leaves the block alone, but stay links in the
+  # editor, where a block node mid-paragraph would split it.
+  test "a br-separated media link stays a link in the editor" do
+    html = %(<div>Some words<br><a href="https://open.spotify.com/album/53Rf">https://open.spotify.com/album/53Rf</a><br>more words</div>)
+    post = @user.blog.posts.create!(title: "Embed", content: html)
+
+    visit edit_app_post_path(post)
+    wait_for_editor
+
+    assert_no_selector "lexxy-editor .lexxy-editor__content .media-embed"
+
+    value = editor_value
+    assert_includes value, "Some words<br>"
+    assert_includes value, "<br>more words"
+  end
+
+  test "pasting a media link between paragraphs keeps them both" do
+    post = @user.blog.posts.create!(title: "Embed", content: "<p>before</p><p>after</p>")
+
+    visit edit_app_post_path(post)
+    wait_for_editor
+
+    find("lexxy-editor .lexxy-editor__content p", text: "before").click
+    find("lexxy-editor .lexxy-editor__content").send_keys(:end, :enter)
+    paste_into_editor("https://open.spotify.com/album/53Rf76kJAhJNtyrxLgKTRa")
+
+    assert_selector "lexxy-editor .lexxy-editor__content .media-embed iframe", wait: 5
+
+    value = editor_value
+    assert_includes value, "<p>before</p>"
+    assert_includes value, "<p>after</p>"
+    assert_includes value, %(<a href="https://open.spotify.com/album/53Rf76kJAhJNtyrxLgKTRa">)
+  end
+
+  # An embeddable URL written mid-sentence is prose, not a player, so it keeps the
+  # link handling Lexxy gives every other link.
+  test "a media link with text beside it stays a link" do
+    post = @user.blog.posts.create!(title: "Embed", content: <<~HTML)
+      <p>Listen to <a href="https://open.spotify.com/track/1234567890abcdef">https://open.spotify.com/track/1234567890abcdef</a> now</p>
+    HTML
+
+    visit edit_app_post_path(post)
+    wait_for_editor
+
+    assert_no_selector "lexxy-editor .lexxy-editor__content .media-embed"
+    assert_includes editor_value, "Listen to "
+  end
+
+  # A link whose text is a title rather than the URL was written deliberately, and
+  # replacing it with a player would throw the title away.
+  test "a media link with its own text stays a link" do
+    post = @user.blog.posts.create!(title: "Embed", content: <<~HTML)
+      <p><a href="https://open.spotify.com/track/1234567890abcdef">A good song</a></p>
+    HTML
+
+    visit edit_app_post_path(post)
+    wait_for_editor
+
+    assert_no_selector "lexxy-editor .lexxy-editor__content .media-embed"
+    assert_includes editor_value, "A good song"
+  end
+
   private
 
     def wait_for_editor
       # The inner content node appears once the web component has initialised.
       assert_selector "lexxy-editor .lexxy-editor__content", wait: 5
+    end
+
+    def paste_into_editor(text)
+      evaluate_script(<<~JS)
+        (() => {
+          const content = document.querySelector("lexxy-editor .lexxy-editor__content")
+          const clipboardData = new DataTransfer()
+          clipboardData.setData("text/plain", #{text.to_json})
+          content.dispatchEvent(new ClipboardEvent("paste", { clipboardData, bubbles: true, cancelable: true }))
+        })()
+      JS
     end
 
     def editor_value

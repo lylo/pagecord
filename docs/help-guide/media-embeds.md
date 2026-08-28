@@ -36,4 +36,6 @@ https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT
 
 ## Embeds in the editor
 
-Embeds are not rendered in the editor – you'll see the raw URL while writing. They only appear in the published (or previewed) post.
+Most embeds are shown in the editor as you write, so you can see the player in place rather than a bare URL. Strava activities and direct image URLs are the exceptions: those stay as links while writing and appear in the published post.
+
+Only the link is saved, never the player. That means an embed keeps working if the service changes how its player is built, and it stays a plain link anywhere a player cannot go – an RSS reader or an email newsletter.

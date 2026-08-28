@@ -1,9 +1,13 @@
 class App::PostsController < App::BaseController
   include Pagy::Method
   include BlogContentSecurityPolicy
+  include EditorContentSecurityPolicy
 
   # The preview renders blog content, embeds included, under the blog layout
   blog_content_security_policy only: :show
+
+  # The editor previews embeds too
+  editor_content_security_policy only: %i[ new edit create update ]
 
   rescue_from Pagy::RangeError, with: :redirect_to_first_page
 

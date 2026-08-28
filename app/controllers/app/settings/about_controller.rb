@@ -1,4 +1,9 @@
 class App::Settings::AboutController < App::BaseController
+  include EditorContentSecurityPolicy
+
+  # The editor previews embeds, which are third-party iframes
+  editor_content_security_policy only: %i[ show update ]
+
   def show
   end
 

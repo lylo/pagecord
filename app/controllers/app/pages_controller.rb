@@ -1,4 +1,9 @@
 class App::PagesController < App::BaseController
+  include EditorContentSecurityPolicy
+
+  # The editor previews embeds, which are third-party iframes
+  editor_content_security_policy only: %i[ new edit create update ]
+
   def index
     @sort = cookies.encrypted[:pages_sort] == "updated" ? "updated" : "alpha"
     @pages = @blog.pages.kept.published.order(pages_order)

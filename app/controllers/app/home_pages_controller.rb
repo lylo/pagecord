@@ -1,4 +1,9 @@
 class App::HomePagesController < App::BaseController
+  include EditorContentSecurityPolicy
+
+  # The editor previews embeds, which are third-party iframes
+  editor_content_security_policy only: %i[ new edit create update ]
+
   def new
     @home_page = @blog.pages.build
   end
