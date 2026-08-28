@@ -1,0 +1,56 @@
+/* Print styles for public blog pages. */
+
+@page {
+  margin: 18mm;
+}
+
+@media print {
+  /* Every colour on the page is mixed from these three, so overriding them
+     recolours the whole document. body[data-theme] outranks both the theme
+     stylesheet and the inline custom theme block in the head. */
+  body[data-theme] {
+    --theme-bg: #ffffff;
+    --theme-text: #000000;
+    --theme-accent: #000000;
+
+    /* A photo at the screen cap of 48rem swallows a whole sheet. */
+    --content-image-max-height: 12cm;
+  }
+
+  nav,
+  .post-actions,
+  .email-subscriber-form,
+  .email-form-container,
+  .comments,
+  .comment-form,
+  .flash-wrapper,
+  .tag-filter-notice,
+  .excerpt-read-more,
+  #brand {
+    display: none;
+  }
+
+  /* Nothing is clickable on paper, so a link drops the underline and prints
+     its address instead. */
+  .post-body a {
+    text-decoration: none;
+    border-bottom: 0;
+    font-weight: inherit;
+  }
+
+  .post-body a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+
+  figure,
+  pre,
+  blockquote {
+    break-inside: avoid;
+  }
+
+  h1, h2, h3, h4 {
+    break-after: avoid;
+  }
+}
