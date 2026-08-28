@@ -282,6 +282,9 @@ Rails.application.routes.draw do
 
     get "/:year/:month/:day/:slug", to: "blogs/posts#show", as: :blog_dated_post,
         constraints: { year: /\d{4}/, month: /\d{2}/, day: /\d{2}/ }
+    # Accept inbound Blogger routes
+    get "/:year/:month/:slug", to: "blogs/posts#show",
+        constraints: { year: /\d{4}/, month: /\d{2}/ }
     get "/:prefix/:slug", to: "blogs/posts#show", as: :blog_prefixed_post
 
     # Catch-all for unmatched routes on blog domains

@@ -212,4 +212,33 @@ class Blogs::CanonicalUrlsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test "a Blogger permalink redirects to the canonical post URL" do
+    get "/2020/05/#{@post.slug}.html"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{@post.slug}"
+    assert_equal 301, @response.status
+  end
+
+  test "a Blogger permalink redirects without the html extension" do
+    get "/2020/05/#{@post.slug}"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{@post.slug}"
+    assert_equal 301, @response.status
+  end
+
+  test "a Blogger permalink follows the blog's chosen format" do
+    @blog.update!(post_url_format: "prefix", post_url_prefix: "notes")
+
+    get "/2020/05/#{@post.slug}.html"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/notes/#{@post.slug}"
+    assert_equal 301, @response.status
+  end
+
+  test "a Blogger permalink for an unknown slug is not found" do
+    get "/2020/05/nothing-here.html"
+
+    assert_response :not_found
+  end
 end
