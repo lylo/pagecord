@@ -241,4 +241,10 @@ class Blogs::CanonicalUrlsTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
+
+  test "/rss redirects to the feed" do
+    get "/rss"
+
+    assert_redirected_to "/feed.xml"
+  end
 end
