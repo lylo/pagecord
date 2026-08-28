@@ -85,6 +85,14 @@ class Post < ApplicationRecord
     published_at.present? && published_at > Time.current
   end
 
+  def newer_post
+    blog.posts.visible.where("(published_at, id) > (?, ?)", published_at, id).ordered_by_published(:asc).first
+  end
+
+  def older_post
+    blog.posts.visible.where("(published_at, id) < (?, ?)", published_at, id).ordered_by_published.first
+  end
+
   def summary(limit: 64)
     return "" unless has_text_content?
     text_summary.truncate(limit, separator: /\s/)

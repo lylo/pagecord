@@ -62,6 +62,17 @@
         </div>
       <% end %>
 
+      <%= settings_row "Post Navigation" do %>
+        <div class="flex gap-3">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= styled_check_box form, :show_post_navigation, checked: @blog.show_post_navigation %>
+          </div>
+          <div>
+            <%= form.label :show_post_navigation, "Show links to previous and next posts at the bottom of each post", class: "text-slate-800 dark:text-slate-100" %>
+          </div>
+        </div>
+      <% end %>
+
       <% saved_password = persisted_value(@blog, :password_digest).present? %>
       <%= settings_row "Privacy", stacked: true do %>
         <div class="group">

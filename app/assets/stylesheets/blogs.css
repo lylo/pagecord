@@ -527,6 +527,48 @@ footer.blog-footer #brand svg {
 }
 
 /* ============================= */
+/* Post Navigation               */
+/* ============================= */
+
+:where(.blog) {
+  :where(.post-navigation) {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-block: 0.5rem 2rem;
+    font-size: 0.875em;
+    line-height: 1.4;
+
+    a {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5em;
+      max-width: 48%;
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--color-accent-hover);
+    }
+
+    .post-navigation-title {
+      text-decoration: underline;
+    }
+
+    .post-navigation-arrow {
+      flex-shrink: 0;
+      color: var(--color-text-muted);
+    }
+
+    .post-navigation-older {
+      margin-left: auto;
+      text-align: right;
+    }
+  }
+}
+
+/* ============================= */
 /* Forms                         */
 /* ============================= */
 

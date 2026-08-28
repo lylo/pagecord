@@ -23,6 +23,7 @@ class App::Settings::BlogsController < App::BaseController
         :show_metrics,
         :external_links_in_new_tab,
         :show_upvotes,
+        :show_post_navigation,
         :use_password,
         :password,
         :post_url_format,

@@ -208,6 +208,13 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_equal false, @blog.reload.show_metrics
   end
 
+  test "should update show_post_navigation" do
+    patch app_settings_blog_url, params: { blog: { show_post_navigation: true } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal true, @blog.reload.show_post_navigation
+  end
+
   test "should update external links in new tab" do
     patch app_settings_blog_url, params: { blog: { external_links_in_new_tab: true } }, as: :turbo_stream
 

@@ -683,6 +683,39 @@ class PostTest < ActiveSupport::TestCase
     assert post.reload.update(title: "Renamed")
   end
 
+  test "newer_post and older_post return adjacent visible posts" do
+    post = posts(:two)
+
+    assert_equal posts(:one), post.newer_post
+    assert_equal posts(:photography_and_tech), post.older_post
+  end
+
+  test "newer_post is nil for the newest post and older_post is nil for the oldest" do
+    assert_nil posts(:one).newer_post
+    assert_nil posts(:joel_titleless).older_post
+  end
+
+  test "newer_post and older_post break published_at ties by id" do
+    a = posts(:photography_and_tech)
+    b = posts(:embeds)
+    b.update!(published_at: a.published_at)
+
+    older, newer = [ a, b ].sort_by(&:id)
+    assert_equal newer, older.newer_post
+    assert_equal older, newer.older_post
+  end
+
+  test "newer_post and older_post skip hidden posts" do
+    posts(:one).update!(hidden: true)
+
+    assert_nil posts(:two).newer_post
+  end
+
+  test "newer_post and older_post never return pages" do
+    assert_nil posts(:four).newer_post
+    assert_nil posts(:four).older_post
+  end
+
   test "a lapsed subscriber cannot add a new video" do
     blog = blogs(:joel)
     blog.user.subscription.update!(next_billed_at: 1.day.ago)

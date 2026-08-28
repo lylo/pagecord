@@ -1,0 +1,18 @@
+<% newer = post.newer_post %>
+<% older = post.older_post %>
+<% if newer || older %>
+  <div class="post-navigation">
+    <% if newer %>
+      <%= link_to post_path(newer), class: "post-navigation-newer" do %>
+        <span class="post-navigation-arrow" aria-hidden="true">&larr;</span>
+        <span class="post-navigation-title"><%= newer.display_title %></span>
+      <% end %>
+    <% end %>
+    <% if older %>
+      <%= link_to post_path(older), class: "post-navigation-older" do %>
+        <span class="post-navigation-title"><%= older.display_title %></span>
+        <span class="post-navigation-arrow" aria-hidden="true">&rarr;</span>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

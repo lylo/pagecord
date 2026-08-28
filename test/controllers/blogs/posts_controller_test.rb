@@ -186,6 +186,45 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-frame#email_subscriber_form", count: 0
   end
 
+  test "should show post navigation links when enabled" do
+    @blog.update!(show_post_navigation: true)
+    post = posts(:two)
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select ".post-navigation a.post-navigation-newer[href=?]", post_path(posts(:one))
+    assert_select ".post-navigation a.post-navigation-older[href=?]", post_path(posts(:photography_and_tech))
+  end
+
+  test "should not show post navigation when disabled" do
+    post = posts(:two)
+
+    get blog_post_path(post.slug)
+
+    assert_response :success
+    assert_select ".post-navigation", count: 0
+  end
+
+  test "should not show post navigation on pages" do
+    @blog.update!(show_post_navigation: true)
+
+    get blog_post_path(posts(:about).slug)
+
+    assert_response :success
+    assert_select ".post-navigation", count: 0
+  end
+
+  test "should only show older link on the newest post" do
+    @blog.update!(show_post_navigation: true)
+
+    get blog_post_path(posts(:one).slug)
+
+    assert_response :success
+    assert_select ".post-navigation a.post-navigation-newer", count: 0
+    assert_select ".post-navigation a.post-navigation-older[href=?]", post_path(posts(:two))
+  end
+
   test "should get show" do
     post = @blog.posts.visible.first
 
