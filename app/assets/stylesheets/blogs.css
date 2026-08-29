@@ -962,6 +962,16 @@ turbo-frame > .comment:first-child {
 /* Post Lists                    */
 /* ============================= */
 
+/* Pagination sentinel. Turbo loads a lazy frame as soon as it intersects the
+   viewport, but an empty frame is an inline box of no height. On a blog with no
+   footer it ends up flush with the bottom of the document, where only the very
+   last pixel of scroll can reveal it: Safari's overscroll reaches that, Chrome
+   and Firefox do not. Give it a box of its own so hitting the bottom is enough. */
+turbo-frame[loading="lazy"] {
+  display: block;
+  min-height: 6rem;
+}
+
 /* Stream layout - spaced posts */
 .post-stream-item {
   margin-bottom: 4rem;
