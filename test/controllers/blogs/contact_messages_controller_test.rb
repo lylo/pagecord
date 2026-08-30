@@ -4,7 +4,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
     @user = @blog.user
-    host! "#{@blog.subdomain}.lvh.me"
+    host! "#{@blog.subdomain}.pagecord.localhost"
   end
 
   test "should create contact message for premium user" do

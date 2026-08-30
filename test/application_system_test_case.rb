@@ -24,12 +24,15 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   setup do
     Capybara.always_include_port = true
-    Capybara.app_host = "http://lvh.me:#{Capybara.current_session.server.port}"
+    Capybara.app_host = "http://localhost:#{Capybara.current_session.server.port}"
   end
 
+  # Browsers resolve any .localhost name to loopback without a DNS lookup. The
+  # extra label is there because request.subdomain drops tld_length + 1 of them,
+  # and a two-label host would leave nothing behind.
   def use_subdomain(subdomain, path = "/")
     port = Capybara.current_session.server.port
-    Capybara.app_host = "http://#{subdomain}.lvh.me:#{port}"
+    Capybara.app_host = "http://#{subdomain}.pagecord.localhost:#{port}"
   end
 
   teardown do
