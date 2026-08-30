@@ -5,8 +5,8 @@ class ContentModerationJobTest < ActiveJob::TestCase
   setup do
     @original_token = ENV["OPENAI_ACCESS_TOKEN"]
     ENV["OPENAI_ACCESS_TOKEN"] = "test_token"
-    @post = posts(:one)
-    @post.update!(text_summary: "Test content")
+    @post = posts(:vivian_draft)
+    @post.update!(status: :published, content: "Test content", text_summary: "Test content")
   end
 
   teardown do
@@ -22,6 +22,11 @@ class ContentModerationJobTest < ActiveJob::TestCase
     @post.update!(status: :draft)
     ContentModerator.any_instance.expects(:moderate).never
     ContentModerationJob.perform_now(@post.id)
+  end
+
+  test "skips posts from subscribed users" do
+    ContentModerator.any_instance.expects(:moderate).never
+    ContentModerationJob.perform_now(posts(:one).id)
   end
 
   test "moderates hidden posts" do

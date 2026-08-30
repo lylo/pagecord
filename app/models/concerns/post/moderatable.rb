@@ -32,6 +32,7 @@ module Post::Moderatable
   end
 
   def needs_moderation?
+    return false if blog.user.subscribed?
     return true if content_moderation.nil?
     return true if content_moderation.pending? || content_moderation.error?
     return true if content_moderation.fingerprint.blank?

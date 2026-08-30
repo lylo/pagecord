@@ -3,13 +3,18 @@ require "mocha/minitest"
 
 class Post::ModeratableTest < ActiveSupport::TestCase
   setup do
-    @post = posts(:one)
-    @post.update!(text_summary: "Test content for moderation")
+    @post = posts(:vivian_draft)
+    @post.update!(status: :published, content: "Test content", text_summary: "Test content for moderation")
   end
 
   test "needs_moderation? returns true when no content_moderation exists" do
     assert_nil @post.content_moderation
     assert @post.needs_moderation?
+  end
+
+  test "needs_moderation? returns false for a subscribed user" do
+    assert posts(:one).blog.user.subscribed?
+    refute posts(:one).needs_moderation?
   end
 
   test "needs_moderation? returns true for pending content_moderation" do
