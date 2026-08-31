@@ -2,7 +2,7 @@ require "test_helper"
 
 class Public::PagesControllerTest < ActionDispatch::IntegrationTest
   MARKETING_PAGES = %w[
-    terms privacy faq brand
+    terms privacy ai faq brand
     pagecord_vs_about_me pagecord_vs_medium pagecord_vs_hey_world
     pagecord_vs_wordpress pagecord_vs_substack
     personal_website minimalist_blogging blogging_by_email
