@@ -15,7 +15,7 @@ class App::Settings::SenderEmailAddresses::VerificationsControllerTest < ActionD
     get app_settings_sender_email_addresses_verification_path(token: sender.token_digest)
 
     assert_redirected_to edit_app_settings_account_path
-    assert_match "Sender email address has been verified", flash[:notice]
+    assert_match "Email address has been verified", flash[:notice]
 
     sender.reload
     assert sender.accepted?
@@ -48,7 +48,7 @@ class App::Settings::SenderEmailAddresses::VerificationsControllerTest < ActionD
     get app_settings_sender_email_addresses_verification_path(token: sender.token_digest)
 
     assert_redirected_to login_path
-    assert_match "Sender email address has been verified", flash[:notice]
+    assert_match "Email address has been verified", flash[:notice]
 
     sender.reload
     assert sender.accepted?
@@ -61,7 +61,7 @@ class App::Settings::SenderEmailAddresses::VerificationsControllerTest < ActionD
     get app_settings_sender_email_addresses_verification_path(token: sender.token_digest)
 
     assert_redirected_to edit_app_settings_account_path
-    assert_match "Sender email address has been verified", flash[:notice]
+    assert_match "Email address has been verified", flash[:notice]
 
     sender.reload
     assert sender.accepted?

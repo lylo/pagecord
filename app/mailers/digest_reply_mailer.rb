@@ -12,7 +12,7 @@ class DigestReplyMailer < PostmarkMailer
     sender_name = original_mail[:from].display_names.first.presence || sender
 
     mail(
-      to: @blog.user.email,
+      to: @blog.notifications_email,
       from: "#{sender_name} <hello@notifications.pagecord.com>",
       reply_to: sender,
       subject: "Re: #{@digest.subject}",

@@ -7,7 +7,7 @@ class CommentMailer < MailpaceMailer
 
     I18n.with_locale(@blog.locale) do
       mail(
-        to: @blog.user.email,
+        to: @blog.notifications_email,
         subject: t("comments.mailer.subject")
       )
     end

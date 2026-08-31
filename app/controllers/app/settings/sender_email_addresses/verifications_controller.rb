@@ -8,7 +8,7 @@ class App::Settings::SenderEmailAddresses::VerificationsController < App::BaseCo
     if sender_email_address && !sender_email_address.accepted? && !sender_email_address.expired?
       sender_email_address.accept!
 
-      redirect_to redirect_path, notice: "Sender email address has been verified! You can now send posts to your blog from #{sender_email_address.email}."
+      redirect_to redirect_path, notice: "Email address has been verified! You can now post to your blog from #{sender_email_address.email}."
     else
       redirect_to redirect_path, alert: "Invalid or expired verification link :("
     end

@@ -19,6 +19,7 @@ class Blog < ApplicationRecord
   belongs_to :home_page, class_name: "Post", optional: true
 
   has_many :sender_email_addresses, dependent: :destroy
+  belongs_to :notifications_email_address, class_name: "SenderEmailAddress", optional: true
 
   has_many :navigation_items, dependent: :destroy
   has_many :social_navigation_items, -> { where(type: "SocialNavigationItem") }, class_name: "SocialNavigationItem", foreign_key: :blog_id
@@ -41,6 +42,7 @@ class Blog < ApplicationRecord
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
+  validate  :notifications_email_address_is_own
   validates :google_site_verification, format: { with: /\A[a-zA-Z0-9_-]+\z/, message: "can only contain letters, numbers, underscores, and hyphens" }, allow_blank: true
 
   def has_custom_home_page?
@@ -90,7 +92,17 @@ class Blog < ApplicationRecord
     comments_enabled && user.has_premium_access?
   end
 
+  def notifications_email
+    notifications_email_address&.email || user.email
+  end
+
   private
+
+    def notifications_email_address_is_own
+      if notifications_email_address && (notifications_email_address.blog_id != id || !notifications_email_address.accepted?)
+        errors.add(:notifications_email_address, "is invalid")
+      end
+    end
 
     def hosts
       [ "#{subdomain}.#{Rails.application.config.x.domain}", custom_domain ].compact_blank.map(&:downcase)

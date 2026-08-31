@@ -5,7 +5,7 @@ class SenderEmailAddressMailer < MailpaceMailer
 
     mail(
       to: @sender_email_address.email,
-      subject: "Verify your sender email address for #{@blog.display_name}"
+      subject: "Verify your email address for #{@blog.display_name}"
     )
   end
 end

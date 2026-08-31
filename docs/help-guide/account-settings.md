@@ -23,16 +23,16 @@ Set your time zone to display dates and times in your local time. This affects h
 
 Pagecord uses magic link emails by default – no password needed. If you prefer a password, click the link to set one via the forgot password flow.
 
-## Sender email addresses
+## Additional email addresses
 
-By default, you can only post by email from the address you signed up with. You can add up to 3 additional sender addresses:
+By default, Pagecord only uses the email address you signed up with. You can add up to 3 additional addresses:
 
 1. Enter the email address
-2. Click **Add Sender Email**
+2. Click **Add Email Address**
 3. Check that email for a verification link
 4. Click the link to confirm
 
-Once verified, you can post to your blog from that address too.
+Once verified, you can post to your blog from that address, and choose it to receive comment, reply and contact form notifications in **Settings** → **Audience**.
 
 ## Deleting your account
 

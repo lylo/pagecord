@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_08_26_192016) do
+ActiveRecord::Schema[8.2].define(version: 2026_08_28_155939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -139,9 +139,11 @@ ActiveRecord::Schema[8.2].define(version: 2026_08_26_192016) do
     t.string "password_digest"
     t.string "post_url_format", default: "flat", null: false
     t.string "post_url_prefix"
+    t.bigint "notifications_email_address_id"
     t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
+    t.index ["notifications_email_address_id"], name: "index_blogs_on_notifications_email_address_id"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
@@ -460,6 +462,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_08_26_192016) do
   add_foreign_key "blog_exports", "blogs"
   add_foreign_key "blog_spotlight_exclusions", "blogs"
   add_foreign_key "blogs", "posts", column: "home_page_id", on_delete: :nullify
+  add_foreign_key "blogs", "sender_email_addresses", column: "notifications_email_address_id", on_delete: :nullify
   add_foreign_key "blogs", "users"
   add_foreign_key "contact_messages", "blogs"
   add_foreign_key "content_moderations", "posts"

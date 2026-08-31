@@ -8,7 +8,7 @@ class ContactMailer < MailpaceMailer
 
     I18n.with_locale(@blog.locale) do
       mail(
-        to: @blog.user.email,
+        to: @blog.notifications_email,
         subject: t("contact_form.mailer.subject", name: @contact_message.name),
         reply_to: @contact_message.email
       )

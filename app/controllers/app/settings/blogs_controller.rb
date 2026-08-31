@@ -26,7 +26,8 @@ class App::Settings::BlogsController < App::BaseController
         :use_password,
         :password,
         :post_url_format,
-        :post_url_prefix
+        :post_url_prefix,
+        :notifications_email_address_id
       ]
 
       if @blog.user.subscribed?

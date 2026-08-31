@@ -16,6 +16,15 @@ class ReplyMailerTest < ActionMailer::TestCase
     assert_match "Rails mailers", email.body.encoded
   end
 
+  test "sends to the notifications email address when set" do
+    reply = post_replies(:test)
+    reply.post.blog.update!(notifications_email_address: sender_email_addresses(:joel))
+
+    email = ReplyMailer.with(reply: reply).new_reply
+
+    assert_equal [ "joel@iamjoel.com" ], email.to
+  end
+
   test "formats multiline message correctly" do
     reply = post_replies(:test)
     email = ReplyMailer.with(reply: reply).new_reply
