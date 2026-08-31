@@ -32,9 +32,16 @@ It searches exactly as the search page does, so there's no need to add both a na
 
 Search looks across the titles and content of your published posts and pages. Results are ordered with the most recent first.
 
+Words match from the beginning, so `cat` finds "catalogue" but `logue` doesn't.
+
 ## Searching for an exact phrase
 
 To match an exact phrase, wrap it in double quotes:
 
 - `coffee shop` finds posts that mention both words anywhere
 - `"coffee shop"` finds posts where those words appear together, in that order
+
+Quoting a single word matches anywhere within a word, which is useful when you only know part of it:
+
+- `logue` finds nothing
+- `"logue"` finds "catalogue" and "dialogue"
