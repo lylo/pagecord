@@ -50,16 +50,17 @@ class SessionsController < ApplicationController
     end
 
     def create_with_email
-      @user = User.kept.joins(:blogs).find_by(
+      @user = User.joins(:blogs).find_by(
         blogs: { subdomain: user_params[:subdomain] },
         email: user_params[:email]
       )
 
-      if @user.present?
-        AccountVerificationMailer.with(user: @user).login.deliver_later
+      if @user&.discarded?
+        redirect_to sessions_closed_path
+      else
+        AccountVerificationMailer.with(user: @user).login.deliver_later if @user.present?
+        redirect_to sessions_thanks_path
       end
-
-      redirect_to sessions_thanks_path
     end
 
     def login_rate_limit_reached

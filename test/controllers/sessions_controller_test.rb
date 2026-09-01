@@ -46,6 +46,23 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to sessions_thanks_path
   end
 
+  test "email login for a discarded user shows the account closed page without sending" do
+    user = users(:joel)
+    subdomain = user.blog.subdomain
+    user.discard!
+
+    assert_no_emails do
+      post sessions_url, params: { user: { subdomain: subdomain, email: user.email }, rendered_at: signed_rendered_at }
+    end
+
+    assert_redirected_to sessions_closed_path
+  end
+
+  test "should show account closed page" do
+    get sessions_closed_url
+    assert_response :success
+  end
+
   test "should destroy session" do
     delete logout_url
     assert_redirected_to root_path

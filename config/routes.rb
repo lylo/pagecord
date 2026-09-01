@@ -58,6 +58,7 @@ Rails.application.routes.draw do
     resources :sessions, only: [ :create ]
     namespace :sessions do
       resource :thanks, only: [ :show ], controller: "thanks"
+      resource :closed, only: [ :show ], controller: "closed"
     end
 
     resources :password_resets, only: [ :new, :create, :edit, :update ], param: :token
