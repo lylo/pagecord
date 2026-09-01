@@ -33,4 +33,14 @@ class Admin::Users::RestorationsControllerTest < ActionDispatch::IntegrationTest
     assert_operator user.blog.reload.updated_at, :>, old_time
     assert_operator second_blog.reload.updated_at, :>, old_time
   end
+
+  test "restoring through the admin button clears the tombstone" do
+    user = users(:annie)
+    AccountTombstone.record!(user, reason: :spam)
+    user.discard!
+
+    assert_difference -> { AccountTombstone.count }, -1 do
+      post admin_user_restoration_path(user)
+    end
+  end
 end

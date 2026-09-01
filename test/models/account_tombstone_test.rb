@@ -35,4 +35,24 @@ class AccountTombstoneTest < ActiveSupport::TestCase
       AccountTombstone.record!(user, reason: :spam)
     end
   end
+
+  test "restoring the account removes its tombstone" do
+    user = users(:annie)
+    AccountTombstone.record!(user, reason: :spam)
+    user.discard!
+
+    assert_difference -> { AccountTombstone.count }, -1 do
+      user.undiscard!
+    end
+  end
+
+  test "restoring one account leaves another's tombstone alone" do
+    AccountTombstone.record!(users(:annie), reason: :spam)
+    other = users(:vivian)
+    other.discard!
+
+    assert_no_difference -> { AccountTombstone.count } do
+      other.undiscard!
+    end
+  end
 end

@@ -21,6 +21,9 @@ class User < ApplicationRecord
       )
   }
 
+  # Restoring an account unmakes its deletion, so the tombstone goes too.
+  after_undiscard -> { AccountTombstone.where(user_id: id).delete_all }
+
   validates :password, length: { minimum: 12 }, confirmation: true, allow_blank: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   normalizes :email, with: -> { it.downcase.strip }
