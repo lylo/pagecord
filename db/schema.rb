@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_09_01_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_09_01_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -36,7 +36,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_09_01_120000) do
     t.string "subdomain"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["deleted_at"], name: "index_account_tombstones_on_deleted_at"
+    t.index ["user_id"], name: "index_account_tombstones_on_user_id"
   end
 
   create_table "action_mailbox_inbound_emails", force: :cascade do |t|

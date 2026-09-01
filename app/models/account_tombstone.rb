@@ -8,6 +8,7 @@ class AccountTombstone < ApplicationRecord
 
   def self.record!(user, reason:)
     create!(
+      user_id: user.id,
       signed_up_at: user.created_at,
       deleted_at: Time.current,
       reason: reason,
