@@ -67,4 +67,12 @@ class Blog::SpotlitTest < ActiveSupport::TestCase
   test "include_in_spotlight is a no-op when not excluded" do
     assert_nothing_raised { @blog.include_in_spotlight }
   end
+
+  test "an unreviewed blog is not spotlit" do
+    blog = blogs(:joel)
+    blog.update!(reviewed_at: nil)
+
+    assert_not blog.spotlit?
+    assert_not_includes Blog.spotlit, blog
+  end
 end
