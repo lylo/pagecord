@@ -180,20 +180,16 @@ Rails.application.routes.draw do
         resource :spotlight_exclusion, only: [ :create, :destroy ]
       end
       namespace :moderation do
-        root to: redirect("/admin/moderation/spam")
+        root to: redirect("/admin/moderation/blogs")
 
         resources :content, only: [ :index, :show ] do
           resource :dismissal, only: [ :create ], controller: "content/dismissals"
           resource :discard, only: [ :create ], controller: "content/discards"
         end
 
-        namespace :spam do
-          resource :detection_run, only: [ :create ]
-        end
-
-        resources :spam, only: [ :index, :show ] do
-          resource :dismissal, only: [ :create ], controller: "spam/dismissals"
-          resource :confirmation, only: [ :create ], controller: "spam/confirmations"
+        resources :blogs, only: [ :index ] do
+          resource :review, only: [ :create ], controller: "blogs/reviews"
+          resource :spam_confirmation, only: [ :create ], controller: "blogs/spam_confirmations"
         end
       end
     end

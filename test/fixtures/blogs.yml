@@ -3,6 +3,7 @@ DEFAULTS: &default
   width: standard
   font: sans
   locale: en
+  reviewed_at: <%= 1.day.ago %>
 
 joel:
   user: joel
@@ -56,6 +57,7 @@ pagecord:
   user: pagecord
   subdomain: blog
   delivery_email: pagecord_asj232j@post.pagecord.com
+  reviewed_at: <%= 1.day.ago %>
 
 unengaged:
   user: unengaged
