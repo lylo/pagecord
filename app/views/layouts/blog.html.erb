@@ -50,7 +50,7 @@
     <%= javascript_importmap_tags "blog", importmap: Rails.application.config.importmap_blog %>
 
     <% if @blog.present? %>
-      <% unless @blog.user.search_indexable? %>
+      <% unless @blog.search_indexable? %>
         <meta name="robots" content="noindex, nofollow">
       <% else %>
         <%= yield :robots_meta %>
