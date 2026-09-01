@@ -30,4 +30,10 @@ class Admin::Moderation::BlogsControllerTest < ActionDispatch::IntegrationTest
 
     assert_no_match "@#{@blog.subdomain}", response.body
   end
+
+  test "links each blog to its admin account page" do
+    get admin_moderation_blogs_path
+
+    assert_match admin_user_path(@blog.user), response.body
+  end
 end
