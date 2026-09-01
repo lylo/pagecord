@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Caddy serves these when the app is down or being deployed, and reads them from
+# the deploy user's home rather than the release.
+templates="$HOME/.hatchbox/templates"
+release="${RELEASE_DIR:-$DIR/current}"
+
+mkdir -p "$templates"
+cp "$release/public/maintenance.html" "$templates/maintenance.html"
+cp "$release/public/error.html" "$templates/error.html"
