@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 8fa2d0b44cc6f7eb7497dfcbbaf7a90026789286
+  revision: a378ab6bdd91b9535e896fcbf4408457430dfd30
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -45,6 +45,7 @@ GIT
       activesupport (= 8.2.0.alpha)
       builder (~> 3.1)
       erubi (~> 1.11)
+      herb (>= 0.10)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.7)
     activejob (8.2.0.alpha)
@@ -61,7 +62,7 @@ GIT
       activejob (= 8.2.0.alpha)
       activerecord (= 8.2.0.alpha)
       activesupport (= 8.2.0.alpha)
-      marcel (~> 1.0)
+      marcel (~> 2.0)
     activesupport (8.2.0.alpha)
       base64
       bigdecimal
@@ -223,6 +224,14 @@ GEM
       rake (~> 13.3)
     groupdate (6.8.0)
       activesupport (>= 7.2)
+    herb (0.10.3-aarch64-linux-gnu)
+    herb (0.10.3-aarch64-linux-musl)
+    herb (0.10.3-arm-linux-gnu)
+    herb (0.10.3-arm-linux-musl)
+    herb (0.10.3-arm64-darwin)
+    herb (0.10.3-x86_64-darwin)
+    herb (0.10.3-x86_64-linux-gnu)
+    herb (0.10.3-x86_64-linux-musl)
     htmlentities (4.4.2)
     httparty (0.24.2)
       csv
@@ -277,7 +286,7 @@ GEM
       actionmailer (>= 6.0.0)
       activestorage (>= 6.0.0)
       httparty (>= 0.18.1)
-    marcel (1.2.1)
+    marcel (2.1.0)
     matrix (0.4.3)
     maxminddb (0.1.22)
     mini_mime (1.1.5)
@@ -298,7 +307,7 @@ GEM
       net-protocol
     net-pop (0.1.2)
       net-protocol
-    net-protocol (0.2.2)
+    net-protocol (0.3.0)
       timeout
     net-smtp (0.5.1)
       net-protocol
@@ -398,7 +407,7 @@ GEM
       railties (> 3.1)
     rainbow (3.1.1)
     rake (13.4.2)
-    rbs (4.1.3)
+    rbs (4.2.0)
       logger
       prism (>= 1.6.0)
       tsort
