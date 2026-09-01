@@ -6,21 +6,17 @@
   <p>Pagecord is a one-man band. I use AI to assist with the running of the business. This page documents where and how AI is used.</p>
 
   <div class="not-prose bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 my-8">
-    <p><strong>TL;DR:</strong> Pagecord blogs are not used to train AI models, and Pagecord has no AI features in the product. I use coding LLMs (currently Claude Code) as an assistant when writing code. Pagecord also uses OpenAI's content moderation service to check for illegal content, as well as spam signups.</p>
+    <p><strong>TL;DR:</strong> Pagecord blogs are not used to train AI models, and Pagecord has no AI features in the product. I use coding LLMs (currently Claude Code) as an assistant when writing code. Pagecord also uses OpenAI's content moderation service to check for illegal content. Spam blogs are reviewed by me, by hand.</p>
   </div>
 
   <h3 id="writing-code" class="source-serif font-semibold text-2xl">1. Writing code</h3>
   <p>I use a coding LLM (currently Claude Code) when I work on the Pagecord app. It's an assistant for writing and reviewing code, finding and fixing bugs, and identifying and fixing security and performance issues.</p>
   <p>I review the code myself, the old school way, before it reaches production. Pagecord has a comprehensive test suite that runs before code is shipped. Pagecord's source code is open and free to read <a href="https://github.com/lylo/pagecord">on GitHub</a>. Please take a look.</p>
 
-  <h3 id="content-moderation-and-spam" class="source-serif font-semibold text-2xl">2. Content moderation and spam detection</h3>
-  <p>Pagecord is a user-generated content platform so it attracts spam blogs, and is open to being abused. The <a href="<%= terms_path %>">T&amp;Cs</a> cover this, and Pagecord has duties under the <a href="https://www.gov.uk/government/collections/online-safety-act">UK Online Safety Act</a>. To help me identify spam blogs and abuse there are two automated checks, both of which use <a href="https://openai.com">OpenAI</a> services:</p>
-  <ul>
-    <li><strong>Content moderation (free and trial accounts only).</strong> When a post is published, the title, text and up to five images are sent to <a href="https://developers.openai.com/api/docs/guides/moderation">OpenAI's content moderation service</a>. This flags whether the content contains banned or illegal categories (violence, porn, hate speech etc).</li>
-    <li><strong>Spam blog detection (free and trial accounts only).</strong> When a blog is new, and again if it changes during its first month, its title, bio, nav links and up to ten recent posts are checked using a cheap OpenAI model to identify spam blogs (typically SEO link farm stuff).</li>
-  </ul>
-  <p>These checks look at published, public content on free or trial blogs only. Private drafts, deleted posts, email addresses, subscriber lists and account details are not sent. I currently review flagged content manually.</p>
-  <p>Content sent through these APIs is not used to train or improve OpenAI models. Their terms allow them to keep it for up to 30 days for abuse monitoring, but then it gets deleted. This processing is covered by a data processing agreement that includes the <a href="https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/international-transfers/appropriate-safeguards/what-are-standard-data-protection-clauses-the-uk-idta-and-the-addendum/#WhatStandardDataProtectionClauses">Standard Contractual Clauses</a>. As such, it's in the same UK GDPR framework as all sub-processors listed in the Pagecord <a href="<%= privacy_path %>">Privacy Policy</a>.</p>
+  <h3 id="content-moderation" class="source-serif font-semibold text-2xl">2. Content moderation</h3>
+  <p>Pagecord is a user-generated content platform so it attracts spam blogs, and is open to being abused. The <a href="<%= terms_path %>">T&amp;Cs</a> cover this, and Pagecord has duties under the <a href="https://www.gov.uk/government/collections/online-safety-act">UK Online Safety Act</a>. There is one automated check, on free and trial accounts only. When a post is published, the title, text and up to five images are sent to <a href="https://developers.openai.com/api/docs/guides/moderation">OpenAI's content moderation service</a>, which flags whether the content contains banned or illegal categories (violence, porn, hate speech etc).</p>
+  <p>This check looks at published, public content on free or trial blogs only. Private drafts, deleted posts, email addresses, subscriber lists and account details are not sent. I review flagged content manually.</p>
+  <p>Content sent through this API is not used to train or improve OpenAI models. Their terms allow them to keep it for up to 30 days for abuse monitoring, but then it gets deleted. This processing is covered by a data processing agreement that includes the <a href="https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/international-transfers/appropriate-safeguards/what-are-standard-data-protection-clauses-the-uk-idta-and-the-addendum/#WhatStandardDataProtectionClauses">Standard Contractual Clauses</a>. As such, it's in the same UK GDPR framework as all sub-processors listed in the Pagecord <a href="<%= privacy_path %>">Privacy Policy</a>.</p>
   <p>Comments, email replies, and contact form messages are checked for spam by <a href="https://cleantalk.org">CleanTalk</a>. As I understand it, this is reputation-based rather than AI, but I can't say categorically. The same goes for the other third party services Pagecord uses, which are all listed in the <a href="<%= privacy_path %>">Privacy Policy</a>.</p>
 
   <h3 id="what-pagecord-does-not-do" class="source-serif font-semibold text-2xl">What Pagecord doesn't do</h3>
@@ -36,5 +32,5 @@
 
   <p>I will endeavour to keep this page fresh and accurate. If you have any questions about it, please email <a href="mailto:hello@pagecord.com">hello@pagecord.com</a>.</p>
 
-  <p class="text-sm italic">Last updated: August 2026</p>
+  <p class="text-sm italic">Last updated: September 2026</p>
 </div>

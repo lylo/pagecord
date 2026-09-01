@@ -34,15 +34,8 @@ every :day, at: "5:15 am" do
   runner "SendTrialEndedEmailsJob.perform_later"
 end
 
-# Spam blogs earn their keep from indexed backlinks, so the sooner they are
-# flagged the less they get out of us. Cheap to run: blogs with a detection drop
-# out, and empty ones are skipped before the model is called.
-every 3.hours do
-  runner "SpamDetectionJob.perform_later"
-end
-
 every :day, at: "7:00 am" do
-  runner "SpamDetectionDigestJob.perform_later"
+  runner "BlogReviewDigestJob.perform_later"
 end
 
 # Once a day, deliberately: a moderation queue shouldn't nag. The interval must

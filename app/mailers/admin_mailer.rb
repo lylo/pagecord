@@ -1,15 +1,10 @@
 class AdminMailer < CloudflareMailer
-  def spam_detection_digest(detection_ids)
-    @detections = SpamDetection.where(id: detection_ids)
-                               .includes(blog: :user)
-                               .order(status: :desc, detected_at: :desc)
-
-    @spam_count = @detections.spam.count
-    @uncertain_count = @detections.uncertain.count
+  def blog_review_digest(count)
+    @count = count
 
     mail(
       to: "hello@pagecord.com",
-      subject: "Spam Detection Digest: #{@detections.count} blogs flagged"
+      subject: "Blog review: #{@count} #{"blog".pluralize(@count)} waiting"
     )
   end
 
