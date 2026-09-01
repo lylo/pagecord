@@ -11,7 +11,7 @@ class Admin::Moderation::Spam::ConfirmationsControllerTest < ActionDispatch::Int
   test "marks the detection reviewed and queues user destruction" do
     detection = spam_detections(:spam_blog_detection)
 
-    assert_enqueued_with(job: DestroyUserJob, args: [ detection.blog.user.id, { spam: true } ]) do
+    assert_enqueued_with(job: DestroyUserJob, args: [ detection.blog.user.id, { reason: :spam } ]) do
       post admin_moderation_spam_confirmation_path(detection)
     end
 

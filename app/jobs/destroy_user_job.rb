@@ -1,17 +1,21 @@
 class DestroyUserJob < ApplicationJob
   queue_as :default
 
-  def perform(user_id, options = {})
+  def perform(user_id, reason: :user_deleted)
     user = User.find(user_id)
     with_sentry_context(user: user, blog: user.blog) do
-      user.discard!
+      ActiveRecord::Base.transaction do
+        user.discard!
+        AccountTombstone.record!(user, reason: reason)
+      end
+
       user.blogs.find_each(&:touch)
 
       if user.subscription
         PaddleApi.new.cancel_subscription(user.subscription.paddle_subscription_id)
       end
 
-      if options[:spam]
+      if reason.to_s == "spam"
         create_spam_detection(user.blog)
         MarketingAutomation::DeleteContactJob.perform_later(user_id)
       end
