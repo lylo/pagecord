@@ -29,14 +29,20 @@ export default class extends Controller {
       this.containerTarget.classList.remove("hidden")
       this.inputTarget.focus()
     } else {
-      if (this.hasContainerTarget) {
-        this.containerTarget.classList.add("hidden")
-      }
-      if (this.hasInputTarget) {
-        this.inputTarget.value = ""
-      }
-      this.clearSearch()
+      this.close()
     }
+  }
+
+  close() {
+    clearTimeout(this.timeout)
+
+    if (this.hasContainerTarget) {
+      this.containerTarget.classList.add("hidden")
+    }
+    if (this.hasInputTarget) {
+      this.inputTarget.value = ""
+    }
+    this.clearSearch()
   }
 
   search() {
@@ -59,7 +65,7 @@ export default class extends Controller {
 
   clearSearch() {
     if (this.hasFormTarget) {
-      Turbo.visit(this.formTarget.action)
+      this.submitSearch()
     } else if (this.hasUrlValue) {
       Turbo.visit(this.urlValue)
     }
@@ -78,14 +84,7 @@ export default class extends Controller {
 
     if (event.key === "Escape") {
       event.preventDefault()
-      if (this.hasInputTarget && this.inputTarget.value) {
-        this.inputTarget.value = ""
-        this.clearSearch()
-      } else if (window.location.search) {
-        this.clearSearch()
-      } else if (this.hasContainerTarget) {
-        this.containerTarget.classList.add("hidden")
-      }
+      this.close()
     }
   }
 }
