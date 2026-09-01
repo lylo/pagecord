@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_08_26_192016) do
+ActiveRecord::Schema[8.2].define(version: 2026_09_01_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -26,6 +26,17 @@ ActiveRecord::Schema[8.2].define(version: 2026_08_26_192016) do
     t.index ["expires_at"], name: "index_access_requests_on_expires_at"
     t.index ["token_digest"], name: "index_access_requests_on_token_digest", unique: true
     t.index ["user_id"], name: "index_access_requests_on_user_id"
+  end
+
+  create_table "account_tombstones", force: :cascade do |t|
+    t.datetime "signed_up_at", null: false
+    t.datetime "deleted_at", null: false
+    t.string "reason", null: false
+    t.string "plan"
+    t.string "subdomain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_account_tombstones_on_deleted_at"
   end
 
   create_table "action_mailbox_inbound_emails", force: :cascade do |t|

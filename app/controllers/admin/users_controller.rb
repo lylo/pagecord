@@ -70,10 +70,10 @@ class Admin::UsersController < Admin::BaseController
 
     if params[:spam]
       flash[:notice] = "User was marked as spam and discarded"
-      DestroyUserJob.perform_now(@user.id, spam: true)
+      DestroyUserJob.perform_now(@user.id, reason: :spam)
     else
       flash[:notice] = "User was successfully discarded"
-      DestroyUserJob.perform_now(@user.id)
+      DestroyUserJob.perform_now(@user.id, reason: :admin_deleted)
     end
 
     redirect_to admin_users_path

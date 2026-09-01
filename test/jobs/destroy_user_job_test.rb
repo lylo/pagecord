@@ -42,8 +42,49 @@ class DestroyUserJobTest < ActiveJob::TestCase
 
     assert_difference("EmailSubscriber.count", -1) do
       perform_enqueued_jobs do
-        DestroyUserJob.perform_now(@user.id, spam: true)
+        DestroyUserJob.perform_now(@user.id, reason: :spam)
       end
     end
+  end
+
+  test "records a tombstone naming why the account went" do
+    assert_difference -> { AccountTombstone.count }, 1 do
+      DestroyUserJob.perform_now(@user.id, reason: :spam)
+    end
+
+    assert AccountTombstone.last.spam?
+  end
+
+  test "distinguishes an admin removal from a self-serve deletion" do
+    DestroyUserJob.perform_now(@user.id, reason: :admin_deleted)
+
+    assert AccountTombstone.last.admin_deleted?
+  end
+
+  test "treats a deletion with no options as the user's own" do
+    DestroyUserJob.perform_now(@user.id)
+
+    assert AccountTombstone.last.user_deleted?
+  end
+
+  test "a retry cannot write a second tombstone" do
+    DestroyUserJob.perform_now(@user.id, reason: :spam)
+
+    assert_no_difference -> { AccountTombstone.count } do
+      assert_raises(Discard::RecordNotDiscarded) do
+        DestroyUserJob.perform_now(@user.id, reason: :spam)
+      end
+    end
+  end
+
+  test "a spam tombstone records every subdomain the user had" do
+    user = users(:joel)
+    mock_api = mock("paddle_api")
+    mock_api.stubs(:cancel_subscription).returns(true)
+    PaddleApi.stubs(:new).returns(mock_api)
+
+    DestroyUserJob.perform_now(user.id, reason: :spam)
+
+    assert_equal user.blogs.pluck(:subdomain).join(" "), AccountTombstone.last.subdomain
   end
 end
