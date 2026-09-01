@@ -14,6 +14,7 @@ module Blog::Spotlit
         .where(allow_search_indexing: true)
         .not_password_protected
         .where(users: { discarded_at: nil })
+        .where.not(reviewed_at: nil)
         .where("users.created_at <= ?", MINIMUM_ACCOUNT_AGE.ago)
         .where.missing(:spotlight_exclusion)
     }
@@ -27,9 +28,11 @@ module Blog::Spotlit
     end
   end
 
+  # The Spotlight is Pagecord's front page, so review is required even for paying users.
   def spotlit?
     allow_search_indexing? &&
       !password_protected? &&
+      reviewed_at.present? &&
       user.created_at <= MINIMUM_ACCOUNT_AGE.ago &&
       user.discarded_at.nil? &&
       spotlight_exclusion.nil?

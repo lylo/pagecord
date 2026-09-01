@@ -29,10 +29,6 @@ class User < ApplicationRecord
     self.update! verified: true
   end
 
-  def search_indexable?
-    self.created_at&.before?(1.week.ago) || subscribed?
-  end
-
   def blog
     blogs.first
   end

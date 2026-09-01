@@ -78,7 +78,25 @@ class Blog::RobotsTxtTest < ActiveSupport::TestCase
     assert_not blog.crawlable?
 
     blog.update!(allow_search_indexing: true)
-    blog.user.stubs(:search_indexable?).returns(false)
+    blog.stubs(:search_indexable?).returns(false)
     assert_not blog.crawlable?
+  end
+
+  test "search_indexable? waits for review" do
+    blog = blogs(:elliot)
+    blog.update!(reviewed_at: nil)
+
+    assert_not blog.search_indexable?
+
+    blog.update!(reviewed_at: Time.current)
+    assert blog.search_indexable?
+  end
+
+  test "search_indexable? skips the wait for a paying user" do
+    blog = blogs(:joel)
+    blog.update!(reviewed_at: nil)
+
+    assert blog.user.subscribed?
+    assert blog.search_indexable?
   end
 end
