@@ -1,0 +1,60 @@
+<%= render "admin/moderation/shared/tabs" %>
+
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center gap-3">
+    <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @total_unreviewed %></span>
+    <span class="text-sm text-slate-500 dark:text-slate-400"><%= "blog".pluralize(@total_unreviewed) %> to review, newest first</span>
+  </div>
+
+  <% if @blogs.any? %>
+    <div class="divide-y divide-slate-200 dark:divide-slate-700">
+      <% @blogs.each do |blog| %>
+        <div class="px-4 sm:px-6 py-4 flex flex-col gap-3">
+          <div class="min-w-0">
+            <%= link_to blog_home_url(blog), target: "_blank",
+                class: "text-base font-semibold text-slate-900 dark:text-slate-50 hover:underline" do %>
+              @<%= blog.subdomain %>
+            <% end %>
+
+            <span class="block sm:inline sm:ml-2 text-xs text-slate-500 dark:text-slate-400">
+              <%= time_ago_in_words(blog.created_at) %>
+              &middot; <%= pluralize(@post_counts.fetch(blog.id, 0), "post") %>
+              &middot; <%= blog.user.timezone %>
+              <% if blog.user.subscribed? %>&middot; <span class="text-green-600 dark:text-green-400 font-medium">Paid</span><% end %>
+            </span>
+
+            <% summary = [ blog.title, blog.bio.to_plain_text.squish ].filter_map(&:presence).join(" – ") %>
+            <% if summary.present? %>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400"><%= summary %></p>
+            <% end %>
+
+            <% urls = outbound_urls(blog) %>
+            <% if urls.any? %>
+              <p class="mt-1 text-xs font-mono text-slate-500 dark:text-slate-400 break-all"><%= urls.join("  ") %></p>
+            <% end %>
+          </div>
+
+          <div class="flex gap-2 shrink-0 self-start">
+            <%= button_to "Not spam",
+                admin_moderation_blog_review_path(blog),
+                method: :post,
+                class: "btn-primary py-1" %>
+            <%= button_to "Spam",
+                admin_moderation_blog_spam_confirmation_path(blog),
+                method: :post,
+                class: "btn-danger py-1",
+                data: { turbo_confirm: "Confirm @#{blog.subdomain} as spam? This discards the user and cancels any subscription." } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-700">
+      <%= render "app/shared/pagy_nav" %>
+    </div>
+  <% else %>
+    <div class="px-6 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
+      Nothing to review ✨
+    </div>
+  <% end %>
+</div>
