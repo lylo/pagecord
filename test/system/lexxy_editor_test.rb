@@ -329,6 +329,72 @@ class LexxyEditorTest < ApplicationSystemTestCase
     assert_includes editor_value, "A good song"
   end
 
+  # Unfurl prompts appear only on paste, so the choice is offered once. A stored
+  # link was already answered: either dismissed, or written as a link on purpose.
+  test "pasting an article link offers a preview and saves as the bare link" do
+    visit new_app_post_path
+    wait_for_editor
+
+    find("lexxy-editor .lexxy-editor__content").click
+    paste_into_editor("https://example.com/article")
+
+    assert_selector "lexxy-editor .lexxy-editor__content .link-unfurl button", text: "Show preview", wait: 5
+
+    assert_includes editor_value, %(<p><a href="https://example.com/article">https://example.com/article</a></p>)
+    assert_not_includes editor_value, "link-unfurl"
+  end
+
+  test "dismissing an unfurl prompt restores the plain link" do
+    visit new_app_post_path
+    wait_for_editor
+
+    find("lexxy-editor .lexxy-editor__content").click
+    paste_into_editor("https://example.com/article")
+
+    click_on "Dismiss"
+
+    assert_no_selector "lexxy-editor .lexxy-editor__content .link-unfurl"
+    assert_includes editor_value, %(<a href="https://example.com/article">https://example.com/article</a>)
+  end
+
+  test "expanding an unfurl prompt inserts the image, title and description" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg"
+    )
+    preview = stub(title: "A big story", description: "All the details.", image_width: 1024, image_height: 683)
+    preview.stubs(:fetch).returns(preview)
+    preview.stubs(:create_image_blob).returns(blob)
+    LinkPreview.stubs(:new).returns(preview)
+
+    visit new_app_post_path
+    wait_for_editor
+
+    find("lexxy-editor .lexxy-editor__content").click
+    paste_into_editor("https://example.com/article")
+
+    click_on "Show preview"
+
+    assert_selector "lexxy-editor .lexxy-editor__content strong", text: "A big story", wait: 5
+
+    value = editor_value
+    assert_includes value, "action-text-attachment"
+    assert_includes value, "sgid="
+    assert_includes value, %(<a href="https://example.com/article"><strong>A big story</strong></a>)
+    assert_includes value, "<br>All the details."
+    assert_no_selector "lexxy-editor .lexxy-editor__content .link-unfurl"
+  end
+
+  test "opening a post with a bare article link shows no unfurl prompt" do
+    html = %(<p><a href="https://example.com/article">https://example.com/article</a></p>)
+    post = @user.blog.posts.create!(title: "Link", content: html)
+
+    visit edit_app_post_path(post)
+    wait_for_editor
+
+    assert_no_selector "lexxy-editor .lexxy-editor__content .link-unfurl"
+    assert_equal html, editor_value
+  end
+
   private
 
     def wait_for_editor
