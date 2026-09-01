@@ -27,6 +27,10 @@
         <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Subscription.where.not(cancelled_at: nil).where("next_billed_at > ?", Time.current).count) %></span>
         <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">Churning</span>
       <% end %>
+      <%= link_to admin_moderation_blogs_path, class: "group" do %>
+        <span class="text-2xl font-bold text-slate-900 dark:text-slate-50 group-hover:underline"><%= number_with_delimiter(Blog.unreviewed.count) %></span>
+        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide ml-1">To review</span>
+      <% end %>
     </div>
 
     <%= form_with url: admin_users_path, method: :get, data: { turbo_frame: "stats-content", controller: "search", search_target: "form" }, local: true do |form| %>
