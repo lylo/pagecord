@@ -252,6 +252,7 @@ Rails.application.routes.draw do
     get "/feed", to: "blogs/posts#index", defaults: { format: :rss }, as: :blog_feed
     get "/:name.rss", to: redirect("/feed.xml")
     get "/rss", to: redirect("/feed.xml")
+    get "/posts_feed", to: redirect("/feed.xml")
 
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 
