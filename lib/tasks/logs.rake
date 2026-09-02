@@ -99,11 +99,14 @@ module LogDisplay
 end
 
 namespace :logs do
-  desc "Per-hour request overview across all log files (highlights anomalies)"
+  desc "Per-hour request overview across the log files (highlights anomalies); optional DAYS=7 for a recent window"
   task :overview do
     puts "#{LogDisplay::BOLD}Scanning log files...#{LogDisplay::RESET}"
 
-    files = LogParser.discover_log_files
+    days = ENV["DAYS"].to_i
+    # A row per hour of every retained log is thousands of rows, and an anomaly
+    # from weeks ago re-flags every run. The window keeps both current.
+    files = days > 0 ? LogParser.recent_dated_files(days) : LogParser.discover_log_files
     if files.empty?
       puts "#{LogDisplay::RED}No production log files found in log/#{LogDisplay::RESET}"
       exit 0
@@ -112,7 +115,7 @@ namespace :logs do
 
     hourly = Hash.new(0)
 
-    LogParser.each_hour_bucket do |bucket|
+    LogParser.each_hour_bucket(files) do |bucket|
       hourly[bucket] += 1
     end
 

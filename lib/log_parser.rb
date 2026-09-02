@@ -98,10 +98,10 @@ class LogParser
 
   # Overview fast path: only needs hour bucket + "Started" check.
   # Skips full regex parsing entirely — just string-slices the timestamp.
-  def self.each_hour_bucket(&block)
-    return enum_for(:each_hour_bucket) unless block_given?
+  def self.each_hour_bucket(paths = nil, &block)
+    return enum_for(:each_hour_bucket, paths) unless block_given?
 
-    each_file do |io|
+    each_file_in(paths) do |io|
       io.each_line do |line|
         next unless line.include?("Started ")
         # Extract "YYYY-MM-DD HH:00" from timestamp at line start
@@ -207,8 +207,11 @@ class LogParser
   # Iterates over the discovered log files, yielding each IO. Given a date, only
   # opens the files that can hold it.
   def self.each_file(date_str = nil, &block)
-    files = date_str ? files_for_date(date_str) : discover_log_files
-    files.each do |path|
+    each_file_in(date_str ? files_for_date(date_str) : nil, &block)
+  end
+
+  def self.each_file_in(paths, &block)
+    (paths || discover_log_files).each do |path|
       open_file(path) { |io| yield io }
     end
   end
@@ -237,5 +240,5 @@ class LogParser
     end
   end
 
-  private_class_method :each_file
+  private_class_method :each_file, :each_file_in
 end
