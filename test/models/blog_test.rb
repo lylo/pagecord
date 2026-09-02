@@ -38,6 +38,13 @@ class BlogTest < ActiveSupport::TestCase
     assert @blog.valid?
   end
 
+  test "should process the thumb variant of an avatar with a corrupt ICC profile" do
+    @blog.avatar = { io: file_fixture("bad-icc-profile.jpg").open, filename: "avatar.jpg", content_type: "image/jpeg" }
+    @blog.save!
+
+    assert @blog.avatar.variant(:thumb).processed
+  end
+
   test "should reject an avatar disguised as an image" do
     @blog.avatar = { io: StringIO.new("<svg xmlns='http://www.w3.org/2000/svg'><script>alert(1)</script></svg>"),
                      filename: "avatar.png", content_type: "image/png" }

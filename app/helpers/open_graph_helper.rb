@@ -70,7 +70,7 @@ module OpenGraphHelper
       }
 
       params[:avatar] = if blog.avatar.attached?
-        # Use :thumb variant (JPEG format) to avoid cdn-cgi proxy issues
+        # Use the :thumb variant to avoid cdn-cgi proxy issues
         rails_public_blob_url(blog.avatar.variant(:thumb))
       else
         if Rails.env.production?
