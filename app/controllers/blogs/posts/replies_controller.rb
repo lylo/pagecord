@@ -1,7 +1,8 @@
 class Blogs::Posts::RepliesController < Blogs::BaseController
   include SpamPrevention
 
-  rate_limit to: 3, within: 1.hour, only: [ :create ]
+  rate_limit to: 10, within: 1.hour, only: [ :create ], name: "reply-create"
+  rate_limit to: 60, within: 1.minute, only: [ :new ], name: "reply-new"
 
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
