@@ -152,6 +152,19 @@ class BlogTest < ActiveSupport::TestCase
     assert_empty EmailSubscriber.where(blog_id: @blog.id)
   end
 
+  test "should destroy leftover spam detections on destroy" do
+    ActiveRecord::Base.connection.execute(
+      "INSERT INTO spam_detections (blog_id, status, created_at, updated_at) " \
+      "VALUES (#{@blog.id}, 0, NOW(), NOW())"
+    )
+
+    @blog.destroy!
+
+    assert_equal 0, ActiveRecord::Base.connection.select_value(
+      "SELECT COUNT(*) FROM spam_detections WHERE blog_id = #{@blog.id}"
+    )
+  end
+
   test "should validate google site verification" do
     @blog.google_site_verification = "GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44"
     assert @blog.valid?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_09_01_130001) do
+ActiveRecord::Schema[8.2].define(version: 2026_09_02_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -496,7 +496,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_09_01_130001) do
   add_foreign_key "post_replies", "posts"
   add_foreign_key "posts", "blogs"
   add_foreign_key "sender_email_addresses", "blogs"
-  add_foreign_key "spam_detections", "blogs"
+  add_foreign_key "spam_detections", "blogs", on_delete: :cascade
   add_foreign_key "subscription_renewal_reminders", "subscriptions"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "unengaged_follow_ups", "users"
