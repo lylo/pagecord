@@ -74,6 +74,7 @@ Rails.application.routes.draw do
       namespace :posts do
         resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
         resource :details, only: [ :create, :destroy ], controller: "details"
+        resources :tags, only: [ :index, :update, :destroy ], param: :name
       end
       resources :posts, param: :token do
         resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do

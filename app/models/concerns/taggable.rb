@@ -27,6 +27,26 @@ module Taggable
       where.not(tag_list: []).pluck(:tag_list).flatten.uniq.sort
     end
 
+    def tag_counts
+      where.not(tag_list: []).pluck(:tag_list).flatten.tally.sort.to_h
+    end
+
+    # Rename and remove write with update_columns: the tag list is rebuilt here
+    # exactly as normalize_tags would leave it, and skipping the save keeps
+    # updated_at where it was, so a retag doesn't look like an edit to anything
+    # reading that timestamp.
+    def rename_tag(from, to)
+      tagged_with(from).find_each do |record|
+        record.update_columns(tag_list: (record.tag_list - [ from ] + [ to ]).uniq.sort)
+      end
+    end
+
+    def remove_tag(tag)
+      tagged_with(tag).find_each do |record|
+        record.update_columns(tag_list: record.tag_list - [ tag ])
+      end
+    end
+
     def tagged_with(*tags)
       where("tag_list @> ARRAY[?]::varchar[]", Array(tags).flatten)
     end
