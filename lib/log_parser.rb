@@ -1,5 +1,6 @@
 require "zlib"
 require "time"
+require "date"
 
 class LogParser
   Entry = Struct.new(
@@ -43,6 +44,8 @@ class LogParser
     (?<body>.*)
   \z/x
 
+  DATED_LOG_RE  = /\Aproduction\.log\.\d{4}-\d{2}-\d{2}\.gz\z/
+
   STARTED_RE    = /Started\s+(\w+)\s+"([^"]+)"/
   PROCESSING_RE = /Processing\s+by\s+(\S+)/
   COMPLETED_RE  = /Completed\s+(?<status>\d{3})\s+(?<status_text>.*?)\s+in\s+(?<duration>[\d.]+)ms(?:\s+\((?<breakdown>.*)\))?/
@@ -69,7 +72,7 @@ class LogParser
 
     hour_prefix = format("%sT%02d", date_str, hour.to_i) # e.g. "2026-02-23T21"
 
-    each_file do |io|
+    each_file(date_str) do |io|
       io.each_line do |line|
         next unless line.start_with?(hour_prefix)
         entry = parse_line(line)
@@ -84,7 +87,7 @@ class LogParser
 
     date_prefix = "#{date_str}T" # e.g. "2026-02-23T"
 
-    each_file do |io|
+    each_file(date_str) do |io|
       io.each_line do |line|
         next unless line.start_with?(date_prefix)
         entry = parse_line(line)
@@ -201,10 +204,36 @@ class LogParser
     match[index].to_i if match
   end
 
-  # Iterates over all discovered log files, yielding each IO.
-  def self.each_file(&block)
-    discover_log_files.each do |path|
+  # Iterates over the discovered log files, yielding each IO. Given a date, only
+  # opens the files that can hold it.
+  def self.each_file(date_str = nil, &block)
+    files = date_str ? files_for_date(date_str) : discover_log_files
+    files.each do |path|
       open_file(path) { |io| yield io }
+    end
+  end
+
+  # The calendar day a dated archive is named for.
+  def self.date_of(path)
+    File.basename(path)[/\d{4}-\d{2}-\d{2}/]
+  end
+
+  # The newest dated archives, oldest first, for reports over a recent window.
+  def self.recent_dated_files(days)
+    discover_log_files.select { |f| DATED_LOG_RE.match?(File.basename(f)) }.sort.last(days)
+  end
+
+  # Rotation happens shortly after midnight UTC, so a day's entries land in the
+  # archive named for it and the tail of the previous day's. Anything not named
+  # for a date (the live log, a numbered rotation) is always a candidate.
+  def self.files_for_date(date_str)
+    files = discover_log_files
+    return files unless files.any? { |f| DATED_LOG_RE.match?(File.basename(f)) }
+
+    previous = (Date.iso8601(date_str).prev_day.iso8601 rescue nil)
+    files.select do |f|
+      base = File.basename(f)
+      !DATED_LOG_RE.match?(base) || base.include?(date_str) || (previous && base.include?(previous))
     end
   end
 

@@ -547,9 +547,10 @@ namespace :logs do
     )
   end
 
-  desc "AI bot robots.txt compliance: which disallowed crawlers still hit the site. rake \"logs:bots\" or rake \"logs:bots[2026-07-21]\""
+  desc "AI bot robots.txt compliance: which disallowed crawlers still hit the site. rake \"logs:bots\" or rake \"logs:bots[2026-07-21]\"; optional DAYS=7 for a recent window"
   task :bots, [ :date ] do |_t, args|
     date = args[:date]
+    days = ENV["DAYS"].to_i
 
     blocklist_path = File.join(Dir.pwd, "app/views/blogs/robots/_ai_training_crawlers.text.erb")
     unless File.exist?(blocklist_path)
@@ -568,10 +569,26 @@ namespace :logs do
     # block rather than treating them as confirmed offenders.
     review = %w[lcc yak]
 
-    scope = date || "all retained logs"
+    # A rolling window keeps the table responsive: a token blocked in Caddy weeks
+    # ago carries a cumulative count that drowns out whether the block worked.
+    window = LogParser.recent_dated_files(days) if days > 0
+
+    scope = if date
+      date
+    elsif window&.any?
+      "#{LogParser.date_of(window.first)} to #{LogParser.date_of(window.last)}"
+    else
+      "all retained logs"
+    end
     puts "#{LogDisplay::BOLD}Scanning #{scope} for #{tokens.size} disallowed AI bots ...#{LogDisplay::RESET}"
 
-    entries = date ? LogParser.each_entry_for_date(date) : LogParser.each_entry
+    entries = if date
+      LogParser.each_entry_for_date(date)
+    elsif window&.any?
+      LogParser.each_entry(*window)
+    else
+      LogParser.each_entry
+    end
     # needle is a cheap prefilter; boundary confirms the token isn't buried
     # inside a longer word (e.g. ExaBot inside VirexaBot).
     matchers = tokens.map do |token|
