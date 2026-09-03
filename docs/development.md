@@ -179,6 +179,9 @@ HOST=example.com rake "logs:performance[2026-02-23,21]"
 rake logs:bots              # all retained logs
 rake "logs:bots[2026-02-23]"  # a single day
 
+# Signup funnel for a day — successes, blocks by reason, new blogs, browsers
+rake "logs:signups[2026-02-23]"
+
 # Live tail with per-minute request counter (alerts at >500 req/min)
 rake logs:watch
 

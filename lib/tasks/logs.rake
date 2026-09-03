@@ -550,6 +550,185 @@ namespace :logs do
     )
   end
 
+  desc "Signup funnel for a date: rake \"logs:signups[2026-09-01]\""
+  task :signups, [ :date ] do |_t, args|
+    date = args[:date]
+
+    unless date
+      puts "#{LogDisplay::RED}Usage: rake \"logs:signups[2026-09-01]\"#{LogDisplay::RESET}"
+      exit 1
+    end
+
+    puts "#{LogDisplay::BOLD}Analysing signups for #{date} ...#{LogDisplay::RESET}"
+
+    attempts = {}
+    new_views = 0
+
+    record_for = ->(uuid) { attempts[uuid] ||= { blocks: [] } }
+
+    LogParser.each_entry_for_date(date) do |e|
+      case e.line_type
+      when :started
+        if e.detail.start_with?("POST /signups")
+          r = record_for.(e.uuid)
+          r[:time] ||= e.timestamp
+          r[:ip] ||= e.ip
+          r[:ua] ||= e.user_agent
+          r[:started] = true
+        elsif e.detail.start_with?("GET /signups/new") || e.detail == "GET /signups"
+          new_views += 1
+        end
+      when :processing
+        if e.detail.start_with?("SignupsController#create")
+          record_for.(e.uuid)[:processing] = true
+        end
+      when :completed
+        if attempts.key?(e.uuid)
+          attempts[e.uuid][:status] = e.status
+        end
+      when :other
+        r = attempts[e.uuid]
+        next unless r
+
+        body = e.detail.to_s
+        if body.start_with?("Parameters:")
+          r[:subdomain] ||= body[/"subdomain"\s*=>\s*"([^"]+)"/, 1]
+          r[:timezone] ||= body[/"timezone"\s*=>\s*"([^"]+)"/, 1]
+          r[:referrer] ||= body[/"signup_referrer"\s*=>\s*"([^"]*)"/, 1]
+          r[:source_note] ||= body[/"signup_source_note"\s*=>\s*"([^"]*)"/, 1]
+        elsif body.include?("Honeypot field completed")
+          r[:blocks] << "honeypot"
+        elsif body.include?("Form completed too quickly") || body.include?("Invalid or missing form token")
+          r[:blocks] << "form-time"
+        elsif (m = body.match(/Suspicious email blocked:\s*(\S+)/))
+          r[:blocks] << "suspicious-email"
+          r[:suspicious_email] = m[1]
+        elsif body.include?("Turnstile check failed")
+          r[:blocks] << "turnstile"
+        elsif body.include?("Signup validation failed")
+          r[:validation_failed] = body[/Signup validation failed:\s*(.*)/, 1]
+        end
+      end
+    end
+
+    signups = attempts.values.select { |r| r[:processing] || r[:started] }
+
+    # Plain-English funnel labels; the report is read at breakfast.
+    block_label = {
+      "honeypot" => "Honeypot caught",
+      "form-time" => "Form too fast",
+      "suspicious-email" => "Suspicious email",
+      "turnstile" => "Turnstile blocked"
+    }
+
+    # Where did they come from? The note after the form ("a search") wins;
+    # otherwise the referrer's utm_source, otherwise just the site name.
+    source_for = ->(r) do
+      note = r[:source_note].to_s.strip
+      return note[0, 30] unless note.empty?
+
+      ref = r[:referrer].to_s
+      return "direct" if ref.empty?
+      return ref[/utm_source=([^&]+)/, 1].to_s[0, 30] if ref.include?("utm_source=")
+
+      host = ref[%r{https?://([^/?#]+)}, 1].to_s.sub(/\Awww\./, "")
+      host.empty? ? "link" : host[0, 30]
+    end
+
+    # Chrome, Safari, Firefox... rather than the full user-agent firehose.
+    browser_for = ->(ua) do
+      ua = ua.to_s
+      return "Bot" if ua =~ /bot|crawl|spider|slurp|mediapartners/i
+      return "Script" if ua =~ /curl|Go-http|python|wget|httpclient/i
+      return "In-app" if ua =~ /Electron|chatlyio|;wv/
+      return "Opera" if ua.include?("OPR/")
+      return "Edge" if ua.include?("Edg/")
+      return "Firefox" if ua.include?("Firefox/")
+      return "Safari" if ua.include?("Safari/") && ua.include?("Version/")
+      return "Chrome" if ua.include?("Chrome/")
+      "Other"
+    end
+
+    funnel = Hash.new(0)
+    successes = []
+    browsers = Hash.new(0)
+
+    signups.each do |r|
+      browsers[browser_for.(r[:ua])] += 1
+
+      case r[:status]
+      when 302
+        funnel["Signed up"] += 1
+        successes << r
+      when 429
+        funnel["Rate-limited"] += 1
+      else
+        if r[:blocks].any?
+          funnel[block_label.fetch(r[:blocks].first, "Blocked")] += 1
+        elsif r[:validation_failed]
+          funnel["Validation failure"] += 1
+        elsif r[:status] == 422
+          # The only silent 422 path in SignupsController#create is the
+          # banned-timezone reject, which logs nothing. Every other 422
+          # leaves a warn/info line classified above.
+          funnel["Banned timezone"] += 1
+        elsif r[:status].nil?
+          funnel["Unfinished"] += 1
+        else
+          funnel["Other"] += 1
+        end
+      end
+    end
+
+    puts LogDisplay.table(
+      title: "Signup funnel for #{date} (#{signups.size} attempts, #{new_views} form views)",
+      columns: [
+        { label: "Stage", width: 20, align: :left },
+        { label: "Count", width: 8, align: :right }
+      ],
+      rows: funnel.sort_by { |_, c| -c }.map { |stage, c| [ stage, c.to_s ] }
+    )
+
+    puts LogDisplay.table(
+      title: "Successful signups (#{successes.size})",
+      columns: [
+        { label: "Time", width: 8, align: :left },
+        { label: "Subdomain", width: 22, align: :left },
+        { label: "Timezone", width: 22, align: :left },
+        { label: "Source", width: 30, align: :left }
+      ],
+      rows: successes.sort_by { |r| r[:time].to_s }.map do |r|
+        [
+          r[:time]&.strftime("%H:%M:%S") || "-",
+          r[:subdomain] || "-",
+          r[:timezone] || "-",
+          source_for.(r)
+        ]
+      end
+    )
+
+    # The one IP signal worth surfacing: distinct new blogs from one address.
+    # Same-address retries of a single signup are normal and stay silent.
+    successes.group_by { |r| r[:ip] }.each do |ip, rs|
+      names = rs.map { |r| r[:subdomain] }.compact.uniq
+      next if ip.nil? || names.size < 2
+
+      puts "#{LogDisplay::DIM}Note: #{names.join(" and ")} signed up from the same address — worth a spam check.#{LogDisplay::RESET}"
+    end
+
+    puts LogDisplay.table(
+      title: "Signup browsers",
+      columns: [
+        { label: "Browser", width: 12, align: :left },
+        { label: "Attempts", width: 9, align: :right }
+      ],
+      rows: browsers.sort_by { |_, c| -c }.map { |b, c| [ b, c.to_s ] }
+    )
+
+    puts "#{LogDisplay::DIM}\"Signup validation failed\" lines carry the email address in plain text — " \
+      "never paste those lines anywhere.#{LogDisplay::RESET}"
+  end
+
   desc "AI bot robots.txt compliance: which disallowed crawlers still hit the site. rake \"logs:bots\" or rake \"logs:bots[2026-07-21]\"; optional DAYS=7 for a recent window"
   task :bots, [ :date ] do |_t, args|
     date = args[:date]
