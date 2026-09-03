@@ -49,3 +49,4 @@
 node_modules
 .claude.json
 .poolside
+.fizzy.yaml
