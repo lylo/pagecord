@@ -297,6 +297,18 @@ class PostTest < ActiveSupport::TestCase
     assert_equal blob, rendered_post.first_media
   end
 
+  test "content_media_attachments follows document order when embeds are preloaded" do
+    a, b, c = 3.times.map { |i|
+      ActiveStorage::Blob.create_and_upload!(io: StringIO.new("img#{i}"), filename: "#{i}.jpg", content_type: "image/jpeg")
+    }
+    tag = ->(blob) { %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>) }
+
+    post = blogs(:joel).posts.create!(content: [ a, b, c ].map(&tag).join)
+    post.update!(content: [ c, a, b ].map(&tag).join)
+
+    assert_equal [ c, a, b ], Post.where(id: post.id).for_blog_render.first.content_media_attachments
+  end
+
   test "has_text_content? should return true for posts with text" do
     blog = blogs(:joel)
     post = blog.posts.create!(

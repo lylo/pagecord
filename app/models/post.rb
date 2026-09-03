@@ -167,11 +167,15 @@ class Post < ApplicationRecord
 
   def content_media_attachments
     return [] unless content.body.present?
-    if rich_text_content&.association(:embeds_attachments)&.loaded?
-      return rich_text_content.embeds_attachments.filter_map(&:blob).select { |blob| blob.image? || blob.video? }
+
+    attachables = if rich_text_content&.association(:embeds_attachments)&.loaded?
+      blobs_by_sgid = rich_text_content.embeds_attachments.filter_map(&:blob).index_by(&:attachable_sgid)
+      content.body.fragment.find_all("#{ActionText::Attachment.tag_name}[sgid]").filter_map { |node| blobs_by_sgid[node["sgid"]] }
+    else
+      content.body.attachments.filter_map(&:attachable)
     end
 
-    content.body.attachments.filter_map(&:attachable).select { |attachable| attachable.try(:image?) || attachable.try(:video?) }
+    attachables.select { |attachable| attachable.try(:image?) || attachable.try(:video?) }
   end
 
   # Returns full plain text extracted from ActionText content.
