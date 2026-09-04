@@ -56,6 +56,7 @@ gem "local_time"
 gem "pagy", "~> 43.4"
 gem "nanoid", "~> 2.0"
 gem "rack-attack"
+gem "public_suffix"
 gem "rails_autolink"
 gem "rubyzip", "~> 3"
 gem "sanitize"  # CSS and HTML sanitization for user-provided custom CSS

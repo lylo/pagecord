@@ -582,6 +582,7 @@ DEPENDENCIES
   postmark-rails
   premailer-rails (~> 1.12)
   propshaft
+  public_suffix
   puma (>= 5.0)
   rack-attack
   rails!

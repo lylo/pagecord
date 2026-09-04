@@ -26,14 +26,16 @@ module CustomDomain
 
     private
 
+      # Root domain: example.com or www.example.com, judged against the public
+      # suffix list so example.com.br and www.example.co.uk count too.
       def root_domain?(domain)
         host = extract_host(domain)
         return false unless host
 
-        parts = host.split(".")
+        registrable = PublicSuffix.domain(host)
+        return false unless registrable
 
-        # Root domain: example.com (2 parts) or www.example.com (3 parts starting with www)
-        parts.length == 2 || (parts.length == 3 && parts.first == "www")
+        host == registrable || host == "www.#{registrable}"
       end
 
       def variant_domain(domain)

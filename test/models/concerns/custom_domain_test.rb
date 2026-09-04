@@ -26,6 +26,20 @@ class CustomDomainTest < ActiveSupport::TestCase
     assert_equal @blog, result
   end
 
+  test "find_by_domain_with_www_fallback should find root variant for www domain under a multi-part suffix" do
+    @blog.update!(custom_domain: "example.com.br")
+
+    result = Blog.find_by_domain_with_www_fallback("www.example.com.br")
+    assert_equal @blog, result
+  end
+
+  test "find_by_domain_with_www_fallback should find www variant for root domain under a multi-part suffix" do
+    @blog.update!(custom_domain: "www.example.co.uk")
+
+    result = Blog.find_by_domain_with_www_fallback("example.co.uk")
+    assert_equal @blog, result
+  end
+
   test "find_by_domain_with_www_fallback should not check www variant for subdomains" do
     @blog.update!(custom_domain: "www.blog.example.com")
 
