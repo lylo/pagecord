@@ -8,6 +8,13 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
+  test "should serve the static 406 page to an unsupported browser" do
+    get app_posts_url, headers: { "User-Agent" => "Mozilla/5.0 (Linux; Android 9; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Mobile Safari/537.36" }
+
+    assert_response :not_acceptable
+    assert_select "h1", text: "Your browser isn't supported"
+  end
+
   test "should get new post page" do
     get new_app_post_url
 

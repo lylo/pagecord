@@ -34,6 +34,7 @@
 /public/*.html
 !/public/maintenance.html
 !/public/error.html
+!/public/406-unsupported-browser.html
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
