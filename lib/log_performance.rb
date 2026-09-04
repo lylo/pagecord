@@ -1,4 +1,12 @@
 module LogPerformance
+  THROTTLED_ENDPOINT = "Rack::Attack (throttled before Rails)"
+
+  # One record per request id. A request that raises after rendering, or that
+  # is rate limited, logs a second "Completed" line when the error page renders
+  # under the same id; only the first line describes the request itself.
+  #
+  # Requests Rack::Attack answers with 429 before Rails runs never log
+  # "Completed"; they come back as records with throttled: true and no timings.
   def self.records_for(entries, host: nil)
     requests = {}
     records = []
@@ -20,7 +28,14 @@ module LogPerformance
         request[:path] = e.detail
       when :processing
         request[:endpoint] = e.detail
+      when :throttled
+        next if host && e.host != host
+
+        records << request.merge(path: e.detail, status: 429, endpoint: THROTTLED_ENDPOINT, throttled: true)
       when :completed
+        next if request[:completed]
+
+        request[:completed] = true
         request[:host] ||= e.host
         next if host && request[:host] != host
 
@@ -37,6 +52,10 @@ module LogPerformance
     end
 
     records
+  end
+
+  def self.status_counts(records)
+    records.group_by { |record| record[:status] }.transform_values(&:size).sort_by { |status, count| [ -count, status ] }
   end
 
   def self.endpoint_stats(records)

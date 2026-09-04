@@ -19,6 +19,18 @@ class LogParserTest < Minitest::Test
     assert_equal 6.6, entry.gc_ms
   end
 
+  def test_rack_attack_throttle_line_is_a_throttled_request
+    entry = LogParser.parse_line(
+      "2026-09-02T03:20:26+00:00 WARN [abc123] [host=joel.pagecord.com] [ip=203.0.113.1] [user_agent=Browser] " \
+      "[Rack::Attack] Throttled POST /login from 203.0.113.1"
+    )
+
+    assert_equal :throttled, entry.line_type
+    assert_equal "POST /login", entry.detail
+    assert_equal 429, entry.status
+    assert_nil entry.duration_ms
+  end
+
   def test_completed_line_without_breakdown_still_records_status_and_duration
     entry = LogParser.parse_line(
       "2026-02-23T21:38:00+00:00 INFO [abc123] [host=joel.pagecord.com] [ip=203.0.113.1] [user_agent=Browser] " \

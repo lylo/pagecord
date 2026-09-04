@@ -428,7 +428,7 @@ namespace :logs do
     end
     puts "#{LogDisplay::DIM}Host filter: #{hostname}#{LogDisplay::RESET}" if hostname
 
-    records = LogPerformance.records_for(entries, host: hostname)
+    throttles, records = LogPerformance.records_for(entries, host: hostname).partition { |record| record[:throttled] }
 
     if records.empty?
       puts "#{LogDisplay::YELLOW}No completed requests found for that period.#{LogDisplay::RESET}"
@@ -469,6 +469,19 @@ namespace :logs do
         ]
       ]
     )
+
+    rails_429s = records.count { |record| record[:status] == 429 }
+    puts LogDisplay.table(
+      title: "Responses by status (one per request id; #{throttles.size} Rack::Attack throttles listed separately)",
+      columns: [
+        { label: "Status", width: 20, align: :left },
+        { label: "Requests", width: 10, align: :right }
+      ],
+      rows: LogPerformance.status_counts(records).map { |status, count| [ status.to_s, count ] } +
+        [ [ "429 (Rack::Attack)", throttles.size ] ]
+    )
+    puts "#{LogDisplay::BOLD}Rate limited: #{rails_429s + throttles.size} requests (#{rails_429s} Rails 429s + #{throttles.size} Rack::Attack throttles)#{LogDisplay::RESET}"
+    puts
 
     slowest_requests = records.sort_by { |record| -(record[:duration_ms] || 0) }.first(20)
     puts LogDisplay.table(

@@ -22,11 +22,12 @@ class LogParser
     keyword_init: true
   )
 
-  # line_type is one of :started, :processing, :completed, :other
+  # line_type is one of :started, :processing, :completed, :throttled, :other
   # detail holds the type-specific info:
   #   :started    → "GET /some/path"
   #   :processing → "Blogs::PostsController#show as HTML"
   #   :completed  → "200 OK in 45ms (...)"
+  #   :throttled  → "POST /login" (Rack::Attack answered 429 before Rails ran)
   #   :other      → the raw remainder
 
   # Timestamp format: 2026-02-23T21:38:00+00:00
@@ -49,6 +50,7 @@ class LogParser
   STARTED_RE    = /Started\s+(\w+)\s+"([^"]+)"/
   PROCESSING_RE = /Processing\s+by\s+(\S+)/
   COMPLETED_RE  = /Completed\s+(?<status>\d{3})\s+(?<status_text>.*?)\s+in\s+(?<duration>[\d.]+)ms(?:\s+\((?<breakdown>.*)\))?/
+  THROTTLED_RE  = /\[Rack::Attack\]\s+Throttled\s+(\w+)\s+(\S+)/
 
   def self.each_entry(*paths, &block)
     return enum_for(:each_entry, *paths) unless block_given?
@@ -175,6 +177,8 @@ class LogParser
     elsif (cm = COMPLETED_RE.match(body))
       detail = "#{cm[:status]} #{cm[:status_text]} in #{cm[:duration]}ms"
       [ :completed, detail, completed_attributes(cm) ]
+    elsif (tm = THROTTLED_RE.match(body))
+      [ :throttled, "#{tm[1]} #{tm[2]}", { status: 429 } ]
     else
       [ :other, body, {} ]
     end
