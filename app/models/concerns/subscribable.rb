@@ -15,6 +15,10 @@ module Subscribable
     subscription&.active?
   end
 
+  def paying?
+    subscription.present? && subscription.active_paid?
+  end
+
   def on_trial?
     trial_ends_at.present? && trial_ends_at >= Date.current && !subscribed?
   end

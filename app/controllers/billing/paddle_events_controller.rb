@@ -22,6 +22,14 @@ module Billing
           process_event params[:event_type]
         else
           Rails.logger.warn("Unable to find user for Paddle #{params[:event_type]} (customer #{params.dig(:data, :customer_id)})")
+
+          BillingEventLog.record(
+            :webhook_unmatched,
+            type: params[:event_type],
+            customer: payload.customer_id,
+            user: payload.user_id,
+            blog: params.dig(:data, :custom_data, :blog_subdomain)
+          )
         end
       else
         Rails.logger.error("Unable to verify Paddle request signature")
@@ -105,11 +113,15 @@ module Billing
 
         Rails.logger.info "Subscription #{@subscription.id} cancelled at #{cancelled_at}"
 
+        booked_earlier = @subscription.cancelled_at.present?
+
         # Paddle only sends this once the cancellation has taken effect, so access ends
         # now. Cancellations scheduled for the end of the term arrive as
         # subscription.updated with a scheduled_change and keep their billing period
         # until this event follows.
         @subscription.update!(cancelled_at: cancelled_at, next_billed_at: cancelled_at)
+
+        BillingEventLog.record(:cancel_effective, for_subscription: @subscription, started: payload.started_at&.to_date, booked_earlier: booked_earlier)
       end
 
       def subscription_updated
@@ -132,16 +144,32 @@ module Billing
         )
 
         notify_supporter_upgrade
+        log_plan_change
 
         if (cancelling_at = payload.cancellation_scheduled_at)
           Rails.logger.info "Subscription is being cancelled"
+
+          # The in-app cancellation form and account deletion both set this
+          # before Paddle's webhook arrives.
+          booked_earlier = @subscription.cancelled_at.present? || @user.discarded?
+
           @subscription.update!(cancelled_at: Time.parse(cancelling_at))
+
+          BillingEventLog.record(
+            :cancel_scheduled,
+            for_subscription: @subscription,
+            effective: @subscription.cancelled_at,
+            started: payload.started_at&.to_date,
+            source: "paddle",
+            booked_earlier: booked_earlier
+          )
         end
       end
 
       def subscription_past_due
-        # No-op
         Rails.logger.info "Subscription past due"
+
+        BillingEventLog.record(:past_due, for_subscription: @subscription, for_user: @user)
       end
 
       def transaction_completed
@@ -177,6 +205,8 @@ module Billing
           @subscription.update!(updates)
 
           notify_supporter_upgrade
+          log_plan_change
+          log_completed_transaction
 
           Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}, unit_price: #{updates[:unit_price]}"
         else
@@ -186,6 +216,28 @@ module Billing
 
       def transaction_payment_failed
         Rails.logger.warn "Payment failed for user #{@user.id} (#{@user.blog.subdomain}) - Paddle Retain will retry automatically"
+
+        BillingEventLog.record(:payment_failed, for_subscription: @subscription, for_user: @user, existing: @subscription.present?)
+      end
+
+      def log_completed_transaction
+        case payload.origin
+        when "web" then BillingEventLog.record(:subscription_started, for_subscription: @subscription)
+        when "subscription_recurring" then BillingEventLog.record(:renewal, for_subscription: @subscription)
+        end
+      end
+
+      # Like notify_supporter_upgrade: Paddle sends two webhooks for one plan
+      # change, and only the first to arrive flips the plan.
+      def log_plan_change
+        return unless @subscription.saved_change_to_plan?
+
+        BillingEventLog.record(
+          :plan_changed,
+          for_subscription: @subscription,
+          from: @subscription.plan_before_last_save,
+          from_amount: @subscription.unit_price_before_last_save
+        )
       end
 
       # Fires only on the save that actually flips the plan to supporter, so the

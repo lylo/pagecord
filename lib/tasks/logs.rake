@@ -1,5 +1,6 @@
 require_relative "../log_parser"
 require_relative "../log_performance"
+require_relative "../log_billing"
 
 module LogDisplay
   unless defined?(RESET)
@@ -33,6 +34,12 @@ module LogDisplay
 
   def self.number(value, precision: 1)
     value ? value.round(precision).to_s : "-"
+  end
+
+  def self.price(cents, plan = nil)
+    return "-" if cents.to_s.empty?
+
+    "#{format("$%.2f", cents.to_i / 100.0)}#{plan == "monthly" ? "/mo" : "/yr"}"
   end
 
   # Renders a box-drawn table.
@@ -740,6 +747,117 @@ namespace :logs do
 
     puts "#{LogDisplay::DIM}\"Signup validation failed\" lines carry the email address in plain text — " \
       "never paste those lines anywhere.#{LogDisplay::RESET}"
+  end
+
+  desc "Subscriptions, cancellations and payment failures for a date: rake \"logs:billing[2026-09-05]\""
+  task :billing, [ :date ] do |_t, args|
+    date = args[:date]
+
+    unless date
+      puts "#{LogDisplay::RED}Usage: rake \"logs:billing[2026-09-05]\"#{LogDisplay::RESET}"
+      exit 1
+    end
+
+    puts "#{LogDisplay::BOLD}Analysing billing events for #{date} ...#{LogDisplay::RESET}"
+
+    events = LogBilling.events_for(LogParser.each_entry_for_date(date))
+
+    labels = {
+      "subscription_started" => "New",
+      "plan_changed" => "Plan change",
+      "cancel_requested" => "Cancel requested",
+      "cancel_scheduled" => "Cancel scheduled",
+      "cancel_effective" => "Access ended",
+      "account_deleted" => "Account deleted",
+      "webhook_unmatched" => "Unmatched webhook"
+    }
+
+    movements = events.reject { |e| %w[ renewal payment_failed past_due ].include?(e[:event]) }
+    renewals = events.select { |e| e[:event] == "renewal" }
+    failures = events.select { |e| e[:event] == "payment_failed" }
+    past_due = events.select { |e| e[:event] == "past_due" }
+
+    detail_for = ->(e) do
+      parts = []
+      parts << (e[:paid] == "true" ? "paid" : "free") if e[:event] == "account_deleted"
+      parts << e[:reason] if e[:reason]
+      parts << "was #{e[:from]} #{LogDisplay.price(e[:from_amount], e[:from])}" if e[:from]
+      parts << "ends #{e[:effective]}" if e[:effective]
+      parts << "since #{e[:started]}" if e[:started]
+      parts << "booked earlier" if e[:booked_earlier] == "true"
+      parts << "#{e[:type]} for customer #{e[:customer]}" if e[:customer]
+      parts.join(", ")
+    end
+
+    puts LogDisplay.table(
+      title: "Subscription movements for #{date} (#{movements.size})",
+      columns: [
+        { label: "Time", width: 8, align: :left },
+        { label: "Blog", width: 22, align: :left },
+        { label: "Event", width: 17, align: :left },
+        { label: "Plan", width: 9, align: :left },
+        { label: "Price", width: 10, align: :right },
+        { label: "Detail", width: 46, align: :left }
+      ],
+      rows: movements.sort_by { |e| e[:timestamp].to_s }.map do |e|
+        [
+          e[:timestamp]&.strftime("%H:%M:%S") || "-",
+          e[:blog] || "user #{e[:user]}",
+          labels.fetch(e[:event], e[:event]),
+          e[:plan] || "-",
+          LogBilling.books_revenue?(e) ? LogDisplay.price(e[:amount], e[:plan]) : "-",
+          detail_for.(e)
+        ]
+      end
+    )
+
+    delta = LogBilling.annualised_delta(events)
+    sign = delta.negative? ? "-" : "+"
+    puts "Net annualised run rate: #{sign}#{format("$%.2f", delta.abs / 100.0)}"
+    puts "#{LogDisplay::DIM}Priced rows are the ones that move it. A dash means the change was " \
+      "counted on the day it was decided.#{LogDisplay::RESET}"
+
+    billed = renewals.sum { |e| e[:amount].to_i }
+    puts "Renewals billed: #{renewals.size}, totalling #{format("$%.2f", billed / 100.0)}"
+
+    if failures.any? || past_due.any?
+      # A failure and its recovery usually land minutes apart, so the outcome is
+      # only reliable for the same day.
+      outcome_for = ->(e) do
+        later = events.select { |o| o[:user] == e[:user] && o[:timestamp].to_s > e[:timestamp].to_s }
+        return "recovered" if later.any? { |o| %w[ renewal subscription_started ].include?(o[:event]) }
+        return "cancelled after failing" if later.any? { |o| o[:event].to_s.start_with?("cancel", "account_deleted") }
+
+        "unresolved"
+      end
+
+      puts LogDisplay.table(
+        title: "Payment failures for #{date} (#{failures.size}, #{past_due.size} past due)",
+        columns: [
+          { label: "Time", width: 8, align: :left },
+          { label: "Blog", width: 22, align: :left },
+          { label: "Plan", width: 10, align: :left },
+          { label: "Price", width: 10, align: :right },
+          { label: "Stage", width: 12, align: :left },
+          { label: "Same-day outcome", width: 24, align: :left }
+        ],
+        rows: failures.sort_by { |e| e[:timestamp].to_s }.map do |e|
+          [
+            e[:timestamp]&.strftime("%H:%M:%S") || "-",
+            e[:blog] || "user #{e[:user]}",
+            e[:plan] || "-",
+            LogDisplay.price(e[:amount], e[:plan]),
+            e[:existing] == "true" ? "renewal" : "checkout",
+            outcome_for.(e)
+          ]
+        end
+      )
+    end
+
+    if events.empty?
+      puts "#{LogDisplay::DIM}No billing events. Lines are only written from #{LogDisplay::RESET}" \
+        "#{LogDisplay::DIM}the deploy that added BillingEventLog onwards.#{LogDisplay::RESET}"
+    end
   end
 
   desc "AI bot robots.txt compliance: which disallowed crawlers still hit the site. rake \"logs:bots\" or rake \"logs:bots[2026-07-21]\"; optional DAYS=7 for a recent window"
