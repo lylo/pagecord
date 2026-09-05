@@ -17,7 +17,7 @@ Most people arrive from one of these:
 - **Medium** – from the archive at Settings → Security and apps → Download your information
 - **Substack** – posts *and* your subscriber list, from Settings → Exports
 
-We can also import from **Ghost**, **Bear**, **Pika**, and **Jekyll or other static site generators**.
+We can also import from **Ghost**, **Bear**, **Pika**, **Blogmaker**, and **Jekyll or other static site generators**.
 
 If your platform isn't on this list, ask anyway. As long as you can get a reasonable export out of it, we can usually work with it.
 
