@@ -11,6 +11,8 @@ class App::Settings::UsersController < App::BaseController
     DestroyUserJob.perform_later(Current.user.id)
     SendCancellationEmailJob.set(wait: 24.hours).perform_later(Current.user.id, subscriber: false)
 
+    BillingEventLog.record(:account_deleted, for_user: Current.user, paid: Current.user.paying?, source: "app")
+
     redirect_to root_path
   end
 

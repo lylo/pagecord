@@ -68,13 +68,12 @@ class Admin::UsersController < Admin::BaseController
   def destroy
     @user = User.find(params[:id])
 
-    if params[:spam]
-      flash[:notice] = "User was marked as spam and discarded"
-      DestroyUserJob.perform_now(@user.id, reason: :spam)
-    else
-      flash[:notice] = "User was successfully discarded"
-      DestroyUserJob.perform_now(@user.id, reason: :admin_deleted)
-    end
+    reason = params[:spam] ? :spam : :admin_deleted
+
+    BillingEventLog.record(:account_deleted, for_user: @user, paid: @user.paying?, source: "admin", reason: reason)
+
+    flash[:notice] = reason == :spam ? "User was marked as spam and discarded" : "User was successfully discarded"
+    DestroyUserJob.perform_now(@user.id, reason: reason)
 
     redirect_to admin_users_path
   end

@@ -452,7 +452,158 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal Time.parse(payload["data"]["billing_period"]["ends_at"]), subscription.reload.next_billed_at
   end
 
+  test "should log a subscription start with the amount actually charged" do
+    subscription = subscriptions(:one)
+    payload = payload_for("transaction.completed", subscription.user)
+    json_payload = payload.to_json
+
+    lines = billing_lines do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    line = lines.find { |l| l.include?("event=subscription_started") }
+    assert line, "expected a subscription_started line, got: #{lines.inspect}"
+    assert_includes line, "blog=#{subscription.user.blog.subdomain}"
+    assert_includes line, "amount=2900"
+  end
+
+  test "should log the blog even when Paddle sends no blog_subdomain" do
+    subscription = subscriptions(:one)
+    payload = payload_for("transaction.completed", subscription.user)
+    payload["data"]["custom_data"].delete("blog_subdomain")
+    json_payload = payload.to_json
+
+    lines = billing_lines do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    line = lines.find { |l| l.include?("event=subscription_started") }
+    assert_includes line, "blog=#{subscription.user.blog.subdomain}"
+  end
+
+  test "should log a scheduled cancellation with the date access ends" do
+    subscription = subscriptions(:one)
+    payload = payload_for("subscription.updated.cancellation", subscription.user)
+    effective_at = 1.month.from_now
+    payload["data"]["customer_id"] = "ctm_01hvnxx8katrjdh3xjph09mef7"
+    payload["data"]["id"] = "sub_01hvrk1481njzb874tn7wyrksv"
+    payload["data"]["scheduled_change"]["effective_at"] = effective_at.iso8601
+    json_payload = payload.to_json
+
+    lines = billing_lines do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    line = lines.find { |l| l.include?("event=cancel_scheduled") }
+    assert line, "expected a cancel_scheduled line, got: #{lines.inspect}"
+    assert_includes line, "effective=#{effective_at.to_date.iso8601}"
+    assert_includes line, "source=paddle"
+  end
+
+  test "should log a plan change from the webhook that flips it, with the old price" do
+    subscription = subscriptions(:one)
+    subscription.update!(plan: :supporter, unit_price: 7500)
+    payload = payload_for("subscription.updated.plan_change", subscription.user)
+    json_payload = payload.to_json
+
+    lines = billing_lines do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    line = lines.find { |l| l.include?("event=plan_changed") }
+    assert line, "expected a plan_changed line, got: #{lines.inspect}"
+    assert_includes line, "from=supporter"
+    assert_includes line, "from_amount=7500"
+    assert_includes line, "plan=annual"
+    assert_includes line, "amount=3900"
+  end
+
+  test "should not log a plan change when the plan did not change" do
+    subscription = subscriptions(:one)
+    payload = payload_for("subscription.updated.plan_change", subscription.user)
+    json_payload = payload.to_json
+
+    lines = billing_lines do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    assert_nil lines.find { |l| l.include?("event=plan_changed") }
+  end
+
+  test "should still process the webhook when billing logging fails" do
+    subscription = subscriptions(:one)
+    payload = payload_for("subscription.canceled", subscription.user)
+    payload["data"]["canceled_at"] = Time.current.iso8601
+    json_payload = payload.to_json
+
+    BillingEventLog.stubs(:line_for).raises(RuntimeError, "boom")
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert subscription.reload.cancelled?
+  end
+
+  test "should log a payment failure at checkout as having no existing subscription" do
+    user = users(:vivian)
+    payload = payload_for("transaction.payment_failed", user)
+    json_payload = payload.to_json
+
+    lines = billing_lines do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    line = lines.find { |l| l.include?("event=payment_failed") }
+    assert line, "expected a payment_failed line, got: #{lines.inspect}"
+    assert_includes line, "existing=false"
+  end
+
   private
+
+    def billing_lines
+      io = StringIO.new
+      previous = Rails.logger
+      Rails.logger = ActiveSupport::Logger.new(io)
+      yield
+      io.string.scan(/\[billing\].*/)
+    ensure
+      Rails.logger = previous
+    end
 
     def payload_for(event_type, user)
       json_payload = File.read(Rails.root.join("test", "fixtures", "billing", "#{event_type}.json"))

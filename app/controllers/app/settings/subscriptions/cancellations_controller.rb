@@ -9,10 +9,11 @@ class App::Settings::Subscriptions::CancellationsController < App::BaseControlle
     Rails.logger.info "Cancelling subscription for #{Current.user.id}"
 
     if @subscription.present?
-      response = PaddleApi.new.cancel_subscription(@subscription.paddle_subscription_id)
-      Rails.logger.info response
+      PaddleApi.new.cancel_subscription(@subscription.paddle_subscription_id)
       @subscription.update!(cancelled_at: Time.current)
       SendCancellationEmailJob.set(wait: 4.hours).perform_later(Current.user.id, subscriber: true)
+
+      BillingEventLog.record(:cancel_requested, for_subscription: @subscription, effective: @subscription.next_billed_at, source: "app")
     end
 
     redirect_to app_settings_path, notice: "Your subscription has been cancelled. You'll keep access until the end of your current billing period."

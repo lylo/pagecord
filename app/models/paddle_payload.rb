@@ -32,6 +32,10 @@ class PaddlePayload
     @data[:origin]
   end
 
+  def started_at
+    @data[:started_at]
+  end
+
   def billing_period_ends_at
     @data.dig(:billing_period, :ends_at)
   end

@@ -98,6 +98,10 @@ class Subscription < ApplicationRecord
     cancelled_at.present?
   end
 
+  def active_paid?
+    !complimentary? && !cancelled? && !lapsed?
+  end
+
   def lapsed?
     return false if complimentary?
 
