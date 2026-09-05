@@ -29,6 +29,16 @@ class Blogs::AccessControllerTest < ActionDispatch::IntegrationTest
     assert_no_match post.title, response.body
   end
 
+  test "the gate is in the blog's language" do
+    @blog.update!(password: "letmein", locale: "pt")
+
+    get blog_posts_path
+
+    assert_response :unauthorized
+    assert_select "p", I18n.t("private_blog.intro", locale: :pt)
+    assert_select "input[name=password][placeholder=?]", I18n.t("private_blog.placeholder", locale: :pt)
+  end
+
   test "correct password returns the visitor to the page they asked for and grants access" do
     @blog.update!(password: "letmein")
     wanted = posts(:one)

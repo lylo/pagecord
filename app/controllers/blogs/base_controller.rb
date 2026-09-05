@@ -13,7 +13,7 @@ class Blogs::BaseController < ApplicationController
   # The order is load bearing. load_blog sets @blog for everything after it, and
   # the domain redirects run before the access check so a request on the wrong
   # host is moved on rather than shown a password form.
-  before_action :load_blog, :validate_user, :enforce_custom_domain, :require_blog_access, :set_locale, :reject_malicious_params
+  before_action :load_blog, :set_locale, :validate_user, :enforce_custom_domain, :require_blog_access, :reject_malicious_params
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_blog_not_found
   rescue_from ActionController::TooManyRequests, with: :render_too_many_requests
