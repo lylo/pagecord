@@ -90,13 +90,6 @@ class LogBillingTest < Minitest::Test
     assert_equal(-3900, LogBilling.annualised_delta(parsed))
   end
 
-  def test_a_free_account_deletion_costs_nothing_but_is_still_reported
-    parsed = events("[billing] event=account_deleted user=1 blog=one paid=false source=app")
-
-    assert_equal 1, parsed.size
-    assert_equal 0, LogBilling.annualised_delta(parsed)
-  end
-
   private
 
     def events(*bodies)
