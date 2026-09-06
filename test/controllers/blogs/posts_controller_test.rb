@@ -825,6 +825,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/posts"
   end
 
+  test "should render the tag list when the tag is sent as raw UTF-8 bytes" do
+    get blog_posts_list_path, env: { "QUERY_STRING" => "tag=spo\xC5\x82ecze\xC5\x84stwo".b }
+
+    assert_response :success
+    assert_equal [ "społeczeństwo" ], assigns(:current_tags)
+    assert_select "meta[property='og:url'][content=?]", "http://#{@blog.subdomain}.example.com/posts?tag=spo%C5%82ecze%C5%84stwo"
+  end
+
   test "should redirect trailing slash on post URL to non-trailing slash version" do
     post = @blog.posts.visible.first
 

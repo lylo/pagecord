@@ -17,7 +17,14 @@ class RedirectTrailingSlash
       return [ 400, { "Content-Type" => "text/plain" }, [ "Bad Request" ] ]
     end
 
+    # Percent-encode raw non-ASCII bytes so the URL matches what browsers send
+    # and request.original_url is plain ASCII
+    %w[PATH_INFO QUERY_STRING].each do |key|
+      env[key] = URI::RFC2396_PARSER.escape(env[key].to_s.b, /[^[:ascii:]]/n)
+    end
+
     request = Rack::Request.new(env)
+    env["ORIGINAL_FULLPATH"] = request.fullpath
     path = request.path
 
     # Redirect if path has trailing slash and is not root
