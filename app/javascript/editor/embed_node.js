@@ -137,7 +137,7 @@ export function $embedLinkParagraph(paragraph) {
 // selection pointing at a node that no longer exists. Lexical resolves that by
 // dropping the selection, and the embed goes with it, so the caret has to be given
 // somewhere to land, which at the end of a post means a new paragraph.
-function $moveCaretAfter(embed) {
+export function $moveCaretAfter(embed) {
   const next = embed.getNextSibling()
 
   if (next) {

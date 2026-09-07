@@ -353,3 +353,37 @@ lexxy-link-dropdown {
 .lexxy-editor__content .media-embed > * {
   pointer-events: none;
 }
+
+/* ================================== */
+/* Link Unfurls                       */
+/* ================================== */
+
+/* The prompt under a freshly pasted link offering to expand it into a preview.
+   Editor chrome only: the stored post holds the bare link until a preview is
+   chosen, so nothing here appears on the blog. */
+.lexxy-editor__content .link-unfurl {
+  margin-block: 0 var(--lexxy-content-margin);
+}
+
+.lexxy-editor__content .link-unfurl__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--lexxy-toolbar-gap);
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--lexxy-color-text-subtle);
+}
+
+.lexxy-editor__content .link-unfurl__actions button {
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--lexxy-color-ink-lighter);
+  border-radius: var(--lexxy-radius);
+  background: var(--lexxy-color-canvas);
+  color: var(--lexxy-color-text);
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.lexxy-editor__content .link-unfurl__actions button:hover {
+  background: var(--lexxy-color-ink-lightest);
+}
