@@ -22,6 +22,8 @@ class App::OnboardingsController < App::BaseController
   private
 
     def blog_params
-      params.require(:blog).permit(:bio, :title, :layout, :theme, :width, :font, :locale)
+      params.require(:blog).permit(:bio, :title, :layout, :theme, :width, :font, :locale,
+        :custom_theme_bg_light, :custom_theme_text_light, :custom_theme_accent_light,
+        :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark)
     end
 end

@@ -43,4 +43,11 @@ class App::OnboardingsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "title_layout", @user.blog.reload.layout
   end
+
+  test "should save custom theme colours" do
+    patch app_onboarding_path, params: { blog: { theme: "custom", custom_theme_bg_light: "#111111" } }, as: :turbo_stream
+
+    assert_response :success
+    assert_equal "#111111", @user.blog.reload.custom_theme_bg_light
+  end
 end
