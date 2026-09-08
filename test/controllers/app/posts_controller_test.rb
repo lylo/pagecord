@@ -15,6 +15,21 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: "Your browser isn't supported"
   end
 
+  test "edit shows the settings menu by default" do
+    get edit_app_post_url(@user.blog.posts.published.first)
+
+    assert_select "[data-controller~=post-attributes]"
+    assert_select "button[title^='Post settings']", false
+  end
+
+  test "edit shows the settings panel when the feature is enabled" do
+    @user.update!(features: [ "post_settings_panel" ])
+    get edit_app_post_url(@user.blog.posts.published.first)
+
+    assert_select "[data-controller~=settings-panel]"
+    assert_select "h2", text: "Post settings"
+  end
+
   test "should get new post page" do
     get new_app_post_url
 

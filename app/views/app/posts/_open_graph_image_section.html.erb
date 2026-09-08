@@ -1,5 +1,5 @@
 <% if Current.user.has_premium_access? %>
-<div class="<%= 'hidden' unless record.open_graph_image.attached? || record.open_graph_image_suppressed? %> mb-8" data-post-attributes-target="section" data-section="og-image">
+<div class="<%= 'hidden' unless local_assigns[:revealed] || record.open_graph_image.attached? || record.open_graph_image_suppressed? %> mb-8" data-post-attributes-target="section" data-section="og-image">
   <div class="mt-4 font-bold">Open Graph Image</div>
 
   <% if record.open_graph_image.attached? && record.open_graph_image.blob.persisted? %>
