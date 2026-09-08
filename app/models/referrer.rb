@@ -115,7 +115,7 @@ class Referrer
       # Remove www. prefix and normalize aliases
       normalized = host.sub(/\Awww\./, "")
       DOMAIN_ALIASES.fetch(normalized, normalized)
-    rescue URI::InvalidURIError
+    rescue URI::Error
       nil
     end
 end

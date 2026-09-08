@@ -24,7 +24,7 @@ module Html
         return false unless uri.is_a?(URI::HTTP) && uri.host.present?
 
         !blog_hosts.include?(uri.host.downcase)
-      rescue URI::InvalidURIError
+      rescue URI::Error
         false
       end
 

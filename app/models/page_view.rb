@@ -68,7 +68,7 @@ class PageView < ApplicationRecord
 
       uri = begin
         URI.parse(full_path)
-      rescue URI::InvalidURIError
+      rescue URI::Error
         nil
       end
       return [ full_path, nil ] if uri.nil?

@@ -39,7 +39,7 @@ class SocialNavigationItem < NavigationItem
         uri = URI.parse(url)
         errors.add(:url, "must be HTTP or HTTPS") unless uri.scheme.in?(%w[http https])
       end
-    rescue URI::InvalidURIError
+    rescue URI::Error
       errors.add(:url, "is not a valid URL")
     end
 

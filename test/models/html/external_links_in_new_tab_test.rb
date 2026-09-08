@@ -42,6 +42,13 @@ class Html::ExternalLinksInNewTabTest < ActiveSupport::TestCase
     assert links.all? { |link| link["rel"].nil? }
   end
 
+  test "leaves malformed mailto links unchanged" do
+    link = transformed_link(@blog, '<p><a href="mailto:example.org">Email</a></p>')
+
+    assert_nil link["target"]
+    assert_nil link["rel"]
+  end
+
   test "leaves custom domain links unchanged" do
     blog = blogs(:annie)
     link = transformed_link(blog, '<p><a href="https://annie.blog/about">Internal</a></p>')

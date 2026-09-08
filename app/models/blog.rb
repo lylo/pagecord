@@ -69,7 +69,7 @@ class Blog < ApplicationRecord
     return unless hosts.include?(uri.host&.downcase)
 
     posts.kept.find_by(slug: uri.path.delete_prefix("/").chomp("/").delete_prefix("posts/"))
-  rescue URI::InvalidURIError
+  rescue URI::Error
     nil
   end
 

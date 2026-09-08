@@ -39,7 +39,7 @@ module Html
         href_uri = URI.parse(href)
         text_uri = URI.parse(text)
         [ href_uri.scheme, href_uri.host, href_uri.path ] == [ text_uri.scheme, text_uri.host, text_uri.path ]
-      rescue URI::InvalidURIError
+      rescue URI::Error
         false
       end
   end

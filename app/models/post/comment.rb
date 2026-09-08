@@ -54,7 +54,7 @@ class Post::Comment < ApplicationRecord
 
   def link_url
     link if link.present? && URI.parse(link).scheme.in?(%w[http https])
-  rescue URI::InvalidURIError
+  rescue URI::Error
     nil
   end
 
@@ -78,7 +78,7 @@ class Post::Comment < ApplicationRecord
     def link_format
       uri = URI.parse(link)
       errors.add(:link, "must be HTTP or HTTPS") unless uri.scheme.in?(%w[http https])
-    rescue URI::InvalidURIError
+    rescue URI::Error
       errors.add(:link, "is not a valid URL")
     end
 

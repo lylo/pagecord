@@ -49,7 +49,7 @@ module Css
         def allowed_font_url?(url)
           uri = URI.parse(url)
           uri.scheme == "https" && ALLOWED_FONT_HOSTS.include?(uri.host)
-        rescue URI::InvalidURIError
+        rescue URI::Error
           false
         end
 

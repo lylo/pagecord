@@ -49,7 +49,7 @@ module Html
       def sanitize_url(url)
         uri = URI.parse(url)
         CGI.escapeHTML(uri.to_s)
-      rescue URI::InvalidURIError
+      rescue URI::Error
         ""
       end
 
