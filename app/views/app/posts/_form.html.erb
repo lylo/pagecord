@@ -1,7 +1,8 @@
 <% is_new = !@post.persisted? %>
+<% panel = current_features.enabled?(:post_settings_panel) %>
 <% quota = Current.user.upload_quota %>
 
-<div data-controller="post-attributes autosave"
+<div data-controller="<%= panel ? "settings-panel" : "post-attributes" %> autosave"
     data-autosave-key-value="<%= is_new ? "draft-post-new-#{@blog.id}" : "draft-post-#{@post.id}" %>"
     data-autosave-base-title-value="<%= @post.title.to_s %>"
     data-autosave-base-content-value="<%= h(@post.content&.body&.to_html.to_s) if @post.persisted? %>">
@@ -9,130 +10,37 @@
 
   <%= render "email_banner" %>
 
-  <div class="flex items-center justify-end gap-x-2 text-slate-500 dark:text-slate-300 mb-4">
-   <div data-controller="toggle">
-      <%= link_to "#", class: "font-medium hover:text-black dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
-          <div class="">
-            <%= inline_svg_tag "icons/ellipsis-horizontal-circle.svg", class: "w-7 h-7" %>
-          </div>
+  <% if panel %>
+    <div class="flex items-center justify-end gap-x-3 mb-4 text-slate-500 dark:text-slate-300">
+      <span class="flex flex-wrap justify-end gap-x-2 text-sm text-slate-400 dark:text-slate-500" data-settings-panel-target="tags">
+        <% @post.tag_list.first(3).each do |tag| %>
+          <span>#<%= tag %></span>
         <% end %>
-
-        <%= render "drop_down_menu" %>
+        <% if @post.tag_list.size > 3 %>
+          <span>+<%= @post.tag_list.size - 3 %> more</span>
+        <% end %>
+      </span>
+      <%= render "settings_button", record: @post, label: "Post settings" %>
     </div>
-  </div>
+  <% else %>
+    <div class="flex items-center justify-end gap-x-2 text-slate-500 dark:text-slate-300 mb-4">
+     <div data-controller="toggle">
+        <%= link_to "#", class: "font-medium hover:text-black dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
+            <div class="">
+              <%= inline_svg_tag "icons/ellipsis-horizontal-circle.svg", class: "w-7 h-7" %>
+            </div>
+          <% end %>
+
+          <%= render "drop_down_menu" %>
+      </div>
+    </div>
+  <% end %>
 
   <%= form_with(model: [:app, @post], html: { id: "post-form" }) do |form| %>
     <%= hidden_field_tag :context_blog_id, @blog.id if is_new %>
     <%= hidden_field_tag :page, params[:page] if params[:page].present? %>
 
-    <div class="hidden mb-8" data-post-attributes-target="section" data-section="published-at">
-      <div class="mt-4 font-bold">
-      <%= form.label :published_at, "Publication Time" %>
-      </div>
-
-      <div class="mt-2">
-      <%= form.datetime_field :published_at,
-          value: @post.published_at&.strftime('%Y-%m-%dT%H:%M'),
-          class: "dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
-      </div>
-    </div>
-
-    <div class="<%= 'hidden' unless @post.errors[:slug].any? %> mb-8" data-post-attributes-target="section" data-section="slug">
-      <div class="mt-4 font-bold">
-      <%= form.label :slug, "Slug" %>
-      </div>
-
-      <fieldset class="mt-2">
-        <%= form.text_field :slug,
-            class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
-            placeholder: "custom-url-path" %>
-        <div class="field-error"><%= @post.errors[:slug].to_sentence if @post.errors[:slug].any? %></div>
-      </fieldset>
-    </div>
-
-    <div class="hidden mb-8" data-post-attributes-target="section" data-section="canonical-url">
-      <div class="mt-4 font-bold">
-      <%= form.label :canonical_url, "Canonical URL" %>
-      </div>
-
-      <div class="mt-2">
-      <%= form.text_field :canonical_url, class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg", placeholder: "https://example-canonical-url.com" %>
-      </div>
-    </div>
-
-    <div class="<%= 'hidden' unless @post.hidden? %> mb-8" data-post-attributes-target="section" data-section="visibility">
-      <div class="mt-4 font-bold">
-        Post Visibility
-      </div>
-
-      <div class="mt-4 flex gap-3">
-        <div class="flex h-6 shrink-0 items-center">
-          <%= form.check_box :hidden, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" %>
-        </div>
-        <div>
-          <%= form.label :hidden, "Hide this post on my blog", class: "text-sm text-slate-800 dark:text-slate-100" %>
-          <p class="text-slate-500 text-sm">
-            When checked, this post will not be visible on your blog, but it can accessed via it's link.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <% if @blog.accepts_comments? %>
-      <div class="<%= 'hidden' unless @post.comments_closed %> mb-8" data-post-attributes-target="section" data-section="comments">
-        <div class="mt-4 font-bold">
-          Comments
-        </div>
-
-        <div class="mt-4 flex gap-3">
-          <div class="flex h-6 shrink-0 items-center">
-            <%= form.check_box :comments_closed, class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0" %>
-          </div>
-          <div>
-            <%= form.label :comments_closed, "Close comments on this post", class: "text-sm text-slate-800 dark:text-slate-100" %>
-            <p class="text-slate-500 text-sm">
-              <% if @post.comments_count.positive? %>
-                Readers won't be able to add any more. The <%= pluralize @post.comments_count, "comment" %> already published will stay visible.
-              <% else %>
-                Readers won't be able to comment, and no comment box will appear on this post.
-              <% end %>
-            </p>
-          </div>
-        </div>
-      </div>
-    <% end %>
-
-    <div class="<%= 'hidden' unless @post.tag_list.present? %> mb-8" data-post-attributes-target="section" data-section="tags">
-      <div class="mt-4 font-bold">
-        <%= form.label :tags_string, "Tags" %>
-      </div>
-
-      <div class="mt-2" data-controller="tags-input" data-tags-input-suggestions-value="<%= @blog.all_posts.kept.all_tags.to_json %>">
-        <%= form.text_field :tags_string,
-            class: "w-full",
-            data: {
-              tags_input_target: "input"
-            } %>
-
-        <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-          Type a tag and press enter to add it. Use letters, numbers, and hyphens only.
-        </div>
-      </div>
-    </div>
-
-    <%= render "app/posts/open_graph_image_section", record: @post, form: form %>
-
-    <div class="<%= 'hidden' unless @post.locale.present? %> mb-8" data-post-attributes-target="section" data-section="locale">
-      <div class="mt-4 font-bold">
-        <%= form.label :locale, "Post Language" %>
-      </div>
-      <div class="mt-2">
-        <%= form.select :locale,
-            Post.available_locales,
-            { include_blank: "Use blog default (#{Post.locale_name(@post.blog.locale)})" },
-            class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
-      </div>
-    </div>
+    <%= render panel ? "settings_panel" : "settings_sections", form: form %>
 
     <%= form.text_field :title,
       placeholder: "Optional post title",
