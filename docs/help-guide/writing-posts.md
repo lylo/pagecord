@@ -109,7 +109,9 @@ To add tags, select the **Add Tags** option from the drop-down menu above the ed
 
 Tags appear at the bottom of your post and in your blog's tag list.
 
-To rename or remove a tag across every post that uses it, click the tag icon at the top of your posts list. Renaming a tag to one that already exists merges the two. Removing a tag only takes it off your posts – the posts themselves are untouched.
+### Managing tags
+
+Click the tag icon at the top of your posts list to go to the tag management screen. You can rename, merge or delete tags from here.
 
 ## Scheduling posts
 
