@@ -1,7 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Swaps a read-only label for the form that edits it, so a row only shows
-// input and save buttons once you've asked to change something.
 export default class extends Controller {
   static targets = ["display", "form", "input"]
 

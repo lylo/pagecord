@@ -1,8 +1,6 @@
 require "application_system_test_case"
 
 class TagsTest < ApplicationSystemTestCase
-  # Rename and remove are covered by the controller test. What only exists in the
-  # browser is the swap from label to form and back.
   setup do
     user = users(:joel)
     access_request = user.access_requests.create!
@@ -35,6 +33,13 @@ class TagsTest < ApplicationSystemTestCase
       assert_text "photography"
 
       click_on "Rename photography"
+      assert_field "new_name", with: "photography"
+    end
+  end
+
+  test "double-clicking the tag name opens the editor" do
+    within_photography_row do
+      find("span", text: "photography").double_click
       assert_field "new_name", with: "photography"
     end
   end
