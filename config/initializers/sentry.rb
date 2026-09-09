@@ -3,22 +3,20 @@ if Rails.env.production?
     config.dsn = ENV["SENTRY_DSN"]
     config.breadcrumbs_logger = [ :active_support_logger, :http_logger ]
 
-    config.before_send = lambda do |event, hint|
-      if hint[:scope]&.current_hub&.current_scope
-        if Current.user
-          event.user = {
-            id: Current.user.id,
-            email: Current.user.email
-          }
-        end
+    config.before_send = lambda do |event, _hint|
+      if Current.user
+        event.user = {
+          id: Current.user.id,
+          username: Current.blog&.subdomain
+        }
+      end
 
-        # Add current blog data if available
-        if Current.blog
-          event.extra[:blog] = {
-            id: Current.blog.id,
-            subdomain: Current.blog.subdomain
-          }
-        end
+      # Add current blog data if available
+      if Current.blog
+        event.extra[:blog] = {
+          id: Current.blog.id,
+          subdomain: Current.blog.subdomain
+        }
       end
 
       event
@@ -28,6 +26,10 @@ if Rails.env.production?
     # against the tracing quota, and exhausting it early leaves no traces for
     # the rest of the month.
     config.traces_sample_rate = 0.1
+
+    # Sentry 7 turns structured logging on by default, which ships an event for
+    # every Active Record query and Action Controller action.
+    config.rails.structured_logging.enabled = false
 
     # Remove ActionController::BadRequest from sentry-rails' default IGNORE_DEFAULT
     # so unhandled bad requests (not caught by BotErrorFilter) get reported
