@@ -1,0 +1,7 @@
+<%# locals: (record:, label:) %>
+<button type="button" class="relative flex items-center cursor-pointer hover:text-black dark:hover:text-slate-50" title="<%= label %> (⌘.)" data-action="settings-panel#toggle">
+  <%= inline_svg_tag "icons/cog.svg", class: "w-6 h-6 shrink-0" %>
+  <% if settings_customised?(record) %>
+    <span class="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-pagecord-accent ring-2 ring-white dark:ring-slate-900"></span>
+  <% end %>
+</button>

@@ -12,11 +12,11 @@
 
 <%= tag.div(**wrapper_options) do %>
   <button type="button"
-          class="inline-flex h-7 w-7 cursor-pointer items-center justify-center text-slate-500 hover:text-black dark:text-slate-300 dark:hover:text-slate-50"
+          class="flex h-7 w-7 cursor-pointer items-center justify-center text-slate-500 hover:text-black dark:text-slate-300 dark:hover:text-slate-50"
           title="<%= button_title %>"
           aria-label="<%= button_label %>"
           data-action="dialog#open">
-    <%= inline_svg_tag "icons/information-circle.svg", class: "w-7 h-7" %>
+    <%= inline_svg_tag "icons/information-circle.svg", class: "w-6 h-6" %>
   </button>
 
   <dialog class="fixed inset-0 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-lg border border-slate-200 bg-white p-0 text-slate-900 shadow-xl backdrop:bg-slate-950/50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"

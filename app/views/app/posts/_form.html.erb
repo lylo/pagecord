@@ -11,21 +11,16 @@
   <%= render "email_banner" %>
 
   <% if panel %>
-    <div class="flex justify-end mb-4 text-slate-500 dark:text-slate-300">
-      <button type="button" class="relative flex items-center gap-x-3 cursor-pointer hover:text-black dark:hover:text-slate-50" title="Post settings (⌘.)" data-action="settings-panel#toggle">
-        <span class="flex flex-wrap justify-end gap-x-2 text-sm text-slate-400 dark:text-slate-500" data-settings-panel-target="tags">
-          <% @post.tag_list.first(3).each do |tag| %>
-            <span>#<%= tag %></span>
-          <% end %>
-          <% if @post.tag_list.size > 3 %>
-            <span>+<%= @post.tag_list.size - 3 %> more</span>
-          <% end %>
-        </span>
-        <%= inline_svg_tag "icons/cog.svg", class: "w-6 h-6 shrink-0" %>
-        <% if settings_customised?(@post) %>
-          <span class="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-pagecord-accent ring-2 ring-white dark:ring-slate-900"></span>
+    <div class="flex items-center justify-end gap-x-3 mb-4 text-slate-500 dark:text-slate-300">
+      <span class="flex flex-wrap justify-end gap-x-2 text-sm text-slate-400 dark:text-slate-500" data-settings-panel-target="tags">
+        <% @post.tag_list.first(3).each do |tag| %>
+          <span>#<%= tag %></span>
         <% end %>
-      </button>
+        <% if @post.tag_list.size > 3 %>
+          <span>+<%= @post.tag_list.size - 3 %> more</span>
+        <% end %>
+      </span>
+      <%= render "settings_button", record: @post, label: "Post settings" %>
     </div>
   <% else %>
     <div class="flex items-center justify-end gap-x-2 text-slate-500 dark:text-slate-300 mb-4">
