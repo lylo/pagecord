@@ -14,6 +14,10 @@ class Api::BaseController < ActionController::API
     render json: { error: e.message }, status: :bad_request
   end
 
+  rescue_from Api::ForbiddenError do |e|
+    render json: { error: e.message }, status: :forbidden
+  end
+
   rescue_from Post::FrontMatter::InvalidError do |e|
     render json: { error: "Invalid front matter: #{e.message}" }, status: :unprocessable_entity
   end
@@ -57,6 +61,13 @@ class Api::BaseController < ActionController::API
 
     def rate_limit_reached
       render json: { error: "Rate limit exceeded" }, status: :too_many_requests
+    end
+
+    def settings_params(*fields, subscriber_only: [])
+      forbidden = subscriber_only.find { params.key?(it) } unless Current.blog.user.subscribed?
+      raise Api::ForbiddenError, "#{forbidden} requires a subscription" if forbidden
+
+      params.permit(*fields, *subscriber_only)
     end
 
     def unchanged_content_skipped(params, record)

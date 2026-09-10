@@ -228,6 +228,10 @@ Rails.application.routes.draw do
       resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
       resource :home_page, only: [ :show, :create, :update, :destroy ]
       resources :attachments, only: [ :create ]
+      namespace :settings do
+        resource :appearance, only: [ :show, :update ], controller: "appearance"
+        resource :custom_code, only: [ :show, :update ], controller: "custom_code"
+      end
       # The Micropub spec mandates a single endpoint, so these two stay as they are.
       post "/micropub", to: "micropub#create"
       get "/micropub", to: "micropub#query", as: nil
