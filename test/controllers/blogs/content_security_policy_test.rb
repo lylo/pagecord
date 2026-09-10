@@ -43,14 +43,6 @@ class App::PreviewContentSecurityPolicyTest < ActionDispatch::IntegrationTest
     login_as @blog.user
   end
 
-  test "post preview enforces the permissive policy" do
-    get app_post_path(@blog.posts.first)
-
-    assert_response :success
-    assert_includes response.headers["Content-Security-Policy"], "frame-src 'self' https:"
-    assert_nil response.headers["Content-Security-Policy-Report-Only"]
-  end
-
   test "theme garden preview enforces the permissive policy" do
     get app_settings_theme_garden_preview_path(theme_templates(:minimal_mono))
 

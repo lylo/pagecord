@@ -117,6 +117,8 @@ Want to publish later? Click **Change Publication Time** from the drop-down menu
 
 Posts are saved as drafts automatically in your browser as you write, but you should click **Save Draft** to return to it later. Draft posts appear at the top of your post list.
 
+To see how a draft looks on your blog, click the preview icon next to it. The preview opens on your blog's own address and works without logging in, so you can share the link with anyone you'd like to read the post before it's published. The link stops working once the post is live.
+
 ## Changing the post slug
 
 A slug is the end part of the URL that looks like `/my-first-post`. This is set automatically when you create a post, but you can change it by selecting **Change Slug** from the drop-down menu when editing (or creating) a post.

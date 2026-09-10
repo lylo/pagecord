@@ -1,0 +1,12 @@
+<%= content_for :robots_meta do %>
+  <meta name="robots" content="noindex, nofollow">
+<% end %>
+
+<%= render "blogs/header", hide_email_form: true, hide_bio: !@post.home_page? %>
+
+<div data-controller="media-embeds lightbox">
+  <article>
+    <%= render "blogs/posts/post_title", post: @post %>
+    <%= render "blogs/posts/post_content", post: @post %>
+  </article>
+</div>

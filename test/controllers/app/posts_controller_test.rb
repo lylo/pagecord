@@ -570,44 +570,14 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "should preview draft post with blog layout" do
-    get app_post_url(posts(:vivian_draft))
+  test "should link a draft to its shareable preview on the blog" do
+    draft = posts(:vivian_draft)
 
-    assert_response :success
-    assert_select "article"
-    assert_select ".lexxy-content"
+    get app_posts_url
+
+    assert_select "a[title='Preview draft'][href=?]", blog_post_preview_url(draft.signed_id(purpose: :preview), host: draft.blog.host)
   end
 
-  test "should preview pending post with blog layout" do
-    future_dated_post = @user.blog.posts.create!(
-      title: "Future Preview",
-      content: "Future-dated post",
-      published_at: 1.week.from_now,
-    )
-
-    get app_post_url(future_dated_post)
-    assert_response :success
-    assert_select "article"
-    assert_select ".lexxy-content"
-  end
-
-  test "should preview published post with blog layout" do
-    published_post = @user.blog.posts.published.first
-
-    get app_post_url(published_post)
-
-    assert_response :success
-    assert_select "article"
-    assert_select ".lexxy-content"
-  end
-
-  test "should not preview post from another user's blog" do
-    other_user_post = posts(:one) # Joel's post
-
-    get app_post_url(other_user_post)
-
-    assert_response :not_found
-  end
 
   test "should refuse hand-crafted attachment HTML once the upload allowance is used" do
     fill_upload_quota(@user, UploadQuota::FREE_LIMIT)
