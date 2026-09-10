@@ -2,11 +2,11 @@
   <nav>
     <% @blog.navigation_items.ordered.each do |item| %>
       <% if item.icon %>
-        <%= link_to navigation_item_url(item), class: "social-link", aria: { label: item.icon_label } do %>
+        <%= link_to navigation_item_url(item), class: "social-link", aria: { label: item.icon_label }, **navigation_item_link_options(item) do %>
           <%= inline_svg_tag item.icon %>
         <% end %>
       <% else %>
-        <%= link_to item.label, navigation_item_url(item) %>
+        <%= link_to item.label, navigation_item_url(item), **navigation_item_link_options(item) %>
       <% end %>
     <% end %>
   </nav>

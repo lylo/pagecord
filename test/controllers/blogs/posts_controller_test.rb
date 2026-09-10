@@ -936,6 +936,37 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav a[href=?]", "/search"
   end
 
+  test "should open external navigation links in a new tab when enabled" do
+    @blog.update!(external_links_in_new_tab: true)
+
+    get blog_posts_path
+
+    assert_select "nav a[href=?][target=\"_blank\"][rel=\"noopener\"]", "https://bsky.app/profile/joel.example.com"
+    assert_select "nav a[href=?]:not([target])", "/posts"
+  end
+
+  test "should leave navigation links in the same tab when disabled" do
+    get blog_posts_path
+
+    assert_select "nav a[href=?]:not([target])", "https://bsky.app/profile/joel.example.com"
+  end
+
+  test "should open external bio links in a new tab when enabled" do
+    @blog.update!(bio: "<p>Visit https://example.org</p>", external_links_in_new_tab: true)
+
+    get blog_posts_path
+
+    assert_select ".bio a[href=?][target=\"_blank\"][rel=\"noopener\"]", "https://example.org"
+  end
+
+  test "should leave bio links in the same tab when disabled" do
+    @blog.update!(bio: "<p>Visit https://example.org</p>")
+
+    get blog_posts_path
+
+    assert_select ".bio a[href=?]:not([target])", "https://example.org"
+  end
+
   test "should render avatar favicon when blog has an avatar" do
     @blog.avatar.attach(
       io: File.open(Rails.root.join("test/fixtures/files/avatar.png")),
