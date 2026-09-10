@@ -125,7 +125,9 @@ Rails.application.routes.draw do
           get "verify/:token", to: "verifications#show", as: :verification
         end
 
-        resource :custom_code, only: [ :show, :update ], controller: "custom_code"
+        resource :custom_code, only: [ :show, :update ], controller: "custom_code" do
+          resource :preview, only: [ :show, :update ], controller: "custom_code/previews"
+        end
         resource :api, only: [ :show, :create, :destroy ], controller: "api"
         resources :exports
 
