@@ -3,6 +3,7 @@ require "application_system_test_case"
 class TagsTest < ApplicationSystemTestCase
   setup do
     user = users(:joel)
+    user.update!(features: [ "tag_management" ])
     access_request = user.access_requests.create!
     visit access_request_verification_path(token: access_request.token_digest)
 

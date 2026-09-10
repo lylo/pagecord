@@ -5,8 +5,17 @@ class App::Posts::TagsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @user = users(:joel)
+    @user.update!(features: [ "tag_management" ])
     login_as @user
     @blog = blogs(:joel)
+  end
+
+  test "should not be found without the feature" do
+    @user.update!(features: [])
+
+    get app_posts_tags_path
+
+    assert_response :not_found
   end
 
   test "should list tags with post counts" do

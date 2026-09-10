@@ -1,4 +1,5 @@
 class App::Posts::TagsController < App::BaseController
+  before_action :require_tag_management
   before_action :set_tag, only: [ :update, :destroy ]
 
   def index
@@ -28,6 +29,10 @@ class App::Posts::TagsController < App::BaseController
   end
 
   private
+
+    def require_tag_management
+      raise ActiveRecord::RecordNotFound unless current_features.enabled?(:tag_management)
+    end
 
     def set_tag
       @tag = params[:name].to_s.downcase

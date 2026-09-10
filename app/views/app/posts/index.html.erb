@@ -12,8 +12,10 @@
               <%= inline_svg_tag "icons/search.svg", class: "w-5 h-5" %>
             </button>
 
-            <%= link_to app_posts_tags_path, class: "rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100", title: "Manage tags", aria: { label: "Manage tags" } do %>
-              <%= inline_svg_tag "icons/tag.svg", class: "w-5 h-5" %>
+            <% if current_features.enabled?(:tag_management) %>
+              <%= link_to app_posts_tags_path, class: "rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100", title: "Manage tags", aria: { label: "Manage tags" } do %>
+                <%= inline_svg_tag "icons/tag.svg", class: "w-5 h-5" %>
+              <% end %>
             <% end %>
           </div>
 
