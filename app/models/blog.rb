@@ -1,6 +1,6 @@
 class Blog < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, Blog::CustomCode, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::PasswordProtected, Blog::PostUrls, Blog::Spotlit
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, Blog::CustomCode, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::PasswordProtected, Blog::PostUrls, Blog::Spotlit, Blog::Hosts
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
@@ -58,21 +58,6 @@ class Blog < ApplicationRecord
     title.blank? ? "@#{subdomain}" : title
   end
 
-  def host
-    custom_domain.presence || "#{subdomain}.#{Rails.application.config.x.domain}"
-  end
-
-  # A blog stays reachable on its subdomain after a custom domain is set, so a
-  # post URL is matched against both.
-  def find_post_by_url(url)
-    uri = URI.parse(url.to_s)
-    return unless hosts.include?(uri.host&.downcase)
-
-    posts.kept.find_by(slug: uri.path.delete_prefix("/").chomp("/").delete_prefix("posts/"))
-  rescue URI::Error
-    nil
-  end
-
   # Perks of paying rather than things the blogger made, so the stored
   # preference only applies while the plan includes it. Replies are an ongoing
   # service – we mail the owner on their behalf – and branding removal
@@ -94,10 +79,6 @@ class Blog < ApplicationRecord
   end
 
   private
-
-    def hosts
-      [ "#{subdomain}.#{Rails.application.config.x.domain}", custom_domain ].compact_blank.map(&:downcase)
-    end
 
     def within_blog_limit
       if user && blog_count_exceeds_limit?

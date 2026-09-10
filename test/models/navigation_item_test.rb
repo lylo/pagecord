@@ -244,4 +244,20 @@ class SocialNavigationItemTest < ActiveSupport::TestCase
     assert_not item.valid?
     assert_includes item.errors[:url], "is not a valid URL"
   end
+
+  test "external? is true for social profiles" do
+    assert navigation_items(:joel_social_bluesky).external?
+  end
+
+  test "external? is false for email, page and relative custom links" do
+    assert_not navigation_items(:saul_social_email).external?
+    assert_not navigation_items(:joel_about).external?
+    assert_not navigation_items(:joel_custom).external?
+  end
+
+  test "external? is false for a link back to the blog's own host" do
+    item = CustomNavigationItem.new(blog: @blog, label: "Archive", url: "https://#{@blog.subdomain}.example.com/archive")
+
+    assert_not item.external?
+  end
 end
