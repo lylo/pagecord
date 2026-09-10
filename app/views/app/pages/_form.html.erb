@@ -1,8 +1,7 @@
 <% is_new = !@page.persisted? %>
-<% panel = current_features.enabled?(:post_settings_panel) %>
 <% quota = Current.user.upload_quota %>
 
-<div data-controller="<%= panel ? "settings-panel" : "post-attributes" %> autosave"
+<div data-controller="settings-panel autosave"
     data-autosave-key-value="<%= is_new ? "draft-page-new-#{@blog.id}" : "draft-page-#{@page.id}" %>"
     data-autosave-base-title-value="<%= @page.title.to_s %>"
     data-autosave-base-content-value="<%= h(@page.content&.body&.to_html.to_s) if @page.persisted? %>">
@@ -11,23 +10,13 @@
   <div class="mb-4 flex items-center justify-end gap-x-2 text-slate-500 dark:text-slate-300">
     <%= render "app/shared/help/edit_page" %>
 
-    <% if panel %>
-      <%= render "app/posts/settings_button", record: @page, label: "Page settings" %>
-    <% else %>
-      <div data-controller="toggle">
-        <%= link_to "#", class: "inline-flex h-7 w-7 items-center justify-center text-slate-500 hover:text-black dark:text-slate-300 dark:hover:text-slate-50", data: { action: "click->toggle#toggle click@window->toggle#hide" } do %>
-          <%= inline_svg_tag "icons/ellipsis-horizontal-circle.svg", class: "w-7 h-7" %>
-        <% end %>
-
-        <%= render "drop_down_menu" %>
-      </div>
-    <% end %>
+    <%= render "app/posts/settings_button", record: @page, label: "Page settings" %>
   </div>
 
   <%= form_with(model: @page, url: @page.persisted? ? app_page_path(@page) : app_pages_path, html: { id: "page-form" }) do |form| %>
     <%= hidden_field_tag :context_blog_id, @blog.id if is_new %>
 
-    <%= render panel ? "settings_panel" : "settings_sections", form: form %>
+    <%= render "settings_panel", form: form %>
 
     <fieldset>
       <%= form.text_field :title,
