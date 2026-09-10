@@ -170,3 +170,12 @@ annie_home_page:
   slug: home
   is_page: true
   <<: *default
+
+kitchen_sink:
+  title: Kitchen sink
+  blog: joel
+  published_at: <%= 1.week.ago %>
+  token: <%= SecureRandom.hex(4) %>
+  slug: kitchen-sink
+  is_page: true
+  <<: *default
