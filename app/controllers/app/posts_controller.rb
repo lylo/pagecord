@@ -19,6 +19,12 @@ class App::PostsController < App::BaseController
     posts_query = @blog.posts.kept.published.includes(:post_digests).order(published_at: :desc)
     drafts_query = @blog.posts.kept.draft.includes(:post_digests).order(Arel.sql("COALESCE(posts.published_at, posts.updated_at) DESC"))
 
+    @tag = params[:tag]
+    if @tag.present?
+      posts_query = posts_query.tagged_with(@tag)
+      drafts_query = drafts_query.tagged_with(@tag)
+    end
+
     @search_term = params[:search]
     if @search_term.present?
       if @search_term.match?(/^".*"$/)  # Starts and ends with quotes
@@ -34,7 +40,7 @@ class App::PostsController < App::BaseController
     @pagy, @posts = pagy(posts_query, limit: 25)
     @drafts = @pagy.page == 1 ? drafts_query.load : []
     # pagy has already counted the posts, so only the drafts need counting again.
-    @search_results_count = @search_term.present? ? @pagy.count + drafts_query.count : nil
+    @search_results_count = @search_term.present? || @tag.present? ? @pagy.count + drafts_query.count : nil
     @total_posts_count = @blog.posts.kept.published.count
   end
 

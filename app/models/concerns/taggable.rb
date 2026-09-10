@@ -27,6 +27,20 @@ module Taggable
       where.not(tag_list: []).pluck(:tag_list).flatten.uniq.sort
     end
 
+    def tag_counts
+      where.not(tag_list: []).pluck(:tag_list).flatten.tally.sort.to_h
+    end
+
+    def rename_tag(from, to)
+      tagged_with(from).find_each do |record|
+        record.update_columns(tag_list: (record.tag_list - [ from ] + [ to ]).uniq.sort)
+      end
+    end
+
+    def remove_tag(tag)
+      tagged_with(tag).update_all([ "tag_list = array_remove(tag_list, ?)", tag ])
+    end
+
     def tagged_with(*tags)
       where("tag_list @> ARRAY[?]::varchar[]", Array(tags).flatten)
     end

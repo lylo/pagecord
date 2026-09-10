@@ -1,7 +1,7 @@
-<% if @search_term.present? && @posts.empty? && @drafts.empty? %>
+<% if (@search_term.present? || @tag.present?) && @posts.empty? && @drafts.empty? %>
   <div class="rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900/60">
     <p class="text-center">
-      No posts found for "<%= @search_term %>"
+      No posts found for "<%= @search_term.presence || @tag %>"
     </p>
   </div>
 <% elsif @drafts.any? || @posts.any? %>
@@ -33,9 +33,9 @@
         <div class="mb-4 flex items-center justify-between gap-2 pt-1">
           <div class="flex items-center gap-2">
             <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">
-              <%= @search_term.present? ? "🔎 Results" : "📝 Published" %>
+              <% if @tag.present? %>🏷️ <%= @tag %><% elsif @search_term.present? %>🔎 Results<% else %>📝 Published<% end %>
             </div>
-            <%= pill @search_term.present? ? @search_results_count : @total_posts_count %>
+            <%= pill @search_results_count || @total_posts_count %>
           </div>
           <%= render "info_toggle" %>
         </div>
