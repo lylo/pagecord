@@ -101,15 +101,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "button[aria-label='Page ideas and help']"
   end
 
-  test "edit shows the settings menu by default" do
-    get edit_app_page_path(@page)
-
-    assert_select "[data-controller~=post-attributes]"
-    assert_select "button[title^='Page settings']", false
-  end
-
-  test "edit shows the settings panel when the feature is enabled" do
-    @user.update!(features: [ "post_settings_panel" ])
+  test "edit shows the settings panel" do
     get edit_app_page_path(@page)
 
     assert_select "[data-controller~=settings-panel]"

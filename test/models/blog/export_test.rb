@@ -24,11 +24,11 @@ class Blog::ExportTest < ActiveSupport::TestCase
     @image_data = "fake image data"
     fake_image = StringIO.new(@image_data)
 
+    # Mock the images the other fixture posts point at
+    URI.stubs(:open).with(anything, read_timeout: 30, redirect: true).yields(StringIO.new("fixture image data"))
+
     # Mock the test image URL - use yields for block form of URI.open
     URI.expects(:open).with("http://example.com/test%20image.jpg", read_timeout: 30, redirect: true).yields(fake_image)
-
-    # Mock any ActiveStorage URLs from fixtures (they'll have different URLs)
-    URI.stubs(:open).with(regexp_matches(/rails\/active_storage/), read_timeout: 30, redirect: true).yields(StringIO.new("fixture image data"))
   end
 
   test "defaults to html format" do

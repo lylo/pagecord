@@ -207,3 +207,78 @@ annie_home_page:
   record: annie_home_page (Post)
   name: content
   body: <p>Welcome to my blog.</p>
+
+kitchen_sink:
+  record: kitchen_sink (Post)
+  name: content
+  body: |
+    <p>{{ table_of_contents }}</p>
+    <p>One page with every element a theme has to style. <strong>Bold</strong>, <em>italic</em>, <s>struck</s>, <u>underlined</u>, <mark>highlighted</mark>, a <a href="https://pagecord.com">link</a> and some <code>inline code</code>, followed by a footnote reference.<sup data-footnote-ref="1" id="fnref-1"><a href="#fn-1">1</a></sup></p>
+    <h1 id="heading-one">Heading one</h1>
+    <p>A paragraph under a first-level heading. The quick brown fox jumps over the lazy dog while the five boxing wizards jump quickly.</p>
+    <h2 id="heading-two">Heading two</h2>
+    <p>A paragraph under a second-level heading, long enough to wrap onto a second line so the measure and leading can be judged against the headings around it.</p>
+    <h3 id="heading-three">Heading three</h3>
+    <p>A paragraph under a third-level heading.</p>
+    <h2 id="lists">Lists</h2>
+    <ul>
+      <li>An unordered item</li>
+      <li>Another item with a nested list
+        <ul>
+          <li>Nested item</li>
+          <li>Another nested item</li>
+        </ul>
+      </li>
+      <li>A last item</li>
+    </ul>
+    <ol>
+      <li>First step</li>
+      <li>Second step</li>
+      <li>Third step</li>
+    </ol>
+    <h2 id="quotes-and-callouts">Quotes and callouts</h2>
+    <blockquote>
+      <p>The best camera is the one that's with you. A quotation long enough to wrap, so the left rule and the italic can be checked together.</p>
+    </blockquote>
+    <aside data-callout="note">
+      <p data-callout-title>Note</p>
+      <p>An Obsidian-style callout. Colours come from the callout type.</p>
+    </aside>
+    <aside data-callout="warning">
+      <p data-callout-title>Warning</p>
+      <p>A second callout in a different colour.</p>
+    </aside>
+    <details>
+      <summary>A collapsed details block</summary>
+      <p>Hidden until the summary is clicked.</p>
+    </details>
+    <h2 id="code">Code</h2>
+    <pre data-language="ruby">def greet(name)
+      puts "Hello, #{name}"
+    end</pre>
+    <h2 id="tables-and-definitions">Tables and definitions</h2>
+    <table>
+      <tbody>
+        <tr><th>Camera</th><th>Lens</th><th>Year</th></tr>
+        <tr><td>Leica M6</td><td>35mm Summicron</td><td>1984</td></tr>
+        <tr><td>Fuji X100V</td><td>Fixed 23mm</td><td>2020</td></tr>
+        <tr><td>Ricoh GR III</td><td>Fixed 18mm</td><td>2019</td></tr>
+      </tbody>
+    </table>
+    <dl>
+      <dt>Aperture</dt><dd>How much light the lens lets in.</dd>
+      <dt>Shutter speed</dt><dd>How long the sensor is exposed.</dd>
+      <dt>ISO</dt><dd>How sensitive the sensor is.</dd>
+    </dl>
+    <h2 id="media">Media</h2>
+    <figure class="attachment attachment--preview attachment--jpg">
+      <img src="https://picsum.photos/seed/pagecord/1200/800" alt="A placeholder photograph">
+      <figcaption class="attachment__caption">A captioned image</figcaption>
+    </figure>
+    <p><a href="https://open.spotify.com/track/15xYayQFFYeKEWRruuzsfZ">https://open.spotify.com/track/15xYayQFFYeKEWRruuzsfZ</a></p>
+    <p><a href="https://www.youtube.com/watch?v=eVrJCTW8GgE">https://www.youtube.com/watch?v=eVrJCTW8GgE</a></p>
+    <hr>
+    <p>Text after a horizontal rule, then the footnotes.</p>
+    <ol data-footnotes>
+      <li id="fn-1"><p>The footnote itself, rendered as an ordered list at the end of the post.</p></li>
+    </ol>
