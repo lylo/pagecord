@@ -43,7 +43,7 @@
                   </div>
 
                   <div class="flex items-center gap-x-2 text-slate-400 dark:text-slate-400">
-                    <%= link_to app_post_path(page), title: "Preview draft", target: "_blank", data: { turbo_frame: "_top" }, class: "transition-colors hover:text-slate-600 dark:hover:text-slate-200" do %>
+                    <%= link_to blog_post_preview_url(page.signed_id(purpose: :preview), host: page.blog.host), title: "Preview draft", target: "_blank", data: { turbo_frame: "_top" }, class: "transition-colors hover:text-slate-600 dark:hover:text-slate-200" do %>
                       <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "h-4 w-4" %>
                     <% end %>
                   </div>

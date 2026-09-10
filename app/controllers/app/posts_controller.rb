@@ -1,10 +1,6 @@
 class App::PostsController < App::BaseController
   include Pagy::Method
-  include BlogContentSecurityPolicy
   include EditorContentSecurityPolicy
-
-  # The preview renders blog content, embeds included, under the blog layout
-  blog_content_security_policy only: :show
 
   # The editor previews embeds too
   editor_content_security_policy only: %i[ new edit create update ]
@@ -44,14 +40,6 @@ class App::PostsController < App::BaseController
 
   def edit
     @post = @blog.posts.kept.find_by!(token: params[:token])
-  end
-
-  def show
-    @post = @blog.all_posts.kept.find_by!(token: params[:token])
-    @user = Current.user
-    @preview = true
-
-    render layout: "blog"
   end
 
   def create
