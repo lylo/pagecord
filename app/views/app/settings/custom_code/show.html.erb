@@ -30,6 +30,7 @@
   <%= settings_section "Style", description: "Restyle your blog with your own CSS, and add a snippet to the bottom of every page.", control: style_help do %>
     <%= render layout: "code_field", locals: {
           title: "Custom CSS", attribute: :custom_css, mode: "css",
+          preview_path: app_settings_custom_code_preview_path,
           disabled: premium_disabled, subscribe_prompt: "to style your blog with custom CSS." } do %>
       <p>
         Add custom CSS to style your blog. This CSS will be inserted into the <code>&lt;head&gt;</code> of your blog pages.
