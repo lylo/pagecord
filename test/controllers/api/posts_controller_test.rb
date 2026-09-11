@@ -403,6 +403,38 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes json["content"], "<figure"
   end
 
+  test "update with attachment preserves a client supplied alt" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+
+    patch "/posts/#{@post.token}", params: {
+      content: %(Hello\n\n<action-text-attachment sgid="#{blob.attachable_sgid}" alt="A boat at sunset"></action-text-attachment>),
+      content_format: "markdown"
+    }, headers: auth_header
+
+    assert_response :success
+    assert_includes JSON.parse(response.body)["content"], 'alt="A boat at sunset"'
+  end
+
+  test "an attachment with neither alt nor caption renders without an alt attribute" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+
+    patch "/posts/#{@post.token}", params: {
+      content: %(Hello\n\n<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      content_format: "markdown"
+    }, headers: auth_header
+
+    assert_response :success
+    assert_not_includes @post.reload.content.body.to_s, "alt="
+  end
+
   test "update with identical content skips attachment churn" do
     blob = ActiveStorage::Blob.create_and_upload!(
       io: file_fixture("space.jpg").open,
