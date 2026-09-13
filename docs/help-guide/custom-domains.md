@@ -56,7 +56,7 @@ Pagecord will verify your DNS and set up SSL automatically. This can take a few 
 Once your site is loading successfully on Pagecord, you have two options:
 
 - Leave it as **DNS only** (grey cloud) – the simplest setup, since Pagecord already provides CDN and SSL.
-- Switch to the **proxied** (orange cloud) mode if you want Cloudflare's CDN and protections. If you do, set your SSL/TLS mode to **Full (Strict)** to avoid certificate errors. The certificate renews fine through the proxy once it has been issued.
+- Switch to the **proxied** (orange cloud) mode if you want Cloudflare's CDN and protections. If you do, set your SSL/TLS mode to **Full (Strict)** to avoid certificate errors. Note that the proxy blocks certificate **renewals** as well as the first issue: certificates renew around every 60 days, so you'll need to switch back to **DNS only** for a few hours each time. If you don't, your site will start showing certificate errors once the current certificate expires.
 
 ## Removing a custom domain
 
