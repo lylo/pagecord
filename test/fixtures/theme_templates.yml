@@ -125,6 +125,7 @@ broadside:
 
     /* Header: title left, avatar right */
     .titlebar { margin-top: 2rem; margin-bottom: 0.5rem; }
+    header > .email-subscriber-form { margin-top: 1.5rem; }
     .avatar-container { flex-direction: row-reverse; align-items: center; }
     .avatar img { border-radius: 0.25rem; }
     .blog-title {
@@ -223,12 +224,17 @@ archibald:
     body { font-family: "Roboto Mono", monospace; }
 
     /* Header: reorder to title, nav, bio */
-    header { display: flex; flex-direction: column; }
-    header > .titlebar { order: 1; }
-    header > nav { order: 2; justify-content: flex-start; margin-bottom: 1.75em; gap: 1rem; }
-    header > .bio { order: 3; }
-    header > .email-subscriber-form { order: 4; }
-    header > hr { order: 5; }
+    header {
+      display: flex;
+      flex-direction: column;
+      row-gap: 1.5rem;
+      margin-top: 1.25rem;
+    }
+    header > .titlebar { order: 1; margin-block: 0; }
+    header > nav { order: 2; justify-content: flex-start; gap: 1rem; }
+    header > .bio { order: 3; margin-block: 0; }
+    header > .email-subscriber-form { order: 4; margin-block: 0; }
+    header > hr { order: 5; margin-block: 0 1.75rem; }
 
     /* Links: accent underline, highlight on hover */
     nav a, .post-body a, .posts-titles a, .posts-list a, .subscription-message a {
@@ -310,6 +316,8 @@ hestia:
     .post.h-entry:not(:has(.post-title)) {
       padding-top: 8px;
     }
+
+    .blog.post .email-subscriber-form { margin-top: 2rem; }
 
     article img:not(figure img, .attachment-gallery *),
     .attachment:not(.attachment-gallery *) {
@@ -477,6 +485,10 @@ holamundo:
         font-size: 1rem;
       }
 
+      header > .email-subscriber-form {
+        margin-top: 2.75rem;
+      }
+
       .email-subscriber-form::before {
         content: "";
         position: absolute;
@@ -584,12 +596,18 @@ novella:
     :root { --font-size-base: 110%; }
 
     /* Header: centered masthead */
-    header { display: flex; flex-direction: column; align-items: center; }
-    header > .titlebar { order: 1; }
-    header > .bio { order: 2; }
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      row-gap: 1.5rem;
+      margin-top: 1.25rem;
+    }
+    header > .titlebar { order: 1; margin-block: 0; }
+    header > .bio { order: 2; margin-block: 0; }
     header > nav { order: 3; }
-    header > .email-subscriber-form { order: 4; margin-top: 1.25rem; }
-    header > hr { order: 5; width: 100%; }
+    header > .email-subscriber-form { order: 4; margin-block: 0; }
+    header > hr { order: 5; width: 100%; margin-block: 0; }
 
     .titlebar { justify-content: center; }
     .avatar-container {
@@ -606,7 +624,7 @@ novella:
       letter-spacing: 0.15em;
     }
     .blog-title a { font-weight: 600; }
-    .bio { text-align: center; font-style: italic; opacity: 0.8; margin-top: 0.5rem; }
+    .bio { text-align: center; font-style: italic; opacity: 0.8; }
     nav { justify-content: center; gap: 1.25rem; font-size: 0.9em; }
     nav a { font-weight: 400; }
 
@@ -615,7 +633,7 @@ novella:
       border: none;
       height: 1px;
       background: linear-gradient(to right, transparent, var(--color-border), transparent);
-      margin: 1.75rem 0;
+      margin: 0 0 1.75rem;
     }
 
     /* Stream posts */
@@ -855,6 +873,7 @@ minimal_mono:
     article.post footer { display: contents; }
     article.post .post-date { order: -1; }
     article.post .post-actions { margin-top: 1rem; margin-bottom: 1rem; }
+    .blog.post .email-subscriber-form { margin-top: 2rem; }
     h1.post-title { line-height: inherit; margin-bottom: 0.5rem; }
     .tags-container { margin-top: 0.5rem; }
     .email-form-container { gap: 0.25rem; }
@@ -906,6 +925,7 @@ pukka:
       display: grid;
       grid-template-columns: auto 1fr;
       align-items: center;
+      row-gap: 0.5rem;
       margin-top: 2rem;
       margin-bottom: 3rem;
     }
@@ -936,7 +956,6 @@ pukka:
       justify-content: flex-start;
       gap: 1rem;
       font-size: 1em;
-      margin-top: 0.5rem;
     }
     header nav a {
       color: var(--color-accent);
@@ -950,8 +969,13 @@ pukka:
       grid-column: 1 / -1;
     }
 
+    header > .bio,
+    header > .email-subscriber-form {
+      margin-block: 1rem 0;
+    }
+
     header hr {
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
 
     /* Bio reads like body text */
@@ -1041,16 +1065,21 @@ aurelia:
     h1.post-title { letter-spacing: -0.01em; }
 
     /* Header: title right, then nav, then bio */
-    header { display: flex; flex-direction: column; }
-    header > .titlebar { order: 1; }
+    header {
+      display: flex;
+      flex-direction: column;
+      row-gap: 1.25rem;
+      margin-top: 1.25rem;
+    }
+    header > .titlebar { order: 1; margin-block: 0; }
     header > nav { order: 2; }
-    header > .bio { order: 3; color: var(--color-text); }
-    header > .email-subscriber-form { order: 4; }
+    header > .bio { order: 3; color: var(--color-text); margin-block: 0; }
+    header > .email-subscriber-form { order: 4; margin-block: 0; }
     header hr { display: none; }
 
     /* Avatar pinned to the right margin. The title sits beside it, and drops
        below it when the column is too narrow to take both. */
-    .titlebar { justify-content: flex-end; margin-bottom: 0.75rem; }
+    .titlebar { justify-content: flex-end; }
     .avatar-container {
       width: 100%;
       flex-direction: row-reverse;
