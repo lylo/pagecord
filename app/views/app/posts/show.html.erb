@@ -1,7 +1,7 @@
 <%= render "blogs/header", hide_email_form: true, hide_bio: !@post.home_page? %>
 
 <div data-controller="media-embeds lightbox">
-  <article>
+  <article class="<%= @post.page? ? 'page' : 'post' %> h-entry">
     <%= render "blogs/posts/post_title", post: @post %>
     <%= render "blogs/posts/post_content", post: @post %>
 

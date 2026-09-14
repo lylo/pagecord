@@ -599,7 +599,8 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     get app_post_url(posts(:vivian_draft))
 
     assert_response :success
-    assert_select "article"
+    assert_select "article.post"
+    assert_select "article footer .post-date"
     assert_select ".lexxy-content"
   end
 
