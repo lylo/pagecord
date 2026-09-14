@@ -150,7 +150,7 @@ It only runs on single posts, which is why there's no `turbo:frame-load` here. P
 
 ## A copy link button for headings
 
-This receipe shows a button in the margin when you hover over a heading. Clicking it copies the address of that section to the clipboard. This goes in **Body code**:
+This recipe shows a button in the margin when you hover over a heading. Clicking it copies the address of that section to the clipboard, and a small notice in the corner of the page confirms it. This goes in **Body code**:
 
 ```html
 <style>
@@ -176,7 +176,27 @@ This receipe shows a button in the margin when you hover over a heading. Clickin
 
 :is(h1, h2, h3, h4):hover .heading-link, .heading-link:focus-visible { opacity: 1; }
 
-.heading-link:hover, .heading-link.copied { background: color-mix(in srgb, currentColor 18%, transparent); }
+.heading-link:hover { background: color-mix(in srgb, currentColor 18%, transparent); }
+
+.heading-toast {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 0.875rem;
+  opacity: 0;
+  translate: 0 0.5rem;
+  animation: heading-toast 2.5s;
+  pointer-events: none;
+}
+
+@keyframes heading-toast { 10%, 90% { opacity: 1; translate: none; } }
 
 @media (max-width: 52rem) { .heading-link { display: none; } }
 </style>
@@ -185,7 +205,11 @@ This receipe shows a button in the margin when you hover over a heading. Clickin
 if (!window.headingLinksReady) {
   window.headingLinksReady = true;
 
-  const icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
+  const icon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
+
+  const toast = document.createElement("div");
+  toast.className = "heading-toast";
+  toast.innerHTML = icon + "Copied link to clipboard";
 
   document.addEventListener("turbo:load", function () {
     if (document.body.dataset.pageType === "index") return;
@@ -202,8 +226,9 @@ if (!window.headingLinksReady) {
       link.addEventListener("click", function (event) {
         event.preventDefault();
         navigator.clipboard?.writeText(link.href);
-        link.classList.add("copied");
-        setTimeout(function () { link.classList.remove("copied"); }, 1500);
+
+        // Adding the toast to the page starts its animation, and adding it again restarts it
+        document.body.append(toast);
       });
 
       heading.prepend(link);
