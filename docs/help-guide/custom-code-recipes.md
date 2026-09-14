@@ -42,7 +42,7 @@ You could merge everything into one `<script>` block instead, and it would work,
 
 Don't put a `<script>` inside another one. The browser ends the outer block at the first `</script>` it finds, and the rest of your code spills onto the page as text.
 
-The 16KB body code limit applies to the whole box rather than to each snippet. Every recipe here, pasted together, comes to around 5KB, so there's plenty of room.
+The 16KB body code limit applies to the whole box rather than to each snippet. Every recipe here, pasted together, comes to around 8KB, so there's plenty of room.
 
 ## A copy button for code blocks
 
@@ -147,6 +147,83 @@ if (!window.tableOfContentsReady) {
 Pagecord gives every heading in a post an `id` when you save it, so the links have something to point at without you doing anything. Posts written a long time ago might not have them, so the script falls back to numbering the sections itself.
 
 It only runs on single posts, which is why there's no `turbo:frame-load` here. Posts with fewer than three headings are left alone, so short posts stay clean. It picks up `h2` and `h3` – add `h4` to the selector if your posts go deeper – and it starts open, so remove `toc.open = true` if you'd rather readers had to click.
+
+## A copy link button for headings
+
+This receipe shows a button in the margin when you hover over a heading. Clicking it copies the address of that section to the clipboard. This goes in **Body code**:
+
+```html
+<style>
+.post-body :is(h1, h2, h3, h4) { position: relative; --heading-link-size: 2rem; }
+
+.heading-link {
+  position: absolute;
+  left: calc(-1 * (var(--heading-link-size) + 0.5rem));
+  top: 0.75em;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: var(--heading-link-size);
+  height: var(--heading-link-size);
+  border-radius: 0.35rem;
+  color: inherit;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  opacity: 0;
+  transition: 0.15s;
+}
+
+.heading-link svg { width: 55%; height: 55%; opacity: 0.7; }
+
+:is(h1, h2, h3, h4):hover .heading-link, .heading-link:focus-visible { opacity: 1; }
+
+.heading-link:hover, .heading-link.copied { background: color-mix(in srgb, currentColor 18%, transparent); }
+
+@media (max-width: 52rem) { .heading-link { display: none; } }
+</style>
+
+<script>
+if (!window.headingLinksReady) {
+  window.headingLinksReady = true;
+
+  const icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
+
+  document.addEventListener("turbo:load", function () {
+    if (document.body.dataset.pageType === "index") return;
+
+    document.querySelectorAll(".post-body :is(h1, h2, h3, h4)[id]").forEach(function (heading) {
+      if (heading.querySelector(".heading-link")) return;
+
+      const link = document.createElement("a");
+      link.className = "heading-link";
+      link.href = "#" + heading.id;
+      link.title = "Copy link to this section";
+      link.innerHTML = icon;
+
+      link.addEventListener("click", function (event) {
+        event.preventDefault();
+        navigator.clipboard?.writeText(link.href);
+        link.classList.add("copied");
+        setTimeout(function () { link.classList.remove("copied"); }, 1500);
+      });
+
+      heading.prepend(link);
+    });
+  });
+}
+</script>
+```
+
+Pagecord gives every heading an `id` when you save a post, so what the button copies is the address of the post with `#` and that id on the end.
+
+The button borrows its colour from the heading, so it looks right on any theme without adjusting. It's a fixed size rather than one that grows with the heading: change `--heading-link-size` and both the icon and the gap follow it. It picks up `h1` to `h4` – add `h5` and `h6` to the selectors in both the style and the script if your posts go deeper.
+
+If your theme sets its own heading sizes and you'd rather keep the tweak in **Custom CSS**, the rule needs to be more specific than the one above, because body code is read after your stylesheet:
+
+```css
+.blog .post-body :is(h1, h2, h3, h4) { --heading-link-size: 1.25rem; }
+```
+
+It's hidden on narrow screens, where there's no margin for it to sit in and no mouse to hover with, and it stays off your home page, where a link to a section of one post among many isn't much use.
 
 ## Showing webmentions
 
