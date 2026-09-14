@@ -9,10 +9,13 @@ class Blogs::Posts::PreviewsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should preview a draft post with its signed token" do
-    get blog_post_preview_path(posts(:joel_draft).signed_id(purpose: :preview))
+    token = posts(:joel_draft).signed_id(purpose: :preview)
+    get blog_post_preview_path(token)
 
     assert_response :success
-    assert_select "article"
+    assert_select "article.post"
+    assert_select "article footer .post-date"
+    assert_select "a.post-title-link[href=?]", blog_post_preview_url(token, host: @blog.host)
     assert_select "meta[name=robots][content='noindex, nofollow']"
     assert_equal "no-store", response.headers["Cache-Control"]
     assert_nil response.headers["Cache-Tag"]
@@ -22,7 +25,8 @@ class Blogs::Posts::PreviewsControllerTest < ActionDispatch::IntegrationTest
     get blog_post_preview_path(posts(:draft_page).signed_id(purpose: :preview))
 
     assert_response :success
-    assert_select "article"
+    assert_select "article.page"
+    assert_select "article footer", false
   end
 
   test "should preview a scheduled post with its signed token" do
