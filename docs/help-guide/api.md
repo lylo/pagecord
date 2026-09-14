@@ -236,6 +236,62 @@ Unlinks the home page from the blog but keeps the underlying page. Returns `204 
 
 Returns `404 Not Found` if no home page is set.
 
+## Settings
+
+Two singular resources mirror the Appearance and Custom code screens in your blog settings. An update only changes the fields you send, and returns the whole resource. Both include `updated_at`.
+
+Fields marked "subscribers only" return `403 Forbidden` naming the field if your blog is on a trial rather than a paid plan.
+
+### Get appearance
+
+```
+GET /settings/appearance
+```
+
+Returns `200 OK` with the appearance settings.
+
+### Update appearance
+
+```
+PATCH /settings/appearance
+```
+
+Parameters:
+
+- `theme` – `base`, `mint`, `lavender`, `coral`, `sand`, `sky`, `berry`, or `custom`
+- `font` – `sans`, `serif`, or `mono`
+- `width` – `narrow`, `standard`, or `wide`
+- `layout` – `stream_layout`, `title_layout`, or `cards_layout`
+- `custom_theme_bg_light`, `custom_theme_text_light`, `custom_theme_accent_light` – hex colours, used when `theme` is `custom`
+- `custom_theme_bg_dark`, `custom_theme_text_dark`, `custom_theme_accent_dark` – hex colours, used when `theme` is `custom`
+- `show_branding` – `true` or `false` (subscribers only)
+
+Returns `200 OK` with the updated settings. Returns `422 Unprocessable Entity` when validation fails.
+
+### Get custom code
+
+```
+GET /settings/custom_code
+```
+
+Returns `200 OK` with the custom code settings.
+
+### Update custom code
+
+```
+PATCH /settings/custom_code
+```
+
+Parameters:
+
+- `custom_css` – custom stylesheet for your blog
+- `custom_footer_html` – HTML appended to the footer
+- `custom_head_html` – HTML injected into `<head>` (subscribers only)
+- `custom_body_html` – HTML injected at the end of `<body>` (subscribers only)
+- `custom_code_enabled` – `true` or `false` (subscribers only)
+
+Returns `200 OK` with the updated settings. Returns `422 Unprocessable Entity` when validation fails.
+
 ## Attachments
 
 Upload images, videos, or audio files to use in your posts.
@@ -361,7 +417,7 @@ Validation errors use `errors`:
 |--------|---------|
 | 400 | Bad request – invalid timestamp, out-of-range page, invalid status value, or invalid attachment sgid |
 | 401 | Missing or invalid API key |
-| 403 | Premium subscription required, or the upload allowance is used up |
+| 403 | Premium subscription required, the upload allowance is used up, or a subscriber-only setting was sent without a subscription |
 | 404 | Resource not found |
 | 422 | Validation failed, invalid front matter, missing file, unsupported file type, or oversized file |
 | 429 | Rate limit exceeded |

@@ -1,7 +1,16 @@
 /* CodeMirror editor overrides, shared by the CSS and HTML editors */
+[data-controller~="code-editor"] {
+  --code-editor-max-height: 70vh;
+}
+
+[data-controller~="code-editor"] .CodeMirror-scroll {
+  max-height: var(--code-editor-max-height);
+}
+
 [data-controller~="code-editor"] .CodeMirror {
   height: auto;
   min-height: 10rem;
+  max-height: var(--code-editor-max-height);
   border: 1px solid #cbd5e1;
   border-radius: 0.375rem;
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;

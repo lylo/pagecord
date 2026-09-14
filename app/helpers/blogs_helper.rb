@@ -89,6 +89,13 @@ module BlogsHelper
     end
   end
 
+  def blog_bio(blog)
+    bio = auto_link(blog.bio)
+    return bio unless blog.external_links_in_new_tab?
+
+    Html::ExternalLinksInNewTab.new(blog).transform(bio).html_safe
+  end
+
   def custom_footer_html(blog)
     sanitize blog.custom_footer_html,
       tags: Blog::CustomFooter::ALLOWED_TAGS,

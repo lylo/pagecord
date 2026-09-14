@@ -22,6 +22,12 @@ module PostsHelper
     item.link_url
   end
 
+  def navigation_item_link_options(item)
+    return {} unless @blog.external_links_in_new_tab? && item.external?
+
+    { target: "_blank", rel: "noopener" }
+  end
+
   def filter_description
     parts = []
     parts << "tagged with <strong>#{h @current_tags.join(", ")}</strong>" if @current_tags.present?

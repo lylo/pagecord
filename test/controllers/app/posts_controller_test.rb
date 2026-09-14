@@ -436,6 +436,31 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "Mobile Post"
   end
 
+  test "index hides the tag management link by default" do
+    get app_posts_path
+
+    assert_select "a[href=?]", app_posts_tags_path, false
+  end
+
+  test "index shows the tag management link when the feature is enabled" do
+    @user.update!(features: [ "tag_management" ])
+
+    get app_posts_path
+
+    assert_select "a[href=?]", app_posts_tags_path
+  end
+
+  test "should filter posts by tag" do
+    @user.blog.posts.create!(title: "Photo Post", content: "Photos", tags_string: "photo")
+    @user.blog.posts.create!(title: "Photography Post", content: "Photos", tags_string: "photography")
+
+    get app_posts_path(tag: "photo")
+
+    assert_response :success
+    assert_includes @response.body, "Photo Post"
+    assert_not_includes @response.body, "Photography Post"
+  end
+
   test "should search drafts as well as published posts" do
     @user.blog.posts.create!(title: "Published Rails Post", content: "Published content", tags_string: "rails")
     @user.blog.posts.create!(title: "Draft Rails Post", content: "Draft content", tags_string: "rails", status: :draft)

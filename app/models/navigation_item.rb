@@ -14,6 +14,10 @@ class NavigationItem < ApplicationRecord
     raise NotImplementedError, "Subclass must implement link_url"
   end
 
+  def external?
+    blog.external_url?(link_url)
+  end
+
   def icon
     nil
   end

@@ -21,7 +21,7 @@
 
     <div class="form-field">
       <%= form.label :message, t('email_form.form.message_label') %>
-      <%= form.text_area :message, rows: 6, required: true %>
+      <%= form.text_area :message, rows: 6, required: true, class: "autogrow" %>
     </div>
 
     <%= render "/shared/turnstile" %>
