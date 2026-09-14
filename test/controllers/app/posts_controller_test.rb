@@ -436,15 +436,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "Mobile Post"
   end
 
-  test "index hides the tag management link by default" do
-    get app_posts_path
-
-    assert_select "a[href=?]", app_posts_tags_path, false
-  end
-
-  test "index shows the tag management link when the feature is enabled" do
-    @user.update!(features: [ "tag_management" ])
-
+  test "index links to the tag management screen" do
     get app_posts_path
 
     assert_select "a[href=?]", app_posts_tags_path
