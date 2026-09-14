@@ -252,12 +252,4 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_pages_path
     assert @page.reload.open_graph_image_suppressed?
   end
-
-  test "should preview draft page with blog layout" do
-    get app_post_path(@draft_page)
-
-    assert_response :success
-    assert_select "article"
-    assert_select ".lexxy-content"
-  end
 end

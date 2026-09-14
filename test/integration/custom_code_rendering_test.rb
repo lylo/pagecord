@@ -52,13 +52,8 @@ class CustomCodeRenderingTest < ActionDispatch::IntegrationTest
   end
 
   # The app is a different origin to the blog, so custom code must not run there.
-  test "does not run in the app previews" do
+  test "does not run in the theme garden preview" do
     login_as @blog.user
-
-    get app_post_url(token: @post.token)
-    assert_response :success
-    assert_not_includes response.body, HEAD_CODE
-    assert_not_includes response.body, BODY_CODE
 
     get app_settings_theme_garden_preview_url(theme_templates(:cardashian))
     assert_response :success

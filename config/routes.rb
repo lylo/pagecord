@@ -76,7 +76,7 @@ Rails.application.routes.draw do
         resource :details, only: [ :create, :destroy ], controller: "details"
         resources :tags, only: [ :index, :update, :destroy ], param: :name
       end
-      resources :posts, param: :token do
+      resources :posts, param: :token, except: [ :show ] do
         resource :broadcast, only: [ :create ], controller: "posts/broadcasts" do
           resource :test, only: [ :create ], controller: "posts/broadcasts/tests"
         end
@@ -239,7 +239,7 @@ Rails.application.routes.draw do
     end
   end
 
-  # Available on every domain, so embeds also resolve when previewing a draft in the app.
+  # Available on every domain, so embeds also resolve in the theme garden preview.
   namespace :api do
     namespace :embeds do
       resource :bandcamp, only: [ :create ], controller: "bandcamp"
@@ -262,6 +262,7 @@ Rails.application.routes.draw do
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 
     get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
+    resources :previews, only: [ :show ], controller: "blogs/posts/previews", as: :blog_post_previews
     get "/posts/:slug", to: "blogs/posts#show"
 
     get "/:slug", to: "blogs/posts#show", as: :blog_post
