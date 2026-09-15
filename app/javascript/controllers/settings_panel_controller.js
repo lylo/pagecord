@@ -15,6 +15,8 @@ export default class extends Controller {
   }
 
   open() {
+    this.previouslyFocused = document.activeElement
+    this.previousRange = this.caretRange()
     this.panelTarget.setAttribute("data-open", "")
 
     // Focus the first field once the drawer is on screen - it's still
@@ -24,6 +26,25 @@ export default class extends Controller {
 
   close() {
     this.panelTarget.removeAttribute("data-open")
+    this.previouslyFocused?.focus()
+    this.restoreCaret()
+  }
+
+  // Inputs remember their cursor, but focusing the editor drops the caret at
+  // the start, so put the selection back where the writer left it
+  caretRange() {
+    if (!this.previouslyFocused?.isContentEditable) return null
+
+    const selection = window.getSelection()
+    return selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : null
+  }
+
+  restoreCaret() {
+    if (!this.previousRange) return
+
+    const selection = window.getSelection()
+    selection.removeAllRanges()
+    selection.addRange(this.previousRange)
   }
 
   toggle() {
