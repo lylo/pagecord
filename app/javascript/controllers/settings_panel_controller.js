@@ -16,6 +16,10 @@ export default class extends Controller {
 
   open() {
     this.panelTarget.setAttribute("data-open", "")
+
+    // Focus the first field once the drawer is on screen - it's still
+    // visibility:hidden on the first frame, so focus wouldn't take
+    requestAnimationFrame(() => requestAnimationFrame(() => this.firstField?.focus()))
   }
 
   close() {
@@ -23,7 +27,11 @@ export default class extends Controller {
   }
 
   toggle() {
-    this.panelTarget.toggleAttribute("data-open")
+    this.panelTarget.hasAttribute("data-open") ? this.close() : this.open()
+  }
+
+  get firstField() {
+    return this.panelTarget.querySelector("input:not([type=hidden]), textarea, select, [contenteditable]:not([contenteditable=false])")
   }
 
   refreshTags(event) {
