@@ -27,8 +27,13 @@
           <div id="<%= attribute %>-error" class="field-error"><%= @blog.errors[attribute].first %></div>
         </div>
 
-        <div>
+        <div class="flex items-center gap-2">
           <%= form.submit "Save #{title}", disabled: disabled, data: { save_button_target: "button" }, class: "btn-primary" %>
+
+          <% if local_assigns[:preview_path].present? && !disabled %>
+            <%= form.submit "Preview", formaction: preview_path, formtarget: "_blank",
+                  data: { turbo: false }, class: "btn-secondary" %>
+          <% end %>
         </div>
       </div>
     <% end %>
