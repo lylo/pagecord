@@ -58,7 +58,7 @@ Pagecord supports creating and updating posts with:
 - Slug
 - Published date
 - Image uploads through the media endpoint
-- Image descriptions from apps, stored as captions
+- Image alt text and captions
 
 Pagecord does not currently support cross-posting targets through Micropub. The `syndicate-to` response is intentionally empty.
 
@@ -143,6 +143,24 @@ file=@photo.jpg
 ```
 
 On success, Pagecord returns `201 Created` with a `Location` header. Use that URL in your Markdown content or as a Micropub `photo` property.
+
+### Alt text and captions
+
+A Markdown image carries two descriptions, and Pagecord uses both:
+
+```text
+![A fishing boat at sunset](image-url "Sunset on the Mekong")
+```
+
+The text in the square brackets becomes the image's alt text. It describes the image for screen readers and is not shown on the page. The quoted title after the URL becomes the visible caption underneath the image.
+
+Give an image alt text alone and it stays undescribed on screen but readable to assistive technology:
+
+```text
+![A fishing boat at sunset](image-url)
+```
+
+The `alt` value on a Micropub `photo` property is treated the same way.
 
 ## Source Queries
 

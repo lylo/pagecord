@@ -30,4 +30,28 @@ Obsidian's callout syntax is supported, so `> [!note] Title` publishes as a styl
 
 Footnotes are supported too, so `[^1]` markers and their definitions publish as a numbered list at the foot of the post. See [Footnotes](footnotes.md).
 
+## Images and alt text
+
+Obsidian's own embed syntax uploads the file but gives it no description:
+
+```text
+![[photo.jpg]]
+```
+
+Use Markdown embed syntax when you want to describe an image. It carries two descriptions, and Pagecord uses both:
+
+```text
+![A fishing boat at sunset](photo.jpg "Sunset on the Mekong")
+```
+
+The text in the square brackets becomes the image's alt text. It describes the image for screen readers and is not shown on the page. The quoted title after the path becomes the visible caption underneath the image.
+
+Leave the title off and the image is described but not captioned:
+
+```text
+![A fishing boat at sunset](photo.jpg)
+```
+
+Images already hosted on the web are left alone, so only files in your vault are uploaded. A vault path containing parentheses or quotation marks will not match, so use a wikilink for those.
+
 Full details are [on the plugin home page](https://community.obsidian.md/plugins/pagecord).
