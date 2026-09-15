@@ -20,6 +20,22 @@ This stays running in your terminal. Open a second terminal for running commands
 
 You can view the app at [http://localhost:3000](http://localhost:3000). You can view individual blogs on their respective subdomains, e.g. [http://joel.localhost:3000](http://joel.localhost:3000). Note: Safari doesn't support `*.localhost` subdomains - use `lvh.me` instead (e.g. [http://joel.lvh.me:3000](http://joel.lvh.me:3000)).
 
+## Logging in
+
+The database is seeded with the test fixtures the first time you start, so there
+are accounts waiting for you. `joel@pagecord.com` is the one to use: it owns two
+blogs (`joel` and `joelnotes`) and has a subscription, so premium features and
+the API work.
+
+Pagecord has no passwords. Sign in with the email address, then collect the link
+from the local mail catcher:
+
+1. Go to [http://localhost:3000/login](http://localhost:3000/login) and enter `joel@pagecord.com`
+2. Open [http://localhost:3000/letter_opener](http://localhost:3000/letter_opener) and click the link in the email
+
+Every email the app sends in development lands in `/letter_opener` rather than a
+real inbox, so that's where confirmations, digests and subscriber emails go too.
+
 ## After pulling changes
 
 ```bash
