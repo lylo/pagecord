@@ -85,8 +85,8 @@ updated when a model is added — a trap the code genuinely can't express.
 Every app page renders inside a **sheet**: a white surface on the tinted page
 background. The sheet's parts are component classes in
 `app/assets/tailwind/components.css`: `.sheet`, `.sheet-bleed`, `.sheet-header`,
-`.sheet-band`, `.sheet-divider`, `.option-card`, `.option-radio`, `.tab` and
-`.tab-active`. A view adds only layout modifiers to them (`justify-between`,
+`.sheet-band`, `.sheet-divider`, `.option-card`, `.option-radio`, `.btn-group`
+with `.btn-group-item`, `.tab` and `.tab-active`. A view adds only layout modifiers to them (`justify-between`,
 `py-5`, `flex-col`); it never restates their colours, borders or padding.
 
 - **The sheet is the only bordered container.** Inside it, sections divide with
@@ -95,7 +95,9 @@ background. The sheet's parts are component classes in
   lay out several sheets by declaring `content_for :sheets`, which Settings does.
 - **Every screen starts with a header row**: `sheet-header`, flush to the sheet's
   top edge with a hairline beneath. Breadcrumb or tabs on the left, actions on
-  the right, and 24px to whatever follows. Breadcrumbs root at the nav section and are omitted where
+  the right, and 24px to whatever follows. List screens (Posts, Pages) follow it
+  with a page title and a control row: the primary action, a `btn-group` for the
+  Published/Drafts choice, then a `sheet-divider` above the rows. Breadcrumbs root at the nav section and are omitted where
   a nav tab already goes to the same place, as in the editors.
 - **Full-bleed dividers**: rows carry `sheet-bleed` so the divider between them
   reaches the sheet's edges. A standalone rule is `sheet-divider`.
@@ -111,8 +113,9 @@ background. The sheet's parts are component classes in
 - **Choices are option cards**: an `option-card` label wrapping an `option-radio`
   (or a hidden one). See the export format, typeface, layout, width and email
   delivery choosers.
-- **Blank slates** are a shaded band flush to the sheet's top, not a box floating
-  inside it. When the blank slate is the whole page it fills the sheet.
+- **Blank slates**: when the blank slate is the whole page, it is centred in the
+  sheet (Pages, Comments). When content follows it, it is a shaded band flush to
+  the sheet's top (Posts). Never a box floating inside the sheet.
 - **Buttons** are one height: filled variants carry a transparent border so they
   match outline ones. Destructive actions always use `btn-danger`.
 - **Placeholders** are set once in `components.css`; the editor's are in

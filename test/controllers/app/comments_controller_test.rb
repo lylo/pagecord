@@ -69,7 +69,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     get app_comments_path(tab: "approved")
 
     assert_response :success
-    assert_select "h1", count: 0
+    assert_select "h1", text: "Comments"
     assert_select "p", text: /Great post/
     assert_select "p", text: /On another post/
   end

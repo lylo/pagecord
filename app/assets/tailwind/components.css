@@ -77,6 +77,19 @@
     @apply h-4 w-4 cursor-pointer border-slate-300 text-pagecord-accent focus:ring-pagecord-accent/40 dark:border-slate-600 dark:bg-slate-700;
   }
 
+  /* A row of exclusive choices, one .btn-group-item per option, sized to match the buttons. */
+  .btn-group {
+    @apply inline-flex divide-x divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.03)] dark:divide-slate-700 dark:border-slate-700 dark:bg-slate-900;
+  }
+
+  .btn-group-item {
+    @apply inline-flex h-full cursor-pointer items-center gap-1.5 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800;
+  }
+
+  .btn-group-item-active {
+    @apply bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100;
+  }
+
   /* Tabs sit on a .sheet-band; the active one joins the panel below it. */
   .tab {
     @apply -mb-px inline-flex cursor-pointer items-center gap-2 rounded-t-lg border border-b-0 border-transparent px-4 py-3 text-sm text-slate-500 transition hover:text-slate-800 sm:text-base dark:text-slate-400 dark:hover:text-slate-200;

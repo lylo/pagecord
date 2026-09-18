@@ -1,22 +1,19 @@
-<% if (@search_term.present? || @tag.present?) && @posts.empty? && @drafts.empty? %>
+<% filtering = @search_term.present? || @tag.present? %>
+
+<% if filtering && @posts.empty? && @drafts.empty? %>
   <p class="py-8 text-center text-slate-600 dark:text-slate-300">No posts found for "<%= @search_term.presence || @tag %>"</p>
 <% else %>
-  <% filter = { search: @search_term.presence, tag: @tag.presence } %>
-  <% published_title = @tag.presence || (@search_term.present? ? "Results" : "Published") %>
-
-  <div class="sheet-band flex items-end justify-between gap-2 pt-2">
-    <div class="flex gap-1">
-      <%= button_to app_posts_tab_path, method: :patch, params: filter.merge(tab: "published"), form_class: "contents",
-            class: class_names("tab", "tab-active": @tab == "published") do %>
-        <%= published_title %> <%= pill @pagy.count %>
+  <% if filtering %>
+    <p class="pt-4 text-sm text-slate-500 dark:text-slate-400">
+      <%= pluralize(@tab == "drafts" ? @drafts.size : @pagy.count, @tab == "drafts" ? "draft" : "post") %>
+      <% if @tag.present? %>
+        tagged <span class="font-medium text-slate-700 dark:text-slate-200">#<%= @tag %></span> ·
+        <%= link_to "Clear", app_posts_path, class: "link-quiet" %>
+      <% else %>
+        matching "<%= @search_term %>"
       <% end %>
-      <%= button_to app_posts_tab_path, method: :patch, params: filter.merge(tab: "drafts"), form_class: "contents",
-            class: class_names("tab", "tab-active": @tab == "drafts") do %>
-        Drafts <%= pill @drafts.size %>
-      <% end %>
-    </div>
-    <div class="pb-3"><%= render "info_toggle" %></div>
-  </div>
+    </p>
+  <% end %>
 
   <% if @tab == "drafts" %>
     <div id="draft_posts" class="pt-4 pb-4">

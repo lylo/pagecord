@@ -1,17 +1,19 @@
 <% if @post %>
   <div class="py-8">
-    <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-50">No comments yet</h2>
+    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50">No comments yet</h2>
     <p class="mt-1 text-slate-600 dark:text-slate-300">
       When a reader comments on this post, it will appear here for you to approve.
     </p>
   </div>
 <% else %>
-  <div class="sheet-band border-b-0 -mt-(--sheet-padding) -mb-4 rounded-lg py-6 sm:-mb-6">
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-50">No comments yet ✨</h1>
-    <p class="mt-2 text-slate-600 dark:text-slate-300">
-      Comments on your posts appear here for you to approve. Nothing is published until you say
-      so, and spam never reaches this page. You can turn comments off again in
-      <%= link_to "Audience settings", app_settings_audience_path, class: "link-quiet font-medium hover:text-slate-700 dark:hover:text-slate-300" %>.
-    </p>
+  <div class="flex grow flex-col items-center pt-8 pb-16 sm:pt-14">
+    <div class="max-w-md">
+      <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50">No comments yet</h2>
+      <p class="mt-2 text-slate-600 dark:text-slate-300">
+        Comments on your posts appear here for you to approve. Nothing is published until you say
+        so, and spam never reaches this page. You can turn comments off again in
+        <%= link_to "Audience settings", app_settings_audience_path, class: "link-quiet font-medium hover:text-slate-700 dark:hover:text-slate-300" %>.
+      </p>
+    </div>
   </div>
 <% end %>

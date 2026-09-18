@@ -44,8 +44,8 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     get app_posts_url
 
     assert_response :success
-    assert_select "button.tab", text: /Published/
-    assert_select "button.tab", text: /Drafts/
+    assert_select "button.btn-group-item", text: /Published/
+    assert_select "button.btn-group-item", text: /Drafts/
 
     get app_posts_url(tab: "drafts")
 
@@ -543,8 +543,8 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "each tab counts its own search results" do
     get app_posts_path(search: "post")
 
-    assert_select "button.tab", text: /Results\s+1/
-    assert_select "button.tab", text: /Drafts\s+1/
+    assert_select "#posts p", text: /1 post matching/
+    assert_select "button.btn-group-item", text: /Drafts\s+1/
   end
 
   test "should sort drafts by published_at or updated_at" do

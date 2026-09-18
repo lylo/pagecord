@@ -2,8 +2,12 @@
   <% if @posts.empty? && @drafts.empty? && @search_term.blank? && @tag.blank? %>
     <%= render "blank_slate" %>
   <% else %>
+    <% filter = { search: @search_term.presence, tag: @tag.presence } %>
+
     <div data-controller="search">
-      <div class="sheet-header justify-end gap-2">
+      <div class="sheet-header justify-between gap-x-3">
+        <%= render "app/shared/blog_link" %>
+
         <div class="flex items-center text-slate-600 dark:text-slate-400">
           <button data-action="click->search#toggle" class="cursor-pointer rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100" title="Search posts" aria-label="Search posts">
             <%= inline_svg_tag "icons/search.svg", class: "w-5 h-5" %>
@@ -13,8 +17,25 @@
             <%= inline_svg_tag "icons/tag.svg", class: "w-5 h-5" %>
           <% end %>
         </div>
+      </div>
 
-        <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
+      <h1 class="mt-6 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Posts</h1>
+
+      <div class="mt-3 flex flex-wrap items-center gap-2">
+        <%= link_to "New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
+
+        <div class="btn-group">
+          <%= button_to app_posts_tab_path, method: :patch, params: filter.merge(tab: "published"),
+                class: class_names("btn-group-item", "btn-group-item-active": @tab == "published") do %>
+            Published <%= pill @posts_count %>
+          <% end %>
+          <%= button_to app_posts_tab_path, method: :patch, params: filter.merge(tab: "drafts"),
+                class: class_names("btn-group-item", "btn-group-item-active": @tab == "drafts") do %>
+            Drafts <%= pill @drafts_count %>
+          <% end %>
+        </div>
+
+        <div class="ms-auto"><%= render "info_toggle" %></div>
       </div>
 
       <div data-search-target="container" class="pt-4 <%= 'hidden' unless @search_term %>">
@@ -22,7 +43,7 @@
           <div class="relative">
             <%= form.text_field :search, value: @search_term, placeholder: "Search posts...",
                 data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
-                class: "w-full rounded-lg border border-slate-300 bg-white px-4 py-2 pr-12 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-0 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-slate-400" %>
+                class: "form-field w-full px-4 py-2 pr-12" %>
             <button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 -translate-y-1/2 transform text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300" title="Close search" aria-label="Close search">
               <%= inline_svg_tag "icons/close.svg", class: "w-5 h-5" %>
             </button>
@@ -30,11 +51,13 @@
         <% end %>
       </div>
     </div>
-  <% end %>
 
-  <%= turbo_frame_tag "posts", data: { turbo_action: "advance" } do %>
-    <%= render "posts_list" %>
-    <%= render "app/shared/pagy_nav" if @tab == "published" %>
+    <div class="sheet-divider mt-5"></div>
+
+    <%= turbo_frame_tag "posts", data: { turbo_action: "advance" } do %>
+      <%= render "posts_list" %>
+      <%= render "app/shared/pagy_nav" if @tab == "published" %>
+    <% end %>
   <% end %>
 
   <% trashed_count = @blog.posts.discarded.count %>

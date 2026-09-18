@@ -1,35 +1,37 @@
 <% quiet_link = "link-quiet font-medium hover:text-slate-800 dark:hover:text-slate-200" %>
 
-<div class="sheet-band -mt-(--sheet-padding) rounded-t-lg py-6">
-  <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-50">Write your first post ✨</h1>
-  <p class="mt-2 text-slate-600 dark:text-slate-300">
-    Your posts will appear here. The quickest way to start is to compose a draft in the editor.
-  </p>
-  <div class="mt-4">
-    <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
-  </div>
-</div>
-
-<h2 class="pt-6 pb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">Or publish from somewhere else</h2>
-
-<div class="divide-y divide-slate-200 dark:divide-slate-800">
-  <div class="sheet-bleed flex items-start gap-3 py-5">
-    <span class="text-xl leading-6" aria-hidden="true">💎</span>
-    <div>
-      <p class="font-semibold text-slate-900 dark:text-slate-50">Obsidian</p>
-      <p class="mt-0.5 text-sm leading-6 text-slate-600 dark:text-slate-300">
-        Publish straight from your vault with the <%= link_to "Pagecord Obsidian plugin", "https://help.pagecord.com/obsidian", target: "_blank", class: quiet_link %>.
-      </p>
+<div class="flex grow flex-col items-center pt-8 pb-16 sm:pt-14">
+  <div class="max-w-md">
+    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50">Write your first post</h2>
+    <p class="mt-2 text-slate-600 dark:text-slate-300">
+      Your posts will appear here. The quickest way to start is to compose a draft in the editor.
+    </p>
+    <div class="mt-6">
+      <%= link_to "New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
     </div>
-  </div>
 
-  <div class="sheet-bleed flex items-start gap-3 py-5">
-    <span class="text-xl leading-6" aria-hidden="true">✉️</span>
-    <div>
-      <p class="font-semibold text-slate-900 dark:text-slate-50">Email</p>
-      <p class="mt-0.5 text-sm leading-6 text-slate-600 dark:text-slate-300">
-        <%= link_to "Email a post", "https://help.pagecord.com/posting-by-email", class: quiet_link %> from your inbox to <%= mail_to @blog.delivery_email, @blog.delivery_email, class: quiet_link %>.
-      </p>
+    <h3 class="mt-12 text-lg font-semibold text-slate-900 dark:text-slate-100">Or publish from somewhere else</h3>
+
+    <div class="mt-2">
+      <div class="flex items-start gap-3 py-4">
+        <span class="text-xl leading-6" aria-hidden="true">✉️</span>
+        <div>
+          <p class="font-semibold text-slate-900 dark:text-slate-50">Email</p>
+          <p class="mt-0.5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+            <%= link_to "Email a post", "https://help.pagecord.com/posting-by-email", class: quiet_link %> from your inbox to <%= mail_to @blog.delivery_email, @blog.delivery_email, class: quiet_link %>.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 py-4">
+        <span class="text-xl leading-6" aria-hidden="true">💎</span>
+        <div>
+          <p class="font-semibold text-slate-900 dark:text-slate-50">Obsidian</p>
+          <p class="mt-0.5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+            Publish straight from your vault with the <%= link_to "Pagecord Obsidian plugin", "https://help.pagecord.com/obsidian", target: "_blank", class: quiet_link %>.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -35,6 +35,8 @@ class App::PostsController < App::BaseController
 
     @pagy, @posts = pagy(posts_query, limit: 25)
     @drafts = drafts_query.load
+    @drafts_count = @blog.posts.kept.draft.count
+    @posts_count = @blog.posts.kept.published.count
     @tab = params[:tab].presence_in(%w[ published drafts ]) || default_tab
   end
 
