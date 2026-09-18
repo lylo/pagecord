@@ -25,7 +25,7 @@ By default, your blog's home page shows your posts. You can replace this with a 
 
 1. Create a new page (the title can be left blank for home pages)
 2. Publish it
-3. From the drop-down menu, select **Set as Home Page**
+3. Open **Page settings** and choose **Make home page**
 
 Your custom home page can include [dynamic variables](https://help.pagecord.com/dynamic-variables-for-pages) to display post lists, tags, a search box, and more.
 

@@ -1,0 +1,17 @@
+<div class="btn-group">
+  <%= button_to app_pages_sort_order_path, method: :patch, params: { sort_order: { by: "alpha" } },
+        form_class: "contents",
+        title: "Sort alphabetically", aria: { current: (@sort == "alpha" ? "page" : nil) },
+        class: class_names("btn-group-item", "btn-group-item-active": @sort == "alpha") do %>
+    <%= inline_svg_tag "icons/bars-arrow-down.svg", class: "h-4 w-4 shrink-0" %>
+    <span>A–Z</span>
+  <% end %>
+
+  <%= button_to app_pages_sort_order_path, method: :patch, params: { sort_order: { by: "updated" } },
+        form_class: "contents",
+        title: "Sort by recently updated", aria: { current: (@sort == "updated" ? "page" : nil) },
+        class: class_names("btn-group-item", "btn-group-item-active": @sort == "updated") do %>
+    <%= inline_svg_tag "icons/clock.svg", class: "h-4 w-4 shrink-0" %>
+    <span>Recent</span>
+  <% end %>
+</div>

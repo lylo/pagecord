@@ -75,7 +75,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
 
     page = @blog.pages.last
     assert page.page?
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
   end
 
   test "should create draft page" do
@@ -134,7 +134,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
 
     @page.reload
     assert_equal "Updated About", @page.title
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
   end
 
   test "should update page as draft" do
@@ -242,14 +242,14 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
 
     patch app_page_path(@page), params: { post: { open_graph_image: image } }
 
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
     assert @page.reload.open_graph_image.attached?
   end
 
   test "should update page with open_graph_image_suppressed" do
     patch app_page_path(@page), params: { post: { open_graph_image_suppressed: true } }
 
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
     assert @page.reload.open_graph_image_suppressed?
   end
 end

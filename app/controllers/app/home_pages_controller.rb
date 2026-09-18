@@ -15,7 +15,7 @@ class App::HomePagesController < App::BaseController
 
     if @home_page.save
       @blog.update!(home_page_id: @home_page.id)
-      redirect_to app_pages_path, notice: "Home page created!"
+      redirect_to app_pages_path(tab: @home_page.draft? ? "drafts" : "published"), notice: "Home page created!"
     else
       render :new, status: :unprocessable_entity
     end
@@ -30,7 +30,7 @@ class App::HomePagesController < App::BaseController
     @home_page = @blog.home_page
 
     if @home_page.update(home_page_params)
-      redirect_to app_pages_path, notice: "Home page updated"
+      redirect_to app_pages_path(tab: @home_page.draft? ? "drafts" : "published"), notice: "Home page updated"
     else
       render :edit, status: :unprocessable_entity
     end

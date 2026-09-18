@@ -1,6 +1,7 @@
-<% api_intro = "Create and manage posts, upload images, and automate your blog with the Pagecord API. Use it with scripts, Shortcuts, Obsidian, or any tool that can make HTTP requests." %>
+<%= render "app/settings/header", title: "API", heading: "Automate your blog",
+      description: "Create and manage posts, upload images, and automate your blog with the Pagecord API. Use it with scripts, Shortcuts, Obsidian, or any tool that can make HTTP requests." %>
 
-<%= settings_section "API", description: api_intro do %>
+<%= settings_section do %>
   <% if @blog.user.on_free_plan? %>
     <%= settings_row "Access", stacked: true do %>
       <%= callout(:info) do %>

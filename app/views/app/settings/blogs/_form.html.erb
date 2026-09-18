@@ -1,8 +1,10 @@
+<%= render "app/settings/header", title: "Blog Settings", heading: "Set up your blog" %>
+
 <%= form_with url: app_settings_blog_path, model: @blog do |form| %>
   <% disabled = !@blog.user.subscribed? %>
 
-  <div class="space-y-8 group/privacy">
-    <%= settings_section "Blog Settings" do %>
+  <div class="group/privacy">
+    <%= settings_section do %>
       <%= settings_row "Post by Email" do %>
         <p class="text-slate-700 dark:text-slate-300">
           Send an email from <%= @blog.user.email %> to
@@ -225,11 +227,11 @@
           <%= field_error(@blog, :subdomain) %>
         </fieldset>
       <% end %>
-    <% end %>
+      <div class="sheet-bleed flex items-center gap-x-2 py-5">
+        <%= form.submit "Update", class: "btn-primary" %>
+        <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+      </div>
+  <% end %>
   </div>
 
-  <div class="mt-12 flex items-center gap-x-2">
-    <%= form.submit "Update", class: "btn-primary" %>
-    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
-  </div>
 <% end %>

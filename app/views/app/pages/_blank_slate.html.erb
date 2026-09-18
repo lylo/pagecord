@@ -1,13 +1,15 @@
-<div class="rounded-xl border border-slate-200 bg-slate-50 p-6 sm:p-8 dark:border-slate-700 dark:bg-slate-800/50">
-  <h1 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Create your first page ✨</h1>
-  <p class="mt-2 leading-7 text-slate-600 dark:text-slate-300">
-    Pages are for standalone parts of your site, like an About, Contact, or Now page. Once you've created a page, you can add it to your navigation in <%= link_to "Navigation settings", app_settings_navigation_items_path, class: "font-medium underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:decoration-slate-600 dark:hover:text-slate-300" %>.
-  </p>
+<div class="flex grow flex-col items-center pt-8 pb-16 sm:pt-14">
+  <div class="max-w-md">
+    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50">Create your first page</h2>
+    <p class="mt-2 text-slate-600 dark:text-slate-300">
+      Pages are for standalone parts of your site, like an About, Contact, or Now page. Once you've created one, you can add it to your navigation in <%= link_to "Navigation settings", app_settings_navigation_items_path, class: "link-quiet font-medium hover:text-slate-800 dark:hover:text-slate-200" %>.
+    </p>
 
-  <div class="mt-5 flex flex-wrap gap-2">
-    <%= link_to "✏️ New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
-    <% unless @blog.has_custom_home_page? %>
-      <%= link_to "🏠 Create Home Page", new_app_home_page_path, class: "btn-secondary", title: "Create a blank home page" %>
-    <% end %>
+    <div class="mt-6 flex flex-wrap gap-2">
+      <%= link_to "New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
+      <% unless @blog.has_custom_home_page? %>
+        <%= link_to "Create Home Page", new_app_home_page_path, class: "btn-optional", title: "Create a blank home page" %>
+      <% end %>
+    </div>
   </div>
 </div>

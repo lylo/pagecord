@@ -1,29 +1,29 @@
 /* Override tagify CSS variables */
 .tagify {
-  --tag-bg: #e2e8f0 !important;
-  --tag-text-color: #1e293b !important;
-  --tag-invalid-color: #1e293b !important;
-  --tag-hover: #cbd5e1 !important;
-  --tag-remove-bg: oklch(86.9% 0.022 252.894) !important;
-  --tag-remove-btn-bg--hover: #1e293b !important;
-  --tags-focus-border-color: oklch(55.4% 0.046 257.417) !important;  /* slate-500 */
+  --tag-bg: var(--color-slate-200) !important;
+  --tag-text-color: var(--color-slate-800) !important;
+  --tag-invalid-color: var(--color-slate-800) !important;
+  --tag-hover: var(--color-slate-300) !important;
+  --tag-remove-bg: var(--color-slate-300) !important;
+  --tag-remove-btn-bg--hover: var(--color-slate-800) !important;
+  --tags-focus-border-color: var(--color-slate-500) !important;
   --tagify-dd-bg-color: white;
-  --tagify-dd-text-color: #6b7280;  /* gray-500 */
-  --tagify-dd-color-primary: #f3f4f6;  /* gray-100, used for border */
+  --tagify-dd-text-color: var(--color-slate-500);
+  --tagify-dd-color-primary: var(--color-slate-100);
 }
 
 @media (prefers-color-scheme: dark) {
   .tagify {
-    --tag-bg: #334155 !important;
-    --tag-text-color: #e2e8f0 !important;
-    --tag-invalid-color: #e2e8f0 !important;
-    --tag-hover: #475569 !important;
-    --tag-remove-bg: #475569 !important;
-    --tag-remove-btn-color: #94a3b8 !important;
-    --tag-remove-btn-bg--hover: #1e293b !important;
-    --tagify-dd-bg-color: #374151;  /* gray-700 */
-    --tagify-dd-text-color: #d1d5db;  /* gray-300 */
-    --tagify-dd-color-primary: #4b5563;  /* gray-600 */
+    --tag-bg: var(--color-slate-700) !important;
+    --tag-text-color: var(--color-slate-200) !important;
+    --tag-invalid-color: var(--color-slate-200) !important;
+    --tag-hover: var(--color-slate-600) !important;
+    --tag-remove-bg: var(--color-slate-600) !important;
+    --tag-remove-btn-color: var(--color-slate-400) !important;
+    --tag-remove-btn-bg--hover: var(--color-slate-800) !important;
+    --tagify-dd-bg-color: var(--color-slate-800);
+    --tagify-dd-text-color: var(--color-slate-300);
+    --tagify-dd-color-primary: var(--color-slate-700);
   }
 }
 
@@ -43,7 +43,7 @@ tags {
 
 .tagify__dropdown__wrapper {
   background: white;
-  border: 1px solid #f3f4f6;  /* gray-100 */
+  border: 1px solid var(--color-slate-200);
   border-radius: 0.375rem;  /* rounded-md */
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);  /* shadow-lg */
   padding: 0.25rem;
@@ -56,22 +56,22 @@ tags {
 }
 
 .tagify__dropdown__item--active {
-  background: #e5e7eb;  /* gray-200 */
+  background: var(--color-slate-200);
   color: inherit;
 }
 
 @media (prefers-color-scheme: dark) {
   .tagify__dropdown__wrapper {
-    background: #374151;  /* gray-700 */
-    border-color: #4b5563;  /* gray-600 */
+    background: var(--color-slate-800);
+    border-color: var(--color-slate-700);
   }
 
   .tagify__dropdown__item {
-    color: #d1d5db;  /* gray-300 */
+    color: var(--color-slate-300);
   }
 
   .tagify__dropdown__item--active {
-    background: #4b5563;  /* gray-600 */
+    background: var(--color-slate-700);
     color: inherit;
   }
 }

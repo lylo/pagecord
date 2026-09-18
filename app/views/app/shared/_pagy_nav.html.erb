@@ -1,5 +1,6 @@
+<%# locals: (spacing: "mt-4") %>
 <% if @pagy.pages > 1 %>
-  <div class="mt-4 flex justify-end">
+  <div class="flex justify-end <%= spacing %>">
     <%== @pagy.series_nav %>
   </div>
 <% end %>

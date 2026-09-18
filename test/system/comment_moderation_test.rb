@@ -13,10 +13,10 @@ class CommentModerationTest < ApplicationSystemTestCase
   test "deleting a comment asks first and honours the answer" do
     visit app_comment_path(@comment)
 
-    dismiss_confirm { click_on "Delete" }
+    dismiss_confirm { click_on "Delete comment" }
     assert Post::Comment.exists?(@comment.id), "dismissing the dialog should keep the comment"
 
-    accept_confirm { click_on "Delete" }
+    accept_confirm { click_on "Delete comment" }
     assert_current_path app_comments_path, wait: 5
     assert_text "Comment deleted"
     assert_not Post::Comment.exists?(@comment.id)

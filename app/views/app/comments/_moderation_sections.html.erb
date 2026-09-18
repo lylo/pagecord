@@ -1,13 +1,20 @@
 <% if @pending.empty? && @approved.empty? %>
   <%= render "app/comments/blank_slate" %>
 <% else %>
-  <div class="space-y-8">
-    <% if @pending.any? %>
-      <%= render "app/comments/pending_section" %>
-    <% end %>
+  <div class="<%= @post ? "mt-6" : "mt-3" %> flex flex-wrap items-center gap-2">
+    <div class="btn-group">
+      <%= link_to comments_tab_path("pending"), class: class_names("btn-group-item", "btn-group-item-active": @tab == "pending") do %>
+        Waiting for you <%= pill @pending.size %>
+      <% end %>
+      <%= link_to comments_tab_path("approved"), class: class_names("btn-group-item", "btn-group-item-active": @tab == "approved") do %>
+        Approved <%= pill @pagy.count %>
+      <% end %>
+    </div>
+  </div>
 
-    <% if @approved.any? %>
-      <%= render "app/comments/approved_section" %>
-    <% end %>
+  <div class="sheet-divider mt-5"></div>
+
+  <div class="pt-2">
+    <%= render "app/comments/#{@tab}_section" %>
   </div>
 <% end %>

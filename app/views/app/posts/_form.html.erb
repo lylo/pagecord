@@ -1,7 +1,7 @@
 <% is_new = !@post.persisted? %>
 <% quota = Current.user.upload_quota %>
 
-<div data-controller="settings-panel autosave"
+<div data-controller="settings-panel autosave writing-mode"
     data-autosave-key-value="<%= is_new ? "draft-post-new-#{@blog.id}" : "draft-post-#{@post.id}" %>"
     data-autosave-base-title-value="<%= @post.title.to_s %>"
     data-autosave-base-content-value="<%= h(@post.content&.body&.to_html.to_s) if @post.persisted? %>">
@@ -9,56 +9,51 @@
 
   <%= render "email_banner" %>
 
-  <div class="flex items-center justify-end gap-x-3 mb-4 text-slate-500 dark:text-slate-300">
-    <span class="flex flex-wrap justify-end gap-x-2 text-sm text-slate-400 dark:text-slate-500" data-settings-panel-target="tags">
-      <% @post.tag_list.first(3).each do |tag| %>
-        <span>#<%= tag %></span>
-      <% end %>
-      <% if @post.tag_list.size > 3 %>
-        <span>+<%= @post.tag_list.size - 3 %> more</span>
-      <% end %>
-    </span>
-    <%= render "settings_button", record: @post, label: "Post settings" %>
-  </div>
-
   <%= form_with(model: [:app, @post], html: { id: "post-form" }) do |form| %>
     <%= hidden_field_tag :context_blog_id, @blog.id if is_new %>
     <%= hidden_field_tag :page, params[:page] if params[:page].present? %>
 
     <%= render "settings_panel", form: form %>
 
-    <%= form.text_field :title,
-      placeholder: "Optional post title",
-      class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
-      autofocus: true,
-      data: { autosave_target: "title" }
-    %>
+    <div class="sheet-header mb-6 flex-wrap justify-between gap-x-3 gap-y-2 writing-mode:hidden">
+      <div class="flex items-center gap-x-2 min-w-0">
+        <span class="hidden sm:flex flex-wrap gap-x-2 text-slate-400 dark:text-slate-500" data-settings-panel-target="tags">
+          <% @post.tag_list.first(3).each do |tag| %>
+            <span>#<%= tag %></span>
+          <% end %>
+          <% if @post.tag_list.size > 3 %>
+            <span>+<%= @post.tag_list.size - 3 %> more</span>
+          <% end %>
+        </span>
+      </div>
+      <div class="flex flex-wrap items-center justify-end gap-2 ms-auto">
+        <%= render "app/posts/writing_mode_button" %>
+        <%= render "settings_button", record: @post, label: "Post settings" %>
+        <%= link_to (is_new ? "Discard" : "Cancel"),
+              app_posts_path(page: params[:page].presence),
+              class: "btn-optional",
+              data: { action: "click->autosave#cancel" } %>
+        <%= form.button draft_button_text(@post), name: "post[status]", value: "draft", class: "btn-optional" %>
+        <%= render "publish_button", form: form, record: @post %>
+      </div>
+    </div>
+
+    <%= render "title_field", form: form %>
 
     <fieldset>
+      <div class="field-error"><%= @post.errors.full_messages_for(:content).first %></div>
       <%= form.rich_text_area :content,
         placeholder: "Craft your draft...",
-        class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
+        class: "lexxy-content lexxy-borderless mt-4",
         spellcheck: true,
         autocorrect: "on",
         autocapitalize: "sentences",
         data: { controller: "lexxy ios-toolbar", autosave_target: "content", attachments: !quota.exceeded?, videos: quota.unlimited? } %>
 
-      <div class="field-error"><%= @post.errors[:content].first if @post.errors[:content].any? %></div>
     </fieldset>
-
-    <div class="flex items-center justify-between mt-8">
-      <div>
-        <%= form.submit publish_button_text(@post), class: "btn-primary" %>
-        <%= link_to (is_new ? "Discard" : "Cancel"),
-              app_posts_path(page: params[:page].presence),
-              class: "btn-secondary",
-              data: { action: "click->autosave#cancel" } %>
-      </div>
-      <div>
-        <%= form.button draft_button_text(@post), name: "post[status]", value: "draft", class: "btn-optional" %>
-      </div>
-    </div>
 
     <%= render "app/shared/upload_quota", quota: quota %>
   <% end %>
+
+  <%= render "app/posts/writing_mode_button", exit: true %>
 </div>

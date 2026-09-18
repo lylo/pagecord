@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["element"]
+  static targets = ["button", "element"]
 
   connect() {
     this.hide()
@@ -9,13 +9,12 @@ export default class extends Controller {
 
   toggle(event) {
     event.preventDefault()
-    event.stopPropagation()
     this.elementTarget.classList.toggle("hidden")
   }
 
-  hide() {
-    if (!this.elementTarget.classList.contains("hidden")) {
-      this.elementTarget.classList.add("hidden")
-    }
+  hide(event) {
+    if (event?.type === "click" && this.buttonTarget.contains(event.target)) return
+
+    this.elementTarget.classList.add("hidden")
   }
 }

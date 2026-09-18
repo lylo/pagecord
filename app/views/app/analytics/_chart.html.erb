@@ -1,5 +1,5 @@
 <!-- Chart -->
-<div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
+<div>
   <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Page Views Over Time</h3>
 
   <% if @chart_data.any? %>
@@ -104,7 +104,7 @@
         <% if @chart_data.length > 1 %>
           <polyline
             fill="none"
-            stroke="#4fbd9c"
+            stroke="var(--color-pagecord-accent)"
             stroke-width="2"
             points="<%= @chart_data.map.with_index { |data, index|
               x = chart_left_margin + (index * step_x)
@@ -119,7 +119,7 @@
           <% x = chart_left_margin + (index * step_x) %>
           <% unique_y = chart_top_margin + chart_height - (data[:unique_page_views].to_f / chart_max * chart_height) %>
 
-          <circle cx="<%= x %>" cy="<%= unique_y %>" r="3" fill="#4fbd9c  "/>
+          <circle cx="<%= x %>" cy="<%= unique_y %>" r="3" fill="var(--color-pagecord-accent)"/>
         <% end %>
 
         <!-- Full line for day view -->
@@ -130,10 +130,10 @@
           <% unique_y = chart_top_margin + chart_height - (data[:unique_page_views].to_f / chart_max * chart_height) %>
 
           <!-- Page views line -->
-          <line x1="<%= line_start_x %>" y1="<%= unique_y %>" x2="<%= line_end_x %>" y2="<%= unique_y %>" stroke="#4fbd9c" stroke-width="3"/>
+          <line x1="<%= line_start_x %>" y1="<%= unique_y %>" x2="<%= line_end_x %>" y2="<%= unique_y %>" stroke="var(--color-pagecord-accent)" stroke-width="3"/>
 
           <!-- End point circle for visual emphasis -->
-          <circle cx="<%= line_end_x %>" cy="<%= unique_y %>" r="3" fill="#4fbd9c"/>
+          <circle cx="<%= line_end_x %>" cy="<%= unique_y %>" r="3" fill="var(--color-pagecord-accent)"/>
         <% end %>
       </svg>
     </div>

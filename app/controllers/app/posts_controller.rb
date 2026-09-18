@@ -34,10 +34,10 @@ class App::PostsController < App::BaseController
     end
 
     @pagy, @posts = pagy(posts_query, limit: 25)
-    @drafts = @pagy.page == 1 ? drafts_query.load : []
-    # pagy has already counted the posts, so only the drafts need counting again.
-    @search_results_count = @search_term.present? || @tag.present? ? @pagy.count + drafts_query.count : nil
-    @total_posts_count = @blog.posts.kept.published.count
+    @drafts = drafts_query.load
+    @drafts_count = @blog.posts.kept.draft.count
+    @posts_count = @blog.posts.kept.published.count
+    @tab = params[:tab].presence_in(%w[ published drafts ]) || default_tab
   end
 
   def new
@@ -54,7 +54,7 @@ class App::PostsController < App::BaseController
     return render_stale_form_context unless context_blog_id_matches_current_blog?
 
     if @post.save
-      redirect_to app_posts_path, notice: "Post was successfully created"
+      redirect_to app_posts_path(tab: @post.draft? ? "drafts" : "published"), notice: "Post was successfully created"
     else
       render :new, status: :unprocessable_entity
     end
@@ -64,7 +64,7 @@ class App::PostsController < App::BaseController
     @post = @blog.posts.kept.find_by!(token: params[:token])
 
     if @post.update(post_params)
-      redirect_to app_posts_path(page: params[:page].presence), notice: "Post was successfully updated"
+      redirect_to app_posts_path(page: params[:page].presence, tab: @post.draft? ? "drafts" : "published"), notice: "Post was successfully updated"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -78,6 +78,10 @@ class App::PostsController < App::BaseController
   end
 
   private
+
+    def default_tab
+      @posts.empty? && @drafts.any? ? "drafts" : "published"
+    end
 
 
     def post_params

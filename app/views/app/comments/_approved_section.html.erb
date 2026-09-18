@@ -1,12 +1,9 @@
-<div>
-  <section>
-    <div class="-mx-4 flex items-center gap-2 border-y border-slate-200 bg-slate-50 px-4 py-5 sm:mx-0 sm:rounded-t-lg sm:border-x sm:px-6 dark:border-slate-700 dark:bg-slate-800">
-      <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Approved</h3>
-      <%= pill(@pagy.count) %>
-    </div>
-
+<% if @approved.any? %>
+  <div class="divide-y divide-slate-200 dark:divide-slate-800">
     <%= render partial: "app/comments/approved_comment", collection: @approved, as: :comment %>
-  </section>
+  </div>
 
   <%= render "app/shared/pagy_nav" %>
-</div>
+<% else %>
+  <p class="py-8 text-center text-slate-600 dark:text-slate-300">No approved comments yet.</p>
+<% end %>

@@ -98,7 +98,7 @@ class AutosaveTest < ApplicationSystemTestCase
 
     click_on "Publish Post"
 
-    assert_current_path app_posts_path
+    assert_current_path app_posts_path(tab: "published")
     assert_nil draft_for(key)
   end
 

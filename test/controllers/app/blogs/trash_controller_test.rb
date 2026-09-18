@@ -12,7 +12,7 @@ class App::Blogs::TrashControllerTest < ActionDispatch::IntegrationTest
     get app_blogs_trash_url
 
     assert_response :success
-    assert_select "h1", "Blog trash"
+    assert_select "a[href=?]", app_blogs_path, text: "Blogs"
     assert_match blog.display_name, response.body
     assert_select "form[action='#{app_blog_restoration_path(blog)}']"
     assert_select "form[action='#{app_blog_path(blog)}']"

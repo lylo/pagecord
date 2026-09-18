@@ -1,5 +1,7 @@
-<% heading = tag.span safe_join([ "Waiting for you", pill(@pending.size) ]), class: "inline-flex items-center gap-2" %>
-
-<%= settings_section heading do %>
-  <%= render partial: "app/comments/pending_comment", collection: @pending, as: :comment %>
+<% if @pending.any? %>
+  <div class="divide-y divide-slate-200 dark:divide-slate-800">
+    <%= render partial: "app/comments/pending_comment", collection: @pending, as: :comment %>
+  </div>
+<% else %>
+  <p class="py-8 text-center text-slate-600 dark:text-slate-300">Nothing waiting for you.</p>
 <% end %>

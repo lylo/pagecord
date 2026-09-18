@@ -31,7 +31,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
     home_page = @blog.reload.home_page
     assert_equal "Welcome", home_page.title
     assert_equal true, home_page.is_page
@@ -46,7 +46,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
     home_page = @blog.reload.home_page
     assert_nil home_page.title
     assert home_page.persisted?
@@ -102,7 +102,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
 
     patch app_home_page_url, params: { post: { title: "New Title", content: "New content" } }
 
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
     assert_equal "New Title", page.reload.title
     assert_equal "New content", page.content.to_plain_text.strip
   end
@@ -161,7 +161,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
 
     patch app_home_page_url, params: { post: { open_graph_image: image } }
 
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
     assert home_page.reload.open_graph_image.attached?
   end
 
@@ -172,7 +172,7 @@ class App::HomePagesControllerTest < ActionDispatch::IntegrationTest
 
     patch app_home_page_url, params: { post: { open_graph_image_suppressed: true } }
 
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
     assert home_page.reload.open_graph_image_suppressed?
   end
 end

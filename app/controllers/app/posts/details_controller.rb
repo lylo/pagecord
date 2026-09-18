@@ -14,6 +14,6 @@ class App::Posts::DetailsController < App::BaseController
     def show_details(preference)
       cookies.permanent.encrypted[:posts_info] = preference
 
-      redirect_to app_posts_path(search: params[:search].presence, page: params[:page])
+      redirect_to app_posts_path(search: params[:search].presence, page: params[:page], tab: params[:tab].presence)
     end
 end

@@ -1,3 +1,5 @@
+<%= render "app/settings/header", title: "Audience", heading: "Grow your audience" %>
+
 <% email_disabled = !Current.user.subscribed? %>
 <% features_disabled = Current.user.on_free_plan? %>
 
@@ -16,7 +18,7 @@
 <% end %>
 
 <%= form_with url: app_settings_blog_path, model: @blog, data: { controller: "subscription-settings" } do |form| %>
-  <div class="space-y-8">
+  <div>
     <%= settings_section "Email Subscriptions", description: "Let readers subscribe to get your posts by email" do %>
       <%= settings_row "Status" do %>
         <div class="flex gap-3 <%= 'opacity-50' if email_disabled %>">
@@ -43,14 +45,14 @@
 
       <%= settings_row "Delivery", class: ("opacity-50" if email_disabled), data: { subscription_settings_target: "dependent" } do %>
         <div class="flex flex-col sm:flex-row gap-3">
-          <label class="flex-1 cursor-pointer rounded-lg border p-4 has-[:checked]:border-[#4fbd9c] has-[:checked]:bg-emerald-50 dark:has-[:checked]:bg-emerald-900/20 border-slate-200 dark:border-slate-700 transition-colors">
+          <label class="option-card flex-1 flex-col">
             <%= form.radio_button :email_delivery_mode, "digest", disabled: email_disabled, class: "sr-only" %>
-            <span class="block font-medium text-sm text-slate-800 dark:text-slate-200">Weekly Digest</span>
+            <span class="block text-sm">Weekly Digest</span>
             <span class="block text-xs text-slate-500 dark:text-slate-400 mt-1">Subscribers receive a weekly roundup of your latest posts on Tuesday mornings.</span>
           </label>
-          <label class="flex-1 cursor-pointer rounded-lg border p-4 has-[:checked]:border-[#4fbd9c] has-[:checked]:bg-emerald-50 dark:has-[:checked]:bg-emerald-900/20 border-slate-200 dark:border-slate-700 transition-colors">
+          <label class="option-card flex-1 flex-col">
             <%= form.radio_button :email_delivery_mode, "individual", disabled: email_disabled, class: "sr-only" %>
-            <span class="block font-medium text-sm text-slate-800 dark:text-slate-200">Individual</span>
+            <span class="block text-sm">Individual</span>
             <span class="block text-xs text-slate-500 dark:text-slate-400 mt-1">You choose which posts to send, one at a time, whenever you like.</span>
           </label>
         </div>
@@ -111,11 +113,11 @@
           <%= form.label :show_metrics, "Show metrics and the Analytics page", class: "text-slate-800 dark:text-slate-100" %>
         </div>
       <% end %>
-    <% end %>
+    <div class="sheet-bleed flex items-center gap-x-2 py-5">
+      <%= form.submit "Update", class: "btn-primary" %>
+      <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+    </div>
+  <% end %>
   </div>
 
-  <div class="mt-12 flex items-center gap-x-2">
-    <%= form.submit "Update", class: "btn-primary" %>
-    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
-  </div>
 <% end %>

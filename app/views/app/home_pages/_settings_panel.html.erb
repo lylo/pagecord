@@ -1,0 +1,16 @@
+<%# locals: (form:) %>
+<%= render layout: "app/posts/settings_drawer", locals: { title: "Home page settings" } do %>
+  <% if @home_page.persisted? %>
+    <div class="mb-8" data-section="home-page">
+      <div class="mt-4 font-bold">Home page</div>
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Shown instead of your post list when someone visits your blog. Unlinking keeps the page.</p>
+      <%= link_to "Unlink home page", app_home_page_path, class: "btn-optional mt-3", data: { turbo_method: :delete, turbo_confirm: "Remove this page as your home page?" } %>
+    </div>
+  <% end %>
+
+  <%= render "app/posts/open_graph_image_section", record: @home_page, form: form, revealed: true %>
+
+  <div class="mt-8 pt-6 pb-4 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+    <button type="button" class="btn-optional sm:hidden" data-action="settings-panel#close">Done</button>
+  </div>
+<% end %>

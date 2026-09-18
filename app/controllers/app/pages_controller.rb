@@ -8,6 +8,7 @@ class App::PagesController < App::BaseController
     @sort = cookies.encrypted[:pages_sort] == "updated" ? "updated" : "alpha"
     @pages = @blog.pages.kept.published.order(pages_order)
     @drafts = @blog.pages.kept.draft.order(:title)
+    @tab = params[:tab].presence_in(%w[ published drafts ]) || default_tab
   end
 
   def new
@@ -20,7 +21,7 @@ class App::PagesController < App::BaseController
     return render_stale_form_context unless context_blog_id_matches_current_blog?
 
     if @page.save
-      redirect_to app_pages_path, notice: "Page was successfully created."
+      redirect_to app_pages_path(tab: @page.draft? ? "drafts" : "published"), notice: "Page was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -34,7 +35,7 @@ class App::PagesController < App::BaseController
     @page = @blog.pages.kept.find_by!(token: params[:token])
 
     if @page.update(page_params)
-      redirect_to app_pages_path, notice: "Page was successfully updated."
+      redirect_to app_pages_path(tab: @page.draft? ? "drafts" : "published"), notice: "Page was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -48,6 +49,10 @@ class App::PagesController < App::BaseController
   end
 
   private
+
+    def default_tab
+      @pages.empty? && @drafts.any? ? "drafts" : "published"
+    end
 
     def pages_order
       @sort == "updated" ? Arel.sql("updated_at DESC, LOWER(title)") : Arel.sql("CASE WHEN id = #{@blog.home_page_id.to_i} THEN 0 ELSE 1 END, LOWER(title), updated_at DESC")

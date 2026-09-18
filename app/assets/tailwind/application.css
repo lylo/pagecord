@@ -3,8 +3,46 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/aspect-ratio";
 
+@custom-variant writing-mode (&:where([data-writing-mode], [data-writing-mode] *));
+
 @theme {
-  --color-pagecord-accent: hsl(162, 54%, 57%); /* #56cda9 */
+  --color-pagecord-accent: #4fbd9c;
+  --color-pagecord-accent-hover: #4bb193;
+
+  /* The app's grey scale: slate's lightness steps on the accent's hue, kept under the slate name. */
+  --color-slate-50: oklch(98.4% 0.003 170);
+  --color-slate-100: oklch(96.8% 0.005 170);
+  --color-slate-200: oklch(92.9% 0.008 170);
+  --color-slate-300: oklch(86.9% 0.012 170);
+  --color-slate-400: oklch(70.4% 0.018 170);
+  --color-slate-500: oklch(55.4% 0.02 170);
+  --color-slate-600: oklch(44.6% 0.02 170);
+  --color-slate-700: oklch(37.2% 0.018 170);
+  --color-slate-800: oklch(27.9% 0.015 170);
+  --color-slate-900: oklch(20.8% 0.012 170);
+  --color-slate-950: oklch(13.5% 0.01 170);
+}
+
+/* Dark mode has its own scale: the greys go cool, because on surfaces this large the
+   accent's hue reads as a cast rather than a tint, and the accent goes light and soft,
+   which is why anything filled with it takes dark text. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-pagecord-accent: oklch(78% 0.075 172);
+    --color-pagecord-accent-hover: oklch(83% 0.075 172);
+
+    --color-slate-50: oklch(97% 0.002 237);
+    --color-slate-100: oklch(94% 0.003 237);
+    --color-slate-200: oklch(89% 0.004 237);
+    --color-slate-300: oklch(82% 0.006 237);
+    --color-slate-400: oklch(71% 0.01 237);
+    --color-slate-500: oklch(62% 0.012 237);
+    --color-slate-600: oklch(48% 0.012 237);
+    --color-slate-700: oklch(39% 0.012 237);
+    --color-slate-800: oklch(32% 0.012 237);
+    --color-slate-900: oklch(26% 0.011 237);
+    --color-slate-950: oklch(19% 0.01 237);
+  }
 }
 
 /* Components */
@@ -28,33 +66,21 @@
   }
 }
 
-@layer base {
-
-}
-
 hr {
-  @apply border-gray-300 dark:border-gray-600;
+  @apply border-slate-200 dark:border-slate-800;
 }
 
-/* Pagy pagination */
-.pagy {
-  @apply flex space-x-1 font-semibold text-sm text-slate-500 dark:text-slate-300;
-}
-
+/* Pagy pagination. The nav itself is .btn-group's shell, in components.css. */
 .pagy a {
-  @apply block rounded-lg px-3 py-1 bg-slate-200 dark:bg-slate-700;
-}
-
-.pagy a:hover {
-  @apply bg-slate-300 dark:bg-slate-600 dark:text-slate-100;
+  @apply block px-3.5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800;
 }
 
 .pagy a:not([href]):not([aria-current]) { /* disabled links (gaps, prev/next at boundaries) */
-  @apply text-slate-300 bg-slate-100 dark:bg-slate-800 dark:text-slate-700 cursor-default;
+  @apply text-slate-300 hover:bg-transparent dark:text-slate-600 cursor-default;
 }
 
 .pagy a[aria-current="page"] { /* current page */
-  @apply text-white bg-slate-400 dark:bg-slate-500 cursor-default;
+  @apply bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100 cursor-default;
 }
 
 .pagy label {

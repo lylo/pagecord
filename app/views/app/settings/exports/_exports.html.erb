@@ -1,41 +1,28 @@
-<table class="mt-4 min-w-full text-sm divide-y divide-slate-300 dark:divide-slate-700">
-  <thead>
-    <tr>
-      <th class="p-2 text-start font-bold">Date</th>
-      <th class="p-2 text-start font-bold">Format</th>
-      <th class="p-2 text-start font-bold">Status</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @exports.each do |export| %>
-      <tr>
-        <td class="p-2 text-slate-600 dark:text-slate-500">
-          <%= export.created_at.to_formatted_s(:short) %>
-        </td>
-
-        <td class="p-2 text-slate-600 dark:text-slate-500">
+<div class="divide-y divide-slate-200 dark:divide-slate-800">
+  <% @exports.each do |export| %>
+    <div class="flex items-center justify-between gap-3 py-4">
+      <div class="min-w-0">
+        <div class="font-medium text-slate-900 dark:text-slate-100">
           <%= export.display_format %>
-        </td>
-        
-        <td class="p-2 text-slate-600 dark:text-slate-500">
-          <%= export.status.titleize %>
-        </td>
+        </div>
+        <div class="text-sm text-slate-500 dark:text-slate-400">
+          <%= export.created_at.to_formatted_s(:short) %> · <%= export.status.titleize %>
+        </div>
+      </div>
 
-        <td class="p-2 flex items-center justify-end">
-          <% if export.file.present? %>
-            <%= link_to rails_blob_path(export.file, disposition: "attachment"), class: "btn-primary mr-2" do %>
-              <%= inline_svg_tag "icons/download.svg", class: "w-4 h-4" %>
-              <span class="hidden sm:inline ml-2">Download</span>
-            <% end %>
+      <div class="flex shrink-0 items-center gap-2">
+        <% if export.file.present? %>
+          <%= link_to rails_blob_path(export.file, disposition: "attachment"), class: "btn-primary" do %>
+            <%= inline_svg_tag "icons/download.svg", class: "w-4 h-4" %>
+            <span class="hidden sm:inline ms-2">Download</span>
           <% end %>
+        <% end %>
 
-          <%= button_to app_settings_export_path(export), method: :delete, class: "btn-danger", data: { turbo_confirm: "Are you sure?" } do %>
-            <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
-            <span class="hidden sm:inline ml-2">Delete</span>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+        <%= button_to app_settings_export_path(export), method: :delete, class: "btn-danger", form_class: "contents", data: { turbo_confirm: "Delete this export? This cannot be undone." } do %>
+          <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
+          <span class="hidden sm:inline ms-2">Delete</span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

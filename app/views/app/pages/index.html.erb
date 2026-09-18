@@ -1,134 +1,59 @@
-<div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50">
-  <div class="my-8">
-    <div class="mb-8">
-      <% if @pages.empty? && @drafts.empty? %>
-        <%= render "blank_slate" %>
-      <% else %>
-        <div class="mb-8 flex flex-wrap justify-end gap-2">
-          <% unless @blog.has_custom_home_page? %>
-            <%= link_to "🏠 Create Home Page", new_app_home_page_path, class: "btn-secondary", title: "Create a blank home page" %>
-          <% end %>
-          <%= link_to "✏️ New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
-        </div>
+<% if @pages.empty? && @drafts.empty? %>
+  <%= render "blank_slate" %>
+<% else %>
+  <div class="sheet-header justify-between gap-x-3">
+    <%= render "app/shared/blog_link" %>
+    <%= render "sort_toggle" if @tab == "published" %>
+  </div>
+
+  <h1 class="mt-6 page-title">Pages</h1>
+
+  <div class="mt-3 flex flex-wrap items-center gap-2">
+    <%= link_to "New Page", new_app_page_path, class: "btn-primary", title: "Create a new page" %>
+    <% unless @blog.has_custom_home_page? %>
+      <%= link_to "Create Home Page", new_app_home_page_path, class: "btn-optional", title: "Create a blank home page" %>
+    <% end %>
+
+    <div class="btn-group">
+      <%= link_to app_pages_path(tab: "published"), class: class_names("btn-group-item", "btn-group-item-active": @tab == "published") do %>
+        Published <%= pill @pages.size %>
+      <% end %>
+      <%= link_to app_pages_path(tab: "drafts"), class: class_names("btn-group-item", "btn-group-item-active": @tab == "drafts") do %>
+        Drafts <%= pill @drafts.size %>
       <% end %>
     </div>
+  </div>
 
-    <% if @drafts.any? || @pages.any? %>
-      <div class="overflow-hidden sm:rounded-lg sm:border sm:border-slate-200 sm:bg-white dark:sm:border-slate-700 dark:sm:bg-slate-900/60">
-        <% if @drafts.any? %>
-          <div class="px-0 py-4 sm:p-5" id="draft_pages">
-            <div class="mb-4 flex items-center gap-2">
-              <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">🖋️ Drafts</div>
-              <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-                <%= @drafts.size %>
-              </span>
-            </div>
+  <div class="sheet-divider mt-5"></div>
 
-            <div>
-              <% @drafts.each do |page| %>
-                <div class="group flex items-center justify-between gap-3 py-1.5">
-                  <div class="min-w-0 flex items-center gap-2">
-                    <% edit_path = (page.home_page? ? edit_app_home_page_path : edit_app_page_path(page)) %>
+  <% if @tab == "drafts" %>
+    <div id="draft_pages" class="pt-4 pb-4">
+      <% @drafts.each do |page| %>
+        <%= render "page", page: page,
+              link: blog_post_preview_url(page.signed_id(purpose: :preview), host: page.blog.host), link_title: "Preview draft" %>
+      <% end %>
+      <% if @drafts.empty? %>
+        <p class="py-6 text-center text-slate-600 dark:text-slate-300">No drafts.</p>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="pt-4 pb-4">
+      <% @pages.each do |page| %>
+        <%= render "page", page: page, link: post_url(page), link_title: "View this page" %>
+      <% end %>
+      <% if @pages.empty? %>
+        <p class="py-6 text-center text-slate-600 dark:text-slate-300">Nothing published yet.</p>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
 
-                    <%= link_to edit_path, title: "Click to edit this page", class: "min-w-0" do %>
-                      <div class="flex items-center gap-2">
-                        <% if page.home_page? %>
-                          <span>🏠</span>
-                        <% end %>
-                        <div class="truncate font-medium text-slate-900 group-hover:underline dark:text-slate-100">
-                          <%= page.display_title %>
-                        </div>
-                      </div>
-                    <% end %>
-                  </div>
-
-                  <div class="flex items-center gap-x-2 text-slate-400 dark:text-slate-400">
-                    <%= link_to blog_post_preview_url(page.signed_id(purpose: :preview), host: page.blog.host), title: "Preview draft", target: "_blank", data: { turbo_frame: "_top" }, class: "transition-colors hover:text-slate-600 dark:hover:text-slate-200" do %>
-                      <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "h-4 w-4" %>
-                    <% end %>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-
-        <% if @drafts.any? && @pages.any? %>
-          <div class="border-t border-slate-200 dark:border-slate-700 sm:border-t"></div>
-        <% end %>
-
-        <% if @pages.any? %>
-          <div class="px-0 py-4 sm:p-5">
-            <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <div class="flex items-center gap-2">
-                <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">📄 Pages</div>
-                <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-                  <%= @pages.size %>
-                </span>
-              </div>
-
-              <div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-sm dark:border-slate-700 dark:bg-slate-800">
-                <%= button_to app_pages_sort_order_path, method: :patch,
-                      params: { sort_order: { by: "alpha" } },
-                      form_class: "contents",
-                      title: "Sort alphabetically",
-                      aria: { current: (@sort == "alpha" ? "page" : nil) },
-                      class: @sort == "alpha" ? "inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1 font-medium text-slate-900 dark:bg-slate-700 dark:text-slate-50" : "cursor-pointer inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-slate-500 transition-colors hover:bg-white hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-slate-50" do %>
-                  <%= inline_svg_tag "icons/bars-arrow-down.svg", class: "h-4 w-4 shrink-0" %>
-                  <span>A–Z</span>
-                <% end %>
-
-                <%= button_to app_pages_sort_order_path, method: :patch,
-                      params: { sort_order: { by: "updated" } },
-                      form_class: "contents",
-                      title: "Sort by recently updated",
-                      aria: { current: (@sort == "updated" ? "page" : nil) },
-                      class: @sort == "updated" ? "inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1 font-medium text-slate-900 dark:bg-slate-700 dark:text-slate-50" : "cursor-pointer inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-slate-500 transition-colors hover:bg-white hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-slate-50" do %>
-                  <%= inline_svg_tag "icons/clock.svg", class: "h-4 w-4 shrink-0" %>
-                  <span>Recent</span>
-                <% end %>
-              </div>
-            </div>
-
-            <div>
-              <% @pages.each do |page| %>
-                <div class="group flex items-center justify-between gap-3 py-1.5">
-                  <div class="min-w-0 flex items-center gap-2">
-                    <% edit_path = page.home_page? ? edit_app_home_page_path : edit_app_page_path(page) %>
-
-                    <%= link_to edit_path, title: "Click to edit this page", class: "min-w-0" do %>
-                      <div class="flex items-center gap-2">
-                        <% if page.home_page? %>
-                          <span title="This page is your home page">🏠</span>
-                        <% end %>
-                        <div class="truncate font-medium text-slate-900 group-hover:underline dark:text-slate-100">
-                          <%= page.display_title %>
-                        </div>
-                      </div>
-                    <% end %>
-                  </div>
-
-                  <div class="flex items-center gap-x-2 text-slate-400 dark:text-slate-400">
-                    <%= link_to post_url(page), title: "View this page", target: "_blank", class: "transition-colors hover:text-slate-600 dark:hover:text-slate-200" do %>
-                      <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "h-4 w-4" %>
-                    <% end %>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
-
-    <% trashed_count = @blog.pages.discarded.count %>
-    <% if trashed_count > 0 %>
-      <div class="mt-8 pt-4 border-t border-slate-200 dark:border-slate-700">
-        <%= link_to app_pages_trash_path, class: "inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300" do %>
-          <%= inline_svg_tag "icons/trash.svg", class: "w-3.5 h-3.5" %>
-          <%= pluralize trashed_count, "deleted page" %>
-        <% end %>
-      </div>
+<% trashed_count = @blog.pages.discarded.count %>
+<% if trashed_count > 0 %>
+  <div class="sheet-divider mt-auto pt-5">
+    <%= link_to app_pages_trash_path, class: "inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300" do %>
+      <%= inline_svg_tag "icons/trash.svg", class: "w-3.5 h-3.5" %>
+      <%= pluralize trashed_count, "deleted page" %>
     <% end %>
   </div>
-</div>
+<% end %>

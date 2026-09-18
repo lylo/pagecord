@@ -1,6 +1,8 @@
-<div class="space-y-8">
-  <%= settings_section "🪴 Theme Garden", description: "Browse our curated selection of theme templates and apply them to your blog with one click." do %>
-    <div class="px-6 py-5">
+<%= render "app/settings/header", title: "Theme Garden", heading: "Pick a ready-made design", description: "Browse our curated selection of theme templates and apply them to your blog with one click.", parent: "Appearance", parent_path: app_settings_appearance_path %>
+
+<div>
+  <%= settings_section do %>
+    <div class="py-5">
       <% if @templates.any? %>
         <%= render "templates", templates: @templates %>
       <% else %>
@@ -8,8 +10,4 @@
       <% end %>
     </div>
   <% end %>
-</div>
-
-<div class="mt-12">
-  <%= link_to "Back to Appearance", app_settings_appearance_path, class: "btn-secondary" %>
 </div>

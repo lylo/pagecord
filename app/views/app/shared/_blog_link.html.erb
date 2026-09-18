@@ -1,0 +1,4 @@
+<%= link_to blog_home_url(@blog), target: "_blank", title: "View your blog", class: "inline-flex min-w-0 items-center gap-1.5 font-semibold text-slate-800 hover:underline dark:text-slate-100" do %>
+  <span class="truncate"><%= @blog.display_name %></span>
+  <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "h-3.5 w-3.5 shrink-0 text-slate-400" %>
+<% end %>

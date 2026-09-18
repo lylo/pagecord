@@ -27,7 +27,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "form#post-form" do
-      assert_select "input[type=submit][value='Publish Post']"
+      assert_select "button[type=submit]", text: /Publish Post/
       assert_select "button[type=submit]" do |elements|
         assert_equal "Save Draft", elements.first.text.strip
       end
@@ -40,8 +40,24 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  # The footer sits inside the posts turbo frame so pagination swaps with the
+  # results, but the trash page has no such frame to render into.
+  test "the trash link leaves the posts frame" do
+    @user.blog.posts.create!(title: "Gone", content: "Body").discard
+
+    get app_posts_path
+
+    assert_select "a[href=?][data-turbo-frame=_top]", app_posts_trash_path
+  end
+
   test "should get posts index" do
     get app_posts_url
+
+    assert_response :success
+    assert_select "a.btn-group-item", text: /Published/
+    assert_select "a.btn-group-item", text: /Drafts/
+
+    get app_posts_url(tab: "drafts")
 
     assert_response :success
     assert_select "div#draft_posts"
@@ -65,7 +81,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     assert @user.blog.posts.last.published?
     assert_equal "New Post", @user.blog.posts.last.title
     assert_equal "New content", @user.blog.posts.last.content.to_s.strip
@@ -93,7 +109,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     created_post = @user.blog.posts.last
     assert created_post.published?
     assert created_post.hidden?
@@ -108,7 +124,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     created_post = @user.blog.posts.last
     assert created_post.published?
     assert_not created_post.hidden?
@@ -123,7 +139,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "drafts")
     assert @user.blog.posts.last.draft?
   end
 
@@ -182,7 +198,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "form#post-form" do
-      assert_select "input[type=submit][value='Update Post']"
+      assert_select "button[type=submit]", text: /Update Post/
       assert_select "button[type=submit]" do |elements|
         assert_equal "Unpublish", elements.first.text.strip
       end
@@ -194,7 +210,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "form#post-form" do
-      assert_select "input[type=submit][value='Publish Post']"
+      assert_select "button[type=submit]", text: /Publish Post/
       assert_select "button[type=submit]" do |elements|
         assert_equal "Update Draft", elements.first.text.strip
       end
@@ -211,7 +227,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     assert_equal "New Title", @user.blog.posts.first.title
     assert_equal "New content", @user.blog.posts.first.content.to_s.strip
     assert_equal 1.month.ago.to_date, @user.blog.posts.first.published_at
@@ -314,7 +330,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     patch app_post_url(post), params: { post: { open_graph_image: image } }
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     assert post.reload.open_graph_image.attached?
   end
 
@@ -325,7 +341,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     patch app_post_url(post), params: { post: { open_graph_image_suppressed: true } }
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     assert post.reload.open_graph_image_suppressed?
   end
 
@@ -344,7 +360,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_redirected_to app_posts_url(page: 3)
+    assert_redirected_to app_posts_url(page: 3, tab: "published")
     assert_equal "Updated Title", @user.blog.posts.first.title
   end
 
@@ -363,7 +379,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     created_post = @user.blog.posts.last
     assert_equal [ "javascript", "rails", "web-development" ], created_post.tag_list
     assert_equal "javascript, rails, web-development", created_post.tags_string
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
   end
 
   test "should update post with tags" do
@@ -379,7 +395,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     post.reload
     assert_equal [ "rails", "ruby", "updated" ], post.tag_list
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
   end
 
   test "should preserve tags on validation errors" do
@@ -461,6 +477,10 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes @response.body, "Published Rails Post"
+
+    get app_posts_path(search: "rails", tab: "drafts")
+
+    assert_response :success
     assert_includes @response.body, "Draft Rails Post"
   end
 
@@ -502,28 +522,26 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, "Test Post"
   end
 
-  test "should only show drafts on page 1 when searching" do
-    # Create enough posts to span multiple pages
+  test "searching keeps drafts on their own tab" do
     30.times do |i|
       @user.blog.posts.create!(title: "Published Post #{i}", content: "Published content #{i}")
     end
     @user.blog.posts.create!(title: "Draft Post", content: "Draft content", status: :draft)
 
-    # Page 1 should show drafts
-    get app_posts_path(search: "Post")
+    get app_posts_path(search: "Post", tab: "drafts")
     assert_response :success
     assert_includes @response.body, "Draft Post"
 
-    # Page 2 should not show drafts
     get app_posts_path(search: "Post", page: 2)
     assert_response :success
     assert_not_includes @response.body, "Draft Post"
   end
 
-  test "search results count covers drafts as well as published posts" do
+  test "each tab counts its own search results" do
     get app_posts_path(search: "post")
 
-    assert_equal 2, assigns(:search_results_count)
+    assert_select "#posts p", text: /1 post matching/
+    assert_select "a.btn-group-item", text: /Drafts\s+1/
   end
 
   test "should sort drafts by published_at or updated_at" do
@@ -549,7 +567,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       updated_at: 1.hour.ago
     )
 
-    get app_posts_path
+    get app_posts_path(tab: "drafts")
 
     assert_response :success
     assert_select "#draft_posts" do
@@ -590,7 +608,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   test "should link a draft to its shareable preview on the blog" do
     draft = posts(:vivian_draft)
 
-    get app_posts_url
+    get app_posts_url(tab: "drafts")
 
     assert_select "a[title='Preview draft'][href=?]", blog_post_preview_url(draft.signed_id(purpose: :preview), host: draft.blog.host)
   end

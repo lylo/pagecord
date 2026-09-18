@@ -1,7 +1,7 @@
 <% show_likes = @blog.show_metrics? && post.upvotes_count.positive? %>
 <% show_comments = @blog.accepts_comments? && post.comments_count.positive? %>
 
-<div class="flex gap-x-2 mb-2">
+<div class="group flex gap-x-2 -mx-2 px-2 py-1 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800/60">
   <div class="text-slate-500 dark:text-slate-400 <%= local_assigns[:show_year] ? 'w-26' : 'w-16' %> flex-shrink-0">
     <% date = post.display_date.to_date %>
     <%= local_assigns[:show_year] ? date.strftime("%d %b %Y") : date.to_fs(:short) %>
@@ -10,7 +10,7 @@
   <div class="flex w-full items-start justify-between gap-x-4 sm:gap-x-6">
     <div class="flex flex-wrap items-baseline gap-x-2 min-w-0">
       <%= link_to edit_app_post_path(post, page: params[:page]), title: "Click to edit this post", data: { turbo_frame: "_top", turbo_prefetch: false } do %>
-        <span class="font-medium hover:underline [overflow-wrap:anywhere]"><%= post.display_title %></span>
+        <span class="font-medium group-hover:underline [overflow-wrap:anywhere]"><%= post.display_title %></span>
       <% end %>
 
       <% if @show_info %>
@@ -20,7 +20,7 @@
       <% end %>
     </div>
 
-    <div class="flex shrink-0 items-start gap-x-2 pt-1 text-slate-400 dark:text-slate-400">
+    <div class="flex shrink-0 items-start gap-x-2 pt-1 text-slate-400 group-hover:text-slate-500 dark:text-slate-400 dark:group-hover:text-slate-300">
       <% if @show_info %>
         <% if post.hidden? %>
           <%= inline_svg_tag "icons/eye-slash.svg", class: "w-4 h-4", title: "Private post", aria: { label: "Private post" }, role: "img" %>
