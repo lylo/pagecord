@@ -1,5 +1,7 @@
+<%= render "app/settings/header", title: "About" %>
+
 <%= form_with url: app_settings_about_path, model: @blog, data: { controller: "avatar" } do |form| %>
-  <%= settings_section "About", description: "How you're introduced on your blog's home page" do %>
+  <%= settings_section do %>
     <%= settings_row "Bio", stacked: true, hint: "Appears in the header of your blog's home page" do %>
       <div class="lexxy-minimal">
         <%= form.rich_text_area :bio,
@@ -17,10 +19,7 @@
     <% end %>
 
     <%= settings_row "Blog Title" do %>
-      <%= styled_text_field(form, :title, class: "w-full") %>
-      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-        Shown on your blog instead of <strong>@<%= @blog.subdomain %></strong>.
-      </p>
+      <%= styled_text_field(form, :title, class: "w-full", placeholder: "@#{@blog.subdomain}") %>
     <% end %>
 
     <%= settings_row "Avatar" do %>
@@ -48,10 +47,10 @@
         <% end %>
       </p>
     <% end %>
+    <div class="sheet-bleed flex items-center gap-x-2 py-5">
+      <%= form.submit "Update", class: "btn-primary" %>
+      <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+    </div>
   <% end %>
 
-  <div class="mt-12 flex items-center gap-x-2">
-    <%= form.submit "Update", class: "btn-primary" %>
-    <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
-  </div>
 <% end %>

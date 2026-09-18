@@ -1,11 +1,9 @@
 <div class="relative space-y-6">
-  <%= trial_callout("Analytics") %>
-
-  <div class="<%= 'pointer-events-none select-none opacity-30' unless Current.user.has_premium_access? %> space-y-6">
+  <div class="<%= 'pointer-events-none select-none opacity-30' unless Current.user.has_premium_access? %>">
     <!-- View Type Navigation -->
-    <div class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 space-y-3 md:space-y-0">
+    <div class="sheet-header">
       <!-- Mobile: Stacked Layout, Desktop: Side by Side -->
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
+      <div class="flex w-full flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
         <!-- View Type Buttons -->
         <div class="flex space-x-2 justify-center md:justify-start">
           <%
@@ -132,20 +130,31 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Metrics Card -->
-    <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+  <%= trial_callout("Analytics") %>
+
+  <div class="<%= 'pointer-events-none select-none opacity-30' unless Current.user.has_premium_access? %> space-y-6">
+    <div>
       <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Page Views</h3>
       <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">
         <%= format_number(@analytics_data[:unique_page_views]) %>
       </p>
     </div>
 
+    <div class="sheet-divider"></div>
+
     <%= render 'chart' %>
+
+    <div class="sheet-divider"></div>
 
     <%= render 'leaderboard' %>
 
+    <div class="sheet-divider"></div>
+
     <%= render 'referrers' %>
+
+    <div class="sheet-divider"></div>
 
     <%= render 'countries' %>
   </div>

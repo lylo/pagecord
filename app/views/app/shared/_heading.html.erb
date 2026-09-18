@@ -1,13 +1,19 @@
-<div class="flex justify-end mb-4">
+<div class="flex shrink-0">
   <div class="relative" data-controller="toggle">
-    <button data-action="click->toggle#toggle click@window->toggle#hide" class="flex items-center gap-2 cursor-pointer">
-      <%= render "app/shared/blog_avatar", blog: @blog, size: "md" %>
+    <button data-toggle-target="button" data-action="click->toggle#toggle click@window->toggle#hide keydown.esc@window->toggle#hide" class="flex items-center gap-2 cursor-pointer rounded-full p-1 pl-3 bg-white dark:bg-slate-900 shadow-[0_1px_2px_rgba(0,0,0,0.06)] text-sm font-medium transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
+      <span class="truncate max-w-40"><%= @blog.display_name %></span>
+      <%= inline_svg_tag "icons/chevron-down.svg", class: "w-3.5 h-3.5 text-slate-400" %>
+      <%= render "app/shared/blog_avatar", blog: @blog, size: "sm" %>
     </button>
 
-    <div data-toggle-target="element" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 z-50">
+    <div data-toggle-target="element" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-lg shadow-md dark:shadow-black/40 border border-slate-200 dark:border-slate-800 z-50">
       <div class="py-2">
+        <% if Current.user.blogs.size > 1 %>
+          <p class="px-4 pb-1 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Switch blog</p>
+        <% end %>
+
         <% Current.user.blogs.order(:created_at).each do |blog| %>
-          <%= button_to app_blog_selection_path(blog), method: :post, class: "w-full flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 #{blog.id == @blog.id ? 'bg-slate-50 dark:bg-slate-700/50' : ''}" do %>
+          <%= button_to app_blog_selection_path(blog), method: :post, class: "w-full flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 #{blog.id == @blog.id ? 'bg-slate-50 dark:bg-slate-800/60' : ''}" do %>
             <%= render "app/shared/blog_avatar", blog: blog, size: "sm" %>
             <span class="text-sm font-medium truncate"><%= blog.display_name %></span>
             <% if blog.id == @blog.id %>
@@ -16,11 +22,25 @@
           <% end %>
         <% end %>
 
-        <div class="border-t border-slate-200 dark:border-slate-700 mt-2 pt-2 px-4 pb-2 flex items-center justify-between">
-          <%= link_to blog_home_url(@blog), target: "_blank", class: "text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 inline-flex items-center gap-1" do %>
-            View <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-3.5 h-3.5" %>
+        <% item = "block px-4 py-2 text-sm text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300" %>
+
+        <div class="mt-2 border-t border-slate-200 pt-2 pb-2 dark:border-slate-800">
+          <%= link_to blog_home_url(@blog), target: "_blank", class: "#{item} flex items-center gap-1.5" do %>
+            <span class="truncate">View <%= @blog.display_name %></span>
+            <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "h-3.5 w-3.5 shrink-0" %>
           <% end %>
-          <%= link_to "Manage blogs", app_blogs_path, class: "text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300" %>
+          <%= link_to "Manage blogs", app_blogs_path, class: item %>
+        </div>
+
+        <div class="border-t border-slate-200 pt-2 dark:border-slate-800">
+          <% if Current.user.admin? %>
+            <%= link_to "Admin", admin_users_path, class: item %>
+          <% end %>
+
+          <%= button_to logout_path, method: :delete, form_class: "contents",
+                class: "#{item} w-full cursor-pointer text-start" do %>
+            Log out
+          <% end %>
         </div>
       </div>
     </div>

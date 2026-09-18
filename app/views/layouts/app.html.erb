@@ -25,40 +25,52 @@
     <%= yield :head %>
   </head>
 
-  <body class="flex flex-col min-h-screen bg-white dark:bg-slate-900">
-    <header class="mb-4">
+  <body class="flex flex-col min-h-screen bg-slate-100 dark:bg-slate-950">
+    <header class="mb-4 md:mb-6">
       <% if Current.user.onboarding_complete? && !Current.user.subscribed? %>
         <%= render "/app/shared/premium_upsell_banner" %>
       <% end %>
+      <div class="w-full px-4 py-3 relative flex items-center justify-between text-slate-950 dark:text-slate-50">
+        <div class="relative md:static" data-controller="toggle">
+          <button type="button" class="flex items-center gap-1.5 cursor-pointer rounded-full py-1 px-2.5 bg-white dark:bg-slate-900 shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 md:hidden" title="Sections" aria-label="Sections" data-toggle-target="button" data-action="toggle#toggle click@window->toggle#hide keydown.esc@window->toggle#hide">
+            <%= inline_svg_tag "logo-mark.svg", class: "h-7 w-7" %>
+            <%= inline_svg_tag "icons/chevron-down.svg", class: "h-3.5 w-3.5 text-slate-400" %>
+          </button>
+          <%= link_to app_root_path, class: "hidden md:inline-flex transition-transform hover:-rotate-12", title: "Pagecord" do %>
+            <%= inline_svg_tag "logo-mark.svg", class: "h-7 w-7" %>
+          <% end %>
+          <%= render "app/shared/nav" %>
+        </div>
+        <%= render "app/shared/heading" %>
+      </div>
     </header>
     <main class="container mx-auto px-4 flex flex-grow">
-      <div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50">
+      <div class="mx-auto flex w-full max-w-3xl flex-col text-slate-950 dark:text-slate-50">
         <div id="flash"><%= render "app/shared/flash" %></div>
 
-        <%= render "app/shared/heading" %>
-        <%= render "app/shared/nav" %>
-
-        <%= yield %>
+        <% if content_for?(:sheets) %>
+          <%= yield %>
+        <% else %>
+          <div class="sheet flex flex-grow flex-col">
+            <%= yield %>
+          </div>
+        <% end %>
       </div>
     </main>
 
-    <footer class="p-8 flex flex-col w-full text-center">
-      <div class="flex gap-x-4 justify-center items-center">
-        <% if Current.user.admin? %>
-         <%= link_to "Admin", admin_users_path, class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
-        <% end %>
+    <footer class="mx-auto w-full max-w-3xl px-4 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+      <div class="flex items-center justify-center gap-x-5">
+        <%= link_to "Help", "https://help.pagecord.com", class: "hover:text-slate-800 dark:hover:text-slate-200" %>
+        <%= link_to "FAQ", faq_path, class: "hover:text-slate-800 dark:hover:text-slate-200" %>
 
-        <%= link_to "Help", "https://help.pagecord.com", class: "text-sm font-semibold hover:underline dark:text-slate-200" %>
-        <%= button_to logout_path, method: :delete, class: "text-sm font-semibold hover:underline dark:text-slate-200", form: { class: "flex" } do %>
-          Logout
+        <%= link_to "https://github.com/lylo/pagecord", "aria-label": "Pagecord on GitHub" do %>
+          <%= inline_svg_tag "icons/social/github.svg", class: "h-4 w-4 hover:text-slate-800 dark:hover:text-slate-200", title: "Pagecord on GitHub" %>
         <% end %>
       </div>
 
-      <div>
-        <%= link_to app_root_path do %>
-          <%= inline_svg_tag "logo.svg", class: "w-[120px] mt-8 inline-flex dark:text-slate-100 text-slate-900" %>
-        <% end %>
-      </div>
+      <%= link_to app_root_path, "aria-label": "Pagecord home" do %>
+        <%= inline_svg_tag "logo.svg", class: "mt-6 w-[100px] inline-flex text-slate-900 dark:text-slate-100" %>
+      <% end %>
     </footer>
   </body>
 </html>

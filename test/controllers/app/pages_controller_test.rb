@@ -17,6 +17,14 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "remembers the chosen tab" do
+    patch app_pages_tab_path, params: { tab: "drafts" }
+    get app_pages_path
+
+    assert_response :success
+    assert_select "div#draft_pages"
+  end
+
   test "should sort pages by recently updated when requested" do
     @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
     posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)

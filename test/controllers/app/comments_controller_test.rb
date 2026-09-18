@@ -14,18 +14,24 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "a[href=?]", app_comment_path(post_comments(:pending))
-    assert_select "a[href=?]", app_comment_path(post_comments(:approved))
     assert_select "p", text: /35mm/
     assert_select "a", text: posts(:one).display_title, message: "each row should name its post"
+
+    get app_comments_path(tab: "approved")
+
+    assert_response :success
+    assert_select "a[href=?]", app_comment_path(post_comments(:approved))
   end
 
   test "marks comments the author already replied to" do
-    get app_comments_path
+    get app_comments_path(tab: "approved")
 
     assert_response :success
     assert_select "article", text: /Great post/ do
       assert_select "span.sr-only", text: "You replied to this comment."
     end
+    get app_comments_path(tab: "pending")
+
     assert_select "article#post_comment_#{post_comments(:pending).id}" do
       assert_select "span.sr-only", count: 0
     end
@@ -47,7 +53,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
   test "scopes to a single post" do
     posts(:two).comments.create!(name: "Elsewhere", message: "On another post", approved_at: Time.current)
 
-    get app_post_comments_path(@post)
+    get app_post_comments_path(@post, tab: "approved")
 
     assert_response :success
     assert_select "a[href=?]", edit_app_post_path(@post), text: @post.display_title
@@ -60,7 +66,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
   test "the whole blog view is not scoped to a post" do
     posts(:two).comments.create!(name: "Elsewhere", message: "On another post", approved_at: Time.current)
 
-    get app_comments_path
+    get app_comments_path(tab: "approved")
 
     assert_response :success
     assert_select "h1", count: 0
@@ -76,13 +82,13 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   test "the way back out follows the list you arrived from" do
     get app_comment_path(post_comments(:approved), post: @post.token)
-    assert_select "a.btn-secondary[href=?]", app_post_comments_path(@post), text: "Back to comments"
+    assert_select "a[href=?]", app_post_comments_path(@post), text: "Comments"
 
     get app_comment_path(post_comments(:approved))
-    assert_select "a.btn-secondary[href=?]", app_comments_path, text: "Back to comments"
+    assert_select "a[href=?]", app_comments_path, text: "Comments"
 
     get app_comment_path(post_comments(:approved), post: posts(:two).token)
-    assert_select "a.btn-secondary[href=?]", app_comments_path, text: "Back to comments"
+    assert_select "a[href=?]", app_comments_path, text: "Comments"
   end
 
   test "shows a single comment with its reply, and no box to reply again" do
@@ -100,10 +106,10 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     # format: :html, so the show page gets the redirect rather than the
     # index's turbo_stream moderation refresh.
-    assert_select "form[action=?][method=post]", app_comment_approval_path(post_comments(:pending), format: :html) do
+    assert_select "form[action=?][method=post]#comment-approval", app_comment_approval_path(post_comments(:pending), format: :html) do
       assert_select "textarea"
-      assert_select "input[type=submit][value=Approve]"
     end
+    assert_select "input[type=submit][value=Approve][form=comment-approval]"
   end
 
   test "deletes a comment" do

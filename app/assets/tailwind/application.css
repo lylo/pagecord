@@ -4,7 +4,21 @@
 @plugin "@tailwindcss/aspect-ratio";
 
 @theme {
-  --color-pagecord-accent: hsl(162, 54%, 57%); /* #56cda9 */
+  --color-pagecord-accent: #4fbd9c;
+  --color-pagecord-accent-hover: #4bb193;
+
+  /* The app's grey scale: slate's lightness steps on the accent's hue, kept under the slate name. */
+  --color-slate-50: oklch(98.4% 0.003 170);
+  --color-slate-100: oklch(96.8% 0.005 170);
+  --color-slate-200: oklch(92.9% 0.008 170);
+  --color-slate-300: oklch(86.9% 0.012 170);
+  --color-slate-400: oklch(70.4% 0.018 170);
+  --color-slate-500: oklch(55.4% 0.02 170);
+  --color-slate-600: oklch(44.6% 0.02 170);
+  --color-slate-700: oklch(37.2% 0.018 170);
+  --color-slate-800: oklch(27.9% 0.015 170);
+  --color-slate-900: oklch(20.8% 0.012 170);
+  --color-slate-950: oklch(13.5% 0.01 170);
 }
 
 /* Components */
@@ -28,12 +42,8 @@
   }
 }
 
-@layer base {
-
-}
-
 hr {
-  @apply border-gray-300 dark:border-gray-600;
+  @apply border-slate-200 dark:border-slate-800;
 }
 
 /* Pagy pagination */

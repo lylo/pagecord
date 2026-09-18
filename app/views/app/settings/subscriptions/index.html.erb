@@ -1,5 +1,7 @@
-<%= settings_section "Billing" do %>
-<div class="px-6 py-5 flex flex-col gap-y-4">
+<%= render "app/settings/header", title: "Billing" %>
+
+<%= settings_section do %>
+<div class="py-5 flex flex-col gap-y-4">
 <% if Current.user.on_trial? %>
   <%= callout(:info) do %>
     You have <strong><%= pluralize(Current.user.trial_days_remaining, "day") %></strong> remaining of your 14-day free trial of Pagecord Premium!
@@ -33,7 +35,7 @@
     </div>
 
     <% if @subscription.paddle_customer_id.present? %>
-      <div class="mt-6 pt-2 border-t border-slate-200 dark:border-slate-700">
+      <div class="sheet-divider mt-6 pt-2">
         <%= link_to app_settings_paddle_invoices_path, target: "_blank", rel: "noopener", class: "flex items-center justify-between py-3 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white" do %>
           <span>View past invoices</span>
           <span aria-hidden="true" class="text-slate-400">&rsaquo;</span>
@@ -83,7 +85,7 @@
       <p class="mt-2">
         Switching takes effect at your next renewal, with no charge or refund now.
       </p>
-      <div class="mt-4 border border-slate-200 dark:border-slate-600 rounded-lg p-4 sm:max-w-xs">
+      <div class="mt-4 bg-slate-50 dark:bg-slate-800/60 rounded-lg p-4 sm:max-w-xs">
         <h3 class="font-semibold text-lg">Annual</h3>
         <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500">/year</span></p>
         <div class="mt-4">
@@ -93,13 +95,13 @@
     <% elsif @subscription.monthly? %>
       <h3 class="font-semibold text-lg mt-6">Change your plan</h3>
       <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="border-2 border-[#4fbd9c] rounded-lg p-4 relative">
-          <span class="absolute -top-3 left-4 bg-[#4fbd9c] text-white text-xs font-semibold px-2 py-1 rounded">Current Plan</span>
+        <div class="border-2 border-pagecord-accent rounded-lg p-4 relative">
+          <span class="absolute -top-3 left-4 bg-pagecord-accent text-white text-xs font-semibold px-2 py-1 rounded">Current Plan</span>
           <h3 class="font-semibold text-lg">Monthly</h3>
           <p class="text-2xl font-bold mt-2">$<%= @subscription.unit_price / 100 %><span class="text-sm font-normal text-slate-500">/month</span></p>
           <p class="text-sm text-slate-500 mt-1">Renews <%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></p>
         </div>
-        <div class="border border-slate-200 dark:border-slate-600 rounded-lg p-4">
+        <div class="bg-slate-50 dark:bg-slate-800/60 rounded-lg p-4">
           <h3 class="font-semibold text-lg">Annual</h3>
           <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500">/year</span></p>
           <p class="text-sm text-slate-500 mt-1">Save vs monthly</p>
@@ -111,18 +113,18 @@
     <% end %>
 
     <% unless @subscription.supporter? %>
-      <div class="mt-6 rounded-lg p-4 bg-[#4fbd9c]/5 border border-[#4fbd9c]/40">
+      <div class="mt-6 rounded-lg p-4 bg-pagecord-accent/10">
         <h3 class="font-semibold text-lg">Become a Supporter</h3>
         <p class="text-sm text-slate-500 mt-1">
           Love Pagecord? Back its independent development for <strong>$<%= localised_price(:supporter) %>/year</strong>. No extra features, just buckets of thanks and a spot for your blog on the upcoming supporters page 🙏💖
         </p>
         <div class="mt-4">
-          <%= button_to "Support Pagecord", app_settings_subscriptions_plan_path(plan: "supporter"), method: :patch, class: "btn-primary", data: { turbo_confirm: "Become a Pagecord Supporter for $#{localised_price(:supporter)}/year? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
+          <%= button_to "Upgrade to Supporter", app_settings_subscriptions_plan_path(plan: "supporter"), method: :patch, class: "btn-primary", data: { turbo_confirm: "Become a Pagecord Supporter for $#{localised_price(:supporter)}/year? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
         </div>
       </div>
     <% end %>
 
-    <div class="mt-6 pt-2 border-t border-slate-200 dark:border-slate-700" data-controller="paddle">
+    <div class="sheet-divider mt-6 pt-2" data-controller="paddle">
       <%= link_to "#", data: { paddle_target: "link", id: @subscription.paddle_subscription_id }, class: "flex items-center justify-between py-3 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white" do %>
         <span>Update card details</span>
         <span aria-hidden="true" class="text-slate-400">&rsaquo;</span>

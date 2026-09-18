@@ -4,6 +4,18 @@
   </p>
 </div>
 
+<% if @home_page %>
+  <div>
+    <h3 class="font-medium text-slate-900 dark:text-slate-100">Your home page</h3>
+    <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+      This page is shown instead of your post list when someone visits your blog. Most home pages leave the title blank.
+    </p>
+    <div class="mt-2">
+      <%= link_to "Custom home page help", "https://help.pagecord.com/creating-pages#setting-a-custom-home-page", class: "text-sm font-medium underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:decoration-slate-600 dark:hover:decoration-slate-300", target: "_blank", rel: "noopener" %>
+    </div>
+  </div>
+<% end %>
+
 <div>
   <h3 class="font-medium text-slate-900 dark:text-slate-100">Add a Contact form</h3>
   <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">

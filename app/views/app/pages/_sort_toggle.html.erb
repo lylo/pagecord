@@ -1,0 +1,25 @@
+<% option = "inline-flex items-center gap-1.5 rounded-md px-3 py-1" %>
+<% selected = "#{option} bg-white font-medium text-slate-900 dark:bg-slate-700 dark:text-slate-50" %>
+<% unselected = "cursor-pointer #{option} text-slate-500 transition-colors hover:bg-white hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-slate-50" %>
+
+<div class="inline-flex items-center rounded-lg bg-slate-100 p-0.5 text-sm dark:bg-slate-800">
+  <%= button_to app_pages_sort_order_path, method: :patch,
+        params: { sort_order: { by: "alpha" } },
+        form_class: "contents",
+        title: "Sort alphabetically",
+        aria: { current: (@sort == "alpha" ? "page" : nil) },
+        class: @sort == "alpha" ? selected : unselected do %>
+    <%= inline_svg_tag "icons/bars-arrow-down.svg", class: "h-4 w-4 shrink-0" %>
+    <span>A–Z</span>
+  <% end %>
+
+  <%= button_to app_pages_sort_order_path, method: :patch,
+        params: { sort_order: { by: "updated" } },
+        form_class: "contents",
+        title: "Sort by recently updated",
+        aria: { current: (@sort == "updated" ? "page" : nil) },
+        class: @sort == "updated" ? selected : unselected do %>
+    <%= inline_svg_tag "icons/clock.svg", class: "h-4 w-4 shrink-0" %>
+    <span>Recent</span>
+  <% end %>
+</div>

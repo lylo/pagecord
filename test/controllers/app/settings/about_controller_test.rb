@@ -12,7 +12,7 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
   test "should get show" do
     get app_settings_about_url
 
-    assert_select "h3", { count: 1, text: "About" }
+    assert_select ".sheet-header span", text: "About"
     assert_select "h4", { count: 1, text: "Bio" }
     assert_select "h4", { count: 1, text: "Blog Title" }
     assert_response :success

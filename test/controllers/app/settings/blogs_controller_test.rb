@@ -12,7 +12,7 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
   test "should get show" do
     get app_settings_blog_url
 
-    assert_select "h3", { count: 1, text: "Blog Settings" }
+    assert_select ".sheet-header span", text: "Blog Settings"
     assert_select "h3", { count: 1, text: "Advanced" }
     assert_select "h4", { count: 1, text: "Custom Domain" }
     assert_select "h4", { count: 1, text: "Discoverability" }

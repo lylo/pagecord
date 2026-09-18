@@ -1,0 +1,7 @@
+<%# locals: (form:) %>
+<%= form.text_area :title,
+      placeholder: "Title",
+      rows: 1,
+      autofocus: true,
+      class: "autogrow w-full resize-none p-0 text-3xl font-semibold leading-tight bg-transparent border-0 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-0",
+      data: { controller: "title-field", action: "keydown.enter->title-field#next", autosave_target: "title" } %>

@@ -1,15 +1,7 @@
 module App::PostsHelper
-  def publish_button_text(post, model_name: nil)
-    name = model_name || infer_model_name(post)
-    if post.persisted?
-      if post.published?
-        "Update #{name}"
-      else
-        "Publish #{name}"
-      end
-    else
-      "Publish #{name}"
-    end
+  def publish_button_text(post, model_name: nil, short: false)
+    verb = post.persisted? && post.published? ? "Update" : "Publish"
+    short ? verb : "#{verb} #{model_name || infer_model_name(post)}"
   end
 
   def settings_customised?(post)

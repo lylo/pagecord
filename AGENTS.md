@@ -82,16 +82,62 @@ updated when a model is added — a trap the code genuinely can't express.
 
 ## Design System
 
-- **Panels**: Prefer `rounded-lg` panels with light borders (`border-slate-200` / `dark:border-slate-700`) for app UI containers. Avoid heavier radii and unnecessary shadows unless an existing screen already uses them.
-- **Soft callouts**: For blank slates and top-of-page helper panels, prefer a soft surface like `bg-slate-50 dark:bg-slate-800` with roomier padding (`p-6`) rather than the older generic callout look.
-- **List panels**: For index-style screens, prefer a single bordered panel that can contain multiple sections (for example Drafts + Published) with dividers, rather than several unrelated floating blocks.
-- **Count pills**: Count badges should stay friendly and compact: `rounded-full`, slate-filled, small padding (`px-2 py-0.5`), and low visual drama.
+Every app page renders inside a **sheet**: a white surface on the tinted page
+background. The sheet's parts are component classes in
+`app/assets/tailwind/components.css`: `.sheet`, `.sheet-bleed`, `.sheet-header`,
+`.sheet-band`, `.sheet-divider`, `.option-card`, `.option-radio`, `.tab` and
+`.tab-active`. A view adds only layout modifiers to them (`justify-between`,
+`py-5`, `flex-col`); it never restates their colours, borders or padding.
+
+- **The sheet is the only bordered container.** Inside it, sections divide with
+  edge-to-edge hairlines and soft fills; bordered panels are not used. Inputs keep
+  their borders. The Settings index cards are a deliberate exception. A page can
+  lay out several sheets by declaring `content_for :sheets`, which Settings does.
+- **Every screen starts with a header row**: `sheet-header`, flush to the sheet's
+  top edge with a hairline beneath. Breadcrumb or tabs on the left, actions on
+  the right, and 24px to whatever follows. Breadcrumbs root at the nav section and are omitted where
+  a nav tab already goes to the same place, as in the editors.
+- **Full-bleed dividers**: rows carry `sheet-bleed` so the divider between them
+  reaches the sheet's edges. A standalone rule is `sheet-divider`.
+- **Spacing**: sheet body 32px, header row 16px, a row in a divided list 20px, a
+  section boundary 24px either side of its rule, 24px below a tab strip. Tab
+  panels are not rows: 24px above, 32px below.
+- **Section headings**: in Settings and on blank slates, a `sheet-band` (shaded
+  fill with a hairline beneath), rendered by `settings_section`. Tab strips sit
+  on a band too. On list screens, plain text with a count pill and any
+  control on the right, rendered by
+  `app/views/app/shared/_list_section_heading.html.erb`. Both align with the rows
+  beneath them.
+- **Choices are option cards**: an `option-card` label wrapping an `option-radio`
+  (or a hidden one). See the export format, typeface, layout, width and email
+  delivery choosers.
+- **Blank slates** are a shaded band flush to the sheet's top, not a box floating
+  inside it. When the blank slate is the whole page it fills the sheet.
+- **Buttons** are one height: filled variants carry a transparent border so they
+  match outline ones. Destructive actions always use `btn-danger`.
+- **Placeholders** are set once in `components.css`; the editor's are in
+  `lexxy-editor-overrides.css` so they beat Lexxy's own opacity. Never set a
+  placeholder colour in a view.
+- **Count pills** use the `pill` helper: `rounded-full`, slate-filled, low drama.
+- **Row hover** on a list: soft fill, title underlines, row icons brighten. Divided
+  rows fill full-bleed; compact rows (posts, pages) fill an inset rounded strip.
+- **Dark mode** keeps the page at `slate-950` and every surface, including the nav
+  and menus, at `slate-900`; the sheet gets a 1px `slate-800` ring in place of a
+  shadow. Structural hairlines are `dark:border-slate-800`; inputs and option
+  cards keep `dark:border-slate-700` for affordance.
 - **Text hierarchy**:
   - Headings and primary labels: `text-slate-900 dark:text-slate-100`
-  - Standard supporting copy in blank slates, trash views, and helper text: `text-slate-600 dark:text-slate-300`
-  - Stronger helper/callout copy when the panel is body-led rather than heading-led (for example the Settings intro panel): `text-slate-800 dark:text-slate-200`
-  - Meta text, dates, counts, and secondary controls: `text-slate-500 dark:text-slate-400`
-- **Consistency rule**: New app-facing UI should generally follow the same panel language now used on Pages, Posts, and Trash screens before inventing a new treatment.
+  - Supporting copy: `text-slate-600 dark:text-slate-300`
+  - Meta text, dates, counts, secondary controls: `text-slate-500 dark:text-slate-400`
+- **The grey scale is remapped** in `app/assets/tailwind/application.css` to
+  slate's lightness steps at the accent's hue, so `slate-*` reads as a faintly
+  green grey everywhere. Don't reach for `zinc`, `stone` or `gray`.
+- **Palette**: `pagecord-accent` (and `pagecord-accent-hover`) is the only
+  brand colour; never write its hex in a view. Semantic colours are `red` for
+  danger, `amber` for warnings, `sky` for information and `emerald` for success.
+  The avatar palette in `_blog_avatar` is the one place other hues appear.
+- **Consistency rule**: follow the treatment already used on Posts, Comments and
+  Settings before inventing a new one.
 
 ## Testing
 

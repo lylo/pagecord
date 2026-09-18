@@ -1,9 +1,15 @@
 /* ================================== */
 /* Lexxy Editor Specific Styles       */
 /* ================================== */
+/* Lexxy fades its placeholder to 0.66; the app sets one weight for all of them. */
+lexxy-editor .lexxy-editor__content::before {
+  color: var(--color-slate-400);
+  opacity: 1;
+}
+
 lexxy-editor {
-  --lexxy-color-accent-dark: #4fbd9c;
-  --lexxy-color-accent-medium: #3da482; /* darker jade for hover */
+  --lexxy-color-accent-dark: var(--color-pagecord-accent);
+  --lexxy-color-accent-medium: var(--color-pagecord-accent-hover);
 
   &:focus-within {
     border: 1px solid var(--color-slate-400);
@@ -49,6 +55,56 @@ lexxy-editor {
     }
   }
 }
+/* ================================== */
+/* Borderless Editor (posts, pages)   */
+/* ================================== */
+lexxy-editor.lexxy-borderless {
+  --lexxy-editor-padding: 0;
+  --lexxy-editor-rows: 50vh;
+
+  border: none;
+  border-radius: 0;
+  background: transparent;
+
+  &:focus-within {
+    border: none;
+  }
+
+  fieldset:has(.field-error:not(:empty)) & {
+    border: none !important;
+
+    .lexxy-editor__content {
+      margin: -13px;
+      padding: 12px;
+      border: 1px solid var(--color-red-500);
+      border-radius: var(--radius-lg);
+    }
+  }
+
+  lexxy-toolbar {
+    inline-size: calc(100% + 2 * var(--sheet-padding));
+    max-inline-size: none;
+    margin-inline: calc(-1 * var(--sheet-padding));
+    padding-inline: var(--sheet-padding);
+    padding-block: 0.5rem;
+    margin-block-end: 1.5rem;
+    border-radius: 0;
+    border-block: 1px solid var(--color-slate-200);
+    background: var(--color-white);
+
+    .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
+      background: transparent;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  lexxy-editor.lexxy-borderless lexxy-toolbar {
+    border-color: var(--color-slate-800);
+    background: var(--color-slate-900);
+  }
+}
+
 /* ================================== */
 /* Lexxy Toolbar Base Styles          */
 /* ================================== */

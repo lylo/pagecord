@@ -7,7 +7,7 @@
 
     <fieldset class="mt-2">
       <%= form.text_field :slug,
-          class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
+          class: "w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
           placeholder: "custom-url-path" %>
       <div class="field-error"><%= @page.errors[:slug].to_sentence if @page.errors[:slug].any? %></div>
     </fieldset>
@@ -31,9 +31,17 @@
     </div>
   </div>
 
+  <% if @page.persisted? && !@blog.has_custom_home_page? %>
+    <div class="mb-8" data-section="home-page">
+      <div class="mt-4 font-bold">Home page</div>
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Show this page instead of your post list when someone visits your blog.</p>
+      <%= link_to "Make home page", app_page_home_page_path(@page.token), data: { turbo_method: :post }, class: "btn-optional mt-3" %>
+    </div>
+  <% end %>
+
   <%= render "app/posts/open_graph_image_section", record: @page, form: form, revealed: true %>
 
-  <div class="mt-8 pt-6 pb-4 border-t border-slate-200 dark:border-slate-700 flex justify-between gap-x-2">
+  <div class="mt-8 pt-6 pb-4 border-t border-slate-200 dark:border-slate-800 flex justify-between gap-x-2">
     <% if @page.persisted? %>
       <%= link_to "Delete page", app_pages_trash_path(page_token: @page.token), class: "btn-danger", data: { turbo_method: :post, turbo_confirm: "Are you sure you want to delete this page?" } %>
     <% end %>

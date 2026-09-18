@@ -5,7 +5,7 @@ module CommentModeration
 
   included do
     before_action :ensure_comments_enabled
-    helper_method :return_path
+    helper_method :return_path, :comments_tab_path
   end
 
   private
@@ -24,6 +24,7 @@ module CommentModeration
         scope.approved.top_level.order(updated_at: :desc).includes(:post, :replies)
       )
       @approved.load
+      @tab = params[:tab].presence_in(%w[ pending approved ]) || (@pending.any? ? "pending" : "approved")
     end
 
     def refresh_moderation(notice)
@@ -34,6 +35,10 @@ module CommentModeration
 
     def return_path
       origin_post ? app_post_comments_path(origin_post) : app_comments_path
+    end
+
+    def comments_tab_path(tab)
+      @post ? app_post_comments_path(@post, tab: tab) : app_comments_path(tab: tab)
     end
 
     def comment_path

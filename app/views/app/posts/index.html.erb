@@ -1,53 +1,49 @@
-<div class="mx-auto max-w-3xl w-full text-slate-950 dark:text-slate-50" data-controller="keyboard-shortcuts" data-keyboard-shortcuts-shortcuts-value="<%= { c: new_app_post_path }.to_json %>">
-  <div class="my-8">
-    <% if @posts.empty? && @drafts.empty? && @search_term.blank? && @tag.blank? %>
-      <div class="mb-8">
-        <%= render "blank_slate" %>
-      </div>
-    <% else %>
-      <div data-controller="search" class="mb-8">
-        <div class="mb-4 flex flex-wrap items-center justify-end gap-2">
-          <div class="flex items-center text-slate-600 dark:text-slate-400">
-            <button data-action="click->search#toggle" class="cursor-pointer rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100" title="Search posts" aria-label="Search posts">
-              <%= inline_svg_tag "icons/search.svg", class: "w-5 h-5" %>
-            </button>
+<div class="flex grow flex-col" data-controller="keyboard-shortcuts" data-keyboard-shortcuts-shortcuts-value="<%= { c: new_app_post_path }.to_json %>">
+  <% if @posts.empty? && @drafts.empty? && @search_term.blank? && @tag.blank? %>
+    <%= render "blank_slate" %>
+  <% else %>
+    <div data-controller="search">
+      <div class="sheet-header justify-end gap-2">
+        <div class="flex items-center text-slate-600 dark:text-slate-400">
+          <button data-action="click->search#toggle" class="cursor-pointer rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100" title="Search posts" aria-label="Search posts">
+            <%= inline_svg_tag "icons/search.svg", class: "w-5 h-5" %>
+          </button>
 
-            <%= link_to app_posts_tags_path, class: "rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100", title: "Manage tags", aria: { label: "Manage tags" } do %>
-              <%= inline_svg_tag "icons/tag.svg", class: "w-5 h-5" %>
-            <% end %>
-          </div>
-
-          <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
-        </div>
-
-        <div data-search-target="container" class="<%= 'hidden' unless @search_term %>">
-          <%= form_with url: app_posts_path, method: :get, local: true, data: { turbo_frame: "posts", search_target: "form", turbo_action: "advance" } do |form| %>
-            <div class="relative">
-              <%= form.text_field :search, value: @search_term, placeholder: "Search posts...",
-                  data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
-                  class: "w-full rounded-lg border border-slate-300 bg-white px-4 py-2 pr-12 text-slate-900 placeholder-slate-500 focus:border-slate-500 focus:outline-none focus:ring-0 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-400 dark:focus:border-slate-400" %>
-              <button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 -translate-y-1/2 transform text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300" title="Close search" aria-label="Close search">
-                <%= inline_svg_tag "icons/close.svg", class: "w-5 h-5" %>
-              </button>
-            </div>
+          <%= link_to app_posts_tags_path, class: "rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100", title: "Manage tags", aria: { label: "Manage tags" } do %>
+            <%= inline_svg_tag "icons/tag.svg", class: "w-5 h-5" %>
           <% end %>
         </div>
+
+        <%= link_to "✏️ New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
       </div>
-    <% end %>
 
-    <%= turbo_frame_tag "posts", data: { turbo_action: "advance" } do %>
-      <%= render "posts_list" %>
-      <%= render "app/shared/pagy_nav" %>
-    <% end %>
-
-    <% trashed_count = @blog.posts.discarded.count %>
-    <% if trashed_count > 0 %>
-      <div class="mt-8 pt-4 border-t border-slate-200 dark:border-slate-700">
-        <%= link_to app_posts_trash_path, class: "inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300" do %>
-          <%= inline_svg_tag "icons/trash.svg", class: "w-3.5 h-3.5" %>
-          <%= pluralize trashed_count, "deleted post" %>
+      <div data-search-target="container" class="pt-4 <%= 'hidden' unless @search_term %>">
+        <%= form_with url: app_posts_path, method: :get, local: true, data: { turbo_frame: "posts", search_target: "form", turbo_action: "advance" } do |form| %>
+          <div class="relative">
+            <%= form.text_field :search, value: @search_term, placeholder: "Search posts...",
+                data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
+                class: "w-full rounded-lg border border-slate-300 bg-white px-4 py-2 pr-12 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-0 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-slate-400" %>
+            <button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 -translate-y-1/2 transform text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300" title="Close search" aria-label="Close search">
+              <%= inline_svg_tag "icons/close.svg", class: "w-5 h-5" %>
+            </button>
+          </div>
         <% end %>
       </div>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
+
+  <%= turbo_frame_tag "posts", data: { turbo_action: "advance" } do %>
+    <%= render "posts_list" %>
+    <%= render "app/shared/pagy_nav" if @tab == "published" %>
+  <% end %>
+
+  <% trashed_count = @blog.posts.discarded.count %>
+  <% if trashed_count > 0 %>
+    <div class="sheet-divider mt-auto pt-5">
+      <%= link_to app_posts_trash_path, class: "inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300" do %>
+        <%= inline_svg_tag "icons/trash.svg", class: "w-3.5 h-3.5" %>
+        <%= pluralize trashed_count, "deleted post" %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

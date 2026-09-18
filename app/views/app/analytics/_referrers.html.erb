@@ -1,5 +1,5 @@
 <!-- Traffic Sources -->
-<div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
+<div>
   <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Traffic Sources</h3>
 
   <% if @referrer_data.any? %>
@@ -22,7 +22,7 @@
             <div class="hidden md:block bg-slate-200 dark:bg-slate-600 rounded-full h-2 w-20">
               <% max_visits = @referrer_data.first[:count] %>
               <% width = (referrer[:count].to_f / max_visits * 100).round(1) %>
-              <div class="bg-[#4fbd9c] rounded-full h-2 transition-all duration-300" style="width: <%= width %>%"></div>
+              <div class="bg-pagecord-accent rounded-full h-2 transition-all duration-300" style="width: <%= width %>%"></div>
             </div>
             <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 min-w-[3rem] text-right">
               <%= format_number(referrer[:count]) %>

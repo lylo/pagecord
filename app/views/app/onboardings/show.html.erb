@@ -1,55 +1,43 @@
-<div class="mt-8 prose dark:prose-invert">
-  <h1 class="text-2xl sm:text-3xl">
-  Welcome to Pagecord! ✨
-  </h1>
+<div class="text-slate-800 dark:text-slate-200">
+  <div class="pb-6">
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Welcome to Pagecord! ✨</h1>
+    <p class="mt-2 text-slate-600 dark:text-slate-300">
+      Your blog is live at <%= link_to blog_home_url(@blog), blog_home_url(@blog), class: "link-quiet font-semibold" %>.
+    </p>
 
-  <p>
-    Your blog is now live on the web at <%= link_to blog_home_url(@blog), blog_home_url(@blog), class: "font-semibold underline" %>
-  </p>
+    <p class="mt-2 text-slate-600 dark:text-slate-300">
+      Five quick things to set up. You can change any of them later in Settings.
+    </p>
+  </div>
 
-  <p>
-    To help you get started, we're going to set a few things up. You don't need to decide now &ndash; you can
-    change any of this later in your Settings!
-  </p>
+  <%= render "step", number: "1", title: "Give your blog a title" %>
 
-  <h2 class="text-xl sm:text-2xl">
-    Give your blog a custom title
-  </h2>
+  <div class="py-6">
+    <%= form_with url: app_onboarding_path, model: @blog,
+          data: {
+            turbo_scroll: false,
+            controller: "save-button",
+            action: "turbo:submit-end->save-button#showMessage"
+          } do |form| %>
+      <fieldset>
+        <%= styled_text_field(form, :title, placeholder: "@#{@blog.subdomain}", class: "w-full") %>
+        <div class="field-error"><%= @blog.errors[:title].first if @blog.errors[:title].any? %></div>
+      </fieldset>
 
-  <p>
-    If you like, you can give your blog a different title to <span class="font-bold">@<%= @blog.subdomain %></span>. Just enter it below and click Save.
-  </p>
-
-  <%= form_with url: app_onboarding_path, model: @blog,
+      <%= form.submit "Save",
         data: {
-          turbo_scroll: false,
-          controller: "save-button",
-          action: "turbo:submit-end->save-button#showMessage"
-        } do |form| %>
-    <fieldset>
-      <%= form.text_field :title, placeholder: "Enter a new title...", class: "w-full dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg" %>
-      <div class="field-error"><%= @blog.errors[:title].first if @blog.errors[:title].any? %></div>
-    </fieldset>
+          save_button_target: "button",
+          save_button_message_value: "✅ Saved!"
+        },
+        class: "mt-2 btn-primary"
+      %>
+    <% end %>
+  </div>
 
-    <%= form.submit "Save",
-      data: {
-        save_button_target: "button",
-        save_button_message_value: "✅ Saved!"
-      },
-      class: "mt-2 btn-primary"
-    %>
-  <% end %>
+  <%= render "step", number: "2", title: "Add a bio",
+        description: "Your bio appears at the top of your blog's home page. Entirely optional." %>
 
-  <h2 class="text-xl sm:text-2xl">
-    Add a bio
-  </h2>
-
-  <p>
-    Your bio will appear at the top of your blog's home page. This is where you'll tell the world all about your blog! It's entirely optional,
-    and you can always add one later.
-  </p>
-
-  <div class="lexxy-minimal">
+  <div class="lexxy-minimal py-6">
     <%= form_with url: app_onboarding_path, model: @blog,
           data: {
             turbo_scroll: false,
@@ -59,8 +47,8 @@
 
       <fieldset>
         <%= form.rich_text_area :bio,
-          placeholder: "add a bio to your profile if you like...",
-          class: "lexxy-content min-h-[150px] border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
+          placeholder: "Add your bio...",
+          class: "lexxy-content min-h-[150px]",
           spellcheck: true,
           autocorrect: "on",
           autocapitalize: "sentences",
@@ -77,38 +65,25 @@
     <% end %>
   </div>
 
-  <h2 class="text-xl sm:text-2xl">
-    Choose a design ✨
-  </h2>
-  <p>
-    Start from a ready-made design, or set the basics yourself. You can always change any of this later in Appearance settings.
-  </p>
+  <%= render "step", number: "3", title: "Choose a design ✨",
+        description: "Pick a ready-made design, or choose your own colours, type and layout." %>
 
-  <div data-controller="tabs" class="not-prose my-6"
-    data-tabs-active-class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
-    data-tabs-inactive-class="text-slate-500 dark:text-slate-400">
-    <div class="flex gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-800">
-      <button type="button"
-        data-tabs-target="tab"
-        data-action="tabs#select"
-        data-tabs-index-param="0"
-        class="flex-1 px-4 py-3 rounded-lg text-sm sm:text-base font-bold cursor-pointer transition bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm">
+  <div class="py-6">
+  <div data-controller="tabs" data-tabs-active-class="tab-active">
+    <div class="sheet-band flex gap-1 pt-2">
+      <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="0" class="tab tab-active">
         🖼️ Ready-made design
       </button>
-      <button type="button"
-        data-tabs-target="tab"
-        data-action="tabs#select"
-        data-tabs-index-param="1"
-        class="flex-1 px-4 py-3 rounded-lg text-sm sm:text-base font-bold cursor-pointer transition text-slate-500 dark:text-slate-400">
-        🎛️ Start with the basics
+      <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="1" class="tab">
+        🎛️ Choose your own
       </button>
     </div>
 
-    <div data-tabs-target="panel" class="pt-6">
+    <div data-tabs-target="panel" class="pt-6 pb-2">
       <%= render "ready_made", templates: @featured_templates %>
     </div>
 
-    <div data-tabs-target="panel" class="hidden pt-6 space-y-8">
+    <div data-tabs-target="panel" class="hidden pt-6 pb-2 space-y-8">
       <div>
         <h3 class="text-lg font-semibold">Pick a colour scheme 🎨</h3>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">The default is the classic Pagecord minimal monochrome.</p>
@@ -142,28 +117,22 @@
       </div>
     </div>
   </div>
+  </div>
 
-  <h2 class="text-xl sm:text-2xl">
-    Choose your language
-  </h2>
-  <p>
-    Choose the language for your email subscription form and other interface elements.
-  </p>
+  <%= render "step", number: "4", title: "Choose your language",
+        description: "The interface language of your blog, used for buttons, forms and dates." %>
 
-  <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
-    <%= render "/app/settings/blogs/language_select", form: form %>
-  <% end %>
+  <div class="py-6">
+    <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
+      <%= render "/app/settings/blogs/language_select", form: form %>
+    <% end %>
+  </div>
 
-  <h2 class="text-xl sm:text-2xl">
-    Ready to write ✍️
-  </h2>
+  <%= render "step", number: "5", title: "Ready to write ✍️",
+        description: "Publish your first post in the editor, from Obsidian, or straight from your inbox." %>
 
-  <p>
-    That's the setup done. Next you'll land on your Posts page, where you can publish your first post &ndash; write it in the editor, from Obsidian, or straight from your inbox.
-  </p>
-
-  <div class="flex justify-center">
-    <%= button_to app_onboarding_completion_path, class: "text-lg btn-primary my-8" do %>
+  <div class="py-6">
+    <%= button_to app_onboarding_completion_path, class: "btn-primary" do %>
       Go to your blog and start writing →
     <% end %>
   </div>

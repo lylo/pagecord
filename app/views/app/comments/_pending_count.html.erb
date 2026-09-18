@@ -1,2 +1,4 @@
 <% pending_count = @blog.comments.pending.count %>
-<%= pill pending_count, class: "ms-1 inline-block -translate-y-px" if pending_count.positive? %>
+<% if pending_count.positive? %>
+  <span class="ms-1.5 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-pagecord-accent text-white text-[11px] font-bold"><%= pending_count %></span>
+<% end %>

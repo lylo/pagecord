@@ -2,7 +2,7 @@
   /* ---- APP COMPONENTS ---- */
 
   .btn-primary {
-    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-white bg-[#4fbd9c] rounded-lg hover:bg-[#4bb193] focus:ring-4 focus:outline-none focus:ring-pagecord-accent/30 cursor-pointer;
+    @apply text-sm inline-flex items-center border border-transparent px-4 py-2 font-medium text-center text-white bg-pagecord-accent rounded-lg hover:bg-pagecord-accent-hover focus:ring-4 focus:outline-none focus:ring-pagecord-accent/30 cursor-pointer;
   }
 
   .btn-optional {
@@ -10,11 +10,11 @@
   }
 
   .btn-secondary {
-    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-slate-800 dark:text-slate-100 bg-slate-200 dark:bg-slate-600 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 cursor-pointer;
+    @apply text-sm inline-flex items-center border border-transparent px-4 py-2 font-medium text-center text-slate-800 dark:text-slate-100 bg-slate-200 dark:bg-slate-600 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 cursor-pointer;
   }
 
   .btn-danger {
-    @apply text-sm inline-flex items-center px-4 py-2 font-medium text-center text-slate-800 hover:text-white dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-red-700 dark:focus:ring-slate-800 cursor-pointer;
+    @apply text-sm inline-flex items-center border border-transparent px-4 py-2 font-medium text-center text-slate-800 hover:text-white dark:text-slate-100 bg-slate-200 rounded-lg hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-red-700 dark:focus:ring-slate-800 cursor-pointer;
   }
 
   /* A quiet underline for links inside body copy: comment bylines, timestamps,
@@ -23,8 +23,79 @@
     @apply underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 dark:decoration-slate-600 dark:hover:decoration-slate-300;
   }
 
+  /* The page's white surface on the tinted app background. Rows that need to reach
+     its edges, such as an editor's header and toolbar, use .sheet-bleed. */
+  .sheet {
+    --sheet-padding: --spacing(4);
+    @apply bg-white dark:bg-slate-900 -mx-4;
+    padding: var(--sheet-padding);
+
+    @media (width >= 40rem) {
+      --sheet-padding: --spacing(8);
+      padding-block-end: --spacing(6);
+      margin-inline: 0;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 2px 24px rgb(15 23 42 / 0.06);
+
+      @media (prefers-color-scheme: dark) {
+        box-shadow: 0 0 0 1px var(--color-slate-800), 0 2px 24px rgb(0 0 0 / 0.25);
+      }
+    }
+  }
+
+  .sheet-bleed {
+    margin-inline: calc(-1 * var(--sheet-padding));
+    padding-inline: var(--sheet-padding);
+  }
+
+  /* The header row every screen starts with, flush to the sheet's top edge. */
+  .sheet-header {
+    @apply flex min-h-16 items-center border-b border-slate-200 py-3 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-300;
+    margin-block-start: calc(-1 * var(--sheet-padding));
+    margin-inline: calc(-1 * var(--sheet-padding));
+    padding-inline: --spacing(4);
+  }
+
+  /* A shaded, full-bleed section: settings headings, blank slates, tab strips. */
+  .sheet-band {
+    @apply border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/60;
+    margin-inline: calc(-1 * var(--sheet-padding));
+    padding-inline: var(--sheet-padding);
+  }
+
+  .sheet-divider {
+    @apply border-t border-slate-200 dark:border-slate-800;
+    margin-inline: calc(-1 * var(--sheet-padding));
+    padding-inline: var(--sheet-padding);
+  }
+
+  .option-card {
+    @apply flex w-full cursor-pointer rounded-lg border border-slate-200 p-4 font-medium text-slate-800 transition-colors hover:bg-slate-50 has-checked:border-pagecord-accent has-checked:bg-pagecord-accent/10 has-checked:text-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:has-checked:text-slate-50;
+  }
+
+  .option-radio {
+    @apply h-4 w-4 cursor-pointer border-slate-300 text-pagecord-accent focus:ring-pagecord-accent/40 dark:border-slate-600 dark:bg-slate-700;
+  }
+
+  /* Tabs sit on a .sheet-band; the active one joins the panel below it. */
+  .tab {
+    @apply -mb-px inline-flex cursor-pointer items-center gap-2 rounded-t-lg border border-b-0 border-transparent px-4 py-3 text-sm text-slate-500 transition hover:text-slate-800 sm:text-base dark:text-slate-400 dark:hover:text-slate-200;
+  }
+
+  .tab-active {
+    @apply border-slate-200 bg-white font-bold text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100;
+  }
+
   .form-field {
     @apply dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400 border-slate-300 dark:border-slate-700;
+  }
+
+  /* One placeholder weight across the app. The editor's own placeholders are set
+     in lexxy-editor-overrides.css, which loads after Lexxy. */
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-slate-400);
+    opacity: 1;
   }
 
   /* Native auto-growing textarea (Chrome/Edge 123+, Safari 26.2+; not Firefox) */

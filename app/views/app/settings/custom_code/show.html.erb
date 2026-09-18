@@ -1,3 +1,5 @@
+<%= render "app/settings/header", title: "Custom Code" %>
+
 <% content_for :head do %>
   <%= stylesheet_link_tag "codemirror", "codemirror-show-hint", "code-editor" %>
 <% end %>
@@ -26,7 +28,7 @@
 
 <% help_link = ->(slug) { link_to "the help guide", "https://help.pagecord.com/#{slug}", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" } %>
 
-<div class="space-y-8">
+<div>
   <%= settings_section "Style", description: "Restyle your blog with your own CSS, and add a snippet to the bottom of every page.", control: style_help do %>
     <%= render layout: "code_field", locals: {
           title: "Custom CSS", attribute: :custom_css, mode: "css",
@@ -81,7 +83,7 @@
       </p>
     <% end %>
 
-    <div class="px-4 py-5 sm:px-6">
+    <div class="py-5">
       <%= form_with url: app_settings_custom_code_path, model: @blog,
             data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
         <div class="flex gap-3 <%= 'opacity-50' if code_disabled %>">
@@ -99,8 +101,4 @@
       <% end %>
     </div>
   <% end %>
-</div>
-
-<div class="mt-12">
-  <%= link_to "Back to Settings", app_settings_path, class: "btn-secondary" %>
 </div>

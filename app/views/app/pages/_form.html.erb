@@ -7,53 +7,41 @@
     data-autosave-base-content-value="<%= h(@page.content&.body&.to_html.to_s) if @page.persisted? %>">
 
 
-  <div class="mb-4 flex items-center justify-end gap-x-2 text-slate-500 dark:text-slate-300">
-    <%= render "app/shared/help/edit_page" %>
-
-    <%= render "app/posts/settings_button", record: @page, label: "Page settings" %>
-  </div>
-
   <%= form_with(model: @page, url: @page.persisted? ? app_page_path(@page) : app_pages_path, html: { id: "page-form" }) do |form| %>
     <%= hidden_field_tag :context_blog_id, @blog.id if is_new %>
 
     <%= render "settings_panel", form: form %>
 
+    <div class="sheet-header mb-6 flex-wrap justify-between gap-x-3 gap-y-2">
+      <div class="hidden sm:flex items-center gap-x-2 min-w-0">
+        <%= render "app/shared/help/edit_page" %>
+      </div>
+      <div class="flex flex-wrap items-center justify-end gap-2 ms-auto">
+        <%= render "app/posts/settings_button", record: @page, label: "Page settings" %>
+        <%= link_to (is_new ? "Discard" : "Cancel"), app_pages_path,
+              class: "btn-optional",
+              data: { action: "click->autosave#cancel" } %>
+        <%= form.button draft_button_text(@page), name: "post[status]", value: "draft", class: "btn-optional" %>
+        <%= render "app/posts/publish_button", form: form, record: @page %>
+      </div>
+    </div>
+
     <fieldset>
-      <%= form.text_field :title,
-            placeholder: "Page title",
-            class: "w-full placeholder-slate-300 dark:placeholder-slate-600 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400",
-            autofocus: true,
-            data: { autosave_target: "title" }
-      %>
-      <div class="field-error"><%= @page.errors[:title].to_sentence if @page.errors[:title].any? %></div>
+      <%= render "app/posts/title_field", form: form %>
+      <div class="field-error"><%= @page.errors.full_messages_for(:title).to_sentence %></div>
     </fieldset>
 
     <fieldset>
+      <div class="field-error"><%= @page.errors.full_messages_for(:content).first %></div>
       <%= form.rich_text_area :content,
         placeholder: "Write your page content...",
-        class: "lexxy-content mt-4 focus:ring-0 focus:!border-slate-500 dark:focus:!border-slate-400",
+        class: "lexxy-content lexxy-borderless mt-4",
         spellcheck: true,
         autocorrect: "on",
         autocapitalize: "sentences",
         data: { controller: "lexxy ios-toolbar", autosave_target: "content", attachments: !quota.exceeded?, videos: quota.unlimited? } %>
 
-      <div class="field-error"><%= @page.errors[:content].first if @page.errors[:content].any? %></div>
     </fieldset>
-
-    <% show_make_home_page = !@blog.has_custom_home_page? && @page.persisted? %>
-    <% flex_class = show_make_home_page ? "flex-col" : "justify-between" %>
-    <div class="flex <%= flex_class %> sm:flex-row sm:items-center sm:justify-between gap-3 mt-8">
-      <div class="flex flex-wrap gap-2">
-        <%= form.submit publish_button_text(@page), class: "btn-primary" %>
-        <%= link_to "Cancel", app_pages_path, class: "btn-secondary" %>
-      </div>
-      <div class="flex flex-wrap gap-2">
-        <%= form.button draft_button_text(@page), name: "post[status]", value: "draft", class: "btn-optional" %>
-        <% if show_make_home_page %>
-          <%= link_to "Make Home Page", app_page_home_page_path(@page.token), data: { turbo_method: :post }, class: "btn-optional" %>
-        <% end %>
-      </div>
-    </div>
 
     <%= render "app/shared/upload_quota", quota: quota %>
   <% end %>

@@ -8,6 +8,7 @@ class App::PagesController < App::BaseController
     @sort = cookies.encrypted[:pages_sort] == "updated" ? "updated" : "alpha"
     @pages = @blog.pages.kept.published.order(pages_order)
     @drafts = @blog.pages.kept.draft.order(:title)
+    @tab = params[:tab].presence_in(%w[ published drafts ]) || default_tab
   end
 
   def new
@@ -48,6 +49,10 @@ class App::PagesController < App::BaseController
   end
 
   private
+
+    def default_tab
+      cookies.encrypted[:pages_tab] == "drafts" || (@pages.empty? && @drafts.any?) ? "drafts" : "published"
+    end
 
     def pages_order
       @sort == "updated" ? Arel.sql("updated_at DESC, LOWER(title)") : Arel.sql("CASE WHEN id = #{@blog.home_page_id.to_i} THEN 0 ELSE 1 END, LOWER(title), updated_at DESC")

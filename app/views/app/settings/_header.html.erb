@@ -1,0 +1,14 @@
+<%# locals: (title:, parent: nil, parent_path: nil) %>
+<% content_for :sheets, true %>
+
+<% content_for :settings_breadcrumb do %>
+  <div class="sheet-header gap-x-2">
+    <%= link_to "Settings", app_settings_path, class: "shrink-0 font-semibold text-slate-800 dark:text-slate-100 hover:underline" %>
+    <span class="shrink-0 text-slate-400">&rsaquo;</span>
+    <% if parent %>
+      <%= link_to parent, parent_path, class: "shrink-0 font-semibold text-slate-800 dark:text-slate-100 hover:underline" %>
+      <span class="shrink-0 text-slate-400">&rsaquo;</span>
+    <% end %>
+    <span class="min-w-0 truncate"><%= title %></span>
+  </div>
+<% end %>

@@ -1,0 +1,5 @@
+<%# locals: (form:, record:, model_name: nil) %>
+<%= form.button class: "btn-primary" do %>
+  <span class="sm:hidden"><%= publish_button_text(record, model_name: model_name, short: true) %></span>
+  <span class="hidden sm:inline"><%= publish_button_text(record, model_name: model_name) %></span>
+<% end %>
