@@ -29,7 +29,7 @@
         You can use <code>@import</code> for Google Fonts or Bunny Fonts.
       </p>
 
-      <p class="text-sm text-slate-500 italic">
+      <p class="text-sm text-slate-500 dark:text-slate-400 italic">
         Customer support for debugging custom CSS is not possible. Read <%= help_link.call("custom-css") %> to get started.
       </p>
     <% end %>
@@ -41,7 +41,7 @@
         Add a small HTML snippet to the bottom of your blog for badges, webrings, links, or copyright text.
       </p>
 
-      <p class="text-sm text-slate-500 italic">
+      <p class="text-sm text-slate-500 dark:text-slate-400 italic">
         Only basic, safe HTML is supported. Scripts, embeds, forms, iframes, and inline styles are not supported. Read <%= help_link.call("custom-footer") %> to get started.
       </p>
     <% end %>
@@ -56,7 +56,7 @@
         analytics, or for a verification tag another service has asked them to add.
       </p>
 
-      <p class="text-sm text-slate-500 italic">
+      <p class="text-sm text-slate-500 dark:text-slate-400 italic">
         Only <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;link&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;noscript&gt;</code> and <code>&lt;template&gt;</code> tags can go here. Customer support for debugging custom code is not possible. Read <%= help_link.call("custom-code") %> to get started.
       </p>
     <% end %>
@@ -69,7 +69,7 @@
         see, like chat widgets and embedded forms.
       </p>
 
-      <p class="text-sm text-slate-500 italic">
+      <p class="text-sm text-slate-500 dark:text-slate-400 italic">
         Any HTML can go here. Customer support for debugging custom code is not possible. Read <%= help_link.call("custom-code") %> to get started.
       </p>
     <% end %>
@@ -83,7 +83,7 @@
           </div>
           <div>
             <%= form.label :custom_code_enabled, "Head and body code enabled", class: "text-slate-800 dark:text-slate-100" %>
-            <p class="text-slate-500 text-sm">
+            <p class="text-slate-500 dark:text-slate-400 text-sm">
               Switch your code off without deleting it, so you can rule it out when something looks wrong on
               your blog.
             </p>

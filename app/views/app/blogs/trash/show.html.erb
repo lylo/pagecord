@@ -5,7 +5,7 @@
 </div>
 
 <div class="mt-6 flex items-center gap-3">
-  <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Deleted blogs</h1>
+  <h1 class="page-title">Deleted blogs</h1>
   <% if @trashed_blogs.any? %><%= pill @trashed_blogs.size, class: "mt-1" %><% end %>
 </div>
 <p class="mt-2 text-slate-600 dark:text-slate-300">Deleted blogs are kept for 30 days before being permanently removed.</p>

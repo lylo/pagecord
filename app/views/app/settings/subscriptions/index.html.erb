@@ -53,7 +53,7 @@
     <p class="mt-2">
       Renew now to continue enjoying premium features like video uploads, custom domains, and more!
     </p>
-    <p class="mt-2 text-sm text-slate-500">You'll be billed immediately when you restart.</p>
+    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">You'll be billed immediately when you restart.</p>
 
     <%= render "plan_cards", monthly_label: "Restart Monthly", annual_label: "Restart Annually" %>
   <% else %>
@@ -87,7 +87,7 @@
       </p>
       <div class="mt-4 bg-slate-50 dark:bg-slate-800/60 rounded-lg p-4 sm:max-w-xs">
         <h3 class="font-semibold text-lg">Annual</h3>
-        <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500">/year</span></p>
+        <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500 dark:text-slate-400">/year</span></p>
         <div class="mt-4">
           <%= button_to "Switch to Annual", app_settings_subscriptions_plan_path(plan: "annual"), method: :patch, class: "btn-optional w-full justify-center", data: { turbo_confirm: "Switch to the standard annual plan? You won't be charged or refunded now: it takes effect at your next renewal." } %>
         </div>
@@ -96,15 +96,15 @@
       <h3 class="font-semibold text-lg mt-6">Change your plan</h3>
       <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="border-2 border-pagecord-accent rounded-lg p-4 relative">
-          <span class="absolute -top-3 left-4 bg-pagecord-accent text-white text-xs font-semibold px-2 py-1 rounded">Current Plan</span>
+          <span class="absolute -top-3 left-4 bg-pagecord-accent text-white dark:text-slate-950 text-xs font-semibold px-2 py-1 rounded">Current Plan</span>
           <h3 class="font-semibold text-lg">Monthly</h3>
-          <p class="text-2xl font-bold mt-2">$<%= @subscription.unit_price / 100 %><span class="text-sm font-normal text-slate-500">/month</span></p>
-          <p class="text-sm text-slate-500 mt-1">Renews <%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></p>
+          <p class="text-2xl font-bold mt-2">$<%= @subscription.unit_price / 100 %><span class="text-sm font-normal text-slate-500 dark:text-slate-400">/month</span></p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Renews <%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></p>
         </div>
         <div class="bg-slate-50 dark:bg-slate-800/60 rounded-lg p-4">
           <h3 class="font-semibold text-lg">Annual</h3>
-          <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500">/year</span></p>
-          <p class="text-sm text-slate-500 mt-1">Save vs monthly</p>
+          <p class="text-2xl font-bold mt-2">$<%= localised_price %><span class="text-sm font-normal text-slate-500 dark:text-slate-400">/year</span></p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Save vs monthly</p>
           <div class="mt-4">
             <%= button_to "Switch to Annual", app_settings_subscriptions_plan_path(plan: "annual"), method: :patch, class: "btn-primary w-full justify-center", data: { turbo_confirm: "Switch to annual billing? You'll be charged a prorated amount today and your next billing date will be adjusted." } %>
           </div>
@@ -115,7 +115,7 @@
     <% unless @subscription.supporter? %>
       <div class="mt-6 rounded-lg p-4 bg-pagecord-accent/10">
         <h3 class="font-semibold text-lg">Become a Supporter</h3>
-        <p class="text-sm text-slate-500 mt-1">
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Love Pagecord? Back its independent development for <strong>$<%= localised_price(:supporter) %>/year</strong>. No extra features, just buckets of thanks and a spot for your blog on the upcoming supporters page 🙏💖
         </p>
         <div class="mt-4">

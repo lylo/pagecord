@@ -68,11 +68,7 @@ hr {
   @apply border-slate-200 dark:border-slate-800;
 }
 
-/* Pagy pagination, styled as a button group */
-.pagy {
-  @apply inline-flex divide-x divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-600 shadow-[0_1px_2px_rgba(15,23,42,0.03)] dark:divide-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300;
-}
-
+/* Pagy pagination. The nav itself is .btn-group's shell, in components.css. */
 .pagy a {
   @apply block px-3.5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800;
 }

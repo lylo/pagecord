@@ -78,15 +78,15 @@ updated when a model is added — a trap the code genuinely can't express.
 - **App views**: Tailwind utility classes with dark mode variants (`dark:bg-slate-800`, etc.)
 - **Blog views**: Semantic CSS classes, NOT Tailwind. Layout: `layouts/blog.html.erb`. Typography uses `em` units for scaling.
 - **Logical properties**: Prefer `margin-inline-start` over `margin-left` for RTL support
-- Primary button color: `bg-[#4fbd9c]` (`btn-primary` class)
+- Primary button colour: `btn-primary`, filled with `bg-pagecord-accent`
 
 ## Design System
 
 Every app page renders inside a **sheet**: a white surface on the tinted page
 background. The sheet's parts are component classes in
 `app/assets/tailwind/components.css`: `.sheet`, `.sheet-bleed`, `.sheet-header`,
-`.sheet-band`, `.sheet-divider`, `.option-card`, `.option-radio`, `.btn-icon`,
-and `.btn-group` with `.btn-group-item`. A view adds only layout modifiers to them (`justify-between`,
+`.sheet-band`, `.sheet-divider`, `.page-title`, `.option-card`, `.option-radio`,
+`.btn-icon`, and `.btn-group` with `.btn-group-item`. A view adds only layout modifiers to them (`justify-between`,
 `py-5`, `flex-col`); it never restates their colours, borders or padding.
 
 - **The sheet is the only bordered container.** Inside it, sections divide with
@@ -96,9 +96,9 @@ and `.btn-group` with `.btn-group-item`. A view adds only layout modifiers to th
 - **Every screen starts with a header row**: `sheet-header`, flush to the sheet's
   top edge with a hairline beneath. Breadcrumb or tabs on the left, actions on
   the right. It appears only when it has something to hold: a breadcrumb on a
-  sub-page, or tools such as search and sort. Every screen then carries a page
-  title (`text-3xl font-bold tracking-tight`), and where it has actions a control
-  row beneath: the primary action, a `btn-group` for any exclusive choice
+  sub-page, or tools such as search and sort. Every screen then carries a
+  `page-title`, and where it has actions a control row beneath: the primary
+  action, a `btn-group` for any exclusive choice
   (Published/Drafts, Day/Month/Year, client-side panels), then a `sheet-divider`
   above the content. Breadcrumbs root at the nav section and are omitted where
   a nav tab already goes to the same place, as in the editors.
@@ -109,16 +109,15 @@ and `.btn-group` with `.btn-group-item`. A view adds only layout modifiers to th
   panels are not rows: 24px above, 32px below.
 - **Section headings** in Settings are a `sheet-band` (shaded fill with a
   hairline beneath), rendered by `settings_section`. In the first sheet the band
-  sits below the page title and its rule; every later sheet opens with it. On list screens, plain text with a count pill and any
-  control on the right, rendered by
-  `app/views/app/shared/_list_section_heading.html.erb`. Both align with the rows
-  beneath them.
+  sits below the page title and its rule; every later sheet opens with it. On
+  list screens the sections are the `btn-group` in the control row, each item
+  carrying a count `pill`.
 - **Choices are option cards**: an `option-card` label wrapping an `option-radio`
   (or a hidden one). See the export format, typeface, layout, width and email
   delivery choosers.
-- **Blank slates**: when the blank slate is the whole page, it is centred in the
-  sheet (Pages, Comments). When content follows it, it is a shaded band flush to
-  the sheet's top (Posts). Never a box floating inside the sheet.
+- **Blank slates** are centred in the sheet, a heading and a line of copy over
+  the primary action (Posts, Pages, Comments). Never a box floating inside the
+  sheet.
 - **Buttons** are one height: filled variants carry a transparent border so they
   match outline ones. Destructive actions always use `btn-danger`.
 - **Placeholders** are set once in `components.css`; the editor's are in
@@ -137,7 +136,9 @@ and `.btn-group` with `.btn-group-item`. A view adds only layout modifiers to th
   - Meta text, dates, counts, secondary controls: `text-slate-500 dark:text-slate-400`
 - **The grey scale is remapped** in `app/assets/tailwind/application.css` to
   slate's lightness steps at the accent's hue, so `slate-*` reads as a faintly
-  green grey everywhere. Don't reach for `zinc`, `stone` or `gray`.
+  green grey. Dark mode redefines the same scale cool and the accent light, so
+  anything filled with the accent takes `dark:text-slate-950`. Don't reach for
+  `zinc`, `stone` or `gray`.
 - **Palette**: `pagecord-accent` (and `pagecord-accent-hover`) is the only
   brand colour; never write its hex in a view. Semantic colours are `red` for
   danger, `amber` for warnings, `sky` for information and `emerald` for success.
