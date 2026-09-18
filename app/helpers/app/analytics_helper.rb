@@ -25,6 +25,35 @@ module App::AnalyticsHelper
     end
   end
 
+  # Switching view keeps today in view when the viewed period contains it,
+  # otherwise lands on the same position within the viewed period.
+  def date_for_view(date, from, to)
+    case to
+    when "day"
+      case from
+      when "month" then current_period?(date, "month") ? Date.current : Date.new(date.year, date.month, [ Date.current.day, date.end_of_month.day ].min)
+      when "year" then current_period?(date, "year") ? Date.current : date
+      else date
+      end
+    when "month"
+      case from
+      when "day" then date.beginning_of_month
+      when "year" then current_period?(date, "year") ? Date.current.beginning_of_month : Date.new(date.year, Date.current.month, 1)
+      else date
+      end
+    when "year"
+      from == "year" ? date : date.beginning_of_year
+    end
+  end
+
+  def current_period?(date, view_type)
+    case view_type
+    when "day" then date.to_date == Date.current
+    when "month" then date.beginning_of_month == Date.current.beginning_of_month
+    when "year" then date.beginning_of_year == Date.current.beginning_of_year
+    end
+  end
+
   def previous_date(date, view_type)
     case view_type
     when "day"

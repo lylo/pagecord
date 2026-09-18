@@ -1,14 +1,22 @@
-<%# locals: (title:, parent: nil, parent_path: nil) %>
+<%# locals: (title:, heading:, description: nil, control: nil, parent: nil, parent_path: nil) %>
 <% content_for :sheets, true %>
 
 <% content_for :settings_breadcrumb do %>
-  <div class="sheet-header gap-x-2">
-    <%= link_to "Settings", app_settings_path, class: "shrink-0 font-semibold text-slate-800 dark:text-slate-100 hover:underline" %>
-    <span class="shrink-0 text-slate-400">&rsaquo;</span>
-    <% if parent %>
-      <%= link_to parent, parent_path, class: "shrink-0 font-semibold text-slate-800 dark:text-slate-100 hover:underline" %>
+  <div class="sheet-header justify-between gap-x-3">
+    <div class="flex min-w-0 items-center gap-x-2">
+      <%= link_to "Settings", app_settings_path, class: "shrink-0 font-semibold text-slate-800 dark:text-slate-100 hover:underline" %>
       <span class="shrink-0 text-slate-400">&rsaquo;</span>
-    <% end %>
-    <span class="min-w-0 truncate"><%= title %></span>
+      <% if parent %>
+        <%= link_to parent, parent_path, class: "shrink-0 font-semibold text-slate-800 dark:text-slate-100 hover:underline" %>
+        <span class="shrink-0 text-slate-400">&rsaquo;</span>
+      <% end %>
+      <span class="min-w-0 truncate"><%= title %></span>
+    </div>
+    <%= control %>
   </div>
+
+  <h1 class="mt-6 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100"><%= heading %></h1>
+  <% if description %>
+    <p class="mt-2 text-slate-600 dark:text-slate-300"><%= description %></p>
+  <% end %>
 <% end %>

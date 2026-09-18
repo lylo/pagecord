@@ -1,5 +1,3 @@
-<%= render "app/settings/header", title: "Navigation" %>
-
 <% nav_help = capture do %>
   <%= render "app/shared/dialog",
     id: "navigation-help",
@@ -9,8 +7,11 @@
     content_partial: "app/shared/help/navigation_content" %>
 <% end %>
 
+<%= render "app/settings/header", title: "Navigation", heading: "Set up your navigation",
+      description: "Links in your blog's header. Drag to reorder.", control: nav_help %>
+
 <div>
-  <%= settings_section "Navigation", description: "Links in your blog's header. Drag to reorder.", control: nav_help do %>
+  <%= settings_section do %>
     <% if @navigation_items.any? %>
       <div data-controller="sortable"
            data-sortable-resource-name-value="navigation_item"

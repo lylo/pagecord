@@ -85,8 +85,8 @@ updated when a model is added — a trap the code genuinely can't express.
 Every app page renders inside a **sheet**: a white surface on the tinted page
 background. The sheet's parts are component classes in
 `app/assets/tailwind/components.css`: `.sheet`, `.sheet-bleed`, `.sheet-header`,
-`.sheet-band`, `.sheet-divider`, `.option-card`, `.option-radio`, `.btn-group`
-with `.btn-group-item`, `.tab` and `.tab-active`. A view adds only layout modifiers to them (`justify-between`,
+`.sheet-band`, `.sheet-divider`, `.option-card`, `.option-radio`, `.btn-icon`,
+and `.btn-group` with `.btn-group-item`. A view adds only layout modifiers to them (`justify-between`,
 `py-5`, `flex-col`); it never restates their colours, borders or padding.
 
 - **The sheet is the only bordered container.** Inside it, sections divide with
@@ -95,18 +95,21 @@ with `.btn-group-item`, `.tab` and `.tab-active`. A view adds only layout modifi
   lay out several sheets by declaring `content_for :sheets`, which Settings does.
 - **Every screen starts with a header row**: `sheet-header`, flush to the sheet's
   top edge with a hairline beneath. Breadcrumb or tabs on the left, actions on
-  the right, and 24px to whatever follows. List screens (Posts, Pages) follow it
-  with a page title and a control row: the primary action, a `btn-group` for the
-  Published/Drafts choice, then a `sheet-divider` above the rows. Breadcrumbs root at the nav section and are omitted where
+  the right. It appears only when it has something to hold: a breadcrumb on a
+  sub-page, or tools such as search and sort. Every screen then carries a page
+  title (`text-3xl font-bold tracking-tight`), and where it has actions a control
+  row beneath: the primary action, a `btn-group` for any exclusive choice
+  (Published/Drafts, Day/Month/Year, client-side panels), then a `sheet-divider`
+  above the content. Breadcrumbs root at the nav section and are omitted where
   a nav tab already goes to the same place, as in the editors.
 - **Full-bleed dividers**: rows carry `sheet-bleed` so the divider between them
   reaches the sheet's edges. A standalone rule is `sheet-divider`.
 - **Spacing**: sheet body 32px, header row 16px, a row in a divided list 20px, a
   section boundary 24px either side of its rule, 24px below a tab strip. Tab
   panels are not rows: 24px above, 32px below.
-- **Section headings**: in Settings and on blank slates, a `sheet-band` (shaded
-  fill with a hairline beneath), rendered by `settings_section`. Tab strips sit
-  on a band too. On list screens, plain text with a count pill and any
+- **Section headings** in Settings are a `sheet-band` (shaded fill with a
+  hairline beneath), rendered by `settings_section`. In the first sheet the band
+  sits below the page title and its rule; every later sheet opens with it. On list screens, plain text with a count pill and any
   control on the right, rendered by
   `app/views/app/shared/_list_section_heading.html.erb`. Both align with the rows
   beneath them.

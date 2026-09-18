@@ -69,12 +69,12 @@
         description: "Pick a ready-made design, or choose your own colours, type and layout." %>
 
   <div class="py-6">
-  <div data-controller="tabs" data-tabs-active-class="tab-active">
-    <div class="sheet-band flex gap-1 pt-2">
-      <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="0" class="tab tab-active">
+  <div data-controller="tabs" data-tabs-active-class="btn-group-item-active">
+    <div class="btn-group">
+      <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="0" class="btn-group-item btn-group-item-active">
         Ready-made design
       </button>
-      <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="1" class="tab">
+      <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="1" class="btn-group-item">
         Choose your own
       </button>
     </div>

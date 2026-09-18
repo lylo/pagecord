@@ -1,4 +1,4 @@
-<%= render "app/settings/header", title: "Blog Settings" %>
+<%= render "app/settings/header", title: "Blog Settings", heading: "Set up your blog" %>
 
 <%= form_with url: app_settings_blog_path, model: @blog do |form| %>
   <% disabled = !@blog.user.subscribed? %>

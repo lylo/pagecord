@@ -1,7 +1,7 @@
-<%= render "app/settings/header", title: "Exports" %>
+<%= render "app/settings/header", title: "Exports", heading: "Export your posts", description: "Download a ZIP archive of your posts. Videos are not currently included in exports." %>
 
 <div>
-  <%= settings_section description: "Download a ZIP archive of your posts. Videos are not currently included in exports." do %>
+  <%= settings_section do %>
     <%= settings_row "Format", stacked: true do %>
       <%= form_with model: Blog::Export.new, url: app_settings_exports_path, local: true, class: "space-y-4" do |form| %>
         <fieldset>

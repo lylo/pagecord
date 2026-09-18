@@ -1,17 +1,22 @@
-<%= render "app/settings/header", title: "Appearance" %>
+<%= render "app/settings/header", title: "Appearance", heading: "Change your blog's appearance",
+      description: "Pick your colours, typeface, layout and width, or start from a ready-made design." %>
 
 <div>
-  <section class="sheet" data-controller="tabs" data-tabs-active-class="tab-active">
-    <% breadcrumb = settings_breadcrumb %>
-    <%= breadcrumb %>
-    <div class="sheet-band flex gap-1 pt-2 <%= "-mt-(--sheet-padding) rounded-t-lg" unless breadcrumb %>">
-      <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="0" class="tab tab-active">
-        Colour scheme
-      </button>
-      <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="1" class="tab">
-        Ready-made design
-      </button>
+  <section class="sheet" data-controller="tabs" data-tabs-active-class="btn-group-item-active">
+    <%= settings_breadcrumb %>
+
+    <div class="mt-5 flex flex-wrap items-center gap-2">
+      <div class="btn-group">
+        <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="0" class="btn-group-item btn-group-item-active">
+          Colour scheme
+        </button>
+        <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="1" class="btn-group-item">
+          Ready-made design
+        </button>
+      </div>
     </div>
+
+    <div class="sheet-divider mt-5"></div>
 
     <div data-tabs-target="panel" class="pt-6 pb-8">
       <div data-controller="theme-selector">

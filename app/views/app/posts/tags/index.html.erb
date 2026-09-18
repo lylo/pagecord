@@ -1,12 +1,18 @@
-<div class="sheet-header mb-6 flex-wrap justify-between gap-x-3 gap-y-2">
+<div class="sheet-header justify-between gap-x-3">
   <div class="flex items-center gap-x-2 min-w-0">
     <%= link_to "Posts", app_posts_path, class: "font-semibold text-slate-800 dark:text-slate-100 hover:underline" %>
     <span class="text-slate-400">&rsaquo;</span>
     <span class="truncate">Tags</span>
-    <%= pill @tag_counts.size %>
   </div>
   <%= render "app/shared/help/tags" %>
 </div>
+
+<div class="mt-6 flex items-center gap-3">
+  <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Manage your tags</h1>
+  <%= pill @tag_counts.size, class: "mt-1" %>
+</div>
+
+<div class="sheet-divider mt-5"></div>
 
 <div class="divide-y divide-slate-200 dark:divide-slate-800">
   <% if @tag_counts.empty? %>

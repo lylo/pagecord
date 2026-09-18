@@ -1,5 +1,3 @@
-<%= render "app/settings/header", title: "Custom Code" %>
-
 <% content_for :head do %>
   <%= stylesheet_link_tag "codemirror", "codemirror-show-hint", "code-editor" %>
 <% end %>
@@ -7,7 +5,7 @@
 <% premium_disabled = !@blog.user.has_premium_access? %>
 <% code_disabled = !@blog.user.subscribed? %>
 
-<% style_help = capture do %>
+<% code_help = capture do %>
   <%= render "app/shared/dialog",
     id: "custom-code-help",
     title: "Before you add custom code",
@@ -16,20 +14,13 @@
     content_partial: "app/shared/help/custom_code_content" %>
 <% end %>
 
-<%# Same content, reachable from either section. Only one binds the ? shortcut,
-    otherwise both dialogs open at once. %>
-<% scripts_help = capture do %>
-  <%= render "app/shared/dialog",
-    id: "custom-code-help-scripts",
-    title: "Before you add custom code",
-    button_label: "Custom code help",
-    content_partial: "app/shared/help/custom_code_content" %>
-<% end %>
+<%= render "app/settings/header", title: "Custom Code", heading: "Add your own code",
+      description: "Restyle your blog with CSS, add a footer, and drop scripts into every page.", control: code_help %>
 
 <% help_link = ->(slug) { link_to "the help guide", "https://help.pagecord.com/#{slug}", class: "underline decoration-slate-300 underline-offset-2 hover:text-slate-700 dark:hover:text-slate-300", target: "_blank" } %>
 
 <div>
-  <%= settings_section "Style", description: "Restyle your blog with your own CSS, and add a snippet to the bottom of every page.", control: style_help do %>
+  <%= settings_section "Style", description: "Restyle your blog with your own CSS, and add a snippet to the bottom of every page." do %>
     <%= render layout: "code_field", locals: {
           title: "Custom CSS", attribute: :custom_css, mode: "css",
           disabled: premium_disabled, subscribe_prompt: "to style your blog with custom CSS." } do %>
@@ -56,7 +47,7 @@
     <% end %>
   <% end %>
 
-  <%= settings_section "Scripts", description: "Add code to every page of your blog, for things Pagecord doesn't do itself.", control: scripts_help do %>
+  <%= settings_section "Scripts", description: "Add code to every page of your blog, for things Pagecord doesn't do itself." do %>
     <%= render layout: "code_field", locals: {
           title: "Head Code", attribute: :custom_head_html, mode: "htmlmixed",
           disabled: code_disabled, subscribe_prompt: "to add custom code to your blog." } do %>

@@ -1,4 +1,4 @@
-<%= render "app/settings/header", title: "About" %>
+<%= render "app/settings/header", title: "About", heading: "Introduce yourself", description: "How you're introduced on your blog's home page." %>
 
 <%= form_with url: app_settings_about_path, model: @blog, data: { controller: "avatar" } do |form| %>
   <%= settings_section do %>

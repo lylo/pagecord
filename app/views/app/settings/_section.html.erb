@@ -1,7 +1,11 @@
 <% breadcrumb = settings_breadcrumb %>
 
 <section class="sheet [&:not(:first-of-type)]:mt-6">
-  <%= breadcrumb %>
+  <% if breadcrumb %>
+    <%= breadcrumb %>
+
+    <div class="sheet-divider mt-5"></div>
+  <% end %>
 
   <% if title || description || control %>
     <div class="sheet-band flex items-start justify-between gap-4 py-5 <%= "-mt-(--sheet-padding) rounded-t-lg" unless breadcrumb %>">
