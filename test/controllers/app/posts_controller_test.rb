@@ -44,8 +44,8 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     get app_posts_url
 
     assert_response :success
-    assert_select "button.btn-group-item", text: /Published/
-    assert_select "button.btn-group-item", text: /Drafts/
+    assert_select "a.btn-group-item", text: /Published/
+    assert_select "a.btn-group-item", text: /Drafts/
 
     get app_posts_url(tab: "drafts")
 
@@ -71,7 +71,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     assert @user.blog.posts.last.published?
     assert_equal "New Post", @user.blog.posts.last.title
     assert_equal "New content", @user.blog.posts.last.content.to_s.strip
@@ -99,7 +99,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     created_post = @user.blog.posts.last
     assert created_post.published?
     assert created_post.hidden?
@@ -114,7 +114,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     created_post = @user.blog.posts.last
     assert created_post.published?
     assert_not created_post.hidden?
@@ -129,7 +129,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "drafts")
     assert @user.blog.posts.last.draft?
   end
 
@@ -217,7 +217,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     assert_equal "New Title", @user.blog.posts.first.title
     assert_equal "New content", @user.blog.posts.first.content.to_s.strip
     assert_equal 1.month.ago.to_date, @user.blog.posts.first.published_at
@@ -320,7 +320,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     patch app_post_url(post), params: { post: { open_graph_image: image } }
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     assert post.reload.open_graph_image.attached?
   end
 
@@ -331,7 +331,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     patch app_post_url(post), params: { post: { open_graph_image_suppressed: true } }
 
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
     assert post.reload.open_graph_image_suppressed?
   end
 
@@ -350,7 +350,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_redirected_to app_posts_url(page: 3)
+    assert_redirected_to app_posts_url(page: 3, tab: "published")
     assert_equal "Updated Title", @user.blog.posts.first.title
   end
 
@@ -369,7 +369,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     created_post = @user.blog.posts.last
     assert_equal [ "javascript", "rails", "web-development" ], created_post.tag_list
     assert_equal "javascript, rails, web-development", created_post.tags_string
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
   end
 
   test "should update post with tags" do
@@ -385,7 +385,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
     post.reload
     assert_equal [ "rails", "ruby", "updated" ], post.tag_list
-    assert_redirected_to app_posts_url
+    assert_redirected_to app_posts_url(tab: "published")
   end
 
   test "should preserve tags on validation errors" do
@@ -527,24 +527,11 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "Draft Post"
   end
 
-  test "remembers the chosen tab" do
-    patch app_posts_tab_path, params: { tab: "drafts" }
-    follow_redirect!
-    assert_select "div#draft_posts"
-
-    get app_posts_path
-    assert_select "div#draft_posts"
-
-    patch app_posts_tab_path, params: { tab: "published" }
-    get app_posts_path
-    assert_select "div#draft_posts", count: 0
-  end
-
   test "each tab counts its own search results" do
     get app_posts_path(search: "post")
 
     assert_select "#posts p", text: /1 post matching/
-    assert_select "button.btn-group-item", text: /Drafts\s+1/
+    assert_select "a.btn-group-item", text: /Drafts\s+1/
   end
 
   test "should sort drafts by published_at or updated_at" do

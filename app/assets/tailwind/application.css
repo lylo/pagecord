@@ -21,6 +21,14 @@
   --color-slate-950: oklch(13.5% 0.01 170);
 }
 
+/* The accent glows against dark surfaces, so it steps down a little there. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-pagecord-accent: #3a9a7d;
+    --color-pagecord-accent-hover: #348c71;
+  }
+}
+
 /* Components */
 @import "./components.css";
 
@@ -46,25 +54,21 @@ hr {
   @apply border-slate-200 dark:border-slate-800;
 }
 
-/* Pagy pagination */
+/* Pagy pagination, styled as a button group */
 .pagy {
-  @apply flex space-x-1 font-semibold text-sm text-slate-500 dark:text-slate-300;
+  @apply inline-flex divide-x divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-600 shadow-[0_1px_2px_rgba(15,23,42,0.03)] dark:divide-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300;
 }
 
 .pagy a {
-  @apply block rounded-lg px-3 py-1 bg-slate-200 dark:bg-slate-700;
-}
-
-.pagy a:hover {
-  @apply bg-slate-300 dark:bg-slate-600 dark:text-slate-100;
+  @apply block px-3.5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800;
 }
 
 .pagy a:not([href]):not([aria-current]) { /* disabled links (gaps, prev/next at boundaries) */
-  @apply text-slate-300 bg-slate-100 dark:bg-slate-800 dark:text-slate-700 cursor-default;
+  @apply text-slate-300 hover:bg-transparent dark:text-slate-600 cursor-default;
 }
 
 .pagy a[aria-current="page"] { /* current page */
-  @apply text-white bg-slate-400 dark:bg-slate-500 cursor-default;
+  @apply bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100 cursor-default;
 }
 
 .pagy label {

@@ -54,7 +54,7 @@ class App::PostsController < App::BaseController
     return render_stale_form_context unless context_blog_id_matches_current_blog?
 
     if @post.save
-      redirect_to app_posts_path, notice: "Post was successfully created"
+      redirect_to app_posts_path(tab: @post.draft? ? "drafts" : "published"), notice: "Post was successfully created"
     else
       render :new, status: :unprocessable_entity
     end
@@ -64,7 +64,7 @@ class App::PostsController < App::BaseController
     @post = @blog.posts.kept.find_by!(token: params[:token])
 
     if @post.update(post_params)
-      redirect_to app_posts_path(page: params[:page].presence), notice: "Post was successfully updated"
+      redirect_to app_posts_path(page: params[:page].presence, tab: @post.draft? ? "drafts" : "published"), notice: "Post was successfully updated"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -80,7 +80,7 @@ class App::PostsController < App::BaseController
   private
 
     def default_tab
-      cookies.encrypted[:posts_tab] == "drafts" || (@posts.empty? && @drafts.any?) ? "drafts" : "published"
+      @posts.empty? && @drafts.any? ? "drafts" : "published"
     end
 
 

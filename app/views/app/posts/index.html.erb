@@ -25,12 +25,10 @@
         <%= link_to "New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
 
         <div class="btn-group">
-          <%= button_to app_posts_tab_path, method: :patch, params: filter.merge(tab: "published"),
-                class: class_names("btn-group-item", "btn-group-item-active": @tab == "published") do %>
+          <%= link_to app_posts_path(filter.merge(tab: "published")), class: class_names("btn-group-item", "btn-group-item-active": @tab == "published") do %>
             Published <%= pill @posts_count %>
           <% end %>
-          <%= button_to app_posts_tab_path, method: :patch, params: filter.merge(tab: "drafts"),
-                class: class_names("btn-group-item", "btn-group-item-active": @tab == "drafts") do %>
+          <%= link_to app_posts_path(filter.merge(tab: "drafts")), class: class_names("btn-group-item", "btn-group-item-active": @tab == "drafts") do %>
             Drafts <%= pill @drafts_count %>
           <% end %>
         </div>
@@ -54,19 +52,22 @@
 
     <div class="sheet-divider mt-5"></div>
 
-    <%= turbo_frame_tag "posts", data: { turbo_action: "advance" } do %>
+    <%= turbo_frame_tag "posts", class: "flex grow flex-col", data: { turbo_action: "advance" } do %>
       <%= render "posts_list" %>
-      <%= render "app/shared/pagy_nav" if @tab == "published" %>
-    <% end %>
-  <% end %>
 
-  <% trashed_count = @blog.posts.discarded.count %>
-  <% if trashed_count > 0 %>
-    <div class="sheet-divider mt-auto pt-5">
-      <%= link_to app_posts_trash_path, class: "inline-flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300" do %>
-        <%= inline_svg_tag "icons/trash.svg", class: "w-3.5 h-3.5" %>
-        <%= pluralize trashed_count, "deleted post" %>
+      <% trashed_count = @blog.posts.discarded.count %>
+      <% paginated = @tab == "published" && @pagy.pages > 1 %>
+      <% if trashed_count > 0 || paginated %>
+        <div class="sheet-divider mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-4 pt-5">
+          <%= render "app/shared/pagy_nav", spacing: "basis-full justify-center sm:basis-auto sm:ms-auto sm:justify-end" if paginated %>
+          <% if trashed_count > 0 %>
+            <%= link_to app_posts_trash_path, class: "inline-flex basis-full items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 sm:order-first sm:basis-auto" do %>
+              <%= inline_svg_tag "icons/trash.svg", class: "w-3.5 h-3.5" %>
+              <%= pluralize trashed_count, "deleted post" %>
+            <% end %>
+          <% end %>
+        </div>
       <% end %>
-    </div>
+    <% end %>
   <% end %>
 </div>

@@ -15,12 +15,10 @@
     <% end %>
 
     <div class="btn-group">
-      <%= button_to app_pages_tab_path, method: :patch, params: { tab: "published" },
-            class: class_names("btn-group-item", "btn-group-item-active": @tab == "published") do %>
+      <%= link_to app_pages_path(tab: "published"), class: class_names("btn-group-item", "btn-group-item-active": @tab == "published") do %>
         Published <%= pill @pages.size %>
       <% end %>
-      <%= button_to app_pages_tab_path, method: :patch, params: { tab: "drafts" },
-            class: class_names("btn-group-item", "btn-group-item-active": @tab == "drafts") do %>
+      <%= link_to app_pages_path(tab: "drafts"), class: class_names("btn-group-item", "btn-group-item-active": @tab == "drafts") do %>
         Drafts <%= pill @drafts.size %>
       <% end %>
     </div>

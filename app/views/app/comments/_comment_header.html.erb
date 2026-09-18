@@ -12,7 +12,7 @@
     <% unless @post %>
       on
       <%= link_to post_url(comment.post), target: "_blank", rel: "noopener", title: "View published post",
-            class: "group/post font-semibold text-slate-900 dark:text-slate-100" do %><span class="group-hover/post:underline"><%= comment.post.display_title %></span><%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "ms-1 inline h-3.5 w-3.5 align-top text-slate-400" %><% end %>
+            class: "link-quiet font-semibold text-slate-900 dark:text-slate-100" do %><%= comment.post.display_title %><%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "ms-1 inline h-3.5 w-3.5 align-top text-slate-400" %><% end %>
     <% end %>
   </p>
 

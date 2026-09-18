@@ -21,7 +21,7 @@ class App::PagesController < App::BaseController
     return render_stale_form_context unless context_blog_id_matches_current_blog?
 
     if @page.save
-      redirect_to app_pages_path, notice: "Page was successfully created."
+      redirect_to app_pages_path(tab: @page.draft? ? "drafts" : "published"), notice: "Page was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -35,7 +35,7 @@ class App::PagesController < App::BaseController
     @page = @blog.pages.kept.find_by!(token: params[:token])
 
     if @page.update(page_params)
-      redirect_to app_pages_path, notice: "Page was successfully updated."
+      redirect_to app_pages_path(tab: @page.draft? ? "drafts" : "published"), notice: "Page was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -51,7 +51,7 @@ class App::PagesController < App::BaseController
   private
 
     def default_tab
-      cookies.encrypted[:pages_tab] == "drafts" || (@pages.empty? && @drafts.any?) ? "drafts" : "published"
+      @pages.empty? && @drafts.any? ? "drafts" : "published"
     end
 
     def pages_order

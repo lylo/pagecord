@@ -17,14 +17,6 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "remembers the chosen tab" do
-    patch app_pages_tab_path, params: { tab: "drafts" }
-    get app_pages_path
-
-    assert_response :success
-    assert_select "div#draft_pages"
-  end
-
   test "should sort pages by recently updated when requested" do
     @page.update_columns(title: "Archive Page", updated_at: 2.days.ago)
     posts(:contact).update_columns(title: "Fresh Notes", updated_at: 1.hour.ago)
@@ -83,7 +75,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
 
     page = @blog.pages.last
     assert page.page?
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
   end
 
   test "should create draft page" do
@@ -142,7 +134,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
 
     @page.reload
     assert_equal "Updated About", @page.title
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
   end
 
   test "should update page as draft" do
@@ -250,14 +242,14 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
 
     patch app_page_path(@page), params: { post: { open_graph_image: image } }
 
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
     assert @page.reload.open_graph_image.attached?
   end
 
   test "should update page with open_graph_image_suppressed" do
     patch app_page_path(@page), params: { post: { open_graph_image_suppressed: true } }
 
-    assert_redirected_to app_pages_path
+    assert_redirected_to app_pages_path(tab: "published")
     assert @page.reload.open_graph_image_suppressed?
   end
 end

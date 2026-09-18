@@ -74,7 +74,6 @@ Rails.application.routes.draw do
       namespace :posts do
         resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
         resource :details, only: [ :create, :destroy ], controller: "details"
-        resource :tab, only: :update
         resources :tags, only: [ :index, :update, :destroy ], param: :name
       end
       resources :posts, param: :token, except: [ :show ] do
@@ -89,7 +88,6 @@ Rails.application.routes.draw do
       namespace :pages do
         resource :trash, only: [ :show, :create, :destroy ], controller: "trash"
         resource :sort_order, only: :update
-        resource :tab, only: :update
       end
       resources :pages, except: [ :show ], param: :token do
         resource :restoration, only: [ :create ], controller: "pages/restorations"
