@@ -92,6 +92,10 @@ lexxy-editor.lexxy-borderless {
     border-block: 1px solid var(--color-slate-200);
     background: var(--color-white);
 
+    [data-writing-mode] & {
+      --sheet-padding: 0;
+    }
+
     .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
       background: transparent;
     }
