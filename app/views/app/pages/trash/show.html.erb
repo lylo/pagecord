@@ -1,23 +1,28 @@
-<div class="sheet-header justify-between gap-x-3">
-  <div class="flex min-w-0 items-center gap-x-2">
-    <%= link_to "Pages", app_pages_path, class: "shrink-0 font-semibold text-slate-800 dark:text-slate-100 hover:underline" %>
-    <span class="shrink-0 text-slate-400">&rsaquo;</span>
-    <span class="min-w-0 truncate">Trash</span>
-    <% if @trashed_pages.any? %><%= pill @trashed_pages.size %><% end %>
-  </div>
+<div class="sheet-header gap-x-2">
+  <%= link_to "Pages", app_pages_path, class: "shrink-0 font-semibold text-slate-800 dark:text-slate-100 hover:underline" %>
+  <span class="shrink-0 text-slate-400">&rsaquo;</span>
+  <span class="min-w-0 truncate">Trash</span>
+</div>
 
-  <% if @trashed_pages.any? %>
-    <%= link_to "Empty trash", app_pages_trash_path,
-          data: { turbo_method: :delete, turbo_confirm: "Permanently delete all pages in the trash? This cannot be undone." },
-          class: "link-quiet shrink-0 hover:text-slate-800 dark:hover:text-slate-200" %>
-  <% end %>
+<div class="mt-6 flex items-center gap-3">
+  <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Deleted pages</h1>
+  <% if @trashed_pages.any? %><%= pill @trashed_pages.size, class: "mt-1" %><% end %>
 </div>
-<div class="sheet-band py-5">
-  <p class="text-sm text-slate-500 dark:text-slate-400">Deleted pages are kept for 30 days before being permanently removed.</p>
-</div>
+<p class="mt-2 text-slate-600 dark:text-slate-300">Deleted pages are kept for 30 days before being permanently removed.</p>
+
+<% if @trashed_pages.any? %>
+  <div class="mt-5 flex flex-wrap items-center gap-2">
+    <%= link_to "Empty trash", app_pages_trash_path, class: "btn-danger",
+          data: { turbo_method: :delete, turbo_confirm: "Permanently delete all pages in the trash? This cannot be undone." } %>
+  </div>
+<% end %>
+
+<div class="sheet-divider mt-5"></div>
 
 <% if @trashed_pages.empty? %>
-  <p class="py-8 text-center text-slate-600 dark:text-slate-300">Your trash is empty.</p>
+  <div class="flex grow flex-col items-center pt-8 pb-16 sm:pt-14">
+    <p class="max-w-md text-slate-600 dark:text-slate-300">Your trash is empty.</p>
+  </div>
 <% else %>
   <div class="divide-y divide-slate-200 dark:divide-slate-800">
     <% @trashed_pages.each do |page| %>
