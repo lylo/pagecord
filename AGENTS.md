@@ -52,6 +52,11 @@ blog is unlocked by storing its digest in the access cookie". Not what it defend
 against, not what happens to whom if it changes. If the method name already says
 it, write nothing.
 
+Use the plain name of the thing: the selector, the file, the property. Never a
+label coined while writing ("bare classes", "the rail", "the guard") unless the
+code already uses it. If you touch an existing comment, rewrite it to this
+standard rather than adding to it.
+
 If a change needed explaining, the explanation belongs in the commit message or
 the pull request, where it is attached to the change rather than to the file
 forever. Code review comments are not code comments.
