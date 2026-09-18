@@ -40,6 +40,16 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  # The footer sits inside the posts turbo frame so pagination swaps with the
+  # results, but the trash page has no such frame to render into.
+  test "the trash link leaves the posts frame" do
+    @user.blog.posts.create!(title: "Gone", content: "Body").discard
+
+    get app_posts_path
+
+    assert_select "a[href=?][data-turbo-frame=_top]", app_posts_trash_path
+  end
+
   test "should get posts index" do
     get app_posts_url
 

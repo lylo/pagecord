@@ -72,7 +72,7 @@
           form: (comment.approved? ? "comment-reply" : "comment-approval"), class: "btn-primary" %>
   <% end %>
 
-  <%= button_to "Delete", app_comment_path(comment, origin.merge(format: :html)), method: :delete,
+  <%= button_to "Delete comment", app_comment_path(comment, origin.merge(format: :html)), method: :delete,
         form_class: "contents",
         data: { turbo_confirm: "Delete this comment? This can't be undone." },
         class: "btn-danger" %>

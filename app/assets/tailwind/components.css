@@ -2,7 +2,7 @@
   /* ---- APP COMPONENTS ---- */
 
   .btn-primary {
-    @apply text-sm inline-flex items-center border border-transparent px-4 py-2 font-medium text-center text-white bg-pagecord-accent rounded-lg hover:bg-pagecord-accent-hover focus:ring-4 focus:outline-none focus:ring-pagecord-accent/30 cursor-pointer;
+    @apply text-sm inline-flex items-center border border-transparent px-4 py-2 font-medium text-center text-white dark:text-slate-950 bg-pagecord-accent rounded-lg hover:bg-pagecord-accent-hover focus:ring-4 focus:outline-none focus:ring-pagecord-accent/30 cursor-pointer;
   }
 
   .btn-optional {

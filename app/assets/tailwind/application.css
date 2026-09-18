@@ -21,11 +21,25 @@
   --color-slate-950: oklch(13.5% 0.01 170);
 }
 
-/* The accent glows against dark surfaces, so it steps down a little there. */
+/* Dark mode has its own scale: the greys go cool, because on surfaces this large the
+   accent's hue reads as a cast rather than a tint, and the accent goes light and soft,
+   which is why anything filled with it takes dark text. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-pagecord-accent: #3a9a7d;
-    --color-pagecord-accent-hover: #348c71;
+    --color-pagecord-accent: oklch(78% 0.075 172);
+    --color-pagecord-accent-hover: oklch(83% 0.075 172);
+
+    --color-slate-50: oklch(97% 0.002 237);
+    --color-slate-100: oklch(94% 0.003 237);
+    --color-slate-200: oklch(89% 0.004 237);
+    --color-slate-300: oklch(82% 0.006 237);
+    --color-slate-400: oklch(71% 0.01 237);
+    --color-slate-500: oklch(62% 0.012 237);
+    --color-slate-600: oklch(48% 0.012 237);
+    --color-slate-700: oklch(39% 0.012 237);
+    --color-slate-800: oklch(32% 0.012 237);
+    --color-slate-900: oklch(26% 0.011 237);
+    --color-slate-950: oklch(19% 0.01 237);
   }
 }
 
