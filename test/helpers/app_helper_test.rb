@@ -5,6 +5,14 @@ class AppHelperTest < ActionView::TestCase
     @blog = blogs(:joel)
   end
 
+  test "shortcut labels the modifier for the platform" do
+    request.user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+    assert_equal "⌘.", shortcut("⌘.", "Ctrl+.")
+
+    request.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    assert_equal "Ctrl+.", shortcut("⌘.", "Ctrl+.")
+  end
+
   test "persisted_value returns was value when available" do
     @blog.update(subdomain: "joel.joel")
 

@@ -5,7 +5,7 @@
     <%= inline_svg_tag "icons/collapse.svg", class: "w-6 h-6 shrink-0" %>
   </button>
 <% else %>
-  <button type="button" class="<%= classes %>" title="Writing mode (⌘⇧F)" data-action="mousedown->writing-mode#toggle:prevent">
+  <button type="button" class="<%= classes %>" title="Writing mode (<%= shortcut "⌘⇧F", "Ctrl+Shift+F" %>)" data-action="mousedown->writing-mode#toggle:prevent">
     <%= inline_svg_tag "icons/expand.svg", class: "w-6 h-6 shrink-0" %>
   </button>
 <% end %>

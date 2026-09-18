@@ -9,6 +9,10 @@ module AppHelper
     tag.span text, **options, class: [ "rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300", options[:class] ]
   end
 
+  def shortcut(mac, other)
+    request.user_agent.to_s.include?("Mac") ? mac : other
+  end
+
   def is_current_path?(section)
     # /app/posts/:token/comments contains two section names, so the controller wins.
     return controller_name == section if NAV_SECTIONS.include?(controller_name)
