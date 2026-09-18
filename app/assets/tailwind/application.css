@@ -3,6 +3,8 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/aspect-ratio";
 
+@custom-variant writing-mode (&:where([data-writing-mode], [data-writing-mode] *));
+
 @theme {
   --color-pagecord-accent: #4fbd9c;
   --color-pagecord-accent-hover: #4bb193;

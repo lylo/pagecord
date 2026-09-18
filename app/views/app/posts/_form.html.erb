@@ -1,7 +1,7 @@
 <% is_new = !@post.persisted? %>
 <% quota = Current.user.upload_quota %>
 
-<div data-controller="settings-panel autosave"
+<div data-controller="settings-panel autosave writing-mode"
     data-autosave-key-value="<%= is_new ? "draft-post-new-#{@blog.id}" : "draft-post-#{@post.id}" %>"
     data-autosave-base-title-value="<%= @post.title.to_s %>"
     data-autosave-base-content-value="<%= h(@post.content&.body&.to_html.to_s) if @post.persisted? %>">
@@ -15,7 +15,7 @@
 
     <%= render "settings_panel", form: form %>
 
-    <div class="sheet-header mb-6 flex-wrap justify-between gap-x-3 gap-y-2">
+    <div class="sheet-header mb-6 flex-wrap justify-between gap-x-3 gap-y-2 writing-mode:hidden">
       <div class="flex items-center gap-x-2 min-w-0">
         <span class="hidden sm:flex flex-wrap gap-x-2 text-slate-400 dark:text-slate-500" data-settings-panel-target="tags">
           <% @post.tag_list.first(3).each do |tag| %>
@@ -27,6 +27,7 @@
         </span>
       </div>
       <div class="flex flex-wrap items-center justify-end gap-2 ms-auto">
+        <%= render "app/posts/writing_mode_button" %>
         <%= render "settings_button", record: @post, label: "Post settings" %>
         <%= link_to (is_new ? "Discard" : "Cancel"),
               app_posts_path(page: params[:page].presence),
@@ -53,4 +54,6 @@
 
     <%= render "app/shared/upload_quota", quota: quota %>
   <% end %>
+
+  <%= render "app/posts/writing_mode_button", exit: true %>
 </div>

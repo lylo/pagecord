@@ -1,7 +1,7 @@
 <% is_new = !@page.persisted? %>
 <% quota = Current.user.upload_quota %>
 
-<div data-controller="settings-panel autosave"
+<div data-controller="settings-panel autosave writing-mode"
     data-autosave-key-value="<%= is_new ? "draft-page-new-#{@blog.id}" : "draft-page-#{@page.id}" %>"
     data-autosave-base-title-value="<%= @page.title.to_s %>"
     data-autosave-base-content-value="<%= h(@page.content&.body&.to_html.to_s) if @page.persisted? %>">
@@ -12,11 +12,12 @@
 
     <%= render "settings_panel", form: form %>
 
-    <div class="sheet-header mb-6 flex-wrap justify-between gap-x-3 gap-y-2">
+    <div class="sheet-header mb-6 flex-wrap justify-between gap-x-3 gap-y-2 writing-mode:hidden">
       <div class="hidden sm:flex items-center gap-x-2 min-w-0">
         <%= render "app/shared/help/edit_page" %>
       </div>
       <div class="flex flex-wrap items-center justify-end gap-2 ms-auto">
+        <%= render "app/posts/writing_mode_button" %>
         <%= render "app/posts/settings_button", record: @page, label: "Page settings" %>
         <%= link_to (is_new ? "Discard" : "Cancel"), app_pages_path,
               class: "btn-optional",
@@ -45,4 +46,6 @@
 
     <%= render "app/shared/upload_quota", quota: quota %>
   <% end %>
+
+  <%= render "app/posts/writing_mode_button", exit: true %>
 </div>

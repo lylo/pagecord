@@ -25,8 +25,8 @@
     <%= yield :head %>
   </head>
 
-  <body class="flex flex-col min-h-screen bg-slate-100 dark:bg-slate-950">
-    <header class="mb-4 md:mb-6">
+  <body class="flex flex-col min-h-screen bg-slate-100 dark:bg-slate-950 writing-mode:bg-white dark:writing-mode:bg-slate-900">
+    <header class="mb-4 md:mb-6 writing-mode:hidden">
       <% if Current.user.onboarding_complete? && !Current.user.subscribed? %>
         <%= render "/app/shared/premium_upsell_banner" %>
       <% end %>
@@ -51,14 +51,14 @@
         <% if content_for?(:sheets) %>
           <%= yield %>
         <% else %>
-          <div class="sheet flex flex-grow flex-col">
+          <div class="sheet flex flex-grow flex-col writing-mode:rounded-none writing-mode:shadow-none writing-mode:pt-[12vh]">
             <%= yield %>
           </div>
         <% end %>
       </div>
     </main>
 
-    <footer class="mx-auto w-full max-w-3xl px-4 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+    <footer class="writing-mode:hidden mx-auto w-full max-w-3xl px-4 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
       <div class="flex items-center justify-center gap-x-5">
         <%= link_to "Help", "https://help.pagecord.com", class: "hover:text-slate-800 dark:hover:text-slate-200" %>
         <%= link_to "FAQ", faq_path, class: "hover:text-slate-800 dark:hover:text-slate-200" %>
