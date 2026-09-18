@@ -204,14 +204,15 @@
   }
 }
 
-/* Nothing sits above the first block, so it never needs a top margin: the
-   mirror of Lexxy's `> :last-child`. Bare classes to outrank the symmetric
-   margins above and the image margins in blogs.css. lexxy-editor carries
-   .lexxy-content itself, hence the contenteditable root. */
+/* Not wrapped in :where() so these outrank the image margins in blogs.css. */
 .lexxy-content:not(lexxy-editor),
 .lexxy-editor__content {
   > :first-child {
     margin-block-start: 0;
+  }
+
+  > :last-child {
+    margin-block-end: 0;
   }
 
   /* The list has no top margin, but its first item's leaks out through it. */
