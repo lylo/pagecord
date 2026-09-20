@@ -29,6 +29,16 @@ class Blogs::Posts::PreviewsControllerTest < ActionDispatch::IntegrationTest
     assert_select "article footer", false
   end
 
+  test "should preview a draft page's embedded posts" do
+    page = posts(:draft_page)
+    page.update!(content: "{{ posts style: stream }}")
+
+    get blog_post_preview_path(page.signed_id(purpose: :preview))
+
+    assert_response :success
+    assert_select "div.post-stream-item", minimum: 1
+  end
+
   test "should preview a scheduled post with its signed token" do
     post = @blog.posts.create!(title: "Scheduled", content: "Soon", published_at: 1.week.from_now)
 

@@ -1,5 +1,5 @@
 <% if post.tag_list.present? %>
-  <%= render "tags", post: post %>
+  <%= render "blogs/posts/tags", post: post %>
 <% end %>
 
 <footer>
@@ -38,7 +38,7 @@
       <% end %>
 
       <% if @blog.show_upvotes? %>
-        <%= render "upvotes", post: post %>
+        <%= render "blogs/posts/upvotes", post: post %>
       <% end %>
     </div>
   <% end %>

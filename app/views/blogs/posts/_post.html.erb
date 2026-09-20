@@ -1,10 +1,10 @@
 <% cache_if(post.post?, [post, @blog.updated_at, local_assigns[:excerpt], @blog.accepts_comments?]) do %>
   <article class="<%= post.page? ? 'page' : 'post' %> h-entry">
-    <%= render "post_title", post: post %>
+    <%= render "blogs/posts/post_title", post: post %>
 
-    <%= render "post_content", post: post, excerpt: local_assigns[:excerpt] %>
+    <%= render "blogs/posts/post_content", post: post, excerpt: local_assigns[:excerpt] %>
 
-    <%= render "post_footer", post: post if post.post? %>
+    <%= render "blogs/posts/post_footer", post: post if post.post? %>
   </article>
 
   <% if post.post? && @blog.accepts_comments? && post.comments_visible? %>
