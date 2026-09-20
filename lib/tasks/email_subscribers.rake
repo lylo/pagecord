@@ -1,7 +1,7 @@
 require "csv"
 
 namespace :email_subscribers do
-  desc "Import confirmed subscribers from a CSV (headers: email, created_at, country — only email is required). Every row is imported as a confirmed subscriber, so remove unsubscribed/deleted contacts from the file first. Usage: DRY_RUN=true bin/rails \"email_subscribers:import[blog_subdomain,path/to/subscribers.csv]\""
+  desc "Import confirmed subscribers from a comma or semicolon separated CSV (headers: email, created_at, country – only email is required). Every row is imported as a confirmed subscriber, so remove unsubscribed/deleted contacts from the file first. Usage: DRY_RUN=true bin/rails \"email_subscribers:import[blog_subdomain,path/to/subscribers.csv]\""
   task :import, [ :blog_subdomain, :csv_path ] => :environment do |_task, args|
     blog = Blog.find_by(subdomain: args[:blog_subdomain])
     unless blog
@@ -18,7 +18,10 @@ namespace :email_subscribers do
     dry_run = ENV["DRY_RUN"] == "true"
     puts "=== DRY RUN - no records will be created ===" if dry_run
 
-    rows = CSV.read(csv_path, headers: true, encoding: "bom|utf-8", header_converters: ->(header) { header&.strip })
+    header_line = File.open(csv_path, "rb") { |io| io.readline }
+    col_sep = header_line.count(";") > header_line.count(",") ? ";" : ","
+
+    rows = CSV.read(csv_path, headers: true, encoding: "bom|utf-8", col_sep: col_sep, header_converters: ->(header) { header&.strip })
     unless rows.headers.include?("email")
       puts "CSV must have an 'email' header. Found: #{rows.headers.join(", ")}"
       exit 1
@@ -31,6 +34,8 @@ namespace :email_subscribers do
     failed_count = 0
 
     rows.each do |row|
+      next if row.fields.all?(&:blank?)
+
       email = row["email"]&.strip
 
       if email.blank?
