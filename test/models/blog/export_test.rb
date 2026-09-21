@@ -12,9 +12,9 @@ class Blog::ExportTest < ActiveSupport::TestCase
     @post.content = ActionText::Content.new(<<~HTML)
       <div class="lexxy-content">
         <p>Here is an image:</p>
-        <action-text-attachment sgid="123" content-type="image/jpeg" url="http://example.com/test%20image.jpg">
+        <action-text-attachment sgid="123" content-type="image/jpeg" url="http://localhost:3000/rails/active_storage/blobs/redirect/abc123/test%20image.jpg">
           <figure>
-            <img src="http://example.com/test%20image.jpg" alt="Test">
+            <img src="http://localhost:3000/rails/active_storage/blobs/redirect/abc123/test%20image.jpg" alt="Test">
           </figure>
         </action-text-attachment>
       </div>
@@ -28,7 +28,7 @@ class Blog::ExportTest < ActiveSupport::TestCase
     URI.stubs(:open).with(anything, read_timeout: 30, redirect: true).yields(StringIO.new("fixture image data"))
 
     # Mock the test image URL - use yields for block form of URI.open
-    URI.expects(:open).with("http://example.com/test%20image.jpg", read_timeout: 30, redirect: true).yields(fake_image)
+    URI.expects(:open).with("http://localhost:3000/rails/active_storage/blobs/redirect/abc123/test%20image.jpg", read_timeout: 30, redirect: true).yields(fake_image)
   end
 
   test "defaults to html format" do

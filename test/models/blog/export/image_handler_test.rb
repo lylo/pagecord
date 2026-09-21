@@ -15,23 +15,63 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
     @image_handler = Blog::Export::ImageHandler.new(@post, "tmp/images_dir")
   end
 
-  test "replace image source with local path" do
-    @image_handler.stubs(:download_image)
-      .with("http://example.com/test%20image.jpg", regexp_matches(/test_image\.jpg$/))
-      .returns(nil)
+  test "bundles an image from the storage host" do
+    blob = create_blob
+    handler = isolated_handler
+    handler.stubs(:download_image)
 
-    processed_html = @image_handler.process_images(@post.content.body.to_s)
+    processed_html = with_asset_host do
+      handler.process_images(%(<img src="https://storage.pagecord.com/#{blob.key}">))
+    end
 
-    assert_match %r{src="images/[^/]+/test_image\.jpg"}, processed_html
+    assert_match %r{src="images/[^/]+/space\.jpg"}, processed_html
+  end
+
+  test "bundles a storage image served through the Cloudflare resizer" do
+    blob = create_blob
+    handler = isolated_handler
+    handler.stubs(:download_image)
+
+    processed_html = with_asset_host do
+      handler.process_images(%(<img src="https://pagecord.com/cdn-cgi/image/width=1600,format=webp/https://storage.pagecord.com/#{blob.key}">))
+    end
+
+    assert_match %r{src="images/[^/]+/space\.jpg"}, processed_html
+  end
+
+  test "leaves images on other hosts alone" do
+    handler = isolated_handler
+    handler.expects(:download_image).never
+
+    processed_html = with_asset_host do
+      handler.process_images(@post.content.body.to_s)
+    end
+
+    assert_match %r{src="http://example\.com/test%20image\.jpg"}, processed_html
+  end
+
+  test "never fetches an image whose src only resembles the storage host" do
+    handler = isolated_handler
+    handler.expects(:download_image).never
+
+    with_asset_host do
+      handler.process_images(<<~HTML)
+        <img src="https://storage.pagecord.com.example.com/key">
+        <img src="https://storage.pagecord.com@example.com/key">
+        <img src="http://127.0.0.1:6379/key">
+        <img src="/etc/passwd">
+      HTML
+    end
   end
 
   test "failed image download does not raise exception" do
-    @image_handler.stubs(:download_image)
-      .with("http://example.com/test%20image.jpg", regexp_matches(/test_image\.jpg$/))
-      .raises(StandardError, "Download failed")
+    handler = isolated_handler
+    handler.stubs(:download_image).raises(StandardError, "Download failed")
 
     assert_nothing_raised do
-      @image_handler.process_images(@post.content.body.to_s)
+      with_asset_host do
+        handler.process_images(%(<img src="https://storage.pagecord.com/#{create_blob.key}">))
+      end
     end
   end
 
