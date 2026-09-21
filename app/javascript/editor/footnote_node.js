@@ -139,6 +139,16 @@ export class FootnotesNode extends ElementNode {
     return true
   }
 
+  // Text can only go in the notes, so Lexxy's provisional paragraph gives the list
+  // a caret position either side, as it does for a table.
+  canInsertTextBefore() {
+    return false
+  }
+
+  canInsertTextAfter() {
+    return false
+  }
+
   // exportDOM is inherited: Lexical builds the exported element from createDOM,
   // so this covers the editor and the saved HTML alike.
   createDOM() {
