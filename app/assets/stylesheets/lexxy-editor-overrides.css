@@ -91,13 +91,10 @@ lexxy-editor.lexxy-borderless {
     border-radius: 0;
     border-block: 1px solid var(--color-slate-200);
     background: var(--color-white);
+    --lexxy-toolbar-button-background: transparent;
 
     [data-writing-mode] & {
       --sheet-padding: 0;
-    }
-
-    .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
-      background: transparent;
     }
   }
 }
@@ -115,6 +112,7 @@ lexxy-editor.lexxy-borderless {
 
 lexxy-toolbar {
   --lexxy-toolbar-button-size: 1.75lh;
+  --lexxy-toolbar-button-background: var(--color-slate-100);
 
   position: sticky;
   top: 0;
@@ -128,7 +126,7 @@ lexxy-toolbar {
   gap: 0.25rem;
 
   .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
-    background: var(--color-slate-100);
+    background: var(--lexxy-toolbar-button-background);
     color: var(--color-slate-800);
     border: none;
 
@@ -205,10 +203,11 @@ lexxy-toolbar {
 
   /* Toolbar needs explicit overrides (light mode doesn't use Lexxy variables) */
   lexxy-toolbar {
+    --lexxy-toolbar-button-background: var(--color-slate-800);
     background: var(--color-slate-800);
 
     .lexxy-editor__toolbar-button:not([value="link"]):not([value="unlink"]) {
-      background: var(--color-slate-800);
+      background: var(--lexxy-toolbar-button-background);
       color: var(--color-slate-200);
 
       &:hover, &:focus {
