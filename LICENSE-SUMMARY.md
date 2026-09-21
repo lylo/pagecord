@@ -1,6 +1,6 @@
-# Pagecord License Summary
+# Pagecord Licence Summary
 
-This is a **human-readable summary** of the Pagecord License.  
+This is a **human-readable summary** of the Pagecord Licence.  
 It is not a substitute for the full legal terms in [LICENSE.md](./LICENSE.md).
 
 ---
@@ -12,13 +12,14 @@ It is not a substitute for the full legal terms in [LICENSE.md](./LICENSE.md).
 - Learn from the source and contribute improvements  
 
 ## ❌ What you cannot do
-- Offer Pagecord as a **hosted or managed service** (e.g. a competing SaaS blogging platform)  
+- Offer Pagecord, or any substantial part of it, as a **hosted or managed service** (e.g. a competing SaaS blogging platform)  
 - Remove or obscure licensing, copyright, or trademark notices  
+- Use the Pagecord name or logo  
 
-## ℹ️ Why this license?
-Pagecord is meant to be free for personal use and self-hosting.  
+## ℹ️ Why this licence?
+Pagecord is meant to be free to self-host.  
 But the hosted version at [pagecord.com](https://pagecord.com) is a paid SaaS business.  
-This license protects against clones that undermine that business model.
+This licence protects against clones that undermine that business model.
 
 ---
 
