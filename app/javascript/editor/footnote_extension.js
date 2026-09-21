@@ -97,6 +97,10 @@ export default class FootnoteExtension extends Lexxy.Extension {
     button.dataset.command = "insertFootnote"
     button.innerHTML = ICON
 
+    // The toolbar is a single tab stop: Lexxy sets every button to -1, but it does
+    // that before extensions add theirs, so ours have to opt in.
+    button.tabIndex = -1
+
     // Anchored on the dropdown element, not its button[name=link] trigger, which
     // lives inside it: inserting after the trigger would nest the button in the
     // dropdown, where it is both misplaced and missed by Lexxy's data-lexxy-extension

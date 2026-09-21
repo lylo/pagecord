@@ -83,6 +83,10 @@ export default class CalloutExtension extends Lexxy.Extension {
         <button type="button" role="menuitem" value="" title="Remove callout" class="lexxy-editor__toolbar-button lexxy-editor__toolbar-dropdown-reset">Remove</button>
       </div>
     `
+    // The toolbar is a single tab stop: Lexxy sets every button to -1, but it does
+    // that before extensions add theirs, so ours have to opt in.
+    dropdown.querySelectorAll("button").forEach((button) => button.tabIndex = -1)
+
     dropdown.addEventListener("click", this.#selectCalloutType)
 
     lexxyToolbar.querySelector("button[name=quote]").insertAdjacentElement("afterend", dropdown)
