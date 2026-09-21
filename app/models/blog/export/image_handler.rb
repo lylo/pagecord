@@ -7,38 +7,34 @@ class Blog::Export::ImageHandler
 
   def process_images(html)
     doc = Nokogiri::HTML::DocumentFragment.parse(html)
-    doc.css("img").each do |img|
-      process_node(img, "src")
-    end
-    hosted_links(doc).each do |link|
-      process_node(link, "href")
-    end
+    hosted_nodes(doc, "img", "src").each { |img| process_node(img, "src") }
+    hosted_nodes(doc, "a", "href").each { |link| process_node(link, "href") }
     doc.to_html
   end
 
   private
 
-    # A PDF attachment is a link, not an image, so it needs bundling too. Only
-    # our own storage qualifies: Html::Sanitize has already stripped the
-    # classes that would otherwise identify the attachment, and a post's other
-    # links belong to whoever they point at.
-    def hosted_links(doc)
-      doc.css("a[href]").select { |link| own_storage?(link["href"]) }
+    # Only our own storage is bundled, images and PDF links alike; a post's
+    # other images and links belong to whoever they point at.
+    def hosted_nodes(doc, tag, attribute)
+      doc.css("#{tag}[#{attribute}]").select { |node| own_storage?(node[attribute]) }
     end
 
-    # In production blobs live behind the public asset host; in development
-    # the app serves them itself, so recognise its Active Storage routes.
-    def own_storage?(href)
+    # In production blobs live behind the public asset host, matched with its
+    # trailing slash so only that host qualifies; in development the app serves
+    # them itself, so recognise its Active Storage routes.
+    def own_storage?(url)
+      url = extract_original_url(url)
+
       if (host = ENV["ACTIVE_STORAGE_ASSET_HOST"]).present?
-        href.start_with?(host)
+        url.start_with?(File.join(host, ""))
       else
-        href.include?("/rails/active_storage/")
+        url.include?("/rails/active_storage/")
       end
     end
 
     def process_node(node, attribute)
       src = node[attribute]
-      return unless src
 
       FileUtils.mkdir_p(@post_images_dir)
       safe_filename = sanitized_filename(src)
