@@ -164,6 +164,19 @@ background. The sheet's parts are component classes in
 
 ## Git Commits
 
+- **Check the checkout first.** If `git rev-parse --abbrev-ref HEAD` is
+  `gitbutler/workspace`, this is a GitButler workspace: use `but` for every write
+  (`but diff` for file and hunk IDs, `but commit -b <branch> -m "..." <id>`,
+  `but push <branch>`). Never `git add`, `commit`, `checkout`, `rebase` or `stash`
+  here – a raw commit lands in the workspace commit and mixes every applied branch
+  together. If `but` isn't available on that branch, stop and ask rather than
+  falling back to git. On an ordinary checkout, plain git is fine.
+- Several branches share one working tree, so other agents' edits show up in your
+  diff. Commit the specific file or hunk IDs your change touched, never everything
+  uncommitted, and leave other branches' changes alone.
+- Work reaches `main` by `but push <branch>`, deploying and testing that branch,
+  then merging. `but land <branch>` fast-forwards `main` and pushes in one
+  irreversible step – only on an explicit instruction to land.
 - Use plain branch names without category prefixes (for example `help-dialogs`, not `feature/help-dialogs` or `fix/help-dialogs`)
 - Use plain PR titles without automation prefixes (for example `Help dialogs`, not `[codex] Help dialogs`)
 - **NEVER** add "Co-Authored-By", "Generated with Claude Code", or any AI attribution to commit messages, PR descriptions, or code comments. This is a hard rule — no exceptions.
