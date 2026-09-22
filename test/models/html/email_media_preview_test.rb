@@ -1,9 +1,11 @@
 require "test_helper"
 
 class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
+  POST_URL = "https://joel.pagecord.com/video-post"
+
   test "replaces bare youtube watch links with linked thumbnails" do
     html = %(<p><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a></p>)
-    result = Html::EmailMediaPreview.new.transform(html)
+    result = Html::EmailMediaPreview.new(POST_URL).transform(html)
 
     assert_includes result, %(<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="email-media-preview">)
     assert_includes result, %(<img src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg")
@@ -13,7 +15,7 @@ class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
 
   test "replaces standalone youtube text urls with linked thumbnails" do
     html = %(<p>https://www.youtube.com/watch?v=dQw4w9WgXcQ</p>)
-    result = Html::EmailMediaPreview.new.transform(html)
+    result = Html::EmailMediaPreview.new(POST_URL).transform(html)
 
     assert_includes result, %(<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="email-media-preview">)
     assert_includes result, %(<img src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg")
@@ -24,7 +26,7 @@ class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
       <p>Watch https://www.youtube.com/watch?v=dQw4w9WgXcQ later</p>
       <p>https://www.youtube.com/watch?v=dQw4w9WgXcQ later</p>
     HTML
-    result = Html::EmailMediaPreview.new.transform(html)
+    result = Html::EmailMediaPreview.new(POST_URL).transform(html)
 
     assert_includes result, "Watch https://www.youtube.com/watch?v=dQw4w9WgXcQ later"
     assert_includes result, "https://www.youtube.com/watch?v=dQw4w9WgXcQ later"
@@ -39,7 +41,7 @@ class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
     ]
 
     urls.each do |url|
-      result = Html::EmailMediaPreview.new.transform(%(<p><a href="#{url}">#{url}</a></p>))
+      result = Html::EmailMediaPreview.new(POST_URL).transform(%(<p><a href="#{url}">#{url}</a></p>))
 
       assert_includes result, %(<img src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg")
     end
@@ -47,14 +49,14 @@ class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
 
   test "replaces youtube links when text omits query string" do
     html = %(<p><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">https://www.youtube.com/watch</a></p>)
-    result = Html::EmailMediaPreview.new.transform(html)
+    result = Html::EmailMediaPreview.new(POST_URL).transform(html)
 
     assert_includes result, %(<img src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg")
   end
 
   test "leaves editorial youtube links unchanged" do
     html = %(<p><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">watch this</a></p>)
-    result = Html::EmailMediaPreview.new.transform(html)
+    result = Html::EmailMediaPreview.new(POST_URL).transform(html)
 
     assert_includes result, ">watch this</a>"
     assert_not_includes result, "hqdefault.jpg"
@@ -62,7 +64,7 @@ class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
 
   test "does not create nested links" do
     html = %(<p><a href="https://example.com">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a></p>)
-    result = Html::EmailMediaPreview.new.transform(html)
+    result = Html::EmailMediaPreview.new(POST_URL).transform(html)
 
     assert_equal 1, Nokogiri::HTML::DocumentFragment.parse(result).css("a").count
     assert_not_includes result, "hqdefault.jpg"
@@ -70,7 +72,7 @@ class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
 
   test "leaves non-youtube media links unchanged" do
     html = %(<p><a href="https://open.spotify.com/track/abc123">https://open.spotify.com/track/abc123</a></p>)
-    result = Html::EmailMediaPreview.new.transform(html)
+    result = Html::EmailMediaPreview.new(POST_URL).transform(html)
 
     assert_includes result, "https://open.spotify.com/track/abc123"
     assert_not_includes result, "<img"
@@ -78,9 +80,26 @@ class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
 
   test "leaves unsupported youtube urls unchanged" do
     html = %(<p><a href="https://www.youtube.com/channel/example">https://www.youtube.com/channel/example</a></p>)
-    result = Html::EmailMediaPreview.new.transform(html)
+    result = Html::EmailMediaPreview.new(POST_URL).transform(html)
 
     assert_includes result, "https://www.youtube.com/channel/example"
     assert_not_includes result, "hqdefault.jpg"
+  end
+
+  test "replaces an uploaded video with its poster linked to the post" do
+    html = %(<figure><video src="https://cdn.example.com/clip.mp4" poster="https://cdn.example.com/clip.jpg" controls="controls"></video><figcaption>Clip</figcaption></figure>)
+    result = Html::EmailMediaPreview.new(POST_URL).transform(html)
+
+    assert_includes result, %(<a href="#{POST_URL}" class="email-media-preview">)
+    assert_includes result, %(<img src="https://cdn.example.com/clip.jpg" alt="Video thumbnail")
+    assert_includes result, "<figcaption>Clip</figcaption>"
+    assert_not_includes result, "<video"
+  end
+
+  test "removes an uploaded video that has no poster" do
+    html = %(<p>Before</p><figure><video src="https://cdn.example.com/clip.mp4" controls="controls"></video></figure><p>After</p>)
+    result = Html::EmailMediaPreview.new(POST_URL).transform(html)
+
+    assert_equal "<p>Before</p><p>After</p>", result
   end
 end
