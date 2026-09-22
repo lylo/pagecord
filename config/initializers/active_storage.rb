@@ -23,6 +23,6 @@ end
 # the editor, the API, Micropub and inbound email all end up attaching a blob.
 # This is where Rails runs analyze_blob_later for the same reason.
 ActiveSupport.on_load(:active_storage_attachment) do
-  after_create_commit -> { GeneratePdfPreviewJob.perform_later(blob) },
-    if: -> { blob.content_type == "application/pdf" }
+  after_create_commit -> { GeneratePreviewJob.perform_later(blob) },
+    if: -> { blob.previewable? }
 end
