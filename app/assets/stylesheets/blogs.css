@@ -1232,14 +1232,6 @@ ul.posts-list {
   white-space: nowrap;
 }
 
-.posts-list h2 {
-  margin-bottom: 0.5rem;
-}
-
-.posts-list h2:not(:first-child) {
-  margin-top: 1.5rem;
-}
-
 .posts-gallery {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

@@ -4,7 +4,7 @@
     <% unless previous_year.nil? %>
       </ul>
     <% end %>
-    <h2>
+    <h2 class="year-header <%= 'has-previous' if previous_year %>">
       <%# See _title_layout.html.erb: group headings are not local_time. %>
       <%= post.published_at.year %>
     </h2>
