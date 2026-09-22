@@ -71,6 +71,32 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_not_includes email.text_part.body.encoded, "hqdefault.jpg"
   end
 
+  test "digest email replaces an uploaded video with its poster linked to the post" do
+    email_subscriber = email_subscribers(:one)
+    video = create_video_blob
+    video.preview_image.attach(io: file_fixture("space.jpg").open, filename: "poster.jpg", content_type: "image/jpeg")
+    post = blogs(:joel).posts.create!(title: "Video post", content: attachment_node_for(video), status: :published, published_at: 30.minutes.ago)
+    post_digests(:one).digest_posts.create!(post: post)
+
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: post_digests(:one)).weekly_digest
+
+    assert_match %r{<a href="http://joel\.example\.com/#{post.slug}" class="email-media-preview">}, email.html_part.body.encoded
+    assert_includes email.html_part.body.encoded, %(alt="Video thumbnail")
+    assert_not_includes email.html_part.body.encoded, "<video"
+  end
+
+  test "digest email drops an uploaded video that has no poster yet" do
+    email_subscriber = email_subscribers(:one)
+    post = blogs(:joel).posts.create!(title: "Video post", content: "<p>Hello</p>#{attachment_node_for(create_video_blob)}", status: :published, published_at: 30.minutes.ago)
+    post_digests(:one).digest_posts.create!(post: post)
+
+    email = PostDigestMailer.with(subscriber: email_subscriber, digest: post_digests(:one)).weekly_digest
+
+    assert_includes email.html_part.body.encoded, "<p>Hello</p>"
+    assert_not_includes email.html_part.body.encoded, "<video"
+    assert_not_includes email.html_part.body.encoded, "<figure"
+  end
+
   test "individual email renders correctly with post title as subject" do
     blog = blogs(:joel)
     email_subscriber = email_subscribers(:one)
@@ -192,6 +218,10 @@ class PostDigestMailerTest < ActionMailer::TestCase
   end
 
   private
+
+    def create_video_blob
+      ActiveStorage::Blob.create_and_upload!(io: file_fixture("tiny.jpg").open, filename: "clip.mp4", content_type: "video/mp4", identify: false)
+    end
 
     def create_post_with_attachment(blog:, title:, caption:)
       blob = ActiveStorage::Blob.create_and_upload!(

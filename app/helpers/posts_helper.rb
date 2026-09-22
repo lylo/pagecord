@@ -1,12 +1,4 @@
 module PostsHelper
-  def strip_video_tags(html)
-    doc = Nokogiri::HTML::DocumentFragment.parse(html)
-    doc.css("figure").each do |figure|
-      figure.remove if figure.at_css("video")
-    end
-    doc.to_html
-  end
-
   def tag_filter_url(tag)
     if @blog
       # For public blog views
@@ -68,8 +60,7 @@ module PostsHelper
   def render_digest_post_content(post)
     content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
     content = ExcerptBreak.strip(content)
-    content = Html::EmailMediaPreview.new.transform(content)
-    strip_video_tags(content).html_safe
+    Html::EmailMediaPreview.new(post_url(post)).transform(content).html_safe
   end
 
   def process_dynamic_variables(post)
