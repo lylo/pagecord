@@ -22,6 +22,26 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", text: "Post settings"
   end
 
+  test "edit offers to email a sendable post" do
+    login_as users(:joel)
+    blogs(:joel).update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)
+
+    get edit_app_post_url(posts(:photography_and_tech))
+
+    assert_select ".sheet-top-band", text: /Send this post to your/
+  end
+
+  test "edit shows when a post was emailed" do
+    login_as users(:joel)
+    blogs(:joel).update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)
+    digest = PostDigest.create!(blog: blogs(:joel), kind: :individual, delivered_at: Time.current)
+    digest.digest_posts.create!(post: posts(:photography_and_tech))
+
+    get edit_app_post_url(posts(:photography_and_tech))
+
+    assert_select ".sheet-top-band", text: /Emailed to/
+  end
+
   test "should get new post page" do
     get new_app_post_url
 

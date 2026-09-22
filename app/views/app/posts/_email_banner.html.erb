@@ -1,36 +1,35 @@
-<% if show_email_banner?(@post, @blog) %>
-  <% subscriber_count = @blog.email_subscribers.confirmed.count %>
-  <% if @post.individually_sent? %>
-    <% digest = @post.post_digests.individual.first %>
-    <div class="rounded-lg p-4 text-sm mb-4 writing-mode:hidden bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300">
-      <div class="relative">
-        <div class="absolute -right-4 -top-8 -bottom-8 w-60 flex items-center justify-end pointer-events-none">
-          <%= inline_svg_tag "icons/stamp.svg", class: "w-56 text-pagecord-accent/30 dark:text-pagecord-accent/25 rotate-[-5deg]" %>
-        </div>
-        <div class="relative flex items-center gap-2">
-          <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-pagecord-accent shrink-0" %>
-          <% count = digest.delivered_at? ? digest.deliveries.count : subscriber_count %>
-          <% recipients = @blog.show_metrics? ? pluralize(count, "subscriber") : "subscribers" %>
-          <span>Emailed to <%= recipients %> on <%= l(digest.created_at.in_time_zone(Current.user.timezone).to_date, format: :post_date) %>.</span>
-        </div>
+<% subscriber_count = @blog.email_subscribers.confirmed.count %>
+<% if @post.individually_sent? %>
+  <% digest = @post.post_digests.individual.first %>
+  <div class="sheet-top-band writing-mode:hidden relative overflow-hidden py-6 text-sm text-slate-700 dark:text-slate-300">
+    <div class="pointer-events-none absolute inset-y-0 end-0 flex items-center">
+      <%= inline_svg_tag "icons/stamp.svg", class: "h-14 w-auto text-pagecord-accent/30 dark:text-pagecord-accent/25 rotate-[-5deg]" %>
+    </div>
+    <div class="relative flex items-center gap-2">
+      <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-pagecord-accent shrink-0" %>
+      <% count = digest.delivered_at? ? digest.deliveries.count : subscriber_count %>
+      <% recipients = @blog.show_metrics? ? pluralize(count, "subscriber") : "subscribers" %>
+      <span>Emailed to <%= recipients %> on <%= l(digest.created_at.in_time_zone(Current.user.timezone).to_date, format: :post_date) %>.</span>
+    </div>
+  </div>
+<% elsif @post.individually_sendable? %>
+  <div class="sheet-top-band writing-mode:hidden py-3 text-sm text-slate-700 dark:text-slate-300">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-2">
+        <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" %>
+        <span>Send this post to your <%= @blog.show_metrics? ? pluralize(subscriber_count, "subscriber") : "subscribers" %>.</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+        <%= link_to "Send a test email", app_post_broadcast_test_path(@post), data: { turbo_method: :post, turbo_confirm: "Send a test email to #{Current.user.email}?" }, class: "link-quiet text-slate-600 dark:text-slate-300" %>
+        <%= button_to app_post_broadcast_path(@post),
+          method: :post,
+          class: "btn-secondary",
+          form_class: "contents",
+          data: { turbo_confirm: "Send this post to all your email subscribers?" } do %>
+          <%= inline_svg_tag "icons/paper-airplane.svg", class: "w-4 h-4" %>
+          <span class="ms-2">Send</span>
+        <% end %>
       </div>
     </div>
-  <% elsif @post.individually_sendable? %>
-    <div class="rounded-lg p-4 text-sm mb-4 writing-mode:hidden bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div class="flex items-center gap-2">
-          <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" %>
-          <span>Send this post to your <%= @blog.show_metrics? ? pluralize(subscriber_count, "subscriber") : "subscribers" %>.</span>
-        </div>
-        <div class="flex flex-row-reverse justify-between items-center gap-3 sm:flex-row sm:justify-start">
-          <%= link_to "Send a test email", app_post_broadcast_test_path(@post), data: { turbo_method: :post, turbo_confirm: "Send a test email to #{Current.user.email}?" }, class: "text-xs underline" %>
-          <%= button_to "Send to subscribers",
-            app_post_broadcast_path(@post),
-            method: :post,
-            class: "btn-primary text-xs !py-1.5 !px-3",
-            data: { turbo_confirm: "Send this post to all your email subscribers?" } %>
-        </div>
-      </div>
-    </div>
-  <% end %>
+  </div>
 <% end %>

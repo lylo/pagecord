@@ -80,6 +80,10 @@ class Post::EmailableTest < ActiveSupport::TestCase
     assert @post.individually_sendable?
   end
 
+  test "individually_sendable? returns false for an unsaved post" do
+    assert_not @post.dup.individually_sendable?
+  end
+
   test "individually_sendable? returns false for pages" do
     page = @blog.posts.create!(title: "Test Page", content: "Page content", is_page: true)
     assert_not page.individually_sendable?
