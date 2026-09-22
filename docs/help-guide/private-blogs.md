@@ -6,9 +6,10 @@ published_at: 2026-08-17T10:00:00+00:00
 
 Put a password on your blog so only the people you share it with can read it. Handy for a travelogue, a family newsletter, a garden diary, a book club, or anything else that doesn't need to be fully public.
 
-Prefer to watch? This video runs through the whole thing end to end – creating the blog, turning on the password, writing a post, and sending it out to the family by email.
-
-https://www.youtube.com/watch?v=syuLvxoQBnw
+> [!tip] Prefer to watch?
+> This video runs through the whole thing end to end – creating the blog, turning on the password, writing a post, and sending it out to the family by email.
+>
+> https://www.youtube.com/watch?v=syuLvxoQBnw
 
 ## Turning on password protection
 
