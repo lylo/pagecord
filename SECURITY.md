@@ -30,4 +30,4 @@ Please test against your own account and your own blog. Don't access, modify or 
 
 Researchers who have reported issues responsibly:
 
-- Yani Yuan, Beijing University of Posts and Telecommunications, September 2026: SSRF in blog exports
+- Yani Yuan, Siwen Jin, Yanwei Sun and Zifeng Kang, Beijing University of Posts and Telecommunications, September 2026: SSRF in blog exports
