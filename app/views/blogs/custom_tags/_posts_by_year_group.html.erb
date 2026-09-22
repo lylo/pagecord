@@ -1,0 +1,7 @@
+<h2 class="year-header <%= 'has-previous' if has_previous %>">
+  <%# See _title_layout.html.erb: group headings are not local_time. %>
+  <%= year %>
+</h2>
+<ul id="embedded-posts-<%= frame_id %>-<%= year %>" class="posts-list">
+  <%= render partial: "blogs/posts/by_year_post", collection: posts, as: :post %>
+</ul>

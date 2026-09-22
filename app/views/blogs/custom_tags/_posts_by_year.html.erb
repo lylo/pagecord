@@ -1,16 +1,10 @@
-<% previous_year = nil %>
-<% posts.each do |post| %>
-  <% if post.published_at.year != previous_year %>
-    <% unless previous_year.nil? %>
-      </ul>
-    <% end %>
-    <h2 class="year-header <%= 'has-previous' if previous_year %>">
-      <%# See _title_layout.html.erb: group headings are not local_time. %>
-      <%= post.published_at.year %>
-    </h2>
-    <ul class="posts-list">
-    <% previous_year = post.published_at.year %>
-  <% end %>
-  <li><%= local_time post.published_at, format: :month_day %> <%= link_to post.display_title, post_path(post), data: { turbo_prefetch: false } %></li>
+<% posts.group_by { |post| post.published_at.year }.each_with_index do |(year, year_posts), index| %>
+  <%= render "blogs/custom_tags/posts_by_year_group", year: year, posts: year_posts, frame_id: frame_id, has_previous: index.positive? %>
 <% end %>
-</ul>
+<% if has_next %>
+  <%= turbo_frame_tag "embedded-posts-#{frame_id}-page-2",
+      src: blog_embedded_posts_path(page: 2, style: "by_year", frame_id: frame_id,
+            page_frame_id: "embedded-posts-#{frame_id}-page-2",
+            last_visible_year: posts.last.published_at.year, **filter_params),
+      loading: :lazy %>
+<% end %>

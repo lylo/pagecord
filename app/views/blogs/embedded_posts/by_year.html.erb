@@ -1,0 +1,23 @@
+<%= turbo_frame_tag @page_frame_id do %>
+  <% groups = @posts.group_by { |post| post.published_at.year } %>
+  <% continued_year = params[:last_visible_year].to_i %>
+
+  <% if (continued_posts = groups.delete(continued_year)) %>
+    <%= turbo_stream.append "#{@container_id}-#{continued_year}" do %>
+      <%= render partial: "blogs/posts/by_year_post", collection: continued_posts, as: :post %>
+    <% end %>
+  <% end %>
+
+  <%= turbo_stream.replace @page_frame_id do %>
+    <% groups.each do |year, year_posts| %>
+      <%= render "blogs/custom_tags/posts_by_year_group", year: year, posts: year_posts, frame_id: @frame_id, has_previous: true %>
+    <% end %>
+    <% if @pagy.next %>
+      <%= turbo_frame_tag @next_page_frame_id,
+          src: blog_embedded_posts_path(page: @pagy.next, style: @style, frame_id: @frame_id,
+                page_frame_id: @next_page_frame_id, last_visible_year: @posts.last.published_at.year,
+                **request.query_parameters.except("page", "page_frame_id", "style", "frame_id", "last_visible_year")),
+          loading: :lazy %>
+    <% end %>
+  <% end %>
+<% end %>

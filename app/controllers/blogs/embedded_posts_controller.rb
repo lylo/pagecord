@@ -31,7 +31,7 @@ class Blogs::EmbeddedPostsController < Blogs::BaseController
     @page_frame_id = params[:page_frame_id].presence || "#{@container_id}-page-#{@pagy.page}"
     @next_page_frame_id = "#{@container_id}-page-#{@pagy.next}" if @pagy.next
     set_blog_cache_headers
-    render layout: false
+    render @style == "by_year" ? :by_year : :index, layout: false
   end
 
   private

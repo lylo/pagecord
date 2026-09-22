@@ -487,6 +487,29 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select "article.page h2 time", count: 0
     assert_select "article.page h2.year-header"
     assert_select "article.page h2.year-header:not(.has-previous)", count: 1
+    assert_select "article.page ul.posts-list[id$='-2024']"
+    assert_select "turbo-frame", count: 0
+  end
+
+  test "paginates posts_by_year into lazy frames" do
+    DynamicVariable::PostsTag.stubs(:page_size_for).returns(2)
+    page = @blog.pages.create!(title: "Archive", content: "{{ posts_by_year }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "ul.posts-list li", count: 2
+    assert_select "turbo-frame[loading='lazy'][src*='style=by_year'][src*='last_visible_year=2026']"
+  end
+
+  test "posts_by_year honours limit" do
+    page = @blog.pages.create!(title: "Archive", content: "{{ posts_by_year | limit: 3 }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_response :success
+    assert_select "ul.posts-list li", count: 3
+    assert_select "turbo-frame", count: 0
   end
 
   test "renders posts_by_year tag with tag filter" do
