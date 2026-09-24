@@ -6,7 +6,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
   test "should get home page" do
     get root_path
     assert_response :success
-    assert_select "h1", text: "A blog you'll actually keep updated"
+    assert_select "h1", text: "Make yourself at home on the web."
   end
 
   test "should publicly cache unattributed home page" do
