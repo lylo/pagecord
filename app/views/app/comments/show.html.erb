@@ -55,13 +55,13 @@
 <% elsif comment.approved? %>
   <%= form_with url: app_comment_replies_path(comment, origin), method: :post, id: "comment-reply" do |form| %>
     <%= form.text_area "comment[message]", rows: 3, required: true,
-          class: "form-field mt-4 w-full",
+          class: "form-field autogrow min-h-24 mt-4 w-full",
           placeholder: "Write a public reply. It is published straight away, and you can only reply once." %>
   <% end %>
 <% else %>
   <%= form_with url: app_comment_approval_path(comment, origin.merge(format: :html)), method: :post, id: "comment-approval" do |form| %>
     <%= form.text_area "comment[message]", rows: 3,
-          class: "form-field mt-4 w-full",
+          class: "form-field autogrow min-h-24 mt-4 w-full",
           placeholder: "Write an optional public reply before approving…" %>
   <% end %>
 <% end %>

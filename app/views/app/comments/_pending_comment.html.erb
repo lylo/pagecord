@@ -7,7 +7,7 @@
 
   <%= form_with url: app_comment_approval_path(comment, post: @post&.token), method: :post, class: "mt-4" do |form| %>
     <%= form.text_area "comment[message]", rows: 3,
-          class: "form-field w-full",
+          class: "form-field autogrow min-h-24 w-full",
           placeholder: "Write an optional public reply before approving…" %>
 
     <% if local_assigns[:reply_error].present? %>
