@@ -485,8 +485,8 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     # See _title_layout: year headings are grouped server-side, so they must
     # not be local_time elements.
     assert_select "article.page h2 time", count: 0
-    assert_select "article.page h2.year-header"
-    assert_select "article.page h2.year-header:not(.has-previous)", count: 1
+    assert_select "article.page h2.posts-list-heading"
+    assert_select "article.page h2.posts-list-heading:not(.has-previous)", count: 1
     assert_select "article.page ul.posts-list[id$='-2024']"
     assert_select "turbo-frame", count: 0
   end

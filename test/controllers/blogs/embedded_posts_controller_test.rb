@@ -72,7 +72,7 @@ class Blogs::EmbeddedPostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "turbo-stream[action='append'][target='embedded-posts-posts-2026'] li", count: 1
     assert_select "turbo-stream[action='replace'][target='embedded-posts-posts-page-3']" do
-      assert_select "h2.year-header.has-previous", text: /2025/
+      assert_select "h2.posts-list-heading.has-previous", text: /2025/
       assert_select "ul#embedded-posts-posts-2025 li", count: 1
       assert_select "turbo-frame", count: 0
     end
