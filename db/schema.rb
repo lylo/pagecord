@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_09_02_090001) do
+ActiveRecord::Schema[8.2].define(version: 2026_09_24_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -224,6 +224,22 @@ ActiveRecord::Schema[8.2].define(version: 2026_09_02_090001) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id", "email"], name: "index_email_subscribers_on_blog_id_and_email", unique: true
+  end
+
+  create_table "mcp_connections", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.text "client_id", null: false
+    t.string "client_name", null: false
+    t.string "redirect_uri", null: false
+    t.string "code_digest"
+    t.string "code_challenge"
+    t.datetime "code_expires_at"
+    t.string "token_digest"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_mcp_connections_on_blog_id"
+    t.index ["code_digest"], name: "index_mcp_connections_on_code_digest", unique: true
+    t.index ["token_digest"], name: "index_mcp_connections_on_token_digest", unique: true
   end
 
   create_table "navigation_items", force: :cascade do |t|
@@ -470,6 +486,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_09_02_090001) do
   add_foreign_key "digest_posts", "posts"
   add_foreign_key "email_change_requests", "users"
   add_foreign_key "email_subscribers", "blogs"
+  add_foreign_key "mcp_connections", "blogs"
   add_foreign_key "navigation_items", "blogs"
   add_foreign_key "navigation_items", "posts"
   add_foreign_key "paddle_events", "users"

@@ -40,7 +40,7 @@ class SessionsController < ApplicationController
       if user&.verified? && user.authenticate(user_params[:password])
         sign_in user
         session[:current_blog_id] = blog.id
-        redirect_to app_root_path, notice: "Welcome back!"
+        redirect_to session.delete(:return_to) || app_root_path, notice: "Welcome back!"
       else
         flash.now[:alert] = "Invalid subdomain or password"
         @user = User.new.tap { |u| u.blogs.build(subdomain: user_params[:subdomain]) }

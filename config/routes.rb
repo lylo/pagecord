@@ -42,6 +42,9 @@ Rails.application.routes.draw do
     match "(*path)", to: redirect(host: Rails.application.config.x.domain), via: :all
   end
 
+  get "/.well-known/oauth-authorization-server", to: "oauth/metadata#authorization_server", as: :oauth_authorization_server
+  get "/.well-known/oauth-protected-resource(/mcp)", to: "oauth/metadata#protected_resource", as: :oauth_protected_resource
+
   constraints(DomainConstraints.method(:default_domain?)) do
     constraints AdminConstraint.new do
       mount Sidekiq::Web, at: "/admin/sidekiq"
@@ -51,6 +54,13 @@ Rails.application.routes.draw do
     resources :signups, only: [ :index, :new, :create ]
     namespace :signups do
       resource :thanks, only: [ :show ], controller: "thanks"
+    end
+
+    namespace :oauth do
+      post "register", to: "clients#create", as: :registration
+      get "authorize", to: "authorizations#new", as: :authorization
+      post "authorize", to: "authorizations#create"
+      post "token", to: "tokens#create", as: :token
     end
 
     get "/login", to: "sessions#new"
@@ -127,6 +137,7 @@ Rails.application.routes.draw do
 
         resource :custom_code, only: [ :show, :update ], controller: "custom_code"
         resource :api, only: [ :show, :create, :destroy ], controller: "api"
+        resources :mcp_connections, only: :destroy
         resources :exports
 
         resources :sender_email_addresses, only: [ :create, :destroy ]
@@ -236,6 +247,7 @@ Rails.application.routes.draw do
       post "/micropub", to: "micropub#create"
       get "/micropub", to: "micropub#query", as: nil
       post "/micropub/media", to: "micropub/media#create"
+      match "/mcp", to: "mcp#create", via: [ :post, :get, :delete ]
     end
   end
 

@@ -1,0 +1,42 @@
+<% content_for :title, "Pagecord - Connect #{@client.name}" %>
+
+<div class="mb-8">
+  <h1 class="text-2xl font-bold mb-4">Connect <%= @client.name %> to Pagecord</h1>
+  <p class="text-slate-600 dark:text-slate-300">
+    <%= @client.name %> is asking to manage your blog. It will be able to read, write, publish and delete posts, and change how your blog looks.
+  </p>
+  <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+    You'll go back to <strong><%= URI.parse(params[:redirect_uri]).host %></strong> afterwards. Only connect apps you trust.
+  </p>
+</div>
+
+<% if @user.has_premium_access? %>
+  <%= form_with url: oauth_authorization_path, data: { turbo: false }, class: "space-y-6" do %>
+    <% %w[ client_id redirect_uri state code_challenge code_challenge_method response_type ].each do |name| %>
+      <%= hidden_field_tag name, params[name], id: nil %>
+    <% end %>
+
+    <% if @user.blogs.many? %>
+      <fieldset class="space-y-2">
+        <legend class="mb-2 font-medium text-slate-900 dark:text-slate-100">Which blog should it manage?</legend>
+        <% @user.blogs.each do |blog| %>
+          <label class="option-card items-center gap-2">
+            <%= radio_button_tag :blog_id, blog.id, blog == @blog, class: "option-radio" %>
+            <span><%= blog.display_name %></span>
+          </label>
+        <% end %>
+      </fieldset>
+    <% else %>
+      <%= hidden_field_tag :blog_id, @blog.id, id: nil %>
+    <% end %>
+
+    <div class="flex gap-2">
+      <%= button_tag "Allow", name: "decision", value: "allow", class: "btn-primary" %>
+      <%= button_tag "Cancel", name: "decision", value: "deny", class: "btn-secondary" %>
+    </div>
+  <% end %>
+<% else %>
+  <%= callout(:info) do %>
+    Connecting apps needs a Pagecord subscription. <%= link_to "Subscribe", app_settings_subscriptions_path, class: "underline font-medium" %>, then try connecting again.
+  <% end %>
+<% end %>
