@@ -167,6 +167,26 @@
   }
 
   /* Home page components */
+  .home-nav-item {
+    @apply block whitespace-nowrap px-1 py-1 decoration-pagecord-accent decoration-2 underline-offset-8 hover:text-slate-900 dark:hover:text-slate-100 md:rounded-full md:px-3.5 md:py-1.5 md:hover:bg-white md:dark:hover:bg-slate-700;
+  }
+
+  .home-nav-item[aria-current] {
+    @apply text-slate-900 underline dark:text-slate-100 md:bg-slate-800 md:text-white md:no-underline md:hover:bg-slate-800 md:hover:text-white md:dark:bg-slate-100 md:dark:text-slate-900 md:dark:hover:bg-slate-100 md:dark:hover:text-slate-900;
+  }
+
+  /* Pricing and Features are sections of the home page: selected while scrolled into view, or while the URL targets them where scroll markers aren't supported. */
+  .home-nav-item:target-current {
+    @apply text-slate-900 underline dark:text-slate-100 md:bg-slate-800 md:text-white md:no-underline md:hover:bg-slate-800 md:hover:text-white md:dark:bg-slate-100 md:dark:text-slate-900 md:dark:hover:bg-slate-100 md:dark:hover:text-slate-900;
+  }
+
+  @supports not selector(:target-current) {
+    :root:has(#pricing:target) .home-nav-item[href$="#pricing"],
+    :root:has(#features:target) .home-nav-item[href$="#features"] {
+      @apply text-slate-900 underline dark:text-slate-100 md:bg-slate-800 md:text-white md:no-underline md:hover:bg-slate-800 md:hover:text-white md:dark:bg-slate-100 md:dark:text-slate-900 md:dark:hover:bg-slate-100 md:dark:hover:text-slate-900;
+    }
+  }
+
   .home-link {
     @apply underline decoration-pagecord-accent decoration-2 font-medium hover:bg-pagecord-accent/10 transition-all duration-200 rounded;
   }

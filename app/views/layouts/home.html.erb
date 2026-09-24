@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<%# scroll-pt clears the sticky header, which is two rows tall below md. %>
+<html lang="en" class="scroll-pt-36 md:scroll-pt-24">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -84,10 +85,8 @@
     <script defer data-domain="pagecord.com" src="https://plausible.io/js/script.js"></script>
   </head>
 
-  <body class="home flex flex-col min-h-screen bg-white dark:bg-slate-900">
-    <div class="px-4">
-      <%= render "layouts/header" %>
-    </div>
+  <body id="top" class="home flex flex-col min-h-screen bg-white dark:bg-slate-950">
+    <%= render "layouts/header" %>
 
     <main class="flex flex-grow text-slate-950 dark:text-slate-50">
       <div class="mx-auto mt-8 w-full">

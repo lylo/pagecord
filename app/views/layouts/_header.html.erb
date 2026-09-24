@@ -1,16 +1,22 @@
-<header>
-  <nav class="py-4 flex flex-col sm:flex-row justify-between items-center text-slate-900 dark:text-slate-100 font-medium">
-    <div>
-      <%= link_to root_path, "aria-label": "Pagecord Home" do %>
-        <%= inline_svg_tag "logo.svg", class: "w-38 sm:w-46 dark:text-slate-100 text-slate-900" %>
-      <% end %>
+<% nav_items = [ [ "Pricing", root_path(anchor: "pricing") ], [ "Features", root_path(anchor: "features") ], [ "Spotlight", spotlight_path ], [ "Updates", "https://blog.pagecord.com" ] ] %>
+
+<header class="sticky top-0 z-40 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+  <div class="relative flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-slate-900 [scroll-target-group:auto] dark:text-slate-100">
+    <%= link_to root_path(anchor: "top"), "aria-label": "Pagecord Home", class: "shrink-0" do %>
+      <%= inline_svg_tag "logo.svg", class: "w-30 sm:w-36" %>
+    <% end %>
+
+    <nav aria-label="Main" class="order-last flex w-full justify-center md:order-none md:w-auto">
+      <ul role="list" class="flex w-full items-center justify-around text-sm font-medium text-slate-600 dark:text-slate-300 md:absolute md:w-auto md:gap-0.5 md:rounded-full md:bg-slate-100 md:p-1 md:dark:bg-slate-800 md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
+        <% nav_items.each do |label, path| %>
+          <li><%= link_to label, path, class: "home-nav-item", aria: { current: ("page" if current_page?(path)) } %></li>
+        <% end %>
+      </ul>
+    </nav>
+
+    <div class="flex shrink-0 items-center gap-3">
+      <%= link_to "Log In", login_path, class: "rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 sm:border-transparent sm:px-0 sm:text-slate-600 sm:hover:bg-transparent sm:hover:text-slate-900 sm:dark:border-transparent sm:dark:text-slate-300 sm:dark:hover:bg-transparent sm:dark:hover:text-slate-100" %>
+      <%= link_to "Start writing", new_signup_path, class: "btn-primary hidden sm:inline-flex" %>
     </div>
-    <div class="flex items-center mt-4 sm:mt-0 space-x-4 me-2 text-sm sm:text-base">
-      <%= link_to "Spotlight", spotlight_path, class: "home-link" %>
-      <%= link_to "Pricing", root_path(anchor: "pricing"), class: "home-link" %>
-      <%= link_to "Features", root_path(anchor: "features"), class: "home-link" %>
-      <%= link_to "Updates", "https://blog.pagecord.com", class: "home-link" %>
-      <%= link_to "Log In", login_path, class: "home-link" %>
-    </div>
-  </nav>
+  </div>
 </header>
