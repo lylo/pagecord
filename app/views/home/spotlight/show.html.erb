@@ -15,14 +15,13 @@
     <p>A look at what people are reading and writing on Pagecord.</p>
   </div>
 
-  <nav class="mt-8 flex justify-center gap-1 text-sm font-medium">
-    <%= link_to "Trending", spotlight_path,
-      class: "px-4 py-2 rounded-full transition-colors #{@tab == "trending" ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}" %>
-    <%= link_to "Recent", spotlight_path(tab: "recent"),
-      class: "px-4 py-2 rounded-full transition-colors #{@tab == "recent" ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}" %>
-    <%= link_to "Shuffle", shuffle_path,
-      class: "px-4 py-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors", target: "_blank", rel: "noopener" %>
-  </nav>
+  <div class="mt-8 flex justify-center">
+    <nav class="btn-group" aria-label="Spotlight">
+      <%= link_to "Trending", spotlight_path, class: class_names("btn-group-item", "btn-group-item-active": @tab == "trending"), aria: { current: ("page" if @tab == "trending") } %>
+      <%= link_to "Recent", spotlight_path(tab: "recent"), class: class_names("btn-group-item", "btn-group-item-active": @tab == "recent"), aria: { current: ("page" if @tab == "recent") } %>
+      <%= link_to "Shuffle", shuffle_path, class: "btn-group-item", target: "_blank", rel: "noopener" %>
+    </nav>
+  </div>
 
   <div class="mt-8">
     <% if @posts.any? %>

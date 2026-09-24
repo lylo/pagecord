@@ -29,7 +29,7 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
     get spotlight_path
 
     assert_response :success
-    assert_select "nav a.bg-slate-900", "Trending"
+    assert_select "nav[aria-label=Spotlight] a[aria-current=page]", "Trending"
   end
 
   test "should show trending RSS feed" do
