@@ -12,9 +12,9 @@ class Turnstile
     # Only a clear verdict blocks. A 5xx, an unparseable body or a network
     # error all mean we can't tell, and Turnstile sits on top of the honeypot,
     # form timing and rate limits, so it must never take signups down with it.
-    return true unless response.success? && response.parsed_response.is_a?(Hash)
+    return true unless response.success?
 
-    response.parsed_response["success"] == true
+    JSON.parse(response.body)["success"] == true
   rescue StandardError => e
     Rails.logger.error "Turnstile unavailable for #{remote_ip}, allowing request: #{e.message}"
     true

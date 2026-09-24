@@ -10,13 +10,13 @@ class TurnstileTest < ActiveSupport::TestCase
   end
 
   test "true for a token Cloudflare confirms" do
-    stub_siteverify(success: true, body: { "success" => true })
+    stub_siteverify(success: true, body: { "success" => true }.to_json)
 
     assert Turnstile.verify?("a-token", remote_ip: "203.0.113.1")
   end
 
   test "false for a token Cloudflare rejects" do
-    stub_siteverify(success: true, body: { "success" => false })
+    stub_siteverify(success: true, body: { "success" => false }.to_json)
 
     assert_not Turnstile.verify?("a-token", remote_ip: "203.0.113.1")
   end
@@ -50,12 +50,18 @@ class TurnstileTest < ActiveSupport::TestCase
     assert Turnstile.verify?("a-token", remote_ip: "203.0.113.1")
   end
 
+  test "true when siteverify returns an unparseable body" do
+    stub_siteverify(success: true, body: "<html>not json</html>")
+
+    assert Turnstile.verify?("a-token", remote_ip: "203.0.113.1")
+  end
+
   private
 
     def stub_siteverify(success:, body:)
       response = mock("response")
       response.stubs(:success?).returns(success)
-      response.stubs(:parsed_response).returns(body)
+      response.stubs(:body).returns(body)
       HTTParty.stubs(:post).returns(response)
     end
 end
