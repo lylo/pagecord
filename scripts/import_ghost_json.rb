@@ -5,8 +5,8 @@ require "cgi"
 require_relative "import_helpers"
 
 # Import Ghost JSON export into Pagecord posts
-# Usage: ruby import_ghost_json.rb path/to/ghost_export.json blog_subdomain ghost_url [--dry-run] [--as-pages] [--include-pages] [--include-drafts]
-def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_pages: false, include_pages: false, include_drafts: false)
+# Usage: ruby import_ghost_json.rb path/to/ghost_export.json blog_subdomain ghost_url [--dry-run] [--as-pages] [--include-pages] [--include-drafts] [--assets-root=path]
+def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_pages: false, include_pages: false, include_drafts: false, assets_root: nil)
   include ImportHelpers
 
   # Parse the Ghost JSON file
@@ -20,6 +20,10 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_p
   end
 
   check_import_allowed!(blog, dry_run: dry_run)
+
+  # With --assets-root, media under __GHOST_URL__/content/ is read from assets_root/content/ instead of the live site
+  media_url = assets_root ? "" : ghost_url
+  expand_ghost_urls = ->(html) { html.gsub("__GHOST_URL__/content/", "#{media_url}/content/").gsub("__GHOST_URL__", ghost_url) }
 
   # Extract data from the JSON structure
   posts_data = json_data.dig("db", 0, "data", "posts") || []
@@ -89,14 +93,14 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_p
     end
 
     # Replace __GHOST_URL__ references with the actual ghost URL
-    feature_image = feature_image.gsub("__GHOST_URL__", ghost_url) if feature_image
+    feature_image = expand_ghost_urls.(feature_image) if feature_image
 
     # Determine content to use (html -> plaintext -> custom_excerpt)
     content_to_use = nil
     content_needs_feature_image = false
 
     if html_content.present?
-      content_to_use = html_content.gsub("__GHOST_URL__", ghost_url)
+      content_to_use = expand_ghost_urls.(html_content)
       # Convert WordPress-style video shortcodes to HTML video tags
       # [video width="854" height="480" mp4="url"][/video] -> <video ...><source ...></video>
       content_to_use = content_to_use.gsub(/\[video([^\]]*)\]\[\/video\]/) do |match|
@@ -136,7 +140,7 @@ def import_ghost_json(file_path, blog_subdomain, ghost_url, dry_run: false, as_p
 
     # Process images/videos and create ActionText content
     # skip_on_error: true keeps original URLs for any media that fails to download
-    post.content = content_to_use.present? ? process_images_to_actiontext(content_to_use, dry_run: dry_run, skip_on_error: true) : ""
+    post.content = content_to_use.present? ? process_images_to_actiontext(content_to_use, assets_root: assets_root, dry_run: dry_run, skip_on_error: true) : ""
 
     if dry_run
       type_label = is_page ? "page" : "post"
@@ -188,6 +192,7 @@ if __FILE__ == $PROGRAM_NAME
     puts "  --as-pages       Import all items as pages (is_page = true)"
     puts "  --include-pages  Include Ghost pages in import (default: posts only)"
     puts "  --include-drafts Include draft posts (default: published only)"
+    puts "  --assets-root=path  Read __GHOST_URL__/content/ media from path/content/ (the unpacked Ghost content folder's parent)"
     puts ""
     puts "Examples:"
     puts "  bundle exec rails runner scripts/import_ghost_json.rb export.json myblog https://ghost.example.com"
@@ -203,6 +208,7 @@ if __FILE__ == $PROGRAM_NAME
   as_pages = ARGV.include?("--as-pages")
   include_pages = ARGV.include?("--include-pages")
   include_drafts = ARGV.include?("--include-drafts")
+  assets_root = ARGV.find { |arg| arg.start_with?("--assets-root=") }&.split("=", 2)&.last&.then { |path| File.expand_path(path) }
 
   unless File.exist?(file_path)
     puts "File not found: #{file_path}"
@@ -217,5 +223,6 @@ if __FILE__ == $PROGRAM_NAME
     dry_run: dry_run,
     as_pages: as_pages,
     include_pages: include_pages,
-    include_drafts: include_drafts)
+    include_drafts: include_drafts,
+    assets_root: assets_root)
 end
