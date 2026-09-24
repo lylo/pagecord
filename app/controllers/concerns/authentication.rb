@@ -26,11 +26,11 @@ module Authentication
     Rails.logger.info "Signing in #{user.id}"
 
     # A fresh session id on every sign in, so a session id planted beforehand
-    # cannot be used afterwards. Attribution is carried over because it is
-    # captured before signup completes.
-    attribution = session[:signup_attribution]
+    # cannot be used afterwards. Attribution and the page that asked for a login
+    # are carried over because both are captured before sign in.
+    carried = session.to_hash.slice("signup_attribution", "return_to")
     reset_session
-    session[:signup_attribution] = attribution if attribution.present?
+    carried.each { |key, value| session[key] = value }
 
     session[:user_id] = user.id
   end

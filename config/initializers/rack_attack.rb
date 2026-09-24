@@ -15,12 +15,16 @@ class Rack::Attack
   GENERAL_LIMIT = Rails.application.config.x.rack_attack[:general_limit]
   POST_LIMIT = Rails.application.config.x.rack_attack[:post_limit]
 
+  # Every Claude and ChatGPT user reaches these from the same few addresses, so
+  # they are limited per blog in Api::BaseController instead of per IP.
+  SHARED_CLIENT_PATHS = %w[ /mcp /oauth/register /oauth/token ].freeze
+
   throttle("req/ip", limit: GENERAL_LIMIT, period: 1.minute) do |req|
-    req.ip
+    req.ip unless SHARED_CLIENT_PATHS.include?(req.path)
   end
 
   throttle("req/ip/post", limit: POST_LIMIT, period: 1.minute) do |req|
-    req.ip if req.post?
+    req.ip if req.post? && !SHARED_CLIENT_PATHS.include?(req.path)
   end
 
   throttle("req/ip/unauthenticated_exact_app", limit: 5, period: 1.minute) do |req|

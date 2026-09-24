@@ -51,6 +51,38 @@
       </div>
     <% end %>
 
+    <%= settings_row "Claude and ChatGPT", stacked: true, hint: "Manage your blog by chatting with an AI assistant" do %>
+      <div class="space-y-4">
+        <p>
+          Add Pagecord as a custom connector in Claude or ChatGPT using this URL, then log in to Pagecord when asked.
+          The <%= link_to "MCP guide", "https://help.pagecord.com/mcp", class: "underline", target: "_blank" %> has step-by-step instructions.
+        </p>
+
+        <div data-controller="clipboard" class="flex items-center gap-2">
+          <code data-clipboard-target="source" class="flex-1 break-all text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded px-3 py-2 font-mono text-slate-800 dark:text-slate-200 select-all"><%= mcp_endpoint_url %></code>
+          <button type="button" data-action="clipboard#copy" data-clipboard-target="button" class="btn-secondary w-20 justify-center">Copy</button>
+        </div>
+
+        <% connections = @blog.mcp_connections.active.order(created_at: :desc) %>
+        <% if connections.any? %>
+          <div class="space-y-3">
+            <% connections.each do |connection| %>
+              <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <div class="min-w-0">
+                  <span class="text-sm text-slate-900 dark:text-slate-100"><%= connection.client_name %></span>
+                  <span class="text-sm text-slate-500 dark:text-slate-400">connected <%= time_ago_in_words(connection.created_at) %> ago</span>
+                </div>
+                <%= button_to "Disconnect", app_settings_mcp_connection_path(connection), method: :delete, class: "btn-danger", form_class: "contents",
+                      data: { turbo_confirm: "Disconnect #{connection.client_name}? It will no longer be able to manage your blog." } %>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-slate-500 dark:text-slate-400">No apps connected yet.</p>
+        <% end %>
+      </div>
+    <% end %>
+
     <%= settings_row "Quick start", stacked: true do %>
       <p class="mb-3">
         Authenticate all requests with a Bearer token in the <code class="text-sm bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">Authorization</code> header:

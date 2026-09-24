@@ -17,6 +17,6 @@ class AccessRequests::VerificationsController < ApplicationController
 
     sign_in @user
 
-    redirect_to app_posts_path
+    redirect_to session.delete(:return_to) || app_posts_path
   end
 end

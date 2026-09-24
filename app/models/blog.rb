@@ -19,6 +19,7 @@ class Blog < ApplicationRecord
   belongs_to :home_page, class_name: "Post", optional: true
 
   has_many :sender_email_addresses, dependent: :destroy
+  has_many :mcp_connections, dependent: :destroy
 
   has_many :navigation_items, dependent: :destroy
 

@@ -56,7 +56,15 @@ module RoutingHelper
   end
 
   def micropub_endpoint_url
-    micropub_url(host: "api.#{Rails.application.config.x.domain}")
+    micropub_url(host: api_host)
+  end
+
+  def mcp_endpoint_url
+    mcp_url(host: api_host)
+  end
+
+  def api_host
+    "api.#{Rails.application.config.x.domain}"
   end
 
   private
