@@ -1,12 +1,13 @@
-<section class="-mt-8 pb-10 sm:px-4 sm:pt-6 md:pt-10 md:pb-16 sm:bg-pagecord-accent/10 sm:dark:bg-slate-950">
-  <div class="sheet sm:[--sheet-padding:--spacing(12)] sm:pb-12 mx-auto max-w-5xl flex flex-col gap-12">
-    <div class="flex flex-col gap-6">
+<section class="-mt-8 pb-8 sm:px-4 sm:pt-6 md:pt-10 md:pb-10 sm:bg-pagecord-accent/10 sm:dark:bg-slate-950">
+  <div class="sheet sm:[--sheet-padding:--spacing(12)] sm:pb-12 mx-auto max-w-7xl flex flex-col gap-12">
+    <div class="relative overflow-hidden sheet-bleed -mt-(--sheet-padding) pt-(--sheet-padding) -mb-12 pb-12 sm:rounded-t-lg">
+      <div class="flex flex-col gap-6 lg:max-w-[55%]">
       <h1 class="max-w-3xl source-serif font-semibold text-5xl md:text-7xl tracking-tight leading-[1.02] text-slate-900 dark:text-slate-100">
-        Make yourself at <span class="inline bg-[linear-gradient(180deg,transparent_68%,rgb(79_189_156_/_0.45)_68%,rgb(79_189_156_/_0.45)_92%,transparent_92%)] [box-decoration-break:clone] px-1 -mx-1">home</span> on the web.
+        Make yourself a <span class="inline bg-[linear-gradient(180deg,transparent_68%,rgb(79_189_156_/_0.45)_68%,rgb(79_189_156_/_0.45)_92%,transparent_92%)] [box-decoration-break:clone] px-1 -mx-1">home</span> on the web
       </h1>
 
       <div class="max-w-2xl flex flex-col gap-4 text-lg md:text-xl leading-relaxed text-slate-600 dark:text-slate-300">
-        <p class="mb-2 source-serif font-medium text-2xl md:text-3xl leading-snug tracking-tight text-slate-900 dark:text-slate-100">Pagecord is the perfect home for your writing on the web.</p>
+        <p class="mb-2 source-serif font-medium text-2xl md:text-3xl leading-snug tracking-tight text-slate-900 dark:text-slate-100">Pagecord is the perfect home for your writing.</p>
 
         <p>Write when you like, where you like. Use the built-in editor, iA Writer, Obsidian, or publish by sending an email. Whatever suits you!</p>
 
@@ -20,9 +21,19 @@
         <%= link_to "See real Pagecord sites", spotlight_path, class: "inline-flex justify-center items-center rounded-lg border border-slate-300 dark:border-slate-700 px-5 py-3 font-medium text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800" %>
       </div>
 
-      <p class="max-w-3xl text-sm text-slate-500 dark:text-slate-400">
+      <p class="max-w-2xl text-sm text-slate-500 dark:text-slate-400">
         Classic is free forever. Every new account starts with a 14-day free trial of Premium. No card required. Already writing somewhere else? We'll <%= link_to "bring your old posts across", "https://help.pagecord.com/importing-an-existing-blog", class: "home-link" %>.
       </p>
+      </div>
+
+      <picture class="contents">
+        <source srcset="<%= home_image_path("home/harbourlight-home-dark.webp", width: 1000, quality: 88) %>" media="(prefers-color-scheme: dark)">
+        <%= image_tag home_image_path("home/harbourlight-home.webp", width: 1000, quality: 88),
+              alt: "",
+              width: "1320",
+              height: "2800",
+              class: "hidden lg:block absolute top-8 left-[60%] w-[32rem] max-w-none origin-top-left -rotate-6 rounded-lg shadow-2xl ring-1 ring-slate-900/10 dark:ring-white/10" %>
+      </picture>
     </div>
 
     <div class="sheet-divider"></div>
@@ -79,7 +90,7 @@
     </div>
   </div>
 
-  <p class="mt-5 px-4 text-center text-sm text-slate-500 dark:text-slate-400">Trusted by 1,000+ independent writers &middot; Independent, open source, no adverts</p>
+  <p class="mt-5 px-4 text-center text-sm text-slate-500 dark:text-slate-400">Trusted by 1,200+ writers &middot; Pagecord is independent and open source</p>
 </section>
 
 <div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
