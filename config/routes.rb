@@ -242,7 +242,7 @@ Rails.application.routes.draw do
   # Available on every domain, so embeds also resolve in the theme garden preview.
   namespace :api do
     namespace :embeds do
-      resource :bandcamp, only: [ :create ], controller: "bandcamp"
+      resource :bandcamp, only: [ :show ], controller: "bandcamp"
     end
   end
 

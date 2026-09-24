@@ -20,7 +20,7 @@ class Api::Embeds::BandcampControllerTest < ActionDispatch::IntegrationTest
 
     URI.stubs(:open).with(bandcamp_url, uri_open_options).returns(StringIO.new(mock_html))
 
-    post "/api/embeds/bandcamp", params: { url: bandcamp_url }
+    get "/api/embeds/bandcamp", params: { url: bandcamp_url }
 
     assert_response :success
     json_response = JSON.parse(response.body)
@@ -39,17 +39,18 @@ class Api::Embeds::BandcampControllerTest < ActionDispatch::IntegrationTest
 
     URI.stubs(:open).with(bandcamp_url, uri_open_options).returns(StringIO.new(mock_html))
 
-    post "/api/embeds/bandcamp", params: { url: bandcamp_url }
+    get "/api/embeds/bandcamp", params: { url: bandcamp_url }
 
     assert_response :unprocessable_entity
     json_response = JSON.parse(response.body)
     assert_equal "No og:video found", json_response["error"]
+    assert_not_includes response.headers["Cache-Control"].to_s, "public"
   end
 
   test "should handle network errors gracefully" do
     URI.stubs(:open).with(bandcamp_url, uri_open_options).raises(StandardError.new("Network error"))
 
-    post "/api/embeds/bandcamp", params: { url: bandcamp_url }
+    get "/api/embeds/bandcamp", params: { url: bandcamp_url }
 
     assert_response :unprocessable_entity
     json_response = JSON.parse(response.body)
@@ -71,7 +72,7 @@ class Api::Embeds::BandcampControllerTest < ActionDispatch::IntegrationTest
 
     URI.stubs(:open).with(bandcamp_url, uri_open_options).returns(StringIO.new(mock_html))
 
-    post "/api/embeds/bandcamp", params: { url: bandcamp_url }
+    get "/api/embeds/bandcamp", params: { url: bandcamp_url }
 
     assert_response :success
     json_response = JSON.parse(response.body)
@@ -91,21 +92,39 @@ class Api::Embeds::BandcampControllerTest < ActionDispatch::IntegrationTest
 
     URI.stubs(:open).with(bandcamp_url, uri_open_options).returns(StringIO.new(mock_html))
 
-    post "/api/embeds/bandcamp", params: { url: bandcamp_url }
+    get "/api/embeds/bandcamp", params: { url: bandcamp_url }
 
     assert_response :success
     json_response = JSON.parse(response.body)
     assert_equal "https://bandcamp.com/EmbeddedPlayer/v=2/album=789/", json_response["embed_url"]
   end
 
-  test "should skip CSRF token verification" do
-    # This test ensures the endpoint works without CSRF tokens (important for API endpoints)
-    URI.stubs(:open).with(bandcamp_url, uri_open_options).returns(StringIO.new("<html></html>"))
+  test "should be publicly cacheable without a session cookie" do
+    mock_html = <<~HTML
+      <html>
+        <head>
+          <meta property="og:video" content="https://bandcamp.com/EmbeddedPlayer/v=2/album=123/"/>
+        </head>
+      </html>
+    HTML
 
-    post "/api/embeds/bandcamp", params: { url: bandcamp_url }
+    URI.stubs(:open).with(bandcamp_url, uri_open_options).returns(StringIO.new(mock_html))
 
-    # Should not get InvalidAuthenticityToken error
-    assert_not_equal "ActionController::InvalidAuthenticityToken", response.body
+    get "/api/embeds/bandcamp", params: { url: bandcamp_url }
+
+    assert_response :success
+    assert_includes response.headers["Cache-Control"], "public"
+    assert_nil response.headers["Set-Cookie"]
+  end
+
+  test "should not cache a missing og:video" do
+    Rails.stubs(:cache).returns(ActiveSupport::Cache::MemoryStore.new)
+    URI.expects(:open).twice.with(bandcamp_url, uri_open_options).returns(StringIO.new("<html></html>"), StringIO.new("<html></html>"))
+
+    2.times do
+      get "/api/embeds/bandcamp", params: { url: bandcamp_url }
+      assert_response :unprocessable_entity
+    end
   end
 
   test "should cache resolved embed URLs" do
@@ -122,7 +141,7 @@ class Api::Embeds::BandcampControllerTest < ActionDispatch::IntegrationTest
     URI.expects(:open).once.with(bandcamp_url, uri_open_options).returns(StringIO.new(mock_html))
 
     2.times do
-      post "/api/embeds/bandcamp", params: { url: bandcamp_url }
+      get "/api/embeds/bandcamp", params: { url: bandcamp_url }
 
       assert_response :success
       json_response = JSON.parse(response.body)
@@ -133,7 +152,7 @@ class Api::Embeds::BandcampControllerTest < ActionDispatch::IntegrationTest
   test "should reject non-Bandcamp URLs" do
     URI.expects(:open).never
 
-    post "/api/embeds/bandcamp", params: { url: "https://example.com/album" }
+    get "/api/embeds/bandcamp", params: { url: "https://example.com/album" }
 
     assert_response :unprocessable_entity
     json_response = JSON.parse(response.body)
