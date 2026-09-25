@@ -125,7 +125,9 @@ Rails.application.routes.draw do
           get "verify/:token", to: "verifications#show", as: :verification
         end
 
-        resource :custom_code, only: [ :show, :update ], controller: "custom_code"
+        resource :custom_code, only: [ :show, :update ], controller: "custom_code" do
+          resource :preview, only: [ :update ], controller: "custom_code/previews"
+        end
         resource :api, only: [ :show, :create, :destroy ], controller: "api"
         resources :exports
 
@@ -262,6 +264,7 @@ Rails.application.routes.draw do
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 
     get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
+    get "/previews/css/:id", to: "blogs/css_previews#show", as: :blog_css_preview
     resources :previews, only: [ :show ], controller: "blogs/posts/previews", as: :blog_post_previews
     get "/posts/:slug", to: "blogs/posts#show"
 
