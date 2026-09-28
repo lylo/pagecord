@@ -31,6 +31,17 @@ lexxy-editor {
     color: var(--color-slate-500) !important;
   }
 
+  /* Opens the alt text dialog under the ALT button rather than below the image.
+     The 1.5ch matches the toolbar's translate in lexxy-editor.css. */
+  lexxy-attachment-toolbar {
+    anchor-name: --lexxy-attachment-toolbar;
+  }
+
+  .lexxy-alternative-text-dialog {
+    position-anchor: --lexxy-attachment-toolbar;
+    inset-block-start: calc(anchor(bottom) + 1.5ch + var(--lexxy-toolbar-spacing));
+  }
+
   a {
     color: inherit;
   }
