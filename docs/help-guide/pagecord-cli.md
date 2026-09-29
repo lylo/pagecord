@@ -4,7 +4,7 @@ published: true
 published_at: 2026-06-11T00:00:00+00:00
 ---
 
-The Pagecord CLI lets you publish local Markdown and HTML files to your Pagecord blog from the command line. It is useful if you write in a local folder, use an editor like Vim, Emacs, iA Writer, or VS Code, or want to publish from scripts and automation.
+The Pagecord CLI lets you publish local Markdown and HTML files to your Pagecord blog from the command line, read and edit your posts and pages, and change your blog's appearance and custom code. It is useful if you write in a local folder, use an editor like Vim, Emacs, iA Writer, or VS Code, want to publish from scripts and automation, or work with an AI agent such as Claude Code.
 
 The CLI is a Premium feature because it uses the Pagecord API.
 
@@ -58,8 +58,6 @@ If you want to move a published post back to draft, run `draft` on the same file
 pagecord draft post.md
 ```
 
-To delete a post, use the Pagecord dashboard.
-
 ## Multiple blogs
 
 You can log in to more than one Pagecord blog:
@@ -72,14 +70,20 @@ pagecord login work
 List configured blogs:
 
 ```bash
-pagecord list
+pagecord blog list
 ```
 
-If only one blog is configured, `publish` and `draft` can omit the subdomain. If you have more than one, pass the subdomain as the final argument:
+If only one blog is configured, you don't need to say which one to use. If you have more than one, set a default, or pass `--blog` to any command:
 
 ```bash
-pagecord publish post.md personal
-pagecord draft post.md work
+pagecord blog use personal
+pagecord post list --blog work
+```
+
+`publish` and `draft` also accept the subdomain as the final argument:
+
+```bash
+pagecord publish post.md work
 ```
 
 Remove a saved blog:
@@ -99,6 +103,7 @@ pagecord publish post.md --published-at 2026-06-11
 pagecord publish post.md --tags ruby,cli
 pagecord publish post.md --canonical-url https://example.com/original
 pagecord publish post.md --hidden
+pagecord publish post.md --no-hidden
 pagecord publish post.md --locale en
 ```
 
@@ -145,6 +150,71 @@ Markdown image references to local files are uploaded to Pagecord automatically:
 ```
 
 Supported local image types are JPEG, PNG, GIF, and WebP. External image URLs and HTML `<img>` tags are left alone.
+
+## Posts and pages
+
+You can also work with posts that aren't in a local file. Every post and page has a short token, such as `aaa33a9b`, which the list shows.
+
+```bash
+pagecord post list
+pagecord post list --drafts
+pagecord post show aaa33a9b
+```
+
+Lists show 15 posts at a time, newest first. Use `--page 2` for the next 15.
+
+`show` prints the post's details followed by its content as HTML. To change a post, save the content to a file, edit it, and send it back:
+
+```bash
+pagecord post update aaa33a9b --content-file post.html
+pagecord post update aaa33a9b --title "New title" --status draft
+```
+
+`update` only changes what you pass. `--content-file` sends Markdown if the file ends in `.md`, and HTML otherwise. It accepts the same options as `publish`, plus `--status draft` or `--status published`.
+
+To create or delete a post:
+
+```bash
+pagecord post create --title "Hello" --content-file hello.md --status draft
+pagecord post delete aaa33a9b
+```
+
+Deleting moves a post to the bin. Add `--permanent` to delete it for good.
+
+Pages work the same way with `pagecord page`, for example `pagecord page list`.
+
+Add `--json` to any command for output you can use in scripts.
+
+## Appearance and custom code
+
+Show and change your theme, font, width and layout:
+
+```bash
+pagecord appearance show
+pagecord appearance update --theme sand --font serif
+```
+
+Custom CSS, head, body and footer code each take a file:
+
+```bash
+pagecord custom-code show --css > blog.css
+pagecord custom-code update --css blog.css
+pagecord custom-code update --footer-html footer.html
+```
+
+An update replaces the whole field, so keep a copy of the original. See [Custom CSS](custom-css.md) for what you can style.
+
+## Using the CLI with an AI agent
+
+The CLI includes a skill that teaches AI agents such as Claude Code how to use it:
+
+```bash
+pagecord skill install
+```
+
+This installs the skill to `~/.agents/skills/pagecord` and links it into `~/.claude/skills`. Run it again after updating the CLI with `gem update pagecord-cli`. You can then ask your agent to list your drafts, edit a post, or restyle your blog.
+
+Check which version you have with `pagecord version`.
 
 ## Using the CLI with Obsidian
 

@@ -190,6 +190,7 @@ background. The sheet's parts are component classes in
 - **Sentry skill** (`/sentry`): investigate and fix Sentry errors
 - **Support skill** (`/support`): investigate customer issues and draft responses
 - **Fizzy skill** (`/fizzy`): list, create, update, move, comment on, and inspect Fizzy tracker cards. Use it for any tracker work rather than hand-rolling the API
+- **Pagecord CLI** (`~/dev/pagecord-cli`): its agent skill ships with the gem (`pagecord skill install`). Against the dev server, log in with `pagecord login SUBDOMAIN --base-url http://api.localhost:3000` – the `api.` host is required
 - **Pagecord blog drafts**: write reviewable Obsidian posts to `/Users/olly/Notes/Personal/Pagecord Blog Posts`
 
 ## Commands
@@ -271,7 +272,7 @@ Docker: prefix commands with `docker-compose exec web`
 - **Sluggable**: URL slug generation with reserved words
 - **Taggable**: Tag management with validation, normalization, querying
 - **Verifiable**: Token-based verification with 24h expiry (used by email addresses, change requests)
-- **CssSanitizable**: Custom CSS validation (4KB limit)
+- **CssSanitizable**: Custom CSS validation (16KB limit)
 
 ### Media Embeds
 
