@@ -92,6 +92,7 @@ class Html::EmailMediaPreviewTest < ActiveSupport::TestCase
 
     assert_includes result, %(<a href="#{POST_URL}" class="email-media-preview">)
     assert_includes result, %(<img src="https://cdn.example.com/clip.jpg" alt="Video thumbnail")
+    assert_includes result, "Watch the video</span></a>"
     assert_includes result, "<figcaption>Clip</figcaption>"
     assert_not_includes result, "<video"
   end

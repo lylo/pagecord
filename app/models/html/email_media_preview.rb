@@ -44,7 +44,12 @@ module Html
         image["alt"] = alt
         image["style"] = "display:block;margin:0 auto;max-width:100%;height:auto;"
 
+        label = Nokogiri::XML::Node.new("span", doc)
+        label.content = I18n.t("email_subscribers.mailers.shared.watch_video")
+        label["style"] = "display:block;margin-top:8px;text-align:center;"
+
         link.add_child(image)
+        link.add_child(label)
         link
       end
 

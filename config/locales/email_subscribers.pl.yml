@@ -25,6 +25,7 @@ pl:
         unsubscribe_link: "Anuluj subskrypcję"
         unsubscribe_text: "Anuluj subskrypcję, klikając poniższy link:"
         view_online: "Zobacz ten wpis online"
+        watch_video: "▶\uFE0E Obejrzyj film"
       confirmation:
         subject: "Potwierdź subskrypcję bloga %{blog_name}"
         message: "Potwierdź subskrypcję bloga %{blog_name}. Jeśli nie chciałeś subskrybować, możesz zignorować tego e-maila."
