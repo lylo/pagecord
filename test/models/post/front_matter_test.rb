@@ -51,6 +51,11 @@ class Post::FrontMatterTest < ActiveSupport::TestCase
     assert_equal "fr", attrs[:locale]
   end
 
+  test "parses open_graph_image" do
+    attrs = Post::FrontMatter.parse("open_graph_image: text")
+    assert_equal "text", attrs[:open_graph_image]
+  end
+
   test "ignores unknown keys" do
     attrs = Post::FrontMatter.parse("title: Hello\nunknown: value")
     assert_equal({ title: "Hello" }, attrs)

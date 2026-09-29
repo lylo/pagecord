@@ -119,6 +119,7 @@ Parameters:
 - `tags` – comma-separated tags
 - `hidden` – `true` to hide from the feed
 - `locale` – post language code
+- `open_graph_image` – `text` to always use the text-based social sharing card, even when the post has images
 
 Returns `201 Created` with the created post object. Returns `422 Unprocessable Entity` when validation fails.
 
@@ -393,7 +394,7 @@ curl -X POST https://api.pagecord.com/posts \
   }'
 ```
 
-Supported front matter fields: `title`, `slug`, `status`, `published_at` (or `date`), `canonical_url`, `locale`, `hidden`, `tags`.
+Supported front matter fields: `title`, `slug`, `status`, `published_at` (or `date`), `canonical_url`, `locale`, `hidden`, `tags`, `open_graph_image`.
 
 Explicit parameters always take priority over front matter values. For example, passing `title=Explicit` with front matter containing `title: From FM` will use "Explicit".
 

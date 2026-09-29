@@ -43,7 +43,7 @@ class Api::HomePagesController < Api::BaseController
       Api::PostParams.new(
         params,
         :title, :content, :slug, :published_at, :canonical_url,
-        :tags, :hidden, :locale, :status, :content_format,
+        :tags, :hidden, :locale, :open_graph_image, :status, :content_format,
         except_token: false
       ).to_h.merge(is_page: true, is_home_page: true)
     end

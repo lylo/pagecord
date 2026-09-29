@@ -24,7 +24,7 @@ Open the command palette (`Cmd/Ctrl + P`) and run the command for the blog you w
 
 Each saved blog connection gets its own pair of publish commands. A post is linked to one Pagecord blog at a time, so updates continue using the same blog connection that first published the note.
 
-The plugin reads optional YAML frontmatter (`title`, `slug`, `tags`, `published_at`, `canonical_url`, `hidden`, `locale`) and uploads embedded images automatically. After publishing, it manages Pagecord metadata in the note frontmatter so future publishes update the existing post. Existing notes published before multi-blog support continue to work.
+The plugin reads optional YAML frontmatter (`title`, `slug`, `tags`, `published_at`, `canonical_url`, `hidden`, `locale`, `open_graph_image`) and uploads embedded images automatically. Set `open_graph_image: text` to always use the text-based social sharing card, even when the post has images. After publishing, it manages Pagecord metadata in the note frontmatter so future publishes update the existing post. Existing notes published before multi-blog support continue to work.
 
 Obsidian's callout syntax is supported, so `> [!note] Title` publishes as a styled callout rather than a plain quote. See [Callouts](callouts.md).
 

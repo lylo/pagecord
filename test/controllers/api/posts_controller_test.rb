@@ -373,6 +373,27 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Updated Title", @post.reload.title
   end
 
+  test "update with open_graph_image text uses the text-based card" do
+    patch "/posts/#{@post.token}", params: { open_graph_image: "text" }, headers: auth_header
+
+    assert_response :success
+    assert @post.reload.open_graph_image_suppressed?
+  end
+
+  test "update reads open_graph_image from markdown front matter" do
+    patch "/posts/#{@post.token}", params: { content_format: "markdown", content: "---\nopen_graph_image: text\n---\nHello" }, headers: auth_header
+
+    assert_response :success
+    assert @post.reload.open_graph_image_suppressed?
+  end
+
+  test "update ignores an unknown open_graph_image value" do
+    patch "/posts/#{@post.token}", params: { open_graph_image: "cover.jpg" }, headers: auth_header
+
+    assert_response :success
+    assert_not @post.reload.open_graph_image_suppressed?
+  end
+
   test "update can publish a draft" do
     patch "/posts/#{@draft.token}", params: { status: "published" }, headers: auth_header
 

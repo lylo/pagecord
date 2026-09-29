@@ -4,7 +4,7 @@ class Post::FrontMatter
   MAPPING = {
     "title" => :title, "slug" => :slug, "published_at" => :published_at, "date" => :published_at,
     "canonical_url" => :canonical_url, "locale" => :locale, "status" => :status,
-    "hidden" => :hidden, "tags" => :tags_string
+    "hidden" => :hidden, "tags" => :tags_string, "open_graph_image" => :open_graph_image
   }.freeze
 
   def self.parse(yaml)
