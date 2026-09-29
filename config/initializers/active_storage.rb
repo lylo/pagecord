@@ -26,3 +26,8 @@ ActiveSupport.on_load(:active_storage_attachment) do
   after_create_commit -> { GeneratePreviewJob.perform_later(blob) },
     if: -> { blob.previewable? }
 end
+
+# Uploads are limited to UploadLimits::CONTENT_TYPES, none of which need the
+# loaders libvips marks as untrusted (ImageMagick, SVG, PDF, RAW and others)
+require "vips"
+Vips.block_untrusted(true)

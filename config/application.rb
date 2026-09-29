@@ -23,6 +23,8 @@ module Pagecord
     #
     # config.time_zone = "Central Time (US & Canada)"
     config.active_storage.variant_processor = :vips
+    config.active_storage.video_preview_input_arguments = "-format_whitelist mov"
+    config.active_storage.ffprobe_arguments = "-format_whitelist mov,mp3,wav"
 
     config.active_record.automatically_invert_plural_associations = true
 
