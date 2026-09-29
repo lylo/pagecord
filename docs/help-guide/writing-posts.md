@@ -61,6 +61,16 @@ end
 
 Drag and drop images directly into the editor, or click the attachment icon (paperclip) in the toolbar. See [Image size and quality](#image-size-and-quality) for tips on preparing your photos.
 
+### Alt text and captions
+
+Alt text is a short description of an image. Screen readers read it aloud in place of the image, and search engines use it too. It isn't shown on the page.
+
+To add alt text, click an image in the editor, then click the **ALT** button next to the trash icon. Describe the image and click **Save**.
+
+A caption is different: it's shown underneath the image for everyone to read. Click below an image in the editor to add one. If an image has a caption but no alt text, the caption is used as its alt text. An image with neither has no alt text at all, rather than a generic placeholder that tells a screen reader user nothing.
+
+Writing in Markdown? See [Obsidian](obsidian.md#images-and-alt-text) for the syntax, which works the same way in the [CLI](pagecord-cli.md) and the [API](api.md).
+
 ### Image size and quality
 
 You don't need to worry too much about preparing your images. Pagecord automatically resizes and optimises every image for the web, converting it to WebP and serving the right size for where it appears – smaller for thumbnails and galleries, up to 1600 pixels wide for the full view. Images are only ever scaled down, never up.
