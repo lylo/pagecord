@@ -330,7 +330,16 @@ a {
 .digest .post-content .email-media-preview {
   display: block;
   text-align: center;
+  text-decoration: none;
   margin: 1.5em 0;
+}
+
+.digest .post-content .email-media-preview-label {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #64748b;
 }
 
 .digest .post-content table {

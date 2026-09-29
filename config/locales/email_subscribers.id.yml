@@ -25,7 +25,7 @@ id:
         unsubscribe_link: "Batalkan langganan"
         unsubscribe_text: "Batalkan langganan dengan mengetuk tautan di bawah ini:"
         view_online: "Tampilkan pos ini secara online"
-        watch_video: "▶\uFE0E Tonton video"
+        watch_video: "Tonton video"
       confirmation:
         subject: "Konfirmasikan langgananmu pada %{blog_name}"
         message: "Mohon konfirmasi langgananmu pada %{blog_name}. Jika kamu tidak berniat untuk berlangganan, kamu dapat mengabaikan email ini."

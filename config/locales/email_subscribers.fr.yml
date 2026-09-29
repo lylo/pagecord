@@ -25,7 +25,7 @@ fr:
         unsubscribe_link: "Se désabonner"
         unsubscribe_text: "Désabonne-toi en cliquant sur le lien ci-dessous :"
         view_online: "Voir cet article en ligne"
-        watch_video: "▶\uFE0E Regarder la vidéo"
+        watch_video: "Regarder la vidéo"
       confirmation:
         subject: "Confirme ton abonnement à %{blog_name}"
         message: "Confirme ton abonnement à %{blog_name}. Si tu n'avais pas l'intention de t'abonner, tu peux ignorer cet email."
