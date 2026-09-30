@@ -21,6 +21,12 @@ class AccessRequests::VerificationsControllerTest < ActionDispatch::IntegrationT
     assert user.reload.verified
   end
 
+  test "should record a Plausible event when verifying a new signup" do
+    assert_enqueued_with(job: PlausibleEventJob, args: [ "Signup verified", { url: root_url, user_agent: "", ip: "127.0.0.1" } ]) do
+      get access_request_verification_url(access_requests(:elliot).token_digest)
+    end
+  end
+
   test "should not verify expired access request" do
     user = users(:elliot)
 

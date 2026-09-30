@@ -11,6 +11,7 @@ class AccessRequests::VerificationsController < ApplicationController
 
       WelcomeMailer.with(user: @user, price: localised_price).welcome_email.deliver_later
       MarketingAutomation::AddContactJob.perform_later(@user.id)
+      PlausibleEventJob.perform_later("Signup verified", url: root_url, user_agent: request.user_agent.to_s, ip: request.ip)
     end
 
     access_request.accept!
