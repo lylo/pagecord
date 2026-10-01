@@ -83,11 +83,6 @@ namespace :cache do
         "/faq",
         "/terms",
         "/privacy",
-        "/pagecord-vs-hey-world",
-        "/pagecord-vs-wordpress",
-        "/pagecord-vs-substack",
-        "/pagecord-vs-medium",
-        "/pagecord-vs-about-me",
         "/blogging-by-email",
         "/minimalist-blogging",
         "/llms.txt"

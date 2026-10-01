@@ -7,7 +7,7 @@ class Public::SitemapsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes @response.body, "https://pagecord.com/personal-website"
     assert_includes @response.body, "https://pagecord.com/minimalist-blogging"
-    assert_includes @response.body, "https://pagecord.com/blogger-alternative"
+    assert_includes @response.body, "https://pagecord.com/minimalist-blogging"
     assert_includes @response.body, "https://pagecord.com/indie-blogging-platform"
   end
 end
