@@ -35,32 +35,31 @@ class GeneratePreviewJobTest < ActiveSupport::TestCase
     assert_not @blob.reload.preview_image.attached?
   end
 
-  test "is enqueued when a pdf is embedded in a post" do
+  test "is enqueued when a pdf is uploaded" do
     assert_enqueued_with job: GeneratePreviewJob do
-      create_post_embedding(@blob)
+      ActiveStorage::Blob.create_and_upload!(io: file_fixture("document.pdf").open, filename: "document.pdf", content_type: "application/pdf")
     end
   end
 
-  test "is enqueued when a video is embedded in a post" do
+  test "is enqueued when a video is uploaded" do
     ActiveStorage::Blob.any_instance.stubs(:previewable?).returns(true)
-    video = ActiveStorage::Blob.create_and_upload!(io: file_fixture("tiny.jpg").open, filename: "clip.mp4", content_type: "video/mp4", identify: false)
 
     assert_enqueued_with job: GeneratePreviewJob do
-      create_post_embedding(video)
+      ActiveStorage::Blob.create_and_upload!(io: file_fixture("tiny.jpg").open, filename: "clip.mp4", content_type: "video/mp4", identify: false)
     end
   end
 
   test "is not enqueued for an image" do
-    image = create_image_blob
-
     assert_no_enqueued_jobs only: GeneratePreviewJob do
-      create_post_embedding(image)
+      create_image_blob
     end
   end
 
-  private
+  test "retries until a direct upload arrives" do
+    blob = ActiveStorage::Blob.create_before_direct_upload!(filename: "document.pdf", byte_size: 1.kilobyte, checksum: "abc123", content_type: "application/pdf")
 
-    def create_post_embedding(blob)
-      blogs(:joel).posts.create!(title: "Attached", content: attachment_node_for(blob), status: :published)
+    assert_enqueued_with job: GeneratePreviewJob, args: [ blob ] do
+      GeneratePreviewJob.perform_now(blob)
     end
+  end
 end

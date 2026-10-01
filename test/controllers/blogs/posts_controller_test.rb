@@ -87,6 +87,29 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "cards layout should render a video preview for video-only posts" do
     @blog.cards_layout!
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new("video"),
+      filename: "clip.mov",
+      content_type: "video/quicktime"
+    )
+    blob.preview_image.attach(io: file_fixture("space.jpg").open, filename: "poster.jpg", content_type: "image/jpeg")
+    @blog.posts.create!(
+      title: "Video Card Post",
+      content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select ".post-card-summary img", minimum: 1
+    assert_select "video.post-card-video", count: 0
+    assert_not_includes @response.body, "[clip.mov]"
+  end
+
+  test "cards layout should render the video until its preview is generated" do
+    @blog.cards_layout!
     ActiveStorage::Previewer::VideoPreviewer.stubs(:accept?).returns(true)
     blob = ActiveStorage::Blob.create_and_upload!(
       io: StringIO.new("video"),
@@ -103,9 +126,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select ".post-card-summary img", minimum: 1
-    assert_select "video.post-card-video", count: 0
-    assert_not_includes @response.body, "[clip.mov]"
+    assert_select "video.post-card-video", count: 1
   end
 
   test "cards layout should keep text preview for posts with text and video" do

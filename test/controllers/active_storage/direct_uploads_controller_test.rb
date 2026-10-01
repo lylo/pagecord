@@ -31,6 +31,23 @@ class ActiveStorage::DirectUploadsControllerTest < ActionDispatch::IntegrationTe
     assert_response :success
   end
 
+  test "returns a preview status url for a previewable upload" do
+    post rails_direct_uploads_path, params: {
+      blob: { filename: "report.pdf", content_type: "application/pdf", byte_size: 5.megabytes, checksum: "abc123" }
+    }, as: :json
+
+    blob = ActiveStorage::Blob.find_signed!(response.parsed_body["signed_id"])
+    assert_equal app_preview_path(blob.signed_id), response.parsed_body["preview_status_url"]
+  end
+
+  test "returns no preview status url for an image" do
+    post rails_direct_uploads_path, params: {
+      blob: { filename: "photo.jpg", content_type: "image/jpeg", byte_size: 1.megabyte, checksum: "abc123" }
+    }, as: :json
+
+    assert_nil response.parsed_body["preview_status_url"]
+  end
+
   test "allows pdf from a free user" do
     login_as users(:vivian)
 

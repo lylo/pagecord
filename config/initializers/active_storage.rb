@@ -19,12 +19,10 @@ ActiveSupport.on_load(:active_storage_attachment) do
   end
 end
 
-# Hook the attachment rather than the upload so every route in covers itself:
-# the editor, the API, Micropub and inbound email all end up attaching a blob.
-# This is where Rails runs analyze_blob_later for the same reason.
-ActiveSupport.on_load(:active_storage_attachment) do
-  after_create_commit -> { GeneratePreviewJob.perform_later(blob) },
-    if: -> { blob.previewable? }
+# Hooked on the blob so the editor's preview is ready before the post is saved.
+# App::PreviewsController reports when it is.
+ActiveSupport.on_load(:active_storage_blob) do
+  after_create_commit -> { GeneratePreviewJob.perform_later(self) }, if: :previewable?
 end
 
 # Uploads are limited to UploadLimits::CONTENT_TYPES, none of which need the

@@ -70,6 +70,7 @@ Rails.application.routes.draw do
 
     namespace :app do
       resource :upgrade_banner, only: [ :destroy ]
+      resources :previews, only: [ :show ]
       resources :analytics, only: [ :index ]
       namespace :posts do
         resource :trash, only: [ :show, :create, :destroy ], controller: "trash"

@@ -13,6 +13,11 @@ class GeneratePreviewJob < ApplicationJob
   # already caught by the previewable? guard – so retrying can never succeed.
   discard_on ActiveJob::DeserializationError, ActiveStorage::PreviewError
 
+  # A direct upload creates the blob before the browser sends the file. If it
+  # never arrives, the upload was abandoned and there is nothing to preview.
+  retry_on ActiveStorage::FileNotFoundError, wait: :polynomially_longer, attempts: 8 do
+  end
+
   def perform(blob)
     return if blob.preview_image.attached? || !blob.previewable?
 
