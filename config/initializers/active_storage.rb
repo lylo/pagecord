@@ -19,6 +19,11 @@ ActiveSupport.on_load(:active_storage_attachment) do
   end
 end
 
+# A representation request answers 202 until GeneratePreviewJob has made the preview.
+Rails.autoloaders.main.on_load("ActiveStorage::Representations::BaseController") do |klass, _abspath|
+  klass.prepend PendingPreviewRepresentation unless klass < PendingPreviewRepresentation
+end
+
 # Hooked on the blob so the editor's preview is ready before the post is saved.
 # App::PreviewsController reports when it is.
 ActiveSupport.on_load(:active_storage_blob) do

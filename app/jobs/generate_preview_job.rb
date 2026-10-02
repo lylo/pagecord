@@ -15,7 +15,7 @@ class GeneratePreviewJob < ApplicationJob
 
   # A direct upload creates the blob before the browser sends the file. If it
   # never arrives, the upload was abandoned and there is nothing to preview.
-  retry_on ActiveStorage::FileNotFoundError, wait: :polynomially_longer, attempts: 8 do
+  retry_on ActiveStorage::FileNotFoundError, wait: 10.seconds, attempts: 60 do
   end
 
   def perform(blob)
