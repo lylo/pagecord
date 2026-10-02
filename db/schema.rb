@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_09_02_090001) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_02_070000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -389,6 +389,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_09_02_090001) do
     t.datetime "next_billed_at"
     t.string "paddle_customer_id"
     t.string "paddle_price_id"
+    t.string "paddle_status"
     t.string "paddle_subscription_id"
     t.string "plan", null: false
     t.integer "unit_price"

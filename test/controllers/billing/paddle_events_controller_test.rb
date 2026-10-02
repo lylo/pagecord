@@ -68,6 +68,7 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert subscription.reload.cancelled?
     assert_equal cancellation_date.to_i, subscription.cancelled_at.to_i
     assert_equal cancellation_date.to_i, subscription.next_billed_at.to_i
+    assert_equal "canceled", subscription.paddle_status
     assert_not subscription.user.subscribed?, "access should end when the cancellation takes effect"
   end
 
@@ -359,6 +360,16 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 3900, subscription.unit_price, "unit_price should reconcile from the webhook, not stay at the supporter price"
   end
 
+  test "should mark a subscription past due when a renewal fails, and clear it once paid" do
+    subscription = subscriptions(:one)
+
+    post_subscription_event "subscription.past_due", status: "past_due"
+    assert subscription.reload.past_due?
+
+    post_subscription_event "subscription.updated", status: "active"
+    assert_not subscription.reload.past_due?
+  end
+
   test "should not dispatch an event type that names an internal method" do
     user = users(:vivian)
     payload = payload_for("subscription.created", user)
@@ -603,6 +614,22 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
       io.string.scan(/\[billing\].*/)
     ensure
       Rails.logger = previous
+    end
+
+    def post_subscription_event(event_type, status:)
+      payload = payload_for("subscription.updated.plan_change", subscriptions(:one).user)
+      payload["event_type"] = event_type
+      payload["data"]["status"] = status
+      json_payload = payload.to_json
+
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+
+      assert_response :success
     end
 
     def payload_for(event_type, user)

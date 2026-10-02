@@ -24,6 +24,10 @@ class PaddlePayload
     @data[:next_billed_at]
   end
 
+  def status
+    @data[:status]
+  end
+
   def canceled_at
     @data[:canceled_at]
   end

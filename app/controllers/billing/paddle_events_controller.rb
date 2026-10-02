@@ -102,7 +102,8 @@ module Billing
           paddle_price_id: payload.price_id,
           unit_price: payload.unit_price,
           next_billed_at: Time.parse(payload.next_billed_at),
-          plan: plan
+          plan: plan,
+          paddle_status: payload.status
         )
 
         Subscription::SupporterWelcomeMailer.welcome(@subscription).deliver_later if @subscription.supporter?
@@ -119,7 +120,7 @@ module Billing
         # now. Cancellations scheduled for the end of the term arrive as
         # subscription.updated with a scheduled_change and keep their billing period
         # until this event follows.
-        @subscription.update!(cancelled_at: cancelled_at, next_billed_at: cancelled_at)
+        @subscription.update!(cancelled_at: cancelled_at, next_billed_at: cancelled_at, paddle_status: payload.status)
 
         BillingEventLog.record(:cancel_effective, for_subscription: @subscription, started: payload.started_at&.to_date, booked_earlier: booked_earlier)
       end
@@ -140,7 +141,8 @@ module Billing
           paddle_price_id: new_price_id,
           unit_price: payload.unit_price,
           next_billed_at: next_billed_at,
-          plan: new_plan
+          plan: new_plan,
+          paddle_status: payload.status
         )
 
         notify_supporter_upgrade
@@ -168,6 +170,8 @@ module Billing
 
       def subscription_past_due
         Rails.logger.info "Subscription past due"
+
+        @subscription.update!(paddle_status: payload.status)
 
         BillingEventLog.record(:past_due, for_subscription: @subscription, for_user: @user)
       end

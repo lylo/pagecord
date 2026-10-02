@@ -98,6 +98,10 @@ class Subscription < ApplicationRecord
     cancelled_at.present?
   end
 
+  def past_due?
+    paddle_status == "past_due"
+  end
+
   def active_paid?
     !complimentary? && !cancelled? && !lapsed?
   end
