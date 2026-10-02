@@ -77,6 +77,12 @@ You don't need to worry too much about preparing your images. Pagecord automatic
 
 For the best results, export your photos at around 1600 pixels on the longest edge. Anything larger will simply be scaled down to fit, so there's no benefit to uploading huge files. This resolution stays sharp on desktop monitors and high-resolution phone screens alike. The maximum file size per image is 10MB, though at these dimensions you'll rarely come close.
 
+### Location data in photos
+
+Phones and cameras often record where a photo was taken. Pagecord removes this location data from every JPEG, PNG and WebP photo you upload, whether you add it in the editor, send it by email, post it through the API or use it as your avatar. Other details, such as the camera model and exposure settings, are kept, and the image itself isn't changed.
+
+The location is removed a few seconds after the upload finishes. To be certain a photo never reaches Pagecord with its location, remove it before uploading – most phones offer this in their share options.
+
 ### Image galleries
 
 To create a gallery, click the paperclip icon in the toolbar and select multiple images at once. You can also drag multiple photos straight into the editor. Either way, they'll be arranged in a grid automatically.

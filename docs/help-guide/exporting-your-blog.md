@@ -25,7 +25,7 @@ Once the export is ready, it appears in your exports list. Click to download the
 ## What's included
 
 - All published posts and pages
-- Images referenced in your content
+- Images referenced in your content, as Pagecord stores them – without their location data (see [Location data in photos](writing-posts.md#location-data-in-photos))
 - An index file linking to all content
 
 ## Export limits
