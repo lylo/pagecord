@@ -5,6 +5,9 @@ class RemoveImageLocationJob < ApplicationJob
 
   CONTENT_TYPES = %w[ image/jpeg image/png image/webp ].freeze
 
+  # Reads stdin and writes stdout, so exiftool goes by the bytes rather than a filename that may not match them
+  REMOVE_GPS = %w[ exiftool -quiet -gps:all= -xmp:gps*= -o - - ].freeze
+
   queue_as :low
 
   discard_on ActiveJob::DeserializationError, ActiveStorage::FileNotFoundError
@@ -13,14 +16,12 @@ class RemoveImageLocationJob < ApplicationJob
   def perform(blob)
     return unless blob.content_type.in?(CONTENT_TYPES)
 
-    # Piped rather than passed a path, so exiftool goes by the bytes and not a filename that may not match them
-    stripped, error, status = Open3.capture3("exiftool", "-quiet", "-gps:all=", "-xmp:gps*=", "-o", "-", "-", stdin_data: blob.download, binmode: true)
+    original = blob.download
+    stripped, error, status = Open3.capture3(*REMOVE_GPS, stdin_data: original, binmode: true)
     raise UnwritableImage, "Blob #{blob.id}: #{error.strip}" unless status.success?
+    return if stripped == original
 
-    io = StringIO.new(stripped)
-    unless blob.service.compute_checksum(io) == blob.checksum
-      blob.upload io, identify: false
-      blob.save!
-    end
+    blob.upload StringIO.new(stripped), identify: false
+    blob.save!
   end
 end
