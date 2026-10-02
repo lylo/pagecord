@@ -23,6 +23,10 @@ end
 # App::PreviewsController reports when it is.
 ActiveSupport.on_load(:active_storage_blob) do
   after_create_commit -> { GeneratePreviewJob.perform_later(self) }, if: :previewable?
+
+  # Analysis runs once, after the file has arrived, whichever way it was uploaded
+  after_update_commit -> { RemoveImageLocationJob.perform_later(self) },
+    if: -> { analyzed? && saved_change_to_metadata? && content_type.in?(RemoveImageLocationJob::CONTENT_TYPES) }
 end
 
 # Uploads are limited to UploadLimits::CONTENT_TYPES, none of which need the
