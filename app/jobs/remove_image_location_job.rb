@@ -8,6 +8,8 @@ class RemoveImageLocationJob < ApplicationJob
   discard_on ActiveJob::DeserializationError, ActiveStorage::FileNotFoundError
 
   def perform(blob)
+    return unless blob.content_type.in?(CONTENT_TYPES)
+
     blob.open do |file|
       system "exiftool", "-quiet", "-overwrite_original", "-gps:all=", "-xmp:all=", file.path, exception: true
 

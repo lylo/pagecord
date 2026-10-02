@@ -26,12 +26,27 @@ class RemoveImageLocationJobTest < ActiveSupport::TestCase
     RemoveImageLocationJob.perform_now(blob)
   end
 
-  test "is enqueued once a photo is analysed" do
+  test "leaves files that aren't photos alone" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: file_fixture("document.pdf").open, filename: "document.pdf", content_type: "application/pdf")
+    RemoveImageLocationJob.any_instance.expects(:system).never
+
+    RemoveImageLocationJob.perform_now(blob)
+  end
+
+  test "is enqueued when an avatar is uploaded" do
+    blog = blogs(:joel)
+
+    blog.update!(avatar: Rack::Test::UploadedFile.new(file_fixture("gps.jpg"), "image/jpeg"))
+
+    assert_enqueued_with job: RemoveImageLocationJob, args: [ blog.avatar.blob ]
+  end
+
+  test "is enqueued when an uploaded photo is added to a post" do
     blob = upload "gps.jpg"
 
-    assert_enqueued_with job: RemoveImageLocationJob, args: [ blob ] do
-      blob.analyze
-    end
+    posts(:one).update!(content: ActionText::Content.new("").append_attachables(blob).to_s)
+
+    assert_enqueued_with job: RemoveImageLocationJob, args: [ blob ]
   end
 
   private
