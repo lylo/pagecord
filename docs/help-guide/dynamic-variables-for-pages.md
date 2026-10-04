@@ -312,6 +312,24 @@ By default, the date is shown in your blog's locale format. Use the `format` par
 
 Note: `long` and `long_datetime` always display month names in English. For non-English blogs, use the default or a numeric format.
 
+To show when anything on your blog last changed, rather than just this page, use the `scope` parameter. This works well on a home page:
+
+| Scope | Shows the latest date that |
+|-------|-----------------------------|
+| _(default)_ | this page was updated |
+| `content` | any post or page was published or edited |
+| `posts` | any post was published or edited |
+
+```javascript
+{{ updated_at | scope: content }}
+```
+
+Drafts, hidden posts and scheduled posts that haven't gone live yet don't count, and nor do comments or design changes. `scope` combines with `format`:
+
+```javascript
+{{ updated_at | scope: posts | format: long }}
+```
+
 You can style the output with the CSS class `updated-at`.
 
 ### Table of Contents

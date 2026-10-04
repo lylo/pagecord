@@ -678,6 +678,28 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "updated_at tag with content scope shows the latest visible post or page" do
+    page = @blog.pages.create!(title: "Home", content: "{{ updated_at | scope: content }}", status: :published)
+    travel 1.hour
+    latest = @blog.posts.create!(title: "Newer", content: "Content", status: :published)
+    travel 1.hour
+    @blog.posts.create!(title: "Draft", content: "Content", status: :draft)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_select "time.updated-at[datetime=?]", latest.updated_at.utc.iso8601
+  end
+
+  test "updated_at tag with posts scope ignores pages" do
+    post = @blog.posts.create!(title: "Post", content: "Content", status: :published, published_at: 1.day.ago)
+    travel 1.hour
+    page = @blog.pages.create!(title: "Home", content: "{{ updated_at | scope: posts }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_select "time.updated-at[datetime=?]", post.updated_at.utc.iso8601
+  end
+
   test "does not process updated_at tag in regular posts" do
     post = @blog.posts.create!(title: "A Post", content: "{{ updated_at }}", status: :published)
 
