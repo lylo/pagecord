@@ -346,7 +346,7 @@ GEM
     pg (1.6.3-x86_64-darwin)
     pg (1.6.3-x86_64-linux)
     pg (1.6.3-x86_64-linux-musl)
-    pg_query (6.2.3)
+    pg_query (6.2.5)
       google-protobuf (>= 4.34.0)
     pg_search (2.4.0)
       activerecord (>= 8.0)
