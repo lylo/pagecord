@@ -235,7 +235,7 @@ GEM
     herb (0.11.0-x86_64-linux-gnu)
     herb (0.11.0-x86_64-linux-musl)
     htmlentities (4.4.2)
-    httparty (0.24.2)
+    httparty (0.24.3)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
