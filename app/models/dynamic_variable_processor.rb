@@ -81,7 +81,15 @@ class DynamicVariableProcessor
         UPDATED_AT_FORMATS[params[:format]] || :post_date
       end
 
-      @view.local_time(@post.updated_at, format: format, class: "updated-at")
+      time = updated_at_for(params[:scope])
+      time ? @view.local_time(time, format: format, class: "updated-at") : ""
+    end
+
+    def updated_at_for(scope)
+      return @post.updated_at unless scope.in?(%w[content posts pages])
+
+      content = scope == "content" ? @blog.all_posts : @blog.public_send(scope)
+      content.visible.maximum(Arel.sql("GREATEST(posts.updated_at, posts.published_at)"))
     end
 
     def render_table_of_contents_tag(params_string)
