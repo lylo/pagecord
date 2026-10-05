@@ -45,6 +45,7 @@ class App::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href='#{new_app_blog_path}']", count: 0
     assert_match "add up to #{Blog::MAX_BLOGS_PAID} blogs", response.body
     assert_select "a[href='#{app_settings_subscriptions_path}']", text: "Subscribe to Pagecord Premium"
+    assert_select "a.btn-primary[href='#{app_settings_subscriptions_path}']", text: "Upgrade to add a blog"
   end
 
   test "trial user can see manage blogs upsell" do

@@ -5,9 +5,10 @@
   <div class="mt-5 flex flex-wrap items-center gap-2">
     <% if @blogs.count < Current.user.blog_limit %>
       <%= link_to "Add Blog", new_app_blog_path, class: "btn-primary" %>
+    <% elsif Current.user.subscribed? %>
+      <span class="btn-primary cursor-not-allowed opacity-50" title="You can have up to <%= Blog::MAX_BLOGS_PAID %> blogs on your plan." aria-disabled="true">Add Blog</span>
     <% else %>
-      <% reason = Current.user.subscribed? ? "You can have up to #{Blog::MAX_BLOGS_PAID} blogs on your plan." : "Subscribe to Pagecord Premium to add up to #{Blog::MAX_BLOGS_PAID} blogs." %>
-      <span class="btn-primary cursor-not-allowed opacity-50" title="<%= reason %>" aria-disabled="true">Add Blog</span>
+      <%= link_to "Upgrade to add a blog", app_settings_subscriptions_path, class: "btn-primary" %>
     <% end %>
   </div>
 
