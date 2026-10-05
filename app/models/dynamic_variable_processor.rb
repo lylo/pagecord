@@ -86,10 +86,10 @@ class DynamicVariableProcessor
     end
 
     def updated_at_for(scope)
-      return @post.updated_at unless scope.in?(%w[content posts])
+      return @post.updated_at unless scope.in?(%w[content posts pages])
 
-      content = scope == "posts" ? @blog.posts.visible.posts : @blog.posts.visible
-      content.maximum(Arel.sql("GREATEST(posts.updated_at, posts.published_at)"))
+      content = scope == "content" ? @blog.all_posts : @blog.public_send(scope)
+      content.visible.maximum(Arel.sql("GREATEST(posts.updated_at, posts.published_at)"))
     end
 
     def render_table_of_contents_tag(params_string)

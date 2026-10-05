@@ -319,6 +319,7 @@ To show when anything on your blog last changed, rather than just this page, use
 | _(default)_ | this page was updated |
 | `content` | any post or page was published or edited |
 | `posts` | any post was published or edited |
+| `pages` | any page was published or edited |
 
 ```javascript
 {{ updated_at | scope: content }}
