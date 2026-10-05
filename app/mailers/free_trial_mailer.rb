@@ -7,8 +7,6 @@ class FreeTrialMailer < CloudflareMailer
   def trial_ended
     @user = params[:user]
     @blog = @user.blog
-    @price = Subscription.price
-    @monthly_price = Subscription.price(:monthly)
 
     mail to: @user.email, subject: "Your Pagecord free trial has ended"
   end
@@ -16,7 +14,8 @@ class FreeTrialMailer < CloudflareMailer
   def trial_reminder
     @user = params[:user]
     @blog = @user.blog
+    @ends_on = @user.trial_ends_at.strftime("%A %-d %B")
 
-    mail to: @user.email, subject: "Your Pagecord free trial ends in a few days"
+    mail to: @user.email, subject: "Your Pagecord free trial ends on #{@ends_on}"
   end
 end

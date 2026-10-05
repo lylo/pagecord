@@ -1,8 +1,8 @@
 <p>Hi there 👋</p>
 
-<p>Just a heads up – your free trial of Pagecord Premium ends in a few days. After that, you'll still be able to use <%= link_to "your blog", blog_home_url(@blog) %> for free, and nothing you've made will be taken away, but premium features like analytics, writing custom CSS, reply by email, the contact form and the API won't be available.</p>
+<p>Just a heads up – your free trial of Pagecord Premium ends on <strong><%= @ends_on %></strong>. After that, <%= link_to "your blog", blog_home_url(@blog) %> carries on for free and nothing you've made is taken away, but analytics, editing custom CSS, reply by email, the contact form and the API switch off.</p>
 
-<p>If you'd like to keep them, you can <a href="https://pagecord.com/pricing">subscribe to Premium</a>. It's great value and helps support Pagecord!</p>
+<p>If you <a href="<%= app_settings_subscriptions_url %>">subscribe to Premium</a>, you keep all of that, plus the things the trial doesn't include: your own domain name, a newsletter for your readers, no Pagecord branding, unlimited uploads and video.</p>
 
 <p>Of course, you can keep using Pagecord for free – no pressure at all!</p>
 

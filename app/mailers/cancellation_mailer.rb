@@ -5,6 +5,11 @@ class CancellationMailer < CloudflareMailer
           reply_to: "Olly at Pagecord <olly@pagecord.com>"
 
   def subscriber_cancellation
+    if (ends_at = params[:user].subscription&.next_billed_at)
+      @ends_on = ends_at.strftime("%-d %B %Y")
+      @domain_ends_on = (ends_at + Subscribable::CUSTOM_DOMAIN_GRACE_PERIOD.days).strftime("%-d %B %Y")
+    end
+
     send_email
   end
 
