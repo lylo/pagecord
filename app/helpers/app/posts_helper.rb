@@ -9,15 +9,13 @@ module App::PostsHelper
       post.canonical_url.present? || post.open_graph_image.attached? || post.open_graph_image_suppressed?
   end
 
-  def draft_button_text(post, model_name: nil)
-    if post.persisted?
-      if post.published?
-        "Unpublish"
-      else
-        "Update Draft"
-      end
+  def draft_button_text(post, model_name: nil, short: false)
+    if post.persisted? && post.published?
+      "Unpublish"
+    elsif short
+      "Save"
     else
-      "Save Draft"
+      post.persisted? ? "Update Draft" : "Save Draft"
     end
   end
 

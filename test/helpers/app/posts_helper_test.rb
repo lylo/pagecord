@@ -68,6 +68,12 @@ class App::PostsHelperTest < ActionView::TestCase
     assert_equal "Update Draft", draft_button_text(posts(:draft_page))
   end
 
+  test "draft_button_text short form for drafts" do
+    assert_equal "Save", draft_button_text(@blog.posts.build(content: "Test"), short: true)
+    assert_equal "Save", draft_button_text(posts(:joel_draft), short: true)
+    assert_equal "Unpublish", draft_button_text(posts(:one), short: true)
+  end
+
   test "draft_button_text for existing published post" do
     assert_equal "Unpublish", draft_button_text(posts(:one))
   end

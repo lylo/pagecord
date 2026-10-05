@@ -1,0 +1,5 @@
+<%# locals: (form:, record:) %>
+<%= form.button name: "post[status]", value: "draft", class: "btn-optional" do %>
+  <span class="sm:hidden"><%= draft_button_text(record, short: true) %></span>
+  <span class="hidden sm:inline"><%= draft_button_text(record) %></span>
+<% end %>

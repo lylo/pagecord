@@ -49,7 +49,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form#post-form" do
       assert_select "button[type=submit]", text: /Publish Post/
       assert_select "button[type=submit]" do |elements|
-        assert_equal "Save Draft", elements.first.text.strip
+        assert_match "Save Draft", elements.first.text
       end
     end
     assert_select "button[aria-label='Page ideas and help']", false
@@ -220,7 +220,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form#post-form" do
       assert_select "button[type=submit]", text: /Update Post/
       assert_select "button[type=submit]" do |elements|
-        assert_equal "Unpublish", elements.first.text.strip
+        assert_match "Unpublish", elements.first.text
       end
     end
   end
@@ -232,7 +232,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form#post-form" do
       assert_select "button[type=submit]", text: /Publish Post/
       assert_select "button[type=submit]" do |elements|
-        assert_equal "Update Draft", elements.first.text.strip
+        assert_match "Update Draft", elements.first.text
       end
     end
   end

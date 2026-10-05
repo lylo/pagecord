@@ -33,7 +33,7 @@
               app_posts_path(page: params[:page].presence),
               class: "btn-optional",
               data: { action: "click->autosave#cancel" } %>
-        <%= form.button draft_button_text(@post), name: "post[status]", value: "draft", class: "btn-optional" %>
+        <%= render "app/posts/draft_button", form: form, record: @post %>
         <%= render "publish_button", form: form, record: @post %>
       </div>
     </div>

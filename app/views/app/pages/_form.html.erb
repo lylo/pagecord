@@ -22,7 +22,7 @@
         <%= link_to (is_new ? "Discard" : "Cancel"), app_pages_path,
               class: "btn-optional",
               data: { action: "click->autosave#cancel" } %>
-        <%= form.button draft_button_text(@page), name: "post[status]", value: "draft", class: "btn-optional" %>
+        <%= render "app/posts/draft_button", form: form, record: @page %>
         <%= render "app/posts/publish_button", form: form, record: @page %>
       </div>
     </div>
