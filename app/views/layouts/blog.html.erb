@@ -26,6 +26,10 @@
     <% if has_open_graph_image? %>
       <meta property="og:image" content="<%= open_graph_image %>">
       <meta property="twitter:image" content="<%= open_graph_image %>">
+      <% if (image_alt = open_graph_image_alt).present? %>
+        <meta property="og:image:alt" content="<%= image_alt %>">
+        <meta property="twitter:image:alt" content="<%= image_alt %>">
+      <% end %>
       <meta property="twitter:card" content="summary_large_image">
     <% else %>
       <meta property="twitter:card" content="summary">

@@ -16,6 +16,12 @@ module OpenGraphHelper
     end
   end
 
+  def open_graph_image_alt
+    return if @post.nil? || @post.open_graph_image_suppressed? || @post.open_graph_image&.attached?
+
+    @post.first_image_alt
+  end
+
   def dynamic_og_image_for_landing_page(title:, subtitle: "pagecord.com")
     worker_url = ENV["OG_WORKER_URL"]
     return nil unless worker_url.present?

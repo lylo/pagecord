@@ -297,6 +297,16 @@ class PostTest < ActiveSupport::TestCase
     assert_equal blob, rendered_post.first_media
   end
 
+  test "first_image_alt reads alt from the first image's attachment" do
+    post = Post.new(content: <<~HTML)
+      <action-text-attachment sgid="harbour" alt="A harbour at dawn"></action-text-attachment>
+      <action-text-attachment sgid="lighthouse" alt="A lighthouse"></action-text-attachment>
+    HTML
+    post.stubs(:first_image).returns(stub(attachable_sgid: "lighthouse"))
+
+    assert_equal "A lighthouse", post.first_image_alt
+  end
+
   test "content_media_attachments follows document order when embeds are preloaded" do
     a, b, c = 3.times.map { |i|
       ActiveStorage::Blob.create_and_upload!(io: StringIO.new("img#{i}"), filename: "#{i}.jpg", content_type: "image/jpeg")

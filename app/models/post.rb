@@ -156,6 +156,14 @@ class Post < ApplicationRecord
     @first_image ||= content_image_attachments.first || attachments.find(&:image?)
   end
 
+  def first_image_alt
+    sgid = first_image.try(:attachable_sgid)
+    return unless sgid
+
+    node = content.body.fragment.find_all("#{ActionText::Attachment.tag_name}[sgid='#{sgid}']").first
+    node["alt"].presence if node
+  end
+
   def first_media
     @first_media ||= content_media_attachments.first ||
       attachments.find { |attachment| attachment.image? || attachment.video? }
