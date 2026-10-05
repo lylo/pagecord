@@ -6,7 +6,7 @@
     { icon: "🧭", title: "Navigation", description: "Manage header navigation links and social icons", path: app_settings_navigation_items_path },
     { icon: "📣", title: "Audience", description: "Manage email subscription and reply by email options", path: app_settings_audience_path },
     { icon: "💾", title: "Exports", description: "Export your blog data", path: app_settings_exports_path },
-    { icon: "</>", icon_class: "font-mono font-bold text-slate-700 dark:text-slate-200", title: "Custom Code", description: "Add your own CSS, analytics and scripts", path: app_settings_custom_code_path },
+    { icon: "🧩", title: "Custom Code", description: "Add your own CSS, analytics and scripts", path: app_settings_custom_code_path },
     { icon: "🔌", title: "API", description: "Manage programmatic access to your blog", path: app_settings_api_path },
     { icon: "⚙️", title: "My Account", description: "Update your email, timezone or close your account", path: edit_app_settings_account_path },
     { icon: "💳", title: "Billing", description: "Manage your Pagecord subscription", path: app_settings_subscriptions_path, data: { turbo: false } }
@@ -21,7 +21,7 @@
       <%= link_to section[:path], data: section[:data] do %>
         <div class="h-full rounded-lg border border-slate-200 p-5 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800">
           <div class="mb-4">
-            <span class="<%= class_names("text-4xl", section[:icon_class]) %>"><%= section[:icon] %></span>
+            <span class="text-4xl"><%= section[:icon] %></span>
           </div>
           <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-slate-100"><%= section[:title] %></h3>
           <p class="text-slate-600 dark:text-slate-300"><%= section[:description] %></p>
