@@ -146,8 +146,11 @@ Markdown image references to local files are uploaded to Pagecord automatically:
 
 ```markdown
 ![Alt text](photo.jpg)
+![Alt text](my photo.jpg "A caption")
 ![[photo.jpg]]
 ```
+
+The alt text and an optional quoted caption go onto the image. Filenames can contain spaces.
 
 Supported local image types are JPEG, PNG, GIF, and WebP. External image URLs and HTML `<img>` tags are left alone.
 
