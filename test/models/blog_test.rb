@@ -73,6 +73,11 @@ class BlogTest < ActiveSupport::TestCase
     assert user.blog.delivery_email =~ /newuser_[a-zA-Z0-9]{8}@post.pagecord.com/
   end
 
+  test "should skip review for a blog created by a subscriber" do
+    assert users(:annie).blogs.create!(subdomain: "annieextra").reviewed_at
+    assert_nil User.create!(email: "newuser@newuser.com", blogs_attributes: [ { subdomain: "newuser" } ]).blog.reviewed_at
+  end
+
   test "should not create blogs beyond the user's limit" do
     blog = users(:vivian).blogs.build(subdomain: "vivianextra")
 
