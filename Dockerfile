@@ -47,7 +47,7 @@ FROM base AS app
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl postgresql-client libvips poppler-utils && \
+    apt-get install --no-install-recommends -y curl postgresql-client libvips poppler-utils libimage-exiftool-perl && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
