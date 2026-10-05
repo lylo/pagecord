@@ -3,14 +3,14 @@
 <p>I noticed you cancelled your Pagecord subscription for <strong><%= link_to @blog.display_name, blog_home_url(@blog) %></strong>. Sorry to see you go!</p>
 
 <% if @ends_on %>
-  <p>Premium stays on until <strong><%= @ends_on %></strong>. After that, your blog carries on for free and nothing you've made is taken away, but Premium features like analytics, your newsletter and hiding the Pagecord branding switch off.</p>
+  <p>You have Premium access until <strong><%= @ends_on %></strong>. After that, your blog and all its content will still be available, but Premium features like analytics, email newsletters and editing your custom CSS will all switch off.</p>
 
   <% if @blog.custom_domain.present? %>
-    <p>Your custom domain, <strong><%= @blog.custom_domain %></strong>, keeps working until <strong><%= @domain_ends_on %></strong>. After that, your blog goes back to its pagecord.com address.</p>
+    <p>Your custom domain, <strong><%= @blog.custom_domain %></strong>, keeps working until <strong><%= @domain_ends_on %></strong>. After that, your blog goes back to its <%= @blog.subdomain %>.pagecord.com address.</p>
   <% end %>
 <% end %>
 
-<p>If you have a moment, I'd love to hear what didn't work for you – it really helps me improve Pagecord. You can resubscribe any time, and just reply to this email if there's anything I can help with.</p>
+<p>If you have a moment, I'd love to hear what didn't work for you – it really helps me improve Pagecord. You can also resubscribe any time, and just reply to this email if there's anything I can help with.</p>
 
 <%= image_tag "signature.jpg", style: "margin-top: 8px; text-align: left; width:120px;" %>
 

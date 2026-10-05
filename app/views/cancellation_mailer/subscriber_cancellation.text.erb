@@ -3,14 +3,14 @@ Hi there 👋
 I noticed you cancelled your Pagecord subscription for <%= @blog.display_name %> (<%= blog_home_url(@blog) %>). Sorry to see you go!
 <% if @ends_on %>
 
-Premium stays on until <%= @ends_on %>. After that, your blog carries on for free and nothing you've made is taken away, but Premium features like analytics, your newsletter and hiding the Pagecord branding switch off.
+You have Premium access until <%= @ends_on %>. After that, your blog and all its content will still be available, but Premium features like analytics, email newsletters and editing your custom CSS will all switch off.
 <% if @blog.custom_domain.present? %>
 
-Your custom domain, <%= @blog.custom_domain %>, keeps working until <%= @domain_ends_on %>. After that, your blog goes back to its pagecord.com address.
+Your custom domain, <%= @blog.custom_domain %>, keeps working until <%= @domain_ends_on %>. After that, your blog goes back to its <%= @blog.subdomain %>.pagecord.com address.
 <% end %>
 <% end %>
 
-If you have a moment, I'd love to hear what didn't work for you – it really helps me improve Pagecord. You can resubscribe any time, and just reply to this email if there's anything I can help with.
+If you have a moment, I'd love to hear what didn't work for you – it really helps me improve Pagecord. You can also resubscribe any time, and just reply to this email if there's anything I can help with.
 
 Olly
 
