@@ -23,7 +23,7 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "[data-controller=tabs] button[data-tabs-target=tab]", count: 2
-    assert_select "a[href=?]", app_settings_theme_garden_index_path
+    assert_select "form[action=?]", app_settings_theme_garden_application_path(ThemeTemplate.active.ordered.last)
     ThemeTemplate.active.ordered.first.tap do |template|
       assert_select "form[action=?]", app_settings_theme_garden_application_path(template)
       assert_select "a[href=?]", app_settings_theme_garden_preview_path(template)
