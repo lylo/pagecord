@@ -17,11 +17,7 @@ class Blogs::EmbeddedPostsController < Blogs::BaseController
     relation = @blog.posts.visible
       .filtered_for_dynamic_variable(**post_list_params.filter_args)
 
-    if @style == "gallery"
-      relation = DynamicVariable::PostsTag
-        .with_gallery_image(relation)
-        .with_attached_open_graph_image
-    end
+    relation = DynamicVariable::PostsTag.with_gallery_image(relation) if @style == "gallery"
 
     relation = relation.for_blog_render
 

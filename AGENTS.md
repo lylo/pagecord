@@ -233,7 +233,7 @@ Docker: prefix commands with `docker-compose exec web`
 - **Content moderation**: OpenAI API via `ContentModerator`. `ContentModerationBatchJob` runs every 10 min. Flagged posts stay visible for admin review. Daily digest to admin via `ContentModerationDigestJob`.
 - **Spam detection**: messages only – comments, email replies and contact form messages (`SpamCheckable`) go through `MessageSpamDetector`, backed by CleanTalk. New blogs are not checked automatically.
 - **Dynamic variables**: `{{ posts }}`, `{{ posts_by_year }}`, `{{ tags }}`, `{{ email_subscription }}` — processed in pages only (`is_page: true`) via `DynamicVariableProcessor`
-- **Excerpt break**: `{{ more }}` or `<!--more-->` marker splits a post into a teaser and the rest. `ExcerptBreak` parses the marker; `Post#excerpt_html` / `excerpt_text` expose the teaser (computed on demand, memoized – no DB column). Stream layout renders teaser + "Read more" link; cards use `excerpt_text`. Full post views, RSS, and digest emails render full content with the marker stripped. Help doc: `docs/help-guide/excerpt-breaks.md`.
+- **Excerpt break**: `{{ more }}` or `<!--more-->` marker splits a post into a teaser and the rest. `ExcerptBreak` parses the marker; `Post#excerpt_html` exposes the teaser (computed on demand, memoized – no DB column). Stream layout renders teaser + "Read more" link; cards use `card_excerpt_html` (`Html::CardExcerpt`): the full teaser as plain paragraphs, or the post cut at 324 characters. Full post views, RSS, and digest emails render full content with the marker stripped. Help doc: `docs/help-guide/excerpt-breaks.md`.
 - **OG images**: Auto-generated from first post image via `GenerateOpenGraphImageJob`
 
 ### Analytics
