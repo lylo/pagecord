@@ -74,7 +74,7 @@ class DynamicVariable::PostsTag
       relation = @blog.posts.visible
         .filtered_for_dynamic_variable(**@post_list_params.filter_args)
 
-      relation = self.class.with_gallery_image(relation).with_attached_open_graph_image if @style == "gallery"
+      relation = self.class.with_gallery_image(relation) if @style == "gallery"
       relation.for_blog_render
     end
 end

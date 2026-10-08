@@ -1035,7 +1035,7 @@ turbo-frame[loading="lazy"] {
   mask: var(--link-post-icon) center / contain no-repeat;
 }
 
-/* Cards layout - grid of post cards */
+/* Cards layout */
 .post-card {
   margin-bottom: 2rem;
 }
@@ -1069,6 +1069,19 @@ turbo-frame[loading="lazy"] {
   transition: all 200ms;
 }
 
+.post-card-image {
+  margin-bottom: 1.25rem;
+}
+
+.post-card-image img,
+.post-card-image video {
+  display: block;
+  width: 100%;
+  max-height: 30rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
 .post-card-title {
   font-size: 1.5em;
   line-height: 1.4;
@@ -1086,18 +1099,12 @@ turbo-frame[loading="lazy"] {
   line-height: 1.5;
 }
 
-.post-card-summary img {
-  border-radius: 0.5rem;
-  margin-inline: auto;
-  max-width: 100%;
+.post-card-summary p {
+  margin-block: 0 0.75em;
 }
 
-.post-card-summary video {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  max-height: 30rem;
-  object-fit: contain;
+.post-card-summary p:last-child {
+  margin-block-end: 0;
 }
 
 .post-card-meta {
