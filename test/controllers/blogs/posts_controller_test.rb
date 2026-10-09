@@ -70,19 +70,38 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".excerpt-read-more a", text: I18n.t("posts.read_more"), minimum: 1
   end
 
-  test "cards layout should use excerpt summary when excerpt break is present" do
+  test "cards layout should render the excerpt as plain paragraphs inside the card link" do
     @blog.cards_layout!
     @blog.posts.create!(
       title: "Excerpted Card Post",
-      content: "<p>Card teaser text.</p><p>{{ more }}</p><p>Card hidden text.</p>",
+      content: %(<p><em>Card teaser</em> with <a href="https://example.com">a link</a>.</p><p>{{ more }}</p><p>Card hidden text.</p>),
       status: :published
     )
 
     get blog_posts_path
 
     assert_response :success
-    assert_includes @response.body, "Card teaser text."
+    assert_select "a.post-card-link .post-card-summary p", text: "Card teaser with a link."
+    assert_select ".post-card-summary a", count: 0
+    assert_select ".post-card-summary em", count: 0
     assert_not_includes @response.body, "Card hidden text."
+  end
+
+  test "cards layout should render the first image above the title" do
+    @blog.cards_layout!
+    blob = ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+    @blog.posts.create!(
+      title: "Image Card Post",
+      content: %(<p>Some words.</p><action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>),
+      status: :published,
+      published_at: 30.minutes.ago
+    )
+
+    get blog_posts_path
+
+    assert_response :success
+    assert_select ".post-card-image img", count: 1
+    assert_select ".post-card-summary img", count: 0
   end
 
   test "cards layout should render a video preview for video-only posts" do
@@ -103,7 +122,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     get blog_posts_path
 
     assert_response :success
-    assert_select ".post-card-summary img", minimum: 1
+    assert_select ".post-card-image img", minimum: 1
     assert_select "video.post-card-video", count: 0
     assert_not_includes @response.body, "[clip.mov]"
   end

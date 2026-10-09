@@ -19,7 +19,7 @@ class App::OnboardingsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "[data-controller=tabs]"
-    assert_select "a", text: "Browse all designs in the Theme Garden"
+    assert_select "a", text: "See all designs"
   end
 
   test "should update blog title" do
