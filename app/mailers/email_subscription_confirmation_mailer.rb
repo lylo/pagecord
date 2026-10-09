@@ -1,4 +1,4 @@
-class EmailSubscriptionConfirmationMailer < MailpaceMailer
+class EmailSubscriptionConfirmationMailer < PostmarkMailer
   include RoutingHelper
   layout "mailer_minimal"
   helper RoutingHelper
@@ -6,9 +6,6 @@ class EmailSubscriptionConfirmationMailer < MailpaceMailer
   def confirm
     @subscriber = params[:subscriber]
 
-    # Mailpace rebuilds the message from a fixed set of API fields, so
-    # List-Unsubscribe-Post never reaches the wire and one-click is unavailable.
-    # Point at the confirmation page, which answers a GET.
     headers["List-Unsubscribe"] = "<#{email_subscriber_unsubscribe_url_for(@subscriber)}>"
 
     I18n.with_locale(@subscriber.blog.locale) do

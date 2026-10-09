@@ -1,4 +1,4 @@
-class AccountVerificationMailer < MailpaceMailer
+class AccountVerificationMailer < CloudflareMailer
   def verify
     @user = params[:user]
     @access_request = @user.access_requests.create!
@@ -12,4 +12,11 @@ class AccountVerificationMailer < MailpaceMailer
 
     mail(to: @user.email, subject: "Log into your Pagecord account")
   end
+
+  private
+
+    def undeliverable_recipient(error)
+      super
+      Sentry.capture_exception(error, extra: { to: message.to.first })
+    end
 end

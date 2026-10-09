@@ -283,11 +283,6 @@ GEM
       net-imap
       net-pop
       net-smtp
-    mailpace-rails (0.4.3)
-      actionmailbox (>= 6.0.0)
-      actionmailer (>= 6.0.0)
-      activestorage (>= 6.0.0)
-      httparty (>= 0.18.1)
     marcel (2.1.0)
     matrix (0.4.3)
     maxminddb (0.1.22)
@@ -570,7 +565,6 @@ DEPENDENCIES
   letter_opener_web
   lexxy
   local_time
-  mailpace-rails
   maxminddb
   mocha
   nanoid (~> 2.0)

@@ -32,7 +32,6 @@ gem "sentry-ruby"
 gem "sentry-rails"
 
 # email sending and receiving
-gem "mailpace-rails"
 gem "postmark-rails"
 gem "premailer-rails", "~> 1.12"
 

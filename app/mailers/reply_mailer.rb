@@ -1,4 +1,4 @@
-class ReplyMailer < MailpaceMailer
+class ReplyMailer < CloudflareMailer
   layout "mailer_minimal"
   helper :routing
 

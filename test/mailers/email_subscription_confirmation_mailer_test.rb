@@ -15,13 +15,11 @@ class EmailSubscriptionConfirmationMailerTest < ActionMailer::TestCase
     assert_match subscriber.token, email.body.encoded
   end
 
-  test "confirmation email carries a List-Unsubscribe header Mailpace will deliver" do
+  test "confirmation email carries a List-Unsubscribe header" do
     subscriber = email_subscribers(:two)
 
     email = EmailSubscriptionConfirmationMailer.with(subscriber: subscriber).confirm
 
-    # Mailpace reads this field as list_unsubscribe. It sends no other header,
-    # so the URL has to answer a GET rather than rely on one-click.
     assert_equal "<#{unsubscribe_url(subscriber)}>", email.header["list_unsubscribe"].to_s
     assert_nil email.header["List-Unsubscribe-Post"].presence
   end

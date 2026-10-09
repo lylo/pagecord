@@ -1,4 +1,4 @@
-class CommentMailer < MailpaceMailer
+class CommentMailer < CloudflareMailer
   layout "mailer_minimal"
 
   def digest

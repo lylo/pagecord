@@ -1,4 +1,4 @@
-class ContactMailer < MailpaceMailer
+class ContactMailer < CloudflareMailer
   layout "mailer_minimal"
   helper :routing
 
