@@ -1,6 +1,7 @@
 require_relative "../log_parser"
 require_relative "../log_performance"
 require_relative "../log_billing"
+require_relative "../log_code_red"
 
 module LogDisplay
   unless defined?(RESET)
@@ -962,6 +963,76 @@ namespace :logs do
     puts "#{LogDisplay::DIM}User agents are self-declared and unverified: these counts are what traffic CLAIMED to be, not what it was.#{LogDisplay::RESET}"
     puts "#{LogDisplay::DIM}\"Forged\" = share of requests from IPs that claimed 3+ different tokens. A high share means the count says nothing about the named company.#{LogDisplay::RESET}"
     puts "#{LogDisplay::DIM}Counts include the bots' own robots.txt fetches, which are compliance rather than violations.#{LogDisplay::RESET}"
+  end
+
+  desc "Code red checks for a date: mail volume against its baseline, subscription surges, form abuse: rake \"logs:code_red[2026-10-08]\""
+  task :code_red, [ :date ] do |_t, args|
+    date = args[:date]
+
+    unless date
+      puts "#{LogDisplay::RED}Usage: rake \"logs:code_red[2026-10-08]\"#{LogDisplay::RESET}"
+      exit 1
+    end
+
+    day = Date.iso8601(date)
+    window = ((day - LogCodeRed::BASELINE_DAYS)..day.next_day).map(&:iso8601)
+    files = LogParser.discover_log_files.select { |f| (d = LogParser.date_of(f)).nil? || window.include?(d) }
+
+    counts = Hash.new { |h, k| h[k] = Hash.new(0) }
+    files.each do |file|
+      LogParser.open_file(file) do |io|
+        LogCodeRed.mail_counts(io.each_line).each { |mailer, by_day| by_day.each { |d, n| counts[mailer][d] += n } }
+      end
+    end
+
+    mail_rows = LogCodeRed.mail_rows(counts, date)
+    submissions = LogCodeRed.form_submissions(LogParser.each_entry_for_date(date))
+    subscribe_rows = LogCodeRed.subscribe_rows(submissions)
+    alerts = LogCodeRed.alerts(mail_rows, subscribe_rows)
+
+    if alerts.any?
+      alerts.each { |alert| puts "#{LogDisplay::RED}#{LogDisplay::BOLD}CODE RED: #{alert}#{LogDisplay::RESET}" }
+    else
+      puts "#{LogDisplay::GREEN}No code red signals for #{date}.#{LogDisplay::RESET}"
+    end
+    puts
+
+    puts LogDisplay.table(
+      title: "Queued mail by mailer for #{date} (no digests)",
+      columns: [
+        { label: "Mailer", width: 48, align: :left },
+        { label: "Sent", width: 6, align: :right },
+        { label: "Daily avg", width: 10, align: :right }
+      ],
+      rows: mail_rows.map { |row| [ row[:mailer], row[:today], row[:baseline] ] },
+      highlight: ->(row) { mail_rows.find { |r| r[:mailer] == row[0] }[:surge] }
+    )
+
+    puts LogDisplay.table(
+      title: "Public form submissions for #{date}",
+      columns: [
+        { label: "Form", width: 15, align: :left },
+        { label: "Attempts", width: 9, align: :right },
+        { label: "Accepted", width: 9, align: :right },
+        { label: "Tor", width: 5, align: :right },
+        { label: "Blocked by", width: 60, align: :left }
+      ],
+      rows: LogCodeRed.form_rows(submissions).map { |row| [ row[:form], row[:attempts], row[:accepted], row[:tor], row[:blocks].sort_by { -_2 }.map { "#{_1} #{_2}" }.join(", ") ] }
+    )
+
+    puts LogDisplay.table(
+      title: "Subscribe attempts by blog for #{date} (flagged: cap paused confirmations, over #{LogCodeRed::CONFIRMATIONS_PER_BLOG} confirmations, or #{LogCodeRed::SUBSCRIBE_IPS_PER_BLOG}+ IPs)",
+      columns: [
+        { label: "Blog", width: 36, align: :left },
+        { label: "Attempts", width: 9, align: :right },
+        { label: "IPs", width: 5, align: :right },
+        { label: "Blocked", width: 8, align: :right },
+        { label: "Confirmations", width: 13, align: :right },
+        { label: "Paused", width: 6, align: :right }
+      ],
+      rows: subscribe_rows.first(15).map { |row| [ row[:host], row[:attempts], row[:ips], row[:blocked], row[:confirmations], row[:paused] ] },
+      highlight: ->(row) { subscribe_rows.find { |r| r[:host] == row[0] }[:flagged] }
+    )
   end
 
   desc "Live tail of production.log with per-minute request counter"
