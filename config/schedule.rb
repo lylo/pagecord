@@ -48,6 +48,10 @@ every 1.hour do
   runner "ContentModerationBatchJob.perform_later"
 end
 
+every :day, at: "3:30 am" do
+  runner "TorExitNode.refresh"
+end
+
 every :day, at: "8:00 am" do
   runner "ContentModerationDigestJob.perform_later"
 end

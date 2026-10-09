@@ -6,7 +6,7 @@ module SpamPrevention
   DEFAULT_MINIMUM_FORM_COMPLETION_TIME = 3.seconds
 
   included do
-    before_action :form_complete_time_check, :honeypot_check, :suspicious_email_check,
+    before_action :tor_exit_node_check, :form_complete_time_check, :honeypot_check, :suspicious_email_check,
                   :turnstile_check, only: [ :create ]
   end
 
@@ -53,6 +53,13 @@ module SpamPrevention
     # real person who can retry. Override to say so.
     def reject_turnstile
       reject_submission
+    end
+
+    def tor_exit_node_check
+      if TorExitNode.include?(request.ip)
+        Rails.logger.warn "Tor exit node. Request blocked."
+        reject_submission
+      end
     end
 
     def honeypot_check

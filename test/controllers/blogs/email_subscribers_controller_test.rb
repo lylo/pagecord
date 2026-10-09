@@ -64,6 +64,28 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, "There's an issue with your subscription"
   end
 
+  test "should not add email subscriber from a Tor exit node" do
+    TorExitNode.stubs(:include?).returns(true)
+
+    assert_no_difference("EmailSubscriber.count") do
+      post email_subscribers_url(subdomain: @blog.subdomain), params: { blog_subdomain: @blog.subdomain, email_subscriber: { email: "test@example.com" }, rendered_at: signed_rendered_at }, as: :turbo_stream
+    end
+
+    assert_includes @response.body, "There's an issue with your subscription"
+  end
+
+  test "should save but not confirm once a blog passes its daily unconfirmed limit" do
+    Blog.any_instance.stubs(:recent_unconfirmed_subscribers_count).returns(EmailSubscribable::DAILY_UNCONFIRMED_SUBSCRIBER_LIMIT + 1)
+
+    assert_difference("EmailSubscriber.count", 1) do
+      assert_no_enqueued_emails do
+        post email_subscribers_url(subdomain: @blog.subdomain), params: { blog_subdomain: @blog.subdomain, email_subscriber: { email: "test@example.com" }, rendered_at: signed_rendered_at }, as: :turbo_stream
+      end
+    end
+
+    assert_includes @response.body, "Thanks for subscribing"
+  end
+
   test "should allow gmail address with fewer than 3 dots" do
     assert_difference("EmailSubscriber.count", 1) do
       post email_subscribers_url(subdomain: @blog.subdomain), params: {

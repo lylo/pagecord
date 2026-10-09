@@ -15,7 +15,7 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
     if @blog.email_subscribers.find_by(email: @subscriber.email)
       @message = default_message
     elsif @subscriber.save
-      EmailSubscriptionConfirmationMailer.with(subscriber: @subscriber).confirm.deliver_later
+      deliver_confirmation
       @message = default_message
     end
 
@@ -26,6 +26,14 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
   end
 
   private
+
+    def deliver_confirmation
+      if @blog.recent_unconfirmed_subscribers_count > EmailSubscribable::DAILY_UNCONFIRMED_SUBSCRIBER_LIMIT
+        Rails.logger.warn "Subscriber confirmations paused. Too many unconfirmed subscribers today."
+      else
+        EmailSubscriptionConfirmationMailer.with(subscriber: @subscriber).confirm.deliver_later
+      end
+    end
 
     def submitted_email
       params.dig(:email_subscriber, :email)
