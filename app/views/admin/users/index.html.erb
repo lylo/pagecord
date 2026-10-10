@@ -33,11 +33,11 @@
       <% end %>
     </div>
 
-    <%= form_with url: admin_users_path, method: :get, data: { turbo_frame: "stats-content", controller: "search", search_target: "form" }, local: true do |form| %>
+    <%= form_with url: admin_users_path, method: :get, data: { turbo_frame: "stats-content", controller: "search", search_target: "form", action: command_key_action("k", "search#open:prevent") }, local: true do |form| %>
       <div class="relative">
         <%= form.text_field :search, placeholder: "Search by subdomain, custom domain, email or Paddle ID...", value: params[:search],
             class: "form-field w-full px-3 py-2 pr-10 text-sm",
-            data: { action: "input->search#search keydown->search#handleKeydown", search_target: "input" },
+            data: { action: "input->search#search keydown.enter->search#submitNow:prevent keydown.esc->search#close:prevent", search_target: "input" },
             autofocus: true %>
         <button type="button" data-action="click->search#toggle" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Clear search">
           <%= inline_svg_tag "icons/close.svg", class: "w-4 h-4" %>

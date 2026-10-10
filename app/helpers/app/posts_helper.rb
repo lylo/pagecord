@@ -7,7 +7,7 @@ module App::PostsHelper
   def save_shortcut_options
     {
       title: "Save (#{shortcut "⌘S", "Ctrl+S"})",
-      data: { controller: "hotkey", action: "keydown.meta+s@document->hotkey#click keydown.ctrl+s@document->hotkey#click" }
+      data: { controller: "hotkey", action: command_key_action("s", "hotkey#click") }
     }
   end
 
