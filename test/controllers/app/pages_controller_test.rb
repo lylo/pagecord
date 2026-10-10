@@ -55,7 +55,7 @@ class App::PagesControllerTest < ActionDispatch::IntegrationTest
     get new_app_page_path
     assert_response :success
     assert_select "button[aria-label='Page ideas and help']"
-    assert_select "[data-dialog-shortcut-value='?']"
+    assert_select "button[data-hotkey='?']"
     assert_includes response.body, "{{ contact_form }}"
     assert_includes response.body, "{{ posts_by_year }}"
     assert_includes response.body, "https://help.pagecord.com/dynamic-variables-for-pages#recent-posts-on-your-home-page"

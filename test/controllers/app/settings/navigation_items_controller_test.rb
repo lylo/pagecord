@@ -14,7 +14,7 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     assert_response :success
     assert_select "h1", "Set up your navigation"
     assert_select "button[aria-label='Navigation help']"
-    assert_select "[data-dialog-shortcut-value='?']"
+    assert_select "button[data-hotkey='?']"
     assert_includes response.body, "/posts"
   end
 

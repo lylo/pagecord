@@ -97,6 +97,22 @@ class HotkeysTest < ApplicationSystemTestCase
     assert_no_selector "lexxy-editor .lexxy-editor__content:focus"
   end
 
+  test "question mark opens a screen's help" do
+    visit app_settings_navigation_items_path
+
+    keyboard.key_down(:shift).send_keys("/").key_up(:shift).perform
+    assert_selector "dialog[open]"
+  end
+
+  test "command period opens the settings panel from inside the text" do
+    visit new_app_post_path
+    find("lexxy-editor .lexxy-editor__content").send_keys("Thinking", [ :meta, "." ])
+    assert_selector "[data-settings-panel-target='panel'][data-open]"
+
+    page.driver.browser.action.send_keys(:escape).perform
+    assert_no_selector "[data-settings-panel-target='panel'][data-open]"
+  end
+
   test "command s saves a draft from inside the text" do
     visit new_app_post_path
     find_field("post[title]").send_keys("Saved mid-sentence")
