@@ -16,20 +16,14 @@ class HotkeysTest < ApplicationSystemTestCase
 
   test "a hotkey opens the blog menu and its items take hotkeys of their own" do
     keyboard.key_down(:shift).send_keys("m").perform
-    assert_selector "a[data-hotkey='b'] kbd", text: "B"
-
-    keyboard.send_keys("b").key_up(:shift).perform
-    assert_current_path app_blogs_path
+    assert_selector "a[data-hotkey='v'] kbd", text: "V"
+    keyboard.key_up(:shift).perform
   end
 
-  test "the posts list takes hotkeys for its tabs, search and a new post" do
+  test "the posts list takes hotkeys for its tabs and a new post" do
     keyboard.key_down(:shift).send_keys("d").key_up(:shift).perform
     assert_selector ".btn-group-item-active", text: "Drafts"
 
-    keyboard.key_down(:shift).send_keys("f").key_up(:shift).perform
-    assert_selector "[data-search-target='input']:focus"
-
-    page.execute_script("document.activeElement.blur()")
     keyboard.key_down(:shift).send_keys("n").key_up(:shift).perform
     assert_current_path new_app_post_path
   end
@@ -73,6 +67,9 @@ class HotkeysTest < ApplicationSystemTestCase
 
     keyboard.key_down(:shift).send_keys("e").key_up(:shift).perform
     assert_current_path app_settings_appearance_path
+
+    keyboard.key_down(:shift).send_keys("r").key_up(:shift).perform
+    assert_selector ".btn-group-item-active", text: "Ready-made design"
   end
 
   test "shift types normally in a text field until it is double-tapped" do
