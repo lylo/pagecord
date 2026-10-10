@@ -82,8 +82,7 @@ class App::Settings::Subscriptions::PlansControllerTest < ActionDispatch::Integr
 
     assert_redirected_to app_settings_path
     assert_equal "Your plan has been updated to annual!", flash[:notice]
-    assert @user.subscription.reload.annual?, "expected plan to be optimistically updated to annual"
-    assert_equal Subscription.price_id(:annual), @user.subscription.paddle_price_id
+    assert @user.subscription.reload.supporter?
   end
 
   test "should reject invalid plan" do

@@ -48,7 +48,8 @@ class Subscription < ApplicationRecord
     PRICE_IDS.find { |_, ids| ids.values.include?(price_id) }&.first&.to_s || "annual"
   end
 
-  # Returns nil once the plan has changed, or a symbol naming why it didn't.
+  # Returns nil once Paddle accepts the change, or a symbol naming why it didn't.
+  # The plan itself is saved by Paddle's webhooks.
   def change_plan_to(new_plan)
     return :unknown_plan unless PLANS.include?(new_plan)
 
@@ -62,17 +63,10 @@ class Subscription < ApplicationRecord
       proration_billing_mode: proration_billing_mode_for(new_plan)
     )
 
-    unless response.success?
-      Rails.logger.error "Plan change failed for user #{user_id} (#{paddle_subscription_id} -> #{new_plan}): HTTP #{response.code} #{response.body}"
-      return paddle_error_from(response)
-    end
+    return if response.success?
 
-    # Optimistically reflect the switch now so the UI is correct even if the
-    # subscription.updated webhook is delayed or missed. The webhook still
-    # confirms unit_price and the next billing date.
-    update!(plan: new_plan, paddle_price_id: Subscription.price_id(new_plan))
-
-    nil
+    Rails.logger.error "Plan change failed for user #{user_id} (#{paddle_subscription_id} -> #{new_plan}): HTTP #{response.code} #{response.body}"
+    paddle_error_from(response)
   end
 
   def extend_to(date)
