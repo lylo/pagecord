@@ -13,6 +13,10 @@ module AppHelper
     request.user_agent.to_s.include?("Mac") ? mac : other
   end
 
+  def command_key_action(key, action)
+    %w[ meta ctrl ].map { |modifier| "keydown.#{modifier}+#{key}@document->#{action}" }.join(" ")
+  end
+
   def hotkey(key, **options)
     tag.kbd key.upcase, **options, class: [ "hotkey", options[:class] ], aria: { hidden: true }
   end
