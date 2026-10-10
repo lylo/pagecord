@@ -6,9 +6,11 @@
 
     <div class="mt-3 flex flex-wrap items-center gap-2">
       <div class="btn-group">
-        <% %w[ day month year ].each do |view| %>
-          <%= link_to view.titleize, nav_path_for_date(view, date_for_view(@date, @view_type, view)),
-                class: class_names("btn-group-item", "btn-group-item-active": @view_type == view) %>
+        <% { "day" => "d", "month" => "o", "year" => "y" }.each do |view, key| %>
+          <%= link_to nav_path_for_date(view, date_for_view(@date, @view_type, view)),
+                **hotkey_options(key, class: class_names("btn-group-item", "btn-group-item-active": @view_type == view)) do %>
+            <%= view.titleize %><%= hotkey key %>
+          <% end %>
         <% end %>
       </div>
 
@@ -18,7 +20,8 @@
         <% end %>
 
         <div class="flex items-center gap-x-1">
-          <%= link_to nav_path_for_date(@view_type, previous_date(@date, @view_type)), class: "btn-icon", title: "Previous #{@view_type}", aria: { label: "Previous #{@view_type}" } do %>
+          <%= link_to nav_path_for_date(@view_type, previous_date(@date, @view_type)), class: "btn-icon", title: "Previous #{@view_type} (←)", aria: { label: "Previous #{@view_type}", keyshortcuts: "ArrowLeft" },
+                data: { controller: "hotkey", action: "keydown.left@document->hotkey#click" } do %>
             <%= inline_svg_tag "icons/chevron-left.svg", class: "w-4 h-4" %>
           <% end %>
 
@@ -31,7 +34,8 @@
               <%= inline_svg_tag "icons/chevron-right.svg", class: "w-4 h-4" %>
             </span>
           <% else %>
-            <%= link_to nav_path_for_date(@view_type, next_date(@date, @view_type)), class: "btn-icon", title: "Next #{@view_type}", aria: { label: "Next #{@view_type}" } do %>
+            <%= link_to nav_path_for_date(@view_type, next_date(@date, @view_type)), class: "btn-icon", title: "Next #{@view_type} (→)", aria: { label: "Next #{@view_type}", keyshortcuts: "ArrowRight" },
+                  data: { controller: "hotkey", action: "keydown.right@document->hotkey#click" } do %>
               <%= inline_svg_tag "icons/chevron-right.svg", class: "w-4 h-4" %>
             <% end %>
           <% end %>
