@@ -70,6 +70,7 @@ updated when a model is added — a trap the code genuinely can't express.
 - **Importmaps** only (NOT npm/yarn/webpack). Add packages: `bin/importmap pin package-name`
 - **Stimulus only**: Never inline `<script>` tags or vanilla JS in views. No jQuery.
 - Use Stimulus targets (not `querySelector`), actions (`data-action`), and values for data passing
+- **Keyboard shortcuts** are Stimulus keyboard actions on the element that owns them: `keydown.esc->inline-edit#cancel`, or `command_key_action("k", "search#open:prevent")` for a ⌘/Ctrl chord. Hold-Shift keys are `hotkey_options` plus `hotkey` on a button or link. Never add a `keydown` listener in `connect`
 - Prefer existing Stimulus components (e.g., `stimulus-sortable`) over custom implementations
 - Use Turbo Frames and Streams for dynamic updates
 

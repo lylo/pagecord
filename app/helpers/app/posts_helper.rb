@@ -4,6 +4,13 @@ module App::PostsHelper
     short ? verb : "#{verb} #{model_name || infer_model_name(post)}"
   end
 
+  def save_shortcut_options
+    {
+      title: "Save (#{shortcut "⌘S", "Ctrl+S"})",
+      data: { controller: "hotkey", action: command_key_action("s", "hotkey#click") }
+    }
+  end
+
   def settings_customised?(post)
     post.hidden? || post.comments_closed || post.tag_list.present? || post.locale.present? ||
       post.canonical_url.present? || post.open_graph_image.attached? || post.open_graph_image_suppressed?

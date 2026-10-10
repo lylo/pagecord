@@ -22,6 +22,8 @@ Italic Cmd/Ctrl + I
 Link Cmd/Ctrl + K
 ```
 
+Cmd/Ctrl + S saves your draft, or updates a published post. See [Keyboard shortcuts](keyboard-shortcuts.md) for the rest.
+
 ### **Markdown shortcuts**
 
 The editor recognises Markdown as you type:
@@ -121,7 +123,7 @@ If you want to show only the beginning of a post on your blog home page, add an 
 
 Add tags to organise your posts by topic. Readers can click a tag to see all posts with that tag.
 
-To add tags, select the **Add Tags** option from the drop-down menu above the editor.
+To add tags, open the post settings (the cog above the editor, or Cmd/Ctrl + .) and fill in **Tags**.
 
 Tags appear at the bottom of your post and in your blog's tag list.
 
@@ -131,7 +133,7 @@ Click the tag icon at the top of your posts list to go to the tag management scr
 
 ## Scheduling posts
 
-Want to publish later? Click **Change Publication Time** from the drop-down menu and pick a future date. The post will go live at that time.
+Want to publish later? Open the post settings and set a future **Publication Time**. The post will go live at that time.
 
 ## Drafts
 
@@ -141,13 +143,13 @@ To see how a draft looks on your blog, click the preview icon next to it. The pr
 
 ## Changing the post slug
 
-A slug is the end part of the URL that looks like `/my-first-post`. This is set automatically when you create a post, but you can change it by selecting **Change Slug** from the drop-down menu when editing (or creating) a post.
+A slug is the end part of the URL that looks like `/my-first-post`. This is set automatically when you create a post, but you can change it in the **Slug** field of the post settings.
 
 ## Setting the language for a post
 
 By default, posts use the language set on your blog. If you write a post in a different language, you can override this per post.
 
-Select **Set Language** from the drop-down menu (or press **L**) to choose a language for that post. To revert to the blog default, select the blank "Use blog default" option.
+Use **Post Language** in the post settings to choose a language for that post. To revert to the blog default, select the blank "Use blog default" option.
 
 The post language is used for the `lang` attribute in your HTML and helps browsers and screen readers render text correctly.
 
@@ -155,14 +157,14 @@ The post language is used for the `lang` attribute in your HTML and helps browse
 
 You can hide a post from your blog feed while keeping it accessible via its direct link. This is useful for posts you want to share privately or keep as a reference without showing them on your blog.
 
-To hide a post, select **Post Visibility** from the drop-down menu and check "Hide this post on my blog".
+To hide a post, open the post settings and check "Hide this post on my blog".
 
 ## Canonical URLs
 
 If you're cross-posting content from another site, you can set a canonical URL to tell search engines where the original version lives. This helps avoid duplicate content issues.
 
-To set a canonical URL, select **Canonical URL** from the drop-down menu when editing a post.
+To set a canonical URL, fill in **Canonical URL** in the post settings.
 
 ## Deleting posts
 
-To delete a post, select **Delete Post** from the drop-down menu. Deleted posts are moved to the trash and kept for 30 days, so you can restore them if you change your mind.
+To delete a post, open the post settings and click **Delete post**. Deleted posts are moved to the trash and kept for 30 days, so you can restore them if you change your mind.

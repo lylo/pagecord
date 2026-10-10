@@ -13,6 +13,20 @@ module AppHelper
     request.user_agent.to_s.include?("Mac") ? mac : other
   end
 
+  def command_key_action(key, action)
+    %w[ meta ctrl ].map { |modifier| "keydown.#{modifier}+#{key}@document->#{action}" }.join(" ")
+  end
+
+  def hotkey(key, **options)
+    tag.kbd key.upcase, **options, class: [ "hotkey", options[:class] ], aria: { hidden: true }
+  end
+
+  def hotkey_options(key, **options)
+    return options unless key
+
+    options.deep_merge(data: { hotkey: key }, aria: { keyshortcuts: "Shift+#{key.upcase}" })
+  end
+
   def is_current_path?(section)
     # /app/posts/:token/comments contains two section names, so the controller wins.
     return controller_name == section if NAV_SECTIONS.include?(controller_name)
@@ -20,11 +34,10 @@ module AppHelper
     request.path.include?(section) || controller_name.include?(section)
   end
 
-  def nav_link_attributes(section)
-    {
+  def nav_link_attributes(section, hotkey:)
+    hotkey_options hotkey,
       class: "flex w-full items-center whitespace-nowrap px-4 py-2 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 aria-[current=page]:bg-slate-100 aria-[current=page]:text-slate-900 dark:aria-[current=page]:bg-slate-800 dark:aria-[current=page]:text-slate-100 md:w-auto md:rounded-full md:px-3.5 md:py-1.5 md:hover:bg-transparent md:hover:text-slate-900 md:dark:hover:bg-transparent md:dark:hover:text-slate-100 md:aria-[current=page]:bg-slate-800 md:aria-[current=page]:text-white md:dark:aria-[current=page]:bg-slate-100 md:dark:aria-[current=page]:text-slate-900",
       aria: { current: ("page" if is_current_path?(section)) }
-    }
   end
 
   def callout(type = :info, &block)

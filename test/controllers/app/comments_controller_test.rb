@@ -109,7 +109,7 @@ class App::CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?][method=post]#comment-approval", app_comment_approval_path(post_comments(:pending), format: :html) do
       assert_select "textarea"
     end
-    assert_select "input[type=submit][value=Approve][form=comment-approval]"
+    assert_select "button[type=submit][form=comment-approval]", text: /Approve/
   end
 
   test "deletes a comment" do

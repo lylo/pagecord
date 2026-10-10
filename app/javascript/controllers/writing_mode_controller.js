@@ -1,14 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  connect() {
-    this.keydown = this.keydown.bind(this)
-    // Capture, so the settings drawer's Escape handler hasn't closed it yet
-    document.addEventListener("keydown", this.keydown, true)
-  }
-
   disconnect() {
-    document.removeEventListener("keydown", this.keydown, true)
     document.documentElement.removeAttribute("data-writing-mode")
   }
 
@@ -16,12 +9,19 @@ export default class extends Controller {
     document.documentElement.toggleAttribute("data-writing-mode")
   }
 
-  keydown(event) {
-    if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === "f") {
-      event.preventDefault()
-      this.toggle()
-    } else if (event.key === "Escape" && !this.element.querySelector("[data-open]")) {
-      document.documentElement.removeAttribute("data-writing-mode")
-    }
+  // Bound in the capture phase, so Escape arrives before the settings drawer closes and before the editor blurs
+  exit(event) {
+    if (!this.writing || this.element.querySelector("[data-open]")) return
+
+    event.stopPropagation()
+    this.toggle()
+  }
+
+  leaveText(event) {
+    if (!event.defaultPrevented && this.element.contains(document.activeElement)) document.activeElement.blur()
+  }
+
+  get writing() {
+    return document.documentElement.hasAttribute("data-writing-mode")
   }
 }

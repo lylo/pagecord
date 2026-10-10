@@ -5,29 +5,15 @@ export default class extends Controller {
   static targets = ["input", "container", "form"]
   static values = { url: String }
 
-  connect() {
-    this.timeout = null
-    this.boundKeydown = this.handleKeydown.bind(this)
-    document.addEventListener("keydown", this.boundKeydown)
-
-    if (this.hasInputTarget) {
-      this.inputTarget.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          clearTimeout(this.timeout)
-          this.submitSearch()
-        }
-      })
-    }
-  }
-
-  disconnect() {
-    document.removeEventListener("keydown", this.boundKeydown)
+  open() {
+    if (this.hasContainerTarget) this.containerTarget.classList.remove("hidden")
+    this.inputTarget.focus()
+    this.inputTarget.select()
   }
 
   toggle() {
     if (this.hasContainerTarget && this.containerTarget.classList.contains("hidden")) {
-      this.containerTarget.classList.remove("hidden")
-      this.inputTarget.focus()
+      this.open()
     } else {
       this.close()
     }
@@ -57,6 +43,11 @@ export default class extends Controller {
     }, 300)
   }
 
+  submitNow() {
+    clearTimeout(this.timeout)
+    this.submitSearch()
+  }
+
   submitSearch() {
     if (this.hasFormTarget) {
       this.formTarget.requestSubmit()
@@ -68,23 +59,6 @@ export default class extends Controller {
       this.submitSearch()
     } else if (this.hasUrlValue) {
       Turbo.visit(this.urlValue)
-    }
-  }
-
-  handleKeydown(event) {
-    if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-      event.preventDefault()
-      if (this.hasContainerTarget && this.containerTarget.classList.contains("hidden")) {
-        this.toggle()
-      } else if (this.hasInputTarget) {
-        this.inputTarget.focus()
-        this.inputTarget.select()
-      }
-    }
-
-    if (event.key === "Escape") {
-      event.preventDefault()
-      this.close()
     }
   }
 }

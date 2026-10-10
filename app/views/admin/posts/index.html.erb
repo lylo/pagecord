@@ -23,7 +23,7 @@
 </div>
 
 <% if params[:period].present? %>
-  <div class="bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 rounded-xl px-6 py-3 mb-4 flex items-center gap-3" data-controller="search" data-search-url-value="<%= admin_posts_path %>">
+  <div class="bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 rounded-xl px-6 py-3 mb-4 flex items-center gap-3" data-controller="search" data-search-url-value="<%= admin_posts_path %>" data-action="keydown.esc@document->search#close">
     <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @pagy.count %></span>
     <span class="text-sm text-slate-500 dark:text-slate-400"><%= "post".pluralize(@pagy.count) %></span>
     <% period_label = params[:period] == "today" ? "Today" : "This week" %>
