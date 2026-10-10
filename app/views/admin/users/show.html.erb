@@ -134,7 +134,7 @@
       <% end %>
       <% if @user.subscription.cancelled_at %>
         <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Cancelled On</dt>
+          <dt class="font-medium text-slate-900 dark:text-slate-50"><%= @user.subscription.cancelled_at.future? ? "Cancels On" : "Cancelled On" %></dt>
           <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.cancelled_at.strftime('%B %d, %Y') %></dd>
         </div>
       <% end %>
