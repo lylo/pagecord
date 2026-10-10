@@ -1,4 +1,4 @@
-<div class="flex grow flex-col" data-controller="keyboard-shortcuts" data-keyboard-shortcuts-shortcuts-value="<%= { c: new_app_post_path }.to_json %>">
+<div class="flex grow flex-col">
   <% if @posts.empty? && @drafts.empty? && @search_term.blank? && @tag.blank? %>
     <%= render "blank_slate" %>
   <% else %>
@@ -22,14 +22,14 @@
       <h1 class="mt-6 page-title">Posts</h1>
 
       <div class="mt-3 flex flex-wrap items-center gap-2">
-        <%= link_to "New Post", new_app_post_path, class: "btn-primary", title: "Start writing a new post" %>
+        <%= render "new_post_button" %>
 
         <div class="btn-group">
-          <%= link_to app_posts_path(filter.merge(tab: "published")), class: class_names("btn-group-item", "btn-group-item-active": @tab == "published") do %>
-            Published <%= pill @posts_count %>
+          <%= link_to app_posts_path(filter.merge(tab: "published")), **hotkey_options("u", class: class_names("btn-group-item", "btn-group-item-active": @tab == "published")) do %>
+            Published <%= pill @posts_count %><%= hotkey "u" %>
           <% end %>
-          <%= link_to app_posts_path(filter.merge(tab: "drafts")), class: class_names("btn-group-item", "btn-group-item-active": @tab == "drafts") do %>
-            Drafts <%= pill @drafts_count %>
+          <%= link_to app_posts_path(filter.merge(tab: "drafts")), **hotkey_options("d", class: class_names("btn-group-item", "btn-group-item-active": @tab == "drafts")) do %>
+            Drafts <%= pill @drafts_count %><%= hotkey "d" %>
           <% end %>
         </div>
 
