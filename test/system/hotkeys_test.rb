@@ -72,6 +72,40 @@ class HotkeysTest < ApplicationSystemTestCase
     assert_selector ".btn-group-item-active", text: "Ready-made design"
   end
 
+  test "escape leaves the editor's text so a hotkey can save the draft" do
+    visit new_app_post_path
+    find_field("post[title]").send_keys("Keyboard draft")
+    find("lexxy-editor .lexxy-editor__content").send_keys("Written without the mouse", :escape)
+    assert_no_selector "lexxy-editor .lexxy-editor__content:focus"
+
+    keyboard.key_down(:shift).send_keys("d").key_up(:shift).perform
+    assert_current_path app_posts_path(tab: "drafts")
+    assert_text "Keyboard draft"
+  end
+
+  test "escape leaves writing mode before it leaves the text" do
+    visit new_app_post_path
+    editor = find("lexxy-editor .lexxy-editor__content")
+    editor.send_keys("Deep in thought", [ :meta, :shift, "f" ])
+    assert_selector "html[data-writing-mode]"
+
+    editor.send_keys(:escape)
+    assert_no_selector "html[data-writing-mode]"
+    assert_selector "lexxy-editor .lexxy-editor__content:focus"
+
+    editor.send_keys(:escape)
+    assert_no_selector "lexxy-editor .lexxy-editor__content:focus"
+  end
+
+  test "command s saves a draft from inside the text" do
+    visit new_app_post_path
+    find_field("post[title]").send_keys("Saved mid-sentence")
+    find("lexxy-editor .lexxy-editor__content").send_keys("Still typing", [ :meta, "s" ])
+
+    assert_current_path app_posts_path(tab: "drafts")
+    assert_text "Saved mid-sentence"
+  end
+
   test "shift types normally in a text field until it is double-tapped" do
     visit new_app_post_path
     find_field("post[title]").click

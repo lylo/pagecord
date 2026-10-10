@@ -66,7 +66,8 @@ export default class extends Controller {
     if ((event.metaKey || event.ctrlKey) && event.key === ".") {
       event.preventDefault()
       this.toggle()
-    } else if (event.key === "Escape") {
+    } else if (event.key === "Escape" && this.panelTarget.hasAttribute("data-open")) {
+      event.preventDefault()
       this.close()
     }
   }
