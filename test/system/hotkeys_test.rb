@@ -68,6 +68,13 @@ class HotkeysTest < ApplicationSystemTestCase
     assert_selector "span.min-w-32", text: (Date.current.year - 1).to_s
   end
 
+  test "each settings card takes a hotkey" do
+    visit app_settings_path
+
+    keyboard.key_down(:shift).send_keys("e").key_up(:shift).perform
+    assert_current_path app_settings_appearance_path
+  end
+
   test "shift types normally in a text field until it is double-tapped" do
     visit new_app_post_path
     find_field("post[title]").click
