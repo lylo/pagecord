@@ -25,7 +25,7 @@
     <%= yield :head %>
   </head>
 
-  <body class="flex flex-col min-h-screen bg-slate-100 dark:bg-slate-950 writing-mode:bg-white dark:writing-mode:bg-slate-900">
+  <body class="flex flex-col min-h-screen bg-slate-100 dark:bg-slate-950 writing-mode:bg-white dark:writing-mode:bg-slate-900" data-controller="hotkey-mode" data-action="keydown@document->hotkey-mode#keydown keyup@document->hotkey-mode#keyup blur@window->hotkey-mode#exit">
     <header class="mb-4 md:mb-6 writing-mode:hidden">
       <% if Current.user.onboarding_complete? && !Current.user.subscribed? %>
         <%= render "/app/shared/premium_upsell_banner" %>

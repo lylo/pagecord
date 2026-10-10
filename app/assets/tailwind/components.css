@@ -99,6 +99,10 @@
     @apply flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100;
   }
 
+  .hotkey {
+    @apply hidden hotkey-mode:inline-flex ms-1.5 h-4 min-w-4 items-center justify-center rounded border border-current px-1 font-sans text-[0.625rem] font-semibold leading-none opacity-70;
+  }
+
   /* A row of exclusive choices, one .btn-group-item per option, sized to match the buttons.
      Pagy's nav wears the same shell; its links are styled in application.css. */
   .btn-group,
