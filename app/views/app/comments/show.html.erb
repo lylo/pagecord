@@ -53,29 +53,33 @@
     <p class="mt-2 whitespace-pre-line leading-7 text-slate-800 dark:text-slate-200"><%= reply.message %></p>
   </div>
 <% elsif comment.approved? %>
-  <%= form_with url: app_comment_replies_path(comment, origin), method: :post, id: "comment-reply" do |form| %>
-    <%= form.text_area "comment[message]", rows: 3, required: true,
-          class: "form-field autogrow min-h-24 mt-4 w-full",
-          placeholder: "Write a public reply. It is published straight away, and you can only reply once." %>
+  <%= form_with url: app_comment_replies_path(comment, origin), method: :post, id: "comment-reply", class: "relative mt-4" do |form| %>
+    <%= form.text_area "comment[message]", rows: 3, required: true, **hotkey_options("r",
+          class: "form-field autogrow min-h-24 w-full",
+          placeholder: "Write a public reply. It is published straight away, and you can only reply once.") %>
+    <%= hotkey "r", class: "absolute top-2 end-2 text-slate-500 dark:text-slate-400" %>
   <% end %>
 <% else %>
-  <%= form_with url: app_comment_approval_path(comment, origin.merge(format: :html)), method: :post, id: "comment-approval" do |form| %>
-    <%= form.text_area "comment[message]", rows: 3,
-          class: "form-field autogrow min-h-24 mt-4 w-full",
-          placeholder: "Write an optional public reply before approving…" %>
+  <%= form_with url: app_comment_approval_path(comment, origin.merge(format: :html)), method: :post, id: "comment-approval", class: "relative mt-4" do |form| %>
+    <%= form.text_area "comment[message]", rows: 3, **hotkey_options("r",
+          class: "form-field autogrow min-h-24 w-full",
+          placeholder: "Write an optional public reply before approving…") %>
+    <%= hotkey "r", class: "absolute top-2 end-2 text-slate-500 dark:text-slate-400" %>
   <% end %>
 <% end %>
 
 <div class="mt-3 flex flex-wrap items-center gap-2">
   <% unless reply %>
-    <%= submit_tag (comment.approved? ? "Post reply" : "Approve"), name: nil,
-          form: (comment.approved? ? "comment-reply" : "comment-approval"), class: "btn-primary" %>
+    <%= button_tag name: nil, form: (comment.approved? ? "comment-reply" : "comment-approval"), **hotkey_options("y", class: "btn-primary") do %>
+      <%= comment.approved? ? "Post reply" : "Approve" %><%= hotkey "y" %>
+    <% end %>
   <% end %>
 
-  <%= button_to "Delete comment", app_comment_path(comment, origin.merge(format: :html)), method: :delete,
+  <%= button_to app_comment_path(comment, origin.merge(format: :html)), method: :delete,
         form_class: "contents",
-        data: { turbo_confirm: "Delete this comment? This can't be undone." },
-        class: "btn-danger" %>
+        **hotkey_options("x", data: { turbo_confirm: "Delete this comment? This can't be undone." }, class: "btn-danger") do %>
+    Delete comment<%= hotkey "x" %>
+  <% end %>
 </div>
 
 <div class="sheet-divider mt-6 pt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 text-sm">

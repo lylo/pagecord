@@ -1,3 +1,5 @@
+<% first = local_assigns.fetch(:comment_counter, 0).zero? %>
+
 <article id="<%= dom_id(comment) %>" class="sheet-bleed py-5">
   <div class="rounded-lg bg-slate-50 p-4 dark:bg-slate-800/60">
     <%= render "app/comments/comment_header", comment: comment %>
@@ -6,20 +8,27 @@
   </div>
 
   <%= form_with url: app_comment_approval_path(comment, post: @post&.token), method: :post, class: "mt-4" do |form| %>
-    <%= form.text_area "comment[message]", rows: 3,
-          class: "form-field autogrow min-h-24 w-full",
-          placeholder: "Write an optional public reply before approving…" %>
+    <div class="relative">
+      <%= form.text_area "comment[message]", rows: 3, **hotkey_options(("r" if first),
+            class: "form-field autogrow min-h-24 w-full",
+            placeholder: "Write an optional public reply before approving…") %>
+      <%= hotkey "r", class: "absolute top-2 end-2 text-slate-500 dark:text-slate-400" if first %>
+    </div>
 
     <% if local_assigns[:reply_error].present? %>
       <p class="mt-2 text-sm text-red-600 dark:text-red-400"><%= reply_error %></p>
     <% end %>
 
     <div class="mt-3 flex flex-wrap items-center gap-2">
-      <%= form.submit "Approve", class: "btn-primary", data: { turbo_submits_with: "Approving…" } %>
+      <%= form.button **hotkey_options(("y" if first), class: "btn-primary", data: { turbo_submits_with: "Approving…" }) do %>
+        Approve<%= hotkey "y" if first %>
+      <% end %>
 
-      <%= link_to "Delete", app_comment_path(comment, post: @post&.token),
-            data: { turbo_method: :delete, turbo_confirm: "Delete this comment? This can't be undone.", turbo_submits_with: "Deleting…" },
-            class: "btn-danger" %>
+      <%= link_to app_comment_path(comment, post: @post&.token),
+            **hotkey_options(("x" if first), data: { turbo_method: :delete, turbo_confirm: "Delete this comment? This can't be undone.", turbo_submits_with: "Deleting…" },
+              class: "btn-danger") do %>
+        Delete<%= hotkey "x" if first %>
+      <% end %>
     </div>
   <% end %>
 </article>
