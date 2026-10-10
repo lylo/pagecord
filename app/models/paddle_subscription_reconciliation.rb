@@ -132,6 +132,8 @@ class PaddleSubscriptionReconciliation
           discrepancies << discrepancy("paddle_active_without_user", paddle_subscription, nil, "Paddle active subscription has no matching local user")
         elsif !local_paid?(match.subscription) && !local_churning?(match.subscription)
           discrepancies << discrepancy("paddle_active_user_not_paid_or_churning", paddle_subscription, match, "Matched user is not marked paid or churning locally")
+        elsif match.subscription.paddle_price_id != price_id(paddle_subscription)
+          discrepancies << discrepancy("pagecord_price_differs_from_paddle", paddle_subscription, match, "Local #{match.subscription.plan} plan has price #{match.subscription.paddle_price_id} but Paddle bills #{price_id(paddle_subscription)}")
         end
 
         if scheduled_cancel_ids.include?(subscription_id(paddle_subscription)) && !local_churning?(match&.subscription)
@@ -218,6 +220,7 @@ class PaddleSubscriptionReconciliation
       print_discrepancy_list(io, report, "Paddle active subscriptions matched to users not marked paid or churning", "paddle_active_user_not_paid_or_churning")
       print_discrepancy_list(io, report, "Pagecord paid/churning users with no active Paddle subscription", "pagecord_paid_or_churning_without_active_paddle")
       print_discrepancy_list(io, report, "Users with more than one active Paddle subscription", "user_has_multiple_active_paddle_subscriptions")
+      print_discrepancy_list(io, report, "Users whose price differs from the one Paddle bills", "pagecord_price_differs_from_paddle")
       print_discrepancy_list(io, report, "Paddle active subscriptions scheduled to cancel where user is not marked churning", "paddle_scheduled_cancel_user_not_churning")
       print_discrepancy_list(io, report, "Users marked churning where Paddle subscription has no scheduled_change.action=cancel", "pagecord_churning_without_paddle_scheduled_cancel")
 
@@ -263,7 +266,7 @@ class PaddleSubscriptionReconciliation
         scheduled_change_effective_at(paddle_subscription),
         paddle_subscription["next_billed_at"],
         paddle_subscription.dig("current_billing_period", "ends_at"),
-        paddle_subscription.dig("items", 0, "price", "id"),
+        price_id(paddle_subscription),
         match&.user&.id,
         match&.user&.email,
         local_subscription&.id,
@@ -379,7 +382,7 @@ class PaddleSubscriptionReconciliation
     end
 
     def local_paid?(subscription)
-      subscription&.plan.in?(%w[annual monthly]) &&
+      subscription&.plan.in?(Subscription::PLANS) &&
         subscription.cancelled_at.blank? &&
         subscription.next_billed_at.present? &&
         subscription.next_billed_at > Time.current
@@ -416,6 +419,10 @@ class PaddleSubscriptionReconciliation
 
     def customer_id(subscription)
       subscription&.fetch("customer_id", nil)
+    end
+
+    def price_id(subscription)
+      subscription&.dig("items", 0, "price", "id")
     end
 
     def scheduled_change_action(subscription)

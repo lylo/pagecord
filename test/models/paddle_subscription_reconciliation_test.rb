@@ -26,8 +26,8 @@ class PaddleSubscriptionReconciliationTest < ActiveSupport::TestCase
     pagecord_subscription = subscriptions(:three)
     saul_subscription = subscriptions(:monthly_subscription)
 
-    joel_subscription.update!(paddle_customer_id: "ctm_joel")
-    annie_subscription.update!(cancelled_at: 1.day.ago, paddle_customer_id: "ctm_annie")
+    joel_subscription.update!(paddle_customer_id: "ctm_joel", paddle_price_id: "pri_test")
+    annie_subscription.update!(cancelled_at: 1.day.ago, paddle_customer_id: "ctm_annie", paddle_price_id: "pri_test")
     pagecord_subscription.update!(plan: :complimentary, paddle_customer_id: "ctm_pagecord")
 
     active_subscriptions = [
@@ -89,9 +89,32 @@ class PaddleSubscriptionReconciliationTest < ActiveSupport::TestCase
     end
   end
 
+  test "counts a Supporter as paid and flags a price Pagecord never recorded" do
+    supporter = subscriptions(:one)
+    supporter.update!(plan: :supporter, paddle_price_id: Subscription.price_id(:supporter))
+    stale = subscriptions(:two)
+    stale.update!(paddle_price_id: Subscription.price_id(:annual))
+
+    client = FakePaddleClient.new(
+      subscriptions_by_status: {
+        "active" => [
+          paddle_subscription(id: supporter.paddle_subscription_id, price_id: Subscription.price_id(:supporter)),
+          paddle_subscription(id: stale.paddle_subscription_id, price_id: Subscription.price_id(:supporter))
+        ]
+      },
+      scheduled_cancel_subscriptions: [],
+      customers: {}
+    )
+
+    report = PaddleSubscriptionReconciliation.new(client:).build_report
+
+    assert_discrepancy_count report, "paddle_active_user_not_paid_or_churning", 0
+    assert_equal [ stale ], report.discrepancies.select { |discrepancy| discrepancy.type == "pagecord_price_differs_from_paddle" }.map { |discrepancy| discrepancy.match.subscription }
+  end
+
   private
 
-    def paddle_subscription(id:, customer_id: "ctm_test", scheduled_change_action: nil, custom_data: nil)
+    def paddle_subscription(id:, customer_id: "ctm_test", scheduled_change_action: nil, custom_data: nil, price_id: "pri_test")
       {
         "id" => id,
         "customer_id" => customer_id,
@@ -103,7 +126,7 @@ class PaddleSubscriptionReconciliationTest < ActiveSupport::TestCase
         "items" => [
           {
             "price" => {
-              "id" => "pri_test"
+              "id" => price_id
             }
           }
         ]
