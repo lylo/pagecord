@@ -1,0 +1,6 @@
+<div class="sheet-bleed flex items-center gap-x-2 py-5">
+  <%= form.button **hotkey_options("u", class: "btn-primary") do %>
+    Update<%= hotkey "u" %>
+  <% end %>
+  <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
+</div>
