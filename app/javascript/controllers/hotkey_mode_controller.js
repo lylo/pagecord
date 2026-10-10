@@ -51,7 +51,7 @@ export default class extends Controller {
     const target = this.find(this.keyFor(event))
     if (target) {
       event.preventDefault()
-      target.click()
+      this.isField(target) ? target.focus() : target.click()
     }
   }
 
@@ -66,7 +66,10 @@ export default class extends Controller {
   }
 
   get typing() {
-    const element = document.activeElement
+    return this.isField(document.activeElement)
+  }
+
+  isField(element) {
     return element?.isContentEditable || element?.matches("textarea, select, input:not([type=checkbox], [type=radio], [type=submit], [type=reset], [type=file], [type=button])")
   }
 }
