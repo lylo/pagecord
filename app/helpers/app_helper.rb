@@ -13,6 +13,10 @@ module AppHelper
     request.user_agent.to_s.include?("Mac") ? mac : other
   end
 
+  def hotkey(key)
+    tag.kbd key.upcase, class: "hotkey", aria: { hidden: true }
+  end
+
   def is_current_path?(section)
     # /app/posts/:token/comments contains two section names, so the controller wins.
     return controller_name == section if NAV_SECTIONS.include?(controller_name)
@@ -20,10 +24,11 @@ module AppHelper
     request.path.include?(section) || controller_name.include?(section)
   end
 
-  def nav_link_attributes(section)
+  def nav_link_attributes(section, hotkey:)
     {
+      data: { hotkey: hotkey },
       class: "flex w-full items-center whitespace-nowrap px-4 py-2 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 aria-[current=page]:bg-slate-100 aria-[current=page]:text-slate-900 dark:aria-[current=page]:bg-slate-800 dark:aria-[current=page]:text-slate-100 md:w-auto md:rounded-full md:px-3.5 md:py-1.5 md:hover:bg-transparent md:hover:text-slate-900 md:dark:hover:bg-transparent md:dark:hover:text-slate-100 md:aria-[current=page]:bg-slate-800 md:aria-[current=page]:text-white md:dark:aria-[current=page]:bg-slate-100 md:dark:aria-[current=page]:text-slate-900",
-      aria: { current: ("page" if is_current_path?(section)) }
+      aria: { current: ("page" if is_current_path?(section)), keyshortcuts: "Shift+#{hotkey.upcase}" }
     }
   end
 
