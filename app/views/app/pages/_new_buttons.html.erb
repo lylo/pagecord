@@ -1,0 +1,6 @@
+<%= link_to new_app_page_path, **hotkey_options("n", class: "btn-primary", title: "Create a new page") do %>
+  New Page<%= hotkey "n" %>
+<% end %>
+<% unless @blog.has_custom_home_page? %>
+  <%= link_to "Create Home Page", new_app_home_page_path, class: "btn-optional", title: "Create a blank home page" %>
+<% end %>

@@ -2,9 +2,7 @@ require "application_system_test_case"
 
 class HotkeysTest < ApplicationSystemTestCase
   setup do
-    access_request = users(:vivian).access_requests.create!
-    visit access_request_verification_path(access_request.token_digest)
-    assert_current_path app_posts_path
+    sign_in users(:vivian)
   end
 
   test "holding shift reveals the nav hotkeys and a hotkey follows its link" do
@@ -36,6 +34,17 @@ class HotkeysTest < ApplicationSystemTestCase
     assert_current_path new_app_post_path
   end
 
+  test "the pages list takes hotkeys for its tabs and a new page" do
+    sign_in users(:joel)
+    visit app_pages_path
+
+    keyboard.key_down(:shift).send_keys("d").key_up(:shift).perform
+    assert_selector ".btn-group-item-active", text: "Drafts"
+
+    keyboard.key_down(:shift).send_keys("n").key_up(:shift).perform
+    assert_current_path new_app_page_path
+  end
+
   test "shift types normally in a text field until it is double-tapped" do
     visit new_app_post_path
     find_field("post[title]").click
@@ -51,6 +60,11 @@ class HotkeysTest < ApplicationSystemTestCase
   end
 
   private
+    def sign_in(user)
+      visit access_request_verification_path(user.access_requests.create!.token_digest)
+      assert_current_path app_posts_path
+    end
+
     def keyboard
       page.driver.browser.action
     end
