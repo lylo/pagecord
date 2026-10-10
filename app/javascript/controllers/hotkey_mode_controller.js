@@ -58,7 +58,7 @@ export default class extends Controller {
   find(key) {
     const scope = [ ...document.querySelectorAll("dialog[open]") ].at(-1) ?? document
     const targets = [ ...scope.querySelectorAll(`[data-hotkey="${CSS.escape(key)}"]`) ]
-    return targets.find(target => target.checkVisibility()) ?? targets[0]
+    return targets.find(target => target.checkVisibility()) ?? targets.find(target => target.matches("a"))
   }
 
   keyFor(event) {

@@ -24,6 +24,18 @@ class HotkeysTest < ApplicationSystemTestCase
     assert_current_path app_blogs_path
   end
 
+  test "the posts list takes hotkeys for its tabs, search and a new post" do
+    keyboard.key_down(:shift).send_keys("d").key_up(:shift).perform
+    assert_selector ".btn-group-item-active", text: "Drafts"
+
+    keyboard.key_down(:shift).send_keys("f").key_up(:shift).perform
+    assert_selector "[data-search-target='input']:focus"
+
+    find("body").click
+    keyboard.key_down(:shift).send_keys("n").key_up(:shift).perform
+    assert_current_path new_app_post_path
+  end
+
   test "shift types normally in a text field until it is double-tapped" do
     visit new_app_post_path
     find_field("post[title]").click
