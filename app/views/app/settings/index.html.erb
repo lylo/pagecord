@@ -1,15 +1,15 @@
 <%
   sections = [
-    { icon: "💬", title: "About", description: "Edit your bio, blog title and avatar", path: app_settings_about_path },
-    { icon: "🎨", title: "Appearance", description: "Customise your blog's theme, layout and style", path: app_settings_appearance_path },
-    { icon: "📝", title: "Blog Settings", description: "Configure custom domain and search engine visibility", path: app_settings_blog_path },
-    { icon: "🧭", title: "Navigation", description: "Manage header navigation links and social icons", path: app_settings_navigation_items_path },
-    { icon: "📣", title: "Audience", description: "Manage email subscription and reply by email options", path: app_settings_audience_path },
-    { icon: "💾", title: "Exports", description: "Export your blog data", path: app_settings_exports_path },
-    { icon: "🧩", title: "Custom Code", description: "Add your own CSS, analytics and scripts", path: app_settings_custom_code_path },
-    { icon: "🔌", title: "API", description: "Manage programmatic access to your blog", path: app_settings_api_path },
-    { icon: "⚙️", title: "My Account", description: "Update your email, timezone or close your account", path: edit_app_settings_account_path },
-    { icon: "💳", title: "Billing", description: "Manage your Pagecord subscription", path: app_settings_subscriptions_path, data: { turbo: false } }
+    { icon: "💬", title: "About", hotkey: "o", description: "Edit your bio, blog title and avatar", path: app_settings_about_path },
+    { icon: "🎨", title: "Appearance", hotkey: "e", description: "Customise your blog's theme, layout and style", path: app_settings_appearance_path },
+    { icon: "📝", title: "Blog Settings", hotkey: "b", description: "Configure custom domain and search engine visibility", path: app_settings_blog_path },
+    { icon: "🧭", title: "Navigation", hotkey: "n", description: "Manage header navigation links and social icons", path: app_settings_navigation_items_path },
+    { icon: "📣", title: "Audience", hotkey: "u", description: "Manage email subscription and reply by email options", path: app_settings_audience_path },
+    { icon: "💾", title: "Exports", hotkey: "x", description: "Export your blog data", path: app_settings_exports_path },
+    { icon: "🧩", title: "Custom Code", hotkey: "d", description: "Add your own CSS, analytics and scripts", path: app_settings_custom_code_path },
+    { icon: "🔌", title: "API", hotkey: "i", description: "Manage programmatic access to your blog", path: app_settings_api_path },
+    { icon: "⚙️", title: "My Account", hotkey: "y", description: "Update your email, timezone or close your account", path: edit_app_settings_account_path },
+    { icon: "💳", title: "Billing", hotkey: "l", description: "Manage your Pagecord subscription", path: app_settings_subscriptions_path, data: { turbo: false } }
   ]
 %>
 
@@ -18,11 +18,12 @@
 
   <div class="mt-6 grid sm:grid-cols-2 gap-4">
     <% sections.each do |section| %>
-      <%= link_to section[:path], data: section[:data] do %>
-        <div class="h-full rounded-lg border border-slate-200 p-5 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800">
+      <%= link_to section[:path], **hotkey_options(section[:hotkey], data: section[:data]) do %>
+        <div class="relative h-full rounded-lg border border-slate-200 p-5 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800">
           <div class="mb-4">
             <span class="text-4xl"><%= section[:icon] %></span>
           </div>
+          <%= hotkey section[:hotkey], class: "absolute top-4 end-4 text-slate-500 dark:text-slate-400" %>
           <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-slate-100"><%= section[:title] %></h3>
           <p class="text-slate-600 dark:text-slate-300"><%= section[:description] %></p>
         </div>
