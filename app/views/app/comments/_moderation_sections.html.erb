@@ -3,11 +3,11 @@
 <% else %>
   <div class="<%= @post ? "mt-6" : "mt-3" %> flex flex-wrap items-center gap-2">
     <div class="btn-group">
-      <%= link_to comments_tab_path("pending"), class: class_names("btn-group-item", "btn-group-item-active": @tab == "pending") do %>
-        Waiting for you <%= pill @pending.size %>
+      <%= link_to comments_tab_path("pending"), **hotkey_options("w", class: class_names("btn-group-item", "btn-group-item-active": @tab == "pending")) do %>
+        Waiting for you <%= pill @pending.size %><%= hotkey "w" %>
       <% end %>
-      <%= link_to comments_tab_path("approved"), class: class_names("btn-group-item", "btn-group-item-active": @tab == "approved") do %>
-        Approved <%= pill @pagy.count %>
+      <%= link_to comments_tab_path("approved"), **hotkey_options("v", class: class_names("btn-group-item", "btn-group-item-active": @tab == "approved")) do %>
+        Approved <%= pill @pagy.count %><%= hotkey "v" %>
       <% end %>
     </div>
   </div>

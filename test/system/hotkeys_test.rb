@@ -29,7 +29,7 @@ class HotkeysTest < ApplicationSystemTestCase
     keyboard.key_down(:shift).send_keys("f").key_up(:shift).perform
     assert_selector "[data-search-target='input']:focus"
 
-    find("body").click
+    page.execute_script("document.activeElement.blur()")
     keyboard.key_down(:shift).send_keys("n").key_up(:shift).perform
     assert_current_path new_app_post_path
   end
@@ -43,6 +43,18 @@ class HotkeysTest < ApplicationSystemTestCase
 
     keyboard.key_down(:shift).send_keys("n").key_up(:shift).perform
     assert_current_path new_app_page_path
+  end
+
+  test "the top waiting comment takes hotkeys to reply and approve" do
+    sign_in users(:joel)
+    visit app_comments_path
+
+    keyboard.key_down(:shift).send_keys("r").key_up(:shift).perform
+    assert_selector "textarea[data-hotkey='r']:focus"
+
+    page.execute_script("document.activeElement.blur()")
+    keyboard.key_down(:shift).send_keys("y").key_up(:shift).perform
+    assert page.has_content?("Comment approved.", wait: 2)
   end
 
   test "shift types normally in a text field until it is double-tapped" do
