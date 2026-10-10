@@ -12,9 +12,7 @@ module User::Screenable
   def screen(ip:, user_agent:)
     return if ENV["CLEANTALK_AUTH_KEY"].blank?
 
-    Rails.error.handle do
-      create_screening!(failed_checks: { cleantalk: cleantalk_failure(ip, user_agent) }.compact)
-    end
+    create_screening!(failed_checks: { cleantalk: cleantalk_failure(ip, user_agent) }.compact)
   end
 
   private

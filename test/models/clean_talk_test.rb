@@ -42,7 +42,7 @@ class CleanTalkTest < ActiveSupport::TestCase
       sender_email: "test@example.com",
       sender_ip: "1.2.3.4",
       sender_info: { REFFERRER: "https://example.com", USER_AGENT: "Mozilla/5.0" }.to_json
-    }.to_json, headers: { "Content-Type" => "application/json" }, timeout: 2).returns(stub(body: { "allow" => 0, "account_status" => 1 }.to_json))
+    }.to_json, headers: { "Content-Type" => "application/json" }).returns(stub(body: { "allow" => 0, "account_status" => 1 }.to_json))
 
     CleanTalk.check_newuser(email: "test@example.com", ip: "1.2.3.4", user_agent: "Mozilla/5.0", referrer: "https://example.com")
   end

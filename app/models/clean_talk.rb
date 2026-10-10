@@ -36,14 +36,14 @@ class CleanTalk
       sender_info: { REFFERRER: referrer, USER_AGENT: user_agent }.to_json
     }
 
-    response = request(body, timeout: 2)
+    response = request(body)
     raise NoVerdict unless response["account_status"] == 1
 
     response
   end
 
-  def self.request(body, **options)
-    response = post("/api2.0", body: body.to_json, headers: { "Content-Type" => "application/json" }, **options)
+  def self.request(body)
+    response = post("/api2.0", body: body.to_json, headers: { "Content-Type" => "application/json" })
 
     JSON.parse(response.body)
   end

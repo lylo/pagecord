@@ -26,11 +26,4 @@ class User::ScreenableTest < ActiveSupport::TestCase
 
     assert_not @user.screening_failed?
   end
-
-  test "a check that errors is reported and leaves the account unscreened" do
-    CleanTalk.stubs(:check_newuser).raises(CleanTalk::NoVerdict)
-
-    assert_error_reported(CleanTalk::NoVerdict) { @user.screen(ip: "1.2.3.4", user_agent: "Mozilla/5.0") }
-    assert_nil @user.reload.screening
-  end
 end

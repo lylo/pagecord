@@ -21,7 +21,7 @@ class SignupsController < ApplicationController
     return reject_submission unless signup_from_allowed_timezone
 
     if @user.save
-      @user.screen(ip: request.ip, user_agent: request.user_agent)
+      ScreenUserJob.perform_later(@user.id, ip: request.ip, user_agent: request.user_agent)
       attribution = signup_attribution
       session.delete(:signup_attribution)
 

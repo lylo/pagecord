@@ -121,7 +121,9 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     ENV["CLEANTALK_AUTH_KEY"] = "test-key"
     CleanTalk.expects(:check_newuser).with(has_entries(email: "test@example.com", ip: "127.0.0.1")).returns({ "allow" => 0, "codes" => "FORBIDDEN BL" })
 
-    post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at }
+    perform_enqueued_jobs(only: ScreenUserJob) do
+      post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at }
+    end
 
     assert_redirected_to signups_thanks_path
     assert User.last.screening_failed?
