@@ -62,7 +62,7 @@ export default class extends Controller {
   }
 
   keyFor(event) {
-    return (event.code.match(/^Key([A-Z])$/)?.[1] ?? event.key).toLowerCase()
+    return (event.code.match(/^(?:Key|Digit)(\w)$/)?.[1] ?? event.key).toLowerCase()
   }
 
   get typing() {
