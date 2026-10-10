@@ -16,6 +16,14 @@ class HotkeysTest < ApplicationSystemTestCase
     assert_no_selector "nav kbd", text: "G"
   end
 
+  test "a hotkey opens the blog menu and its items take hotkeys of their own" do
+    keyboard.key_down(:shift).send_keys("m").perform
+    assert_selector "a[data-hotkey='b'] kbd", text: "B"
+
+    keyboard.send_keys("b").key_up(:shift).perform
+    assert_current_path app_blogs_path
+  end
+
   test "shift types normally in a text field until it is double-tapped" do
     visit new_app_post_path
     find_field("post[title]").click

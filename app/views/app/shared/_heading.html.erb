@@ -1,7 +1,8 @@
 <div class="flex shrink-0">
   <div class="relative" data-controller="toggle">
-    <button data-toggle-target="button" data-action="click->toggle#toggle click@window->toggle#hide keydown.esc@window->toggle#hide" class="flex items-center gap-2 cursor-pointer rounded-full p-1 pl-3 bg-white dark:bg-slate-900 shadow-[0_1px_2px_rgba(0,0,0,0.06)] text-sm font-medium transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
+    <button data-toggle-target="button" data-hotkey="m" aria-keyshortcuts="Shift+M" data-action="click->toggle#toggle click@window->toggle#hide keydown.esc@window->toggle#hide" class="flex items-center gap-2 cursor-pointer rounded-full p-1 pl-3 bg-white dark:bg-slate-900 shadow-[0_1px_2px_rgba(0,0,0,0.06)] text-sm font-medium transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
       <span class="truncate max-w-40"><%= @blog.display_name %></span>
+      <%= hotkey "m", class: "ms-0" %>
       <%= inline_svg_tag "icons/chevron-down.svg", class: "w-3.5 h-3.5 text-slate-400" %>
       <%= render "app/shared/blog_avatar", blog: @blog, size: "sm" %>
     </button>
@@ -12,11 +13,14 @@
           <p class="px-4 pb-1 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Switch blog</p>
         <% end %>
 
-        <% Current.user.blogs.order(:created_at).each do |blog| %>
-          <%= button_to app_blog_selection_path(blog), method: :post, class: "w-full flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 #{blog.id == @blog.id ? 'bg-slate-50 dark:bg-slate-800/60' : ''}" do %>
+        <% Current.user.blogs.order(:created_at).each.with_index(1) do |blog, position| %>
+          <% key = position.to_s unless blog.id == @blog.id %>
+          <%= button_to app_blog_selection_path(blog), method: :post, **hotkey_options(key, class: "w-full flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 #{key ? '' : 'bg-slate-50 dark:bg-slate-800/60'}") do %>
             <%= render "app/shared/blog_avatar", blog: blog, size: "sm" %>
             <span class="text-sm font-medium truncate"><%= blog.display_name %></span>
-            <% if blog.id == @blog.id %>
+            <% if key %>
+              <%= hotkey key, class: "ms-auto" %>
+            <% else %>
               <span class="ml-auto text-xs text-slate-400">Current</span>
             <% end %>
           <% end %>
@@ -25,9 +29,10 @@
         <% item = "block px-4 py-2 text-sm text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300" %>
 
         <div class="mt-2 border-t border-slate-200 pt-2 pb-2 dark:border-slate-800">
-          <%= link_to blog_home_url(@blog), target: "_blank", class: "#{item} flex items-center gap-1.5" do %>
+          <%= link_to blog_home_url(@blog), target: "_blank", **hotkey_options("v", class: "#{item} flex items-center gap-1.5") do %>
             <span class="truncate">View <%= @blog.display_name %></span>
             <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "h-3.5 w-3.5 shrink-0" %>
+            <%= hotkey "v", class: "ms-auto" %>
           <% end %>
           <%= link_to "Manage blogs", app_blogs_path, class: item %>
         </div>
