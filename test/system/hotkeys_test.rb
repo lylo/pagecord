@@ -57,6 +57,17 @@ class HotkeysTest < ApplicationSystemTestCase
     assert page.has_content?("Comment approved.", wait: 2)
   end
 
+  test "analytics takes hotkeys for its periods and the arrow keys step through them" do
+    sign_in users(:joel)
+    visit app_analytics_path
+
+    keyboard.key_down(:shift).send_keys("y").key_up(:shift).perform
+    assert_selector ".btn-group-item-active", text: "Year"
+
+    keyboard.send_keys(:arrow_left).perform
+    assert_selector "span.min-w-32", text: (Date.current.year - 1).to_s
+  end
+
   test "shift types normally in a text field until it is double-tapped" do
     visit new_app_post_path
     find_field("post[title]").click
