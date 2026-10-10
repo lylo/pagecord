@@ -31,6 +31,15 @@ class Admin::Moderation::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_no_match "@#{@blog.subdomain}", response.body
   end
 
+  test "labels a blog whose owner failed screening" do
+    @blog.user.create_screening!(failed_checks: { cleantalk: "FORBIDDEN BL" })
+
+    get admin_moderation_blogs_path
+
+    assert_match "Screening failed", response.body
+    assert_match "FORBIDDEN BL", response.body
+  end
+
   test "links each blog to its admin account page" do
     get admin_moderation_blogs_path
 

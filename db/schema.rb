@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_02_070000) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_10_190001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -37,6 +37,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_02_070000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.jsonb "failed_checks"
     t.index ["deleted_at"], name: "index_account_tombstones_on_deleted_at"
     t.index ["user_id"], name: "index_account_tombstones_on_user_id"
   end
@@ -438,6 +439,14 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_02_070000) do
     t.index ["post_id", "hash_id"], name: "index_upvotes_on_post_id_and_hash_id", unique: true
   end
 
+  create_table "user_screenings", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.jsonb "failed_checks", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_screenings_on_user_id", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
@@ -488,4 +497,5 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_02_070000) do
   add_foreign_key "subscriptions", "users"
   add_foreign_key "unengaged_follow_ups", "users"
   add_foreign_key "upvotes", "posts"
+  add_foreign_key "user_screenings", "users"
 end

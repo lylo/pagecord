@@ -14,6 +14,16 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should show the screening on the account page" do
+    user = users(:annie)
+    user.create_screening!(failed_checks: { cleantalk: "FORBIDDEN BL" })
+
+    get admin_user_path(user)
+
+    assert_response :success
+    assert_match "cleantalk FORBIDDEN BL", response.body
+  end
+
   test "should search users by email" do
     user1 = users(:vivian)
     user2 = users(:joel)

@@ -35,6 +35,26 @@ class CleanTalkTest < ActiveSupport::TestCase
     CleanTalk.check_message(email: "test@example.com", nickname: "Test User", message: "Hello!", page_url: "https://olly.world/hello")
   end
 
+  test "sends check_newuser request with the sender's address and browser" do
+    CleanTalk.expects(:post).with("/api2.0", body: {
+      method_name: "check_newuser",
+      auth_key: ENV["CLEANTALK_AUTH_KEY"],
+      sender_email: "test@example.com",
+      sender_ip: "1.2.3.4",
+      sender_info: { REFFERRER: "https://example.com", USER_AGENT: "Mozilla/5.0" }.to_json
+    }.to_json, headers: { "Content-Type" => "application/json" }, timeout: 2).returns(stub(body: { "allow" => 0, "account_status" => 1 }.to_json))
+
+    CleanTalk.check_newuser(email: "test@example.com", ip: "1.2.3.4", user_agent: "Mozilla/5.0", referrer: "https://example.com")
+  end
+
+  test "check_newuser raises when the account is not active" do
+    CleanTalk.stubs(:post).returns(stub(body: { "allow" => 1, "account_status" => 0 }.to_json))
+
+    assert_raises(CleanTalk::NoVerdict) do
+      CleanTalk.check_newuser(email: "test@example.com", ip: "1.2.3.4", user_agent: "Mozilla/5.0", referrer: nil)
+    end
+  end
+
   test "raises on network error" do
     CleanTalk.expects(:post).raises(Net::ReadTimeout.new("timed out"))
 

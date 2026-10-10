@@ -21,6 +21,7 @@
               &middot; <%= time_ago_in_words(blog.created_at) %>
               &middot; <%= pluralize(@post_counts.fetch(blog.id, 0), "post") %>
               &middot; <%= blog.user.timezone %>
+              <% if blog.user.screening_failed? %>&middot; <span class="text-red-600 dark:text-red-400 font-medium" title="<%= blog.user.screening.failed_checks.values.join(", ") %>">Screening failed</span><% end %>
               <% if blog.user.subscribed? %>&middot; <span class="text-green-600 dark:text-green-400 font-medium">Paid</span><% end %>
             </span>
 

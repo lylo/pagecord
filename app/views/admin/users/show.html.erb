@@ -42,6 +42,21 @@
         <dt class="font-medium text-slate-900 dark:text-slate-50">Timezone</dt>
         <dd class="text-slate-500 dark:text-slate-400"><%= @user.timezone %></dd>
       </div>
+      <div class="flex justify-between gap-4">
+        <dt class="font-medium text-slate-900 dark:text-slate-50">Screening</dt>
+        <dd class="text-slate-500 dark:text-slate-400 text-right">
+          <% if @user.screening.nil? %>
+            Not screened
+          <% elsif @user.screening_failed? %>
+            <span class="text-red-600 dark:text-red-400 font-medium">Failed</span>
+            <% @user.screening.failed_checks.each do |check, reason| %>
+              <span class="block text-xs font-mono"><%= check %> <%= reason %></span>
+            <% end %>
+          <% else %>
+            Passed
+          <% end %>
+        </dd>
+      </div>
       <% if @user.signup_referrer.present? %>
         <div class="flex justify-between gap-4">
           <dt class="font-medium text-slate-900 dark:text-slate-50">Referrer</dt>

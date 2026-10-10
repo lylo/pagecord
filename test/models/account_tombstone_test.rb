@@ -20,6 +20,14 @@ class AccountTombstoneTest < ActiveSupport::TestCase
     assert_equal user.blogs.pluck(:subdomain).join(" "), tombstone.subdomain
   end
 
+  test "keeps the failed checks only on a spam deletion" do
+    user = users(:annie)
+    user.create_screening!(failed_checks: { cleantalk: "FORBIDDEN BL" })
+
+    assert_equal({ "cleantalk" => "FORBIDDEN BL" }, AccountTombstone.record!(user, reason: :spam).failed_checks)
+    assert_nil AccountTombstone.record!(user, reason: :user_deleted).failed_checks
+  end
+
   test "records the plan of a paying account" do
     tombstone = AccountTombstone.record!(users(:joel), reason: :user_deleted)
 

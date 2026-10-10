@@ -196,6 +196,8 @@ Rails.application.routes.draw do
           resource :review, only: [ :create ], controller: "blogs/reviews"
           resource :spam_confirmation, only: [ :create ], controller: "blogs/spam_confirmations"
         end
+
+        resources :screenings, only: [ :index ]
       end
     end
 

@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   include Discard::Model
-  include Onboardable, Subscribable, PasswordSecured
+  include Onboardable, Subscribable, PasswordSecured, Screenable
 
   has_many :all_blogs, -> { with_discarded }, class_name: "Blog", dependent: :destroy, inverse_of: :user
   has_many :blogs, -> { kept.order(:created_at) }, inverse_of: :user
