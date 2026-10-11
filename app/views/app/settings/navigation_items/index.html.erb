@@ -122,7 +122,7 @@
           <div class="group pt-2">
             <div class="flex gap-3">
               <div class="flex h-6 shrink-0 items-center">
-                <%= styled_check_box form, :use_icon, checked: @navigation_item&.icon_svg?, id: "use-icon" %>
+                <%= styled_check_box form, :use_icon, checked: @navigation_item&.use_icon || @navigation_item&.icon_svg?, id: "use-icon" %>
               </div>
               <div>
                 <%= form.label :use_icon, "Show a custom icon", for: "use-icon", class: "text-slate-800 dark:text-slate-100" %>

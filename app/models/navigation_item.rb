@@ -24,10 +24,6 @@ class NavigationItem < ApplicationRecord
     nil
   end
 
-  def icon_label
-    label
-  end
-
   def label_hidden?
     icon.present? || (icon_svg? && !show_label?)
   end

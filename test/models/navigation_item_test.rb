@@ -141,6 +141,14 @@ class CustomNavigationItemTest < ActiveSupport::TestCase
     assert_equal '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M0 0h256v256H0z" fill="currentColor"/></svg>', item.icon_svg
   end
 
+  test "a pasted icon is cleaned whatever its size or doctype" do
+    padded = %(<svg viewBox="0 0 24 24"><script>alert(1)</script><path d="M1 1"/>#{"🎧" * 2100}</svg>)
+    entities = %(<?xml version="1.0"?><!DOCTYPE svg [<!ENTITY a "aaaa"><!ENTITY b "&a;&a;">]><svg viewBox="0 0 1 1"><path d="&b;"/></svg>)
+
+    assert_equal '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 1"/></svg>', CustomNavigationItem.new(icon_svg: padded).icon_svg
+    assert_equal '<svg viewBox="0 0 1 1" fill="currentColor"><path d="&b;"/></svg>', CustomNavigationItem.new(icon_svg: entities).icon_svg
+  end
+
   test "a pasted outline icon keeps its unfilled shapes" do
     item = CustomNavigationItem.new(icon_svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#111"><path d="M1 1"/></svg>')
 
