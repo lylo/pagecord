@@ -1,7 +1,13 @@
 <% if @blog.navigation_items.ordered.any? %>
   <nav>
     <% @blog.navigation_items.ordered.each do |item| %>
-      <%= link_to navigation_item_url(item), class: ("social-link" if item.icon), aria: { label: (item.icon_label if item.label_hidden?) }, **navigation_item_link_options(item) do %><%= navigation_item_icon(item) %><%= item.label unless item.label_hidden? %><% end %>
+      <%= link_to navigation_item_url(item),
+            class: ("social-link" if item.label_hidden?),
+            aria: { label: (item.label if item.label_hidden?) },
+            **navigation_item_link_options(item) do %>
+        <%= navigation_item_icon(item) %>
+        <%= item.label unless item.label_hidden? %>
+      <% end %>
     <% end %>
   </nav>
 <% end %>

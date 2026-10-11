@@ -4,7 +4,7 @@ module NavigationItem::IconSvg
   MAX_SIZE = 8.kilobytes
   ELEMENTS = %w[ svg g path circle ellipse line polyline polygon rect ].freeze
   ATTRIBUTES = %w[ viewBox d cx cy r rx ry x y x1 y1 x2 y2 width height points transform
-                   fill fill-rule fill-opacity clip-rule opacity
+                   fill fill-rule fill-opacity opacity
                    stroke stroke-width stroke-linecap stroke-linejoin stroke-miterlimit stroke-opacity ].freeze
 
   included do
@@ -20,14 +20,13 @@ module NavigationItem::IconSvg
   class_methods do
     private
 
-      # Anything that isn't an SVG is left as it is, so validation can reject it.
+      # A non-SVG passes through untouched for validation to reject.
       def clean_icon_svg(svg)
-        return svg.presence if svg.bytesize > MAX_SIZE
-
         document = Nokogiri::XML(svg)
         root = document.root
         return svg.presence unless root&.name == "svg"
 
+        document.internal_subset&.remove
         document.remove_namespaces!
         root.xpath(".//node()").each do |node|
           node.element? && ELEMENTS.include?(node.name) ? clean_icon_svg_attributes(node) : node.remove

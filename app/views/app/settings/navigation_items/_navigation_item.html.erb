@@ -5,7 +5,7 @@
     <%= inline_svg_tag "icons/grip-dots.svg", class: "w-4 h-4" %>
   </div>
   <% icon = navigation_item_icon(navigation_item) %>
-  <% label = navigation_item.label_hidden? ? tag.span(navigation_item.label, class: "italic text-slate-400 dark:text-slate-500", title: "Only the icon shows on your blog") : navigation_item.label %>
+  <% label = navigation_item.label_hidden? ? tag.span(navigation_item.label, class: "italic text-slate-500 dark:text-slate-400", title: "Only the icon shows on your blog") : navigation_item.label %>
   <div class="flex flex-1 items-center gap-2">
     <%= link_to_unless navigation_item.is_a?(SearchNavigationItem),
           safe_join([ (tag.span(icon, class: "flex size-4 shrink-0 *:size-full") if icon), label ]),
