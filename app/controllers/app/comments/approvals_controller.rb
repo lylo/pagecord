@@ -36,10 +36,12 @@ class App::Comments::ApprovalsController < App::BaseController
     end
 
     def render_reply_error(error)
+      load_comment_collections(origin_post)
+
       render turbo_stream: turbo_stream.replace(
         @comment,
         partial: "app/comments/pending_comment",
-        locals: { comment: @comment, reply_error: error }
+        locals: { comment: @comment, reply_error: error, first: @pending.first == @comment }
       ), status: :unprocessable_entity
     end
 end

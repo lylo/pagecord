@@ -1,14 +1,19 @@
 module App::PostsHelper
   def publish_button_text(post, model_name: nil, short: false)
-    verb = post.persisted? && post.published? ? "Update" : "Publish"
+    verb = editing_published?(post) ? "Update" : "Publish"
     short ? verb : "#{verb} #{model_name || infer_model_name(post)}"
   end
 
-  def save_shortcut_options
-    {
+  def save_button_options(key, saves:, **options)
+    return options unless saves
+
+    hotkey_options key, **options,
       title: "Save (#{shortcut "⌘S", "Ctrl+S"})",
       data: { controller: "hotkey", action: command_key_action("s", "hotkey#click") }
-    }
+  end
+
+  def editing_published?(post)
+    post.persisted? && post.published?
   end
 
   def settings_customised?(post)
@@ -17,7 +22,7 @@ module App::PostsHelper
   end
 
   def draft_button_text(post, model_name: nil, short: false)
-    if post.persisted? && post.published?
+    if editing_published?(post)
       "Unpublish"
     elsif short
       "Save"

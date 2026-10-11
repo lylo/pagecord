@@ -1,4 +1,4 @@
-<% first = local_assigns.fetch(:comment_counter, 0).zero? %>
+<% first = local_assigns.fetch(:first) { comment_counter == 0 } %>
 
 <article id="<%= dom_id(comment) %>" class="sheet-bleed py-5">
   <div class="rounded-lg bg-slate-50 p-4 dark:bg-slate-800/60">
@@ -24,11 +24,9 @@
         Approve<%= hotkey "y" if first %>
       <% end %>
 
-      <%= link_to app_comment_path(comment, post: @post&.token),
-            **hotkey_options(("x" if first), data: { turbo_method: :delete, turbo_confirm: "Delete this comment? This can't be undone.", turbo_submits_with: "Deleting…" },
-              class: "btn-danger") do %>
-        Delete<%= hotkey "x" if first %>
-      <% end %>
+      <%= link_to "Delete", app_comment_path(comment, post: @post&.token),
+            data: { turbo_method: :delete, turbo_confirm: "Delete this comment? This can't be undone.", turbo_submits_with: "Deleting…" },
+            class: "btn-danger" %>
     </div>
   <% end %>
 </article>

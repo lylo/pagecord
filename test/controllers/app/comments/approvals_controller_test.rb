@@ -67,7 +67,9 @@ class App::Comments::ApprovalsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_not comment.reload.approved?
-    assert_select "turbo-stream[action=replace][target=post_comment_#{comment.id}]"
+    assert_select "turbo-stream[action=replace][target=post_comment_#{comment.id}]" do
+      assert_select "textarea[data-hotkey=r]", 1, "the top comment keeps its hotkeys"
+    end
     assert_includes response.body, "Message is too long"
   end
 
