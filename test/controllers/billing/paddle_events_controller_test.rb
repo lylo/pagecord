@@ -72,6 +72,44 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_not subscription.user.subscribed?, "access should end when the cancellation takes effect"
   end
 
+  test "a new subscription repoints the row even though its id differs" do
+    subscription = subscriptions(:one)
+
+    payload = payload_for("subscription.created", subscription.user)
+    payload["data"]["id"] = "sub_replacement"
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert_equal "sub_replacement", subscription.reload.paddle_subscription_id
+  end
+
+  test "a cancellation for a subscription the user has since replaced leaves the new one alone" do
+    subscription = subscriptions(:one)
+
+    payload = payload_for("subscription.canceled", subscription.user)
+    payload["data"]["id"] = "sub_replaced"
+    payload["data"]["canceled_at"] = Time.current.iso8601
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert_not subscription.reload.cancelled?
+    assert subscription.user.subscribed?
+  end
+
   # Paddle cancels immediately when it refunds, and sends subscription.updated
   # alongside subscription.canceled with no next_billed_at of its own.
   test "should not restore access when subscription.updated follows a cancellation" do

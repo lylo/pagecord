@@ -78,8 +78,19 @@ module Billing
 
         Rails.logger.info "Paddle #{event} for user #{@user.id}"
 
+        if for_another_subscription?(event)
+          Rails.logger.info "Ignoring Paddle #{event} for #{payload.subscription_id}: user #{@user.id} is on #{@subscription.paddle_subscription_id}"
+          return
+        end
+
         handler = HANDLERS[event]
         send(handler) if handler
+      end
+
+      def for_another_subscription?(event)
+        event.start_with?("subscription.") && event != "subscription.created" &&
+          @subscription&.paddle_subscription_id.present? &&
+          payload.subscription_id != @subscription.paddle_subscription_id
       end
 
       def subscription_created
