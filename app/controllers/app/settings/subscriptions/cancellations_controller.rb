@@ -17,6 +17,9 @@ class App::Settings::Subscriptions::CancellationsController < App::BaseControlle
     end
 
     redirect_to app_settings_path, notice: "Your subscription has been cancelled. You'll keep access until the end of your current billing period."
+  rescue PaddleApi::Error => error
+    Sentry.capture_exception(error) if Sentry.initialized?
+    redirect_to new_app_settings_subscriptions_cancellation_path, flash: { error: "I couldn't cancel your subscription just now. Please try again, or email hello@pagecord.com." }
   end
 
   private

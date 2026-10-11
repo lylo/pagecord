@@ -1,12 +1,19 @@
 require "httparty"
 
 class PaddleApi
+  class Error < StandardError; end
+
   def get_subscription(id)
     get "subscriptions/#{id}"
   end
 
   def cancel_subscription(id)
-    post "subscriptions/#{id}/cancel", { effective_from: "next_billing_period" }.to_json
+    response = post "subscriptions/#{id}/cancel", { effective_from: "next_billing_period" }.to_json
+    raise Error, "#{response.dig("error", "code")}: #{response.dig("error", "detail")}" if response["error"]
+
+    response
+  rescue JSON::ParserError, Timeout::Error, SocketError, SystemCallError => error
+    raise Error, error.message
   end
 
   def update_subscription_items(subscription_id, price_id, proration_billing_mode: "prorated_immediately")

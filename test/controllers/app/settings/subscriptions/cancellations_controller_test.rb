@@ -47,4 +47,16 @@ class App::Settings::Subscriptions::CancellationsControllerTest < ActionDispatch
     assert_includes line, "source=app"
     assert @user.subscription.reload.cancelled?
   end
+
+  test "a cancellation Paddle refuses sends them back to try again" do
+    PaddleApi.any_instance.stubs(:cancel_subscription).raises(PaddleApi::Error, "boom")
+
+    assert_no_enqueued_jobs(only: SendCancellationEmailJob) do
+      post app_settings_subscriptions_cancellation_url
+    end
+
+    assert_redirected_to new_app_settings_subscriptions_cancellation_path
+    assert_match "couldn't cancel", flash[:error]
+    assert_not @user.subscription.reload.cancelled?
+  end
 end

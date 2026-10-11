@@ -17,14 +17,28 @@ class DestroyUserJobTest < ActiveJob::TestCase
     second_blog = blogs(:joel_notes)
     old_time = 2.days.ago
     user.blogs.update_all(updated_at: old_time)
-    mock_api = mock("paddle_api")
-    mock_api.expects(:cancel_subscription).with(user.subscription.paddle_subscription_id).returns(true)
-    PaddleApi.stubs(:new).returns(mock_api)
 
     DestroyUserJob.perform_now(user.id)
 
     assert_operator user.blog.reload.updated_at, :>, old_time
     assert_operator second_blog.reload.updated_at, :>, old_time
+  end
+
+  test "cancels a paid subscription in Paddle in a job of its own" do
+    user = users(:joel)
+
+    assert_enqueued_with(job: CancelPaddleSubscriptionJob, args: [ user.subscription.paddle_subscription_id ]) do
+      DestroyUserJob.perform_now(user.id)
+    end
+  end
+
+  test "leaves a subscription that is already cancelled alone" do
+    user = users(:joel)
+    user.subscription.update!(cancelled_at: Time.current)
+
+    assert_no_enqueued_jobs(only: CancelPaddleSubscriptionJob) do
+      DestroyUserJob.perform_now(user.id)
+    end
   end
 
   test "should not remove from marketing automation" do
@@ -79,9 +93,6 @@ class DestroyUserJobTest < ActiveJob::TestCase
 
   test "a spam tombstone records every subdomain the user had" do
     user = users(:joel)
-    mock_api = mock("paddle_api")
-    mock_api.stubs(:cancel_subscription).returns(true)
-    PaddleApi.stubs(:new).returns(mock_api)
 
     DestroyUserJob.perform_now(user.id, reason: :spam)
 
@@ -90,7 +101,6 @@ class DestroyUserJobTest < ActiveJob::TestCase
 
   test "logs a self-serve deletion with the blog and whether they were paying" do
     user = users(:joel)
-    PaddleApi.stubs(:new).returns(stub(cancel_subscription: true))
 
     line = billing_line { DestroyUserJob.perform_now(user.id) }
 

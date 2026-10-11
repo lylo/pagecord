@@ -13,8 +13,8 @@ class DestroyUserJob < ApplicationJob
 
       user.blogs.find_each(&:touch)
 
-      if user.subscription
-        PaddleApi.new.cancel_subscription(user.subscription.paddle_subscription_id)
+      if user.subscription&.active_paid?
+        CancelPaddleSubscriptionJob.perform_later(user.subscription.paddle_subscription_id)
       end
 
       MarketingAutomation::DeleteContactJob.perform_later(user_id) if reason.to_s == "spam"
