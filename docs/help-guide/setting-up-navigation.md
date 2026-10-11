@@ -93,6 +93,14 @@ Adds a search icon that links to your blog's [search page](blog-search.md), so r
 
 You can also embed a search box in a page with the `{{ search }}` dynamic variable, instead of or as well as the navigation icon. See [Search](blog-search.md).
 
+## Editing navigation items
+
+Click a link's name in the list to edit it. Its details fill the form below, so change what you like and click **Save**, or **Cancel** to leave it as it was.
+
+A link's type can't be changed. To turn a custom link into a social link, for example, remove it and add a new one. Search has nothing to edit, so it can't be clicked.
+
+Links that only show an icon on your blog have their label dimmed in the list. The label is still read out by screen readers.
+
 ## Reordering navigation items
 
 Drag items to change their order. The order you see in settings is the order they'll appear on your blog.
