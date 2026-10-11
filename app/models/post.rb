@@ -46,7 +46,7 @@ class Post < ApplicationRecord
         ]
       )
     }
-  scope :for_blog_render, -> { with_full_rich_text.with_attached_attachments.includes(:upvotes) }
+  scope :for_blog_render, -> { with_full_rich_text.with_attached_attachments.with_attached_open_graph_image.includes(:upvotes) }
   after_commit :touch_blog, on: [ :create, :update, :destroy ]
 
   def content_present
@@ -95,8 +95,9 @@ class Post < ApplicationRecord
     @excerpt_html = has_excerpt? ? ExcerptBreak.extract(content.to_s) : nil
   end
 
-  def excerpt_text(limit: 64)
-    plain_text_from(raw_excerpt_html.to_s).truncate(limit, separator: /\s/)
+  def card_excerpt_html
+    excerpt = Html::CardExcerpt.new(limit: has_excerpt? ? nil : 324)
+    excerpt.transform(has_excerpt? ? raw_excerpt_html : content.body.to_html).html_safe
   end
 
   def has_text_content?

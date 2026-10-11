@@ -46,10 +46,6 @@
       </p>
 
       <%= render "app/settings/theme_garden/templates", templates: @templates %>
-
-      <p class="mt-6 text-sm">
-        <%= link_to "Browse all designs in the Theme Garden", app_settings_theme_garden_index_path, class: "font-semibold underline" %>
-      </p>
     </div>
   </section>
 
@@ -68,7 +64,7 @@
       <% end %>
     <% end %>
 
-    <%= settings_row "Blog Layout", stacked: true, hint: "How your posts appear on your home page: a full-content stream, a list of titles, or cards with excerpts" do %>
+    <%= settings_row "Blog Layout", stacked: true, hint: safe_join([ "How your posts appear on your home page: a full-content stream, a list of titles, or cards. Add an ", link_to("excerpt break", "https://help.pagecord.com/excerpt-breaks", class: "underline", target: "_blank"), " to choose what a card shows." ]) do %>
       <%= form_with url: app_settings_appearance_path, model: @blog,
             data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
         <%= render "layout_options", form: form %>

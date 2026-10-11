@@ -45,6 +45,25 @@ class ThemeTemplatesRakeTest < ActiveSupport::TestCase
     assert_equal "body { color: blue; }", other.reload.custom_css
   end
 
+  test "sync creates a template that is missing" do
+    theme_templates(:haiku).destroy!
+
+    out, = capture_io { Rake::Task["theme_templates:sync"].invoke("haiku") }
+
+    assert_match(/Haiku: created/, out)
+    assert_equal "cards_layout", ThemeTemplate.find_by!(name: "Haiku").layout
+  end
+
+  test "sync updates settings as well as CSS" do
+    @template.update_columns(position: 99, custom_theme_accent_light: "#123456")
+
+    out, = capture_io { Rake::Task["theme_templates:sync"].invoke("minimal_mono") }
+
+    assert_match(/position: 99 -> \d+/, out)
+    assert_equal fixture_for(@template.name)["position"], @template.reload.position
+    assert_nil @template.custom_theme_accent_light
+  end
+
   test "sync aborts on an unknown theme" do
     assert_raises(SystemExit) do
       capture_io { Rake::Task["theme_templates:sync"].invoke("nope") }
@@ -62,9 +81,12 @@ class ThemeTemplatesRakeTest < ActiveSupport::TestCase
   end
 
   private
+    def fixture_for(name)
+      YAML.load_file(Rails.root.join("test/fixtures/theme_templates.yml")).each_value.find { |attrs| attrs["name"] == name }
+    end
+
     def fixture_css_for(name)
-      YAML.load_file(Rails.root.join("test/fixtures/theme_templates.yml"))
-          .each_value.find { |attrs| attrs["name"] == name }["custom_css"]
+      fixture_for(name)["custom_css"]
     end
 
     def with_env(vars)

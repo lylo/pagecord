@@ -158,13 +158,18 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "", summary
   end
 
-  test "excerpt_text returns plain text of excerpt when excerpt break is present" do
-    blog = blogs(:joel)
-    post = blog.posts.create!(
+  test "card_excerpt_html is the whole teaser when there is an excerpt break" do
+    post = blogs(:joel).posts.create!(
       content: "<p>Intro text for cards.</p><p>{{ more }}</p><p>Body text should stay off cards.</p>"
     )
 
-    assert_equal "Intro text for cards.", post.excerpt_text
+    assert_equal "<p>Intro text for cards.</p>", post.card_excerpt_html
+  end
+
+  test "card_excerpt_html shortens the post when there is no excerpt break" do
+    post = blogs(:joel).posts.create!(content: "<p>#{"word " * 100}</p>")
+
+    assert_operator post.card_excerpt_html.length, :<, 340
   end
 
   test "should not rebuild text_summary when content has not changed" do

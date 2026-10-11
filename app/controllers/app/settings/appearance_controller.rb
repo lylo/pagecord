@@ -19,7 +19,7 @@ class App::Settings::AppearanceController < App::BaseController
   private
 
     def set_templates
-      @templates = ThemeTemplate.active.ordered.limit(6)
+      @templates = ThemeTemplate.active.ordered
     end
 
     def appearance_params

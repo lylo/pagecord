@@ -618,6 +618,23 @@ This keeps the label background transparent at the top while adding contrast beh
 
 {{ attachment: gallery-title-overlay }}
 
+### Cards: customising the layout
+
+Each card is a `.post-card`, and inside it a `.post-card-content` holding:
+
+- `.post-card-image` – the post's social sharing image, or its first image
+- `.post-card-title` – the post title
+- `.post-card-summary` – the excerpt: the text above an [excerpt break](excerpt-breaks.md), or the opening lines of the post
+- `.post-card-meta` – the date (`.post-card-date`) and the Read more label (`.post-card-badge`)
+
+**Show only the picture and title:**
+
+```css
+.post-card-summary { display: none; }
+```
+
+For a picture that fills the card with the words laid over it, apply the **Haiku** theme from the Theme Garden.
+
 ### Adding a background image to your blog
 
 You can set a background image so that it fits the viewport and scales nicely. It can be unreliable to rely on a 3rd party URL for the image, so I would recommend creating a page on your Pagecord blog and uploading your background image there. View the page, copy the image URL, then reference that image in your CSS.
