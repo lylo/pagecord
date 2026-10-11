@@ -43,14 +43,16 @@ A custom link can show an icon, either beside its label or instead of it. Icons 
 3. Tick **Show a custom icon** and paste the code into the box.
 4. Choose **Icon and label** to show both, or **Icon only** to show just the icon.
 
-You don't need to worry about the icon's size or colour. Pagecord sizes it to match your navigation text and colours it to match your theme. It keeps only the shapes in the SVG, so anything else, like colours or scripts, is removed.
+You don't need to worry about the icon's size or colour. Pagecord sizes it for your navigation and colours it to match your theme.
+
+Icons must be simple: a single shape, up to 4 KB of SVG. Every Phosphor icon fits apart from the Duotone style, and so does almost every Simple Icons logo. If an icon is turned down, try a different style or a different icon.
 
 With **Icon only**, screen readers still read out the label, so keep it descriptive.
 
 To make an icon bigger or smaller, add some [custom CSS](custom-css.md) that targets the link by its URL:
 
 ```css
-nav a[href="https://music.apple.com/profile/you"] svg {
+nav a[href="https://letterboxd.com/you"] svg {
   width: 1.25rem;
   height: 1.25rem;
 }

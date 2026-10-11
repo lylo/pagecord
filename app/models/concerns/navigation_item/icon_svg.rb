@@ -1,52 +1,30 @@
 module NavigationItem::IconSvg
   extend ActiveSupport::Concern
 
-  MAX_SIZE = 8.kilobytes
-  ELEMENTS = %w[ svg g path circle ellipse line polyline polygon rect ].freeze
-  ATTRIBUTES = %w[ viewBox d cx cy r rx ry x y x1 y1 x2 y2 width height points transform
-                   fill fill-rule fill-opacity opacity
-                   stroke stroke-width stroke-linecap stroke-linejoin stroke-miterlimit stroke-opacity ].freeze
+  MAX_SIZE = 4.kilobytes
+  # Only an icon in this exact shape can be saved, so navigation_item_icon can render it with html_safe.
+  FORMAT = %r{\A<svg viewBox="[\d.,\s-]+" fill="currentColor"><path d="[MmZzLlHhVvCcSsQqTtAaEe\d.,+\s-]+"/></svg>\z}
 
   included do
     attribute :use_icon, :boolean
 
-    normalizes :icon_svg, with: ->(svg) { clean_icon_svg(svg.strip) }
+    normalizes :icon_svg, with: ->(svg) { rebuild_icon_svg(svg.strip) }
     before_validation :clear_icon_svg, if: -> { use_icon == false }
 
-    validates :icon_svg, length: { maximum: MAX_SIZE }
-    validate :icon_svg_has_view_box, if: :icon_svg?
+    validates :icon_svg, allow_nil: true, length: { maximum: MAX_SIZE },
+      format: { with: FORMAT, message: "must be an SVG with a viewBox and a single path, like the icons on Simple Icons and Phosphor" }
   end
 
   class_methods do
     private
 
-      # A non-SVG passes through untouched for validation to reject.
-      def clean_icon_svg(svg)
-        root = Nokogiri::HTML5.fragment(svg).element_children.first
-        return svg.presence unless root&.name == "svg"
+      # A paste without a viewBox and exactly one path passes through untouched for the format validation to reject.
+      def rebuild_icon_svg(svg)
+        view_box = svg[/viewBox="([^"]*)"/i, 1]
+        paths = svg.scan(/<path\b[^>]*\sd="([^"]*)"/i).flatten
+        return svg.presence unless view_box && paths.one?
 
-        root.traverse do |node|
-          if node.element? && ELEMENTS.include?(node.name)
-            clean_icon_svg_attributes(node)
-          elsif node != root
-            node.remove
-          end
-        end
-
-        root.remove_attribute("width")
-        root.remove_attribute("height")
-        root["fill"] ||= "currentColor"
-        root.to_html
-      end
-
-      def clean_icon_svg_attributes(element)
-        element.attribute_nodes.each do |attribute|
-          if ATTRIBUTES.exclude?(attribute.name)
-            attribute.remove
-          elsif attribute.name.in?(%w[ fill stroke ]) && attribute.value != "none"
-            attribute.value = "currentColor"
-          end
-        end
+        %(<svg viewBox="#{view_box}" fill="currentColor"><path d="#{paths.first}"/></svg>)
       end
   end
 
@@ -58,10 +36,5 @@ module NavigationItem::IconSvg
 
     def clear_icon_svg
       self.icon_svg = nil
-    end
-
-    def icon_svg_has_view_box
-      root = Nokogiri::HTML5.fragment(icon_svg).element_children.first
-      errors.add(:icon_svg, "must be an SVG with a viewBox") unless root&.name == "svg" && root["viewBox"]
     end
 end
