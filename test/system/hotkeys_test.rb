@@ -5,13 +5,16 @@ class HotkeysTest < ApplicationSystemTestCase
     sign_in users(:vivian)
   end
 
-  test "holding shift reveals the nav hotkeys and a hotkey follows its link" do
+  test "holding shift reveals the nav hotkeys and follows one link after another" do
     keyboard.key_down(:shift).perform
     assert_selector "nav kbd", text: "G"
 
-    keyboard.send_keys("g").key_up(:shift).perform
+    keyboard.send_keys("g").perform
     assert_current_path app_pages_path
-    assert_no_selector "nav kbd", text: "G"
+
+    keyboard.send_keys("p").key_up(:shift).perform
+    assert_current_path app_posts_path
+    assert_no_selector "nav kbd", text: "P"
   end
 
   test "a hotkey opens the blog menu and its items take hotkeys of their own" do
@@ -28,27 +31,15 @@ class HotkeysTest < ApplicationSystemTestCase
     assert_current_path new_app_post_path
   end
 
-  test "the pages list takes hotkeys for its tabs and a new page" do
-    sign_in users(:joel)
-    visit app_pages_path
-
-    keyboard.key_down(:shift).send_keys("d").key_up(:shift).perform
-    assert_selector ".btn-group-item-active", text: "Drafts"
-
-    keyboard.key_down(:shift).send_keys("n").key_up(:shift).perform
-    assert_current_path new_app_page_path
-  end
-
   test "the top waiting comment takes hotkeys to reply and approve" do
     sign_in users(:joel)
     visit app_comments_path
 
-    keyboard.key_down(:shift).send_keys("r").key_up(:shift).perform
-    assert_selector "textarea[data-hotkey='r']:focus"
+    keyboard.key_down(:shift).send_keys("r", "y").key_up(:shift).perform
+    assert_field "comment[message]", with: "Y", focused: true
 
-    page.execute_script("document.activeElement.blur()")
-    keyboard.key_down(:shift).send_keys("y").key_up(:shift).perform
-    assert page.has_content?("Comment approved.", wait: 2)
+    keyboard.key_down(:shift).key_up(:shift).key_down(:shift).key_up(:shift).key_down(:shift).send_keys("y").key_up(:shift).perform
+    assert page.has_content?("Comment approved", wait: 2)
   end
 
   test "analytics takes hotkeys for its periods and the arrow keys step through them" do

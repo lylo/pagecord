@@ -75,11 +75,10 @@
     <% end %>
   <% end %>
 
-  <%= button_to app_comment_path(comment, origin.merge(format: :html)), method: :delete,
+  <%= button_to "Delete comment", app_comment_path(comment, origin.merge(format: :html)), method: :delete,
         form_class: "contents",
-        **hotkey_options("x", data: { turbo_confirm: "Delete this comment? This can't be undone." }, class: "btn-danger") do %>
-    Delete comment<%= hotkey "x" %>
-  <% end %>
+        data: { turbo_confirm: "Delete this comment? This can't be undone." },
+        class: "btn-danger" %>
 </div>
 
 <div class="sheet-divider mt-6 pt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 text-sm">

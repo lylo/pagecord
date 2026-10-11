@@ -49,20 +49,25 @@ export default class extends Controller {
     if (event.key === "Escape" || event.metaKey || event.ctrlKey || event.altKey || !this.shiftHeld) return this.exit()
 
     const target = this.find(this.keyFor(event))
-    if (target) {
-      event.preventDefault()
-      this.isField(target) ? target.focus() : target.click()
+    if (!target) return
+
+    event.preventDefault()
+    if (this.isField(target)) {
+      target.focus()
+      this.exit()
+    } else {
+      target.click()
     }
   }
 
   find(key) {
     const scope = [ ...document.querySelectorAll("dialog[open]") ].at(-1) ?? document
     const targets = [ ...scope.querySelectorAll(`[data-hotkey="${CSS.escape(key)}"]`) ]
-    return targets.find(target => target.checkVisibility()) ?? targets.find(target => target.matches("a"))
+    return targets.find(target => target.checkVisibility()) ?? targets.find(target => target.closest("nav"))
   }
 
   keyFor(event) {
-    return (event.code.match(/^(?:Key|Digit)(\w)$/)?.[1] ?? event.key).toLowerCase()
+    return (event.code.match(/^Digit(\d)$/)?.[1] ?? event.key).toLowerCase()
   }
 
   get typing() {

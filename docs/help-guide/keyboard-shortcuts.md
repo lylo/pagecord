@@ -10,7 +10,7 @@ Most of Pagecord can be used from the keyboard.
 
 Hold **Shift** on any screen and a small key appears beside everything you can reach from the keyboard. Keep holding Shift and press that key to use it. Let go of Shift and the keys disappear.
 
-Shift still types capital letters while you're writing. To see the keys from inside a text box, tap **Shift** twice quickly. They stay visible for three seconds.
+Shift still types capital letters while you're writing. To see the keys from inside a text box, tap **Shift** twice quickly. They stay visible for three seconds, and while they show, Shift plus a key uses it even from the text box.
 
 ## Everywhere
 
@@ -62,7 +62,6 @@ Shift + W    Waiting for you
 Shift + V    Approved
 Shift + R    Reply to the top waiting comment
 Shift + Y    Approve it
-Shift + X    Delete it
 ```
 
 Approving a comment moves the keys on to the next one, so you can work through the queue without the mouse.
