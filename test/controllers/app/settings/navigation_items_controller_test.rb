@@ -15,7 +15,7 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     assert_select "h1", "Set up your navigation"
     assert_select "button[aria-label='Navigation help']"
     assert_select "[data-dialog-shortcut-value='?']"
-    assert_includes response.body, "/posts"
+    assert_select "[data-sortable-update-url]", count: @blog.navigation_items.count
   end
 
   test "index shows pages dropdown without home page" do
