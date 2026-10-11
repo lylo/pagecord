@@ -1,13 +1,11 @@
 <% if @blog.navigation_items.ordered.any? %>
   <nav>
     <% @blog.navigation_items.ordered.each do |item| %>
-      <%= link_to navigation_item_url(item),
+      <%= link_to safe_join([ navigation_item_icon(item), (item.label unless item.label_hidden?) ]),
+            navigation_item_url(item),
             class: ("social-link" if item.label_hidden?),
             aria: { label: (item.label if item.label_hidden?) },
-            **navigation_item_link_options(item) do %>
-        <%= navigation_item_icon(item) %>
-        <%= item.label unless item.label_hidden? %>
-      <% end %>
+            **navigation_item_link_options(item) %>
     <% end %>
   </nav>
 <% end %>
