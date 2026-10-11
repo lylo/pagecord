@@ -55,13 +55,13 @@ export default class extends Controller {
   }
 
   disableFields(container) {
-    container.querySelectorAll("input, select").forEach(field => {
+    container.querySelectorAll("input, select, textarea").forEach(field => {
       field.disabled = true
     })
   }
 
   enableFields(container) {
-    container.querySelectorAll("input, select").forEach(field => {
+    container.querySelectorAll("input, select, textarea").forEach(field => {
       field.disabled = false
     })
   }

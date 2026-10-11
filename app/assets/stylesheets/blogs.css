@@ -245,6 +245,10 @@ footer.blog-footer #brand svg {
       }
     }
 
+    :where(a:has(svg)) {
+      gap: 0.4em;
+    }
+
     svg {
       width: 1rem;
       height: 1rem;

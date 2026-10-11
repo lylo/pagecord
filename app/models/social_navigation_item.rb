@@ -1,12 +1,12 @@
 class SocialNavigationItem < NavigationItem
-  PLATFORMS = [ "Bluesky", "Email", "Facebook", "Foto", "GitHub", "Glass", "Hipstamatic", "Instagram", "LinkedIn", "Mastodon",
+  PLATFORMS = [ "Apple Music", "Bluesky", "Email", "Facebook", "Foto", "GitHub", "Glass", "Hipstamatic", "Instagram", "LinkedIn", "Mastodon",
                 "Pixelfed", "Reddit", "RSS", "Spotify", "Threads", "TikTok", "Web", "X", "YouTube" ].sort
 
   validates :platform, presence: true, inclusion: { in: PLATFORMS }
   validates :url, presence: true
   validate :validate_url_format
 
-  before_validation :set_label_from_platform, if: -> { platform.present? && label.blank? }
+  before_validation :set_label_from_platform, if: :platform_changed?
 
   # Platforms whose links are identity claims: profiles of the blog's author,
   # not the blog's own feed (RSS) or an arbitrary site (Web)
@@ -17,11 +17,7 @@ class SocialNavigationItem < NavigationItem
   end
 
   def icon
-    "icons/social/#{platform.downcase}.svg"
-  end
-
-  def icon_label
-    "#{platform.titleize} Link"
+    "icons/social/#{platform.downcase.delete(" ")}.svg"
   end
 
   def email?

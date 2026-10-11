@@ -1,8 +1,13 @@
 class App::Settings::NavigationItemsController < App::BaseController
-  before_action :set_navigation_item, only: [ :update, :destroy ]
+  before_action :set_navigation_item, only: [ :edit, :update, :destroy ]
 
   def index
     load_form_data
+  end
+
+  def edit
+    load_form_data
+    render :index
   end
 
   def create
@@ -59,6 +64,6 @@ class App::Settings::NavigationItemsController < App::BaseController
     end
 
     def navigation_item_params
-      params.require(:navigation_item).permit(:label, :url, :post_id, :platform)
+      params.require(:navigation_item).permit(:label, :url, :post_id, :platform, :use_icon, :icon_svg, :show_label)
     end
 end

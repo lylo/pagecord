@@ -34,10 +34,35 @@ A manual link with your own label and URL. Use this for:
 
 You can use relative paths (like `/archive`) or full URLs (like `https://example.com`).
 
+#### Adding a custom icon
+
+A custom link can show an icon, either beside its label or instead of it. Icons are added as SVG code, the format most icon sites offer for copying.
+
+1. Find an icon. [Simple Icons](https://simpleicons.org) has logos for thousands of brands, and [Phosphor](https://phosphoricons.com) has everyday symbols like headphones, a camera or a book.
+2. Copy its SVG code.
+3. Tick **Show a custom icon** and paste the code into the box.
+4. Choose **Icon and label** to show both, or **Icon only** to show just the icon.
+
+You don't need to worry about the icon's size or colour. Pagecord sizes it to match your navigation text and colours it to match your theme. It keeps only the shapes in the SVG, so anything else, like colours or scripts, is removed.
+
+With **Icon only**, screen readers still read out the label, so keep it descriptive.
+
+To make an icon bigger or smaller, add some [custom CSS](custom-css.md) that targets the link by its URL:
+
+```css
+nav a[href="https://music.apple.com/profile/you"] svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+```
+
+Only use icons you have the right to use. Icons from Simple Icons and Phosphor are free to use, though brand logos still belong to their owners.
+
 ### Social link
 
 Adds a social media icon to your header. Choose from:
 
+- Apple Music
 - Bluesky
 - Email
 - Facebook
@@ -58,7 +83,7 @@ Adds a social media icon to your header. Choose from:
 - X
 - YouTube
 
-Enter the URL to your profile, or an email address for Email links, and the appropriate icon will be displayed.
+Enter the URL to your profile, or an email address for Email links, and the appropriate icon will be displayed. For anything not on this list, use a custom link with an icon.
 
 ### Search
 

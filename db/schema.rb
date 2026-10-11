@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_10_190001) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_11_112336) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -237,6 +237,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_10_190001) do
     t.string "type", null: false
     t.datetime "updated_at", null: false
     t.string "url"
+    t.text "icon_svg"
+    t.boolean "show_label", default: true, null: false
     t.index ["blog_id", "position"], name: "index_navigation_items_on_blog_id_and_position"
     t.index ["post_id"], name: "index_navigation_items_on_post_id"
   end

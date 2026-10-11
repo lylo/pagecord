@@ -957,6 +957,30 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav a[href=?]", "/search"
   end
 
+  test "should render a custom link's icon beside its label, or alone and labelled for screen readers" do
+    navigation_items(:joel_custom).update!(icon_svg: '<svg viewBox="0 0 24 24"><path d="M0 0h24v24H0z"/></svg>')
+
+    get blog_posts_path
+    assert_select "nav a[href=\"/posts\"]:not([aria-label])", text: "Posts" do
+      assert_select "svg path"
+    end
+
+    navigation_items(:joel_custom).update!(show_label: false)
+
+    get blog_posts_path
+    assert_select "nav a[href=\"/posts\"][aria-label=\"Posts\"]", text: "" do
+      assert_select "svg path"
+    end
+  end
+
+  test "should render a social link as its icon, labelled for screen readers" do
+    get blog_posts_path
+
+    assert_select "nav a.social-link[href=?][aria-label=Bluesky]", "https://bsky.app/profile/joel.example.com", text: "" do
+      assert_select "svg"
+    end
+  end
+
   test "should open external navigation links in a new tab when enabled" do
     @blog.update!(external_links_in_new_tab: true)
 

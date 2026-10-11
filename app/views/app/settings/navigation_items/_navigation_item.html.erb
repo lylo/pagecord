@@ -4,12 +4,13 @@
   <div class="handle cursor-grab" title="Drag to reorder">
     <%= inline_svg_tag "icons/grip-dots.svg", class: "w-4 h-4" %>
   </div>
-  <%= content_tag(:div, yield(:icon), class: "flex items-center gap-2") if content_for?(:icon) %>
-  <div class="flex-1">
-    <%= navigation_item.label %>
-    <% if content_for?(:details) %>
-      <span class="text-slate-500 dark:text-slate-400 text-sm ml-2"><%= yield(:details) %></span>
-    <% end %>
+  <% icon = navigation_item_icon(navigation_item) %>
+  <% label = navigation_item.label_hidden? ? tag.span(navigation_item.label, class: "italic text-slate-400 dark:text-slate-500", title: "Only the icon shows on your blog") : navigation_item.label %>
+  <div class="flex flex-1 items-center gap-2">
+    <%= link_to_unless navigation_item.is_a?(SearchNavigationItem),
+          safe_join([ (tag.span(icon, class: "flex size-4 shrink-0 *:size-full") if icon), label ]),
+          edit_app_settings_navigation_item_path(navigation_item, anchor: "navigation-form"),
+          class: "flex items-center gap-2 hover:underline" %>
   </div>
   <%= button_to app_settings_navigation_item_path(navigation_item),
       method: :delete,
