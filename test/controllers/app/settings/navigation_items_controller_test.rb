@@ -142,7 +142,7 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     patch app_settings_navigation_item_path(item), params: { navigation_item: { label: "Posts", url: "/posts", icon_svg: '<svg viewBox="0 0 24 24"><path d="M1 1"/></svg>' } }
 
     assert_redirected_to app_settings_navigation_items_path
-    assert_equal '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 1"/></svg>', item.reload.icon_svg
+    assert_equal '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 1"></path></svg>', item.reload.icon_svg
   end
 
   test "update removes a custom link's icon when it's unticked" do

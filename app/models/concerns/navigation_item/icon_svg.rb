@@ -22,21 +22,21 @@ module NavigationItem::IconSvg
 
       # A non-SVG passes through untouched for validation to reject.
       def clean_icon_svg(svg)
-        document = Nokogiri::XML(svg)
-        root = document.root
+        root = Nokogiri::HTML5.fragment(svg).element_children.first
         return svg.presence unless root&.name == "svg"
 
-        document.internal_subset&.remove
-        document.remove_namespaces!
-        root.xpath(".//node()").each do |node|
-          node.element? && ELEMENTS.include?(node.name) ? clean_icon_svg_attributes(node) : node.remove
+        root.traverse do |node|
+          if node.element? && ELEMENTS.include?(node.name)
+            clean_icon_svg_attributes(node)
+          elsif node != root
+            node.remove
+          end
         end
 
-        clean_icon_svg_attributes(root)
         root.remove_attribute("width")
         root.remove_attribute("height")
         root["fill"] ||= "currentColor"
-        root.to_xml(save_with: Nokogiri::XML::Node::SaveOptions::AS_XML)
+        root.to_html
       end
 
       def clean_icon_svg_attributes(element)
@@ -61,7 +61,7 @@ module NavigationItem::IconSvg
     end
 
     def icon_svg_has_view_box
-      root = Nokogiri::XML(icon_svg).root
+      root = Nokogiri::HTML5.fragment(icon_svg).element_children.first
       errors.add(:icon_svg, "must be an SVG with a viewBox") unless root&.name == "svg" && root["viewBox"]
     end
 end
