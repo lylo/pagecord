@@ -27,6 +27,22 @@ class App::Settings::Subscriptions::ResumptionsControllerTest < ActionDispatch::
     assert_nil @user.subscription.reload.cancelled_at
   end
 
+  test "logs the resume with the price they pay" do
+    @user.subscription.update!(cancelled_at: Time.current)
+    PaddleApi.stubs(:new).returns(stub(resume_subscription: stub(success?: true)))
+
+    io = StringIO.new
+    previous = Rails.logger
+    Rails.logger = ActiveSupport::Logger.new(io)
+    post app_settings_subscriptions_resumption_path
+    Rails.logger = previous
+
+    line = io.string[/\[billing\].*/]
+    assert_includes line, "event=resumed"
+    assert_includes line, "blog=#{@user.blog.subdomain}"
+    assert_includes line, "amount=#{@user.subscription.unit_price}"
+  end
+
   test "should not resume non-cancelled subscription" do
     post app_settings_subscriptions_resumption_path
 

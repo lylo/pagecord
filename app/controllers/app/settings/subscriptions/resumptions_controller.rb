@@ -6,6 +6,7 @@ class App::Settings::Subscriptions::ResumptionsController < App::BaseController
 
     if PaddleApi.new.resume_subscription(subscription.paddle_subscription_id).success?
       subscription.update!(cancelled_at: nil)
+      BillingEventLog.record(:resumed, for_subscription: subscription, source: "app")
       redirect_to app_settings_path, notice: "Your subscription has been resumed!"
     else
       redirect_to app_settings_subscriptions_path, alert: "Unable to resume subscription. Please try again."

@@ -12,13 +12,14 @@ module LogBilling
   BOOKING_EVENTS = %w[
     subscription_started
     plan_changed
+    resumed
     cancel_requested
     cancel_scheduled
     cancel_effective
     account_deleted
   ].freeze
 
-  GAINS = %w[ subscription_started plan_changed ].freeze
+  GAINS = %w[ subscription_started plan_changed resumed ].freeze
 
   class << self
     def events_for(entries)

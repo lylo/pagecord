@@ -766,6 +766,7 @@ namespace :logs do
     labels = {
       "subscription_started" => "New",
       "plan_changed" => "Plan change",
+      "resumed" => "Resumed",
       "cancel_requested" => "Cancel requested",
       "cancel_scheduled" => "Cancel scheduled",
       "cancel_effective" => "Access ended",

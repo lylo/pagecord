@@ -60,6 +60,12 @@ class LogBillingTest < Minitest::Test
     assert_equal 3600, LogBilling.annualised_delta(parsed)
   end
 
+  def test_a_resumed_subscription_books_its_price_back
+    parsed = events("[billing] event=resumed user=1 blog=one plan=annual amount=3900 source=app")
+
+    assert_equal 3900, LogBilling.annualised_delta(parsed)
+  end
+
   def test_a_spam_removal_is_not_churn
     parsed = events(
       "[billing] event=account_deleted user=1 blog=one plan=annual amount=3900 source=admin reason=spam"
