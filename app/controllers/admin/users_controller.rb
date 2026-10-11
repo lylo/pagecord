@@ -70,8 +70,6 @@ class Admin::UsersController < Admin::BaseController
 
     reason = params[:spam] ? :spam : :admin_deleted
 
-    BillingEventLog.record(:account_deleted, for_user: @user, paid: @user.paying?, source: "admin", reason: reason)
-
     flash[:notice] = reason == :spam ? "User was marked as spam and discarded" : "User was successfully discarded"
     DestroyUserJob.perform_now(@user.id, reason: reason)
 
