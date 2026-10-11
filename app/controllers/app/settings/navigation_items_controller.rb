@@ -64,6 +64,6 @@ class App::Settings::NavigationItemsController < App::BaseController
     end
 
     def navigation_item_params
-      params.require(:navigation_item).permit(:label, :url, :post_id, :platform, :use_icon, :icon_svg, :show_label)
+      params.fetch(:navigation_item, {}).permit(:label, :url, :post_id, :platform, :use_icon, :icon_svg, :show_label)
     end
 end

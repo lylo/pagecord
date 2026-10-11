@@ -167,10 +167,7 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
 
   test "create search navigation item" do
     assert_difference -> { SearchNavigationItem.count }, 1 do
-      post app_settings_navigation_items_path, params: {
-        nav_type: "search",
-        navigation_item: { label: "Search" }
-      }
+      post app_settings_navigation_items_path, params: { nav_type: "search" }
     end
 
     assert_redirected_to app_settings_navigation_items_path
@@ -185,10 +182,7 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     @blog.navigation_items.create!(type: "SearchNavigationItem")
 
     assert_no_difference -> { SearchNavigationItem.count } do
-      post app_settings_navigation_items_path, params: {
-        nav_type: "search",
-        navigation_item: { label: "Search" }
-      }
+      post app_settings_navigation_items_path, params: { nav_type: "search" }
     end
 
     assert_response :unprocessable_entity
@@ -205,10 +199,7 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     login_as users(:vivian)
 
     assert_difference -> { SearchNavigationItem.count }, 1 do
-      post app_settings_navigation_items_path, params: {
-        nav_type: "search",
-        navigation_item: { label: "Search" }
-      }
+      post app_settings_navigation_items_path, params: { nav_type: "search" }
     end
 
     assert_redirected_to app_settings_navigation_items_path

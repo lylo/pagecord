@@ -1,8 +1,6 @@
 class SearchNavigationItem < NavigationItem
   validates :type, uniqueness: { scope: :blog_id }
 
-  before_validation :set_label, on: :create
-
   def label
     I18n.t("search.submit")
   end
@@ -14,10 +12,4 @@ class SearchNavigationItem < NavigationItem
   def icon
     "icons/search.svg"
   end
-
-  private
-
-    def set_label
-      self.label = "Search"
-    end
 end
