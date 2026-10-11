@@ -9,6 +9,10 @@ class SearchNavigationItem < NavigationItem
     Rails.application.routes.url_helpers.blog_search_path
   end
 
+  def label_hidden?
+    true
+  end
+
   def icon
     "icons/search.svg"
   end

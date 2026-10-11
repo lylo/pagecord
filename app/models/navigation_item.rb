@@ -24,10 +24,6 @@ class NavigationItem < ApplicationRecord
     nil
   end
 
-  def label_hidden?
-    icon.present? || (icon_svg? && !show_label?)
-  end
-
   def reorder(new_position)
     old_position = position
 

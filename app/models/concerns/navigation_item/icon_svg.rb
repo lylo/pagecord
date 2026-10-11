@@ -50,6 +50,10 @@ module NavigationItem::IconSvg
       end
   end
 
+  def label_hidden?
+    icon_svg? && !show_label?
+  end
+
   private
 
     def clear_icon_svg

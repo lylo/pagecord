@@ -16,6 +16,10 @@ class SocialNavigationItem < NavigationItem
     email? ? "mailto:#{url}" : url
   end
 
+  def label_hidden?
+    true
+  end
+
   def icon
     "icons/social/#{platform.downcase.delete(" ")}.svg"
   end
