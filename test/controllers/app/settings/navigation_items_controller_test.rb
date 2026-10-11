@@ -117,6 +117,44 @@ class App::Settings::NavigationItemsControllerTest < ActionDispatch::Integration
     assert_response :unprocessable_entity
   end
 
+  test "a rejected link keeps the scroll position so its errors stay in view" do
+    post app_settings_navigation_items_path, params: { nav_type: "custom", navigation_item: { label: "", url: "/listening" } }
+
+    assert_response :unprocessable_entity
+    assert_select "meta[name='turbo-refresh-scroll'][content='preserve']"
+  end
+
+  test "edit fills the form with the link" do
+    item = navigation_items(:joel_custom)
+
+    get edit_app_settings_navigation_item_path(item)
+
+    assert_response :success
+    assert_select "form[action=?]", app_settings_navigation_item_path(item) do
+      assert_select "input[name='navigation_item[url]'][value='/posts']"
+      assert_select "input[type=submit][value=Save]"
+    end
+  end
+
+  test "update changes a custom link's icon" do
+    item = navigation_items(:joel_custom)
+
+    patch app_settings_navigation_item_path(item), params: { navigation_item: { label: "Posts", url: "/posts", icon_svg: '<svg viewBox="0 0 24 24"><path d="M1 1"/></svg>' } }
+
+    assert_redirected_to app_settings_navigation_items_path
+    assert_equal '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 1"/></svg>', item.reload.icon_svg
+  end
+
+  test "update removes a custom link's icon when it's unticked" do
+    item = navigation_items(:joel_custom)
+    item.update!(icon_svg: '<svg viewBox="0 0 24 24"><path d="M1 1"/></svg>')
+
+    patch app_settings_navigation_item_path(item), params: { navigation_item: { label: "Posts", url: "/posts", use_icon: "0", icon_svg: '<svg viewBox="0 0 24 24"><path d="M1 1"/></svg>' } }
+
+    assert_redirected_to app_settings_navigation_items_path
+    assert_nil item.reload.icon_svg
+  end
+
   test "posts radio hidden once a posts item exists" do
     get app_settings_navigation_items_path
     assert_select "input[name='nav_type'][value='posts']", count: 1

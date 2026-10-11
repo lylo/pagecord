@@ -1,4 +1,6 @@
 class NavigationItem < ApplicationRecord
+  include IconSvg
+
   belongs_to :blog, touch: true
   belongs_to :post, optional: true
 
@@ -20,6 +22,14 @@ class NavigationItem < ApplicationRecord
 
   def icon
     nil
+  end
+
+  def icon_label
+    label
+  end
+
+  def label_hidden?
+    icon.present? || (icon_svg? && !show_label?)
   end
 
   def reorder(new_position)

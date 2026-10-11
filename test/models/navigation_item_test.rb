@@ -125,6 +125,45 @@ class CustomNavigationItemTest < ActiveSupport::TestCase
   test "link_url returns url" do
     assert_equal "/posts", @nav_item.link_url
   end
+
+  test "a pasted icon keeps only its shapes, in the theme colour" do
+    item = CustomNavigationItem.new(blog: @blog, label: "Listening", url: "/listening", icon_svg: <<~SVG)
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256" onload="alert(1)">
+        <title>Headphones</title>
+        <script>alert(1)</script>
+        <foreignObject><div>hi</div></foreignObject>
+        <path d="M0 0h256v256H0z" fill="#000000" style="color: red" class="icon"/>
+        <a xlink:href="javascript:alert(1)"><path d="M1 1"/></a>
+      </svg>
+    SVG
+
+    assert item.valid?
+    assert_equal '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M0 0h256v256H0z" fill="currentColor"/></svg>', item.icon_svg
+  end
+
+  test "a pasted outline icon keeps its unfilled shapes" do
+    item = CustomNavigationItem.new(icon_svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#111"><path d="M1 1"/></svg>')
+
+    assert_equal '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 1"/></svg>', item.icon_svg
+  end
+
+  test "label is hidden only for an icon link set to show the icon alone" do
+    icon_svg = '<svg viewBox="0 0 24 24"><path d="M1 1"/></svg>'
+
+    assert_not CustomNavigationItem.new(label: "Listening").label_hidden?
+    assert_not CustomNavigationItem.new(label: "Listening", icon_svg:).label_hidden?
+    assert CustomNavigationItem.new(label: "Listening", icon_svg:, show_label: false).label_hidden?
+    assert navigation_items(:joel_social_bluesky).label_hidden?
+  end
+
+  test "a pasted icon must be an SVG with a viewBox" do
+    [ "headphones", "<div>🎧</div>", '<svg><path d="M1 1"/></svg>' ].each do |icon_svg|
+      item = CustomNavigationItem.new(blog: @blog, label: "Listening", url: "/listening", icon_svg:)
+
+      assert_not item.valid?, icon_svg
+      assert_includes item.errors[:icon_svg], "must be an SVG with a viewBox"
+    end
+  end
 end
 
 class PostsNavigationItemTest < ActiveSupport::TestCase
@@ -259,5 +298,19 @@ class SocialNavigationItemTest < ActiveSupport::TestCase
     item = CustomNavigationItem.new(blog: @blog, label: "Archive", url: "https://#{@blog.subdomain}.example.com/archive")
 
     assert_not item.external?
+  end
+
+  test "label follows the platform when it changes" do
+    item = navigation_items(:joel_social_bluesky)
+
+    item.update!(platform: "Mastodon", url: "https://mas.to/@joel")
+
+    assert_equal "Mastodon", item.label
+  end
+
+  test "every social platform has an icon" do
+    SocialNavigationItem::PLATFORMS.each do |platform|
+      assert Rails.root.join("app/assets/images", SocialNavigationItem.new(platform:).icon).exist?, platform
+    end
   end
 end

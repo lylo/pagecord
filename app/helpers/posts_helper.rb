@@ -14,6 +14,14 @@ module PostsHelper
     item.link_url
   end
 
+  def navigation_item_icon(item)
+    if item.icon_svg?
+      item.icon_svg.html_safe
+    elsif item.icon
+      inline_svg_tag item.icon
+    end
+  end
+
   def navigation_item_link_options(item)
     return {} unless @blog.external_links_in_new_tab? && item.external?
 

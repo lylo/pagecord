@@ -118,7 +118,7 @@ Rails.application.routes.draw do
           resource :preview, only: [ :show ], controller: "theme_garden/previews"
           resource :application, only: [ :create ], controller: "theme_garden/applications"
         end
-        resources :navigation_items, only: [ :index, :create, :update, :destroy ]
+        resources :navigation_items, only: [ :index, :edit, :create, :update, :destroy ]
         resources :email_change_requests, only: [ :create, :destroy ] do
           resource :resend, only: [ :create ], controller: "email_change_requests/resends"
         end
