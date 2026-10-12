@@ -2,7 +2,7 @@ require_relative "log_parser"
 
 # Reads the [billing] lines BillingEventLog writes.
 module LogBilling
-  TAG = "[billing] ".freeze
+  LINE = /\A(?:\[[^\]]*\]\s+)*\[billing\] (?<pairs>.*)/
 
   MONTHS_PER_TERM = { "monthly" => 12 }.freeze
 
@@ -26,10 +26,8 @@ module LogBilling
       entries.filter_map do |entry|
         next unless entry.line_type == :other
 
-        body = entry.detail.to_s
-        next unless body.start_with?(TAG)
-
-        parse(body, entry)
+        match = LINE.match(entry.detail.to_s)
+        parse(match[:pairs], entry) if match
       end
     end
 
@@ -53,10 +51,10 @@ module LogBilling
 
     private
 
-      def parse(body, entry)
+      def parse(pairs, entry)
         event = { timestamp: entry.timestamp, uuid: entry.uuid }
 
-        body.delete_prefix(TAG).split(" ").each do |pair|
+        pairs.split(" ").each do |pair|
           key, value = pair.split("=", 2)
           next if key.nil? || value.nil?
 

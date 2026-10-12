@@ -38,10 +38,12 @@ class LogParser
   HEADER_RE = /\A
     (?<ts>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2})\s+
     (?<level>\w+)\s+
-    \[(?<uuid>[^\]]*)\]\s+
-    \[host=(?<host>[^\]]*)\]\s+
-    \[ip=(?<ip>[^\]]*)\]\s+
-    \[user_agent=(?<ua>[^\]]*)\]\s+
+    (?:
+      \[(?<uuid>[^\]]*)\]\s+
+      \[host=(?<host>[^\]]*)\]\s+
+      \[ip=(?<ip>[^\]]*)\]\s+
+      \[user_agent=(?<ua>[^\]]*)\]\s+
+    )?
     (?<body>.*)
   \z/x
 

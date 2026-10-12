@@ -1,5 +1,4 @@
-# Writes the [billing] lines `rake logs:billing` reads. Call from a controller,
-# never a job: LogParser skips log lines without a request context header.
+# Writes the [billing] lines `rake logs:billing` reads.
 class BillingEventLog
   TAG = "[billing]".freeze
 
@@ -37,9 +36,9 @@ class BillingEventLog
         "#{TAG} #{pairs.join(" ")}"
       end
 
-      # Space separates one key=value from the next, so no value may contain one.
+      # Whitespace separates one key=value from the next and newlines end the line, so no value may contain either.
       def value_for(value)
-        value.respond_to?(:strftime) ? value.strftime("%F") : value.to_s.tr(" ", "_")
+        value.respond_to?(:strftime) ? value.strftime("%F") : value.to_s.gsub(/[[:space:]]/, "_")
       end
   end
 end

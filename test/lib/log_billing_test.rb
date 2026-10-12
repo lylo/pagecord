@@ -6,12 +6,27 @@ class LogBillingTest < Minitest::Test
     parsed = events(
       "[billing] event=renewal user=1 blog=one plan=annual amount=3900",
       "Completed 200 OK in 12ms",
-      "Cancelling subscription for 1"
+      "Cancelling subscription for 1",
+      'Parameters: {"post" => {"title" => "[billing] event=subscription_started plan=annual amount=3900"}}'
     )
 
     assert_equal 1, parsed.size
     assert_equal "renewal", parsed.first[:event]
     assert_equal "one", parsed.first[:blog]
+  end
+
+  def test_reads_billing_lines_written_inside_a_job
+    entries = [
+      "2026-10-11T08:05:46+00:00 INFO [ActiveJob] [DestroyUserJob] [def456] " \
+        "[billing] event=account_deleted user=1 blog=one paid=false reason=user_deleted",
+      "2026-10-11T11:01:54+00:00 INFO [abc123] [host=pagecord.com] [ip=203.0.113.1] [user_agent=Browser] " \
+        "[ActiveJob] [DestroyUserJob] [ghi789] [billing] event=account_deleted user=2 blog=two paid=false reason=spam"
+    ].map { |line| LogParser.parse_line(line) }
+
+    parsed = LogBilling.events_for(entries)
+
+    assert_equal %w[ 1 2 ], parsed.map { |event| event[:user] }
+    assert_equal %w[ account_deleted account_deleted ], parsed.map { |event| event[:event] }
   end
 
   def test_monthly_is_worth_a_year_of_run_rate
