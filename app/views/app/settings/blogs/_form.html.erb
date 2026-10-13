@@ -238,10 +238,7 @@
           <%= field_error(@blog, :subdomain) %>
         </fieldset>
       <% end %>
-      <div class="sheet-bleed flex items-center gap-x-2 py-5">
-        <%= form.submit "Update", class: "btn-primary" %>
-        <%= link_to "Cancel", app_settings_path, class: "btn-secondary" %>
-      </div>
+      <%= render "app/settings/form_actions", form: form %>
   <% end %>
   </div>
 

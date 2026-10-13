@@ -4,14 +4,7 @@ export default class extends Controller {
   static targets = ["panel", "tags"]
 
   connect() {
-    this.keydown = this.keydown.bind(this)
-    document.addEventListener("keydown", this.keydown)
-
     if (this.panelTarget.querySelector(".field-error:not(:empty)")) this.open()
-  }
-
-  disconnect() {
-    document.removeEventListener("keydown", this.keydown)
   }
 
   open() {
@@ -62,12 +55,10 @@ export default class extends Controller {
     this.tagsTarget.replaceChildren(...labels.map(text => Object.assign(document.createElement("span"), { textContent: text })))
   }
 
-  keydown(event) {
-    if ((event.metaKey || event.ctrlKey) && event.key === ".") {
-      event.preventDefault()
-      this.toggle()
-    } else if (event.key === "Escape") {
-      this.close()
-    }
+  dismiss(event) {
+    if (!this.panelTarget.hasAttribute("data-open")) return
+
+    event.preventDefault()
+    this.close()
   }
 }
