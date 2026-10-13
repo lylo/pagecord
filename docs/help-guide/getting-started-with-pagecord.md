@@ -45,6 +45,16 @@ If you do want a title, just add it in the title field when writing in the app, 
 
 You can change the language of your blog's interface elements (like email subscription forms) in **Settings → Blog Settings**.
 
+## Changing the date format
+
+Also in **Settings → Blog Settings**. By default, dates follow your blog's language: `13 Oct 2026` in English, `13.10.2026` in German. You can choose a numeric format instead:
+
+- **13/10/2026**, **13-10-2026** or **13.10.2026** – day, month, year
+- **10/13/2026** – month, day, year
+- **2026-10-13** – year, month, day (ISO)
+
+The format applies everywhere your blog shows a date, including the List of Titles layout, `{{ posts_by_year }}`, comments and the emails sent to your subscribers.
+
 ## What's Next?
 
 Now that you've published your first post, here are some things to explore:

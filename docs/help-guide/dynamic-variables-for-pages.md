@@ -294,7 +294,7 @@ Display the date the page was last updated. This is handy for pages that evolve 
 {{ updated_at }}
 ```
 
-By default, the date is shown in your blog's locale format. Use the `format` parameter for a specific style:
+By default, the date is shown in your blog's date format, set in Blog Settings, which follows your blog's language unless you've chosen one. Use the `format` parameter for a specific style:
 
 | Format | Example |
 |--------|---------|
@@ -302,9 +302,11 @@ By default, the date is shown in your blog's locale format. Use the `format` par
 | `datetime` | 12 Sep 2026 14:30 _(locale-specific + time)_ |
 | `long` | 12 September 2026 _(English only)_ |
 | `long_datetime` | 12 September 2026 14:30 _(English only)_ |
-| `dd_mm_yyyy` | 12/09/2026 |
-| `mm_dd_yyyy` | 09/12/2026 |
-| `yyyy_mm_dd` | 2026-09-12 |
+| `dd/mm/yyyy` | 12/09/2026 |
+| `dd-mm-yyyy` | 12-09-2026 |
+| `dd.mm.yyyy` | 12.09.2026 |
+| `mm/dd/yyyy` | 09/12/2026 |
+| `yyyy-mm-dd` | 2026-09-12 |
 
 ```javascript
 {{ updated_at | format: datetime }}
