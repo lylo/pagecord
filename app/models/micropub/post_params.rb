@@ -3,7 +3,8 @@ class Micropub::PostParams
     "name" => :title,
     "mp-slug" => :slug,
     "published" => :published_at,
-    "post-status" => :status
+    "post-status" => :status,
+    "bookmark-of" => :link_url
   }.freeze
 
   def initialize(params)

@@ -501,6 +501,18 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert @response.body.include?("This is public content")
   end
 
+  test "a link post's RSS item links to its link URL and keeps its permalink as the guid" do
+    post = @blog.posts.visible.titled("true").first
+    post.update!(link_url: "https://example.com/article")
+
+    get rss_feed_path(@blog)
+
+    item = Nokogiri::XML(@response.body).xpath("//item[title=$title]", nil, title: post.title).first
+    assert_equal "https://example.com/article", item.at_xpath("link").text
+    assert_equal post_url(post), item.at_xpath("guid").text
+    assert_includes item.at_xpath("description").text, %(<a href="#{post_url(post)}">Permalink</a>)
+  end
+
   test "should redirect from old /name.rss to subdomain RSS feed" do
     host! Rails.application.config.x.domain
 
@@ -803,6 +815,28 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "link[rel=canonical][href=?]", "https://myblog.net"
+  end
+
+  test "a link post's title links to its link URL" do
+    post = @blog.posts.visible.titled("true").first
+    post.update!(link_url: "https://example.com/article")
+
+    get post_path(post)
+
+    assert_select "article.link-post a.post-title-link[href=?]", "https://example.com/article"
+    assert_select "a.post-title-link.u-url", count: 0
+    assert_select "h1 a.post-permalink[href=?]", post_path(post)
+    assert_select "link[rel=canonical][href=?]", post_url(post)
+  end
+
+  test "a link post's title opens in a new tab when external links do" do
+    @blog.update!(external_links_in_new_tab: true)
+    post = @blog.posts.visible.titled("true").first
+    post.update!(link_url: "https://example.com/article")
+
+    get post_path(post)
+
+    assert_select "a.post-title-link[href=?][target=\"_blank\"][rel=\"noopener\"]", "https://example.com/article"
   end
 
   test "should emit BlogPosting structured data on a post page" do
@@ -1298,6 +1332,27 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes @response.body, posts(:one).title
     assert_not_includes @response.body, posts(:joel_titleless).slug
+  end
+
+  test "should filter posts with link_posts=false" do
+    posts(:one).update!(link_url: "https://example.com/article")
+
+    get blog_posts_path(link_posts: "false")
+
+    assert_response :success
+    assert_select ".tag-filter-notice p", text: "Posts that aren't link posts"
+    assert_not_includes @response.body, posts(:one).title
+    assert_includes @response.body, posts(:joel_titleless).slug
+  end
+
+  test "should filter RSS feed with link_posts=false" do
+    posts(:one).update!(link_url: "https://example.com/article")
+
+    get blog_feed_xml_path(link_posts: "false")
+
+    assert_response :success
+    assert_not_includes @response.body, posts(:one).title
+    assert_includes @response.body, posts(:joel_titleless).slug
   end
 
   test "should combine tag and title filters" do

@@ -50,6 +50,7 @@ List endpoints return arrays:
     "status": "published",
     "published_at": "2026-03-11T12:00:00.000Z",
     "canonical_url": null,
+    "link_url": null,
     "tag_list": ["rails", "ruby"],
     "hidden": false,
     "locale": "en",
@@ -65,7 +66,7 @@ Create requests return `201 Created` with the created resource. Get and update r
 Post responses include:
 
 - `token` – stable API identifier for future get, update, and delete requests
-- `title`, `slug`, `status`, `published_at`, `canonical_url`, `tag_list`, `hidden`, and `locale`
+- `title`, `slug`, `status`, `published_at`, `canonical_url`, `link_url`, `tag_list`, `hidden`, and `locale`
 - `created_at` and `updated_at`
 - `content` – stored HTML, including canonical Action Text attachment tags where relevant
 
@@ -116,6 +117,7 @@ Parameters:
 - `status` – `published` or `draft`
 - `published_at` – ISO 8601 timestamp
 - `canonical_url` – canonical URL for the post
+- `link_url` – makes it a link post: the title links to this address
 - `tags` – comma-separated tags
 - `hidden` – `true` to hide from the feed
 - `locale` – post language code
@@ -394,7 +396,7 @@ curl -X POST https://api.pagecord.com/posts \
   }'
 ```
 
-Supported front matter fields: `title`, `slug`, `status`, `published_at` (or `date`), `canonical_url`, `locale`, `hidden`, `tags`, `open_graph_image`.
+Supported front matter fields: `title`, `slug`, `status`, `published_at` (or `date`), `canonical_url`, `link_url`, `locale`, `hidden`, `tags`, `open_graph_image`.
 
 Explicit parameters always take priority over front matter values. For example, passing `title=Explicit` with front matter containing `title: From FM` will use "Explicit".
 

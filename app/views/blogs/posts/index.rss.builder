@@ -1,4 +1,4 @@
-cache([ @blog, @posts.map(&:id), @current_tags, params[:without_tag], params[:title], @current_lang ]) do
+cache([ @blog, @posts.map(&:id), @current_tags, params[:without_tag], params[:title], params[:link_posts], @current_lang ]) do
   xml.instruct! :xml, version: "1.0"
   xml.rss version: "2.0" do
     xml.channel do
@@ -14,6 +14,7 @@ cache([ @blog, @posts.map(&:id), @current_tags, params[:without_tag], params[:ti
         publication_time = post.published_at_in_user_timezone
         rendered_content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
         rendered_content = ExcerptBreak.strip(rendered_content)
+        rendered_content += %(<p><a href="#{link}">Permalink</a></p>) if post.link_url?
 
         xml.item do
           if post.title.blank?
@@ -26,7 +27,7 @@ cache([ @blog, @posts.map(&:id), @current_tags, params[:without_tag], params[:ti
           end
 
           xml.pubDate publication_time.to_formatted_s(:rfc822)
-          xml.link link
+          xml.link post.link_url || link
           xml.guid link
 
           post.tag_list.each do |tag|

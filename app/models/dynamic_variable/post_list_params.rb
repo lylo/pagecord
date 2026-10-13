@@ -20,6 +20,7 @@ class DynamicVariable::PostListParams
       args[:tag] = @params[:tag] if @params[:tag]
       args[:without_tag] = @params[:without_tag] if @params[:without_tag]
       args[:title] = @params[:title] if @params.key?(:title)
+      args[:link_posts] = @params[:link_posts] if @params.key?(:link_posts)
       args[:emailed] = @params[:emailed] if @params.key?(:emailed)
       args[:lang] = @params[:lang] if @params[:lang]
       args[:year] = @params[:year] if include_year && @params[:year]
@@ -33,6 +34,7 @@ class DynamicVariable::PostListParams
       qp[:tag] = Array(@params[:tag]).join(",") if @params[:tag]
       qp[:without_tag] = Array(@params[:without_tag]).join(",") if @params[:without_tag]
       qp[:title] = @params[:title].to_s if @params.key?(:title)
+      qp[:link_posts] = @params[:link_posts].to_s if @params.key?(:link_posts)
       qp[:emailed] = @params[:emailed].to_s if @params.key?(:emailed)
       qp[:lang] = @params[:lang] if @params[:lang]
       qp[:year] = @params[:year] if include_year && @params[:year]
@@ -48,6 +50,7 @@ class DynamicVariable::PostListParams
         normalized[:tag] = split_list_param(params[:tag]) if params[:tag].present?
         normalized[:without_tag] = split_list_param(params[:without_tag]) if params[:without_tag].present?
         normalized[:title] = params[:title] if params[:title].present?
+        normalized[:link_posts] = params[:link_posts] if params[:link_posts].present?
         normalized[:emailed] = params[:emailed] if params[:emailed].present?
         normalized[:lang] = params[:lang] if params[:lang].present?
         normalized[:year] = params[:year] if params[:year].present?

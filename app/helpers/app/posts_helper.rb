@@ -6,7 +6,7 @@ module App::PostsHelper
 
   def settings_customised?(post)
     post.hidden? || post.comments_closed || post.tag_list.present? || post.locale.present? ||
-      post.canonical_url.present? || post.open_graph_image.attached? || post.open_graph_image_suppressed?
+      post.canonical_url.present? || post.link_url.present? || post.open_graph_image.attached? || post.open_graph_image_suppressed?
   end
 
   def draft_button_text(post, model_name: nil, short: false)

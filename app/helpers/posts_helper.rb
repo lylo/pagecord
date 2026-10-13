@@ -22,16 +22,19 @@ module PostsHelper
     end
   end
 
-  def navigation_item_link_options(item)
-    return {} unless @blog.external_links_in_new_tab? && item.external?
+  def new_tab_link_options
+    @blog.external_links_in_new_tab? ? { target: "_blank", rel: "noopener" } : {}
+  end
 
-    { target: "_blank", rel: "noopener" }
+  def navigation_item_link_options(item)
+    item.external? ? new_tab_link_options : {}
   end
 
   def filter_description
     parts = []
     parts << "tagged with <strong>#{h @current_tags.join(", ")}</strong>" if @current_tags.present?
     parts << (params[:title] == "true" ? "with titles" : "without titles") if params[:title].present?
+    parts << (params[:link_posts] == "true" ? "that are link posts" : "that aren't link posts") if params[:link_posts].present?
     parts << "in <strong>#{h Post.locale_name(@current_lang)}</strong>" if @current_lang.present?
     safe_join([ "Posts ", parts.join(", ").html_safe ])
   end

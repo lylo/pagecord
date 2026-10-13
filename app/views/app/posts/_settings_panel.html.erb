@@ -72,6 +72,23 @@
     </div>
   </div>
 
+  <div class="mb-8" data-section="link-url">
+    <div class="mt-4 font-bold">
+    <%= form.label :link_url, "Link URL" %>
+    </div>
+
+    <fieldset class="mt-2">
+      <%= form.text_field :link_url,
+          class: "w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
+          placeholder: "https://example.com/an-article" %>
+      <div class="field-error"><%= @post.errors[:link_url].to_sentence if @post.errors[:link_url].any? %></div>
+
+      <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+        Makes this a link post: the title links to this page instead of the post itself.
+      </div>
+    </fieldset>
+  </div>
+
   <% if @blog.accepts_comments? %>
     <div class="mb-8" data-section="comments">
       <div class="mt-4 font-bold">

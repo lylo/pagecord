@@ -64,6 +64,20 @@ Or only posts without a title:
 https://yourusername.pagecord.com/feed.xml?title=false
 ```
 
+### Filter link posts
+
+Leave out link posts, for an articles-only feed:
+
+```javascript
+https://yourusername.pagecord.com/feed.xml?link_posts=false
+```
+
+Or only link posts:
+
+```javascript
+https://yourusername.pagecord.com/feed.xml?link_posts=true
+```
+
 ### Filter by language
 
 ```javascript

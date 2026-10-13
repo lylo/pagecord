@@ -1,0 +1,6 @@
+<%# locals: (post:) %>
+<% if post.link_url? %>
+  <span class="link-post-title"><%= link_to post.display_title, post.link_url, class: "p-name u-bookmark-of", **new_tab_link_options %>&nbsp;<%= render "blogs/posts/permalink", post: post %></span>
+<% else %>
+  <%= link_to post.display_title, post_path(post), class: "p-name u-url", data: { turbo_prefetch: false } %>
+<% end %>

@@ -123,6 +123,19 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_equal post.title, email.subject
   end
 
+  test "individual email links a link post's title to its link URL" do
+    post = posts(:one)
+    post.update!(link_url: "https://example.com/article")
+
+    digest = PostDigest.create!(blog: blogs(:joel), kind: :individual)
+    digest.digest_posts.create!(post: post)
+
+    email = PostDigestMailer.with(subscriber: email_subscribers(:one), digest: digest).individual
+
+    assert_match %r{<a href="https://example\.com/article">#{post.title}</a>}, email.html_part.body.decoded
+    assert_includes email.text_part.body.decoded, "https://example.com/article"
+  end
+
   test "individual email uses fallback subject when post has no title" do
     blog = blogs(:joel)
     email_subscriber = email_subscribers(:one)

@@ -149,7 +149,8 @@ class Api::MicropubController < Api::BaseController
         "category" => post.tag_list,
         "post-status" => [ post.status ],
         "published" => [ post.published_at&.iso8601 ].compact,
-        "mp-slug" => [ post.slug ]
+        "mp-slug" => [ post.slug ],
+        "bookmark-of" => [ post.link_url ].compact
       }.select { |_key, values| values.present? }
     end
 

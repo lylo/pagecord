@@ -69,6 +69,7 @@ class Blogs::PostsController < Blogs::BaseController
       scope = scope.tagged_with_any(@current_tags) if @current_tags
       scope = scope.tagged_without_any(params[:without_tag].split(",").map(&:strip)) if params[:without_tag].present?
       scope = scope.titled(params[:title]) if params[:title].present?
+      scope = scope.link_posts(params[:link_posts]) if params[:link_posts].present?
       scope = scope.for_locale(@current_lang, @blog.locale) if @current_lang
 
       @pagy, @posts = pagy(scope, limit: page_size)
@@ -89,7 +90,7 @@ class Blogs::PostsController < Blogs::BaseController
   private
 
     def filtered?
-      params[:tag].present? || params[:title].present? || params[:lang].present?
+      params[:tag].present? || params[:title].present? || params[:link_posts].present? || params[:lang].present?
     end
 
     def redirect_to_last_page(exception)

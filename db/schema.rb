@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_13_094520) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_13_161055) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -340,6 +340,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_13_094520) do
     t.integer "upvotes_count", default: 0, null: false
     t.integer "comments_count", default: 0, null: false
     t.datetime "comments_closed_at"
+    t.string "link_url"
     t.index ["blog_id", "is_page"], name: "index_posts_on_blog_id_and_is_page"
     t.index ["blog_id", "slug"], name: "index_posts_on_blog_id_and_slug", unique: true
     t.index ["blog_id", "status", "published_at"], name: "index_posts_published_lookup", order: { published_at: :desc }, where: "(status = 1)"

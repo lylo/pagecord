@@ -124,6 +124,18 @@ By default, posts are shown newest first. Use `sort: asc` to show oldest first â
 {{ posts | title: false }}
 ```
 
+#### **Leave out link posts**
+
+```javascript
+{{ posts | link_posts: false }}
+```
+
+#### **Only link posts**
+
+```javascript
+{{ posts | link_posts: true }}
+```
+
 #### **Only posts sent in a newsletter**
 
 ```javascript
@@ -240,6 +252,12 @@ Shows posts matching any of the tags.
 
 ```javascript
 {{ posts_by_year | title: true }}
+```
+
+#### **An archive without link posts**
+
+```javascript
+{{ posts_by_year | link_posts: false }}
 ```
 
 #### **Only posts sent as newsletter**

@@ -1,4 +1,8 @@
 <div class="digest">
+  <% if @post.link_url? %>
+    <h2 class="post-title"><%= link_to @post.title, @post.link_url %></h2>
+  <% end %>
+
   <div class="post-content">
     <%= render_digest_post_content(@post) %>
   </div>

@@ -36,6 +36,11 @@ class Post::FrontMatterTest < ActiveSupport::TestCase
     assert_equal "ruby", attrs[:tags_string]
   end
 
+  test "parses link_url" do
+    attrs = Post::FrontMatter.parse("link_url: https://example.com/article")
+    assert_equal "https://example.com/article", attrs[:link_url]
+  end
+
   test "parses canonical_url" do
     attrs = Post::FrontMatter.parse("canonical_url: https://example.com/post")
     assert_equal "https://example.com/post", attrs[:canonical_url]

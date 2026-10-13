@@ -168,6 +168,15 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "published", json["status"]
   end
 
+  test "create makes a link post" do
+    post "/posts", params: {
+      title: "Linked", content: "Hello", link_url: "https://example.com/article", status: "published"
+    }, headers: auth_header
+
+    assert_response :created
+    assert_equal "https://example.com/article", JSON.parse(response.body)["link_url"]
+  end
+
   test "create with tags" do
     post "/posts", params: {
       title: "Tagged", content: "Hello", tags: "ruby, rails", status: "published"

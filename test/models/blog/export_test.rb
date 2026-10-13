@@ -90,6 +90,7 @@ class Blog::ExportTest < ActiveSupport::TestCase
 
   test "markdown export creates markdown files and index" do
     setup_post_with_image
+    @post.update!(link_url: "https://example.com/article")
     export = Blog::Export.create!(blog: @blog, format: :markdown)
 
     Dir.mktmpdir do |dir|
@@ -107,6 +108,7 @@ class Blog::ExportTest < ActiveSupport::TestCase
       assert File.exist?(md_file)
       content = File.read(md_file)
       assert_includes content, "title: \"Test Post\""
+      assert_includes content, "link_url: https://example.com/article"
       assert_includes content, "# Test Post"
 
       image_path = File.join(dir, "images", @post.slug, "test_image.jpg")

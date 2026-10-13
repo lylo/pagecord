@@ -79,6 +79,24 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select "body", text: /The Beauty of Landscape Photography/
   end
 
+  test "posts_by_year tag filters link posts" do
+    @blog.posts.create!(title: "An Article", content: "Content", status: :published, published_at: 2.days.ago)
+    link_post = @blog.posts.create!(title: "A Link Post", content: "Content", link_url: "https://example.com/article", status: :published, published_at: 1.day.ago)
+
+    articles = @blog.pages.create!(title: "Archive", content: "{{ posts_by_year | link_posts: false }}", status: :published)
+    get blog_post_url(subdomain: @blog.subdomain, slug: articles.slug)
+
+    assert_select "li", text: /An Article/
+    assert_select "li", text: /A Link Post/, count: 0
+
+    links = @blog.pages.create!(title: "Links", content: "{{ posts_by_year | link_posts: true }}", status: :published)
+    get blog_post_url(subdomain: @blog.subdomain, slug: links.slug)
+
+    assert_select "li.h-entry.link-post .link-post-title a.u-bookmark-of[href=?]", "https://example.com/article"
+    assert_select "li.h-entry.link-post .link-post-title a.post-permalink.u-url[href=?]", "/#{link_post.slug}"
+    assert_select "li", text: /An Article/, count: 0
+  end
+
   test "renders tags custom tag" do
     page = @blog.pages.create!(title: "Tags", content: "{{ tags }}", status: :published)
 

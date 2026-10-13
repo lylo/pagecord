@@ -57,6 +57,7 @@ Pagecord supports creating and updating posts with:
 - Tags
 - Slug
 - Published date
+- Link posts, using `bookmark-of`
 - Image uploads through the media endpoint
 - Image alt text and captions
 

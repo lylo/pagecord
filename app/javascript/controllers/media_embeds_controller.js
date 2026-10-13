@@ -8,8 +8,7 @@ export default class extends Controller {
   }
 
   async replaceMediaLinks() {
-    const articles = Array.from(this.element.querySelectorAll('article'))
-    const links = articles.flatMap(a => Array.from(a.querySelectorAll('a')).filter(l => isEmbeddableLink(l, this.mediaSites)))
+    const links = Array.from(this.element.querySelectorAll(".post-body a")).filter(l => isEmbeddableLink(l, this.mediaSites))
     await Promise.all(links.map(link => this.processLink(link)))
   }
 

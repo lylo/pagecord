@@ -334,6 +334,30 @@ class Api::MicropubControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test "creates a link post from bookmark-of" do
+    post "/micropub",
+      params: {
+        type: [ "h-entry" ],
+        properties: {
+          name: [ "Worth reading" ],
+          content: [ "Hello" ],
+          "bookmark-of": [ "https://example.com/article" ]
+        }
+      }.to_json,
+      headers: auth_header.merge("Content-Type" => "application/json")
+
+    assert_response :created
+    assert_equal "https://example.com/article", @blog.posts.find_by(slug: "worth-reading").link_url
+  end
+
+  test "source query returns bookmark-of for a link post" do
+    @post.update!(link_url: "https://example.com/article")
+
+    get "/micropub", params: { q: "source", url: "http://joel.example.com/#{@post.slug}" }, headers: auth_header
+
+    assert_equal [ "https://example.com/article" ], JSON.parse(response.body)["properties"]["bookmark-of"]
+  end
+
   test "source query returns post properties" do
     get "/micropub", params: { q: "source", url: "http://joel.example.com/#{@post.slug}" }, headers: auth_header
 

@@ -7,7 +7,7 @@
 <% preview_url = blog_post_preview_url(params[:id], host: @blog.host) %>
 
 <div data-controller="media-embeds lightbox">
-  <article class="<%= @post.page? ? 'page' : 'post' %> h-entry">
+  <article class="<%= token_list(@post.page? ? "page" : "post", "h-entry", "link-post": @post.link_url?) %>">
     <%= render "blogs/posts/post_title", post: @post, url: preview_url %>
     <%= render "blogs/posts/post_content", post: @post %>
 

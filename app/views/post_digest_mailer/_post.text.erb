@@ -1,6 +1,9 @@
 <% if post.title %>
 ## <%= post.title %>
 <% end %>
+<% if post.link_url? %>
+<%= post.link_url %>
+<% end %>
 
 <%= post.content.to_plain_text %>
 

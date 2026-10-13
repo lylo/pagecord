@@ -18,6 +18,31 @@ class PostTest < ActiveSupport::TestCase
     assert_not @post.valid?
   end
 
+  test "link_url must be an http or https address" do
+    post = posts(:one)
+
+    post.link_url = " https://example.com/article "
+    assert post.valid?
+    assert_equal "https://example.com/article", post.link_url
+
+    post.link_url = ""
+    assert_nil post.link_url
+
+    post.link_url = "https://de.wikipedia.org/wiki/Müller?q=a|b"
+    assert post.valid?
+
+    post.link_url = "javascript:alert(1)"
+    assert_not post.valid?
+  end
+
+  test "a link post needs a title" do
+    post = posts(:joel_titleless)
+    post.link_url = "https://example.com/article"
+
+    assert_not post.valid?
+    assert_equal [ "needs a post title" ], post.errors[:link_url]
+  end
+
   test "published at should be set on create for published posts" do
     post = blogs(:joel).posts.create! title: "my new post", content: "this is my new post", status: :published
 

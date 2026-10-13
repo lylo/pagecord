@@ -1,5 +1,5 @@
 <% cache_if(post.post?, [post, @blog.updated_at, local_assigns[:excerpt], @blog.accepts_comments?]) do %>
-  <article class="<%= post.page? ? 'page' : 'post' %> h-entry">
+  <article class="<%= token_list(post.page? ? "page" : "post", "h-entry", "link-post": post.link_url?) %>">
     <%= render "blogs/posts/post_title", post: post %>
 
     <%= render "blogs/posts/post_content", post: post, excerpt: local_assigns[:excerpt] %>

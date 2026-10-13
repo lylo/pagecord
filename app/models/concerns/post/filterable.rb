@@ -2,11 +2,12 @@ module Post::Filterable
   extend ActiveSupport::Concern
 
   class_methods do
-    def filtered_for_dynamic_variable(tag: nil, without_tag: nil, title: nil, emailed: nil, lang: nil, blog_locale: nil, year: nil, sort: nil)
+    def filtered_for_dynamic_variable(tag: nil, without_tag: nil, title: nil, link_posts: nil, emailed: nil, lang: nil, blog_locale: nil, year: nil, sort: nil)
       apply_filters(
         tag: tag,
         without_tag: without_tag,
         title: title,
+        link_posts: link_posts,
         emailed: emailed,
         lang: lang,
         blog_locale: blog_locale,
@@ -14,12 +15,13 @@ module Post::Filterable
       ).ordered_by_published(sort)
     end
 
-    def apply_filters(tag: nil, without_tag: nil, title: nil, emailed: nil, lang: nil, blog_locale: nil, year: nil)
+    def apply_filters(tag: nil, without_tag: nil, title: nil, link_posts: nil, emailed: nil, lang: nil, blog_locale: nil, year: nil)
       scope = all
       scope = scope.tagged_with_any(*Array(tag)) if tag
       scope = scope.tagged_without_any(*Array(without_tag)) if without_tag
       scope = scope.where.not(title: [ nil, "" ]) if title.to_s == "true"
       scope = scope.where(title: [ nil, "" ]) if title.to_s == "false"
+      scope = scope.link_posts(link_posts) unless link_posts.nil?
       scope = scope.emailed if emailed.to_s == "true"
       scope = scope.not_emailed if emailed.to_s == "false"
       scope = scope.for_locale(lang, blog_locale) if lang

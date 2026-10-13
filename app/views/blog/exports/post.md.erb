@@ -4,6 +4,9 @@ published: <%= post.published? %>
 <% if post.published_at.present? -%>
 published_at: <%= post.published_at.iso8601 %>
 <% end -%>
+<% if post.link_url? -%>
+link_url: <%= post.link_url %>
+<% end -%>
 <% if post.tag_list.present? -%>
 tags: [<%= post.tag_list.map { |tag| "\"#{tag}\"" }.join(", ") %>]
 <% end -%>

@@ -28,12 +28,17 @@ class Post < ApplicationRecord
   validates_with UploadQuota::Validator
   validate :title_present_for_pages
   validate :one_home_page, on: :create
+  validates :link_url, format: { with: %r{\Ahttps?://\S+\z}, message: "must be a full web address, starting with https://" }, allow_nil: true
+  validate :title_present_for_link_posts
+
+  normalizes :link_url, with: -> { it.strip.presence }
 
   scope :posts, -> { where(is_page: false) }
   scope :pages, -> { where(is_page: true) }
   scope :released, -> { where("published_at <= ?", Time.current) }
   scope :visible, -> { kept.where.not(hidden: true).published.released }
   scope :titled, ->(flag) { flag == "true" ? where.not(title: [ nil, "" ]) : where(title: [ nil, "" ]) }
+  scope :link_posts, ->(flag) { flag.to_s == "true" ? where.not(link_url: nil) : where(link_url: nil) }
   scope :for_locale, ->(locale, blog_locale) {
     blog_locale == locale ? where(locale: [ locale, nil ]) : where(locale: locale)
   }
@@ -69,6 +74,10 @@ class Post < ApplicationRecord
     if page? && title.blank? && !home_page?
       errors.add(:title, "can't be blank")
     end
+  end
+
+  def title_present_for_link_posts
+    errors.add(:link_url, "needs a post title") if link_url? && title.blank?
   end
 
   def one_home_page
