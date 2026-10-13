@@ -18,6 +18,13 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_match blog.display_name, email.subject
   end
 
+  test "digest email dates posts in the blog's date format" do
+    blogs(:joel).update!(date_format: "yyyy-mm-dd")
+    email = PostDigestMailer.with(subscriber: email_subscribers(:one), digest: post_digests(:one)).weekly_digest
+
+    assert_match posts(:one).published_at_in_user_timezone.to_date.iso8601, email.html_part.body.to_s
+  end
+
   test "digest email includes subscriber token header for bounce tracking" do
     email_subscriber = email_subscribers(:one)
     email = PostDigestMailer.with(subscriber: email_subscriber, digest: post_digests(:one)).weekly_digest

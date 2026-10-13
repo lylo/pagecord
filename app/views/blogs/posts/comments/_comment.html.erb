@@ -10,7 +10,7 @@
     <% if comment.author? %>
       <span class="comment-badge"><%= t("comments.author_badge") %></span>
     <% end %>
-    <%= local_time comment.created_at, format: published_at_date_format, class: "comment-date" %>
+    <%= local_time comment.created_at, format: @blog.post_date_format, class: "comment-date" %>
   </div>
 
   <div class="comment-message"><%= comment.message %></div>

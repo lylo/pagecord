@@ -12,7 +12,7 @@
         <% previous_year = post_date.year %>
       <% end %>
       <div class="post-row h-entry" <%= tag.attributes(data: post_tag_data(post)) %>>
-        <%= local_time post_date, format: :month_day, class: "dt-published" %>
+        <%= local_time post_date, format: @blog.month_day_format, class: "dt-published" %>
         <%= link_to post.display_title, post_path(post), class: "p-name u-url", data: { turbo_prefetch: false } %>
       </div>
     <% end %>

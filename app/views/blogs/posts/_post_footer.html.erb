@@ -4,7 +4,7 @@
 
 <footer>
   <%= link_to post_path(post), class: "post-date u-url" do %>
-    <%= local_time post.published_at, format: published_at_date_format, class: "dt-published" %>
+    <%= local_time post.published_at, format: @blog.post_date_format, class: "dt-published" %>
   <% end %>
 
   <% reply_enabled = @blog.accepts_replies? %>

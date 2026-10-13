@@ -17,7 +17,8 @@ class DynamicVariableProcessor
     "long_datetime" => "%d %B %Y %H:%M",
     "dd_mm_yyyy"    => "%d/%m/%Y",
     "mm_dd_yyyy"    => "%m/%d/%Y",
-    "yyyy_mm_dd"    => "%Y-%m-%d"
+    "yyyy_mm_dd"    => "%Y-%m-%d",
+    **Blog::DATE_FORMATS.transform_values { it[:post_date] }
   }.freeze
 
   def initialize(post:, view:)
@@ -76,9 +77,9 @@ class DynamicVariableProcessor
     def render_updated_at_tag(params_string)
       params = parse_params(params_string)
       format = if params[:format] == "datetime"
-        "#{I18n.t("date.formats.post_date", locale: @blog.locale)} %H:%M"
+        "#{@blog.post_date_format} %H:%M"
       else
-        UPDATED_AT_FORMATS[params[:format]] || :post_date
+        UPDATED_AT_FORMATS[params[:format]] || @blog.post_date_format
       end
 
       time = updated_at_for(params[:scope])

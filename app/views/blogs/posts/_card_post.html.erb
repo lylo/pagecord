@@ -29,7 +29,7 @@
       </div>
 
       <div class="post-card-meta <%= post.tag_list.present? ? 'has-tags' : 'no-tags' %>">
-        <%= local_time post.published_at, format: published_at_date_format, class: "post-card-date dt-published" %>
+        <%= local_time post.published_at, format: @blog.post_date_format, class: "post-card-date dt-published" %>
         <span class="post-card-badge">
           <%= t('posts.read_more') %>
         </span>

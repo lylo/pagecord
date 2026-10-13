@@ -119,6 +119,13 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_equal expected_subject, digest.subject
   end
 
+  test "subject dates the digest in the blog's date format" do
+    digest = post_digests(:one)
+    digest.blog.update!(date_format: "yyyy-mm-dd")
+
+    assert_includes digest.subject, digest.created_at.to_date.iso8601
+  end
+
   test "generate_individual_for creates an individual digest with one post" do
     post = create_new_post
 

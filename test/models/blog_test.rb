@@ -419,4 +419,28 @@ class BlogTest < ActiveSupport::TestCase
     assert blog.user.on_trial?
     assert blog.accepts_replies?
   end
+
+  test "date format follows the language until a preset is chosen" do
+    blog = blogs(:joel)
+    blog.update!(locale: "de")
+
+    assert_equal "%d.%m.%Y", blog.post_date_format
+    assert_equal "%d/%m", blog.month_day_format
+
+    blog.update!(date_format: "yyyy-mm-dd")
+
+    assert_equal "%Y-%m-%d", blog.post_date_format
+    assert_equal "%m-%d", blog.month_day_format
+  end
+
+  test "date format must be a preset" do
+    blog = blogs(:joel)
+
+    blog.date_format = "%Y"
+    assert_not blog.valid?
+
+    blog.date_format = ""
+    assert blog.valid?
+    assert_nil blog.date_format
+  end
 end

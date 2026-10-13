@@ -59,6 +59,14 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "annie.blog", blog_with_domain.reload.custom_domain
   end
 
+  test "should set and clear the date format" do
+    patch app_settings_blog_url, params: { blog: { date_format: "yyyy-mm-dd" } }, as: :turbo_stream
+    assert_equal "yyyy-mm-dd", @blog.reload.date_format
+
+    patch app_settings_blog_url, params: { blog: { date_format: "" } }, as: :turbo_stream
+    assert_nil @blog.reload.date_format
+  end
+
   test "should update search engine visibility" do
     patch app_settings_blog_url, params: { blog: { allow_search_indexing: false } }, as: :turbo_stream
 

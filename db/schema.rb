@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_11_112336) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_13_094520) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -154,6 +154,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_11_112336) do
     t.string "post_url_format", default: "flat", null: false
     t.string "post_url_prefix"
     t.datetime "reviewed_at"
+    t.string "date_format"
     t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"

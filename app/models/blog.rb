@@ -12,6 +12,14 @@ class Blog < ApplicationRecord
   AVATAR_CONTENT_TYPES = %w[ image/jpeg image/png image/webp ].freeze
   AVATAR_MAX_SIZE = 5.megabytes
 
+  DATE_FORMATS = {
+    "dd/mm/yyyy" => { post_date: "%d/%m/%Y", month_day: "%d/%m" },
+    "dd-mm-yyyy" => { post_date: "%d-%m-%Y", month_day: "%d-%m" },
+    "dd.mm.yyyy" => { post_date: "%d.%m.%Y", month_day: "%d.%m" },
+    "mm/dd/yyyy" => { post_date: "%m/%d/%Y", month_day: "%m/%d" },
+    "yyyy-mm-dd" => { post_date: "%Y-%m-%d", month_day: "%m-%d" }
+  }.freeze
+
   has_many :all_posts, class_name: "Post", dependent: :destroy
   has_many :posts, -> { where(is_page: false) }, class_name: "Post"
   has_many :pages, -> { where(is_page: true) }, class_name: "Post"
@@ -47,6 +55,9 @@ class Blog < ApplicationRecord
   validate  :subdomain_valid
   validates :google_site_verification, format: { with: /\A[a-zA-Z0-9_-]+\z/, message: "can only contain letters, numbers, underscores, and hyphens" }, allow_blank: true
 
+  normalizes :date_format, with: -> { it.presence }
+  validates :date_format, inclusion: { in: DATE_FORMATS.keys }, allow_nil: true
+
   def has_custom_home_page?
     home_page.present?
   end
@@ -79,7 +90,19 @@ class Blog < ApplicationRecord
     comments_enabled && user.has_premium_access?
   end
 
+  def post_date_format
+    date_format_for(:post_date)
+  end
+
+  def month_day_format
+    date_format_for(:month_day)
+  end
+
   private
+
+    def date_format_for(name)
+      DATE_FORMATS.dig(date_format, name) || I18n.t("date.formats.#{name}", locale: locale)
+    end
 
     def within_blog_limit
       if user && blog_count_exceeds_limit?
