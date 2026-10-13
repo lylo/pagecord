@@ -510,7 +510,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     item = Nokogiri::XML(@response.body).xpath("//item[title=$title]", nil, title: post.title).first
     assert_equal "https://example.com/article", item.at_xpath("link").text
     assert_equal post_url(post), item.at_xpath("guid").text
-    assert_includes item.at_xpath("description").text, %(<a href="#{post_url(post)}">Permalink</a>)
+    assert_includes item.at_xpath("description").text, %(🔗 <a href="#{post_url(post)}">#{post_url(post)}</a>)
   end
 
   test "should redirect from old /name.rss to subdomain RSS feed" do

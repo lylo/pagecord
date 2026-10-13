@@ -14,7 +14,7 @@ cache([ @blog, @posts.map(&:id), @current_tags, params[:without_tag], params[:ti
         publication_time = post.published_at_in_user_timezone
         rendered_content = Html::StripActionTextAttachments.new.transform(post.content.to_s)
         rendered_content = ExcerptBreak.strip(rendered_content)
-        rendered_content += %(<p><a href="#{link}">Permalink</a></p>) if post.link_url?
+        rendered_content += %(<p>🔗 <a href="#{link}">#{link}</a></p>) if post.link_url?
 
         xml.item do
           if post.title.blank?
