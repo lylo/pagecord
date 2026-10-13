@@ -45,6 +45,18 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".year-header time", count: 0
   end
 
+  test "should render dates in the blog's date format" do
+    @blog.update!(date_format: "yyyy-mm-dd")
+
+    get blog_posts_path
+    assert_select "time.dt-published[data-format=?]", "%Y-%m-%d", minimum: 1
+
+    @blog.title_layout!
+
+    get blog_posts_path
+    assert_select ".post-row time[data-format=?]", "%m-%d", minimum: 1
+  end
+
   test "should render cards" do
     @blog.cards_layout!
 

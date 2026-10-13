@@ -57,7 +57,7 @@ class PostDigest < ApplicationRecord
       key = individual? ? "individual.default_subject" : "weekly_digest.subject"
       I18n.t("email_subscribers.mailers.#{key}",
         blog_name: blog.display_name,
-        date: I18n.l(created_at.to_date, format: :post_date))
+        date: I18n.l(created_at.to_date, format: blog.post_date_format))
     end
   end
 

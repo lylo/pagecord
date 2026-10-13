@@ -48,10 +48,6 @@ module PostsHelper
     end
   end
 
-  def published_at_date_format
-    :post_date
-  end
-
   def render_post_content(post)
     content = process_dynamic_variables(post)
     content = Html::StripActionTextAttachments.new.transform(content)

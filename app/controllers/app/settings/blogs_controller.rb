@@ -20,6 +20,7 @@ class App::Settings::BlogsController < App::BaseController
         :google_site_verification,
         :seo_title,
         :locale,
+        :date_format,
         :show_metrics,
         :external_links_in_new_tab,
         :show_upvotes,

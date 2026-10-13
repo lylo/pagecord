@@ -668,7 +668,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
   end
 
   test "renders updated_at tag with named formats" do
-    %w[datetime long long_datetime dd_mm_yyyy mm_dd_yyyy yyyy_mm_dd].each do |fmt|
+    %w[datetime long long_datetime dd_mm_yyyy mm_dd_yyyy yyyy_mm_dd dd.mm.yyyy yyyy-mm-dd].each do |fmt|
       page = @blog.pages.create!(title: "Updated #{fmt}", content: "{{ updated_at format: #{fmt} }}", status: :published)
 
       get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
@@ -676,6 +676,15 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_select "time.updated-at", minimum: 1
     end
+  end
+
+  test "updated_at tag defaults to the blog's date format" do
+    @blog.update!(date_format: "dd-mm-yyyy")
+    page = @blog.pages.create!(title: "Updated", content: "{{ updated_at }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_select "time.updated-at[data-format=?]", "%d-%m-%Y"
   end
 
   test "updated_at tag with content scope shows the latest visible post or page" do
