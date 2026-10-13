@@ -8,7 +8,7 @@ class PostDigestMailerPreview < ActionMailer::Preview
 
   def individual
     blog = preview_blog
-    digest = digest_for_param(blog) || blog.post_digests.individual.last || create_individual_digest(blog)
+    digest = digest_for_param(blog) || blog.post_digests.individual.joins(:digest_posts).last || create_individual_digest(blog)
     PostDigestMailer.with(digest: digest, subscriber: blog.email_subscribers.first).individual
   end
 
