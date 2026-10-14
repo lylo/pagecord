@@ -40,6 +40,14 @@ class Public::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "#compare table tbody", 2
   end
 
+  test "a page with two signup letters gives each its own field" do
+    get minimalist_blogging_path
+
+    assert_select "input#title", 1
+    assert_select "input#closing_title", 1
+    assert_select "label[for=closing_title]", 1
+  end
+
   test "pricing redirects to the home page pricing section" do
     get pricing_path
 

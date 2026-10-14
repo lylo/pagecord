@@ -87,40 +87,40 @@
         [ "On every plan", [
           [ "Number of posts", "Write as many posts as you like. Your blog app should never hold you back", "Unlimited", "Unlimited" ],
           [ "Number of blogs", "Run a main blog and a side project, newsletter, or microblog from the same account", Blog::MAX_BLOGS_FREE, Blog::MAX_BLOGS_PAID ],
-          [ "Write by email", "Publishing is as simple as sending an email. Rich text is fully supported", true, true ],
-          [ "Online editor", "Use a rich text editor if you prefer a traditional blogging experience", true, true ],
-          [ "Long-form writing", "Write long-form articles or microblog your thoughts. Both look great!", true, true ],
-          [ "Pages", "Create standalone pages for About, Now, Contact, archives, tags, and more with dynamic variables", true, true ],
-          [ "Custom Home Page", "Choose a custom page to welcome visitors instead of dropping them straight into the post stream", true, true ],
-          [ "Themes", "Style your blog with colour themes and fonts", true, true ],
-          [ "Tags", "Tag your posts to keep things organised", true, true ],
-          [ "Password protected blog", "Put a password on a blog so only the people you share it with can read it", true, true ],
-          [ "Media Embeds", "Links to YouTube, Spotify, Bandcamp and GitHub are automatically embedded. Great for sharing your favourite tunes and videos", true, true ],
-          [ "Multi-language support", "Pagecord allows your blog interface to be in English, French, Spanish, German and Portuguese", true, true ],
-          [ "RSS feeds", "Every site has a public RSS feed so readers can follow along in their favourite feed reader", true, true ],
-          [ "Full Site Export", "Export your entire Pagecord blog as HTML or Markdown, with images included", true, true ],
-          [ "Post Likes", "Visitors can 'like' your posts. You track the stats in the app", true, true ],
-          [ "Search", "Readers can search your site to find what they're looking for", true, true ],
-          [ "Avatar", "Add a touch of your own personality while retaining that classic Pagecord minimal look", true, true ]
+          [ "Write by email", "Publishing is as simple as sending an email. Rich text is fully supported", included, included ],
+          [ "Online editor", "Use a rich text editor if you prefer a traditional blogging experience", included, included ],
+          [ "Long-form writing", "Write long-form articles or microblog your thoughts. Both look great!", included, included ],
+          [ "Pages", "Create standalone pages for About, Now, Contact, archives, tags, and more with dynamic variables", included, included ],
+          [ "Custom Home Page", "Choose a custom page to welcome visitors instead of dropping them straight into the post stream", included, included ],
+          [ "Themes", "Style your blog with colour themes and fonts", included, included ],
+          [ "Tags", "Tag your posts to keep things organised", included, included ],
+          [ "Password protected blog", "Put a password on a blog so only the people you share it with can read it", included, included ],
+          [ "Media Embeds", "Links to YouTube, Spotify, Bandcamp and GitHub are automatically embedded. Great for sharing your favourite tunes and videos", included, included ],
+          [ "Multi-language support", "Pagecord allows your blog interface to be in English, French, Spanish, German and Portuguese", included, included ],
+          [ "RSS feeds", "Every site has a public RSS feed so readers can follow along in their favourite feed reader", included, included ],
+          [ "Full Site Export", "Export your entire Pagecord blog as HTML or Markdown, with images included", included, included ],
+          [ "Post Likes", "Visitors can 'like' your posts. You track the stats in the app", included, included ],
+          [ "Search", "Readers can search your site to find what they're looking for", included, included ],
+          [ "Avatar", "Add a touch of your own personality while retaining that classic Pagecord minimal look", included, included ]
         ] ],
         [ "With Premium", [
-          [ "Image & Audio Hosting", "Upload images, galleries and audio for your posts, via email attachments or using the editor", "20 for free", true ],
-          [ "Video Hosting", "Upload video straight into a post, up to 50MB a file", false, true ],
-          [ "Page view analytics", "See how many people are visiting your blog with privacy-respecting analytics", false, true ],
-          [ "Email newsletter", safe_join([ "Readers subscribe and receive a weekly digest or individual posts as you publish them (250 subscriber limit. More for ", link_to("an additional fee", "/faq#subscribers", class: "home-link"), ")" ]), false, true ],
-          [ "Comments", "Readers comment without signing up for anything. Every comment waits for your approval, and spam is filtered out before it reaches you", false, true ],
-          [ "Reply by email", "Readers reply to your posts by email. Your email address is never revealed!", false, true ],
-          [ "Embeddable Contact Form", "Add a contact form to any page. Messages go straight to your inbox", false, true ],
-          [ "Custom Domains", "If you'd prefer to use your own domain name for your site, set it up in one click", false, true ],
-          [ "Custom CSS", "Add your own CSS to customise the look of your blog beyond the built-in themes", false, true ],
-          [ "Custom code", "Add your own HTML and JavaScript to every page for third party analytics, or custom functionality", false, true ],
-          [ "API, Obsidian & Shortcuts", "Publish from the official Obsidian plugin, iA Writer, scripts, Shortcuts, or anything that can make an HTTP request", false, true ],
-          [ "Independent software", "Support a bootstrapped, profitable, open source blogging platform", false, true ]
+          [ "Image & Audio Hosting", "Upload images, galleries and audio for your posts, via email attachments or using the editor", "20 for free", included ],
+          [ "Video Hosting", "Upload video straight into a post, up to 50MB a file", excluded, included ],
+          [ "Page view analytics", "See how many people are visiting your blog with privacy-respecting analytics", excluded, included ],
+          [ "Email newsletter", safe_join([ "Readers subscribe and receive a weekly digest or individual posts as you publish them (250 subscriber limit. More for ", link_to("an additional fee", "/faq#subscribers", class: "home-link"), ")" ]), excluded, included ],
+          [ "Comments", "Readers comment without signing up for anything. Every comment waits for your approval, and spam is filtered out before it reaches you", excluded, included ],
+          [ "Reply by email", "Readers reply to your posts by email. Your email address is never revealed!", excluded, included ],
+          [ "Embeddable Contact Form", "Add a contact form to any page. Messages go straight to your inbox", excluded, included ],
+          [ "Custom Domains", "If you'd prefer to use your own domain name for your site, set it up in one click", excluded, included ],
+          [ "Custom CSS", "Add your own CSS to customise the look of your blog beyond the built-in themes", excluded, included ],
+          [ "Custom code", "Add your own HTML and JavaScript to every page for third party analytics, or custom functionality", excluded, included ],
+          [ "API, Obsidian & Shortcuts", "Publish from the official Obsidian plugin, iA Writer, scripts, Shortcuts, or anything that can make an HTTP request", excluded, included ],
+          [ "Independent software", "Support a bootstrapped, profitable, open source blogging platform", excluded, included ]
         ] ]
       ].each do |group, rows| %>
         <tbody>
           <tr>
-            <th colspan="3" scope="colgroup" class="px-4 md:px-8 py-3 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400"><%= group %></th>
+            <th colspan="3" scope="rowgroup" class="px-4 md:px-8 py-3 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400"><%= group %></th>
           </tr>
           <% rows.each do |name, description, classic, premium| %>
             <tr class="border-b border-slate-100 dark:border-slate-800 last:border-0">
@@ -130,7 +130,7 @@
               </th>
               <% [ classic, premium ].each do |value| %>
                 <td class="py-4 text-center text-slate-700 dark:text-slate-300">
-                  <%= value == true ? included : value == false ? excluded : value %>
+                  <%= value %>
                 </td>
               <% end %>
             </tr>

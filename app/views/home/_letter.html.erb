@@ -1,4 +1,5 @@
-<%= form_with url: new_signup_path, method: :get, class: "letter-paper letter-paper--note", data: { controller: "signup-letter signature", turbo: false } do |form| %>
+<%# locals: (namespace: nil) %>
+<%= form_with url: new_signup_path, method: :get, namespace:, class: "letter-paper letter-paper--note", data: { controller: "signup-letter signature", turbo: false } do |form| %>
   <%= render "letters/stamp" %>
 
   <p>Dear Pagecord,</p>
@@ -14,9 +15,6 @@
 
   <div class="letter-send">
     <span>Next, your email. Then your blog's live.</span>
-    <%= tag.button type: "submit", class: "btn-primary" do %>
-      Start my blog
-      <%= inline_svg_tag "icons/paper-airplane.svg", class: "w-5 h-5" %>
-    <% end %>
+    <%= render "letters/send", form:, label: "Start my blog" %>
   </div>
 <% end %>

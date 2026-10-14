@@ -295,7 +295,7 @@
   font-size: 1rem;
 }
 
-/* Paper on the home page sits on a white sheet, so its shadow reaches all four edges */
+/* Paper on the home page and marketing pages */
 
 .letter-paper--note,
 .letter-paper--long,
@@ -487,7 +487,7 @@
   margin-block-start: 0.25em;
 }
 
-/* A short letter on the home page */
+/* A short letter that starts a signup, on the home page and marketing pages */
 
 .letter-paper--note {
   max-width: 34rem;
@@ -621,9 +621,20 @@
   justify-content: center;
 }
 
-.letter-stamp__cameo svg {
+.letter-stamp__mark {
   width: 30px;
-  height: auto;
+  aspect-ratio: 1094 / 1550;
+  background-color: currentColor;
+  -webkit-mask: url("logo-mark-crowned.svg") center / contain no-repeat;
+  mask: url("logo-mark-crowned.svg") center / contain no-repeat;
+}
+
+.letter-postmark {
+  display: block;
+  aspect-ratio: 600 / 250;
+  background-color: currentColor;
+  -webkit-mask: url("icons/stamp.svg") center / contain no-repeat;
+  mask: url("icons/stamp.svg") center / contain no-repeat;
 }
 
 .letter-stamp__code {

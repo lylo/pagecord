@@ -1,4 +1,5 @@
 # Import map for the marketing pages (home layout): Stimulus and the letter controllers only.
+# A Stimulus controller used on a marketing page must be pinned here too, or it won't load.
 
 pin "home", preload: true
 

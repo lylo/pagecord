@@ -69,6 +69,7 @@
 
 /* Testimonials carousel container */
 .testimonials-fade-edges {
+  --fade-color: color-mix(in srgb, var(--color-pagecord-accent) 10%, white);
   position: relative; /* required for fade pseudo-elements */
   overflow-x: auto;
   max-width: 100vw;
@@ -95,29 +96,16 @@
 
 .testimonials-fade-edges::before {
   left: 0;
-  background: linear-gradient(to right, rgb(255 255 255 / 1), rgb(255 255 255 / 0));
+  background: linear-gradient(to right, var(--fade-color), transparent);
 }
 
 .testimonials-fade-edges::after {
   right: 0;
-  background: linear-gradient(to left, rgb(255 255 255 / 1), rgb(255 255 255 / 0));
+  background: linear-gradient(to left, var(--fade-color), transparent);
 }
 
-/* Dark mode fade edges */
 @media (prefers-color-scheme: dark) {
-  .testimonials-fade-edges::before {
-    background: linear-gradient(to right, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
+  .testimonials-fade-edges {
+    --fade-color: var(--color-slate-900);
   }
-
-  .testimonials-fade-edges::after {
-    background: linear-gradient(to left, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
-  }
-}
-
-.dark .testimonials-fade-edges::before {
-  background: linear-gradient(to right, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
-}
-
-.dark .testimonials-fade-edges::after {
-  background: linear-gradient(to left, rgb(15 23 42 / 1), rgb(15 23 42 / 0));
 }

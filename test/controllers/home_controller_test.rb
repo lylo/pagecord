@@ -16,6 +16,12 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?] input[name=authenticity_token]", new_signup_path, count: 0
   end
 
+  test "the home page loads the marketing import map, not the app's" do
+    get root_path
+
+    assert_no_match "lexxy", response.body
+  end
+
   test "should publicly cache unattributed home page" do
     get root_path
 

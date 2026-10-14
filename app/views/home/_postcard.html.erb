@@ -3,7 +3,7 @@
   <blockquote>&ldquo;<%= quote %>&rdquo;</blockquote>
   <figcaption>
     <%= render "letters/stamp" %>
-    <%= inline_svg_tag "icons/stamp.svg", class: "postcard__postmark", aria_hidden: true %>
+    <span class="letter-postmark postcard__postmark"></span>
     <span class="postcard__name"><%= name %></span>
     <%= link_to safe_join(url.delete_prefix("https://").delete_suffix("/").split(/(?<=\.)/), tag.wbr), url, class: "postcard__site" %>
   </figcaption>
