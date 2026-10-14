@@ -50,4 +50,13 @@ class App::OnboardingsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "#111111", @user.blog.reload.custom_theme_bg_light
   end
+
+  test "offers a password only to an account without one" do
+    get app_onboarding_path
+    assert_select "#onboarding_password"
+
+    @user.update!(password: "a long password")
+    get app_onboarding_path
+    assert_select "#onboarding_password", 0
+  end
 end

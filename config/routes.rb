@@ -105,6 +105,7 @@ Rails.application.routes.draw do
       resource :onboarding, only: [ :show, :update ], path: "onboarding" do
         resource :completion, only: [ :create ], controller: "onboardings/completions"
         resource :theme, only: [ :update ], controller: "onboardings/themes"
+        resource :password, only: [ :create ], controller: "onboardings/passwords"
       end
 
       namespace :settings do
