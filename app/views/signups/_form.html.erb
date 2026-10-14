@@ -1,3 +1,5 @@
+<% code = (params[:invitation_code] || params[:code]).to_s %>
+
 <% blog = @user.blogs.first %>
 <% focus = @user.errors[:email].any? ? :email : (blog&.errors&.include?(:subdomain) ? :subdomain : :title) %>
 
@@ -6,13 +8,35 @@
   <%= form.hidden_field :timezone, data: { timezone_target: "timeZone" } %>
   <%= render "/shared/spam_prevention" %>
 
+  <% if Invitation.required? %>
+    <div class="signup-ticket">
+      <div class="signup-ticket__stub">
+        <span class="signup-ticket__kicker">Admit one writer</span>
+        <span class="signup-ticket__title">You're<br>invited</span>
+      </div>
+      <div class="signup-ticket__body">
+        <%= label_tag "invite-code", "Your invite code", class: "signup-ticket__label" %>
+        <%# The letter stays hidden while this field's placeholder is showing %>
+        <%= text_field_tag :invitation_code, code,
+            placeholder: "ABCD2345EF",
+            id: "invite-code",
+            required: true,
+            autocomplete: "off",
+            autocapitalize: "characters",
+            spellcheck: false,
+            class: "signup-ticket__input",
+            data: { signup_letter_target: "code", action: "input->signup-letter#codeChanged" } %>
+      </div>
+    </div>
+    <p class="signup-hint">No code? <%= mail_to "hello@pagecord.com", "Email me", subject: "Invite request" %> and say hi.</p>
+  <% end %>
 
   <div class="signup-letter">
     <div class="signup-stamp" aria-hidden="true">
       <div class="signup-stamp__face">
         <span>PAGECORD</span>
         <span class="signup-stamp__cameo"><%= inline_svg_tag "logo-mark-crowned.svg" %></span>
-        <span class="signup-stamp__code">1ST</span>
+        <span class="signup-stamp__code" data-signup-letter-target="stampCode"><%= Invitation.required? ? code.strip.upcase.first(10) : "1ST" %></span>
       </div>
     </div>
 
@@ -34,7 +58,7 @@
               placeholder: "my blog title",
               maxlength: 100,
               required: true,
-              autofocus: focus == :title,
+              autofocus: !Invitation.required? && focus == :title,
               class: "signup-blank signup-blank--name",
               data: { signup_letter_target: "name", action: "input->signup-letter#nameChanged" } %>
         </span>

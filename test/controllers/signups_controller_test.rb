@@ -15,6 +15,58 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_not User.last.marketing_consent
   end
 
+  test "invite-only signup form takes its code from the link" do
+    Invitation.stubs(:required?).returns(true)
+
+    get new_signup_url(code: "ABCD1234")
+
+    assert_select "input[name=invitation_code][value=ABCD1234]"
+  end
+
+  test "invite-only signup needs an available invite code" do
+    Invitation.stubs(:required?).returns(true)
+
+    assert_no_difference("User.count") do
+      post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at }
+    end
+    assert_response :unprocessable_entity
+
+    assert_no_difference("User.count") do
+      post signups_url, params: { invitation_code: invitations(:redeemed).code, user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at }
+    end
+    assert_response :unprocessable_entity
+  end
+
+  test "invite-only signup refuses a list of codes in one request" do
+    Invitation.stubs(:required?).returns(true)
+
+    assert_no_difference("User.count") do
+      post signups_url, params: { invitation_code: [ "WRONG23456", invitations(:unused).code ], user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at }
+    end
+    assert_response :unprocessable_entity
+  end
+
+  test "invite-only signup refuses a code redeemed by someone else mid-signup" do
+    Invitation.stubs(:required?).returns(true)
+    User.any_instance.stubs(:save).raises(ActiveRecord::StaleObjectError)
+
+    assert_no_difference("User.count") do
+      post signups_url, params: { invitation_code: invitations(:unused).code, user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at }
+    end
+    assert_response :unprocessable_entity
+  end
+
+  test "invite-only signup with a code records the inviter and skips review" do
+    Invitation.stubs(:required?).returns(true)
+    assert_difference("User.count") do
+      post signups_url, params: { invitation_code: invitations(:unused).code.downcase, user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at }
+    end
+
+    user = User.last
+    assert_equal users(:joel), user.invitation.inviter
+    assert user.blog.reviewed_at.present?
+  end
+
   test "signing up keeps the blog name as its title" do
     post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { title: "Harbour Light", subdomain: "harbourlight" } ] }, rendered_at: signed_rendered_at }
 

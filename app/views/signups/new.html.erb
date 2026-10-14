@@ -4,5 +4,12 @@
 <% if ENV["DISABLE_SIGNUPS"] %>
   <p class="signup-hint">Signups are currently disabled. Please check back later.</p>
 <% else %>
+  <% if Invitation.required? %>
+    <div class="signup-intro">
+      <h1>Pagecord is invite-only right now</h1>
+      <p>To keep the spammers out.</p>
+    </div>
+  <% end %>
+
   <%= render "form" %>
 <% end %>

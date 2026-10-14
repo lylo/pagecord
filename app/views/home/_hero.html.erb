@@ -22,6 +22,7 @@
       </div>
 
       <p class="max-w-2xl text-sm text-slate-500 dark:text-slate-400">
+        <% if Invitation.required? %>At the moment, Pagecord is invite-only: ask a Pagecord writer for a code.<% end %>
         Classic is free forever. Every new account starts with a 14-day free trial of Premium. No card required. Already writing somewhere else? We'll <%= link_to "bring your old posts across", "https://help.pagecord.com/importing-an-existing-blog", class: "home-link" %>.
       </p>
       </div>

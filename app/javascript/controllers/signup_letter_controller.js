@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["name", "subdomain", "signature"]
+  static targets = ["name", "subdomain", "signature", "code", "stampCode"]
 
   connect() {
     this.subdomainEdited = this.subdomainTarget.value !== "" && this.subdomainTarget.value !== this.#slug(this.nameTarget.value)
@@ -14,6 +14,10 @@ export default class extends Controller {
 
   subdomainChanged() {
     this.subdomainEdited = this.subdomainTarget.value !== ""
+  }
+
+  codeChanged() {
+    if (this.hasStampCodeTarget) this.stampCodeTarget.textContent = this.codeTarget.value.trim().toUpperCase().slice(0, 10)
   }
 
   #slug(name) {
