@@ -829,6 +829,16 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=canonical][href=?]", post_url(post)
   end
 
+  test "a link post's permalink is labelled in the blog's language" do
+    @blog.update!(locale: "fr")
+    post = @blog.posts.visible.titled("true").first
+    post.update!(link_url: "https://example.com/article")
+
+    get post_path(post)
+
+    assert_select "a.post-permalink[aria-label=?]", "Lien permanent"
+  end
+
   test "a link post's title opens in a new tab when external links do" do
     @blog.update!(external_links_in_new_tab: true)
     post = @blog.posts.visible.titled("true").first
