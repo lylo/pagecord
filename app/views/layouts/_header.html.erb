@@ -15,9 +15,8 @@
     </nav>
 
     <div class="flex shrink-0 items-center gap-2 sm:gap-3">
-      <% quiet_link = "rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 sm:border-transparent sm:px-0 sm:text-slate-600 sm:hover:bg-transparent sm:hover:text-slate-900 sm:dark:border-transparent sm:dark:text-slate-300 sm:dark:hover:bg-transparent sm:dark:hover:text-slate-100" %>
-      <%= link_to "Log In", login_path, class: quiet_link %>
-      <%= link_to "Start writing", new_signup_path, class: current_page?(root_path) ? quiet_link : "btn-primary" %>
+      <%= link_to "Log In", login_path, class: "rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 sm:border-transparent sm:px-0 sm:text-slate-600 sm:hover:bg-transparent sm:hover:text-slate-900 sm:dark:border-transparent sm:dark:text-slate-300 sm:dark:hover:bg-transparent sm:dark:hover:text-slate-100" %>
+      <%= link_to "Start writing", new_signup_path, class: "btn-primary px-3 py-1.5" %>
     </div>
   </div>
 </header>
