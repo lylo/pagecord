@@ -12,7 +12,7 @@ class SignupsController < ApplicationController
 
   def new
     @user = User.new(marketing_consent: true, signup_referrer: request.referer)
-    @user.blogs.build
+    @user.blogs.build(title: params[:title])
   end
 
   def create

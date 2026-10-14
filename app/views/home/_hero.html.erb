@@ -7,22 +7,17 @@
       </h1>
 
       <div class="max-w-2xl flex flex-col gap-4 text-lg md:text-xl leading-relaxed text-slate-600 dark:text-slate-300">
-        <p class="mb-2 source-serif font-medium text-2xl md:text-3xl leading-snug tracking-tight text-slate-900 dark:text-slate-100">Pagecord is the perfect home for your writing.</p>
+        <p class="mb-2 source-serif font-medium text-2xl md:text-3xl leading-snug tracking-tight text-slate-900 dark:text-slate-100">A personal site and blog. Focus on writing, not wrangling.</p>
 
-        <p>Write when you like, where you like. Use the built-in editor, iA Writer, Obsidian, or publish by sending an email. Whatever suits you!</p>
-
-        <p>Everything a blog or personal site needs, in one tidy package: a home page, blog posts, unlimited pages, an email newsletter, comments, analytics, and a domain of your own.</p>
-
-        <p>Your own words, written your own way, on your own corner of the web.</p>
+        <p>Publish when you like, from wherever you like: the built-in editor, iA Writer, Obsidian, or just by sending an email.</p>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-3 sm:items-center">
-        <%= link_to "Start writing for free", new_signup_path, class: "btn-primary justify-center text-base px-5 py-3" %>
-        <%= link_to "See real Pagecord sites", spotlight_path, class: "inline-flex justify-center items-center rounded-lg border border-slate-300 dark:border-slate-700 px-5 py-3 font-medium text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800" %>
-      </div>
+      <%= render "home/letter" %>
 
-      <p class="max-w-2xl text-sm text-slate-500 dark:text-slate-400">
-        Classic is free forever. Every new account starts with a 14-day free trial of Premium. No card required. Already writing somewhere else? We'll <%= link_to "bring your old posts across", "https://help.pagecord.com/importing-an-existing-blog", class: "home-link" %>.
+      <p class="text-sm"><%= link_to "See real Pagecord sites", spotlight_path, class: "home-link" %></p>
+
+      <p class="max-w-xl text-sm text-slate-500 dark:text-slate-400">
+        Every account starts with 14 days of Premium. Keep it for $<%= localised_price %> a year, or stay on Classic for free. Already writing somewhere else? We'll <%= link_to "bring your old posts across", "https://help.pagecord.com/importing-an-existing-blog", class: "home-link" %>.
       </p>
       </div>
 
@@ -38,122 +33,8 @@
 
     <div class="sheet-divider"></div>
 
-    <div class="flex flex-col gap-8">
-      <div class="flex flex-col gap-3">
-        <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight text-slate-900 dark:text-slate-100">More than just a blog</h2>
-        <p class="max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-300">With unlimited pages and posts, custom code and CSS, Pagecord lets you create the personal website of your dreams!</p>
-      </div>
-
-      <div class="grid md:grid-cols-3 gap-8 md:gap-6">
-        <article class="flex flex-col gap-4">
-          <%= image_tag home_image_path("home/screenshot-01.webp", width: 680, quality: 88),
-                srcset: home_image_srcset("home/screenshot-01.webp", widths: [ 680, 1500 ], quality: 88),
-                sizes: "(min-width: 48rem) 20rem, calc(100vw - 4rem)",
-                alt: "A Pagecord personal site with About, Grid and Archives pages and a photo post",
-                width: "1500",
-                height: "1420",
-                class: "aspect-[4/3] w-full object-cover object-top rounded-lg shadow-sm ring-1 ring-slate-200 dark:ring-slate-800" %>
-          <div>
-            <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">A personal site</h3>
-            <p class="mt-1 text-slate-600 dark:text-slate-300">An about page, a now page, photo galleries and an archive of everything you've written. As many pages as you like, on a domain of your own.</p>
-          </div>
-        </article>
-
-        <article class="flex flex-col gap-4">
-          <%= image_tag home_image_path("home/screenshot-03.webp", width: 680, quality: 88),
-                srcset: home_image_srcset("home/screenshot-03.webp", widths: [ 680, 1500 ], quality: 88),
-                sizes: "(min-width: 48rem) 20rem, calc(100vw - 4rem)",
-                alt: "A Pagecord blog with a photo header, links to its archive and gallery, and a post of sculpture photographs",
-                width: "1500",
-                height: "1420",
-                class: "aspect-[4/3] w-full object-cover object-top rounded-lg shadow-sm ring-1 ring-slate-200 dark:ring-slate-800" %>
-          <div>
-            <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">A blog</h3>
-            <p class="mt-1 text-slate-600 dark:text-slate-300">A blog for all writing habits, long form articles or micro-posts. Readers can follow by RSS or by email updates. Comments and analytics are built in.</p>
-          </div>
-        </article>
-
-        <article class="flex flex-col gap-4">
-          <%= image_tag home_image_path("home/screenshot-02.webp", width: 680, quality: 88),
-                srcset: home_image_srcset("home/screenshot-02.webp", widths: [ 680, 1500 ], quality: 88),
-                sizes: "(min-width: 48rem) 20rem, calc(100vw - 4rem)",
-                alt: "A Pagecord home page with an avatar, a short introduction, links to About, Now and Contact, and its latest post",
-                width: "1500",
-                height: "1420",
-                class: "aspect-[4/3] w-full object-cover object-top rounded-lg shadow-sm ring-1 ring-slate-200 dark:ring-slate-800" %>
-          <div>
-            <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Your home page</h3>
-            <p class="mt-1 text-slate-600 dark:text-slate-300">Create a home page for introducing yourself or your writing. Embed photos, recent posts, a contact form, or just show your blog.</p>
-          </div>
-        </article>
-      </div>
-    </div>
+    <%= render "home/corner" %>
   </div>
 
   <p class="mt-5 px-4 text-center text-sm text-slate-500 dark:text-slate-400">Trusted by 1,200+ writers &middot; Pagecord is independent and open source</p>
 </section>
-
-<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
-  <section class="my-12 md:my-16">
-    <div id="principles" class="mb-8 text-center">
-      <h2 class="source-serif mt-3 font-semibold text-3xl md:text-5xl tracking-tight text-slate-900 dark:text-slate-100">The Pagecord Principles</h2>
-    </div>
-
-    <p class="md:text-xl leading-relaxed my-5 text-center">
-      Pagecord is designed with these guiding principles front of mind.
-    </p>
-
-    <div class="grid md:grid-cols-2 gap-8 mt-8">
-      <section class="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-slate-700 bg-[linear-gradient(135deg,#ffffff,#f7fdfa)] dark:bg-[linear-gradient(135deg,#0f172a,#111b1a)] p-6 shadow-sm">
-        <div class="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#4fbd9c]/12 blur-2xl"></div>
-        <div class="relative">
-          <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Write more, manage less</h3>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">
-            Pagecord reduces the ceremony around blogging. Publish what you like, when you like, from wherever you like. A single photograph, a quick thought, a full-on essay. Everything looks great. Don't let overthinking hold you back – write and publish whenever you feel the urge.
-          </p>
-        </div>
-      </section>
-
-      <section class="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-slate-700 bg-[linear-gradient(225deg,#ffffff,#f7fdfa)] dark:bg-[linear-gradient(225deg,#0f172a,#111b1a)] p-6 shadow-sm">
-        <div class="absolute -left-10 -top-10 h-28 w-28 rounded-full bg-[#4fbd9c]/12 blur-2xl"></div>
-        <div class="relative">
-          <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Use your favourite writing tool</h3>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Write wherever suits you. There's a lovely editor built in, or you can publish a post by sending an email &ndash; no app to open, no password to remember. Already devoted to Obsidian or iA Writer? Pagecord works with those, and there's a CLI and API for the tinkerers.</p>
-        </div>
-      </section>
-
-      <section class="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-slate-700 bg-[radial-gradient(circle_at_bottom_left,rgb(79_189_156_/_0.08),transparent_45%),linear-gradient(135deg,#ffffff,#f7fdfa)] dark:bg-[radial-gradient(circle_at_bottom_left,rgb(79_189_156_/_0.08),transparent_45%),linear-gradient(135deg,#0f172a,#111b1a)] p-6 shadow-sm">
-        <div class="absolute -right-10 -bottom-10 h-28 w-28 rounded-full bg-[#4fbd9c]/12 blur-2xl"></div>
-        <div class="relative">
-          <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Own your home on the web</h3>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord gives writers a long-term home on the web. Bring your own domain name, create your own design. Export your entire site, including images, any time in HTML or Markdown format. No lock-in. Easy to leave, but worth staying for.</p>
-        </div>
-      </section>
-
-      <section class="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-slate-700 bg-[radial-gradient(circle_at_top_right,rgb(79_189_156_/_0.08),transparent_42%),linear-gradient(45deg,#ffffff,#f7fdfa)] dark:bg-[radial-gradient(circle_at_top_right,rgb(79_189_156_/_0.08),transparent_42%),linear-gradient(45deg,#0f172a,#111b1a)] p-6 shadow-sm">
-        <div class="absolute -left-10 -bottom-10 h-28 w-28 rounded-full bg-[#4fbd9c]/12 blur-2xl"></div>
-        <div class="relative">
-          <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Embrace boring web standards</h3>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord embraces the original dream of the World Wide Web. Fast, lean, semantic HTML that looks great on every device. Tiny JavaScript sprinkles, evergreen permalinks, RSS, email, and Micropub. No bloat, no adverts. Built for the long haul using tried and trusted tech.</p>
-        </div>
-      </section>
-
-      <section class="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-slate-700 bg-[linear-gradient(315deg,#ffffff,#f7fdfa)] dark:bg-[linear-gradient(315deg,#0f172a,#111b1a)] p-6 shadow-sm">
-        <div class="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#4fbd9c]/12 blur-2xl"></div>
-        <div class="relative">
-          <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Allow people to follow, calmly</h3>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Reading a Pagecord blog should be as effortless as writing on one. Every Pagecord blog comes with RSS support. Premium lets readers subscribe to weekly email digests, or individual posts by email. Readers can also reply privately to posts using email.</p>
-        </div>
-      </section>
-
-      <section class="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-slate-700 bg-[radial-gradient(circle_at_center,rgb(79_189_156_/_0.08),transparent_46%),linear-gradient(135deg,#ffffff,#f7fdfa)] dark:bg-[radial-gradient(circle_at_center,rgb(79_189_156_/_0.08),transparent_46%),linear-gradient(135deg,#0f172a,#111b1a)] p-6 shadow-sm">
-        <div class="absolute -left-10 -bottom-10 h-28 w-28 rounded-full bg-[#4fbd9c]/12 blur-2xl"></div>
-        <div class="relative">
-          <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Complete, not complicated</h3>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-300">Pagecord includes posts, pages, themes, analytics, email subscribers, comments, custom domains, and full export. Everything you could reasonably need, for a most reasonable price.</p>
-        </div>
-      </section>
-    </div>
-  </section>
-</div>
-

@@ -10,7 +10,7 @@
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
-    <% default_meta_description = "Pagecord is the perfect home for your writing on the web. Publish from the editor, email, Obsidian or iA Writer, with pages, a newsletter, comments, analytics and a domain of your own." %>
+    <% default_meta_description = "A personal site and blog. Focus on writing, not wrangling. Publish from the editor, Obsidian, iA Writer, or just by sending an email." %>
     <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : default_meta_description %>">
 
     <% og_title = (content_for?(:title) ? content_for(:title) : "Pagecord: Make yourself a home on the web").strip %>
@@ -62,7 +62,8 @@
         font-family: "SourceSerif4Variable", Georgia, serif;
       }
     </style>
-    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "caveat", "letter", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags "home", importmap: Rails.application.config.importmap_home %>
     <script>
       window.addEventListener("load", function() {
         var script = document.createElement("script")

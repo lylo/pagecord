@@ -1,14 +1,18 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["name", "subdomain"]
+  static targets = ["name", "subdomain", "address"]
 
   connect() {
-    this.followingName = this.subdomainTarget.value === "" || this.subdomainTarget.value === this.#slug
+    if (this.hasSubdomainTarget) {
+      this.followingName = this.subdomainTarget.value === "" || this.subdomainTarget.value === this.#slug
+      this.nameChanged()
+    }
   }
 
   nameChanged() {
-    if (this.followingName) this.subdomainTarget.value = this.#slug
+    if (this.hasSubdomainTarget && this.followingName) this.subdomainTarget.value = this.#slug
+    if (this.hasAddressTarget) this.addressTarget.textContent = this.#slug && `${this.#slug}.pagecord.com`
   }
 
   subdomainChanged() {

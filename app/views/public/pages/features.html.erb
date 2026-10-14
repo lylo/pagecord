@@ -1,0 +1,148 @@
+<% content_for :title, "Features – Pagecord" %>
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "Pagecord has everything you need") %>
+<% end %>
+<% content_for :meta_description, "Pagecord gives you everything a personal website actually needs: blog posts, pages, RSS, email subscriptions, comments, simple analytics, a custom domain, full site export, and integrations with Obsidian and iA Writer." %>
+
+<section class="md:mt-4 -mb-6 md:-mb-12 mx-auto max-w-4xl px-4 text-center flex flex-col items-center gap-6">
+  <h1 class="source-serif font-semibold text-4xl md:text-6xl tracking-tight leading-tight text-slate-900 dark:text-slate-100">Pagecord has everything you need</h1>
+  <p class="md:text-xl leading-relaxed text-slate-600 dark:text-slate-300">
+    Pagecord gives you everything a personal website actually needs: blog posts, pages, RSS, email subscriptions, comments, simple analytics, a custom domain, full site export, and integrations with popular writing tools like Obsidian and iA Writer.
+  </p>
+</section>
+
+<%= render layout: "home/feature", locals: { id: "post-by-email", title: "Post by sending an email", image: "home/gmail-compose.webp", alt: "Screenshot of composing a post in Gmail", size: "1600x967" } do %>
+  <p>Email is already on every device you use. Send a message to your private Pagecord address and it becomes a post on your blog.</p>
+  <p>Text formatting, images and links all look great!</p>
+<% end %>
+
+<%= render layout: "home/feature", locals: { id: "post-by-editor", title: "A wonderful editor for writing, built in", image: "home/rich-text-editor.webp", alt: "A screenshot of Pagecord's rich text editor", size: "1600x968", flip: true } do %>
+  <p>Pagecord has a wonderful online editor for writing posts in your browser, or on your phone. Use Markdown syntax, add formatting, images, galleries, tables, colours, and code blocks with syntax highlighting.</p>
+<% end %>
+
+<%= render layout: "home/feature", locals: { id: "obsidian-api", title: "Publish from Obsidian, iA Writer, or your own scripts", image: "home/obsidian.webp", alt: "Screenshot of composing a post in Obsidian", size: "1600x1609" } do %>
+  <p>The <a href="https://help.pagecord.com/obsidian" class="home-link">official Pagecord Obsidian plugin</a> publishes selected notes straight to your blog. If you prefer <a href="https://help.pagecord.com/micropub#using-ia-writer" class="home-link">iA Writer</a>, Pagecord has you covered. Or you can use the <a href="https://help.pagecord.com/api" class="home-link">Pagecord API</a> and <a href="https://help.pagecord.com/pagecord-cli" class="home-link">CLI</a> to publish from Shortcuts, scripts, local folders, or any workflow that already works for you.</p>
+<% end %>
+
+<%= render layout: "home/feature", locals: { id: "newsletter", title: "Your blog posts are easy to follow", image: "home/weekly-digest.webp", alt: "A screenshot of Apple Mail with a weekly digest email", size: "1600x967", flip: true } do %>
+  <p>Every Pagecord blog has RSS, but not everyone uses it. With Pagecord Premium, readers can subscribe to your blog by email and receive an automatic <strong>weekly digest</strong>. If you prefer, you can send posts individually instead, on your schedule.</p>
+<% end %>
+
+<%= render layout: "home/feature", locals: { id: "comments", title: "Host a conversation with comments", image: "home/comments.webp", alt: "A screenshot of comments on a Pagecord blog post", size: "1600x922" } do %>
+  <p>With Pagecord Premium you can enable comments on your posts. Readers leave a name and a message: no account needed, no email address revealed. You can post a reply to any of them.</p>
+  <p>Comments won't appear until you approve them, and spam is filtered out before it reaches you.</p>
+<% end %>
+
+<%= render layout: "home/feature", locals: { id: "analytics", title: "Privacy-respecting analytics built in", image: "home/analytics.webp", alt: "A screenshot of Pagecord's page view analytics page", size: "1600x968", flip: true } do %>
+  <p>It's nice to know how many visitors your blog gets, and where they come from, but you shouldn't have to add costly 3rd party tracking scripts.</p>
+  <p>Pagecord Premium has simple, privacy-first analytics built in. And if you would rather not know, you can turn it all off.</p>
+<% end %>
+
+<section id="walkthrough" class="mt-20 md:mt-28 mx-auto max-w-6xl px-4 grid md:grid-cols-[2fr_3fr] gap-10 md:gap-16 items-center">
+  <div class="flex flex-col gap-5">
+    <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight leading-tight text-slate-900 dark:text-slate-100">Watch a Pagecord walkthrough</h2>
+    <p class="text-lg md:text-xl leading-relaxed text-slate-600 dark:text-slate-300">
+      Join Pagecord creator Olly for a 20-minute tour of everything Pagecord can do, or work through the
+      <%= link_to "tutorial playlist", "https://www.youtube.com/playlist?list=PLWmBHyKikHFs", class: "home-link" %>
+      for shorter videos on individual features.
+    </p>
+    <p class="text-sm"><%= link_to "Watch on YouTube", "https://www.youtube.com/watch?v=8vVm7e7HxMQ", class: "home-link" %></p>
+  </div>
+  <div class="relative">
+    <video controls preload="none" poster="<%= asset_path("home/pagecord-walkthrough-poster.jpg") %>" class="aspect-video w-full rounded-xl shadow-lg">
+      <source src="https://media.pagecord.com/pagecord-walkthrough-jan-2026.mp4" type="video/mp4">
+      <track kind="captions" src="<%= asset_path("home/pagecord-walkthrough-captions.vtt") %>" srclang="en" label="English">
+    </video>
+    <p class="home-postit">I filmed this in January, it's rather out of date – soz! New one coming soon!</p>
+  </div>
+</section>
+
+<section id="compare" class="mt-20 md:mt-28 mx-auto max-w-5xl px-4">
+  <h2 class="mb-8 text-center source-serif font-semibold text-3xl md:text-4xl tracking-tight text-slate-900 dark:text-slate-100">Classic and Premium, side by side</h2>
+
+  <% included = capture do %>
+    <%= inline_svg_tag "icons/check.svg", class: "inline w-5 h-5 text-pagecord-accent", aria_hidden: true %><span class="sr-only">Included</span>
+  <% end %>
+  <% excluded = capture do %>
+    <span aria-hidden="true" class="text-slate-300 dark:text-slate-600">–</span><span class="sr-only">Not included</span>
+  <% end %>
+
+  <div class="rounded-xl ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
+    <table class="w-full text-left">
+      <thead>
+        <tr class="border-b border-slate-200 dark:border-slate-800">
+          <th class="px-4 md:px-8 py-5"><span class="sr-only">Feature</span></th>
+          <th class="w-24 md:w-40 py-5 text-center align-top">
+            <span class="block text-lg md:text-xl font-semibold text-slate-900 dark:text-slate-100">Classic</span>
+            <span class="block text-sm font-normal text-slate-500 dark:text-slate-400">FREE!</span>
+          </th>
+          <th class="w-24 md:w-40 py-5 text-center align-top">
+            <span class="block text-lg md:text-xl font-semibold text-slate-900 dark:text-slate-100">Premium</span>
+            <span class="block text-sm font-normal text-slate-500 dark:text-slate-400">Only <b class="text-slate-900 dark:text-slate-100">$<%= localised_price %> per year!</b></span>
+          </th>
+        </tr>
+      </thead>
+
+      <% [
+        [ "On every plan", [
+          [ "Number of posts", "Write as many posts as you like. Your blog app should never hold you back", "Unlimited", "Unlimited" ],
+          [ "Number of blogs", "Run a main blog and a side project, newsletter, or microblog from the same account", Blog::MAX_BLOGS_FREE, Blog::MAX_BLOGS_PAID ],
+          [ "Write by email", "Publishing is as simple as sending an email. Rich text is fully supported", true, true ],
+          [ "Online editor", "Use a rich text editor if you prefer a traditional blogging experience", true, true ],
+          [ "Long-form writing", "Write long-form articles or microblog your thoughts. Both look great!", true, true ],
+          [ "Pages", "Create standalone pages for About, Now, Contact, archives, tags, and more with dynamic variables", true, true ],
+          [ "Custom Home Page", "Choose a custom page to welcome visitors instead of dropping them straight into the post stream", true, true ],
+          [ "Themes", "Style your blog with colour themes and fonts", true, true ],
+          [ "Tags", "Tag your posts to keep things organised", true, true ],
+          [ "Password protected blog", "Put a password on a blog so only the people you share it with can read it", true, true ],
+          [ "Media Embeds", "Links to YouTube, Spotify, Bandcamp and GitHub are automatically embedded. Great for sharing your favourite tunes and videos", true, true ],
+          [ "Multi-language support", "Pagecord allows your blog interface to be in English, French, Spanish, German and Portuguese", true, true ],
+          [ "RSS feeds", "Every site has a public RSS feed so readers can follow along in their favourite feed reader", true, true ],
+          [ "Full Site Export", "Export your entire Pagecord blog as HTML or Markdown, with images included", true, true ],
+          [ "Post Likes", "Visitors can 'like' your posts. You track the stats in the app", true, true ],
+          [ "Search", "Readers can search your site to find what they're looking for", true, true ],
+          [ "Avatar", "Add a touch of your own personality while retaining that classic Pagecord minimal look", true, true ]
+        ] ],
+        [ "With Premium", [
+          [ "Image & Audio Hosting", "Upload images, galleries and audio for your posts, via email attachments or using the editor", "20 for free", true ],
+          [ "Video Hosting", "Upload video straight into a post, up to 50MB a file", false, true ],
+          [ "Page view analytics", "See how many people are visiting your blog with privacy-respecting analytics", false, true ],
+          [ "Email newsletter", safe_join([ "Readers subscribe and receive a weekly digest or individual posts as you publish them (250 subscriber limit. More for ", link_to("an additional fee", "/faq#subscribers", class: "home-link"), ")" ]), false, true ],
+          [ "Comments", "Readers comment without signing up for anything. Every comment waits for your approval, and spam is filtered out before it reaches you", false, true ],
+          [ "Reply by email", "Readers reply to your posts by email. Your email address is never revealed!", false, true ],
+          [ "Embeddable Contact Form", "Add a contact form to any page. Messages go straight to your inbox", false, true ],
+          [ "Custom Domains", "If you'd prefer to use your own domain name for your site, set it up in one click", false, true ],
+          [ "Custom CSS", "Add your own CSS to customise the look of your blog beyond the built-in themes", false, true ],
+          [ "Custom code", "Add your own HTML and JavaScript to every page for third party analytics, or custom functionality", false, true ],
+          [ "API, Obsidian & Shortcuts", "Publish from the official Obsidian plugin, iA Writer, scripts, Shortcuts, or anything that can make an HTTP request", false, true ],
+          [ "Independent software", "Support a bootstrapped, profitable, open source blogging platform", false, true ]
+        ] ]
+      ].each do |group, rows| %>
+        <tbody>
+          <tr>
+            <th colspan="3" scope="colgroup" class="px-4 md:px-8 py-3 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400"><%= group %></th>
+          </tr>
+          <% rows.each do |name, description, classic, premium| %>
+            <tr class="border-b border-slate-100 dark:border-slate-800 last:border-0">
+              <th scope="row" class="px-4 md:px-8 py-4 font-normal">
+                <span class="block font-semibold text-slate-900 dark:text-slate-100"><%= name %></span>
+                <span class="hidden sm:block mt-0.5 text-sm text-slate-500 dark:text-slate-400"><%= description %></span>
+              </th>
+              <% [ classic, premium ].each do |value| %>
+                <td class="py-4 text-center text-slate-700 dark:text-slate-300">
+                  <%= value == true ? included : value == false ? excluded : value %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      <% end %>
+    </table>
+  </div>
+
+  <p class="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+    Every new account starts with a 14-day free trial of Premium. <%= link_to "See pricing", root_path(anchor: "pricing"), class: "home-link" %>
+  </p>
+</section>
+
+<%= render "landing_cta" %>

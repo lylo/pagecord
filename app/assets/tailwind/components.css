@@ -175,14 +175,13 @@
     @apply text-slate-900 underline dark:text-slate-100 md:bg-slate-800 md:text-white md:no-underline md:hover:bg-slate-800 md:hover:text-white md:dark:bg-slate-100 md:dark:text-slate-900 md:dark:hover:bg-slate-100 md:dark:hover:text-slate-900;
   }
 
-  /* Pricing and Features are sections of the home page: selected while scrolled into view, or while the URL targets them where scroll markers aren't supported. */
+  /* Pricing is a section of the home page: selected while scrolled into view, or while the URL targets it where scroll markers aren't supported. */
   .home-nav-item:target-current {
     @apply text-slate-900 underline dark:text-slate-100 md:bg-slate-800 md:text-white md:no-underline md:hover:bg-slate-800 md:hover:text-white md:dark:bg-slate-100 md:dark:text-slate-900 md:dark:hover:bg-slate-100 md:dark:hover:text-slate-900;
   }
 
   @supports not selector(:target-current) {
-    :root:has(#pricing:target) .home-nav-item[href$="#pricing"],
-    :root:has(#features:target) .home-nav-item[href$="#features"] {
+    :root:has(#pricing:target) .home-nav-item[href$="#pricing"] {
       @apply text-slate-900 underline dark:text-slate-100 md:bg-slate-800 md:text-white md:no-underline md:hover:bg-slate-800 md:hover:text-white md:dark:bg-slate-100 md:dark:text-slate-900 md:dark:hover:bg-slate-100 md:dark:hover:text-slate-900;
     }
   }

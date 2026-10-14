@@ -9,6 +9,13 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: "Make yourself a home on the web"
   end
 
+  test "the hero letter starts a signup with the blog name" do
+    get root_path
+
+    assert_select "form[action=?][method=get] input[name=title]", new_signup_path
+    assert_select "form[action=?] input[name=authenticity_token]", new_signup_path, count: 0
+  end
+
   test "should publicly cache unattributed home page" do
     get root_path
 

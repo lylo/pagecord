@@ -7,6 +7,6 @@ class Public::LlmsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "text/plain; charset=utf-8", @response.content_type
     assert_includes @response.body, "# Pagecord"
     assert_includes @response.body, "Make yourself a home on the web"
-    assert_includes @response.body, "Publish wherever you like"
+    assert_includes @response.body, "Focus on writing, not wrangling"
   end
 end

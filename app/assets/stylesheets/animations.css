@@ -51,6 +51,12 @@
   animation-play-state: paused;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll-smooth {
+    animation: none;
+  }
+}
+
 /* Hide scrollbar but allow scrolling */
 .overflow-x-auto {
   scrollbar-width: none; /* Firefox */

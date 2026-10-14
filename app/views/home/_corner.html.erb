@@ -1,0 +1,50 @@
+<div class="flex flex-col gap-8">
+  <div class="flex flex-col gap-3">
+    <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight text-slate-900 dark:text-slate-100">Your own corner of the web</h2>
+    <p class="max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-300">Write as much as you like, on as many pages as you like. Pagecord lets you create the personal website of your dreams!</p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-8 md:gap-6">
+    <article class="flex flex-col gap-4">
+      <%= image_tag home_image_path("home/screenshot-01.webp", width: 680, quality: 88),
+            srcset: home_image_srcset("home/screenshot-01.webp", widths: [ 680, 1500 ], quality: 88),
+            sizes: "(min-width: 48rem) 20rem, calc(100vw - 4rem)",
+            alt: "A Pagecord personal site with About, Grid and Archives pages and a photo post",
+            width: "1500",
+            height: "1420",
+            class: "aspect-[4/3] w-full object-cover object-top rounded-lg shadow-sm ring-1 ring-slate-200 dark:ring-slate-800" %>
+      <div>
+        <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">A personal site</h3>
+        <p class="mt-1 text-slate-600 dark:text-slate-300">A home for whatever you make: poems, short stories, a novel chapter by chapter, a sketchbook. As many pages as you like, a way for readers to get in touch, and a domain of your own.</p>
+      </div>
+    </article>
+
+    <article class="flex flex-col gap-4">
+      <%= image_tag home_image_path("home/screenshot-03.webp", width: 680, quality: 88),
+            srcset: home_image_srcset("home/screenshot-03.webp", widths: [ 680, 1500 ], quality: 88),
+            sizes: "(min-width: 48rem) 20rem, calc(100vw - 4rem)",
+            alt: "A Pagecord blog with a photo header, links to its archive and gallery, and a post of sculpture photographs",
+            width: "1500",
+            height: "1420",
+            class: "aspect-[4/3] w-full object-cover object-top rounded-lg shadow-sm ring-1 ring-slate-200 dark:ring-slate-800" %>
+      <div>
+        <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">A blog</h3>
+        <p class="mt-1 text-slate-600 dark:text-slate-300">A blog for all writing habits, long form articles or micro-posts. Readers can follow by RSS or by email updates. Comments and analytics are built in.</p>
+      </div>
+    </article>
+
+    <article class="flex flex-col gap-4">
+      <%= image_tag home_image_path("home/screenshot-02.webp", width: 680, quality: 88),
+            srcset: home_image_srcset("home/screenshot-02.webp", widths: [ 680, 1500 ], quality: 88),
+            sizes: "(min-width: 48rem) 20rem, calc(100vw - 4rem)",
+            alt: "A Pagecord home page with an avatar, a short introduction, links to About, Now and Contact, and its latest post",
+            width: "1500",
+            height: "1420",
+            class: "aspect-[4/3] w-full object-cover object-top rounded-lg shadow-sm ring-1 ring-slate-200 dark:ring-slate-800" %>
+      <div>
+        <h3 class="source-serif font-semibold text-2xl tracking-tight text-slate-900 dark:text-slate-100">Your home page</h3>
+        <p class="mt-1 text-slate-600 dark:text-slate-300">Introduce yourself and your work. Show your latest posts, your book, your gallery, or just your blog.</p>
+      </div>
+    </article>
+  </div>
+</div>

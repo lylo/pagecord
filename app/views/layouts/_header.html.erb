@@ -1,4 +1,4 @@
-<% nav_items = [ [ "Pricing", root_path(anchor: "pricing") ], [ "Features", root_path(anchor: "features") ], [ "Spotlight", spotlight_path ], [ "Updates", "https://blog.pagecord.com" ] ] %>
+<% nav_items = [ [ "Pricing", root_path(anchor: "pricing") ], [ "Features", features_path ], [ "Spotlight", spotlight_path ], [ "Updates", "https://blog.pagecord.com" ] ] %>
 
 <header class="sticky top-0 z-40 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
   <div class="relative flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-slate-900 [scroll-target-group:auto] dark:text-slate-100">
@@ -15,8 +15,9 @@
     </nav>
 
     <div class="flex shrink-0 items-center gap-2 sm:gap-3">
-      <%= link_to "Log In", login_path, class: "rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 sm:border-transparent sm:px-0 sm:text-slate-600 sm:hover:bg-transparent sm:hover:text-slate-900 sm:dark:border-transparent sm:dark:text-slate-300 sm:dark:hover:bg-transparent sm:dark:hover:text-slate-100" %>
-      <%= link_to "Start writing", new_signup_path, class: "btn-primary" %>
+      <% quiet_link = "rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 sm:border-transparent sm:px-0 sm:text-slate-600 sm:hover:bg-transparent sm:hover:text-slate-900 sm:dark:border-transparent sm:dark:text-slate-300 sm:dark:hover:bg-transparent sm:dark:hover:text-slate-100" %>
+      <%= link_to "Log In", login_path, class: quiet_link %>
+      <%= link_to "Start writing", new_signup_path, class: current_page?(root_path) ? quiet_link : "btn-primary" %>
     </div>
   </div>
 </header>

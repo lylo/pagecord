@@ -28,18 +28,17 @@
     </p>
   </div>
 
-  <div class="text-center mt-8 mb-4 md:text-xl">
-    <%= link_to new_signup_path do %>
-      <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Create your blog for free</div>
-    <% end %>
+  <div class="mt-10 flex flex-col items-center gap-5">
+    <%= render "home/letter" %>
+    <p class="text-sm">or <%= link_to "learn more on the Pagecord home page", root_path, class: "home-link" %></p>
   </div>
 </div>
 
 <%= render "screenshots" %>
 
-<div class="md:mt-4 mb-4 md:mb-8 mx-auto max-w-4xl px-4">
-  <section class="my-10 md:my-14 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 md:p-8">
-    <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight text-slate-800 dark:text-slate-200">Built for indie bloggers on the small web</h2>
+<div class="mt-20 md:mt-28 mx-auto max-w-3xl px-4">
+  <section>
+    <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight text-slate-900 dark:text-slate-100">Built for indie bloggers on the small web</h2>
     <div class="mt-6 md:text-xl text-base leading-relaxed text-slate-800 dark:text-slate-200 flex flex-col gap-y-4">
       <p>
         Pagecord is free forever for the blogging basics, with a premium version at $<%= localised_price %>/year or $<%= localised_price(:monthly) %>/month when you need more.
@@ -56,8 +55,4 @@
 
 <%= render "home/testimonials" %>
 
-<div class="text-center mt-8 mb-4 md:text-xl">
-  <%= link_to new_signup_path do %>
-    <div class="mt-2 inline-flex font-medium p-4 rounded-xl shadow-sm btn-primary text-xl">Sign up for free today!</div>
-  <% end %>
-</div>
+<%= render "landing_cta" %>

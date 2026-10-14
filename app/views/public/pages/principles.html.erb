@@ -1,0 +1,37 @@
+<% content_for :title, "The Pagecord Principles" %>
+<%= content_for :og_image do %>
+  <%= dynamic_og_image_for_landing_page(title: "The Pagecord Principles") %>
+<% end %>
+<% content_for :meta_description, "A letter from Pagecord's maker on the six principles behind it: write more and manage less, use your favourite writing tool, own your home on the web, and more." %>
+
+<div class="mx-auto max-w-3xl px-4 flex flex-col items-center gap-10">
+  <h1 class="source-serif font-semibold text-4xl md:text-6xl tracking-tight text-center text-slate-900 dark:text-slate-100">The Pagecord Principles</h1>
+
+  <article class="letter-paper letter-paper--long">
+    <%= render "letters/letterhead" %>
+
+    <p>Dear writer,</p>
+
+    <p>Pagecord is designed with these guiding principles front of mind.</p>
+
+    <p><strong>Write more, manage less.</strong> Pagecord reduces the ceremony around blogging. Publish what you like, when you like, from wherever you like. A single photograph, a quick thought, a full-on essay. Everything looks great. Don't let overthinking hold you back – write and publish whenever you feel the urge.</p>
+
+    <p><strong>Use your favourite writing tool.</strong> Write wherever suits you. There's a lovely editor built in, or you can publish a post by sending an email &ndash; no app to open, no password to remember. Already devoted to Obsidian or iA Writer? Pagecord works with those, and there's a CLI and API for the tinkerers.</p>
+
+    <p><strong>Own your home on the web.</strong> Pagecord gives writers a long-term home on the web. Bring your own domain name, create your own design. Export your entire site, including images, any time in HTML or Markdown format. No lock-in. Easy to leave, but worth staying for.</p>
+
+    <p><strong>Embrace boring web standards.</strong> Pagecord embraces the original dream of the World Wide Web. Fast, lean, semantic HTML that looks great on every device. Tiny JavaScript sprinkles, evergreen permalinks, RSS, email, and Micropub. No bloat, no adverts. Built for the long haul using tried and trusted tech.</p>
+
+    <p><strong>Allow people to follow, calmly.</strong> Reading a Pagecord blog should be as effortless as writing on one. Every Pagecord blog comes with RSS support. Premium lets readers subscribe to weekly email digests, or individual posts by email. Readers can also reply privately to posts using email.</p>
+
+    <p><strong>Complete, not complicated.</strong> Pagecord includes posts, pages, themes, analytics, email subscribers, comments, custom domains, and full export. Everything you could reasonably need, for a most reasonable price.</p>
+
+    <p>Yours,</p>
+    <p class="letter-signature">Olly</p>
+  </article>
+
+  <div class="mt-6 mb-20 w-full max-w-xl flex flex-col items-center gap-6">
+    <%= render "home/letter" %>
+    <p class="text-sm"><%= link_to "See real Pagecord sites", spotlight_path, class: "home-link" %></p>
+  </div>
+</div>

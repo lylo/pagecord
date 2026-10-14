@@ -1,0 +1,15 @@
+<%# locals: (title:, image:, alt:, size:, id: nil, flip: false) %>
+<section id="<%= id %>" class="mt-20 md:mt-28 mx-auto max-w-6xl px-4 grid md:grid-cols-2 gap-10 md:gap-20 items-center">
+  <div class="flex flex-col gap-5 <%= "md:order-last" if flip %>">
+    <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight leading-tight text-slate-900 dark:text-slate-100"><%= title %></h2>
+    <div class="flex flex-col gap-5 text-lg md:text-xl leading-relaxed text-slate-600 dark:text-slate-300">
+      <%= yield %>
+    </div>
+  </div>
+
+  <%= image_tag home_image_path(image, width: 1200, quality: 88),
+        srcset: home_image_srcset(image, widths: [ 800, 1600 ], quality: 88),
+        sizes: "(min-width: 72rem) 34rem, (min-width: 48rem) 45vw, 100vw",
+        alt:, size:, loading: "lazy",
+        class: "w-full h-auto rounded-xl shadow-lg ring-1 ring-slate-200 dark:ring-slate-800" %>
+</section>
