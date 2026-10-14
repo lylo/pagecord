@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%= render "layouts/head", stylesheets: %w[tailwind application inter source-serif-4 ibm-plex-mono caveat signup] %>
+  </head>
+
+  <body class="signup-page">
+    <main class="signup">
+      <%= render "app/shared/flash" %>
+      <%= yield %>
+
+      <p class="signup-footer">Already writing on Pagecord? <%= link_to "Sign in", login_path %> · <%= link_to "pagecord.com", root_path %></p>
+    </main>
+  </body>
+</html>

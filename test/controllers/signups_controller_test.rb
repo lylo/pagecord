@@ -15,6 +15,29 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_not User.last.marketing_consent
   end
 
+  test "signing up keeps the blog name as its title" do
+    post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { title: "Harbour Light", subdomain: "harbourlight" } ] }, rendered_at: signed_rendered_at }
+
+    assert_equal "Harbour Light", User.last.blog.title
+  end
+
+  test "a taken subdomain keeps the letter filled in and says so" do
+    post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { title: "Joel Again", subdomain: blogs(:joel).subdomain } ] }, rendered_at: signed_rendered_at }
+
+    assert_response :unprocessable_entity
+    assert_select "input[name='user[blogs_attributes][0][title]'][value='Joel Again']"
+    assert_select ".signup-note", /taken/
+  end
+
+  test "a taken email offers to sign in" do
+    post signups_url, params: { user: { email: users(:joel).email, blogs_attributes: [ { subdomain: "newblog" } ] }, rendered_at: signed_rendered_at }
+
+    assert_select ".signup-note a[href=?]", login_path
+    assert_select "p input[name='user[email]']", 1
+    assert_select "input[name='user[email]'][autofocus]"
+    assert_select "input[name='user[blogs_attributes][0][title]'][autofocus]", 0
+  end
+
   test "should preserve signup attribution for plausible goal page" do
     get root_url, params: {
       utm_source: "reddit",

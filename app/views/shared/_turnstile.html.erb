@@ -1,3 +1,4 @@
+<%# locals: (theme: "light", appearance: "always") %>
 <% if turnstile_enabled? %>
 <div class="turnstile-widget">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -6,7 +7,8 @@
     <% if Rails.env.test? %>
     data-action="test"
     <% end %>
-    data-theme="light">
+    data-theme="<%= theme %>"
+    data-appearance="<%= appearance %>">
   </div>
 </div>
 <% end %>

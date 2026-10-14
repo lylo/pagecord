@@ -5,11 +5,6 @@
 /* This file is loaded by ALL layouts (blog, admin, app, home, etc.)
    It should only contain truly shared styles that apply everywhere. */
 
-/* Field errors wrapper - makes Rails error wrapper invisible to flexbox */
-.field_with_errors {
-  display: contents;
-}
-
 /* Color picker - remove browser default padding so color fills entire input */
 input[type="color"].color-picker-full {
   padding: 0;
