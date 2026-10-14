@@ -8,5 +8,12 @@
     <p>Please check back later.</p>
   </div>
 <% else %>
+  <% if Invitation.required? %>
+    <div class="letter-intro">
+      <h1>Pagecord is invite-only right now</h1>
+      <p>To keep the spammers out.</p>
+    </div>
+  <% end %>
+
   <%= render "form" %>
 <% end %>

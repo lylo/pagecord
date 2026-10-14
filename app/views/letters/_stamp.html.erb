@@ -1,8 +1,8 @@
-<%# locals: (code: "1ST", free: false) %>
+<%# locals: (code: "1ST", free: false, code_data: {}) %>
 <div class="<%= class_names("letter-stamp", "letter-stamp--free" => free) %>" aria-hidden="true">
   <div class="letter-stamp__face">
     <span>PAGECORD</span>
     <span class="letter-stamp__cameo"><span class="letter-stamp__mark"></span></span>
-    <span class="letter-stamp__code"><%= code %></span>
+    <%= tag.span code, class: "letter-stamp__code", data: code_data %>
   </div>
 </div>

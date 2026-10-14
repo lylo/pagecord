@@ -10,6 +10,14 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?] input[name=authenticity_token]", new_signup_path, count: 0
   end
 
+  test "the hero letter says when signup is invite-only" do
+    Invitation.stubs(:required?).returns(true)
+
+    get root_path
+
+    assert_select ".letter-note--aside", /invite-only/
+  end
+
   test "the home page loads the marketing import map, not the app's" do
     get root_path
 

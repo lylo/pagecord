@@ -19,6 +19,14 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_match "cleantalk FORBIDDEN BL", response.body
   end
 
+  test "should show who invited an account and who it invited" do
+    get admin_user_path(users(:vivian))
+    assert_select "a[href=?]", admin_user_path(users(:joel))
+
+    get admin_user_path(users(:joel))
+    assert_select "a[href=?]", admin_user_path(users(:vivian))
+  end
+
   test "should search users by email" do
     user1 = users(:vivian)
     user2 = users(:joel)

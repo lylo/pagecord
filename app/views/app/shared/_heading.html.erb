@@ -35,6 +35,10 @@
             <%= hotkey "v", class: "ms-auto" %>
           <% end %>
           <%= link_to "Manage blogs", app_blogs_path, class: item %>
+          <%= link_to app_invitations_path, class: "#{item} flex items-center gap-1.5" do %>
+            <%= inline_svg_tag "icons/ticket.svg", class: "h-4 w-4 shrink-0" %>
+            Invite a writer
+          <% end %>
         </div>
 
         <div class="border-t border-slate-200 pt-2 dark:border-slate-800">
