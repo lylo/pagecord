@@ -6,6 +6,15 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "should show log in page" do
     get login_url
     assert_response :success
+    assert_select "input[name='user[subdomain]']"
+    assert_select "input[name='user[email]']"
+  end
+
+  test "should show the password log in page" do
+    get login_url(mode: :password)
+    assert_response :success
+    assert_select "input[name='user[password]'][type=password]"
+    assert_select "a[href=?]", new_password_reset_path
   end
 
   test "should send verification email for valid credentials" do

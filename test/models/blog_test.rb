@@ -443,4 +443,11 @@ class BlogTest < ActiveSupport::TestCase
     assert blog.valid?
     assert_nil blog.date_format
   end
+
+  test "a title is at most 100 characters" do
+    blog = blogs(:joel)
+    blog.title = "a" * 101
+
+    assert_not blog.valid?
+  end
 end

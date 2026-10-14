@@ -1,15 +1,12 @@
 <% content_for :title, "Pagecord - Sign up" %>
 <% content_for :meta_description, "Create your free Pagecord account. Start blogging in seconds." %>
+<% content_for :footer do %>Already writing on Pagecord? <%= link_to "Sign in", login_path %><% end %>
 
 <% if ENV["DISABLE_SIGNUPS"] %>
-  <p class="text-center">
-    Signups are currently disabled. Please check back later.
-  </p>
+  <div class="letter-intro">
+    <h1>Signups are closed for now</h1>
+    <p>Please check back later.</p>
+  </div>
 <% else %>
-  <h1 class="text-2xl font-bold mb-2">Let's create your Pagecord blog!</h1>
-  <p class="text-slate-600 dark:text-slate-400">
-    To create your blog, choose a subdomain and enter your email.
-  </p>
-
   <%= render "form" %>
 <% end %>

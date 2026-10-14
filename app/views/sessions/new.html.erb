@@ -1,13 +1,38 @@
-<% content_for :title, "Pagecord - Log In" %>
-<% content_for :meta_description, "Log in to your Pagecord account to post and manage your blog" %>
+<% content_for :title, "Pagecord - Sign in" %>
+<% content_for :meta_description, "Sign in to your Pagecord account to post and manage your blog" %>
 
-<div class="mb-8">
-  <h1 class="text-2xl font-bold mb-4"><%= greeting %>! 👋</h1>
-  <p class="text-slate-600 dark:text-slate-400">
-    <%= @password_mode ? "Enter your subdomain and password to log in." : "Enter your account details below and we'll send you a magic link to log in." %>
-  </p>
-</div>
+<%= form_with url: sessions_path, model: @user, class: "letter-form", data: { turbo: false, controller: "signature" } do |form| %>
+  <div class="letter-paper">
+    <%= render "letters/letterhead" %>
 
-<%= turbo_frame_tag "login_form" do %>
-  <%= render @password_mode ? "password_login_form" : "email_login_form" %>
+    <p>Dear Pagecord,</p>
+    <p>
+      It's me again, from
+      <%= letter_subdomain_blank form, value: @user.blogs.first&.subdomain, autofocus: true,
+            data: { signature_target: "source", action: "input->signature#sign" } %>
+    </p>
+    <p>
+      <% if @password_mode %>
+        My password is
+        <%= letter_blank form, :password, label: "Password", as: :password_field, period: true, required: true, autocomplete: "current-password" %>
+      <% else %>
+        Please send a sign-in link to
+        <%= letter_email_blank form %>
+      <% end %>
+    </p>
+
+    <p class="letter-note" role="alert"><% if @password_rejected %>That blog address and password don't match. Try again, or <%= link_to "sign in with a link", login_path %>?<% end %></p>
+
+    <p>Yours,</p>
+    <p class="letter-signature" data-signature-target="output"><%= @user.blogs.first&.subdomain %></p>
+
+    <div class="letter-send">
+      <%= render "letters/send", form: form, label: @password_mode ? "Sign in" : "Send me a link" %>
+      <% if @password_mode %>
+        <span class="letter-aside"><%= link_to "Email me a link instead", login_path %><%= link_to "Forgotten your password?", new_password_reset_path %></span>
+      <% else %>
+        <span class="letter-aside"><%= link_to "Use my password instead", login_path(mode: :password) %></span>
+      <% end %>
+    </div>
+  </div>
 <% end %>

@@ -6,11 +6,12 @@
     </p>
 
     <p class="mt-2 text-slate-600 dark:text-slate-300">
-      Five quick things to set up. You can change any of them later in Settings.
+      A few quick things to set up. You can change any of them later in Settings.
     </p>
   </div>
 
-  <%= render "step", number: "1", title: "Give your blog a title" %>
+  <%= render "step", number: "1", title: "Confirm your blog title",
+        description: "Here's the name from your letter. Change it now, or any time in Settings." %>
 
   <div class="py-6">
     <%= form_with url: app_onboarding_path, model: @blog,
@@ -128,8 +129,26 @@
     <% end %>
   </div>
 
-  <%= render "step", number: "5", title: "Ready to write ✍️",
-        description: "Publish your first post in the editor, from Obsidian, or straight from your inbox." %>
+  <% unless Current.user.has_password? %>
+    <%= render "step", number: "5", title: "Add a password",
+          description: "Optional. We'll always email you a sign-in link, but a password can be handy too." %>
+
+    <div id="onboarding_password" class="py-6">
+      <%= form_with url: app_onboarding_password_path, scope: :user, class: "space-y-3" do |form| %>
+        <fieldset class="grid gap-3 sm:grid-cols-2">
+          <%= form.label :password, "Password", class: "sr-only" %>
+          <%= form.password_field :password, placeholder: "Password (12+ characters)", minlength: 12, required: true, autocomplete: "new-password", class: "w-full px-3 py-2.5 form-field rounded-lg" %>
+          <%= form.label :password_confirmation, "Confirm password", class: "sr-only" %>
+          <%= form.password_field :password_confirmation, placeholder: "Once more, to be sure", required: true, autocomplete: "new-password", class: "w-full px-3 py-2.5 form-field rounded-lg" %>
+        </fieldset>
+        <div id="password_error" class="field-error"></div>
+        <%= form.submit "Save password", class: "btn-primary" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= render "step", number: Current.user.has_password? ? "5" : "6", title: "Ready to write ✍️",
+        description: "Write your first post, add a page, or set up your home page." %>
 
   <div class="py-6">
     <%= button_to app_onboarding_completion_path, class: "btn-primary" do %>

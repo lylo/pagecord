@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   rate_limit to: 5, within: 5.minutes, only: :create, with: :login_rate_limit_reached, name: "session-create"
   rate_limit to: 20, within: 1.minute, only: :new, name: "session-new"
 
-  layout "sessions"
+  layout "letter"
 
   def new
     if Current.user.present?
@@ -40,9 +40,9 @@ class SessionsController < ApplicationController
       if user&.verified? && user.authenticate(user_params[:password])
         sign_in user
         session[:current_blog_id] = blog.id
-        redirect_to app_root_path, notice: "Welcome back!"
+        redirect_to app_root_path
       else
-        flash.now[:alert] = "Invalid subdomain or password"
+        @password_rejected = true
         @user = User.new.tap { |u| u.blogs.build(subdomain: user_params[:subdomain]) }
         @password_mode = true
         render :new, status: :unprocessable_entity

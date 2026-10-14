@@ -8,6 +8,8 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
   test "new shows password reset form" do
     get new_password_reset_url
     assert_response :success
+    assert_select "input[name='user[subdomain]']"
+    assert_select "input[name='user[email]']"
   end
 
   test "create sends reset email and redirects" do

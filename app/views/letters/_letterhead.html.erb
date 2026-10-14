@@ -1,0 +1,8 @@
+<%= render "letters/stamp" %>
+
+<div class="letter-letterhead" aria-hidden="true">
+  <%= inline_svg_tag "logo-mark-black.svg" %>
+  <span>PAGECORD</span>
+</div>
+
+<p class="letter-date"><%= Date.current.strftime("%-d %B %Y") %></p>

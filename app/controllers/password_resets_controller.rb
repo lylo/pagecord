@@ -6,7 +6,7 @@ class PasswordResetsController < ApplicationController
   skip_before_action :authenticate, :domain_check
   before_action :find_access_request, only: [ :edit, :update ]
 
-  layout "sessions"
+  layout "letter"
 
   def new
     @user = User.new.tap { |u| u.blogs.build }

@@ -3,22 +3,16 @@ require "test_helper"
 class PasswordAuthenticationTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
-  test "signup with password requires verification before login" do
+  test "a password can't sign in before the email is verified" do
     assert_emails 1 do
       post signups_url, params: {
-        user: {
-          email: "newuser@example.com",
-          password: "password1234",
-          password_confirmation: "password1234",
-          timezone: "UTC",
-          blogs_attributes: [ { subdomain: "newuser" } ]
-        },
+        user: { email: "newuser@example.com", timezone: "UTC", blogs_attributes: [ { subdomain: "newuser" } ] },
         rendered_at: signed_rendered_at
       }
     end
 
     user = User.find_by(email: "newuser@example.com")
-    assert user.has_password?
+    user.update!(password: "password1234")
     assert_not user.verified?
 
     post sessions_url, params: {
@@ -28,6 +22,7 @@ class PasswordAuthenticationTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_nil session[:user_id]
+    assert_select ".letter-note a[href=?]", login_path
 
     get access_request_verification_url(user.access_requests.last.token_digest)
 

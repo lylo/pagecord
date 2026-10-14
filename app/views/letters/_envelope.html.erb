@@ -1,0 +1,11 @@
+<%# locals: (heading:, body:) %>
+<div class="letter-envelope" aria-hidden="true">
+  <%= render "letters/stamp" %>
+  <%= inline_svg_tag "icons/stamp.svg", class: "letter-envelope__postmark" %>
+  <div class="letter-envelope__address">To Pagecord</div>
+</div>
+
+<div class="letter-intro">
+  <h1><%= heading %></h1>
+  <p><%= body %></p>
+</div>

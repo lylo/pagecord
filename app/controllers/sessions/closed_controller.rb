@@ -1,5 +1,5 @@
 class Sessions::ClosedController < ApplicationController
-  layout "sessions"
+  layout "letter"
 
   def show
   end

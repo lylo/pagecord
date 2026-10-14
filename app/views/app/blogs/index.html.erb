@@ -15,8 +15,10 @@
   <div class="sheet-divider mt-5"></div>
 
   <% unless Current.user.subscribed? %>
-    <div class="mt-6 mb-6 rounded-lg bg-slate-50 p-4 text-sm text-slate-600 dark:bg-slate-800/50 dark:text-slate-300">
-      <%= link_to "Subscribe to Pagecord Premium", app_settings_subscriptions_path, class: "link-quiet font-medium" %> to add up to <%= Blog::MAX_BLOGS_PAID %> blogs to your account. Handy for a separate photo blog, microblog, or a private journal!
+    <div class="my-6">
+      <%= callout(:info) do %>
+        <%= link_to "Subscribe to Pagecord Premium", app_settings_subscriptions_path, class: "underline font-medium" %> to add up to <%= Blog::MAX_BLOGS_PAID %> blogs to your account. Handy for a separate photo blog, microblog, or a private journal!
+      <% end %>
     </div>
   <% end %>
 
