@@ -53,6 +53,7 @@ class Blog < ApplicationRecord
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
   validate  :subdomain_valid
+  validates :title, length: { maximum: 100 }
   validates :google_site_verification, format: { with: /\A[a-zA-Z0-9_-]+\z/, message: "can only contain letters, numbers, underscores, and hyphens" }, allow_blank: true
 
   normalizes :date_format, with: -> { it.presence }

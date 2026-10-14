@@ -1,95 +1,91 @@
-<% if @error_message %>
-  <div class="mt-6 px-4 py-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-sm">
-    <%= @error_message %>
-  </div>
-<% end %>
+<% blog = @user.blogs.first %>
+<% focus = @user.errors[:email].any? ? :email : (blog&.errors&.include?(:subdomain) ? :subdomain : :title) %>
 
-<%= form_with url: signups_path, model: @user, data: { controller: "timezone", turbo: "false" }, class: "mt-6 space-y-6" do |form| %>
+<%= form_with url: signups_path, model: @user, class: "letter-form", data: { controller: "timezone signup-letter", turbo: "false" } do |form| %>
   <%= form.hidden_field :signup_referrer %>
+  <%= form.hidden_field :timezone, data: { timezone_target: "timeZone" } %>
+  <%= render "/shared/spam_prevention" %>
 
-  <fieldset>
-    <label class="block text-base font-semibold text-slate-700 dark:text-slate-200 mb-2.5">Choose your subdomain</label>
-    <div class="flex items-center gap-1.5">
-      <%= form.fields_for :blogs do |blog_form| %>
-        <%= blog_form.text_field :subdomain,
-            placeholder: "subdomain",
-            autofocus: true,
-            class: "px-3 py-2.5 form-field rounded-lg flex-shrink min-w-0",
-            maxlength: 20,
-            required: true %>
-      <% end %>
-      <span class="font-medium text-slate-700 dark:text-slate-300 flex-shrink-0">.pagecord.com</span>
-    </div>
-    <%= field_error(@user.blogs.first, :subdomain) %>
-    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1.5">
-      This will be part of your blog's URL (subdomain.pagecord.com). Letters and numbers only.
-    </p>
-  </fieldset>
 
-  <fieldset>
-    <label class="block text-base font-semibold text-slate-700 dark:text-slate-200 mb-2.5">Email address</label>
-    <%= form.email_field :email,
-        placeholder: "you@example.com",
-        required: true,
-        class: "w-full sm:w-96 px-3 py-2.5 form-field rounded-lg" %>
-    <%= field_error(@user, :email) %>
-    <%= render "/shared/spam_prevention" %>
-    <%= form.hidden_field :timezone, data: { timezone_target: "timeZone" } %>
-  </fieldset>
-
-  <details class="w-full sm:w-auto border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-slate-50 dark:bg-slate-800/50 group" <%= 'open' if @user.errors[:password].any? || @user.errors[:password_confirmation].any? %>>
-    <summary class="flex items-center justify-between cursor-pointer list-none">
-      <div>
-        <h3 class="text-base font-semibold text-slate-700 dark:text-slate-200">Set a password <span class="text-slate-500 dark:text-slate-400 font-normal">(optional)</span></h3>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-          You can leave blank to use handy, secure email login links
-        </p>
+  <div class="letter-paper">
+    <div class="letter-stamp" aria-hidden="true">
+      <div class="letter-stamp__face">
+        <span>PAGECORD</span>
+        <span class="letter-stamp__cameo"><%= inline_svg_tag "logo-mark-crowned.svg" %></span>
+        <span class="letter-stamp__code">1ST</span>
       </div>
-<%= inline_svg_tag "icons/chevron-down.svg", class: "w-5 h-5 text-slate-400 transition-transform duration-200 group-open:rotate-180" %>
-    </summary>
-
-    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <fieldset>
-        <label class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Password</label>
-        <%= form.password_field :password,
-            class: "w-full px-3 py-2.5 form-field rounded-lg",
-            minlength: 12,
-            placeholder: "Minimum 12 characters" %>
-        <%= field_error(@user, :password) %>
-      </fieldset>
-
-      <fieldset>
-        <label class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Confirm password</label>
-        <%= form.password_field :password_confirmation,
-            class: "w-full px-3 py-2.5 form-field rounded-lg",
-            placeholder: "Re-enter your password" %>
-        <%= field_error(@user, :password_confirmation) %>
-      </fieldset>
     </div>
-  </details>
 
-  <%= render "/shared/turnstile" %>
+    <div class="letter-letterhead" aria-hidden="true">
+      <%= inline_svg_tag "logo-mark-black.svg" %>
+      <span>PAGECORD</span>
+    </div>
 
-  <fieldset>
-    <label class="block text-base font-semibold text-slate-700 dark:text-slate-200 mb-2.5">How did you hear about Pagecord? <span class="text-slate-500 dark:text-slate-400 font-normal">(optional)</span></label>
-    <%= form.text_field :signup_source_note,
-        placeholder: "e.g. Hacker News, a friend, a search...",
-        maxlength: 500,
-        class: "w-full px-3 py-2.5 form-field rounded-lg" %>
-  </fieldset>
+    <p class="letter-date"><%= Date.current.strftime("%-d %B %Y") %></p>
+    <p class="letter-note" role="alert"><%= @error_message %></p>
 
-  <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700">
-    <%= form.checkbox :marketing_consent,
-        class: "mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-[#4fbd9c] focus:ring-[#4fbd9c] focus:ring-offset-0" %>
-    <%= form.label :marketing_consent, class: "text-sm text-slate-700 dark:text-slate-300" do %>
-      Subscribe to the Pagecord mailing list for updates and tips. You can unsubscribe anytime.
-    <% end %>
-  </div>
-
-  <div class="mt-8">
-    <%= form.submit "Create account", class: "btn-primary cursor-pointer" %>
-    <p class="text-sm text-slate-500 dark:text-slate-400 mt-3">
-      By creating an account, you agree to our <%= link_to "Terms", terms_path, class: "underline hover:text-slate-700 dark:hover:text-slate-300" %> and <%= link_to "Privacy Policy", privacy_path, class: "underline hover:text-slate-700 dark:hover:text-slate-300" %>.
+    <p>Dear Pagecord,</p>
+    <p>
+      I'd like a blog called
+      <%= form.fields_for :blogs do |blog_form| %>
+        <span class="letter-field">
+          <%= blog_form.label :title, "Blog title", class: "sr-only" %>
+          <%= blog_form.text_field :title,
+              placeholder: "my blog title",
+              maxlength: 100,
+              required: true,
+              autofocus: focus == :title,
+              class: "letter-blank letter-blank--name",
+              data: { signup_letter_target: "name", action: "input->signup-letter#nameChanged" } %>
+        </span>
+        <span class="letter-field">
+          at
+          <%= blog_form.label :subdomain, "Subdomain", class: "sr-only" %>
+          <%= blog_form.text_field :subdomain,
+              placeholder: "subdomain",
+              maxlength: Subdomain::MAX_LENGTH,
+              required: true,
+              autofocus: focus == :subdomain,
+              autocapitalize: "none",
+              spellcheck: false,
+              class: "letter-blank letter-blank--subdomain",
+              data: { signup_letter_target: "subdomain", action: "input->signup-letter#subdomainChanged" } %><span>.pagecord.com.</span>
+        </span>
+      <% end %>
     </p>
+    <p>
+      You can reach me at
+      <span class="letter-field">
+        <%= form.label :email, "Email", class: "sr-only" %>
+        <%= form.email_field :email, placeholder: "your email", required: true, autofocus: focus == :email, class: "letter-blank letter-blank--email" %><span class="letter-trail">.</span>
+      </span>
+    </p>
+    <p class="letter-note" role="alert"><%= signup_note(@user) %></p>
+
+    <p>Yours,</p>
+    <p class="letter-signature" data-signup-letter-target="signature"><%= @user.blogs.first&.title %></p>
+
+    <p class="letter-ps">
+      P.S. I heard about Pagecord from
+      <span class="letter-field">
+        <%= form.label :signup_source_note, "How did you hear about Pagecord?", class: "sr-only" %>
+        <%= form.text_field :signup_source_note, placeholder: "a friend, ChatGPT, Reddit… (optional)", maxlength: 500, class: "letter-blank letter-blank--source" %>
+      </span>
+    </p>
+
+    <div class="letter-consent">
+      <%= form.checkbox :marketing_consent %>
+      <%= form.label :marketing_consent, "Send me the Pagecord newsletter, with updates and tips. Unsubscribe any time." %>
+    </div>
+
+    <div class="letter-send">
+      <%= render "/shared/turnstile", theme: "auto", appearance: "interaction-only" %>
+      <%= form.button type: "submit", class: "btn-primary" do %>
+        Send my letter
+        <%= inline_svg_tag "icons/paper-airplane.svg", class: "w-5 h-5" %>
+      <% end %>
+      <span>We'll email you a link to sign in.</span>
+      <span>By signing up you agree to our <%= link_to "Terms", terms_path %> and <%= link_to "Privacy Policy", privacy_path %>.</span>
+    </div>
   </div>
 <% end %>

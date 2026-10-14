@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%= render "layouts/head", stylesheets: %w[tailwind application inter source-serif-4 ibm-plex-mono caveat letter] %>
+  </head>
+
+  <body class="letter-page">
+    <main class="letter-desk">
+      <%= render "app/shared/flash" %>
+      <%= yield %>
+
+      <p class="letter-footer">Already writing on Pagecord? <%= link_to "Sign in", login_path %> · <%= link_to "pagecord.com", root_path %></p>
+    </main>
+  </body>
+</html>

@@ -10,7 +10,8 @@
     </p>
   </div>
 
-  <%= render "step", number: "1", title: "Give your blog a title" %>
+  <%= render "step", number: "1", title: "Confirm your blog title",
+        description: "Here's the name from your letter. Change it now, or any time in Settings." %>
 
   <div class="py-6">
     <%= form_with url: app_onboarding_path, model: @blog,

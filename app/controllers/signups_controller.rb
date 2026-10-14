@@ -4,7 +4,7 @@ class SignupsController < ApplicationController
   rate_limit to: 10, within: 1.hour, only: [ :create ], name: "signup-create"
   rate_limit to: 20, within: 1.minute, only: [ :new ], name: "signup-new"
 
-  layout "sessions"
+  layout "letter"
 
   def index
     redirect_to new_signup_path
@@ -42,21 +42,19 @@ class SignupsController < ApplicationController
 
     def reject_submission
       @error_message = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."
-      @user = User.new
-      @user.blogs.build
+      @user ||= User.new(user_params)
       render :new, status: :unprocessable_entity
     end
 
     def reject_turnstile
       @error_message = "Please complete the security check"
-      @user = User.new
-      @user.blogs.build
+      @user ||= User.new(user_params)
       render :new, status: :unprocessable_entity
     end
 
     def user_params
       @user_params ||= begin
-        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :password, :password_confirmation, :signup_referrer, :signup_source_note, blogs_attributes: [ :subdomain ])
+        raw_params = params.require(:user).permit(:email, :timezone, :marketing_consent, :signup_referrer, :signup_source_note, blogs_attributes: [ :subdomain, :title ])
         translate_timezone_param(raw_params)
       end
     end

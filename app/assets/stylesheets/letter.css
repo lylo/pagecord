@@ -1,0 +1,517 @@
+/* Letter pages (signup, sign in, password reset): writing paper, a stamp and, once sent, an envelope. */
+
+.letter-page {
+  --letter-page: #f6f8f5;
+  --letter-paper: #fdfdfb;
+  --letter-ink: #141816;
+  --letter-muted: #6b7280;
+  --letter-rule: #8b93a3;
+  --letter-navy: #23366f;
+  --letter-error: #b4412f;
+
+  margin: 0;
+  min-height: 100vh;
+  background: var(--letter-page);
+  color: var(--letter-ink);
+  font-family: "InterVariable", ui-sans-serif, system-ui, sans-serif;
+}
+
+.letter-desk {
+  box-sizing: border-box;
+  max-width: 760px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 56px 16px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.letter-desk a {
+  color: var(--letter-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+.letter-intro {
+  text-align: center;
+}
+
+.letter-intro h1 {
+  margin: 0;
+  font-family: "SourceSerif4Variable", Georgia, serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.letter-intro p {
+  max-width: 34rem;
+  margin: 1rem auto 0;
+  color: var(--letter-muted);
+  line-height: 1.6;
+}
+
+.letter-form {
+  width: 100%;
+}
+
+.letter-hint {
+  margin: 0;
+  font-size: 14px;
+  color: var(--letter-muted);
+}
+
+/* The letter */
+
+.letter-paper {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 16px;
+  padding: 48px clamp(22px, 8vw, 80px) 44px;
+  background: var(--letter-paper) url("letter/paper-light.jpg") 0 0 / 512px auto;
+  box-shadow: 0 34px 60px -28px rgba(28, 38, 35, 0.38);
+  color: var(--letter-ink);
+  font-family: "SourceSerif4Variable", Georgia, serif;
+  font-size: 1.375rem;
+  line-height: 2.2;
+}
+
+.letter-paper p {
+  margin: 0;
+}
+
+.letter-paper p + p {
+  margin-block-start: 0.5rem;
+}
+
+.letter-letterhead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0 24px;
+  line-height: 1;
+}
+
+.letter-letterhead svg {
+  width: 34px;
+  height: auto;
+  color: #f1f2f1;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.95)) drop-shadow(0 -1px 0 rgba(40, 50, 70, 0.2));
+}
+
+.letter-letterhead span {
+  font-family: "InterVariable", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  color: #9aa1ad;
+}
+
+.letter-paper .letter-date {
+  margin-block-end: 1.25rem;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--letter-muted);
+}
+
+.letter-blank {
+  box-sizing: border-box;
+  height: 2.2rem;
+  padding: 0 6px;
+  border: 0;
+  border-bottom: 2px dotted var(--letter-rule);
+  background: transparent;
+  color: var(--letter-ink);
+  font: inherit;
+  font-weight: 600;
+  vertical-align: baseline;
+}
+
+.letter-blank::placeholder {
+  color: #a3a9b4;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.letter-blank:focus {
+  outline: none;
+  box-shadow: none;
+  background: rgba(35, 54, 111, 0.06);
+  border-bottom-style: solid;
+  border-bottom-color: var(--letter-navy);
+}
+
+.letter-blank--name { width: 15rem; }
+.letter-blank--subdomain { width: 10rem; text-align: end; }
+.letter-blank--email { width: 17rem; }
+
+.letter-note {
+  font-family: "CaveatVariable", cursive;
+  font-size: 1.6rem;
+  line-height: 1.6;
+  color: var(--letter-error);
+  transform: rotate(-1deg);
+  transform-origin: left;
+}
+
+.letter-note:empty {
+  display: none;
+}
+
+.letter-note a {
+  color: inherit;
+  white-space: nowrap;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+}
+
+.letter-note a:hover {
+  text-decoration-color: currentColor;
+}
+
+.letter-field {
+  white-space: nowrap;
+}
+
+.letter-signature {
+  min-height: 3.5rem;
+  font-family: "CaveatVariable", cursive;
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.letter-signature:empty {
+  min-height: 1rem;
+}
+
+.letter-paper .letter-ps {
+  margin-block-start: 1rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.35em;
+  font-size: 1.125rem;
+  white-space: nowrap;
+}
+
+.letter-ps .letter-field {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+}
+
+.letter-ps .letter-blank {
+  width: 100%;
+  min-width: 0;
+}
+
+.letter-blank--source::placeholder {
+  font-size: 0.85em;
+}
+
+.letter-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-block-start: 1.5rem;
+  font-family: "InterVariable", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--letter-muted);
+}
+
+.letter-consent input {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-block-start: 2px;
+  border: 1px solid #c3cbc8;
+  border-radius: 4px;
+  color: #4fbd9c;
+  cursor: pointer;
+}
+
+.letter-consent input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 189, 156, 0.3);
+}
+
+.letter-consent label {
+  cursor: pointer;
+}
+
+.letter-send {
+  margin-block-start: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  font-family: "InterVariable", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--letter-muted);
+  text-align: end;
+}
+
+.letter-send .turnstile-widget {
+  margin-block-end: 8px;
+}
+
+.letter-send .btn-primary {
+  min-height: 48px;
+  padding-inline: 22px;
+  gap: 10px;
+  font-size: 1rem;
+}
+
+/* The stamp */
+
+.letter-stamp {
+  position: absolute;
+  inset-block-start: 34px;
+  inset-inline-end: 36px;
+  padding: 6px;
+  background: #ffffff;
+  border: 3px dotted var(--letter-paper);
+  box-shadow: 0 1px 3px rgba(30, 40, 60, 0.18);
+  transform: rotate(4deg);
+}
+
+.letter-stamp__face {
+  box-sizing: border-box;
+  width: 86px;
+  height: 106px;
+  padding: 7px 5px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background: #23366f;
+  color: #f4f6fb;
+  font-family: "InterVariable", sans-serif;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  line-height: 1;
+}
+
+.letter-stamp__cameo {
+  box-sizing: border-box;
+  width: 52px;
+  height: 62px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.letter-stamp__cameo svg {
+  width: 30px;
+  height: auto;
+}
+
+.letter-stamp__code {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+}
+
+/* Sent */
+
+.letter-envelope {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  height: 340px;
+  margin-top: 40px;
+  border-radius: 6px;
+  background: #fdfdfb;
+  box-shadow: 0 1px 2px rgba(30, 40, 60, 0.14), 0 34px 60px -26px rgba(30, 40, 60, 0.4);
+  overflow: hidden;
+}
+
+.letter-envelope::before,
+.letter-envelope::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+}
+
+.letter-envelope::before {
+  inset-block-start: 0;
+  height: 180px;
+  background: #eceef0;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.letter-envelope::after {
+  inset-block-end: 0;
+  height: 200px;
+  background: #f2f3f5;
+  clip-path: polygon(0 100%, 50% 10%, 100% 100%);
+}
+
+.letter-envelope .letter-stamp {
+  z-index: 1;
+  inset-block-start: 22px;
+  inset-inline-end: 24px;
+}
+
+.letter-envelope__postmark {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 46px;
+  inset-inline-end: 70px;
+  width: 190px;
+  height: auto;
+  color: rgba(40, 36, 30, 0.5);
+  transform: rotate(-8deg);
+}
+
+.letter-envelope__address {
+  position: absolute;
+  z-index: 1;
+  inset-inline: 0;
+  inset-block-end: 64px;
+  text-align: center;
+  font-family: "CaveatVariable", cursive;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--letter-ink);
+}
+
+.letter-footer {
+  margin: auto 0 0;
+  padding-top: 24px;
+  font-size: 13px;
+  color: var(--letter-muted);
+}
+
+/* Dark mode: the same stationery, printed dark */
+
+@media (prefers-color-scheme: dark) {
+  .letter-page {
+    --letter-page: oklch(15% 0.012 262);
+    --letter-paper: oklch(25% 0.035 262);
+    --letter-ink: oklch(94% 0.005 250);
+    --letter-muted: oklch(76% 0.02 262);
+    --letter-rule: oklch(60% 0.04 262);
+    --letter-navy: oklch(80% 0.07 265);
+    --letter-error: oklch(74% 0.13 30);
+  }
+
+  .letter-paper {
+    background-image: url("letter/paper-dark.jpg");
+    box-shadow: 0 34px 60px -28px rgba(0, 0, 0, 0.7);
+  }
+
+  .letter-letterhead svg {
+    color: oklch(33% 0.04 262);
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.16)) drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.6));
+  }
+
+  .letter-letterhead span,
+  .letter-blank::placeholder {
+    color: oklch(64% 0.03 262);
+  }
+
+  .letter-blank:focus {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .letter-stamp {
+    background: oklch(86% 0.012 262);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  .letter-consent input {
+    border-color: oklch(52% 0.03 262);
+    background-color: transparent;
+  }
+
+  .letter-envelope {
+    background: var(--letter-paper);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 34px 60px -26px rgba(0, 0, 0, 0.7);
+  }
+
+  .letter-envelope::before {
+    background: oklch(22% 0.035 262);
+  }
+
+  .letter-envelope::after {
+    background: oklch(23.5% 0.035 262);
+  }
+
+  .letter-envelope__postmark {
+    color: rgba(255, 255, 255, 0.45);
+  }
+}
+
+@media (max-width: 640px) {
+  .letter-desk {
+    padding-top: 32px;
+  }
+
+  .letter-intro h1 {
+    font-size: 2rem;
+  }
+
+  .letter-paper {
+    padding-block: 32px 28px;
+    font-size: 1.15rem;
+    line-height: 1.8;
+  }
+
+  .letter-paper p + p {
+    margin-block-start: 1rem;
+  }
+
+  .letter-trail {
+    display: none;
+  }
+
+  .letter-paper .letter-ps {
+    display: block;
+    white-space: normal;
+  }
+
+  .letter-send {
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .letter-send .turnstile-widget {
+    align-self: center;
+  }
+
+  .letter-send .btn-primary {
+    justify-content: center;
+  }
+
+  .letter-field {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .letter-field .letter-blank {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+  }
+
+  .letter-stamp {
+    inset-block-start: 14px;
+    inset-inline-end: 12px;
+    transform: rotate(4deg) scale(0.62);
+    transform-origin: top right;
+  }
+}
+
