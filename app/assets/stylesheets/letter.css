@@ -380,7 +380,8 @@
 
 .home-envelope .letter-envelope__address {
   inset-block-end: 40px;
-  font-size: 1.6rem;
+  padding-inline: 16px;
+  font-size: clamp(1rem, 4.4vw, 1.6rem);
 }
 
 .letter-envelope--open::before {
@@ -517,7 +518,7 @@
   justify-content: space-between;
   margin-block-start: 0.5rem;
   font-family: "InterVariable", sans-serif;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .letter-address {
@@ -591,7 +592,8 @@
 }
 
 .letter-return .letter-envelope__address {
-  font-size: 1.75rem;
+  padding-inline: 16px;
+  font-size: clamp(1.1rem, 5vw, 1.75rem);
 }
 
 .letter-return__stamp {
