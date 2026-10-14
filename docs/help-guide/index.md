@@ -26,6 +26,7 @@ Learn how to create posts, format your content, add images, schedule posts for l
 - [Callouts](callouts.md)
 - [Footnotes](footnotes.md)
 - [Using excerpt breaks](excerpt-breaks.md)
+- [Link posts](link-posts.md)
 - [Media embeds](media-embeds.md)
 - [Posting by email](posting-by-email.md)
 - [Post URLs](post-urls.md)

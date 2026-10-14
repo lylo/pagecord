@@ -117,6 +117,10 @@ Title-free posts work well for:
 
 If you want to show only the beginning of a post on your blog home page, add an excerpt break. See [Using excerpt breaks](excerpt-breaks.md) for details.
 
+## Link posts
+
+To make a post's title link to another page on the web, Daring Fireball style, set a link URL. See [Link posts](link-posts.md) for details.
+
 ## Tags
 
 Add tags to organise your posts by topic. Readers can click a tag to see all posts with that tag.

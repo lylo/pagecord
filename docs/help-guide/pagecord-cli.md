@@ -102,6 +102,7 @@ pagecord publish post.md --slug my-post
 pagecord publish post.md --published-at 2026-06-11
 pagecord publish post.md --tags ruby,cli
 pagecord publish post.md --canonical-url https://example.com/original
+pagecord publish post.md --link-url https://example.com/an-article
 pagecord publish post.md --hidden
 pagecord publish post.md --no-hidden
 pagecord publish post.md --locale en
@@ -122,6 +123,7 @@ tags:
   - cli
 published_at: 2026-06-11T12:00:00Z
 canonical_url: https://example.com/original
+link_url: https://example.com/an-article
 hidden: false
 locale: en
 ---
