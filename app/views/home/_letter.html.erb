@@ -10,6 +10,10 @@
   </p>
   <p class="letter-address" data-signup-letter-target="address" data-placeholder="yourname.pagecord.com"></p>
 
+  <% if Invitation.required? %>
+    <p class="letter-note letter-note--aside">At the moment, Pagecord is invite-only: ask a Pagecord writer for a code.</p>
+  <% end %>
+
   <p>Yours,</p>
   <p class="letter-signature" data-signature-target="output"></p>
 

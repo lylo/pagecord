@@ -30,6 +30,10 @@
             <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "h-3.5 w-3.5 shrink-0" %>
           <% end %>
           <%= link_to "Manage blogs", app_blogs_path, class: item %>
+          <%= link_to app_invitations_path, class: "#{item} flex items-center gap-1.5" do %>
+            <%= inline_svg_tag "icons/ticket.svg", class: "h-4 w-4 shrink-0" %>
+            Invite a writer
+          <% end %>
         </div>
 
         <div class="border-t border-slate-200 pt-2 dark:border-slate-800">

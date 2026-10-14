@@ -17,8 +17,10 @@ class SignupsController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @user.invitation = Invitation.available.find_by(code: params[:invitation_code].to_s)
 
     return reject_submission unless signup_from_allowed_timezone
+    return reject_invitation_code if Invitation.required? && !@user.invited?
 
     if @user.save
       ScreenUserJob.perform_later(@user.id, ip: request.ip, user_agent: request.user_agent)
@@ -32,6 +34,8 @@ class SignupsController < ApplicationController
       Rails.logger.info "Signup validation failed: #{@user.errors.details}"
       render :new, status: :unprocessable_entity
     end
+  rescue ActiveRecord::StaleObjectError
+    reject_invitation_code
   end
 
   private
@@ -43,6 +47,11 @@ class SignupsController < ApplicationController
     def reject_submission
       @error_message = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."
       @user ||= User.new(user_params)
+      render :new, status: :unprocessable_entity
+    end
+
+    def reject_invitation_code
+      @error_message = "That invite code isn't valid, or it has already been used."
       render :new, status: :unprocessable_entity
     end
 
