@@ -22,6 +22,7 @@ class PasswordAuthenticationTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_nil session[:user_id]
+    assert_select ".letter-note a[href=?]", login_path
 
     get access_request_verification_url(user.access_requests.last.token_digest)
 

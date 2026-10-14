@@ -1,11 +1,4 @@
-<% content_for :title, "Pagecord - Check Your Email" %>
+<% content_for :title, "Pagecord - Check your inbox" %>
 
-<h1 class="text-2xl font-bold mb-4">Thanks!</h1>
-
-<p class="mb-4">
-  If an account exists with that subdomain and email, you'll receive a password reset link shortly. The link will expire in 24 hours.
-</p>
-
-<div class="mt-8">
-  <%= link_to "Back to login", login_path, class: "btn-primary" %>
-</div>
+<%= render "letters/envelope", heading: "Your reset link is on its way",
+      body: "If that blog address and email match an account, we've written you an email with a link to set a new password. It works for 24 hours." %>

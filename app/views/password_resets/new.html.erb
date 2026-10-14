@@ -1,33 +1,46 @@
-<% content_for :title, "Pagecord - Reset Password" %>
+<% content_for :title, "Pagecord - Reset your password" %>
 <% content_for :meta_description, "Reset your Pagecord password. Enter your email to receive a password reset link." %>
 
-<p>
-  Enter your blog subdomain and email address to receive a password reset link.
-</p>
+<%= form_with url: password_resets_path, model: @user, class: "letter-form", data: { turbo: false, controller: "signature" } do |form| %>
+  <%= render "/shared/spam_prevention" %>
 
-<%= form_with url: password_resets_path, model: @user, data: { turbo: "false" }, class: "mt-8 space-y-4" do |form| %>
-  <div class="flex items-center gap-1">
-    <%= form.text_field :subdomain,
-        placeholder: "subdomain",
-        autofocus: true,
-        class: "px-3 py-2.5 form-field rounded-lg flex-shrink min-w-0",
-        maxlength: 20,
-        required: true %>
-    <span class="font-medium text-slate-700 dark:text-slate-300 flex-shrink-0">.pagecord.com</span>
-  </div>
+  <div class="letter-paper">
+    <%= render "letters/letterhead" %>
 
-  <div>
-    <%= form.email_field :email,
-        placeholder: "you@example.com",
-        required: true,
-        class: "w-full sm:w-96 px-3 py-2.5 form-field rounded-lg" %>
-    <%= render "/shared/spam_prevention" %>
-  </div>
+    <p>Dear Pagecord,</p>
+    <p>
+      I've lost my password for
+      <span class="letter-field">
+        <%= form.label :subdomain, "Subdomain", class: "sr-only" %>
+        <%= form.text_field :subdomain,
+            placeholder: "subdomain",
+            maxlength: Subdomain::MAX_LENGTH,
+            required: true,
+            autofocus: true,
+            autocapitalize: "none",
+            spellcheck: false,
+            class: "letter-blank letter-blank--subdomain",
+            data: { signature_target: "source", action: "input->signature#sign" } %><span>.pagecord.com.</span>
+      </span>
+    </p>
+    <p>
+      Please send a reset link to
+      <span class="letter-field">
+        <%= form.label :email, "Email", class: "sr-only" %>
+        <%= form.email_field :email, placeholder: "your email", required: true, autocomplete: "email", class: "letter-blank letter-blank--email" %><span class="letter-trail">.</span>
+      </span>
+    </p>
 
-  <%= render "/shared/turnstile" %>
+    <p>Yours,</p>
+    <p class="letter-signature" data-signature-target="output"></p>
 
-  <div class="flex items-center gap-4">
-    <%= form.submit "Send reset link", class: "btn-primary" %>
-    <%= link_to "Cancel", login_path(mode: :password), class: "text-sm font-medium underline" %>
+    <div class="letter-send">
+      <%= render "/shared/turnstile", theme: "auto", appearance: "interaction-only" %>
+      <%= form.button type: "submit", class: "btn-primary" do %>
+        Send me a reset link
+        <%= inline_svg_tag "icons/paper-airplane.svg", class: "w-5 h-5" %>
+      <% end %>
+      <span class="letter-aside"><%= link_to "Never mind, I remember it", login_path(mode: :password) %></span>
+    </div>
   </div>
 <% end %>

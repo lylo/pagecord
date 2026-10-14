@@ -1,18 +1,4 @@
 <% content_for :title, "Pagecord - Check your inbox" %>
 
-<div class="letter-envelope" aria-hidden="true">
-  <div class="letter-stamp">
-    <div class="letter-stamp__face">
-      <span>PAGECORD</span>
-      <span class="letter-stamp__cameo"><%= inline_svg_tag "logo-mark-crowned.svg" %></span>
-      <span class="letter-stamp__code">1ST</span>
-    </div>
-  </div>
-  <%= inline_svg_tag "icons/stamp.svg", class: "letter-envelope__postmark" %>
-  <div class="letter-envelope__address">To Pagecord</div>
-</div>
-
-<div class="letter-intro">
-  <h1>Your letter's on its way</h1>
-  <p>We've written you an email with a link to start your blog. It works for 24 hours, so check your inbox (and your spam folder, just in case).</p>
-</div>
+<%= render "letters/envelope", heading: "Your letter's on its way",
+      body: "We've written you an email with a link to start your blog. It works for 24 hours, so check your inbox (and your spam folder, just in case)." %>

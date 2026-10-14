@@ -1,7 +1,4 @@
-<p class="text-center">
-  Thanks. We've sent you an email with your log in link.
-</p>
+<% content_for :title, "Pagecord - Check your inbox" %>
 
-<p class="text-center mt-4 text-sm text-slate-500 dark:text-slate-400">
-  No email? We only send one when the email and blog address both match an account, so check them for typos.
-</p>
+<%= render "letters/envelope", heading: "Your sign-in link is on its way",
+      body: "No email? We only send one when the blog address and email both match an account, so check both for typos." %>

@@ -1,7 +1,6 @@
-<p class="text-center">
-  This account has been closed, so we haven't sent a login link.
-</p>
+<% content_for :title, "Pagecord - Account closed" %>
 
-<p class="text-center mt-4">
-  If you think this is a mistake, email <%= mail_to "hello@pagecord.com", class: "underline" %>.
-</p>
+<div class="letter-intro">
+  <h1>This account has been closed</h1>
+  <p>So we haven't sent a sign-in link. If you think this is a mistake, email <%= mail_to "hello@pagecord.com" %>.</p>
+</div>

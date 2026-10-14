@@ -1,31 +1,35 @@
-<% content_for :title, "Pagecord - Set New Password" %>
+<% content_for :title, "Pagecord - Set a new password" %>
 
+<%= form_with url: password_reset_path(params[:token]), model: @user, method: :patch, class: "letter-form", data: { turbo: false } do |form| %>
+  <div class="letter-paper">
+    <%= render "letters/letterhead" %>
 
-<h1 class="text-2xl font-bold mb-4">@<%= @user.blog.subdomain %></h1>
+    <p>Dear Pagecord,</p>
+    <p>
+      Please change the password for <%= @user.blog.subdomain %>.pagecord.com to
+      <span class="letter-field">
+        <%= form.label :password, "New password", class: "sr-only" %>
+        <%= form.password_field :password, required: true, autofocus: true, minlength: 12, autocomplete: "new-password", class: "letter-blank letter-blank--password" %><span class="letter-trail">.</span>
+      </span>
+    </p>
+    <p>
+      Once more, to be sure:
+      <span class="letter-field">
+        <%= form.label :password_confirmation, "Confirm new password", class: "sr-only" %>
+        <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", class: "letter-blank letter-blank--password" %><span class="letter-trail">.</span>
+      </span>
+    </p>
+    <p class="letter-note" role="alert"><%= @user.errors.full_messages.first %></p>
 
-<p>
-  Enter your new password below.
-</p>
+    <p>Yours,</p>
+    <p class="letter-signature"><%= @user.blog.display_name %></p>
 
-<%= form_with url: password_reset_path(params[:token]), model: @user, method: :patch, data: { turbo: "false" }, class: "mt-8 space-y-6" do |form| %>
-  <div>
-    <%= form.label :password, "New password", class: "block text-sm font-medium mb-1" %>
-    <%= form.password_field :password, required: true, autofocus: true, class: "px-2 py-1 m-0 form-field rounded-sm" %>
-    <% if @user.errors[:password].any? %>
-      <div class="text-red-600 text-sm mt-1"><%= @user.errors[:password].first %></div>
-    <% end %>
-    <div class="text-slate-500 text-xs mt-1">
-      Minimum 12 characters
+    <div class="letter-send">
+      <%= form.button type: "submit", class: "btn-primary" do %>
+        Change my password
+        <%= inline_svg_tag "icons/paper-airplane.svg", class: "w-5 h-5" %>
+      <% end %>
+      <span>At least 12 characters.</span>
     </div>
   </div>
-
-  <div>
-    <%= form.label :password_confirmation, "Confirm password", class: "block text-sm font-medium mb-1" %>
-    <%= form.password_field :password_confirmation, required: true, class: "px-2 py-1 m-0 form-field rounded-sm" %>
-    <% if @user.errors[:password_confirmation].any? %>
-      <div class="text-red-600 text-sm mt-1"><%= @user.errors[:password_confirmation].first %></div>
-    <% end %>
-  </div>
-
-  <%= form.submit "Update password", class: "btn-primary" %>
 <% end %>

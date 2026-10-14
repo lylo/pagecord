@@ -1,5 +1,5 @@
 class PasswordResets::ThanksController < ApplicationController
-  layout "sessions"
+  layout "letter"
 
   def show
   end

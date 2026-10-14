@@ -149,6 +149,7 @@
 .letter-blank--name { width: 15rem; }
 .letter-blank--subdomain { width: 10rem; text-align: end; }
 .letter-blank--email { width: 17rem; }
+.letter-blank--password { width: 15rem; }
 
 .letter-note {
   font-family: "CaveatVariable", cursive;
@@ -260,6 +261,26 @@
 
 .letter-send .turnstile-widget {
   margin-block-end: 8px;
+}
+
+.letter-aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.letter-aside a {
+  font-family: "CaveatVariable", cursive;
+  font-size: 1.45em;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.letter-aside a:hover {
+  text-decoration-color: currentColor;
 }
 
 .letter-send .btn-primary {
@@ -492,6 +513,10 @@
 
   .letter-send .btn-primary {
     justify-content: center;
+  }
+
+  .letter-aside {
+    align-items: center;
   }
 
   .letter-field {

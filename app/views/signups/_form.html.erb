@@ -1,27 +1,13 @@
 <% blog = @user.blogs.first %>
 <% focus = @user.errors[:email].any? ? :email : (blog&.errors&.include?(:subdomain) ? :subdomain : :title) %>
 
-<%= form_with url: signups_path, model: @user, class: "letter-form", data: { controller: "timezone signup-letter", turbo: "false" } do |form| %>
+<%= form_with url: signups_path, model: @user, class: "letter-form", data: { controller: "timezone signup-letter signature", turbo: "false" } do |form| %>
   <%= form.hidden_field :signup_referrer %>
   <%= form.hidden_field :timezone, data: { timezone_target: "timeZone" } %>
   <%= render "/shared/spam_prevention" %>
 
-
   <div class="letter-paper">
-    <div class="letter-stamp" aria-hidden="true">
-      <div class="letter-stamp__face">
-        <span>PAGECORD</span>
-        <span class="letter-stamp__cameo"><%= inline_svg_tag "logo-mark-crowned.svg" %></span>
-        <span class="letter-stamp__code">1ST</span>
-      </div>
-    </div>
-
-    <div class="letter-letterhead" aria-hidden="true">
-      <%= inline_svg_tag "logo-mark-black.svg" %>
-      <span>PAGECORD</span>
-    </div>
-
-    <p class="letter-date"><%= Date.current.strftime("%-d %B %Y") %></p>
+    <%= render "letters/letterhead" %>
     <p class="letter-note" role="alert"><%= @error_message %></p>
 
     <p>Dear Pagecord,</p>
@@ -36,7 +22,7 @@
               required: true,
               autofocus: focus == :title,
               class: "letter-blank letter-blank--name",
-              data: { signup_letter_target: "name", action: "input->signup-letter#nameChanged" } %>
+              data: { signup_letter_target: "name", signature_target: "source", action: "input->signup-letter#nameChanged input->signature#sign" } %>
         </span>
         <span class="letter-field">
           at
@@ -63,7 +49,7 @@
     <p class="letter-note" role="alert"><%= signup_note(@user) %></p>
 
     <p>Yours,</p>
-    <p class="letter-signature" data-signup-letter-target="signature"><%= @user.blogs.first&.title %></p>
+    <p class="letter-signature" data-signature-target="output"><%= @user.blogs.first&.title %></p>
 
     <p class="letter-ps">
       P.S. I heard about Pagecord from

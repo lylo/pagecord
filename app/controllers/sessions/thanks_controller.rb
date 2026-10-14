@@ -1,5 +1,5 @@
 class Sessions::ThanksController < ApplicationController
-  layout "sessions"
+  layout "letter"
 
   def show
   end
