@@ -422,6 +422,27 @@ Posts with tags include a `data-tags` attribute on their wrapper element. You ca
 }
 ```
 
+### Styling link posts
+
+A link post's title links to another website, with a small arrow after it. Link posts carry a `link-post` class, so you can style their titles differently from your other posts. To give them a light dotted underline:
+
+```css
+.link-post .post-title .post-title-link {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--color-text-muted);
+  text-decoration-thickness: 0.05em;
+  text-underline-offset: 0.2em;
+}
+```
+
+To hide the arrow:
+
+```css
+.link-post .post-title-link::after {
+  display: none;
+}
+```
+
 ### Styling one page, or one kind of page
 
 Every blog page carries two attributes on `<body>` that let you scope CSS to part of your blog.
