@@ -1,3 +1,18 @@
-<div class="text-center">
-  Nope. That page doesn't exist, sorry! 😭
-</div>
+<% content_for :title, "Return to sender – Pagecord" %>
+
+<section class="mx-auto mb-20 max-w-xl px-4 flex flex-col items-center gap-8 text-center">
+  <div class="letter-return">
+    <%= render "letters/envelope", address: truncate("#{request.host}#{request.original_fullpath.split("?").first}", length: 34) %>
+    <span class="letter-return__stamp" aria-hidden="true">Return to sender</span>
+  </div>
+
+  <div class="flex flex-col gap-3">
+    <h1 class="source-serif font-semibold text-4xl md:text-5xl tracking-tight text-slate-900 dark:text-slate-100">Return to sender</h1>
+    <p class="text-lg text-slate-600 dark:text-slate-300">There's nothing at this address.</p>
+  </div>
+
+  <p class="flex flex-wrap justify-center gap-x-6 gap-y-2">
+    <%= link_to "Back to the home page", root_path, class: "home-link" %>
+    <%= link_to "See everything Pagecord can do", features_path, class: "home-link" %>
+  </p>
+</section>
