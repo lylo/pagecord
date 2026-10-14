@@ -79,6 +79,7 @@
 
     <fieldset class="mt-2">
       <%= form.text_field :link_url,
+          inputmode: "url",
           class: "w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg",
           placeholder: "https://example.com/an-article" %>
       <div class="field-error"><%= @post.errors[:link_url].to_sentence if @post.errors[:link_url].any? %></div>
