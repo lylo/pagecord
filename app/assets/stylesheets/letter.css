@@ -6,6 +6,7 @@
   --letter-ink: #141816;
   --letter-muted: #6b7280;
   --letter-rule: #8b93a3;
+  --letter-faint: #a3a9b4;
   --letter-navy: #23366f;
   --letter-error: #b4412f;
 
@@ -58,12 +59,6 @@
   width: 100%;
 }
 
-.letter-hint {
-  margin: 0;
-  font-size: 14px;
-  color: var(--letter-muted);
-}
-
 /* The letter */
 
 .letter-paper {
@@ -109,7 +104,7 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.32em;
-  color: #9aa1ad;
+  color: var(--letter-faint);
 }
 
 .letter-paper .letter-date {
@@ -121,6 +116,7 @@
 
 .letter-blank {
   box-sizing: border-box;
+  width: 15rem;
   height: 2.2rem;
   padding: 0 6px;
   border: 0;
@@ -133,7 +129,7 @@
 }
 
 .letter-blank::placeholder {
-  color: #a3a9b4;
+  color: var(--letter-faint);
   font-style: italic;
   font-weight: 400;
 }
@@ -146,10 +142,8 @@
   border-bottom-color: var(--letter-navy);
 }
 
-.letter-blank--name { width: 15rem; }
 .letter-blank--subdomain { width: 10rem; text-align: end; }
 .letter-blank--email { width: 17rem; }
-.letter-blank--password { width: 15rem; }
 
 .letter-note {
   font-family: "CaveatVariable", cursive;
@@ -220,29 +214,38 @@
   align-items: flex-start;
   gap: 10px;
   margin-block-start: 1.5rem;
-  font-family: "InterVariable", sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--letter-muted);
 }
 
 .letter-consent input {
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  margin-block-start: 2px;
-  border: 1px solid #c3cbc8;
-  border-radius: 4px;
-  color: #4fbd9c;
+  width: 1em;
+  height: 1em;
+  margin-block-start: 0.3em;
+  border: 1.5px solid var(--letter-rule);
+  border-radius: 2px;
+  background-color: transparent;
   cursor: pointer;
+}
+
+.letter-consent input:checked,
+.letter-consent input:checked:hover,
+.letter-consent input:checked:focus {
+  border-color: var(--letter-rule);
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%23141816' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 100%;
 }
 
 .letter-consent input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(79, 189, 156, 0.3);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--letter-navy) 15%, transparent);
 }
 
 .letter-consent label {
+  text-wrap: pretty;
   cursor: pointer;
 }
 
@@ -252,8 +255,7 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 8px;
-  font-family: "InterVariable", sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--letter-muted);
   text-align: end;
@@ -284,6 +286,7 @@
 }
 
 .letter-send .btn-primary {
+  font-family: "InterVariable", sans-serif;
   min-height: 48px;
   padding-inline: 22px;
   gap: 10px;
@@ -338,7 +341,6 @@
 }
 
 .letter-stamp__code {
-  font-family: "IBM Plex Mono", monospace;
   font-size: 8px;
   letter-spacing: 0.08em;
 }
@@ -352,7 +354,7 @@
   height: 340px;
   margin-top: 40px;
   border-radius: 6px;
-  background: #fdfdfb;
+  background: var(--letter-paper);
   box-shadow: 0 1px 2px rgba(30, 40, 60, 0.14), 0 34px 60px -26px rgba(30, 40, 60, 0.4);
   overflow: hidden;
 }
@@ -423,8 +425,9 @@
     --letter-ink: oklch(94% 0.005 250);
     --letter-muted: oklch(76% 0.02 262);
     --letter-rule: oklch(60% 0.04 262);
+    --letter-faint: oklch(64% 0.03 262);
     --letter-navy: oklch(80% 0.07 265);
-    --letter-error: oklch(74% 0.13 30);
+    --letter-error: oklch(72% 0.16 18);
   }
 
   .letter-paper {
@@ -437,11 +440,6 @@
     filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.16)) drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.6));
   }
 
-  .letter-letterhead span,
-  .letter-blank::placeholder {
-    color: oklch(64% 0.03 262);
-  }
-
   .letter-blank:focus {
     background: rgba(255, 255, 255, 0.05);
   }
@@ -451,13 +449,13 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   }
 
-  .letter-consent input {
-    border-color: oklch(52% 0.03 262);
-    background-color: transparent;
+  .letter-consent input:checked,
+  .letter-consent input:checked:hover,
+  .letter-consent input:checked:focus {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%23eceef2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
 
   .letter-envelope {
-    background: var(--letter-paper);
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 34px 60px -26px rgba(0, 0, 0, 0.7);
   }
 

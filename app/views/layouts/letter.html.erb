@@ -9,7 +9,7 @@
     <%= render "layouts/manifest" %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "tailwind", "application", "inter", "source-serif-4", "ibm-plex-mono", "caveat", "letter", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "application", "inter", "source-serif-4", "caveat", "letter", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <script defer data-domain="pagecord.com" src="https://plausible.io/js/script.js"></script>
   </head>
@@ -20,8 +20,8 @@
       <%= yield %>
 
       <p class="letter-footer">
-        <% if controller_path.start_with?("signups") %>
-          Already writing on Pagecord? <%= link_to "Sign in", login_path %>
+        <% if content_for?(:footer) %>
+          <%= yield :footer %>
         <% else %>
           New here? <%= link_to "Start a blog", new_signup_path %>
         <% end %>

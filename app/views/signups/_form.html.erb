@@ -14,49 +14,24 @@
     <p>
       I'd like a blog called
       <%= form.fields_for :blogs do |blog_form| %>
-        <span class="letter-field">
-          <%= blog_form.label :title, "Blog title", class: "sr-only" %>
-          <%= blog_form.text_field :title,
-              placeholder: "my blog title",
-              maxlength: 100,
-              required: true,
-              autofocus: focus == :title,
-              class: "letter-blank letter-blank--name",
+        <%= letter_blank blog_form, :title, label: "Blog title", placeholder: "my blog title", maxlength: 100, required: true, autofocus: focus == :title,
               data: { signup_letter_target: "name", signature_target: "source", action: "input->signup-letter#nameChanged input->signature#sign" } %>
-        </span>
-        <span class="letter-field">
-          at
-          <%= blog_form.label :subdomain, "Subdomain", class: "sr-only" %>
-          <%= blog_form.text_field :subdomain,
-              placeholder: "subdomain",
-              maxlength: Subdomain::MAX_LENGTH,
-              required: true,
-              autofocus: focus == :subdomain,
-              autocapitalize: "none",
-              spellcheck: false,
-              class: "letter-blank letter-blank--subdomain",
-              data: { signup_letter_target: "subdomain", action: "input->signup-letter#subdomainChanged" } %><span>.pagecord.com.</span>
-        </span>
+        <%= letter_subdomain_blank blog_form, lead: "at", autofocus: focus == :subdomain,
+              data: { signup_letter_target: "subdomain", action: "input->signup-letter#subdomainChanged" } %>
       <% end %>
     </p>
     <p>
       You can reach me at
-      <span class="letter-field">
-        <%= form.label :email, "Email", class: "sr-only" %>
-        <%= form.email_field :email, placeholder: "your email", required: true, autofocus: focus == :email, class: "letter-blank letter-blank--email" %><span class="letter-trail">.</span>
-      </span>
+      <%= letter_email_blank form, autofocus: focus == :email %>
     </p>
     <p class="letter-note" role="alert"><%= signup_note(@user) %></p>
 
     <p>Yours,</p>
-    <p class="letter-signature" data-signature-target="output"><%= @user.blogs.first&.title %></p>
+    <p class="letter-signature" data-signature-target="output"><%= blog&.title %></p>
 
     <p class="letter-ps">
       P.S. I heard about Pagecord from
-      <span class="letter-field">
-        <%= form.label :signup_source_note, "How did you hear about Pagecord?", class: "sr-only" %>
-        <%= form.text_field :signup_source_note, placeholder: "a friend, ChatGPT, Reddit… (optional)", maxlength: 500, class: "letter-blank letter-blank--source" %>
-      </span>
+      <%= letter_blank form, :signup_source_note, label: "How did you hear about Pagecord?", size: :source, placeholder: "a friend, ChatGPT, Reddit… (optional)", maxlength: 500 %>
     </p>
 
     <div class="letter-consent">
@@ -66,10 +41,7 @@
 
     <div class="letter-send">
       <%= render "/shared/turnstile", theme: "auto", appearance: "interaction-only" %>
-      <%= form.button type: "submit", class: "btn-primary" do %>
-        Send my letter
-        <%= inline_svg_tag "icons/paper-airplane.svg", class: "w-5 h-5" %>
-      <% end %>
+      <%= render "letters/send", form: form, label: "Send my letter" %>
       <span>We'll email you a link to sign in.</span>
       <span>By signing up you agree to our <%= link_to "Terms", terms_path %> and <%= link_to "Privacy Policy", privacy_path %>.</span>
     </div>

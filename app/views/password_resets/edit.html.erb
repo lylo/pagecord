@@ -7,17 +7,11 @@
     <p>Dear Pagecord,</p>
     <p>
       Please change the password for <%= @user.blog.subdomain %>.pagecord.com to
-      <span class="letter-field">
-        <%= form.label :password, "New password", class: "sr-only" %>
-        <%= form.password_field :password, required: true, autofocus: true, minlength: 12, autocomplete: "new-password", class: "letter-blank letter-blank--password" %><span class="letter-trail">.</span>
-      </span>
+      <%= letter_blank form, :password, label: "New password", as: :password_field, period: true, required: true, autofocus: true, minlength: 12, autocomplete: "new-password" %>
     </p>
     <p>
       Once more, to be sure:
-      <span class="letter-field">
-        <%= form.label :password_confirmation, "Confirm new password", class: "sr-only" %>
-        <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", class: "letter-blank letter-blank--password" %><span class="letter-trail">.</span>
-      </span>
+      <%= letter_blank form, :password_confirmation, label: "Confirm new password", as: :password_field, period: true, required: true, autocomplete: "new-password" %>
     </p>
     <p class="letter-note" role="alert"><%= @user.errors.full_messages.first %></p>
 
@@ -25,10 +19,7 @@
     <p class="letter-signature"><%= @user.blog.display_name %></p>
 
     <div class="letter-send">
-      <%= form.button type: "submit", class: "btn-primary" do %>
-        Change my password
-        <%= inline_svg_tag "icons/paper-airplane.svg", class: "w-5 h-5" %>
-      <% end %>
+      <%= render "letters/send", form: form, label: "Change my password" %>
       <span>At least 12 characters.</span>
     </div>
   </div>

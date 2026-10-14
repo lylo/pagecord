@@ -10,25 +10,11 @@
     <p>Dear Pagecord,</p>
     <p>
       I've lost my password for
-      <span class="letter-field">
-        <%= form.label :subdomain, "Subdomain", class: "sr-only" %>
-        <%= form.text_field :subdomain,
-            placeholder: "subdomain",
-            maxlength: Subdomain::MAX_LENGTH,
-            required: true,
-            autofocus: true,
-            autocapitalize: "none",
-            spellcheck: false,
-            class: "letter-blank letter-blank--subdomain",
-            data: { signature_target: "source", action: "input->signature#sign" } %><span>.pagecord.com.</span>
-      </span>
+      <%= letter_subdomain_blank form, autofocus: true, data: { signature_target: "source", action: "input->signature#sign" } %>
     </p>
     <p>
       Please send a reset link to
-      <span class="letter-field">
-        <%= form.label :email, "Email", class: "sr-only" %>
-        <%= form.email_field :email, placeholder: "your email", required: true, autocomplete: "email", class: "letter-blank letter-blank--email" %><span class="letter-trail">.</span>
-      </span>
+      <%= letter_email_blank form %>
     </p>
 
     <p>Yours,</p>
@@ -36,10 +22,7 @@
 
     <div class="letter-send">
       <%= render "/shared/turnstile", theme: "auto", appearance: "interaction-only" %>
-      <%= form.button type: "submit", class: "btn-primary" do %>
-        Send me a reset link
-        <%= inline_svg_tag "icons/paper-airplane.svg", class: "w-5 h-5" %>
-      <% end %>
+      <%= render "letters/send", form: form, label: "Send me a reset link" %>
       <span class="letter-aside"><%= link_to "Never mind, I remember it", login_path(mode: :password) %></span>
     </div>
   </div>
