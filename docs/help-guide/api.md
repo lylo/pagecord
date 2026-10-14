@@ -56,6 +56,7 @@ List endpoints return arrays:
     "locale": "en",
     "created_at": "2026-03-11T12:00:00.000Z",
     "updated_at": "2026-03-11T12:00:00.000Z",
+    "url": "https://myblog.pagecord.com/my-post",
     "content": "<p>Hello world</p>"
   }
 ]
@@ -68,6 +69,7 @@ Post responses include:
 - `token` – stable API identifier for future get, update, and delete requests
 - `title`, `slug`, `status`, `published_at`, `canonical_url`, `link_url`, `tag_list`, `hidden`, and `locale`
 - `created_at` and `updated_at`
+- `url` – the post's address on your blog, matching your post URL format and custom domain. `null` for drafts and scheduled posts
 - `content` – stored HTML, including canonical Action Text attachment tags where relevant
 
 Page and home page responses include the same fields, plus:

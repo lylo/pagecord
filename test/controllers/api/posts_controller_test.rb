@@ -166,6 +166,7 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
     assert_equal "New Post", json["title"]
     assert_equal "published", json["status"]
+    assert_equal "http://joel.example.com/new-post", json["url"]
   end
 
   test "create makes a link post" do
@@ -197,6 +198,17 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
     json = JSON.parse(response.body)
     assert_equal "draft", json["status"]
+    assert json.key?("url")
+    assert_nil json["url"]
+  end
+
+  test "create gives a scheduled post no url until it is released" do
+    post "/posts", params: {
+      title: "Later", content: "Soon", status: "published", published_at: 1.day.from_now.iso8601
+    }, headers: auth_header
+
+    assert_response :created
+    assert_nil JSON.parse(response.body)["url"]
   end
 
   test "create converts markdown to html when content_format is markdown" do

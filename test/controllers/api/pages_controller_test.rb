@@ -78,6 +78,7 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal @page.title, json["title"]
     assert_equal @page.token, json["token"]
     assert_equal true, json["is_page"]
+    assert_equal "http://joel.example.com/#{@page.slug}", json["url"]
   end
 
   test "show includes is_home_page field" do

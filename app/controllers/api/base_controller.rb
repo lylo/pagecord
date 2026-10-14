@@ -1,5 +1,6 @@
 class Api::BaseController < ActionController::API
   include ActionController::HttpAuthentication::Token::ControllerMethods
+  include RoutingHelper
 
   wrap_parameters false
 

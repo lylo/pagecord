@@ -1,6 +1,4 @@
 class Api::MicropubController < Api::BaseController
-  include RoutingHelper
-
   skip_before_action :authenticate, :require_premium, only: :query
   before_action :advertise_micropub_endpoint, only: :query
   before_action :authenticate_source_query, only: :query, if: :source_query?

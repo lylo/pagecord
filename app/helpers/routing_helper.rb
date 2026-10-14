@@ -23,6 +23,10 @@ module RoutingHelper
     post_link(post, "url")
   end
 
+  def published_post_url(post)
+    post_url(post) if post.published? && !post.pending?
+  end
+
   def blog_home_path(blog, options = {})
     route_for_blog(blog, "blog_posts", "path", options)
   end
