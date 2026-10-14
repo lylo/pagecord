@@ -83,7 +83,8 @@ namespace :cache do
         "/faq",
         "/terms",
         "/privacy",
-        "/blogging-by-email",
+        "/features",
+        "/principles",
         "/minimalist-blogging",
         "/llms.txt"
       ]

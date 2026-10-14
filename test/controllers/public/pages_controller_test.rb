@@ -1,13 +1,8 @@
 require "test_helper"
 
 class Public::PagesControllerTest < ActionDispatch::IntegrationTest
-  MARKETING_PAGES = %w[
-    terms privacy ai faq brand
-    personal_website minimalist_blogging blogging_by_email indie_blogging_platform
-  ].freeze
-
   test "renders every marketing page" do
-    MARKETING_PAGES.each do |page|
+    MARKETING_PAGES.each_value do |page|
       get public_send("#{page}_path")
 
       assert_response :success, "#{page} did not render"
