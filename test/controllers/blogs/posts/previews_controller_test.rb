@@ -21,7 +21,7 @@ class Blogs::Posts::PreviewsControllerTest < ActionDispatch::IntegrationTest
     assert_nil response.headers["Cache-Tag"]
   end
 
-  test "should preview a draft link post with its permalink pointing at the preview" do
+  test "should preview a draft link post with its date pointing at the preview" do
     post = posts(:joel_draft)
     post.update!(link_url: "https://example.com/article")
     token = post.signed_id(purpose: :preview)
@@ -29,7 +29,7 @@ class Blogs::Posts::PreviewsControllerTest < ActionDispatch::IntegrationTest
     get blog_post_preview_path(token)
 
     assert_select "article.link-post a.post-title-link[href=?]", "https://example.com/article"
-    assert_select "a.post-permalink[href=?]", blog_post_preview_url(token, host: @blog.host)
+    assert_select "a.post-date.u-url[href=?]", blog_post_preview_url(token, host: @blog.host)
   end
 
   test "should preview a draft page with its signed token" do

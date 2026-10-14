@@ -2,7 +2,7 @@
 <% if post.title.present? %>
   <h1 class="post-title p-name">
     <% if post.link_url? %>
-      <%= link_to post.title, post.link_url, class: "post-title-link u-bookmark-of", **new_tab_link_options %>&nbsp;<%= render "blogs/posts/permalink", post: post, url: url || post_path(post) %>
+      <%= link_to post.title, post.link_url, class: "post-title-link u-bookmark-of", **new_tab_link_options %>
     <% else %>
       <%= link_to post.title, url || post_url(post), class: "post-title-link u-url" %>
     <% end %>

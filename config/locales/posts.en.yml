@@ -1,6 +1,4 @@
 en:
-  posts:
-    permalink: "Permalink"
   activerecord:
     attributes:
       post:

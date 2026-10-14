@@ -1,4 +1,1 @@
-<li class="<%= token_list("h-entry", "link-post": post.link_url?) %>">
-  <%= local_time post.published_at, format: @blog.month_day_format, class: "dt-published" %>
-  <%= render "blogs/posts/title_link", post: post %>
-</li>
+<li><%= local_time post.published_at, format: @blog.month_day_format %> <%= link_to post.display_title, post_path(post), data: { turbo_prefetch: false } %></li>

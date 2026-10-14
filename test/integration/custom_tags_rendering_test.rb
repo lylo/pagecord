@@ -92,8 +92,7 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     links = @blog.pages.create!(title: "Links", content: "{{ posts_by_year | link_posts: true }}", status: :published)
     get blog_post_url(subdomain: @blog.subdomain, slug: links.slug)
 
-    assert_select "li.h-entry.link-post .link-post-title a.u-bookmark-of[href=?]", "https://example.com/article"
-    assert_select "li.h-entry.link-post .link-post-title a.post-permalink.u-url[href=?]", "/#{link_post.slug}"
+    assert_select "li a[href=?]", "/#{link_post.slug}", text: "A Link Post"
     assert_select "li", text: /An Article/, count: 0
   end
 

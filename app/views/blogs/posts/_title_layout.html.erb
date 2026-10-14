@@ -11,9 +11,9 @@
         </h2>
         <% previous_year = post_date.year %>
       <% end %>
-      <div class="<%= token_list("post-row", "h-entry", "link-post": post.link_url?) %>" <%= tag.attributes(data: post_tag_data(post)) %>>
+      <div class="post-row h-entry" <%= tag.attributes(data: post_tag_data(post)) %>>
         <%= local_time post_date, format: @blog.month_day_format, class: "dt-published" %>
-        <%= render "blogs/posts/title_link", post: post %>
+        <%= link_to post.display_title, post_path(post), class: "p-name u-url", data: { turbo_prefetch: false } %>
       </div>
     <% end %>
   </div>
