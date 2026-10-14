@@ -435,6 +435,22 @@ A link post's title links to another website, with a small arrow after it. Link 
 }
 ```
 
+To swap the arrow for a star, like Daring Fireball:
+
+```css
+.link-post .post-title-link::after {
+  display: none;
+}
+
+.link-post .post-title::after {
+  content: "★";
+  margin-inline-start: 0.3em;
+  font-size: 0.5em;
+  vertical-align: 0.6em;
+  color: var(--color-text-muted);
+}
+```
+
 To hide the arrow:
 
 ```css
