@@ -33,6 +33,21 @@ class Public::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.headers["Cache-Control"], "s-maxage"
   end
 
+  test "the features page has the walkthrough and compares the plans" do
+    get features_path
+
+    assert_select "#walkthrough video"
+    assert_select "#compare table tbody", 2
+  end
+
+  test "a page with two signup letters gives each its own field" do
+    get minimalist_blogging_path
+
+    assert_select "input#title", 1
+    assert_select "input#closing_title", 1
+    assert_select "label[for=closing_title]", 1
+  end
+
   test "pricing redirects to the home page pricing section" do
     get pricing_path
 

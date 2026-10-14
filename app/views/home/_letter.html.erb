@@ -1,0 +1,20 @@
+<%# locals: (namespace: nil) %>
+<%= form_with url: new_signup_path, method: :get, namespace:, class: "letter-paper letter-paper--note", data: { controller: "signup-letter signature", turbo: false } do |form| %>
+  <%= render "letters/stamp" %>
+
+  <p>Dear Pagecord,</p>
+  <p>
+    I'd like a blog called
+    <%= letter_blank form, :title, label: "Blog name", placeholder: "my blog name", maxlength: 100, required: true,
+          data: { signup_letter_target: "name", signature_target: "source", action: "input->signup-letter#nameChanged input->signature#sign" } %>
+  </p>
+  <p class="letter-address" data-signup-letter-target="address" data-placeholder="yourname.pagecord.com"></p>
+
+  <p>Yours,</p>
+  <p class="letter-signature" data-signature-target="output"></p>
+
+  <div class="letter-send">
+    <span>Next, your email. Then your blog's live.</span>
+    <%= render "letters/send", form:, label: "Start my blog" %>
+  </div>
+<% end %>

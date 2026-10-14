@@ -1,5 +1,5 @@
 <% blog = @user.blogs.first %>
-<% focus = @user.errors[:email].any? ? :email : (blog&.errors&.include?(:subdomain) ? :subdomain : :title) %>
+<% focus = (@user.errors[:email].any? || (blog&.title.present? && blog.errors.none?)) ? :email : (blog&.errors&.include?(:subdomain) ? :subdomain : :title) %>
 
 <%= form_with url: signups_path, model: @user, class: "letter-form", data: { controller: "timezone signup-letter signature", turbo: "false" } do |form| %>
   <%= form.hidden_field :signup_referrer %>

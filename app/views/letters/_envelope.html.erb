@@ -1,11 +1,13 @@
-<%# locals: (heading:, body:) %>
-<div class="letter-envelope" aria-hidden="true">
+<%# locals: (heading: nil, body: nil, address: "To Pagecord", open: false) %>
+<div class="<%= class_names("letter-envelope", "letter-envelope--open" => open) %>" aria-hidden="true">
   <%= render "letters/stamp" %>
-  <%= inline_svg_tag "icons/stamp.svg", class: "letter-envelope__postmark" %>
-  <div class="letter-envelope__address">To Pagecord</div>
+  <span class="letter-postmark letter-envelope__postmark"></span>
+  <div class="letter-envelope__address"><%= address %></div>
 </div>
 
-<div class="letter-intro">
-  <h1><%= heading %></h1>
-  <p><%= body %></p>
-</div>
+<% if heading %>
+  <div class="letter-intro">
+    <h1><%= heading %></h1>
+    <p><%= body %></p>
+  </div>
+<% end %>

@@ -1,98 +1,57 @@
-<div id="post-by-editor" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">A wonderful editor for writing, built in</h2>
+<section id="post-by-email" class="mt-20 md:mt-28 mx-auto max-w-6xl px-4 grid md:grid-cols-2 gap-10 md:gap-20 items-center">
+  <div class="flex flex-col gap-5 md:order-last">
+    <h2 class="source-serif font-semibold text-3xl md:text-4xl tracking-tight leading-tight text-slate-900 dark:text-slate-100">Post by sending an email</h2>
+    <div class="flex flex-col gap-5 text-lg md:text-xl leading-relaxed text-slate-600 dark:text-slate-300">
+      <p>Email is already on every device you use. Send a message to your private Pagecord address and it becomes a post on your blog.</p>
+      <p>Text formatting, images and links all look great!</p>
+    </div>
+  </div>
 
-  <p class="md:text-xl leading-relaxed my-5">
-    Pagecord has a wonderful online editor for writing posts in your browser, or on your phone. Use Markdown syntax, add formatting, images, galleries, tables, colours, and code blocks with syntax highlighting.
-  </p>
+  <div class="home-envelope" aria-hidden="true">
+    <div class="home-envelope__post">
+      <span class="home-envelope__blog">HARBOUR LIGHT</span>
+      <span class="home-envelope__title">The long way round</span>
+      <span class="home-envelope__date">21 September 2026</span>
+      <p>I took the coast road home last weekend, instead of the motorway. It added an hour and a half to my journey, but it was amazing.</p>
+    </div>
+    <%= render "letters/envelope", address: "harbourlight_9y38ue9i@post.pagecord.com", open: true %>
+  </div>
+</section>
 
-  <%= image_tag home_image_path("home/rich-text-editor.webp", width: 1600, quality: 90),
-    srcset: home_image_srcset("home/rich-text-editor.webp", widths: [ 800, 1600 ], quality: 88),
-    sizes: "(min-width: 56rem) 54rem, 100vw",
-    alt: "A screenshot of Pagecord's rich text editor",
-    width: "1600",
-    height: "968" %>
-</div>
+<%= render layout: "home/feature", locals: { id: "post-by-editor", title: "A wonderful editor for writing, built in", image: "home/rich-text-editor.webp", alt: "A screenshot of Pagecord's rich text editor", size: "1600x968" } do %>
+  <p>Pagecord has a wonderful online editor for writing posts in your browser, or on your phone. Use Markdown syntax, add formatting, images, galleries, tables, colours, and code blocks with syntax highlighting.</p>
+<% end %>
 
-<div id="post-by-email" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Post by sending an email</h2>
+<%= render layout: "home/feature", locals: { id: "follow", title: "Allow people to follow, calmly", image: "home/weekly-digest.webp", alt: "A screenshot of Apple Mail with a weekly digest email", size: "1600x967", flip: true } do %>
+  <p>Every Pagecord blog has RSS, but not everyone uses it. With Pagecord Premium, readers can subscribe to your blog by email and receive an automatic <strong>weekly digest</strong>. If you prefer, you can send posts individually instead, on your schedule.</p>
+<% end %>
 
-  <p class="md:text-xl leading-relaxed my-5">
-    Email is already on every device you use. Send a message to your private Pagecord address and it becomes a post on your blog.
-  </p>
+<%= render layout: "home/feature", locals: { id: "analytics", title: "Privacy-respecting analytics built in", image: "home/analytics.webp", alt: "A screenshot of Pagecord's page view analytics page", size: "1600x968" } do %>
+  <p>It's nice to know how many visitors your blog gets, and where they come from, but you shouldn't have to add costly 3rd party tracking scripts.</p>
+  <p>Pagecord Premium has simple, privacy-first analytics built in. And if you would rather not know, you can turn it all off.</p>
+<% end %>
 
-  <p class="md:text-xl leading-relaxed my-5">
-  Text formatting, images and links all look great!
-  </p>
-  <%= image_tag home_image_path("home/gmail-compose.webp", width: 1600, quality: 90),
-        srcset: home_image_srcset("home/gmail-compose.webp", widths: [ 800, 1600 ], quality: 88),
-        sizes: "(min-width: 56rem) 54rem, 100vw",
-        alt: "Screenshot of composing a post in Gmail",
-        width: "1600",
-        height: "967" %>
-</div>
+<section id="features" class="mt-20 md:mt-28 mx-auto max-w-6xl px-4">
+  <div class="flex items-baseline justify-between gap-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+    <h2 class="source-serif font-semibold text-3xl tracking-tight text-slate-900 dark:text-slate-100">Also enclosed</h2>
+    <%= link_to "See every feature", features_path, class: "home-link text-sm" %>
+  </div>
 
-<div id="obsidian-api" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Publish from Obsidian, iA Writer, or your own scripts</h2>
-
-  <p class="md:text-xl leading-relaxed my-5">
-  The <a href="https://help.pagecord.com/obsidian" class="font-medium underline">official Pagecord Obsidian plugin</a> publishes selected notes straight to your blog. If you prefer <a href="https://help.pagecord.com/micropub#using-ia-writer" class="font-medium underline">iA Writer</a>, Pagecord has you covered. Or you can use the <a href="https://help.pagecord.com/api" class="font-medium underline">Pagecord API</a> and <a href="https://help.pagecord.com/pagecord-cli" class="font-medium underline">CLI</a> to publish from Shortcuts, scripts, local folders, or any workflow that already works for you.
-  </p>
-
-  <%= image_tag home_image_path("home/obsidian.webp", width: 1600, quality: 90),
-        srcset: home_image_srcset("home/obsidian.webp", widths: [ 800, 1600 ], quality: 88),
-        sizes: "(min-width: 56rem) 54rem, 100vw",
-        alt: "Screenshot of the composing a post in Obsidian",
-        width: "1600",
-        height: "1609" %>
-</div>
-
-<div id="newsletter" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Your blog posts are easy to follow</h2>
-
-  <p class="md:text-xl leading-relaxed my-5">
-    Every Pagecord blog has RSS, but not everyone uses it. With Pagecord Premium, readers can subscribe to your blog by email and receive an automatic <strong>weekly digest</strong>. If you prefer, you can send posts individually instead, on your schedule.
-  </p>
-
-  <%= image_tag home_image_path("home/weekly-digest.webp", width: 1600, quality: 90),
-    srcset: home_image_srcset("home/weekly-digest.webp", widths: [ 800, 1600 ], quality: 88),
-    sizes: "(min-width: 56rem) 54rem, 100vw",
-    alt: "A screenshot of Apple Mail with a weekly digest email",
-    width: "1600",
-    height: "967" %>
-</div>
-
-<div id="comments" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Host a conversation with comments</h2>
-
-  <p class="md:text-xl leading-relaxed my-5">
-    With Pagecord Premium you can enable comments on your posts. Readers leave a name and a message: no account needed, no email address revealed. You can post a reply to any of them.
-  </p>
-
-  <p class="md:text-xl leading-relaxed my-5">
-    Comments won't appear until you approve them, and spam is filtered out before it reaches you.
-  </p>
-
-  <%= image_tag home_image_path("home/comments.webp", width: 1600, quality: 90),
-    srcset: home_image_srcset("home/comments.webp", widths: [ 800, 1600 ], quality: 88),
-    sizes: "(min-width: 56rem) 54rem, 100vw",
-    alt: "A screenshot of comments on a Pagecord blog post",
-    width: "1600",
-    height: "922" %>
-</div>
-
-<div id="analytics" class="mt-16 mb-4 md:mb-8 mx-auto max-w-4xl px-4 text-slate-800 dark:text-slate-200">
-  <h2 class="source-serif text-center font-semibold my-8 text-3xl md:text-4xl tracking-tight">Privacy-respecting analytics built in</h2>
-
-  <p class="md:text-xl leading-relaxed my-5">
-  It's nice to know how many visitors your blog gets, and where they come from, but you shouldn't have to add costly 3rd party tracking scripts.</p>
-  <p class="md:text-xl leading-relaxed my-5">
-  Pagecord Premium has simple, privacy-first analytics built in. And if you would rather not know, you can turn it all off.
-  </p>
-
-  <%= image_tag home_image_path("home/analytics.webp", width: 1600, quality: 90),
-    srcset: home_image_srcset("home/analytics.webp", widths: [ 800, 1600 ], quality: 88),
-    sizes: "(min-width: 56rem) 54rem, 100vw",
-    alt: "A screenshot of Pagecord's page view analytics page",
-    width: "1600",
-    height: "968" %>
-</div>
+  <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-9">
+    <% [
+      [ "Obsidian, iA Writer and the API", "Publish straight from the official Obsidian plugin or iA Writer. Tinkerers can use Shortcuts, scripts and the API too.", "obsidian-api" ],
+      [ "Custom domains", "If you'd prefer to use your own domain name for your site, set it up in one click.", "compare" ],
+      [ "Pages", "Create standalone pages for About, Now, Contact, archives, tags, and more with dynamic variables.", "compare" ],
+      [ "Themes", "Style your blog with colour themes and fonts, then choose a layout and page width that suit your writing.", "compare" ],
+      [ "Media embeds", "Links to YouTube, Spotify, Bandcamp and GitHub are automatically embedded. Great for sharing your favourite tunes and videos.", "compare" ],
+      [ "Full site export", "Export your entire Pagecord blog as HTML or Markdown, with images included.", "compare" ]
+    ].each do |name, description, anchor| %>
+      <div class="flex flex-col gap-1.5">
+        <h3 class="source-serif font-semibold text-xl text-slate-900 dark:text-slate-100">
+          <%= link_to name, features_path(anchor:), class: "decoration-pagecord-accent decoration-2 underline-offset-4 hover:underline" %>
+        </h3>
+        <p class="text-slate-500 dark:text-slate-400"><%= description %></p>
+      </div>
+    <% end %>
+  </div>
+</section>
