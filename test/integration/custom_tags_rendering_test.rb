@@ -94,6 +94,12 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
 
     assert_select "li a[href=?]", "/#{link_post.slug}", text: "A Link Post"
     assert_select "li", text: /An Article/, count: 0
+
+    everything = @blog.pages.create!(title: "Everything", content: "{{ posts_by_year | link_posts: yes }}", status: :published)
+    get blog_post_url(subdomain: @blog.subdomain, slug: everything.slug)
+
+    assert_select "li", text: /An Article/
+    assert_select "li", text: /A Link Post/
   end
 
   test "renders tags custom tag" do

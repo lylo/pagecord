@@ -21,7 +21,7 @@ module Post::Filterable
       scope = scope.tagged_without_any(*Array(without_tag)) if without_tag
       scope = scope.where.not(title: [ nil, "" ]) if title.to_s == "true"
       scope = scope.where(title: [ nil, "" ]) if title.to_s == "false"
-      scope = scope.link_posts(link_posts) unless link_posts.nil?
+      scope = scope.link_posts(link_posts) if link_posts.to_s.in?(%w[true false])
       scope = scope.emailed if emailed.to_s == "true"
       scope = scope.not_emailed if emailed.to_s == "false"
       scope = scope.for_locale(lang, blog_locale) if lang
