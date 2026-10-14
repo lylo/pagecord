@@ -29,6 +29,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "input[name=invitation_code][value=ABCD1234]"
     assert_select ".letter-stamp__code", "ABCD1234"
+    assert_select ".letter-ticket__serial", Date.current.strftime("%-d %b %Y").upcase
   end
 
   test "invite-only signup needs an available invite code" do
