@@ -10,24 +10,29 @@
   <%= render "/shared/spam_prevention" %>
 
   <% if Invitation.required? %>
-    <div class="letter-ticket">
-      <div class="letter-ticket__stub">
-        <span class="letter-ticket__kicker">Admit one writer</span>
-        <span class="letter-ticket__title">You're<br>invited</span>
-      </div>
-      <div class="letter-ticket__body">
-        <%= label_tag "invite-code", "Your invite code", class: "letter-ticket__label" %>
-        <%# The letter stays hidden while this field's placeholder is showing %>
-        <%= text_field_tag :invitation_code, code,
-            placeholder: "ABCD2345EF",
-            id: "invite-code",
-            required: true,
-            autofocus: focus == :code,
-            autocomplete: "off",
-            autocapitalize: "characters",
-            spellcheck: false,
-            class: "letter-ticket__input",
-            data: { signup_letter_target: "code", action: "input->signup-letter#codeChanged" } %>
+    <div class="letter-ticket-shadow">
+      <div class="letter-ticket">
+        <span class="letter-ticket__stamp" aria-hidden="true"></span>
+        <div class="letter-ticket__stub" aria-hidden="true">
+          <span class="letter-ticket__admit">Admit<br>one</span>
+          <span class="letter-ticket__writer">writer</span>
+          <span class="letter-ticket__serial"><%= Date.current.strftime("%-d %b %Y").upcase %></span>
+        </div>
+        <div class="letter-ticket__body">
+          <span class="letter-ticket__title">You're invited!</span>
+          <%= label_tag "invite-code", "Your invite code", class: "letter-ticket__label" %>
+          <%# The letter stays hidden while this field's placeholder is showing %>
+          <%= text_field_tag :invitation_code, code,
+              placeholder: "ABCD2345EF",
+              id: "invite-code",
+              required: true,
+              autofocus: focus == :code,
+              autocomplete: "off",
+              autocapitalize: "characters",
+              spellcheck: false,
+              class: "letter-ticket__input",
+              data: { signup_letter_target: "code", action: "input->signup-letter#codeChanged" } %>
+        </div>
       </div>
     </div>
     <p class="letter-hint">No code? <%= mail_to "hello@pagecord.com", "Email me", subject: "Invite request" %> and say hi.</p>
