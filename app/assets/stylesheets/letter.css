@@ -579,6 +579,40 @@
   transform: rotate(3deg);
 }
 
+/* The 404 page: an envelope stamped "Return to sender" */
+
+.letter-return {
+  position: relative;
+  width: 100%;
+}
+
+.letter-return .letter-envelope {
+  margin-inline: auto;
+}
+
+.letter-return .letter-envelope__address {
+  font-size: 1.75rem;
+}
+
+.letter-return__stamp {
+  position: absolute;
+  z-index: 3;
+  inset-block-start: 55%;
+  inset-inline-start: 50%;
+  padding: 6px 16px;
+  border: 4px double currentColor;
+  border-radius: 6px;
+  color: var(--letter-error);
+  font-family: "InterVariable", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.85;
+  transform: translate(-50%, -50%) rotate(-12deg);
+}
+
 /* The stamp */
 
 .letter-stamp {
@@ -797,6 +831,10 @@
 }
 
 @media (max-width: 640px) {
+  .letter-return__stamp {
+    font-size: 1.1rem;
+  }
+
   .letter-desk {
     padding-top: 32px;
   }

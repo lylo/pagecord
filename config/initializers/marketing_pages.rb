@@ -2,6 +2,5 @@
 # defined here so drawing the routes doesn't autoload ActionController.
 MARKETING_PAGES = %w[
   terms privacy ai faq brand
-  personal-website minimalist-blogging blogging-by-email indie-blogging-platform
-  features principles
+  minimalist-blogging indie-blogging-platform features principles
 ].index_with { |slug| slug.tr("-", "_") }.freeze

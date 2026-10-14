@@ -1,8 +1,0 @@
-<section class="mt-20 md:mt-28 px-4">
-  <h2 class="source-serif text-center font-semibold mb-10 text-3xl md:text-4xl tracking-tight text-slate-900 dark:text-slate-100">Postcards from writers</h2>
-  <div class="mx-auto max-w-6xl flex flex-wrap justify-center gap-8">
-    <% testimonials.each do |testimonial| %>
-      <%= render "home/postcard", quote: testimonial[:quote], name: testimonial[:name], url: testimonial[:url] %>
-    <% end %>
-  </div>
-</section>

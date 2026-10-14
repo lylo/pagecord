@@ -6,6 +6,17 @@ class ErrorsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "a missing page is returned to sender, addressed to the page that was asked for" do
+    detailed = Rails.application.env_config["action_dispatch.show_detailed_exceptions"]
+    Rails.application.env_config["action_dispatch.show_detailed_exceptions"] = false
+    get "/personal-website"
+    Rails.application.env_config["action_dispatch.show_detailed_exceptions"] = detailed
+
+    assert_response :not_found
+    assert_select ".letter-envelope__address", "example.com/personal-website"
+    assert_select "h1", "Return to sender"
+  end
+
   test "should get not_found with invalid format" do
     get "/404.xml"
     assert_response :not_found
