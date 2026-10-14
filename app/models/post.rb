@@ -29,7 +29,7 @@ class Post < ApplicationRecord
   validate :title_present_for_pages
   validate :one_home_page, on: :create
   validates :link_url, format: { with: %r{\Ahttps?://\S+\z}, message: "must be a full web address, starting with https://" }, allow_nil: true
-  validate :title_present_for_link_posts
+  validate :link_url_allowed, if: :link_url?
 
   normalizes :link_url, with: -> { it.strip.presence }
 
@@ -76,8 +76,12 @@ class Post < ApplicationRecord
     end
   end
 
-  def title_present_for_link_posts
-    errors.add(:link_url, "needs a post title") if link_url? && title.blank?
+  def link_url_allowed
+    if page?
+      errors.add(:link_url, "can only be set on posts")
+    elsif title.blank?
+      errors.add(:link_url, "needs a post title")
+    end
   end
 
   def one_home_page

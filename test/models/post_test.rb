@@ -43,6 +43,14 @@ class PostTest < ActiveSupport::TestCase
     assert_equal [ "needs a post title" ], post.errors[:link_url]
   end
 
+  test "a page can't be a link post" do
+    page = posts(:draft_page)
+    page.link_url = "https://example.com/article"
+
+    assert_not page.valid?
+    assert_equal [ "Link URL can only be set on posts" ], page.errors.full_messages_for(:link_url)
+  end
+
   test "published at should be set on create for published posts" do
     post = blogs(:joel).posts.create! title: "my new post", content: "this is my new post", status: :published
 

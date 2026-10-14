@@ -1,0 +1,8 @@
+en:
+  posts:
+    permalink: "Permalink"
+  activerecord:
+    attributes:
+      post:
+        canonical_url: "Canonical URL"
+        link_url: "Link URL"
