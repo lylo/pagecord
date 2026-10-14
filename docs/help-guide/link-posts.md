@@ -10,13 +10,13 @@ A link post is a post whose title links to another page on the web, with your ow
 
 Write your post as normal, then open **Post settings** and paste the address into **Link URL**. A link post needs a title, since the title is the link. Pages can't be link posts.
 
-The rest is a normal post, with comments, likes, tags and everything else.
+The rest is a normal post, with comments, likes, tags and everything else. To turn it back into a normal post, clear **Link URL**.
 
 ## Where the title goes
 
 On your home page, on the post page and in emails to your subscribers, a link post's title links to the page you're writing about, with a small ↗ after it. Readers reach the post itself through the date at the foot of the post.
 
-In title lists, `{{ posts }}` and `{{ posts_by_year }}`, the title still links to your post.
+In the title, cards and gallery layouts, and in `{{ posts }}` and `{{ posts_by_year }}`, the title still links to your post.
 
 ## In your RSS feed
 
@@ -66,6 +66,6 @@ See the [Custom CSS Guide](custom-css.md) for more.
 ## From other apps
 
 - **API and front matter**: set `link_url`. See the [API guide](api.md).
-- **Pagecord CLI**: use `--link-url`, or `link_url` in front matter. See [Pagecord CLI](pagecord-cli.md).
+- **Pagecord CLI**: use `--link-url`, or `link_url` in front matter. `--link-url ""` clears it. See [Pagecord CLI](pagecord-cli.md).
 - **Obsidian**: add `link_url` to a note's frontmatter. See [Obsidian](obsidian.md).
 - **Micropub**: send `bookmark-of`. See [Micropub](micropub.md).

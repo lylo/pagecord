@@ -382,6 +382,15 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Updated Title", @post.reload.title
   end
 
+  test "update with an empty link_url turns a link post back into a post" do
+    @post.update!(link_url: "https://example.com/article")
+
+    patch "/posts/#{@post.token}", params: { link_url: "" }, headers: auth_header
+
+    assert_response :success
+    assert_nil @post.reload.link_url
+  end
+
   test "update with open_graph_image text uses the text-based card" do
     patch "/posts/#{@post.token}", params: { open_graph_image: "text" }, headers: auth_header
 
