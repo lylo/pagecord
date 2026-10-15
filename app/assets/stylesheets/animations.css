@@ -33,30 +33,6 @@
 /* Testimonial Carousel          */
 /* ============================= */
 
-@keyframes scroll-smooth {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(var(--scroll-distance, -50%));
-  }
-}
-
-.animate-scroll-smooth {
-  animation: scroll-smooth 60s linear infinite;
-  will-change: transform; /* smoother hardware-accelerated animation */
-}
-
-.animate-scroll-smooth:hover {
-  animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-scroll-smooth {
-    animation: none;
-  }
-}
-
 /* Hide scrollbar but allow scrolling */
 .overflow-x-auto {
   scrollbar-width: none; /* Firefox */

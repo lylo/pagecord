@@ -15,10 +15,10 @@
       [ "Pagecord is fire.", "Elettrodora", "https://elettrodora.xyz/" ]
     ] %>
 
-    <div class="relative overflow-x-auto py-6">
-      <div class="flex w-max animate-scroll-smooth">
+    <div class="relative overflow-x-auto py-6" data-controller="carousel" data-action="mouseenter->carousel#pause mouseleave->carousel#resume touchstart->carousel#pause touchend->carousel#resume">
+      <div class="flex w-max">
         <% [ false, true ].each do |duplicate| %>
-          <%= tag.div class: "flex gap-8 px-4 md:px-8", aria: { hidden: (true if duplicate) } do %>
+          <%= tag.div class: "flex gap-8 px-4 md:px-8", aria: { hidden: (true if duplicate) }, data: { carousel_target: ("set" unless duplicate) } do %>
             <% testimonials.each do |quote, name, url, lang| %>
               <%= render "home/postcard", quote:, name:, url:, lang:, duplicate: %>
             <% end %>

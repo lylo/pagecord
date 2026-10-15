@@ -8,3 +8,4 @@ pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 
 pin "controllers/signup_letter_controller", preload: false
 pin "controllers/signature_controller", preload: false
+pin "controllers/carousel_controller", preload: false
