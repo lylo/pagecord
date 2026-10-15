@@ -272,7 +272,7 @@ Docker: prefix commands with `docker-compose exec web`
 - **Sluggable**: URL slug generation with reserved words
 - **Taggable**: Tag management with validation, normalization, querying
 - **Verifiable**: Token-based verification with 24h expiry (used by email addresses, change requests)
-- **CssSanitizable**: Custom CSS validation (16KB limit)
+- **CssSanitizable**: Custom CSS validation (24KB limit)
 
 ### Media Embeds
 

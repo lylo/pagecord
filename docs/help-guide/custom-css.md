@@ -94,7 +94,7 @@ Writing your own custom CSS is a premium feature. Your CSS is inserted into the 
 
 For safety, Pagecord validates custom CSS before saving it:
 
-- The maximum size is 16KB
+- The maximum size is 24KB
 - `@import` is only allowed for HTTPS URLs from Google Fonts and Bunny Fonts
 - CSS custom properties, logical properties, `@supports`, and `@layer` are supported
 - Unsafe content, invalid import URLs, and unsupported syntax such as nested CSS are rejected
