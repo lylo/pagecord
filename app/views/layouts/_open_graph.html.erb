@@ -1,0 +1,18 @@
+<% title = (content_for?(:title) ? content_for(:title) : "Pagecord: Make yourself a home on the web").strip %>
+<% description = (content_for?(:meta_description) ? content_for(:meta_description) : "A personal site and blog. Focus on writing, not wrangling. Publish from the editor, Obsidian, iA Writer, or just by sending an email.").strip %>
+<% image = content_for?(:og_image) ? content_for(:og_image).strip.html_safe : image_url("social/open-graph.webp") %>
+
+<meta name="description" content="<%= description %>">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="<%= request.original_url %>">
+<meta property="og:title" content="<%= title %>">
+<meta property="og:description" content="<%= description %>">
+<meta property="og:image" content="<%= image %>">
+
+<meta property="twitter:url" content="<%= request.original_url %>">
+<meta property="twitter:title" content="<%= title %>">
+<meta property="twitter:description" content="<%= description %>">
+<meta property="twitter:image" content="<%= image %>">
+<meta property="twitter:card" content="summary_large_image">

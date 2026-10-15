@@ -10,25 +10,7 @@
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
-    <% default_meta_description = "A personal site and blog. Focus on writing, not wrangling. Publish from the editor, Obsidian, iA Writer, or just by sending an email." %>
-    <meta name="description" content="<%= content_for?(:meta_description) ? content_for(:meta_description) : default_meta_description %>">
-
-    <% og_title = (content_for?(:title) ? content_for(:title) : "Pagecord: Make yourself a home on the web").strip %>
-    <% og_description = (content_for?(:meta_description) ? content_for(:meta_description) : default_meta_description).strip %>
-    <% og_image = content_for?(:og_image) ? content_for(:og_image).strip.html_safe : image_url("social/open-graph.webp") %>
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="<%= request.original_url %>">
-    <meta property="og:title" content="<%= og_title %>">
-    <meta property="og:description" content="<%= og_description %>">
-    <meta property="og:image" content="<%= og_image %>">
-
-    <meta property="twitter:url" content="<%= request.original_url %>">
-    <meta property="twitter:title" content="<%= og_title %>">
-    <meta property="twitter:description" content="<%= og_description %>">
-    <meta property="twitter:image" content="<%= og_image %>">
-    <meta property="twitter:card" content="summary_large_image">
+    <%= render "layouts/open_graph" %>
 
     <link rel="canonical" href="<%= canonical_url %>">
     <%= yield :head %>

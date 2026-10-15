@@ -9,20 +9,7 @@
     <%= render "layouts/default_favicons" %>
     <%= render "layouts/manifest" %>
 
-    <meta name="description" content="A personal site and blog. Focus on writing, not wrangling. Publish from the editor, Obsidian, iA Writer, or just by sending an email.">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="<%= request.original_url %>">
-    <meta property="og:title" content="Pagecord: Make yourself a home on the web">
-    <meta property="og:description" content="A personal site and blog. Focus on writing, not wrangling. Publish from the editor, Obsidian, iA Writer, or just by sending an email.">
-    <meta property="og:image" content="<%= image_url "social/open-graph.webp" %>">
-
-    <meta property="twitter:url" content="<%= request.original_url %>">
-    <meta property="twitter:title" content="Pagecord: Make yourself a home on the web">
-    <meta property="twitter:description" content="A personal site and blog. Focus on writing, not wrangling. Publish from the editor, Obsidian, iA Writer, or just by sending an email.">
-    <meta property="twitter:image" content="<%= image_url "social/open-graph.webp" %>">
-    <meta property="twitter:card" content="summary_large_image">
+    <%= render "layouts/open_graph" %>
 
     <%= stylesheet_link_tag "tailwind", "inter", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
