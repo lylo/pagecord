@@ -72,6 +72,7 @@ def import_pika_markdown(export_root, blog_subdomain, dry_run: false)
     content_doc = Nokogiri::HTML::DocumentFragment.parse(render_markdown_preserving_dynamic_variables(markdown))
 
     rewrite_pika_paths(content_doc)
+    caption_pika_images(content_doc)
     group_pika_galleries(content_doc)
 
     post = blog.all_posts.new(
@@ -245,6 +246,34 @@ def lift_images_out_of_paragraph(paragraph)
   return unless children.any? && children.all? { |node| image_like?(node) }
 
   paragraph.replace(Nokogiri::HTML::DocumentFragment.parse(children.map(&:to_html).join))
+end
+
+PIKA_CAPTION_ALT = "An image with caption:"
+
+# Pika exports a caption as an italic line straight after its image, and gives a
+# captioned image with no alt the alt "An image with caption: <caption>". A
+# figcaption becomes the attachment's caption, which also serves as its alt.
+def caption_pika_images(content_doc)
+  content_doc.css("img").each do |image|
+    caption_nodes = [ next_meaningful(image) ]
+    caption_nodes << next_meaningful(caption_nodes.first) if caption_nodes.first&.name == "br"
+    caption_nodes = [] unless pika_caption?(caption_nodes.last)
+
+    caption = caption_nodes.last&.text&.strip
+    if image["alt"].to_s.start_with?(PIKA_CAPTION_ALT)
+      caption ||= image["alt"].delete_prefix(PIKA_CAPTION_ALT).strip
+      image.remove_attribute("alt")
+    end
+    next if caption.blank?
+
+    caption_nodes.each(&:remove)
+    figure = image.wrap("<figure></figure>").parent
+    figure.add_child(Nokogiri::XML::Node.new("figcaption", content_doc.document).tap { |node| node.content = caption })
+  end
+end
+
+def pika_caption?(node)
+  node&.name == "em" && [ nil, "br", "img" ].include?(next_meaningful(node)&.name)
 end
 
 def image_like?(node)
