@@ -617,14 +617,18 @@
 
 /* The stamp */
 
+/* Perforations are transparent holes in the background; round fits a whole number of them to each edge */
 .letter-stamp {
+  --stamp-paper: #ffffff;
+  --hole: 4px;
   position: absolute;
   inset-block-start: 34px;
   inset-inline-end: 36px;
-  padding: 6px;
-  background: #ffffff;
-  border: 3px dotted var(--letter-paper);
-  box-shadow: 0 1px 3px rgba(30, 40, 60, 0.18);
+  padding: 9px;
+  background:
+    radial-gradient(var(--hole), transparent 98%, var(--stamp-paper)) calc(var(--hole) * -1.5) calc(var(--hole) * -1.5) / calc(var(--hole) * 3) calc(var(--hole) * 3) round,
+    linear-gradient(var(--stamp-paper) 0 0) 50% / calc(100% - var(--hole) * 3) calc(100% - var(--hole) * 3) no-repeat;
+  filter: drop-shadow(0 1px 1.5px rgba(30, 40, 60, 0.3));
   transform: rotate(4deg);
 }
 
@@ -789,8 +793,8 @@
   }
 
   .letter-stamp {
-    background: oklch(86% 0.012 262);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --stamp-paper: oklch(86% 0.012 262);
+    filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.6));
   }
 
   .letter-consent input:checked,
