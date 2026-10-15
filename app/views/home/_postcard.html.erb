@@ -1,10 +1,10 @@
-<%# locals: (quote:, name:, url:) %>
-<figure class="postcard">
-  <blockquote>&ldquo;<%= quote %>&rdquo;</blockquote>
+<%# locals: (quote:, name:, url:, lang: nil, duplicate: false) %>
+<figure class="postcard" style="--quote-length: <%= quote.length %>">
+  <%= tag.blockquote "“#{quote}”", lang: %>
   <figcaption>
     <%= render "letters/stamp" %>
     <span class="letter-postmark postcard__postmark"></span>
     <span class="postcard__name"><%= name %></span>
-    <%= link_to safe_join(url.delete_prefix("https://").delete_suffix("/").split(/(?<=\.)/), tag.wbr), url, class: "postcard__site" %>
+    <%= link_to safe_join(url.delete_prefix("https://").delete_suffix("/").split(/(?<=\.)/), tag.wbr), url, class: "postcard__site", tabindex: (-1 if duplicate) %>
   </figcaption>
 </figure>

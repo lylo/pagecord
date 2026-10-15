@@ -2,25 +2,28 @@
   <h2 class="source-serif text-center font-semibold mb-6 text-3xl md:text-4xl tracking-tight text-slate-900 dark:text-slate-100">Postcards from writers</h2>
 
   <div class="relative testimonials-fade-edges">
-    <% postcards = capture do %>
-      <% [
-        [ "Pagecord has two big attractions. One is rediscovering blogging by email, but a bigger win is the source availability. It does what I need, very nicely.", "Richard Dallaway", "https://richard.dallaway.com" ],
-        [ "It's simple, it's niche, it's elegant. The most important thing is the words and it takes away all the excuses that distract us from the real purpose of a blog, which is to learn about ourselves.", "e6on", "https://e6on.pagecord.com" ],
-        [ "I was drawn to Pagecord because it allows me to post simply by sending an email. I was blown away by the other great features. It's simple, fast, and affordable, perfect for a personal blog.", "Eric", "https://focustivity.blog" ],
-        [ "The ability to post by email was such a relief. Write, send, publish. Frictionless! Pagecord keeps getting better with well-designed and executed features. As well as great support!", "Chad", "https://blog.chadmoore.net/" ],
-        [ "Of all the platforms I've explored, Pagecord is my favourite. The developer is very responsive to suggestions and active in improving the platform while maintaining the core simplicity of using it.", "David", "https://front.pagecord.com/" ],
-        [ "I think Pagecord is the perfect place to host your own blog, especially if you want to keep things simple without getting lost in the forest of modern publishing platforms or newsletter engines.", "Greg", "https://iamgregb.io/" ],
-        [ "I've used every platform one can imagine over the years! Pagecord is seamless, well designed, and is as simple as an email.", "Kristen", "https://thehundredfold.pagecord.com/" ],
-        [ "Pagecord is fire.", "Elettrodora", "https://elettrodora.xyz/" ]
-      ].each do |quote, name, url| %>
-        <%= render "home/postcard", quote:, name:, url: %>
-      <% end %>
-    <% end %>
+    <% testimonials = [
+      [ "Pagecord has two big attractions. One is rediscovering blogging by email, but a bigger win is the source availability. It does what I need, very nicely.", "Richard Dallaway", "https://richard.dallaway.com" ],
+      [ "My blog is about trying to live and work online without losing my soul – independently, ethically, free from bloat and away from the clutches of ‘big tech’. Pagecord is a great fit with these principles and a pleasure to use.", "Jeremy", "https://howtointer.net" ],
+      [ "It's simple, it's niche, it's elegant. The most important thing is the words and it takes away all the excuses that distract us from the real purpose of a blog, which is to learn about ourselves.", "e6on", "https://e6on.pagecord.com" ],
+      [ "I was drawn to Pagecord because it allows me to post simply by sending an email. I was blown away by the other great features. It's simple, fast, and affordable, perfect for a personal blog.", "Eric", "https://focustivity.blog" ],
+      [ "The ability to post by email was such a relief. Write, send, publish. Frictionless! Pagecord keeps getting better with well-designed and executed features. As well as great support!", "Chad", "https://blog.chadmoore.net/" ],
+      [ "Escogí Pagecord porque está pensado para los que disfrutamos escribiendo, pero sin descuidar el aspecto visual de las publicaciones, pues integra a la perfección textos y fotografías, cuidando hasta el último detalle.", "Alfonso", "https://alfonso-postigo.com", "es" ],
+      [ "Of all the platforms I've explored, Pagecord is my favourite. The developer is very responsive to suggestions and active in improving the platform while maintaining the core simplicity of using it.", "David", "https://front.pagecord.com/" ],
+      [ "I think Pagecord is the perfect place to host your own blog, especially if you want to keep things simple without getting lost in the forest of modern publishing platforms or newsletter engines.", "Greg", "https://iamgregb.io/" ],
+      [ "I've used every platform one can imagine over the years! Pagecord is seamless, well designed, and is as simple as an email.", "Kristen", "https://thehundredfold.pagecord.com/" ],
+      [ "Pagecord is fire.", "Elettrodora", "https://elettrodora.xyz/" ]
+    ] %>
 
     <div class="relative overflow-x-auto py-6">
       <div class="flex w-max animate-scroll-smooth">
-        <div class="flex gap-8 px-4 md:px-8"><%= postcards %></div>
-        <div class="flex gap-8 px-4 md:px-8" inert><%= postcards %></div>
+        <% [ false, true ].each do |duplicate| %>
+          <%= tag.div class: "flex gap-8 px-4 md:px-8", aria: { hidden: (true if duplicate) } do %>
+            <% testimonials.each do |quote, name, url, lang| %>
+              <%= render "home/postcard", quote:, name:, url:, lang:, duplicate: %>
+            <% end %>
+          <% end %>
+        <% end %>
       </div>
     </div>
   </div>
