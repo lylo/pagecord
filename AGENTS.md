@@ -181,7 +181,12 @@ background. The sheet's parts are component classes in
 - Use plain PR titles without automation prefixes (for example `Help dialogs`, not `[codex] Help dialogs`)
 - **NEVER** add "Co-Authored-By", "Generated with Claude Code", or any AI attribution to commit messages, PR descriptions, or code comments. This is a hard rule — no exceptions.
 - **NEVER** put customer data in commit messages, PR descriptions, code comments, test names, or test data: no subdomains, emails, names, user ids, or Paddle customer ids. Describe the shape of a case ("a cancellation requested weeks before it takes effect"), never the customer it came from. This is a hard rule — no exceptions.
-- Ask for human review before committing generated code
+- Commit to a branch and push it without asking once the change is verified: tests
+  pass, or it has been checked against real data, and rubocop is clean. Landing on
+  `main` still waits for an explicit instruction.
+- Ask before committing changes to billing, authentication, data migrations or
+  customer email, and leave design and copy uncommitted while it's still being
+  iterated on.
 
 ## Tooling
 
