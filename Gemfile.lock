@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 978799ffea9d3c652c084d3442ea8ac0b5d89588
+  revision: e9aab74b131fbc15cd07332315b836c760fbf4f0
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -259,7 +259,7 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     jmespath (1.6.2)
-    json (3.0.2)
+    json (3.1.0)
     language_server-protocol (3.17.0.6)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -302,7 +302,7 @@ GEM
     nanoid (2.0.0)
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-imap (0.6.7)
+    net-imap (0.6.8)
       date
       net-protocol
     net-pop (0.1.2)
