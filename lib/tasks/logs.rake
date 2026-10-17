@@ -617,6 +617,8 @@ namespace :logs do
           r[:timezone] ||= body[/"timezone"\s*=>\s*"([^"]+)"/, 1]
           r[:referrer] ||= body[/"signup_referrer"\s*=>\s*"([^"]*)"/, 1]
           r[:source_note] ||= body[/"signup_source_note"\s*=>\s*"([^"]*)"/, 1]
+        elsif body.include?("Tor exit node. Request blocked.")
+          r[:blocks] << "tor"
         elsif body.include?("Honeypot field completed")
           r[:blocks] << "honeypot"
         elsif body.include?("Form completed too quickly") || body.include?("Invalid or missing form token")
@@ -636,6 +638,7 @@ namespace :logs do
 
     # Plain-English funnel labels; the report is read at breakfast.
     block_label = {
+      "tor" => "Tor blocked",
       "honeypot" => "Honeypot caught",
       "form-time" => "Form too fast",
       "suspicious-email" => "Suspicious email",
