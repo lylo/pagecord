@@ -74,6 +74,6 @@ USER root:root
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qq && \
-    apt-get install --no-install-recommends -y chromium chromium-driver fonts-liberation && \
+    apt-get install --no-install-recommends -y chromium chromium-driver fonts-liberation git && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 USER rails:rails
