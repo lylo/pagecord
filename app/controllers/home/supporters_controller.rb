@@ -19,7 +19,7 @@ class Home::SupportersController < ApplicationController
 
     def supporter_blogs
       # One blog per supporter, preferring the one with a custom domain.
-      blog_per_supporter = Blog.kept
+      blog_per_supporter = Blog.kept.spotlit
         .joins(user: :subscription)
         .merge(User.kept.where(admin: false))
         .merge(Subscription.active_paid.supporter)

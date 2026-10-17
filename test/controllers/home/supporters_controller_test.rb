@@ -42,6 +42,14 @@ class Home::SupportersControllerTest < ActionDispatch::IntegrationTest
     assert_no_match blogs(:annie).custom_domain, response.body
   end
 
+  test "excludes blogs excluded from the spotlight" do
+    blogs(:annie).exclude_from_spotlight
+
+    get supporters_path
+
+    assert_no_match blogs(:annie).custom_domain, response.body
+  end
+
   test "shows one blog per supporter, preferring the custom domain" do
     second_blog = @annie.blogs.create!(subdomain: "anniesecond", delivery_email: "anniesecond_x1@post.example.com")
 
