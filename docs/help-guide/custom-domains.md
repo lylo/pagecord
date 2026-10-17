@@ -51,12 +51,12 @@ Pagecord will verify your DNS and set up SSL automatically. This can take a few 
 
 ## Cloudflare users
 
-**Important:** when first setting up your domain, your Cloudflare DNS records must be set to **DNS only** (grey cloud). The orange-cloud proxy prevents us from issuing your SSL certificate, which will leave your site showing a `522` error.
+Your records can be either:
 
-Once your site is loading successfully on Pagecord, you have two options:
+- **DNS only** (grey cloud) – the simplest setup, since Pagecord already provides CDN and SSL.
+- **Proxied** (orange cloud), if you want Cloudflare's CDN and protections. Set your SSL/TLS mode to **Full (Strict)** to avoid certificate errors.
 
-- Leave it as **DNS only** (grey cloud) – the simplest setup, since Pagecord already provides CDN and SSL.
-- Switch to the **proxied** (orange cloud) mode if you want Cloudflare's CDN and protections. If you do, set your SSL/TLS mode to **Full (Strict)** to avoid certificate errors. Note that the proxy blocks certificate **renewals** as well as the first issue: certificates renew around every 60 days, so you'll need to switch back to **DNS only** for a few hours each time. If you don't, your site will start showing certificate errors once the current certificate expires.
+If you proxy, make sure no redirect or firewall rule blocks `/.well-known/acme-challenge/` on your domain. I issue and renew your SSL certificate through that path, so blocking it will leave your site showing certificate errors.
 
 ## Removing a custom domain
 
