@@ -4,7 +4,7 @@ published: false
 published_at: 2026-10-18T12:00:00+00:00
 ---
 
-Connect Pagecord to Claude or ChatGPT and manage your blog by chatting. Ask it to draft a post from your notes, publish a draft, tidy up tags, or try a new theme – no terminal or API key needed.
+Connect Pagecord to Claude or ChatGPT and design your blog by chatting. Try a new theme, adjust the colours, or write custom CSS and code. You can also manage posts – no terminal or API key needed.
 
 Pagecord works as an MCP server (Model Context Protocol, the standard AI assistants use to talk to other apps). Connecting is a Premium feature.
 
@@ -22,19 +22,27 @@ You can also copy it from **Settings > API** in your dashboard.
 
 ## Connecting Claude
 
-1. In Claude, open **Settings > Connectors** and choose **Add custom connector**
-2. Give it a name, such as Pagecord, and paste the connector URL
-3. Click **Connect**. A Pagecord window opens
-4. Log in if asked, choose which blog to connect if you have more than one, and click **Allow**
+For Free, Pro and Max plans:
 
-The connector then works in every Claude chat. Turn it on from the tools menu in a conversation if it isn't already.
+1. In Claude, open **Customize > Connectors** and choose **+ Add > Add custom connector**
+2. Give it a name, such as Pagecord, and paste the connector URL
+3. Continue through the setup, choose **Register automatically** for the OAuth client, then click **Add**
+4. In a chat, open **+ > Connectors** and turn on Pagecord
+5. Click **Connect**, log in if asked, choose which blog to connect if you have more than one, and click **Allow**
+
+On Team or Enterprise plans, an organisation owner needs to add Pagecord as an organisation connector first. You can then connect to it from **Customize > Connectors**.
 
 ## Connecting ChatGPT
 
-1. In ChatGPT, open **Settings > Apps & Connectors > Advanced settings** and turn on **Developer mode**
-2. Back in **Apps & Connectors**, choose **Create**
-3. Paste the connector URL, choose **OAuth** for authentication, and create it
-4. Log in to Pagecord when the window opens and click **Allow**
+Custom MCP servers with write actions are available on ChatGPT Business and Enterprise/Edu plans, on the web. Workspace permissions may limit who can add them. ChatGPT Pro can connect to custom MCP servers with read-only access, so Pagecord's post and design tools that make changes won't be available there.
+
+1. In ChatGPT on the web, open **Plugins** and choose **+ > Add custom MCP server**
+2. Enter a name, such as Pagecord, and paste the connector URL
+3. Choose **OAuth** for authentication, review the access warning, then choose **Create as a plugin**
+4. Review the tools ChatGPT finds, then create the plugin
+5. In a new chat, select Pagecord from the tools menu and connect to Pagecord when prompted
+
+See [OpenAI's setup guide](https://help.openai.com/en/articles/12584461-connecting-custom-mcp-servers-in-chatgpt) for current workspace and account requirements.
 
 ## Logging in from the connect window
 
