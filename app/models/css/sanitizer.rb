@@ -61,15 +61,24 @@ module Css
 
         def rule_problems(nodes, css, sanitizer, context = nil)
           preceded_by_property = false
+          position = 0
 
           nodes.flat_map do |node|
-            problems = node_problems(node, css, sanitizer, context, preceded_by_property)
+            problems = node_problems(node, css, sanitizer, context, preceded_by_property, position)
             preceded_by_property = node[:node] == :property if %i[ property semicolon at_rule style_rule ].include?(node[:node])
+            position = end_of(node) || position
             problems
           end
         end
 
-        def node_problems(node, css, sanitizer, context, preceded_by_property)
+        # Crass gives no position for text it couldn't parse, so it is placed
+        # where the node before it ended.
+        def end_of(node)
+          token = node[:raw] ? node : node[:tokens]&.last
+          token[:pos] + token[:raw].length if token&.dig(:pos)
+        end
+
+        def node_problems(node, css, sanitizer, context, preceded_by_property, position)
           case node[:node]
           when :whitespace, :comment
             []
@@ -82,7 +91,8 @@ module Css
           when :semicolon
             preceded_by_property ? [] : [ "Line #{line_at(css, node[:pos])} has a stray semicolon." ]
           else
-            [ context ? "Nested rules aren't supported. Move what's inside #{context} into its own rule, such as #{context} .child { … }." : "There's text that isn't part of a CSS rule." ]
+            line = line_at(css, position)
+            [ context ? "Line #{line}: nested rules aren't supported. Move what's inside #{context} into its own rule, such as #{context} .child { … }." : "Line #{line}: there's text that isn't part of a CSS rule." ]
           end
         end
 

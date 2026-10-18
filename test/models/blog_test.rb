@@ -244,7 +244,7 @@ class BlogTest < ActiveSupport::TestCase
   test "should reject custom CSS with script tags" do
     @blog.custom_css = ".blog { color: red; }<script>alert(1)</script>"
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "There's text that isn't part of a CSS rule."
+    assert_includes @blog.errors.full_messages, "Line 1: there's text that isn't part of a CSS rule."
   end
 
   test "should reject invalid @import URLs" do
@@ -282,7 +282,7 @@ class BlogTest < ActiveSupport::TestCase
   test "should reject CSS exceeding size limit" do
     @blog.custom_css = "." + ("a" * 2_500)
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "There's text that isn't part of a CSS rule."
+    assert_includes @blog.errors.full_messages, "Line 1: there's text that isn't part of a CSS rule."
   end
 
   test "should allow local custom footer links and images" do

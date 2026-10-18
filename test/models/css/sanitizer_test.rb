@@ -127,7 +127,8 @@ class Css::SanitizerTest < ActiveSupport::TestCase
   end
 
   test "problems explains nested rules" do
-    assert_match "Move what's inside .post into its own rule", Css::Sanitizer.problems(".post { & h1 { color: blue; } }").sole
+    assert_match "Line 3: nested rules aren't supported. Move what's inside .post into its own rule",
+      Css::Sanitizer.problems("p { color: red; }\n.post {\n  & h1 { color: blue; }\n}").sole
   end
 
   test "problems reports a stray semicolon" do
