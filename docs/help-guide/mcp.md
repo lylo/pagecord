@@ -59,8 +59,18 @@ Once connected, your assistant can:
 - Move a post to the trash. You can restore it from the Trash in your dashboard
 - Read and change your theme, font, page width, layout and custom colours
 - Read and change your custom CSS and footer, and if you're a subscriber, your custom head and body HTML
+- Read your blog's real HTML, so its CSS targets the right elements
+- Check CSS before saving it, and give you a preview link to see a design before it replaces yours
 
 It can't see your analytics, subscribers or account settings, and it can't send emails to subscribers.
+
+## Designing with an assistant
+
+Your assistant reads a design guide from Pagecord before it starts – the colour variables, how dark mode works, and what custom CSS can contain – and keeps a copy of your custom CSS so it can put it back. A few things help:
+
+- Ask it to show you a preview link before it saves anything
+- Check the design in light and dark mode, and on your phone
+- If you want to go back, ask it to restore the custom CSS it copied at the start
 
 ## Disconnecting
 

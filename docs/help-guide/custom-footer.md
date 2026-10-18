@@ -23,9 +23,11 @@ For custom or translated attribution text, turn off Pagecord branding and add yo
 
 ## What HTML is supported?
 
-Only basic HTML is supported, such as links, text formatting, paragraphs and images.
+Only basic HTML is supported, such as links, text formatting, paragraphs and images. The tags allowed are `a`, `b`, `br`, `div`, `em`, `hr`, `i`, `img`, `li`, `ol`, `p`, `small`, `span`, `strong`, `u` and `ul`.
 
-Scripts, embeds, forms, iframes, inline styles, and unsafe attributes are not supported. For those, see [custom code](custom-code.md).
+The attributes allowed are `href`, `title`, `target`, `rel`, `src`, `alt`, `width`, `height`, `loading`, `class`, `aria-label` and `aria-hidden`. Add a `class` to style part of your footer from your custom CSS.
+
+Scripts, embeds, forms, iframes, inline styles, comments and other attributes are not supported, and the error message names whichever one it found. For those, see [custom code](custom-code.md).
 
 The surrounding HTML structure looks like this:
 

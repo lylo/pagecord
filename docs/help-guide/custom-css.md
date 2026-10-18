@@ -92,12 +92,73 @@ To try changes first, click **Preview**. Your blog opens in a new tab with the n
 
 Writing your own custom CSS is a premium feature. Your CSS is inserted into the `<head>` of your blog pages, and once it's saved it keeps rendering whatever plan you're on.
 
-For safety, Pagecord validates custom CSS before saving it:
+Your CSS is added after Pagecord's own stylesheets, so a rule with the same specificity as Pagecord's wins. You shouldn't need `!important`.
+
+## What custom CSS can contain
+
+For safety, Pagecord checks custom CSS before saving it. If something isn't allowed, the error names it and the line it's on.
 
 - The maximum size is 24KB
-- `@import` is only allowed for HTTPS URLs from Google Fonts and Bunny Fonts
-- CSS custom properties, logical properties, `@supports`, and `@layer` are supported
-- Unsafe content, invalid import URLs, and unsupported syntax such as nested CSS are rejected
+- Most standard properties work, including grid, flexbox, `place-items`, `inset`, `aspect-ratio`, `scrollbar-width`, logical properties and custom properties
+- The at-rules allowed are `@media`, `@supports`, `@container`, `@layer`, `@keyframes`, `@import`, `@font-face` and `@page`
+- `url()` accepts `https`, `http` and relative URLs
+- `@import` must come first, and only loads HTTPS URLs from Google Fonts (`fonts.googleapis.com`, `fonts.gstatic.com`) and Bunny Fonts (`fonts.bunny.net`)
+- `@font-face` can't set `src`, so self-hosted fonts aren't possible. Import them from Google Fonts or Bunny Fonts instead, or, on a subscription, add a `<link>` to your [custom head code](custom-code.md)
+- Nested CSS (including `&`), `@property` and `expression()` aren't supported
+
+## Colours and dark mode
+
+Every theme is built from three colours, set as CSS variables on the `body` element:
+
+- `--theme-bg` – the background
+- `--theme-text` – the text
+- `--theme-accent` – links and accents
+
+Everything else is mixed from those three, so changing them recolours the whole blog:
+
+| Variable | Used for |
+| --- | --- |
+| `--color-bg` | The page background |
+| `--color-bg-subtle` | Code blocks, table headers, tags and forms |
+| `--color-bg-elevated` | Hover fills |
+| `--color-text` | Body text |
+| `--color-text-heading` | Headings |
+| `--color-text-muted` | Dates, captions and secondary text |
+| `--color-text-light` | Quieter text and placeholders |
+| `--color-accent` | Links |
+| `--color-accent-hover` | Links on hover |
+| `--color-border` | Hairlines and borders |
+
+The colour variables are declared on `[data-theme]`, which is the `body` element, so override them there rather than on `:root`, where they'd be hidden by the theme's own values. `--font-size-base` and the `--content-width-*` widths live on `:root`.
+
+Dark mode follows the reader's system setting. There's no toggle, class or attribute for it, only the `prefers-color-scheme` media query, so write your dark colours inside it:
+
+```css
+[data-theme] {
+  --theme-bg: #fdfbf7;
+  --theme-text: #2b2520;
+  --theme-accent: #a0522d;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme] {
+    --theme-bg: #1c1917;
+    --theme-text: #e7e5e4;
+    --theme-accent: #f4a460;
+  }
+}
+```
+
+The **Custom** theme in **Settings** → **Appearance** does the same thing without any CSS: its light and dark colours set these three variables.
+
+## Good habits
+
+- Copy your existing CSS somewhere safe before making big changes
+- Use the colour variables rather than fixed colours, so dark mode keeps working
+- Check your design in light and dark mode, and on a phone
+- Keep the navigation on one line on narrow screens
+- Wrap hover effects that move things in `@media (hover: hover) and (pointer: fine)`, so they don't stick after a tap on a phone
+- Turn animations off for readers who ask for less motion, with `@media (prefers-reduced-motion: reduce)`
 
 ## Examples
 
