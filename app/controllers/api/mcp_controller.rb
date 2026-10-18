@@ -4,7 +4,7 @@ class Api::McpController < Api::BaseController
   TOOLS = [
     Mcp::Tools::ListPosts, Mcp::Tools::GetPost, Mcp::Tools::CreatePost, Mcp::Tools::UpdatePost, Mcp::Tools::DeletePost,
     Mcp::Tools::GetAppearance, Mcp::Tools::UpdateAppearance, Mcp::Tools::GetCustomCode, Mcp::Tools::UpdateCustomCode,
-    Mcp::Tools::GetPageMarkup, Mcp::Tools::GetImage
+    Mcp::Tools::GetPageMarkup, Mcp::Tools::GetImage, Mcp::Tools::SetImageAlt
   ].freeze
 
   before_action :require_mcp

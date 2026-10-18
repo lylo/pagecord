@@ -63,7 +63,7 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
   test "lists the tools" do
     rpc "tools/list"
 
-    assert_equal %w[ create_post delete_post get_appearance get_custom_code get_image get_page_markup get_post list_posts update_appearance update_custom_code update_post ],
+    assert_equal %w[ create_post delete_post get_appearance get_custom_code get_image get_page_markup get_post list_posts set_image_alt update_appearance update_custom_code update_post ],
       result["tools"].map { it["name"] }.sort
   end
 
@@ -97,7 +97,7 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     post.update!(content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))
 
     call_tool "get_post", token: post.token
-    assert_equal [ "http://example.com/rails/active_storage/blobs/redirect/#{blob.signed_id}/space.jpg" ], tool_output["images"]
+    assert_equal "http://example.com/rails/active_storage/blobs/redirect/#{blob.signed_id}/space.jpg", tool_output["images"].sole["url"]
 
     call_tool "update_post", token: post.token, content: tool_output["content"].sub("Hello", "Hello again")
 
@@ -109,10 +109,37 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
   test "finds a post's images in one query" do
     blobs = 2.times.map { ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg") }
     post = posts(:one)
-    post.update!(content: blobs.map { %(<action-text-attachment sgid="#{it.attachable_sgid}"></action-text-attachment>) }.join)
-    post.reload.content.body
+    post.update!(content: blobs.map { %(<action-text-attachment sgid="#{it.attachable_sgid}" width="1600" alt="Stars"></action-text-attachment>) }.join)
+    fragment = post.reload.content.body.fragment
 
-    assert_queries_count(1) { assert_equal blobs, Mcp::Tools::GetPost.send(:attached_blobs, post) }
+    assert_queries_count(1) { assert_equal blobs, Mcp::Tools::GetPost.send(:image_attachments, fragment).map(&:last) }
+
+    call_tool "get_post", token: post.token
+    assert_equal({ "filename" => "space.jpg", "width" => 1600, "height" => nil, "alt" => "Stars" }, tool_output["images"].first.except("url"))
+  end
+
+  test "sets an image's alt text without touching the rest of the post" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+    post = posts(:one)
+    post.update!(content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))
+
+    call_tool "get_post", token: post.token
+    call_tool "set_image_alt", token: post.token, url: tool_output["images"].sole["url"], alt: "A nebula"
+
+    assert_not result["isError"]
+    node = post.reload.content.body.fragment.find_all("action-text-attachment").sole
+    assert_equal "A nebula", node["alt"]
+    assert_equal blob.attachable_sgid, node["sgid"]
+    assert_includes post.content.body.to_html, "<p>Hello</p>"
+  end
+
+  test "refuses to set alt text on an image that isn't in the post" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+    posts(:one).update!(content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))
+
+    call_tool "set_image_alt", token: posts(:two).token, url: "https://storage.example.com/#{blob.key}", alt: "A nebula"
+
+    assert_equal "That image isn't in this post", result["content"].first["text"]
   end
 
   test "shows a post image" do
@@ -120,7 +147,7 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     posts(:one).update!(content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))
 
     call_tool "get_post", token: posts(:one).token
-    call_tool "get_image", url: tool_output["images"].sole
+    call_tool "get_image", url: tool_output["images"].sole["url"]
 
     image = result["content"].sole
     assert_equal "image", image["type"]

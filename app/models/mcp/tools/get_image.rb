@@ -14,21 +14,21 @@ class Mcp::Tools::GetImage < Mcp::Tool
   end
 
   class << self
+    # A public blob URL ends in the blob's key on the storage host, or carries
+    # its signed id on the app's redirect route.
+    def find_image(blog, url)
+      segments = URI.parse(url).path.split("/").compact_blank
+      signed_ids = segments.filter_map { ActiveStorage::Blob.find_signed(it)&.id }
+
+      images(blog).where(key: segments).or(images(blog).where(id: signed_ids)).first or
+        raise Api::BadRequestError, "No image on this blog has that URL"
+    rescue URI::InvalidURIError
+      raise Api::BadRequestError, "That isn't a URL"
+    end
+
     private
       def content(variant)
         { content: [ { type: "image", data: Base64.strict_encode64(variant.download), mimeType: "image/webp" } ] }
-      end
-
-      # A public blob URL ends in the blob's key on the storage host, or carries
-      # its signed id on the app's redirect route.
-      def find_image(blog, url)
-        segments = URI.parse(url).path.split("/").compact_blank
-        signed_ids = segments.filter_map { ActiveStorage::Blob.find_signed(it)&.id }
-
-        images(blog).where(key: segments).or(images(blog).where(id: signed_ids)).first or
-          raise Api::BadRequestError, "No image on this blog has that URL"
-      rescue URI::InvalidURIError
-        raise Api::BadRequestError, "That isn't a URL"
       end
 
       def images(blog)

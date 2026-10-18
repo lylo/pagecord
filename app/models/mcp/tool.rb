@@ -59,6 +59,15 @@ class Mcp::Tool
         blog.posts.kept.find_by!(token:)
       end
 
+      # Each image's attachment tag and blob, the blobs found in one query,
+      # where Action Text's attachables resolves one blob per attachment.
+      def image_attachments(fragment)
+        nodes = fragment.find_all("action-text-attachment[sgid]").index_by do |node|
+          SignedGlobalID.parse(node["sgid"], for: ActionText::Attachable::LOCATOR_NAME)&.model_id.to_i
+        end
+        ActiveStorage::Blob.where(id: nodes.keys).select(&:image?).map { [ nodes[it.id], it ] }
+      end
+
       def post_attributes(arguments)
         params = ActionController::Parameters.new(arguments.merge(content_format: "markdown"))
         Api::PostParams.new(params, *POST_PROPERTIES.keys, :content_format).to_h
