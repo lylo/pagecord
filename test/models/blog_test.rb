@@ -295,7 +295,27 @@ class BlogTest < ActiveSupport::TestCase
     @blog.custom_footer_html = '<img src="https://example.com/x.png" onerror="alert(1)">'
 
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom footer html contains invalid or potentially unsafe content"
+    assert_match "has the attribute `onerror` on <img>, which isn't allowed", @blog.errors.full_messages.first
+  end
+
+  test "should name the disallowed tag in custom footer HTML" do
+    @blog.custom_footer_html = "<p>Hi</p><script>alert(1)</script>"
+
+    assert_not @blog.valid?
+    assert_match "has <script>, which isn't an allowed tag", @blog.errors.full_messages.first
+  end
+
+  test "should reject a javascript link in custom footer HTML" do
+    @blog.custom_footer_html = '<a href="JavaScript:alert(1)">Hi</a>'
+
+    assert_not @blog.valid?
+    assert_includes @blog.errors.full_messages, "Custom footer html has an unsafe URL in `href` on <a>. Use an http, https, mailto or relative URL"
+  end
+
+  test "should accept custom footer HTML the sanitizer only reformats" do
+    @blog.custom_footer_html = '<p>Me & you<br/><a href="https://example.com/?a=1&b=2">Link</a></p>'
+
+    assert @blog.valid?
   end
 
   test "should not touch posts when reply_by_email changes" do
