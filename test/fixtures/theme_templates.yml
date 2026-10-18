@@ -1202,8 +1202,7 @@ haiku:
     .blog-title,
     h1.post-title,
     .post-body :is(h1, h2, h3),
-    .post-card-title,
-    .post-card-content:has(.post-card-image) .post-card-summary {
+    .post-card-title {
       font-family: "EB Garamond", serif;
     }
 
@@ -1330,6 +1329,7 @@ haiku:
     }
 
     .post-card-content:has(.post-card-image) {
+      justify-content: flex-end;
       text-shadow: 0 1px 8px rgb(0 0 0 / 0.6);
     }
 
@@ -1347,13 +1347,13 @@ haiku:
       overflow: hidden;
     }
 
-    /* A soft wash behind the words keeps them legible on bright photos */
+    /* A wash darkens the foot of the photo, where the title and date sit */
     .post-card-image::after {
       content: "";
       position: absolute;
       inset-block: 0;
       inset-inline: 0;
-      background: linear-gradient(rgb(0 0 0 / 0.4), transparent 55%, rgb(0 0 0 / 0.25));
+      background: linear-gradient(transparent 40%, rgb(0 0 0 / 0.65));
     }
 
     .post-card-image img {
@@ -1387,8 +1387,7 @@ haiku:
     }
 
     .post-card-content:has(.post-card-image) .post-card-summary {
-      font-size: 1.25em;
-      line-height: 1.45;
+      display: none;
     }
 
     .post-card-date {
@@ -1435,4 +1434,4 @@ haiku:
   custom_theme_text_dark: "#dde8e1"
   custom_theme_accent_dark: "#7fbfa2"
   position: 4
-  active: false
+  active: true
