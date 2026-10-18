@@ -6,12 +6,6 @@ allowed-tools: Bash
 
 # CI
 
-Run the local checks in this order and stop on first failure unless the user asks otherwise:
-
-1. `bundle exec brakeman --quiet --no-pager --ensure-latest`
-2. `bundle exec rubocop`
-3. `bin/importmap audit`
-4. `bin/rails test`
-5. `bin/rails test:system`
+Run `bin/rails ci` (on Linux, `docker compose exec -T web bin/rails ci`). It runs every step in `lib/tasks/ci.rake` and stops at the first failure.
 
 Report a short status summary with one line per step. If a step fails, include the failing command and the key error.

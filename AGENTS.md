@@ -61,8 +61,9 @@ If a change needed explaining, the explanation belongs in the commit message or
 the pull request, where it is attached to the change rather than to the file
 forever. Code review comments are not code comments.
 
-For calibration, `~/dev/fizzy` runs at roughly 1.6% comment lines across all
-models and controllers, and its longest comment warns that a constant must be
+For calibration, Fizzy (`~/dev/fizzy` on the Mac, `~/Dev/fizzy` on Linux) runs at
+roughly 2.6% comment lines across its models and controllers, counting non-blank
+lines, against Pagecord's 4.5%. Its longest comment warns that a constant must be
 updated when a model is added – a trap the code genuinely can't express.
 
 ## JavaScript & Frontend
@@ -177,6 +178,8 @@ background. The sheet's parts are component classes in
 - Work reaches `main` by `but push <branch>`, deploying and testing that branch,
   then merging. `but land <branch>` fast-forwards `main` and pushes in one
   irreversible step – only on an explicit instruction to land.
+- Run `bin/rails ci` before landing. Its gem audit can turn `main` red with no
+  code change, when a new advisory is published.
 - Use plain branch names without category prefixes (for example `help-dialogs`, not `feature/help-dialogs` or `fix/help-dialogs`)
 - Use plain PR titles without automation prefixes (for example `Help dialogs`, not `[codex] Help dialogs`)
 - **NEVER** add "Co-Authored-By", "Generated with Claude Code", or any AI attribution to commit messages, PR descriptions, or code comments. This is a hard rule – no exceptions.
@@ -190,24 +193,29 @@ background. The sheet's parts are component classes in
 
 ## Tooling
 
-- **Rubocop** auto-runs on every file edit/write via a PostToolUse hook (see `.claude/settings.json`)
-- **CI skill** (`/ci`): runs brakeman, rubocop, importmap audit, unit and system tests locally
+- **Rubocop** auto-runs on every file edit/write via a PostToolUse hook (see `.claude/settings.json`). It runs on the host on both machines, so after a Rails bump run `bundle install` there too, or every lint fails silently
+- **CI** (`bin/rails ci`, or the `/ci` skill): the full local pipeline, defined once in `lib/tasks/ci.rake`
 - **Sentry, Support and Fizzy skills** (`/sentry`, `/support`, `/fizzy`) live in the user's `~/.claude/skills`, not the repo. Use `/fizzy` for any tracker work rather than hand-rolling the API
-- **Pagecord CLI** (`~/dev/pagecord-cli`): its agent skill ships with the gem (`pagecord skill install`). Against the dev server, log in with `pagecord login SUBDOMAIN --base-url http://api.localhost:3000` – the `api.` host is required
-- **Pagecord blog drafts**: write reviewable Obsidian posts to `/Users/olly/Notes/Personal/Pagecord Blog Posts`
+- **Pagecord CLI** (the `lylo/pagecord-cli` repo): its agent skill ships with the gem (`pagecord skill install`). Against the dev server, log in with `pagecord login SUBDOMAIN --base-url http://api.localhost:3000` – the `api.` host is required
+- **Pagecord blog drafts**: write reviewable Obsidian posts to `Pagecord Blog Posts` in the vault: `/Users/olly/Notes/Personal` on the Mac, `/home/olly/Documents/Primary` on Linux
 
 ## Commands
 
+Two machines are in daily use:
+
+- **Mac** (laptop): everything runs natively on the host, Postgres included.
+- **Linux** (desktop): Rails, tests and `bin/rails ci` run in Docker, as there is no host
+  Postgres. Prefix them with `docker compose exec -T web`; without `-T`,
+  non-interactive commands hang. Rubocop and brakeman also run on the host.
+
 ```bash
 bin/dev                          # Start app (Rails, Tailwind, Redis, Sidekiq)
+bin/rails ci                     # Full local pipeline
 bin/rails test                   # Unit tests
-bin/rails test:system            # System tests (not in Docker)
-bin/system-test                  # System tests with Docker database
+bin/rails test:system            # System tests
 bundle exec rubocop              # Linter
 bundle exec brakeman             # Security scanner
 ```
-
-Docker: prefix commands with `docker-compose exec web`
 
 ## Architecture
 
