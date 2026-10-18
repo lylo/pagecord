@@ -53,6 +53,14 @@ Rails.application.routes.draw do
       resource :thanks, only: [ :show ], controller: "thanks"
     end
 
+    get "/.well-known/oauth-authorization-server", to: "oauth/metadata#authorization_server", as: :oauth_authorization_server
+    namespace :oauth do
+      post "register", to: "clients#create", as: :registration
+      get "authorize", to: "authorizations#new", as: :authorization
+      post "authorize", to: "authorizations#create"
+      post "token", to: "tokens#create", as: :token
+    end
+
     get "/login", to: "sessions#new"
     delete "/logout", to: "sessions#destroy"
     resources :sessions, only: [ :create ]
@@ -131,6 +139,7 @@ Rails.application.routes.draw do
           resource :preview, only: [ :update ], controller: "custom_code/previews"
         end
         resource :api, only: [ :show, :create, :destroy ], controller: "api"
+        resources :mcp_connections, only: :destroy
         resources :exports
 
         resources :sender_email_addresses, only: [ :create, :destroy ]
@@ -242,7 +251,13 @@ Rails.application.routes.draw do
       post "/micropub", to: "micropub#create"
       get "/micropub", to: "micropub#query", as: nil
       post "/micropub/media", to: "micropub/media#create"
+      post "/mcp", to: "mcp#create"
+      # Clients open an event stream with GET; 405 tells them there is none.
+      match "/mcp", to: ->(_env) { [ 405, {}, [] ] }, via: [ :get, :delete ]
     end
+
+    get "/.well-known/oauth-protected-resource(/mcp)", to: "oauth/metadata#protected_resource", as: :oauth_protected_resource
+    get "/.well-known/oauth-authorization-server", to: "oauth/metadata#authorization_server", as: nil
   end
 
   # Available on every domain, so embeds also resolve in the theme garden preview.

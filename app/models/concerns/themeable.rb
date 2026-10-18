@@ -12,6 +12,11 @@ module Themeable
   THEMES = %w[base mint lavender coral sand sky berry custom].freeze
   FONTS = %w[sans serif mono].freeze
   PAGE_WIDTHS = %w[narrow standard wide].freeze
+  ATTRIBUTES = %i[
+    theme font width layout
+    custom_theme_bg_light custom_theme_text_light custom_theme_accent_light
+    custom_theme_bg_dark custom_theme_text_dark custom_theme_accent_dark
+  ].freeze
 
   included do
     validates :theme, inclusion: { in: THEMES, message: "%{value} is not a valid theme" }, allow_blank: true

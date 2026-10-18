@@ -17,7 +17,11 @@ module Blog::ApiKey
 
   class_methods do
     def find_by_api_key(token)
-      kept.find_by(api_key_digest: Digest::SHA256.hexdigest(token))
+      kept.with_kept_user.find_by(api_key_digest: Digest::SHA256.hexdigest(token))
+    end
+
+    def find_by_mcp_token(token)
+      find_by_api_key(token) || McpConnection.find_by_token(token)&.blog
     end
   end
 end

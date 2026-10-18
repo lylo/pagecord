@@ -1,6 +1,8 @@
 module Blog::CustomCode
   extend ActiveSupport::Concern
 
+  ATTRIBUTES = %i[ custom_css custom_footer_html ].freeze
+  SUBSCRIBER_ATTRIBUTES = %i[ custom_head_html custom_body_html custom_code_enabled ].freeze
   MAX_SIZES = { custom_head_html: 4.kilobytes, custom_body_html: 16.kilobytes }.freeze
   HEAD_ELEMENTS = %w[ script style link meta noscript template ].freeze
 

@@ -1,5 +1,6 @@
 class App::Settings::ApiController < App::BaseController
   before_action :require_premium, only: [ :create, :destroy ]
+  before_action :set_connections, only: [ :show, :create ]
 
   def show
   end
@@ -15,6 +16,10 @@ class App::Settings::ApiController < App::BaseController
   end
 
   private
+
+    def set_connections
+      @connections = @blog.mcp_connections.active.order(created_at: :desc).load
+    end
 
     def require_premium
       render_app_not_found unless Current.user.has_premium_access?

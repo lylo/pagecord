@@ -1,0 +1,48 @@
+<% content_for :title, "Pagecord - Connect #{@client.name}" %>
+<% content_for :footer do %>
+  Connected apps can be disconnected at any time from <%= link_to "Settings", app_settings_api_path %>.
+<% end %>
+
+<% if @user.has_premium_access? %>
+  <%= form_with url: oauth_authorization_path, class: "letter-form", data: { turbo: false } do |form| %>
+    <% %w[ client_id redirect_uri state code_challenge code_challenge_method response_type ].each do |name| %>
+      <%= hidden_field_tag name, params[name], id: nil %>
+    <% end %>
+
+    <div class="letter-paper">
+      <%= render "letters/letterhead" %>
+
+      <p>Dear Pagecord,</p>
+      <p>
+        Please let <%= @client.name %> manage
+        <% if @user.blogs.many? %>
+          <span class="letter-field">
+            <%= label_tag :blog_id, "Blog", class: "sr-only" %>
+            <%= select_tag :blog_id, options_from_collection_for_select(@user.blogs, :id, :display_name, @blog.id), class: "letter-blank letter-blank--select" %>
+            <span class="letter-trail">.</span>
+          </span>
+        <% else %>
+          <%= hidden_field_tag :blog_id, @blog.id, id: nil %>
+          <%= @blog.display_name %>.
+        <% end %>
+      </p>
+      <p>
+        It may read, write, publish and delete posts, and change how the blog looks, custom code included.
+        Afterwards, send me back to <%= URI.parse(params[:redirect_uri]).host %>.
+      </p>
+
+      <p>Yours,</p>
+      <p class="letter-signature"><%= @blog.display_name %></p>
+
+      <div class="letter-send">
+        <%= render "letters/send", form: form, label: "Allow" %>
+        <span class="letter-aside"><%= link_to "Cancel", @denial_url %></span>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <div class="letter-intro">
+    <h1>Connecting apps needs a subscription</h1>
+    <p><%= link_to "Subscribe", app_settings_subscriptions_path %>, then try connecting again from <%= @client.name %>.</p>
+  </div>
+<% end %>

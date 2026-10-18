@@ -33,6 +33,26 @@ class RackAttackTest < ActionDispatch::IntegrationTest
     assert_equal 429, response.status
   end
 
+  test "keeps /mcp requests with an invalid token on the IP throttle" do
+    Rack::Attack::POST_LIMIT.times do |n|
+      post mcp_url(host: "api.example.com"), params: { jsonrpc: "2.0", id: 1, method: "ping" }, as: :json,
+        headers: { "HTTP_X_FORWARDED_FOR" => "203.0.113.5", "Authorization" => "Bearer bogus-#{n}" }
+    end
+
+    post mcp_url(host: "api.example.com"), params: { jsonrpc: "2.0", id: 1, method: "ping" }, as: :json,
+      headers: { "HTTP_X_FORWARDED_FOR" => "203.0.113.5", "Authorization" => "Bearer bogus" }
+    assert_equal 429, response.status
+  end
+
+  test "leaves /mcp requests with a valid token to the per-blog limit" do
+    (Rack::Attack::POST_LIMIT + 1).times do
+      post mcp_url(host: "api.example.com"), params: { jsonrpc: "2.0", id: 1, method: "ping" }, as: :json,
+        headers: { "HTTP_X_FORWARDED_FOR" => "203.0.113.6", "Authorization" => "Bearer test_mcp_token" }
+    end
+
+    assert_response :success
+  end
+
   test "tracks different IPs independently" do
     Rack::Attack::POST_LIMIT.times do
       post blog_page_views_url(host: blog_host), headers: { "HTTP_X_FORWARDED_FOR" => "203.0.113.3" }

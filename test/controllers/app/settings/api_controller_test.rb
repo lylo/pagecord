@@ -15,6 +15,17 @@ class App::Settings::ApiControllerTest < ActionDispatch::IntegrationTest
     assert_nil users(:joel).blog.reload.api_key_digest
   end
 
+  test "shows the connector only with the mcp feature" do
+    login_as users(:joel)
+
+    get app_settings_api_path
+    assert_select "code", text: "http://api.example.com/mcp"
+
+    users(:joel).update!(features: [])
+    get app_settings_api_path
+    assert_select "code", text: "http://api.example.com/mcp", count: 0
+  end
+
   test "free user cannot generate an api key" do
     user = users(:vivian)
     assert user.on_free_plan?
