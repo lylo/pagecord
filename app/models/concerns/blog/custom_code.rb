@@ -5,6 +5,7 @@ module Blog::CustomCode
   SUBSCRIBER_ATTRIBUTES = %i[ custom_head_html custom_body_html custom_code_enabled ].freeze
   MAX_SIZES = { custom_head_html: 4.kilobytes, custom_body_html: 16.kilobytes }.freeze
   HEAD_ELEMENTS = %w[ script style link meta noscript template ].freeze
+  CSS_PREVIEW_LIFETIME = 10.minutes
 
   # Belong in a head, but Pagecord owns the title and a <base> would rewrite
   # every relative link on the blog, so neither is accepted.
@@ -29,6 +30,16 @@ module Blog::CustomCode
     custom_code_enabled? && user.subscribed?
   end
 
+  def stash_css_preview(css)
+    SecureRandom.base58(24).tap do |token|
+      Rails.cache.write(css_preview_key(token), Css::Sanitizer.sanitize_stylesheet(css), expires_in: CSS_PREVIEW_LIFETIME)
+    end
+  end
+
+  def css_preview(token)
+    Rails.cache.read(css_preview_key(token))
+  end
+
   def custom_head_html_for_render
     custom_head_html.html_safe if custom_head_html.present? && custom_code_active?
   end
@@ -38,6 +49,10 @@ module Blog::CustomCode
   end
 
   private
+
+    def css_preview_key(token)
+      "css_preview:#{id}:#{token}"
+    end
 
     def custom_head_html_valid
       return unless custom_code_valid?(:custom_head_html)

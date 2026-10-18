@@ -7,10 +7,7 @@ class App::Settings::CustomCode::PreviewsController < App::BaseController
     css = params[:blog][:custom_css].to_s
     return head :content_too_large if css.bytesize > Css::Sanitizer::MAX_CSS_SIZE
 
-    token = SecureRandom.base58(24)
-    Rails.cache.write("css_preview:#{@blog.id}:#{token}", Css::Sanitizer.sanitize_stylesheet(css), expires_in: 10.minutes)
-
-    redirect_to blog_css_preview_url(token, host: @blog.host), allow_other_host: true
+    redirect_to blog_css_preview_url(@blog.stash_css_preview(css), host: @blog.host), allow_other_host: true
   end
 
   private

@@ -63,7 +63,7 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
   test "lists the tools" do
     rpc "tools/list"
 
-    assert_equal %w[ create_post delete_post get_appearance get_custom_code get_page_markup get_post list_posts update_appearance update_custom_code update_post ],
+    assert_equal %w[ create_post delete_post get_appearance get_custom_code get_design_guide get_page_markup get_post list_posts preview_custom_css update_appearance update_custom_code update_post ],
       result["tools"].map { it["name"] }.sort
   end
 
@@ -198,6 +198,23 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal "http://joel.example.com/#{posts(:one).slug}", tool_output["url"]
     assert_includes tool_output["html"], %(data-slug="#{posts(:one).slug}")
+  end
+
+  test "links to a preview of unsaved CSS" do
+    Rails.stubs(:cache).returns(ActiveSupport::Cache::MemoryStore.new)
+    call_tool "preview_custom_css", custom_css: ".blog { color: rebeccapurple; }"
+
+    token = tool_output["url"].split("/").last
+    assert_equal "http://joel.example.com/previews/css/#{token}", tool_output["url"]
+    assert_includes @blog.css_preview(token), "rebeccapurple"
+    assert_nil @blog.reload.custom_css
+  end
+
+  test "refuses to preview CSS that wouldn't save" do
+    call_tool "preview_custom_css", custom_css: ".blog { colour: red; }"
+
+    assert result["isError"]
+    assert_equal "Custom css has `colour` on line 1, which isn't an allowed property", result["content"].first["text"]
   end
 
   test "keeps head and body HTML for subscribers" do

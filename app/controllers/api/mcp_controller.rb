@@ -4,7 +4,7 @@ class Api::McpController < Api::BaseController
   TOOLS = [
     Mcp::Tools::ListPosts, Mcp::Tools::GetPost, Mcp::Tools::CreatePost, Mcp::Tools::UpdatePost, Mcp::Tools::DeletePost,
     Mcp::Tools::GetAppearance, Mcp::Tools::UpdateAppearance, Mcp::Tools::GetCustomCode, Mcp::Tools::UpdateCustomCode,
-    Mcp::Tools::GetPageMarkup
+    Mcp::Tools::GetPageMarkup, Mcp::Tools::GetDesignGuide, Mcp::Tools::PreviewCustomCss
   ].freeze
 
   before_action :require_mcp
@@ -12,9 +12,10 @@ class Api::McpController < Api::BaseController
   INSTRUCTIONS = <<~TEXT.squish
     Tools for managing one Pagecord blog. Post content is Markdown. New posts are drafts
     unless status is "published". Fetch a post with get_post before updating its content,
-    because update_post replaces the whole body. Before writing CSS, fetch the blog's
-    homepage (its url is in get_appearance) to see the markup; the classes are documented
-    at https://help.pagecord.com/custom-css.
+    because update_post replaces the whole body. Before designing the blog, read get_design_guide,
+    keep a copy of get_custom_code so the design can be restored, and read the real markup with
+    get_page_markup. Check CSS with update_custom_code and dry_run, which names any rejected
+    property and its line, and share preview_custom_css links before saving.
   TEXT
 
   def create

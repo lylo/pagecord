@@ -3,7 +3,7 @@ class Blogs::CssPreviewsController < Blogs::PostsController
   after_action :no_store
 
   def show
-    @blog.custom_css = Rails.cache.read("css_preview:#{@blog.id}:#{params[:id]}") or raise ActiveRecord::RecordNotFound
+    @blog.custom_css = @blog.css_preview(params[:id]) or raise ActiveRecord::RecordNotFound
 
     index
   end
