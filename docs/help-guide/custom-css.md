@@ -121,6 +121,7 @@ Everything else is mixed from those three, so changing them recolours the whole 
 | `--color-bg` | The page background |
 | `--color-bg-subtle` | Code blocks, table headers, tags and forms |
 | `--color-bg-elevated` | Hover fills |
+| `--color-bg-sunken` | The strongest fill |
 | `--color-text` | Body text |
 | `--color-text-heading` | Headings |
 | `--color-text-muted` | Dates, captions and secondary text |
@@ -128,8 +129,11 @@ Everything else is mixed from those three, so changing them recolours the whole 
 | `--color-accent` | Links |
 | `--color-accent-hover` | Links on hover |
 | `--color-border` | Hairlines and borders |
+| `--color-border-strong` | Stronger borders |
+| `--color-button-bg` | Button fill |
+| `--color-button-text` | Button text |
 
-The colour variables are declared on `[data-theme]`, which is the `body` element, so override them there rather than on `:root`, where they'd be hidden by the theme's own values. `--font-size-base` and the `--content-width-*` widths live on `:root`.
+The colour variables are declared on `[data-theme]`, which is the `body` element, so override them there rather than on `:root`, where they'd be hidden by the theme's own values. `--font-size-base` (100% by default), the fonts `--font-sans`, `--font-serif` and `--font-mono`, and the widths `--content-width-narrow`, `--content-width-standard` and `--content-width-wide` live on `:root`. `--font-body` is the font your blog uses.
 
 Dark mode follows the reader's system setting. There's no toggle, class or attribute for it, only the `prefers-color-scheme` media query, so write your dark colours inside it:
 

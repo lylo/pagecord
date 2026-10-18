@@ -63,7 +63,7 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
   test "lists the tools" do
     rpc "tools/list"
 
-    assert_equal %w[ create_post delete_post get_appearance get_custom_code get_design_guide get_page_markup get_post list_posts preview_custom_css update_appearance update_custom_code update_post ],
+    assert_equal %w[ create_post delete_post get_appearance get_custom_code get_page_markup get_post list_posts update_appearance update_custom_code update_post ],
       result["tools"].map { it["name"] }.sort
   end
 
@@ -181,7 +181,7 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     call_tool "update_custom_code", custom_css: "a { color: red; }\nb { colour: blue; }", dry_run: true
 
     assert result["isError"]
-    assert_equal "Custom css has `colour` on line 2, which isn't an allowed property", result["content"].first["text"]
+    assert_equal "Line 2: the colour property isn't supported.", result["content"].first["text"]
   end
 
   test "shows the home page markup without scripts" do
@@ -200,21 +200,12 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     assert_includes tool_output["html"], %(data-slug="#{posts(:one).slug}")
   end
 
-  test "links to a preview of unsaved CSS" do
-    Rails.stubs(:cache).returns(ActiveSupport::Cache::MemoryStore.new)
-    call_tool "preview_custom_css", custom_css: ".blog { color: rebeccapurple; }"
+  test "shows the markup of a password protected blog" do
+    @blog.update!(password: "letmein")
+    call_tool "get_page_markup"
 
-    token = tool_output["url"].split("/").last
-    assert_equal "http://joel.example.com/previews/css/#{token}", tool_output["url"]
-    assert_includes @blog.css_preview(token), "rebeccapurple"
-    assert_nil @blog.reload.custom_css
-  end
-
-  test "refuses to preview CSS that wouldn't save" do
-    call_tool "preview_custom_css", custom_css: ".blog { colour: red; }"
-
-    assert result["isError"]
-    assert_equal "Custom css has `colour` on line 1, which isn't an allowed property", result["content"].first["text"]
+    assert_equal 200, tool_output["status"]
+    assert_includes tool_output["html"], %(<article class="post)
   end
 
   test "keeps head and body HTML for subscribers" do
