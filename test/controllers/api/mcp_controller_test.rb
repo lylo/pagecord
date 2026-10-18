@@ -63,7 +63,7 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
   test "lists the tools" do
     rpc "tools/list"
 
-    assert_equal %w[ create_post delete_post get_appearance get_custom_code get_post list_posts update_appearance update_custom_code update_post ],
+    assert_equal %w[ create_post delete_post get_appearance get_custom_code get_page_markup get_post list_posts update_appearance update_custom_code update_post ],
       result["tools"].map { it["name"] }.sort
   end
 
@@ -180,6 +180,22 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
 
     assert result["isError"]
     assert_equal "Custom css has `colour` on line 2, which isn't an allowed property", result["content"].first["text"]
+  end
+
+  test "shows the home page markup without scripts" do
+    call_tool "get_page_markup"
+
+    assert_equal 200, tool_output["status"]
+    assert_includes tool_output["html"], %(<article class="post)
+    assert_not_includes tool_output["html"], "<script"
+    assert tool_output["stylesheets"].any? { it.include?("/blogs") }
+  end
+
+  test "shows a post's markup by slug" do
+    call_tool "get_page_markup", page_type: "post", slug: posts(:one).slug
+
+    assert_equal "http://joel.example.com/#{posts(:one).slug}", tool_output["url"]
+    assert_includes tool_output["html"], %(data-slug="#{posts(:one).slug}")
   end
 
   test "keeps head and body HTML for subscribers" do
