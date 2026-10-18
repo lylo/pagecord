@@ -11,7 +11,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path' | xargs bundle exec rubocop -A"
+            "command": "jq -r '.tool_input.file_path | select(startswith(env.CLAUDE_PROJECT_DIR + \"/\"))' | xargs -r bundle exec rubocop -A --force-exclusion"
           }
         ]
       }
