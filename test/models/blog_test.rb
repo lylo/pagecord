@@ -312,6 +312,12 @@ class BlogTest < ActiveSupport::TestCase
     assert_includes @blog.errors.full_messages, "Custom footer html has an unsafe URL in `href` on <a>. Use an http, https, mailto or relative URL"
   end
 
+  test "should allow classes and aria labels in custom footer HTML" do
+    @blog.custom_footer_html = '<div class="links"><a class="badge" href="/about" aria-label="About me">About</a></div>'
+
+    assert @blog.valid?
+  end
+
   test "should accept custom footer HTML the sanitizer only reformats" do
     @blog.custom_footer_html = '<p>Me & you<br/><a href="https://example.com/?a=1&b=2">Link</a></p>'
 

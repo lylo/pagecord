@@ -37,6 +37,12 @@ class Css::SanitizerTest < ActiveSupport::TestCase
     assert_includes result, "column-gap: 0.75rem"
   end
 
+  test "preserves modern layout properties" do
+    css = ".a { display: grid; place-items: center; inset: 0; scrollbar-width: thin; scrollbar-color: red blue; scroll-margin-top: 2rem; }"
+    assert_empty Css::Sanitizer.problems(css)
+    assert_equal css, Css::Sanitizer.sanitize_stylesheet(css)
+  end
+
   test "preserves initial-letter for drop caps" do
     css = "p::first-letter { initial-letter: 3; -webkit-initial-letter: 3; }"
     result = Css::Sanitizer.sanitize_stylesheet(css)

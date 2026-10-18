@@ -6,7 +6,7 @@ module Blog::CustomFooter
     a b br div em hr i img li ol p small span strong u ul
   ].freeze
   ALLOWED_ATTRIBUTES = %w[
-    href title target rel src alt width height loading
+    href title target rel src alt width height loading class aria-label aria-hidden
   ].freeze
 
   included do

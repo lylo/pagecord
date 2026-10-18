@@ -134,6 +134,21 @@ module Css
             -moz-osx-font-smoothing
             initial-letter
             -webkit-initial-letter
+            place-items place-content place-self
+            inset rotate scale isolation mix-blend-mode
+            backdrop-filter -webkit-backdrop-filter
+            scrollbar-width scrollbar-color scrollbar-gutter
+            overscroll-behavior overscroll-behavior-x overscroll-behavior-y overscroll-behavior-block overscroll-behavior-inline
+            scroll-margin scroll-margin-top scroll-margin-right scroll-margin-bottom scroll-margin-left
+            scroll-margin-block scroll-margin-block-start scroll-margin-block-end
+            scroll-margin-inline scroll-margin-inline-start scroll-margin-inline-end
+            scroll-padding scroll-padding-top scroll-padding-right scroll-padding-bottom scroll-padding-left
+            scroll-padding-block scroll-padding-block-start scroll-padding-block-end
+            scroll-padding-inline scroll-padding-inline-start scroll-padding-inline-end
+            scroll-snap-type scroll-snap-align scroll-snap-stop
+            line-clamp hyphenate-character margin-trim -webkit-user-select
+            print-color-adjust -webkit-print-color-adjust
+            transition-behavior interpolate-size field-sizing position-anchor
           ]
         end
 
