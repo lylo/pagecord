@@ -65,7 +65,7 @@ module Css
 
           nodes.flat_map do |node|
             problems = node_problems(node, css, sanitizer, context, preceded_by_property, position)
-            preceded_by_property = node[:node] == :property if %i[ property semicolon at_rule style_rule ].include?(node[:node])
+            preceded_by_property = %i[ property error ].include?(node[:node]) unless %i[ whitespace comment ].include?(node[:node])
             position = end_of(node) || position
             problems
           end

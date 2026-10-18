@@ -1,5 +1,6 @@
 class Mcp::Tools::GetPost < Mcp::Tool
-  describe "Fetch one post, with its content as Markdown and a public URL for each image in it.",
+  describe "Fetch one post, with its content as Markdown and a public URL for each image in it. Images and files appear in " \
+    "the content as <action-text-attachment> tags; keep them as they are when updating the post, or they are removed.",
     properties: { token: { type: "string" } }, required: %i[ token ], read_only: true
 
   def self.perform(blog, token:)

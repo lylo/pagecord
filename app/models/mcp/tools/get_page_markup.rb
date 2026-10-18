@@ -3,10 +3,11 @@ class Mcp::Tools::GetPageMarkup < Mcp::Tool
   LONG_RUN = 10
   TEXT_LIMIT = 80
   ATTRIBUTE_LIMIT = 120
+  FULL_ATTRIBUTES = %w[ src href ].freeze
 
   describe "Get the rendered HTML body of a blog page, to write CSS against the real markup. home is the blog's front page " \
     "(its post list in the chosen layout, or its home page). Without a slug, post is the newest post and page the newest page. " \
-    "Scripts, styles and SVG paths are removed, long text is cut short, and a run of more than #{LONG_RUN} similar " \
+    "Scripts, styles and SVG paths are removed, long text and attributes are cut short (src and href are kept whole), and a run of more than #{LONG_RUN} similar " \
     "siblings, such as a long post list, keeps its first #{REPEATS_SHOWN} and replaces the rest with a comment. Also returns the stylesheets the page loads, in order; custom CSS comes after them.",
     properties: {
       page_type: { type: "string", enum: %w[ home post page ], default: "home" },
@@ -54,7 +55,9 @@ class Mcp::Tools::GetPageMarkup < Mcp::Tool
         body.css("script, style, template, noscript").remove
         body.css("svg").each { it.children.remove }
         body.xpath(".//text()").each { it.content = it.content.truncate(TEXT_LIMIT) unless it.blank? }
-        body.css("*").each { |element| element.attribute_nodes.each { it.value = it.value.truncate(ATTRIBUTE_LIMIT) } }
+        body.css("*").each do |element|
+          element.attribute_nodes.each { it.value = it.value.truncate(ATTRIBUTE_LIMIT) unless FULL_ATTRIBUTES.include?(it.name) }
+        end
         shorten_repeats(body)
 
         body.to_html.gsub(/^\s*\n/, "")

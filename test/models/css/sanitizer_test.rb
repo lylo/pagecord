@@ -126,6 +126,10 @@ class Css::SanitizerTest < ActiveSupport::TestCase
     assert_equal [ "Line 2: the zoom-level property isn't supported." ], Css::Sanitizer.problems(css)
   end
 
+  test "problems doesn't call the semicolon that ends a nested rule stray" do
+    assert_match "Line 2: nested rules aren't supported", Css::Sanitizer.problems("body {\n  .a { color: blue }\n  width: 10px;\n}").sole
+  end
+
   test "problems explains nested rules" do
     assert_match "Line 3: nested rules aren't supported. Move what's inside .post into its own rule",
       Css::Sanitizer.problems("p { color: red; }\n.post {\n  & h1 { color: blue; }\n}").sole

@@ -128,6 +128,15 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     assert_equal "WEBP", Base64.decode64(image["data"])[8, 4]
   end
 
+  test "shows an image from a resized URL in the page markup" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+    posts(:one).update!(content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))
+
+    call_tool "get_image", url: "https://example.com/cdn-cgi/image/width=1600,format=webp/https://storage.example.com/#{blob.key}"
+
+    assert_equal "image", result["content"].sole["type"]
+  end
+
   test "refuses an image from another blog" do
     blob = ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
     posts(:one).update!(blog: blogs(:vivian), content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))

@@ -1,7 +1,8 @@
 class Mcp::Tools::GetImage < Mcp::Tool
   SIZE = 800
 
-  describe "See one of the blog's images: a post image URL from get_post or the avatar_url from get_appearance. " \
+  describe "See one of the blog's images: a post image URL from get_post, the avatar_url from get_appearance, " \
+    "or an img src from get_page_markup. " \
     "Returns the image itself, at most #{SIZE}px on its longest side.",
     properties: { url: { type: "string" } }, required: %i[ url ], read_only: true
 
