@@ -1,7 +1,7 @@
 ---
 title: "Connecting Claude and ChatGPT"
 published: true
-published_at: 2026-10-18T12:00:00+00:00
+published_at: 2026-10-18T09:00:00+00:00
 ---
 
 Connect Pagecord to Claude or ChatGPT and design your blog by chatting. Try a new theme, adjust the colours, or write custom CSS and code. You can also manage posts – no terminal or API key needed.
