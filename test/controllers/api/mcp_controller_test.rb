@@ -163,6 +163,23 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     assert_not result["isError"]
     assert_equal "body { color: blue }", @blog.reload.custom_css
     assert @blog.custom_code_enabled?
+    assert_equal %w[ custom_css ], tool_output["changed"]
+    assert_equal({ "bytes" => 20, "limit" => Css::Sanitizer::MAX_CSS_SIZE }, tool_output["sizes"]["custom_css"])
+  end
+
+  test "checks custom code without saving it" do
+    call_tool "update_custom_code", custom_css: "body { color: blue }", dry_run: true
+
+    assert_not tool_output["saved"]
+    assert_equal %w[ custom_css ], tool_output["changed"]
+    assert_nil @blog.reload.custom_css
+  end
+
+  test "says why custom code is rejected" do
+    call_tool "update_custom_code", custom_css: "a { color: red; }\nb { colour: blue; }", dry_run: true
+
+    assert result["isError"]
+    assert_equal "Custom css has `colour` on line 2, which isn't an allowed property", result["content"].first["text"]
   end
 
   test "keeps head and body HTML for subscribers" do

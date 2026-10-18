@@ -36,7 +36,7 @@ class Mcp::Tool
     rescue ActiveRecord::RecordNotFound
       failure "Post not found"
     rescue ActiveRecord::RecordInvalid => e
-      failure e.record.errors.full_messages.to_sentence
+      failure e.record.errors.full_messages.join("\n")
     rescue Api::BadRequestError, Api::ForbiddenError, Post::FrontMatter::InvalidError => e
       failure e.message
     end
