@@ -175,9 +175,9 @@ background. The sheet's parts are component classes in
 - Several branches share one working tree, so other agents' edits show up in your
   diff. Commit the specific file or hunk IDs your change touched, never everything
   uncommitted, and leave other branches' changes alone.
-- Work reaches `main` by `but push <branch>`, deploying and testing that branch,
-  then merging. `but land <branch>` fast-forwards `main` and pushes in one
-  irreversible step – only on an explicit instruction to land.
+- Work reaches `main` by `but land <branch>`, which fast-forwards `main` and
+  pushes, when asked to push to `main`, land or ship. No pull request is needed;
+  open one only when asked.
 - Run `bin/rails ci` before landing. Its gem audit can turn `main` red with no
   code change, when a new advisory is published.
 - Use plain branch names without category prefixes (for example `help-dialogs`, not `feature/help-dialogs` or `fix/help-dialogs`)

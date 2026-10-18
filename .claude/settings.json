@@ -5,6 +5,7 @@
       "Bash(bin/rails:*)",
       "Bash(docker compose exec:*)",
       "Bash(but commit:*)",
+      "Bash(but land:*)",
       "Bash(but push:*)",
       "Bash(gh pr merge:*)"
     ]
