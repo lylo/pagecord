@@ -20,6 +20,10 @@ class Mcp::Tool
       @annotations = annotations.transform_keys { "#{it.to_s.camelize(:lower)}Hint" }
     end
 
+    def default_url_options
+      Rails.application.config.action_controller.default_url_options
+    end
+
     def tool_name
       name.demodulize.underscore
     end

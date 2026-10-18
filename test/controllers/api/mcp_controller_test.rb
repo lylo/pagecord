@@ -97,6 +97,8 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     post.update!(content: %(<p>Hello</p><action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))
 
     call_tool "get_post", token: post.token
+    assert_equal [ "http://example.com/rails/active_storage/blobs/redirect/#{blob.signed_id}/space.jpg" ], tool_output["images"]
+
     call_tool "update_post", token: post.token, content: tool_output["content"].sub("Hello", "Hello again")
 
     assert_not result["isError"]
