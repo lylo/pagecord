@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(bin/importmap audit)"
+      "Bash(bin/importmap audit)",
+      "Bash(bin/rails:*)",
+      "Bash(docker compose exec:*)",
+      "Bash(but commit:*)",
+      "Bash(but push:*)",
+      "Bash(gh pr merge:*)"
     ]
   },
   "hooks": {
