@@ -1435,4 +1435,4 @@ haiku:
   custom_theme_text_dark: "#dde8e1"
   custom_theme_accent_dark: "#7fbfa2"
   position: 4
-  active: true
+  active: false
