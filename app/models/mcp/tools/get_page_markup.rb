@@ -1,12 +1,13 @@
 class Mcp::Tools::GetPageMarkup < Mcp::Tool
   REPEATS_SHOWN = 3
+  LONG_RUN = 10
   TEXT_LIMIT = 80
   ATTRIBUTE_LIMIT = 120
 
   describe "Get the rendered HTML body of a blog page, to write CSS against the real markup. home is the blog's front page " \
     "(its post list in the chosen layout, or its home page). Without a slug, post is the newest post and page the newest page. " \
-    "Scripts, styles and SVG paths are removed, long text is cut short, and after #{REPEATS_SHOWN} similar siblings the rest " \
-    "are replaced by a comment. Also returns the stylesheets the page loads, in order; custom CSS comes after them.",
+    "Scripts, styles and SVG paths are removed, long text is cut short, and a run of more than #{LONG_RUN} similar " \
+    "siblings, such as a long post list, keeps its first #{REPEATS_SHOWN} and replaces the rest with a comment. Also returns the stylesheets the page loads, in order; custom CSS comes after them.",
     properties: {
       page_type: { type: "string", enum: %w[ home post page ], default: "home" },
       slug: { type: "string", description: "The post or page slug, from list_posts." }
@@ -61,9 +62,9 @@ class Mcp::Tools::GetPageMarkup < Mcp::Tool
 
       def shorten_repeats(element)
         element.element_children.group_by { [ it.name, it[:class] ] }.each do |(name, classes), siblings|
-          extras = siblings.drop(REPEATS_SHOWN)
-          next if extras.empty?
+          next if siblings.size <= LONG_RUN
 
+          extras = siblings.drop(REPEATS_SHOWN)
           selector = [ name, *classes&.split ].join(".")
           extras.first.add_previous_sibling(Nokogiri::XML::Comment.new(element.document, " #{extras.size} more #{selector} "))
           extras.each(&:remove)

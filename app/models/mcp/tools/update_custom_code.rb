@@ -2,7 +2,7 @@ class Mcp::Tools::UpdateCustomCode < Mcp::Tool
   LIMITS = { custom_css: Css::Sanitizer::MAX_CSS_SIZE, custom_footer_html: Blog::CustomFooter::MAX_SIZE, **Blog::CustomCode::MAX_SIZES }.freeze
 
   describe "Change the blog's custom CSS, footer HTML, and head and body HTML. Only the fields given change; each replaces the whole value. " \
-    "Returns which fields changed and each field's size against its limit. With dry_run, nothing is saved and validation errors are reported the same way.",
+    "Returns which fields changed and each field's size against its limit. With dry_run, nothing is saved and validation errors are reported the same way; valid: true means it would save.",
     properties: {
       custom_css: { type: "string", description: "Up to #{LIMITS[:custom_css] / 1.kilobyte}KB." },
       custom_footer_html: { type: "string", description: "Shown beneath every page. Up to #{LIMITS[:custom_footer_html] / 1.kilobyte}KB of " \
@@ -23,6 +23,7 @@ class Mcp::Tools::UpdateCustomCode < Mcp::Tool
     dry_run ? blog.validate! : blog.save!
 
     {
+      valid: true,
       saved: !dry_run,
       changed: changed,
       sizes: LIMITS.to_h { |field, limit| [ field, { bytes: blog[field].to_s.bytesize, limit: limit } ] }

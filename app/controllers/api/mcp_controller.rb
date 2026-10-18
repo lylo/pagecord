@@ -13,9 +13,10 @@ class Api::McpController < Api::BaseController
     Tools for managing one Pagecord blog. Post content is Markdown. New posts are drafts
     unless status is "published". Fetch a post with get_post before updating its content,
     because update_post replaces the whole body. Before designing the blog, read
-    https://help.pagecord.com/custom-css for the CSS variables, dark mode and what custom CSS may
-    contain, keep a copy of get_custom_code so the design can be restored, and read the real markup
-    with get_page_markup. Check CSS with update_custom_code and dry_run, which names any rejected
+    https://help.pagecord.com/custom-css, especially "What custom CSS can contain" and "Colours
+    and dark mode", and https://help.pagecord.com/custom-footer for the footer HTML. Keep a copy
+    of get_custom_code so the design can be restored, and read the real markup with
+    get_page_markup. Check CSS with update_custom_code and dry_run, which names any rejected
     property and its line.
   TEXT
 

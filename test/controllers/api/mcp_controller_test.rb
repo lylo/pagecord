@@ -181,6 +181,7 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
   test "checks custom code without saving it" do
     call_tool "update_custom_code", custom_css: "body { color: blue }", dry_run: true
 
+    assert tool_output["valid"]
     assert_not tool_output["saved"]
     assert_equal %w[ custom_css ], tool_output["changed"]
     assert_nil @blog.reload.custom_css
@@ -200,6 +201,15 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     assert_includes tool_output["html"], %(<article class="post)
     assert_not_includes tool_output["html"], "<script"
     assert tool_output["stylesheets"].any? { it.include?("/blogs") }
+  end
+
+  test "shortens only long runs of similar elements in the markup" do
+    body = Nokogiri::HTML5("<body><nav>#{"<a>Link</a>" * 6}</nav><main>#{"<article>Post</article>" * 12}</main></body>").at("body")
+    html = Mcp::Tools::GetPageMarkup.send(:outline, body)
+
+    assert_equal 6, html.scan("<a>").size
+    assert_equal 3, html.scan("<article>").size
+    assert_includes html, "<!-- 9 more article -->"
   end
 
   test "shows a post's markup by slug" do
