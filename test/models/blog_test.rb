@@ -231,26 +231,26 @@ class BlogTest < ActiveSupport::TestCase
   test "should reject custom CSS with XSS attempt via </style>" do
     @blog.custom_css = ".blog { color: red; }</style><script>alert(1)</script>"
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
+    assert_includes @blog.errors.full_messages, "Custom css contains </style, which would end the stylesheet"
   end
 
   test "should reject custom CSS with </style > whitespace bypass" do
     # HTML5 parsers accept </style > (with whitespace before >) as valid end tag
     @blog.custom_css = '.test:after { content: "</style ><script>alert(1)</script>"; }'
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
+    assert_includes @blog.errors.full_messages, "Custom css contains </style, which would end the stylesheet"
   end
 
   test "should reject custom CSS with script tags" do
     @blog.custom_css = ".blog { color: red; }<script>alert(1)</script>"
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
+    assert_includes @blog.errors.full_messages, "Custom css has text that isn't a CSS rule"
   end
 
   test "should reject invalid @import URLs" do
     @blog.custom_css = '@import url("https://evil.com/steal.css");'
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
+    assert_includes @blog.errors.full_messages.first, "has an @import on line 1 that isn't allowed"
   end
 
   test "should allow Google Fonts @import" do
@@ -280,9 +280,9 @@ class BlogTest < ActiveSupport::TestCase
   end
 
   test "should reject CSS exceeding size limit" do
-    @blog.custom_css = "." + ("a" * 2_500) # Exceeds 2KB limit
+    @blog.custom_css = "." + ("a" * 2_500)
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains invalid or potentially unsafe content"
+    assert_includes @blog.errors.full_messages, "Custom css has text that isn't a CSS rule"
   end
 
   test "should allow local custom footer links and images" do

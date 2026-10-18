@@ -39,7 +39,8 @@ module CssSanitizable
       # If sanitization changed the CSS, something unsafe or unsupported was removed
       # Don't mutate the attribute - let the user see what failed and fix it
       if original_normalized != sanitized_normalized
-        errors.add(:custom_css, "contains invalid or potentially unsafe content")
+        problems = Css::Sanitizer.problems(custom_css).presence || [ "contains invalid or potentially unsafe content" ]
+        problems.each { errors.add(:custom_css, it) }
       end
     end
 

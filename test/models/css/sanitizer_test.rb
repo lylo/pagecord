@@ -99,4 +99,37 @@ class Css::SanitizerTest < ActiveSupport::TestCase
     result = Css::Sanitizer.sanitize_stylesheet(css)
     assert_not_includes result, "\r"
   end
+
+  test "problems names a disallowed property and its line" do
+    css = "body { color: red; }\n.a { colour: blue; }"
+    assert_equal [ "has `colour` on line 2, which isn't an allowed property" ], Css::Sanitizer.problems(css)
+  end
+
+  test "problems names a disallowed value" do
+    css = "body { background: url(javascript:alert(1)); }"
+    assert_match "has a value for `background` on line 1 that isn't allowed", Css::Sanitizer.problems(css).sole
+  end
+
+  test "problems names a disallowed at-rule" do
+    css = "a { color: red; }\n@font-feature-values Foo { @swash { fancy: 1; } }"
+    assert_equal [ "has @font-feature-values on line 2, which isn't an allowed at-rule" ], Css::Sanitizer.problems(css)
+  end
+
+  test "problems finds properties inside media queries" do
+    css = "@media (min-width: 40em) {\n  .a { zoom-level: 2; }\n}"
+    assert_equal [ "has `zoom-level` on line 2, which isn't an allowed property" ], Css::Sanitizer.problems(css)
+  end
+
+  test "problems explains nested rules" do
+    assert_match "inside `.post`. Nested rules aren't supported", Css::Sanitizer.problems(".post { & h1 { color: blue; } }").sole
+  end
+
+  test "problems reports a stray semicolon" do
+    assert_equal [ "has a stray semicolon on line 1" ], Css::Sanitizer.problems("a { color: red;; }")
+  end
+
+  test "problems is empty for CSS the sanitizer keeps" do
+    css = "@import url(\"https://fonts.bunny.net/css?family=inter\");\n@media (prefers-color-scheme: dark) { :root { --x: 1px; } a { color: red; } }"
+    assert_empty Css::Sanitizer.problems(css)
+  end
 end
