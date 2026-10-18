@@ -63,7 +63,7 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
   test "lists the tools" do
     rpc "tools/list"
 
-    assert_equal %w[ create_post delete_post get_appearance get_custom_code get_page_markup get_post list_posts update_appearance update_custom_code update_post ],
+    assert_equal %w[ create_post delete_post get_appearance get_custom_code get_image get_page_markup get_post list_posts update_appearance update_custom_code update_post ],
       result["tools"].map { it["name"] }.sort
   end
 
@@ -113,6 +113,29 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     post.reload.content.body
 
     assert_queries_count(1) { assert_equal blobs, Mcp::Tools::GetPost.send(:attached_blobs, post) }
+  end
+
+  test "shows a post image" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+    posts(:one).update!(content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))
+
+    call_tool "get_post", token: posts(:one).token
+    call_tool "get_image", url: tool_output["images"].sole
+
+    image = result["content"].sole
+    assert_equal "image", image["type"]
+    assert_equal "image/webp", image["mimeType"]
+    assert_equal "WEBP", Base64.decode64(image["data"])[8, 4]
+  end
+
+  test "refuses an image from another blog" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+    posts(:one).update!(blog: blogs(:vivian), content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))
+
+    call_tool "get_image", url: "http://example.com/rails/active_storage/blobs/redirect/#{blob.signed_id}/space.jpg"
+
+    assert result["isError"]
+    assert_equal "No image on this blog has that URL", result["content"].first["text"]
   end
 
   test "reports missing and malformed arguments as tool errors" do
