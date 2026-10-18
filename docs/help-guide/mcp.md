@@ -1,6 +1,6 @@
 ---
 title: "Connecting Claude and ChatGPT"
-published: false
+published: true
 published_at: 2026-10-18T12:00:00+00:00
 ---
 
