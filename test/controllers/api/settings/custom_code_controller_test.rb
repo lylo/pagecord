@@ -53,7 +53,7 @@ class Api::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
       headers: auth_header
 
     assert_response :unprocessable_entity
-    assert_includes JSON.parse(response.body)["errors"], "Custom css contains </style, which would end the stylesheet"
+    assert_includes JSON.parse(response.body)["errors"], "</style isn't allowed, because it would end the stylesheet."
   end
 
   test "update sets custom head html for a subscriber" do

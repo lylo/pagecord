@@ -1,0 +1,10 @@
+en:
+  activerecord:
+    errors:
+      models:
+        blog:
+          attributes:
+            custom_css:
+              format: "%{message}"
+            custom_footer_html:
+              format: "%{message}"

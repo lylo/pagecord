@@ -231,26 +231,26 @@ class BlogTest < ActiveSupport::TestCase
   test "should reject custom CSS with XSS attempt via </style>" do
     @blog.custom_css = ".blog { color: red; }</style><script>alert(1)</script>"
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains </style, which would end the stylesheet"
+    assert_includes @blog.errors.full_messages, "</style isn't allowed, because it would end the stylesheet."
   end
 
   test "should reject custom CSS with </style > whitespace bypass" do
     # HTML5 parsers accept </style > (with whitespace before >) as valid end tag
     @blog.custom_css = '.test:after { content: "</style ><script>alert(1)</script>"; }'
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css contains </style, which would end the stylesheet"
+    assert_includes @blog.errors.full_messages, "</style isn't allowed, because it would end the stylesheet."
   end
 
   test "should reject custom CSS with script tags" do
     @blog.custom_css = ".blog { color: red; }<script>alert(1)</script>"
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css has text that isn't a CSS rule"
+    assert_includes @blog.errors.full_messages, "There's text that isn't part of a CSS rule."
   end
 
   test "should reject invalid @import URLs" do
     @blog.custom_css = '@import url("https://evil.com/steal.css");'
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages.first, "has an @import on line 1 that isn't allowed"
+    assert_includes @blog.errors.full_messages.first, "Line 1: @import can only load https URLs"
   end
 
   test "should allow Google Fonts @import" do
@@ -282,7 +282,7 @@ class BlogTest < ActiveSupport::TestCase
   test "should reject CSS exceeding size limit" do
     @blog.custom_css = "." + ("a" * 2_500)
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom css has text that isn't a CSS rule"
+    assert_includes @blog.errors.full_messages, "There's text that isn't part of a CSS rule."
   end
 
   test "should allow local custom footer links and images" do
@@ -295,21 +295,21 @@ class BlogTest < ActiveSupport::TestCase
     @blog.custom_footer_html = '<img src="https://example.com/x.png" onerror="alert(1)">'
 
     assert_not @blog.valid?
-    assert_match "has the attribute `onerror` on <img>, which isn't allowed", @blog.errors.full_messages.first
+    assert_match "The onerror attribute on <img> isn't supported.", @blog.errors.full_messages.first
   end
 
   test "should name the disallowed tag in custom footer HTML" do
     @blog.custom_footer_html = "<p>Hi</p><script>alert(1)</script>"
 
     assert_not @blog.valid?
-    assert_match "has <script>, which isn't an allowed tag", @blog.errors.full_messages.first
+    assert_match "The <script> tag isn't supported.", @blog.errors.full_messages.first
   end
 
   test "should reject a javascript link in custom footer HTML" do
     @blog.custom_footer_html = '<a href="JavaScript:alert(1)">Hi</a>'
 
     assert_not @blog.valid?
-    assert_includes @blog.errors.full_messages, "Custom footer html has an unsafe URL in `href` on <a>. Use an http, https, mailto or relative URL"
+    assert_includes @blog.errors.full_messages, "The href on <a> needs to be an http, https, mailto or relative URL."
   end
 
   test "should allow classes and aria labels in custom footer HTML" do

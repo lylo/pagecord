@@ -12,6 +12,7 @@ module Pagecord
     config.load_defaults 8.1
 
     config.action_view.field_error_proc = ->(html_tag, _instance) { html_tag }
+    config.active_model.i18n_customize_full_message = true
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.

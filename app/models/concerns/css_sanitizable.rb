@@ -24,7 +24,7 @@ module CssSanitizable
       # Check size limit first for a clearer error message
       max_size = Css::Sanitizer::MAX_CSS_SIZE
       if custom_css.bytesize > max_size
-        errors.add(:custom_css, "is too large (maximum is #{max_size / 1024}KB)")
+        errors.add(:custom_css, "Custom CSS can be up to #{max_size / 1024}KB.")
         return
       end
 
@@ -39,7 +39,7 @@ module CssSanitizable
       # If sanitization changed the CSS, something unsafe or unsupported was removed
       # Don't mutate the attribute - let the user see what failed and fix it
       if original_normalized != sanitized_normalized
-        problems = Css::Sanitizer.problems(custom_css).presence || [ "contains invalid or potentially unsafe content" ]
+        problems = Css::Sanitizer.problems(custom_css).presence || [ "Something in this CSS isn't supported or isn't safe." ]
         problems.each { errors.add(:custom_css, it) }
       end
     end

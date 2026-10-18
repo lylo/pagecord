@@ -5,7 +5,8 @@ class Mcp::Tools::UpdateCustomCode < Mcp::Tool
     "Returns which fields changed and each field's size against its limit. With dry_run, nothing is saved and validation errors are reported the same way.",
     properties: {
       custom_css: { type: "string", description: "Up to #{LIMITS[:custom_css] / 1.kilobyte}KB." },
-      custom_footer_html: { type: "string", description: "Shown beneath every page. Up to #{LIMITS[:custom_footer_html] / 1.kilobyte}KB." },
+      custom_footer_html: { type: "string", description: "Shown beneath every page. Up to #{LIMITS[:custom_footer_html] / 1.kilobyte}KB of " \
+        "#{Blog::CustomFooter::ALLOWED_TAGS.join(", ")} tags, with only the attributes #{Blog::CustomFooter::ALLOWED_ATTRIBUTES.join(", ")}." },
       custom_head_html: { type: "string", description: "Subscribers only. Up to #{LIMITS[:custom_head_html] / 1.kilobyte}KB of head elements such as script, style, link and meta." },
       custom_body_html: { type: "string", description: "Subscribers only. Up to #{LIMITS[:custom_body_html] / 1.kilobyte}KB, inserted at the end of the body." },
       custom_code_enabled: { type: "boolean", description: "Subscribers only. Whether the head and body HTML are used." },

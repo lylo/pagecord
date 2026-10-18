@@ -127,4 +127,11 @@ class App::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_nil @blog.reload.custom_css
   end
+
+  test "should show every reason custom footer HTML is rejected" do
+    patch app_settings_custom_code_url, params: { blog: { custom_footer_html: '<section>Hi</section><p style="color: red">There</p>' } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_match "The &lt;section&gt; tag isn&#39;t supported.<br>Inline styles aren&#39;t supported.", response.body
+  end
 end

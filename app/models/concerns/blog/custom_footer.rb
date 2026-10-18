@@ -21,9 +21,9 @@ module Blog::CustomFooter
 
     def validate_custom_footer_html
       if custom_footer_html.bytesize > MAX_SIZE
-        errors.add(:custom_footer_html, "is too large (maximum is #{MAX_SIZE / 1.kilobyte}KB)")
+        errors.add(:custom_footer_html, "The footer can be up to #{MAX_SIZE / 1.kilobyte}KB.")
       elsif sanitize_custom_footer_html != custom_footer_fragment.to_html.strip
-        problems = custom_footer_problems.presence || [ "contains invalid or potentially unsafe content" ]
+        problems = custom_footer_problems.presence || [ "Something in this HTML isn't supported or isn't safe." ]
         problems.each { errors.add(:custom_footer_html, it) }
       end
     end
@@ -42,15 +42,17 @@ module Blog::CustomFooter
 
       custom_footer_fragment.traverse do |node|
         if node.comment?
-          problems << "has an HTML comment, which isn't allowed"
+          problems << "HTML comments aren't supported."
         elsif node.element? && ALLOWED_TAGS.exclude?(node.name)
-          problems << "has <#{node.name}>, which isn't an allowed tag. Allowed tags are #{ALLOWED_TAGS.join(", ")}"
+          problems << "The <#{node.name}> tag isn't supported."
         elsif node.element?
           node.attribute_nodes.each do |attribute|
-            if ALLOWED_ATTRIBUTES.exclude?(attribute.name)
-              problems << "has the attribute `#{attribute.name}` on <#{node.name}>, which isn't allowed. Allowed attributes are #{ALLOWED_ATTRIBUTES.join(", ")}"
+            if attribute.name == "style"
+              problems << "Inline styles aren't supported. Add a class to the <#{node.name}> and style it in your custom CSS."
+            elsif ALLOWED_ATTRIBUTES.exclude?(attribute.name)
+              problems << "The #{attribute.name} attribute on <#{node.name}> isn't supported."
             elsif unsafe_footer_url?(attribute)
-              problems << "has an unsafe URL in `#{attribute.name}` on <#{node.name}>. Use an http, https, mailto or relative URL"
+              problems << "The #{attribute.name} on <#{node.name}> needs to be an http, https, mailto or relative URL."
             end
           end
         end

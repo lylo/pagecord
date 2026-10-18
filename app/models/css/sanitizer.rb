@@ -33,7 +33,7 @@ module Css
         sanitizer = ::Sanitize::CSS.new(build_sanitize_config(css))
 
         problems = rule_problems(Crass.parse(css, preserve_comments: true), css, sanitizer)
-        problems << "contains </style, which would end the stylesheet" if css.match?(/<\/style/i)
+        problems << "</style isn't allowed, because it would end the stylesheet." if css.match?(/<\/style/i)
         problems
       end
 
@@ -80,9 +80,9 @@ module Css
           when :property
             property_problems(node, css, sanitizer)
           when :semicolon
-            preceded_by_property ? [] : [ "has a stray semicolon on line #{line_at(css, node[:pos])}" ]
+            preceded_by_property ? [] : [ "Line #{line_at(css, node[:pos])} has a stray semicolon." ]
           else
-            [ context ? "has something that isn't a declaration inside `#{context}`. Nested rules aren't supported, so write `#{context} .child { … }` as its own rule" : "has text that isn't a CSS rule" ]
+            [ context ? "Nested rules aren't supported. Move what's inside #{context} into its own rule, such as #{context} .child { … }." : "There's text that isn't part of a CSS rule." ]
           end
         end
 
@@ -95,9 +95,9 @@ module Css
           elsif sanitizer.config[:at_rules_with_properties].include?(name)
             rule_problems(Crass::Parser.parse_properties(node[:block], preserve_comments: true), css, sanitizer, "@#{name}")
           elsif name == "import"
-            sanitizer.send(:at_rule!, node.dup) ? [] : [ "has an @import on line #{line} that isn't allowed. Only https URLs from #{ALLOWED_FONT_HOSTS.to_sentence} can be imported" ]
+            sanitizer.send(:at_rule!, node.dup) ? [] : [ "Line #{line}: @import can only load https URLs from #{ALLOWED_FONT_HOSTS.to_sentence}." ]
           elsif sanitizer.send(:at_rule!, node.dup).nil?
-            [ "has @#{name} on line #{line}, which isn't an allowed at-rule" ]
+            [ "Line #{line}: @#{name} isn't supported." ]
           else
             []
           end
@@ -108,9 +108,9 @@ module Css
           line = line_at(css, node[:tokens].first[:pos])
 
           if sanitizer.config[:properties].exclude?(name)
-            [ "has `#{name}` on line #{line}, which isn't an allowed property" ]
+            [ "Line #{line}: the #{name} property isn't supported." ]
           elsif sanitizer.send(:property!, node.dup).nil?
-            [ "has a value for `#{name}` on line #{line} that isn't allowed: `#{node[:value].truncate(60)}`. URLs must be https, and expression() isn't supported" ]
+            [ "Line #{line}: this value for #{name} isn't allowed: #{node[:value].truncate(60)}" ]
           else
             []
           end

@@ -23,10 +23,8 @@ class App::Settings::CustomCodeController < App::BaseController
 
   private
 
-    # turbo_stream.update renders a plain String as raw markup, and the custom
-    # code errors quote the tags they object to.
     def error_stream(attribute)
-      turbo_stream.update("#{attribute}-error", ERB::Util.html_escape(@blog.errors[attribute].first.to_s))
+      turbo_stream.update("#{attribute}-error", helpers.safe_join(@blog.errors[attribute], helpers.tag.br))
     end
 
     def custom_code_params
