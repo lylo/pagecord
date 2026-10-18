@@ -106,6 +106,15 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     assert_includes post.content.body.to_html, %(sgid="#{blob.attachable_sgid}")
   end
 
+  test "finds a post's images in one query" do
+    blobs = 2.times.map { ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg") }
+    post = posts(:one)
+    post.update!(content: blobs.map { %(<action-text-attachment sgid="#{it.attachable_sgid}"></action-text-attachment>) }.join)
+    post.reload.content.body
+
+    assert_queries_count(1) { assert_equal blobs, Mcp::Tools::GetPost.send(:attached_blobs, post) }
+  end
+
   test "reports missing and malformed arguments as tool errors" do
     call_tool "get_post"
     assert result["isError"]

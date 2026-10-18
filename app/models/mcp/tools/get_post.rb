@@ -7,7 +7,16 @@ class Mcp::Tools::GetPost < Mcp::Tool
 
     summarize(post).merge(
       content: ReverseMarkdown.convert(post.content.body.to_html, github_flavored: true),
-      images: post.content.body.attachables.grep(ActiveStorage::Blob).select(&:image?).map { rails_public_blob_url(it) }
+      images: attached_blobs(post).select(&:image?).map { rails_public_blob_url(it) }
     )
+  end
+
+  class << self
+    private
+      # Located in one query, where Action Text's attachables resolves one blob per attachment.
+      def attached_blobs(post)
+        sgids = post.content.body.fragment.find_all("action-text-attachment[sgid]").map { it["sgid"] }
+        GlobalID::Locator.locate_many_signed(sgids, for: ActionText::Attachable::LOCATOR_NAME, ignore_missing: true).grep(ActiveStorage::Blob)
+      end
   end
 end
