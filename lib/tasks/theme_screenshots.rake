@@ -17,6 +17,7 @@ namespace :theme_templates do
     options.add_argument("--window-size=1280,800")
     options.add_argument("--force-device-scale-factor=1")
     options.add_argument("--hide-scrollbars")
+    options.add_argument("--blink-settings=preferredColorScheme=1")
 
     have_cwebp = system("which cwebp > /dev/null 2>&1")
     abort "cwebp not found — install with: brew install webp" unless have_cwebp
