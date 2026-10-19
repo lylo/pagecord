@@ -159,7 +159,7 @@ This recipe shows a button in the margin when you hover over a heading. Clicking
 .heading-link {
   position: absolute;
   left: calc(-1 * (var(--heading-link-size) + 0.5rem));
-  top: 0.75em;
+  top: 0.5lh;
   translate: 0 -50%;
   display: grid;
   place-items: center;
