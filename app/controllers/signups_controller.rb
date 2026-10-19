@@ -18,7 +18,7 @@ class SignupsController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    return reject_submission unless signup_from_allowed_timezone
+    return reject_banned_timezone unless signup_from_allowed_timezone
 
     if @user.save
       ScreenUserJob.perform_later(@user.id, ip: request.ip, user_agent: request.user_agent)
@@ -43,6 +43,11 @@ class SignupsController < ApplicationController
     def reject_submission
       @error_message = "There's an issue signing you up. If you're using a VPN, try signing up without it. Contact support if the problem persists."
       @user ||= User.new(user_params)
+      render :new, status: :unprocessable_entity
+    end
+
+    def reject_banned_timezone
+      @region_paused = true
       render :new, status: :unprocessable_entity
     end
 

@@ -8,7 +8,7 @@
 
   <div class="letter-paper">
     <%= render "letters/letterhead" %>
-    <p class="letter-note" role="alert"><%= @error_message %></p>
+    <p class="letter-note" role="alert"><%= @region_paused ? render("region_paused") : @error_message %></p>
 
     <p>Dear Pagecord,</p>
     <p>

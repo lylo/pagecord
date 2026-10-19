@@ -144,7 +144,8 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_includes @response.body, "There&#39;s an issue signing you up"
+    assert_includes @response.body, "Signups from your region are paused"
+    assert_includes @response.body, "mailto:hello@pagecord.com"
   end
 
   test "should screen the new account" do
