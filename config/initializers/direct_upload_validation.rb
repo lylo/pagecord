@@ -4,4 +4,5 @@
 Rails.autoloaders.main.on_load("ActiveStorage::DirectUploadsController") do |klass, _abspath|
   klass.include DirectUploadValidation unless klass < DirectUploadValidation
   klass.prepend DirectUploadPreviewStatus unless klass < DirectUploadPreviewStatus
+  klass.prepend DirectUploadIdentification unless klass < DirectUploadIdentification
 end

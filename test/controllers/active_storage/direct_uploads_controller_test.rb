@@ -31,6 +31,19 @@ class ActiveStorage::DirectUploadsControllerTest < ActionDispatch::IntegrationTe
     assert_response :success
   end
 
+  test "marks the blob identified so attaching it doesn't download it" do
+    post rails_direct_uploads_path, params: {
+      blob: { filename: "photo.jpg", content_type: "image/jpeg", byte_size: 1.megabyte, checksum: "abc123", metadata: { analyzed: true, width: 1 } }
+    }, as: :json
+
+    blob = ActiveStorage::Blob.find_signed!(response.parsed_body["signed_id"])
+    assert_equal({ "identified" => true }, blob.metadata)
+
+    blob.service.class.any_instance.expects(:download_chunk).never
+    posts(:one).update!(content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>))
+    assert_equal "image/jpeg", blob.reload.content_type
+  end
+
   test "returns a preview status url for a previewable upload" do
     post rails_direct_uploads_path, params: {
       blob: { filename: "report.pdf", content_type: "application/pdf", byte_size: 5.megabytes, checksum: "abc123" }
