@@ -42,8 +42,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     get admin_users_path(search: user1.blog.subdomain)
 
     assert_response :success
-    assert_includes @response.body, user1.blog.subdomain
-    assert_not_includes @response.body, user2.blog.subdomain
+    assert_select "turbo-frame#users a", text: user1.blog.subdomain
+    assert_select "turbo-frame#users a", text: user2.blog.subdomain, count: 0
   end
 
   test "should search users by custom domain" do
@@ -77,8 +77,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     get admin_users_path, params: { status: "paid" }
     assert_response :success
 
-    assert_select "span", text: "Paid"
-    assert_select "div", text: /results?/
+    assert_select ".btn-group-item-active", text: /Paid/
   end
 
   test "should filter by comped status" do
@@ -87,16 +86,16 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     get admin_users_path, params: { status: "comped" }
     assert_response :success
 
-    assert_select "span", text: "Comped"
-    assert_select "td", text: /joel/
+    assert_select "turbo-frame#users span", text: "Comped"
+    assert_select "turbo-frame#users a", text: /joel/
   end
 
   test "should combine search and status filters" do
     get admin_users_path, params: { search: "joel", status: "paid" }
     assert_response :success
 
-    assert_select "a", text: /Paid/
-    assert_select "div", text: /results?/
+    assert_select ".btn-group-item-active", text: /Paid/
+    assert_select "p", text: /results? for/
   end
 
   test "should preserve status filter when searching" do
@@ -129,29 +128,27 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
-  test "should show correct status labels in table" do
+  test "should show correct status labels" do
     get admin_users_path
     assert_response :success
 
-    assert_select "td", text: "Premium"
-    assert_select "td", text: "Free"
+    assert_select "span", text: "Premium"
+    assert_select "span", text: "Free"
   end
 
   test "should handle empty search results with status filter" do
     get admin_users_path, params: { search: "nonexistent", status: "paid" }
     assert_response :success
 
-    assert_select "span", text: "Paid"
-    assert_select "div", text: /0 results/
+    assert_select ".btn-group-item-active", text: /Paid/
+    assert_select "p", text: /0 results/
   end
 
   test "should render blog rows with post counts" do
     get admin_users_path
     assert_response :success
 
-    assert_select "th", text: "User"
-    assert_select "th", text: "Blogs"
-    assert_select "span", text: /posts?/
+    assert_select "turbo-frame#users li", text: /posts?/
   end
 
   test "should discard regular user" do

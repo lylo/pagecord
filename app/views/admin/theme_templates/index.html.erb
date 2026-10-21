@@ -1,32 +1,31 @@
-<div class="max-w-3xl mx-auto">
-  <div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold">Theme Templates</h1>
-    <%= link_to "New Template", new_admin_theme_template_path, class: "btn-primary" %>
+<div class="flex grow flex-col">
+  <h1 class="page-title">Theme templates</h1>
+
+  <div class="mt-3 flex flex-wrap items-center gap-2">
+    <%= link_to "New template", new_admin_theme_template_path, class: "btn-primary" %>
+    <%= link_to "Download as fixtures", admin_theme_templates_fixtures_path, class: "btn-optional" %>
   </div>
 
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+  <div class="sheet-divider mt-5"></div>
+
+  <div class="divide-y divide-slate-200 dark:divide-slate-800"
        data-controller="sortable"
        data-sortable-resource-name-value="theme_template"
        data-sortable-handle-value=".handle"
        data-sortable-animation-value="150">
     <% @templates.each do |template| %>
-      <div class="flex items-center gap-3 py-3 px-4 border-b border-slate-200 dark:border-slate-700 last:border-b-0"
+      <div class="sheet-bleed flex items-center gap-3 py-3"
            data-id="<%= template.id %>"
            data-sortable-update-url="<%= admin_theme_template_path(template) %>">
         <div class="handle cursor-grab" title="Drag to reorder">
-          <%= inline_svg_tag "icons/grip-dots.svg", class: "w-4 h-4 text-slate-400" %>
+          <%= inline_svg_tag "icons/grip-dots.svg", class: "h-4 w-4 text-slate-400" %>
         </div>
-        <div class="flex-1">
-          <%= link_to template.name, edit_admin_theme_template_path(template), class: "font-medium hover:underline" %>
+        <div class="min-w-0 flex-1">
+          <%= link_to template.name, edit_admin_theme_template_path(template), class: "font-medium text-slate-900 hover:underline dark:text-slate-100" %>
+          <p class="text-sm text-slate-500 dark:text-slate-400"><%= [ template.theme, template.font ].compact_blank.join(" · ").presence || "–" %></p>
         </div>
-        <span class="text-sm text-slate-500"><%= template.theme.presence || "–" %></span>
-        <span class="text-sm text-slate-500"><%= template.font.presence || "–" %></span>
-        <span class="text-sm <%= template.active? ? 'text-green-600' : 'text-slate-400' %>"><%= template.active? ? "Active" : "Inactive" %></span>
+        <%= template.active? ? badge("Active", :success) : badge("Inactive") %>
       </div>
     <% end %>
-  </div>
-
-  <div class="mt-4 text-right">
-    <%= link_to "Download as fixtures", admin_theme_templates_fixtures_path, class: "text-sm text-slate-500 hover:text-slate-700" %>
   </div>
 </div>

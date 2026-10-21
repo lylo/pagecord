@@ -1,44 +1,51 @@
-<div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-bold"><%= @template.name %></h1>
-  <div class="flex gap-2">
-    <%= link_to "Edit", edit_admin_theme_template_path(@template), class: "btn-secondary" %>
-    <%= button_to "Delete", admin_theme_template_path(@template), method: :delete, class: "btn-secondary text-red-600", form: { data: { turbo_confirm: "Are you sure?" } } %>
-  </div>
+<div class="sheet-header gap-x-2">
+  <%= link_to "Templates", admin_theme_templates_path, class: "shrink-0 font-semibold text-slate-800 hover:underline dark:text-slate-100" %>
+  <span class="shrink-0 text-slate-400">&rsaquo;</span>
+  <span class="min-w-0 truncate"><%= @template.name %></span>
 </div>
 
-<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
+<h1 class="mt-6 page-title"><%= @template.name %></h1>
+
+<div class="mt-3 flex flex-wrap gap-2">
+  <%= link_to "Edit", edit_admin_theme_template_path(@template), class: "btn-primary" %>
+  <%= button_to "Delete", admin_theme_template_path(@template), method: :delete, form_class: "contents", class: "btn-danger", data: { turbo_confirm: "Delete this template?" } %>
+</div>
+
+<div class="sheet-divider mt-5"></div>
+
+<div class="mt-6 space-y-4">
   <div>
-    <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Description</span>
+    <span class="text-sm text-slate-500 dark:text-slate-400">Description</span>
     <p><%= @template.description.presence || "–" %></p>
   </div>
 
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
     <div>
-      <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Theme</span>
+      <span class="text-sm text-slate-500 dark:text-slate-400">Theme</span>
       <p><%= @template.theme.presence || "–" %></p>
     </div>
     <div>
-      <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Font</span>
+      <span class="text-sm text-slate-500 dark:text-slate-400">Font</span>
       <p><%= @template.font.presence || "–" %></p>
     </div>
     <div>
-      <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Width</span>
+      <span class="text-sm text-slate-500 dark:text-slate-400">Width</span>
       <p><%= @template.width.presence || "–" %></p>
     </div>
     <div>
-      <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Layout</span>
+      <span class="text-sm text-slate-500 dark:text-slate-400">Layout</span>
       <p><%= @template.layout.presence || "–" %></p>
     </div>
   </div>
 
   <div>
-    <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Custom CSS</span>
-    <pre class="mt-1 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg text-sm font-mono overflow-x-auto"><%= @template.custom_css %></pre>
+    <span class="text-sm text-slate-500 dark:text-slate-400">Custom CSS</span>
+    <pre class="mt-1 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/60 text-sm font-mono overflow-x-auto"><%= @template.custom_css %></pre>
   </div>
 
   <% if @template.author_name.present? %>
     <div>
-      <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Author</span>
+      <span class="text-sm text-slate-500 dark:text-slate-400">Author</span>
       <p>
         <%= @template.author_name %>
         <% if @template.author_url.present? %>

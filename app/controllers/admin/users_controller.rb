@@ -2,7 +2,13 @@ class Admin::UsersController < Admin::BaseController
   include Pagy::Method
 
   def index
-    @total_users = User.count
+    @status_counts = {
+      nil => User.count,
+      "paid" => Subscription.active_paid.count,
+      "supporter" => Subscription.active_paid.where(plan: :supporter).count,
+      "comped" => Subscription.comped.count,
+      "churning" => Subscription.where.not(cancelled_at: nil).where("next_billed_at > ?", Time.current).count
+    }
 
     users = User.left_outer_joins(:subscription)
                 .includes(:subscription, :blogs)

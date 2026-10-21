@@ -125,6 +125,10 @@ background. The sheet's parts are component classes in
   `lexxy-editor-overrides.css` so they beat Lexxy's own opacity. Never set a
   placeholder colour in a view.
 - **Count pills** use the `pill` helper: `rounded-full`, slate-filled, low drama.
+- **Admin** follows the same system: `layouts/admin` wraps every page in a sheet,
+  lists are divided rows rather than tables so they work on a phone, and status
+  labels use `badge(text, tone)` with a semantic tone (`:danger`, `:warning`,
+  `:info`, `:success`) or none for a neutral pill.
 - **Row hover** on a list: soft fill, title underlines, row icons brighten. Divided
   rows fill full-bleed; compact rows (posts, pages) fill an inset rounded strip.
 - **Dark mode** keeps the page at `slate-950` and every surface, including the nav
