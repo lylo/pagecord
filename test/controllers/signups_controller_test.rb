@@ -22,6 +22,13 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_select "input[name='user[email]'][autofocus]"
   end
 
+  test "the signup letter is not autofilled" do
+    get new_signup_path
+
+    assert_select "form.letter-form[autocomplete=off]"
+    assert_select "input[name='user[email]'][autocomplete=off]"
+  end
+
   test "signing up keeps the blog name as its title" do
     post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { title: "Harbour Light", subdomain: "harbourlight" } ] }, rendered_at: signed_rendered_at }
 

@@ -1,7 +1,7 @@
 <% blog = @user.blogs.first %>
 <% focus = (@user.errors[:email].any? || (blog&.title.present? && blog.errors.none?)) ? :email : (blog&.errors&.include?(:subdomain) ? :subdomain : :title) %>
 
-<%= form_with url: signups_path, model: @user, class: "letter-form", data: { controller: "timezone signup-letter signature", turbo: "false" } do |form| %>
+<%= form_with url: signups_path, model: @user, class: "letter-form", html: { autocomplete: "off" }, data: { controller: "timezone signup-letter signature", turbo: "false" } do |form| %>
   <%= form.hidden_field :signup_referrer %>
   <%= form.hidden_field :timezone, data: { timezone_target: "timeZone" } %>
   <%= render "/shared/spam_prevention" %>
@@ -22,7 +22,7 @@
     </p>
     <p>
       You can reach me at
-      <%= letter_email_blank form, autofocus: focus == :email %>
+      <%= letter_email_blank form, autocomplete: "off", autofocus: focus == :email %>
     </p>
     <p class="letter-note" role="alert"><%= signup_note(@user) %></p>
 
