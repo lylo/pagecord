@@ -93,7 +93,7 @@
       <%= button_to "Spam", admin_moderation_blog_spam_confirmation_path(blog, filter), form_class: "contents",
             class: "btn-danger justify-center", data: { shortcut: "spam", turbo_confirm: "Confirm @#{blog.subdomain} as spam? This discards the user and cancels any subscription." } %>
       <%= button_to "Remove", admin_moderation_blog_removal_path(blog, filter), form_class: "contents",
-            class: "btn-optional justify-center", data: { shortcut: "remove", turbo_confirm: "Remove @#{blog.subdomain}? This discards the user without marking it as spam." } %>
+            class: "btn-optional justify-center", data: { shortcut: "remove", turbo_confirm: "Remove @#{blog.subdomain}? This discards the user and cancels any subscription, without marking it as spam." } %>
     </div>
   </div>
 </article>

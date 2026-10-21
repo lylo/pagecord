@@ -25,6 +25,6 @@ class Admin::Moderation::Blogs::ReviewsControllerTest < ActionDispatch::Integrat
 
     assert_response :success
     assert_select "turbo-stream[action=remove][target=?]", dom_id(blog)
-    assert_select "turbo-stream[target=moderation_filters] .btn-group-item-active", text: /Posts/
+    assert_select "turbo-stream[target=moderation_filters] .btn-group-item-active", text: /Has posts/
   end
 end

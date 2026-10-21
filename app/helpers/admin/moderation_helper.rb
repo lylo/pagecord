@@ -7,9 +7,9 @@ module Admin::ModerationHelper
 
   QUEUE_FILTER_LABELS = {
     "all" => "All",
-    "posts" => "Posts",
-    "links" => "Links",
-    "screening" => "Screening",
+    "posts" => "Has posts",
+    "links" => "Has links",
+    "screening" => "Failed screening",
     "unverified" => "Unverified"
   }.freeze
 
