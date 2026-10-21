@@ -29,7 +29,7 @@ class SignupsController < ApplicationController
 
       redirect_to signups_thanks_path(attribution)
     else
-      Rails.logger.info "Signup validation failed: #{@user.errors.details}"
+      Rails.logger.info "Signup validation failed: #{@user.errors.map { "#{it.attribute} #{it.type}" }.join(", ")}"
       render :new, status: :unprocessable_entity
     end
   end

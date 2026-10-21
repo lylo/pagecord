@@ -45,6 +45,17 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_select "input[name='user[blogs_attributes][0][title]'][autofocus]", 0
   end
 
+  test "a validation failure is logged without the email address" do
+    io = StringIO.new
+    previous = Rails.logger
+    Rails.logger = ActiveSupport::Logger.new(io)
+    post signups_url, params: { user: { email: users(:joel).email, blogs_attributes: [ { subdomain: blogs(:joel).subdomain } ] }, rendered_at: signed_rendered_at }
+    Rails.logger = previous
+
+    assert_equal "blogs.subdomain taken, email taken", io.string[/Signup validation failed: (.*)/, 1]
+    assert_not_includes io.string, users(:joel).email
+  end
+
   test "should preserve signup attribution for plausible goal page" do
     get root_url, params: {
       utm_source: "reddit",
