@@ -1,13 +1,12 @@
 <% blog = review.blog %>
 <% user = review.user %>
-<% filter = { filter: (queue_filter unless queue_filter == "all") } %>
 
-<article id="<%= dom_id(blog) %>" class="sheet-bleed scroll-mt-4 py-5 data-selected:shadow-[inset_3px_0_0_var(--color-pagecord-accent)]" data-moderation-queue-target="row">
+<article id="<%= dom_id(blog) %>" class="sheet-bleed py-5">
   <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
     <div class="min-w-0 flex-1 space-y-3">
       <div>
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <%= link_to blog_home_url(blog), target: "_blank", rel: "noopener", data: { shortcut: "open" },
+          <%= link_to blog_home_url(blog), target: "_blank", rel: "noopener",
                 class: "inline-flex items-center gap-1 text-lg font-semibold text-slate-900 hover:underline dark:text-slate-100" do %>
             @<%= blog.subdomain %>
             <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "h-3.5 w-3.5 text-slate-400" %>
@@ -36,11 +35,10 @@
         </div>
       <% end %>
 
-      <% flags = review_flags(review) %>
-      <% if flags.any? %>
+      <% if user.screening_failed? %>
         <div class="flex flex-wrap gap-1.5">
-          <% flags.each do |text, tone| %>
-            <%= badge text, tone %>
+          <% screening_reasons(user.screening).each do |reason| %>
+            <%= badge "Screening: #{reason}", :danger %>
           <% end %>
         </div>
       <% end %>
@@ -61,9 +59,6 @@
               </div>
               <% if post.text_summary.present? %>
                 <p class="mt-1 text-sm text-slate-600 [overflow-wrap:anywhere] dark:text-slate-300"><%= post.text_summary.truncate(240, separator: /\s/) %></p>
-              <% end %>
-              <% if (hosts = review.hosts_for(post)).any? %>
-                <p class="mt-1 font-mono text-xs text-slate-500 [overflow-wrap:anywhere] dark:text-slate-400">&rarr; <%= hosts.keys.join(", ") %></p>
               <% end %>
             </div>
           <% end %>
@@ -88,12 +83,12 @@
     </div>
 
     <div class="grid grid-cols-3 gap-2 sm:flex sm:w-28 sm:shrink-0 sm:flex-col">
-      <%= button_to "Not spam", admin_moderation_blog_review_path(blog, filter), form_class: "contents",
-            class: "btn-primary justify-center", data: { shortcut: "not-spam" } %>
-      <%= button_to "Spam", admin_moderation_blog_spam_confirmation_path(blog, filter), form_class: "contents",
-            class: "btn-danger justify-center", data: { shortcut: "spam", turbo_confirm: "Confirm @#{blog.subdomain} as spam? This discards the user and cancels any subscription." } %>
-      <%= button_to "Remove", admin_moderation_blog_removal_path(blog, filter), form_class: "contents",
-            class: "btn-optional justify-center", data: { shortcut: "remove", turbo_confirm: "Remove @#{blog.subdomain}? This discards the user and cancels any subscription, without marking it as spam." } %>
+      <%= button_to "Not spam", admin_moderation_blog_review_path(blog), form_class: "contents",
+            class: "btn-primary justify-center" %>
+      <%= button_to "Spam", admin_moderation_blog_spam_confirmation_path(blog), form_class: "contents",
+            class: "btn-danger justify-center", data: { turbo_confirm: "Confirm @#{blog.subdomain} as spam? This discards the user and cancels any subscription." } %>
+      <%= button_to "Remove", admin_moderation_blog_removal_path(blog), form_class: "contents",
+            class: "btn-optional justify-center", data: { turbo_confirm: "Remove @#{blog.subdomain}? This discards the user and cancels any subscription, without marking it as spam." } %>
     </div>
   </div>
 </article>

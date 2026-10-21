@@ -31,14 +31,6 @@ module Admin::ModerationHelper
     codes.map { SCREENING_CODES.fetch(it) { it.humanize(capitalize: false) } }.presence || [ "failed screening" ]
   end
 
-  def review_flags(review)
-    flags = []
-    flags += screening_reasons(review.user.screening).map { [ "Screening: #{it}", :danger ] } if review.user.screening_failed?
-    flags << [ "Links to #{pluralize(review.link_hosts.size, "site")}", :warning ] if review.link_hosts.any?
-    flags << [ "#{review.burst_count} other signups in this timezone within #{Blog::Review::BURST_WINDOW.inspect}", :info ] if review.burst?
-    flags
-  end
-
   def signup_source(user)
     user.signup_source_note.presence || user.signup_referrer.to_s[%r{\Ahttps?://(?:www\.)?([^/?#:]+)}i, 1] || "direct"
   end

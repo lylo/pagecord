@@ -4,7 +4,7 @@
     <li><%= link_to "Posts", admin_posts_path, **nav_link_attributes("posts") %></li>
     <li>
       <%= link_to admin_moderation_root_path, **nav_link_attributes("moderation") do %>
-        Moderation<span id="moderation_nav_count"><%= pill blogs_to_review_count, class: "ms-1.5" if blogs_to_review_count > 0 %></span>
+        Moderation<%= pill blogs_to_review_count, class: "ms-1.5" if blogs_to_review_count > 0 %>
       <% end %>
     </li>
     <li>

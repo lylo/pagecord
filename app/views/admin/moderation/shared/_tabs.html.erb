@@ -1,16 +1,16 @@
 <% tabs = [
-  [ "New blogs", admin_moderation_blogs_path, "blogs", blogs_to_review_count, "moderation_tab_count" ],
-  [ "Flagged posts", admin_moderation_content_index_path, "content", content_moderation_count, nil ],
-  [ "Accuracy", admin_moderation_screenings_path, "screenings", 0, nil ]
+  [ "New blogs", admin_moderation_blogs_path, "blogs", blogs_to_review_count ],
+  [ "Flagged posts", admin_moderation_content_index_path, "content", content_moderation_count ],
+  [ "Accuracy", admin_moderation_screenings_path, "screenings", 0 ]
 ] %>
 
 <div class="sheet-header gap-x-6 overflow-x-auto">
-  <% tabs.each do |label, path, name, count, count_id| %>
+  <% tabs.each do |label, path, name, count| %>
     <% current = controller_name == name %>
     <%= link_to path, aria: { current: ("page" if current) },
           class: class_names("flex shrink-0 items-center gap-1.5 hover:text-slate-900 dark:hover:text-slate-100", "font-semibold text-slate-900 dark:text-slate-100": current) do %>
       <%= label %>
-      <span id="<%= count_id %>"><%= pill count if count.positive? %></span>
+      <%= pill count if count.positive? %>
     <% end %>
   <% end %>
 </div>

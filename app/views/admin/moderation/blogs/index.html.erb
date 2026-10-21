@@ -1,9 +1,18 @@
-<div class="flex grow flex-col" data-controller="moderation-queue" data-action="keydown@document->moderation-queue#key">
+<div class="flex grow flex-col">
   <%= render "admin/moderation/shared/tabs" %>
 
   <h1 class="mt-6 page-title">Blogs to review</h1>
 
-  <%= render "filters" %>
+  <div class="-mx-4 mt-3 max-w-[calc(100%+2rem)] overflow-x-auto px-4 sm:mx-0 sm:max-w-full sm:px-0">
+    <div class="btn-group w-max whitespace-nowrap">
+      <% Admin::ModerationHelper::QUEUE_FILTER_LABELS.each do |filter, label| %>
+        <%= link_to admin_moderation_blogs_path(filter: (filter unless filter == "all")),
+              class: class_names("btn-group-item", "btn-group-item-active": queue_filter == filter) do %>
+          <%= label %> <%= pill queue_counts[filter] %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
 
   <div class="sheet-divider mt-5"></div>
 

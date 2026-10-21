@@ -25,19 +25,5 @@ class Blog::ReviewTest < ActiveSupport::TestCase
     review = Blog::Review.for([ @blog.reload ]).first
 
     assert_equal({ "shop.test" => 3, "bio.test" => 1 }, review.link_hosts)
-    assert_equal({ "shop.test" => 2 }, review.hosts_for(posts(:four)))
-  end
-
-  test "counts other signups in the same timezone within the burst window" do
-    user = @blog.user
-    user.update_columns(timezone: "Kathmandu", created_at: 3.days.ago)
-    users(:saul).update_columns(timezone: user.timezone, created_at: user.created_at + 5.minutes)
-    users(:elliot).update_columns(timezone: user.timezone, created_at: user.created_at - 10.minutes)
-    users(:vivian).update_columns(timezone: user.timezone, created_at: user.created_at + 1.hour)
-
-    review = Blog::Review.for([ @blog ]).first
-
-    assert_equal 2, review.burst_count
-    assert review.burst?
   end
 end
