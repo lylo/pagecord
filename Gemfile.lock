@@ -329,7 +329,7 @@ GEM
     nokogiri (1.19.4-x86_64-linux-musl)
       racc (~> 1.4)
     openssl (4.0.2)
-    pagy (43.7.0)
+    pagy (43.8.0)
       json
       uri
       yaml
@@ -573,7 +573,7 @@ DEPENDENCIES
   mocha
   nanoid (~> 2.0)
   openssl (~> 4.0)
-  pagy (~> 43.4)
+  pagy (~> 43.8)
   pg
   pg_query (>= 2)
   pg_search
