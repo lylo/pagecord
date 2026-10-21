@@ -17,7 +17,7 @@ class Admin::Moderation::ScreeningsControllerTest < ActionDispatch::IntegrationT
 
     assert_response :success
     assert_match "@#{blogs(:joel_notes).subdomain}", response.body
-    assert_match "cleantalk FORBIDDEN BL", response.body
+    assert_match "IP or email on CleanTalk&#39;s blacklist", response.body
     assert_match "@missedone", response.body
   end
 

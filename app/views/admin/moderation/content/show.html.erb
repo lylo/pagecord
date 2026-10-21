@@ -1,57 +1,36 @@
-<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-6">
-  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4">
-    <div class="flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <%= link_to blog_home_url(@post.blog), target: "_blank", class: "font-semibold text-slate-900 dark:text-slate-50 hover:underline" do %>
-          @<%= @post.blog.subdomain %>
-        <% end %>
-        <% if @post.content_moderation&.flagged_categories&.any? %>
-          <% @post.content_moderation.flagged_categories.each do |cat| %>
-            <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
-              <%= cat %> · <%= (@post.content_moderation.category_scores[cat].to_f * 100).round %>%
-            </span>
-          <% end %>
-        <% end %>
-        <% if @post.discarded? %>
-          <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Discarded</span>
-        <% else %>
-          <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Visible</span>
-        <% end %>
-      </div>
-      <% if @post.content_moderation&.moderated_at %>
-        <span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap"><%= @post.content_moderation.moderated_at.to_formatted_s(:long) %></span>
+<% moderation = @post.content_moderation %>
+
+<div class="sheet-header gap-x-2">
+  <%= link_to "Moderation", admin_moderation_content_index_path, class: "shrink-0 font-semibold text-slate-800 hover:underline dark:text-slate-100" %>
+  <span class="shrink-0 text-slate-400">&rsaquo;</span>
+  <span class="min-w-0 truncate"><%= @post.display_title %></span>
+</div>
+
+<div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+  <div class="min-w-0">
+    <h1 class="page-title [overflow-wrap:anywhere]">
+      <%= link_to post_url(@post), target: "_blank", rel: "noopener", class: "hover:underline" do %>
+        <%= @post.display_title %><%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "ms-2 inline h-5 w-5 align-baseline text-slate-400" %>
+      <% end %>
+    </h1>
+    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+      <%= link_to "@#{@post.blog.subdomain}", blog_home_url(@post.blog), target: "_blank", rel: "noopener", class: "link-quiet" %>
+      &middot; <%= link_to "account", admin_user_path(@post.blog.user), class: "link-quiet" %>
+      <% if moderation&.moderated_at %>&middot; flagged <%= moderation.moderated_at.to_formatted_s(:long) %><% end %>
+    </p>
+    <div class="mt-3 flex flex-wrap gap-1.5">
+      <%= badge "Discarded", :danger if @post.discarded? %>
+      <% moderation&.flagged_categories&.each do |category| %>
+        <%= badge "#{category} · #{(moderation.category_scores[category].to_f * 100).round}%", :danger %>
       <% end %>
     </div>
   </div>
 
-  <div class="p-6">
-    <% if @post.title.present? %>
-      <h2 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-4">
-        <%= link_to blog_post_url(subdomain: @post.blog.subdomain, slug: @post.slug), target: "_blank", class: "inline-flex items-center gap-1.5 hover:underline" do %>
-          <%= @post.title %>
-          <%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "w-4 h-4 text-slate-400" %>
-        <% end %>
-      </h2>
-    <% end %>
-    <div class="prose dark:prose-invert max-w-none">
-      <%= @post.content.body %>
-    </div>
-  </div>
+  <%= render "admin/moderation/content/actions", post: @post %>
 </div>
 
-<div class="flex items-center justify-between">
-  <%= link_to "← Back", admin_moderation_content_index_path, class: "btn-optional py-1.5" %>
-  <div class="flex gap-2">
-    <% if @post.discarded? %>
-      <%= button_to "Restore", admin_moderation_content_dismissal_path(@post),
-          method: :post, class: "btn-primary py-1.5",
-          data: { turbo_confirm: "Restore this post?" } %>
-    <% else %>
-      <%= button_to "Dismiss", admin_moderation_content_dismissal_path(@post),
-          method: :post, class: "btn-secondary py-1.5" %>
-      <%= button_to "Discard", admin_moderation_content_discard_path(@post),
-          method: :post, class: "btn-danger py-1.5",
-          data: { turbo_confirm: "Discard this post?" } %>
-    <% end %>
-  </div>
+<div class="sheet-divider mt-5"></div>
+
+<div class="prose mt-6 max-w-none dark:prose-invert">
+  <%= @post.content.body %>
 </div>

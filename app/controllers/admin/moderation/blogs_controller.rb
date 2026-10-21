@@ -1,13 +1,12 @@
 class Admin::Moderation::BlogsController < Admin::BaseController
-  include Pagy::Method
+  include Pagy::Method, Admin::Moderation::Queue
 
   def index
-    @total_unreviewed = Blog.unreviewed.count
-    @pagy, @blogs = pagy(
-      Blog.unreviewed.order(created_at: :desc)
-          .includes(:rich_text_bio, :navigation_items, user: [ :subscription, :screening ]),
+    @pagy, blogs = pagy(
+      queued_blogs(queue_filter).order(created_at: :desc)
+        .includes(:rich_text_bio, :navigation_items, user: [ :subscription, :screening ]),
       limit: 25
     )
-    @post_counts = Post.kept.published.where(blog_id: @blogs.map(&:id)).group(:blog_id).count
+    @reviews = Blog::Review.for(blogs)
   end
 end

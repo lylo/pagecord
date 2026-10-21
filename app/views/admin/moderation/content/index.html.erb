@@ -1,71 +1,48 @@
-<%= render "admin/moderation/shared/tabs" %>
+<div class="flex grow flex-col">
+  <%= render "admin/moderation/shared/tabs" %>
 
-<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
-  <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4">
-    <div class="flex items-center gap-3">
-      <span class="text-lg font-bold text-slate-900 dark:text-slate-50"><%= @pagy.count %></span>
-      <span class="text-sm text-slate-500 dark:text-slate-400">flagged <%= "post".pluralize(@pagy.count) %> to review</span>
-    </div>
-  </div>
+  <h1 class="mt-6 page-title">Flagged posts</h1>
+  <p class="mt-2 text-slate-600 dark:text-slate-300">Published posts content moderation flagged. They stay visible until you act.</p>
+
+  <div class="sheet-divider mt-5"></div>
 
   <% if @posts.any? %>
-    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-      <thead>
-        <tr>
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Post</th>
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Blog</th>
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Flags</th>
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Score</th>
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Status</th>
-          <th class="py-3 px-6 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Moderated</th>
-          <th class="py-3 px-6 text-end text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-        <% @posts.each do |post| %>
-          <tr>
-            <td class="whitespace-nowrap py-3 px-6 text-sm font-medium text-slate-900 dark:text-slate-50">
-              <%= link_to post.display_title.truncate(40), admin_moderation_content_path(post), class: "font-medium underline" %>
-            </td>
-            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
-              <%= link_to "@#{post.blog.subdomain}", blog_home_url(post.blog), target: "_blank", class: "hover:underline" %>
-            </td>
-            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
-              <%= post.content_moderation&.flagged_categories&.join(", ") %>
-            </td>
-            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
-              <%= number_to_percentage(post.content_moderation.category_scores.values.max.to_f * 100, precision: 0) %>
-            </td>
-            <td class="whitespace-nowrap py-3 px-6 text-sm">
-              <% if post.discarded? %>
-                <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Discarded</span>
-              <% else %>
-                <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Visible</span>
-              <% end %>
-            </td>
-            <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
-              <%= post.content_moderation&.moderated_at&.to_formatted_s(:short) %>
-            </td>
-            <td class="whitespace-nowrap py-3 px-6 text-end text-sm">
-              <div class="flex justify-end space-x-2">
-                <% if post.discarded? %>
-                  <%= button_to "Restore", admin_moderation_content_dismissal_path(post),
-                      method: :post, class: "btn-primary py-1",
-                      data: { turbo_confirm: "Restore this post?" } %>
-                <% else %>
-                  <%= button_to "Dismiss", admin_moderation_content_dismissal_path(post),
-                      method: :post, class: "btn-secondary py-1" %>
-                  <%= button_to "Discard", admin_moderation_content_discard_path(post),
-                      method: :post, class: "btn-danger py-1",
-                      data: { turbo_confirm: "Discard this post?" } %>
+    <div class="divide-y divide-slate-200 dark:divide-slate-800">
+      <% @posts.each do |post| %>
+        <% moderation = post.content_moderation %>
+        <article class="sheet-bleed py-5">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <%= link_to post.display_title, admin_moderation_content_path(post),
+                      class: "font-semibold text-slate-900 hover:underline [overflow-wrap:anywhere] dark:text-slate-100" %>
+                <%= badge "Discarded", :danger if post.discarded? %>
+              </div>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                <%= link_to "@#{post.blog.subdomain}", blog_home_url(post.blog), target: "_blank", rel: "noopener", class: "link-quiet" %>
+                &middot; flagged <%= time_ago_in_words(moderation.moderated_at) %> ago
+              </p>
+              <div class="mt-2 flex flex-wrap gap-1.5">
+                <% moderation.flagged_categories.each do |category| %>
+                  <%= badge "#{category} · #{(moderation.category_scores[category].to_f * 100).round}%", :danger %>
                 <% end %>
               </div>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+              <% if post.text_summary.present? %>
+                <p class="mt-2 text-sm text-slate-600 [overflow-wrap:anywhere] dark:text-slate-300"><%= post.text_summary.truncate(240, separator: /\s/) %></p>
+              <% end %>
+            </div>
+
+            <%= render "admin/moderation/content/actions", post: post %>
+          </div>
+        </article>
+      <% end %>
+    </div>
 
     <%= render "app/shared/pagy_nav" %>
+  <% else %>
+    <div class="flex grow flex-col items-center justify-center py-16 text-center">
+      <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100">Nothing flagged</h2>
+      <p class="mt-2 text-slate-600 dark:text-slate-300">Content moderation hasn't flagged any published posts.</p>
+    </div>
   <% end %>
 </div>

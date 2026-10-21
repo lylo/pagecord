@@ -1,268 +1,169 @@
-<h2 class="text-2xl font-bold pt-4 mb-8">
-  <%= @user.email %>
-</h2>
+<% section_heading = "sheet-band mt-8 py-3 font-semibold text-slate-900 dark:text-slate-100" %>
+<% rows = "divide-y divide-slate-200 dark:divide-slate-800" %>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  <%# ---- User Details ---- %>
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">User Details</h3>
-    <dl class="space-y-3 text-sm p-6">
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Email</dt>
-        <dd class="text-slate-500 dark:text-slate-400 text-right truncate"><%= @user.email %></dd>
-      </div>
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Created At</dt>
-        <dd class="text-slate-500 dark:text-slate-400"><%= @user.created_at.to_formatted_s(:long) %></dd>
-      </div>
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Verified</dt>
-        <dd class="text-slate-500 dark:text-slate-400">
-          <% if @user.verified? %>
-            Yes
-          <% else %>
-            <span class="flex items-center gap-2">
-              No
-              <%= button_to "Resend verification", admin_user_verification_email_path(@user), method: :post, class: "btn-secondary text-xs py-0.5 px-2" %>
-            </span>
-          <% end %>
-        </dd>
-      </div>
-      <% if @user.discarded? %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Cancelled</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= @user.discarded_at.to_formatted_s(:long) %></dd>
-        </div>
-      <% end %>
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Marketing</dt>
-        <dd class="text-slate-500 dark:text-slate-400"><%= @user.marketing_consent? ? '✅' : '❌' %></dd>
-      </div>
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Timezone</dt>
-        <dd class="text-slate-500 dark:text-slate-400"><%= @user.timezone %></dd>
-      </div>
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Screening</dt>
-        <dd class="text-slate-500 dark:text-slate-400 text-right">
-          <% if @user.screening.nil? %>
-            Not screened
-          <% elsif @user.screening_failed? %>
-            <span class="text-red-600 dark:text-red-400 font-medium">Failed</span>
-            <% @user.screening.failed_checks.each do |check, reason| %>
-              <span class="block text-xs font-mono"><%= check %> <%= reason %></span>
-            <% end %>
-          <% else %>
-            Passed
-          <% end %>
-        </dd>
-      </div>
-      <% if @user.signup_referrer.present? %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Referrer</dt>
-          <dd class="text-slate-500 dark:text-slate-400 text-right truncate min-w-0">
-            <%= link_to @user.signup_referrer, @user.signup_referrer, class: "underline", target: "_blank", rel: "noopener" %>
-          </dd>
-        </div>
-      <% end %>
-      <% if @user.signup_source_note.present? %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Heard via</dt>
-          <dd class="text-slate-500 dark:text-slate-400 text-right break-words min-w-0"><%= @user.signup_source_note %></dd>
-        </div>
-      <% end %>
-    </dl>
-  </div>
-
-  <%# ---- Free Trial ---- %>
-  <% unless @user.subscribed? %>
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Free Trial</h3>
-    <dl class="space-y-3 text-sm p-6">
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Status</dt>
-        <dd>
-          <% if @user.on_trial? %>
-            <span class="text-green-600 font-semibold"><%= @user.trial_days_remaining %> days remaining</span>
-          <% elsif @user.trial_ends_at.present? %>
-            <span class="text-slate-500">Ended <%= @user.trial_ends_at.to_formatted_s(:long) %></span>
-          <% else %>
-            <span class="text-slate-500">No trial</span>
-          <% end %>
-        </dd>
-      </div>
-      <div>
-        <dt class="font-medium text-slate-900 dark:text-slate-50 mb-2">Trial Ends</dt>
-        <dd>
-          <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "flex items-center gap-2", data: { turbo: false } do |f| %>
-            <%= f.date_field :trial_ends_at, class: "form-field rounded-lg text-sm px-3 py-1.5 dark:[color-scheme:dark]" %>
-            <%= f.submit "Update", class: "btn-secondary py-1.5" %>
-          <% end %>
-        </dd>
-      </div>
-    </dl>
-  </div>
-  <% end %>
-
-  <%# ---- Subscription ---- %>
-  <% if @user.subscription %>
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Subscription</h3>
-    <dl class="space-y-3 text-sm p-6">
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Status</dt>
-        <dd>
-          <% if @user.subscription.active? %>
-            <span title="<%= @user.subscription.paddle_subscription_id %>" class="text-green-600 font-semibold">Active</span>
-          <% elsif @user.subscription.cancelled? %>
-            <span class="text-yellow-600 font-semibold">Cancelled</span>
-          <% elsif @user.subscription.lapsed? %>
-            <span class="text-red-600 font-semibold">Lapsed</span>
-          <% end %>
-        </dd>
-      </div>
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Type</dt>
-        <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.complimentary? ? 'Complimentary' : 'Paid' %></dd>
-      </div>
-      <% if @user.subscription.paddle_subscription_id.present? %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Paddle ID</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.paddle_subscription_id %></dd>
-        </div>
-      <% end %>
-      <div class="flex justify-between gap-4">
-        <dt class="font-medium text-slate-900 dark:text-slate-50">Created</dt>
-        <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.created_at.to_formatted_s(:long) %></dd>
-      </div>
-      <% if @user.subscription.unit_price %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Price</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= number_to_currency(@user.subscription.unit_price / 100) %></dd>
-        </div>
-      <% end %>
-      <% if @user.subscription.next_billed_at %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Next Billing</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.next_billed_at.strftime('%B %d, %Y') %></dd>
-        </div>
-      <% end %>
-      <% if @user.subscription.cancelled_at %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50"><%= @user.subscription.cancelled_at.future? ? "Cancels On" : "Cancelled On" %></dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= @user.subscription.cancelled_at.strftime('%B %d, %Y') %></dd>
-        </div>
-      <% end %>
-      <% if @user.subscription.paddle_subscription_id.present? %>
-        <div>
-          <dt class="font-medium text-slate-900 dark:text-slate-50 mb-2">Extend Billing Date</dt>
-          <dd>
-            <%= form_with url: admin_user_subscription_path(@user), method: :patch, class: "flex items-center gap-2", data: { turbo: false } do |f| %>
-              <%= f.date_field :next_billed_at, value: @user.subscription.next_billed_at&.to_date, class: "form-field rounded-lg text-sm px-3 py-1.5 dark:[color-scheme:dark]" %>
-              <%= f.submit "Update", class: "btn-secondary py-1.5" %>
-            <% end %>
-          </dd>
-        </div>
-      <% end %>
-    </dl>
-  </div>
-  <% end %>
-
-  <%# ---- Features ---- %>
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Features</h3>
-    <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "p-6", data: { turbo: false } do |f| %>
-      <%= hidden_field_tag "user[features][]", "" %>
-      <% all_features = (Rails.features.names.map(&:to_s) | @user.features).sort %>
-      <div class="space-y-3">
-        <% all_features.each do |feature| %>
-          <label class="flex gap-3 items-start cursor-pointer">
-            <div class="flex h-6 shrink-0 items-center">
-              <%= f.check_box :features, { multiple: true, checked: @user.features.include?(feature), class: "form-checkbox h-5 w-5 text-slate-600 border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded focus:ring focus:ring-slate-300 dark:focus:ring-slate-600 focus:ring-offset-0", onchange: "this.form.requestSubmit()" }, feature, nil %>
-            </div>
-            <div>
-              <span class="text-sm text-slate-800 dark:text-slate-100"><%= feature %></span>
-              <% unless Rails.features.names.map(&:to_s).include?(feature) %>
-                <span class="text-xs text-yellow-600 dark:text-yellow-400">(legacy)</span>
-              <% end %>
-            </div>
-          </label>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-
-  <% @user.blogs.each do |blog| %>
-    <%# ---- Blog ---- %>
-    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-      <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Blog</h3>
-      <dl class="space-y-3 text-sm p-6">
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Subdomain</dt>
-          <dd><%= link_to blog.subdomain, blog_home_url(blog), class: "font-medium underline", target: "_blank" %></dd>
-        </div>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Posts</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= blog.posts.count %></dd>
-        </div>
-        <% if blog.email_subscriptions_enabled? %>
-          <div class="flex justify-between gap-4">
-            <dt class="font-medium text-slate-900 dark:text-slate-50">Subscribers</dt>
-            <dd class="text-slate-500 dark:text-slate-400"><%= blog.email_subscribers.confirmed.count %></dd>
-          </div>
-        <% end %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Custom Domain</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= blog.custom_domain.presence || "None" %></dd>
-        </div>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Theme</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= blog.theme %> · <%= blog.width %> · <%= blog.font %></dd>
-        </div>
-        <div class="flex justify-between gap-4 items-center">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Spotlight</dt>
-          <dd>
-            <% if blog.spotlight_exclusion %>
-              <%= button_to "Include in spotlight", admin_user_spotlight_exclusion_path(@user, blog_id: blog.id), method: :delete, class: "btn-optional text-xs" %>
-            <% else %>
-              <%= button_to "Exclude from spotlight", admin_user_spotlight_exclusion_path(@user, blog_id: blog.id), method: :post, class: "btn-optional text-xs" %>
-            <% end %>
-          </dd>
-        </div>
-      </dl>
-    </div>
-  <% end %>
+<div class="sheet-header gap-x-2">
+  <%= link_to "Users", admin_users_path, class: "shrink-0 font-semibold text-slate-800 hover:underline dark:text-slate-100" %>
+  <span class="shrink-0 text-slate-400">&rsaquo;</span>
+  <span class="min-w-0 truncate"><%= @user.email %></span>
 </div>
 
-<div class="flex flex-col sm:flex-row justify-between mt-16 py-4">
-  <div>
-    <%= link_to "← Back to Users", admin_users_path, class: "btn-optional" %>
-  </div>
+<h1 class="mt-6 page-title [overflow-wrap:anywhere]"><%= @user.email %></h1>
+<div class="mt-3 flex flex-wrap gap-1.5">
+  <%= account_status_badge(@user) %>
+  <%= badge "Unverified", :warning unless @user.verified? %>
+  <%= badge "Screening failed", :danger if @user.screening_failed? %>
+</div>
 
-  <% if @user != Current.user %>
-    <% if @user.discarded? %>
-      <div class="flex mt-8 sm:mt-0 space-x-4 items-center">
-        <%= button_to admin_user_restoration_path(@user), class: "btn-primary" do %>
-          Restore
-        <% end %>
-      </div>
+<h2 class="<%= section_heading %>">Account</h2>
+<dl class="<%= rows %>">
+  <%= render layout: "detail", locals: { label: "Joined" } do %><%= @user.created_at.to_formatted_s(:long) %><% end %>
+  <%= render layout: "detail", locals: { label: "Verified" } do %>
+    <% if @user.verified? %>
+      Yes
     <% else %>
-      <div class="flex mt-8 sm:mt-0 justify-end space-x-4 items-center">
-        <% unless @user.subscribed? %>
-          <%= button_to admin_user_path(@user), method: :delete,
-              class: "btn-danger",
-              data: { turbo_confirm: "Are you sure you want to mark this account as spam? This will cancel the account and remove it from all mailing lists." } do %>
-            <%= hidden_field_tag :spam, true %>
-            Mark as Spam
-          <% end %>
-        <% end %>
-
-        <%= button_to admin_user_path(@user), method: :delete,
-            class: "btn-danger",
-            data: { turbo_confirm: "Are you sure you want to cancel this account?" } do %>
-          Cancel Account
-        <% end %>
-      </div>
+      <span class="flex flex-wrap items-center gap-2">
+        No
+        <%= button_to "Resend verification", admin_user_verification_email_path(@user), method: :post, form_class: "contents", class: "btn-optional px-3 py-1" %>
+      </span>
     <% end %>
   <% end %>
-</div>
+  <% if @user.discarded? %>
+    <%= render layout: "detail", locals: { label: "Cancelled" } do %><%= @user.discarded_at.to_formatted_s(:long) %><% end %>
+  <% end %>
+  <%= render layout: "detail", locals: { label: "Marketing" } do %><%= @user.marketing_consent? ? "Opted in" : "No" %><% end %>
+  <%= render layout: "detail", locals: { label: "Timezone" } do %><%= @user.timezone %><% end %>
+  <%= render layout: "detail", locals: { label: "Screening" } do %>
+    <% if @user.screening.nil? %>
+      Not screened
+    <% elsif @user.screening_failed? %>
+      <span class="text-red-600 dark:text-red-400"><%= screening_reasons(@user.screening).to_sentence.upcase_first %></span>
+      <span class="block font-mono text-xs text-slate-500 dark:text-slate-400"><%= @user.screening.failed_checks.map { |check, reason| "#{check} #{reason}" }.join(", ") %></span>
+    <% else %>
+      Passed
+    <% end %>
+  <% end %>
+  <% if @user.signup_referrer.present? %>
+    <%= render layout: "detail", locals: { label: "Referrer" } do %>
+      <%= link_to @user.signup_referrer, @user.signup_referrer, class: "link-quiet", target: "_blank", rel: "noopener" %>
+    <% end %>
+  <% end %>
+  <% if @user.signup_source_note.present? %>
+    <%= render layout: "detail", locals: { label: "Heard via" } do %><%= @user.signup_source_note %><% end %>
+  <% end %>
+</dl>
+
+<% unless @user.subscribed? %>
+  <h2 class="<%= section_heading %>">Free trial</h2>
+  <dl class="<%= rows %>">
+    <%= render layout: "detail", locals: { label: "Status" } do %>
+      <% if @user.on_trial? %>
+        <span class="text-emerald-700 dark:text-emerald-400"><%= pluralize(@user.trial_days_remaining, "day") %> remaining</span>
+      <% elsif @user.trial_ends_at.present? %>
+        Ended <%= @user.trial_ends_at.to_formatted_s(:long) %>
+      <% else %>
+        No trial
+      <% end %>
+    <% end %>
+    <%= render layout: "detail", locals: { label: "Trial ends" } do %>
+      <%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "flex flex-wrap items-center gap-2", data: { turbo: false } do |f| %>
+        <%= f.date_field :trial_ends_at, class: "form-field px-3 py-1.5 text-sm dark:[color-scheme:dark]" %>
+        <%= f.submit "Update", class: "btn-optional" %>
+      <% end %>
+    <% end %>
+  </dl>
+<% end %>
+
+<% if (subscription = @user.subscription) %>
+  <h2 class="<%= section_heading %>">Subscription</h2>
+  <dl class="<%= rows %>">
+    <%= render layout: "detail", locals: { label: "Status" } do %>
+      <% if subscription.active? %>
+        <%= badge "Active", :success, title: subscription.paddle_subscription_id %>
+      <% elsif subscription.cancelled? %>
+        <%= badge "Cancelled", :warning %>
+      <% elsif subscription.lapsed? %>
+        <%= badge "Lapsed", :danger %>
+      <% end %>
+    <% end %>
+    <%= render layout: "detail", locals: { label: "Type" } do %><%= subscription.complimentary? ? "Complimentary" : "Paid" %><% end %>
+    <% if subscription.paddle_subscription_id.present? %>
+      <%= render layout: "detail", locals: { label: "Paddle ID" } do %><span class="font-mono text-sm"><%= subscription.paddle_subscription_id %></span><% end %>
+    <% end %>
+    <%= render layout: "detail", locals: { label: "Created" } do %><%= subscription.created_at.to_formatted_s(:long) %><% end %>
+    <% if subscription.unit_price %>
+      <%= render layout: "detail", locals: { label: "Price" } do %><%= number_to_currency(subscription.unit_price / 100) %><% end %>
+    <% end %>
+    <% if subscription.next_billed_at %>
+      <%= render layout: "detail", locals: { label: "Next billing" } do %><%= subscription.next_billed_at.to_date.to_fs(:long) %><% end %>
+    <% end %>
+    <% if subscription.cancelled_at %>
+      <%= render layout: "detail", locals: { label: subscription.cancelled_at.future? ? "Cancels on" : "Cancelled on" } do %><%= subscription.cancelled_at.to_date.to_fs(:long) %><% end %>
+    <% end %>
+    <% if subscription.paddle_subscription_id.present? %>
+      <%= render layout: "detail", locals: { label: "Extend billing date" } do %>
+        <%= form_with url: admin_user_subscription_path(@user), method: :patch, class: "flex flex-wrap items-center gap-2", data: { turbo: false } do |f| %>
+          <%= f.date_field :next_billed_at, value: subscription.next_billed_at&.to_date, class: "form-field px-3 py-1.5 text-sm dark:[color-scheme:dark]" %>
+          <%= f.submit "Update", class: "btn-optional" %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </dl>
+<% end %>
+
+<% @user.blogs.each do |blog| %>
+  <h2 class="<%= section_heading %>">
+    <%= link_to blog_home_url(blog), target: "_blank", rel: "noopener", class: "inline-flex items-center gap-1 hover:underline" do %>
+      @<%= blog.subdomain %><%= inline_svg_tag "icons/arrow-top-right-on-square.svg", class: "h-3.5 w-3.5 text-slate-400" %>
+    <% end %>
+  </h2>
+  <dl class="<%= rows %>">
+    <%= render layout: "detail", locals: { label: "Posts" } do %><%= blog.posts.count %><% end %>
+    <% if blog.email_subscriptions_enabled? %>
+      <%= render layout: "detail", locals: { label: "Subscribers" } do %><%= blog.email_subscribers.confirmed.count %><% end %>
+    <% end %>
+    <%= render layout: "detail", locals: { label: "Custom domain" } do %><%= blog.custom_domain.presence || "None" %><% end %>
+    <%= render layout: "detail", locals: { label: "Theme" } do %><%= blog.theme %> &middot; <%= blog.width %> &middot; <%= blog.font %><% end %>
+    <%= render layout: "detail", locals: { label: "Spotlight" } do %>
+      <% if blog.spotlight_exclusion %>
+        <%= button_to "Include in spotlight", admin_user_spotlight_exclusion_path(@user, blog_id: blog.id), method: :delete, class: "btn-optional px-3 py-1" %>
+      <% else %>
+        <%= button_to "Exclude from spotlight", admin_user_spotlight_exclusion_path(@user, blog_id: blog.id), method: :post, class: "btn-optional px-3 py-1" %>
+      <% end %>
+    <% end %>
+  </dl>
+<% end %>
+
+<h2 class="<%= section_heading %>">Features</h2>
+<%= form_with model: @user, url: admin_user_path(@user), method: :patch, class: "py-4", data: { turbo: false } do |f| %>
+  <%= hidden_field_tag "user[features][]", "" %>
+  <% defined_features = Rails.features.names.map(&:to_s) %>
+  <% all_features = (defined_features | @user.features).sort %>
+  <% if all_features.empty? %>
+    <p class="text-slate-500 dark:text-slate-400">No features defined.</p>
+  <% end %>
+  <div class="space-y-3">
+    <% all_features.each do |feature| %>
+      <label class="flex cursor-pointer items-center gap-3">
+        <%= f.check_box :features, { multiple: true, checked: @user.features.include?(feature), class: "h-5 w-5 rounded border-slate-300 text-pagecord-accent focus:ring-pagecord-accent/40 dark:border-slate-600 dark:bg-slate-700", onchange: "this.form.requestSubmit()" }, feature, nil %>
+        <span class="text-slate-800 dark:text-slate-100"><%= feature %></span>
+        <%= badge "Legacy", :warning unless defined_features.include?(feature) %>
+      </label>
+    <% end %>
+  </div>
+<% end %>
+
+<% if @user != Current.user %>
+  <div class="sheet-divider mt-4"></div>
+  <div class="flex flex-wrap justify-end gap-2 pt-6">
+    <% if @user.discarded? %>
+      <%= button_to "Restore", admin_user_restoration_path(@user), form_class: "contents", class: "btn-primary" %>
+    <% else %>
+      <% unless @user.subscribed? %>
+        <%= button_to "Mark as spam", admin_user_path(@user), method: :delete, params: { spam: true }, form_class: "contents", class: "btn-danger",
+              data: { turbo_confirm: "Mark this account as spam? This will cancel the account and remove it from all mailing lists." } %>
+      <% end %>
+      <%= button_to "Cancel account", admin_user_path(@user), method: :delete, form_class: "contents", class: "btn-danger",
+            data: { turbo_confirm: "Are you sure you want to cancel this account?" } %>
+    <% end %>
+  </div>
+<% end %>

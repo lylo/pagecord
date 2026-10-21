@@ -1,0 +1,11 @@
+<div class="grid grid-cols-2 gap-2 sm:flex sm:w-28 sm:shrink-0 sm:flex-col">
+  <% if post.discarded? %>
+    <%= button_to "Restore", admin_moderation_content_dismissal_path(post), form_class: "contents",
+          class: "btn-primary col-span-2 justify-center", data: { turbo_confirm: "Restore this post?" } %>
+  <% else %>
+    <%= button_to "Dismiss", admin_moderation_content_dismissal_path(post), form_class: "contents",
+          class: "btn-optional justify-center" %>
+    <%= button_to "Discard", admin_moderation_content_discard_path(post), form_class: "contents",
+          class: "btn-danger justify-center", data: { turbo_confirm: "Discard this post?" } %>
+  <% end %>
+</div>

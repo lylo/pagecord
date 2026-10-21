@@ -1,0 +1,5 @@
+<%= turbo_stream.remove dom_id(@blog) %>
+<%= turbo_stream.replace "moderation_filters", partial: "admin/moderation/blogs/filters" %>
+<%= turbo_stream.update "moderation_tab_count" do %><%= pill blogs_to_review_count if blogs_to_review_count.positive? %><% end %>
+<%= turbo_stream.update "moderation_nav_count" do %><%= pill blogs_to_review_count, class: "ms-1.5" if blogs_to_review_count.positive? %><% end %>
+<%= turbo_stream.update "flash", partial: "app/shared/flash" %>

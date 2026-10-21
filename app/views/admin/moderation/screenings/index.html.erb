@@ -1,67 +1,72 @@
-<%= render "admin/moderation/shared/tabs" %>
+<div class="flex grow flex-col">
+  <%= render "admin/moderation/shared/tabs" %>
 
-<% if @accuracy.measured? %>
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-6">
-    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Screening, last 30 days</h3>
-    <dl class="grid grid-cols-[auto_auto] justify-start gap-x-8 gap-y-2 p-6 text-sm tabular-nums">
-      <dt class="font-medium text-slate-900 dark:text-slate-50">Reviewed</dt>
-      <dd class="text-right text-slate-500 dark:text-slate-400"><%= @accuracy.reviewed_count %></dd>
-      <dt class="font-medium text-slate-900 dark:text-slate-50">False positives</dt>
-      <dd class="text-right">
-        <%= link_to @accuracy.false_positives.size, "#false-positives",
-            class: class_names("hover:underline", "font-medium text-red-600 dark:text-red-400": @accuracy.false_positives.any?, "text-slate-500 dark:text-slate-400": @accuracy.false_positives.none?) %>
-      </dd>
-      <dt class="font-medium text-slate-900 dark:text-slate-50">Missed spam</dt>
-      <dd class="text-right">
-        <%= link_to @accuracy.missed_spam.size, "#missed-spam", class: "hover:underline text-slate-500 dark:text-slate-400" %>
-      </dd>
+  <h1 class="mt-6 page-title">Screening accuracy</h1>
+  <p class="mt-2 text-slate-600 dark:text-slate-300">How signup screening compared with your reviews over the last 30 days.</p>
+
+  <% if @accuracy.measured? %>
+    <dl class="mt-6 grid grid-cols-3 gap-4 tabular-nums">
+      <div>
+        <dt class="text-sm text-slate-500 dark:text-slate-400">Reviewed</dt>
+        <dd class="text-2xl font-bold text-slate-900 dark:text-slate-100"><%= @accuracy.reviewed_count %></dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-500 dark:text-slate-400">False positives</dt>
+        <dd class="text-2xl font-bold">
+          <%= link_to @accuracy.false_positives.size, "#false-positives",
+                class: class_names("hover:underline", @accuracy.false_positives.any? ? "text-red-600 dark:text-red-400" : "text-slate-900 dark:text-slate-100") %>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-500 dark:text-slate-400">Missed spam</dt>
+        <dd class="text-2xl font-bold"><%= link_to @accuracy.missed_spam.size, "#missed-spam", class: "text-slate-900 hover:underline dark:text-slate-100" %></dd>
+      </div>
     </dl>
-  </div>
 
-  <div id="false-positives" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-6">
-    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">False positives</h3>
-    <% if @accuracy.false_positives.any? %>
-      <div class="divide-y divide-slate-200 dark:divide-slate-700">
-        <% @accuracy.false_positives.each do |screening| %>
-          <% blog = screening.user.blogs.detect(&:reviewed_at) %>
-          <div class="px-4 sm:px-6 py-4">
-            <%= link_to "@#{blog.subdomain}", blog_home_url(blog), target: "_blank",
-                class: "text-base font-semibold text-slate-900 dark:text-slate-50 hover:underline" %>
-            <span class="block sm:inline sm:ml-2 text-xs text-slate-500 dark:text-slate-400">
-              <%= link_to "account", admin_user_path(screening.user), class: "underline" %>
-              &middot; marked not spam <%= time_ago_in_words(blog.reviewed_at) %> ago
-            </span>
-            <% screening.failed_checks.each do |check, reason| %>
-              <p class="mt-1 text-xs font-mono text-slate-500 dark:text-slate-400"><%= check %> <%= reason %></p>
-            <% end %>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <p class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">None</p>
-    <% end %>
-  </div>
+    <section id="false-positives" class="mt-8">
+      <h2 class="sheet-band py-3 font-semibold text-slate-900 dark:text-slate-100">False positives</h2>
+      <% if @accuracy.false_positives.any? %>
+        <div class="divide-y divide-slate-200 dark:divide-slate-800">
+          <% @accuracy.false_positives.each do |screening| %>
+            <% blog = screening.user.blogs.detect(&:reviewed_at) %>
+            <div class="sheet-bleed py-4">
+              <%= link_to "@#{blog.subdomain}", blog_home_url(blog), target: "_blank", rel: "noopener",
+                    class: "font-semibold text-slate-900 hover:underline dark:text-slate-100" %>
+              <span class="text-sm text-slate-500 dark:text-slate-400">
+                &middot; <%= link_to "account", admin_user_path(screening.user), class: "link-quiet" %>
+                &middot; marked not spam <%= time_ago_in_words(blog.reviewed_at) %> ago
+              </span>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300"><%= screening_reasons(screening).to_sentence.upcase_first %></p>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="py-4 text-slate-500 dark:text-slate-400">None</p>
+      <% end %>
+    </section>
 
-  <div id="missed-spam" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-    <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 px-6 py-3 border-b border-slate-200 dark:border-slate-700">Missed spam</h3>
-    <% if @accuracy.missed_spam.any? %>
-      <div class="divide-y divide-slate-200 dark:divide-slate-700">
-        <% @accuracy.missed_spam.each do |tombstone| %>
-          <div class="px-4 sm:px-6 py-4">
-            <span class="text-base font-semibold text-slate-900 dark:text-slate-50"><%= tombstone.subdomain.present? ? "@#{tombstone.subdomain}" : "No blog" %></span>
-            <span class="block sm:inline sm:ml-2 text-xs text-slate-500 dark:text-slate-400">
-              <% if tombstone.user %><%= link_to "account", admin_user_path(tombstone.user), class: "underline" %> &middot;<% end %>
-              confirmed spam <%= time_ago_in_words(tombstone.deleted_at) %> ago
-            </span>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <p class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">None</p>
-    <% end %>
-  </div>
-<% else %>
-  <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 px-6 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
-    Nothing to compare yet. Screening is measured once you review a blog whose owner was screened.
-  </div>
-<% end %>
+    <section id="missed-spam" class="mt-8">
+      <h2 class="sheet-band py-3 font-semibold text-slate-900 dark:text-slate-100">Missed spam</h2>
+      <% if @accuracy.missed_spam.any? %>
+        <div class="divide-y divide-slate-200 dark:divide-slate-800">
+          <% @accuracy.missed_spam.each do |tombstone| %>
+            <div class="sheet-bleed py-4">
+              <span class="font-semibold text-slate-900 dark:text-slate-100"><%= tombstone.subdomain.present? ? "@#{tombstone.subdomain}" : "No blog" %></span>
+              <span class="text-sm text-slate-500 dark:text-slate-400">
+                <% if tombstone.user %>&middot; <%= link_to "account", admin_user_path(tombstone.user), class: "link-quiet" %><% end %>
+                &middot; confirmed spam <%= time_ago_in_words(tombstone.deleted_at) %> ago
+              </span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="py-4 text-slate-500 dark:text-slate-400">None</p>
+      <% end %>
+    </section>
+  <% else %>
+    <div class="flex grow flex-col items-center justify-center py-16 text-center">
+      <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100">Nothing to compare yet</h2>
+      <p class="mt-2 text-slate-600 dark:text-slate-300">Screening is measured once you review a blog whose owner was screened.</p>
+    </div>
+  <% end %>
+</div>
