@@ -1,5 +1,5 @@
 <%# locals: (namespace: nil) %>
-<%= form_with url: new_signup_path, method: :get, namespace:, class: "letter-paper letter-paper--note", data: { controller: "signup-letter signature", turbo: false } do |form| %>
+<%= form_with url: new_signup_path, method: :get, namespace:, class: "letter-paper letter-paper--note", html: { autocomplete: "off" }, data: { controller: "signup-letter signature", turbo: false } do |form| %>
   <%= render "letters/stamp" %>
 
   <p>Dear Pagecord,</p>
