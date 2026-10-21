@@ -11,16 +11,4 @@ module Admin::BadgesHelper
 
     tag.span text, **options, class: [ "rounded-full px-2 py-0.5 text-xs font-medium", BADGE_TONES.fetch(tone), options[:class] ]
   end
-
-  def account_status_badge(user)
-    return badge("Cancelled", :danger) if user.discarded?
-    return badge("Free") unless user.subscribed?
-
-    subscription = user.subscription
-    if subscription.complimentary? then badge("Comped", :info)
-    elsif subscription.cancelled? then badge("Churning", :warning)
-    elsif subscription.supporter? then badge("Supporter", :success)
-    else badge("Premium", :success)
-    end
-  end
 end

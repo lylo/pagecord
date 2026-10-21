@@ -1,37 +1,42 @@
-<div class="sheet-header gap-x-2">
-  <%= link_to "Users", admin_users_path, class: "shrink-0 font-semibold text-slate-800 hover:underline dark:text-slate-100" %>
-  <span class="shrink-0 text-slate-400">&rsaquo;</span>
-  <span class="min-w-0 truncate">New user</span>
-</div>
+<% content_for :sheets, true %>
 
-<h1 class="mt-6 page-title">New user</h1>
+<div class="max-w-2xl mx-auto">
+  <h2 class="text-2xl font-bold py-8">Create New User</h2>
 
-<%= form_with(model: [ :admin, @user ], class: "mt-6 max-w-lg space-y-5") do |form| %>
-  <% if @user.errors.any? %>
-    <%= callout(:warning) do %>
-      <ul class="list-disc space-y-1 ps-5">
-        <% @user.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+  <%= form_with(model: [:admin, @user], class: "max-w-lg") do |form| %>
+    <% if @user.errors.any? %>
+      <div class="bg-red-100 dark:bg-red-900 p-4 rounded mb-6">
+        <h2 class="font-semibold text-red-700 dark:text-red-300 mb-2"><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+        <ul class="list-disc pl-5 space-y-1 text-red-600 dark:text-red-200">
+          <% @user.errors.messages.each do |attribute, messages| %>
+            <% messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          <% end %>
+        </ul>
+      </div>
     <% end %>
-  <% end %>
 
-  <%= form.fields_for :blogs do |blog_form| %>
-    <div>
-      <%= blog_form.label :subdomain, "Subdomain", class: "mb-1 block text-sm font-medium" %>
-      <%= blog_form.text_field :subdomain, placeholder: "subdomain", autofocus: true, maxlength: 20, required: true, class: "form-field w-full" %>
-      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Letters and numbers only</p>
+    <div class="mb-4">
+      <%= form.fields_for :blogs do |blog_form| %>
+        <%= blog_form.label :subdomain, "Subdomain", class: "block text-sm font-medium mb-1" %>
+        <div class="flex items-center">
+          <%= blog_form.text_field :subdomain, placeholder: "subdomain", autofocus: true, class: "w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400", maxlength: 20, required: true %>
+        </div>
+        <div class="text-slate-500 text-xs mt-1">
+          Subdomain can only contain letters and numbers
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :email, class: "block text-sm font-medium mb-1" %>
+      <%= form.email_field :email, class: "w-full dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-0 focus:border-slate-500 dark:focus:border-slate-400", placeholder: "you@example.com", required: true %>
+    </div>
+
+    <div class="flex items-center gap-x-2 mt-6">
+      <%= form.submit "Create User", class: "btn-primary cursor-pointer" %>
+      <%= link_to "Cancel", admin_users_path, class: "btn-secondary" %>
     </div>
   <% end %>
-
-  <div>
-    <%= form.label :email, class: "mb-1 block text-sm font-medium" %>
-    <%= form.email_field :email, placeholder: "you@example.com", required: true, class: "form-field w-full" %>
-  </div>
-
-  <div class="flex items-center gap-2">
-    <%= form.submit "Create user", class: "btn-primary" %>
-    <%= link_to "Cancel", admin_users_path, class: "btn-optional" %>
-  </div>
-<% end %>
+</div>
