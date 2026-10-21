@@ -29,7 +29,7 @@ module Admin::Moderation::Queue
     end
 
     def with_external_links(blogs)
-      outside = "https?://(?![^\"/]*#{Regexp.escape(Rails.application.config.x.domain)})"
+      outside = "https?://(?!([^\"/?#:]*\\.)?#{Regexp.escape(Rails.application.config.x.domain)}([\"/?#:]|$))"
       linked = ActionText::RichText.where("action_text_rich_texts.body ~* ?", "href=\"#{outside}")
 
       bio = linked.where(record_type: "Blog", name: "bio").where("action_text_rich_texts.record_id = blogs.id")

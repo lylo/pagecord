@@ -61,6 +61,16 @@ class Admin::Moderation::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_select "##{dom_id(blogs(:elliot))}", count: 0
   end
 
+  test "the links filter counts a host that only contains the app's domain as outside" do
+    posts(:four).update!(content: %(<p><a href="https://example.com.shop.test">buy</a></p>))
+    blogs(:elliot).update!(reviewed_at: nil, bio: %(<p><a href="https://annie.example.com/">mine</a></p>))
+
+    get admin_moderation_blogs_path(filter: "links")
+
+    assert_select "##{dom_id(@blog)}"
+    assert_select "##{dom_id(blogs(:elliot))}", count: 0
+  end
+
   test "the screening filter keeps blogs whose owner failed screening" do
     blogs(:elliot).update!(reviewed_at: nil)
     blogs(:elliot).user.create_screening!(failed_checks: { cleantalk: "FORBIDDEN BL" })
