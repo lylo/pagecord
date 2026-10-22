@@ -24,11 +24,6 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Install libvips
-        run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y libvips libvips-dev
-
       - name: Scan for security vulnerabilities in Ruby dependencies
         run: bin/brakeman --no-pager
 
@@ -55,7 +50,7 @@ jobs:
       - name: Install libvips
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y libvips libvips-dev
+          sudo apt-get install --no-install-recommends -y libvips
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
         run: bin/importmap audit
@@ -90,7 +85,6 @@ jobs:
             libjemalloc2 \
             libsqlite3-0 \
             libvips \
-            libvips-dev \
             poppler-utils
 
       - name: Checkout code
