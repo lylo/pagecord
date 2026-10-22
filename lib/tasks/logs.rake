@@ -969,7 +969,7 @@ namespace :logs do
     puts "#{LogDisplay::DIM}Counts include the bots' own robots.txt fetches, which are compliance rather than violations.#{LogDisplay::RESET}"
   end
 
-  desc "Code red checks for a date: mail volume against its baseline, subscription surges, form abuse: rake \"logs:code_red[2026-10-08]\""
+  desc "Code red checks for a date: mail flooding one recipient, subscription surges, form abuse: rake \"logs:code_red[2026-10-08]\""
   task :code_red, [ :date ] do |_t, args|
     date = args[:date]
 
@@ -982,17 +982,12 @@ namespace :logs do
     window = ((day - LogCodeRed::BASELINE_DAYS)..day.next_day).map(&:iso8601)
     files = LogParser.discover_log_files.select { |f| (d = LogParser.date_of(f)).nil? || window.include?(d) }
 
-    counts = Hash.new { |h, k| h[k] = Hash.new(0) }
-    files.each do |file|
-      LogParser.open_file(file) do |io|
-        LogCodeRed.mail_counts(io.each_line).each { |mailer, by_day| by_day.each { |d, n| counts[mailer][d] += n } }
-      end
-    end
+    jobs = files.flat_map { |file| LogParser.open_file(file) { |io| LogCodeRed.mail_jobs(io.each_line) } || [] }
 
-    mail_rows = LogCodeRed.mail_rows(counts, date)
+    mail_rows = LogCodeRed.mail_rows(jobs, date)
     submissions = LogCodeRed.form_submissions(LogParser.each_entry_for_date(date))
     subscribe_rows = LogCodeRed.subscribe_rows(submissions)
-    alerts = LogCodeRed.alerts(mail_rows, subscribe_rows)
+    alerts = LogCodeRed.alerts(LogCodeRed.flooded_recipients(jobs, date), subscribe_rows)
 
     if alerts.any?
       alerts.each { |alert| puts "#{LogDisplay::RED}#{LogDisplay::BOLD}CODE RED: #{alert}#{LogDisplay::RESET}" }
@@ -1008,8 +1003,7 @@ namespace :logs do
         { label: "Sent", width: 6, align: :right },
         { label: "Daily avg", width: 10, align: :right }
       ],
-      rows: mail_rows.map { |row| [ row[:mailer], row[:today], row[:baseline] ] },
-      highlight: ->(row) { mail_rows.find { |r| r[:mailer] == row[0] }[:surge] }
+      rows: mail_rows.map { |row| [ row[:mailer], row[:today], row[:baseline] ] }
     )
 
     puts LogDisplay.table(
