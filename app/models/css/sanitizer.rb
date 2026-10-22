@@ -105,8 +105,8 @@ module Css
           elsif sanitizer.config[:at_rules_with_properties].include?(name)
             rule_problems(Crass::Parser.parse_properties(node[:block], preserve_comments: true), css, sanitizer, "@#{name}")
           elsif name == "import"
-            sanitizer.send(:at_rule!, node.dup) ? [] : [ "Line #{line}: @import can only load https URLs from #{ALLOWED_FONT_HOSTS.to_sentence}." ]
-          elsif sanitizer.send(:at_rule!, node.dup).nil?
+            sanitizer.send(:at_rule!, node.dup, declarations: false) ? [] : [ "Line #{line}: @import can only load https URLs from #{ALLOWED_FONT_HOSTS.to_sentence}." ]
+          elsif sanitizer.send(:at_rule!, node.dup, declarations: false).nil?
             [ "Line #{line}: @#{name} isn't supported." ]
           else
             []
