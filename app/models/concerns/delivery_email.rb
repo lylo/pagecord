@@ -10,7 +10,7 @@ module DeliveryEmail
     MAIL_DOMAIN = "@post.pagecord.com"
 
     def generate_delivery_email
-      code = Nanoid.generate(size: 8, alphabet: "0123456789abcdefghijklmnopqrstuvwxyz")
+      code = SecureRandom.alphanumeric(8, chars: "0123456789abcdefghijklmnopqrstuvwxyz".chars)
 
       self.delivery_email = "#{subdomain}_#{code}#{MAIL_DOMAIN}" unless delivery_email.present?
     end
