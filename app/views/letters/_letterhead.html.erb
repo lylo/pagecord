@@ -1,4 +1,5 @@
-<%= render "letters/stamp" %>
+<%# locals: (stamp_code: "1ST", stamp_code_data: {}) %>
+<%= render "letters/stamp", code: stamp_code, code_data: stamp_code_data %>
 
 <div class="letter-letterhead" aria-hidden="true">
   <%= inline_svg_tag "logo-mark-black.svg" %>

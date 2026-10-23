@@ -1,0 +1,53 @@
+<div class="flex grow flex-col">
+  <h1 class="page-title">Invite a writer</h1>
+  <p class="mt-2 text-slate-600 dark:text-slate-300">Each invite code lets one person create a Pagecord account.</p>
+
+  <div class="mt-5">
+    <% if Current.user.invitations_remaining.positive? %>
+      <%= button_to "Create invite code", app_invitations_path, class: "btn-primary cursor-pointer" %>
+    <% else %>
+      <p class="text-sm text-slate-500 dark:text-slate-400">
+        Subscribers get <%= User::Invitable::SUBSCRIBER_INVITATIONS %> invite codes. Other writers get <%= User::Invitable::WRITER_INVITATIONS %> once their account is a month old and they've posted on four different days.
+      </p>
+    <% end %>
+  </div>
+
+  <div class="sheet-divider mt-5"></div>
+
+  <% if @invitations.empty? %>
+    <p class="py-8 text-center text-slate-600 dark:text-slate-300">You haven't created any invite codes yet.</p>
+  <% else %>
+    <div class="divide-y divide-slate-200 dark:divide-slate-800">
+      <% @invitations.each do |invitation| %>
+        <% if invitation.redeemed_at %>
+          <% blog = invitation.invitee&.blog %>
+          <div class="sheet-bleed flex items-center justify-between gap-4 py-5">
+            <div class="flex min-w-0 items-center gap-3">
+              <% if blog %>
+                <%= render "app/shared/blog_avatar", blog: blog, size: "md" %>
+              <% end %>
+              <div class="min-w-0">
+                <% if blog %>
+                  <%= link_to blog.display_name, blog_home_url(blog), target: "_blank", class: "block truncate font-semibold text-slate-900 hover:underline dark:text-slate-100" %>
+                <% end %>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Redeemed on <%= invitation.redeemed_at.to_date.to_formatted_s(:long) %></p>
+              </div>
+            </div>
+            <code class="shrink-0 font-mono text-sm text-slate-500 dark:text-slate-400"><%= invitation.code %></code>
+          </div>
+        <% else %>
+          <div class="sheet-bleed flex flex-wrap items-center justify-between gap-4 py-5">
+            <div class="min-w-0">
+              <code class="font-mono font-semibold text-slate-900 dark:text-slate-100"><%= invitation.code %></code>
+              <p class="mt-1 truncate text-sm text-slate-500 dark:text-slate-400"><%= new_signup_url(code: invitation.code) %></p>
+            </div>
+            <div class="flex shrink-0 gap-2">
+              <button type="button" data-controller="clipboard" data-clipboard-text-value="<%= invitation.code %>" data-clipboard-target="button" data-action="clipboard#copy" class="btn-secondary cursor-pointer">Copy code</button>
+              <button type="button" data-controller="clipboard" data-clipboard-text-value="<%= new_signup_url(code: invitation.code) %>" data-clipboard-target="button" data-action="clipboard#copy" class="btn-secondary cursor-pointer">Copy link</button>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

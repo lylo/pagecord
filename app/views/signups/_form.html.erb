@@ -1,13 +1,45 @@
+<% code = (params[:invitation_code] || params[:code]).to_s %>
+
 <% blog = @user.blogs.first %>
 <% focus = (@user.errors[:email].any? || (blog&.title.present? && blog.errors.none?)) ? :email : (blog&.errors&.include?(:subdomain) ? :subdomain : :title) %>
+<% focus = :code if Invitation.required? && code.blank? %>
 
 <%= form_with url: signups_path, model: @user, class: "letter-form", html: { autocomplete: "off" }, data: { controller: "timezone signup-letter signature", turbo: "false" } do |form| %>
   <%= form.hidden_field :signup_referrer %>
   <%= form.hidden_field :timezone, data: { timezone_target: "timeZone" } %>
   <%= render "/shared/spam_prevention" %>
 
+  <% if Invitation.required? %>
+    <div class="letter-ticket-shadow">
+      <div class="letter-ticket">
+        <span class="letter-ticket__stamp" aria-hidden="true"></span>
+        <div class="letter-ticket__stub" aria-hidden="true">
+          <span class="letter-ticket__admit">Admit<br>one</span>
+          <span class="letter-ticket__writer">writer</span>
+          <span class="letter-ticket__serial"><%= Date.current.strftime("%-d %b %Y").upcase %></span>
+        </div>
+        <div class="letter-ticket__body">
+          <span class="letter-ticket__title">You're invited!</span>
+          <%= label_tag "invite-code", "Your invite code", class: "letter-ticket__label" %>
+          <%# The letter stays hidden while this field's placeholder is showing %>
+          <%= text_field_tag :invitation_code, code,
+              placeholder: "ABCD2345EF",
+              id: "invite-code",
+              required: true,
+              autofocus: focus == :code,
+              autocomplete: "off",
+              autocapitalize: "characters",
+              spellcheck: false,
+              class: "letter-ticket__input",
+              data: { signup_letter_target: "code", action: "input->signup-letter#codeChanged" } %>
+        </div>
+      </div>
+    </div>
+    <p class="letter-hint">No code? <%= mail_to "hello@pagecord.com", "Email me", subject: "Invite request" %> and say hi.</p>
+  <% end %>
+
   <div class="letter-paper">
-    <%= render "letters/letterhead" %>
+    <%= render "letters/letterhead", stamp_code: Invitation.required? ? code.strip.upcase.first(10) : "1ST", stamp_code_data: { signup_letter_target: "stampCode" } %>
     <p class="letter-note" role="alert"><%= @region_paused ? render("region_paused") : @error_message %></p>
 
     <p>Dear Pagecord,</p>

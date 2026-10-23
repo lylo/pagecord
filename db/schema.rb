@@ -12,8 +12,8 @@
 
 ActiveRecord::Schema[8.2].define(version: 2026_10_18_120000) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
+  enable_extension "plpgsql"
 
   create_table "access_requests", force: :cascade do |t|
     t.datetime "accepted_at"
@@ -228,6 +228,19 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_18_120000) do
     t.index ["blog_id", "email"], name: "index_email_subscribers_on_blog_id_and_email", unique: true
   end
 
+  create_table "invitations", force: :cascade do |t|
+    t.bigint "inviter_id", null: false
+    t.bigint "invitee_id"
+    t.string "code", null: false
+    t.datetime "redeemed_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_invitations_on_code", unique: true
+    t.index ["invitee_id"], name: "index_invitations_on_invitee_id", unique: true
+    t.index ["inviter_id"], name: "index_invitations_on_inviter_id"
+  end
+
   create_table "mcp_connections", force: :cascade do |t|
     t.bigint "blog_id", null: false
     t.text "client_id", null: false
@@ -410,12 +423,12 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_18_120000) do
     t.datetime "next_billed_at"
     t.string "paddle_customer_id"
     t.string "paddle_price_id"
-    t.string "paddle_status"
     t.string "paddle_subscription_id"
     t.string "plan", null: false
     t.integer "unit_price"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.string "paddle_status"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
@@ -500,6 +513,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_18_120000) do
   add_foreign_key "digest_posts", "posts"
   add_foreign_key "email_change_requests", "users"
   add_foreign_key "email_subscribers", "blogs"
+  add_foreign_key "invitations", "users", column: "invitee_id"
+  add_foreign_key "invitations", "users", column: "inviter_id"
   add_foreign_key "mcp_connections", "blogs"
   add_foreign_key "navigation_items", "blogs"
   add_foreign_key "navigation_items", "posts"

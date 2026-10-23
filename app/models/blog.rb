@@ -48,7 +48,7 @@ class Blog < ApplicationRecord
   validate :within_blog_limit, on: :create
 
   before_validation :downcase_subdomain
-  before_create -> { self.reviewed_at = Time.current }, if: -> { user.subscribed? }
+  before_create -> { self.reviewed_at = Time.current }, if: -> { user.subscribed? || user.invited? }
   after_commit :purge_cloudflare_cache, on: :update
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }
