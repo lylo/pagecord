@@ -85,7 +85,7 @@ end
 
 # Import WordPress WXR exported XML files into Pagecord posts
 # Usage: ruby import_wordpress.rb path/to/export.xml blog_subdomain [--dry-run]
-def import_wordpress(path, blog_subdomain, dry_run: false, include_private: false, skip_images: false)
+def import_wordpress(path, blog_subdomain, dry_run: false, include_private: false, skip_images: false, markdown: false)
   include ImportHelpers
 
   # Find the correct blog
@@ -211,7 +211,8 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
     )
 
     # Parse and clean HTML content
-    cleaned_content = wrap_paragraphs(content_encoded.gsub("\r", ""))
+    body = content_encoded.gsub("\r", "")
+    cleaned_content = markdown ? Post::Markdown.render(body).last : wrap_paragraphs(body)
 
     content_doc = Nokogiri::HTML::DocumentFragment.parse(cleaned_content)
 
@@ -355,6 +356,7 @@ if __FILE__ == $PROGRAM_NAME
     puts "  --dry-run          Preview import without creating posts"
     puts "  --include-private  Import private posts as hidden posts"
     puts "  --skip-images      Don't download images, keep original URLs"
+    puts "  --markdown         Post bodies are Markdown, as in Micro.blog exports"
     puts ""
     puts "Notes:"
     puts "  - Post type (post vs page) is determined from the WordPress export"
@@ -378,10 +380,11 @@ if __FILE__ == $PROGRAM_NAME
   dry_run = ARGV.include?('--dry-run')
   include_private = ARGV.include?('--include-private')
   skip_images = ARGV.include?('--skip-images')
+  markdown = ARGV.include?('--markdown')
 
   if dry_run
     puts "=== DRY RUN MODE - No posts will be created ==="
   end
 
-  import_wordpress(path, blog_subdomain, dry_run: dry_run, include_private: include_private, skip_images: skip_images)
+  import_wordpress(path, blog_subdomain, dry_run: dry_run, include_private: include_private, skip_images: skip_images, markdown: markdown)
 end
