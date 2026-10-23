@@ -25,9 +25,9 @@ class Admin::DeliverabilityIssuesControllerTest < ActionDispatch::IntegrationTes
 
     get admin_deliverability_issues_url
     assert_response :success
-    assert_select "span", text: /fred@example.com/
+    assert_select "td", text: /fred@example.com/
     assert_select "span", text: /HardBounce/
-    assert_select "a", text: /joel/
+    assert_select "td", text: /joel/ # subscriber's blog
   end
 
   test "index shows repeated bounces with their type and count" do
@@ -46,7 +46,7 @@ class Admin::DeliverabilityIssuesControllerTest < ActionDispatch::IntegrationTes
 
     get admin_deliverability_issues_url
     assert_response :success
-    assert_select "span", text: /fred@example.com/, count: 1
+    assert_select "td", text: /fred@example.com/, count: 1
     assert_select "span", text: /Transient/, count: 0
   end
 
@@ -56,8 +56,8 @@ class Admin::DeliverabilityIssuesControllerTest < ActionDispatch::IntegrationTes
     get admin_deliverability_issues_url
     assert_response :success
     assert_select "p", text: /Nothing needs deleting/
-    assert_select "span", text: /fred@example.com/
-    assert_select "h2", text: /Watching/
+    assert_select "td", text: /fred@example.com/
+    assert_select "div", text: "Watching"
   end
 
   test "index omits addresses with no matching local subscriber" do

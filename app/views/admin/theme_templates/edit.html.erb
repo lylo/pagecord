@@ -1,9 +1,5 @@
-<div class="sheet-header gap-x-2">
-  <%= link_to "Templates", admin_theme_templates_path, class: "shrink-0 font-semibold text-slate-800 hover:underline dark:text-slate-100" %>
-  <span class="shrink-0 text-slate-400">&rsaquo;</span>
-  <span class="min-w-0 truncate"><%= @template.name %></span>
+<div class="max-w-3xl mx-auto">
+  <h1 class="text-2xl font-bold mb-6">Edit: <%= @template.name %></h1>
+
+  <%= render "form", template: @template %>
 </div>
-
-<h1 class="mt-6 mb-6 page-title"><%= @template.name %></h1>
-
-<%= render "form", template: @template %>

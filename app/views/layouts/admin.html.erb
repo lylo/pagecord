@@ -13,20 +13,14 @@
     <%= yield :head %>
   </head>
 
-  <body class="flex flex-col min-h-screen bg-slate-100 dark:bg-slate-950">
+  <body class="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900">
     <%= render "admin/shared/header" %>
 
-    <main class="container mx-auto px-4 flex flex-grow mb-10">
-      <div class="mx-auto flex w-full max-w-5xl flex-col text-slate-950 dark:text-slate-50">
-        <div id="flash"><%= render "app/shared/flash" %></div>
+    <main class="container mx-auto px-4 flex flex-grow mb-8">
+      <div class="mx-auto max-w-6xl w-full text-slate-950 dark:text-slate-50">
+        <%= render "app/shared/flash" %>
 
-        <% if content_for?(:sheets) %>
-          <%= yield %>
-        <% else %>
-          <div class="sheet flex flex-grow flex-col">
-            <%= yield %>
-          </div>
-        <% end %>
+        <%= yield %>
       </div>
     </main>
   </body>

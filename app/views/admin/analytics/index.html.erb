@@ -1,28 +1,61 @@
-<%
-  context_month = @report.view_type == "year" ? Date.new(@report.date.year, Date.current.month, 1) : @report.date
-  context_year = @report.date.beginning_of_year
-  monthly = @report.view_type == "month"
-  step = monthly ? 1.month : 1.year
-  date_format = monthly ? "%Y-%m" : "%Y"
-%>
+<div class="space-y-6">
+  <!-- Date/View Type Navigation -->
+  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
+      <!-- View Type Buttons -->
+      <div class="flex space-x-2 justify-center md:justify-start">
+        <% 
+          context_month = case @report.view_type
+            when "year"
+              Date.new(@report.date.year, Date.current.month, 1)
+            else 
+              @report.date
+          end
+          
+          context_year = @report.date.beginning_of_year
+        %>
+        <%= link_to admin_analytics_path(view_type: "month", date: context_month.strftime("%Y-%m")),
+            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@report.view_type == 'month' ? 'bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}" do %>
+          Month
+        <% end %>
+        <%= link_to admin_analytics_path(view_type: "year", date: context_year.strftime("%Y")),
+            class: "px-4 py-2 text-sm font-medium rounded-lg transition-colors #{@report.view_type == 'year' ? 'bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}" do %>
+          Year
+        <% end %>
+      </div>
 
-<div class="flex grow flex-col">
-  <h1 class="page-title">Analytics</h1>
-
-  <div class="mt-3 flex flex-wrap items-center gap-2">
-    <div class="btn-group">
-      <%= link_to "Month", admin_analytics_path(view_type: "month", date: context_month.strftime("%Y-%m")), class: class_names("btn-group-item", "btn-group-item-active": monthly) %>
-      <%= link_to "Year", admin_analytics_path(view_type: "year", date: context_year.strftime("%Y")), class: class_names("btn-group-item", "btn-group-item-active": !monthly) %>
-    </div>
-
-    <div class="flex items-center gap-1">
-      <%= link_to admin_analytics_path(view_type: @report.view_type, date: (@report.date - step).strftime(date_format)), class: "btn-icon", title: "Previous", aria: { label: "Previous" } do %>
-        <%= inline_svg_tag "icons/chevron-left.svg", class: "h-4 w-4" %>
-      <% end %>
-      <span class="min-w-28 text-center text-sm font-medium text-slate-900 dark:text-slate-100"><%= @report.date.strftime(monthly ? "%B %Y" : "%Y") %></span>
-      <%= link_to admin_analytics_path(view_type: @report.view_type, date: (@report.date + step).strftime(date_format)), class: "btn-icon", title: "Next", aria: { label: "Next" } do %>
-        <%= inline_svg_tag "icons/chevron-right.svg", class: "h-4 w-4" %>
-      <% end %>
+      <!-- Date Navigation -->
+      <div class="flex justify-center items-center space-x-3">
+        <% if @report.view_type == "month" %>
+          <%= link_to admin_analytics_path(view_type: @report.view_type, date: (@report.date - 1.month).strftime("%Y-%m")), 
+              class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
+            <%= inline_svg_tag "icons/chevron-left.svg", class: "w-4 h-4" %>
+          <% end %>
+          
+          <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[8rem] text-center">
+            <%= @report.date.strftime("%B %Y") %>
+          </span>
+          
+          <%= link_to admin_analytics_path(view_type: @report.view_type, date: (@report.date + 1.month).strftime("%Y-%m")), 
+              class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
+            <%= inline_svg_tag "icons/chevron-right.svg", class: "w-4 h-4" %>
+          <% end %>
+        <% else %>
+          <%= link_to admin_analytics_path(view_type: @report.view_type, date: (@report.date - 1.year).strftime("%Y")), 
+              class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
+            <%= inline_svg_tag "icons/chevron-left.svg", class: "w-4 h-4" %>
+          <% end %>
+          
+          <span class="text-sm font-medium text-slate-900 dark:text-slate-100 min-w-[8rem] text-center">
+            <%= @report.date.strftime("%Y") %>
+          </span>
+          
+          <%= link_to admin_analytics_path(view_type: @report.view_type, date: (@report.date + 1.year).strftime("%Y")), 
+              class: "p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" do %>
+            <%= inline_svg_tag "icons/chevron-right.svg", class: "w-4 h-4" %>
+          <% end %>
+        <% end %>
+      </div>
     </div>
   </div>
 

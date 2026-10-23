@@ -1,17 +1,28 @@
-<header class="mb-4 md:mb-6">
-  <div class="w-full px-4 py-3 relative flex items-center justify-between text-slate-950 dark:text-slate-50">
-    <div class="relative md:static" data-controller="toggle">
-      <button type="button" class="flex items-center gap-1.5 cursor-pointer rounded-full py-1 px-2.5 bg-white dark:bg-slate-900 shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 md:hidden" title="Sections" aria-label="Sections" data-toggle-target="button" data-action="toggle#toggle click@window->toggle#hide keydown.esc@window->toggle#hide">
-        <%= inline_svg_tag "logo-mark.svg", class: "h-7 w-7" %>
-        <span class="text-sm font-medium">Admin</span>
-        <%= inline_svg_tag "icons/chevron-down.svg", class: "h-3.5 w-3.5 text-slate-400" %>
-      </button>
-      <%= link_to admin_users_path, class: "hidden md:inline-flex items-center gap-2 transition-transform hover:-rotate-3", title: "Admin" do %>
-        <%= inline_svg_tag "logo-mark.svg", class: "h-7 w-7" %>
-        <span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Admin</span>
+<header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 mb-8">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col sm:flex-row justify-between gap-y-2 py-4">
+      <%= link_to app_root_path do %>
+        <%= inline_svg_tag "logo.svg", class: "w-[100px] inline-flex dark:text-slate-100 text-slate-900" %>
       <% end %>
-      <%= render "admin/shared/nav" %>
+
+      <nav class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 sm:mt-0">
+        <%= link_to "Users", admin_users_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'users'}" %>
+        <%= link_to "Posts", admin_posts_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'posts'}" %>
+        <%= link_to admin_moderation_root_path, class: "inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 dark:text-slate-100" do %>
+          <span class="hover:underline <%= 'home-link' if controller_name.in?(%w[content blogs screenings]) %>">Moderation</span>
+          <% if blogs_to_review_count > 0 %>
+            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300"><%= blogs_to_review_count %></span>
+          <% end %>
+        <% end %>
+        <%= link_to admin_deliverability_issues_path, class: "inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 dark:text-slate-100" do %>
+          <span class="hover:underline <%= 'home-link' if controller_name == 'deliverability_issues' %>">Deliverability</span>
+          <% if deliverability_count > 0 %>
+            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300"><%= deliverability_count %></span>
+          <% end %>
+        <% end %>
+        <%= link_to "Templates", admin_theme_templates_path, class: "hidden sm:inline text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'theme_templates'}" %>
+        <%= link_to "Analytics", admin_analytics_path, class: "text-sm font-semibold hover:underline text-slate-900 dark:text-slate-100 #{'home-link' if controller_name == 'analytics'}" %>
+      </nav>
     </div>
-    <%= render "app/shared/heading" %>
   </div>
 </header>

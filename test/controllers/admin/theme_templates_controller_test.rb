@@ -13,7 +13,7 @@ class Admin::ThemeTemplatesControllerTest < ActionDispatch::IntegrationTest
     get admin_theme_templates_url
 
     assert_response :success
-    assert_select "h1", text: "Theme templates"
+    assert_select "h1", text: "Theme Templates"
   end
 
   test "should get new" do
