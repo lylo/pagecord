@@ -40,6 +40,13 @@ export default class extends Controller {
     selection.addRange(this.previousRange)
   }
 
+  reveal(event) {
+    if (this.panelTarget.hasAttribute("data-open")) return
+
+    this.open()
+    requestAnimationFrame(() => requestAnimationFrame(() => event.target.reportValidity()))
+  }
+
   toggle() {
     this.panelTarget.hasAttribute("data-open") ? this.close() : this.open()
   }
