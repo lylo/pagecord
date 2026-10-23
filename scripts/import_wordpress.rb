@@ -78,6 +78,11 @@ def usable_slug(post_name)
   post_name
 end
 
+def bare_link(url)
+  escaped = CGI.escapeHTML(url)
+  "<p><a href=\"#{escaped}\">#{escaped}</a></p>"
+end
+
 # Import WordPress WXR exported XML files into Pagecord posts
 # Usage: ruby import_wordpress.rb path/to/export.xml blog_subdomain [--dry-run]
 def import_wordpress(path, blog_subdomain, dry_run: false, include_private: false, skip_images: false)
@@ -210,8 +215,25 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
 
     content_doc = Nokogiri::HTML::DocumentFragment.parse(cleaned_content)
 
-    # Remove style, script, and iframe tags
-    content_doc.css("style, script, iframe").each(&:remove)
+    content_doc.css("style, script").each(&:remove)
+
+    # Iframe embeds become bare links, which Pagecord embeds where it supports the site
+    content_doc.css("iframe").each do |iframe|
+      src = iframe["src"].to_s
+
+      url = case src
+      when %r{youtube(?:-nocookie)?\.com/embed/([a-zA-Z0-9_-]+)}
+        "https://www.youtube.com/watch?v=#{$1}"
+      when %r{player\.vimeo\.com/video/(\d+)}
+        "https://vimeo.com/#{$1}"
+      when %r{facebook\.com/plugins/}
+        URI.decode_www_form(URI(src).query.to_s).to_h["href"]
+      else
+        src.presence
+      end
+
+      url ? iframe.replace(bare_link(url)) : iframe.remove
+    end
 
     # Convert old Flash <object> embeds to plain URLs (Vimeo, YouTube)
     content_doc.css("object").each do |obj|
@@ -225,7 +247,7 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
         "https://www.youtube.com/watch?v=#{$1}"
       end
 
-      obj.replace("<p>#{url}</p>") if url
+      obj.replace(bare_link(url)) if url
     end
 
     # Unwrap images from <a> tags (WordPress often links images to full-size versions)
