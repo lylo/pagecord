@@ -184,9 +184,9 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
     # Keep the WordPress URL so existing links and search results still resolve
     slug = usable_slug(item.at_xpath("post_name")&.text&.strip)
 
-    # Check if post already exists by slug, or by title (case-insensitive)
+    # Check if post already exists by slug, by title (case-insensitive), or by date for a titleless post
     existing_post = slug ? blog.all_posts.find_by(slug: slug) : nil
-    existing_post ||= post_exists?(blog, title) if title.present?
+    existing_post ||= title.present? ? post_exists?(blog, title) : blog.all_posts.find_by(title: nil, published_at: published_at)
 
     if existing_post
       skipped_duplicate += 1
