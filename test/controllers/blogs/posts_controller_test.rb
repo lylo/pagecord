@@ -1501,6 +1501,16 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_template "blogs/posts/show"
   end
 
+  test "should redirect the home page's own slug to the blog root" do
+    page = posts(:about)
+    @blog.update!(home_page_id: page.id)
+
+    get blog_post_path(page.slug)
+
+    assert_redirected_to blog_posts_path
+    assert_response :moved_permanently
+  end
+
   test "should set canonical_url to root when custom home page is rendered" do
     page = posts(:about)
     @blog.update!(home_page_id: page.id)

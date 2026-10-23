@@ -31,7 +31,16 @@ class Blogs::SitemapsControllerTest < ActionDispatch::IntegrationTest
     get "/sitemap.xml", headers: { "Host" => blog.custom_domain }
 
     assert_response :success
-    assert_equal blog.all_posts.count + 1, Nokogiri::XML(@response.body).xpath("//xmlns:url").count
+    assert_equal blog.all_posts.count, Nokogiri::XML(@response.body).xpath("//xmlns:url").count
+  end
+
+  test "sitemap lists the home page only at the blog root" do
+    blog = blogs(:annie)
+    get "/sitemap.xml", headers: { "Host" => blog.custom_domain }
+
+    locs = Nokogiri::XML(@response.body).xpath("//xmlns:url/xmlns:loc").map(&:text)
+    assert_includes locs, blog_home_url(blog)
+    assert_not_includes locs, post_url(blog.home_page)
   end
 
   test "should return 406 for unsupported format" do

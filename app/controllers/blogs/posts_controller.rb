@@ -36,6 +36,8 @@ class Blogs::PostsController < Blogs::BaseController
       .for_blog_render
       .find_by!(slug: blog_params[:slug])
 
+    return redirect_to blog_home_path(@blog), status: :moved_permanently if @post.home_page?
+
     # Canonicalise: the same slug is recognised under /:slug, /posts/:slug,
     # /:prefix/:slug and dated paths; only the blog's canonical form renders.
     return redirect_to post_path(@post), status: :moved_permanently unless request.path == post_path(@post)
