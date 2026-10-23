@@ -58,6 +58,18 @@ class AccessRequests::VerificationsControllerTest < ActionDispatch::IntegrationT
     assert_redirected_to root_path
   end
 
+  test "should not verify or subscribe a discarded user" do
+    user = users(:elliot)
+    user.discard!
+
+    assert_no_enqueued_jobs(only: MarketingAutomation::AddContactJob) do
+      get access_request_verification_url(access_requests(:elliot).token_digest)
+    end
+
+    assert_redirected_to sessions_closed_path
+    assert_not user.reload.verified
+  end
+
   test "should reject password_reset token for login" do
     user = users(:joel)
     access_request = user.access_requests.create!(purpose: "password_reset")

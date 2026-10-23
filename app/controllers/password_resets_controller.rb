@@ -55,6 +55,7 @@ class PasswordResetsController < ApplicationController
       end
 
       @user = @access_request.user
+      redirect_to sessions_closed_path if @user.discarded?
     end
 
     def user_params

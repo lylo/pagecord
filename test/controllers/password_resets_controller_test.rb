@@ -53,6 +53,14 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
   end
 
+  test "edit rejects a discarded user" do
+    access_request = @user.access_requests.create!(purpose: "password_reset")
+    @user.discard!
+
+    get edit_password_reset_url(access_request.token_digest)
+    assert_redirected_to sessions_closed_path
+  end
+
   test "update sets password and signs in" do
     access_request = @user.access_requests.create!(purpose: "password_reset")
 

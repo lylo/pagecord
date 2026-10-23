@@ -5,6 +5,7 @@ class AccessRequests::VerificationsController < ApplicationController
     return redirect_to root_path unless access_request
 
     @user = access_request.user
+    return redirect_to sessions_closed_path if @user.discarded?
 
     if !@user.verified? && access_request.pending?
       @user.verify!
