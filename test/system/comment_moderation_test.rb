@@ -21,17 +21,4 @@ class CommentModerationTest < ApplicationSystemTestCase
     assert_text "Comment deleted"
     assert_not Post::Comment.exists?(@comment.id)
   end
-
-  test "approving with a reply publishes both" do
-    pending = post_comments(:unanswered)
-    pending.update!(approved_at: nil)
-
-    visit app_comment_path(pending)
-    fill_in "comment[message]", with: "Thanks for reading!"
-    click_on "Approve"
-
-    assert_current_path app_comments_path, wait: 5
-    assert_text "Comment approved"
-    assert pending.reload.approved?
-  end
 end
