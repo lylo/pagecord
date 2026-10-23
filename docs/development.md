@@ -56,7 +56,7 @@ With `docker compose up` running in one terminal, use a second terminal for one-
 | --- | --- |
 | `bin/dev` | `docker compose up` |
 | `bin/rails c` | `docker compose exec web bin/rails c` |
-| `bin/rails ci` | `docker compose exec web bin/rails ci` |
+| `bin/ci` | `docker compose exec web bin/ci` |
 
 Anything else follows the same `docker compose exec web ...` pattern:
 

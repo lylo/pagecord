@@ -182,7 +182,7 @@ background. The sheet's parts are component classes in
 - Work reaches `main` by `but land <branch>`, which fast-forwards `main` and
   pushes, when asked to push to `main`, land or ship. No pull request is needed;
   open one only when asked.
-- Run `bin/rails ci` before landing. Its gem audit can turn `main` red with no
+- Run `bin/ci` before landing. Its gem audit can turn `main` red with no
   code change, when a new advisory is published.
 - Use plain branch names without category prefixes (for example `help-dialogs`, not `feature/help-dialogs` or `fix/help-dialogs`)
 - Use plain PR titles without automation prefixes (for example `Help dialogs`, not `[codex] Help dialogs`)
@@ -198,7 +198,7 @@ background. The sheet's parts are component classes in
 ## Tooling
 
 - **Rubocop** auto-runs on every file edit/write via a PostToolUse hook (see `.claude/settings.json`). It runs on the host on both machines, so after a Rails bump run `bundle install` there too, or every lint fails silently
-- **CI** (`bin/rails ci`, or the `/ci` skill): the full local pipeline, defined once in `lib/tasks/ci.rake`
+- **CI** (`bin/ci`, or the `/ci` skill): the full local pipeline, declared in `config/ci.rb`
 - **Sentry, Support and Fizzy skills** (`/sentry`, `/support`, `/fizzy`) live in the user's `~/.claude/skills`, not the repo. Use `/fizzy` for any tracker work rather than hand-rolling the API
 - **Pagecord CLI** (the `lylo/pagecord-cli` repo): its agent skill ships with the gem (`pagecord skill install`). Against the dev server, log in with `pagecord login SUBDOMAIN --base-url http://api.localhost:3000` – the `api.` host is required
 - **Pagecord blog drafts**: write reviewable Obsidian posts to `Pagecord Blog Posts` in the vault: `/Users/olly/Notes/Personal` on the Mac, `/home/olly/Documents/Primary` on Linux
@@ -208,13 +208,13 @@ background. The sheet's parts are component classes in
 Two machines are in daily use:
 
 - **Mac** (laptop): everything runs natively on the host, Postgres included.
-- **Linux** (desktop): Rails, tests and `bin/rails ci` run in Docker, as there is no host
+- **Linux** (desktop): Rails, tests and `bin/ci` run in Docker, as there is no host
   Postgres. Prefix them with `docker compose exec -T web`; without `-T`,
   non-interactive commands hang. Rubocop and brakeman also run on the host.
 
 ```bash
 bin/dev                          # Start app (Rails, Tailwind, Redis, Sidekiq)
-bin/rails ci                     # Full local pipeline
+bin/ci                           # Full local pipeline
 bin/rails test                   # Unit tests
 bin/rails test:system            # System tests
 bundle exec rubocop              # Linter

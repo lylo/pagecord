@@ -6,6 +6,6 @@ allowed-tools: Bash
 
 # CI
 
-Run `bin/rails ci` (on Linux, `docker compose exec -T web bin/rails ci`). It runs every step in `lib/tasks/ci.rake` and stops at the first failure.
+Run `bin/ci` (on Linux, `docker compose exec -T web bin/ci`). It runs every step in `config/ci.rb` and reports each one with its runtime. Pass `--fail-fast` to stop at the first failure.
 
 Report a short status summary with one line per step. If a step fails, include the failing command and the key error.
