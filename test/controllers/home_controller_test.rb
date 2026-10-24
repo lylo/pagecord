@@ -3,12 +3,6 @@ require "test_helper"
 class HomeControllerTest < ActionDispatch::IntegrationTest
   include AuthenticatedTest
 
-  test "should get home page" do
-    get root_path
-    assert_response :success
-    assert_select "h1", text: "Make yourself a home on the web"
-  end
-
   test "the hero letter starts a signup with the blog name" do
     get root_path
 

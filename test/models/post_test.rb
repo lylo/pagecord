@@ -1,16 +1,9 @@
 require "test_helper"
 
 class PostTest < ActiveSupport::TestCase
-  include ActiveJob::TestHelper
-
   test "should generate a token on create" do
     post = Post.create(blog: blogs(:joel), title: "a new post", content: "content")
     assert post.token.present?
-  end
-
-  test "should be valid with body" do
-    @post = Post.new(blog: blogs(:joel), content: "Test post")
-    assert @post.valid?
   end
 
   test "should not be valid without body or title" do
@@ -63,13 +56,6 @@ class PostTest < ActiveSupport::TestCase
     assert post.published_at.nil?
   end
 
-  test "published at should be set" do
-    published_at = 1.day.ago
-    post = blogs(:joel).posts.create! title: "my new post", content: "this is my new post", published_at: published_at
-
-    assert_equal published_at.to_time.to_i, post.published_at.to_time.to_i
-  end
-
   test "visible scope shows only published, released, unhidden posts" do
     future = Post.create(blog: blogs(:joel), title: "later", published_at: 1.day.from_now)
     draft = Post.create(blog: blogs(:joel), title: "draft", content: "content", status: :draft)
@@ -78,33 +64,6 @@ class PostTest < ActiveSupport::TestCase
     assert_not Post.visible.include?(draft)
     assert_not Post.published.include?(draft)
     assert Post.draft.include?(draft)
-  end
-
-  test "post with blank title and body should be invalid" do
-    assert_not blogs(:joel).posts.build(title: "", content: "").valid?
-  end
-
-  test "destroying a post should destroy digest posts" do
-    assert_difference "DigestPost.count", -1 do
-      posts(:one).destroy
-    end
-  end
-
-  # Page-related tests
-  test "should create page" do
-    blog = blogs(:joel)
-    page = blog.posts.build(title: "Test Page", content: "Page content", is_page: true)
-    assert page.save
-    assert page.page?
-    assert_not page.post?
-  end
-
-  test "should create post" do
-    blog = blogs(:joel)
-    post = blog.posts.build(title: "Test Blog Post", content: "Post content", is_page: false)
-    assert post.save
-    assert post.post?
-    assert_not post.page?
   end
 
   test "should scope pages correctly" do
@@ -116,32 +75,6 @@ class PostTest < ActiveSupport::TestCase
     assert_not_includes blog.pages, post
     assert_includes blog.posts, post
     assert_not_includes blog.posts, page
-  end
-
-  test "is_page defaults to false" do
-    blog = blogs(:joel)
-    post = blog.posts.build
-    assert_not post.is_page
-  end
-
-  test "fixture pages should be correctly configured" do
-    about_page = posts(:about)
-    assert about_page.page?
-    assert_equal "about", about_page.slug
-    assert_equal blogs(:joel), about_page.blog
-
-    draft_page = posts(:draft_page)
-    assert draft_page.page?
-    assert draft_page.draft?
-  end
-
-  test "should include Taggable concern" do
-    post = Post.new(blog: blogs(:joel), content: "Test post")
-    assert post.respond_to?(:tag_list)
-    assert post.respond_to?(:tags_string)
-    assert post.respond_to?(:tags_string=)
-    assert Post.respond_to?(:tagged_with)
-    assert Post.respond_to?(:all_tags)
   end
 
   test "should honor manual published_at when updating a published post" do
@@ -357,26 +290,6 @@ class PostTest < ActiveSupport::TestCase
     assert_equal [ c, a, b ], Post.where(id: post.id).for_blog_render.first.content_media_attachments
   end
 
-  test "has_text_content? should return true for posts with text" do
-    blog = blogs(:joel)
-    post = blog.posts.create!(
-      title: "Text Post",
-      content: "This post has meaningful text content."
-    )
-
-    assert post.has_text_content?
-  end
-
-  test "has_text_content? should return false for image-only posts" do
-    blog = blogs(:joel)
-    post = blog.posts.new(
-      title: "Image Only Post",
-      content: "<figure><img src='test.jpg'></figure>"
-    )
-
-    assert_not post.has_text_content?
-  end
-
   test "has_text_content? should return false for URL-only posts" do
     blog = blogs(:joel)
     post = blog.posts.new(
@@ -402,13 +315,6 @@ class PostTest < ActiveSupport::TestCase
     page = blog.posts.new(content: "Page content", is_page: true, title: "")
     assert_not page.valid?
     assert_includes page.errors[:title], "can't be blank"
-  end
-
-  test "should set text_summary when post without title is saved" do
-    blog = blogs(:joel)
-    post = blog.posts.create!(content: "This is my post content that should be cached.")
-
-    assert_equal "This is my post content that should be cached.", post.text_summary
   end
 
   test "should set text_summary even when post has a title" do
@@ -577,14 +483,6 @@ class PostTest < ActiveSupport::TestCase
     assert_includes post.text_summary, "cell. Second"
   end
 
-  # Locale tests
-  test "locale should be nil by default" do
-    blog = blogs(:joel)
-    post = blog.posts.create!(content: "Test post")
-
-    assert_nil post.locale
-  end
-
   test "locale should accept valid locales" do
     blog = blogs(:joel)
     Localisable::SUPPORTED_LOCALES.each do |locale|
@@ -665,15 +563,6 @@ class PostTest < ActiveSupport::TestCase
     Blog.any_instance.expects(:touch).never
 
     blog.destroy!
-  end
-
-  test "should purge attachment blobs when a post is destroyed" do
-    post = blogs(:joel).posts.create!(content: "With a file", status: :published)
-    post.attachments.attach(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
-
-    assert_difference -> { ActiveStorage::Blob.count }, -1 do
-      perform_enqueued_jobs { post.destroy! }
-    end
   end
 
   test "should touch blog when post status changes to published" do

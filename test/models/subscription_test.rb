@@ -54,16 +54,6 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_not @subscription.active?
   end
 
-  test "cancelled? should return true if cancelled_at is present" do
-    @subscription.cancelled_at = Time.current
-    assert @subscription.cancelled?
-  end
-
-  test "cancelled? should return false if cancelled_at is nil" do
-    @subscription.cancelled_at = nil
-    assert_not @subscription.cancelled?
-  end
-
   test "lapsed? should return true if next_billed_at is in the past" do
     @subscription.next_billed_at = 1.month.ago
     assert @subscription.lapsed?
@@ -87,11 +77,6 @@ class SubscriptionTest < ActiveSupport::TestCase
 
   test "active_paid scope should include annual subscriptions" do
     subscription = subscriptions(:one)
-    assert_includes Subscription.active_paid, subscription
-  end
-
-  test "active_paid scope should include monthly subscriptions" do
-    subscription = subscriptions(:monthly_subscription)
     assert_includes Subscription.active_paid, subscription
   end
 

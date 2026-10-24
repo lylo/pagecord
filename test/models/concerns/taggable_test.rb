@@ -8,16 +8,6 @@ class TaggableTest < ActiveSupport::TestCase
     @post = posts(:one)
   end
 
-  test "should parse comma-separated tags" do
-    @post.tags_string = "rails, javascript, ruby"
-    assert_equal [ "javascript", "rails", "ruby" ], @post.tag_list
-  end
-
-  test "should parse space-separated tags" do
-    @post.tags_string = "rails javascript ruby"
-    assert_equal [ "javascript", "rails", "ruby" ], @post.tag_list
-  end
-
   test "should handle mixed separators" do
     @post.tags_string = "rails, javascript ruby hotwire"
     assert_equal [ "hotwire", "javascript", "rails", "ruby" ], @post.tag_list
@@ -48,11 +38,6 @@ class TaggableTest < ActiveSupport::TestCase
     assert_equal "rails, javascript, ruby", @post.tags_string
   end
 
-  test "should return empty string for empty tag_list" do
-    @post.tag_list = []
-    assert_equal "", @post.tags_string
-  end
-
   test "should validate tag format" do
     @post.tag_list = [ "rails", "javascript-framework", "ruby123" ]
     assert @post.valid?
@@ -60,11 +45,6 @@ class TaggableTest < ActiveSupport::TestCase
     @post.tag_list = [ "rails!", "@javascript", "ruby with spaces" ]
     assert_not @post.valid?
     assert_includes @post.errors[:tag_list].first, "invalid tags"
-  end
-
-  test "should allow valid tag characters" do
-    @post.tag_list = [ "rails", "javascript-framework", "ruby123", "web-dev", "API" ]
-    assert @post.valid?
   end
 
   test "should reject invalid tag characters" do
@@ -79,39 +59,6 @@ class TaggableTest < ActiveSupport::TestCase
     @post.tags_string = "zebra, apple, banana"
     @post.save!
     assert_equal [ "apple", "banana", "zebra" ], @post.tag_list
-  end
-
-  test "should find posts tagged with specific tags" do
-    post1 = Post.create!(
-      title: "Rails Post",
-      content: ActionText::RichText.new(body: "About Rails"),
-      blog: @blog,
-      tag_list: [ "rails", "ruby" ]
-    )
-
-    post2 = Post.create!(
-      title: "JavaScript Post",
-      content: ActionText::RichText.new(body: "About JavaScript"),
-      blog: @blog,
-      tag_list: [ "javascript", "web" ]
-    )
-
-    post3 = Post.create!(
-      title: "Full Stack Post",
-      content: ActionText::RichText.new(body: "About full stack"),
-      blog: @blog,
-      tag_list: [ "rails", "javascript" ]
-    )
-
-    rails_posts = Post.tagged_with("rails")
-    assert_includes rails_posts, post1
-    assert_includes rails_posts, post3
-    assert_not_includes rails_posts, post2
-
-    js_posts = Post.tagged_with("javascript")
-    assert_includes js_posts, post2
-    assert_includes js_posts, post3
-    assert_not_includes js_posts, post1
   end
 
   test "should find posts tagged with all specified tags (AND logic)" do

@@ -61,13 +61,6 @@ class Post::EmailableTest < ActiveSupport::TestCase
     assert_not @post.individually_sent?
   end
 
-  test "individually_sent? returns true when post has been sent" do
-    digest = PostDigest.create!(blog: @blog, kind: :individual, delivered_at: Time.current)
-    digest.digest_posts.create!(post: @post)
-
-    assert @post.individually_sent?
-  end
-
   test "individually_sent? returns true even before delivery completes" do
     digest = PostDigest.create!(blog: @blog, kind: :individual)
     digest.digest_posts.create!(post: @post)

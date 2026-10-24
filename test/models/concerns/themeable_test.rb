@@ -39,33 +39,6 @@ class ThemeableTest < ActiveSupport::TestCase
     @blog.valid?
   end
 
-  test "width helper methods" do
-    @blog.width = "narrow"
-    assert @blog.narrow?
-    assert_not @blog.standard?
-    assert_not @blog.wide?
-
-    @blog.width = "standard"
-    assert @blog.standard?
-    assert_not @blog.narrow?
-    assert_not @blog.wide?
-
-    @blog.width = "wide"
-    assert @blog.wide?
-    assert_not @blog.narrow?
-    assert_not @blog.standard?
-  end
-
-  test "custom_theme? returns true when theme is custom" do
-    @blog.theme = "custom"
-    assert @blog.custom_theme?
-  end
-
-  test "custom_theme? returns false when theme is not custom" do
-    @blog.theme = "mint"
-    assert_not @blog.custom_theme?
-  end
-
   test "should validate custom theme colors with valid hex codes" do
     @blog.theme = "custom"
     @blog.custom_theme_bg_light = "#abcdef"

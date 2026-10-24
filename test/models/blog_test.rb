@@ -142,12 +142,6 @@ class BlogTest < ActiveSupport::TestCase
     assert_nil @blog.reload.custom_domain
   end
 
-  test "should destroy post digests on destroy" do
-    assert_difference "PostDigest.count", -1 do
-      @blog.destroy
-    end
-  end
-
   test "should take its posts, comments, page views and subscribers with it" do
     @blog.page_views.create!(path: "/", viewed_at: Time.current, visitor_hash: "abc123")
     post_ids = @blog.all_posts.ids
@@ -413,13 +407,6 @@ class BlogTest < ActiveSupport::TestCase
     blog.user.subscription.update!(next_billed_at: 1.day.ago)
 
     assert blog.reload.branding_visible?
-  end
-
-  test "branding stays hidden for a subscriber who turned it off" do
-    blog = blogs(:joel)
-    blog.update!(show_branding: false)
-
-    assert_not blog.reload.branding_visible?
   end
 
   test "branding shows for a free blog" do

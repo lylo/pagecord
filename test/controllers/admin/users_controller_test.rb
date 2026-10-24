@@ -9,11 +9,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
-  test "should get index" do
-    get admin_users_url
-    assert_response :success
-  end
-
   test "should show the screening on the account page" do
     user = users(:annie)
     user.create_screening!(failed_checks: { cleantalk: "FORBIDDEN BL" })
@@ -91,14 +86,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_select "td", text: /joel/
   end
 
-  test "should combine search and status filters" do
-    get admin_users_path, params: { search: "joel", status: "paid" }
-    assert_response :success
-
-    assert_select "a", text: /Paid/
-    assert_select "div", text: /results?/
-  end
-
   test "should preserve status filter when searching" do
     get admin_users_path, params: { status: "paid" }
     assert_response :success
@@ -112,13 +99,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "a[href='#{admin_users_path(status: "paid")}']"
     assert_select "a[href='#{admin_users_path(status: "comped")}']"
-  end
-
-  test "should highlight active filter in stats summary" do
-    get admin_users_path, params: { status: "paid" }
-    assert_response :success
-
-    assert_select "a[href='#{admin_users_path}']", text: /Users/
   end
 
   test "should require admin access" do

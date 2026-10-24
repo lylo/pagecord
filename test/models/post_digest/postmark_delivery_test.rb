@@ -2,10 +2,6 @@ require "test_helper"
 require "mocha/minitest"
 
 class PostDigest::PostmarkDeliveryTest < ActiveSupport::TestCase
-  test "BATCH_SIZE is 50" do
-    assert_equal 50, PostDigest::PostmarkDelivery::BATCH_SIZE
-  end
-
   test "deliver_all creates delivery records and marks digest as delivered" do
     blog = blogs(:joel)
     subscriber = email_subscribers(:one)

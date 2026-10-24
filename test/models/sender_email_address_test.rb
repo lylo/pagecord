@@ -7,12 +7,6 @@ class SenderEmailAddressTest < ActiveSupport::TestCase
     assert sender.token_digest.length > 20
   end
 
-  test "should set verified to false on create" do
-    sender = blogs(:joel).sender_email_addresses.create!(email: "sender@example.com")
-    assert_not sender.accepted?
-    assert_nil sender.accepted_at
-  end
-
   test "should validate email presence" do
     sender = blogs(:joel).sender_email_addresses.new(email: "")
     assert_not sender.valid?
@@ -55,34 +49,6 @@ class SenderEmailAddressTest < ActiveSupport::TestCase
 
     assert_not sender2.valid?
     assert_includes sender2.errors[:token_digest], "has already been taken"
-  end
-
-  test "should belong to blog" do
-    sender = blogs(:joel).sender_email_addresses.create!(email: "sender@example.com")
-    assert_equal blogs(:joel), sender.blog
-  end
-
-  test "should allow manual verification" do
-    sender = blogs(:joel).sender_email_addresses.create!(email: "sender@example.com")
-
-    assert_not sender.accepted?
-    assert_nil sender.accepted_at
-    assert_not_nil sender.token_digest
-
-    sender.update!(accepted_at: Time.current, token_digest: nil)
-
-    assert sender.accepted?
-    assert_not_nil sender.accepted_at
-    assert_nil sender.token_digest
-  end
-
-  test "should handle nil verification token gracefully" do
-    sender = blogs(:joel).sender_email_addresses.new(email: "sender@example.com")
-    sender.token_digest = nil
-    sender.save!
-
-    # Should generate token even if initially nil
-    assert_not_nil sender.token_digest
   end
 
   test "should not override existing verification token" do

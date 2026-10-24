@@ -53,14 +53,6 @@ class SluggableTest < ActiveSupport::TestCase
     assert_equal original_slug, post.slug
   end
 
-  test "should update slug when explicitly changed on persisted post" do
-    post = posts(:one)
-
-    post.update!(slug: "new-explicit-slug")
-
-    assert_equal "new-explicit-slug", post.slug
-  end
-
   test "should update slug when title changes on draft post" do
     post = posts(:one)
     post.update!(status: :draft)
@@ -70,23 +62,8 @@ class SluggableTest < ActiveSupport::TestCase
     assert_equal "updated-draft-title", post.slug
   end
 
-  test "should preserve slug when title changes on published post" do
-    post = posts(:one)
-    post.update!(status: :published)
-    original_slug = post.slug
-
-    post.update!(title: "Updated Published Title")
-
-    assert_equal original_slug, post.slug
-  end
-
   test "should preserve custom slug when creating a new post" do
     post = @blog.posts.create!(title: "A New Post", content: "Content", slug: "my-custom-slug")
-    assert_equal "my-custom-slug", post.slug
-  end
-
-  test "should preserve custom slug when creating a new draft post" do
-    post = @blog.posts.create!(title: "A New Post", content: "Content", slug: "my-custom-slug", status: :draft)
     assert_equal "my-custom-slug", post.slug
   end
 

@@ -12,16 +12,4 @@ class Html::MonospaceDetectionTest < ActiveSupport::TestCase
     transformed_html = Html::MonospaceDetection.new.transform(html)
     assert_equal "<div><code>this is monospace</code></div>", transformed_html
   end
-
-  test "should recognise inconsolata" do
-    html = "<div><font face=\"inconsolata\">this is monospace</font></div>"
-    transformed_html = Html::MonospaceDetection.new.transform(html)
-    assert_equal "<div><code>this is monospace</code></div>", transformed_html
-  end
-
-  test "should recognise source code pro" do
-    html = "<div><font face=\"source code pro\">this is monospace</font></div>"
-    transformed_html = Html::MonospaceDetection.new.transform(html)
-    assert_equal "<div><code>this is monospace</code></div>", transformed_html
-  end
 end

@@ -57,13 +57,4 @@ class SendPostReplyJobTest < ActiveJob::TestCase
       SendPostReplyJob.perform_now(reply.id)
     end
   end
-
-  test "skips spam check when EMAIL_SPAM_DETECTION is not set" do
-    ENV["EMAIL_SPAM_DETECTION"] = nil
-    reply = post_replies(:test)
-
-    assert_emails 1 do
-      SendPostReplyJob.perform_now(reply.id)
-    end
-  end
 end

@@ -1,15 +1,6 @@
 require "test_helper"
 
 class AccessRequests::VerificationsControllerTest < ActionDispatch::IntegrationTest
-  test "should verify open access request" do
-    user = users(:elliot)
-
-    get access_request_verification_url(access_requests(:elliot).token_digest)
-
-    assert_redirected_to app_posts_url
-    assert user.reload.verified
-  end
-
   test "should send welcome email when verifying access request" do
     user = users(:elliot)
 

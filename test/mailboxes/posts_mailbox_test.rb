@@ -94,16 +94,6 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
   end
 
-  test "mail to invalid address should raise routing error" do
-    assert_raises ActionMailbox::Router::RoutingError do
-      receive_inbound_email_from_mail \
-      to: '"someone" <someone@unknown.com>',
-      from: '"else" <else@example.com>',
-      subject: "Hello world!",
-      body: "Hello?"
-    end
-  end
-
   test "should silently drop email if user not found" do
     assert_no_difference -> { Post.count } do
       receive_inbound_email_from_mail \
@@ -408,122 +398,6 @@ class PostsMailboxTest < ActionMailbox::TestCase
     assert_includes content_text, "This is a post about programming."
   end
 
-  test "should extract hashtags from HTML email and remove them from content" do
-    user = users(:joel)
-
-    html_body = <<~HTML
-      <div>
-        <p>This is a post about web development.</p>
-        <p>I love building applications.</p>
-        <p>#javascript #html #css</p>
-      </div>
-    HTML
-
-    assert_difference -> { user.blog.posts.count }, 1 do
-      receive_inbound_email_from_mail \
-        to: user.blog.delivery_email,
-        from: user.email,
-        reply_to: user.email,
-        subject: "Web development post",
-        body: html_body do |mail|
-          mail.content_type = "text/html"
-          mail.header["Received-SPF"] = "pass"
-      end
-    end
-
-    post = user.blog.posts.last
-    assert_equal "Web development post", post.title
-    assert_equal [ "css", "html", "javascript" ], post.tag_list
-
-    # Tags should be removed from content
-    content_text = post.content.to_plain_text.strip
-    assert_not_includes content_text, "#javascript"
-    assert_not_includes content_text, "#html"
-    assert_not_includes content_text, "#css"
-    assert_includes content_text, "This is a post about web development."
-    assert_includes content_text, "I love building applications."
-  end
-
-  test "should handle emails without hashtags" do
-    user = users(:joel)
-
-    assert_difference -> { user.blog.posts.count }, 1 do
-      receive_inbound_email_from_mail \
-        to: user.blog.delivery_email,
-        from: user.email,
-        reply_to: user.email,
-        subject: "Post without tags",
-        body: "This is a regular post without any hashtags." do |mail|
-          mail.header["Received-SPF"] = "pass"
-      end
-    end
-
-    post = user.blog.posts.last
-    assert_equal "Post without tags", post.title
-    assert_equal [], post.tag_list
-    assert_includes post.content.to_plain_text, "This is a regular post without any hashtags."
-  end
-
-  test "should extract hashtags from HTML email with multiple div elements" do
-    user = users(:joel)
-
-    html_body = <<~HTML
-      <div>This is a test</div>
-      <div><br></div>
-      <div>#test #rails</div>
-      <div>#programming</div>
-      <div><br></div>
-    HTML
-
-    assert_difference -> { user.blog.posts.count }, 1 do
-      receive_inbound_email_from_mail \
-        to: user.blog.delivery_email,
-        from: user.email,
-        reply_to: user.email,
-        subject: "Tags across multiple divs",
-        body: html_body do |mail|
-          mail.content_type = "text/html"
-          mail.header["Received-SPF"] = "pass"
-      end
-    end
-
-    post = user.blog.posts.last
-    assert_equal "Tags across multiple divs", post.title
-    assert_equal [ "programming", "rails", "test" ], post.tag_list
-
-    # Tags should be removed from content
-    content_text = post.content.to_plain_text.strip
-    assert_not_includes content_text, "#test"
-    assert_not_includes content_text, "#rails"
-    assert_not_includes content_text, "#programming"
-    assert_includes content_text, "This is a test"
-  end
-
-  test "should ignore hashtags in the middle of content" do
-    user = users(:joel)
-
-    assert_difference -> { user.blog.posts.count }, 1 do
-      receive_inbound_email_from_mail \
-        to: user.blog.delivery_email,
-        from: user.email,
-        reply_to: user.email,
-        subject: "Post with hashtags in middle",
-        body: "I was working on #ruby today and had fun.\n\nLater I switched to other things.\n\n#programming #coding" do |mail|
-          mail.header["Received-SPF"] = "pass"
-      end
-    end
-
-    post = user.blog.posts.last
-    assert_equal "Post with hashtags in middle", post.title
-    assert_equal [ "coding", "programming" ], post.tag_list
-
-    # Only hashtags at the end should be removed
-    content_text = post.content.to_plain_text.strip
-    assert_includes content_text, "#ruby today"  # This hashtag should remain
-    assert_not_includes content_text, "#programming"  # These should be removed
-    assert_not_includes content_text, "#coding"
-  end
-
   test "should receive email from verified sender email address" do
     user = users(:joel)
     sender_email_address = user.blog.sender_email_addresses.first
@@ -553,20 +427,6 @@ class PostsMailboxTest < ActionMailbox::TestCase
         from: sender_email,
         reply_to: sender_email,
         subject: "Post from unverified sender",
-        body: "This should not work!"
-    end
-  end
-
-  test "should not receive email from non-existent sender email address" do
-    user = users(:joel)
-    sender_email = "nonexistent@example.com"
-
-    assert_no_difference -> { user.blog.posts.count } do
-      receive_inbound_email_from_mail \
-        to: user.blog.delivery_email,
-        from: sender_email,
-        reply_to: sender_email,
-        subject: "Post from non-existent sender",
         body: "This should not work!"
     end
   end

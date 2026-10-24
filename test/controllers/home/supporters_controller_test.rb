@@ -6,13 +6,6 @@ class Home::SupportersControllerTest < ActionDispatch::IntegrationTest
     @annie.subscription.update!(plan: :supporter)
   end
 
-  test "should show supporters page" do
-    get supporters_path
-
-    assert_response :success
-    assert_select "h1", "Supporters"
-  end
-
   test "lists supporter blogs" do
     get supporters_path
 

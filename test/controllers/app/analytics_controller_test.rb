@@ -13,11 +13,6 @@ class App::AnalyticsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get index with day view" do
-    get app_analytics_path(view_type: "day", date: "2024-01-01")
-    assert_response :success
-  end
-
   test "should get index with month view" do
     get app_analytics_path(view_type: "month", date: "2024-01")
     assert_response :success

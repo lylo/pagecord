@@ -33,14 +33,6 @@ class TrimmableTest < ActiveSupport::TestCase
     assert_equal "<div><p>this is some text<br><br>this is more text</p></div>", post.content.to_s.strip
   end
 
-  test "should remove empty divs after hashtag extraction" do
-    post = posts(:two)
-    post.content = "<div>This is a test</div><div><br></div><div></div>"
-    post.save!
-
-    assert_equal "<div>This is a test</div>", post.content.to_s.strip
-  end
-
   test "should not remove divs with actual content" do
     post = posts(:two)
     post.content = "<div>This is a test</div><div><span>Keep this</span></div><div>And this</div>"

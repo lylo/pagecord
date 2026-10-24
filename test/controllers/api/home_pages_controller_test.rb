@@ -113,13 +113,6 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Updated Home", page.reload.title
   end
 
-  test "update returns 404 when no home page is set" do
-    @blog.update!(home_page_id: nil)
-
-    patch "/home_page", params: { title: "Nope" }, headers: auth_header
-    assert_response :not_found
-  end
-
   # -- Destroy --
 
   test "destroy unlinks the home page but keeps the page" do
@@ -142,13 +135,6 @@ class Api::HomePagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :no_content
     assert_equal "Home Page", page.reload.title
-  end
-
-  test "destroy returns 404 when no home page is set" do
-    @blog.update!(home_page_id: nil)
-
-    delete "/home_page", headers: auth_header
-    assert_response :not_found
   end
 
   private

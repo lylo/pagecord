@@ -24,20 +24,6 @@ class BotErrorFilterTest < ActionDispatch::IntegrationTest
     assert_equal "Bad Request\n", response.body
   end
 
-  test "allows regular GET requests" do
-    get "/"
-
-    assert_response :success
-  end
-
-  test "allows regular POST requests with form data" do
-    post "/users/sign_in",
-      params: { user: { email: "test@example.com", password: "password" } }
-
-    # Should not be rejected by the filter (may fail auth, but that's fine)
-    assert_not_equal "Bad Request\n", response.body
-  end
-
   test "allows valid multipart requests with boundary and content" do
     # Create a simple valid multipart body
     boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"

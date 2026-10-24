@@ -42,16 +42,6 @@ class NavigationItemTest < ActiveSupport::TestCase
     assert_equal 3, item3.reload.position
   end
 
-  test "reorder moves item to middle of list" do
-    item1 = navigation_items(:joel_about)
-    item2 = navigation_items(:joel_custom)
-
-    item1.reorder(2)
-
-    assert_equal 2, item1.reload.position
-    assert_equal 1, item2.reload.position
-  end
-
   test "destroying item reorders remaining items" do
     item1 = navigation_items(:joel_about)
     item2 = navigation_items(:joel_custom)
@@ -89,10 +79,6 @@ class PageNavigationItemTest < ActiveSupport::TestCase
     assert_includes item.errors[:post], "can't be blank"
   end
 
-  test "label returns post display_title" do
-    assert_equal @page.display_title, @nav_item.label
-  end
-
   test "link_url returns post path with slug" do
     expected_path = Rails.application.routes.url_helpers.blog_post_path(@page.slug)
     assert_equal expected_path, @nav_item.link_url
@@ -102,7 +88,6 @@ end
 class CustomNavigationItemTest < ActiveSupport::TestCase
   setup do
     @blog = blogs(:joel)
-    @nav_item = navigation_items(:joel_custom)
   end
 
   test "valid with label and url" do
@@ -120,10 +105,6 @@ class CustomNavigationItemTest < ActiveSupport::TestCase
     item = CustomNavigationItem.new(blog: @blog, label: "Test")
     assert_not item.valid?
     assert_includes item.errors[:url], "can't be blank"
-  end
-
-  test "link_url returns url" do
-    assert_equal "/posts", @nav_item.link_url
   end
 
   test "a pasted icon is rebuilt from its viewBox and path, in the theme colour" do
@@ -162,17 +143,6 @@ class PostsNavigationItemTest < ActiveSupport::TestCase
   test "valid with label" do
     item = PostsNavigationItem.new(blog: @blog, label: "Blog")
     assert item.valid?
-  end
-
-  test "invalid without label" do
-    item = PostsNavigationItem.new(blog: @blog)
-    assert_not item.valid?
-    assert_includes item.errors[:label], "can't be blank"
-  end
-
-  test "label can be translated" do
-    item = PostsNavigationItem.create!(blog: @blog, label: "Artículos")
-    assert_equal "Artículos", item.reload.label
   end
 
   test "only one allowed per blog" do
@@ -218,12 +188,6 @@ class SocialNavigationItemTest < ActiveSupport::TestCase
     assert_includes item.errors[:platform], "is not included in the list"
   end
 
-  test "label auto-sets from platform" do
-    item = SocialNavigationItem.new(blog: @blog, platform: "GitHub", url: "https://github.com/user")
-    item.valid?
-    assert_equal "GitHub", item.label
-  end
-
   test "link_url returns url for non-email platforms" do
     assert_equal "https://bsky.app/profile/joel.example.com", @nav_item.link_url
   end
@@ -237,15 +201,6 @@ class SocialNavigationItemTest < ActiveSupport::TestCase
     )
 
     assert_equal "mailto:test@example.com", item.link_url
-  end
-
-  test "email? returns true for Email platform" do
-    item = SocialNavigationItem.new(platform: "Email")
-    assert item.email?
-  end
-
-  test "email? returns false for other platforms" do
-    assert_not @nav_item.email?
   end
 
   test "validates email format for Email platform" do

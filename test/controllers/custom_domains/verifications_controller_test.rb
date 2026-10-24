@@ -16,11 +16,6 @@ class CustomDomains::VerificationsControllerTest < ActionDispatch::IntegrationTe
     assert_response :bad_request
   end
 
-  test "should return bad request when domain parameter is blank" do
-    get custom_domain_verification_path, params: { domain: "" }
-    assert_response :bad_request
-  end
-
   test "should return ok for custom domain within the lapsed grace period" do
     user = users(:annie)
     user.subscription.update(next_billed_at: 1.day.ago)

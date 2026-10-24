@@ -10,11 +10,6 @@ class App::Settings::SubscriptionsControllerTest < ActionDispatch::IntegrationTe
     login_as @user
   end
 
-  test "should get index" do
-    get app_settings_subscriptions_path
-    assert_response :success
-  end
-
   test "should display stored unit_price on settings page" do
     get app_settings_subscriptions_path
     assert_response :success

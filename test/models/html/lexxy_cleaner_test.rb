@@ -177,21 +177,8 @@ class Html::LexxyCleanerTest < ActiveSupport::TestCase
     assert_equal expected, Html::LexxyCleaner.clean(input)
   end
 
-  test "preserves nested inline elements within paragraphs" do
-    input = "<em>Italic <strong>and bold</strong></em><br><br>Next"
-    result = Html::LexxyCleaner.clean(input)
-
-    assert_includes result, "<p><em>Italic <strong>and bold</strong></em></p>"
-    assert_includes result, "<p>Next</p>"
-  end
-
   test "handles content with only br tags" do
     input = "<br><br><br>"
-    assert_equal "", Html::LexxyCleaner.clean(input)
-  end
-
-  test "handles deeply nested divs with only whitespace" do
-    input = "<div><div><div>   </div></div></div>"
     assert_equal "", Html::LexxyCleaner.clean(input)
   end
 

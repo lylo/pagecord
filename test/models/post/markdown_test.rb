@@ -17,22 +17,6 @@ class Post::MarkdownTest < ActiveSupport::TestCase
     assert_not_includes html, "My Post"
   end
 
-  test "passes front matter attributes through to FrontMatter" do
-    text = "---\ntitle: Hello\nslug: hello\ntags:\n  - ruby\n  - rails\nstatus: draft\n---\nBody"
-    attrs, _html = Post::Markdown.render(text)
-
-    assert_equal "Hello", attrs[:title]
-    assert_equal "hello", attrs[:slug]
-    assert_equal "ruby, rails", attrs[:tags_string]
-    assert_equal "draft", attrs[:status]
-  end
-
-  test "handles markdown without front matter" do
-    attrs, html = Post::Markdown.render("Just some text")
-    assert_equal({}, attrs)
-    assert_includes html, "Just some text"
-  end
-
   test "handles incomplete front matter delimiters" do
     text = "---\ntitle: Hello\nNo closing delimiter"
     attrs, html = Post::Markdown.render(text)

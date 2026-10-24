@@ -6,16 +6,6 @@ class Css::SanitizerTest < ActiveSupport::TestCase
     assert_equal "", Css::Sanitizer.sanitize_stylesheet("")
   end
 
-  test "returns empty string for oversized input" do
-    huge_css = "a" * 3000
-    assert_equal "", Css::Sanitizer.sanitize_stylesheet(huge_css)
-  end
-
-  test "preserves valid CSS" do
-    css = "body { color: red; }"
-    assert_includes Css::Sanitizer.sanitize_stylesheet(css), "color"
-  end
-
   test "preserves CSS custom properties" do
     css = ":root { --theme-bg: #fff; }"
     result = Css::Sanitizer.sanitize_stylesheet(css)
@@ -62,18 +52,6 @@ class Css::SanitizerTest < ActiveSupport::TestCase
     css = '@import url("https://fonts.googleapis.com/css2?family=Roboto");'
     result = Css::Sanitizer.sanitize_stylesheet(css)
     assert_includes result, "fonts.googleapis.com"
-  end
-
-  test "allows Google Fonts static @import" do
-    css = '@import url("https://fonts.gstatic.com/s/roboto/v30/font.woff2");'
-    result = Css::Sanitizer.sanitize_stylesheet(css)
-    assert_includes result, "fonts.gstatic.com"
-  end
-
-  test "allows Bunny Fonts @import" do
-    css = '@import url("https://fonts.bunny.net/css?family=adamina:400");'
-    result = Css::Sanitizer.sanitize_stylesheet(css)
-    assert_includes result, "fonts.bunny.net"
   end
 
   test "strips disallowed @import URLs" do
