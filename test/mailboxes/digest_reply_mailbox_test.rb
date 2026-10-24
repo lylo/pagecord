@@ -21,7 +21,7 @@ class DigestReplyMailboxTest < ActionMailbox::TestCase
   end
 
   test "should not forward if digest not found" do
-    DigestReplyMailer.expects(:forward_reply).never
+    DigestReplyMailer.expects(:with).never
 
     receive_inbound_email_from_mail(
       to: "digest-reply-invalidid@post.pagecord.com",
@@ -34,7 +34,7 @@ class DigestReplyMailboxTest < ActionMailbox::TestCase
   test "should not forward if sender is not a confirmed subscriber" do
     digest = post_digests(:one)
 
-    DigestReplyMailer.expects(:forward_reply).never
+    DigestReplyMailer.expects(:with).never
 
     receive_inbound_email_from_mail(
       to: "digest-reply-#{digest.masked_id}@post.pagecord.com",
@@ -47,7 +47,7 @@ class DigestReplyMailboxTest < ActionMailbox::TestCase
   test "should not forward if no from address" do
     digest = post_digests(:one)
 
-    DigestReplyMailer.expects(:forward_reply).never
+    DigestReplyMailer.expects(:with).never
 
     receive_inbound_email_from_mail(
       to: "digest-reply-#{digest.masked_id}@post.pagecord.com",
@@ -58,7 +58,7 @@ class DigestReplyMailboxTest < ActionMailbox::TestCase
   end
 
   test "should handle malformed digest reply address" do
-    DigestReplyMailer.expects(:forward_reply).never
+    DigestReplyMailer.expects(:with).never
 
     assert_raises ActionMailbox::Router::RoutingError do
       receive_inbound_email_from_mail(

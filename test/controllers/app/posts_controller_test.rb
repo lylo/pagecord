@@ -519,18 +519,12 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "searching keeps drafts on their own tab" do
-    30.times do |i|
-      @user.blog.posts.create!(title: "Published Post #{i}", content: "Published content #{i}")
-    end
-    @user.blog.posts.create!(title: "Draft Post", content: "Draft content", status: :draft)
+    get app_posts_path(search: "post", tab: "drafts")
+    assert_includes @response.body, posts(:vivian_draft).title
 
-    get app_posts_path(search: "Post", tab: "drafts")
-    assert_response :success
-    assert_includes @response.body, "Draft Post"
-
-    get app_posts_path(search: "Post", page: 2)
-    assert_response :success
-    assert_not_includes @response.body, "Draft Post"
+    get app_posts_path(search: "post")
+    assert_includes @response.body, posts(:three).title
+    assert_not_includes @response.body, posts(:vivian_draft).title
   end
 
   test "each tab counts its own search results" do

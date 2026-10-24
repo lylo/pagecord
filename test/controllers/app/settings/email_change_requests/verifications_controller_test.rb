@@ -30,4 +30,15 @@ class App::Settings::EmailChangeRequests::VerificationsControllerTest < ActionDi
     assert_redirected_to root_path
     assert_equal original_email, @user.reload.email
   end
+
+  test "should not verify expired email change request" do
+    request = @user.email_change_requests.create!(new_email: "new_email@example.com", expires_at: 1.minute.ago)
+    original_email = @user.email
+
+    get app_settings_email_change_requests_verification_path(request.token_digest)
+
+    assert_redirected_to root_path
+    assert_equal original_email, @user.reload.email
+    assert_nil request.reload.accepted_at
+  end
 end

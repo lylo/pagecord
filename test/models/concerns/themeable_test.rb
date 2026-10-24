@@ -18,7 +18,7 @@ class ThemeableTest < ActiveSupport::TestCase
     assert_includes @blog.errors[:theme], "invalid_theme is not a valid theme"
 
     @blog.theme = "mint"
-    @blog.valid?
+    assert @blog.valid?
   end
 
   test "font validation" do
@@ -27,7 +27,7 @@ class ThemeableTest < ActiveSupport::TestCase
     assert_includes @blog.errors[:font], "comic-sans is not a valid font"
 
     @blog.font = "serif"
-    @blog.valid?
+    assert @blog.valid?
   end
 
   test "width validation" do
@@ -36,7 +36,7 @@ class ThemeableTest < ActiveSupport::TestCase
     assert_includes @blog.errors[:width], "extra-wide is not a valid width"
 
     @blog.width = "wide"
-    @blog.valid?
+    assert @blog.valid?
   end
 
   test "should validate custom theme colors with valid hex codes" do
