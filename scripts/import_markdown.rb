@@ -3,8 +3,8 @@ require "nokogiri"
 require "yaml"
 require_relative "import_helpers"
 
-# Usage: ruby import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--assets-root=/path/to/assets] [--dry-run]
-def import_markdown(path, blog_subdomain, assets_root: nil, dry_run: false)
+# Usage: ruby import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--assets-root=/path/to/assets] [--slug-from-filename] [--tag=name] [--dry-run]
+def import_markdown(path, blog_subdomain, assets_root: nil, slug_from_filename: false, extra_tags: [], dry_run: false)
   include ImportHelpers
   # Find the correct blog
   blog = Blog.find_by(subdomain: blog_subdomain)
@@ -55,19 +55,22 @@ def import_markdown(path, blog_subdomain, assets_root: nil, dry_run: false)
     content = File.read(file_path)
     front_matter, markdown_content = extract_front_matter(content)
     slug = front_matter["slug"]&.to_s
+    slug ||= File.basename(file_path, ".md").parameterize if slug_from_filename
+    link_url = front_matter["link_url"] || front_matter["link"]
     published_at_value = front_matter["published_at"] || front_matter["published_date"] || front_matter["date"]
     published_at = parse_datetime(
       published_at_value&.to_s,
       fallback_message: "Warning: Could not parse date for #{File.basename(file_path)}"
     )
-    tag_list = parse_markdown_tags(front_matter["tags"])
+    tag_list = (parse_markdown_tags(front_matter["tags"]) + extra_tags).uniq
     is_page = truthy?(front_matter["is_page"]) || front_matter["type"].to_s == "page"
     status = falsey?(front_matter["publish"]) || front_matter["status"].to_s == "draft" ? :draft : :published
     markdown_content = markdown_content.gsub(/<!--\s*more\s*-->/, "")
     markdown_content = normalize_markdown_dynamic_variables(markdown_content, is_page: is_page, published_at: published_at)
     markdown_content = normalize_markdown_hard_breaks(markdown_content)
+    markdown_content = normalize_markdown_wrapper_divs(markdown_content)
     markdown_content = normalize_markdown_footnotes(markdown_content, id_prefix: slug.presence || File.basename(file_path, ".md"))
-    html_content = render_markdown_preserving_dynamic_variables(markdown_content)
+    html_content = strip_unsupported_html(render_markdown_preserving_dynamic_variables(markdown_content))
     parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
 
     # Extract title from front matter first, then fall back to first H1
@@ -83,8 +86,8 @@ def import_markdown(path, blog_subdomain, assets_root: nil, dry_run: false)
       end
     end
 
-    # Check if post already exists by title (case-insensitive) or slug
-    existing_post = post_exists?(blog, title) || post_exists_by_slug(blog, slug)
+    # An explicit slug is the post's identity; two posts may share a title
+    existing_post = slug.present? ? post_exists_by_slug(blog, slug) : post_exists?(blog, title)
 
     if existing_post
       puts "Skipping duplicate post: #{title || File.basename(file_path)} (matches existing: '#{existing_post.title}', slug: '#{existing_post.slug}')"
@@ -97,6 +100,7 @@ def import_markdown(path, blog_subdomain, assets_root: nil, dry_run: false)
       title: title,
       slug: slug,
       published_at: published_at,
+      link_url: link_url,
       tag_list: tag_list,
       is_page: is_page,
       status: status
@@ -115,6 +119,7 @@ def import_markdown(path, blog_subdomain, assets_root: nil, dry_run: false)
       puts "[DRY RUN] Would create #{is_page ? 'page' : 'post'}: #{title || File.basename(file_path)}"
       puts "[DRY RUN] Published at: #{published_at}"
       puts "[DRY RUN] Slug: #{post.slug}" if post.slug.present?
+      puts "[DRY RUN] Link URL: #{post.link_url}" if post.link_url.present?
       puts "[DRY RUN] Tags: #{tag_list.join(", ")}" if tag_list.any?
       puts "[DRY RUN] Content length: #{post.content.to_plain_text.length} characters"
 
@@ -172,6 +177,16 @@ end
 
 def normalize_markdown_hard_breaks(markdown)
   markdown.gsub(/\\\r?\n/, "  \n")
+end
+
+# Markdown inside a raw <div> block is not rendered, so a wrapper div on its own
+# line is dropped and its contents render as Markdown. Code fences are left alone.
+def normalize_markdown_wrapper_divs(markdown)
+  in_fence = false
+  markdown.each_line.reject do |line|
+    in_fence = !in_fence if line.start_with?("```")
+    !in_fence && line.match?(%r{\A\s*</?div[^>]*>\s*\z})
+  end.join
 end
 
 def normalize_markdown_dynamic_variables(markdown, is_page:, published_at:)
@@ -249,11 +264,12 @@ end
 # Run the script if executed directly
 if __FILE__ == $PROGRAM_NAME
   if ARGV.length < 2
-    puts "Usage: bundle exec rails runner import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--assets-root=/path/to/assets] [--dry-run]"
+    puts "Usage: bundle exec rails runner import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--assets-root=/path/to/assets] [--slug-from-filename] [--tag=name] [--dry-run]"
     puts "Examples:"
     puts "  bundle exec rails runner import_markdown.rb ./markdown_posts myblog"
     puts "  bundle exec rails runner import_markdown.rb ./single_post.md myblog --dry-run"
     puts "  bundle exec rails runner import_markdown.rb ~/dev/mysite/_posts myblog --assets-root=~/dev/mysite"
+    puts "  bundle exec rails runner import_markdown.rb ~/dev/mysite/photos myblog --assets-root=~/dev/mysite --slug-from-filename --tag=photos"
     return
   end
 
@@ -263,10 +279,16 @@ if __FILE__ == $PROGRAM_NAME
   # Parse optional flags
   dry_run = false
   assets_root = nil
+  slug_from_filename = false
+  extra_tags = []
 
   ARGV[2..-1]&.each do |arg|
     if arg == "--dry-run"
       dry_run = true
+    elsif arg == "--slug-from-filename"
+      slug_from_filename = true
+    elsif arg.start_with?("--tag=")
+      extra_tags << arg.split("=", 2)[1]
     elsif arg.start_with?("--assets-root=")
       assets_root = arg.split("=", 2)[1]
       # Expand ~ to home directory
@@ -278,5 +300,5 @@ if __FILE__ == $PROGRAM_NAME
     puts "=== DRY RUN MODE - No posts will be created ==="
   end
 
-  import_markdown(path, blog_subdomain, assets_root: assets_root, dry_run: dry_run)
+  import_markdown(path, blog_subdomain, assets_root: assets_root, slug_from_filename: slug_from_filename, extra_tags: extra_tags, dry_run: dry_run)
 end

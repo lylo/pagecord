@@ -173,6 +173,33 @@ module ImportHelpers
 
   public
 
+  # Scripts, styles and wrapper divs have no place in a post. Iframes become bare
+  # links, which Pagecord embeds client-side for the sites it supports.
+  def strip_unsupported_html(html)
+    fragment = Nokogiri::HTML::DocumentFragment.parse(html)
+    fragment.css("script, style").each(&:remove)
+    fragment.css("iframe").each do |iframe|
+      url = embed_link(iframe["src"].to_s)
+      url ? iframe.replace(%(<p><a href="#{url}">#{url}</a></p>)) : iframe.remove
+    end
+    fragment.css("div").each { |div| div.replace(div.children) }
+    fragment.css("p").each { |paragraph| paragraph.remove if paragraph.text.strip.blank? && paragraph.element_children.empty? }
+    fragment.to_html
+  end
+
+  def embed_link(src)
+    case src
+    when %r{youtube(?:-nocookie)?\.com/embed/([\w-]+)}
+      "https://www.youtube.com/watch?v=#{$1}"
+    when %r{player\.vimeo\.com/video/(\d+)}
+      "https://vimeo.com/#{$1}"
+    when %r{embed\.(music|podcasts)\.apple\.com/(.+)}
+      "https://#{$1}.apple.com/#{$2}"
+    else
+      src.sub(%r{\A//}, "https://").presence
+    end
+  end
+
   # Check if a post already exists by title (case-insensitive) or slug
   def post_exists?(blog, title)
     return false unless title
