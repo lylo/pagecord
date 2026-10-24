@@ -23,9 +23,16 @@ Pages are for content that lives outside your blog feed. Use them for an About p
 
 By default, your blog's home page shows your posts. You can replace this with a custom page:
 
-1. Create a new page (the title can be left blank for home pages)
-2. Publish it
-3. Open **Page settings** and choose **Make home page**
+1. Go to **Pages** in your dashboard
+2. Click **Create Home Page**
+3. Write your content (the title can be left blank)
+4. Click **Publish**
+
+To use a page you've already written instead, open it, go to **Page settings** and choose **Make home page**.
+
+Your home page is marked 🏠 in your list of pages. To go back to showing your posts, open it, go to **Home page settings** and choose **Unlink home page**. The page itself is kept.
+
+You can have one home page at a time, so these options are only shown while you don't have one.
 
 Your custom home page can include [dynamic variables](https://help.pagecord.com/dynamic-variables-for-pages) to display post lists, tags, a search box, and more.
 
