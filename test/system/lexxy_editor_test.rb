@@ -203,6 +203,25 @@ class LexxyEditorTest < ApplicationSystemTestCase
     assert_equal expected, toolbar_control_names
   end
 
+  test "the link dialog accepts a path on the blog" do
+    post = @user.blog.posts.create!(title: "Links", content: "<p>About</p>")
+
+    visit edit_app_post_path(post)
+    wait_for_editor
+
+    find("lexxy-editor .lexxy-editor__content p").double_click
+    find("lexxy-toolbar button[name=link]").click
+
+    input = find("lexxy-link-dropdown input")
+    input.fill_in(with: "example.com")
+    assert_not evaluate_script("document.querySelector('lexxy-link-dropdown input').checkValidity()")
+
+    input.fill_in(with: "/about")
+    find("lexxy-link-dropdown button[value=link]").click
+
+    assert_selector "lexxy-editor .lexxy-editor__content a[href='/about']", wait: 2
+  end
+
   test "the bio editor does not offer footnotes" do
     visit app_settings_about_path
 
