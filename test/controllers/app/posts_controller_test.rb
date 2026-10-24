@@ -457,6 +457,16 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, "Mobile Post"
   end
 
+  test "index titles image-only posts with one rich text query" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+    image = ActionText::Attachment.from_attachable(blob, caption: "Harbour at dusk").to_html
+    @user.blog.posts.create!(content: image)
+    @user.blog.posts.create!(content: image)
+
+    assert_queries_match(/action_text_rich_texts/, count: 1) { get app_posts_path }
+    assert_select "span", text: "Harbour at dusk", count: 2
+  end
+
   test "index links to the tag management screen" do
     get app_posts_path
 

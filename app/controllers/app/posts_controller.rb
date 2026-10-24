@@ -38,6 +38,7 @@ class App::PostsController < App::BaseController
     @drafts_count = @blog.posts.kept.draft.count
     @posts_count = @blog.posts.kept.published.count
     @tab = params[:tab].presence_in(%w[ published drafts ]) || default_tab
+    preload_untitled_content(@tab == "published" ? @posts : @drafts)
   end
 
   def new
@@ -83,6 +84,10 @@ class App::PostsController < App::BaseController
       @posts.empty? && @drafts.any? ? "drafts" : "published"
     end
 
+    def preload_untitled_content(posts)
+      untitled = posts.select { |post| post.title.blank? && post.text_summary.blank? }
+      ActiveRecord::Associations::Preloader.new(records: untitled, associations: :rich_text_content).call
+    end
 
     def post_params
       status = params.dig(:post, :status) == "draft" ? :draft : :published
