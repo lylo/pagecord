@@ -121,17 +121,6 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Hacker News", User.last.signup_source_note
   end
 
-  test "should create user with marketing consent" do
-    assert_difference("User.count") do
-      assert_emails 1 do
-        post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ], marketing_consent: true }, rendered_at: signed_rendered_at }
-      end
-    end
-
-    assert_redirected_to signups_thanks_path
-    assert User.last.marketing_consent
-  end
-
   test "should create user with timezone" do
     assert_difference("User.count") do
       assert_emails 1 do
@@ -186,7 +175,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create user if honeypot field is populated" do
     assert_no_difference("User.count") do
-      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] } }
+      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at }
     end
 
     assert_response :unprocessable_entity
@@ -195,7 +184,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create user if form rendered and submitted within 5 seconds" do
     assert_no_difference("User.count") do
-      post signups_url, params: { email_confirmation: "test@example.com", user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at(1.second.ago) }
+      post signups_url, params: { user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at(1.second.ago) }
     end
 
     assert_response :unprocessable_entity

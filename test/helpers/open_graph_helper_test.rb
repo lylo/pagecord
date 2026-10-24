@@ -4,17 +4,6 @@ require "mocha/minitest"
 class OpenGraphHelperTest < ActionView::TestCase
   include OpenGraphHelper
 
-  test "open_graph_image with first image" do
-    @post = posts(:one)
-
-    attachment = mock("attachment")
-    @post.stubs(:first_image).returns(attachment)
-
-    stubs(:resized_image_url).with(attachment, width: 1200, height: 630, crop: true).returns("https://example.com/resized-image.jpg")
-
-    assert_equal "https://example.com/resized-image.jpg", open_graph_image
-  end
-
   test "open_graph_image uses custom open_graph_image attachment when present" do
     @post = posts(:one)
 

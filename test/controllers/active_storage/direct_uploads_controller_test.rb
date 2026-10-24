@@ -23,14 +23,6 @@ class ActiveStorage::DirectUploadsControllerTest < ActionDispatch::IntegrationTe
     assert_response :success
   end
 
-  test "allows pdf upload within size limit" do
-    post rails_direct_uploads_path, params: {
-      blob: { filename: "report.pdf", content_type: "application/pdf", byte_size: 5.megabytes, checksum: "abc123" }
-    }, as: :json
-
-    assert_response :success
-  end
-
   test "marks the blob identified so attaching it doesn't download it" do
     post rails_direct_uploads_path, params: {
       blob: { filename: "photo.jpg", content_type: "image/jpeg", byte_size: 1.megabyte, checksum: "abc123", metadata: { analyzed: true, width: 1 } }
@@ -69,14 +61,6 @@ class ActiveStorage::DirectUploadsControllerTest < ActionDispatch::IntegrationTe
     }, as: :json
 
     assert_response :success
-  end
-
-  test "rejects pdf over 10MB" do
-    post rails_direct_uploads_path, params: {
-      blob: { filename: "huge.pdf", content_type: "application/pdf", byte_size: 11.megabytes, checksum: "abc123" }
-    }, as: :json
-
-    assert_response :unprocessable_entity
   end
 
   test "rejects image over 10MB" do

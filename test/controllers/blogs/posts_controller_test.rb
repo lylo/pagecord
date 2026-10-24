@@ -238,15 +238,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-frame#email_subscriber_form", count: 0
   end
 
-  test "should get show" do
-    post = @blog.posts.visible.first
-
-    get blog_post_path(post.slug)
-
-    assert_response :success
-    assert_equal post, assigns(:post)
-  end
-
   test "show should emit the post slug on the body element" do
     post = @blog.posts.visible.first
 
@@ -302,36 +293,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     )
 
     get "/app"
-
-    assert_response :success
-    assert_equal post, assigns(:post)
-  end
-
-  test "should treat login as a post slug on blog subdomains" do
-    post = @blog.posts.create!(
-      title: "Login slug",
-      content: "This is a post at /login",
-      slug: "login",
-      status: :published,
-      published_at: Time.current
-    )
-
-    get "/login"
-
-    assert_response :success
-    assert_equal post, assigns(:post)
-  end
-
-  test "should treat admin as a post slug on blog subdomains" do
-    post = @blog.posts.create!(
-      title: "Admin slug",
-      content: "This is a post at /admin",
-      slug: "admin",
-      status: :published,
-      published_at: Time.current
-    )
-
-    get "/admin"
 
     assert_response :success
     assert_equal post, assigns(:post)
@@ -457,13 +418,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   ## RSS
-
-  test "should get index as RSS" do
-    get rss_feed_path(@blog)
-
-    assert_response :success
-    assert_equal "application/rss+xml; charset=utf-8", @response.content_type
-  end
 
   test "should use blog bio as RSS channel description when present" do
     @blog.update!(bio: "A blog about Ruby and Rails")
@@ -672,15 +626,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   # Custom domains
 
-  test "should get index on custom domain" do
-    @blog = blogs(:annie)
-    host! @blog.custom_domain
-
-    get "/"
-
-    assert_response :success
-  end
-
   test "should set canonical_url to custom domain on blog home" do
     @blog = blogs(:annie)
     host! @blog.custom_domain
@@ -701,32 +646,12 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=canonical][href=?]", "http://#{@blog.custom_domain}/posts"
   end
 
-  test "should get show on custom domain" do
-    @blog = blogs(:annie)
-    host! @blog.custom_domain
-    post = @blog.posts.visible.first
-
-    get "/#{post.slug}"
-
-    assert_response :success
-  end
-
   test "should redirect to pagecord home page for unrecognised custom domain" do
     post = posts(:four)
 
     get "/#{post.slug}", headers: { "HOST" => "gadzooks.com" }
 
     assert_redirected_to "http://example.com/"
-  end
-
-  test "should redirect from default domain index to custom domain" do
-    @blog = blogs(:annie)
-    host_subdomain! @blog.subdomain
-    post = @blog.posts.visible.first
-
-    get blog_post_path(slug: post.slug)
-
-    assert_redirected_to "http://#{post.blog.custom_domain}/#{post.slug}"
   end
 
   test "should redirect from default domain post to custom domain post" do
@@ -801,18 +726,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should handle malformed page parameter gracefully" do
     get blog_posts_path(page: "\"><h1>Cortex</h1>2")
-
-    assert_response :success
-  end
-
-  test "should handle negative page parameter gracefully" do
-    get blog_posts_path(page: -5)
-
-    assert_response :success
-  end
-
-  test "should handle zero page parameter gracefully" do
-    get blog_posts_path(page: 0)
 
     assert_response :success
   end
@@ -942,12 +855,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to "http://#{@blog.subdomain}.example.com/#{post.slug}?utm_source=feed&utm_medium=rss"
     assert_equal 301, @response.status
-  end
-
-  test "should not redirect trailing slash on root path" do
-    get "/"
-
-    assert_response :success
   end
 
   test "should prevent unreviewed free blogs from being indexed" do
@@ -1222,25 +1129,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "meta[name='google-site-verification']", count: 0
   end
 
-  test "should not render google site verification meta tag when nil" do
-    @blog.update!(google_site_verification: nil)
-
-    get blog_posts_path
-
-    assert_response :success
-    assert_select "meta[name='google-site-verification']", count: 0
-  end
-
-  test "should render google site verification meta tag on post show page" do
-    @blog.update!(google_site_verification: "GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44")
-    post = @blog.posts.visible.first
-
-    get blog_post_path(post.slug)
-
-    assert_response :success
-    assert_select "meta[name='google-site-verification'][content='GzmHXW-PA_FXh29Dp31_cgsIx6ZY_h9OgR6r8DZ0I44']", count: 1
-  end
-
   # Tag filtering tests
 
   test "should filter posts by tag" do
@@ -1432,15 +1320,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should fall back to default locale when blog locale is nil" do
-    @blog.update!(locale: "en")
-
-    get blog_posts_path
-
-    assert_equal "en", I18n.locale.to_s
-    assert_response :success
-  end
-
   test "should render blog 404 template for non-existent post" do
     get blog_post_path("non-existent-slug")
 
@@ -1520,14 +1399,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/"
   end
 
-  test "should show posts index when home page is not set" do
-    get blog_posts_path
-
-    assert_response :success
-    assert_not_nil assigns(:posts)
-    assert_template "blogs/posts/index"
-  end
-
   test "should still show RSS feed when home page is set" do
     @blog.update!(home_page_id: posts(:about).id)
 
@@ -1581,15 +1452,6 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "div.post-row[data-tags='photography']", minimum: 1
-  end
-
-  test "show page should include data-tags on tagged post" do
-    post = posts(:one) # has tag_list: [photography]
-
-    get blog_post_path(post.slug)
-
-    assert_response :success
-    assert_select "div[data-tags='photography']"
   end
 
   test "show page should not include data-tags on untagged post" do

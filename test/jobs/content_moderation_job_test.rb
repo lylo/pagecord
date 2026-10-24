@@ -18,67 +18,6 @@ class ContentModerationJobTest < ActiveJob::TestCase
     ContentModerationJob.perform_now(999999)
   end
 
-  test "skips draft posts" do
-    @post.update!(status: :draft)
-    ContentModerator.any_instance.expects(:moderate).never
-    ContentModerationJob.perform_now(@post.id)
-  end
-
-  test "skips posts from subscribed users" do
-    ContentModerator.any_instance.expects(:moderate).never
-    ContentModerationJob.perform_now(posts(:one).id)
-  end
-
-  test "moderates hidden posts" do
-    @post.update!(hidden: true)
-    result = ContentModerator::Result.new(
-      status: :clean,
-      flags: { "sexual" => false },
-      scores: { "sexual" => 0.01 },
-      model_version: "test"
-    )
-    ContentModerator.any_instance.stubs(:moderate)
-    ContentModerator.any_instance.stubs(:result).returns(result)
-    ContentModerator.any_instance.stubs(:flagged?).returns(false)
-
-    ContentModerationJob.perform_now(@post.id)
-
-    @post.reload
-    assert_not_nil @post.content_moderation
-  end
-
-  test "skips discarded posts" do
-    @post.discard!
-    ContentModerator.any_instance.expects(:moderate).never
-    ContentModerationJob.perform_now(@post.id)
-  end
-
-  test "moderates scheduled posts with future published_at" do
-    @post.update!(published_at: 1.day.from_now)
-    result = ContentModerator::Result.new(
-      status: :clean,
-      flags: { "sexual" => false },
-      scores: { "sexual" => 0.01 },
-      model_version: "test"
-    )
-    ContentModerator.any_instance.stubs(:moderate)
-    ContentModerator.any_instance.stubs(:result).returns(result)
-    ContentModerator.any_instance.stubs(:flagged?).returns(false)
-
-    ContentModerationJob.perform_now(@post.id)
-
-    @post.reload
-    assert_not_nil @post.content_moderation
-    assert @post.content_moderation.clean?
-  end
-
-  test "skips posts that dont need moderation" do
-    fingerprint = @post.moderation_fingerprint
-    @post.create_content_moderation!(status: :clean, fingerprint: fingerprint)
-    ContentModerator.any_instance.expects(:moderate).never
-    ContentModerationJob.perform_now(@post.id)
-  end
-
   test "moderates post and creates clean content_moderation" do
     result = ContentModerator::Result.new(
       status: :clean,

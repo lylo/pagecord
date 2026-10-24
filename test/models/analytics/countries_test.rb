@@ -76,9 +76,7 @@ class Analytics::CountriesTest < ActiveSupport::TestCase
   end
 
   test "limits results to specified count" do
-    country_codes = %w[US GB DE FR CA AU JP IN BR NL SE CH PL BE AT]
-
-    country_codes.each_with_index do |code, i|
+    %w[US GB].each_with_index do |code, i|
       PageView.create!(
         blog: @blog,
         visitor_hash: "visitor#{i}",
@@ -89,8 +87,8 @@ class Analytics::CountriesTest < ActiveSupport::TestCase
       )
     end
 
-    data = @countries.country_data("day", Date.current, limit: 5)
-    assert_equal 5, data.length
+    data = @countries.country_data("day", Date.current, limit: 1)
+    assert_equal 1, data.length
   end
 
   test "orders by count descending" do

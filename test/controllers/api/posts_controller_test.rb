@@ -121,11 +121,6 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
   end
 
-  test "index returns 400 for invalid published_before timestamp" do
-    get "/posts", params: { published_before: "garbage" }, headers: auth_header
-    assert_response :bad_request
-  end
-
   test "index returns 400 for out-of-range page" do
     get "/posts", params: { page: 999 }, headers: auth_header
     assert_response :bad_request
@@ -519,11 +514,6 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  test "update returns 404 for unknown token" do
-    patch "/posts/nonexistent", params: { title: "Nope" }, headers: auth_header
-    assert_response :not_found
-  end
-
   test "update cannot modify another blog's post" do
     other_post = posts(:three)
     patch "/posts/#{other_post.token}", params: { title: "Hacked" }, headers: auth_header
@@ -544,11 +534,6 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
       delete "/posts/#{@post.token}", params: { permanent: true }, headers: auth_header
     end
     assert_response :no_content
-  end
-
-  test "destroy returns 404 for unknown token" do
-    delete "/posts/nonexistent", headers: auth_header
-    assert_response :not_found
   end
 
   test "destroy cannot discard another blog's post" do

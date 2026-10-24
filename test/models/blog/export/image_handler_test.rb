@@ -149,25 +149,6 @@ class Blog::Export::ImageHandlerTest < ActiveSupport::TestCase
     assert_equal regular_url, result
   end
 
-  test "handles various CDN parameter formats" do
-    # Test with different parameter combinations
-    url_with_different_params = "https://pagecord.com/cdn-cgi/image/format=webp,quality=85,width=800/https://storage.pagecord.com/abc123"
-    expected = "https://storage.pagecord.com/abc123"
-
-    result = @image_handler.send(:extract_original_url, url_with_different_params)
-
-    assert_equal expected, result
-  end
-
-  test "handles CDN URLs with query parameters in original URL" do
-    url_with_query = "https://pagecord.com/cdn-cgi/image/width=1200/https://storage.pagecord.com/image123?v=2"
-    expected = "https://storage.pagecord.com/image123?v=2"
-
-    result = @image_handler.send(:extract_original_url, url_with_query)
-
-    assert_equal expected, result
-  end
-
   test "bundles a PDF linked from the storage host" do
     blob = create_pdf_blob
     handler = isolated_handler

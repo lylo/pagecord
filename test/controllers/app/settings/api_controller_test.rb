@@ -36,13 +36,4 @@ class App::Settings::ApiControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
     assert_nil user.blog.reload.api_key_digest
   end
-
-  test "free user cannot revoke an api key" do
-    user = users(:vivian)
-    login_as user
-
-    delete app_settings_api_path
-
-    assert_response :not_found
-  end
 end

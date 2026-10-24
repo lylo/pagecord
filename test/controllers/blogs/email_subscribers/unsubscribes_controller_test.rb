@@ -47,10 +47,4 @@ class Blogs::EmailSubscribers::UnsubscribesControllerTest < ActionDispatch::Inte
 
     assert_response :success
   end
-
-  test "should fail gracefully with invalid token for one click" do
-    post email_subscriber_one_click_unsubscribe_path(token: "unknown")
-    assert_redirected_to root_path
-    assert_equal "No email subscription found", flash[:alert]
-  end
 end

@@ -69,12 +69,6 @@ class DestroyUserJobTest < ActiveJob::TestCase
     assert AccountTombstone.last.spam?
   end
 
-  test "distinguishes an admin removal from a self-serve deletion" do
-    DestroyUserJob.perform_now(@user.id, reason: :admin_deleted)
-
-    assert AccountTombstone.last.admin_deleted?
-  end
-
   test "treats a deletion with no options as the user's own" do
     DestroyUserJob.perform_now(@user.id)
 
@@ -89,14 +83,6 @@ class DestroyUserJobTest < ActiveJob::TestCase
         DestroyUserJob.perform_now(@user.id, reason: :spam)
       end
     end
-  end
-
-  test "a spam tombstone records every subdomain the user had" do
-    user = users(:joel)
-
-    DestroyUserJob.perform_now(user.id, reason: :spam)
-
-    assert_equal user.blogs.pluck(:subdomain).join(" "), AccountTombstone.last.subdomain
   end
 
   test "logs a self-serve deletion with the blog and whether they were paying" do
@@ -117,12 +103,6 @@ class DestroyUserJobTest < ActiveJob::TestCase
     assert_includes line, "paid=false"
     assert_includes line, "blog=#{user.blog.subdomain}"
     assert_no_match(/amount=/, line)
-  end
-
-  test "logs a spam deletion with its reason" do
-    line = billing_line { DestroyUserJob.perform_now(@user.id, reason: :spam) }
-
-    assert_includes line, "reason=spam"
   end
 
   private

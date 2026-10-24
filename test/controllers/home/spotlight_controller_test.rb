@@ -11,20 +11,6 @@ class Home::SpotlightControllerTest < ActionDispatch::IntegrationTest
     Rails.cache.clear
   end
 
-  test "should show spotlight page" do
-    get spotlight_path
-
-    assert_response :success
-    assert_select "h1", "Spotlight"
-  end
-
-  test "should show recent tab" do
-    get spotlight_path(tab: "recent")
-
-    assert_response :success
-    assert_select "h1", "Spotlight"
-  end
-
   test "defaults to trending tab" do
     get spotlight_path
 

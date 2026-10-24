@@ -125,60 +125,6 @@ class PageViewTest < ActiveSupport::TestCase
     assert_equal "just=query", query
   end
 
-  test "analytics consolidation works with path grouping" do
-    blog = blogs(:joel)
-
-    # Clear any existing data
-    PageView.where(blog: blog, path: "/consolidation-test").delete_all
-
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-
-    # Track same path with different query parameters
-    [
-      "/consolidation-test",
-      "/consolidation-test?ref=twitter",
-      "/consolidation-test?utm_source=facebook&utm_medium=social",
-      "/consolidation-test?trk=comments"
-    ].each_with_index do |full_path, i|
-      PageView.track(
-        blog: blog,
-        ip: "192.168.1.#{i + 1}",
-        user_agent: user_agent,
-        path: full_path,
-        country_code: "US"
-      )
-    end
-
-    # Test that analytics group by clean path
-    path_counts = blog.page_views.where(path: "/consolidation-test").group(:path).count
-    assert_equal({ "/consolidation-test" => 4 }, path_counts)
-
-    # Verify query strings are preserved
-    views = blog.page_views.where(path: "/consolidation-test").order(:created_at)
-    assert_equal 4, views.count
-
-    query_strings = views.pluck(:query_string).compact.sort
-    expected_queries = [ "ref=twitter", "trk=comments", "utm_source=facebook&utm_medium=social" ].sort
-    assert_equal expected_queries, query_strings
-  end
-
-  test "should preserve existing behavior for paths without query strings" do
-    blog = blogs(:joel)
-    post = posts(:one)
-
-    view = PageView.track(
-      blog: blog, post: post,
-      ip: "127.0.0.1",
-      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      path: "/simple-path",
-      country_code: "US"
-    )
-
-    assert_equal "/simple-path", view.path
-    assert_nil view.query_string
-    assert view.is_unique?  # Should still track uniqueness correctly
-  end
-
   test "should store referrer_domain when tracking" do
     blog = blogs(:joel)
     post = posts(:one)

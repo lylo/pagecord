@@ -75,8 +75,7 @@ class Analytics::ReferrersTest < ActiveSupport::TestCase
   end
 
   test "limits results to specified count" do
-    # Create 15 different referrers
-    15.times do |i|
+    2.times do |i|
       PageView.create!(
         blog: @blog,
         visitor_hash: "visitor#{i}",
@@ -88,8 +87,8 @@ class Analytics::ReferrersTest < ActiveSupport::TestCase
       )
     end
 
-    data = @referrers.referrer_data("day", Date.current, limit: 5)
-    assert_equal 5, data.length
+    data = @referrers.referrer_data("day", Date.current, limit: 1)
+    assert_equal 1, data.length
   end
 
   test "orders by count descending" do

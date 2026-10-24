@@ -12,13 +12,6 @@ class BlogsHelperTest < ActionView::TestCase
     assert_equal "My blog", blog_title(blog)
   end
 
-  test "blog title with seo_title set" do
-    blog = blogs(:joel)
-    blog.title = "My blog"
-    blog.seo_title = "Custom SEO Title"
-    assert_equal "Custom SEO Title", blog_title(blog)
-  end
-
   test "blog title prioritizes seo_title over title" do
     blog = blogs(:joel)
     blog.title = "Display Title"

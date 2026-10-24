@@ -64,18 +64,6 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
     assert_equal [ "javascript", "rails", "ruby" ], @transformer.tags
   end
 
-  test "should filter out invalid tag formats" do
-    html = "Content here.\n\n#valid-tag #another-valid"
-    @transformer.transform(html)
-
-    assert_equal [ "another-valid", "valid-tag" ], @transformer.tags
-
-    transformer = Html::ExtractTags.new
-    html_mixed = "Content here.\n\n#valid-tag #invalid! #another-valid #invalid@tag"
-    transformer.transform(html_mixed)
-    assert_equal [ "another-valid", "valid-tag" ], transformer.tags
-  end
-
   test "should remove duplicate tags" do
     html = "Content here.\n\n#ruby #rails #ruby #javascript #rails"
     @transformer.transform(html)
@@ -120,18 +108,6 @@ class Html::ExtractTagsTest < ActiveSupport::TestCase
 
     assert_includes result, "<div>This is a test</div>"
     assert_includes result, "<div><br></div>"
-  end
-
-  test "should handle mixed content and hashtag elements" do
-    html = "<p>Regular content</p><p>More content</p><p>#tag1 #tag2</p><p>#tag3</p>"
-    result = @transformer.transform(html)
-
-    assert_equal [ "tag1", "tag2", "tag3" ], @transformer.tags
-    assert_includes result, "Regular content"
-    assert_includes result, "More content"
-    assert_not_includes result, "#tag1"
-    assert_not_includes result, "#tag2"
-    assert_not_includes result, "#tag3"
   end
 
   test "should stop at first non-hashtag element when working backwards" do

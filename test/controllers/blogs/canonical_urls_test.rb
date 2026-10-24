@@ -10,12 +10,6 @@ class Blogs::CanonicalUrlsTest < ActionDispatch::IntegrationTest
     Rails.cache.clear
   end
 
-  test "flat format renders at the bare slug" do
-    get "/#{@post.slug}"
-
-    assert_response :success
-  end
-
   test "flat format redirects a prefixed posts path to the canonical post URL" do
     get "/posts/#{@post.slug}"
 

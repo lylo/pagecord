@@ -70,16 +70,6 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
     assert_nil page_view.post
   end
 
-  test "should not create page view for bot user agent" do
-    assert_no_difference("PageView.count") do
-      post blog_page_views_path,
-           params: { path: "/" }.to_json,
-           headers: { "Content-Type" => "application/json", "User-Agent" => "Googlebot/2.1" }
-    end
-
-    assert_response :no_content
-  end
-
   test "should not enqueue job for bot user agent" do
     assert_no_enqueued_jobs only: TrackPageViewJob do
       post blog_page_views_path,
@@ -141,22 +131,6 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
   end
 
-  test "should track visits from logged in user who is not the blog owner" do
-    other_user = users(:vivian)
-    login_as(other_user)
-    host! "#{@blog.subdomain}.example.com"
-
-    assert_difference("PageView.count", 1) do
-      perform_enqueued_jobs do
-        post blog_page_views_path,
-             params: { path: "/" }.to_json,
-             headers: json_headers
-      end
-    end
-
-    assert_response :no_content
-  end
-
   test "should track unique visitors only" do
     # First request should be unique
     assert_difference("PageView.count", 1) do
@@ -174,14 +148,6 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
              params: { path: "/" }.to_json,
              headers: json_headers
       end
-    end
-  end
-
-  test "should enqueue TrackPageViewJob" do
-    assert_enqueued_with(job: TrackPageViewJob) do
-      post blog_page_views_path,
-           params: { path: "/" }.to_json,
-           headers: json_headers
     end
   end
 

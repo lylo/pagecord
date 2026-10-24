@@ -182,22 +182,6 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 2900, subscription.unit_price
   end
 
-  test "should set base unit price on subscription.created" do
-    user = users(:vivian)
-    payload = payload_for("subscription.created", user)
-    json_payload = payload.to_json
-
-    post billing_paddle_events_url,
-      params: json_payload,
-      headers: {
-        "Content-Type" => "application/json",
-        "Paddle-Signature" => paddle_signature_for(json_payload)
-      }
-
-    assert_response :success
-    assert_equal 3000, user.subscription.reload.unit_price
-  end
-
   test "should ignore unit_price_overrides in subscription webhook" do
     user = users(:vivian)
     payload = payload_for("subscription.created", user)

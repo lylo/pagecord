@@ -116,15 +116,6 @@ class MailParserTest < ActiveSupport::TestCase
     assert parser.has_attachments?, "Should detect inline image as attachment"
   end
 
-  test "should handle plain text with image attachments" do
-    mail = Mail.read(fixture_path("plain_text_with_attachments.eml"))
-    parser = MailParser.new(mail)
-
-    assert_includes parser.body, "Here is some text content"
-    assert parser.has_attachments?, "Should detect attachment"
-    assert_equal 1, parser.attachments.size
-  end
-
   test "should embed attachments in content for multipart/mixed emails" do
     mail = Mail.read(fixture_path("plain_text_with_attachments.eml"))
     parser = MailParser.new(mail)

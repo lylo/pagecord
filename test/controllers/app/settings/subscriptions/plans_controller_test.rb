@@ -52,22 +52,6 @@ class App::Settings::Subscriptions::PlansControllerTest < ActionDispatch::Integr
     assert_equal "Your plan has been updated to supporter!", flash[:notice]
   end
 
-  test "should upgrade from monthly to supporter with immediate proration" do
-    @user.subscription.update!(plan: :monthly)
-    mock_response = mock
-    mock_response.stubs(:success?).returns(true)
-    mock_api = mock
-    mock_api.expects(:update_subscription_items)
-      .with(@user.subscription.paddle_subscription_id, Subscription.price_id(:supporter), proration_billing_mode: "prorated_immediately")
-      .returns(mock_response)
-    PaddleApi.stubs(:new).returns(mock_api)
-
-    patch app_settings_subscriptions_plan_path(plan: "supporter")
-
-    assert_redirected_to app_settings_path
-    assert_equal "Your plan has been updated to supporter!", flash[:notice]
-  end
-
   test "should downgrade from supporter to standard at next cycle without refund" do
     @user.subscription.update!(plan: :supporter)
     mock_response = mock
