@@ -1,9 +1,25 @@
 require "test_helper"
 
 class Post::FrontMatterTest < ActiveSupport::TestCase
-  test "parses title" do
-    attrs = Post::FrontMatter.parse("title: Hello World")
-    assert_equal "Hello World", attrs[:title]
+  test "maps every supported key to its post attribute" do
+    yaml = <<~YAML
+      title: Hello
+      slug: hello
+      published_at: '2024-06-15'
+      canonical_url: https://example.com/post
+      link_url: https://example.com/article
+      locale: fr
+      status: draft
+      hidden: true
+      tags: ruby
+      open_graph_image: text
+    YAML
+
+    assert_equal({
+      title: "Hello", slug: "hello", published_at: "2024-06-15",
+      canonical_url: "https://example.com/post", link_url: "https://example.com/article",
+      locale: "fr", status: "draft", hidden: "true", tags_string: "ruby", open_graph_image: "text"
+    }, Post::FrontMatter.parse(yaml))
   end
 
   test "maps date to published_at" do
@@ -14,16 +30,6 @@ class Post::FrontMatterTest < ActiveSupport::TestCase
   test "parses tags as array" do
     attrs = Post::FrontMatter.parse("tags:\n  - ruby\n  - rails")
     assert_equal "ruby, rails", attrs[:tags_string]
-  end
-
-  test "parses tags as single value" do
-    attrs = Post::FrontMatter.parse("tags: ruby")
-    assert_equal "ruby", attrs[:tags_string]
-  end
-
-  test "parses hidden" do
-    attrs = Post::FrontMatter.parse("hidden: true")
-    assert_equal "true", attrs[:hidden]
   end
 
   test "ignores unknown keys" do

@@ -53,10 +53,11 @@ class Css::SanitizerTest < ActiveSupport::TestCase
     assert_includes result, "color: red"
   end
 
-  test "allows Google Fonts @import" do
-    css = '@import url("https://fonts.googleapis.com/css2?family=Roboto");'
-    result = Css::Sanitizer.sanitize_stylesheet(css)
-    assert_includes result, "fonts.googleapis.com"
+  test "allows @import from Google Fonts and Bunny Fonts" do
+    %w[fonts.googleapis.com fonts.gstatic.com fonts.bunny.net].each do |host|
+      css = %(@import url("https://#{host}/css2?family=Roboto");)
+      assert_includes Css::Sanitizer.sanitize_stylesheet(css), host
+    end
   end
 
   test "strips disallowed @import URLs" do

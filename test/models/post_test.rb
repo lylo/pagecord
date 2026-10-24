@@ -1,6 +1,8 @@
 require "test_helper"
 
 class PostTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   test "should generate a token on create" do
     post = Post.create(blog: blogs(:joel), title: "a new post", content: "content")
     assert post.token.present?
@@ -563,6 +565,15 @@ class PostTest < ActiveSupport::TestCase
     Blog.any_instance.expects(:touch).never
 
     blog.destroy!
+  end
+
+  test "should purge attachment blobs when a post is destroyed" do
+    post = blogs(:joel).posts.create!(content: "With a file", status: :published)
+    post.attachments.attach(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+
+    assert_difference -> { ActiveStorage::Blob.count }, -1 do
+      perform_enqueued_jobs { post.destroy! }
+    end
   end
 
   test "should touch blog when post status changes to published" do
