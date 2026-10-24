@@ -3,8 +3,8 @@ require "nokogiri"
 require "yaml"
 require_relative "import_helpers"
 
-# Usage: ruby import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--assets-root=/path/to/assets] [--slug-from-filename] [--tag=name] [--dry-run]
-def import_markdown(path, blog_subdomain, assets_root: nil, slug_from_filename: false, extra_tags: [], dry_run: false)
+# Usage: ruby import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--assets-root=/path/to/assets] [--slug-from-filename] [--tag=name] [--gallery] [--dry-run]
+def import_markdown(path, blog_subdomain, assets_root: nil, slug_from_filename: false, extra_tags: [], gallery: false, dry_run: false)
   include ImportHelpers
   # Find the correct blog
   blog = Blog.find_by(subdomain: blog_subdomain)
@@ -71,6 +71,7 @@ def import_markdown(path, blog_subdomain, assets_root: nil, slug_from_filename: 
     markdown_content = normalize_markdown_wrapper_divs(markdown_content)
     markdown_content = normalize_markdown_footnotes(markdown_content, id_prefix: slug.presence || File.basename(file_path, ".md"))
     html_content = strip_unsupported_html(render_markdown_preserving_dynamic_variables(markdown_content))
+    html_content = group_consecutive_images(html_content) if gallery
     parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
 
     # Extract title from front matter first, then fall back to first H1
@@ -189,6 +190,29 @@ def normalize_markdown_wrapper_divs(markdown)
   end.join
 end
 
+# Images on consecutive lines become one attachment gallery, which is what Lexxy
+# builds when several images are added at once.
+def group_consecutive_images(html)
+  fragment = Nokogiri::HTML::DocumentFragment.parse(html)
+  image_paragraph = ->(node) do
+    node.element? && node.name == "p" &&
+      node.children.reject { |child| child.text? && child.text.strip.empty? }.then { |kids| kids.size == 1 && kids.first.name == "img" }
+  end
+
+  fragment.children.reject { |node| node.text? && node.text.strip.empty? }
+    .slice_when { |a, b| image_paragraph.(a) != image_paragraph.(b) }
+    .each do |run|
+      next unless run.size > 1 && image_paragraph.(run.first)
+
+      gallery = Nokogiri::XML::Node.new("div", fragment.document)
+      gallery["class"] = "attachment-gallery attachment-gallery--#{run.size}"
+      run.first.before(gallery)
+      run.each { |paragraph| gallery.add_child(paragraph.at_css("img")); paragraph.remove }
+    end
+
+  fragment.to_html
+end
+
 def normalize_markdown_dynamic_variables(markdown, is_page:, published_at:)
   normalized = markdown.gsub(/\{\{\s*post_published_date\s*\}\}/, published_at.strftime("%-d %B %Y"))
   return normalized.gsub(/\{\{\s*post_last_modified\s*\}\}/, "{{ updated_at }}") if is_page
@@ -264,12 +288,12 @@ end
 # Run the script if executed directly
 if __FILE__ == $PROGRAM_NAME
   if ARGV.length < 2
-    puts "Usage: bundle exec rails runner import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--assets-root=/path/to/assets] [--slug-from-filename] [--tag=name] [--dry-run]"
+    puts "Usage: bundle exec rails runner import_markdown.rb path/to/markdown/directory_or_file blog_subdomain [--assets-root=/path/to/assets] [--slug-from-filename] [--tag=name] [--gallery] [--dry-run]"
     puts "Examples:"
     puts "  bundle exec rails runner import_markdown.rb ./markdown_posts myblog"
     puts "  bundle exec rails runner import_markdown.rb ./single_post.md myblog --dry-run"
     puts "  bundle exec rails runner import_markdown.rb ~/dev/mysite/_posts myblog --assets-root=~/dev/mysite"
-    puts "  bundle exec rails runner import_markdown.rb ~/dev/mysite/photos myblog --assets-root=~/dev/mysite --slug-from-filename --tag=photos"
+    puts "  bundle exec rails runner import_markdown.rb ~/dev/mysite/photos myblog --assets-root=~/dev/mysite --slug-from-filename --tag=photos --gallery"
     return
   end
 
@@ -281,12 +305,15 @@ if __FILE__ == $PROGRAM_NAME
   assets_root = nil
   slug_from_filename = false
   extra_tags = []
+  gallery = false
 
   ARGV[2..-1]&.each do |arg|
     if arg == "--dry-run"
       dry_run = true
     elsif arg == "--slug-from-filename"
       slug_from_filename = true
+    elsif arg == "--gallery"
+      gallery = true
     elsif arg.start_with?("--tag=")
       extra_tags << arg.split("=", 2)[1]
     elsif arg.start_with?("--assets-root=")
@@ -300,5 +327,5 @@ if __FILE__ == $PROGRAM_NAME
     puts "=== DRY RUN MODE - No posts will be created ==="
   end
 
-  import_markdown(path, blog_subdomain, assets_root: assets_root, slug_from_filename: slug_from_filename, extra_tags: extra_tags, dry_run: dry_run)
+  import_markdown(path, blog_subdomain, assets_root: assets_root, slug_from_filename: slug_from_filename, extra_tags: extra_tags, gallery: gallery, dry_run: dry_run)
 end
