@@ -417,6 +417,16 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "Untitled", post.display_title
   end
 
+  test "display_title should use a sole image's caption, then its alt text" do
+    blog = blogs(:joel)
+    blob = ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+    image = ->(attributes) { ActionText::Attachment.from_attachable(blob, **attributes).to_html }
+
+    assert_equal "Harbour at dusk", blog.posts.new(content: image.(caption: "Harbour at dusk", alt: "Boats")).display_title
+    assert_equal "Boats", blog.posts.new(content: image.(alt: "Boats")).display_title
+    assert_equal "Untitled", blog.posts.new(content: image.(alt: "Boats") + image.(alt: "Sea")).display_title
+  end
+
   test "display_title should not include tags" do
     blog = blogs(:joel)
     post = blog.posts.create!(content: "<p>This is a test</p><p>{{ posts limit:5 }}</p>")

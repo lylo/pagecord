@@ -128,6 +128,8 @@ class Post < ApplicationRecord
       "Home Page"
     elsif text_summary.present?
       text_summary.truncate(64, separator: /\s/)
+    elsif (description = sole_image_description)
+      description.truncate(64, separator: /\s/)
     else
       "Untitled"
     end
@@ -233,6 +235,13 @@ class Post < ApplicationRecord
         .gsub(/<!--\s*more\s*-->/i, "")
         .gsub(/\s+/, " ")
         .strip
+    end
+
+    def sole_image_description
+      return unless content.body.present?
+
+      images = content.body.fragment.find_all("#{ActionText::Attachment.tag_name}[content-type^='image/']")
+      (images.first["caption"].presence || images.first["alt"].presence)&.squish if images.one?
     end
 
     def raw_excerpt_html
