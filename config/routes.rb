@@ -280,6 +280,9 @@ Rails.application.routes.draw do
     get "/:name.rss", to: redirect("/feed.xml")
     get "/rss", to: redirect("/feed.xml")
     get "/posts_feed", to: redirect("/feed.xml")
+    get "/atom.xml", to: redirect("/feed.xml")
+    get "/index.xml", to: redirect("/feed.xml")
+    get "/blog/feed", to: redirect("/feed.xml")
 
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
 

@@ -247,4 +247,12 @@ class Blogs::CanonicalUrlsTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to "/feed.xml"
   end
+
+  test "feed paths from other platforms redirect to the feed" do
+    %w[/atom.xml /index.xml /blog/feed /blog/feed.xml].each do |path|
+      get path
+
+      assert_redirected_to "/feed.xml"
+    end
+  end
 end
