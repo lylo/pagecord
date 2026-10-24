@@ -34,7 +34,7 @@ class Blogs::PostsController < Blogs::BaseController
       .published
       .released
       .for_blog_render
-      .find_by!(slug: blog_params[:slug])
+      .find_by!(slug: blog_params[:slug].downcase)
 
     return redirect_to blog_home_path(@blog), status: :moved_permanently if @post.home_page?
 

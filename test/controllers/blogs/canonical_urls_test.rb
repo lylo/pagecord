@@ -17,6 +17,13 @@ class Blogs::CanonicalUrlsTest < ActionDispatch::IntegrationTest
     assert_equal 301, @response.status
   end
 
+  test "a capitalised slug from an old site redirects to the lowercase post URL" do
+    get "/blog/#{@post.slug.upcase}"
+
+    assert_redirected_to "http://#{@blog.subdomain}.example.com/#{@post.slug}"
+    assert_equal 301, @response.status
+  end
+
   test "flat format redirects a prefixed posts path for pages" do
     page = posts(:about)
 
