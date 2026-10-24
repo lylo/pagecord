@@ -28,6 +28,15 @@ class App::Settings::SenderEmailAddresses::VerificationsControllerTest < ActionD
     assert_match "Invalid or expired verification link", flash[:alert]
   end
 
+  test "should not verify expired sender email address" do
+    sender = @blog.sender_email_addresses.create!(email: "sender@example.com", expires_at: 1.minute.ago)
+
+    get app_settings_sender_email_addresses_verification_path(token: sender.token_digest)
+
+    assert_match "Invalid or expired verification link", flash[:alert]
+    assert_not sender.reload.accepted?
+  end
+
   test "should verify sender email address when logged out" do
     sender = @blog.sender_email_addresses.create!(email: "sender@example.com")
 

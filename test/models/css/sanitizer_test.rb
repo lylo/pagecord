@@ -6,6 +6,11 @@ class Css::SanitizerTest < ActiveSupport::TestCase
     assert_equal "", Css::Sanitizer.sanitize_stylesheet("")
   end
 
+  test "returns empty string for oversized input" do
+    css = "p { color: red; }" + " " * Css::Sanitizer::MAX_CSS_SIZE
+    assert_equal "", Css::Sanitizer.sanitize_stylesheet(css)
+  end
+
   test "preserves CSS custom properties" do
     css = ":root { --theme-bg: #fff; }"
     result = Css::Sanitizer.sanitize_stylesheet(css)
