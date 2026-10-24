@@ -303,7 +303,7 @@ lexxy-link-dropdown {
     flex: 2;
     inline-size: 100%;
     min-inline-size: 30ch;
-    line-height: normal;
+    line-height: inherit;
     padding-block: 0;
     padding-inline: 1ch;
 
