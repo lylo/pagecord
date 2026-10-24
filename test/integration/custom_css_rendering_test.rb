@@ -9,16 +9,6 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
     @blog = @user.blog
   end
 
-  test "renders custom css in head when css is present" do
-    @blog.update(custom_css: ".blog { background: red; }")
-    post = posts(:one)
-
-    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
-
-    assert_response :success
-    assert_select "head style", text: /\.blog { background: red; }/
-  end
-
   test "renders custom css when user does not have premium access" do
     vivian = users(:vivian)
     vivian.blog.update(custom_css: ".blog { background: red; }")

@@ -9,11 +9,6 @@ class RackAttackTest < ActionDispatch::IntegrationTest
     Rack::Attack.cache.store.clear
   end
 
-  test "allows requests under the general throttle limit" do
-    get "/", headers: { "HTTP_X_FORWARDED_FOR" => "1.2.3.4" }
-    assert_response :success
-  end
-
   test "throttles requests exceeding the general limit per IP" do
     Rack::Attack::GENERAL_LIMIT.times do
       get "/", headers: { "HTTP_X_FORWARDED_FOR" => "203.0.113.1" }

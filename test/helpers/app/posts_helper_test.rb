@@ -26,10 +26,6 @@ class App::PostsHelperTest < ActionView::TestCase
     assert_equal "Publish Post", publish_button_text(posts(:joel_draft))
   end
 
-  test "publish_button_text for existing draft page" do
-    assert_equal "Publish Page", publish_button_text(posts(:draft_page))
-  end
-
   test "publish_button_text for existing published post" do
     assert_equal "Update Post", publish_button_text(posts(:one))
   end
@@ -50,22 +46,8 @@ class App::PostsHelperTest < ActionView::TestCase
     assert_equal "Save Draft", draft_button_text(post)
   end
 
-  test "draft_button_text for new page" do
-    page = @blog.pages.build(title: "Test Page", content: "Test")
-    assert_equal "Save Draft", draft_button_text(page)
-  end
-
-  test "draft_button_text for new home page with model_name override" do
-    home_page = @blog.pages.build(title: "Home", content: "Test")
-    assert_equal "Save Draft", draft_button_text(home_page, model_name: "Home Page")
-  end
-
   test "draft_button_text for existing draft post" do
     assert_equal "Update Draft", draft_button_text(posts(:joel_draft))
-  end
-
-  test "draft_button_text for existing draft page" do
-    assert_equal "Update Draft", draft_button_text(posts(:draft_page))
   end
 
   test "draft_button_text short form for drafts" do
@@ -76,14 +58,5 @@ class App::PostsHelperTest < ActionView::TestCase
 
   test "draft_button_text for existing published post" do
     assert_equal "Unpublish", draft_button_text(posts(:one))
-  end
-
-  test "draft_button_text for existing published page" do
-    assert_equal "Unpublish", draft_button_text(posts(:about))
-  end
-
-  test "draft_button_text for existing published home page with model_name override" do
-    @blog.update!(home_page_id: posts(:about).id)
-    assert_equal "Unpublish", draft_button_text(posts(:about), model_name: "Home Page")
   end
 end

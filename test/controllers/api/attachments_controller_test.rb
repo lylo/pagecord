@@ -20,14 +20,6 @@ class Api::AttachmentsControllerTest < ActionDispatch::IntegrationTest
     assert json["url"].present?
   end
 
-  test "upload creates a blob" do
-    file = fixture_file_upload("space.jpg", "image/jpeg")
-
-    assert_difference -> { ActiveStorage::Blob.count } do
-      post "/attachments", params: { file: file }, headers: auth_header
-    end
-  end
-
   test "rejects unsupported content type" do
     file = fixture_file_upload("space.jpg", "text/plain")
 

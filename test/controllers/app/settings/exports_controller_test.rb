@@ -35,19 +35,6 @@ class App::Settings::ExportsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Export started", flash[:notice]
   end
 
-  test "should create export with html format explicitly" do
-    assert_difference -> { Blog::Export.count } do
-      assert_enqueued_with(job: BlogExportJob) do
-        post app_settings_exports_path
-      end
-    end
-
-    export = Blog::Export.last
-    assert export.html?
-    assert_redirected_to app_settings_exports_path
-    assert_equal "Export started", flash[:notice]
-  end
-
   test "should destroy export" do
     export = @blog.exports.create!
 

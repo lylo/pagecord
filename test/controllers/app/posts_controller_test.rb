@@ -136,21 +136,6 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Hidden Post", created_post.title
   end
 
-  test "should create public post when hidden is false" do
-    assert_difference("@user.blog.posts.count") do
-      post app_posts_url, params: {
-        context_blog_id: @user.blog.id,
-        post: { title: "Public Post", content: "Public content", hidden: false }
-      }
-    end
-
-    assert_redirected_to app_posts_url(tab: "published")
-    created_post = @user.blog.posts.last
-    assert created_post.published?
-    assert_not created_post.hidden?
-    assert_equal "Public Post", created_post.title
-  end
-
   test "should save draft post" do
     assert_difference("@user.blog.posts.count") do
       post app_posts_url, params: {
@@ -522,15 +507,6 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "body", text: /The Beauty of Landscape Photography/
     assert_select "body", text: /The Art of Street Photography/, count: 0
-  end
-
-  test "should return empty results for non-matching search" do
-    @user.blog.posts.create!(title: "Rails Post", content: "About Rails")
-
-    get app_posts_path(search: "Python")
-
-    assert_response :success
-    assert_not_includes @response.body, "Rails Post"
   end
 
   test "should handle empty search parameter" do

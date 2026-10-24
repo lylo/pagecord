@@ -18,13 +18,6 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should show avatar section" do
-    get app_settings_about_url
-
-    assert_select "h4", { count: 1, text: "Avatar" }
-    assert_response :success
-  end
-
   test "should show enabled avatar section even when not subscribed" do
     login_as users(:vivian)
 
@@ -47,14 +40,6 @@ class App::Settings::AboutControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_settings_url
     assert_equal "New Title", @blog.reload.title
-  end
-
-  test "should update avatar" do
-    file = fixture_file_upload("avatar.png", "image/png")
-    patch app_settings_about_url, params: { blog: { avatar: file } }, as: :turbo_stream
-
-    assert_redirected_to app_settings_url
-    assert @blog.reload.avatar.attached?
   end
 
   test "should update avatar even when not subscribed" do

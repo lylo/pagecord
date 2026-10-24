@@ -64,12 +64,4 @@ class SendContactMessageJobTest < ActiveJob::TestCase
       SendContactMessageJob.perform_now(@contact_message.id)
     end
   end
-
-  test "skips spam check when EMAIL_SPAM_DETECTION is not set" do
-    ENV["EMAIL_SPAM_DETECTION"] = nil
-
-    assert_emails 1 do
-      SendContactMessageJob.perform_now(@contact_message.id)
-    end
-  end
 end

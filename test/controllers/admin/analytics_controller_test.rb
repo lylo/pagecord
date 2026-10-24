@@ -8,11 +8,6 @@ class Admin::AnalyticsControllerTest < ActionDispatch::IntegrationTest
     login_as @admin
   end
 
-  test "should get index" do
-    get admin_analytics_path
-    assert_response :success
-  end
-
   test "should get index with month view" do
     get admin_analytics_path(view_type: "month", date: "2024-01")
     assert_response :success

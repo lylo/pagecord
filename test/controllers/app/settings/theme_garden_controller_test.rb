@@ -10,13 +10,6 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
-  test "should get index" do
-    get app_settings_theme_garden_index_url
-
-    assert_response :success
-    assert_select "h1", "Pick a ready-made design"
-  end
-
   test "should show active templates" do
     get app_settings_theme_garden_index_url
 

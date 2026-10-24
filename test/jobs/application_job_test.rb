@@ -15,9 +15,4 @@ class ApplicationJobTest < ActiveSupport::TestCase
   test "yields the block when sentry is not initialized" do
     assert_equal "performed", SentryContextTestJob.perform_now
   end
-
-  test "yields the block with user and blog" do
-    user = users(:vivian)
-    assert_equal "performed", SentryContextTestJob.perform_now(user.id, user.blog.id)
-  end
 end

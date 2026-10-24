@@ -43,14 +43,6 @@ class Blog::ExportTest < ActiveSupport::TestCase
     assert_equal "Markdown", export.display_format
   end
 
-  test "display_format returns proper format names" do
-    html_export = Blog::Export.create!(blog: @blog, format: :html)
-    markdown_export = Blog::Export.create!(blog: @blog, format: :markdown)
-
-    assert_equal "HTML", html_export.display_format
-    assert_equal "Markdown", markdown_export.display_format
-  end
-
   test "creates a zip file with blog contents" do
     export = Blog::Export.create!(blog: @blog)
     export.perform

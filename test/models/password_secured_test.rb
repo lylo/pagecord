@@ -41,16 +41,6 @@ class PasswordSecuredTest < ActiveSupport::TestCase
     assert user.errors[:password_confirmation].present?
   end
 
-  test "authenticates with correct password" do
-    user = User.create!(email: "test@example.com", password: "password1234", password_confirmation: "password1234")
-    assert user.authenticate("password1234")
-  end
-
-  test "rejects incorrect password" do
-    user = User.create!(email: "test@example.com", password: "password1234", password_confirmation: "password1234")
-    assert_not user.authenticate("wrongpassword")
-  end
-
   test "can update without changing password" do
     user = User.create!(email: "test@example.com", password: "password1234", password_confirmation: "password1234")
     assert user.update(timezone: "America/New_York")

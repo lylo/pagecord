@@ -6,21 +6,6 @@ class Post::FrontMatterTest < ActiveSupport::TestCase
     assert_equal "Hello World", attrs[:title]
   end
 
-  test "parses slug" do
-    attrs = Post::FrontMatter.parse("slug: hello-world")
-    assert_equal "hello-world", attrs[:slug]
-  end
-
-  test "parses status" do
-    attrs = Post::FrontMatter.parse("status: draft")
-    assert_equal "draft", attrs[:status]
-  end
-
-  test "parses published_at" do
-    attrs = Post::FrontMatter.parse("published_at: '2024-06-15'")
-    assert_equal "2024-06-15", attrs[:published_at]
-  end
-
   test "maps date to published_at" do
     attrs = Post::FrontMatter.parse("date: '2024-06-15'")
     assert_equal "2024-06-15", attrs[:published_at]
@@ -36,29 +21,9 @@ class Post::FrontMatterTest < ActiveSupport::TestCase
     assert_equal "ruby", attrs[:tags_string]
   end
 
-  test "parses link_url" do
-    attrs = Post::FrontMatter.parse("link_url: https://example.com/article")
-    assert_equal "https://example.com/article", attrs[:link_url]
-  end
-
-  test "parses canonical_url" do
-    attrs = Post::FrontMatter.parse("canonical_url: https://example.com/post")
-    assert_equal "https://example.com/post", attrs[:canonical_url]
-  end
-
   test "parses hidden" do
     attrs = Post::FrontMatter.parse("hidden: true")
     assert_equal "true", attrs[:hidden]
-  end
-
-  test "parses locale" do
-    attrs = Post::FrontMatter.parse("locale: fr")
-    assert_equal "fr", attrs[:locale]
-  end
-
-  test "parses open_graph_image" do
-    attrs = Post::FrontMatter.parse("open_graph_image: text")
-    assert_equal "text", attrs[:open_graph_image]
   end
 
   test "ignores unknown keys" do

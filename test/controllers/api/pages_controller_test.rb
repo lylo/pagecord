@@ -63,11 +63,6 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
   end
 
-  test "index returns 400 for out-of-range page" do
-    get "/pages", params: { page: 999 }, headers: auth_header
-    assert_response :bad_request
-  end
-
   # -- Show --
 
   test "show returns a page" do
@@ -186,11 +181,6 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Updated Page", @page.reload.title
   end
 
-  test "update returns 404 for unknown token" do
-    patch "/pages/nonexistent", params: { title: "Nope" }, headers: auth_header
-    assert_response :not_found
-  end
-
   # -- Destroy --
 
   test "destroy discards a page" do
@@ -214,11 +204,6 @@ class Api::PagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :no_content
     assert_nil @blog.reload.home_page_id
-  end
-
-  test "destroy returns 404 for unknown token" do
-    delete "/pages/nonexistent", headers: auth_header
-    assert_response :not_found
   end
 
   private

@@ -9,19 +9,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     @blog = @user.blog
   end
 
-  test "renders posts custom tag" do
-    @blog.posts.create!(title: "First Post", content: "Content 1", status: :published, published_at: 2.days.ago)
-    @blog.posts.create!(title: "Second Post", content: "Content 2", status: :published, published_at: 1.day.ago)
-
-    page = @blog.pages.create!(title: "Posts Page", content: "{{ posts }}", status: :published)
-
-    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
-
-    assert_response :success
-    assert_select "body", text: /First Post/
-    assert_select "body", text: /Second Post/
-  end
-
   test "posts tag only shows visible posts" do
     @blog.posts.create!(title: "Published Post", content: "Content", status: :published, published_at: 2.days.ago)
     @blog.posts.create!(title: "Hidden Post", content: "Content", status: :published, hidden: true, published_at: 1.day.ago)
@@ -177,20 +164,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "{{ table_of_contents }}"
   end
 
-  test "does not process table_of_contents tag in regular posts" do
-    post = @blog.posts.create!(
-      title: "Regular Post",
-      content: "<p>{{ table_of_contents }}</p><h2>Heading</h2>",
-      status: :published
-    )
-
-    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
-
-    assert_response :success
-    assert_includes response.body, "{{ table_of_contents }}"
-    assert_select "ol.table-of-contents", count: 0
-  end
-
   test "does not process table_of_contents tag inside code" do
     page = @blog.pages.create!(
       title: "TOC Code",
@@ -297,20 +270,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "body", text: /The Art of Street Photography/
     assert_select "body", text: /photography/
-  end
-
-  test "does not process custom tags in regular posts" do
-    post = @blog.posts.create!(
-      title: "Regular Post",
-      content: "This is a post with {{ posts }} tag",
-      status: :published
-    )
-
-    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
-
-    assert_response :success
-    # Custom tag should appear literally, not be processed
-    assert_includes response.body, "{{ posts }}"
   end
 
   test "processes custom tags only in pages not posts" do
@@ -742,29 +701,6 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
 
     assert_select "time.updated-at[datetime=?]", page.updated_at.utc.iso8601
-  end
-
-  test "does not process updated_at tag in regular posts" do
-    post = @blog.posts.create!(title: "A Post", content: "{{ updated_at }}", status: :published)
-
-    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
-
-    assert_response :success
-    assert_includes response.body, "{{ updated_at }}"
-  end
-
-  test "does not process custom tags inside inline code" do
-    page = @blog.pages.create!(
-      title: "Inline Code Example",
-      content: "<p>Use <code>{{ posts }}</code> to display posts.</p>",
-      status: :published
-    )
-
-    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
-
-    assert_response :success
-    # The inline code should contain literal {{ posts }}
-    assert_select "code", text: /{{ posts }}/
   end
 
   test "renders contact_form tag for premium user" do

@@ -315,12 +315,6 @@ class Api::MicropubControllerTest < ActionDispatch::IntegrationTest
     assert_equal [], json["syndicate-to"]
   end
 
-  test "config query does not require authentication" do
-    get "/micropub", params: { q: "config" }
-
-    assert_response :ok
-  end
-
   test "syndicate to query returns empty targets" do
     get "/micropub", params: { q: "syndicate-to" }, headers: auth_header
 

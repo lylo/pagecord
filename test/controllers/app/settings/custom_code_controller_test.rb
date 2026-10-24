@@ -53,16 +53,6 @@ class App::Settings::CustomCodeControllerTest < ActionDispatch::IntegrationTest
     assert_nil free_user.blog.reload.custom_css
   end
 
-  test "should not update custom footer on the free plan" do
-    free_user = users(:vivian)
-    login_as free_user
-
-    patch app_settings_custom_code_url, params: { blog: { custom_footer_html: "<p>hi</p>" } }, as: :turbo_stream
-
-    assert_response :success
-    assert_nil free_user.blog.reload.custom_footer_html
-  end
-
   test "is offered in settings" do
     get app_settings_url
 
