@@ -1445,30 +1445,31 @@ halcyon:
 
     :root {
       --font-size-base: 112.5%;
-      --sky:
-        linear-gradient(170deg, #daf2e6 0%, #ebf6f0 55%, #f5f8f6 100%);
-      --mark: #bfe8d2;
-      --mark-hover: #8fd6b1;
+    }
+
+    /* The gradient and link stroke are tints of the accent colour */
+    [data-theme] {
+      --sky: linear-gradient(170deg, color-mix(in oklab, var(--color-accent) 15%, white) 0%, color-mix(in oklab, var(--color-accent) 7%, white) 55%, color-mix(in oklab, var(--color-accent) 3%, white) 100%);
+      --mark: color-mix(in oklab, var(--color-accent) 28%, white);
+      --mark-hover: color-mix(in oklab, var(--color-accent) 44%, white);
       --shadow: 0 1px 2px rgb(20 30 25 / 0.04), 0 16px 40px -20px rgb(20 40 35 / 0.22);
       --shadow-raised: 0 1px 2px rgb(20 30 25 / 0.05), 0 24px 50px -22px rgb(20 40 35 / 0.32);
     }
 
     @media (prefers-color-scheme: dark) {
-      :root {
-        --sky:
-          linear-gradient(170deg, #0f1220 0%, #13182c 50%, #1a2242 100%);
-        --mark: #3d5299;
-        --mark-hover: #5a72c4;
+      [data-theme] {
+        --sky: linear-gradient(170deg, color-mix(in oklab, var(--color-accent) 6%, #0a0d16) 0%, color-mix(in oklab, var(--color-accent) 14%, #0a0d16) 50%, color-mix(in oklab, var(--color-accent) 27%, #0a0d16) 100%);
+        --mark: color-mix(in oklab, var(--color-accent) 48%, #0a0d16);
+        --mark-hover: color-mix(in oklab, var(--color-accent) 75%, #0a0d16);
         --shadow: 0 0 0 1px rgb(255 255 255 / 0.05), 0 20px 44px -24px rgb(0 0 0 / 0.8);
         --shadow-raised: 0 0 0 1px rgb(255 255 255 / 0.09), 0 28px 54px -24px rgb(0 0 0 / 0.9);
       }
     }
 
-    html {
+    body {
       background: var(--sky) fixed;
     }
 
-    body,
     .blog {
       background: transparent;
     }
@@ -1975,9 +1976,9 @@ halcyon:
   layout: cards_layout
   custom_theme_bg_light: "#ffffff"
   custom_theme_text_light: "#1f2422"
-  custom_theme_accent_light: "#1f2422"
+  custom_theme_accent_light: "#0d8a5a"
   custom_theme_bg_dark: "#222844"
   custom_theme_text_dark: "#e2e6f0"
-  custom_theme_accent_dark: "#e2e6f0"
+  custom_theme_accent_dark: "#7088d8"
   position: 2
   active: true
