@@ -1843,6 +1843,14 @@ halcyon:
       margin-top: 1.5rem;
     }
 
+    .post-stream-item .comments {
+      padding: 1.5rem 0 0;
+      background: none;
+      border-top: 1px solid var(--color-border);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
     article .contact-form,
     .comment-form,
     .comment-notice {
