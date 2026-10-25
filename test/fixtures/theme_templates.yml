@@ -111,7 +111,7 @@ cardashian:
   custom_theme_bg_dark: "#1a1718"
   custom_theme_text_dark: "#e8e6e3"
   custom_theme_accent_dark: "#a78bfa"
-  position: 8
+  position: 9
   active: true
 broadside:
   name: Broadside
@@ -211,7 +211,7 @@ broadside:
   custom_theme_bg_dark: "#150830"
   custom_theme_text_dark: "#ede8ee"
   custom_theme_accent_dark: "#ff4535"
-  position: 5
+  position: 7
   active: true
 archibald:
   name: Archibald
@@ -263,7 +263,7 @@ archibald:
   font: mono
   width: standard
   layout: title_layout
-  position: 2
+  position: 5
   active: true
 hestia:
   name: Hestia
@@ -343,7 +343,7 @@ hestia:
   custom_theme_bg_dark: "#1a1816"
   custom_theme_text_dark: "#d4cfc8"
   custom_theme_accent_dark: "#d4748a"
-  position: 9
+  position: 10
   active: true
 holamundo:
   name: Holamundo
@@ -680,7 +680,7 @@ novella:
   custom_theme_bg_dark: "#141f18"
   custom_theme_text_dark: "#d0d8d2"
   custom_theme_accent_dark: "#d4a840"
-  position: 10
+  position: 11
   active: true
 folly:
   name: Folly
@@ -827,7 +827,7 @@ mozake:
   custom_theme_bg_dark: "#ffffff"
   custom_theme_text_dark: "#000000"
   custom_theme_accent_dark: "#0000EE"
-  position: 12
+  position: 13
   active: true
 minimal_mono:
   name: Minimal Mono
@@ -902,7 +902,7 @@ minimal_mono:
   font: mono
   width: narrow
   layout: stream_layout
-  position: 11
+  position: 12
   active: true
 pukka:
   name: Pukka
@@ -1183,7 +1183,7 @@ aurelia:
   custom_theme_bg_dark: "#1a1613"
   custom_theme_text_dark: "#e7dfd5"
   custom_theme_accent_dark: "#e39385"
-  position: 7
+  position: 8
   active: true
 haiku:
   name: Haiku
@@ -1962,5 +1962,5 @@ halcyon:
   custom_theme_bg_dark: "#222844"
   custom_theme_text_dark: "#e2e6f0"
   custom_theme_accent_dark: "#e2e6f0"
-  position: 13
+  position: 2
   active: true
