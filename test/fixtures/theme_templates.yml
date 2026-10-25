@@ -828,7 +828,7 @@ mozake:
   custom_theme_text_dark: "#000000"
   custom_theme_accent_dark: "#0000EE"
   position: 13
-  active: true
+  active: false
 minimal_mono:
   name: Minimal Mono
   description: A clean monospace journal theme
