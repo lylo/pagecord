@@ -1447,20 +1447,21 @@ halcyon:
       --font-size-base: 112.5%;
     }
 
-    /* The gradient and link stroke are tints of the accent colour */
+    /* The gradient and link stroke are tints of the accent over --ground, the card colour darkened by squaring its lightness */
     [data-theme] {
-      --sky: linear-gradient(170deg, color-mix(in oklab, var(--color-accent) 15%, white) 0%, color-mix(in oklab, var(--color-accent) 7%, white) 55%, color-mix(in oklab, var(--color-accent) 3%, white) 100%);
-      --mark: color-mix(in oklab, var(--color-accent) 28%, white);
-      --mark-hover: color-mix(in oklab, var(--color-accent) 44%, white);
+      --ground: oklch(from var(--color-bg) calc(l * l) c h);
+      --sky: linear-gradient(170deg, color-mix(in oklab, var(--color-accent) 15%, var(--ground)) 0%, color-mix(in oklab, var(--color-accent) 7%, var(--ground)) 55%, color-mix(in oklab, var(--color-accent) 3%, var(--ground)) 100%);
+      --mark: color-mix(in oklab, var(--color-accent) 28%, var(--ground));
+      --mark-hover: color-mix(in oklab, var(--color-accent) 44%, var(--ground));
       --shadow: 0 1px 2px rgb(20 30 25 / 0.04), 0 16px 40px -20px rgb(20 40 35 / 0.22);
       --shadow-raised: 0 1px 2px rgb(20 30 25 / 0.05), 0 24px 50px -22px rgb(20 40 35 / 0.32);
     }
 
     @media (prefers-color-scheme: dark) {
       [data-theme] {
-        --sky: linear-gradient(170deg, color-mix(in oklab, var(--color-accent) 6%, #0a0d16) 0%, color-mix(in oklab, var(--color-accent) 14%, #0a0d16) 50%, color-mix(in oklab, var(--color-accent) 27%, #0a0d16) 100%);
-        --mark: color-mix(in oklab, var(--color-accent) 48%, #0a0d16);
-        --mark-hover: color-mix(in oklab, var(--color-accent) 75%, #0a0d16);
+        --sky: linear-gradient(170deg, color-mix(in oklab, var(--color-accent) 6%, var(--ground)) 0%, color-mix(in oklab, var(--color-accent) 14%, var(--ground)) 50%, color-mix(in oklab, var(--color-accent) 27%, var(--ground)) 100%);
+        --mark: color-mix(in oklab, var(--color-accent) 48%, var(--ground));
+        --mark-hover: color-mix(in oklab, var(--color-accent) 75%, var(--ground));
         --shadow: 0 0 0 1px rgb(255 255 255 / 0.05), 0 20px 44px -24px rgb(0 0 0 / 0.8);
         --shadow-raised: 0 0 0 1px rgb(255 255 255 / 0.09), 0 28px 54px -24px rgb(0 0 0 / 0.9);
       }
@@ -1573,10 +1574,6 @@ halcyon:
       line-height: 1.5;
     }
 
-    .bio a {
-      color: var(--color-text-heading);
-    }
-
     /* Subscribing is one white pill: the field with its button inside */
 
     .email-subscriber-form {
@@ -1608,6 +1605,10 @@ halcyon:
       border: 0;
     }
 
+    .email-subscriber-form .form-fieldset:focus-within {
+      box-shadow: var(--shadow), 0 0 0 2px var(--color-focus);
+    }
+
     .blog .email-subscriber-form input[type="submit"] {
       padding: 0.5rem 1.125rem;
       border-radius: 9999px;
@@ -1636,7 +1637,7 @@ halcyon:
     }
 
     .post-card-content:has(.post-card-image) {
-      grid-template-columns: minmax(0, 1fr) 12rem;
+      grid-template-columns: minmax(0, 1fr) min(12rem, 35%);
       grid-template-areas: "title image" "summary image" "meta image";
     }
 
@@ -1700,8 +1701,6 @@ halcyon:
       border: 0;
       border-radius: 0;
       font-size: 0.85em;
-      font-weight: 500;
-      color: var(--color-text-heading);
     }
 
     .post-card-content:has(.post-card-image):not(:has(.post-card-title, .post-card-summary)) {
@@ -1757,16 +1756,13 @@ halcyon:
       letter-spacing: -0.02em;
     }
 
-    article .post-body a {
-      color: var(--color-text-heading);
-      font-weight: 500;
-    }
-
     /* Links sit on a mint highlighter stroke that deepens on hover */
 
     .bio a,
-    article .post-body a:not(:has(img)),
+    article .post-body a:not(:has(img, svg), .post-card-link, .post-title-link, .post-date, .tag-link),
     .post-card-badge {
+      color: var(--color-text-heading);
+      font-weight: 500;
       text-decoration: none;
       background-image: linear-gradient(var(--mark), var(--mark));
       background-repeat: no-repeat;
@@ -1777,7 +1773,7 @@ halcyon:
     }
 
     .bio a:hover,
-    article .post-body a:not(:has(img)):hover,
+    article .post-body a:not(:has(img, svg), .post-card-link, .post-title-link, .post-date, .tag-link):hover,
     .post-card:hover .post-card-badge {
       color: var(--color-text-heading);
       background-image: linear-gradient(var(--mark-hover), var(--mark-hover));
