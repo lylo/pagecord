@@ -1494,7 +1494,7 @@ halcyon:
     /* Header */
 
     header {
-      margin-top: 0.5rem;
+      margin-top: 2rem;
       margin-bottom: 2.5rem;
       text-align: center;
     }
@@ -1509,12 +1509,29 @@ halcyon:
 
     nav {
       justify-content: center;
-      gap: 1.5rem;
+      gap: 0.5rem 1.25rem;
       font-size: 0.85em;
+    }
+
+    nav a {
+      color: color-mix(in srgb, var(--color-text-heading) 75%, transparent);
+      font-weight: 500;
     }
 
     nav a:hover {
       color: var(--color-text-heading);
+    }
+
+    nav a:not(:has(svg)) {
+      background-image: linear-gradient(var(--mark), var(--mark));
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      background-size: 0% 0.32em;
+      transition: background-size 200ms;
+    }
+
+    nav a:not(:has(svg)):hover {
+      background-size: 100% 0.32em;
     }
 
     .titlebar {
