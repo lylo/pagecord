@@ -1736,6 +1736,11 @@ halcyon:
       box-shadow: none;
     }
 
+    .post-body h1.post-title {
+      font-size: 1.6em;
+      margin-bottom: 1rem;
+    }
+
     h1.post-title {
       font-size: 2.25em;
       font-weight: 800;
