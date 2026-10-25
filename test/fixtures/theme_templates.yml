@@ -1718,8 +1718,7 @@ halcyon:
 
     .post-stream-item,
     [data-page-type="post"] article.post,
-    [data-page-type="page"] article,
-    [data-page-type="home-page"] article {
+    article.page {
       padding: 3rem 3.25rem;
       background: var(--color-bg);
       border-radius: 1.5rem;
@@ -1728,6 +1727,13 @@ halcyon:
 
     .post-stream-item {
       margin-bottom: 1.5rem;
+    }
+
+    .post-body .post-stream-item {
+      padding: 0;
+      background: none;
+      border-radius: 0;
+      box-shadow: none;
     }
 
     h1.post-title {
@@ -1961,8 +1967,7 @@ halcyon:
 
       .post-stream-item,
       [data-page-type="post"] article.post,
-      [data-page-type="page"] article,
-      [data-page-type="home-page"] article,
+      article.page,
       .contact-form,
       .reply-form,
       .comments {
