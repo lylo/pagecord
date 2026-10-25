@@ -1730,8 +1730,10 @@ halcyon:
     }
 
     .post-body .post-stream-item {
-      padding: 0;
+      margin-bottom: 2.5rem;
+      padding: 0 0 2.5rem;
       background: none;
+      border-bottom: 1px solid var(--color-border);
       border-radius: 0;
       box-shadow: none;
     }
