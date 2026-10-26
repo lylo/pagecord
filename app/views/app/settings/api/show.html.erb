@@ -51,21 +51,19 @@
       </div>
     <% end %>
 
-    <% if current_features.enabled?(:mcp) %>
-      <%= settings_row "Claude and ChatGPT", stacked: true, hint: "Manage your blog by chatting with an AI assistant" do %>
-        <div class="space-y-4">
-          <p>
-            Add Pagecord as a custom connector in Claude or ChatGPT using this URL, then log in to Pagecord when asked.
-            The <%= link_to "MCP guide", "https://help.pagecord.com/mcp", class: "underline", target: "_blank" %> has step-by-step instructions.
-          </p>
+    <%= settings_row "Claude and ChatGPT", stacked: true, hint: "Manage your blog by chatting with an AI assistant" do %>
+      <div class="space-y-4">
+        <p>
+          Add Pagecord as a custom connector in Claude or ChatGPT using this URL, then log in to Pagecord when asked.
+          The <%= link_to "MCP guide", "https://help.pagecord.com/mcp", class: "underline", target: "_blank" %> has step-by-step instructions.
+        </p>
 
-          <div data-controller="clipboard" class="flex items-center gap-2">
-            <code data-clipboard-target="source" class="flex-1 break-all text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded px-3 py-2 font-mono text-slate-800 dark:text-slate-200 select-all"><%= mcp_endpoint_url %></code>
-            <button type="button" data-action="clipboard#copy" data-clipboard-target="button" class="btn-secondary w-20 justify-center">Copy</button>
-          </div>
-
+        <div data-controller="clipboard" class="flex items-center gap-2">
+          <code data-clipboard-target="source" class="flex-1 break-all text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded px-3 py-2 font-mono text-slate-800 dark:text-slate-200 select-all"><%= mcp_endpoint_url %></code>
+          <button type="button" data-action="clipboard#copy" data-clipboard-target="button" class="btn-secondary w-20 justify-center">Copy</button>
         </div>
-      <% end %>
+
+      </div>
     <% end %>
 
     <%= settings_row "Quick start", stacked: true do %>

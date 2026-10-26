@@ -7,8 +7,6 @@ class Api::McpController < Api::BaseController
     Mcp::Tools::GetPageMarkup, Mcp::Tools::GetImage, Mcp::Tools::SetImageAlt
   ].freeze
 
-  before_action :require_mcp
-
   INSTRUCTIONS = <<~TEXT.squish
     Tools for managing one Pagecord blog. Post content is Markdown. New posts are drafts
     unless status is "published". Fetch a post with get_post before updating its content,
@@ -82,10 +80,6 @@ class Api::McpController < Api::BaseController
 
     def error(code, message)
       { error: { code:, message: } }
-    end
-
-    def require_mcp
-      raise ActiveRecord::RecordNotFound unless Rails.features.for(blog: Current.blog).enabled?(:mcp)
     end
 
     def authenticate

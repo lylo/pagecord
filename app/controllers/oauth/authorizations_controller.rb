@@ -2,7 +2,6 @@ class Oauth::AuthorizationsController < App::BaseController
   layout "letter"
 
   before_action :set_client
-  before_action :require_mcp
   before_action :require_premium, only: :create
 
   def new
@@ -30,10 +29,6 @@ class Oauth::AuthorizationsController < App::BaseController
           params[:code_challenge].present? && params[:code_challenge_method] == "S256"
         render plain: "This connection request is invalid. Please try connecting again from the app.", status: :unprocessable_entity
       end
-    end
-
-    def require_mcp
-      redirect_to client_url(error: "access_denied"), allow_other_host: true unless current_features.enabled?(:mcp)
     end
 
     def require_premium

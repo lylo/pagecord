@@ -27,14 +27,6 @@ class Oauth::AuthorizationsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", "#{@redirect_uri}?error=access_denied&state=xyz", text: "Cancel"
   end
 
-  test "sends users without the mcp feature back to the client" do
-    @user.update!(features: [])
-    login_as @user
-    get oauth_authorization_path(authorize_params)
-
-    assert_redirected_to "#{@redirect_uri}?error=access_denied&state=xyz"
-  end
-
   test "refuses a redirect the client did not register" do
     login_as @user
     get oauth_authorization_path(authorize_params(redirect_uri: "https://example.org/callback"))

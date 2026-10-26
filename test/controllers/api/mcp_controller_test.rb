@@ -31,13 +31,6 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
-  test "is hidden from blogs without the mcp feature" do
-    @user.update!(features: [])
-
-    rpc "tools/list"
-    assert_response :not_found
-  end
-
   test "requires premium access" do
     @user.subscription.destroy!
     @user.update!(trial_ends_at: nil)
