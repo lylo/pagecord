@@ -34,9 +34,9 @@ On Team or Enterprise plans, an organisation owner needs to add Pagecord as an o
 
 ## Connecting ChatGPT
 
-Custom MCP servers with write actions are available on ChatGPT Business and Enterprise/Edu plans, on the web. Workspace permissions may limit who can add them. ChatGPT Pro can connect to custom MCP servers with read-only access, so Pagecord's post and design tools that make changes won't be available there.
+Adding a custom MCP server needs a paid ChatGPT plan and works on the web. In Business and Enterprise workspaces, an admin may need to allow it.
 
-1. In ChatGPT on the web, open **Plugins** and choose **+ > Add custom MCP server**
+1. In ChatGPT on the web, open **Settings > Plugins**, choose **Browse directory**, then **Add > Add custom MCP server**
 2. Enter a name, such as Pagecord, and paste the connector URL
 3. Choose **OAuth** for authentication, review the access warning, then choose **Create as a plugin**
 4. Review the tools ChatGPT finds, then create the plugin
