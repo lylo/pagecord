@@ -875,7 +875,7 @@ minimal_mono:
     article.post .post-actions { margin-top: 1rem; margin-bottom: 1rem; }
     .blog.post .email-subscriber-form { margin-top: 2rem; }
     h1.post-title { line-height: inherit; margin-bottom: 0.5rem; }
-    .tags-container { margin-top: 0.5rem; }
+    .tags-container { margin-top: 1rem; }
     .email-form-container { gap: 0.25rem; }
     .form-container { padding: 0; }
 
