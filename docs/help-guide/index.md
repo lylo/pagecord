@@ -104,6 +104,7 @@ Use the Pagecord API to manage your blog programmatically, publish from the comm
 - [Publishing with the Pagecord CLI](pagecord-cli.md)
 - [Publishing from Obsidian](obsidian.md)
 - [Publishing with Micropub](micropub.md)
+- [Connecting Claude and ChatGPT](mcp.md)
 
 ## Account & Billing
 
