@@ -1449,6 +1449,7 @@ halcyon:
 
     /* The gradient and link stroke are tints of the accent over --ground, the card colour darkened by squaring its lightness */
     [data-theme] {
+      --card: var(--color-bg);
       --ground: oklch(from var(--color-bg) calc(l * l) c h);
       --sky: linear-gradient(170deg, color-mix(in oklab, var(--color-accent) 15%, var(--ground)) 0%, color-mix(in oklab, var(--color-accent) 7%, var(--ground)) 55%, color-mix(in oklab, var(--color-accent) 3%, var(--ground)) 100%);
       --mark: color-mix(in oklab, var(--color-accent) 28%, var(--ground));
@@ -1460,6 +1461,7 @@ halcyon:
     @media (prefers-color-scheme: dark) {
       [data-theme] {
         --sky: linear-gradient(170deg, color-mix(in oklab, var(--color-accent) 6%, var(--ground)) 0%, color-mix(in oklab, var(--color-accent) 14%, var(--ground)) 50%, color-mix(in oklab, var(--color-accent) 27%, var(--ground)) 100%);
+        --card: oklch(from var(--color-bg) max(l, 0.2) c h);
         --mark: color-mix(in oklab, var(--color-accent) 48%, var(--ground));
         --mark-hover: color-mix(in oklab, var(--color-accent) 75%, var(--ground));
         --shadow: 0 0 0 1px rgb(255 255 255 / 0.05), 0 20px 44px -24px rgb(0 0 0 / 0.8);
@@ -1591,7 +1593,7 @@ halcyon:
       flex-direction: row;
       width: min(100%, 24rem);
       padding: 0.3rem;
-      background: var(--color-bg);
+      background: var(--card);
       border-radius: 9999px;
       box-shadow: var(--shadow);
     }
@@ -1629,7 +1631,7 @@ halcyon:
       grid-template-rows: auto 1fr auto;
       column-gap: 2rem;
       padding: 1.75rem 2rem;
-      background: var(--color-bg);
+      background: var(--card);
       border: 0;
       border-radius: 1.5rem;
       box-shadow: var(--shadow);
@@ -1720,7 +1722,7 @@ halcyon:
     [data-page-type="post"] article.post,
     article.page {
       padding: 3rem 3.25rem;
-      background: var(--color-bg);
+      background: var(--card);
       border-radius: 1.5rem;
       box-shadow: var(--shadow);
     }
@@ -1846,7 +1848,7 @@ halcyon:
     .comments {
       max-width: none;
       padding: 2.25rem 3.25rem;
-      background: var(--color-bg);
+      background: var(--card);
       border: 0;
       border-radius: 1.5rem;
       box-shadow: var(--shadow);
@@ -1896,7 +1898,7 @@ halcyon:
     }
 
     .blog :is(.contact-form, .reply-form, .comment-form) :is(input[type="text"], input[type="email"], input[type="url"], textarea):focus {
-      background: var(--color-bg);
+      background: var(--card);
       border-color: var(--color-border-strong);
     }
 
