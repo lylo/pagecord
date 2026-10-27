@@ -1,0 +1,141 @@
+/* Aurelia – soft dusk gradient, editorial display serif */
+
+@import url('https://fonts.bunny.net/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+@import url('https://fonts.bunny.net/css2?family=Bricolage+Grotesque:wght@300;400;500;700&display=swap');
+
+:root {
+  --font-text: "Bricolage Grotesque", sans-serif;
+  --font-header: "Fraunces", serif;
+}
+
+/* Base type and a fixed dusk gradient behind the content */
+body {
+  font-family: var(--font-text);
+  font-weight: 300;
+  background-image:
+    radial-gradient(75% 75% at 28% 72%, #F0A57F33 0%, transparent 68%),
+    radial-gradient(72% 72% at 76% 58%, #DE7FA62B 0%, transparent 60%),
+    radial-gradient(75% 75% at 50% 20%, #8E9BE026 0%, transparent 55%);
+  background-attachment: fixed;
+}
+
+/* Let the gradient show through the blog container */
+.blog { background: transparent; }
+
+/* Headings in the display serif */
+h1, h2, h3, h4, h5, h6,
+h1.post-title, .blog-title {
+  font-family: var(--font-header);
+  font-weight: 400;
+}
+h1.post-title { letter-spacing: -0.01em; }
+
+/* Header: title right, then nav, then bio */
+header {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+header > .titlebar { order: 1; margin-block: 0; }
+header > nav { order: 2; }
+header > .bio { order: 3; color: var(--color-text); margin-block: 0; }
+header > .email-subscriber-form { order: 4; margin-block: 0; }
+header hr { display: none; }
+
+/* Avatar pinned to the right margin. The title sits beside it, and drops
+   below it when the column is too narrow to take both. */
+.titlebar { justify-content: flex-end; }
+.avatar-container {
+  width: 100%;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.avatar, .avatar img { width: 3rem; height: 3rem; }
+.blog-title {
+  font-size: 2em;
+  text-align: right;
+  flex: 1 1 19rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+nav { justify-content: flex-end; gap: 1rem; }
+
+/* Divider under the header, index page only */
+.blog:not(.post, .page, .home-page) header {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+  padding-bottom: 1.5rem;
+}
+
+/* Title list: align the date column */
+.post-row time { font-variant-numeric: tabular-nums; }
+
+/* Links: accent underline, soft highlight on hover */
+a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent);
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.22em;
+}
+a:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.avatar a,
+.blog-title a,
+.post-title a,
+.posts-titles a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+.avatar a:hover,
+.blog-title a:hover,
+.post-title a:hover,
+.posts-titles a:hover {
+  color: var(--color-accent);
+  background-color: transparent;
+}
+
+footer a { text-decoration: none; }
+footer .comment-link,
+footer .upvote { color: var(--color-text); }
+footer a:hover,
+footer .comment-link:hover,
+footer .upvote:hover {
+  color: var(--color-accent);
+  fill: var(--color-accent);
+  background-color: transparent;
+}
+
+/* Tags: plain #hashtag text */
+.tag-link {
+  background: transparent;
+  padding: 0;
+  color: var(--color-text);
+  font-size: 0.85em;
+  font-weight: 400;
+}
+.tag-link::before { content: "#"; color: var(--color-text-muted); }
+.tag-link:hover,
+.tag-link:hover::before {
+  color: var(--color-accent);
+  background-color: transparent;
+}
+
+/* Forms (subscription, contact, reply) and tag filter notice:
+   soft accent fill, no border */
+.form,
+.tag-filter-notice {
+  background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  border: none;
+}
+.email-subscriber-form input[type="email"] { border: none; }
+
+/* Text selection */
+::selection {
+  background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+}

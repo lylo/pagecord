@@ -4,7 +4,7 @@ class App::Settings::ThemeGarden::ApplicationsController < App::BaseController
   def create
     template = ThemeTemplate.active.find(params[:theme_garden_id])
 
-    if @blog.update(template.appearance_attributes)
+    if @blog.apply_design(template)
       redirect_to app_settings_appearance_path, notice: "\"#{template.name}\" template applied"
     else
       redirect_to app_settings_theme_garden_index_path, alert: "Could not apply template"

@@ -1,0 +1,234 @@
+/* Haiku – photographs with a few words laid over them */
+
+@import url('https://fonts.bunny.net/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+@import url('https://fonts.bunny.net/css2?family=Literata:ital,wght@0,400;0,500;1,400&display=swap');
+
+/* Literata for reading, EB Garamond for titles and the words on photos */
+.blog {
+  font-family: "Literata", serif;
+}
+
+.blog-title,
+h1.post-title,
+.post-body :is(h1, h2, h3),
+.post-card-title {
+  font-family: "EB Garamond", serif;
+}
+
+/* Buttons in jade, lettered in the page colour so they read in dark mode too */
+.blog {
+  --color-button-bg: var(--color-accent);
+  --color-button-hover: color-mix(in srgb, var(--color-accent) 85%, var(--color-text));
+  --color-button-text: var(--color-bg);
+}
+
+/* Post lists run wider than posts, to fit three tiles */
+body[data-page-type="index"] {
+  --content-width-wide: 60rem;
+}
+
+/* Posts and pages keep a comfortable line length */
+body:not([data-page-type="index"]) {
+  --content-width-standard: 42rem;
+  --content-width-wide: 42rem;
+}
+
+/* A quiet, centred header */
+nav {
+  justify-content: center;
+  gap: 1.25rem;
+  font-size: 0.9em;
+}
+
+nav a {
+  color: var(--color-text-muted);
+}
+
+nav a:hover {
+  color: var(--color-accent);
+}
+
+/* Avatar, title and bio sit together as one group */
+.titlebar,
+.avatar-container {
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar-container {
+  gap: 0.75rem;
+}
+
+.titlebar {
+  margin-bottom: 0.25rem;
+}
+
+.blog-title {
+  font-size: 2em;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.blog-title a {
+  color: var(--color-text);
+}
+
+.bio {
+  max-width: 36rem;
+  margin: 1rem auto 0;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/* Subscribing is one compact row: the field and button say what it does */
+.email-subscriber-form {
+  margin-top: 1.75rem;
+  padding: 0;
+  background: transparent;
+  font-size: 0.8em;
+}
+
+.email-subscriber-form .subscription-description {
+  display: none;
+}
+
+/* A single brushstroke in jade, tapering away at both ends */
+header hr {
+  width: min(24rem, 70%);
+  height: 4px;
+  margin: 2.5rem auto 0.5rem;
+  border: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-accent) 80%, transparent), transparent);
+}
+
+/* Square tiles, with the picture filling each one and the words on top */
+.h-feed:has(> .post-card) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr));
+  gap: 1rem;
+  margin-block: 0 1rem;
+}
+
+.post-card {
+  margin-bottom: 0;
+  font-size: 1.125em;
+}
+
+.post-card-link {
+  height: 100%;
+}
+
+.post-card-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 1;
+  min-height: 100%;
+  overflow: hidden;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 1.5rem;
+  background: var(--color-bg-subtle);
+}
+
+.post-card:hover .post-card-content {
+  box-shadow: none;
+  transform: none;
+}
+
+.post-card-content:has(.post-card-image) {
+  justify-content: flex-end;
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.6);
+}
+
+.post-card-content:has(.post-card-image) > :not(.post-card-image),
+.post-card-content:has(.post-card-image) .post-card-date {
+  position: relative;
+  color: white;
+}
+
+.post-card-image {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* A wash darkens the foot of the photo, where the title and date sit */
+.post-card-image::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 0;
+  background: linear-gradient(transparent 40%, rgb(0 0 0 / 0.65));
+}
+
+.post-card-image img {
+  height: 100%;
+  max-height: none;
+  border-radius: 0;
+  transition: transform 600ms;
+}
+
+.post-card:hover .post-card-image img {
+  transform: scale(1.03);
+}
+
+.post-card-title {
+  font-size: 1.5em;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0;
+  color: var(--color-text);
+}
+
+/* Long excerpts fade out rather than stretching the tile */
+.post-card-summary {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(black 70%, transparent);
+  color: var(--color-text);
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+.post-card-content:has(.post-card-image) .post-card-summary {
+  display: none;
+}
+
+.post-card-date {
+  opacity: 1;
+  font-size: 0.8em;
+}
+
+.post-card-badge {
+  display: none;
+}
+
+/* Posts */
+article {
+  font-size: 1.0625em;
+}
+
+article .post-body {
+  line-height: 1.75;
+}
+
+h1.post-title {
+  font-size: 2.5em;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin-bottom: 1.75rem;
+}
+
+.post-body :is(h1, h2, h3) {
+  font-weight: 500;
+}
+
+.post-body img {
+  border-radius: 0;
+}

@@ -1,4 +1,4 @@
-<% confirm_message = @blog.custom_css.present? ? "This will replace your Custom CSS and appearance settings. Continue?" : nil %>
+<% confirm_message = @blog.custom_css.present? ? "This will replace your appearance settings. Your Custom CSS stays, on top of the design. Continue?" : nil %>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
   <% templates.each do |template| %>

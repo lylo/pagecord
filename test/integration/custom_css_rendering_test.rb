@@ -35,6 +35,16 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
     assert_equal 0, custom_css_styles.length
   end
 
+  test "links the design stylesheet ahead of custom css" do
+    @blog.update!(custom_css: ".mine { color: blue; }")
+    @blog.apply_design(theme_templates(:minimal_mono))
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: posts(:one).slug)
+
+    assert_response :success
+    assert_select "head link[rel=stylesheet][href*='themes/minimal-mono'] ~ style", text: /\.mine { color: blue; }/
+  end
+
   test "renders custom css on blog pages" do
     @blog.update(custom_css: ".custom-style { color: blue; }")
     post = posts(:one)

@@ -23,11 +23,13 @@ class Admin::ThemeTemplatesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create template" do
+    theme_templates(:mozake).destroy!
+
     assert_difference("ThemeTemplate.count") do
       post admin_theme_templates_url, params: {
         theme_template: {
           name: "New Template",
-          custom_css: ".blog { color: red; }",
+          slug: "mozake",
           position: 5
         }
       }
@@ -39,7 +41,7 @@ class Admin::ThemeTemplatesControllerTest < ActionDispatch::IntegrationTest
   test "should not create template without required fields" do
     assert_no_difference("ThemeTemplate.count") do
       post admin_theme_templates_url, params: {
-        theme_template: { name: "", custom_css: "" }
+        theme_template: { name: "" }
       }
     end
 

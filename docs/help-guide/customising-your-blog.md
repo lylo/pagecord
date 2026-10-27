@@ -78,12 +78,12 @@ Premium feature to set up, and it keeps rendering afterwards whatever plan you'r
 
 Found in **Settings** → **Appearance** → **Theme Garden** link. Premium feature.
 
-The Theme Garden is a curated collection of CSS templates that you can preview and apply to your blog with one click. Each template is a complete design – combining custom CSS with optional colour scheme, font, layout, and width settings.
+The Theme Garden is a curated collection of designs that you can preview and apply to your blog with one click. Each design is a stylesheet, combined with optional colour scheme, font, layout, and width settings.
 
-- **Preview** any template to see how it looks with your own blog content (opens in a new tab)
-- **Apply** a template to instantly update your blog's appearance
-- Templates use your blog's colour scheme variables, so switching colour scheme after applying a template still works
+- **Preview** any design to see how it looks with your own blog content (opens in a new tab)
+- **Apply** a design to instantly update your blog's appearance
+- Designs use your blog's colour scheme variables, so switching colour scheme after applying a design still works
 
-If you already have Custom CSS, you'll be asked to confirm before applying a template (since it replaces your existing CSS).
+Your own Custom CSS stays when you apply a design, and goes on top of it, so you can adjust a design without copying it. Applying a design does replace your colour scheme, font, layout and width, so you'll be asked to confirm first.
 
 Have a CSS design you'd like to share with the community? [Email us](mailto:hello@pagecord.com) and we may add it to the garden.

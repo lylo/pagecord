@@ -79,6 +79,7 @@
       </style>
     <% end %>
 
+    <%= stylesheet_link_tag @blog.design_stylesheet, "data-turbo-track": "reload" if @blog&.design_stylesheet %>
     <% if @blog.present? && @blog.custom_css.present? %>
       <style>
         <%= @blog.sanitized_custom_css %>

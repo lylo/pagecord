@@ -1,0 +1,549 @@
+/* Halcyon – white cards over a mint gradient, set in Libre Franklin */
+
+@import url('https://fonts.bunny.net/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+:root {
+  --font-size-base: 112.5%;
+}
+
+/* The gradient and link stroke are tints of the accent over --ground, the card colour darkened by squaring its lightness */
+[data-theme] {
+  --card: var(--color-bg);
+  --ground: oklch(from var(--color-bg) calc(l * l) c h);
+  --sky: linear-gradient(170deg, color-mix(in oklab, var(--color-accent) 15%, var(--ground)) 0%, color-mix(in oklab, var(--color-accent) 7%, var(--ground)) 55%, color-mix(in oklab, var(--color-accent) 3%, var(--ground)) 100%);
+  --mark: color-mix(in oklab, var(--color-accent) 28%, var(--ground));
+  --mark-hover: color-mix(in oklab, var(--color-accent) 44%, var(--ground));
+  --shadow: 0 1px 2px rgb(20 30 25 / 0.04), 0 16px 40px -20px rgb(20 40 35 / 0.22);
+  --shadow-raised: 0 1px 2px rgb(20 30 25 / 0.05), 0 24px 50px -22px rgb(20 40 35 / 0.32);
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme] {
+    --sky: linear-gradient(170deg, color-mix(in oklab, var(--color-accent) 6%, var(--ground)) 0%, color-mix(in oklab, var(--color-accent) 14%, var(--ground)) 50%, color-mix(in oklab, var(--color-accent) 27%, var(--ground)) 100%);
+    --card: oklch(from var(--color-bg) max(l, 0.2) c h);
+    --mark: color-mix(in oklab, var(--color-accent) 48%, var(--ground));
+    --mark-hover: color-mix(in oklab, var(--color-accent) 75%, var(--ground));
+    --shadow: 0 0 0 1px rgb(255 255 255 / 0.05), 0 20px 44px -24px rgb(0 0 0 / 0.8);
+    --shadow-raised: 0 0 0 1px rgb(255 255 255 / 0.09), 0 28px 54px -24px rgb(0 0 0 / 0.9);
+  }
+}
+
+body {
+  background: var(--sky) fixed;
+}
+
+.blog {
+  background: transparent;
+}
+
+body[data-page-type] {
+  --content-width-wide: 42rem;
+}
+
+body {
+  font-family: "Libre Franklin", sans-serif;
+}
+
+.blog {
+  --color-button-bg: var(--color-text-heading);
+  --color-button-hover: var(--color-text);
+  --color-button-text: var(--color-bg);
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-text) 15%, transparent);
+}
+
+/* Header */
+
+header {
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+header hr {
+  width: min(100%, 20rem);
+  height: 1px;
+  margin: 2.5rem auto 0;
+  border: 0;
+  background: linear-gradient(to right, transparent, color-mix(in srgb, var(--color-text) 25%, transparent), transparent);
+}
+
+nav {
+  justify-content: center;
+  gap: 0.5rem 1.25rem;
+  font-size: 0.85em;
+}
+
+nav a {
+  color: color-mix(in srgb, var(--color-text-heading) 75%, transparent);
+  font-weight: 500;
+}
+
+nav a:hover {
+  color: var(--color-text-heading);
+}
+
+nav a:not(:has(svg)) {
+  background-image: linear-gradient(var(--mark), var(--mark));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 0.32em;
+  transition: background-size 200ms;
+}
+
+nav a:not(:has(svg)):hover {
+  background-size: 100% 0.32em;
+}
+
+.titlebar {
+  justify-content: center;
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+}
+
+.avatar-container {
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.avatar,
+.avatar img {
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+.avatar img {
+  border: 3px solid var(--color-bg);
+  box-shadow: var(--shadow);
+}
+
+.blog-title {
+  font-size: 2.25em;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.bio {
+  max-width: 30rem;
+  margin: 0.625rem auto 0;
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+/* Subscribing is one white pill: the field with its button inside */
+
+.email-subscriber-form {
+  margin-top: 1.75rem;
+  padding: 0;
+  background: transparent;
+  font-size: 0.85em;
+}
+
+.email-subscriber-form .subscription-description {
+  color: var(--color-text-muted);
+}
+
+.email-subscriber-form .form-fieldset {
+  flex-direction: row;
+  width: min(100%, 24rem);
+  padding: 0.3rem;
+  background: var(--card);
+  border-radius: 9999px;
+  box-shadow: var(--shadow);
+}
+
+.blog .email-subscriber-form input[type="email"] {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  padding-inline: 1rem;
+  background: transparent;
+  border: 0;
+}
+
+.email-subscriber-form .form-fieldset:focus-within {
+  box-shadow: var(--shadow), 0 0 0 2px var(--color-focus);
+}
+
+.blog .email-subscriber-form input[type="submit"] {
+  padding: 0.5rem 1.125rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+/* Cards: words on the left, picture on the right */
+
+.post-card {
+  margin-bottom: 1.25rem;
+  font-size: 0.94em;
+}
+
+.post-card-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "title" "summary" "meta";
+  grid-template-rows: auto 1fr auto;
+  column-gap: 2rem;
+  padding: 1.75rem 2rem;
+  background: var(--card);
+  border: 0;
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: box-shadow 250ms, transform 250ms;
+}
+
+.post-card-content:has(.post-card-image) {
+  grid-template-columns: minmax(0, 1fr) min(12rem, 35%);
+  grid-template-areas: "title image" "summary image" "meta image";
+}
+
+.post-card:hover .post-card-content {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-raised);
+}
+
+.post-card-image {
+  grid-area: image;
+  margin: 0;
+}
+
+.post-card-image img,
+.post-card-image video {
+  height: 100%;
+  min-height: 9rem;
+  max-height: none;
+  border-radius: 1rem;
+}
+
+.post-card-title {
+  grid-area: title;
+  margin: 0 0 0.5rem;
+  font-size: 1.5em;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  color: var(--color-text-heading);
+  text-wrap: balance;
+}
+
+.post-card-summary {
+  grid-area: summary;
+  align-self: start;
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-card-meta,
+.post-card-meta.has-tags,
+.post-card-meta.no-tags {
+  grid-area: meta;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.post-card-date {
+  font-size: 0.85em;
+  opacity: 1;
+}
+
+.post-card-badge {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  font-size: 0.85em;
+}
+
+.post-card-content:has(.post-card-image):not(:has(.post-card-title, .post-card-summary)) {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "image" "meta";
+  grid-template-rows: auto;
+}
+
+.post-card-content:has(.post-card-image):not(:has(.post-card-title, .post-card-summary)) img {
+  aspect-ratio: 16 / 10;
+  min-height: 0;
+}
+
+/* Posts and pages sit on a white sheet */
+
+.post-stream-item,
+[data-page-type="post"] article.post,
+article.page {
+  padding: 3rem 3.25rem;
+  background: var(--card);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.post-stream-item {
+  margin-bottom: 1.5rem;
+}
+
+.post-body .post-stream-item {
+  margin-bottom: 2.5rem;
+  padding: 0 0 2.5rem;
+  background: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.post-body h1.post-title {
+  font-size: 1.6em;
+  margin-bottom: 1rem;
+}
+
+h1.post-title {
+  font-size: 2.25em;
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  margin-bottom: 1.5rem;
+  text-wrap: balance;
+}
+
+.post-body {
+  line-height: 1.7;
+}
+
+.post-body > :first-child {
+  margin-top: 0;
+}
+
+.post-body > :last-child {
+  margin-bottom: 0;
+}
+
+.post-body :is(h2, h3, h4) {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Links sit on a mint highlighter stroke that deepens on hover */
+
+.bio a,
+article .post-body a:not(:has(img, svg), .post-card-link, .post-title-link, .post-date, .tag-link),
+.post-card-badge {
+  color: var(--color-text-heading);
+  font-weight: 500;
+  text-decoration: none;
+  background-image: linear-gradient(var(--mark), var(--mark));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.32em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.bio a:hover,
+article .post-body a:not(:has(img, svg), .post-card-link, .post-title-link, .post-date, .tag-link):hover,
+.post-card:hover .post-card-badge {
+  color: var(--color-text-heading);
+  background-image: linear-gradient(var(--mark-hover), var(--mark-hover));
+}
+
+.post-body img {
+  border-radius: 1rem;
+}
+
+article footer {
+  margin-top: 2rem;
+}
+
+[data-page-type="post"] article.post {
+  display: flex;
+  flex-direction: column;
+}
+
+[data-page-type="post"] article.post > footer {
+  display: contents;
+}
+
+[data-page-type="post"] article.post .post-date {
+  order: -1;
+  align-self: flex-start;
+  margin-bottom: 0.75rem;
+  font-size: 0.75em;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+[data-page-type="post"] article.post .post-actions {
+  align-self: flex-end;
+  margin-top: 2rem;
+}
+
+article a.post-date {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+article a.post-date:hover {
+  color: var(--color-text-heading);
+}
+
+.tag-link,
+.post-body .tag-link {
+  padding: 0.2rem 0.7rem;
+  border-radius: 9999px;
+}
+
+/* Forms and comments sit on white sheets, with filled fields and no borders */
+
+.contact-form,
+.reply-form,
+.comments {
+  max-width: none;
+  padding: 2.25rem 3.25rem;
+  background: var(--card);
+  border: 0;
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.comments {
+  margin-top: 1.5rem;
+}
+
+.post-stream-item .comments {
+  padding: 1.5rem 0 0;
+  background: none;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+article .contact-form,
+.comment-form,
+.comment-notice {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.comment-notice {
+  color: var(--color-text-muted);
+}
+
+.form-container {
+  padding: 0;
+}
+
+.form-field label {
+  margin-bottom: 0.4rem;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.blog :is(.contact-form, .reply-form, .comment-form) :is(input[type="text"], input[type="email"], input[type="url"], textarea) {
+  padding: 0.75rem 1rem;
+  background: var(--color-bg-subtle);
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  transition: border-color 200ms, background-color 200ms;
+}
+
+.blog :is(.contact-form, .reply-form, .comment-form) :is(input[type="text"], input[type="email"], input[type="url"], textarea):focus {
+  background: var(--card);
+  border-color: var(--color-border-strong);
+}
+
+.blog :is(.contact-form, .reply-form, .comment-form) input[type="submit"] {
+  padding: 0.65rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+.blog .form a.btn-cancel {
+  color: var(--color-text-muted);
+}
+
+.blog .form a.btn-cancel:hover {
+  color: var(--color-text-heading);
+}
+
+.comment-by-author {
+  border-radius: 0 0.75rem 0.75rem 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-card:hover .post-card-content {
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .blog-title {
+    font-size: 1.875em;
+  }
+
+  .post-card {
+    margin-bottom: 0.875rem;
+    font-size: 0.875em;
+  }
+
+  .post-card-content {
+    column-gap: 1rem;
+    padding: 1.125rem 1.25rem;
+    border-radius: 1.125rem;
+  }
+
+  .post-card-content:has(.post-card-image) {
+    grid-template-columns: minmax(0, 1fr) 5.5rem;
+    grid-template-areas: "title image" "summary image" "meta meta";
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .post-card-image {
+    align-self: start;
+  }
+
+  .post-card-image img,
+  .post-card-image video {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1;
+    border-radius: 0.625rem;
+  }
+
+  .post-card-title {
+    font-size: 1.3em;
+  }
+
+  .post-card-summary {
+    -webkit-line-clamp: 2;
+  }
+
+  .post-card-meta,
+  .post-card-meta.has-tags,
+  .post-card-meta.no-tags {
+    margin-top: 0.75rem;
+  }
+
+  .post-stream-item,
+  [data-page-type="post"] article.post,
+  article.page,
+  .contact-form,
+  .reply-form,
+  .comments {
+    padding: 1.75rem 1.375rem;
+    border-radius: 1.25rem;
+  }
+
+  h1.post-title {
+    font-size: 1.875em;
+  }
+}

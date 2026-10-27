@@ -15,7 +15,8 @@ class App::Onboardings::ThemesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :no_content
     @blog = @user.blog.reload
-    assert_includes @blog.custom_css, "12px monospace journal"
+    assert_equal template, @blog.theme_template
+    assert_equal 1, @blog.theme_template_version
     assert_equal "mono", @blog.font
     assert_equal "narrow", @blog.width
     assert_equal "stream_layout", @blog.layout
@@ -37,7 +38,8 @@ class App::Onboardings::ThemesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :no_content
     @blog = @user.blog.reload
-    assert_nil @blog.custom_css
+    assert_nil @blog.theme_template
+    assert_nil @blog.theme_template_version
     assert_equal "base", @blog.theme
     assert_equal "stream_layout", @blog.layout
     assert_nil @blog.custom_theme_bg_light

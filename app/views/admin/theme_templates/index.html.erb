@@ -19,14 +19,11 @@
         <div class="flex-1">
           <%= link_to template.name, edit_admin_theme_template_path(template), class: "font-medium hover:underline" %>
         </div>
+        <span class="text-sm text-slate-500">v<%= template.version %></span>
         <span class="text-sm text-slate-500"><%= template.theme.presence || "–" %></span>
         <span class="text-sm text-slate-500"><%= template.font.presence || "–" %></span>
         <span class="text-sm <%= template.active? ? 'text-green-600' : 'text-slate-400' %>"><%= template.active? ? "Active" : "Inactive" %></span>
       </div>
     <% end %>
-  </div>
-
-  <div class="mt-4 text-right">
-    <%= link_to "Download as fixtures", admin_theme_templates_fixtures_path, class: "text-sm text-slate-500 hover:text-slate-700" %>
   </div>
 </div>

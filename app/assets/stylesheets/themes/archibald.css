@@ -1,0 +1,42 @@
+/* Archibald – refined monospace with accent links */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap');
+body { font-family: "Roboto Mono", monospace; }
+
+/* Header: reorder to title, nav, bio */
+header {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+header > .titlebar { order: 1; margin-block: 0; }
+.avatar-container { justify-content: space-between; align-items: flex-start; gap: 1rem; }
+header > nav { order: 2; justify-content: flex-start; gap: 1rem; }
+header > .bio { order: 3; margin-block: 0; }
+header > .email-subscriber-form { order: 4; margin-block: 0; }
+header > hr { order: 5; margin-block: 0 1.75rem; }
+
+/* Links: accent underline, highlight on hover */
+nav a, .post-body a, .posts-titles a, .posts-list a, .subscription-message a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.25em;
+  font-weight: normal;
+}
+nav a:hover, .post-body a:hover, .posts-titles a:hover, .posts-list a:hover, .subscription-message a:hover {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+  text-decoration: none;
+}
+
+/* Dotted borders */
+header hr, footer.blog-footer { border-top: 3px dotted var(--color-text); }
+
+/* Post lists */
+.posts-list a { width: fit-content; }
+
+/* Spacing */
+article, .email-subscriber-form { margin-bottom: 2em; }

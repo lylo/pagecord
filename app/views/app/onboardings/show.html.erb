@@ -23,7 +23,7 @@
       <div class="letter-stationery">
         <% @templates.each do |template| %>
           <label class="letter-sheet">
-            <%= form.radio_button :template_id, template.id, checked: @blog.custom_css == template.custom_css, class: "sr-only" %>
+            <%= form.radio_button :template_id, template.id, checked: @blog.theme_template == template, class: "sr-only" %>
             <% if template.screenshot? %>
               <%= image_tag template.screenshot_asset, alt: "", loading: "lazy" %>
             <% else %>
@@ -35,7 +35,7 @@
         <% end %>
 
         <label class="letter-sheet">
-          <%= form.radio_button :template_id, "", checked: @blog.custom_css.blank?, class: "sr-only" %>
+          <%= form.radio_button :template_id, "", checked: @blog.theme_template.nil?, class: "sr-only" %>
           <span class="letter-sheet__blank"></span>
           <span class="letter-postmark" aria-hidden="true"></span>
           Classic

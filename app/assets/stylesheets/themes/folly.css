@@ -1,0 +1,27 @@
+nav {
+  justify-content: center;
+}
+
+.titlebar, .avatar-container {
+  flex-direction: column;
+  align-items: center;
+}
+
+.bio {
+  text-align: center;
+}
+
+header hr {
+	border: none;
+  text-align: center;
+  background: linear-gradient(var(--color-border), var(--color-border)) center / 40% 1px no-repeat;
+  margin: 2rem 0;
+}
+
+header hr::before {
+	content: "✿";
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  padding: 0 0.5em;
+  font-size: 0.75em;
+}

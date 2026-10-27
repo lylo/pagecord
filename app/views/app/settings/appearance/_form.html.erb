@@ -5,12 +5,13 @@
   <section class="sheet" data-controller="tabs" data-tabs-active-class="btn-group-item-active">
     <%= settings_breadcrumb %>
 
+    <% design_tab = @blog.theme_template.present? %>
     <div class="mt-5 flex flex-wrap items-center gap-2">
       <div class="btn-group">
-        <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="0" data-hotkey="o" aria-keyshortcuts="Shift+O" class="btn-group-item btn-group-item-active">
+        <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="0" data-hotkey="o" aria-keyshortcuts="Shift+O" class="btn-group-item <%= "btn-group-item-active" unless design_tab %>">
           Colour scheme<%= hotkey "o" %>
         </button>
-        <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="1" data-hotkey="r" aria-keyshortcuts="Shift+R" class="btn-group-item">
+        <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="1" data-hotkey="r" aria-keyshortcuts="Shift+R" class="btn-group-item <%= "btn-group-item-active" if design_tab %>">
           Ready-made design<%= hotkey "r" %>
         </button>
       </div>
@@ -18,7 +19,7 @@
 
     <div class="sheet-divider mt-5"></div>
 
-    <div data-tabs-target="panel" class="pt-6 pb-8">
+    <div data-tabs-target="panel" class="pt-6 pb-8 <%= "hidden" if design_tab %>">
       <div data-controller="theme-selector">
         <%= form_with url: app_settings_appearance_path, model: @blog,
               data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
@@ -40,9 +41,9 @@
       </div>
     </div>
 
-    <div data-tabs-target="panel" class="hidden pt-6 pb-8">
+    <div data-tabs-target="panel" class="pt-6 pb-8 <%= "hidden" unless design_tab %>">
       <p class="mb-6 text-sm text-slate-500 dark:text-slate-400">
-        A design sets your colours, font, width and layout, all of which you can change below. It also adds Custom CSS, which you can edit in <%= link_to "Custom Code", app_settings_custom_code_path, class: "underline font-medium" %>.
+        A design sets your colours, font, width and layout, all of which you can change below. Anything you add in <%= link_to "Custom Code", app_settings_custom_code_path, class: "underline font-medium" %> goes on top of it.
       </p>
 
       <%= render "app/settings/theme_garden/templates", templates: @templates %>

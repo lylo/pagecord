@@ -1,0 +1,65 @@
+/* Minimal Mono – 12px monospace journal */
+
+.blog { font-size: 0.75rem; line-height: 1.25rem; }
+h1, h2, h3, h4, h5, h6 { font-weight: 400; }
+h1, h2, h3, h4, h5, h6,
+.blog-title, .bio, nav,
+h1.post-title, article footer,
+.post-card-date, .post-card-summary, .post-card-title,
+.tag-link, .tag-filter-notice, .tag-filter-notice-links, .tag-filter-notice-link,
+.comment-date, .comment-badge, .comment-count,
+.email-subscriber-form, figcaption, .post-body figcaption { font-size: 0.75rem; }
+
+/* Header */
+.avatar, header hr, .post-card-badge { display: none; }
+nav { justify-content: flex-start; }
+.bio { text-align: left; }
+
+/* Cards */
+.post-card-content {
+  border: none; box-shadow: none; border-radius: 0;
+  padding: 0; background: transparent;
+  display: flex; flex-direction: column;
+}
+.post-card:hover .post-card-content { box-shadow: none; transform: none; }
+.post-card-meta { order: -1; margin: 0; }
+.post-card-meta.has-tags, .post-card-meta.no-tags { margin-top: 0; }
+.post-card-date { opacity: 1; }
+.post-card-title {
+  color: var(--color-text); letter-spacing: 0; margin-bottom: 0;
+  text-decoration: underline dotted var(--color-text-muted);
+  text-underline-offset: 0.125em;
+}
+.post-card:hover .post-card-title { text-decoration-color: var(--color-text); }
+.post-card-summary { margin-bottom: 0; }
+
+/* Post */
+article.post { display: flex; flex-direction: column; }
+article.post footer { display: contents; }
+article.post .post-date { order: -1; }
+article.post .post-actions { margin-top: 1rem; margin-bottom: 1rem; }
+.blog.post .email-subscriber-form { margin-top: 2rem; }
+h1.post-title { line-height: inherit; margin-bottom: 0.5rem; }
+.tags-container { margin-top: 1rem; }
+.email-form-container { gap: 0.25rem; }
+.form-container { padding: 0; }
+
+/* Heading markers */
+.post-body h1::before,
+.post-body h2::before,
+.post-body h3::before,
+.post-body h4::before { color: var(--color-text-muted); font-weight: inherit; }
+.post-body h1::before { content: "# "; }
+.post-body h2::before { content: "## "; }
+.post-body h3::before { content: "### "; }
+.post-body h4::before { content: "#### "; }
+
+/* Content */
+article img { border-radius: 0; }
+
+/* Links */
+.bio a, .post-body a {
+  text-decoration: underline dotted var(--color-text-muted);
+  text-underline-offset: 0.125em;
+}
+.bio a:hover, .post-body a:hover { text-decoration-color: var(--color-text); }

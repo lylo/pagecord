@@ -32,8 +32,8 @@
   </div>
 
   <div>
-    <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Custom CSS</span>
-    <pre class="mt-1 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg text-sm font-mono overflow-x-auto"><%= @template.custom_css %></pre>
+    <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Stylesheet</span>
+    <p><code>app/assets/stylesheets/<%= @template.stylesheet %>.css</code>, version <%= @template.version %>, used by <%= pluralize @template.blogs.count, "blog" %></p>
   </div>
 
   <% if @template.author_name.present? %>

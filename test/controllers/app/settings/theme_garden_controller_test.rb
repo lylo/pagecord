@@ -36,7 +36,8 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to app_settings_appearance_path
     @blog.reload
-    assert_includes @blog.custom_css, "12px monospace journal"
+    assert_equal @template, @blog.theme_template
+    assert_nil @blog.custom_css
     assert_equal "mono", @blog.font
     assert_equal "narrow", @blog.width
     assert_equal "stream_layout", @blog.layout

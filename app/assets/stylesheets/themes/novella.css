@@ -1,0 +1,81 @@
+/* Novella – literary editorial */
+
+@import url('https://fonts.bunny.net/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&display=swap');
+body { font-family: "Newsreader", serif; }
+:root { --font-size-base: 110%; }
+
+/* Header: centered masthead */
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+header > .titlebar { order: 1; margin-block: 0; }
+header > .bio { order: 2; margin-block: 0; }
+header > nav { order: 3; }
+header > .email-subscriber-form { order: 4; margin-block: 0; }
+header > hr { order: 5; width: 100%; margin-block: 0; }
+
+.titlebar { justify-content: center; }
+.avatar-container {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+.avatar img { border-radius: 0.5rem; }
+.blog-title {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+.blog-title a { font-weight: 600; }
+.bio { text-align: center; font-style: italic; opacity: 0.8; }
+nav { justify-content: center; gap: 1.25rem; font-size: 0.9em; }
+nav a { font-weight: 400; }
+
+/* Divider */
+header hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-border), transparent);
+  margin: 0 0 1.75rem;
+}
+
+/* Stream posts */
+.post-stream-item {
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.post-stream-item:last-of-type { border-bottom: none; }
+
+h1.post-title { font-weight: 500; letter-spacing: -0.02em; }
+.post-title a { text-decoration: none; }
+
+/* Drop cap on first paragraph of posts (not bio) */
+@supports (initial-letter: 2) or (-webkit-initial-letter: 2) {
+  article.h-entry .e-content > p:first-child::first-letter {
+    -webkit-initial-letter: 2;
+    initial-letter: 2;
+    margin-right: 0.35em;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+}
+
+/* Links */
+.post-body a {
+  text-decoration-color: var(--color-accent-muted);
+  text-underline-offset: 0.15em;
+}
+.post-body a:hover { text-decoration-color: var(--color-accent); }
+
+/* Images */
+article img { border-radius: 0.25rem; }
+
+/* Post footer */
+article footer { font-style: italic; }

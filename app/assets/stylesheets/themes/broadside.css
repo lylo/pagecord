@@ -1,0 +1,83 @@
+/* Broadside – poster-style editorial */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+body { font-family: "Space Grotesk", sans-serif; }
+
+/* Header: title left, avatar right */
+.titlebar { margin-top: 2rem; margin-bottom: 0.5rem; }
+header > .email-subscriber-form { margin-top: 1.5rem; }
+.avatar-container { flex-direction: row-reverse; justify-content: space-between; align-items: center; }
+.avatar img { border-radius: 0.25rem; }
+.blog-title {
+  font-size: 2.5em;
+  line-height: 1;
+}
+.blog-title a { font-weight: 700; letter-spacing: -0.04em; }
+
+nav {
+  justify-content: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+nav a {
+  text-transform: uppercase;
+  font-size: 0.85em;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  padding: 0.2em 0;
+  border-bottom: 2px solid transparent;
+}
+nav a:hover { border-bottom-color: var(--color-accent); }
+
+.bio { text-align: left; margin-top: 0.75rem; }
+
+header hr {
+  border: none;
+  height: 3px;
+  background: var(--color-text);
+  margin: 1.25rem 0;
+}
+
+/* Year headers – the signature element */
+.year-header {
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--color-accent);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.year-header.has-previous { margin-top: 2.5rem; }
+
+/* Post rows */
+.post-row {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.post-row a {
+  font-weight: 500;
+  text-decoration: none;
+}
+.post-row a:hover { color: var(--color-accent); }
+.post-row time { font-variant-numeric: tabular-nums; }
+
+/* Single post */
+h1.post-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.post-title a { text-decoration: none; }
+
+/* Links */
+.post-body a { font-weight: 500; }
+
+/* Tags */
+.tag-link {
+  text-transform: uppercase;
+  font-size: 0.65em;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--color-accent);
+}

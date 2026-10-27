@@ -1,0 +1,98 @@
+/* Cardashian – vivid card gallery */
+
+@import url('https://fonts.bunny.net/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+body { font-family: "Outfit", sans-serif; }
+
+/* Header: avatar + title grouped left */
+.avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+.avatar img {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.375rem;
+  border: 2px solid var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-accent) 20%, transparent);
+}
+.avatar-container { align-items: center; gap: 0.75rem; justify-content: flex-start; }
+.blog-title a { font-weight: 700; letter-spacing: -0.02em; }
+.bio { text-align: left; margin-top: 1rem; margin-bottom: 1rem; }
+
+nav {
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+nav a {
+  font-weight: 500;
+  font-size: 0.95em;
+  background: var(--color-bg-subtle);
+  padding: 0.25em 0.75em;
+  border-radius: 9999px;
+  color: var(--color-text-muted);
+}
+nav a:hover {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+header hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(to right, var(--color-accent), transparent);
+  margin: 1.5rem 0;
+}
+
+/* Cards – accent left border */
+.post-card-content {
+  border: none;
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0 0.5rem 0.5rem 0;
+  background: var(--color-bg-subtle);
+}
+
+.post-card:hover .post-card-content {
+  box-shadow: 0 8px 24px -4px color-mix(in oklch, var(--color-accent) 20%, transparent);
+  transform: translateY(-2px);
+  border-left-width: 4px;
+}
+
+.post-card-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.post-card-badge {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-weight: 600;
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-color: transparent;
+}
+
+.post-card-date { font-variant-numeric: tabular-nums; }
+
+.post-card-image img { border-radius: 0.375rem; }
+
+/* Single post */
+h1.post-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.post-title a { text-decoration: none; }
+
+/* Links */
+.post-body a {
+  font-weight: 500;
+  text-decoration-color: var(--color-accent-muted);
+  text-underline-offset: 0.15em;
+}
+.post-body a:hover { text-decoration-color: var(--color-accent); }
+
+/* Images */
+article img { border-radius: 0.375rem; }
+
+/* Tags */
+.tag-link { font-weight: 500; }

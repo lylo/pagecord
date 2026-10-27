@@ -1,7 +1,3 @@
-<% content_for :head do %>
-  <%= stylesheet_link_tag "codemirror", "codemirror-show-hint", "code-editor" %>
-<% end %>
-
 <%= form_with model: [:admin, template], class: "space-y-6" do |form| %>
   <% if template.errors.any? %>
     <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
@@ -23,11 +19,20 @@
     <%= form.text_area :description, rows: 2, class: "form-field w-full" %>
   </div>
 
-  <div data-controller="code-editor">
-    <%= form.label :custom_css, "Custom CSS", class: "block text-sm font-medium mb-1" %>
-    <%= form.text_area :custom_css, rows: 15, data: { code_editor_target: "textarea" } %>
-    <div class="field-error"><%= template.errors[:custom_css].first if template.errors[:custom_css].any? %></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <%= form.label :slug, class: "block text-sm font-medium mb-1" %>
+      <%= form.text_field :slug, class: "form-field w-full", placeholder: "from the name if blank" %>
+    </div>
+
+    <div>
+      <%= form.label :version, class: "block text-sm font-medium mb-1" %>
+      <%= form.number_field :version, min: 1, class: "form-field w-full" %>
+    </div>
   </div>
+  <p class="text-sm text-slate-500 dark:text-slate-400">
+    The CSS is <code>app/assets/stylesheets/themes/&lt;slug&gt;.css</code>, or <code>&lt;slug&gt;-&lt;version&gt;.css</code> from version 2. Blogs keep the version they applied.
+  </p>
 
   <% has_overrides = template.theme.present? || template.font.present? || template.width.present? || template.layout.present? %>
   <div data-controller="admin-theme-form">
