@@ -26,18 +26,19 @@ namespace :theme_templates do
     overwrite = ENV["OVERWRITE"] == "true"
 
     begin
-      templates.each do |template|
-        slug = template.name.parameterize
-        webp_path = output_dir.join("#{slug}.webp")
+      [ *templates, nil ].each do |template|
+        name = template&.name || "Classic"
+        webp_path = output_dir.join("#{template&.slug || "classic"}.webp")
 
         if webp_path.exist? && !overwrite
-          puts "#{template.name}... skipped (exists, set OVERWRITE=true to regenerate)"
+          puts "#{name}... skipped (exists, set OVERWRITE=true to regenerate)"
           next
         end
 
-        print "#{template.name}... "
+        print "#{name}... "
 
-        screenshot_attrs = template.appearance_attributes.merge(width: "standard", show_subscription_in_header: false)
+        design_attrs = template ? template.appearance_attributes : Blog.classic_design_attributes
+        screenshot_attrs = design_attrs.merge(width: "standard", show_subscription_in_header: false)
         original_attrs = blog.attributes.slice(*screenshot_attrs.keys.map(&:to_s))
         blog.update_columns(screenshot_attrs.stringify_keys)
 
@@ -45,7 +46,7 @@ namespace :theme_templates do
           driver.navigate.to("#{blog_url}?t=#{Time.now.to_i}")
           sleep 2
 
-          png_path = output_dir.join("#{slug}.png")
+          png_path = webp_path.sub_ext(".png")
           driver.save_screenshot(png_path.to_s)
 
           system("cwebp", "-q", "80", "-resize", "640", "0", png_path.to_s, "-o", webp_path.to_s, out: File::NULL, err: File::NULL)

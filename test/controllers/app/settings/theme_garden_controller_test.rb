@@ -44,6 +44,21 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
     assert_equal "base", @blog.theme
   end
 
+  test "classic is offered and puts a blog back on its own settings" do
+    @blog.apply_design(@template)
+
+    get app_settings_theme_garden_index_url
+    assert_select "div.ring-pagecord-accent h4", text: "Minimal Mono"
+    assert_select "form[action=?]", app_settings_theme_garden_application_path("classic")
+
+    post app_settings_theme_garden_application_url("classic")
+
+    assert_redirected_to app_settings_appearance_path
+    @blog.reload
+    assert_nil @blog.theme_template
+    assert_equal "sans", @blog.font
+  end
+
   test "apply should work for free users" do
     login_as users(:vivian)
 

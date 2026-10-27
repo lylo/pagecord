@@ -3,9 +3,21 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
   <% templates.each do |template| %>
     <%= render "app/settings/theme_garden/template_card",
-          template: template,
+          name: template.name,
+          screenshot: (template.screenshot_asset if template.screenshot?),
+          author_name: template.author_name,
+          author_url: template.author_url,
+          current: template == @blog.theme_template,
           apply_path: app_settings_theme_garden_application_path(template),
           preview_path: app_settings_theme_garden_preview_path(template),
           confirm: confirm_message %>
   <% end %>
+
+  <%= render "app/settings/theme_garden/template_card",
+        name: "Classic",
+        screenshot: "theme_templates/classic.webp",
+        current: @blog.theme_template.nil?,
+        apply_path: app_settings_theme_garden_application_path("classic"),
+        preview_path: app_settings_theme_garden_preview_path("classic"),
+        confirm: confirm_message %>
 </div>

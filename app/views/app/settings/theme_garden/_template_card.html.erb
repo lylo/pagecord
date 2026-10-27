@@ -1,7 +1,6 @@
-<% current = template == @blog.theme_template %>
-<div class="rounded-lg overflow-hidden bg-slate-50 dark:bg-slate-800 hover:shadow-md transition-shadow <%= "ring-2 ring-sky-500 dark:ring-sky-600" if current %>">
-  <% if template.screenshot? %>
-    <%= image_tag template.screenshot_asset, class: "w-full h-48 object-cover object-top", alt: template.name %>
+<div class="rounded-lg overflow-hidden bg-slate-50 dark:bg-slate-800 hover:shadow-md transition-shadow <%= "ring-2 ring-pagecord-accent" if current %>">
+  <% if screenshot %>
+    <%= image_tag screenshot, class: "w-full h-48 object-cover object-top", alt: name %>
   <% else %>
     <div class="w-full h-48 bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
       <span class="text-slate-400 dark:text-slate-500 text-sm">No preview</span>
@@ -9,14 +8,14 @@
   <% end %>
 
   <div class="p-4">
-    <h4 class="font-bold text-lg mb-1 flex items-center gap-2"><%= template.name %><%= pill("Current") if current %></h4>
-    <% if template.author_name.present? %>
+    <h4 class="font-bold text-lg mb-1"><%= name %></h4>
+    <% if local_assigns[:author_name].present? %>
       <p class="text-xs text-slate-400 dark:text-slate-500 mb-3">
         By
-        <% if template.author_url.present? %>
-          <%= link_to template.author_name, template.author_url, class: "underline", target: "_blank" %>
+        <% if author_url.present? %>
+          <%= link_to author_name, author_url, class: "underline", target: "_blank" %>
         <% else %>
-          <%= template.author_name %>
+          <%= author_name %>
         <% end %>
       </p>
     <% end %>

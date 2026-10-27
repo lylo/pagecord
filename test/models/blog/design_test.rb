@@ -31,6 +31,18 @@ class Blog::DesignTest < ActiveSupport::TestCase
     assert_nil @blog.custom_css
   end
 
+  test "applying classic unlinks the template and resets the settings" do
+    @blog.apply_design(@template)
+    @blog.update!(custom_css: ".mine { color: red; }")
+
+    @blog.apply_design(nil)
+
+    assert_nil @blog.theme_template
+    assert_nil @blog.theme_template_version
+    assert_equal "sans", @blog.font
+    assert_equal ".mine { color: red; }", @blog.custom_css
+  end
+
   test "a blog without a design has no stylesheet" do
     assert_nil @blog.design_stylesheet
   end
