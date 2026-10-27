@@ -348,6 +348,22 @@ class LexxyEditorTest < ApplicationSystemTestCase
     assert_includes editor_value, "A good song"
   end
 
+  test "nothing can be written after the footnotes" do
+    post = @user.blog.posts.create!(title: "Footnotes", content: <<~HTML)
+      <p>Some text<sup data-footnote-ref="1" id="fnref-1"><a href="#fn-1">1</a></sup>.</p>
+      <ol data-footnotes><li id="fn-1"><p>The note.</p></li></ol>
+    HTML
+
+    visit edit_app_post_path(post)
+    wait_for_editor
+
+    find("lexxy-editor .lexxy-editor__content li p", text: "The note.").click
+    find("lexxy-editor .lexxy-editor__content").send_keys(:end, :down, " More.")
+
+    assert_selector "lexxy-editor .lexxy-editor__content li p", text: "The note. More.", wait: 2
+    assert editor_value.end_with?("</ol>")
+  end
+
   test "pasting an image copied from a web page uploads the file rather than the remote url" do
     visit new_app_post_path
     wait_for_editor

@@ -139,13 +139,9 @@ export class FootnotesNode extends ElementNode {
     return true
   }
 
-  // Text can only go in the notes, so Lexxy's provisional paragraph gives the list
-  // a caret position either side, as it does for a table.
+  // Lexxy's provisional paragraph gives a caret position beside an edge that
+  // refuses text, so refusing only the leading edge keeps the list at the end.
   canInsertTextBefore() {
-    return false
-  }
-
-  canInsertTextAfter() {
     return false
   }
 
