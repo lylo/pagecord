@@ -24,19 +24,7 @@
       <% if local_assigns[:preview_path].present? %>
         <%= link_to "Preview", preview_path, class: "btn-secondary text-sm", target: "_blank" %>
       <% end %>
-      <% if local_assigns[:save_message].present? %>
-        <%= form_with url: apply_path, method: local_assigns.fetch(:apply_method, :post),
-              data: { controller: "save-button", action: "turbo:submit-end->save-button#showMessage" } do |form| %>
-          <% local_assigns.fetch(:apply_params, {}).each do |name, value| %>
-            <%= form.hidden_field name, value: value %>
-          <% end %>
-          <%= form.submit "Apply",
-                data: { save_button_target: "button", save_button_message_value: save_message },
-                class: "btn-primary text-sm" %>
-        <% end %>
-      <% else %>
-        <%= button_to "Apply", apply_path, method: local_assigns.fetch(:apply_method, :post), params: local_assigns.fetch(:apply_params, {}), class: "btn-primary text-sm", form: { data: { turbo_confirm: local_assigns[:confirm] } } %>
-      <% end %>
+      <%= button_to "Apply", apply_path, class: "btn-primary text-sm", form_class: "contents", form: { data: { turbo_confirm: local_assigns[:confirm] } } %>
     </div>
   </div>
 </div>

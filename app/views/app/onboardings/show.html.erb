@@ -1,158 +1,67 @@
-<div class="text-slate-800 dark:text-slate-200">
-  <div class="pb-6">
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Welcome to Pagecord! ✨</h1>
-    <p class="mt-2 text-slate-600 dark:text-slate-300">
-      Your blog is live at <%= link_to blog_home_url(@blog), blog_home_url(@blog), class: "link-quiet font-semibold" %>.
-    </p>
+<% content_for :title, "Pagecord - Welcome" %>
+<% content_for :footer do %>Your blog: <%= link_to blog_home_url(@blog), blog_home_url(@blog) %><% end %>
 
-    <p class="mt-2 text-slate-600 dark:text-slate-300">
-      A few quick things to set up. You can change any of them later in Settings.
-    </p>
-  </div>
+<div class="letter-intro">
+  <h1>Welcome to Pagecord</h1>
+  <p>It's great to have you here! Let's get you set up.</p>
+</div>
 
-  <%= render "step", number: "1", title: "Confirm your blog title",
-        description: "Here's the name from your letter. Change it now, or any time in Settings." %>
+<div class="letter-paper letter-paper--reply">
+  <%= render "letters/letterhead" %>
 
-  <div class="py-6">
-    <%= form_with url: app_onboarding_path, model: @blog,
-          data: {
-            turbo_scroll: false,
-            controller: "save-button",
-            action: "turbo:submit-end->save-button#showMessage"
-          } do |form| %>
-      <fieldset>
-        <%= styled_text_field(form, :title, placeholder: "@#{@blog.subdomain}", class: "w-full") %>
-        <div class="field-error"><%= @blog.errors[:title].first if @blog.errors[:title].any? %></div>
-      </fieldset>
+  <p>Dear <%= @blog.display_name %>,</p>
+  <p>
+    Your blog is live at
+    <%= link_to @blog.host, blog_home_url(@blog), target: "_blank" %>,
+    and ready when you are.
+  </p>
+  <p>First, pick a design for your blog:</p>
 
-      <%= form.submit "Save",
-        data: {
-          save_button_target: "button",
-          save_button_message_value: "✅ Saved!"
-        },
-        class: "mt-2 btn-primary"
-      %>
+  <%= form_with url: app_onboarding_theme_path, method: :patch, class: "letter-stationery", data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
+    <% @templates.each do |template| %>
+      <label class="letter-sheet">
+        <%= form.radio_button :template_id, template.id, checked: @blog.custom_css == template.custom_css, class: "sr-only" %>
+        <% if template.screenshot? %>
+          <%= image_tag template.screenshot_asset, alt: "", loading: "lazy" %>
+        <% else %>
+          <span class="letter-sheet__blank"></span>
+        <% end %>
+        <span class="letter-postmark" aria-hidden="true"></span>
+        <%= template.name %>
+      </label>
     <% end %>
-  </div>
 
-  <%= render "step", number: "2", title: "Add a bio",
-        description: "Your bio appears at the top of your blog's home page. Entirely optional." %>
-
-  <div class="lexxy-minimal py-6">
-    <%= form_with url: app_onboarding_path, model: @blog,
-          data: {
-            turbo_scroll: false,
-            controller: "save-button",
-            action: "turbo:submit-end->save-button#showMessage"
-          } do |form| %>
-
-      <fieldset>
-        <%= form.rich_text_area :bio,
-          placeholder: "Add your bio...",
-          class: "lexxy-content min-h-[150px]",
-          spellcheck: true,
-          autocorrect: "on",
-          autocapitalize: "sentences",
-          attachments: false,
-          data: { subscribed: false } %>
-
-        <div id="bio_error" class="field-error"><%= render "bio_error" if @blog.errors[:bio].any? %></div>
-      </fieldset>
-
-      <%= form.submit "Save",
-        data: { save_button_target: "button" },
-        class: "mt-2 btn-primary"
-      %>
-    <% end %>
-  </div>
-
-  <%= render "step", number: "3", title: "Choose a design ✨",
-        description: "Pick a ready-made design, or choose your own colours, type and layout." %>
-
-  <div class="py-6">
-  <div data-controller="tabs" data-tabs-active-class="btn-group-item-active">
-    <div class="btn-group">
-      <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="0" class="btn-group-item btn-group-item-active">
-        Ready-made design
-      </button>
-      <button type="button" data-tabs-target="tab" data-action="tabs#select" data-tabs-index-param="1" class="btn-group-item">
-        Choose your own
-      </button>
-    </div>
-
-    <div data-tabs-target="panel" class="pt-6 pb-2">
-      <%= render "ready_made", templates: @featured_templates %>
-    </div>
-
-    <div data-tabs-target="panel" class="hidden pt-6 pb-2 space-y-8">
-      <div>
-        <h3 class="text-lg font-semibold">Pick a colour scheme 🎨</h3>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">The default is the classic Pagecord minimal monochrome.</p>
-        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
-          <%= render "/app/settings/appearance/theme_colour", form: form %>
-        <% end %>
-      </div>
-
-      <div>
-        <h3 class="text-lg font-semibold">Choose a typeface</h3>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Choose whether you'd like a sans-serif font, or serif for that elegant look.</p>
-        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
-          <%= render "/app/settings/appearance/theme_font", form: form %>
-        <% end %>
-      </div>
-
-      <div>
-        <h3 class="text-lg font-semibold">Choose your blog layout</h3>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">The default is a stream of all your posts on the home page. You can also choose a list of post titles and dates, or cards with excerpts.</p>
-        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
-          <%= render "/app/settings/appearance/layout_options", form: form %>
-        <% end %>
-      </div>
-
-      <div>
-        <h3 class="text-lg font-semibold">Choose a page width</h3>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Choose whether you'd like the standard layout, or one that's wider or narrower.</p>
-        <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
-          <%= render "/app/settings/appearance/layout_width", form: form %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-  </div>
-
-  <%= render "step", number: "4", title: "Choose your language",
-        description: "The interface language of your blog, used for buttons, forms and dates." %>
-
-  <div class="py-6">
-    <%= form_with url: app_onboarding_path, model: @blog, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
-      <%= render "/app/settings/blogs/language_select", form: form %>
-    <% end %>
-  </div>
-
-  <% unless Current.user.has_password? %>
-    <%= render "step", number: "5", title: "Add a password",
-          description: "Optional. We'll always email you a sign-in link, but a password can be handy too." %>
-
-    <div id="onboarding_password" class="py-6">
-      <%= form_with url: app_onboarding_password_path, scope: :user, class: "space-y-3" do |form| %>
-        <fieldset class="grid gap-3 sm:grid-cols-2">
-          <%= form.label :password, "Password", class: "sr-only" %>
-          <%= form.password_field :password, placeholder: "Password (12+ characters)", minlength: 12, required: true, autocomplete: "new-password", class: "w-full px-3 py-2.5 form-field rounded-lg" %>
-          <%= form.label :password_confirmation, "Confirm password", class: "sr-only" %>
-          <%= form.password_field :password_confirmation, placeholder: "Once more, to be sure", required: true, autocomplete: "new-password", class: "w-full px-3 py-2.5 form-field rounded-lg" %>
-        </fieldset>
-        <div id="password_error" class="field-error"></div>
-        <%= form.submit "Save password", class: "btn-primary" %>
-      <% end %>
-    </div>
+    <label class="letter-sheet">
+      <%= form.radio_button :template_id, "", checked: @blog.custom_css.blank?, class: "sr-only" %>
+      <span class="letter-sheet__blank"></span>
+      <span class="letter-postmark" aria-hidden="true"></span>
+      Classic
+    </label>
   <% end %>
 
-  <%= render "step", number: Current.user.has_password? ? "5" : "6", title: "Ready to write ✍️",
-        description: "Write your first post, add a page, or set up your home page." %>
+  <%= form_with model: @blog, url: app_onboarding_completion_path, method: :post do |form| %>
+    <p>You can add a bio to the top of your blog, if you like:</p>
+    <p>
+      <%= letter_blank form, :bio, label: "Bio", as: :text_area, size: :bio, value: @blog.bio.to_plain_text, maxlength: 500, rows: 2,
+            placeholder: "a little about you or your blog" %>
+    </p>
+    <p class="letter-note" role="alert"><%= @blog.errors.full_messages_for(:bio).first %></p>
+    <p>
+      You'll be writing in
+      <%= form.label :locale, "Language", class: "sr-only" %>
+      <%= form.select :locale, Blog.available_locales, {}, class: "letter-blank letter-blank--select" %>.
+    </p>
+    <p>All of this can be changed in Settings whenever you like.</p>
 
-  <div class="py-6">
-    <%= button_to app_onboarding_completion_path, class: "btn-primary" do %>
-      Go to your blog and start writing →
-    <% end %>
-  </div>
+    <p>Yours,</p>
+    <p class="letter-signature">Olly</p>
+
+    <p class="letter-ps">
+      P.S. You can post by email too. Just write to <span class="letter-address"><%= @blog.delivery_email %></span>
+    </p>
+
+    <div class="letter-send">
+      <%= render "letters/send", form: form, label: "Take me to Pagecord" %>
+    </div>
+  <% end %>
 </div>

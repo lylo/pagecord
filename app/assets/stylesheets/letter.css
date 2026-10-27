@@ -581,17 +581,175 @@
   z-index: 1;
   inset-block-start: -26px;
   inset-inline-end: -18px;
-  box-sizing: border-box;
-  width: 13rem;
   margin: 0;
-  padding: 18px 18px 22px;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  transform: rotate(3deg);
+}
+
+/* Onboarding: Pagecord's reply, with the designs as sheets of stationery */
+
+.letter-paper--reply {
+  animation: letter-arrive 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes letter-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(48px) rotate(1.5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter-paper--reply { animation: none; }
+}
+
+.letter-stationery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px 18px;
+  margin-block: 1rem 2rem;
+}
+
+.letter-sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: "CaveatVariable", cursive;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.letter-sheet img,
+.letter-sheet__blank {
+  display: block;
+  width: 100%;
+  aspect-ratio: 640 / 331;
+  object-fit: cover;
+  object-position: top;
+  background: var(--letter-paper);
+  box-shadow: 0 0 0 1px rgba(28, 38, 35, 0.07), 0 12px 18px -12px rgba(28, 38, 35, 0.45);
+  transform: rotate(-1.2deg);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.letter-sheet:nth-child(even) img,
+.letter-sheet:nth-child(even) .letter-sheet__blank {
+  transform: rotate(1deg);
+}
+
+.letter-sheet:hover img,
+.letter-sheet:hover .letter-sheet__blank {
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 1px rgba(28, 38, 35, 0.07), 0 18px 24px -14px rgba(28, 38, 35, 0.5);
+}
+
+.letter-sheet:has(:checked) img,
+.letter-sheet:has(:checked) .letter-sheet__blank {
+  transform: none;
+  outline: 2px solid var(--letter-navy);
+  outline-offset: 4px;
+}
+
+.letter-sheet:has(:focus-visible) img,
+.letter-sheet:has(:focus-visible) .letter-sheet__blank {
+  outline: 2px dashed var(--letter-navy);
+  outline-offset: 4px;
+}
+
+.letter-sheet .letter-postmark {
+  position: absolute;
+  inset-block-start: 10%;
+  inset-inline-end: -8%;
+  width: 70%;
+  color: var(--letter-navy);
+  opacity: 0;
+  transform: rotate(-12deg) scale(1.4);
+  transition: opacity 0.15s, transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
+  pointer-events: none;
+}
+
+.letter-sheet:has(:checked) .letter-postmark {
+  opacity: 0.8;
+  transform: rotate(-12deg);
+}
+
+.letter-sheet__blank {
+  background:
+    linear-gradient(var(--letter-rule), var(--letter-rule)) 50% 22% / 30% 3px no-repeat,
+    repeating-linear-gradient(transparent 0 7px, color-mix(in srgb, var(--letter-rule) 35%, transparent) 7px 8px) 50% 75% / 64% 40% no-repeat,
+    var(--letter-paper);
+}
+
+/* rows: 2 in onboardings/show; the background draws the first line's rule, the border the second's */
+.letter-blank--bio {
+  display: block;
+  width: 100%;
+  height: auto;
+  line-height: 2.2em;
+  resize: none;
+  background: linear-gradient(to right, var(--letter-rule) 50%, transparent 0) 0 calc(2.2em - 2px) / 4px 2px repeat-x local;
+}
+
+.letter-paper--reply .letter-ps {
+  white-space: normal;
+  display: block;
+}
+
+.letter-paper--reply .letter-address {
+  font-size: 1.35em;
+  overflow-wrap: anywhere;
+}
+
+/* Sheets of the same paper in the app's blank slates */
+
+.paper-sheet {
+  box-sizing: border-box;
+  background: var(--letter-paper) url("letter/paper-light.jpg") 0 0 / 512px auto;
+  box-shadow: 0 0 0 1px rgba(28, 38, 35, 0.04), 0 26px 44px -24px rgba(28, 38, 35, 0.5);
+  color: var(--letter-ink);
+  font-family: "SourceSerif4Variable", Georgia, serif;
+}
+
+.paper-sheet__rule {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--letter-rule) 18%, transparent);
+}
+
+/* A post-it: the app's blank slates and the features page */
+
+.post-it {
+  box-sizing: border-box;
+  width: 12.5rem;
+  padding: 22px 18px 20px;
   background: linear-gradient(180deg, #fff7a8, #fdec7a);
   box-shadow: 0 1px 1px rgba(60, 50, 0, 0.12), 0 14px 18px -12px rgba(60, 50, 0, 0.45);
   font-family: "CaveatVariable", cursive;
-  font-size: 1.5rem;
-  line-height: 1.2;
   color: #2b2a1f;
-  transform: rotate(3deg);
+}
+
+.post-it::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 24px;
+  background: linear-gradient(rgba(90, 70, 0, 0.07), rgba(90, 70, 0, 0));
+}
+
+.post-it a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+.post-it a:hover {
+  text-decoration-thickness: 2px;
 }
 
 /* The 404 page: an envelope stamped "Return to sender" */
@@ -849,6 +1007,11 @@
     background-image: url("letter/paper-dark.jpg");
   }
 
+  .paper-sheet {
+    background: var(--color-slate-800);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 26px 44px -24px rgba(0, 0, 0, 0.8);
+  }
+
   .postcard__postmark {
     color: rgba(255, 255, 255, 0.4);
   }
@@ -930,6 +1093,10 @@
   .letter-paper--note .letter-send {
     flex-direction: column-reverse;
     align-items: stretch;
+  }
+
+  .letter-stationery {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 

@@ -14,49 +14,20 @@ class App::OnboardingsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to app_onboarding_path
   end
 
-  test "should render onboarding page with theme tabs" do
+  test "should render the reply letter with every design" do
     get app_onboarding_path
 
     assert_response :success
-    assert_select "[data-controller=tabs]"
-    assert_select "a", text: "See all designs"
+    assert_select ".letter-sheet", ThemeTemplate.active.count + 1
+    assert_select "form[action=?]", app_onboarding_completion_path
   end
 
-  test "should update blog title" do
-    patch app_onboarding_path, params: { blog: { title: "New Title" } }, as: :turbo_stream
-
-    assert_response :success
-    assert_equal "New Title", @user.blog.reload.title
-    assert_select "turbo-stream[target=heading_blog_title]", text: "New Title"
-  end
-
-  test "should update bio" do
-    patch app_onboarding_path, params: { blog: { bio: "New Bio" } }, as: :turbo_stream
-
-    assert_response :success
-    assert_equal "New Bio", @user.blog.reload.bio.to_plain_text
-  end
-
-  test "should select title layout" do
-    patch app_onboarding_path, params: { blog: { layout: "title_layout" } }, as: :turbo_stream
-
-    assert_response :success
-    assert_equal "title_layout", @user.blog.reload.layout
-  end
-
-  test "should save custom theme colours" do
-    patch app_onboarding_path, params: { blog: { theme: "custom", custom_theme_bg_light: "#111111" } }, as: :turbo_stream
-
-    assert_response :success
-    assert_equal "#111111", @user.blog.reload.custom_theme_bg_light
-  end
-
-  test "offers a password only to an account without one" do
+  test "marks the applied design as chosen" do
     get app_onboarding_path
-    assert_select "#onboarding_password"
+    assert_select "input[name=template_id][value=''][checked]"
 
-    @user.update!(password: "a long password")
+    @user.blog.update!(theme_templates(:cardashian).appearance_attributes)
     get app_onboarding_path
-    assert_select "#onboarding_password", 0
+    assert_select "input[name=template_id][value=?][checked]", theme_templates(:cardashian).id.to_s
   end
 end

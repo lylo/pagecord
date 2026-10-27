@@ -2,9 +2,16 @@ class App::Onboardings::ThemesController < App::BaseController
   skip_before_action :onboarding_check
 
   def update
-    template = ThemeTemplate.active.find(params[:template_id])
-    @blog.update(template.appearance_attributes)
+    @blog.update(appearance_attributes)
 
     head :no_content
   end
+
+  private
+
+    def appearance_attributes
+      template = ThemeTemplate.active.find(params[:template_id]) if params[:template_id].present?
+
+      Blog.column_defaults.slice("custom_css", *Themeable::ATTRIBUTES.map(&:to_s)).merge(template&.appearance_attributes.to_h)
+    end
 end

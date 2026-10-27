@@ -1,37 +1,20 @@
 <% quiet_link = "link-quiet font-medium hover:text-slate-800 dark:hover:text-slate-200" %>
-
-<div class="flex grow flex-col items-center pt-8 pb-16 sm:pt-14">
-  <div class="max-w-lg">
-    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50">Write your first post</h2>
-    <p class="mt-2 text-slate-600 dark:text-slate-300">
-      Your posts will appear here. The quickest way to start is to compose a draft in the editor.
-    </p>
-    <div class="mt-6">
-      <%= render "new_post_button" %>
-    </div>
-
-    <h3 class="mt-12 text-lg font-semibold text-slate-900 dark:text-slate-100">Or publish from somewhere else</h3>
-
-    <div class="mt-2">
-      <div class="flex items-start gap-3 py-4">
-        <span class="text-xl leading-6" aria-hidden="true">✉️</span>
-        <div>
-          <p class="font-semibold text-slate-900 dark:text-slate-50">Email</p>
-          <p class="mt-0.5 text-sm leading-6 text-slate-600 dark:text-slate-300">
-            <%= link_to "Email a post", "https://help.pagecord.com/posting-by-email", class: quiet_link %> from your inbox to <%= mail_to @blog.delivery_email, @blog.delivery_email, class: quiet_link %>.
-          </p>
-        </div>
-      </div>
-
-      <div class="flex items-start gap-3 py-4">
-        <span class="text-xl leading-6" aria-hidden="true">💎</span>
-        <div>
-          <p class="font-semibold text-slate-900 dark:text-slate-50">Obsidian</p>
-          <p class="mt-0.5 text-sm leading-6 text-slate-600 dark:text-slate-300">
-            Publish straight from your vault with the <%= link_to "Pagecord Obsidian plugin", "https://help.pagecord.com/obsidian", target: "_blank", class: quiet_link %>.
-          </p>
-        </div>
-      </div>
+<div class="relative isolate flex grow flex-col items-center pt-10 pb-12 text-center sm:pt-16">
+  <div class="paper-sheet w-60 -rotate-2 px-7 pt-7 pb-9 text-start sm:w-72" aria-hidden="true">
+    <p class="font-hand text-4xl font-bold leading-none text-pagecord-accent-deep">hello, world</p>
+    <div class="mt-5 space-y-3">
+      <div class="paper-sheet__rule"></div>
+      <div class="paper-sheet__rule"></div>
+      <div class="paper-sheet__rule w-2/3"></div>
     </div>
   </div>
+
+  <h2 class="mt-12 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Write your first post</h2>
+  <p class="mt-2 max-w-sm text-slate-600 dark:text-slate-300">
+    Your blog is live at <%= link_to @blog.host, blog_home_url(@blog), target: "_blank", class: quiet_link %>. Ready when you are!
+  </p>
+
+  <%= render "new_post_button", icon: true, css: "mt-6" %>
+
+  <%= render "app/shared/first_steps" %>
 </div>

@@ -9,6 +9,8 @@
 @theme {
   --color-pagecord-accent: #4fbd9c;
   --color-pagecord-accent-hover: #4bb193;
+  --color-pagecord-accent-deep: #2f8f72;
+  --font-hand: "CaveatVariable", cursive;
 
   /* The app's grey scale: slate's lightness steps on the accent's hue, kept under the slate name. */
   --color-slate-50: oklch(98.4% 0.003 170);
@@ -31,6 +33,7 @@
   :root {
     --color-pagecord-accent: oklch(78% 0.075 172);
     --color-pagecord-accent-hover: oklch(83% 0.075 172);
+    --color-pagecord-accent-deep: oklch(78% 0.075 172);
 
     --color-slate-50: oklch(97% 0.002 237);
     --color-slate-100: oklch(94% 0.003 237);

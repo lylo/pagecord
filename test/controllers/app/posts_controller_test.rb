@@ -15,6 +15,17 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: "Your browser isn't supported"
   end
 
+  test "an empty blog gets the first steps note until it has a post or page" do
+    @user.blog.all_posts.update_all(discarded_at: Time.current)
+
+    get app_posts_url
+    assert_select ".post-it a", text: "Write your first post"
+
+    @user.blog.all_posts.first.update_column(:discarded_at, nil)
+    get app_pages_url
+    assert_select ".post-it", 0
+  end
+
   test "edit shows the settings panel" do
     get edit_app_post_url(@user.blog.posts.published.first)
 

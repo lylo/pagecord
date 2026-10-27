@@ -1,0 +1,24 @@
+<% return if @blog.all_posts.kept.exists? %>
+
+<% first_steps = {
+     "Start a blog" => [ true, nil ],
+     "Pick a design" => [ true, nil ],
+     "Say who you are" => [ @blog.bio.present? || @blog.avatar.attached?, app_settings_about_path ],
+     "Write your first post" => [ false, new_app_post_path ]
+   } %>
+
+<div class="post-it relative mt-12 -rotate-2 text-start sm:absolute sm:-top-4 sm:-end-10 sm:mt-0 sm:rotate-3">
+  <p class="text-2xl font-bold">First steps</p>
+  <ul class="mt-1 space-y-0.5 text-xl leading-snug">
+    <% first_steps.each do |step, (done, path)| %>
+      <li class="flex items-baseline gap-2">
+        <span class="w-4 shrink-0 text-center" aria-hidden="true"><%= done ? "✓" : "○" %></span>
+        <% if done %>
+          <s class="decoration-1 opacity-60"><%= step %></s>
+        <% else %>
+          <%= link_to step, path %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>

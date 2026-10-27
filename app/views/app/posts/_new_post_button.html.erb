@@ -1,3 +1,5 @@
-<%= link_to new_app_post_path, **hotkey_options("n", class: "btn-primary", title: "Start writing a new post") do %>
+<%# locals: (icon: false, css: nil) %>
+<%= link_to new_app_post_path, **hotkey_options("n", class: class_names("btn-primary", css, "gap-2" => icon), title: "Start writing a new post") do %>
+  <%= inline_svg_tag "icons/edit.svg", class: "h-4 w-4" if icon %>
   New Post<%= hotkey "n" %>
 <% end %>
