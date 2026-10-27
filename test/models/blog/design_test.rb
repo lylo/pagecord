@@ -43,6 +43,16 @@ class Blog::DesignTest < ActiveSupport::TestCase
     assert_equal ".mine { color: red; }", @blog.custom_css
   end
 
+  test "detaching a design copies its css above the blog's own and goes back to classic" do
+    @blog.apply_design(@template)
+    @blog.update!(custom_css: ".mine { color: red; }")
+
+    assert @blog.detach_design
+
+    assert_nil @blog.theme_template
+    assert_equal "#{@template.css}\n\n.mine { color: red; }", @blog.custom_css
+  end
+
   test "a blog without a design has no stylesheet" do
     assert_nil @blog.design_stylesheet
   end

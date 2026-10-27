@@ -22,6 +22,12 @@ module Blog::Design
     save
   end
 
+  # Back to the classic design with the stylesheet's CSS as the blog's own, to edit
+  def detach_design
+    css = theme_template.css(theme_template_version)
+    update(custom_css: [ css, custom_css ].compact_blank.join("\n\n"), theme_template_id: nil, theme_template_version: nil)
+  end
+
   def design_stylesheet
     theme_template&.stylesheet(theme_template_version)
   end

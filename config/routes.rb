@@ -136,6 +136,7 @@ Rails.application.routes.draw do
 
         resource :custom_code, only: [ :show, :update ], controller: "custom_code" do
           resource :preview, only: [ :update ], controller: "custom_code/previews"
+          resource :design_copy, only: [ :create ], controller: "custom_code/design_copies"
         end
         resource :api, only: [ :show, :create, :destroy ], controller: "api"
         resources :mcp_connections, only: :destroy

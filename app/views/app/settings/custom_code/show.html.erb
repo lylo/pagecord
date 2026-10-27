@@ -27,12 +27,23 @@
           disabled: premium_disabled, subscribe_prompt: "to style your blog with custom CSS." } do %>
       <p>
         Add custom CSS to style your blog. This CSS will be inserted into the <code>&lt;head&gt;</code> of your blog pages.
-        You can use <code>@import</code> for Google Fonts or Bunny Fonts.
+        You can use <code>@import</code> for Google Fonts or Bunny Fonts. Read <%= help_link.call("custom-css") %> to get started.
       </p>
 
-      <p class="text-sm text-slate-500 dark:text-slate-400 italic">
-        Customer support for debugging custom CSS is not possible. Read <%= help_link.call("custom-css") %> to get started.
-      </p>
+      <% if @blog.theme_template %>
+        <div class="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-slate-50 p-4 dark:bg-slate-800/60">
+          <p class="text-slate-600 dark:text-slate-300">
+            Using the <strong class="text-slate-900 dark:text-slate-100"><%= @blog.theme_template.name %></strong> design. Your CSS goes on top of it.
+          </p>
+          <div class="flex gap-2">
+            <%= link_to "View CSS", stylesheet_path(@blog.design_stylesheet), class: "btn-secondary text-sm", target: "_blank" %>
+            <% unless premium_disabled %>
+              <%= button_to "Copy to edit", app_settings_custom_code_design_copy_path, class: "btn-secondary text-sm cursor-pointer", form_class: "contents",
+                    form: { data: { turbo_confirm: "This puts #{@blog.theme_template.name}'s CSS at the top of your Custom CSS and switches your blog to Classic, so later improvements to #{@blog.theme_template.name} won't reach it. Continue?" } } %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
     <% end %>
 
     <%= render layout: "code_field", locals: {
