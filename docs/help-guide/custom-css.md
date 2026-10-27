@@ -253,11 +253,19 @@ Or pick and choose from the individual options below.
 
 ### Centering the Top Navigation
 
-By default, the navigation links are aligned to the right. This will move them to the center.
+By default, the navigation links are aligned to the left. This will move them to the center.
 
 ```css
 nav {
   justify-content: center;
+}
+```
+
+### Moving the Navigation to the Right
+
+```css
+nav {
+  justify-content: flex-end;
 }
 ```
 
