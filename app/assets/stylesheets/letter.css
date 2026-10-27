@@ -705,53 +705,6 @@
   overflow-wrap: anywhere;
 }
 
-/* Sheets of the same paper in the app's blank slates */
-
-.paper-sheet {
-  box-sizing: border-box;
-  background: var(--letter-paper) url("letter/paper-light.jpg") 0 0 / 512px auto;
-  box-shadow: 0 0 0 1px rgba(28, 38, 35, 0.04), 0 26px 44px -24px rgba(28, 38, 35, 0.5);
-  color: var(--letter-ink);
-  font-family: "SourceSerif4Variable", Georgia, serif;
-}
-
-.paper-sheet__rule {
-  height: 0.5rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--letter-rule) 18%, transparent);
-}
-
-/* A post-it: the app's blank slates and the features page */
-
-.post-it {
-  box-sizing: border-box;
-  width: 12.5rem;
-  padding: 22px 18px 20px;
-  background: linear-gradient(180deg, #fff7a8, #fdec7a);
-  box-shadow: 0 1px 1px rgba(60, 50, 0, 0.12), 0 14px 18px -12px rgba(60, 50, 0, 0.45);
-  font-family: "CaveatVariable", cursive;
-  color: #2b2a1f;
-}
-
-.post-it::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 24px;
-  background: linear-gradient(rgba(90, 70, 0, 0.07), rgba(90, 70, 0, 0));
-}
-
-.post-it a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.15em;
-}
-
-.post-it a:hover {
-  text-decoration-thickness: 2px;
-}
-
 /* The 404 page: an envelope stamped "Return to sender" */
 
 .letter-return {
@@ -1005,11 +958,6 @@
 
   .postcard {
     background-image: url("letter/paper-dark.jpg");
-  }
-
-  .paper-sheet {
-    background: var(--color-slate-800);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 26px 44px -24px rgba(0, 0, 0, 0.8);
   }
 
   .postcard__postmark {
