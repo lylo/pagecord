@@ -15,7 +15,6 @@ export default class extends Controller {
     this.element.addEventListener("lexxy:file-accept", this.#validateFile)
     this.element.addEventListener("lexxy:editor-initialized", this.#syncTypingAttributes)
     this.element.addEventListener("focusin", this.#syncTypingAttributesAfterFocus)
-    this.#installClipboardPasteOverride()
     this.#syncTypingAttributes()
   }
 
@@ -23,7 +22,6 @@ export default class extends Controller {
     this.element.removeEventListener("lexxy:file-accept", this.#validateFile)
     this.element.removeEventListener("lexxy:editor-initialized", this.#syncTypingAttributes)
     this.element.removeEventListener("focusin", this.#syncTypingAttributesAfterFocus)
-    this.#restoreClipboardPaste()
   }
 
   #validateFile = (e) => {
@@ -68,20 +66,6 @@ export default class extends Controller {
     }
   }
 
-  #installClipboardPasteOverride() {
-    if (!this.element.clipboard?.paste || this.originalClipboardPaste) return
-
-    this.originalClipboardPaste = this.element.clipboard.paste.bind(this.element.clipboard)
-    this.element.clipboard.paste = this.#pastePreferringImageFiles
-  }
-
-  #restoreClipboardPaste() {
-    if (!this.originalClipboardPaste || !this.element.clipboard) return
-
-    this.element.clipboard.paste = this.originalClipboardPaste
-    this.originalClipboardPaste = null
-  }
-
   #syncTypingAttributes = () => {
     const editorContent = this.element.editorContentElement || this.element.querySelector(".lexxy-editor__content")
     if (!editorContent) return
@@ -96,42 +80,5 @@ export default class extends Controller {
   #syncTypingAttributesAfterFocus = () => {
     this.#syncTypingAttributes()
     requestAnimationFrame(this.#syncTypingAttributes)
-  }
-
-  #pastePreferringImageFiles = (event) => {
-    const imageFiles = this.#pastedImageFilesFrom(event)
-
-    if (imageFiles.length === 0) {
-      return this.originalClipboardPaste?.(event)
-    }
-
-    event.preventDefault()
-    this.#insertUploadNodes(imageFiles)
-    return true
-  }
-
-  #insertUploadNodes(files) {
-    this.#preservingScrollPosition(() => {
-      this.element.focus()
-      this.element.contents.uploadFiles(files)
-    })
-  }
-
-  // Mirrors Lexxy's internal Safari scroll-jump fix for pasted attachments
-  async #preservingScrollPosition(callback) {
-    const { scrollX, scrollY } = window
-    callback()
-    await new Promise(resolve => requestAnimationFrame(resolve))
-    window.scrollTo(scrollX, scrollY)
-  }
-
-  #pastedImageFilesFrom(event) {
-    if (this.element.dataset.attachments !== "true") return []
-
-    const files = Array.from(event.clipboardData?.files || [])
-    const imageFiles = files.filter(file => file.type.startsWith("image/"))
-    if (imageFiles.length === 0) return []
-
-    return imageFiles
   }
 }

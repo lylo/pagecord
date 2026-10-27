@@ -292,21 +292,8 @@ lexxy-link-dropdown {
     gap: 1ch;
   }
 
-  /* Restates Lexxy's input[type="url"] rule, as relative_links_extension.js makes this a text input */
   [data-dropdown-panel] input.input {
-    background-color: var(--lexxy-color-canvas);
-    border: 1px solid var(--lexxy-color-ink-lighter);
-    border-radius: var(--lexxy-radius);
-    color: var(--lexxy-color-text);
-    block-size: var(--lexxy-toolbar-button-size);
-    box-sizing: border-box;
-    font-size: var(--lexxy-text-small);
-    flex: 2;
-    inline-size: 100%;
     min-inline-size: 30ch;
-    line-height: inherit;
-    padding-block: 0;
-    padding-inline: 1ch;
 
     [overflowing] & {
       min-inline-size: 100%;

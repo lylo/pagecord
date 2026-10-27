@@ -348,6 +348,65 @@ class LexxyEditorTest < ApplicationSystemTestCase
     assert_includes editor_value, "A good song"
   end
 
+  test "pasting an image copied from a web page uploads the file rather than the remote url" do
+    visit new_app_post_path
+    wait_for_editor
+    find("lexxy-editor .lexxy-editor__content").click
+
+    paste_image_file_with_html(%(<img src="https://example.com/photo.png">))
+
+    assert_selector "lexxy-editor .lexxy-editor__content figure.attachment--png img[src^='data:image/png']", wait: 2
+    assert_no_selector "lexxy-editor .lexxy-editor__content img[src='https://example.com/photo.png']"
+  end
+
+  test "pasting an image with uploads used up inserts nothing" do
+    UploadQuota.any_instance.stubs(:exceeded?).returns(true)
+    visit new_app_post_path
+    wait_for_editor
+    find("lexxy-editor .lexxy-editor__content").click
+
+    accept_alert("You've used all your free uploads. Subscribe to upload more.") do
+      paste_image_file_with_html(%(<img src="https://example.com/photo.png">))
+    end
+
+    assert_no_selector "lexxy-editor .lexxy-editor__content figure.attachment"
+  end
+
+  test "remote images survive a round trip through the editor" do
+    post = @user.blog.posts.create!(title: "Remote", content: <<~HTML)
+      <p>Sent by email</p>
+      <img src="https://example.com/unfurled.jpg">
+      <action-text-attachment url="https://example.com/pasted.png" content-type="image/png"></action-text-attachment>
+    HTML
+
+    visit edit_app_post_path(post)
+
+    assert_includes editor_value, "https://example.com/unfurled.jpg"
+    assert_includes editor_value, "https://example.com/pasted.png"
+  end
+
+  test "opening a post with callouts, galleries and tables leaves no autosave draft" do
+    blobs = %w[space.jpg avatar.png].map { |name| ActiveStorage::Blob.create_and_upload!(io: file_fixture(name).open, filename: name) }
+    gallery = blobs.map { |blob| ActionText::Attachment.from_attachable(blob, presentation: "gallery").to_html }.join
+    post = @user.blog.posts.create!(title: "Rich", content: <<~HTML)
+      <aside data-callout="note"><p data-callout-title>Heads up</p><p>Callout body</p></aside>
+      <div class="attachment-gallery attachment-gallery--2">#{gallery}</div>
+      <pre data-language="ruby">puts "hello"</pre>
+      <table><tbody><tr><th><p>Head</p></th></tr><tr><td><p>Cell</p></td></tr></tbody></table>
+    HTML
+
+    visit edit_app_post_path(post)
+    assert_selector "lexxy-editor .lexxy-editor__content img", count: 2, wait: 5
+
+    value = editor_value
+    assert_includes value, %(data-callout="note")
+    assert_includes value, "attachment-gallery"
+    blobs.each { |blob| assert_includes value, blob.attachable_sgid }
+    assert_includes value, %(data-language="ruby")
+    assert_includes value, "<table>"
+    assert_nil evaluate_script(%(localStorage.getItem("draft-post-#{post.id}")))
+  end
+
   private
 
     def wait_for_editor
@@ -363,6 +422,18 @@ class LexxyEditorTest < ApplicationSystemTestCase
           clipboardData.setData("text/plain", #{text.to_json})
           content.dispatchEvent(new ClipboardEvent("paste", { clipboardData, bubbles: true, cancelable: true }))
         })()
+      JS
+    end
+
+    def paste_image_file_with_html(html)
+      png = Base64.strict_encode64(file_fixture("avatar.png").binread)
+      execute_script(<<~JS)
+        const bytes = Uint8Array.from(atob(#{png.to_json}), (c) => c.charCodeAt(0))
+        const clipboardData = new DataTransfer()
+        clipboardData.items.add(new File([ bytes ], "avatar.png", { type: "image/png" }))
+        clipboardData.setData("text/html", #{html.to_json})
+        document.querySelector("lexxy-editor .lexxy-editor__content")
+          .dispatchEvent(new ClipboardEvent("paste", { clipboardData, bubbles: true, cancelable: true }))
       JS
     end
 

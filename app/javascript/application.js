@@ -6,12 +6,11 @@ import * as Lexxy from "lexxy"
 import CalloutExtension from "editor/callout_extension"
 import EmbedExtension from "editor/embed_extension"
 import FootnoteExtension from "editor/footnote_extension"
-import RelativeLinksExtension from "editor/relative_links_extension"
 import ToolbarOrderExtension from "editor/toolbar_order_extension"
 import "@rails/actiontext"
 
 // ToolbarOrderExtension last: it rearranges the buttons the others have added.
-Lexxy.configure({ global: { extensions: [ CalloutExtension, EmbedExtension, FootnoteExtension, RelativeLinksExtension, ToolbarOrderExtension ] } })
+Lexxy.configure({ global: { extensions: [ CalloutExtension, EmbedExtension, FootnoteExtension, ToolbarOrderExtension ] } })
 
 import LocalTime from "local-time"
 
