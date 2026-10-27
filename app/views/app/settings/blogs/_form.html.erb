@@ -167,7 +167,7 @@
       <% end %>
     <% end %>
 
-    <%= settings_section "Advanced", description: "Optional settings most blogs won't need to change" do %>
+    <%= settings_section "Advanced", description: "Optional settings most blogs won’t need to change" do %>
       <%= settings_row "SEO Blog Title" do %>
         <fieldset>
           <%= styled_text_field(form, :seo_title, placeholder: "e.g. #{@blog.display_name} - Personal Blog", class: "w-full") %>
