@@ -82,6 +82,10 @@ lexxy-editor.lexxy-borderless {
     border: none;
   }
 
+  .lexxy-editor__content {
+    padding-block-end: 2lh;
+  }
+
   fieldset:has(.field-error:not(:empty)) & {
     border: none !important;
 
