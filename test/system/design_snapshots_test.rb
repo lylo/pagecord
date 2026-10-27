@@ -109,7 +109,7 @@ class DesignSnapshotsTest < ApplicationSystemTestCase
             const embeddable = element => element.matches("a") && element.textContent.trim() === element.getAttribute("href")
             Array.from(document.querySelectorAll(selector)).filter(element => !embeddable(element)).slice(0, 2).forEach((element, index) => {
               const style = element.computedStyleMap()
-              const value = property => (style.get(property)?.toString() ?? getComputedStyle(element).getPropertyValue(property)).replaceAll("BlinkMacSystemFont", "system-ui")
+              const value = property => (style.get(property)?.toString() ?? getComputedStyle(element).getPropertyValue(property)).replace(/BlinkMacSystemFont|"system-ui"/g, "system-ui")
               const unset = property => {
                 const side = property.match(/^border-(top|right|bottom|left)-(width|color)$/)
                 if (side) return value(`border-${side[1]}-style`) === "none"
