@@ -1,3 +1,8 @@
+/* Header layout, set here so a change to Pagecord's base styles can't move it */
+nav { justify-content: flex-end; }
+.avatar-container { justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.blog-title { flex-grow: 0; }
+
 .blog {
     font-family: -apple-system, BlinkMacSystemFont, Aptos, Roboto, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     font-size: 1rem;
