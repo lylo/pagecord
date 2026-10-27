@@ -95,6 +95,7 @@ class DesignSnapshotsTest < ApplicationSystemTestCase
       browser = Capybara.current_session.driver.browser
       browser.execute_cdp("Emulation.setDeviceMetricsOverride", width:, height: 1000, deviceScaleFactor: 1, mobile: false)
       browser.execute_cdp("Emulation.setEmulatedMedia", features: [ { name: "prefers-color-scheme", value: dark ? "dark" : "light" } ])
+      browser.execute_cdp("Emulation.setScrollbarsHidden", hidden: true)
 
       visit "#{view == :home ? "/" : blog_post_path(posts(:one).slug)}?render=#{SecureRandom.hex(4)}"
       page.document.synchronize do
@@ -107,14 +108,15 @@ class DesignSnapshotsTest < ApplicationSystemTestCase
           selectors.forEach(selector => {
             const embeddable = element => element.matches("a") && element.textContent.trim() === element.getAttribute("href")
             Array.from(document.querySelectorAll(selector)).filter(element => !embeddable(element)).slice(0, 2).forEach((element, index) => {
-              const style = getComputedStyle(element)
+              const style = element.computedStyleMap()
+              const value = property => (style.get(property)?.toString() ?? getComputedStyle(element).getPropertyValue(property)).replaceAll("BlinkMacSystemFont", "system-ui")
               const unset = property => {
                 const side = property.match(/^border-(top|right|bottom|left)-(width|color)$/)
-                if (side) return style.getPropertyValue(`border-${side[1]}-style`) === "none"
-                if (property === "text-decoration-color") return style.getPropertyValue("text-decoration-line") === "none"
-                return defaults[property] === style.getPropertyValue(property)
+                if (side) return value(`border-${side[1]}-style`) === "none"
+                if (property === "text-decoration-color") return value("text-decoration-line") === "none"
+                return defaults[property] === value(property)
               }
-              result[`${selector} #${index + 1}`] = properties.filter(property => !unset(property)).map(property => `${property}: ${style.getPropertyValue(property)}`).join("; ")
+              result[`${selector} #${index + 1}`] = properties.filter(property => !unset(property)).map(property => `${property}: ${value(property)}`).join("; ")
             })
           })
           return result
