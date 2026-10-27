@@ -1,6 +1,11 @@
 /* Broadside – poster-style editorial */
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+/* Header layout, set here so a change to Pagecord's base styles can't move it */
+nav { justify-content: flex-end; }
+.avatar-container { justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.blog-title { flex-grow: 0; }
 body { font-family: "Space Grotesk", sans-serif; }
 
 /* Header: title left, avatar right */

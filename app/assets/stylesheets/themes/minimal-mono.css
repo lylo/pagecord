@@ -1,3 +1,8 @@
+/* Header layout, set here so a change to Pagecord's base styles can't move it */
+nav { justify-content: flex-end; }
+.avatar-container { justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.blog-title { flex-grow: 0; }
+
 /* Minimal Mono – 12px monospace journal */
 
 .blog { font-size: 0.75rem; line-height: 1.25rem; }

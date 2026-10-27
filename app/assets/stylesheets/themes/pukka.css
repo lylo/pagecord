@@ -1,3 +1,8 @@
+/* Header layout, set here so a change to Pagecord's base styles can't move it */
+nav { justify-content: flex-end; }
+.avatar-container { justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.blog-title { flex-grow: 0; }
+
 /* Pukka – a clean, roomy default */
 
 /* System font at an 18px base, in a 700px column */
