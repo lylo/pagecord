@@ -32,7 +32,7 @@ class App::Onboardings::ThemesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should put a blog back to the classic design" do
-    @user.blog.update!(theme_templates(:cardashian).appearance_attributes)
+    @user.blog.apply_design(theme_templates(:cardashian))
 
     patch app_onboarding_theme_path, params: { template_id: "" }, as: :turbo_stream
 

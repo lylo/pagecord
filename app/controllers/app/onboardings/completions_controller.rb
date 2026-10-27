@@ -6,7 +6,7 @@ class App::Onboardings::CompletionsController < App::BaseController
       Current.user.onboarding_complete!
       redirect_to app_posts_path
     else
-      @templates = ThemeTemplate.active.ordered
+      @templates = ThemeTemplate.offered_to(@blog).ordered
       render "app/onboardings/show", layout: "letter", status: :unprocessable_entity
     end
   end

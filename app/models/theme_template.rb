@@ -3,6 +3,8 @@ class ThemeTemplate < ApplicationRecord
 
   STYLESHEETS = Rails.root.join("app/assets/stylesheets/themes")
 
+  self.ignored_columns += [ "custom_css" ]
+
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
   has_many :blogs, dependent: :restrict_with_error
@@ -12,20 +14,31 @@ class ThemeTemplate < ApplicationRecord
   validates :version, numericality: { only_integer: true, greater_than: 0 }
   validate :stylesheet_exists
 
+  attr_readonly :slug
+
   before_validation :clear_custom_theme_colors, unless: :custom_theme?
   before_validation { self.slug = name.to_s.parameterize if slug.blank? }
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:position, :id) }
+  scope :offered_to, ->(blog) { active.or(where(id: blog.theme_template_id)) }
 
   # A blog with an untouched copy of a template's CSS in custom_css, from before
   # designs were linked
   def self.copied_css?(css)
-    css.present? && all.any? { |template| template.stylesheet_versions.any? { template.css(it).strip == css.strip } }
+    css.present? && all.any? { |template| template.stylesheet_versions.any? { normalize_css(template.css(it)) == normalize_css(css) } }
+  end
+
+  def self.normalize_css(css)
+    css.to_s.gsub("\r\n", "\n").strip
   end
 
   def stylesheet(version = self.version)
     version == 1 ? "themes/#{slug}" : "themes/#{slug}-#{version}"
+  end
+
+  def stylesheet?(version = self.version)
+    stylesheet_path(version).exist?
   end
 
   def css(version = self.version)
@@ -33,7 +46,7 @@ class ThemeTemplate < ApplicationRecord
   end
 
   def stylesheet_versions
-    STYLESHEETS.glob("#{slug}{,-*}.css").map { it.basename(".css").to_s.delete_prefix("#{slug}-").to_i.clamp(1..) }.sort
+    (1..version).select { stylesheet?(it) }
   end
 
   def screenshot_asset
@@ -42,32 +55,6 @@ class ThemeTemplate < ApplicationRecord
 
   def screenshot?
     slug.present? && Rails.root.join("app/assets/images", screenshot_asset).exist?
-  end
-
-  def reorder(new_position)
-    transaction do
-      self.class.normalize_positions!
-      reload
-
-      old_position = position
-      update_column(:position, -1)
-
-      if new_position > old_position
-        ThemeTemplate.where("position > ? AND position <= ?", old_position, new_position)
-                     .update_all("position = position - 1")
-      elsif new_position < old_position
-        ThemeTemplate.where("position >= ? AND position < ?", new_position, old_position)
-                     .update_all("position = position + 1")
-      end
-
-      update_column(:position, new_position)
-    end
-  end
-
-  def self.normalize_positions!
-    ordered.each.with_index(1) do |template, index|
-      template.update_column(:position, index) unless template.position == index
-    end
   end
 
   def appearance_attributes
@@ -101,6 +88,6 @@ class ThemeTemplate < ApplicationRecord
     def stylesheet_exists
       return if slug.blank? || version.blank?
 
-      errors.add(:version, "has no stylesheet at app/assets/stylesheets/#{stylesheet}.css") unless stylesheet_path(version).exist?
+      errors.add(:version, "has no stylesheet at app/assets/stylesheets/#{stylesheet}.css") unless stylesheet?
     end
 end

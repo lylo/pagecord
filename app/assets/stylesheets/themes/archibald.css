@@ -11,7 +11,6 @@ header {
   margin-top: 1.25rem;
 }
 header > .titlebar { order: 1; margin-block: 0; }
-.avatar-container { justify-content: space-between; align-items: flex-start; gap: 1rem; }
 header > nav { order: 2; justify-content: flex-start; gap: 1rem; }
 header > .bio { order: 3; margin-block: 0; }
 header > .email-subscriber-form { order: 4; margin-block: 0; }

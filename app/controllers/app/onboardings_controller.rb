@@ -5,6 +5,6 @@ class App::OnboardingsController < App::BaseController
   layout "letter"
 
   def show
-    @templates = ThemeTemplate.active.ordered
+    @templates = ThemeTemplate.offered_to(@blog).ordered
   end
 end

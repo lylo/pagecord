@@ -285,7 +285,7 @@ bundle exec brakeman             # Security scanner
 ### Key Concerns
 - **Subscribable**: Trial management (14 days), `has_premium_access?`, `subscribed?`, `paying?`, `custom_domain_access?`
 - **Themeable**: 7 preset themes + custom, fonts, page widths, hex color validation
-- **Blog::Design**: a Theme Garden design is a `ThemeTemplate` row (metadata only) plus a stylesheet in `app/assets/stylesheets/themes/<slug>.css`, linked on the blog page before the blog's own `custom_css` via `theme_template_id` + `theme_template_version`. No template is Classic. Small fixes edit the file in place; a redesign is `<slug>-2.css` with `version` bumped, and blogs keep the version they applied until `theme_templates:usage` shows a file unused. `blogs.css` takes structural changes only, never look changes
+- **Blog::Design**: a Theme Garden design is a `ThemeTemplate` row (metadata only) plus a stylesheet in `app/assets/stylesheets/themes/<slug>.css`, linked on the blog page before the blog's own `custom_css` via `theme_template_id` + `theme_template_version`. No template is Classic. Small fixes (no intended visual change) edit the file in place; a redesign is `<slug>-2.css` with `version` bumped, and blogs keep the version they applied until `theme_templates:usage` (discarded blogs included) shows a file unused. There's no admin: a new design, a version bump or a reorder is a data migration plus the file, and a slug never changes once saved. `blogs.css` takes structural changes only, never look changes
 - **Sluggable**: URL slug generation with reserved words
 - **Taggable**: Tag management with validation, normalization, querying
 - **Verifiable**: Token-based verification with 24h expiry (EmailChangeRequest, SenderEmailAddress)

@@ -19,7 +19,7 @@ class App::Settings::AppearanceController < App::BaseController
   private
 
     def set_templates
-      @templates = ThemeTemplate.active.ordered
+      @templates = ThemeTemplate.offered_to(@blog).ordered
     end
 
     def appearance_params

@@ -1,5 +1,6 @@
 class App::Settings::CustomCode::DesignCopiesController < App::BaseController
   before_action :require_premium
+  before_action -> { redirect_to app_settings_custom_code_path }, unless: -> { @blog.theme_template }
 
   def create
     name = @blog.theme_template.name

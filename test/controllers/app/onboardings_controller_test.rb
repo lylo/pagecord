@@ -41,7 +41,7 @@ class App::OnboardingsControllerTest < ActionDispatch::IntegrationTest
     get app_onboarding_path
     assert_select "input[name=template_id][value=''][checked]"
 
-    @user.blog.update!(theme_templates(:cardashian).appearance_attributes)
+    @user.blog.apply_design(theme_templates(:cardashian))
     get app_onboarding_path
     assert_select "input[name=template_id][value=?][checked]", theme_templates(:cardashian).id.to_s
   end

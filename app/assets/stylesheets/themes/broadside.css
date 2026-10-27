@@ -6,7 +6,7 @@ body { font-family: "Space Grotesk", sans-serif; }
 /* Header: title left, avatar right */
 .titlebar { margin-top: 2rem; margin-bottom: 0.5rem; }
 header > .email-subscriber-form { margin-top: 1.5rem; }
-.avatar-container { flex-direction: row-reverse; justify-content: space-between; align-items: center; }
+.avatar-container { flex-direction: row-reverse; align-items: center; }
 .avatar img { border-radius: 0.25rem; }
 .blog-title {
   font-size: 2.5em;

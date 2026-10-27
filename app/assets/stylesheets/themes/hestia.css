@@ -1,7 +1,5 @@
 .post-title a { font-weight: 700; }
 main a { font-weight: 500; }
-nav { justify-content: flex-end; }
-.avatar-container { justify-content: space-between; align-items: flex-start; gap: 1rem; }
 .bio { margin-top: -.5rem; }
 ul { margin-left: .25rem; }
 ol { margin-left: .5rem; }

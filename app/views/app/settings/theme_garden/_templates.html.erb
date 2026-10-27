@@ -1,4 +1,4 @@
-<% confirm_message = @blog.custom_css.present? ? "This will replace your appearance settings. Your Custom CSS stays, on top of the design. Continue?" : nil %>
+<% confirm_message = [ "This replaces your colour scheme, font, layout and width.", ("Your Custom CSS stays, on top of the design." if @blog.custom_css.present? && !ThemeTemplate.copied_css?(@blog.custom_css)), "Continue?" ].compact.join(" ") %>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
   <% templates.each do |template| %>

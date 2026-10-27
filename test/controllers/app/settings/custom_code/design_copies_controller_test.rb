@@ -27,6 +27,15 @@ class App::Settings::CustomCode::DesignCopiesControllerTest < ActionDispatch::In
     assert_includes @blog.custom_css, "12px monospace journal"
   end
 
+  test "does nothing without a design" do
+    @blog.apply_design(nil)
+
+    post app_settings_custom_code_design_copy_url
+
+    assert_redirected_to app_settings_custom_code_path
+    assert_nil @blog.reload.custom_css
+  end
+
   test "is not for free users" do
     vivian = users(:vivian)
     vivian.blog.apply_design(@template)

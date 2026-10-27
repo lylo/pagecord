@@ -62,7 +62,7 @@ header hr { display: none; }
   min-width: 0;
   overflow-wrap: anywhere;
 }
-nav { justify-content: flex-end; gap: 1rem; }
+nav { gap: 1rem; }
 
 /* Divider under the header, index page only */
 .blog:not(.post, .page, .home-page) header {

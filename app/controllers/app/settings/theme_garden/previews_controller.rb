@@ -7,7 +7,7 @@ class App::Settings::ThemeGarden::PreviewsController < App::BaseController
   blog_content_security_policy only: :show
 
   def show
-    template = ThemeTemplate.active.find(params[:theme_garden_id]) unless params[:theme_garden_id] == "classic"
+    template = ThemeTemplate.offered_to(@blog).find(params[:theme_garden_id]) unless params[:theme_garden_id] == "classic"
 
     @blog.assign_design(template)
     @posts = @blog.posts.visible.with_full_rich_text.includes(:upvotes).order(published_at: :desc).limit(5)

@@ -59,6 +59,45 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
     assert_equal "sans", @blog.font
   end
 
+  test "previews classic" do
+    @blog.apply_design(@template)
+
+    get app_settings_theme_garden_preview_url("classic")
+
+    assert_response :success
+    assert_select "link[href*='themes/']", count: 0
+  end
+
+  test "always asks before replacing appearance settings" do
+    get app_settings_theme_garden_index_url
+
+    assert_select "form[data-turbo-confirm*='replaces your colour scheme']"
+  end
+
+  test "keeps offering a design the blog uses after it is retired from the garden" do
+    @blog.apply_design(@template)
+    @template.update!(active: false)
+
+    get app_settings_theme_garden_index_url
+    assert_select "div.ring-pagecord-accent h4", text: "Minimal Mono"
+
+    post app_settings_theme_garden_application_url(@template)
+    assert_redirected_to app_settings_appearance_path
+
+    post app_settings_theme_garden_application_url(theme_templates(:novella))
+    post app_settings_theme_garden_application_url(@template)
+    assert_response :not_found
+    assert_equal theme_templates(:novella), @blog.reload.theme_template
+  end
+
+  test "does not apply a retired design the blog doesn't use" do
+    @template.update!(active: false)
+
+    post app_settings_theme_garden_application_url(@template)
+
+    assert_response :not_found
+  end
+
   test "apply should work for free users" do
     login_as users(:vivian)
 

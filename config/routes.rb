@@ -179,7 +179,6 @@ Rails.application.routes.draw do
     get "/admin", to: redirect("/admin/users"), as: :admin
 
     namespace :admin do
-      resources :theme_templates
       resources :analytics, only: [ :index ]
       resources :posts, only: [ :index ]
       resources :deliverability_issues, only: [ :index, :destroy ],

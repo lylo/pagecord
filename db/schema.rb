@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_27_170000) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_27_150000) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
-  enable_extension "plpgsql"
 
   create_table "access_requests", force: :cascade do |t|
     t.datetime "accepted_at"
@@ -139,6 +139,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_27_170000) do
     t.boolean "show_upvotes", default: true, null: false
     t.string "subdomain", null: false
     t.string "theme", default: "base", null: false
+    t.bigint "theme_template_id"
+    t.integer "theme_template_version"
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -155,14 +157,12 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_27_170000) do
     t.string "post_url_prefix"
     t.datetime "reviewed_at"
     t.string "date_format"
-    t.bigint "theme_template_id"
-    t.integer "theme_template_version"
     t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"
+    t.index ["theme_template_id"], name: "index_blogs_on_theme_template_id"
     t.index ["reviewed_at"], name: "index_blogs_on_reviewed_at"
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
-    t.index ["theme_template_id"], name: "index_blogs_on_theme_template_id"
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
 
@@ -427,6 +427,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_27_170000) do
     t.string "author_name"
     t.string "author_url"
     t.datetime "created_at", null: false
+    t.text "custom_css"
     t.string "custom_theme_accent_dark"
     t.string "custom_theme_accent_light"
     t.string "custom_theme_bg_dark"
@@ -438,11 +439,11 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_27_170000) do
     t.integer "layout"
     t.string "name", null: false
     t.integer "position", default: 0, null: false
+    t.string "slug", null: false
     t.string "theme"
     t.datetime "updated_at", null: false
-    t.string "width"
-    t.string "slug", null: false
     t.integer "version", default: 1, null: false
+    t.string "width"
     t.index ["active"], name: "index_theme_templates_on_active"
     t.index ["position"], name: "index_theme_templates_on_position"
     t.index ["slug"], name: "index_theme_templates_on_slug", unique: true
