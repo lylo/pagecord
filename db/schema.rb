@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_27_160000) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_27_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -427,7 +427,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_27_160000) do
     t.string "author_name"
     t.string "author_url"
     t.datetime "created_at", null: false
-    t.text "custom_css"
     t.string "custom_theme_accent_dark"
     t.string "custom_theme_accent_light"
     t.string "custom_theme_bg_dark"

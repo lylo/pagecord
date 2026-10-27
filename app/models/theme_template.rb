@@ -3,8 +3,6 @@ class ThemeTemplate < ApplicationRecord
 
   STYLESHEETS = Rails.root.join("app/assets/stylesheets/themes")
 
-  self.ignored_columns += [ "custom_css" ]
-
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ]
 
   has_many :blogs, dependent: :restrict_with_error
