@@ -82,8 +82,10 @@ lexxy-editor.lexxy-borderless {
     border: none;
   }
 
-  .lexxy-editor__content {
-    padding-block-end: 2lh;
+  @media (width < 40rem) {
+    .lexxy-editor__content {
+      padding-block-end: 1rem;
+    }
   }
 
   fieldset:has(.field-error:not(:empty)) & {
