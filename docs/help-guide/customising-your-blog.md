@@ -76,7 +76,7 @@ Premium feature to set up, and it keeps rendering afterwards whatever plan you'r
 
 ## Theme Garden
 
-Found in **Settings** → **Appearance** → **Theme Garden** link. Premium feature.
+Found in **Settings** → **Appearance** → **Theme Garden** link. Free on every plan: pick any design, and change it whenever you like. Going beyond a design with your own [Custom CSS](custom-css.md) is a premium feature.
 
 The Theme Garden is a curated collection of designs that you can preview and apply to your blog with one click. Each design is a stylesheet, combined with optional colour scheme, font, layout, and width settings.
 

@@ -111,7 +111,7 @@ Head to `Settings > Custom Code` and find the "Custom CSS" section. Paste your C
 
 To try changes first, click **Preview**. Your blog opens in a new tab with the new CSS applied, and nothing is saved until you click **Save custom CSS**.
 
-Writing your own custom CSS is a premium feature. Your CSS is inserted into the `<head>` of your blog pages, and once it's saved it keeps rendering whatever plan you're on.
+Writing your own custom CSS is a premium feature; the designs in the Theme Garden are free on every plan. Your CSS is inserted into the `<head>` of your blog pages, and once it's saved it keeps rendering whatever plan you're on.
 
 Your CSS is added after Pagecord's own stylesheets, so a rule with the same specificity as Pagecord's wins. You shouldn't need `!important`.
 

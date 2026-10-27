@@ -239,7 +239,7 @@ bundle exec brakeman             # Security scanner
 - **Trial**: 14-day free trial. `has_premium_access?` = subscribed OR on trial. `subscribed?` = an active subscription, complimentary included; `paying?` = a paid plan only.
 - Trial-eligible (`has_premium_access?`): analytics, comments, reply by email, contact form, custom Open Graph images, writing custom CSS and footers, API and Micropub
 - Subscriber-only (`subscribed?`): setting a custom domain, email subscriptions, branding removal, custom head/body HTML, uncapped uploads, video uploads, custom robots.txt, up to 3 blogs. Subscribers also skip content moderation
-- Free on every plan: avatar, post likes, search, themes, tags, RSS, export, 20 uploads (`UploadQuota::FREE_LIMIT`)
+- Free on every plan: avatar, post likes, search, colour schemes and Theme Garden designs, tags, RSS, export, 20 uploads (`UploadQuota::FREE_LIMIT`)
 - **Uploads**: `UploadQuota` (PORO over User) is the single source of truth – count, bytes, and what the plan allows. Enforced by `UploadQuota::Validator` on Post; the direct-upload endpoint check is an advisory pre-check only. A save that crosses the limit is allowed; the next upload is refused. Only blobs a save *introduces* are checked, so a lapsed subscriber can still edit old posts
 - **Lapsing**: content and appearance you made keeps rendering (custom CSS, footer, robots.txt, uploads); custom head/body HTML stops. Ongoing services stop (newsletter, analytics, API), and so do `Blog#accepts_replies?` and `#accepts_subscribers?`. Custom domains keep working for the 30-day grace, then `Blogs::ClearLapsedCustomDomainsJob` clears them. `Blog#branding_visible?` brings our branding back
 - Payment failures handled automatically by Paddle Retain – don't email customers about failed payments
@@ -285,6 +285,7 @@ bundle exec brakeman             # Security scanner
 ### Key Concerns
 - **Subscribable**: Trial management (14 days), `has_premium_access?`, `subscribed?`, `paying?`, `custom_domain_access?`
 - **Themeable**: 7 preset themes + custom, fonts, page widths, hex color validation
+- **Blog::Design**: a Theme Garden design is a `ThemeTemplate` row (metadata only) plus a stylesheet in `app/assets/stylesheets/themes/<slug>.css`, linked on the blog page before the blog's own `custom_css` via `theme_template_id` + `theme_template_version`. No template is Classic. Small fixes edit the file in place; a redesign is `<slug>-2.css` with `version` bumped, and blogs keep the version they applied until `theme_templates:usage` shows a file unused. `blogs.css` takes structural changes only, never look changes
 - **Sluggable**: URL slug generation with reserved words
 - **Taggable**: Tag management with validation, normalization, querying
 - **Verifiable**: Token-based verification with 24h expiry (EmailChangeRequest, SenderEmailAddress)
