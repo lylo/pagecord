@@ -281,6 +281,10 @@ lexxy-highlight-dropdown button {
 }
 
 /* Lexxy pins this panel to the toolbar's start when the toolbar is [overflowing], which Pagecord's always is */
+[overflowing] .lexxy-editor__toolbar-dropdown--highlight [data-dropdown-panel] {
+  margin-inline: auto;
+}
+
 @media (min-width: 40rem) {
   [overflowing] .lexxy-editor__toolbar-dropdown--highlight {
     position: relative;
