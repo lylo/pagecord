@@ -89,7 +89,7 @@
             </div>
           </div>
 
-          <div class="hidden group-has-[#use-password:checked]:block mt-4">
+          <div class="hidden group-has-[[id=use-password]:checked]:block mt-4">
             <fieldset data-controller="password-visibility">
               <%= form.label :password, "Password", class: "sr-only" %>
               <div class="relative w-full md:w-80">
@@ -115,11 +115,11 @@
 
       <% saved_robots = @blog.custom_robots_txt.present? %>
       <%= settings_row "Discoverability", stacked: true do %>
-        <p class="hidden group-has-[#use-password:checked]/privacy:block text-sm text-slate-500 dark:text-slate-400">
+        <p class="hidden group-has-[[id=use-password]:checked]/privacy:block text-sm text-slate-500 dark:text-slate-400">
           Password protected blogs are always kept out of search engines, the Pagecord Spotlight and Shuffle.
         </p>
 
-        <div class="group group-has-[#use-password:checked]/privacy:hidden">
+        <div class="group group-has-[[id=use-password]:checked]/privacy:hidden">
           <div class="flex gap-3">
             <div class="flex h-6 shrink-0 items-center">
               <%= styled_check_box form, :allow_search_indexing, checked: @blog.allow_search_indexing %>
@@ -146,14 +146,14 @@
                 <% end %>
               </p>
               <% if saved_robots && !disabled %>
-                <p class="hidden group-has-[#use-custom-robots-txt:not(:checked)]:block mt-2 text-sm text-amber-600 dark:text-amber-400">
+                <p class="hidden group-has-[[id=use-custom-robots-txt]:not(:checked)]:block mt-2 text-sm text-amber-600 dark:text-amber-400">
                   Note: Unchecking this box and saving will restore Pagecord's default crawler rules.
                 </p>
               <% end %>
             </div>
           </div>
 
-          <div class="hidden group-has-[#use-custom-robots-txt:checked]:block mt-4">
+          <div class="hidden group-has-[[id=use-custom-robots-txt]:checked]:block mt-4">
             <% editor_value = @blog.custom_robots_txt.presence %>
             <% editor_value ||= render(partial: "blogs/robots/ai_training_crawlers", formats: :text) unless disabled %>
             <%= text_area_tag "blog[custom_robots_txt]",
@@ -167,7 +167,7 @@
       <% end %>
     <% end %>
 
-    <%= settings_section "Advanced", description: "Optional settings most blogs won’t need to change" do %>
+    <%= settings_section "Advanced", description: "Optional settings most blogs won't need to change" do %>
       <%= settings_row "SEO Blog Title" do %>
         <fieldset>
           <%= styled_text_field(form, :seo_title, placeholder: "e.g. #{@blog.display_name} - Personal Blog", class: "w-full") %>
@@ -198,7 +198,7 @@
             </label>
           </div>
 
-          <div class="hidden group-has-[#post-url-format-prefix:checked]:block mt-4">
+          <div class="hidden group-has-[[id=post-url-format-prefix]:checked]:block mt-4">
             <%= form.label :post_url_prefix, "Folder name", class: "font-bold text-slate-800 dark:text-slate-100" %>
             <fieldset class="mt-2">
               <%= styled_text_field(form, :post_url_prefix, value: @blog.post_url_prefix.presence || "blog", maxlength: 30, class: "w-full md:w-80") %>
