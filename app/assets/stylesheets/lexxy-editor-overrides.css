@@ -280,6 +280,20 @@ lexxy-highlight-dropdown button {
   line-height: normal;
 }
 
+/* Lexxy pins this panel to the toolbar's start when the toolbar is [overflowing], which Pagecord's always is */
+@media (min-width: 40rem) {
+  [overflowing] .lexxy-editor__toolbar-dropdown--highlight {
+    position: relative;
+
+    [data-dropdown-panel] {
+      --lexxy-toolbar-button-size: 2rem;
+      border-start-start-radius: calc(var(--lexxy-radius) + var(--lexxy-toolbar-gap));
+      border-start-end-radius: 0;
+      inset-inline: auto 0;
+    }
+  }
+}
+
 lexxy-link-dropdown {
   [data-dropdown-panel] {
     max-inline-size: 48ch;
