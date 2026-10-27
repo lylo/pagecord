@@ -65,7 +65,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  test "invite-only signup with a code records the inviter and skips review" do
+  test "invite-only signup with a code records the inviter and leaves the blog for review" do
     Invitation.stubs(:required?).returns(true)
     assert_difference("User.count") do
       post signups_url, params: { invitation_code: invitations(:unused).code.downcase, user: { email: "test@example.com", blogs_attributes: [ { subdomain: "testuser" } ] }, rendered_at: signed_rendered_at }
@@ -73,7 +73,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
 
     user = User.last
     assert_equal users(:joel), user.invitation.inviter
-    assert user.blog.reviewed_at.present?
+    assert_nil user.blog.reviewed_at
   end
 
   test "signing up keeps the blog name as its title" do
