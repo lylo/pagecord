@@ -139,8 +139,7 @@ export class FootnotesNode extends ElementNode {
     return true
   }
 
-  // Lexxy's provisional paragraph gives a caret position beside an edge that
-  // refuses text, so refusing only the leading edge keeps the list at the end.
+  // Refuses text only at its leading edge, so Lexxy offers no caret after the list.
   canInsertTextBefore() {
     return false
   }

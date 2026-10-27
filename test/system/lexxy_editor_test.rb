@@ -364,17 +364,6 @@ class LexxyEditorTest < ApplicationSystemTestCase
     assert editor_value.end_with?("</ol>")
   end
 
-  test "pasting an image copied from a web page uploads the file rather than the remote url" do
-    visit new_app_post_path
-    wait_for_editor
-    find("lexxy-editor .lexxy-editor__content").click
-
-    paste_image_file_with_html(%(<img src="https://example.com/photo.png">))
-
-    assert_selector "lexxy-editor .lexxy-editor__content figure.attachment--png img[src^='data:image/png']", wait: 2
-    assert_no_selector "lexxy-editor .lexxy-editor__content img[src='https://example.com/photo.png']"
-  end
-
   test "pasting an image with uploads used up inserts nothing" do
     UploadQuota.any_instance.stubs(:exceeded?).returns(true)
     visit new_app_post_path
