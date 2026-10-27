@@ -12,4 +12,16 @@ namespace :theme_templates do
       end
     end
   end
+
+  desc "Check every design still renders as recorded, after a change to blogs.css or the blog markup"
+  task :snapshots do
+    sh "bin/rails test test/system/design_snapshots.rb"
+  end
+
+  namespace :snapshots do
+    desc "Re-record the design snapshots after an intended change"
+    task :record do
+      sh({ "DESIGN_SNAPSHOTS" => "record" }, "bin/rails test test/system/design_snapshots.rb")
+    end
+  end
 end

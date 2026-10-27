@@ -5,7 +5,8 @@ require "application_system_test_case"
 # blogs.css or the blog's markup that reaches a design shows up here. Computed
 # values rather than pixels, so the snapshots hold on any machine.
 #
-# After an intended change: DESIGN_SNAPSHOTS=record bin/rails test test/system/design_snapshots_test.rb
+# Run with bin/rails theme_templates:snapshots, and theme_templates:snapshots:record
+# after an intended change. Not part of the test suite.
 class DesignSnapshotsTest < ApplicationSystemTestCase
   SNAPSHOTS = Rails.root.join("test/system/design_snapshots")
 
@@ -83,7 +84,7 @@ class DesignSnapshotsTest < ApplicationSystemTestCase
         SNAPSHOTS.mkpath
         path.write(JSON.pretty_generate(snapshot) + "\n")
       else
-        assert path.exist?, "No snapshot for #{slug}: run DESIGN_SNAPSHOTS=record bin/rails test #{__FILE__}"
+        assert path.exist?, "No snapshot for #{slug}: run bin/rails theme_templates:snapshots:record"
         assert_snapshot JSON.parse(path.read), snapshot, slug
       end
     end
