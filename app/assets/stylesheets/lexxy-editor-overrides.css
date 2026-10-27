@@ -260,6 +260,7 @@ lexxy-toolbar {
 /* ================================== */
 .lexxy-minimal lexxy-toolbar {
   button:is([name="quote"], [name="code"], [name="table"], [name="divider"], [name="image"], [name="file"], [name="unordered-list"], [name="ordered-list"], [name="footnote"]),
+  .lexxy-editor__toolbar-dropdown--callout,
   :is(lexxy-toolbar-dropdown, lexxy-highlight-dropdown):has(> .lexxy-editor__toolbar-button:is([name="format"], [name="highlight"])) {
     display: none;
   }
