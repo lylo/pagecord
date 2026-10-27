@@ -22,6 +22,14 @@ class App::OnboardingsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?]", app_onboarding_completion_path
   end
 
+  test "sends a user who has finished onboarding to Posts" do
+    @user.onboarding_complete!
+
+    get app_onboarding_path
+
+    assert_redirected_to app_posts_path
+  end
+
   test "marks the applied design as chosen" do
     get app_onboarding_path
     assert_select "input[name=template_id][value=''][checked]"
