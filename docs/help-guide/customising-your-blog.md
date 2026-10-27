@@ -84,6 +84,6 @@ The Theme Garden is a curated collection of designs that you can preview and app
 - **Apply** a design to instantly update your blog's appearance
 - Designs use your blog's colour scheme variables, so switching colour scheme after applying a design still works
 
-Your own Custom CSS stays when you apply a design, and goes on top of it, so you can adjust a design without copying it. Applying a design does replace your colour scheme, font, layout and width, so you'll be asked to confirm first.
+Your own Custom CSS stays when you apply a design, and goes on top of it, so you can adjust a design without copying it. See [Custom CSS and designs](custom-css.md#custom-css-and-designs) for how. Applying a design does replace your colour scheme, font, layout and width, so you'll be asked to confirm first. **Classic** is the plain Pagecord look, with no design stylesheet.
 
 Have a CSS design you'd like to share with the community? [Email us](mailto:hello@pagecord.com) and we may add it to the garden.

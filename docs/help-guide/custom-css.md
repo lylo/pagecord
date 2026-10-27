@@ -27,6 +27,27 @@ If you're new to CSS, check out the [MDN CSS First Steps guide](https://develope
 
 ---
 
+## Custom CSS and designs
+
+A design from the Theme Garden is a stylesheet of its own, loaded before your Custom CSS. Your rules come last, so a rule with the same selector as one of the design's replaces it:
+
+```css
+/* Folly centres the bio; put it back on the left */
+.bio {
+  text-align: left;
+}
+```
+
+To undo a design's rule rather than change it, set the property back to what it would have been without the design:
+
+```css
+.bio {
+  text-align: revert;
+}
+```
+
+Every design's CSS is [on GitHub](https://github.com/lylo/pagecord/tree/main/app/assets/stylesheets/themes), so you can see exactly which rules it sets. Classic is no stylesheet at all: just Pagecord's base styles, with your Custom CSS on top.
+
 ## Blog Structure
 
 To help you know which elements to target, here is a visual map of the blog page structure:
