@@ -604,6 +604,10 @@
   .letter-paper--reply { animation: none; }
 }
 
+.letter-paper--reply legend {
+  margin-block-start: 0.5rem;
+}
+
 .letter-stationery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

@@ -22,6 +22,13 @@ class App::OnboardingsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?]", app_onboarding_completion_path
   end
 
+  test "names the design choices as one group" do
+    get app_onboarding_path
+
+    assert_select "fieldset legend", text: "First, pick a design for your blog:"
+    assert_select "fieldset input[name=template_id]", ThemeTemplate.active.count + 1
+  end
+
   test "sends a user who has finished onboarding to Posts" do
     @user.onboarding_complete!
 

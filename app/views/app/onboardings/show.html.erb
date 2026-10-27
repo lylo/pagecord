@@ -15,28 +15,33 @@
     <%= link_to @blog.host, blog_home_url(@blog), target: "_blank" %>,
     and ready when you are.
   </p>
-  <p>First, pick a design for your blog:</p>
 
-  <%= form_with url: app_onboarding_theme_path, method: :patch, class: "letter-stationery", data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
-    <% @templates.each do |template| %>
-      <label class="letter-sheet">
-        <%= form.radio_button :template_id, template.id, checked: @blog.custom_css == template.custom_css, class: "sr-only" %>
-        <% if template.screenshot? %>
-          <%= image_tag template.screenshot_asset, alt: "", loading: "lazy" %>
-        <% else %>
-          <span class="letter-sheet__blank"></span>
+  <%= form_with url: app_onboarding_theme_path, method: :patch, data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
+    <fieldset>
+      <legend>First, pick a design for your blog:</legend>
+
+      <div class="letter-stationery">
+        <% @templates.each do |template| %>
+          <label class="letter-sheet">
+            <%= form.radio_button :template_id, template.id, checked: @blog.custom_css == template.custom_css, class: "sr-only" %>
+            <% if template.screenshot? %>
+              <%= image_tag template.screenshot_asset, alt: "", loading: "lazy" %>
+            <% else %>
+              <span class="letter-sheet__blank"></span>
+            <% end %>
+            <span class="letter-postmark" aria-hidden="true"></span>
+            <%= template.name %>
+          </label>
         <% end %>
-        <span class="letter-postmark" aria-hidden="true"></span>
-        <%= template.name %>
-      </label>
-    <% end %>
 
-    <label class="letter-sheet">
-      <%= form.radio_button :template_id, "", checked: @blog.custom_css.blank?, class: "sr-only" %>
-      <span class="letter-sheet__blank"></span>
-      <span class="letter-postmark" aria-hidden="true"></span>
-      Classic
-    </label>
+        <label class="letter-sheet">
+          <%= form.radio_button :template_id, "", checked: @blog.custom_css.blank?, class: "sr-only" %>
+          <span class="letter-sheet__blank"></span>
+          <span class="letter-postmark" aria-hidden="true"></span>
+          Classic
+        </label>
+      </div>
+    </fieldset>
   <% end %>
 
   <%= form_with model: @blog, url: app_onboarding_completion_path, method: :post do |form| %>
