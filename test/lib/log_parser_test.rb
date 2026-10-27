@@ -1,4 +1,5 @@
 require "minitest/autorun"
+require "tmpdir"
 require_relative "../../lib/log_parser"
 
 class LogParserTest < Minitest::Test
@@ -42,5 +43,23 @@ class LogParserTest < Minitest::Test
     assert_equal 3.0, entry.duration_ms
     assert_nil entry.active_record_ms
     assert_nil entry.query_count
+  end
+
+  def test_recent_dated_files_counts_days_not_files
+    names = %w[
+      production.log.2026-10-23.gz
+      production.log.2026-10-24T005202.gz
+      production.log.2026-10-24T154837.gz
+      production.log.2026-10-25T000703.gz
+    ]
+
+    Dir.mktmpdir do |dir|
+      Dir.mkdir(File.join(dir, "log"))
+      names.each { FileUtils.touch(File.join(dir, "log", it)) }
+
+      Dir.chdir(dir) do
+        assert_equal names.last(3), LogParser.recent_dated_files(2).map { File.basename(it) }
+      end
+    end
   end
 end

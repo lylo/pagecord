@@ -47,7 +47,7 @@ class LogParser
     (?<body>.*)
   \z/x
 
-  DATED_LOG_RE  = /\Aproduction\.log\.\d{4}-\d{2}-\d{2}\.gz\z/
+  DATED_LOG_RE  = /\Aproduction\.log\.\d{4}-\d{2}-\d{2}(T\d{6})?\.gz\z/
 
   STARTED_RE    = /Started\s+(\w+)\s+"([^"]+)"/
   PROCESSING_RE = /Processing\s+by\s+(\S+)/
@@ -227,9 +227,12 @@ class LogParser
     File.basename(path)[/\d{4}-\d{2}-\d{2}/]
   end
 
-  # The newest dated archives, oldest first, for reports over a recent window.
+  # Every archive from the newest dated days, oldest first, for reports over a
+  # recent window. A busy day rotates more than once, so it can have several.
   def self.recent_dated_files(days)
-    discover_log_files.select { |f| DATED_LOG_RE.match?(File.basename(f)) }.sort.last(days)
+    dated = discover_log_files.select { |f| DATED_LOG_RE.match?(File.basename(f)) }
+    window = dated.map { date_of(it) }.uniq.sort.last(days)
+    dated.select { window.include?(date_of(it)) }.sort
   end
 
   # Rotation happens shortly after midnight UTC, so a day's entries land in the
