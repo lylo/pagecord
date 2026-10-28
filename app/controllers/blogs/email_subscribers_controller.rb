@@ -6,6 +6,7 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
   skip_before_action :turnstile_check # The subscribe form is embedded on every blog page; no widget is rendered
   before_action :requires_user_subscription
+  before_action :enforce_daily_subscriber_limit, only: :create
 
   def create
     @subscriber = @blog.email_subscribers.new(email_subscriber_params)
@@ -15,7 +16,7 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
     if @blog.email_subscribers.find_by(email: @subscriber.email)
       @message = default_message
     elsif @subscriber.save
-      deliver_confirmation
+      EmailSubscriptionConfirmationMailer.with(subscriber: @subscriber).confirm.deliver_later
       @message = default_message
     end
 
@@ -26,14 +27,6 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
   end
 
   private
-
-    def deliver_confirmation
-      if @blog.recent_unconfirmed_subscribers_count > EmailSubscribable::DAILY_UNCONFIRMED_SUBSCRIBER_LIMIT
-        Rails.logger.warn "Subscriber confirmations paused. Too many unconfirmed subscribers today."
-      else
-        EmailSubscriptionConfirmationMailer.with(subscriber: @subscriber).confirm.deliver_later
-      end
-    end
 
     def submitted_email
       params.dig(:email_subscriber, :email)
@@ -57,6 +50,13 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
       respond_to do |format|
         format.turbo_stream { render :create, status: :too_many_requests }
         format.html { redirect_to blog_posts_path, alert: @message }
+      end
+    end
+
+    def enforce_daily_subscriber_limit
+      if @blog.recent_unconfirmed_subscribers_count >= EmailSubscribable::DAILY_UNCONFIRMED_SUBSCRIBER_LIMIT
+        Rails.logger.warn "Daily subscriber limit. Request blocked."
+        rate_limit_reached
       end
     end
 

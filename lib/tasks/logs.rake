@@ -1019,16 +1019,15 @@ namespace :logs do
     )
 
     puts LogDisplay.table(
-      title: "Subscribe attempts by blog for #{date} (flagged: cap paused confirmations, over #{LogCodeRed::CONFIRMATIONS_PER_BLOG} confirmations, or #{LogCodeRed::SUBSCRIBE_IPS_PER_BLOG}+ IPs)",
+      title: "Subscribe attempts by blog for #{date} (flagged: #{LogCodeRed::SUBSCRIBE_IPS_PER_BLOG}+ IPs)",
       columns: [
         { label: "Blog", width: 36, align: :left },
         { label: "Attempts", width: 9, align: :right },
         { label: "IPs", width: 5, align: :right },
         { label: "Blocked", width: 8, align: :right },
-        { label: "Confirmations", width: 13, align: :right },
-        { label: "Paused", width: 6, align: :right }
+        { label: "Confirmations", width: 13, align: :right }
       ],
-      rows: subscribe_rows.first(15).map { |row| [ row[:host], row[:attempts], row[:ips], row[:blocked], row[:confirmations], row[:paused] ] },
+      rows: subscribe_rows.first(15).map { |row| [ row[:host], row[:attempts], row[:ips], row[:blocked], row[:confirmations] ] },
       highlight: ->(row) { subscribe_rows.find { |r| r[:host] == row[0] }[:flagged] }
     )
   end

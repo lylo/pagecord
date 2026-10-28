@@ -17,8 +17,6 @@ module LogCodeRed
     "SignupsController" => "Signup"
   }.freeze
 
-  # Keep in step with EmailSubscribable::DAILY_UNCONFIRMED_SUBSCRIBER_LIMIT.
-  CONFIRMATIONS_PER_BLOG = 5
   SUBSCRIBE_IPS_PER_BLOG = 20
   MAIL_PER_RECIPIENT = 10
   BASELINE_DAYS = 7
@@ -56,7 +54,7 @@ module LogCodeRed
           controller, action = entry.detail.to_s.split("#")
           next unless FORMS.key?(controller) && action == "create"
 
-          submissions[entry.uuid] = { form: FORMS[controller], host: entry.host, ip: entry.ip, block: nil, confirmation: false, paused: false }
+          submissions[entry.uuid] = { form: FORMS[controller], host: entry.host, ip: entry.ip, block: nil, confirmation: false }
         when :other
           submission = submissions[entry.uuid] or next
           body = entry.detail.to_s
@@ -67,8 +65,6 @@ module LogCodeRed
             submission[:block] = "Suspicious email"
           elsif body.include?('"EmailSubscriptionConfirmationMailer", "confirm"')
             submission[:confirmation] = true
-          elsif body.start_with?("Subscriber confirmations paused")
-            submission[:paused] = true
           end
         end
       end
@@ -87,25 +83,16 @@ module LogCodeRed
       subscribes = submissions.select { |s| s[:form] == "Subscribe" }
 
       subscribes.group_by { |s| s[:host] }.map do |host, group|
-        confirmations = group.count { |s| s[:confirmation] }
         ips = group.map { |s| s[:ip] }.uniq.size
-        paused = group.count { |s| s[:paused] }
-        flagged = paused > 0 || confirmations > CONFIRMATIONS_PER_BLOG || ips >= SUBSCRIBE_IPS_PER_BLOG
 
-        { host: host, attempts: group.size, ips: ips, blocked: group.count { |s| s[:block] }, confirmations: confirmations, paused: paused, flagged: flagged }
+        { host: host, attempts: group.size, ips: ips, blocked: group.count { |s| s[:block] }, confirmations: group.count { |s| s[:confirmation] }, flagged: ips >= SUBSCRIBE_IPS_PER_BLOG }
       end.sort_by { |row| -row[:attempts] }
     end
 
     def alerts(flooded_recipients, subscribe_rows)
       floods = flooded_recipients.map { |(mailer, recipient), n| "#{mailer} sent #{n} to #{recipient}" }
 
-      subscribes = subscribe_rows.select { |row| row[:flagged] }.map do |row|
-        reasons = []
-        reasons << "cap paused #{row[:paused]} confirmations" if row[:paused] > 0
-        reasons << "#{row[:confirmations]} confirmations sent" if row[:confirmations] > CONFIRMATIONS_PER_BLOG
-        reasons << "subscribe attempts from #{row[:ips]} IPs" if row[:ips] >= SUBSCRIBE_IPS_PER_BLOG
-        "#{row[:host]}: #{reasons.join(", ")}"
-      end
+      subscribes = subscribe_rows.select { |row| row[:flagged] }.map { |row| "#{row[:host]}: subscribe attempts from #{row[:ips]} IPs" }
 
       floods + subscribes
     end

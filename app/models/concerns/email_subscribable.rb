@@ -8,7 +8,7 @@ module EmailSubscribable
     enum :email_delivery_mode, { digest: 0, individual: 1 }
   end
 
-  DAILY_UNCONFIRMED_SUBSCRIBER_LIMIT = 5
+  DAILY_UNCONFIRMED_SUBSCRIBER_LIMIT = 20
 
   def recent_unconfirmed_subscribers_count
     email_subscribers.unconfirmed.where(created_at: 1.day.ago..).count

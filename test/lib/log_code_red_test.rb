@@ -32,22 +32,13 @@ class LogCodeRedTest < Minitest::Test
     assert submissions.last[:confirmation]
   end
 
-  def test_flags_a_blog_sending_more_confirmations_than_the_cap
-    entries = (1..6).flat_map { |n| subscribe("r#{n}", "busy.example", "10.0.0.#{n % 2}", confirmation) }
+  def test_flags_a_blog_subscribed_to_from_many_ips_but_not_from_one
+    entries = (1..20).flat_map { |n| subscribe("r#{n}", "busy.example", "10.0.0.#{n}", confirmation) } +
+      (1..20).flat_map { |n| subscribe("o#{n}", "owner.example", "10.0.1.1", confirmation) }
 
-    row = LogCodeRed.subscribe_rows(LogCodeRed.form_submissions(entries)).first
+    rows = LogCodeRed.subscribe_rows(LogCodeRed.form_submissions(entries))
 
-    assert row[:flagged]
-    assert_equal [ "busy.example: 6 confirmations sent" ], LogCodeRed.alerts({}, [ row ])
-  end
-
-  def test_flags_a_blog_whose_cap_paused_confirmations
-    entries = subscribe("a", "quiet.example", "1.1.1.1", "Subscriber confirmations paused. Too many unconfirmed subscribers today.")
-
-    row = LogCodeRed.subscribe_rows(LogCodeRed.form_submissions(entries)).first
-
-    assert row[:flagged]
-    assert_equal [ "quiet.example: cap paused 1 confirmations" ], LogCodeRed.alerts({}, [ row ])
+    assert_equal [ "busy.example: subscribe attempts from 20 IPs" ], LogCodeRed.alerts({}, rows)
   end
 
   def test_counts_tor_blocks_per_form
