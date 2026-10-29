@@ -14,6 +14,14 @@ module ActionTextCustomTags
   end
 end
 
+# Lexxy stores an image's link as href on the attachment, next to caption
+module ActionTextAttachmentHref
+  def href
+    node_attributes["href"].presence
+  end
+end
+
 ActiveSupport.on_load(:action_text_content) do
   ActionText::ContentHelper.prepend(ActionTextCustomTags)
+  ActionText::Attachment.include(ActionTextAttachmentHref)
 end
