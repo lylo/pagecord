@@ -29,7 +29,8 @@ class Mcp::Tool
     end
 
     def definition
-      { name: tool_name, description:, inputSchema: { type: "object", properties:, required: }, annotations: }
+      title = tool_name.humanize
+      { name: tool_name, title:, description:, inputSchema: { type: "object", properties:, required: }, annotations: annotations.merge(title:) }
     end
 
     def call(blog, arguments)

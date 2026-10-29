@@ -12,7 +12,7 @@ class Mcp::Tools::UpdateCustomCode < Mcp::Tool
       custom_code_enabled: { type: "boolean", description: "Subscribers only. Whether the head and body HTML are used." },
       dry_run: { type: "boolean", description: "Validate without saving." }
     },
-    idempotent: true
+    idempotent: true, destructive: true
 
   def self.perform(blog, dry_run: false, **arguments)
     forbidden = Blog::CustomCode::SUBSCRIBER_ATTRIBUTES.find { arguments.key?(it) } unless blog.user.subscribed?

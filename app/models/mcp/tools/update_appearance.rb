@@ -14,7 +14,7 @@ class Mcp::Tools::UpdateAppearance < Mcp::Tool
       custom_theme_text_dark: COLOUR,
       custom_theme_accent_dark: COLOUR
     },
-    idempotent: true
+    idempotent: true, destructive: true
 
   def self.perform(blog, **arguments)
     blog.update!(arguments)

@@ -6,7 +6,7 @@ class Mcp::Tools::SetImageAlt < Mcp::Tool
       url: { type: "string" },
       alt: { type: "string", description: "Empty removes the alt text." }
     },
-    required: %i[ token url alt ], idempotent: true
+    required: %i[ token url alt ], idempotent: true, destructive: true
 
   def self.perform(blog, token:, url:, alt:)
     post = find_post(blog, token)

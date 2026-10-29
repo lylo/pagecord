@@ -60,6 +60,15 @@ class Api::McpControllerTest < ActionDispatch::IntegrationTest
       result["tools"].map { it["name"] }.sort
   end
 
+  test "gives every tool a title and a read-only or destructive hint" do
+    rpc "tools/list"
+
+    result["tools"].each do |tool|
+      assert tool.dig("annotations", "title").present?, "#{tool["name"]} has no title"
+      assert tool["annotations"].key?("readOnlyHint") || tool["annotations"].key?("destructiveHint"), "#{tool["name"]} has no hint"
+    end
+  end
+
   test "lists drafts" do
     call_tool "list_posts", status: "draft"
 
