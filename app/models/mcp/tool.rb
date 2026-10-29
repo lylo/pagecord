@@ -17,7 +17,7 @@ class Mcp::Tool
       @description = description
       @properties = properties
       @required = required
-      @annotations = annotations.transform_keys { "#{it.to_s.camelize(:lower)}Hint" }
+      @annotations = { read_only: false, **annotations }.transform_keys { "#{it.to_s.camelize(:lower)}Hint" }
     end
 
     def default_url_options
