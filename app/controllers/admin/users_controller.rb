@@ -8,15 +8,7 @@ class Admin::UsersController < Admin::BaseController
                 .includes(:subscription, :blogs)
                 .order(created_at: :desc)
 
-    if params[:search].present?
-      search = "%#{params[:search]}%"
-      blog_user_ids = Blog.kept
-                          .where("blogs.subdomain ILIKE ? OR blogs.custom_domain ILIKE ?", search, search)
-                          .select(:user_id)
-
-      users = users.where("users.email ILIKE :search OR subscriptions.paddle_customer_id ILIKE :search OR subscriptions.paddle_subscription_id ILIKE :search", search:)
-                   .or(users.where(id: blog_user_ids))
-    end
+    users = search(users, params[:search].strip) if params[:search].present?
 
     if params[:status].present?
       case params[:status]
@@ -77,6 +69,23 @@ class Admin::UsersController < Admin::BaseController
   end
 
   private
+
+    def search(users, query)
+      field, value = query.split(":", 2).map(&:strip)
+      exact = User.sanitize_sql_like(value.to_s)
+
+      case field.downcase
+      when "subdomain" then users.where(id: Blog.kept.where("blogs.subdomain ILIKE ?", exact).select(:user_id))
+      when "domain" then users.where(id: Blog.kept.where("blogs.custom_domain ILIKE ?", exact).select(:user_id))
+      when "email" then users.where("users.email ILIKE ?", exact)
+      else
+        pattern = "%#{User.sanitize_sql_like(query)}%"
+        blog_user_ids = Blog.kept.where("blogs.subdomain ILIKE :pattern OR blogs.custom_domain ILIKE :pattern", pattern:).select(:user_id)
+
+        users.where("users.email ILIKE :pattern OR subscriptions.paddle_customer_id ILIKE :pattern OR subscriptions.paddle_subscription_id ILIKE :pattern", pattern:)
+             .or(users.where(id: blog_user_ids))
+      end
+    end
 
     def user_params
       permitted = params.require(:user).permit(:email, :trial_ends_at, features: [], blogs_attributes: [ :id, :subdomain ])

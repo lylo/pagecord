@@ -52,6 +52,27 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, user2.email
   end
 
+  test "should search users by exact subdomain, domain or email with a prefix" do
+    get admin_users_path(search: "subdomain:Vivian")
+    assert_includes @response.body, users(:vivian).email
+    assert_not_includes @response.body, users(:joel).email
+
+    get admin_users_path(search: "domain:ANNIE.blog")
+    assert_includes @response.body, users(:annie).email
+    assert_not_includes @response.body, users(:joel).email
+
+    get admin_users_path(search: "email: #{users(:vivian).email.upcase}")
+    assert_includes @response.body, users(:vivian).email
+    assert_not_includes @response.body, users(:joel).email
+  end
+
+  test "should not match part of a value when searching with a prefix" do
+    get admin_users_path(search: "subdomain:viv")
+
+    assert_response :success
+    assert_not_includes @response.body, users(:vivian).email
+  end
+
   test "should handle empty search parameter" do
     get admin_users_path(search: "")
 
