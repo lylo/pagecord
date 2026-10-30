@@ -81,3 +81,11 @@ h1.post-title {
   font-weight: 600;
   color: var(--color-accent);
 }
+
+/* Previous and next labels */
+.post-navigation-label {
+  text-transform: uppercase;
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}

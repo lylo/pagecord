@@ -39,3 +39,4 @@ header hr, footer.blog-footer { border-top: 3px dotted var(--color-text); }
 
 /* Spacing */
 article, .email-subscriber-form { margin-bottom: 2em; }
+.post-navigation { margin-bottom: 2rem; }

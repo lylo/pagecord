@@ -117,6 +117,16 @@
     margin-top: 2rem;
   }
 
+  .post-navigation {
+    margin-bottom: 0;
+    font-size: 1rem;
+  }
+
+  :not(:has(.comments)) + .post-navigation,
+  .comments {
+    margin-top: var(--post-end-spacing);
+  }
+
   .blog .form.email-subscriber-form {
     max-width: 38rem;
     padding: 0;

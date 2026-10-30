@@ -35,6 +35,10 @@ article footer .post-actions::before { content: "\00b7"; }
 article footer .comment-link,
 article footer .upvote { color: LinkText; }
 .icon { width: 1em; height: 1em; }
+.post-navigation { font-size: revert; }
+.post-navigation-link { text-decoration: none; }
+.post-navigation-label { color: var(--color-text); }
+.post-navigation-title { font-weight: revert; text-decoration: underline; }
 
 /* Title layout */
 .year-header { font-size: revert; font-weight: bold; }

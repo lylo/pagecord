@@ -78,4 +78,4 @@ h1.post-title { font-weight: 500; letter-spacing: -0.02em; }
 article img { border-radius: 0.25rem; }
 
 /* Post footer */
-article footer { font-style: italic; }
+article footer, .post-navigation-label { font-style: italic; }

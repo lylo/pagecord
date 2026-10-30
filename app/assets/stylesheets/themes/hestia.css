@@ -48,6 +48,10 @@ article img {
 
 .blog.post .email-subscriber-form { margin-top: 2rem; }
 
+.comments,
+:not(:has(.comments)) + .post-navigation { margin-top: var(--post-end-spacing); }
+.post-navigation-label { font-weight: 400; }
+
 article img:not(figure img, .attachment-gallery *),
 .attachment:not(.attachment-gallery *) {
   padding-top: 8px;

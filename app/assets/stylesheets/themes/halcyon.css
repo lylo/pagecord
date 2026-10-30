@@ -417,6 +417,12 @@ article a.post-date:hover {
   margin-top: 1.5rem;
 }
 
+.post-navigation {
+  margin-block: 1.5rem 0;
+  padding: 0 3.25rem;
+  border: 0;
+}
+
 .post-stream-item .comments {
   padding: 1.5rem 0 0;
   background: none;
@@ -545,5 +551,9 @@ article .contact-form,
 
   h1.post-title {
     font-size: 1.875em;
+  }
+
+  .post-navigation {
+    padding-inline: 1.375rem;
   }
 }

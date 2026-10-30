@@ -7,7 +7,7 @@ h1, h2, h3, h4, h5, h6,
 h1.post-title, article footer,
 .post-card-date, .post-card-summary, .post-card-title,
 .tag-link, .tag-filter-notice, .tag-filter-notice-links, .tag-filter-notice-link,
-.comment-date, .comment-badge, .comment-count,
+.comment-date, .comment-badge, .comment-count, .post-navigation,
 .email-subscriber-form, figcaption, .post-body figcaption { font-size: 0.75rem; }
 
 /* Header */
@@ -39,6 +39,9 @@ article.post footer { display: contents; }
 article.post .post-date { order: -1; }
 article.post .post-actions { margin-top: 1rem; margin-bottom: 1rem; }
 .blog.post .email-subscriber-form { margin-top: 2rem; }
+.comments,
+:not(:has(.comments)) + .post-navigation { margin-top: calc(var(--post-end-spacing) - 1rem); }
+.post-navigation { margin-bottom: 1rem; }
 h1.post-title { line-height: inherit; margin-bottom: 0.5rem; }
 .tags-container { margin-top: 1rem; }
 .email-form-container { gap: 0.25rem; }

@@ -100,16 +100,19 @@ a:hover {
   background-color: transparent;
 }
 
-footer a { text-decoration: none; }
+footer a,
+.post-navigation-link { text-decoration: none; }
 footer .comment-link,
 footer .upvote { color: var(--color-text); }
 footer a:hover,
 footer .comment-link:hover,
-footer .upvote:hover {
+footer .upvote:hover,
+.post-navigation-link:hover {
   color: var(--color-accent);
   fill: var(--color-accent);
   background-color: transparent;
 }
+.post-navigation-link:hover .post-navigation-title { text-decoration: none; }
 
 /* Tags: plain #hashtag text */
 .tag-link {
