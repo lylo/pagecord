@@ -38,6 +38,10 @@ ja:
         default_subject: "%{blog_name}の新しい投稿 – %{date}"
   posts:
     read_more: "続きを読む"
+    navigation:
+      label: "記事ナビゲーション"
+      previous: "前の記事"
+      next: "次の記事"
   replies:
     form:
       subject_label: "件名"

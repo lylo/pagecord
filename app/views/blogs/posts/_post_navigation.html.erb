@@ -1,0 +1,17 @@
+<% previous_post, next_post = post.previous_post, post.next_post %>
+<% if previous_post || next_post %>
+  <div class="post-navigation" role="navigation" aria-label="<%= t("posts.navigation.label") %>">
+    <% if previous_post %>
+      <%= link_to post_path(previous_post), class: "post-navigation-link post-navigation-previous", rel: "prev" do %>
+        <span class="post-navigation-label"><%= t("posts.navigation.previous") %></span>
+        <span class="post-navigation-title"><%= previous_post.display_title %></span>
+      <% end %>
+    <% end %>
+    <% if next_post %>
+      <%= link_to post_path(next_post), class: "post-navigation-link post-navigation-next", rel: "next" do %>
+        <span class="post-navigation-label"><%= t("posts.navigation.next") %></span>
+        <span class="post-navigation-title"><%= next_post.display_title %></span>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

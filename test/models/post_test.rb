@@ -664,6 +664,30 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "Video uploads need a paid subscription", post.errors[:content].first
   end
 
+  test "previous and next posts are the visible neighbours by published_at" do
+    post = posts(:two)
+
+    assert_equal posts(:photography_and_tech), post.previous_post
+    assert_equal posts(:one), post.next_post
+  end
+
+  test "previous and next posts skip hidden, draft and scheduled posts and pages" do
+    assert_nil posts(:one).next_post
+    assert_equal posts(:joel_spanish), posts(:joel_titleless).next_post
+    assert_nil posts(:joel_titleless).previous_post
+
+    posts(:one).update_columns(published_at: 1.day.from_now)
+    assert_nil posts(:two).next_post
+  end
+
+  test "previous and next posts break published_at ties on id" do
+    older, newer = posts(:photography_and_tech), posts(:two)
+    older.update_columns(published_at: newer.published_at)
+
+    assert_includes [ newer.previous_post, newer.next_post ], older
+    assert_includes [ older.previous_post, older.next_post ], newer
+  end
+
   private
 
     def attachment_tag(sgid)

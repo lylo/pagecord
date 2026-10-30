@@ -38,6 +38,10 @@ id:
         default_subject: "Pos baru dari %{blog_name} — %{date}"
   posts:
     read_more: "Baca selengkapnya"
+    navigation:
+      label: "Navigasi tulisan"
+      previous: "Sebelumnya"
+      next: "Berikutnya"
   replies:
     form:
       subject_label: "Subjek"

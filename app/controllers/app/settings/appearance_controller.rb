@@ -30,6 +30,7 @@ class App::Settings::AppearanceController < App::BaseController
       ]
 
       permitted_params << :show_branding if @blog.user.subscribed?
+      permitted_params << :show_post_navigation if current_features.enabled?(:post_navigation)
 
       params.require(:blog).permit(permitted_params)
     end

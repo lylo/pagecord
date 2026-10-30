@@ -44,6 +44,28 @@ class App::Settings::AppearanceControllerTest < ActionDispatch::IntegrationTest
     assert_not @blog.reload.show_branding
   end
 
+  test "should update show post navigation flag with the post navigation feature" do
+    @user.update!(features: [ "post_navigation" ])
+
+    get app_settings_appearance_url
+    assert_select "input[name='blog[show_post_navigation]']"
+
+    patch app_settings_appearance_url, params: { blog: { show_post_navigation: true } }, as: :turbo_stream
+
+    assert_response :success
+    assert @blog.reload.show_post_navigation
+  end
+
+  test "should not offer or update show post navigation flag without the post navigation feature" do
+    get app_settings_appearance_url
+    assert_select "input[name='blog[show_post_navigation]']", count: 0
+
+    patch app_settings_appearance_url, params: { blog: { show_post_navigation: true } }, as: :turbo_stream
+
+    assert_response :success
+    assert_not @blog.reload.show_post_navigation
+  end
+
   test "should not update show branding flag for non-subscriber" do
     @user = users(:vivian)
     login_as @user

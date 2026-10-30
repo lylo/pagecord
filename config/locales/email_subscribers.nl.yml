@@ -38,6 +38,10 @@ nl:
         default_subject: "Nieuw bericht van %{blog_name} — %{date}"
   posts:
     read_more: "Lees verder"
+    navigation:
+      label: "Berichtnavigatie"
+      previous: "Vorige"
+      next: "Volgende"
   replies:
     form:
       subject_label: "Onderwerp"

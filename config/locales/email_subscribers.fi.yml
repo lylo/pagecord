@@ -38,6 +38,10 @@ fi:
         default_subject: "Uusi julkaisu blogista %{blog_name} – %{date}"
   posts:
     read_more: "Lue lisää…"
+    navigation:
+      label: "Kirjoitusten navigointi"
+      previous: "Edellinen"
+      next: "Seuraava"
   replies:
     form:
       subject_label: "Aihe"

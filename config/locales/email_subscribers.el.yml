@@ -38,6 +38,10 @@ el:
         default_subject: "Νέα ανάρτηση από το %{blog_name} – %{date}"
   posts:
     read_more: "Διαβάστε περισσότερα…"
+    navigation:
+      label: "Πλοήγηση άρθρων"
+      previous: "Προηγούμενο"
+      next: "Επόμενο"
   replies:
     form:
       subject_label: "Θέμα"

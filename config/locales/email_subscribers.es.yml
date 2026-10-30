@@ -38,6 +38,10 @@ es:
         default_subject: "Nuevo artículo de %{blog_name} — %{date}"
   posts:
     read_more: "Leer más"
+    navigation:
+      label: "Navegación entre entradas"
+      previous: "Anterior"
+      next: "Siguiente"
   replies:
     form:
       subject_label: "Asunto"

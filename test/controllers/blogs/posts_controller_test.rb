@@ -1525,6 +1525,50 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".custom-footer a[href=?]", "https://example.com"
   end
 
+  test "should not render post navigation by default" do
+    get post_path(posts(:two))
+
+    assert_response :success
+    assert_select ".post-navigation", count: 0
+  end
+
+  test "should render post navigation when enabled" do
+    @blog.update!(show_post_navigation: true)
+
+    get post_path(posts(:two))
+
+    assert_response :success
+    assert_select ".post-navigation[role=navigation]", count: 1
+    assert_select ".post-navigation-previous[rel=prev][href=?]", post_path(posts(:photography_and_tech)), text: /Previous\s+#{posts(:photography_and_tech).title}/
+    assert_select ".post-navigation-next[rel=next][href=?]", post_path(posts(:one))
+  end
+
+  test "should render only one post navigation link at each end of the blog" do
+    @blog.update!(show_post_navigation: true)
+
+    get post_path(posts(:one))
+    assert_select ".post-navigation-previous", count: 1
+    assert_select ".post-navigation-next", count: 0
+
+    get post_path(posts(:joel_titleless))
+    assert_select ".post-navigation-previous", count: 0
+    assert_select ".post-navigation-next", count: 1
+  end
+
+  test "should not render post navigation on pages, the home page or the index" do
+    @blog.update!(show_post_navigation: true, home_page_id: posts(:about).id)
+
+    get post_path(posts(:contact))
+    assert_select ".post-navigation", count: 0
+
+    get blog_home_path(@blog)
+    assert_select ".post-navigation", count: 0
+
+    @blog.update!(home_page_id: nil)
+    get blog_posts_path
+    assert_select ".post-navigation", count: 0
+  end
+
   private
 
     def structured_data_from_response

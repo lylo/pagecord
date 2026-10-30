@@ -152,6 +152,14 @@ class Post < ApplicationRecord
     display_date.in_time_zone(timezone)
   end
 
+  def previous_post
+    neighbours.where("(published_at, id) < (?, ?)", published_at, id).ordered_by_published.first
+  end
+
+  def next_post
+    neighbours.where("(published_at, id) > (?, ?)", published_at, id).ordered_by_published(:asc).first
+  end
+
   def page?
     is_page
   end
@@ -235,6 +243,10 @@ class Post < ApplicationRecord
         .gsub(/<!--\s*more\s*-->/i, "")
         .gsub(/\s+/, " ")
         .strip
+    end
+
+    def neighbours
+      blog.posts.visible.select(:id, :blog_id, :slug, :title, :text_summary, :is_page, :published_at)
     end
 
     def sole_image_description
