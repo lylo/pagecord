@@ -72,17 +72,15 @@
       <% end %>
     <% end %>
 
-    <% if current_features.enabled?(:post_navigation) %>
-      <%= settings_row "Post Navigation", stacked: true do %>
-        <%= form_with url: app_settings_appearance_path, model: @blog,
-              data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
-          <div class="flex gap-3">
-            <div class="flex h-6 shrink-0 items-center">
-              <%= styled_check_box form, :show_post_navigation %>
-            </div>
-            <%= form.label :show_post_navigation, "Show links to the previous and next post at the end of each post", class: "text-slate-800 dark:text-slate-100" %>
+    <%= settings_row "Post Navigation", stacked: true do %>
+      <%= form_with url: app_settings_appearance_path, model: @blog,
+            data: { controller: "auto-submit", action: "change->auto-submit#submit" } do |form| %>
+        <div class="flex gap-3">
+          <div class="flex h-6 shrink-0 items-center">
+            <%= styled_check_box form, :show_post_navigation %>
           </div>
-        <% end %>
+          <%= form.label :show_post_navigation, "Show links to the previous and next post at the end of each post", class: "text-slate-800 dark:text-slate-100" %>
+        </div>
       <% end %>
     <% end %>
 

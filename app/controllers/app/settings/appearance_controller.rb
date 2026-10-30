@@ -24,13 +24,12 @@ class App::Settings::AppearanceController < App::BaseController
 
     def appearance_params
       permitted_params = [
-        :layout, :theme, :font, :width,
+        :layout, :theme, :font, :width, :show_post_navigation,
         :custom_theme_bg_light, :custom_theme_text_light, :custom_theme_accent_light,
         :custom_theme_bg_dark, :custom_theme_text_dark, :custom_theme_accent_dark
       ]
 
       permitted_params << :show_branding if @blog.user.subscribed?
-      permitted_params << :show_post_navigation if current_features.enabled?(:post_navigation)
 
       params.require(:blog).permit(permitted_params)
     end
