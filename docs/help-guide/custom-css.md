@@ -516,7 +516,17 @@ Turn on "Post Navigation" in [Appearance](https://pagecord.com/app/settings/appe
     .post-navigation-title       The post's title
 ```
 
-Both links also carry the `.post-navigation-link` class. To show only the titles, hide the labels:
+Both links also carry the `.post-navigation-link` class.
+
+The links sit after your post rather than inside it, so a font size you set on `article` doesn't reach them, and they can look small beside larger post text. To set them at your blog's base size instead:
+
+```css
+.post-navigation {
+  font-size: 1em;
+}
+```
+
+To show only the titles, hide the labels:
 
 ```css
 .post-navigation-label {
