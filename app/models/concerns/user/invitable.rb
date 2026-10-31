@@ -13,6 +13,10 @@ module User::Invitable
     invitation.present?
   end
 
+  def inviting?
+    Invitation.required? || admin?
+  end
+
   def invitations_remaining
     [ invitation_allowance - invitations.size, 0 ].max
   end
