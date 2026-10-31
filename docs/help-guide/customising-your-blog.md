@@ -66,6 +66,10 @@ Choose how posts appear on your home page:
 - **List of Titles** – Compact list with dates and titles
 - **Cards** – Grid of cards with excerpts
 
+### Post navigation
+
+Show links to the previous and next post at the end of each post, so readers can keep going without returning to your home page. It's off by default and works with every design. See [Styling previous and next links](custom-css.md#styling-previous-and-next-links) if you'd like to restyle them.
+
 ### Branding
 
 Premium feature. Choose whether to hide the Pagecord logo at the bottom of your blog (please consider keeping it to spread the good word about Pagecord!). The logo reappears if your subscription lapses.
