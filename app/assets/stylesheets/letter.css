@@ -61,6 +61,185 @@
   width: 100%;
 }
 
+/* The invitation ticket, shown above the signup letter while signup is invite-only */
+
+.letter-ticket-shadow {
+  width: 100%;
+  filter: drop-shadow(0 1px 1px rgba(28, 38, 35, 0.2)) drop-shadow(0 18px 22px rgba(28, 38, 35, 0.24));
+}
+
+.letter-ticket {
+  --stub: 30%;
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  min-height: 190px;
+  color: #16234a;
+  background: linear-gradient(118deg, #eef2fc 0%, #cbd7f2 40%, #e6ecfa 68%, #b4c4ea 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  -webkit-mask:
+    radial-gradient(circle 12px at 0 0, transparent 11.5px, #000 12.5px),
+    radial-gradient(circle 12px at 100% 0, transparent 11.5px, #000 12.5px),
+    radial-gradient(circle 12px at 0 100%, transparent 11.5px, #000 12.5px),
+    radial-gradient(circle 12px at 100% 100%, transparent 11.5px, #000 12.5px),
+    radial-gradient(circle 12px at var(--stub) 0, transparent 11.5px, #000 12.5px),
+    radial-gradient(circle 12px at var(--stub) 100%, transparent 11.5px, #000 12.5px);
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle 12px at 0 0, transparent 11.5px, #000 12.5px),
+    radial-gradient(circle 12px at 100% 0, transparent 11.5px, #000 12.5px),
+    radial-gradient(circle 12px at 0 100%, transparent 11.5px, #000 12.5px),
+    radial-gradient(circle 12px at 100% 100%, transparent 11.5px, #000 12.5px),
+    radial-gradient(circle 12px at var(--stub) 0, transparent 11.5px, #000 12.5px),
+    radial-gradient(circle 12px at var(--stub) 100%, transparent 11.5px, #000 12.5px);
+  mask-composite: intersect;
+}
+
+.letter-ticket::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 4px double rgba(22, 35, 74, 0.3);
+  pointer-events: none;
+}
+
+.letter-ticket__stamp {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--stub) + 18px);
+  width: 96px;
+  aspect-ratio: 1;
+  background-color: rgba(180, 65, 47, 0.45);
+  mix-blend-mode: multiply;
+  -webkit-mask: url("letter/ticket-stamp.svg") center / contain no-repeat;
+  mask: url("letter/ticket-stamp.svg") center / contain no-repeat;
+  transform: translateY(-50%) rotate(-12deg);
+  pointer-events: none;
+}
+
+.letter-ticket__stub {
+  flex: 0 0 var(--stub);
+  box-sizing: border-box;
+  padding: 26px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.letter-ticket__stub::after {
+  content: "";
+  position: absolute;
+  inset-block: 20px;
+  inset-inline-start: calc(var(--stub) - 1.5px);
+  border-inline-start: 3px dotted rgba(22, 35, 74, 0.32);
+}
+
+.letter-ticket__admit {
+  font-family: "SourceSerif4Variable", Georgia, serif;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.letter-ticket__writer {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.letter-ticket__serial {
+  margin-block-start: 8px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.letter-ticket__body {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 30px clamp(22px, 5vw, 44px) 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.letter-ticket__title {
+  margin-block-end: 6px;
+  font-family: "SourceSerif4Variable", Georgia, serif;
+  font-style: italic;
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.letter-ticket__label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.letter-ticket__input {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 20rem;
+  padding: 4px 2px 8px;
+  text-align: center;
+  border: 0;
+  border-bottom: 2px dotted rgba(22, 35, 74, 0.45);
+  border-radius: 0;
+  background: transparent;
+  color: #16234a;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.letter-ticket__input::placeholder {
+  color: rgba(22, 35, 74, 0.28);
+}
+
+.letter-ticket__input:focus {
+  outline: none;
+  box-shadow: none;
+  border-bottom-style: solid;
+  border-bottom-color: #23366f;
+}
+
+.letter-hint {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 15px;
+  color: var(--letter-muted);
+}
+
+/* The letter stays out of sight until an invite code is typed. visibility keeps Turnstile rendering inside it. */
+.letter-form:has(#invite-code:placeholder-shown) .letter-paper {
+  visibility: hidden;
+  height: 0;
+  margin: 0;
+  padding-block: 0;
+  overflow: hidden;
+}
+
+.letter-form:not(:has(#invite-code:placeholder-shown)) .letter-hint {
+  display: none;
+}
+
 /* The letter */
 
 .letter-paper {
@@ -171,6 +350,10 @@
 
 .letter-note:empty {
   display: none;
+}
+
+.letter-note--aside {
+  color: var(--letter-navy);
 }
 
 .letter-note a {
@@ -970,6 +1153,55 @@
 }
 
 @media (max-width: 640px) {
+  .letter-ticket {
+    --stub: 34%;
+    min-height: 0;
+  }
+
+  .letter-ticket::before {
+    inset: 10px;
+  }
+
+  .letter-ticket__stamp {
+    inset-inline-start: calc(var(--stub) + 8px);
+    width: 52px;
+  }
+
+  .letter-ticket__stub {
+    padding: 22px 6px;
+  }
+
+  .letter-ticket__admit {
+    font-size: 1.4rem;
+  }
+
+  .letter-ticket__writer {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+  }
+
+  .letter-ticket__serial {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  .letter-ticket__body {
+    padding: 24px 20px 26px 16px;
+  }
+
+  .letter-ticket__title {
+    font-size: 1.6rem;
+  }
+
+  .letter-ticket__label {
+    font-size: 11px;
+  }
+
+  .letter-ticket__input {
+    font-size: 1.15rem;
+    letter-spacing: 0.12em;
+  }
+
   .letter-return__stamp {
     font-size: 1.1rem;
   }

@@ -1,0 +1,10 @@
+redeemed:
+  inviter: joel
+  invitee: vivian
+  code: VIVIAN4242
+  redeemed_at: <%= 30.days.ago %>
+  created_at: <%= 32.days.ago %>
+
+unused:
+  inviter: joel
+  code: SPARE23456
