@@ -16,8 +16,8 @@ class Api::InvitationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "http://example.com/signups/new?code=#{json["code"]}", json["url"]
   end
 
-  test "create refuses when the owner has no invite codes left" do
-    blog = blogs(:elliot)
+  test "create refuses anyone but an admin" do
+    blog = blogs(:annie)
     blog.user.update!(trial_ends_at: 30.days.from_now)
 
     assert_no_difference -> { Invitation.count } do
