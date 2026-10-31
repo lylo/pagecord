@@ -1,6 +1,8 @@
 class App::InvitationsController < App::BaseController
+  include Pagy::Method
+
   def index
-    @invitations = Current.user.invitations.includes(invitee: :blogs).order(created_at: :desc)
+    @pagy, @invitations = pagy(Current.user.invitations.includes(invitee: :blogs).order(created_at: :desc), limit: 25)
   end
 
   def create
