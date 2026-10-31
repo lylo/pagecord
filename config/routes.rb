@@ -241,6 +241,7 @@ Rails.application.routes.draw do
       resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
       resource :home_page, only: [ :show, :create, :update, :destroy ]
       resources :attachments, only: [ :create ]
+      resources :invitations, only: [ :create ]
       namespace :settings do
         resource :appearance, only: [ :show, :update ], controller: "appearance"
         resource :custom_code, only: [ :show, :update ], controller: "custom_code"
