@@ -31,6 +31,14 @@ class Admin::Moderation::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_no_match "@#{@blog.subdomain}", response.body
   end
 
+  test "shows who invited the owner" do
+    blogs(:vivian).update!(reviewed_at: nil)
+
+    get admin_moderation_blogs_path
+
+    assert_select "a[href=?]", admin_user_path(users(:joel)), text: "@#{blogs(:joel).subdomain}"
+  end
+
   test "says in plain words why the owner failed screening" do
     @blog.user.create_screening!(failed_checks: { cleantalk: "FORBIDDEN BL" })
 

@@ -20,6 +20,10 @@
           &middot; <%= review.email_domain %>
           &middot; <%= user.timezone %>
           &middot; via <%= signup_source(user) %>
+          <% if user.invited? %>
+            <% inviter = user.invitation.inviter %>
+            &middot; invited by <%= link_to inviter.blog ? "@#{inviter.blog.subdomain}" : inviter.email, admin_user_path(inviter), class: "link-quiet" %>
+          <% end %>
           &middot; <%= link_to "account", admin_user_path(user), class: "link-quiet" %>
         </p>
       </div>
