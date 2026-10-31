@@ -6,6 +6,7 @@ class Invitation < ApplicationRecord
   belongs_to :invitee, class_name: "User", optional: true
 
   scope :available, -> { where(redeemed_at: nil, inviter: User.kept) }
+  scope :redeemed, -> { where.not(redeemed_at: nil) }
 
   normalizes :code, with: -> { it.strip.upcase }
 
