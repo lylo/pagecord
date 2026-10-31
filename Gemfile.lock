@@ -172,7 +172,7 @@ GEM
       base64
       ssrf_filter (~> 1.5)
     csv (3.3.6)
-    dalli (5.2.2)
+    dalli (5.2.5)
       logger
     date (3.6.0)
     debug (1.11.1)
