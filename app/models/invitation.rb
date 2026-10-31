@@ -14,6 +14,6 @@ class Invitation < ApplicationRecord
   before_save -> { self.redeemed_at ||= Time.current }, if: :invitee
 
   def self.required?
-    ENV["INVITE_ONLY"].present?
+    ENV["INVITE_ONLY"] == "true"
   end
 end

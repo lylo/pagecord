@@ -31,4 +31,15 @@ class InvitationTest < ActiveSupport::TestCase
     assert invitations(:redeemed).reload.redeemed_at.present?
     assert_nil Invitation.available.find_by(code: invitations(:redeemed).code)
   end
+
+  test "invite-only is on only when INVITE_ONLY is true" do
+    original = ENV["INVITE_ONLY"]
+
+    { "true" => true, "false" => false, "" => false, nil => false }.each do |value, expected|
+      ENV["INVITE_ONLY"] = value
+      assert_equal expected, Invitation.required?, "INVITE_ONLY=#{value.inspect}"
+    end
+  ensure
+    ENV["INVITE_ONLY"] = original
+  end
 end
