@@ -219,7 +219,7 @@ module ImportHelpers
 
   # Clean and normalize tag text for import
   def clean_tag(tag_text)
-    tag_text.strip.downcase.gsub(/\s+/, "-").gsub(/[^a-z0-9\-]/, "")
+    tag_text.strip.downcase.gsub(/\s+/, "-").gsub(/[^\p{L}\p{N}-]/, "")
   end
 
   # Parse datetime string with fallback to current time
