@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :access_requests, dependent: :destroy
   has_many :email_change_requests, dependent: :destroy
   has_one :unengaged_follow_up, dependent: :destroy
+  has_many :cancellations
 
   accepts_nested_attributes_for :blogs
 
@@ -21,8 +22,10 @@ class User < ApplicationRecord
       )
   }
 
-  # Restoring an account unmakes its deletion, so the tombstone goes too.
-  after_undiscard -> { AccountTombstone.where(user_id: id).delete_all }
+  # Restoring an account unmakes its deletion, so the tombstone and exit reason go too.
+  after_undiscard -> { AccountTombstone.where(user_id: id).delete_all; cancellations.account.delete_all }
+  # A purged account keeps its reason for the counts but nothing it wrote.
+  before_destroy -> { cancellations.update_all(user_id: nil, feedback: nil) }
 
   validates :password, length: { minimum: 12 }, confirmation: true, allow_blank: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }

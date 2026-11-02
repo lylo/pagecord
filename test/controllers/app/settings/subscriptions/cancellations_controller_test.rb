@@ -64,6 +64,17 @@ class App::Settings::Subscriptions::CancellationsControllerTest < ActionDispatch
     assert @user.subscription.reload.cancelled?
   end
 
+  test "cancelling an already cancelled subscription does nothing" do
+    @user.subscription.update!(cancelled_at: 1.day.ago)
+    PaddleApi.any_instance.expects(:cancel_subscription).never
+
+    assert_no_difference "Cancellation.count" do
+      post app_settings_subscriptions_cancellation_url, params: @params
+    end
+
+    assert_redirected_to app_settings_path
+  end
+
   test "a cancellation Paddle refuses sends them back to try again" do
     PaddleApi.any_instance.stubs(:cancel_subscription).raises(PaddleApi::Error, "boom")
 

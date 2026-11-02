@@ -4,13 +4,7 @@
     <%= question %>
   </legend>
 
-  <% {
-    too_expensive: "Too expensive",
-    not_writing: "Not writing much any more",
-    missing_feature: "Missing a feature I need",
-    moving_platform: "Moving to another platform",
-    something_else: "Something else"
-  }.each do |reason, label| %>
+  <% Cancellation::REASONS.each do |reason, label| %>
     <label class="option-card items-center gap-3">
       <%= form.radio_button :reason, reason, class: "option-radio", required: true %>
       <span><%= label %></span>

@@ -38,4 +38,11 @@ class App::Settings::Account::DeletionsControllerTest < ActionDispatch::Integrat
 
     assert_response :unprocessable_entity
   end
+
+  test "feedback longer than 2000 characters is refused" do
+    post app_settings_account_deletion_url, params: { cancellation: { reason: "something_else", feedback: "a" * 2001 } }
+
+    assert_response :unprocessable_entity
+    assert_nil @user.reload.discarded_at
+  end
 end
