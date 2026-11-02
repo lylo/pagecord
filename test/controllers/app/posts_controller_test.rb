@@ -42,6 +42,18 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".sheet-top-band", text: /Send this post to your/
   end
 
+  test "edit says when the next send is allowed once the weekly allowance is used" do
+    login_as users(:joel)
+    users(:joel).update!(admin: false)
+    blogs(:joel).update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)
+    User::NewsletterSending::INDIVIDUAL_SENDS_PER_WEEK.times { PostDigest.create!(blog: blogs(:joel_notes), kind: :individual) }
+
+    get edit_app_post_url(posts(:photography_and_tech))
+
+    assert_select ".sheet-top-band", text: /Weekly limit of 3 sends reached/
+    assert_select "form[action=?]", app_post_broadcast_path(posts(:photography_and_tech)), count: 0
+  end
+
   test "edit shows when a post was emailed" do
     login_as users(:joel)
     blogs(:joel).update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)

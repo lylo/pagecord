@@ -144,4 +144,38 @@ class UserTest < ActiveSupport::TestCase
 
     assert_not users(:joel).custom_domain_access?
   end
+
+  test "individual sends are capped per week across all of an account's blogs" do
+    user = users(:joel)
+    user.update!(admin: false)
+    PostDigest.create!(blog: blogs(:joel), kind: :individual)
+    PostDigest.create!(blog: blogs(:joel_notes), kind: :individual)
+
+    assert user.individual_send_allowed?
+
+    PostDigest.create!(blog: blogs(:joel_notes), kind: :individual)
+
+    assert_not user.individual_send_allowed?
+  end
+
+  test "individual sends older than a week no longer count" do
+    user = users(:joel)
+    user.update!(admin: false)
+    oldest = PostDigest.create!(blog: blogs(:joel), kind: :individual, created_at: 6.days.ago)
+    2.times { PostDigest.create!(blog: blogs(:joel), kind: :individual) }
+
+    assert_not user.individual_send_allowed?
+    assert_equal oldest.created_at + 1.week, user.next_individual_send_at
+
+    travel 2.days
+
+    assert user.individual_send_allowed?
+  end
+
+  test "admins are not capped on individual sends" do
+    user = users(:joel)
+    User::NewsletterSending::INDIVIDUAL_SENDS_PER_WEEK.times { PostDigest.create!(blog: blogs(:joel), kind: :individual) }
+
+    assert user.individual_send_allowed?
+  end
 end

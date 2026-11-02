@@ -63,4 +63,16 @@ class App::Posts::BroadcastsControllerTest < ActionDispatch::IntegrationTest
     post app_post_broadcast_path(page)
     assert_response :not_found
   end
+
+  test "create rejects once the account has sent its weekly allowance" do
+    @user.update!(admin: false)
+    User::NewsletterSending::INDIVIDUAL_SENDS_PER_WEEK.times { PostDigest.create!(blog: blogs(:joel_notes), kind: :individual) }
+
+    assert_no_difference "PostDigest.count" do
+      post app_post_broadcast_path(@post)
+    end
+
+    assert_redirected_to edit_app_post_path(@post)
+    assert_equal "Cannot send this post to subscribers.", flash[:alert]
+  end
 end

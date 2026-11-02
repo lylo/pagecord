@@ -28,6 +28,8 @@ Before sending for real, you can use **Send a test email** to preview the email 
 
 Posts you send individually are automatically excluded from future weekly digests, so subscribers never receive the same post twice.
 
+You can send up to 3 posts a week across your account. Once you've sent 3, the banner shows when you can send the next one. Test emails don't count.
+
 ### Switching modes
 
 To change your delivery mode, go to **Settings** → **Audience** and pick between **Weekly Digest** and **Individual** under the email subscriptions checkbox. You can switch at any time. If you switch from individual back to weekly digest, the next Tuesday digest will include any posts that haven't been sent yet.
@@ -53,4 +55,4 @@ Go to **Settings** → **Audience** to see how many confirmed subscribers you ha
 
 ## Subscriber limits
 
-Premium includes up to 250 email subscribers. If you need more, [contact support](support.md) and we'll sort out a larger allowance for an additional fee.
+Premium includes up to 250 email subscribers and up to 3 newsletter emails a week. If you need more subscribers, [contact support](support.md) and we'll sort out a larger allowance for an additional fee.
