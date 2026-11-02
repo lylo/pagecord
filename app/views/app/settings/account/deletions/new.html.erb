@@ -3,7 +3,9 @@
 <div>
   <%= settings_section do %>
     <div class="py-5 space-y-4 text-slate-800 dark:text-slate-200">
-      <p>Your Pagecord account will be permanently deleted. Sorry to see you go!</p>
+      <p>
+        Your Pagecord account will be permanently deleted<%= " and your subscription cancelled, with no further charges" if Current.user.paying? %>. Sorry to see you go!
+      </p>
 
       <%= form_with model: @cancellation, url: app_settings_account_deletion_path, class: "space-y-6 pt-2" do |form| %>
         <%= render "app/settings/cancellation_reasons", form: form, question: "Why are you leaving?" %>

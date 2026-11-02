@@ -9,9 +9,15 @@ class App::Settings::Account::DeletionsControllerTest < ActionDispatch::Integrat
     login_as @user
   end
 
-  test "should get the deletion confirmation" do
+  test "a paying subscriber is told their subscription will be cancelled" do
     get new_app_settings_account_deletion_path
-    assert_response :success
+    assert_select "p", /subscription cancelled/
+  end
+
+  test "a cancelled subscriber is not told about a subscription" do
+    @user.subscription.update!(cancelled_at: 1.day.ago)
+    get new_app_settings_account_deletion_path
+    assert_no_match(/subscription cancelled/, response.body)
   end
 
   test "deleting the account records why and schedules destroy and cancellation email jobs" do
