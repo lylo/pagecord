@@ -1,0 +1,25 @@
+<%# locals: (form:, question:) %>
+<fieldset class="space-y-2">
+  <legend class="mb-3 font-semibold text-slate-900 dark:text-slate-100">
+    <%= question %>
+  </legend>
+
+  <% {
+    too_expensive: "Too expensive",
+    not_writing: "Not writing much any more",
+    missing_feature: "Missing a feature I need",
+    moving_platform: "Moving to another platform",
+    something_else: "Something else"
+  }.each do |reason, label| %>
+    <label class="option-card items-center gap-3">
+      <%= form.radio_button :reason, reason, class: "option-radio", required: true %>
+      <span><%= label %></span>
+    </label>
+  <% end %>
+  <%= field_error(form.object, :reason) %>
+</fieldset>
+
+<div>
+  <%= form.label :feedback, "Is there anything I could have done better?", class: "mb-2 block font-semibold text-slate-900 dark:text-slate-100" %>
+  <%= form.text_area :feedback, rows: 4, maxlength: 2000, class: "form-field w-full" %>
+</div>

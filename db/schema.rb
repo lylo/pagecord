@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_30_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_11_02_113815) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -165,6 +165,17 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_30_120000) do
     t.index ["subdomain"], name: "index_blogs_on_subdomain", unique: true
     t.index ["theme_template_id"], name: "index_blogs_on_theme_template_id"
     t.index ["user_id"], name: "index_blogs_on_user_id"
+  end
+
+  create_table "cancellations", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "kind", null: false
+    t.string "reason", null: false
+    t.text "feedback"
+    t.string "plan"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_cancellations_on_user_id"
   end
 
   create_table "contact_messages", force: :cascade do |t|

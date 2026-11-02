@@ -3,17 +3,22 @@ class App::Settings::Subscriptions::CancellationsController < App::BaseControlle
 
   def new
     redirect_to app_settings_path if @subscription.blank? || @subscription.cancelled?
+    @cancellation = Cancellation.new
   end
 
   def create
+    @cancellation = Cancellation.new(cancellation_params.merge(user: Current.user, kind: :subscription, plan: @subscription&.plan))
+    return render(:new, status: :unprocessable_entity) if @cancellation.invalid?
+
     Rails.logger.info "Cancelling subscription for #{Current.user.id}"
 
     if @subscription.present?
       PaddleApi.new.cancel_subscription(@subscription.paddle_subscription_id)
       @subscription.update!(cancelled_at: Time.current)
+      @cancellation.save!
       SendCancellationEmailJob.set(wait: 4.hours).perform_later(Current.user.id, subscriber: true)
 
-      BillingEventLog.record(:cancel_requested, for_subscription: @subscription, effective: @subscription.next_billed_at, source: "app")
+      BillingEventLog.record(:cancel_requested, for_subscription: @subscription, effective: @subscription.next_billed_at, source: "app", cancel_reason: @cancellation.reason)
     end
 
     redirect_to app_settings_path, notice: "Your subscription has been cancelled. You'll keep access until the end of your current billing period."
@@ -26,5 +31,9 @@ class App::Settings::Subscriptions::CancellationsController < App::BaseControlle
 
     def load_subscription
       @subscription = Current.user.subscription
+    end
+
+    def cancellation_params
+      params.expect(cancellation: [ :reason, :feedback ])
     end
 end

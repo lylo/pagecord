@@ -119,7 +119,7 @@ Rails.application.routes.draw do
         resource :about, only: [ :show, :update ], controller: "about"
         resource :audience, only: :show, controller: "audience"
         resources :subscribers, only: [ :index ]
-        resources :users, only: [ :update, :destroy ]
+        resources :users, only: :update
         resource :blog, only: [ :show, :update ], controller: "blogs"
         resource :appearance, only: [ :show, :update ], controller: "appearance"
         resources :theme_garden, only: [ :index ] do
@@ -148,6 +148,9 @@ Rails.application.routes.draw do
         end
 
         resource :account, only: :edit, controller: "account"
+        namespace :account do
+          resource :deletion, only: [ :new, :create ]
+        end
 
         resources :subscriptions, only: [ :index ]
         namespace :subscriptions do

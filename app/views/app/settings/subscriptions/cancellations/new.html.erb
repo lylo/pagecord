@@ -4,18 +4,22 @@
   <%= settings_section do %>
     <div class="py-5 space-y-4 text-slate-800 dark:text-slate-200">
       <p>
-        After cancelling, you will stay on Pagecord Premium until <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>. After that, your account moves to Classic.
+        After cancelling, you will stay on Pagecord Premium until <strong><%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></strong>. After that, your account moves to the free Classic plan.
       </p>
 
       <p>
-        Everything you've made stays exactly as it is – your posts, pages, custom CSS, footer and uploads all keep working. You'll lose custom domains, email subscribers, analytics, the API, the contact form, reply by email and human customer support. Pagecord branding reappears, and uploads are limited to <%= UploadQuota::FREE_LIMIT %> in total with no video.
+        Everything you've made stays exactly as it is – your posts, pages, custom CSS, footer and uploads all keep working. You'll lose custom domains, email subscribers, analytics, the API, the contact form and reply by email. Pagecord branding reappears, and uploads are limited to <%= UploadQuota::FREE_LIMIT %> in total with no video.
       </p>
 
-      <div class="flex flex-wrap items-center gap-3 pt-2">
-        <%= button_to "Yes, cancel subscription", app_settings_subscriptions_cancellation_path, method: :post, form_class: "contents", class: "btn-danger", data: { turbo_confirm: "Are you absolutely sure?" } %>
+      <%= form_with model: @cancellation, url: app_settings_subscriptions_cancellation_path, class: "space-y-6 pt-2" do |form| %>
+        <%= render "app/settings/cancellation_reasons", form: form, question: "Why are you cancelling your subscription?" %>
 
-        <%= link_to "I don't want to cancel", app_settings_subscriptions_path, class: "btn-primary" %>
-      </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <%= form.submit "Yes, cancel subscription", class: "btn-danger", data: { turbo_confirm: "Are you absolutely sure?" } %>
+
+          <%= link_to "I don't want to cancel", app_settings_subscriptions_path, class: "btn-primary" %>
+        </div>
+      <% end %>
     </div>
   <% end %>
 </div>

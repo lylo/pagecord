@@ -150,12 +150,7 @@
 
   <%= settings_section "Danger Zone", description: "These actions cannot be undone" do %>
     <%= settings_row "Delete Account", stacked: true do %>
-      <%= button_to app_settings_user_path(@user),
-            method: :delete,
-            data: { turbo_confirm: "Are you absolutely sure? Your account will be incinerated!" },
-            class: "btn-danger" do %>
-        Delete account
-      <% end %>
+      <%= link_to "Delete account", new_app_settings_account_deletion_path, class: "btn-danger" %>
 
       <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
         Your account and blog will be permanently deleted. Sorry to see you go!
