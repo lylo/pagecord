@@ -40,6 +40,7 @@ gem "ruby-openai", "~> 8.3"
 
 # everything else
 gem "aws-sdk-s3", require: false
+gem "aws-sdk-sesv2"
 gem "bcrypt", "~> 3.1.7"
 gem "discard", "~> 2.0"
 gem "redcarpet"

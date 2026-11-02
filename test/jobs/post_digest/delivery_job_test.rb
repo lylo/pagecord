@@ -1,4 +1,5 @@
 require "test_helper"
+require "mocha/minitest"
 
 class PostDigest::DeliveryJobTest < ActiveJob::TestCase
   setup do
@@ -50,5 +51,17 @@ class PostDigest::DeliveryJobTest < ActiveJob::TestCase
     end
 
     assert digest.reload.delivered_at.present?
+  end
+
+  test "in production, delivers via SES only for users with the feature" do
+    digest = PostDigest.create!(blog: @blog, kind: :individual)
+    Rails.env.stubs(:production?).returns(true)
+
+    PostDigest::PostmarkDelivery.any_instance.expects(:deliver_all)
+    PostDigest::DeliveryJob.perform_now(digest.id)
+
+    @blog.user.update!(features: [ "ses_newsletter_delivery" ])
+    PostDigest::SesDelivery.any_instance.expects(:deliver_all)
+    PostDigest::DeliveryJob.perform_now(digest.id)
   end
 end

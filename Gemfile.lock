@@ -133,6 +133,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.263.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
+    aws-sdk-sesv2 (1.117.0)
+      aws-sdk-core (~> 3, >= 3.263.0)
+      aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.3.0)
@@ -548,6 +551,7 @@ DEPENDENCIES
   actionpack-page_caching
   appsignal
   aws-sdk-s3
+  aws-sdk-sesv2
   bcrypt (~> 3.1.7)
   bootsnap
   brakeman
