@@ -109,7 +109,7 @@ GEM
       railties
     actionpack-page_caching (1.2.5)
       actionpack (>= 4.0.0)
-    addressable (2.9.0)
+    addressable (2.9.2)
       public_suffix (>= 2.0.2, < 8.0)
     appsignal (5.0.7)
       logger
