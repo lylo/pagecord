@@ -14,8 +14,8 @@ class PostDigest::SesDeliveryTest < ActiveSupport::TestCase
 
   test "deliver_all sends raw MIME per subscriber, records the delivery and marks the digest delivered" do
     @client.expects(:send_email).with { |args|
-      args[:from_email_address].include?("digest@newsletters.pagecord.com") &&
-        args.dig(:content, :raw, :data).include?("To: #{@subscriber.email}")
+      raw = args.dig(:content, :raw, :data)
+      raw.include?("<digest@newsletters.pagecord.com>") && raw.include?("To: #{@subscriber.email}")
     }.returns(stub(message_id: "ses-1"))
 
     assert_difference "PostDigestDelivery.count", 1 do

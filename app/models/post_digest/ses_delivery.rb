@@ -41,7 +41,7 @@ class PostDigest::SesDelivery
 
     def send_and_record(subscriber)
       message = build_email(subscriber)
-      @client.send_email(content: { raw: { data: message.to_s } }, from_email_address: message.from.first)
+      @client.send_email(content: { raw: { data: message.to_s } })
       @digest.deliveries.create!(email_subscriber: subscriber, delivered_at: Time.current)
     rescue Aws::SESV2::Errors::MessageRejected => e
       Rails.error.report(e, context: { post_digest_id: @digest.id, email_subscriber_id: subscriber.id })
