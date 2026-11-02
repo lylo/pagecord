@@ -40,9 +40,17 @@ class App::Settings::Account::DeletionsControllerTest < ActionDispatch::Integrat
   end
 
   test "feedback longer than 2000 characters is refused" do
-    post app_settings_account_deletion_url, params: { cancellation: { reason: "something_else", feedback: "a" * 2001 } }
+    assert_no_enqueued_jobs(only: DestroyUserJob) do
+      post app_settings_account_deletion_url, params: { cancellation: { reason: "something_else", feedback: "a" * 2001 } }
+    end
 
     assert_response :unprocessable_entity
-    assert_nil @user.reload.discarded_at
+  end
+
+  test "deleting the account signs them out" do
+    post app_settings_account_deletion_url, params: { cancellation: { reason: "something_else" } }
+    get app_posts_url
+
+    assert_redirected_to login_url
   end
 end

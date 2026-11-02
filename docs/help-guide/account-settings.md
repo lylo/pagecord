@@ -41,6 +41,6 @@ To permanently delete your account:
 1. Go to **Settings** → **My Account**
 2. Scroll to **Danger Zone**
 3. Click **Delete account**
-4. Confirm when prompted
+4. Say why you're leaving and confirm
 
 This cannot be undone. All your posts, pages, and data will be permanently deleted.

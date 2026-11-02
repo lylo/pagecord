@@ -9,6 +9,7 @@ class App::Settings::Account::DeletionsController < App::BaseController
 
     DestroyUserJob.perform_later(Current.user.id)
     SendCancellationEmailJob.set(wait: 24.hours).perform_later(Current.user.id, subscriber: false)
+    sign_out
 
     redirect_to root_path
   end

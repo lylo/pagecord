@@ -786,6 +786,7 @@ namespace :logs do
       parts = []
       parts << (e[:paid] == "true" ? "paid" : "free") if e[:event] == "account_deleted"
       parts << e[:reason] if e[:reason]
+      parts << e[:cancel_reason] if e[:cancel_reason]
       parts << "was #{e[:from]} #{LogDisplay.price(e[:from_amount], e[:from])}" if e[:from]
       parts << "ends #{e[:effective]}" if e[:effective]
       parts << "since #{e[:started]}" if e[:started]

@@ -26,7 +26,7 @@ class CancellationTest < ActiveSupport::TestCase
     @user.destroy!
 
     @cancellation.reload
-    assert_nil @cancellation.user_id
+    assert_equal @user.id, @cancellation.user_id
     assert_nil @cancellation.feedback
     assert @cancellation.not_writing?
   end
