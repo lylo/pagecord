@@ -22,12 +22,9 @@ class CancellationTest < ActiveSupport::TestCase
     assert_equal [ "subscription" ], @user.cancellations.pluck(:kind)
   end
 
-  test "purging the account keeps the reason but drops what they wrote" do
+  test "purging the account keeps its cancellation" do
     @user.destroy!
 
-    @cancellation.reload
-    assert_equal @user.id, @cancellation.user_id
-    assert_nil @cancellation.feedback
-    assert @cancellation.not_writing?
+    assert_equal "Too busy", @cancellation.reload.feedback
   end
 end

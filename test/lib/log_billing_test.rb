@@ -29,6 +29,12 @@ class LogBillingTest < Minitest::Test
     assert_equal %w[ account_deleted account_deleted ], parsed.map { |event| event[:event] }
   end
 
+  def test_decodes_a_comment_back_to_what_was_written
+    parsed = events("[billing] event=cancel_requested user=1 feedback=Too%20dear%2C%0Asorry%20%3D(")
+
+    assert_equal "Too dear,\nsorry =(", parsed.first[:feedback]
+  end
+
   def test_monthly_is_worth_a_year_of_run_rate
     parsed = events("[billing] event=subscription_started user=1 blog=one plan=monthly amount=400")
 

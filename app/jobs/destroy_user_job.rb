@@ -9,7 +9,8 @@ class DestroyUserJob < ApplicationJob
         AccountTombstone.record!(user, reason: reason)
       end
 
-      BillingEventLog.record(:account_deleted, for_user: user, paid: user.paying?, reason: reason, cancel_reason: user.cancellations.account.last&.reason)
+      cancellation = user.cancellations.account.last
+      BillingEventLog.record(:account_deleted, for_user: user, paid: user.paying?, reason: reason, cancel_reason: cancellation&.reason, feedback: cancellation&.feedback)
 
       user.blogs.find_each(&:touch)
 

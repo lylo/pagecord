@@ -817,6 +817,10 @@ namespace :logs do
       end
     )
 
+    movements.select { |e| e[:feedback] }.each do |e|
+      puts "#{e[:blog] || "user #{e[:user]}"} said: \"#{e[:feedback].gsub(/\s+/, " ")}\""
+    end
+
     delta = LogBilling.annualised_delta(events)
     sign = delta.negative? ? "-" : "+"
     puts "Net annualised run rate: #{sign}#{format("$%.2f", delta.abs / 100.0)}"

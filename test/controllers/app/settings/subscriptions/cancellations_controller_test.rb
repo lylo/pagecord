@@ -61,6 +61,7 @@ class App::Settings::Subscriptions::CancellationsControllerTest < ActionDispatch
     assert_includes line, "amount=#{@user.subscription.unit_price}"
     assert_includes line, "source=app"
     assert_includes line, "cancel_reason=too_expensive"
+    assert_includes line, "feedback=Money%20is%20tight"
     assert @user.subscription.reload.cancelled?
   end
 

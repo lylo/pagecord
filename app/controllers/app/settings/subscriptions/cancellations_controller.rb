@@ -16,7 +16,7 @@ class App::Settings::Subscriptions::CancellationsController < App::BaseControlle
     @cancellation.save!
     SendCancellationEmailJob.set(wait: 4.hours).perform_later(Current.user.id, subscriber: true)
 
-    BillingEventLog.record(:cancel_requested, for_subscription: @subscription, effective: @subscription.next_billed_at, source: "app", cancel_reason: @cancellation.reason)
+    BillingEventLog.record(:cancel_requested, for_subscription: @subscription, effective: @subscription.next_billed_at, source: "app", cancel_reason: @cancellation.reason, feedback: @cancellation.feedback)
 
     redirect_to app_settings_path, notice: "Your subscription has been cancelled. You'll keep access until the end of your current billing period."
   rescue PaddleApi::Error => error

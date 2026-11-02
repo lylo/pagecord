@@ -1,3 +1,4 @@
+require "uri"
 require_relative "log_parser"
 
 # Reads the [billing] lines BillingEventLog writes.
@@ -58,7 +59,7 @@ module LogBilling
           key, value = pair.split("=", 2)
           next if key.nil? || value.nil?
 
-          event[key.to_sym] = value
+          event[key.to_sym] = URI.decode_uri_component(value)
         end
 
         event

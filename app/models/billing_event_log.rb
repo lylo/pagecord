@@ -36,9 +36,9 @@ class BillingEventLog
         "#{TAG} #{pairs.join(" ")}"
       end
 
-      # Whitespace separates one key=value from the next and newlines end the line, so no value may contain either.
+      # Percent-encoded so no value can contain a space or newline; LogBilling decodes them.
       def value_for(value)
-        value.respond_to?(:strftime) ? value.strftime("%F") : value.to_s.gsub(/[[:space:]]/, "_")
+        ERB::Util.url_encode(value.respond_to?(:strftime) ? value.strftime("%F") : value.to_s)
       end
   end
 end

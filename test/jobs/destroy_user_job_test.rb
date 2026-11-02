@@ -87,7 +87,7 @@ class DestroyUserJobTest < ActiveJob::TestCase
 
   test "logs a self-serve deletion with the blog, whether they were paying and why they left" do
     user = users(:joel)
-    user.cancellations.create!(kind: :account, reason: :moving_platform)
+    user.cancellations.create!(kind: :account, reason: :moving_platform, feedback: "Found somewhere else")
 
     line = billing_line { DestroyUserJob.perform_now(user.id) }
 
@@ -95,6 +95,7 @@ class DestroyUserJobTest < ActiveJob::TestCase
     assert_includes line, "paid=true"
     assert_includes line, "reason=user_deleted"
     assert_includes line, "cancel_reason=moving_platform"
+    assert_includes line, "feedback=Found%20somewhere%20else"
   end
 
   test "logs a free user's deletion with no plan or amount" do
