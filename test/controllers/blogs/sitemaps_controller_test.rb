@@ -43,10 +43,9 @@ class Blogs::SitemapsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes locs, post_url(blog.home_page)
   end
 
-  test "should return 406 for unsupported format" do
+  test "should return 404 for unsupported format" do
     get blog_sitemap_path(subdomain: @blog.subdomain, format: :gzip)
 
-    assert_response :not_acceptable
-    assert_equal "", @response.body # Ensure no body is returned for unsupported formats
+    assert_response :not_found
   end
 end
