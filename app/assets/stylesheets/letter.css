@@ -359,6 +359,8 @@
 .letter-note a {
   color: inherit;
   white-space: nowrap;
+  text-decoration-line: underline;
+  text-underline-offset: 0.15em;
   text-decoration-thickness: 1.5px;
   text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
 }
