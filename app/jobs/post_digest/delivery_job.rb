@@ -5,6 +5,10 @@ class PostDigest::DeliveryJob < ApplicationJob
   retry_on Postmark::TimeoutError, wait: :polynomially_longer, attempts: 5
   retry_on Net::OpenTimeout, Net::ReadTimeout, wait: :polynomially_longer, attempts: 5
   retry_on Aws::SESV2::Errors::TooManyRequestsException, Seahorse::Client::NetworkingError, wait: :polynomially_longer, attempts: 5
+  retry_on Aws::SESV2::Errors::LimitExceededException, wait: 1.hour, attempts: 24
+  discard_on Aws::SESV2::Errors::SendingPausedException, Aws::SESV2::Errors::AccountSuspendedException do |job, error|
+    Rails.error.report(error, context: { post_digest_id: job.arguments.first })
+  end
 
   def perform(post_digest_id)
     digest = PostDigest.find(post_digest_id)

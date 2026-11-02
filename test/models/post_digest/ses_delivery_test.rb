@@ -26,8 +26,9 @@ class PostDigest::SesDeliveryTest < ActiveSupport::TestCase
     assert @digest.reload.delivered_at?
   end
 
-  test "deliver_all skips a rejected message but still marks the digest delivered" do
+  test "deliver_all reports a rejected message, skips it and still marks the digest delivered" do
     @client.expects(:send_email).raises(Aws::SESV2::Errors::MessageRejected.new(nil, "suppressed"))
+    Rails.error.expects(:report)
 
     assert_no_difference "PostDigestDelivery.count" do
       PostDigest::SesDelivery.new(@digest).deliver_all

@@ -53,15 +53,30 @@ class PostDigest::DeliveryJobTest < ActiveJob::TestCase
     assert digest.reload.delivered_at.present?
   end
 
-  test "in production, delivers via SES only for users with the feature" do
+  test "in production, delivers via Postmark by default" do
     digest = PostDigest.create!(blog: @blog, kind: :individual)
     Rails.env.stubs(:production?).returns(true)
 
     PostDigest::PostmarkDelivery.any_instance.expects(:deliver_all)
     PostDigest::DeliveryJob.perform_now(digest.id)
+  end
 
+  test "in production, delivers via SES for users with the feature" do
+    digest = PostDigest.create!(blog: @blog, kind: :individual)
     @blog.user.update!(features: [ "ses_newsletter_delivery" ])
+    Rails.env.stubs(:production?).returns(true)
+
     PostDigest::SesDelivery.any_instance.expects(:deliver_all)
     PostDigest::DeliveryJob.perform_now(digest.id)
+  end
+
+  test "a paused SES account discards the job and reports it" do
+    digest = PostDigest.create!(blog: @blog, kind: :individual)
+    @blog.user.update!(features: [ "ses_newsletter_delivery" ])
+    Rails.env.stubs(:production?).returns(true)
+    PostDigest::SesDelivery.any_instance.stubs(:deliver_all).raises(Aws::SESV2::Errors::SendingPausedException.new(nil, "paused"))
+    Rails.error.expects(:report)
+
+    assert_nothing_raised { PostDigest::DeliveryJob.perform_now(digest.id) }
   end
 end

@@ -1,6 +1,6 @@
 class PostDigest::SesDelivery
   BATCH_SIZE = 50
-  SENDS_PER_SECOND = ENV.fetch("AWS_SES_SENDS_PER_SECOND", 14).to_i
+  SENDS_PER_SECOND = Integer(ENV.fetch("AWS_SES_SENDS_PER_SECOND", 14))
 
   def initialize(digest)
     @digest = digest
@@ -44,7 +44,7 @@ class PostDigest::SesDelivery
       @client.send_email(content: { raw: { data: message.to_s } }, from_email_address: message.from.first)
       @digest.deliveries.create!(email_subscriber: subscriber, delivered_at: Time.current)
     rescue Aws::SESV2::Errors::MessageRejected => e
-      Rails.logger.error "Digest delivery rejected for subscriber #{subscriber.id}: #{e.message}"
+      Rails.error.report(e, context: { post_digest_id: @digest.id, email_subscriber_id: subscriber.id })
     end
 
     def pause_until(deadline)
