@@ -61,8 +61,8 @@ module SpamPrevention
       reject_submission
     end
 
-    # Blog pages fetch the nonce once their JavaScript has run (FormNoncesController),
-    # which a client posting fields scraped from the HTML never does. Blog form
+    # Blog forms fetch the nonce when first used (FormNoncesController), which a
+    # client posting fields scraped from the HTML never does. Blog form
     # controllers declare `before_action :form_nonce_check`.
     def form_nonce_check
       nonce = cookies[:form_nonce].to_s

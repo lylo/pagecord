@@ -6,10 +6,14 @@ class BlogFormNonceTest < ActionDispatch::IntegrationTest
     host! "#{@blog.subdomain}.#{Rails.application.config.x.domain}"
   end
 
-  test "a blog page fetches the nonce" do
+  test "the subscribe form fetches the nonce when first used" do
+    @blog.update!(email_subscriptions_enabled: true, show_subscription_in_header: true)
+
     get blog_posts_path
 
-    assert_select "body[data-controller~=form-nonce][data-form-nonce-url-value=?]", blog_form_nonce_path
+    assert_select "body[data-controller~=form-nonce]", count: 0
+    assert_select "form[action=?][data-controller~=form-nonce][data-action~=?][data-form-nonce-url-value=?]",
+      email_subscribers_path, "focusin->form-nonce#prepare", blog_form_nonce_path
   end
 
   test "a subscription without the nonce is refused and asked to reload" do

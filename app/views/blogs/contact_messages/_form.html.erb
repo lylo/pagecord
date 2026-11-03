@@ -3,7 +3,8 @@
             url: contact_messages_path,
             method: :post,
             scope: :contact_message,
-            class: "form-container" do |form| %>
+            class: "form-container",
+            data: { controller: "form-nonce", action: "focusin->form-nonce#prepare", form_nonce_url_value: blog_form_nonce_path } do |form| %>
 
     <%= render "/shared/spam_prevention" %>
 

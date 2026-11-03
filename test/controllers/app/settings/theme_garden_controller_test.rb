@@ -31,12 +31,6 @@ class App::Settings::ThemeGardenControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "a preview doesn't fetch a form nonce" do
-    get app_settings_theme_garden_preview_url(@template)
-
-    assert_select "body[data-controller~=form-nonce]", count: 0
-  end
-
   test "apply should update blog with template attributes" do
     post app_settings_theme_garden_application_url(@template)
 
