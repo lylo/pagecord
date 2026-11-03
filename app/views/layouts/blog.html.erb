@@ -90,7 +90,7 @@
     <%= @blog&.custom_head_html_for_render unless @preview %>
   </head>
 
-  <body class="<%= font_class %>" <%= theme_data_attribute %> data-page-type="<%= content_type_class %>" data-controller="form-nonce" data-form-nonce-url-value="<%= blog_form_nonce_path %>" <%= tag.attributes(data: { slug: @post.slug }) if @post %>>
+  <body class="<%= font_class %>" <%= theme_data_attribute %> data-page-type="<%= content_type_class %>" <%= tag.attributes(data: { controller: "form-nonce", form_nonce_url_value: blog_form_nonce_path }) unless @preview %> <%= tag.attributes(data: { slug: @post.slug }) if @post %>>
     <main>
       <div class="blog blog-container <%= content_width_class %> <%= content_type_class %>">
         <%= render "blogs/flash" %>
