@@ -166,7 +166,7 @@ Rails.application.routes.draw do
         resource :trash, only: [ :show, :destroy ], controller: "trash"
       end
 
-      resources :invitations, only: [ :index, :create ]
+      resources :invitations, only: [ :index, :create, :destroy ]
       resources :blogs, only: [ :index, :new, :create, :destroy ] do
         resource :selection, only: [ :create ], controller: "blogs/selections"
         resource :restoration, only: [ :create ], controller: "blogs/restorations"

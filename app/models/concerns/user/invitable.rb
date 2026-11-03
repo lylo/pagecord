@@ -21,19 +21,19 @@ module User::Invitable
     [ invitation_allowance - invitations.size, 0 ].max
   end
 
-  private
-
-    def invitation_allowance
-      if admin?
-        Float::INFINITY
-      elsif subscribed?
-        SUBSCRIBER_INVITATIONS
-      elsif writing_regularly?
-        WRITER_INVITATIONS
-      else
-        0
-      end
+  def invitation_allowance
+    if admin?
+      Float::INFINITY
+    elsif subscribed?
+      SUBSCRIBER_INVITATIONS
+    elsif writing_regularly?
+      WRITER_INVITATIONS
+    else
+      0
     end
+  end
+
+  private
 
     def writing_regularly?
       created_at.before?(30.days.ago) && Post.posts.visible.where(blog: blogs).distinct.count("DATE(posts.created_at)") >= 4

@@ -2,9 +2,23 @@
   <h1 class="page-title">Invite a writer</h1>
   <p class="mt-2 text-slate-600 dark:text-slate-300">Each invite code lets one person create a Pagecord account.</p>
 
-  <div class="mt-5">
-    <% if Current.user.invitations_remaining.positive? %>
-      <%= button_to "Create invite code", app_invitations_path, class: "btn-primary cursor-pointer" %>
+  <div class="mt-5 flex flex-wrap items-center justify-between gap-x-5 gap-y-3">
+    <% allowance = Current.user.invitation_allowance %>
+    <% if allowance.positive? %>
+      <% remaining = Current.user.invitations_remaining %>
+      <% if remaining.positive? %>
+        <%= button_to "Create invite code", app_invitations_path, class: "btn-primary cursor-pointer", form_class: "contents" %>
+      <% end %>
+      <% if allowance.finite? %>
+        <div class="flex items-center gap-2.5">
+          <div class="flex gap-0.5" aria-hidden="true">
+            <% allowance.times do |i| %>
+              <%= inline_svg_tag "icons/ticket.svg", class: class_names("size-5", i < remaining ? "text-pagecord-accent" : "text-slate-300 dark:text-slate-700") %>
+            <% end %>
+          </div>
+          <span class="text-sm text-slate-500 dark:text-slate-400"><%= remaining %> of <%= allowance %> remaining</span>
+        </div>
+      <% end %>
     <% else %>
       <p class="text-sm text-slate-500 dark:text-slate-400">
         Subscribers get <%= User::Invitable::SUBSCRIBER_INVITATIONS %> invite codes. Other writers get <%= User::Invitable::WRITER_INVITATIONS %> once their account is a month old and they've posted on four different days.
@@ -36,15 +50,24 @@
             <code class="shrink-0 font-mono text-sm text-slate-500 dark:text-slate-400"><%= invitation.code %></code>
           </div>
         <% else %>
-          <div class="sheet-bleed flex flex-wrap items-center justify-between gap-4 py-5">
+          <% url = new_signup_url(code: invitation.code) %>
+          <div class="sheet-bleed flex items-center justify-between gap-4 py-5">
             <div class="min-w-0">
-              <code class="font-mono font-semibold text-slate-900 dark:text-slate-100"><%= invitation.code %></code>
-              <p class="mt-1 truncate text-sm text-slate-500 dark:text-slate-400"><%= new_signup_url(code: invitation.code) %></p>
+              <div class="flex items-center gap-2">
+                <code class="font-mono font-semibold text-slate-900 dark:text-slate-100"><%= invitation.code %></code>
+                <%= render "copy_button", text: invitation.code, label: "Copy invite code" %>
+              </div>
+              <div class="mt-1 flex items-center gap-2">
+                <p class="min-w-0 truncate text-sm text-slate-500 dark:text-slate-400"><%= url %></p>
+                <%= render "copy_button", text: url, label: "Copy invite link" %>
+              </div>
             </div>
-            <div class="flex shrink-0 gap-2">
-              <button type="button" data-controller="clipboard" data-clipboard-text-value="<%= invitation.code %>" data-clipboard-target="button" data-action="clipboard#copy" class="btn-secondary cursor-pointer">Copy code</button>
-              <button type="button" data-controller="clipboard" data-clipboard-text-value="<%= new_signup_url(code: invitation.code) %>" data-clipboard-target="button" data-action="clipboard#copy" class="btn-secondary cursor-pointer">Copy link</button>
-            </div>
+            <%= button_to app_invitation_path(invitation), method: :delete, form_class: "contents",
+                  data: { turbo_confirm: "Delete invite code #{invitation.code}? It will stop working, and you can create another in its place." },
+                  title: "Delete invite code", aria: { label: "Delete invite code" },
+                  class: "btn-icon shrink-0 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400" do %>
+              <%= inline_svg_tag "icons/trash.svg", class: "w-4 h-4" %>
+            <% end %>
           </div>
         <% end %>
       <% end %>
