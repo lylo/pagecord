@@ -244,13 +244,15 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     patch app_settings_blog_url, params: {
       blog: {
         show_subscription_in_header: false,
-        show_subscription_in_footer: false
+        show_subscription_in_footer: false,
+        subscription_description: "Letters from the coast"
       }
     }, as: :turbo_stream
 
     blog = users(:vivian).blog.reload
     assert blog.show_subscription_in_header
     assert blog.show_subscription_in_footer
+    assert_nil blog.subscription_description
   end
 
   test "should set a blog password" do
