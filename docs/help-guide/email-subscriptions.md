@@ -18,7 +18,7 @@ There are two ways to deliver posts to your subscribers:
 
 ### Weekly Digest (default)
 
-Subscribers receive a roundup of your latest posts every Tuesday morning (in your blog's configured time zone). This happens automatically – you don't need to do anything.
+Subscribers receive a roundup of your latest posts every Tuesday morning (8am in the time zone set under **Settings** → **Account**). This happens automatically – you don't need to do anything.
 
 ### Individual
 
