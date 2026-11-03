@@ -188,6 +188,20 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-frame#email_subscriber_form"
   end
 
+  test "should show the blog's own subscription description" do
+    @blog.update!(subscription_description: "Letters from the coast, now and then")
+
+    get blog_posts_path
+
+    assert_select ".subscription-description", text: "Letters from the coast, now and then"
+  end
+
+  test "should show the default subscription description" do
+    get blog_posts_path
+
+    assert_select ".subscription-description", text: I18n.t("email_subscribers.form.subscribe_description.#{@blog.email_delivery_mode}")
+  end
+
   test "should not show email subscription form on index if show_subscription_in_header is false" do
     @blog.update!(
       email_subscriptions_enabled: true,

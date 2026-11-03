@@ -75,6 +75,16 @@
           </div>
         </div>
       <% end %>
+
+      <%= settings_row "Form Text", class: ("opacity-50" if email_disabled), data: { subscription_settings_target: "dependent" } do %>
+        <fieldset>
+          <%= styled_text_field(form, :subscription_description, placeholder: t("email_subscribers.form.subscribe_description.#{@blog.email_delivery_mode}", locale: @blog.locale), maxlength: 200, disabled: email_disabled, class: "w-full", data: { subscription_settings_target: "dependent" }) %>
+          <%= field_error(@blog, :subscription_description) %>
+        </fieldset>
+        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          Replaces the line above the email field. Leave blank to keep the default.
+        </p>
+      <% end %>
     <% end %>
 
     <%= settings_section "Engagement", description: "Ways for readers to respond to your posts. Your email address is never revealed, and only you can see your numbers" do %>

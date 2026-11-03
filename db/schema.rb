@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_11_02_113815) do
+ActiveRecord::Schema[8.2].define(version: 2026_11_03_111428) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -158,6 +158,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_11_02_113815) do
     t.bigint "theme_template_id"
     t.integer "theme_template_version"
     t.boolean "show_post_navigation", default: false, null: false
+    t.string "subscription_description"
     t.index ["api_key_digest"], name: "index_blogs_on_api_key_digest", unique: true
     t.index ["custom_domain"], name: "index_blogs_on_custom_domain", unique: true, where: "(custom_domain IS NOT NULL)"
     t.index ["home_page_id"], name: "index_blogs_on_home_page_id"

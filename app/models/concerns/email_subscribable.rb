@@ -6,6 +6,9 @@ module EmailSubscribable
     has_many :post_digests, dependent: :destroy
 
     enum :email_delivery_mode, { digest: 0, individual: 1 }
+
+    normalizes :subscription_description, with: -> { it.strip.presence }
+    validates :subscription_description, length: { maximum: 200 }
   end
 
   DAILY_UNCONFIRMED_SUBSCRIBER_LIMIT = 20

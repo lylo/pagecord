@@ -209,6 +209,21 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_equal false, @blog.reload.show_subscription_in_footer
   end
 
+  test "should update subscription_description" do
+    patch app_settings_blog_url, params: { blog: { subscription_description: "  Letters from the coast, now and then  " } }, as: :turbo_stream
+
+    assert_redirected_to app_settings_url
+    assert_equal "Letters from the coast, now and then", @blog.reload.subscription_description
+  end
+
+  test "should clear a blank subscription_description" do
+    @blog.update!(subscription_description: "Letters from the coast")
+
+    patch app_settings_blog_url, params: { blog: { subscription_description: " " } }, as: :turbo_stream
+
+    assert_nil @blog.reload.subscription_description
+  end
+
   test "should update show_metrics" do
     patch app_settings_blog_url, params: { blog: { show_metrics: false } }, as: :turbo_stream
 

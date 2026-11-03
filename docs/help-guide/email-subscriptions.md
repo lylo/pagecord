@@ -49,6 +49,8 @@ Enable either or both options in the Audience settings.
 
 You can also embed the form on any page using the `{{ email_subscription }}` [dynamic variable](https://help.pagecord.com/dynamic-variables-for-pages).
 
+To change the line of text above the email field, fill in **Form Text** in the Audience settings. Leave it blank to keep the default, which matches your delivery mode and your blog's language.
+
 ## Viewing your subscribers
 
 Go to **Settings** → **Audience** to see how many confirmed subscribers you have, and to download them as a CSV. The download stays available if your subscription lapses, so your list is always yours to take elsewhere.
