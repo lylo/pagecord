@@ -195,64 +195,11 @@ class App::Settings::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should update show_subscription_in_header" do
-    patch app_settings_blog_url, params: { blog: { show_subscription_in_header: false } }, as: :turbo_stream
-
-    assert_redirected_to app_settings_url
-    assert_equal false, @blog.reload.show_subscription_in_header
-  end
-
-  test "should update show_subscription_in_footer" do
-    patch app_settings_blog_url, params: { blog: { show_subscription_in_footer: false } }, as: :turbo_stream
-
-    assert_redirected_to app_settings_url
-    assert_equal false, @blog.reload.show_subscription_in_footer
-  end
-
-  test "should update subscription_description" do
-    patch app_settings_blog_url, params: { blog: { subscription_description: "  Letters from the coast, now and then  " } }, as: :turbo_stream
-
-    assert_redirected_to app_settings_url
-    assert_equal "Letters from the coast, now and then", @blog.reload.subscription_description
-  end
-
-  test "should clear a blank subscription_description" do
-    @blog.update!(subscription_description: "Letters from the coast")
-
-    patch app_settings_blog_url, params: { blog: { subscription_description: " " } }, as: :turbo_stream
-
-    assert_nil @blog.reload.subscription_description
-  end
-
-  test "should update show_metrics" do
-    patch app_settings_blog_url, params: { blog: { show_metrics: false } }, as: :turbo_stream
-
-    assert_redirected_to app_settings_url
-    assert_equal false, @blog.reload.show_metrics
-  end
-
   test "should update external links in new tab" do
     patch app_settings_blog_url, params: { blog: { external_links_in_new_tab: true } }, as: :turbo_stream
 
     assert_redirected_to app_settings_url
     assert_equal true, @blog.reload.external_links_in_new_tab
-  end
-
-  test "should not allow non-subscribed user to update subscription location settings" do
-    login_as users(:vivian)
-
-    patch app_settings_blog_url, params: {
-      blog: {
-        show_subscription_in_header: false,
-        show_subscription_in_footer: false,
-        subscription_description: "Letters from the coast"
-      }
-    }, as: :turbo_stream
-
-    blog = users(:vivian).blog.reload
-    assert blog.show_subscription_in_header
-    assert blog.show_subscription_in_footer
-    assert_nil blog.subscription_description
   end
 
   test "should set a blog password" do

@@ -117,7 +117,7 @@ Rails.application.routes.draw do
 
       namespace :settings do
         resource :about, only: [ :show, :update ], controller: "about"
-        resource :audience, only: :show, controller: "audience"
+        resource :audience, only: [ :show, :update ], controller: "audience"
         resources :subscribers, only: [ :index ]
         resources :users, only: :update
         resource :blog, only: [ :show, :update ], controller: "blogs"

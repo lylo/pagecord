@@ -21,9 +21,7 @@ class App::Settings::BlogsController < App::BaseController
         :seo_title,
         :locale,
         :date_format,
-        :show_metrics,
         :external_links_in_new_tab,
-        :show_upvotes,
         :use_password,
         :password,
         :post_url_format,
@@ -31,11 +29,7 @@ class App::Settings::BlogsController < App::BaseController
       ]
 
       if @blog.user.subscribed?
-        permitted_params += [ :custom_domain, :custom_robots_txt, :use_custom_robots_txt, :email_subscriptions_enabled, :show_subscription_in_header, :show_subscription_in_footer, :subscription_description, :email_delivery_mode ]
-      end
-
-      if @blog.user.has_premium_access?
-        permitted_params += [ :reply_by_email, :comments_enabled ]
+        permitted_params += [ :custom_domain, :custom_robots_txt, :use_custom_robots_txt ]
       end
 
       params.require(:blog).permit(permitted_params)
