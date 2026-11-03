@@ -5,6 +5,7 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
 
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
   skip_before_action :turnstile_check # The subscribe form is embedded on every blog page; no widget is rendered
+  before_action :form_nonce_check, only: :create
   before_action :requires_user_subscription
   before_action :enforce_daily_subscriber_limit, only: :create
 
@@ -34,11 +35,12 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
 
     def reject_submission
       @message = "There's an issue with your subscription. If you're using a VPN, try subscribing without it. Contact support if the problem persists."
+      respond_with_message
+    end
 
-      respond_to do |format|
-        format.turbo_stream { render :create }
-        format.html { redirect_to blog_posts_path, alert: @message }
-      end
+    def reject_stale_form
+      @message = I18n.t("email_subscribers.create.stale_form_message")
+      respond_with_message
     end
 
     def rate_limit_reached
@@ -46,9 +48,12 @@ class Blogs::EmailSubscribersController < Blogs::BaseController
         "email_subscribers.create.rate_limit_message",
         default: "You've tried to subscribe too many times, too quickly. Please try again later."
       )
+      respond_with_message status: :too_many_requests
+    end
 
+    def respond_with_message(status: :ok)
       respond_to do |format|
-        format.turbo_stream { render :create, status: :too_many_requests }
+        format.turbo_stream { render :create, status: status }
         format.html { redirect_to blog_posts_path, alert: @message }
       end
     end

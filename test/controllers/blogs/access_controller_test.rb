@@ -115,6 +115,7 @@ class Blogs::AccessControllerTest < ActionDispatch::IntegrationTest
   test "a visitor with access can subscribe by email" do
     @blog.update!(password: "letmein", email_subscriptions_enabled: true)
     post blog_access_path, params: { password: "letmein", return_to: "/" }
+    post blog_form_nonce_path
 
     assert_difference -> { @blog.email_subscribers.count }, 1 do
       post email_subscribers_url(subdomain: @blog.subdomain),

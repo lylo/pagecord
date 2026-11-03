@@ -11,6 +11,7 @@ pin "lexxy", to: "lexxy.min.js", preload: false
 
 # Controllers used by blog views - lazy loaded
 pin "controllers/fade_controller", preload: false
+pin "controllers/form_nonce_controller", preload: false
 pin "controllers/lightbox_controller", preload: false
 pin "controllers/media_embeds_controller", preload: false
 pin "controllers/pv_controller", preload: false

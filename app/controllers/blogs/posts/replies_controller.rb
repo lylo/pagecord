@@ -7,7 +7,7 @@ class Blogs::Posts::RepliesController < Blogs::BaseController
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
   before_action :load_post
-  before_action :form_token_check, only: [ :create ]
+  before_action :form_nonce_check, :form_token_check, only: [ :create ]
 
   def new
     redirect_to view_context.post_path(@post) and return unless @blog.accepts_replies?

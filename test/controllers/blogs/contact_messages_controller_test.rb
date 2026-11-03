@@ -5,13 +5,14 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
     @blog = blogs(:joel)
     @user = @blog.user
     host! "#{@blog.subdomain}.pagecord.localhost"
+    post blog_form_nonce_path
   end
 
   test "should create contact message for premium user" do
     assert @user.has_premium_access?
 
     assert_difference "Blog::ContactMessage.count", 1 do
-      post contact_messages_url,
+      post contact_messages_path,
         params: {
           contact_message: { name: "Test User", email: "test@example.com", message: "Hello!" },
           rendered_at: signed_rendered_at(10.seconds.ago)
@@ -30,7 +31,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
     assert_not @user.reload.has_premium_access?
 
     assert_no_difference "Blog::ContactMessage.count" do
-      post contact_messages_url,
+      post contact_messages_path,
         params: {
           contact_message: { name: "Test User", email: "test@example.com", message: "Hello!" },
           rendered_at: signed_rendered_at(10.seconds.ago)
@@ -42,7 +43,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
 
   test "should block honeypot submissions" do
     assert_no_difference "Blog::ContactMessage.count" do
-      post contact_messages_url,
+      post contact_messages_path,
         params: {
           contact_message: { name: "Test User", email: "test@example.com", message: "Hello!" },
           email_confirmation: "spam@example.com",
@@ -55,7 +56,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
 
   test "should block fast form submissions" do
     assert_no_difference "Blog::ContactMessage.count" do
-      post contact_messages_url,
+      post contact_messages_path,
         params: {
           contact_message: { name: "Test User", email: "test@example.com", message: "Hello!" },
           rendered_at: signed_rendered_at(Time.current)
@@ -67,7 +68,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
 
   test "should show error for invalid message" do
     assert_no_difference "Blog::ContactMessage.count" do
-      post contact_messages_url,
+      post contact_messages_path,
         params: {
           contact_message: { name: "", email: "invalid", message: "" },
           rendered_at: signed_rendered_at(10.seconds.ago)

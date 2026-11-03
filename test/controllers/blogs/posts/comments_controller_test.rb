@@ -6,6 +6,7 @@ class Blogs::Posts::CommentsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @post = posts(:one)
     host! "#{@post.blog.subdomain}.#{Rails.application.config.x.domain}"
+    post blog_form_nonce_path
   end
 
   test "the post page shows the comment icon, a count and an empty frame" do

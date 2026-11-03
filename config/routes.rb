@@ -286,6 +286,7 @@ Rails.application.routes.draw do
     get "/blog/feed", to: redirect("/feed.xml")
 
     post "/pv", to: "blogs/page_views#create", as: :blog_page_views
+    post "/form_nonce", to: "blogs/form_nonces#create", as: :blog_form_nonce
 
     get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
     get "/previews/css/:id", to: "blogs/css_previews#show", as: :blog_css_preview

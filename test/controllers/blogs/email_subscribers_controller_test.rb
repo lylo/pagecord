@@ -4,6 +4,7 @@ class Blogs::EmailSubscribersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
     host! "#{@blog.subdomain}.#{Rails.application.config.x.domain}"
+    post blog_form_nonce_path
   end
 
   test "should add new email subscriber" do
