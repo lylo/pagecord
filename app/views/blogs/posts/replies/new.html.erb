@@ -9,7 +9,7 @@
           url: post_replies_path(@post),
           method: :post,
           scope: :reply,
-          data: { turbo: false },
+          data: { turbo: false, controller: "form-nonce", action: "focusin->form-nonce#prepare", form_nonce_url_value: blog_form_nonce_path },
           class: "form-container" do |form| %>
 
   <%= hidden_field_tag :form_token, @form_token %>

@@ -55,6 +55,23 @@ module SpamPrevention
       reject_submission
     end
 
+    # The nonce is missing when the page's fetch failed or a tab outlived its
+    # session, so the visitor is asked to reload. Override to say so.
+    def reject_stale_form
+      reject_submission
+    end
+
+    # Blog forms fetch the nonce when first used (FormNoncesController), which a
+    # client posting fields scraped from the HTML never does. Blog form
+    # controllers declare `before_action :form_nonce_check`.
+    def form_nonce_check
+      nonce = cookies[:form_nonce].to_s
+      return if nonce.present? && ActiveSupport::SecurityUtils.secure_compare(nonce, session[:form_nonce].to_s)
+
+      Rails.logger.warn "Form nonce missing. Request blocked."
+      reject_stale_form
+    end
+
     def tor_exit_node_check
       if TorExitNode.include?(request.ip)
         Rails.logger.warn "Tor exit node. Request blocked."

@@ -3,7 +3,8 @@
           url: post_comments_path(@post),
           method: :post,
           scope: :comment,
-          class: "form-container" do |form| %>
+          class: "form-container",
+          data: { controller: "form-nonce", action: "focusin->form-nonce#prepare", form_nonce_url_value: blog_form_nonce_path } do |form| %>
 
   <%= hidden_field_tag :form_token, @form_token %>
   <%= render "/shared/spam_prevention" %>

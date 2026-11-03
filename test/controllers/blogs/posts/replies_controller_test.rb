@@ -4,6 +4,7 @@ class Blogs::Posts::RepliesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @post = posts(:one)
     host! "#{@post.blog.subdomain}.#{Rails.application.config.x.domain}"
+    post blog_form_nonce_path
   end
 
   test "should get new reply form" do

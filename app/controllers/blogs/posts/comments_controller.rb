@@ -10,7 +10,7 @@ class Blogs::Posts::CommentsController < Blogs::BaseController
   skip_forgery_protection # Cached pages have no session cookie for CSRF verification
 
   before_action :load_post
-  before_action :form_token_check, only: [ :create ]
+  before_action :form_nonce_check, :form_token_check, only: [ :create ]
   before_action :ensure_comments_visible, only: [ :index ]
   before_action :ensure_comments_open, only: [ :create ]
 
