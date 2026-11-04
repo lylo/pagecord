@@ -628,6 +628,12 @@ namespace :logs do
           r[:suspicious_email] = m[1]
         elsif body.include?("Turnstile check failed")
           r[:blocks] << "turnstile"
+        elsif body.include?("Signup refused: banned timezone")
+          r[:blocks] << "timezone"
+        elsif body.include?("Signup refused: invite code")
+          r[:blocks] << "invite"
+        elsif body.include?("Can't verify CSRF token authenticity")
+          r[:blocks] << "csrf"
         elsif body.include?("Signup validation failed")
           r[:validation_failed] = body[/Signup validation failed:\s*(.*)/, 1]
         end
@@ -642,7 +648,10 @@ namespace :logs do
       "honeypot" => "Honeypot caught",
       "form-time" => "Form too fast",
       "suspicious-email" => "Suspicious email",
-      "turnstile" => "Turnstile blocked"
+      "turnstile" => "Turnstile blocked",
+      "timezone" => "Banned timezone",
+      "invite" => "Invite refused",
+      "csrf" => "CSRF failure"
     }
 
     # Where did they come from? The note after the form ("a search") wins;
@@ -691,11 +700,6 @@ namespace :logs do
           funnel[block_label.fetch(r[:blocks].first, "Blocked")] += 1
         elsif r[:validation_failed]
           funnel["Validation failure"] += 1
-        elsif r[:status] == 422
-          # The only silent 422 path in SignupsController#create is the
-          # banned-timezone reject, which logs nothing. Every other 422
-          # leaves a warn/info line classified above.
-          funnel["Banned timezone"] += 1
         elsif r[:status].nil?
           funnel["Unfinished"] += 1
         else

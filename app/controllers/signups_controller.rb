@@ -51,11 +51,13 @@ class SignupsController < ApplicationController
     end
 
     def reject_banned_timezone
+      Rails.logger.info "Signup refused: banned timezone"
       @region_paused = true
       render :new, status: :unprocessable_entity
     end
 
     def reject_invitation_code
+      Rails.logger.info "Signup refused: invite code"
       @error_message = "That invite code isn't valid, or it has already been used."
       render :new, status: :unprocessable_entity
     end
