@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: d0f264a759cce0a45ec59f8c78289ffce0237c77
+  revision: 6782df4a5e14aeea04a5a66cb4f3628b34f88f86
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -47,7 +47,7 @@ GIT
       erubi (~> 1.11)
       herb (>= 0.10)
       rails-dom-testing (~> 2.2)
-      rails-html-sanitizer (~> 1.7)
+      rails-html-sanitizer (~> 1.7, >= 1.7.2)
     activejob (8.2.0.alpha)
       activesupport (= 8.2.0.alpha)
       globalid (>= 1.4.0)
@@ -312,21 +312,21 @@ GEM
     net-smtp (0.5.2)
       net-protocol
     nio4r (2.7.5)
-    nokogiri (1.19.5-aarch64-linux-gnu)
+    nokogiri (1.19.7-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.5-aarch64-linux-musl)
+    nokogiri (1.19.7-aarch64-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.19.5-arm-linux-gnu)
+    nokogiri (1.19.7-arm-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.5-arm-linux-musl)
+    nokogiri (1.19.7-arm-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.19.5-arm64-darwin)
+    nokogiri (1.19.7-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.5-x86_64-darwin)
+    nokogiri (1.19.7-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.5-x86_64-linux-gnu)
+    nokogiri (1.19.7-x86_64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.5-x86_64-linux-musl)
+    nokogiri (1.19.7-x86_64-linux-musl)
       racc (~> 1.4)
     openssl (4.0.2)
     pagy (43.8.1)
