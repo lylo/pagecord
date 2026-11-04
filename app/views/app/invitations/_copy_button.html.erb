@@ -1,8 +1,0 @@
-<span data-controller="clipboard" data-clipboard-text-value="<%= text %>" data-clipboard-copied-class="copied" class="contents">
-  <button type="button" data-clipboard-target="button" data-action="clipboard#copy"
-          class="group btn-icon -my-2 shrink-0" title="<%= label %>" aria-label="<%= label %>">
-    <%= inline_svg_tag "icons/copy.svg", class: "w-4 h-4 group-[.copied]:hidden" %>
-    <%= inline_svg_tag "icons/check.svg", class: "hidden w-4 h-4 text-emerald-600 group-[.copied]:block dark:text-emerald-400" %>
-  </button>
-  <span data-clipboard-target="status" role="status" class="sr-only"></span>
-</span>

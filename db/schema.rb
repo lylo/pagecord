@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_11_03_111428) do
+ActiveRecord::Schema[8.2].define(version: 2026_11_04_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -242,19 +242,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_11_03_111428) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["blog_id", "email"], name: "index_email_subscribers_on_blog_id_and_email", unique: true
-  end
-
-  create_table "invitations", force: :cascade do |t|
-    t.bigint "inviter_id", null: false
-    t.bigint "invitee_id"
-    t.string "code", null: false
-    t.datetime "redeemed_at"
-    t.integer "lock_version", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["code"], name: "index_invitations_on_code", unique: true
-    t.index ["invitee_id"], name: "index_invitations_on_invitee_id", unique: true
-    t.index ["inviter_id"], name: "index_invitations_on_inviter_id"
   end
 
   create_table "mcp_connections", force: :cascade do |t|
@@ -532,8 +519,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_11_03_111428) do
   add_foreign_key "digest_posts", "posts"
   add_foreign_key "email_change_requests", "users"
   add_foreign_key "email_subscribers", "blogs"
-  add_foreign_key "invitations", "users", column: "invitee_id"
-  add_foreign_key "invitations", "users", column: "inviter_id"
   add_foreign_key "mcp_connections", "blogs"
   add_foreign_key "navigation_items", "blogs"
   add_foreign_key "navigation_items", "posts"

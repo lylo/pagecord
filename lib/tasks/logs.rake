@@ -630,8 +630,6 @@ namespace :logs do
           r[:blocks] << "turnstile"
         elsif body.include?("Signup refused: banned timezone")
           r[:blocks] << "timezone"
-        elsif body.include?("Signup refused: invite code")
-          r[:blocks] << "invite"
         elsif body.include?("Can't verify CSRF token authenticity")
           r[:blocks] << "csrf"
         elsif body.include?("Signup validation failed")
@@ -650,7 +648,6 @@ namespace :logs do
       "suspicious-email" => "Suspicious email",
       "turnstile" => "Turnstile blocked",
       "timezone" => "Banned timezone",
-      "invite" => "Invite refused",
       "csrf" => "CSRF failure"
     }
 

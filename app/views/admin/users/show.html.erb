@@ -57,27 +57,6 @@
           <% end %>
         </dd>
       </div>
-      <% if @user.invited? %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Invited by</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= link_to @user.invitation.inviter.email, admin_user_path(@user.invitation.inviter), class: "underline" %></dd>
-        </div>
-      <% end %>
-      <% if @user.invitations.any? %>
-        <div class="flex justify-between gap-4">
-          <dt class="font-medium text-slate-900 dark:text-slate-50">Invites</dt>
-          <dd class="text-slate-500 dark:text-slate-400 text-right">
-            <% redeemed = @user.invitations.redeemed %>
-            <%= @user.invitations.size %> created, <%= redeemed.size %> redeemed
-            <% redeemed.where.not(invitee: nil).includes(:invitee).order(redeemed_at: :desc).limit(10).each do |invitation| %>
-              <span class="block"><%= link_to invitation.invitee.email, admin_user_path(invitation.invitee), class: "underline" %></span>
-            <% end %>
-            <% if redeemed.size > 10 %>
-              <span class="block">and <%= redeemed.size - 10 %> more</span>
-            <% end %>
-          </dd>
-        </div>
-      <% end %>
       <% if @user.signup_referrer.present? %>
         <div class="flex justify-between gap-4">
           <dt class="font-medium text-slate-900 dark:text-slate-50">Referrer</dt>

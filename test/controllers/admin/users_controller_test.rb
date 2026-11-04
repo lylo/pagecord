@@ -9,14 +9,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     login_as @user
   end
 
-  test "should show a user's invites on the account page" do
-    get admin_user_path(users(:joel))
-
-    assert_response :success
-    assert_match "2 created, 1 redeemed", response.body
-    assert_select "a[href=?]", admin_user_path(users(:vivian)), text: users(:vivian).email
-  end
-
   test "should show the screening on the account page" do
     user = users(:annie)
     user.create_screening!(failed_checks: { cleantalk: "FORBIDDEN BL" })
@@ -25,14 +17,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_match "cleantalk FORBIDDEN BL", response.body
-  end
-
-  test "should show who invited an account and who it invited" do
-    get admin_user_path(users(:vivian))
-    assert_select "a[href=?]", admin_user_path(users(:joel))
-
-    get admin_user_path(users(:joel))
-    assert_select "a[href=?]", admin_user_path(users(:vivian))
   end
 
   test "should search users by email" do

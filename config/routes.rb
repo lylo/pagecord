@@ -166,7 +166,6 @@ Rails.application.routes.draw do
         resource :trash, only: [ :show, :destroy ], controller: "trash"
       end
 
-      resources :invitations, only: [ :index, :create, :destroy ]
       resources :blogs, only: [ :index, :new, :create, :destroy ] do
         resource :selection, only: [ :create ], controller: "blogs/selections"
         resource :restoration, only: [ :create ], controller: "blogs/restorations"
@@ -244,7 +243,6 @@ Rails.application.routes.draw do
       resources :pages, only: [ :index, :show, :create, :update, :destroy ], param: :token
       resource :home_page, only: [ :show, :create, :update, :destroy ]
       resources :attachments, only: [ :create ]
-      resources :invitations, only: [ :create ]
       namespace :settings do
         resource :appearance, only: [ :show, :update ], controller: "appearance"
         resource :custom_code, only: [ :show, :update ], controller: "custom_code"
