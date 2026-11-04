@@ -38,7 +38,16 @@ class LogCodeRedTest < Minitest::Test
 
     rows = LogCodeRed.subscribe_rows(LogCodeRed.form_submissions(entries))
 
-    assert_equal [ "busy.example: subscribe attempts from 20 IPs" ], LogCodeRed.alerts({}, rows)
+    assert_equal [ "busy.example: 20 subscription confirmations to attempts from 20 IPs" ], LogCodeRed.alerts({}, rows)
+  end
+
+  def test_does_not_flag_a_blog_whose_subscribe_attempts_were_all_blocked
+    entries = (1..20).flat_map { |n| subscribe("b#{n}", "busy.example", "10.0.0.#{n}", "Form nonce missing. Request blocked.") }
+
+    rows = LogCodeRed.subscribe_rows(LogCodeRed.form_submissions(entries))
+
+    assert rows.first[:flagged]
+    assert_empty LogCodeRed.alerts({}, rows)
   end
 
   def test_counts_tor_blocks_per_form

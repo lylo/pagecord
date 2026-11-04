@@ -92,7 +92,7 @@ module LogCodeRed
     def alerts(flooded_recipients, subscribe_rows)
       floods = flooded_recipients.map { |(mailer, recipient), n| "#{mailer} sent #{n} to #{recipient}" }
 
-      subscribes = subscribe_rows.select { |row| row[:flagged] }.map { |row| "#{row[:host]}: subscribe attempts from #{row[:ips]} IPs" }
+      subscribes = subscribe_rows.select { |row| row[:flagged] && row[:confirmations].positive? }.map { |row| "#{row[:host]}: #{row[:confirmations]} subscription confirmations to attempts from #{row[:ips]} IPs" }
 
       floods + subscribes
     end
