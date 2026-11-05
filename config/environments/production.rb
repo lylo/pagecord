@@ -1,11 +1,4 @@
 require "active_support/core_ext/integer/time"
-require "appsignal"
-
-# We don't use ActionCable. AppSignal's ActionCable hook force-loads
-# ActionCable::Channel::Base during boot, tripping Rails' "load hook run before
-# application initialization" warning. There's no config flag to skip a single
-# hook, so unregister it before AppSignal installs its hooks.
-Appsignal::Hooks.hooks.delete(:action_cable)
 
 Rails.application.configure do
   config.x.rack_attack = { general_limit: 300, post_limit: 30 }
@@ -68,10 +61,8 @@ Rails.application.configure do
 
   stdout_logger = ActiveSupport::Logger.new(STDOUT)
   file_logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
-  appsignal_logger = Appsignal::Logger.new("application")
 
-  # Broadcast to all three loggers
-  broadcast_logger = ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger, appsignal_logger)
+  broadcast_logger = ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger)
   broadcast_logger.formatter = proc do |severity, time, progname, msg|
     "#{time.iso8601} #{severity} #{msg&.strip}\n"
   end

@@ -61,4 +61,4 @@ Transactional emails are sent via [Cloudflare Email Sending](https://developers.
 
 ### Observability
 
-Pagecord uses [Sentry](https://sentry.io) for logging errors and [AppSignal](https://appsignal.com) for observability. When something needs chasing in production, start with [docs/sysadmin/production-debugging-guide.md](docs/sysadmin/production-debugging-guide.md).
+Pagecord uses [Sentry](https://sentry.io) for logging errors. When something needs chasing in production, start with [docs/sysadmin/production-debugging-guide.md](docs/sysadmin/production-debugging-guide.md).

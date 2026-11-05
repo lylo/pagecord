@@ -24,7 +24,6 @@ gem "pg"
 gem "sidekiq"
 
 # monitoring and alerting
-gem "appsignal"
 gem "pghero"
 gem "pg_query", ">= 2"
 gem "rollups"  # Analytics data aggregation
