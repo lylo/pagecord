@@ -3,6 +3,9 @@ if Rails.env.production?
     config.dsn = ENV["SENTRY_DSN"]
     config.breadcrumbs_logger = [ :active_support_logger, :http_logger ]
 
+    # Sentry 7 collects IPs, request bodies and query data unless this is set explicitly.
+    config.send_default_pii = false
+
     config.before_send = lambda do |event, _hint|
       if Current.user
         event.user = {
