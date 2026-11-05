@@ -20,6 +20,10 @@ class User::Screening::Accuracy
     @missed_spam ||= spam_tombstones.where(failed_checks: {}).preload(:user).order(deleted_at: :desc).to_a
   end
 
+  def caught_spam_count
+    @caught_spam_count ||= spam_tombstones.where.not(failed_checks: {}).count
+  end
+
   private
 
     def spam_tombstones
