@@ -5,10 +5,14 @@
   <p class="mt-2 text-slate-600 dark:text-slate-300">How signup screening compared with your reviews over the last 30 days.</p>
 
   <% if @accuracy.measured? %>
-    <dl class="mt-6 grid grid-cols-3 gap-4 tabular-nums">
+    <dl class="mt-6 grid grid-cols-2 gap-4 tabular-nums sm:grid-cols-4">
       <div>
         <dt class="text-sm text-slate-500 dark:text-slate-400">Reviewed</dt>
         <dd class="text-2xl font-bold text-slate-900 dark:text-slate-100"><%= @accuracy.reviewed_count %></dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-500 dark:text-slate-400">Caught spam</dt>
+        <dd class="text-2xl font-bold text-slate-900 dark:text-slate-100"><%= @accuracy.caught_spam_count %></dd>
       </div>
       <div>
         <dt class="text-sm text-slate-500 dark:text-slate-400">False positives</dt>

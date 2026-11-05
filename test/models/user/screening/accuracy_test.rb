@@ -12,6 +12,7 @@ class User::Screening::AccuracyTest < ActiveSupport::TestCase
 
     assert_equal 2, @accuracy.reviewed_count
     assert_equal 1, @accuracy.missed_spam.size
+    assert_equal 1, @accuracy.caught_spam_count
   end
 
   test "counts blogs marked not spam that failed screening as false positives" do
