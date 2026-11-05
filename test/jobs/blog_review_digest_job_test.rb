@@ -3,17 +3,28 @@ require "test_helper"
 class BlogReviewDigestJobTest < ActiveJob::TestCase
   include ActionMailer::TestHelper
 
-  test "emails the count of blogs waiting for review" do
-    blogs(:elliot).update!(reviewed_at: nil)
+  setup do
+    Blog.update_all(reviewed_at: Time.current)
+  end
 
-    assert_enqueued_email_with AdminMailer, :blog_review_digest, args: [ Blog.unreviewed.count ] do
+  test "counts only blogs that have waited three days" do
+    blogs(:elliot).update_columns(reviewed_at: nil, created_at: 4.days.ago)
+    blogs(:vivian).update_columns(reviewed_at: nil, created_at: 2.days.ago)
+
+    assert_enqueued_email_with AdminMailer, :blog_review_digest, args: [ 1 ] do
+      BlogReviewDigestJob.perform_now
+    end
+  end
+
+  test "stays quiet when only newer blogs are waiting" do
+    blogs(:vivian).update_columns(reviewed_at: nil, created_at: 2.days.ago)
+
+    assert_no_enqueued_emails do
       BlogReviewDigestJob.perform_now
     end
   end
 
   test "stays quiet when nothing is waiting" do
-    Blog.update_all(reviewed_at: Time.current)
-
     assert_no_enqueued_emails do
       BlogReviewDigestJob.perform_now
     end
