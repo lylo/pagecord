@@ -105,6 +105,10 @@ nav { justify-content: flex-end; }
     font-size: 1.1rem;
   }
 
+  .post-body img {
+    border-radius: 0;
+  }
+
   @media (min-width: 700px) {
     article h1.post-title {
       font-size: 2.75rem;

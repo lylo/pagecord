@@ -63,7 +63,7 @@ h1.post-title { line-height: inherit; margin-bottom: 0.5rem; }
 .post-body h4::before { content: "#### "; }
 
 /* Content */
-article img { border-radius: 0; }
+.post-body img { border-radius: 0; }
 
 /* Links */
 .bio a, .post-body a {

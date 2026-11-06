@@ -57,7 +57,7 @@ article footer .upvote { color: LinkText; }
 .tag-link::before { content: "#"; }
 
 /* Images */
-article img, .post-card-image img { border-radius: 0; }
+.post-body img, .post-card-image img { border-radius: 0; }
 
 /* Code */
 .post-body pre { background: transparent; border-radius: 0; }
