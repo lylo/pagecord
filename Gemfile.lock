@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: c60254e855df77539a1b8d8eabe5d6e3e3492846
+  revision: cadf0fc8d6d48cefaa07e4bd6cc5dcd8347821b2
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -229,14 +229,14 @@ GEM
       rake (~> 13.3)
     groupdate (6.8.0)
       activesupport (>= 7.2)
-    herb (0.11.1-aarch64-linux-gnu)
-    herb (0.11.1-aarch64-linux-musl)
-    herb (0.11.1-arm-linux-gnu)
-    herb (0.11.1-arm-linux-musl)
-    herb (0.11.1-arm64-darwin)
-    herb (0.11.1-x86_64-darwin)
-    herb (0.11.1-x86_64-linux-gnu)
-    herb (0.11.1-x86_64-linux-musl)
+    herb (0.11.2-aarch64-linux-gnu)
+    herb (0.11.2-aarch64-linux-musl)
+    herb (0.11.2-arm-linux-gnu)
+    herb (0.11.2-arm-linux-musl)
+    herb (0.11.2-arm64-darwin)
+    herb (0.11.2-x86_64-darwin)
+    herb (0.11.2-x86_64-linux-gnu)
+    herb (0.11.2-x86_64-linux-musl)
     htmlentities (4.4.2)
     httparty (0.24.3)
       csv
