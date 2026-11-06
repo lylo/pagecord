@@ -79,7 +79,7 @@ header hr {
 
 .post-card-date { font-variant-numeric: tabular-nums; }
 
-.post-card-image img { border-radius: 0.375rem; }
+.post-card-image img, .post-card-image video { border-radius: 0.375rem; }
 
 /* Single post */
 h1.post-title {
@@ -97,7 +97,7 @@ h1.post-title {
 .post-body a:hover { text-decoration-color: var(--color-accent); }
 
 /* Images */
-.post-body img { border-radius: 0.375rem; }
+.post-body img, .post-body video { border-radius: 0.375rem; }
 
 /* Tags */
 .tag-link { font-weight: 500; }

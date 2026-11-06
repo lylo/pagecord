@@ -106,6 +106,7 @@ nav { justify-content: flex-end; }
   }
 
   .post-body img,
+  .post-body video,
   .post-card-image img,
   .post-card-image video {
     border-radius: 0;

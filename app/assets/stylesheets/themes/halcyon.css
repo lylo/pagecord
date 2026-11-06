@@ -358,7 +358,8 @@ article .post-body a:not(:has(img, svg), .post-card-link, .post-title-link, .pos
   background-image: linear-gradient(var(--mark-hover), var(--mark-hover));
 }
 
-.post-body img {
+.post-body img,
+.post-body video {
   border-radius: 1rem;
 }
 

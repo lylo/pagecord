@@ -238,6 +238,7 @@ h1.post-title {
   font-weight: 500;
 }
 
-.post-body img {
+.post-body img,
+.post-body video {
   border-radius: 0;
 }
