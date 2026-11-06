@@ -173,7 +173,6 @@ header hr {
 .post-card-image img {
   height: 100%;
   max-height: none;
-  border-radius: 0;
   transition: transform 600ms;
 }
 
@@ -234,6 +233,6 @@ h1.post-title {
   font-weight: 500;
 }
 
-.post-body img {
+:where(.post-body, .post-card-image) :is(img, video) {
   border-radius: 0;
 }

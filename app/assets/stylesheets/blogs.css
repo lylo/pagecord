@@ -170,9 +170,11 @@ footer.blog-footer #brand svg {
   :where(.lexxy-content) {
     line-height: inherit;
 
-    /* gives images rounded corners */
-    img:not(.posts-gallery *) {
+    img:where(:not(.posts-gallery *)) {
       border-radius: 0.5em;
+    }
+
+    img:not(.posts-gallery *) {
       max-width: 100%;
       display: block;
     }
@@ -1151,6 +1153,9 @@ turbo-frame[loading="lazy"] {
   width: 100%;
   max-height: 30rem;
   object-fit: cover;
+}
+
+:where(.post-card-image) :is(img, video) {
   border-radius: 0.5rem;
 }
 
