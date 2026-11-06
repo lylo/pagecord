@@ -63,7 +63,7 @@ h1.post-title { line-height: inherit; margin-bottom: 0.5rem; }
 .post-body h4::before { content: "#### "; }
 
 /* Content */
-.post-body img, .post-body video, .post-card-image img, .post-card-image video { border-radius: 0; }
+:where(.post-body, .post-card-image) :is(img, video) { border-radius: 0; }
 
 /* Links */
 .bio a, .post-body a {

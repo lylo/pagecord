@@ -80,7 +80,7 @@ h1.post-title { font-weight: 500; letter-spacing: -0.02em; }
 .post-body a:hover { text-decoration-color: var(--color-accent); }
 
 /* Images */
-.post-body img, .post-body video, .post-card-image img, .post-card-image video { border-radius: 0.25rem; }
+:where(.post-body, .post-card-image) :is(img, video) { border-radius: 0.25rem; }
 
 /* Post footer */
 article footer, .post-navigation-label { font-style: italic; }

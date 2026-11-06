@@ -222,7 +222,6 @@ nav a:not(:has(svg)):hover {
   height: 100%;
   min-height: 9rem;
   max-height: none;
-  border-radius: 1rem;
 }
 
 .post-card-title {
@@ -358,8 +357,7 @@ article .post-body a:not(:has(img, svg), .post-card-link, .post-title-link, .pos
   background-image: linear-gradient(var(--mark-hover), var(--mark-hover));
 }
 
-.post-body img,
-.post-body video {
+:where(.post-body, .post-card-image) :is(img, video) {
   border-radius: 1rem;
 }
 
@@ -528,6 +526,9 @@ article .contact-form,
     height: auto;
     min-height: 0;
     aspect-ratio: 1;
+  }
+
+  :where(.post-card-image) :is(img, video) {
     border-radius: 0.625rem;
   }
 

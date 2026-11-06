@@ -105,10 +105,7 @@ nav { justify-content: flex-end; }
     font-size: 1.1rem;
   }
 
-  .post-body img,
-  .post-body video,
-  .post-card-image img,
-  .post-card-image video {
+  :where(.post-body, .post-card-image) :is(img, video) {
     border-radius: 0;
   }
 
