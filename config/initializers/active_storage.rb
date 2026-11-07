@@ -34,6 +34,10 @@ ActiveSupport.on_load(:active_storage_attachment) do
   after_upload -> { RemoveImageLocationJob.perform_later(blob) }
 end
 
+Rails.application.config.after_initialize do
+  Rails.application.config.active_storage.analyzers.prepend AudioWaveformAnalyzer
+end
+
 # Uploads are limited to UploadLimits::CONTENT_TYPES, none of which need the
 # loaders libvips marks as untrusted (ImageMagick, SVG, PDF, RAW and others)
 require "vips"
