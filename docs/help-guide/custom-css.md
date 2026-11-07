@@ -99,6 +99,10 @@ To help you know which elements to target, here is a visual map of the blog page
 │ │ └──────────────────────────────────────────────────┘ │ │
 │ │                                                      │ │
 │ │ ┌──────────────────────────────────────────────────┐ │ │
+│ │ │ .post-navigation (Previous and next post links)  │ │ │
+│ │ └──────────────────────────────────────────────────┘ │ │
+│ │                                                      │ │
+│ │ ┌──────────────────────────────────────────────────┐ │ │
 │ │ │ .blog-footer (Custom footer and Pagecord logo)   │ │ │
 │ │ └──────────────────────────────────────────────────┘ │ │
 │ └──────────────────────────────────────────────────────┘ │
@@ -495,6 +499,127 @@ The section is set slightly smaller than your body text, and everything inside i
 ```css
 .comments {
   font-size: 1rem;
+}
+```
+
+When [previous and next links](#styling-previous-and-next-links) are switched on, the comments section drops its bottom rule and the links carry it instead, so a rule you set with `border-block` on `.comments` shows twice. Set `border-top` instead.
+
+### Styling previous and next links
+
+Turn on "Post Navigation" in [Appearance](https://pagecord.com/app/settings/appearance) and every post ends with links to the post before and after it. The oldest and newest posts show only one link. The structure looks like this:
+
+```text
+.post-navigation                 The whole block
+  .post-navigation-previous      The link to the older post
+  .post-navigation-next          The link to the newer post
+    .post-navigation-label       The "Previous" or "Next" label
+    .post-navigation-title       The post's title
+```
+
+Both links also carry the `.post-navigation-link` class.
+
+The links sit after your post rather than inside it, so a font size you set on `article` doesn't reach them, and they can look small beside larger post text. To set them at your blog's base size instead:
+
+```css
+.post-navigation {
+  font-size: 1em;
+}
+```
+
+To show only the titles, hide the labels:
+
+```css
+.post-navigation-label {
+  display: none;
+}
+```
+
+To stack the links one above the other rather than side by side:
+
+```css
+.post-navigation {
+  flex-direction: column;
+}
+
+.post-navigation-next {
+  margin-inline-start: 0;
+  text-align: start;
+}
+```
+
+To add arrows (swap them if your blog reads right to left):
+
+```css
+.post-navigation-previous .post-navigation-label::before {
+  content: "← ";
+}
+
+.post-navigation-next .post-navigation-label::after {
+  content: " →";
+}
+```
+
+For an icon rather than a character, use an SVG from an icon set that publishes each icon at its own address, such as [Lucide](https://lucide.dev). The icon is used as a mask, so it takes the colour of the text around it:
+
+```css
+.post-navigation-previous .post-navigation-label::before,
+.post-navigation-next .post-navigation-label::after {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  background-color: currentColor;
+}
+
+.post-navigation-previous .post-navigation-label::before {
+  margin-inline-end: 0.25em;
+  mask: url("https://cdn.jsdelivr.net/npm/lucide-static/icons/arrow-left.svg") center / contain no-repeat;
+}
+
+.post-navigation-next .post-navigation-label::after {
+  margin-inline-start: 0.25em;
+  mask: url("https://cdn.jsdelivr.net/npm/lucide-static/icons/arrow-right.svg") center / contain no-repeat;
+}
+```
+
+To show a single "Up next" card, keep the link to the older post, since readers coming from your home page move from newer posts to older ones. This hides the other link, replaces the label's wording and puts the link in a box:
+
+```css
+.post-navigation {
+  border-top: none;
+  padding-top: 0;
+}
+
+.post-navigation-next {
+  display: none;
+}
+
+.post-navigation-previous {
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background-color: var(--color-bg-subtle);
+}
+
+.post-navigation-previous .post-navigation-label {
+  font-size: 0;
+}
+
+.post-navigation-previous .post-navigation-label::after {
+  content: "Up next";
+  font-size: 0.875rem;
+}
+```
+
+On the oldest post there's no older post, so the card doesn't appear.
+
+To remove the rule above the links:
+
+```css
+.post-navigation {
+  border-top: none;
+  padding-top: 0;
 }
 ```
 
