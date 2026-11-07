@@ -98,6 +98,10 @@ class Post < ApplicationRecord
     published_at.present? && published_at > Time.current
   end
 
+  def visible?
+    kept? && !hidden? && published? && !pending?
+  end
+
   def summary(limit: 64)
     return "" unless has_text_content?
     text_summary.truncate(limit, separator: /\s/)

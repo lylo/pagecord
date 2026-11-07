@@ -22,11 +22,11 @@ Subscribers receive a roundup of your latest posts every Tuesday morning (8am in
 
 ### Individual
 
-You choose which posts to send, one at a time, whenever you like. When individual mode is enabled, published posts show a banner in the post editor with a **Send to subscribers** button. After sending, the banner updates to show the delivery date and subscriber count.
+You choose which posts to send, one at a time. A post can be sent once, within 14 days of its publish date. When individual mode is enabled, published posts show a banner in the post editor with a **Send to subscribers** button. After sending, the banner updates to show the delivery date and subscriber count.
 
 Before sending for real, you can use **Send a test email** to preview the email in your own inbox first.
 
-Posts you send individually are automatically excluded from future weekly digests, so subscribers never receive the same post twice.
+Posts you send individually are automatically excluded from future weekly digests, and a post that has already gone out in a digest can't be sent again, so subscribers never receive the same post twice.
 
 Sending individual posts is covered up to 2,500 emails a month across your account. That's ten sends to a full list of 250 subscribers, and many more with a smaller list. If you reach it, the banner shows the date you can send the next post. Weekly digests and test emails don't count.
 

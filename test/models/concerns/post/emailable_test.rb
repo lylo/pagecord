@@ -87,6 +87,11 @@ class Post::EmailableTest < ActiveSupport::TestCase
     assert_not draft.individually_sendable?
   end
 
+  test "individually_sendable? returns false for a scheduled post" do
+    @post.update!(published_at: 1.day.from_now)
+    assert_not @post.individually_sendable?
+  end
+
   test "individually_sendable? returns false for hidden posts" do
     @post.update!(hidden: true)
     assert_not @post.individually_sendable?
@@ -97,6 +102,30 @@ class Post::EmailableTest < ActiveSupport::TestCase
     digest.digest_posts.create!(post: @post)
 
     assert_not @post.individually_sendable?
+  end
+
+  test "individually_sendable? returns false if already sent in a weekly digest" do
+    digest = PostDigest.create!(blog: @blog, kind: :weekly_digest, delivered_at: Time.current)
+    digest.digest_posts.create!(post: @post)
+
+    assert_not @post.individually_sendable?
+  end
+
+  test "a post can be sent until its send window closes" do
+    @post.update!(published_at: 13.days.ago)
+    assert @post.individually_sendable?
+    assert_not @post.send_window_closed?
+
+    @post.update!(published_at: 15.days.ago)
+    assert_not @post.individually_sendable?
+    assert @post.send_window_closed?
+  end
+
+  test "send_window_closed? returns false for a post that can't be sent anyway" do
+    @post.update!(published_at: 15.days.ago)
+    @post.blog.update!(email_subscriptions_enabled: false)
+
+    assert_not @post.send_window_closed?
   end
 
   test "individually_sendable? returns false if email subscriptions disabled" do

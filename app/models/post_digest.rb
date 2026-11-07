@@ -35,9 +35,9 @@ class PostDigest < ApplicationRecord
   end
 
   def self.generate_individual_for(post)
-    return nil if post.individually_sent?
+    post.with_lock do
+      next if post.post_digests.exists?
 
-    transaction do
       digest = create!(blog: post.blog, kind: :individual)
       digest.digest_posts.create!(post: post)
       digest

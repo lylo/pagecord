@@ -9,7 +9,7 @@ class App::Posts::Broadcasts::TestsControllerTest < ActionDispatch::IntegrationT
     login_as @user
     @blog = @user.blog
     @blog.update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)
-    @post = @blog.posts.visible.posts.first
+    @post = posts(:photography_and_tech)
   end
 
   test "test sends test email to current user" do

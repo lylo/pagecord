@@ -12,6 +12,13 @@
       <span>Emailed to <%= recipients %> on <%= l(digest.created_at.in_time_zone(Current.user.timezone).to_date, format: :post_date) %>.</span>
     </div>
   </div>
+<% elsif @blog.individual? && (digest = @post.post_digests.weekly_digest.first) %>
+  <div class="sheet-top-band writing-mode:hidden py-4 text-sm text-slate-500 dark:text-slate-400">
+    <div class="flex items-center gap-2">
+      <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" %>
+      <span>Included in the weekly digest on <%= l(digest.created_at.in_time_zone(Current.user.timezone).to_date, format: :post_date) %>.</span>
+    </div>
+  </div>
 <% elsif @post.individually_sendable? && !Current.user.individual_send_allowed? %>
   <div class="sheet-top-band writing-mode:hidden py-6 text-sm bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
     <div class="flex items-center gap-2">
@@ -37,6 +44,13 @@
           <span class="ms-2">Send</span>
         <% end %>
       </div>
+    </div>
+  </div>
+<% elsif @post.send_window_closed? %>
+  <div class="sheet-top-band writing-mode:hidden py-4 text-sm text-slate-500 dark:text-slate-400">
+    <div class="flex items-center gap-2">
+      <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" %>
+      <span>Posts can be emailed to subscribers within <%= pluralize(Post::SEND_WINDOW.in_days.to_i, "day") %> of their publish date.</span>
     </div>
   </div>
 <% end %>

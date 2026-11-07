@@ -56,6 +56,29 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?]", app_post_broadcast_path(posts(:photography_and_tech)), count: 0
   end
 
+  test "edit says an older post can no longer be emailed" do
+    login_as users(:joel)
+    blogs(:joel).update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)
+    posts(:photography_and_tech).update!(published_at: 15.days.ago)
+
+    get edit_app_post_url(posts(:photography_and_tech))
+
+    assert_select ".sheet-top-band", text: /within 14 days of their publish date/
+    assert_select "form[action=?]", app_post_broadcast_path(posts(:photography_and_tech)), count: 0
+  end
+
+  test "edit says when a post was included in a weekly digest" do
+    login_as users(:joel)
+    blogs(:joel).update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)
+    digest = PostDigest.create!(blog: blogs(:joel), kind: :weekly_digest)
+    digest.digest_posts.create!(post: posts(:photography_and_tech))
+
+    get edit_app_post_url(posts(:photography_and_tech))
+
+    assert_select ".sheet-top-band", text: /Included in the weekly digest on/
+    assert_select "form[action=?]", app_post_broadcast_path(posts(:photography_and_tech)), count: 0
+  end
+
   test "edit shows when a post was emailed" do
     login_as users(:joel)
     blogs(:joel).update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)

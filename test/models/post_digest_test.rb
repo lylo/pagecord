@@ -145,6 +145,14 @@ class PostDigestTest < ActiveSupport::TestCase
     assert_nil PostDigest.generate_individual_for(post)
   end
 
+  test "generate_individual_for returns nil if post already went out in a weekly digest" do
+    post = create_new_post
+    digest = PostDigest.create!(blog: @blog, kind: :weekly_digest, delivered_at: Time.current)
+    digest.digest_posts.create!(post: post)
+
+    assert_nil PostDigest.generate_individual_for(post)
+  end
+
   test "generate_weekly_digest_forreturns nil if blog is in individual mode" do
     @blog.update!(email_delivery_mode: :individual)
     create_new_post

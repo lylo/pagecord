@@ -1,6 +1,8 @@
 module Post::Emailable
   extend ActiveSupport::Concern
 
+  SEND_WINDOW = 14.days
+
   included do
     scope :emailed, -> { where(id: delivered_digest_post_ids) }
     scope :not_emailed, -> { where.not(id: delivered_digest_post_ids) }
@@ -19,16 +21,27 @@ module Post::Emailable
   end
 
   def individually_sendable?
-    persisted? && !is_page? && published? && kept? && !hidden? &&
-      !individually_sent? &&
-      blog.individual? &&
-      blog.email_subscriptions_enabled? &&
-      blog.user.subscribed? &&
-      blog.email_subscribers.confirmed.exists?
+    published_at&.after?(SEND_WINDOW.ago) && individual_send_eligible?
+  end
+
+  def send_window_closed?
+    published_at&.before?(SEND_WINDOW.ago) && individual_send_eligible?
   end
 
   def send_to_subscribers!
     digest = PostDigest.generate_individual_for(self)
     digest&.deliver
   end
+
+  private
+
+    def individual_send_eligible?
+      persisted? &&
+        post? &&
+        visible? &&
+        post_digests.none? &&
+        blog.individual? &&
+        blog.accepts_subscribers? &&
+        blog.email_subscribers.confirmed.exists?
+    end
 end
