@@ -3,7 +3,7 @@
     <% poster = resized_image_url(blob.preview_image.blob, width: 1600, height: 1200) if blob.preview_image.attached? %>
     <%= video_tag rails_public_blob_url(blob), poster: poster, preload: "auto", controls: "controls", class: "attachment__video max-h-[600px] mx-auto" %>
   <% elsif blob.audio? %>
-    <%= audio_tag rails_public_blob_url(blob), preload: "auto", controls: "controls", class: "attachment__audio w-full" %>
+    <%= audio_tag rails_public_blob_url(blob), preload: "auto", controls: "controls", class: "attachment__audio w-full", data: blob.metadata.slice(:waveform, :duration) %>
   <% elsif blob.image? %>
     <% image_alt = blob.try(:alt).presence || blob.try(:caption).presence %>
     <% if blob.content_type == "image/gif" %>

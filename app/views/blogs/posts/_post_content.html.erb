@@ -1,4 +1,5 @@
-<div class="post-body lexxy-content e-content" data-controller="syntax-highlight">
+<% audio_player = { controller: "syntax-highlight audio-player", audio_player_play_label_value: t("posts.play_audio"), audio_player_seek_label_value: t("posts.audio_position") } %>
+<div class="post-body lexxy-content e-content" <%= tag.attributes(data: post.has_audio? ? audio_player : { controller: "syntax-highlight" }) %>>
   <% if local_assigns[:excerpt] && post.has_excerpt? %>
     <%= render_post_excerpt(post) %>
     <p class="excerpt-read-more">

@@ -10,6 +10,7 @@ pin "local-time"
 pin "lexxy", to: "lexxy.min.js", preload: false
 
 # Controllers used by blog views - lazy loaded
+pin "controllers/audio_player_controller", preload: false
 pin "controllers/fade_controller", preload: false
 pin "controllers/form_nonce_controller", preload: false
 pin "controllers/lightbox_controller", preload: false
