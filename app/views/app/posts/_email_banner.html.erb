@@ -16,7 +16,7 @@
   <div class="sheet-top-band writing-mode:hidden py-6 text-sm bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
     <div class="flex items-center gap-2">
       <%= inline_svg_tag "icons/alert-triangle.svg", class: "w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" %>
-      <span><strong class="font-medium">Weekly limit of <%= User::NewsletterSending::INDIVIDUAL_SENDS_PER_WEEK %> sends reached.</strong> You can send this post from <%= l(Current.user.next_individual_send_at.in_time_zone(Current.user.timezone).to_date, format: "%A %-d %B") %>.</span>
+      <span><strong class="font-medium">Monthly email limit reached.</strong> You can send this post from <%= l(Current.user.next_individual_send_at, format: "%-d %B") %>.</span>
     </div>
   </div>
 <% elsif @post.individually_sendable? %>

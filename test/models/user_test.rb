@@ -145,36 +145,32 @@ class UserTest < ActiveSupport::TestCase
     assert_not users(:joel).custom_domain_access?
   end
 
-  test "individual sends are capped per week across all of an account's blogs" do
+  test "individual sends are allowed until this month's allowance is used" do
     user = users(:joel)
     user.update!(admin: false)
-    PostDigest.create!(blog: blogs(:joel), kind: :individual)
-    PostDigest.create!(blog: blogs(:joel_notes), kind: :individual)
 
+    user.stubs(:emails_sent_this_month).returns(User::NewsletterSending::MONTHLY_EMAIL_ALLOWANCE - 1)
     assert user.individual_send_allowed?
 
-    PostDigest.create!(blog: blogs(:joel_notes), kind: :individual)
-
+    user.stubs(:emails_sent_this_month).returns(User::NewsletterSending::MONTHLY_EMAIL_ALLOWANCE)
     assert_not user.individual_send_allowed?
   end
 
-  test "individual sends older than a week no longer count" do
+  test "emails sent this month count individual deliveries across the account's blogs, not digests" do
     user = users(:joel)
-    user.update!(admin: false)
-    oldest = PostDigest.create!(blog: blogs(:joel), kind: :individual, created_at: 6.days.ago)
-    2.times { PostDigest.create!(blog: blogs(:joel), kind: :individual) }
+    subscriber = email_subscribers(:one)
 
-    assert_not user.individual_send_allowed?
-    assert_equal oldest.created_at + 1.week, user.next_individual_send_at
-
-    travel 2.days
-
-    assert user.individual_send_allowed?
+    assert_difference "user.emails_sent_this_month", 2 do
+      PostDigest.create!(blog: blogs(:joel), kind: :individual).deliveries.create!(email_subscriber: subscriber)
+      PostDigest.create!(blog: blogs(:joel_notes), kind: :individual).deliveries.create!(email_subscriber: subscriber)
+      PostDigest.create!(blog: blogs(:joel), kind: :weekly_digest).deliveries.create!(email_subscriber: subscriber)
+      PostDigest.create!(blog: blogs(:joel), kind: :individual, created_at: 1.month.ago).deliveries.create!(email_subscriber: subscriber)
+    end
   end
 
   test "admins are not capped on individual sends" do
     user = users(:joel)
-    User::NewsletterSending::INDIVIDUAL_SENDS_PER_WEEK.times { PostDigest.create!(blog: blogs(:joel), kind: :individual) }
+    user.stubs(:emails_sent_this_month).returns(User::NewsletterSending::MONTHLY_EMAIL_ALLOWANCE)
 
     assert user.individual_send_allowed?
   end

@@ -64,9 +64,9 @@ class App::Posts::BroadcastsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "create rejects once the account has sent its weekly allowance" do
+  test "create rejects once the account has sent its monthly allowance" do
     @user.update!(admin: false)
-    User::NewsletterSending::INDIVIDUAL_SENDS_PER_WEEK.times { PostDigest.create!(blog: blogs(:joel_notes), kind: :individual) }
+    User.any_instance.stubs(:emails_sent_this_month).returns(User::NewsletterSending::MONTHLY_EMAIL_ALLOWANCE)
 
     assert_no_difference "PostDigest.count" do
       post app_post_broadcast_path(@post)

@@ -1,19 +1,17 @@
 module User::NewsletterSending
   extend ActiveSupport::Concern
 
-  INDIVIDUAL_SENDS_PER_WEEK = 3
+  MONTHLY_EMAIL_ALLOWANCE = 2_500
 
   def individual_send_allowed?
-    admin? || recent_individual_sends.count < INDIVIDUAL_SENDS_PER_WEEK
+    admin? || emails_sent_this_month < MONTHLY_EMAIL_ALLOWANCE
+  end
+
+  def emails_sent_this_month
+    PostDigestDelivery.where(post_digest: post_digests.individual.where(created_at: Time.current.all_month)).count
   end
 
   def next_individual_send_at
-    recent_individual_sends.minimum(:created_at) + 1.week
+    Date.current.next_month.beginning_of_month
   end
-
-  private
-
-    def recent_individual_sends
-      post_digests.individual.where(created_at: 1.week.ago..)
-    end
 end
