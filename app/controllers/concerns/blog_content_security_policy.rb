@@ -19,6 +19,7 @@ module BlogContentSecurityPolicy
         # origin to the blog subdomain
         if Rails.env.development?
           policy.img_src :self, :https, :data, :blob, "http://localhost:3000", "http://lvh.me:3000"
+          policy.media_src :self, :https, "http://localhost:3000", "http://lvh.me:3000"
         else
           policy.img_src :self, :https, :data, :blob
         end
