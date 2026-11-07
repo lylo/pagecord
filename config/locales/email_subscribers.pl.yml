@@ -38,6 +38,8 @@ pl:
         default_subject: "Nowy wpis z bloga %{blog_name} – %{date}"
   posts:
     read_more: "Czytaj dalej…"
+    play_audio: "Odtwórz"
+    audio_position: "Pozycja odtwarzania"
     navigation:
       label: "Nawigacja między wpisami"
       previous: "Poprzedni"

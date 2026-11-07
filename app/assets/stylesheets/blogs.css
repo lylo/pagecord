@@ -135,6 +135,16 @@ footer.blog-footer #brand svg {
 
 .attachment:has(> .audio-player) {
   padding: 0;
+
+  audio {
+    display: none;
+  }
+}
+
+.audio-player__toggle,
+.audio-player__bar {
+  forced-color-adjust: none;
+  print-color-adjust: exact;
 }
 
 .audio-player {
@@ -198,20 +208,22 @@ footer.blog-footer #brand svg {
   background: var(--color-accent);
 }
 
-/* The element's own text is an invisible all-zero time that sets the width; the visible time is in ::after */
+/* The element's own text is a hidden all-zero time that sets the width; the visible time is in ::after */
 .audio-player__time {
-  color: transparent;
+  direction: ltr;
   flex: none;
   font-size: 0.8em;
   font-variant-numeric: tabular-nums;
   position: relative;
+  visibility: hidden;
   white-space: nowrap;
 
   &::after {
     color: var(--color-text-light);
     content: attr(data-time);
-    inset-inline-start: 0;
+    left: 0;
     position: absolute;
+    visibility: visible;
   }
 }
 

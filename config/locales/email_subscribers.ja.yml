@@ -38,6 +38,8 @@ ja:
         default_subject: "%{blog_name}の新しい投稿 – %{date}"
   posts:
     read_more: "続きを読む"
+    play_audio: "再生"
+    audio_position: "再生位置"
     navigation:
       label: "記事ナビゲーション"
       previous: "前の記事"

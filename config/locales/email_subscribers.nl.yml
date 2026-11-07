@@ -38,6 +38,8 @@ nl:
         default_subject: "Nieuw bericht van %{blog_name} — %{date}"
   posts:
     read_more: "Lees verder"
+    play_audio: "Afspelen"
+    audio_position: "Afspeelpositie"
     navigation:
       label: "Berichtnavigatie"
       previous: "Vorige"
