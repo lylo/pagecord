@@ -92,9 +92,9 @@ class Post::EmailableTest < ActiveSupport::TestCase
     assert_not @post.individually_sendable?
   end
 
-  test "individually_sendable? returns false for hidden posts" do
+  test "individually_sendable? returns true for hidden posts" do
     @post.update!(hidden: true)
-    assert_not @post.individually_sendable?
+    assert @post.individually_sendable?
   end
 
   test "individually_sendable? returns false if already sent" do

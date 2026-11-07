@@ -163,6 +163,8 @@ You can hide a post from your blog feed while keeping it accessible via its dire
 
 To hide a post, open the post settings and check "Hide this post on my blog".
 
+Hidden posts are never included in weekly email digests, but if your subscribers get individual emails, you can still send a hidden post to them.
+
 ## Canonical URLs
 
 If you're cross-posting content from another site, you can set a canonical URL to tell search engines where the original version lives. This helps avoid duplicate content issues.

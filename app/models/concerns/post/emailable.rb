@@ -38,7 +38,9 @@ module Post::Emailable
     def individual_send_eligible?
       persisted? &&
         post? &&
-        visible? &&
+        kept? &&
+        published? &&
+        !pending? &&
         post_digests.none? &&
         blog.individual? &&
         blog.accepts_subscribers? &&

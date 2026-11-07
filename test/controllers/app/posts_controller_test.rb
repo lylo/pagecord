@@ -42,6 +42,17 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".sheet-top-band", text: /Send this post to your/
   end
 
+  test "edit offers to email a hidden post while saying it stays hidden" do
+    login_as users(:joel)
+    blogs(:joel).update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)
+    posts(:photography_and_tech).update!(hidden: true)
+
+    get edit_app_post_url(posts(:photography_and_tech))
+
+    assert_select ".sheet-top-band", text: /hidden on your blog, but you can still send it/
+    assert_select "form[action=?]", app_post_broadcast_path(posts(:photography_and_tech))
+  end
+
   test "edit says when the next send is allowed once the monthly allowance is used" do
     login_as users(:joel)
     users(:joel).update!(admin: false)

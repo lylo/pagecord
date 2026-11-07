@@ -31,7 +31,8 @@
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div class="flex items-center gap-2">
         <%= inline_svg_tag "icons/envelope.svg", class: "w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" %>
-        <span>Send this post to your <%= @blog.show_metrics? ? pluralize(subscriber_count, "subscriber") : "subscribers" %>.</span>
+        <% recipients = @blog.show_metrics? ? pluralize(subscriber_count, "subscriber") : "subscribers" %>
+        <span><%= @post.hidden? ? "This post is hidden on your blog, but you can still send it to your #{recipients}." : "Send this post to your #{recipients}." %></span>
       </div>
       <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
         <%= link_to "Send a test email", app_post_broadcast_test_path(@post), data: { turbo_method: :post, turbo_confirm: "Send a test email to #{Current.user.email}?" }, class: "link-quiet text-slate-600 dark:text-slate-300" %>
