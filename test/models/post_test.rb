@@ -644,6 +644,15 @@ class PostTest < ActiveSupport::TestCase
     assert blogs(:vivian).posts.build(content: attachment_node_for(blob), status: :published).valid?
   end
 
+  test "has audio only when an audio file is attached to the body" do
+    audio = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("audio"), filename: "track.mp3", content_type: "audio/mpeg")
+    image = ActiveStorage::Blob.create_and_upload!(io: file_fixture("space.jpg").open, filename: "space.jpg", content_type: "image/jpeg")
+
+    assert blogs(:joel).posts.build(content: attachment_node_for(audio)).has_audio?
+    assert_not blogs(:joel).posts.build(content: attachment_node_for(image)).has_audio?
+    assert_not blogs(:joel).posts.build(content: "<p>Just words</p>").has_audio?
+  end
+
   test "a lapsed subscriber can still edit a post containing their video" do
     blog = blogs(:joel)
     video = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("video"), filename: "clip.mp4", content_type: "video/mp4")

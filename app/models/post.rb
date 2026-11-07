@@ -180,6 +180,10 @@ class Post < ApplicationRecord
     @first_image ||= content_image_attachments.first || attachments.find(&:image?)
   end
 
+  def has_audio?
+    content.body&.fragment&.find_all("#{ActionText::Attachment.tag_name}[content-type^='audio/']")&.any?
+  end
+
   def first_image_alt
     sgid = first_image.try(:attachable_sgid)
     return unless sgid

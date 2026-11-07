@@ -130,6 +130,92 @@ footer.blog-footer #brand svg {
 }
 
 /* ============================= */
+/* Audio player                  */
+/* ============================= */
+
+.attachment:has(> .audio-player) {
+  padding: 0;
+}
+
+.audio-player {
+  align-items: center;
+  display: flex;
+  gap: 0.75em;
+  width: 100%;
+}
+
+.audio-player__toggle {
+  align-items: center;
+  background: var(--color-accent);
+  border: 0;
+  border-radius: 50%;
+  color: var(--color-bg);
+  cursor: pointer;
+  display: flex;
+  flex: none;
+  height: 2.75em;
+  justify-content: center;
+  width: 2.75em;
+
+  &::before {
+    background: currentColor;
+    box-sizing: border-box;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+    content: "";
+    height: 1em;
+    margin-inline-start: 0.2em;
+    width: 0.85em;
+  }
+
+  &[aria-pressed="true"]::before {
+    background: none;
+    border-inline: 0.28em solid currentColor;
+    clip-path: none;
+    margin-inline-start: 0;
+  }
+}
+
+.audio-player__waveform {
+  align-items: center;
+  cursor: pointer;
+  direction: ltr;
+  display: flex;
+  flex: 1;
+  gap: 1px;
+  height: 2.75em;
+  min-width: 0;
+}
+
+.audio-player__bar {
+  background: var(--color-text-disabled);
+  border-radius: 1px;
+  flex: 1;
+  min-height: 2px;
+  pointer-events: none;
+}
+
+.audio-player__bar--played {
+  background: var(--color-accent);
+}
+
+/* The element's own text is an invisible all-zero time that sets the width; the visible time is in ::after */
+.audio-player__time {
+  color: transparent;
+  flex: none;
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+  position: relative;
+  white-space: nowrap;
+
+  &::after {
+    color: var(--color-text-light);
+    content: attr(data-time);
+    inset-inline-start: 0;
+    position: absolute;
+  }
+}
+
+/* ============================= */
 /* Links                         */
 /* ============================= */
 
