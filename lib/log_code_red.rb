@@ -54,7 +54,10 @@ module LogCodeRed
           controller, action = entry.detail.to_s.split("#")
           next unless FORMS.key?(controller) && action == "create"
 
-          submissions[entry.uuid] = { form: FORMS[controller], host: entry.host, ip: entry.ip, block: nil, confirmation: false }
+          submissions[entry.uuid] = { form: FORMS[controller], host: entry.host, ip: entry.ip, block: nil, confirmation: false, status: nil }
+        when :completed
+          submission = submissions[entry.uuid] or next
+          submission[:status] = entry.status
         when :other
           submission = submissions[entry.uuid] or next
           body = entry.detail.to_s
@@ -75,7 +78,7 @@ module LogCodeRed
     def form_rows(submissions)
       submissions.group_by { |s| s[:form] }.map do |form, group|
         blocked = group.select { |s| s[:block] }
-        { form: form, attempts: group.size, accepted: group.size - blocked.size, tor: blocked.count { |s| s[:block] == "Tor exit node" }, blocks: blocked.map { |s| s[:block] }.tally }
+        { form: form, attempts: group.size, accepted: group.count { |s| !s[:block] && s[:status].to_i.between?(200, 399) }, tor: blocked.count { |s| s[:block] == "Tor exit node" }, blocks: blocked.map { |s| s[:block] }.tally }
       end.sort_by { |row| -row[:attempts] }
     end
 

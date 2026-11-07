@@ -61,6 +61,19 @@ class LogCodeRedTest < Minitest::Test
     assert_equal 1, row[:tor]
   end
 
+  def test_counts_only_successful_unblocked_submissions_as_accepted
+    entries = [
+      processing("a", "SignupsController#create"), completed("a", 302),
+      processing("b", "SignupsController#create"), other("b", "Signup refused: banned timezone"), completed("b", 422),
+      processing("c", "SignupsController#create"), other("c", "Can't verify CSRF token authenticity."), completed("c", 422)
+    ]
+
+    row = LogCodeRed.form_rows(LogCodeRed.form_submissions(entries)).first
+
+    assert_equal 3, row[:attempts]
+    assert_equal 1, row[:accepted]
+  end
+
   private
 
     def mail_job(date, mailer, action, recipient)
@@ -81,6 +94,10 @@ class LogCodeRedTest < Minitest::Test
 
     def processing(uuid, detail, host: "blog.example", ip: "1.1.1.1")
       LogParser::Entry.new(uuid: uuid, host: host, ip: ip, line_type: :processing, detail: detail)
+    end
+
+    def completed(uuid, status)
+      LogParser::Entry.new(uuid: uuid, line_type: :completed, status: status)
     end
 
     def other(uuid, body)
