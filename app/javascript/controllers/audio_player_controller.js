@@ -52,15 +52,16 @@ export default class extends Controller {
     const played = duration ? audio.currentTime / duration : 0
     const bars = player.querySelectorAll(".audio-player__bar")
     const waveform = player.querySelector(".audio-player__waveform")
-    const clock = player.querySelector(".audio-player__time")
+    const elapsed = player.querySelector(".audio-player__elapsed")
     const total = this.format(duration)
     const time = `${this.format(audio.currentTime)} / ${total}`
-    const widest = `${total} / ${total}`.replace(/\d/g, "0")
+    const widest = total.replace(/\d/g, "0")
 
     bars.forEach((bar, index) => bar.classList.toggle("audio-player__bar--played", index / bars.length < played))
     player.querySelector(".audio-player__toggle").setAttribute("aria-pressed", !audio.paused)
-    clock.dataset.time = time
-    if (clock.textContent !== widest) clock.textContent = widest
+    elapsed.dataset.time = this.format(audio.currentTime)
+    if (elapsed.textContent !== widest) elapsed.textContent = widest
+    player.querySelector(".audio-player__total").textContent = ` / ${total}`
     waveform.setAttribute("aria-valuemax", Math.floor(duration))
     waveform.setAttribute("aria-valuenow", Math.floor(audio.currentTime))
     waveform.setAttribute("aria-valuetext", time)
@@ -95,7 +96,9 @@ export default class extends Controller {
       ].join(" ")
     })
 
-    player.append(toggle, waveform, this.build("span", "audio-player__time", { "aria-hidden": true }))
+    const clock = this.build("span", "audio-player__time", { "aria-hidden": true })
+    clock.append(this.build("span", "audio-player__elapsed"), this.build("span", "audio-player__total"))
+    player.append(toggle, waveform, clock)
     audio.before(player)
     audio.controls = false
     audio.dataset.action = [ "play", "pause", "timeupdate", "durationchange" ].map(event => `${event}->audio-player#render`).concat("error->audio-player#restore").join(" ")

@@ -208,21 +208,25 @@ footer.blog-footer #brand svg {
   background: var(--color-accent);
 }
 
-/* The element's own text is a hidden all-zero time that sets the width; the visible time is in ::after */
 .audio-player__time {
+  color: var(--color-text-light);
   direction: ltr;
   flex: none;
   font-size: 0.8em;
   font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+
+/* The element's own text is a hidden all-zero time that sets the width; the visible time is in ::after */
+.audio-player__elapsed {
+  display: inline-block;
   position: relative;
   visibility: hidden;
-  white-space: nowrap;
 
   &::after {
-    color: var(--color-text-light);
     content: attr(data-time);
-    left: 0;
     position: absolute;
+    right: 0;
     visibility: visible;
   }
 }
