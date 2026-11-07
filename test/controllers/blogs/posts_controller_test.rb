@@ -19,6 +19,17 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".stream_layout", count: 1
   end
 
+  test "only attaches the audio player to posts with audio" do
+    blob = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("audio"), filename: "track.mp3", content_type: "audio/mpeg")
+    with_audio = @blog.posts.create!(title: "Track", content: ActionText::Attachment.from_attachable(blob).to_html)
+
+    get blog_post_path(with_audio.slug)
+    assert_select ".post-body[data-controller~=audio-player][data-audio-player-play-label-value=Play]"
+
+    get blog_post_path(posts(:one).slug)
+    assert_select ".post-body[data-controller=syntax-highlight]"
+  end
+
   test "should render the avatar for a blog on the free plan" do
     free_blog = blogs(:vivian)
     assert free_blog.user.on_free_plan?

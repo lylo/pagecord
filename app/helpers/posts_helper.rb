@@ -51,6 +51,16 @@ module PostsHelper
     end
   end
 
+  def post_body_data(post)
+    return { controller: "syntax-highlight" } unless post.has_audio?
+
+    {
+      controller: "syntax-highlight audio-player",
+      audio_player_play_label_value: t("posts.play_audio"),
+      audio_player_seek_label_value: t("posts.audio_position")
+    }
+  end
+
   def render_post_content(post)
     content = process_dynamic_variables(post)
     content = Html::StripActionTextAttachments.new.transform(content)

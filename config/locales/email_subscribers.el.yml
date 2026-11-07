@@ -38,6 +38,8 @@ el:
         default_subject: "Νέα ανάρτηση από το %{blog_name} – %{date}"
   posts:
     read_more: "Διαβάστε περισσότερα…"
+    play_audio: "Αναπαραγωγή"
+    audio_position: "Θέση αναπαραγωγής"
     navigation:
       label: "Πλοήγηση άρθρων"
       previous: "Προηγούμενο"

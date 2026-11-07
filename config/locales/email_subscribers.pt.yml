@@ -38,6 +38,8 @@ pt:
         default_subject: "Nova postagem do %{blog_name} — %{date}"
   posts:
     read_more: "Leia mais"
+    play_audio: "Reproduzir"
+    audio_position: "Posição de reprodução"
     navigation:
       label: "Navegação entre publicações"
       previous: "Anterior"

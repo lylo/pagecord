@@ -38,6 +38,8 @@ id:
         default_subject: "Pos baru dari %{blog_name} — %{date}"
   posts:
     read_more: "Baca selengkapnya"
+    play_audio: "Putar"
+    audio_position: "Posisi pemutaran"
     navigation:
       label: "Navigasi tulisan"
       previous: "Sebelumnya"

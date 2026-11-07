@@ -39,6 +39,8 @@ en:
         default_subject: "New post from %{blog_name} — %{date}"
   posts:
     read_more: "Read more…"
+    play_audio: "Play"
+    audio_position: "Playback position"
     navigation:
       label: "Post navigation"
       previous: "Previous"
