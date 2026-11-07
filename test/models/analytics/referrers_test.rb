@@ -236,7 +236,7 @@ class Analytics::ReferrersTest < ActiveSupport::TestCase
 
     Rollup.create!(
       name: "unique_views_by_blog_referrer",
-      time: year_start.to_time,
+      time: year_start.beginning_of_day,
       interval: "day",
       value: 10.0,
       dimensions: { "blog_id" => @blog.id.to_s, "referrer_domain" => "google.com" }

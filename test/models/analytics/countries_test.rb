@@ -186,7 +186,7 @@ class Analytics::CountriesTest < ActiveSupport::TestCase
 
     Rollup.create!(
       name: "unique_views_by_blog_country",
-      time: year_start.to_time,
+      time: year_start.beginning_of_day,
       interval: "day",
       value: 20.0,
       dimensions: { "blog_id" => @blog.id.to_s, "country" => "US" }
