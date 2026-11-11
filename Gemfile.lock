@@ -329,7 +329,7 @@ GEM
     nokogiri (1.19.7-x86_64-linux-musl)
       racc (~> 1.4)
     openssl (4.0.2)
-    pagy (43.8.1)
+    pagy (43.8.2)
       json
       uri
       yaml
