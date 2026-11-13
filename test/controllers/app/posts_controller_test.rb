@@ -60,6 +60,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     User.any_instance.stubs(:emails_sent_this_month).returns(User::NewsletterSending::MONTHLY_EMAIL_ALLOWANCE)
 
     travel_to Time.zone.local(2026, 11, 8) do
+      posts(:photography_and_tech).update!(published_at: 3.days.ago)
       get edit_app_post_url(posts(:photography_and_tech))
     end
 
