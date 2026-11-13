@@ -59,12 +59,9 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     blogs(:joel).update!(email_subscriptions_enabled: true, email_delivery_mode: :individual)
     User.any_instance.stubs(:emails_sent_this_month).returns(User::NewsletterSending::MONTHLY_EMAIL_ALLOWANCE)
 
-    travel_to Time.zone.local(2026, 11, 8) do
-      posts(:photography_and_tech).update!(published_at: 3.days.ago)
-      get edit_app_post_url(posts(:photography_and_tech))
-    end
+    get edit_app_post_url(posts(:photography_and_tech))
 
-    assert_select ".sheet-top-band", text: /Monthly email limit reached.*1 December/
+    assert_select ".sheet-top-band", text: /Monthly email limit reached.*1 #{Date.current.next_month.strftime("%B")}/
     assert_select "form[action=?]", app_post_broadcast_path(posts(:photography_and_tech)), count: 0
   end
 
