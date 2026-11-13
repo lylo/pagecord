@@ -1,17 +1,23 @@
-# Addresses that exist to look unique rather than to be read. Add rules here as
-# patterns show up; callers only ask whether an address is suspicious.
+# Addresses that belong to bots rather than people. Add rules here as patterns
+# show up; callers only ask whether an address is suspicious.
 class SuspiciousEmail
   DOTTED_GMAIL_MINIMUM_DOTS = 3
+  BLOCKED_DOMAINS = %w[ grokbot.com ].freeze
 
   def initialize(email)
     @email = email.to_s
   end
 
   def suspicious?
-    dotted_gmail?
+    dotted_gmail? || blocked_domain?
   end
 
   private
+
+    def blocked_domain?
+      domain = @email.split("@", 2)[1].to_s.downcase
+      BLOCKED_DOMAINS.any? { |blocked| domain == blocked || domain.end_with?(".#{blocked}") }
+    end
 
     # Gmail ignores dots in the local part, so one inbox can be reached through
     # endless variations of the same address.

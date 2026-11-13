@@ -22,6 +22,16 @@ class SuspiciousEmailTest < ActiveSupport::TestCase
     assert_not SuspiciousEmail.new("a.b.c.d.e@example.com").suspicious?
   end
 
+  test "flags grokbot addresses" do
+    [ "agent@mail.grokbot.com", "Agent@Mail.Grokbot.com", "agent@grokbot.com" ].each do |email|
+      assert SuspiciousEmail.new(email).suspicious?, "expected #{email} to be suspicious"
+    end
+  end
+
+  test "allows domains that only contain grokbot" do
+    assert_not SuspiciousEmail.new("agent@notgrokbot.com").suspicious?
+  end
+
   test "handles blank and malformed addresses" do
     [ nil, "", "not-an-email" ].each do |email|
       assert_not SuspiciousEmail.new(email).suspicious?
