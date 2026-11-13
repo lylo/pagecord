@@ -23,6 +23,10 @@ class User < ApplicationRecord
       )
   }
 
+  scope :purgeable_unverified, ->(before:) {
+    where(verified: false).where(created_at: ...before).where.missing(:subscription)
+  }
+
   after_undiscard do
     AccountTombstone.where(user_id: id).delete_all
     cancellations.account.delete_all
