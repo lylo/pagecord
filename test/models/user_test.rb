@@ -129,6 +129,23 @@ class UserTest < ActiveSupport::TestCase
     assert_not_includes User.purgeable_discarded(before: 7.days.ago), user
   end
 
+  test "purgeable_unverified includes unverified users older than the cutoff" do
+    assert_includes User.purgeable_unverified(before: 7.days.ago), users(:elliot)
+    assert_not_includes User.purgeable_unverified(before: 7.days.ago), users(:vivian)
+  end
+
+  test "purgeable_unverified excludes recent signups" do
+    users(:elliot).update_columns(created_at: 6.days.ago)
+
+    assert_not_includes User.purgeable_unverified(before: 7.days.ago), users(:elliot)
+  end
+
+  test "purgeable_unverified excludes users with a subscription" do
+    users(:elliot).create_subscription!(plan: :complimentary)
+
+    assert_not_includes User.purgeable_unverified(before: 7.days.ago), users(:elliot)
+  end
+
   test "custom_domain_access? allows active subscribers" do
     assert users(:joel).custom_domain_access?
   end
