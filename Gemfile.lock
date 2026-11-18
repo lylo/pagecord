@@ -196,6 +196,7 @@ GEM
       net-http (~> 0.5)
     fastimage (2.4.3)
     feature_toggles (1.2.1)
+    ffi (1.17.4)
     ffi (1.17.4-aarch64-linux-gnu)
     ffi (1.17.4-aarch64-linux-musl)
     ffi (1.17.4-arm-linux-gnu)
@@ -229,6 +230,7 @@ GEM
       rake (~> 13.3)
     groupdate (6.8.0)
       activesupport (>= 7.2)
+    herb (0.11.1)
     herb (0.11.1-aarch64-linux-gnu)
     herb (0.11.1-aarch64-linux-musl)
     herb (0.11.1-arm-linux-gnu)
@@ -290,6 +292,7 @@ GEM
     matrix (0.4.3)
     maxminddb (0.1.22)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
@@ -312,6 +315,9 @@ GEM
     net-smtp (0.5.2)
       net-protocol
     nio4r (2.7.5)
+    nokogiri (1.19.7)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.19.7-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.19.7-aarch64-linux-musl)
@@ -375,7 +381,7 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
-    puma (8.0.2)
+    puma (8.1.0)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.8)
