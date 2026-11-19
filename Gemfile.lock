@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: c60254e855df77539a1b8d8eabe5d6e3e3492846
+  revision: c9e828a8c0ba21237ff4b78622eb94bc492e5023
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -19,7 +19,6 @@ GIT
     actionmailer (8.2.0.alpha)
       actionpack (= 8.2.0.alpha)
       actionview (= 8.2.0.alpha)
-      activejob (= 8.2.0.alpha)
       activesupport (= 8.2.0.alpha)
       mail (>= 2.8.0)
       rails-dom-testing (~> 2.2)
@@ -114,7 +113,7 @@ GEM
     ast (2.4.3)
     aws-eventstream (1.4.1)
     aws-partitions (1.1300.0)
-    aws-sdk-core (3.263.0)
+    aws-sdk-core (3.270.0)
       aws-eventstream (~> 1, >= 1.4.1)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -126,12 +125,12 @@ GEM
     aws-sdk-kms (1.138.0)
       aws-sdk-core (~> 3, >= 3.263.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.237.0)
-      aws-sdk-core (~> 3, >= 3.263.0)
+    aws-sdk-s3 (1.245.0)
+      aws-sdk-core (~> 3, >= 3.269.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
-    aws-sdk-sesv2 (1.117.0)
-      aws-sdk-core (~> 3, >= 3.263.0)
+    aws-sdk-sesv2 (1.124.0)
+      aws-sdk-core (~> 3, >= 3.270.0)
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
       aws-eventstream (~> 1, >= 1.0.2)
@@ -172,7 +171,7 @@ GEM
       base64
       ssrf_filter (~> 1.5)
     csv (3.3.7)
-    dalli (5.2.6)
+    dalli (5.3.3)
       logger
     date (3.6.0)
     debug (1.11.1)
@@ -272,7 +271,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    lexxy (1.0.3)
+    lexxy (1.0.4)
       railties (>= 8.0.2)
     lint_roller (1.1.0)
     local_time (3.0.3)
@@ -329,7 +328,7 @@ GEM
     nokogiri (1.19.7-x86_64-linux-musl)
       racc (~> 1.4)
     openssl (4.0.2)
-    pagy (43.8.1)
+    pagy (43.8.3)
       json
       uri
       yaml
@@ -375,7 +374,7 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
-    puma (8.0.2)
+    puma (8.1.2)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.8)
@@ -421,7 +420,7 @@ GEM
     regexp_parser (2.13.1)
     reline (0.7.0)
       io-console (~> 0.5)
-    reverse_markdown (3.0.2)
+    reverse_markdown (3.1.0)
       nokogiri
     rexml (3.4.4)
     rollups (0.6.0)
@@ -605,7 +604,7 @@ DEPENDENCIES
   whenever
 
 RUBY VERSION
-  ruby 4.0.9
+  ruby 4.0.10
 
 BUNDLED WITH
   4.0.23
