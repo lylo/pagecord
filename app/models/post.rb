@@ -4,7 +4,7 @@ class Post < ApplicationRecord
 
   enum :source, [ :editor, :email, :api ]
 
-  MAX_CONTENT_SIZE = 64.kilobytes
+  MAX_CONTENT_SIZE = 256.kilobytes
 
   self.locale_optional = true
 

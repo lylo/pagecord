@@ -330,7 +330,7 @@ class PostTest < ActiveSupport::TestCase
     post = blogs(:joel).posts.build(content: "<p>#{"a" * Post::MAX_CONTENT_SIZE}</p>")
 
     assert_not post.valid?
-    assert_includes post.errors[:content], "is too long (maximum 64 KB)"
+    assert_includes post.errors[:content], "is too long (maximum 256 KB)"
   end
 
   test "should leave an oversized legacy post editable when its content is untouched" do
