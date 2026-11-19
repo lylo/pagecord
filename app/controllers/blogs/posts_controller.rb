@@ -12,6 +12,8 @@ class Blogs::PostsController < Blogs::BaseController
   skip_forgery_protection only: :not_found
   rescue_from Pagy::RangeError, with: :redirect_to_last_page
 
+  prepend_before_action :ignore_accept_header, only: :index
+
   def index
     if request.format.html? && @blog.has_custom_home_page? && !filtered?
       @post = @blog.home_page
@@ -90,6 +92,11 @@ class Blogs::PostsController < Blogs::BaseController
     end
 
   private
+
+    # Cloudflare caches one response per URL, so the URL alone picks the format.
+    def ignore_accept_header
+      request.format = :html unless params[:format]
+    end
 
     def filtered?
       params[:tag].present? || params[:title].present? || params[:link_posts].present? || params[:lang].present?

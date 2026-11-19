@@ -1413,6 +1413,17 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com/"
   end
 
+  test "should show home page whatever the Accept header" do
+    @blog.update!(home_page_id: posts(:about).id)
+
+    [ "*/*", "application/rss+xml" ].each do |accept|
+      get blog_posts_path, headers: { "Accept" => accept }
+
+      assert_template "blogs/posts/show"
+      assert_equal "text/html; charset=utf-8", @response.content_type
+    end
+  end
+
   test "should still show RSS feed when home page is set" do
     @blog.update!(home_page_id: posts(:about).id)
 
