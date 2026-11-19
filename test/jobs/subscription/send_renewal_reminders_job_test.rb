@@ -50,6 +50,16 @@ class Subscription::SendRenewalRemindersJobTest < ActiveJob::TestCase
     assert_not @subscription.renewal_reminders.exists?
   end
 
+  test "does not send renewal reminder for monthly subscription" do
+    @subscription.update!(plan: :monthly, next_billed_at: 1.week.from_now)
+
+    assert_no_enqueued_jobs do
+      Subscription::SendRenewalRemindersJob.perform_now
+    end
+
+    assert_not @subscription.renewal_reminders.exists?
+  end
+
   test "does not send renewal reminder for complimentary subscription" do
     @subscription.update!(
       plan: :complimentary,

@@ -273,7 +273,7 @@ bundle exec brakeman             # Security scanner
 - **Welcome**: `WelcomeMailer.welcome_email` after email verification
 - **Unengaged follow-up**: Monthly `SendUnengagedFollowUpEmailsJob` emails verified, unsubscribed users with no posts after 1 month. Tracked by `UnengagedFollowUp` model (one per user).
 - **Trial**: daily `SendTrialReminderEmailsJob` (3 days before the end) and `SendTrialEndedEmailsJob`, both via `FreeTrialMailer`
-- **Renewal reminders**: `Subscription::SendRenewalRemindersJob` emails every paid plan 2 weeks before `next_billed_at`, at most once a year
+- **Renewal reminders**: `Subscription::SendRenewalRemindersJob` emails annual and supporter plans 2 weeks before `next_billed_at`, at most once a year
 - **Cancellation**: `SendCancellationEmailJob` sends appropriate email (subscriber vs free account). `DestroyUserJob` soft-deletes, records an `AccountTombstone` and cancels Paddle; the hard delete comes later (see Storage).
 
 ### Feature Toggles
