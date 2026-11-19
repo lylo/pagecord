@@ -149,13 +149,9 @@ module Billing
         new_plan = Subscription.plan_from_price_id(new_price_id)
 
         Rails.logger.info "Subscription next billed at updated to #{next_billed_at}, plan: #{new_plan}"
-        @subscription.update!(
-          paddle_price_id: new_price_id,
-          unit_price: payload.unit_price,
-          next_billed_at: next_billed_at,
-          plan: new_plan,
-          paddle_status: payload.status
-        )
+        updates = { paddle_price_id: new_price_id, next_billed_at: next_billed_at, plan: new_plan, paddle_status: payload.status }
+        updates[:unit_price] = payload.unit_price if new_price_id != @subscription.paddle_price_id
+        @subscription.update!(updates)
 
         Subscription::RefreshUnitPriceJob.perform_later(@subscription)
         notify_supporter_upgrade

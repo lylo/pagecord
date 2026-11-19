@@ -18,13 +18,36 @@ class Subscription::SendRenewalRemindersJobTest < ActiveJob::TestCase
 
   test "no reminder goes out when Paddle cannot be asked for the charge" do
     @subscription.update!(next_billed_at: 1.week.from_now)
-    PaddleApi.any_instance.stubs(:get_subscription).raises(PaddleApi::Error, "boom")
+    PaddleApi.any_instance.stubs(:get_subscription).raises(OpenSSL::SSL::SSLError)
 
     assert_no_enqueued_jobs do
       Subscription::SendRenewalRemindersJob.perform_now
     end
 
     assert_not @subscription.renewal_reminders.exists?
+  end
+
+  test "no reminder goes out when Paddle has no renewal scheduled" do
+    @subscription.update!(next_billed_at: 1.week.from_now)
+    PaddleApi.any_instance.stubs(:get_subscription).returns(
+      { "data" => { "next_transaction" => nil, "recurring_transaction_details" => { "totals" => { "total" => "2900" } } } }
+    )
+
+    assert_no_enqueued_jobs do
+      Subscription::SendRenewalRemindersJob.perform_now
+    end
+
+    assert_not @subscription.renewal_reminders.exists?
+  end
+
+  test "a webhook that changes the price before delivery does not change the reminder" do
+    @subscription.update!(next_billed_at: 1.week.from_now)
+
+    Subscription::SendRenewalRemindersJob.perform_now
+    @subscription.update!(unit_price: 3900)
+    perform_enqueued_jobs
+
+    assert_match "We'll charge $29 to your card", ActionMailer::Base.deliveries.last.text_part.body.to_s
   end
 
   test "sends renewal reminder for active paid subscription due in two weeks" do

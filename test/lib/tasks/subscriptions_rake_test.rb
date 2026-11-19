@@ -10,7 +10,9 @@ class SubscriptionsRakeTest < ActiveSupport::TestCase
   test "send_renewal_reminders runs the job" do
     subscription = subscriptions(:one)
     subscription.update!(next_billed_at: 13.days.from_now)
-    PaddleApi.any_instance.stubs(:get_subscription).returns({ "data" => {} })
+    PaddleApi.any_instance.stubs(:get_subscription).returns(
+      { "data" => { "next_transaction" => { "details" => { "totals" => { "grand_total" => "2000" } } } } }
+    )
 
     assert_difference -> { Subscription::RenewalReminder.count } do
       Rake::Task["subscriptions:send_renewal_reminders"].invoke

@@ -138,7 +138,7 @@
       <% if @user.subscription.unit_price %>
         <div class="flex justify-between gap-4">
           <dt class="font-medium text-slate-900 dark:text-slate-50">Price</dt>
-          <dd class="text-slate-500 dark:text-slate-400"><%= subscription_price(@user.subscription) %></dd>
+          <dd class="text-slate-500 dark:text-slate-400"><%= subscription_price(@user.subscription.unit_price) %></dd>
         </div>
       <% end %>
       <% if @user.subscription.next_billed_at %>

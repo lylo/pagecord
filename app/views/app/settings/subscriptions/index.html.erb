@@ -83,7 +83,7 @@
         </div>
         <div class="grid grid-cols-[6rem_1fr] gap-x-4 px-4 py-2">
           <dt class="text-slate-500 dark:text-slate-400">Price</dt>
-          <dd class="font-medium text-slate-900 dark:text-slate-100"><%= subscription_price(@subscription) %>/year</dd>
+          <dd class="font-medium text-slate-900 dark:text-slate-100"><%= subscription_price(@subscription.unit_price) %>/year</dd>
         </div>
         <div class="grid grid-cols-[6rem_1fr] gap-x-4 px-4 py-2 bg-slate-50 dark:bg-slate-800/60">
           <dt class="text-slate-500 dark:text-slate-400">Renews</dt>
@@ -110,7 +110,7 @@
         <div class="border-2 border-pagecord-accent rounded-lg p-4 relative">
           <span class="absolute -top-3 left-4 bg-pagecord-accent text-white dark:text-slate-950 text-xs font-semibold px-2 py-1 rounded">Current Plan</span>
           <h3 class="font-semibold text-lg">Monthly</h3>
-          <p class="text-2xl font-bold mt-2"><%= subscription_price(@subscription) %><span class="text-sm font-normal text-slate-500 dark:text-slate-400">/month</span></p>
+          <p class="text-2xl font-bold mt-2"><%= subscription_price(@subscription.unit_price) %><span class="text-sm font-normal text-slate-500 dark:text-slate-400">/month</span></p>
           <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Renews <%= @subscription.next_billed_at.to_date.to_formatted_s(:long) %></p>
         </div>
         <div class="bg-slate-50 dark:bg-slate-800/60 rounded-lg p-4">

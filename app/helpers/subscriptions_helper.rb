@@ -25,8 +25,8 @@ module SubscriptionsHelper
     paddle_annual_data
   end
 
-  def subscription_price(subscription)
-    number_to_currency subscription.unit_price / 100.0, precision: (subscription.unit_price % 100).zero? ? 0 : 2
+  def subscription_price(cents)
+    number_to_currency cents / 100.0, precision: (cents % 100).zero? ? 0 : 2
   end
 
   def price_id(plan)
