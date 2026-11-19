@@ -57,7 +57,7 @@ class PaddleApi
       raise Error, "#{response.dig("error", "code")}: #{response.dig("error", "detail")}" if response["error"]
 
       response
-    rescue JSON::ParserError, Timeout::Error, SocketError, SystemCallError => error
+    rescue JSON::ParserError, Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError => error
       raise Error, error.message
     end
 

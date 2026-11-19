@@ -9,7 +9,11 @@ class Subscription::SendRenewalRemindersJob < ApplicationJob
         next if subscription.renewal_reminders.exists?(period: period)
 
         charge = subscription.next_charge
-        next unless charge&.positive?
+
+        unless charge
+          Rails.logger.warn "No renewal reminder for subscription #{subscription.id}: Paddle has no charge scheduled"
+          next
+        end
 
         subscription.transaction do
           subscription.update!(unit_price: charge)

@@ -69,9 +69,10 @@ class Subscription < ApplicationRecord
     paddle_error_from(response)
   end
 
-  # What Paddle will take at the next renewal, in cents, or nil when it has none scheduled.
+  # What Paddle will take at the next renewal, in cents, or nil when it has nothing to take.
   def next_charge(paddle = paddle_billing_preview)
-    paddle.dig("next_transaction", "details", "totals", "grand_total")&.to_i
+    charge = paddle.dig("next_transaction", "details", "totals", "grand_total").to_i
+    charge if charge.positive?
   end
 
   # Paddle's recurring_transaction_details leaves out a discount that lasts a set number
@@ -123,6 +124,8 @@ class Subscription < ApplicationRecord
   private
 
     def paddle_billing_preview
+      return {} if paddle_subscription_id.blank?
+
       PaddleApi.new.get_subscription(paddle_subscription_id, include: "next_transaction,recurring_transaction_details").fetch("data")
     end
 

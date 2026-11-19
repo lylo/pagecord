@@ -202,7 +202,9 @@ module Billing
 
           updates = { next_billed_at: next_billed_at }
 
-          if payload.origin == "subscription_update" && (new_price_id = payload.changed_plan_price_id)
+          new_price_id = payload.changed_plan_price_id if payload.origin == "subscription_update"
+
+          if new_price_id && new_price_id != @subscription.paddle_price_id
             updates[:paddle_price_id] = new_price_id
             updates[:plan] = Subscription.plan_from_price_id(new_price_id)
             updates[:unit_price] = payload.changed_plan_unit_price

@@ -113,6 +113,18 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_equal 4246, subscription.reload.unit_price
   end
 
+  test "a next charge of nothing does not become the price" do
+    subscription = subscriptions(:one)
+    stub_paddle_subscription(
+      next_transaction: { details: { totals: { grand_total: "0" } } },
+      recurring_transaction_details: { totals: { total: "3900" } }
+    )
+
+    subscription.refresh_unit_price
+
+    assert_equal 3900, subscription.reload.unit_price
+  end
+
   test "the price is kept when Paddle offers no charge" do
     subscription = subscriptions(:one)
     stub_paddle_subscription(next_transaction: nil, recurring_transaction_details: nil)

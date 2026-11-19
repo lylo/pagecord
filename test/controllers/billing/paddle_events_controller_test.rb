@@ -47,6 +47,7 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert subscription.reload.cancelled?
     assert_equal cancellation_effective_date.to_i, subscription.cancelled_at.to_i
+    assert_equal 2000, subscription.unit_price
   end
 
   test "should handle subscription.canceled event" do
@@ -278,6 +279,24 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     subscription.reload
     assert subscription.annual?, "Expected subscription to be annual after plan change"
     assert_equal Subscription.price_id(:annual), subscription.paddle_price_id
+  end
+
+  test "a plan change payment that arrives after the plan has changed leaves the price alone" do
+    subscription = subscriptions(:one)
+    payload = payload_for("transaction.completed.plan_change.supporter", subscription.user)
+    new_price_id = payload["data"]["items"].find { |item| item["quantity"].to_i > 0 }["price"]["id"]
+    subscription.update!(plan: :supporter, paddle_price_id: new_price_id, unit_price: 9000)
+    json_payload = payload.to_json
+
+    post billing_paddle_events_url,
+      params: json_payload,
+      headers: {
+        "Content-Type" => "application/json",
+        "Paddle-Signature" => paddle_signature_for(json_payload)
+      }
+
+    assert_response :success
+    assert_equal 9000, subscription.reload.unit_price
   end
 
   test "should store the new plan's recurring price, not the prorated transaction total, on a small-proration plan change" do
