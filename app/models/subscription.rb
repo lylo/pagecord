@@ -69,6 +69,16 @@ class Subscription < ApplicationRecord
     paddle_error_from(response)
   end
 
+  # Paddle's recurring_transaction_details leaves out a discount that lasts a set number
+  # of renewals, and its next_transaction is missing once a cancellation is scheduled.
+  def refresh_unit_price
+    paddle = PaddleApi.new.get_subscription(paddle_subscription_id, include: "next_transaction,recurring_transaction_details")
+    charge = paddle.dig("data", "next_transaction", "details", "totals", "grand_total") ||
+      paddle.dig("data", "recurring_transaction_details", "totals", "total")
+
+    update!(unit_price: charge.to_i) if charge
+  end
+
   def extend_to(date)
     new_date = Time.zone.parse(date.to_s)
     response = PaddleApi.new.patch("subscriptions/#{paddle_subscription_id}", {

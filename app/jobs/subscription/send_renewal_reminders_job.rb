@@ -8,10 +8,14 @@ class Subscription::SendRenewalRemindersJob < ApplicationJob
 
         next if subscription.renewal_reminders.exists?(period: period)
 
+        subscription.refresh_unit_price
+
         subscription.transaction do
           subscription.renewal_reminders.create!(period: period, sent_at: Time.current)
           Subscription::RenewalReminderMailer.reminder(subscription).deliver_later
         end
+      rescue PaddleApi::Error => error
+        Sentry.capture_exception(error)
       end
     end
   end

@@ -20,4 +20,10 @@ class PaddleApiTest < ActiveSupport::TestCase
 
     assert_equal "sub_123", PaddleApi.new.cancel_subscription("sub_123").dig("data", "id")
   end
+
+  test "a subscription Paddle cannot find raises" do
+    HTTParty.stubs(:get).returns(stub(body: { error: { code: "not_found", detail: "Entity not found" } }.to_json))
+
+    assert_raises(PaddleApi::Error) { PaddleApi.new.get_subscription("sub_123", include: "next_transaction") }
+  end
 end

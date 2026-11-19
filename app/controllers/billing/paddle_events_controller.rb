@@ -117,6 +117,7 @@ module Billing
           paddle_status: payload.status
         )
 
+        Subscription::RefreshUnitPriceJob.perform_later(@subscription)
         Subscription::SupporterWelcomeMailer.welcome(@subscription).deliver_later if @subscription.supporter?
       end
 
@@ -156,6 +157,7 @@ module Billing
           paddle_status: payload.status
         )
 
+        Subscription::RefreshUnitPriceJob.perform_later(@subscription)
         notify_supporter_upgrade
         log_plan_change
 
@@ -188,7 +190,7 @@ module Billing
       end
 
       def transaction_completed
-        Rails.logger.info "Transaction completed. Updating next_billed_at and unit_price"
+        Rails.logger.info "Transaction completed. Updating next_billed_at"
 
         return if payload.origin == "subscription_payment_method_change"
 
@@ -202,28 +204,23 @@ module Billing
         if @subscription.present?
           next_billed_at = Time.parse(billing_period_ends_at)
 
-          updates = {
-            next_billed_at: next_billed_at,
-            unit_price: payload.transaction_unit_price
-          }
+          updates = { next_billed_at: next_billed_at }
 
           if payload.origin == "subscription_update" && (new_price_id = payload.changed_plan_price_id)
             updates[:paddle_price_id] = new_price_id
             updates[:plan] = Subscription.plan_from_price_id(new_price_id)
-            # On a plan switch, the transaction's line-item total is the prorated
-            # top-up charged today, not the ongoing recurring price. Store the new
-            # price's list price instead, so it matches what the next full renewal bills.
             updates[:unit_price] = payload.changed_plan_unit_price
             Rails.logger.info "Plan changed to #{updates[:plan]} (price_id: #{new_price_id})"
           end
 
           @subscription.update!(updates)
 
+          Subscription::RefreshUnitPriceJob.perform_later(@subscription)
           notify_supporter_upgrade
           log_plan_change
           log_completed_transaction
 
-          Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}, unit_price: #{updates[:unit_price]}"
+          Rails.logger.info "Subscription #{@subscription.id} next billed on #{next_billed_at}"
         else
           raise "Subscription not found for transaction_completed event for #{@user.id} (#{@user.blog.subdomain})"
         end
@@ -237,8 +234,8 @@ module Billing
 
       def log_completed_transaction
         case payload.origin
-        when "web" then BillingEventLog.record(:subscription_started, for_subscription: @subscription)
-        when "subscription_recurring" then BillingEventLog.record(:renewal, for_subscription: @subscription)
+        when "web" then BillingEventLog.record(:subscription_started, for_subscription: @subscription, amount: payload.transaction_unit_price)
+        when "subscription_recurring" then BillingEventLog.record(:renewal, for_subscription: @subscription, amount: payload.transaction_unit_price)
         end
       end
 

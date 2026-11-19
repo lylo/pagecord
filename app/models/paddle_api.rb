@@ -3,17 +3,12 @@ require "httparty"
 class PaddleApi
   class Error < StandardError; end
 
-  def get_subscription(id)
-    get "subscriptions/#{id}"
+  def get_subscription(id, include: nil)
+    checked { get "subscriptions/#{id}#{"?include=#{include}" if include}" }
   end
 
   def cancel_subscription(id)
-    response = post "subscriptions/#{id}/cancel", { effective_from: "next_billing_period" }.to_json
-    raise Error, "#{response.dig("error", "code")}: #{response.dig("error", "detail")}" if response["error"]
-
-    response
-  rescue JSON::ParserError, Timeout::Error, SocketError, SystemCallError => error
-    raise Error, error.message
+    checked { post "subscriptions/#{id}/cancel", { effective_from: "next_billing_period" }.to_json }
   end
 
   def update_subscription_items(subscription_id, price_id, proration_billing_mode: "prorated_immediately")
@@ -56,6 +51,15 @@ class PaddleApi
   private
 
     PADDLE_CONFIG = Rails.application.config_for(:paddle)
+
+    def checked
+      response = yield
+      raise Error, "#{response.dig("error", "code")}: #{response.dig("error", "detail")}" if response["error"]
+
+      response
+    rescue JSON::ParserError, Timeout::Error, SocketError, SystemCallError => error
+      raise Error, error.message
+    end
 
     def headers
       {

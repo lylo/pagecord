@@ -3,6 +3,28 @@ require "test_helper"
 class Subscription::SendRenewalRemindersJobTest < ActiveJob::TestCase
   def setup
     @subscription = users(:joel).subscription
+    PaddleApi.any_instance.stubs(:get_subscription).returns(
+      { "data" => { "next_transaction" => { "details" => { "totals" => { "grand_total" => "2900" } } } } }
+    )
+  end
+
+  test "the reminder quotes the charge Paddle reports" do
+    @subscription.update!(next_billed_at: 1.week.from_now, unit_price: 2030)
+
+    perform_enqueued_jobs { Subscription::SendRenewalRemindersJob.perform_now }
+
+    assert_match "We'll charge $29 to your card", ActionMailer::Base.deliveries.last.text_part.body.to_s
+  end
+
+  test "no reminder goes out when Paddle cannot be asked for the charge" do
+    @subscription.update!(next_billed_at: 1.week.from_now)
+    PaddleApi.any_instance.stubs(:get_subscription).raises(PaddleApi::Error, "boom")
+
+    assert_no_enqueued_jobs do
+      Subscription::SendRenewalRemindersJob.perform_now
+    end
+
+    assert_not @subscription.renewal_reminders.exists?
   end
 
   test "sends renewal reminder for active paid subscription due in two weeks" do

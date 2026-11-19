@@ -161,25 +161,26 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_nil user.subscription
   end
 
-  test "should update next billing date and unit price on transaction.completed event" do
+  test "should update next billing date on transaction.completed event and leave the price to Paddle" do
     subscription = subscriptions(:one)
-    original_unit_price = subscription.unit_price
 
     payload = payload_for("transaction.completed", subscription.user)
     json_payload = payload.to_json
 
-    assert_difference "PaddleEvent.count", 1 do
-      post billing_paddle_events_url,
-        params: json_payload,
-        headers: {
-          "Content-Type" => "application/json",
-          "Paddle-Signature" => paddle_signature_for(json_payload)
-        }
+    assert_enqueued_with job: Subscription::RefreshUnitPriceJob, args: [ subscription ] do
+      assert_difference "PaddleEvent.count", 1 do
+        post billing_paddle_events_url,
+          params: json_payload,
+          headers: {
+            "Content-Type" => "application/json",
+            "Paddle-Signature" => paddle_signature_for(json_payload)
+          }
+      end
     end
 
     assert_response :success
     assert_equal subscription.reload.next_billed_at, Time.parse(payload["data"]["billing_period"]["ends_at"])
-    assert_equal 2900, subscription.unit_price
+    assert_equal 2000, subscription.unit_price
   end
 
   test "should ignore unit_price_overrides in subscription webhook" do

@@ -91,4 +91,40 @@ class SubscriptionTest < ActiveSupport::TestCase
     subscription.update!(plan: :complimentary)
     assert_includes Subscription.comped, subscription
   end
+
+  test "the price is what Paddle will charge at the next renewal" do
+    subscription = subscriptions(:one)
+    stub_paddle_subscription(
+      next_transaction: { details: { totals: { grand_total: "1950" } } },
+      recurring_transaction_details: { totals: { total: "3900" } }
+    )
+
+    subscription.refresh_unit_price
+
+    assert_equal 1950, subscription.reload.unit_price
+  end
+
+  test "the price is Paddle's recurring total once a cancellation is scheduled" do
+    subscription = subscriptions(:one)
+    stub_paddle_subscription(next_transaction: nil, recurring_transaction_details: { totals: { total: "4246" } })
+
+    subscription.refresh_unit_price
+
+    assert_equal 4246, subscription.reload.unit_price
+  end
+
+  test "the price is kept when Paddle offers no charge" do
+    subscription = subscriptions(:one)
+    stub_paddle_subscription(next_transaction: nil, recurring_transaction_details: nil)
+
+    assert_no_changes -> { subscription.reload.unit_price } do
+      subscription.refresh_unit_price
+    end
+  end
+
+  private
+
+    def stub_paddle_subscription(data)
+      PaddleApi.any_instance.stubs(:get_subscription).returns({ "data" => data.deep_stringify_keys })
+    end
 end
