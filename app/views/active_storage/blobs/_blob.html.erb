@@ -7,15 +7,15 @@
   <% elsif blob.image? %>
     <% image_alt = blob.try(:alt).presence || blob.try(:caption).presence %>
     <% if blob.content_type == "image/gif" %>
-      <%= link_to_if blob.try(:href), image_tag(rails_public_blob_url(blob), alt: image_alt), blob.try(:href) %>
+      <%= link_to_if blob.try(:href), image_tag(rails_public_blob_url(blob), alt: image_alt, loading: "lazy"), blob.try(:href) %>
     <% else %>
       <% width, height = local_assigns[:in_gallery] ? [800, 800] : [1600, 1600] %>
       <% lightbox_image_url = resized_image_url(blob, width: 1600, height: 1600) %>
-      <%= link_to_if blob.try(:href), image_tag(resized_image_url(blob, width: width, height: height), alt: image_alt, data: { lightbox_full_url: lightbox_image_url }), blob.try(:href) %>
+      <%= link_to_if blob.try(:href), image_tag(resized_image_url(blob, width: width, height: height), alt: image_alt, loading: "lazy", data: { lightbox_full_url: lightbox_image_url }), blob.try(:href) %>
     <% end %>
   <% elsif blob.content_type == "application/pdf" %>
     <% if blob.preview_image.attached? %>
-      <%= image_tag resized_image_url(blob.preview_image.blob, width: 1600, height: 1200), alt: "First page of #{blob.filename}", class: "attachment__page" %>
+      <%= image_tag resized_image_url(blob.preview_image.blob, width: 1600, height: 1200), alt: "First page of #{blob.filename}", class: "attachment__page", loading: "lazy" %>
     <% else %>
       <span class="attachment__icon">pdf</span>
     <% end %>

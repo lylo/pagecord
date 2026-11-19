@@ -10,7 +10,7 @@ module ActionTextCustomTags
   end
 
   def sanitizer_allowed_attributes
-    super + CUSTOM_ATTRIBUTES
+    super + CUSTOM_ATTRIBUTES + %w[loading]
   end
 end
 

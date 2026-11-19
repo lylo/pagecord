@@ -20,11 +20,19 @@ class LinkedImageRenderingTest < ActionDispatch::IntegrationTest
     assert_select "figure.attachment figcaption a", count: 0
   end
 
+  test "lazy-loads images" do
+    post = published_post_with_image
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_select "figure.attachment img[loading=lazy]"
+  end
+
   private
-    def published_post_with_image(href:)
+    def published_post_with_image(href: nil)
       @blog.posts.create!(
         title: "Linked image",
-        content: %(<action-text-attachment sgid="#{@image.attachable_sgid}" href="#{href}"></action-text-attachment>),
+        content: %(<action-text-attachment sgid="#{@image.attachable_sgid}"#{%( href="#{href}") if href}></action-text-attachment>),
         status: :published,
         published_at: 1.minute.ago
       )
