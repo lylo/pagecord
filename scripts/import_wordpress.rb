@@ -78,14 +78,94 @@ def usable_slug(post_name)
   post_name
 end
 
-def bare_link(url)
-  escaped = CGI.escapeHTML(url)
-  "<p><a href=\"#{escaped}\">#{escaped}</a></p>"
+def bare_link(url, text = url)
+  "<p><a href=\"#{CGI.escapeHTML(url)}\">#{CGI.escapeHTML(text)}</a></p>"
+end
+
+# A large site exports as a directory of numbered XML files
+def export_files(path)
+  File.directory?(path) ? Dir.glob(File.join(path, "*.xml")).sort : [ path ]
+end
+
+def read_export(file)
+  Nokogiri::XML(File.read(file)).tap(&:remove_namespaces!)
+end
+
+# Images in post bodies carry their attachment's ID, which locates the copy WordPress
+# made when the site was moved from another host. Attachments and the default
+# category can sit in a different file from the posts that use them.
+def export_index(files)
+  files.each_with_object({ attachments: {} }) do |file, index|
+    doc = read_export(file)
+    index[:site_host] ||= URI(doc.at_xpath("//channel/link").text.strip).host
+    index[:default_category] ||= default_category_nicename(doc)
+    doc.xpath("//item[post_type='attachment']").each do |attachment|
+      index[:attachments][attachment.at_xpath("post_id").text] = attachment.at_xpath("attachment_url").text.strip
+    end
+  end
+end
+
+# An image on the blog's own host is fetched without the query string that scales it.
+# One on another host is usually gone, so its attachment is used.
+def media_url(img, index)
+  src = img["src"].to_s
+  return src.sub(/\?.*/, "") if src[%r{\Ahttps?://([^/?#]+)}, 1] == index[:site_host]
+
+  index[:attachments][img["class"].to_s[/wp-image-(\d+)/, 1] || img["data-id"]] || src
+end
+
+def with_featured_image(item, body, index)
+  id = item.at_xpath("postmeta[meta_key='_thumbnail_id']/meta_value")&.text
+  url = index[:attachments][id]
+  return body if url.nil? || body.match?(/wp-image-#{id}\b/) || body.include?(File.basename(url))
+
+  %(<img src="#{CGI.escapeHTML(url)}" class="wp-image-#{id}">\n\n#{body})
+end
+
+def gallery_shortcode(attributes, index)
+  ids = attributes[/ids="([\d,\s]+)"/, 1].to_s.split(",").map(&:strip)
+  urls = index[:attachments].values_at(*ids).compact
+  return "".tap { puts "  Warning: dropped [gallery#{attributes}] as it lists no attachments" } if urls.empty?
+
+  %(<figure class="wp-block-gallery">#{urls.map { |url| %(<figure><img src="#{CGI.escapeHTML(url)}"></figure>) }.join}</figure>)
+end
+
+def google_maps_link(embed_url)
+  embed_url = CGI.unescapeHTML(embed_url)
+  longitude, latitude = embed_url.match(/!2d(-?[\d.]+)!3d(-?[\d.]+)/)&.captures
+  bare_link(latitude ? "https://www.google.com/maps?q=#{latitude},#{longitude}" : embed_url, "Google Maps")
+end
+
+# Every WordPress gallery becomes a figure holding one figure per image, with its
+# caption. After sanitising, that nesting is the only way left to recognise one.
+def regroup_galleries(fragment)
+  while (gallery = fragment.at_css(".wp-block-gallery, .wp-block-jetpack-tiled-gallery, .tiled-gallery, .wp-block-jetpack-slideshow, .wp-block-coblocks-gallery-collage"))
+    puts "  Warning: a gallery has no images" if gallery.css("img").empty?
+    figures = gallery.css("img").map do |img|
+      caption = img.parent.at_css("> figcaption") if img.parent.name == "figure" && img.parent != gallery
+      "<figure>#{img.to_html}#{caption&.to_html}</figure>"
+    end
+    caption = gallery.at_css("> figcaption")
+    gallery.replace("<figure>#{figures.join}</figure>#{"<p>#{caption.inner_html}</p>" if caption}")
+  end
+end
+
+def build_galleries(html)
+  fragment = Nokogiri::HTML::DocumentFragment.parse(html)
+  fragment.css("figure").select { |figure| figure.element_children.any? && figure.element_children.all? { |child| child.name == "figure" } }.each do |figure|
+    if figure.element_children.size > 1
+      figure.name = "div"
+      figure["class"] = "attachment-gallery attachment-gallery--#{figure.element_children.size}"
+    else
+      figure.replace(figure.children)
+    end
+  end
+  fragment.to_html
 end
 
 # Import WordPress WXR exported XML files into Pagecord posts
 # Usage: ruby import_wordpress.rb path/to/export.xml blog_subdomain [--dry-run]
-def import_wordpress(path, blog_subdomain, dry_run: false, include_private: false, skip_images: false, markdown: false)
+def import_wordpress(path, blog_subdomain, dry_run: false, include_private: false, skip_images: false, markdown: false, assets_root: nil, featured_images: false)
   include ImportHelpers
 
   # Find the correct blog
@@ -97,29 +177,20 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
 
   check_import_allowed!(blog, dry_run: dry_run)
 
-  unless File.file?(path)
-    puts "File not found: #{path}"
+  files = export_files(path)
+  unless files.any? && files.all? { |file| File.file?(file) && file.end_with?(".xml") }
+    puts "No XML export found at #{path}"
     return
   end
 
-  unless path.end_with?('.xml')
-    puts "File #{path} is not an XML file (must end with .xml)"
-    return
-  end
-
-  puts "Reading WordPress export from #{path}"
-  xml_content = File.read(path)
-  doc = Nokogiri::XML(xml_content)
-
-  # Remove default namespace to make XPath queries simpler
-  doc.remove_namespaces!
-
-  # Extract all items (posts/pages)
-  items = doc.xpath("//item")
-  puts "Found #{items.length} total items in WordPress export"
+  puts "Reading WordPress export from #{files.size} file(s) in #{path}"
+  index = export_index(files)
+  items = files.lazy.flat_map { |file| read_export(file).xpath("//item").to_a }
+  puts "Found #{index[:attachments].size} attachments"
+  puts "Using downloaded media from #{assets_root}" if assets_root
   puts "Note: Images will be downloaded if available, otherwise original URLs will be preserved"
 
-  default_category = default_category_nicename(doc)
+  default_category = index[:default_category]
 
   success_count = 0
   failed_count = 0
@@ -131,7 +202,7 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
 
   items.each do |item|
     # Extract post metadata
-    title = item.at_xpath("title")&.text&.strip
+    title = CGI.unescapeHTML(item.at_xpath("title")&.text&.strip.to_s)
     content_encoded = item.at_xpath("encoded")&.text&.strip
     post_date = item.at_xpath("post_date")&.text&.strip
     post_status = item.at_xpath("status")&.text&.strip
@@ -163,15 +234,16 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
       next
     end
 
-    # Parse publication date
-    published_at = parse_datetime(post_date, fallback_message: "Warning: Could not parse datetime '#{post_date}' for '#{title}'")
+    # Drafts have no GMT date until they are published
+    post_date_gmt = item.at_xpath("post_date_gmt")&.text&.strip.to_s
+    published_at = post_date_gmt.match?(/\A[1-9]/) ? Time.find_zone("UTC").parse(post_date_gmt) : parse_datetime(post_date, fallback_message: "Warning: Could not parse datetime '#{post_date}' for '#{title}'")
 
     # Extract categories AND tags as tag list, dropping the category WordPress
     # assigns by default: it sits on every post, so it says nothing about any of them
     categories = item.xpath("category[@domain='category']")
       .reject { |cat| cat["nicename"] == default_category }
-      .map { |cat| cat.text.strip }
-    post_tags = item.xpath("category[@domain='post_tag']").map { |tag| tag.text.strip }
+      .map { |cat| CGI.unescapeHTML(cat.text.strip) }
+    post_tags = item.xpath("category[@domain='post_tag']").map { |tag| CGI.unescapeHTML(tag.text.strip) }
     tag_list = (categories + post_tags)
       .reject { |t| t.downcase == "uncategorized" }
       .uniq
@@ -184,9 +256,12 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
     # Keep the WordPress URL so existing links and search results still resolve
     slug = usable_slug(item.at_xpath("post_name")&.text&.strip)
 
-    # Check if post already exists by slug, by title (case-insensitive), or by date for a titleless post
-    existing_post = slug ? blog.all_posts.find_by(slug: slug) : nil
-    existing_post ||= title.present? ? post_exists?(blog, title) : blog.all_posts.find_by(title: nil, published_at: published_at)
+    # A WordPress slug is unique, so posts sharing a title are only compared by title when they have none
+    existing_post = if slug
+      blog.all_posts.find_by(slug: slug)
+    else
+      title.present? ? post_exists?(blog, title) : blog.all_posts.find_by(title: nil, published_at: published_at)
+    end
 
     if existing_post
       skipped_duplicate += 1
@@ -210,7 +285,7 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
       hidden: is_private
     )
 
-    # Parse and clean HTML content
+    content_encoded = with_featured_image(item, content_encoded, index) if featured_images
     body = content_encoded.gsub("\r", "")
     cleaned_content = markdown ? Post::Markdown.render(body).last : wrap_paragraphs(body)
 
@@ -251,19 +326,25 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
       obj.replace(bare_link(url)) if url
     end
 
-    # Unwrap images from <a> tags (WordPress often links images to full-size versions)
-    content_doc.css("a img").each do |img|
-      link = img.parent
-      link.replace(img) if link.name == "a" && link.parent
+    # WordPress embeds a URL that sits alone on a line, and so does Pagecord when it is a bare link
+    content_doc.css("p").each do |paragraph|
+      url = paragraph.text.strip
+      paragraph.replace(bare_link(url)) if paragraph.element_children.empty? && url.match?(%r{\Ahttps?://\S+\z})
     end
+    content_doc.css(".wp-block-embed figcaption").each { |caption| caption.name = "p" }
+    content_doc.css(".wp-block-embed, .wp-block-embed__wrapper").each { |embed| embed.replace(embed.children) }
 
-    # Handle WordPress gallery shortcodes [gallery ids="1,2,3"]
-    # These are often left as plain text after export - we'll just remove them
-    content_doc.to_html.gsub!(/\[gallery[^\]]*\]/, '')
+    # Unwrap images from <a> tags (WordPress often links images to full-size versions)
+    content_doc.css("a:has(img)").each { |link| link.replace(link.children) }
+
+    # A [gallery] without ids shows the post's attachments, which the export doesn't link back to the post
+    html_content = content_doc.to_html
+      .gsub(%r{(?:<p>\s*)?\[gallery([^\]]*)\](?:\s*</p>)?}) { gallery_shortcode($1, index) }
+      .gsub(%r{\[embed[^\]]*\](.*?)\[/embed\]|\[youtube[= ]([^\]\s]+)[^\]]*\]}) { bare_link(CGI.unescapeHTML($1 || $2)) }
+      .gsub(%r{(?:<p>\s*)?\[googlemaps\s+([^\s\]]+)[^\]]*\](?:\s*</p>)?}) { google_maps_link($1) }
 
     # Handle WordPress caption shortcodes [caption]...[/caption]
     # Extract the content and convert to figure/figcaption
-    html_content = content_doc.to_html
     html_content = html_content.gsub(/\[caption[^\]]*\](.*?)\[\/caption\]/m) do |_match|
       inner = $1
       inner_doc = Nokogiri::HTML::DocumentFragment.parse(inner)
@@ -282,15 +363,17 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
 
     # Re-parse after shortcode processing
     content_doc = Nokogiri::HTML::DocumentFragment.parse(html_content)
+    regroup_galleries(content_doc)
 
     # Mark images with pagecord="true" so they survive sanitization
-    content_doc.css("img").each { |img| img["pagecord"] = "true" }
+    content_doc.css("img").each do |img|
+      img["src"] = media_url(img, index)
+      img["pagecord"] = "true"
+    end
 
-    # Sanitize HTML content (removes style attributes, etc.)
-    sanitized_content = Html::Sanitize.new.transform(content_doc.to_html)
+    sanitized_content = build_galleries(Html::Sanitize.new.transform(content_doc.to_html))
 
-    # Process images (download and convert to ActionText attachments)
-    post.content = skip_images ? sanitized_content : process_images_to_actiontext(sanitized_content, dry_run: dry_run, skip_on_error: true)
+    post.content = skip_images ? sanitized_content : process_images_to_actiontext(sanitized_content, assets_root: assets_root, dry_run: dry_run, skip_on_error: true)
 
     display_title = title.presence || post.content.to_plain_text.truncate(64) || "Untitled"
 
@@ -325,8 +408,10 @@ def import_wordpress(path, blog_subdomain, dry_run: false, include_private: fals
       puts "Failed to create #{type_label}: #{display_title}"
       puts post.errors.full_messages
       failed_count += 1
-      next
     end
+  rescue => error
+    puts "Failed on #{item.at_xpath("title")&.text}: #{error.class}: #{error.message}"
+    failed_count += 1
   end
 
   skipped_total = skipped_private + skipped_protected + skipped_duplicate + skipped_empty + skipped_other
@@ -348,7 +433,7 @@ end
 # Run the script if executed directly
 if __FILE__ == $PROGRAM_NAME
   if ARGV.length < 2
-    puts "Usage: bundle exec rails runner scripts/import_wordpress.rb path/to/export.xml blog_subdomain [options]"
+    puts "Usage: bundle exec rails runner scripts/import_wordpress.rb path/to/export.xml_or_directory blog_subdomain [options]"
     puts ""
     puts "Imports WordPress WXR export files into Pagecord"
     puts ""
@@ -357,6 +442,8 @@ if __FILE__ == $PROGRAM_NAME
     puts "  --include-private  Import private posts as hidden posts"
     puts "  --skip-images      Don't download images, keep original URLs"
     puts "  --markdown         Post bodies are Markdown, as in Micro.blog exports"
+    puts "  --featured-images  Open each post with its featured image, unless the body already shows it"
+    puts "  --assets-root=DIR  Read images from DIR/<host>/<path> when there, rather than fetching them"
     puts ""
     puts "Notes:"
     puts "  - Post type (post vs page) is determined from the WordPress export"
@@ -372,6 +459,7 @@ if __FILE__ == $PROGRAM_NAME
     puts "  bundle exec rails runner scripts/import_wordpress.rb ./export.xml myblog"
     puts "  bundle exec rails runner scripts/import_wordpress.rb ./export.xml myblog --dry-run"
     puts "  bundle exec rails runner scripts/import_wordpress.rb ./export.xml myblog --include-private"
+    puts "  bundle exec rails runner scripts/import_wordpress.rb ./export-dir myblog --assets-root=./media"
     return
   end
 
@@ -381,10 +469,12 @@ if __FILE__ == $PROGRAM_NAME
   include_private = ARGV.include?('--include-private')
   skip_images = ARGV.include?('--skip-images')
   markdown = ARGV.include?('--markdown')
+  featured_images = ARGV.include?("--featured-images")
+  assets_root = ARGV.find { |arg| arg.start_with?("--assets-root=") }&.split("=", 2)&.last&.then { |dir| File.expand_path(dir) }
 
   if dry_run
     puts "=== DRY RUN MODE - No posts will be created ==="
   end
 
-  import_wordpress(path, blog_subdomain, dry_run: dry_run, include_private: include_private, skip_images: skip_images, markdown: markdown)
+  import_wordpress(path, blog_subdomain, dry_run: dry_run, include_private: include_private, skip_images: skip_images, markdown: markdown, assets_root: assets_root, featured_images: featured_images)
 end

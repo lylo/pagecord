@@ -100,21 +100,26 @@ module ImportHelpers
       end
     end
 
+    # A root-relative src must be in assets_root; a URL is used from there when it
+    # was downloaded to <host>/<path>, and fetched otherwise
     def local_file?(src, assets_root)
-      assets_root && src.start_with?("/")
+      assets_root && (src.start_with?("/") || File.file?(local_path(src, assets_root)))
+    end
+
+    def local_path(src, assets_root)
+      relative = src.start_with?("/") ? src : src.sub(%r{\Ahttps?://}, "/").sub(/[?#].*/m, "")
+      path = File.expand_path(File.join(assets_root, CGI.unescape(relative)))
+      path.start_with?("#{File.expand_path(assets_root)}/") ? path : raise("#{src} is outside the assets root")
     end
 
     def verify_local_file(src, assets_root)
       return unless local_file?(src, assets_root)
-      decoded_src = CGI.unescape(src)
-      local_path = File.join(assets_root, decoded_src)
-      raise "Local file not found: #{local_path}" unless File.exist?(local_path)
+      raise "Local file not found: #{local_path(src, assets_root)}" unless File.exist?(local_path(src, assets_root))
     end
 
     def download_or_open_file(src, assets_root:, type:)
       if local_file?(src, assets_root)
-        decoded_src = CGI.unescape(src)
-        local_path = File.join(assets_root, decoded_src)
+        local_path = local_path(src, assets_root)
         raise "Local file not found: #{local_path}" unless File.exist?(local_path)
         filename = File.basename(local_path)
         puts "  Uploading local #{type}: #{filename}"
@@ -219,7 +224,7 @@ module ImportHelpers
 
   # Clean and normalize tag text for import
   def clean_tag(tag_text)
-    tag_text.strip.downcase.gsub(/\s+/, "-").gsub(/[^\p{L}\p{N}-]/, "")
+    tag_text.strip.downcase.gsub(/\s+/, "-").gsub(/[^\p{L}\p{N}-]/, "").squeeze("-").delete_prefix("-").delete_suffix("-")
   end
 
   # Parse datetime string with fallback to current time
