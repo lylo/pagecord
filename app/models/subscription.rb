@@ -69,14 +69,18 @@ class Subscription < ApplicationRecord
     paddle_error_from(response)
   end
 
+  # What Paddle will take at the next renewal, in cents, or nil when it has none scheduled.
+  def next_charge(paddle = paddle_billing_preview)
+    paddle.dig("next_transaction", "details", "totals", "grand_total")&.to_i
+  end
+
   # Paddle's recurring_transaction_details leaves out a discount that lasts a set number
   # of renewals, and its next_transaction is missing once a cancellation is scheduled.
   def refresh_unit_price
-    paddle = PaddleApi.new.get_subscription(paddle_subscription_id, include: "next_transaction,recurring_transaction_details")
-    charge = paddle.dig("data", "next_transaction", "details", "totals", "grand_total") ||
-      paddle.dig("data", "recurring_transaction_details", "totals", "total")
+    paddle = paddle_billing_preview
+    charge = next_charge(paddle) || paddle.dig("recurring_transaction_details", "totals", "total")&.to_i
 
-    update!(unit_price: charge.to_i) if charge
+    update!(unit_price: charge) if charge
   end
 
   def extend_to(date)
@@ -117,6 +121,10 @@ class Subscription < ApplicationRecord
   end
 
   private
+
+    def paddle_billing_preview
+      PaddleApi.new.get_subscription(paddle_subscription_id, include: "next_transaction,recurring_transaction_details").fetch("data")
+    end
 
     # Downgrades take effect at the next billing cycle and never refund; upgrades bill the difference today.
     def proration_billing_mode_for(new_plan)
