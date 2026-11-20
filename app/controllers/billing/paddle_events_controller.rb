@@ -16,9 +16,14 @@ module Billing
       "transaction.payment_failed" => :transaction_payment_failed
     }.freeze
 
+    # Feedgrab sells through the same Paddle account, so its events arrive here too.
+    FEEDGRAB_PRICE_IDS = %w[ pri_01jxpvr18d4nfm2epjtc9avsk5 pri_01m7vv1eyrntt8vm2crh1zv8np ].freeze
+
     def create
       if verify_signature
-        if @user = load_user
+        if for_feedgrab?
+          Rails.logger.info("Ignoring Paddle #{params[:event_type]} for Feedgrab")
+        elsif @user = load_user
           process_event params[:event_type]
         else
           Rails.logger.warn("Unable to find user for Paddle #{params[:event_type]} (customer #{params.dig(:data, :customer_id)})")
@@ -55,6 +60,10 @@ module Billing
         hmac = OpenSSL::HMAC.hexdigest(digest, key, data)
 
         ActiveSupport::SecurityUtils.secure_compare(hmac, h1)
+      end
+
+      def for_feedgrab?
+        Array(params.dig(:data, :items)).any? { |item| item.dig(:price, :id).in?(FEEDGRAB_PRICE_IDS) }
       end
 
       def load_user

@@ -145,6 +145,25 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_not subscription.user.subscribed?
   end
 
+  test "should ignore a Feedgrab payment even when its user id matches one of ours" do
+    subscription = subscriptions(:one)
+    payload = payload_for("transaction.completed", subscription.user)
+    payload["data"]["items"] = [ { "price" => { "id" => "pri_01jxpvr18d4nfm2epjtc9avsk5" }, "quantity" => 1 } ]
+    payload["data"]["billing_period"] = nil
+    json_payload = payload.to_json
+
+    assert_no_changes -> { [ PaddleEvent.count, subscription.reload.next_billed_at ] } do
+      post billing_paddle_events_url,
+        params: json_payload,
+        headers: {
+          "Content-Type" => "application/json",
+          "Paddle-Signature" => paddle_signature_for(json_payload)
+        }
+    end
+
+    assert_response :success
+  end
+
   test "should not create subscription on transaction.payment_failed event" do
     user = users(:vivian)
 
