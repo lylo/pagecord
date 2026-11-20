@@ -5,7 +5,7 @@ class SearchTest < ApplicationSystemTestCase
     @user = users(:vivian)
     access_request = @user.access_requests.create!
 
-    visit access_request_verification_path(access_request.token_digest)
+    visit access_request_verification_path(access_request.token)
 
     assert_current_path app_posts_path
 

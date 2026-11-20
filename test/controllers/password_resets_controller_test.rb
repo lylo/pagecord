@@ -37,7 +37,7 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
   test "edit shows password form with valid token" do
     access_request = @user.access_requests.create!(purpose: "password_reset")
 
-    get edit_password_reset_url(access_request.token_digest)
+    get edit_password_reset_url(access_request.token)
     assert_response :success
   end
 
@@ -49,7 +49,7 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
   test "edit rejects login token" do
     access_request = @user.access_requests.create!(purpose: "login")
 
-    get edit_password_reset_url(access_request.token_digest)
+    get edit_password_reset_url(access_request.token)
     assert_redirected_to login_path
   end
 
@@ -57,14 +57,14 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
     access_request = @user.access_requests.create!(purpose: "password_reset")
     @user.discard!
 
-    get edit_password_reset_url(access_request.token_digest)
+    get edit_password_reset_url(access_request.token)
     assert_redirected_to sessions_closed_path
   end
 
   test "update sets password and signs in" do
     access_request = @user.access_requests.create!(purpose: "password_reset")
 
-    patch password_reset_url(access_request.token_digest), params: {
+    patch password_reset_url(access_request.token), params: {
       user: { password: "newpass123456", password_confirmation: "newpass123456" }
     }
 
@@ -76,7 +76,7 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
     access_request = @user.access_requests.create!(purpose: "password_reset")
     access_request.update!(expires_at: 2.days.ago)
 
-    patch password_reset_url(access_request.token_digest), params: {
+    patch password_reset_url(access_request.token), params: {
       user: { password: "newpass123456", password_confirmation: "newpass123456" }
     }
 

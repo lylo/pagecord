@@ -6,7 +6,7 @@ class NavigationItemsTest < ApplicationSystemTestCase
   test "social platform selection prepopulates the URL" do
     user = users(:joel)
     access_request = user.access_requests.create!
-    visit access_request_verification_path(token: access_request.token_digest)
+    visit access_request_verification_path(token: access_request.token)
 
     visit app_settings_navigation_items_path
 

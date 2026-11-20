@@ -7,7 +7,7 @@ class AudienceSettingsTest < ApplicationSystemTestCase
     @blog.update!(email_subscriptions_enabled: true)
 
     access_request = @user.access_requests.create!
-    visit access_request_verification_path(token: access_request.token_digest)
+    visit access_request_verification_path(token: access_request.token)
     assert_current_path app_posts_path
   end
 

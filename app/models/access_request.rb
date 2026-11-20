@@ -9,6 +9,16 @@ class AccessRequest < ApplicationRecord
   scope :active, -> { where("expires_at > ?", Time.current) }
   scope :recently_accepted, -> { where("accepted_at > ?", 5.minutes.ago) }
 
+  attr_reader :token
+
+  def self.find_by_token(token)
+    find_by(token_digest: digest(token))
+  end
+
+  def self.digest(token)
+    Digest::SHA256.hexdigest(token.to_s)
+  end
+
   def accept!
     self.accepted_at = Time.current
     save!
@@ -21,7 +31,8 @@ class AccessRequest < ApplicationRecord
   private
 
     def generate_token
-      self.token_digest = SecureRandom.urlsafe_base64
+      @token = SecureRandom.urlsafe_base64
+      self.token_digest = self.class.digest(@token)
     end
 
     def set_expiration

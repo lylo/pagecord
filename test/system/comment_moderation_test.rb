@@ -5,7 +5,7 @@ class CommentModerationTest < ApplicationSystemTestCase
     @comment = post_comments(:approved)
 
     access_request = users(:joel).access_requests.create!
-    visit access_request_verification_path(token: access_request.token_digest)
+    visit access_request_verification_path(token: access_request.token)
   end
 
   # turbo_confirm only works when Turbo drives the form, so this page must not
