@@ -123,6 +123,12 @@ If you want to show only the beginning of a post on your blog home page, add an 
 
 To make a post's title link to another page on the web, Daring Fireball style, set a link URL. See [Link posts](link-posts.md) for details.
 
+## Word count
+
+Open the post settings (the cog above the editor, or Cmd/Ctrl + .) to see the word count, character count and reading time for what you've written. They're worked out each time you open the settings.
+
+Only your writing is counted: images, audio, embeds and their captions are left out. An emoji counts as one character, and reading time assumes 230 words a minute. The same figures appear in the settings for pages and your home page.
+
 ## Tags
 
 Add tags to organise your posts by topic. Readers can click a tag to see all posts with that tag.
