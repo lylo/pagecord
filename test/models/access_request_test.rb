@@ -1,11 +1,12 @@
 require "test_helper"
 
 class AccessRequestTest < ActiveSupport::TestCase
-  test "generates a token on creation" do
-    request = AccessRequest.new(user: users(:joel))
-    request.save!
+  test "stores a digest of the token, which finds the request" do
+    request = AccessRequest.create!(user: users(:joel))
 
-    assert_not_nil request.token_digest
+    assert_not_equal request.token, request.token_digest
+    assert_equal request, AccessRequest.find_by_token(request.token)
+    assert_nil AccessRequest.find_by_token(request.token_digest)
   end
 
   test "sets expiration on creation" do

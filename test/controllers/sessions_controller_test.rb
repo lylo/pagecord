@@ -183,7 +183,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
         rendered_at: signed_rendered_at
       }
     end
-    get access_request_verification_url(user.access_requests.last.token_digest)
+    get ActionMailer::Base.deliveries.last.text_part.body.to_s[%r{http\S+/verify/\S+}]
 
     assert_redirected_to app_posts_path
     assert_equal user.id, session[:user_id]

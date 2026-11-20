@@ -129,7 +129,7 @@ class HotkeysTest < ApplicationSystemTestCase
 
   private
     def sign_in(user)
-      visit access_request_verification_path(user.access_requests.create!.token_digest)
+      visit access_request_verification_path(user.access_requests.create!.token)
       assert_current_path app_posts_path
     end
 

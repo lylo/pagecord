@@ -1,7 +1,7 @@
 class AccessRequests::VerificationsController < ApplicationController
   def show
-    access_request = AccessRequest.login.active.pending.find_by(token_digest: params[:token]) ||
-                     AccessRequest.login.active.recently_accepted.find_by(token_digest: params[:token])
+    access_request = AccessRequest.login.active.pending.find_by_token(params[:token]) ||
+                     AccessRequest.login.active.recently_accepted.find_by_token(params[:token])
     return redirect_to root_path unless access_request
 
     @user = access_request.user

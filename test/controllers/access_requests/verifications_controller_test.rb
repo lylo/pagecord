@@ -5,7 +5,7 @@ class AccessRequests::VerificationsControllerTest < ActionDispatch::IntegrationT
     user = users(:elliot)
 
     assert_emails 1 do
-      get access_request_verification_url(access_requests(:elliot).token_digest)
+      get access_request_verification_url("elliot-token")
     end
 
     assert_redirected_to app_posts_url
@@ -14,14 +14,14 @@ class AccessRequests::VerificationsControllerTest < ActionDispatch::IntegrationT
 
   test "should record a Plausible event when verifying a new signup" do
     assert_enqueued_with(job: PlausibleEventJob, args: [ "Signup verified", { url: root_url, user_agent: "", ip: "127.0.0.1" } ]) do
-      get access_request_verification_url(access_requests(:elliot).token_digest)
+      get access_request_verification_url("elliot-token")
     end
   end
 
   test "should not verify expired access request" do
     user = users(:elliot)
 
-    get access_request_verification_url(access_requests(:elliot_expired).token_digest)
+    get access_request_verification_url("elliot-expired-token")
 
     assert_redirected_to root_path
     assert_not user.reload.verified
@@ -36,7 +36,7 @@ class AccessRequests::VerificationsControllerTest < ActionDispatch::IntegrationT
   test "should re-verify access request with 5 minutes" do
     user = users(:joel)
     access_request = user.access_requests.create!(accepted_at: 1.minute.ago)
-    get access_request_verification_url(access_request.token_digest)
+    get access_request_verification_url(access_request.token)
 
     assert_redirected_to app_posts_path
   end
@@ -44,7 +44,7 @@ class AccessRequests::VerificationsControllerTest < ActionDispatch::IntegrationT
   test "should not re-verify access request after 5 minutes" do
     user = users(:joel)
     access_request = user.access_requests.create!(accepted_at: 6.minutes.ago)
-    get access_request_verification_url(access_request.token_digest)
+    get access_request_verification_url(access_request.token)
 
     assert_redirected_to root_path
   end
@@ -54,7 +54,7 @@ class AccessRequests::VerificationsControllerTest < ActionDispatch::IntegrationT
     user.discard!
 
     assert_no_enqueued_jobs(only: MarketingAutomation::AddContactJob) do
-      get access_request_verification_url(access_requests(:elliot).token_digest)
+      get access_request_verification_url("elliot-token")
     end
 
     assert_redirected_to sessions_closed_path
@@ -65,7 +65,7 @@ class AccessRequests::VerificationsControllerTest < ActionDispatch::IntegrationT
     user = users(:joel)
     access_request = user.access_requests.create!(purpose: "password_reset")
 
-    get access_request_verification_url(access_request.token_digest)
+    get access_request_verification_url(access_request.token)
 
     assert_redirected_to root_path
   end

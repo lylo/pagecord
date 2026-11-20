@@ -4,7 +4,7 @@ class TagsTest < ApplicationSystemTestCase
   setup do
     user = users(:joel)
     access_request = user.access_requests.create!
-    visit access_request_verification_path(token: access_request.token_digest)
+    visit access_request_verification_path(token: access_request.token)
 
     visit app_posts_tags_path
   end

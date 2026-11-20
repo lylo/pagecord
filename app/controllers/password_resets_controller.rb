@@ -47,7 +47,7 @@ class PasswordResetsController < ApplicationController
     end
 
     def find_access_request
-      @access_request = AccessRequest.password_reset.active.pending.find_by(token_digest: params[:token])
+      @access_request = AccessRequest.password_reset.active.pending.find_by_token(params[:token])
 
       unless @access_request
         redirect_to login_path, alert: "Invalid or expired reset link"
