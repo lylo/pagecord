@@ -8,6 +8,20 @@
         <%= inline_svg_tag "icons/close.svg", class: "w-5 h-5" %>
       </button>
     </div>
+    <dl class="grid grid-cols-3 gap-x-4 px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex flex-col-reverse">
+        <dt class="text-xs text-slate-500 dark:text-slate-400">Words</dt>
+        <dd class="font-medium tabular-nums text-slate-900 dark:text-slate-100" data-settings-panel-target="wordCount"></dd>
+      </div>
+      <div class="flex flex-col-reverse">
+        <dt class="text-xs text-slate-500 dark:text-slate-400">Characters</dt>
+        <dd class="font-medium tabular-nums text-slate-900 dark:text-slate-100" data-settings-panel-target="characterCount"></dd>
+      </div>
+      <div class="flex flex-col-reverse">
+        <dt class="text-xs text-slate-500 dark:text-slate-400">Reading time</dt>
+        <dd class="font-medium tabular-nums text-slate-900 dark:text-slate-100" data-settings-panel-target="readingTime"></dd>
+      </div>
+    </dl>
     <div class="px-6 pb-4">
       <%= yield %>
     </div>
