@@ -22,7 +22,7 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal user.id, user.paddle_events.last.payload["data"]["custom_data"]["user_id"]
     assert_equal user.blog.subdomain, user.paddle_events.last.payload["data"]["custom_data"]["blog_subdomain"]
     assert_equal "sub_01hvrk1481njzb874tn7wyrksv", user.subscription.paddle_subscription_id
-    assert_equal "pri_01hvnxrgvfsx46m83z6asdbb94", user.subscription.paddle_price_id
+    assert_equal "pri_01kgccx380dyd8sv1c5mr7qgh4", user.subscription.paddle_price_id
     assert_equal 3000, user.subscription.unit_price
   end
 
@@ -143,6 +143,29 @@ class Billing::PaddleEventsControllerTest < ActionDispatch::IntegrationTest
     subscription.reload
     assert_equal cancellation_date.to_i, subscription.next_billed_at.to_i
     assert_not subscription.user.subscribed?
+  end
+
+  test "should ignore a payment for another product even when its user id matches one of ours" do
+    subscription = subscriptions(:one)
+    payload = payload_for("transaction.completed", subscription.user)
+    payload["data"]["items"] = [ { "price" => { "id" => "pri_another_product" }, "quantity" => 1 } ]
+    payload["data"]["billing_period"] = nil
+    json_payload = payload.to_json
+
+    lines = billing_lines do
+      assert_no_changes -> { [ PaddleEvent.count, subscription.reload.next_billed_at ] } do
+        post billing_paddle_events_url,
+          params: json_payload,
+          headers: {
+            "Content-Type" => "application/json",
+            "Paddle-Signature" => paddle_signature_for(json_payload)
+          }
+      end
+    end
+
+    assert_response :success
+    assert_includes lines.join, "event=webhook_ignored type=transaction.completed"
+    assert_includes lines.join, "price=pri_another_product"
   end
 
   test "should not create subscription on transaction.payment_failed event" do

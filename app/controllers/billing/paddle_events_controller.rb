@@ -18,7 +18,9 @@ module Billing
 
     def create
       if verify_signature
-        if @user = load_user
+        if for_another_product?
+          BillingEventLog.record(:webhook_ignored, type: params[:event_type], customer: payload.customer_id, price: payload.price_ids.join(","))
+        elsif @user = load_user
           process_event params[:event_type]
         else
           Rails.logger.warn("Unable to find user for Paddle #{params[:event_type]} (customer #{params.dig(:data, :customer_id)})")
@@ -55,6 +57,10 @@ module Billing
         hmac = OpenSSL::HMAC.hexdigest(digest, key, data)
 
         ActiveSupport::SecurityUtils.secure_compare(hmac, h1)
+      end
+
+      def for_another_product?
+        payload.price_ids.any? && payload.price_ids.none? { |price_id| Subscription.known_price?(price_id) }
       end
 
       def load_user

@@ -44,6 +44,10 @@ class Subscription < ApplicationRecord
     PRICE_IDS[plan.to_sym][Rails.env.to_sym]
   end
 
+  def self.known_price?(price_id)
+    PRICE_IDS.values.flat_map(&:values).include?(price_id) || exists?(paddle_price_id: price_id)
+  end
+
   def self.plan_from_price_id(price_id)
     PRICE_IDS.find { |_, ids| ids.values.include?(price_id) }&.first&.to_s || "annual"
   end

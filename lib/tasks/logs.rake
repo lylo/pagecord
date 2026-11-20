@@ -775,7 +775,8 @@ namespace :logs do
       "cancel_scheduled" => "Cancel scheduled",
       "cancel_effective" => "Access ended",
       "account_deleted" => "Account deleted",
-      "webhook_unmatched" => "Unmatched webhook"
+      "webhook_unmatched" => "Unmatched webhook",
+      "webhook_ignored" => "Ignored webhook"
     }
 
     movements = events.reject { |e| %w[ renewal payment_failed past_due ].include?(e[:event]) }
@@ -793,6 +794,7 @@ namespace :logs do
       parts << "since #{e[:started]}" if e[:started]
       parts << "booked earlier" if e[:booked_earlier] == "true"
       parts << "#{e[:type]} for customer #{e[:customer]}" if e[:customer]
+      parts << "price #{e[:price]}" if e[:price]
       parts.join(", ")
     end
 

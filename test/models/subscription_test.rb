@@ -36,6 +36,12 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert_equal "supporter", Subscription.plan_from_price_id(Subscription.price_id(:supporter))
   end
 
+  test "known_price? covers the current plan prices and any price a subscription is on" do
+    assert Subscription.known_price?(Subscription.price_id(:annual))
+    assert Subscription.known_price?(subscriptions(:one).paddle_price_id)
+    assert_not Subscription.known_price?("pri_unknown")
+  end
+
   test "plan_from_price_id falls back to annual for unknown price id" do
     assert_equal "annual", Subscription.plan_from_price_id("pri_unknown")
   end

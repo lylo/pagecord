@@ -4,7 +4,7 @@
     "items": [
       {
         "price": {
-          "id": "pri_01gsz8x8sawmvhz1pv30nge1ke",
+          "id": "pri_01kgccx380dyd8sv1c5mr7qgh4",
           "name": "Monthly (per seat)",
           "type": "standard",
           "status": "active",
@@ -147,7 +147,7 @@
             "import_meta": null,
             "tax_category": "standard"
           },
-          "price_id": "pri_01gsz8x8sawmvhz1pv30nge1ke",
+          "price_id": "pri_01kgccx380dyd8sv1c5mr7qgh4",
           "quantity": 1,
           "tax_rate": "0",
           "unit_totals": {

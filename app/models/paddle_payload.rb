@@ -48,6 +48,10 @@ class PaddlePayload
     required(:items, 0, :price, :id)
   end
 
+  def price_ids
+    Array(@data[:items]).filter_map { |item| item.dig(:price, :id) }
+  end
+
   def unit_price
     required(:items, 0, :price, :unit_price, :amount).to_i
   end
