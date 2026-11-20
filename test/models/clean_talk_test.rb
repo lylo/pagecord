@@ -29,7 +29,7 @@ class CleanTalkTest < ActiveSupport::TestCase
       sender_email: "test@example.com",
       sender_nickname: "Test User",
       message: "Hello!",
-      sender_info: { page_url: "https://olly.world/hello", REFERRER: "https://olly.world/hello" }.to_json
+      sender_info: { page_url: "https://olly.world/hello", REFFERRER: "https://olly.world/hello" }.to_json
     }.to_json, headers: { "Content-Type" => "application/json" }).returns(stub_response)
 
     CleanTalk.check_message(email: "test@example.com", nickname: "Test User", message: "Hello!", page_url: "https://olly.world/hello")

@@ -22,7 +22,7 @@ class CleanTalk
     body[:sender_ip] = ip if ip
 
     if page_url
-      body[:sender_info] = { page_url: page_url, REFERRER: page_url }.to_json
+      body[:sender_info] = { page_url: page_url, REFFERRER: page_url }.to_json
     end
 
     request(body)
