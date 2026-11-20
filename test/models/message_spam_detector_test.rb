@@ -62,11 +62,12 @@ class MessageSpamDetectorTest < ActiveSupport::TestCase
     refute @detector.spam?
   end
 
-  test "passes page_url to CleanTalk" do
+  test "passes the sender's address and page_url to CleanTalk" do
     detector = MessageSpamDetector.new(
       name: "Test User",
       email: "test@example.com",
       message: "Hello!",
+      ip: "1.2.3.4",
       page_url: "https://olly.world/hello"
     )
 
@@ -74,6 +75,7 @@ class MessageSpamDetectorTest < ActiveSupport::TestCase
       email: "test@example.com",
       nickname: "Test User",
       message: "Hello!",
+      ip: "1.2.3.4",
       page_url: "https://olly.world/hello"
     ).returns({ "allow" => 1, "comment" => "Clean" })
 

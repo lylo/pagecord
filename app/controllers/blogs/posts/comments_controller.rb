@@ -20,7 +20,7 @@ class Blogs::Posts::CommentsController < Blogs::BaseController
 
   def create
     @comment = @post.comments.new(comment_params)
-    CheckPostCommentJob.perform_later(@comment.id) if @comment.save
+    CheckPostCommentJob.perform_later(@comment.id, request.ip) if @comment.save
 
     load_comments
     render :index, status: @comment.persisted? ? :ok : :unprocessable_entity

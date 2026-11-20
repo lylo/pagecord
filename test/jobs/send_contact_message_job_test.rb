@@ -6,6 +6,7 @@ class SendContactMessageJobTest < ActiveJob::TestCase
 
   setup do
     @original_detection = ENV["EMAIL_SPAM_DETECTION"]
+    @original_key = ENV["CLEANTALK_AUTH_KEY"]
     @blog = blogs(:joel)
     @contact_message = Blog::ContactMessage.create!(
       blog: @blog,
@@ -17,6 +18,7 @@ class SendContactMessageJobTest < ActiveJob::TestCase
 
   teardown do
     ENV["EMAIL_SPAM_DETECTION"] = @original_detection
+    ENV["CLEANTALK_AUTH_KEY"] = @original_key
   end
 
   test "sends email and deletes contact message" do
@@ -63,5 +65,15 @@ class SendContactMessageJobTest < ActiveJob::TestCase
     assert_emails 1 do
       SendContactMessageJob.perform_now(@contact_message.id)
     end
+  end
+
+  test "sends the submitter's address to CleanTalk" do
+    ENV["EMAIL_SPAM_DETECTION"] = "true"
+    ENV["CLEANTALK_AUTH_KEY"] = "test_key"
+    CleanTalk.expects(:check_message).with(has_entry(ip: "1.2.3.4")).returns({ "allow" => 0 })
+
+    SendContactMessageJob.perform_now(@contact_message.id, "1.2.3.4")
+
+    assert_nil Blog::ContactMessage.find_by(id: @contact_message.id)
   end
 end

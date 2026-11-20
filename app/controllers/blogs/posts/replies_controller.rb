@@ -23,7 +23,7 @@ class Blogs::Posts::RepliesController < Blogs::BaseController
     @reply = @post.replies.new(reply_params)
 
     if @reply.save
-      SendPostReplyJob.perform_later(@reply.id)
+      SendPostReplyJob.perform_later(@reply.id, request.ip)
 
       redirect_to sent_post_replies_path(@post)
     else

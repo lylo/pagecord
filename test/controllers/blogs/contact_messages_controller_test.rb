@@ -21,7 +21,7 @@ class Blogs::ContactMessagesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :success
-    assert_enqueued_jobs 1, only: SendContactMessageJob
+    assert_enqueued_with job: SendContactMessageJob, args: [ Blog::ContactMessage.last.id, "127.0.0.1" ]
   end
 
   test "should return 422 for non-premium user" do

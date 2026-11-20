@@ -3,9 +3,10 @@ class MessageSpamDetector
 
   attr_reader :result
 
-  def initialize(name:, message:, email: nil, page_url: nil)
+  def initialize(name:, message:, email: nil, ip: nil, page_url: nil)
     @name = name
     @email = email
+    @ip = ip
     @message = message
     @page_url = page_url
   end
@@ -18,6 +19,7 @@ class MessageSpamDetector
       email: @email,
       nickname: @name,
       message: @message,
+      ip: @ip,
       page_url: @page_url
     )
 

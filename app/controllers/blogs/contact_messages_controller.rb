@@ -12,7 +12,7 @@ class Blogs::ContactMessagesController < Blogs::BaseController
     @contact_message = @blog.contact_messages.new(contact_message_params)
 
     if @contact_message.save
-      SendContactMessageJob.perform_later(@contact_message.id)
+      SendContactMessageJob.perform_later(@contact_message.id, request.ip)
       @message = I18n.t("email_form.success_message")
     else
       @message = I18n.t("email_form.error_message")

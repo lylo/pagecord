@@ -35,6 +35,19 @@ class CleanTalkTest < ActiveSupport::TestCase
     CleanTalk.check_message(email: "test@example.com", nickname: "Test User", message: "Hello!", page_url: "https://olly.world/hello")
   end
 
+  test "includes sender_ip when provided" do
+    CleanTalk.expects(:post).with("/api2.0", body: {
+      method_name: "check_message",
+      auth_key: ENV["CLEANTALK_AUTH_KEY"],
+      sender_email: "test@example.com",
+      sender_nickname: "Test User",
+      message: "Hello!",
+      sender_ip: "1.2.3.4"
+    }.to_json, headers: { "Content-Type" => "application/json" }).returns(stub(body: { "allow" => 1 }.to_json))
+
+    CleanTalk.check_message(email: "test@example.com", nickname: "Test User", message: "Hello!", ip: "1.2.3.4")
+  end
+
   test "sends check_newuser request with the sender's address and browser" do
     CleanTalk.expects(:post).with("/api2.0", body: {
       method_name: "check_newuser",

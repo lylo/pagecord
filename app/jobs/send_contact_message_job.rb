@@ -1,11 +1,11 @@
 class SendContactMessageJob < ApplicationJob
   queue_as :default
 
-  def perform(contact_message_id)
+  def perform(contact_message_id, ip = nil)
     contact_message = Blog::ContactMessage.find_by(id: contact_message_id)
     return unless contact_message
 
-    if contact_message.spam?
+    if contact_message.spam?(ip: ip)
       Rails.logger.info("[SendContactMessageJob] Spam detected, destroying contact message #{contact_message.id}")
       contact_message.destroy!
       return

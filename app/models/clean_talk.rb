@@ -7,7 +7,7 @@ class CleanTalk
 
   class NoVerdict < StandardError; end
 
-  def self.check_message(email:, nickname:, message:, page_url: nil)
+  def self.check_message(email:, nickname:, message:, ip: nil, page_url: nil)
     body = {
       method_name: "check_message",
       auth_key: ENV["CLEANTALK_AUTH_KEY"],
@@ -19,6 +19,7 @@ class CleanTalk
     # Comments deliberately collect no email address, so score on nickname and
     # message alone rather than sending a blank sender.
     body.delete(:sender_email) if email.blank?
+    body[:sender_ip] = ip if ip
 
     if page_url
       body[:sender_info] = { page_url: page_url, REFERRER: page_url }.to_json

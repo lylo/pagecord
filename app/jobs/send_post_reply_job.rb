@@ -1,11 +1,11 @@
 class SendPostReplyJob < ApplicationJob
   queue_as :default
 
-  def perform(reply_id)
+  def perform(reply_id, ip = nil)
     reply = Post::Reply.find_by(id: reply_id)
     return unless reply
 
-    if reply.spam?
+    if reply.spam?(ip: ip)
       Rails.logger.info("[SendPostReplyJob] Spam detected, destroying reply #{reply.id}")
       reply.destroy!
       return
