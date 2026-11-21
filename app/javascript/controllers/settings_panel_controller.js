@@ -1,7 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 
+const WORDS_PER_MINUTE = 230
+const BLOCKS = "p, li, h1, h2, h3, h4, h5, h6, blockquote, pre, td, th, br"
+
 export default class extends Controller {
-  static targets = ["panel", "tags"]
+  static targets = ["panel", "tags", "wordCount", "characterCount", "readingTime"]
 
   connect() {
     if (this.panelTarget.querySelector(".field-error:not(:empty)")) this.open()
@@ -15,6 +18,8 @@ export default class extends Controller {
     // Focus the first field once the drawer is on screen - it's still
     // visibility:hidden on the first frame, so focus wouldn't take
     requestAnimationFrame(() => requestAnimationFrame(() => this.firstField?.focus()))
+
+    this.updateStats()
   }
 
   close() {
@@ -53,6 +58,29 @@ export default class extends Controller {
 
   get firstField() {
     return this.panelTarget.querySelector("input:not([type=hidden]), textarea, select, [contenteditable]:not([contenteditable=false])")
+  }
+
+  updateStats() {
+    const text = this.#writtenText
+    const words = this.#segments(text, "word").filter(segment => segment.isWordLike).length
+
+    this.wordCountTarget.textContent = words.toLocaleString("en")
+    this.characterCountTarget.textContent = this.#segments(text.replace(/\n/g, ""), "grapheme").length.toLocaleString("en")
+    this.readingTimeTarget.textContent = `${Math.ceil(words / WORDS_PER_MINUTE)} min`
+  }
+
+  #segments(text, granularity) {
+    return [...new Intl.Segmenter(undefined, { granularity }).segment(text)]
+  }
+
+  get #writtenText() {
+    const html = this.element.querySelector("lexxy-editor")?.value || ""
+    const body = new DOMParser().parseFromString(html, "text/html").body
+
+    body.querySelectorAll("action-text-attachment").forEach(attachment => attachment.remove())
+    body.querySelectorAll(BLOCKS).forEach(block => block.append("\n"))
+
+    return body.textContent
   }
 
   refreshTags(event) {
