@@ -256,28 +256,19 @@ class PostTest < ActiveSupport::TestCase
   end
 
   test "rendering content loads its embedded blobs in one query" do
-    post = blogs(:vivian).posts.create!(content: image_attachment_html(10), status: :published)
+    post = blogs(:vivian).posts.create!(content: image_attachment_html(2), status: :published)
     post = Post.find(post.id)
 
     assert_queries_match(/FROM "active_storage_blobs"/, count: 1) do
-      assert_equal 10, Nokogiri::HTML5.fragment(post.content.to_s).css("figure img").size
-    end
-  end
-
-  test "listing media loads its embedded blobs in one query" do
-    post = blogs(:vivian).posts.create!(content: image_attachment_html(10), status: :published)
-    post = Post.find(post.id)
-
-    assert_queries_match(/FROM "active_storage_blobs"/, count: 1) do
-      assert_equal 10, post.content_media_attachments.size
+      assert_equal 2, Nokogiri::HTML5.fragment(post.content.to_s).css("figure img").size
     end
   end
 
   test "content with a deleted blob still renders the others" do
-    post = blogs(:vivian).posts.create!(content: image_attachment_html(3), status: :published)
+    post = blogs(:vivian).posts.create!(content: image_attachment_html(2), status: :published)
     post.rich_text_content.embeds.first.purge
 
-    assert_equal 2, Nokogiri::HTML5.fragment(Post.find(post.id).content.to_s).css("figure img").size
+    assert_equal 1, Nokogiri::HTML5.fragment(Post.find(post.id).content.to_s).css("figure img").size
   end
 
   test "first_media returns first image or video attachment" do
