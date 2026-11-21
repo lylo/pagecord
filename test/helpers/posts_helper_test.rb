@@ -35,6 +35,14 @@ class PostsHelperTest < ActionView::TestCase
     assert_equal [ "https://example.org", "https://example.com" ], links.map { |link| link["href"] }
   end
 
+  test "render_post_content leaves the quotes around a URL out of its link" do
+    post = @blog.posts.build(content: %(<p>See "https://example.org" and &#39;https://example.com&#39;</p>))
+
+    links = Nokogiri::HTML::DocumentFragment.parse(render_post_content(post)).css("a")
+
+    assert_equal [ "https://example.org", "https://example.com" ], links.map { |link| link["href"] }
+  end
+
   test "render_post_content keeps backslash sequences in code blocks intact through auto-linking" do
     post = @blog.posts.build(content: "<p>Visit https://example.org</p><pre><code>puts('hi\\') # \\' stays literal</code></pre>")
 

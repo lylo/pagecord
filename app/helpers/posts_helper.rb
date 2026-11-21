@@ -88,7 +88,7 @@ module PostsHelper
       doc = Nokogiri::HTML::DocumentFragment.parse(content)
 
       doc.xpath(".//text()[not(ancestor::a or ancestor::pre or ancestor::code)]").each do |node|
-        node.replace(auto_link(ERB::Util.html_escape(node.text), sanitize: false)) if node.text.match?(AUTO_LINKABLE)
+        node.replace(auto_link(node.to_html, sanitize: false)) if node.text.match?(AUTO_LINKABLE)
       end
 
       doc.to_html
