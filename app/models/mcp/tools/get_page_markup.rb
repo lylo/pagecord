@@ -38,7 +38,7 @@ class Mcp::Tools::GetPageMarkup < Mcp::Tool
 
       # The router, not the app, so the executor middleware doesn't reset Current mid-request.
       def render_page(blog, url)
-        env = Rack::MockRequest.env_for(url, "action_dispatch.remote_ip" => "mcp-#{blog.id}", Blogs::AccessControl::OWNER_RENDER_KEY => blog.id)
+        env = Rack::MockRequest.env_for(url, "REMOTE_ADDR" => "mcp-#{blog.id}", "action_dispatch.remote_ip" => "mcp-#{blog.id}", Blogs::AccessControl::OWNER_RENDER_KEY => blog.id)
           .merge(Rails.application.env_config)
         status, headers, body = I18n.with_locale(I18n.locale) { Rails.application.routes.call(env) }
 

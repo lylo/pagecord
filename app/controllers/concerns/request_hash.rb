@@ -14,7 +14,7 @@ module RequestHash
     def request_hash(duration = :day)
       salt = ENV["SALT"] || "1e57a452a094728c291bc42bf2bc7eb8d9fd8844d1369da2bf728588b46c4e75"
 
-      ip = request.remote_ip
+      ip = request.ip
       date_component = case duration
       when :year
         Time.zone.now.year

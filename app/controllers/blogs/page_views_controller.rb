@@ -9,7 +9,7 @@ class Blogs::PageViewsController < Blogs::BaseController
     TrackPageViewJob.perform_later(
       @blog.id,
       params[:post_token],
-      request.remote_ip,
+      request.ip,
       request.user_agent,
       params[:path],
       params[:referrer],

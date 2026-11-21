@@ -72,7 +72,7 @@ Rails.application.configure do
   config.log_tags = [
     :request_id,
     ->(request) { "host=#{request.host}" },
-    ->(request) { "ip=#{request.remote_ip}" },
+    ->(request) { "ip=#{request.ip}" },
     ->(req) { "user_agent=#{req.user_agent}" }
   ]
   config.logger = tagged_logger

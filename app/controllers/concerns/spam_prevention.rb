@@ -115,7 +115,7 @@ module SpamPrevention
 
     def turnstile_check
       return unless turnstile_enabled?
-      return if Turnstile.verify?(params["cf-turnstile-response"], remote_ip: request.remote_ip)
+      return if Turnstile.verify?(params["cf-turnstile-response"], remote_ip: request.ip)
 
       Rails.logger.warn "Turnstile check failed. Request blocked."
       reject_turnstile

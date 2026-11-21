@@ -27,7 +27,7 @@ class Api::BaseController < ActionController::API
     render json: { error: "Page out of range" }, status: :bad_request
   end
 
-  rate_limit to: 60, within: 1.minute, by: -> { Current.blog&.id || request.remote_ip }, with: :rate_limit_reached
+  rate_limit to: 60, within: 1.minute, by: -> { Current.blog&.id || request.ip }, with: :rate_limit_reached
 
   private
 
