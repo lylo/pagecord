@@ -221,7 +221,9 @@ footer.blog-footer #brand svg {
 .audio-player__tags {
   bottom: 0;
   display: flex;
+  font-family: system-ui, sans-serif;
   gap: 0.25em;
+  letter-spacing: normal;
   pointer-events: none;
   position: absolute;
   right: 0;
