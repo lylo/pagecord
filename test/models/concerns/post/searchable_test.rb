@@ -26,6 +26,36 @@ class Post::SearchableTest < ActiveSupport::TestCase
     assert_equal %w[ wombats ], lexemes(post)
   end
 
+  test "finds a post by a word in its title, tags or content" do
+    post = @blog.posts.create!(title: "Quokka", content: "<p>A day on Rottnest</p>", tags_string: "marsupials")
+
+    %w[ quokka rottnest marsupials ].each do |word|
+      assert_equal [ post ], @blog.posts.search_by_title_and_content(word)
+    end
+  end
+
+  test "matches the start of a word and requires every term" do
+    post = @blog.posts.create!(content: "<p>Quokkas on Rottnest</p>")
+
+    assert_equal [ post ], @blog.posts.search_by_title_and_content("quok rott")
+    assert_empty @blog.posts.search_by_title_and_content("quokkas wombat")
+  end
+
+  test "finds nothing for punctuation alone" do
+    @blog.posts.create!(content: "<p>Quokkas</p>")
+
+    assert_empty @blog.posts.search_by_title_and_content("' : \\ ? & | ! (")
+  end
+
+  test "follows a renamed tag" do
+    post = @blog.posts.create!(content: "<p>Quokkas</p>", tags_string: "marsupials")
+
+    @blog.posts.rename_tag("marsupials", "macropods")
+
+    assert_equal [ post ], @blog.posts.search_by_title_and_content("macropods")
+    assert_empty @blog.posts.search_by_title_and_content("marsupials")
+  end
+
   private
     def lexemes(post)
       Post.where(id: post.id).pick(Arel.sql("tsvector_to_array(search_vector)"))

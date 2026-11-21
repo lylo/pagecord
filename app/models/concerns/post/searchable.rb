@@ -2,24 +2,16 @@ module Post::Searchable
   extend ActiveSupport::Concern
 
   included do
-    include PgSearch::Model
-
     self.ignored_columns += [ "search_vector" ]
 
     around_save :keep_search_vector
 
-    # Fast pg_search without ranking for scalability
-    pg_search_scope :search_by_title_and_content,
-      against: [ :title, :tag_list ],
-      associated_against: {
-        rich_text_content: [ :body ]
-      },
-      using: {
-        tsearch: {
-          dictionary: "simple",
-          prefix: true
-        }
-      }
+    # Each word is quoted so to_tsquery reads it as text, and :* matches the start of a word.
+    scope :search_by_title_and_content, ->(query) {
+      tsquery = query.split.map { "' #{it.gsub(/['?\\:]/, " ")} ':*" }.join(" & ")
+
+      where("(posts.search_vector || to_tsvector('simple', array_to_string(posts.tag_list, ' '))) @@ to_tsquery('simple', ?)", tsquery)
+    }
 
     def self.search_exact_phrase(query)
       return all if query.blank?

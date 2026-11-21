@@ -558,6 +558,7 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
 
   test "should match only posts containing every search word" do
     login_as users(:joel)
+    blogs(:joel).posts.each(&:update_search_vector)
 
     get app_posts_path(search: "Street Photography")
 
@@ -586,6 +587,8 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "searching keeps drafts on their own tab" do
+    @user.blog.posts.each(&:update_search_vector)
+
     get app_posts_path(search: "post", tab: "drafts")
     assert_includes @response.body, posts(:vivian_draft).title
 
@@ -595,6 +598,8 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "each tab counts its own search results" do
+    @user.blog.posts.each(&:update_search_vector)
+
     get app_posts_path(search: "post")
 
     assert_select "#posts p", text: /1 post matching/

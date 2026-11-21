@@ -4,6 +4,8 @@ class Blogs::SearchesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @blog = blogs(:joel)
 
+    @blog.all_posts.each(&:update_search_vector)
+
     host_subdomain! @blog.subdomain
 
     Rails.cache.clear

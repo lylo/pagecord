@@ -345,9 +345,6 @@ GEM
     pg (1.7.0-x86_64-linux-musl)
     pg_query (6.2.5)
       google-protobuf (>= 4.34.0)
-    pg_search (2.4.0)
-      activerecord (>= 8.0)
-      activesupport (>= 8.0)
     pghero (4.1.0)
       activerecord (>= 7.2)
     postmark (1.25.1)
@@ -573,7 +570,6 @@ DEPENDENCIES
   pagy (~> 43.8)
   pg
   pg_query (>= 2)
-  pg_search
   pghero
   postmark-rails
   premailer-rails (~> 1.12)
