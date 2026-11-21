@@ -34,6 +34,13 @@ class ImageHelperTest < ActionView::TestCase
     assert_not_includes resized_image_url(@blob, width: 1600, height: 1200), "/cdn-cgi/image/"
   end
 
+  test "serves an image that cannot be transformed as it was uploaded" do
+    Rails.configuration.x.cloudflare_image_resizing = false
+    @blob.update!(content_type: "image/svg+xml")
+
+    assert_equal rails_public_blob_url(@blob), resized_image_url(@blob, width: 1600, height: 1200)
+  end
+
   test "uses Cloudflare when the blob has not been analysed" do
     @blob.update!(metadata: {})
 

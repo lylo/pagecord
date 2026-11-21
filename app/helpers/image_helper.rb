@@ -16,6 +16,8 @@ module ImageHelper
       options += ",fit=cover,gravity=auto" if crop
 
       "#{base_url}/cdn-cgi/image/#{options}/#{public_url}"
+    elsif !blob.variable?
+      rails_public_blob_url(blob)
     else
       resize_method = crop ? :resize_to_fill : :resize_to_limit
       variant = blob.variant(
