@@ -25,6 +25,11 @@ class Blogs::SearchesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".tag-filter-notice", text: /\d+ posts matching photography/
   end
 
+  test "search results do not load post content" do
+    assert_no_queries_match(/FROM "action_text_rich_texts" WHERE .*"record_id" IN/) { get blog_search_path(q: "photography") }
+    assert_select ".post-row", minimum: 1
+  end
+
   test "should show empty state when nothing matches" do
     get blog_search_path(q: "xyzzy")
 

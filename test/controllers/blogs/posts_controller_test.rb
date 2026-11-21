@@ -45,6 +45,22 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".year-header time", count: 0
   end
 
+  test "a list of post titles does not load post content" do
+    @blog.title_layout!
+
+    assert_no_queries_match(/FROM "action_text_rich_texts" WHERE .*"record_id" IN/) { get blog_posts_path }
+    assert_response :success
+  end
+
+  test "the RSS feed of a title layout blog renders post content" do
+    @blog.title_layout!
+
+    get blog_posts_path(format: :rss)
+
+    assert_response :success
+    assert_includes response.body, "<description>"
+  end
+
   test "should render dates in the blog's date format" do
     @blog.update!(date_format: "yyyy-mm-dd")
 

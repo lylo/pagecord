@@ -12,6 +12,13 @@ class Blogs::EmbeddedPostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "title and by_year pages do not load post content" do
+    %w[title by_year].each do |style|
+      assert_no_queries_match(/FROM "action_text_rich_texts" WHERE .*"record_id" IN/) { get blog_embedded_posts_path(style: style, frame_id: "posts") }
+      assert_response :success
+    end
+  end
+
   test "keeps filters and sort order on later pages" do
     12.times do |i|
       @blog.posts.create!(

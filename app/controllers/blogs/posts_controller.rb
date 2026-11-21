@@ -67,9 +67,8 @@ class Blogs::PostsController < Blogs::BaseController
       @current_tags = params[:tag].split(",").map(&:strip) if params[:tag].present?
       @current_lang = params[:lang].to_s.downcase.split("-").first if params[:lang].present?
 
-      scope = @blog.posts.visible
-        .for_blog_render
-        .ordered_by_published
+      scope = @blog.posts.visible.ordered_by_published
+      scope = scope.for_blog_render unless @blog.title_layout? && request.format.html?
       scope = scope.tagged_with_any(@current_tags) if @current_tags
       scope = scope.tagged_without_any(params[:without_tag].split(",").map(&:strip)) if params[:without_tag].present?
       scope = scope.titled(params[:title]) if params[:title].present?

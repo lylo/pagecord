@@ -14,12 +14,7 @@ class Blogs::EmbeddedPostsController < Blogs::BaseController
     @style = post_list_params.style
     raise ActiveRecord::RecordNotFound unless DynamicVariable::PostsTag.valid_style?(@style)
 
-    relation = @blog.posts.visible
-      .filtered_for_dynamic_variable(**post_list_params.filter_args)
-
-    relation = DynamicVariable::PostsTag.with_gallery_image(relation) if @style == "gallery"
-
-    relation = relation.for_blog_render
+    relation = DynamicVariable::PostsTag.for_style(@blog.posts.visible.filtered_for_dynamic_variable(**post_list_params.filter_args), @style)
 
     @pagy, @posts = pagy(relation, limit: DynamicVariable::PostsTag.page_size_for(@style))
     @frame_id = params[:frame_id].presence || SecureRandom.hex(4)

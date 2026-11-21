@@ -2,6 +2,7 @@ class DynamicVariable::PostsTag
   STYLES = %w[card stream title gallery by_year].freeze
   PAGE_SIZES = { "card" => 20, "stream" => 10, "title" => 100, "gallery" => 40, "by_year" => 100 }.freeze
   DEFAULT_STYLE = "title"
+  TITLE_ONLY_STYLES = %w[title by_year].freeze
 
   class << self
     def valid_style?(style)
@@ -10,6 +11,11 @@ class DynamicVariable::PostsTag
 
     def page_size_for(style)
       PAGE_SIZES.fetch(style.to_s)
+    end
+
+    def for_style(relation, style)
+      relation = with_gallery_image(relation) if style == "gallery"
+      style.in?(TITLE_ONLY_STYLES) ? relation : relation.for_blog_render
     end
 
     def with_gallery_image(relation)
@@ -71,10 +77,6 @@ class DynamicVariable::PostsTag
     end
 
     def filtered_relation
-      relation = @blog.posts.visible
-        .filtered_for_dynamic_variable(**@post_list_params.filter_args)
-
-      relation = self.class.with_gallery_image(relation) if @style == "gallery"
-      relation.for_blog_render
+      self.class.for_style(@blog.posts.visible.filtered_for_dynamic_variable(**@post_list_params.filter_args), @style)
     end
 end

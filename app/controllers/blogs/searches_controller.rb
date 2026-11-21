@@ -10,7 +10,7 @@ class Blogs::SearchesController < Blogs::BaseController
     @query = params[:q].to_s.strip.first(MAX_QUERY_LENGTH)
     return if @query.blank?
 
-    scope = @blog.all_posts.visible.for_blog_render
+    scope = @blog.all_posts.visible
       .order(Arel.sql("CASE WHEN posts.is_page THEN posts.updated_at ELSE posts.published_at END DESC"))
 
     scope = if @query.match?(/^".*"$/)
