@@ -1,10 +1,13 @@
 class ExcerptBreak
   MARKER_BLOCK = /\A\s*\{\{\s*more\s*\}\}\s*\z/i
   WP_COMMENT_BLOCK = /\A\s*<!--\s*more\s*-->\s*\z/i
+  MARKER = /more\s*(?:\}\}|--)/i
 
   class << self
     # Returns HTML before the first marker, or nil if no marker found.
     def extract(html)
+      return nil unless html.match?(MARKER)
+
       doc = parse(html)
       block = find_marker_block(doc)
       return nil unless block
@@ -15,6 +18,8 @@ class ExcerptBreak
 
     # Removes the marker block from HTML, keeps all other content.
     def strip(html)
+      return html unless html.match?(MARKER)
+
       doc = parse(html)
       block = find_marker_block(doc)
       return html unless block
