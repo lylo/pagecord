@@ -255,6 +255,31 @@ class PostTest < ActiveSupport::TestCase
     assert_operator query_count, :<, 40, "Expected bounded query count, got #{query_count}"
   end
 
+  test "rendering content loads its embedded blobs in one query" do
+    post = blogs(:vivian).posts.create!(content: image_attachment_html(10), status: :published)
+    post = Post.find(post.id)
+
+    assert_queries_match(/FROM "active_storage_blobs"/, count: 1) do
+      assert_equal 10, Nokogiri::HTML5.fragment(post.content.to_s).css("figure img").size
+    end
+  end
+
+  test "listing media loads its embedded blobs in one query" do
+    post = blogs(:vivian).posts.create!(content: image_attachment_html(10), status: :published)
+    post = Post.find(post.id)
+
+    assert_queries_match(/FROM "active_storage_blobs"/, count: 1) do
+      assert_equal 10, post.content_media_attachments.size
+    end
+  end
+
+  test "content with a deleted blob still renders the others" do
+    post = blogs(:vivian).posts.create!(content: image_attachment_html(3), status: :published)
+    post.rich_text_content.embeds.first.purge
+
+    assert_equal 2, Nokogiri::HTML5.fragment(Post.find(post.id).content.to_s).css("figure img").size
+  end
+
   test "first_media returns first image or video attachment" do
     blob = ActiveStorage::Blob.create_and_upload!(
       io: StringIO.new("video"),
@@ -265,7 +290,7 @@ class PostTest < ActiveSupport::TestCase
       content: %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>)
     )
 
-    rendered_post = Post.where(id: post.id).with_full_rich_text.first
+    rendered_post = Post.where(id: post.id).for_blog_render.first
 
     assert_equal blob, rendered_post.first_media
   end
@@ -280,7 +305,7 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "A lighthouse", post.first_image_alt
   end
 
-  test "content_media_attachments follows document order when embeds are preloaded" do
+  test "content_media_attachments follows document order" do
     a, b, c = 3.times.map { |i|
       ActiveStorage::Blob.create_and_upload!(io: StringIO.new("img#{i}"), filename: "#{i}.jpg", content_type: "image/jpeg")
     }

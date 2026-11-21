@@ -45,7 +45,7 @@ class Blogs::Posts::RepliesController < Blogs::BaseController
     end
 
     def load_post
-      @post = @blog.posts.with_full_rich_text.includes(blog: :avatar_attachment).find_by!(token: params[:post_token])
+      @post = @blog.posts.with_rich_text_content.includes(blog: :avatar_attachment).find_by!(token: params[:post_token])
     end
 
     def signed_form_record

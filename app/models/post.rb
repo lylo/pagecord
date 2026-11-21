@@ -42,16 +42,7 @@ class Post < ApplicationRecord
   scope :for_locale, ->(locale, blog_locale) {
     blog_locale == locale ? where(locale: [ locale, nil ]) : where(locale: locale)
   }
-  scope :with_full_rich_text, -> {
-      with_rich_text_content_and_embeds.includes(
-        :rich_text_content,
-        rich_text_content: [
-          :embeds_attachments,
-          { embeds_attachments: { blob: :variant_records } }
-        ]
-      )
-    }
-  scope :for_blog_render, -> { with_full_rich_text.with_attached_attachments.with_attached_open_graph_image.includes(:upvotes) }
+  scope :for_blog_render, -> { with_rich_text_content.with_attached_attachments.with_attached_open_graph_image.includes(:upvotes) }
   after_commit :touch_blog, on: [ :create, :update, :destroy ]
 
   def content_present
@@ -200,14 +191,7 @@ class Post < ApplicationRecord
   def content_media_attachments
     return [] unless content.body.present?
 
-    attachables = if rich_text_content&.association(:embeds_attachments)&.loaded?
-      blobs_by_sgid = rich_text_content.embeds_attachments.filter_map(&:blob).index_by(&:attachable_sgid)
-      content.body.fragment.find_all("#{ActionText::Attachment.tag_name}[sgid]").filter_map { |node| blobs_by_sgid[node["sgid"]] }
-    else
-      content.body.attachments.filter_map(&:attachable)
-    end
-
-    attachables.select { |attachable| attachable.try(:image?) || attachable.try(:video?) }
+    content.body.attachables.select { |attachable| attachable.try(:image?) || attachable.try(:video?) }
   end
 
   # Returns full plain text extracted from ActionText content.
