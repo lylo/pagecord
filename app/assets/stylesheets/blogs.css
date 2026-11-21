@@ -228,7 +228,7 @@ footer.blog-footer #brand svg {
 
 /* The element's own text is an invisible all-zero time that sets the width; the visible time is in ::after */
 .audio-player__time {
-  background: var(--color-text);
+  background: var(--color-text-muted);
   border-radius: 0.3em;
   color: transparent;
   font-size: 0.7em;
@@ -248,7 +248,7 @@ footer.blog-footer #brand svg {
 }
 
 .audio-player__speed {
-  background: var(--color-text-light);
+  background: var(--color-text-muted);
   border: 0;
   border-radius: 0.3em;
   color: var(--color-bg);
@@ -264,6 +264,12 @@ footer.blog-footer #brand svg {
 
 .audio-player--started .audio-player__speed {
   display: flex;
+}
+
+@media (hover: hover) {
+  .audio-player__speed:hover {
+    background: var(--color-text);
+  }
 }
 
 /* ============================= */
