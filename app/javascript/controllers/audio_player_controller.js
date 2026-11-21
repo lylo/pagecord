@@ -98,7 +98,6 @@ export default class extends Controller {
     this.resizeObserver.unobserve(player.querySelector(".audio-player__waveform"))
     player.remove()
     delete audio.dataset.action
-    audio.controls = true
   }
 
   enhance(audio) {
@@ -131,7 +130,6 @@ export default class extends Controller {
     track.append(waveform, tags)
     player.append(toggle, track)
     audio.before(player)
-    audio.controls = false
     audio.dataset.action = [ "play", "pause", "timeupdate", "durationchange" ].map(event => `${event}->audio-player#render`).concat("play->audio-player#started", "canplay->audio-player#resume", "playing->audio-player#resume", "error->audio-player#restore").join(" ")
     this.render({ target: audio })
     this.resizeObserver.observe(waveform)

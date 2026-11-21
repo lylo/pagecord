@@ -135,10 +135,11 @@ footer.blog-footer #brand svg {
 
 .attachment:has(> .audio-player) {
   padding: 0;
+}
 
-  audio {
-    display: none;
-  }
+/* Custom CSS can bring back the browser's player by showing the audio element and hiding .audio-player */
+:where(.attachment:has(> .audio-player)) audio {
+  display: none;
 }
 
 .audio-player__toggle,
