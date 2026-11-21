@@ -225,7 +225,7 @@ class Post < ApplicationRecord
         .gsub(%r{https?://\S+}, "")
         .gsub(/\{\{\s*(\w+)([^}]*)\}\}/, "")
         .gsub(/<!--\s*more\s*-->/i, "")
-        .gsub(/\s+/, " ")
+        .gsub(/[[:space:]]+/, " ")
         .strip
     end
 

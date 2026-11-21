@@ -144,7 +144,7 @@ class PostTest < ActiveSupport::TestCase
     post = blogs(:joel).posts.create!(title: "Guarded", content: "Original content.")
     post.stubs(:plain_text_content).raises("text summary should not be rebuilt")
 
-    post.update!(title: "Renamed")
+    post.update!(hidden: true)
 
     assert_equal "Original content.", post.text_summary
   end

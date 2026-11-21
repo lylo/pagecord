@@ -4,6 +4,10 @@ module Post::Searchable
   included do
     include PgSearch::Model
 
+    self.ignored_columns += [ "search_vector" ]
+
+    around_save :keep_search_vector
+
     # Fast pg_search without ranking for scalability
     pg_search_scope :search_by_title_and_content,
       against: [ :title, :tag_list ],
@@ -29,4 +33,22 @@ module Post::Searchable
         )
     end
   end
+
+  def update_search_vector
+    self.class.where(id: id).update_all([ "search_vector = to_tsvector('simple', ?)", search_text ])
+  end
+
+  private
+
+    def keep_search_vector
+      stale = title_changed? || content.changed?
+      yield
+      update_search_vector if stale
+    end
+
+    def search_text
+      images = content.body ? content.body.fragment.find_all("#{ActionText::Attachment.tag_name}, img") : []
+
+      [ title, plain_text_content, *images.flat_map { [ it["caption"], it["alt"] ] } ].join(" ")
+    end
 end
