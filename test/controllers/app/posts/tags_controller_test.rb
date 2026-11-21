@@ -35,6 +35,23 @@ class App::Posts::TagsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ "photos", "technology" ], posts(:photography_and_tech).reload.tag_list
   end
 
+  test "search follows a renamed tag" do
+    post = @blog.posts.create!(content: "<p>Quokkas</p>", tags_string: "marsupials")
+
+    patch app_posts_tag_path("marsupials"), params: { new_name: "macropods" }
+
+    assert_equal [ post ], @blog.posts.search_by_title_and_content("macropods")
+    assert_empty @blog.posts.search_by_title_and_content("marsupials")
+  end
+
+  test "search forgets a removed tag" do
+    @blog.posts.create!(content: "<p>Quokkas</p>", tags_string: "marsupials")
+
+    delete app_posts_tag_path("marsupials")
+
+    assert_empty @blog.posts.search_by_title_and_content("marsupials")
+  end
+
   test "should merge tags when renaming onto an existing tag" do
     patch app_posts_tag_path("photography"), params: { new_name: "technology" }
 

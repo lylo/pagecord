@@ -15,13 +15,16 @@ class App::Posts::TagsController < App::BaseController
     return redirect_to app_posts_tags_path if new_name == @tag
 
     posts.rename_tag(@tag, new_name)
+    posts.tagged_with(new_name).update_search_vectors
     @blog.touch
 
     redirect_to app_posts_tags_path, notice: "Tag was renamed to #{new_name}"
   end
 
   def destroy
+    tagged = posts.tagged_with(@tag).ids
     posts.remove_tag(@tag)
+    posts.where(id: tagged).update_search_vectors
     @blog.touch
 
     redirect_to app_posts_tags_path, notice: "Tag #{@tag} was removed from all posts"
