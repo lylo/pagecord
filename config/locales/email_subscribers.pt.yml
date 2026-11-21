@@ -40,6 +40,7 @@ pt:
     read_more: "Leia mais"
     play_audio: "Reproduzir"
     audio_position: "Posição de reprodução"
+    audio_speed: "Velocidade de reprodução"
     navigation:
       label: "Navegação entre publicações"
       previous: "Anterior"

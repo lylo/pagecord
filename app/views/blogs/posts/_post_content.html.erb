@@ -1,4 +1,12 @@
-<% audio_player = { controller: "syntax-highlight audio-player", audio_player_play_label_value: t("posts.play_audio"), audio_player_seek_label_value: t("posts.audio_position") } %>
+<% audio_player = {
+  controller: "syntax-highlight audio-player",
+  audio_player_play_label_value: t("posts.play_audio"),
+  audio_player_seek_label_value: t("posts.audio_position"),
+  audio_player_speed_label_value: t("posts.audio_speed"),
+  audio_player_title_value: post.display_title,
+  audio_player_artist_value: @blog.display_name,
+  audio_player_artwork_value: (rails_public_blob_url(@blog.avatar.variant(:thumb)) if @blog.avatar.attached?)
+} %>
 <div class="post-body lexxy-content e-content" <%= tag.attributes(data: post.has_audio? ? audio_player : { controller: "syntax-highlight" }) %>>
   <% if local_assigns[:excerpt] && post.has_excerpt? %>
     <%= render_post_excerpt(post) %>

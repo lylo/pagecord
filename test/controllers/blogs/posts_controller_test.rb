@@ -24,7 +24,7 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     with_audio = @blog.posts.create!(title: "Track", content: ActionText::Attachment.from_attachable(blob).to_html)
 
     get blog_post_path(with_audio.slug)
-    assert_select ".post-body[data-controller~=audio-player][data-audio-player-play-label-value=Play]"
+    assert_select ".post-body[data-controller~=audio-player][data-audio-player-play-label-value=Play][data-audio-player-title-value=Track]"
 
     get blog_post_path(posts(:one).slug)
     assert_select ".post-body[data-controller=syntax-highlight]"

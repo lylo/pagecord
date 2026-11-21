@@ -40,6 +40,7 @@ el:
     read_more: "Διαβάστε περισσότερα…"
     play_audio: "Αναπαραγωγή"
     audio_position: "Θέση αναπαραγωγής"
+    audio_speed: "Ταχύτητα αναπαραγωγής"
     navigation:
       label: "Πλοήγηση άρθρων"
       previous: "Προηγούμενο"

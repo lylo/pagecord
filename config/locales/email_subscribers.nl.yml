@@ -40,6 +40,7 @@ nl:
     read_more: "Lees verder"
     play_audio: "Afspelen"
     audio_position: "Afspeelpositie"
+    audio_speed: "Afspeelsnelheid"
     navigation:
       label: "Berichtnavigatie"
       previous: "Vorige"

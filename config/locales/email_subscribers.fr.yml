@@ -40,6 +40,7 @@ fr:
     read_more: "Lire la suite"
     play_audio: "Lire"
     audio_position: "Position de lecture"
+    audio_speed: "Vitesse de lecture"
     navigation:
       label: "Navigation entre les articles"
       previous: "Précédent"

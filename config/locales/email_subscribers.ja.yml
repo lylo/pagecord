@@ -40,6 +40,7 @@ ja:
     read_more: "続きを読む"
     play_audio: "再生"
     audio_position: "再生位置"
+    audio_speed: "再生速度"
     navigation:
       label: "記事ナビゲーション"
       previous: "前の記事"

@@ -40,6 +40,7 @@ id:
     read_more: "Baca selengkapnya"
     play_audio: "Putar"
     audio_position: "Posisi pemutaran"
+    audio_speed: "Kecepatan pemutaran"
     navigation:
       label: "Navigasi tulisan"
       previous: "Sebelumnya"

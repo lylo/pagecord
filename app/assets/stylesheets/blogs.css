@@ -142,7 +142,9 @@ footer.blog-footer #brand svg {
 }
 
 .audio-player__toggle,
-.audio-player__bar {
+.audio-player__bar,
+.audio-player__time,
+.audio-player__speed {
   forced-color-adjust: none;
   print-color-adjust: exact;
 }
@@ -150,7 +152,7 @@ footer.blog-footer #brand svg {
 .audio-player {
   align-items: center;
   display: flex;
-  gap: 0.75em;
+  gap: 0.5em;
   width: 100%;
 }
 
@@ -185,6 +187,13 @@ footer.blog-footer #brand svg {
   }
 }
 
+.audio-player__track {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
 .audio-player__waveform {
   align-items: center;
   cursor: pointer;
@@ -208,27 +217,53 @@ footer.blog-footer #brand svg {
   background: var(--color-accent);
 }
 
-.audio-player__time {
-  color: var(--color-text-light);
-  direction: ltr;
-  flex: none;
-  font-size: 0.8em;
-  font-variant-numeric: tabular-nums;
-  white-space: pre;
+.audio-player__tags {
+  bottom: 0;
+  display: flex;
+  gap: 0.25em;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
 }
 
-/* The element's own text is a hidden all-zero time that sets the width; the visible time is in ::after */
-.audio-player__elapsed {
-  display: inline-block;
+/* The element's own text is an invisible all-zero time that sets the width; the visible time is in ::after */
+.audio-player__time {
+  background: var(--color-text);
+  border-radius: 0.3em;
+  color: transparent;
+  font-size: 0.7em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  padding: 0.25em 0.4em;
   position: relative;
-  visibility: hidden;
 
   &::after {
+    color: var(--color-bg);
     content: attr(data-time);
+    inset: 0;
     position: absolute;
-    right: 0;
-    visibility: visible;
+    text-align: center;
+    top: 0.25em;
   }
+}
+
+.audio-player__speed {
+  background: var(--color-text-light);
+  border: 0;
+  border-radius: 0.3em;
+  color: var(--color-bg);
+  cursor: pointer;
+  display: none;
+  font: inherit;
+  font-size: 0.7em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  padding: 0.25em 0.4em;
+  pointer-events: auto;
+}
+
+.audio-player--started .audio-player__speed {
+  display: flex;
 }
 
 /* ============================= */

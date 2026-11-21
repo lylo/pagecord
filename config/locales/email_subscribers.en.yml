@@ -41,6 +41,7 @@ en:
     read_more: "Read more…"
     play_audio: "Play"
     audio_position: "Playback position"
+    audio_speed: "Playback speed"
     navigation:
       label: "Post navigation"
       previous: "Previous"
