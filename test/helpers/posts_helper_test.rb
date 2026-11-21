@@ -27,6 +27,14 @@ class PostsHelperTest < ActionView::TestCase
     assert_equal "noopener", link["rel"]
   end
 
+  test "render_post_content links a bare URL but not the URLs inside tags" do
+    post = @blog.posts.build(content: '<p>Visit https://example.org&nbsp;today <a href="https://example.com">https://example.com</a></p><pre>https://example.net</pre>')
+
+    links = Nokogiri::HTML::DocumentFragment.parse(render_post_content(post)).css("a")
+
+    assert_equal [ "https://example.org", "https://example.com" ], links.map { |link| link["href"] }
+  end
+
   test "render_post_content keeps backslash sequences in code blocks intact through auto-linking" do
     post = @blog.posts.build(content: "<p>Visit https://example.org</p><pre><code>puts('hi\\') # \\' stays literal</code></pre>")
 

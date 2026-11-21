@@ -82,29 +82,20 @@ module PostsHelper
 
   private
 
-    def safe_auto_link(content, options = {})
-      # The placeholder carries a per-run nonce so post text containing the
-      # literal placeholder cannot collide with it.
-      nonce = SecureRandom.hex(8)
+    AUTO_LINKABLE = %r{://|www\.|@}
 
-      code_blocks = []
-      protected = content.gsub(%r{<(pre|code)[^>]*>.*?</\1>}m) do |match|
-        code_blocks << match
-        "___CODE_BLOCK_#{nonce}_#{code_blocks.length - 1}___"
+    def auto_link_text(content)
+      doc = Nokogiri::HTML::DocumentFragment.parse(content)
+
+      doc.xpath(".//text()[not(ancestor::a or ancestor::pre or ancestor::code)]").each do |node|
+        node.replace(auto_link(ERB::Util.html_escape(node.text), sanitize: false)) if node.text.match?(AUTO_LINKABLE)
       end
 
-      linked = auto_link(protected, options)
-
-      code_blocks.each_with_index do |block, i|
-        # Block form, so backreference sequences in code content stay literal.
-        linked = linked.sub("___CODE_BLOCK_#{nonce}_#{i}___") { block }
-      end
-
-      linked
+      doc.to_html
     end
 
     def process_blog_links(content, blog)
-      content = safe_auto_link(content, sanitize: false)
+      content = auto_link_text(content)
       content = Html::ExternalLinksInNewTab.new(blog).transform(content) if blog.external_links_in_new_tab?
       content
     end
