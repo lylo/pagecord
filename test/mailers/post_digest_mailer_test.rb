@@ -219,6 +219,34 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_equal "\"Dear readers, notes\" <digest@newsletters.pagecord.com>", email.header["from"].to_s
   end
 
+  test "test_individual goes through SES in production when the blog owner has SES newsletter delivery" do
+    post = posts(:one)
+    post.blog.user.features = [ "ses_newsletter_delivery" ]
+
+    Rails.env.stubs(:production?).returns(true)
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_instance_of SesEmail::DeliveryMethod, email.delivery_method
+  end
+
+  test "test_individual keeps the mailer's delivery method without SES newsletter delivery" do
+    post = posts(:one)
+
+    Rails.env.stubs(:production?).returns(true)
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_instance_of Mail::TestMailer, email.delivery_method
+  end
+
+  test "test_individual keeps the mailer's delivery method outside production" do
+    post = posts(:one)
+    post.blog.user.features = [ "ses_newsletter_delivery" ]
+
+    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
+
+    assert_not_instance_of SesEmail::DeliveryMethod, email.delivery_method
+  end
+
   test "test_individual has no broadcast headers" do
     post = posts(:one)
 

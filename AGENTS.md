@@ -260,7 +260,7 @@ bundle exec brakeman             # Security scanner
 - Referrer tracking with domain normalization, search/social classification via `Referrer` model
 
 ### Email Features
-- **Mailers**: transactional mail inherits `CloudflareMailer`; subscriber-facing mail (digests, digest replies, subscription confirmations) inherits `PostmarkMailer`
+- **Mailers**: transactional mail inherits `CloudflareMailer`; newsletter mail (digests, digest replies, subscription confirmations) inherits `NewsletterMailer`, which sends through Postmark, or Amazon SES for users with `ses_newsletter_delivery`
 - **Post digests**: Emails to confirmed EmailSubscribers. Two delivery modes (`email_delivery_mode` enum in `EmailSubscribable`):
   - **Digest** (default): cron runs `post_digests:deliver` hourly on Tuesdays; `PostDigestScheduler` queues `GeneratePostDigestJob` for blogs where it is 8am in the owner's timezone. `PostDigest.generate_weekly_digest_for` finds new posts since last digest.
   - **Individual**: User manually sends single posts from the post editor via `App::Posts::BroadcastsController`. `PostDigest.generate_individual_for` creates a one-post digest. `Post::Emailable` concern provides `individually_sendable?`/`send_to_subscribers!`. A post can be sent within 14 days of publishing (`SEND_WINDOW`), and a user is capped at 2,500 individual emails a month (`User::NewsletterSending`).
