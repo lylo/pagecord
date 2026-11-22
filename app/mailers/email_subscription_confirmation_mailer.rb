@@ -1,4 +1,4 @@
-class EmailSubscriptionConfirmationMailer < PostmarkMailer
+class EmailSubscriptionConfirmationMailer < NewsletterMailer
   include RoutingHelper
   layout "mailer_minimal"
   helper RoutingHelper
@@ -8,8 +8,14 @@ class EmailSubscriptionConfirmationMailer < PostmarkMailer
 
     headers["List-Unsubscribe"] = "<#{email_subscriber_unsubscribe_url_for(@subscriber)}>"
 
-    I18n.with_locale(@subscriber.blog.locale) do
-      mail(to: @subscriber.email, subject: I18n.t("email_subscribers.mailers.confirmation.subject", blog_name: @subscriber.blog.display_name))
+    blog = @subscriber.blog
+
+    I18n.with_locale(blog.locale) do
+      mail(
+        to: @subscriber.email,
+        subject: I18n.t("email_subscribers.mailers.confirmation.subject", blog_name: blog.display_name),
+        delivery_method: delivery_method_for(blog)
+      )
     end
   end
 end

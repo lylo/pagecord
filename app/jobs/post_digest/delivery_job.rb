@@ -7,7 +7,7 @@ class PostDigest::DeliveryJob < ApplicationJob
   retry_on Aws::SESV2::Errors::TooManyRequestsException, Seahorse::Client::NetworkingError, wait: :polynomially_longer, attempts: 5
   retry_on Aws::SESV2::Errors::LimitExceededException, wait: 1.hour, attempts: 24
   discard_on Aws::SESV2::Errors::SendingPausedException, Aws::SESV2::Errors::AccountSuspendedException do |job, error|
-    Rails.error.report(error, context: { post_digest_id: job.arguments.first })
+    Sentry.capture_exception(error, extra: { post_digest_id: job.arguments.first })
   end
 
   def perform(post_digest_id)
@@ -24,7 +24,7 @@ class PostDigest::DeliveryJob < ApplicationJob
   private
 
     def delivery_class_for(digest)
-      digest.blog.user.features.include?("ses_newsletter_delivery") ? PostDigest::SesDelivery : PostDigest::PostmarkDelivery
+      digest.blog.user.ses_newsletter_delivery? ? PostDigest::SesDelivery : PostDigest::PostmarkDelivery
     end
 
     def deliver_via_mailer(digest)

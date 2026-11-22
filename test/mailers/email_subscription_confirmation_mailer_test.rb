@@ -15,6 +15,16 @@ class EmailSubscriptionConfirmationMailerTest < ActionMailer::TestCase
     assert_match subscriber.token, email.body.encoded
   end
 
+  test "confirmation email goes through SES in production when the blog owner has SES newsletter delivery" do
+    subscriber = email_subscribers(:two)
+    subscriber.blog.user.features = [ "ses_newsletter_delivery" ]
+
+    Rails.env.stubs(:production?).returns(true)
+    email = EmailSubscriptionConfirmationMailer.with(subscriber: subscriber).confirm
+
+    assert_instance_of SesEmail::DeliveryMethod, email.delivery_method
+  end
+
   test "confirmation email carries a List-Unsubscribe header" do
     subscriber = email_subscribers(:two)
 

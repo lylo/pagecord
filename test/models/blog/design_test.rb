@@ -103,7 +103,7 @@ class Blog::DesignTest < ActiveSupport::TestCase
     @blog.apply_design(@template)
     @blog.update_column(:theme_template_version, 9)
 
-    Rails.error.expects(:report).once
+    Sentry.expects(:capture_message).once
     assert_nil @blog.reload.design_stylesheet
   end
 end

@@ -5,6 +5,9 @@ require "mocha/minitest"
 
 Dir[File.join(File.dirname(__FILE__), "./support/**/*.rb")].each { |f| require(f) }
 
+# Mailers pick their delivery method from Rails.env as they load, so they are loaded before a test can stub it.
+Rails.autoloaders.main.eager_load_dir(Rails.root.join("app/mailers"))
+
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers

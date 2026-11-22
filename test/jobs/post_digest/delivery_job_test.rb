@@ -75,7 +75,7 @@ class PostDigest::DeliveryJobTest < ActiveJob::TestCase
     @blog.user.update!(features: [ "ses_newsletter_delivery" ])
     Rails.env.stubs(:production?).returns(true)
     PostDigest::SesDelivery.any_instance.stubs(:deliver_all).raises(Aws::SESV2::Errors::SendingPausedException.new(nil, "paused"))
-    Rails.error.expects(:report)
+    Sentry.expects(:capture_exception)
 
     assert_nothing_raised { PostDigest::DeliveryJob.perform_now(digest.id) }
   end

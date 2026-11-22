@@ -1,4 +1,4 @@
-class PostDigestMailer < PostmarkMailer
+class PostDigestMailer < NewsletterMailer
   include PostsHelper
   include RoutingHelper
 
@@ -31,7 +31,8 @@ class PostDigestMailer < PostmarkMailer
       to: params[:email],
       from: sender_address_for(blog),
       subject: "[Test] #{subject}",
-      template_name: "individual"
+      template_name: "individual",
+      delivery_method: delivery_method_for(blog)
     )
   end
 

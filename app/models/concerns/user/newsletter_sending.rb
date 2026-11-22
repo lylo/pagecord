@@ -3,6 +3,10 @@ module User::NewsletterSending
 
   MONTHLY_EMAIL_ALLOWANCE = 2_500
 
+  def ses_newsletter_delivery?
+    features.include?("ses_newsletter_delivery")
+  end
+
   def individual_send_allowed?
     admin? || emails_sent_this_month < MONTHLY_EMAIL_ALLOWANCE
   end

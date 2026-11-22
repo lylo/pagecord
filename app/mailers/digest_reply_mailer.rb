@@ -1,4 +1,4 @@
-class DigestReplyMailer < PostmarkMailer
+class DigestReplyMailer < NewsletterMailer
   include ActionView::Helpers::SanitizeHelper
 
   def forward_reply
@@ -17,7 +17,8 @@ class DigestReplyMailer < PostmarkMailer
       reply_to: sender,
       subject: "Re: #{@digest.subject}",
       body: reply_text(original_mail),
-      content_type: "text/plain"
+      content_type: "text/plain",
+      delivery_method: delivery_method_for(@blog)
     )
   end
 

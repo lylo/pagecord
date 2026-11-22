@@ -4,14 +4,7 @@ class PostDigest::SesDelivery
 
   def initialize(digest)
     @digest = digest
-    @client = self.class.client
-  end
-
-  def self.client
-    Aws::SESV2::Client.new(
-      region: ENV.fetch("AWS_SES_REGION", "eu-west-2"),
-      credentials: Aws::Credentials.new(ENV["AWS_SES_ACCESS_KEY_ID"], ENV["AWS_SES_SECRET_ACCESS_KEY"])
-    )
+    @client = SesEmail::DeliveryMethod.client
   end
 
   def deliver_all
@@ -44,7 +37,7 @@ class PostDigest::SesDelivery
       @client.send_email(content: { raw: { data: message.to_s } })
       @digest.deliveries.create!(email_subscriber: subscriber, delivered_at: Time.current)
     rescue Aws::SESV2::Errors::MessageRejected => e
-      Rails.error.report(e, context: { post_digest_id: @digest.id, email_subscriber_id: subscriber.id })
+      Sentry.capture_exception(e, extra: { post_digest_id: @digest.id, email_subscriber_id: subscriber.id })
     end
 
     def pause_until(deadline)

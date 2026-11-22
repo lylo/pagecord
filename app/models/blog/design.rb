@@ -47,7 +47,7 @@ module Blog::Design
     if theme_template.stylesheet?(theme_template_version)
       theme_template.stylesheet(theme_template_version)
     else
-      Rails.error.report(RuntimeError.new("Missing design stylesheet #{theme_template.stylesheet(theme_template_version)} for blog #{id}"))
+      Sentry.capture_message("Missing design stylesheet #{theme_template.stylesheet(theme_template_version)}", extra: { blog_id: id })
       nil
     end
   end
