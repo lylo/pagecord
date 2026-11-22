@@ -31,7 +31,7 @@ ActiveSupport.on_load(:active_storage_blob) do
 end
 
 ActiveSupport.on_load(:active_storage_attachment) do
-  after_upload -> { RemoveImageLocationJob.perform_later(blob) }
+  after_upload -> { RemoveImageLocationJob.perform_later(blob) if blob.attachments.minimum(:id) == id }
 end
 
 Rails.application.config.after_initialize do

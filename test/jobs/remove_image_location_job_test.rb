@@ -64,6 +64,14 @@ class RemoveImageLocationJobTest < ActiveSupport::TestCase
     assert_enqueued_with job: RemoveImageLocationJob, args: [ blob ]
   end
 
+  test "is enqueued once for a photo attached to a post twice" do
+    blob = upload "gps.jpg"
+
+    assert_enqueued_jobs 1, only: RemoveImageLocationJob do
+      posts(:one).update!(attachments: [ blob ], content: ActionText::Content.new("").append_attachables(blob).to_s)
+    end
+  end
+
   private
 
     def upload(fixture)
