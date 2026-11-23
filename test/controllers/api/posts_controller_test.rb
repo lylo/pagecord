@@ -449,6 +449,28 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes json["content"], "<figure"
   end
 
+  test "create turns a markdown image of an uploaded blob into an attachment" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+
+    post "/posts", params: {
+      title: "Blob image",
+      content: "![Stars over a hill](#{rails_blob_url(blob)})",
+      content_format: "markdown",
+      status: "published"
+    }, headers: auth_header
+
+    assert_response :created
+    content = JSON.parse(response.body)["content"]
+    assert_includes content, 'alt="Stars over a hill"'
+    assert_not_includes content, "caption="
+    assert_not_includes content, "<img"
+    assert_includes @blog.posts.order(:id).last.content.embeds.blobs, blob
+  end
+
   test "update with attachment preserves a client supplied alt" do
     blob = ActiveStorage::Blob.create_and_upload!(
       io: file_fixture("space.jpg").open,

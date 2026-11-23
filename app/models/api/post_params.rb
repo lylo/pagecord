@@ -12,6 +12,7 @@ class Api::PostParams
       attrs[:tags_string] = attrs.delete(:tags) if attrs.key?(:tags)
 
       render_markdown(attrs)
+      attrs[:content] = Html::ResolveBlobImages.new.transform(attrs[:content]) if attrs[:content]
       attrs[:open_graph_image_suppressed] = true if attrs.delete(:open_graph_image) == "text"
       validate_status(attrs)
       enrich_attachments(attrs)
