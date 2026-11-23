@@ -28,6 +28,15 @@ class LinkedImageRenderingTest < ActionDispatch::IntegrationTest
     assert_select "figure.attachment img[loading=lazy]"
   end
 
+  test "sizes images so they hold their space before loading" do
+    @image.update!(metadata: { "width" => 4000, "height" => 3000 })
+    post = published_post_with_image
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: post.slug)
+
+    assert_select "figure.attachment img[width='1600'][height='1200']"
+  end
+
   private
     def published_post_with_image(href: nil)
       @blog.posts.create!(

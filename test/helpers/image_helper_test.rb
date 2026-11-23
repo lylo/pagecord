@@ -46,4 +46,21 @@ class ImageHelperTest < ActionView::TestCase
 
     assert_includes resized_image_url(@blob, width: 1600, height: 1200), "/cdn-cgi/image/"
   end
+  test "sizes an image as it will be served, at most 1600 on its longer side" do
+    @blob.update!(metadata: { "width" => 4000, "height" => 3000 })
+
+    assert_equal({ width: 1600, height: 1200 }, image_dimensions(@blob, limit: 1600))
+  end
+
+  test "sizes a smaller image as it was uploaded" do
+    @blob.update!(metadata: { "width" => 600, "height" => 900 })
+
+    assert_equal({ width: 600, height: 900 }, image_dimensions(@blob, limit: 1600))
+  end
+
+  test "gives no size for an image that has not been analysed" do
+    @blob.update!(metadata: {})
+
+    assert_empty image_dimensions(@blob, limit: 1600)
+  end
 end

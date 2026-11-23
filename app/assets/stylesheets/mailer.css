@@ -4,7 +4,8 @@
 img {
   border: none;
   -ms-interpolation-mode: bicubic;
-  max-width: 100%; }
+  max-width: 100%;
+  height: auto; }
 
 body {
   background-color: #f6f6f6;

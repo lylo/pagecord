@@ -7,11 +7,11 @@
   <% elsif blob.image? %>
     <% image_alt = blob.try(:alt).presence || blob.try(:caption).presence %>
     <% if blob.content_type == "image/gif" %>
-      <%= link_to_if blob.try(:href), image_tag(rails_public_blob_url(blob), alt: image_alt, loading: "lazy"), blob.try(:href) %>
+      <%= link_to_if blob.try(:href), image_tag(rails_public_blob_url(blob), alt: image_alt, loading: "lazy", **(local_assigns[:in_gallery] ? {} : image_dimensions(blob))), blob.try(:href) %>
     <% else %>
       <% lightbox_image_url = resized_image_url(blob, width: 1600, height: 1600) %>
       <% image_url = local_assigns[:in_gallery] ? resized_image_url(blob, width: 800, height: 800) : lightbox_image_url %>
-      <%= link_to_if blob.try(:href), image_tag(image_url, alt: image_alt, loading: "lazy", data: { lightbox_full_url: lightbox_image_url }), blob.try(:href) %>
+      <%= link_to_if blob.try(:href), image_tag(image_url, alt: image_alt, loading: "lazy", data: { lightbox_full_url: lightbox_image_url }, **(local_assigns[:in_gallery] ? {} : image_dimensions(blob, limit: 1600))), blob.try(:href) %>
     <% end %>
   <% elsif blob.content_type == "application/pdf" %>
     <% if blob.preview_image.attached? %>

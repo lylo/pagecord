@@ -29,6 +29,14 @@ module ImageHelper
     end
   end
 
+  def image_dimensions(blob, limit: nil)
+    width, height = blob.metadata.values_at("width", "height")
+    return {} unless width.to_i.positive? && height.to_i.positive?
+
+    scale = limit && blob.variable? ? [ 1, limit.fdiv([ width, height ].max) ].min : 1
+    { width: (width * scale).round, height: (height * scale).round }
+  end
+
   private
 
     # A blob that hasn't been analysed yet has no dimensions to judge, so it
