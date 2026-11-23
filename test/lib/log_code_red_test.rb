@@ -13,6 +13,28 @@ class LogCodeRedTest < Minitest::Test
     assert_equal [ LogCodeRed::MailJob.new("AccountVerificationMailer#login", "User/7", "2026-10-08") ], jobs
   end
 
+  def test_reads_mail_sent_directly_by_jobs
+    jobs = LogCodeRed.mail_jobs([
+      blog_mail_job("SendContactMessageJob", "job-1", "blog.example"),
+      blog_mail_job("SendPostReplyJob", "job-2", "other.example"),
+      blog_mail_job("SendContactMessageJob", "job-3", "blog.example"),
+      "2026-10-08T10:00:01+00:00 INFO [ActiveJob] [SendContactMessageJob] [job-3] [SendContactMessageJob] Spam detected, destroying contact message 3",
+      "2026-10-08T14:00:00+00:00 INFO [ActiveJob] [SendCancellationEmailJob] [job-4] Performing SendCancellationEmailJob (Job ID: job-4) from Sidekiq(default) enqueued at 2026-10-08T10:00:00Z with arguments: 7, {subscriber: true}"
+    ])
+
+    assert_equal [
+      job("CancellationMailer#subscriber_cancellation", "User/7"),
+      job("ContactMailer#new_message", "blog.example"),
+      job("ReplyMailer#new_reply", "other.example")
+    ], jobs
+  end
+
+  def test_flags_a_blog_flooded_with_contact_messages
+    jobs = LogCodeRed.mail_jobs((1..10).map { |n| blog_mail_job("SendContactMessageJob", "job-#{n}", "blog.example") })
+
+    assert_equal [ "ContactMailer#new_message sent 10 to blog.example" ], LogCodeRed.alerts(LogCodeRed.flooded_recipients(jobs, DATE), [])
+  end
+
   def test_flags_one_recipient_flooded_with_mail_but_not_a_busy_day
     jobs = (1..30).map { |n| job("AccountVerificationMailer#login", "User/#{n}") } +
       Array.new(10) { job("AccountVerificationMailer#login", "User/99") } << job("AccountVerificationMailer#login", "User/99", "2026-10-07")
@@ -78,6 +100,10 @@ class LogCodeRedTest < Minitest::Test
 
     def mail_job(date, mailer, action, recipient)
       %(#{date}T10:00:00+00:00 INFO [ActiveJob] [ActionMailer::MailDeliveryJob] [id] Performing ActionMailer::MailDeliveryJob (Job ID: id) from Sidekiq(default) with arguments: "#{mailer}", "#{action}", "deliver_now", {params: {user: #<GlobalID:0x0 @uri=#<URI::GID gid://pagecord/#{recipient}>>}, args: []})
+    end
+
+    def blog_mail_job(job_class, job_id, host)
+      "#{DATE}T10:00:00+00:00 INFO [request-id] [host=#{host}] [ip=1.1.1.1] [ActiveJob] Enqueued #{job_class} (Job ID: #{job_id}) to Sidekiq(default) with arguments: 1, \"1.1.1.1\""
     end
 
     def job(mailer, recipient, day = DATE)

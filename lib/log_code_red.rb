@@ -6,6 +6,11 @@ require_relative "log_parser"
 module LogCodeRed
   MAIL_JOB_RE = /Performing ActionMailer::MailDeliveryJob .*with arguments: "([^"]+)", "([^"]+)"/
   MAIL_RECIPIENT_RE = %r{gid://[^/]+/(\w+/\d+)}
+  CANCELLATION_RE = /Performing SendCancellationEmailJob .*with arguments: (\d+), \{subscriber: (true|false)\}/
+  BLOG_MAIL_RE = /Enqueued (SendContactMessageJob|SendPostReplyJob) \(Job ID: ([\w-]+)\)/
+  BLOG_HOST_RE = /\[host=([^\]]+)\]/
+  SPAM_DROPPED_RE = /\[([\w-]+)\] \[(?:SendContactMessageJob|SendPostReplyJob)\] Spam detected/
+  BLOG_MAILERS = { "SendContactMessageJob" => "ContactMailer#new_message", "SendPostReplyJob" => "ReplyMailer#new_reply" }.freeze
   MailJob = Struct.new(:mailer, :recipient, :day)
 
   FORMS = {
@@ -24,11 +29,24 @@ module LogCodeRed
   class << self
     # Job lines carry no request header, so LogParser skips them; read them raw.
     def mail_jobs(lines)
-      lines.filter_map do |line|
-        next unless (match = MAIL_JOB_RE.match(line))
+      jobs = []
+      blog_mail = {}
 
-        MailJob.new("#{match[1]}##{match[2]}", line[MAIL_RECIPIENT_RE, 1], line[0, 10])
+      lines.each do |line|
+        next unless line.include?("Job")
+
+        if (match = MAIL_JOB_RE.match(line))
+          jobs << MailJob.new("#{match[1]}##{match[2]}", line[MAIL_RECIPIENT_RE, 1], line[0, 10])
+        elsif (match = CANCELLATION_RE.match(line))
+          jobs << MailJob.new("CancellationMailer##{match[2] == "true" ? "subscriber" : "free_account"}_cancellation", "User/#{match[1]}", line[0, 10])
+        elsif (match = BLOG_MAIL_RE.match(line))
+          blog_mail[match[2]] = MailJob.new(BLOG_MAILERS[match[1]], line[BLOG_HOST_RE, 1], line[0, 10])
+        elsif (match = SPAM_DROPPED_RE.match(line))
+          blog_mail.delete(match[1])
+        end
       end
+
+      jobs + blog_mail.values
     end
 
     def mail_rows(jobs, date)
