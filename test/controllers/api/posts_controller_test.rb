@@ -471,6 +471,28 @@ class Api::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_includes @blog.posts.order(:id).last.content.embeds.blobs, blob
   end
 
+  test "create leaves an uploaded image inside a picture element alone" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: file_fixture("space.jpg").open,
+      filename: "space.jpg",
+      content_type: "image/jpeg"
+    )
+
+    url = rails_blob_url(blob)
+
+    post "/posts", params: {
+      title: "Picture",
+      content: %(<figure><picture><source srcset="#{url} 600w"><img src="#{url}" alt="Stars"></picture></figure>),
+      status: "published"
+    }, headers: auth_header
+
+    assert_response :created
+    content = JSON.parse(response.body)["content"]
+    assert_includes content, "<picture>"
+    assert_includes content, %(<img src="#{url}")
+    assert_not_includes content, "action-text-attachment"
+  end
+
   test "update with attachment preserves a client supplied alt" do
     blob = ActiveStorage::Blob.create_and_upload!(
       io: file_fixture("space.jpg").open,

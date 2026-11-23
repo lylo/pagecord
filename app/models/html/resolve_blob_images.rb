@@ -16,6 +16,7 @@ module Html
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
 
       doc.css("img").each do |img|
+        next if img.ancestors("picture").any?
         next unless blob = blob_from_url(img["src"])
 
         node = img.parent&.name == "figure" ? img.parent : img
