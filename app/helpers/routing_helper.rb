@@ -6,7 +6,7 @@ module RoutingHelper
     when "prefix"
       send("blog_prefixed_post_#{type}", blog.post_url_prefix, post.slug, host: host(blog))
     when "dated"
-      date = post.published_at
+      date = post.published_at_in_user_timezone
       return send("blog_post_#{type}", post.slug, host: host(blog)) if date.nil?
 
       send("blog_dated_post_#{type}", date.strftime("%Y"), date.strftime("%m"), date.strftime("%d"), post.slug, host: host(blog))

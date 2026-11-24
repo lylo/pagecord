@@ -122,6 +122,20 @@ class Blogs::CanonicalUrlsTest < ActionDispatch::IntegrationTest
     assert_equal 301, @response.status
   end
 
+  test "dated format uses the publication date in the author's timezone" do
+    @blog.user.update!(timezone: "Helsinki")
+    @blog.update!(post_url_format: "dated")
+    @post.update!(published_at: Time.utc(2025, 11, 20, 22, 30))
+    dated_path = "/2025/11/21/#{@post.slug}"
+
+    get dated_path
+    assert_response :success
+    assert_select "link[rel=canonical][href=?]", "http://#{@blog.subdomain}.example.com#{dated_path}"
+
+    get "/2025/11/20/#{@post.slug}"
+    assert_redirected_to "http://#{@blog.subdomain}.example.com#{dated_path}"
+  end
+
   test "sitemap and feed use the canonical format" do
     @blog.update!(post_url_format: "prefix", post_url_prefix: "notes")
 
