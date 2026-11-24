@@ -9,6 +9,23 @@ Capybara::Selenium::Driver.prepend(Module.new do
   end
 end)
 
+# Chrome 158 rejects the "*" origin Capybara resets storage with, so clear
+# every cookie and the storage of the page the test ended on instead
+Capybara::Selenium::Driver::ChromeDriver.prepend(Module.new do
+  def reset!
+    @origin_at_reset = @browser && current_url[%r{\Ahttps?://[^/]+}]
+    super
+  end
+
+  private
+    def execute_cdp(cmd, params = {})
+      return super unless params[:origin] == "*"
+
+      super("Network.clearBrowserCookies")
+      super(cmd, params.merge(origin: @origin_at_reset)) if @origin_at_reset
+    end
+end)
+
 # In Docker, use the Chromium and driver installed by the Dockerfile's dev stage
 # rather than letting Selenium Manager download a browser at test time.
 Selenium::WebDriver::Chrome::Service.driver_path = "/usr/bin/chromedriver" if ENV["RUNNING_IN_DOCKER"]
