@@ -3,7 +3,7 @@ class DeliverabilityDigestJob < ApplicationJob
 
   def perform
     report = DeliverabilityReport.new
-    count = report.actionable.size
+    count = report.issues.size
     report.cache_count! # before the guard, so the nav badge clears when it reaches zero
 
     warning = health_warning(report)

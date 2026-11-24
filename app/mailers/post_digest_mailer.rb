@@ -31,8 +31,7 @@ class PostDigestMailer < NewsletterMailer
       to: params[:email],
       from: sender_address_for(blog),
       subject: "[Test] #{subject}",
-      template_name: "individual",
-      delivery_method: delivery_method_for(blog)
+      template_name: "individual"
     )
   end
 
@@ -45,8 +44,7 @@ class PostDigestMailer < NewsletterMailer
           to: @subscriber.email,
           from: sender_address_for(@subscriber.blog),
           reply_to: "digest-reply-#{@digest.masked_id}@post.pagecord.com",
-          subject: @digest.subject,
-          message_stream: "broadcast"
+          subject: @digest.subject
         )
       end
     end
@@ -55,8 +53,6 @@ class PostDigestMailer < NewsletterMailer
       one_click_url = email_subscriber_one_click_unsubscribe_url_for(subscriber)
       headers["List-Unsubscribe"] = "<#{one_click_url}>"
       headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
-      headers["X-PM-Message-Stream"] = "broadcast"
-      headers["X-PM-Metadata-SubscriberToken"] = subscriber.token
     end
 
     def sender_address_for(blog)

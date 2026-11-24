@@ -232,7 +232,7 @@ bundle exec brakeman             # Security scanner
 - **Caching**: `blog.updated_at` is the single invalidation boundary. Everything that changes visitor-visible state touches the blog. Post partials are fragment-cached on `[post, @blog.updated_at]` (`_post`, posts only, plus the excerpt flag and `accepts_comments?`; `_card_post`; `_gallery_post`), so any change to the blog re-renders every post on it, and the RSS feed has a `cache` block. Post pages use `fresh_when` ETags on `[post.id, blog.updated_at]`. Blog `after_commit :purge_cloudflare_cache` (on update, production only, debounced 5s through a `Rails.cache` lock) fires `PurgeCloudflareCacheJob` (tag-based purge by subdomain). Edge caching (`s-maxage`, `Cache-Tag`, session skip) only applies to `*.pagecord.com` – custom domains route through Caddy, not Cloudflare. Upvotes don't invalidate caches (display is handled client-side via Stimulus).
 - **Background**: Sidekiq + Redis (Redis is used only by Sidekiq; Action Cable is configured for it but nothing broadcasts). `Rails.cache` is Memcached: Rack::Attack and `rate_limit` counters, the post and RSS fragment caches, and a few small lookups (Bandcamp embeds, spotlight, Tor exit nodes, CSS previews). Cron via `whenever` (see `config/schedule.rb`)
 - **Custom domains**: customers CNAME or ALIAS to `proxy.pagecord.com` (or an A record to its IP). Caddy issues certificates on demand after asking `CustomDomains::VerificationsController`. Serving and certificates are gated by `custom_domain_access?` (subscribed, or within a 30-day grace after lapse), not `subscribed?`
-- **External services**: Cloudflare Email Sending (transactional email) + Postmark (digests and inbound) + Amazon SES (newsletters for flagged users), Sentry (errors), Hatchbox (hosting), Paddle (billing), OpenAI (moderation), CleanTalk (spam), Cloudflare Turnstile, Plausible, DB-IP GeoIP
+- **External services**: Cloudflare Email Sending (transactional email) + Amazon SES (newsletters) + Postmark (inbound only), Sentry (errors), Hatchbox (hosting), Paddle (billing), OpenAI (moderation), CleanTalk (spam), Cloudflare Turnstile, Plausible, DB-IP GeoIP
 
 ### Billing & Access
 - **Payments**: Paddle webhooks (`Billing::PaddleEventsController`) → Subscription model. Plans: monthly, annual, supporter, complimentary
@@ -260,11 +260,11 @@ bundle exec brakeman             # Security scanner
 - Referrer tracking with domain normalization, search/social classification via `Referrer` model
 
 ### Email Features
-- **Mailers**: transactional mail inherits `CloudflareMailer`; newsletter mail (digests, digest replies, subscription confirmations) inherits `NewsletterMailer`, which sends through Postmark, or Amazon SES for users with `ses_newsletter_delivery`
+- **Mailers**: transactional mail inherits `CloudflareMailer`; newsletter mail (digests, digest replies, subscription confirmations) inherits `NewsletterMailer`, which sends through Amazon SES. SES drops sends to addresses on its suppression list without an error; the admin Deliverability page (`DeliverabilityReport`) lists those subscribers and the account's health
 - **Post digests**: Emails to confirmed EmailSubscribers. Two delivery modes (`email_delivery_mode` enum in `EmailSubscribable`):
   - **Digest** (default): cron runs `post_digests:deliver` hourly on Tuesdays; `PostDigestScheduler` queues `GeneratePostDigestJob` for blogs where it is 8am in the owner's timezone. `PostDigest.generate_weekly_digest_for` finds new posts since last digest.
   - **Individual**: User manually sends single posts from the post editor via `App::Posts::BroadcastsController`. `PostDigest.generate_individual_for` creates a one-post digest. `Post::Emailable` concern provides `individually_sendable?`/`send_to_subscribers!`. A post can be sent within 14 days of publishing (`SEND_WINDOW`), and a user is capped at 2,500 individual emails a month (`User::NewsletterSending`).
-  - Both modes reuse the same infrastructure: `PostDigest` (with `kind` enum: `weekly_digest`/`individual`) → `PostDigest::DeliveryJob` (`newsletters` queue) → `PostDigest::PostmarkDelivery` (batches of 50), or `PostDigest::SesDelivery` for users with the `ses_newsletter_delivery` flag. Both are production only; other environments send through `PostDigestMailer`. Posts sent individually are excluded from future weekly digests via `DigestPost` join records.
+  - Both modes reuse the same infrastructure: `PostDigest` (with `kind` enum: `weekly_digest`/`individual`) → `PostDigest::DeliveryJob` (`newsletters` queue) → `PostDigest::SesDelivery`, paced to the account's send rate. It is production only; other environments send through `PostDigestMailer`. Posts sent individually are excluded from future weekly digests via `DigestPost` join records.
   - Requires `email_subscriptions_enabled` + `subscribed?`. Custom sender addresses via `SenderEmailAddress` (max 3 per blog, requires verification).
 - **Reply by email**: a `Post::Reply` from the blog's form goes through `SendPostReplyJob` (spam check) to `ReplyMailer`. Replies to digest emails are forwarded by `DigestReplyMailer`, from confirmed subscribers only.
 - **Blog export**: HTML or Markdown ZIP via `BlogExportJob`. Auto-cleanup after 7 days. Rate limited to 5/day.
@@ -277,7 +277,7 @@ bundle exec brakeman             # Security scanner
 - **Cancellation**: `SendCancellationEmailJob` sends appropriate email (subscriber vs free account). `DestroyUserJob` soft-deletes, records an `AccountTombstone` and cancels Paddle; the hard delete comes later (see Storage).
 
 ### Feature Toggles
-- Feature flags are stored on `users.features` as an array column. One is defined: `ses_newsletter_delivery`, which sends a user's newsletters through Amazon SES instead of Postmark.
+- Feature flags are stored on `users.features` as an array column. None is defined at the moment.
 - Define one in `config/features.rb` using the `feature_toggles` gem: `feature :name do |user: nil, blog: nil| ... end`
 - `ApplicationController#current_features` returns `Rails.features.for(user: Current.user, blog: @blog)` and is exposed to controllers/views. In app code prefer `current_features.enabled?(:feature_name)`; in models check `user.features.include?("feature_name")`.
 - Feature-gated app UI should also guard direct routes with a `before_action` and redirect when disabled.

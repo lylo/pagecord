@@ -25,13 +25,6 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_match posts(:one).published_at_in_user_timezone.to_date.iso8601, email.html_part.body.to_s
   end
 
-  test "digest email includes subscriber token header for bounce tracking" do
-    email_subscriber = email_subscribers(:one)
-    email = PostDigestMailer.with(subscriber: email_subscriber, digest: post_digests(:one)).weekly_digest
-
-    assert_equal email_subscriber.token, email.header["X-PM-Metadata-SubscriberToken"].to_s
-  end
-
   test "digest email with custom blog domain" do
     blog = blogs(:joel)
     blog.update!(custom_domain: "custom.example.com")
@@ -182,7 +175,7 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_match "Unsubscribe", email.body.encoded
   end
 
-  test "individual email includes broadcast headers" do
+  test "individual email carries one-click unsubscribe headers" do
     email_subscriber = email_subscribers(:one)
     post = posts(:one)
 
@@ -191,8 +184,8 @@ class PostDigestMailerTest < ActionMailer::TestCase
 
     email = PostDigestMailer.with(subscriber: email_subscriber, digest: digest).individual
 
-    assert_equal email_subscriber.token, email.header["X-PM-Metadata-SubscriberToken"].to_s
-    assert_equal "broadcast", email.header["X-PM-Message-Stream"].to_s
+    assert_match email_subscriber.token, email.header["List-Unsubscribe"].to_s
+    assert_equal "List-Unsubscribe=One-Click", email.header["List-Unsubscribe-Post"].to_s
   end
 
   test "test_individual sends to specified email with test subject prefix" do
@@ -219,41 +212,11 @@ class PostDigestMailerTest < ActionMailer::TestCase
     assert_equal "\"Dear readers, notes\" <digest@newsletters.pagecord.com>", email.header["from"].to_s
   end
 
-  test "test_individual goes through SES in production when the blog owner has SES newsletter delivery" do
-    post = posts(:one)
-    post.blog.user.features = [ "ses_newsletter_delivery" ]
-
-    Rails.env.stubs(:production?).returns(true)
-    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
-
-    assert_instance_of SesEmail::DeliveryMethod, email.delivery_method
-  end
-
-  test "test_individual keeps the mailer's delivery method without SES newsletter delivery" do
-    post = posts(:one)
-
-    Rails.env.stubs(:production?).returns(true)
-    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
-
-    assert_instance_of Mail::TestMailer, email.delivery_method
-  end
-
-  test "test_individual keeps the mailer's delivery method outside production" do
-    post = posts(:one)
-    post.blog.user.features = [ "ses_newsletter_delivery" ]
-
-    email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
-
-    assert_not_instance_of SesEmail::DeliveryMethod, email.delivery_method
-  end
-
-  test "test_individual has no broadcast headers" do
+  test "test_individual has no unsubscribe header" do
     post = posts(:one)
 
     email = PostDigestMailer.with(post: post, email: "test@example.com").test_individual
 
-    assert_nil email.header["X-PM-Metadata-SubscriberToken"].presence
-    assert_nil email.header["X-PM-Message-Stream"].presence
     assert_nil email.header["List-Unsubscribe"].presence
   end
 

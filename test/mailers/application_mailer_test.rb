@@ -22,14 +22,6 @@ class ApplicationMailerTest < ActionMailer::TestCase
     end
   end
 
-  test "an inactive Postmark recipient does not raise, so the delivery job is not retried" do
-    raising_delivery Postmark::InactiveRecipientError
-
-    assert_nothing_raised do
-      EmailSubscriptionConfirmationMailer.with(subscriber: email_subscribers(:two)).confirm.deliver_now
-    end
-  end
-
   private
 
     def raising_delivery(error)
