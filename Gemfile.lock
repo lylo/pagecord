@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 443726cf20ae91a5fd7b10c891b029f507016056
+  revision: 24dc03c0f31997b87edd5eb6c6386c6c2dede0a7
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -112,8 +112,8 @@ GEM
       public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
     aws-eventstream (1.4.1)
-    aws-partitions (1.1300.0)
-    aws-sdk-core (3.270.0)
+    aws-partitions (1.1311.0)
+    aws-sdk-core (3.272.0)
       aws-eventstream (~> 1, >= 1.4.1)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -122,10 +122,10 @@ GEM
       jmespath (~> 1, >= 1.6.1)
       logger
       rexml (~> 3.4, >= 3.4.2)
-    aws-sdk-kms (1.138.0)
-      aws-sdk-core (~> 3, >= 3.263.0)
+    aws-sdk-kms (1.145.0)
+      aws-sdk-core (~> 3, >= 3.270.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.245.0)
+    aws-sdk-s3 (1.245.1)
       aws-sdk-core (~> 3, >= 3.269.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -138,7 +138,7 @@ GEM
     bcrypt (3.1.22)
     bigdecimal (4.1.3)
     bindex (0.8.1)
-    bootsnap (1.26.1)
+    bootsnap (1.26.2)
       msgpack (~> 1.5)
     brakeman (8.1.1)
       racc
@@ -237,7 +237,7 @@ GEM
     herb (0.11.2-x86_64-linux-gnu)
     herb (0.11.2-x86_64-linux-musl)
     htmlentities (4.4.2)
-    httparty (0.24.3)
+    httparty (0.25.0)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
