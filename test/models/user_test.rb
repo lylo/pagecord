@@ -9,6 +9,14 @@ class UserTest < ActiveSupport::TestCase
     assert user.valid?
   end
 
+  test "changing timezone touches the user's blogs" do
+    user = users(:joel)
+
+    assert_changes -> { user.blog.reload.updated_at } do
+      user.update!(timezone: "Helsinki")
+    end
+  end
+
   test "should store in lowercase" do
     user = User.create!(email: "nEwUser@NewUser.COM")
     assert_equal "newuser@newuser.com", user.email

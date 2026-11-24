@@ -27,6 +27,8 @@ class User < ApplicationRecord
     where(verified: false).where(created_at: ...before).where.missing(:subscription)
   }
 
+  after_update_commit -> { blogs.each(&:touch) }, if: :saved_change_to_timezone?
+
   after_undiscard do
     AccountTombstone.where(user_id: id).delete_all
     cancellations.account.delete_all
