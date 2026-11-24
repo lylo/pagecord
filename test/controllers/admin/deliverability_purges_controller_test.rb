@@ -43,6 +43,16 @@ class Admin::DeliverabilityPurgesControllerTest < ActionDispatch::IntegrationTes
     end
   end
 
+  test "create deletes a subscriber saved with capitals" do
+    EmailSubscriber.create!(blog: blogs(:vivian), email: "Mixed.Case@Example.com", confirmed_at: 1.day.ago)
+    stub_postmark
+    stub_ses(suppressions: [ ses_suppression("mixed.case@example.com") ])
+
+    assert_difference "EmailSubscriber.count", -1 do
+      post admin_deliverability_purge_url
+    end
+  end
+
   test "create reports an SES failure rather than deleting anything" do
     stub_postmark(suppressions: [ { email_address: "fred@example.com", suppression_reason: "HardBounce", created_at: 1.day.ago } ])
     stub_ses.stubs(:list_suppressed_destinations).raises(Aws::SESV2::Errors::AccessDeniedException.new(nil, "denied"))

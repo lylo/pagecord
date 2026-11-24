@@ -16,7 +16,7 @@ class Admin::DeliverabilityIssuesController < Admin::BaseController
   end
 
   def destroy
-    count = EmailSubscriber.where(email: params[:email]).destroy_all.size
+    count = EmailSubscriber.where("lower(email) = ?", params[:email].downcase).destroy_all.size
     redirect_to admin_deliverability_issues_path,
                 notice: "Deleted #{count} #{"subscription".pluralize(count)}."
   end

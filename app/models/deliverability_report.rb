@@ -17,6 +17,7 @@ class DeliverabilityReport
   COMPLAINT_RATE_LIMIT = 0.001
   BOUNCE_RATE_MINIMUM_SENT = 100
   COMPLAINT_RATE_MINIMUM_SENT = 1_000
+  COMPLAINT_RATE_MINIMUM_COMPLAINTS = 5
 
   # Rows come from SES and Postmark, not the database, so an issue is keyed by email address.
   Issue = Struct.new(:email, :source, :reason, :bounce_type, :message_ids, :last_seen_at, :subscribers,
@@ -56,11 +57,15 @@ class DeliverabilityReport
         "SES has paused sending"
       elsif status != "HEALTHY"
         "SES account status is #{status}"
+      elsif complaint_rate_judgeable? && complaint_rate >= COMPLAINT_RATE_LIMIT
+        "SES complaint rate is at AWS's review level"
       elsif sent >= BOUNCE_RATE_MINIMUM_SENT && bounce_rate >= BOUNCE_RATE_LIMIT
         "SES bounce rate is at AWS's review level"
-      elsif sent >= COMPLAINT_RATE_MINIMUM_SENT && complaint_rate >= COMPLAINT_RATE_LIMIT
-        "SES complaint rate is at AWS's review level"
       end
+    end
+
+    def complaint_rate_judgeable?
+      sent >= COMPLAINT_RATE_MINIMUM_SENT || complaints >= COMPLAINT_RATE_MINIMUM_COMPLAINTS
     end
   end
 
@@ -157,7 +162,7 @@ class DeliverabilityReport
 
     def with_subscribers(issues)
       subscribers = EmailSubscriber.includes(:blog)
-        .where(email: issues.map { |issue| issue.email.downcase })
+        .where("lower(email) IN (?)", issues.map { |issue| issue.email.downcase })
         .group_by { |subscriber| subscriber.email.downcase }
 
       issues.filter_map { |issue|

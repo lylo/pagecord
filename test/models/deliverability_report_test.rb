@@ -66,7 +66,22 @@ class DeliverabilityReportTest < ActiveSupport::TestCase
     warning = ->(**ses) { DeliverabilityReport.new(client: stub, ses_client: stub_ses(**ses)).health.warning }
 
     assert_nil warning.(sent: 99, bounces: 5)
-    assert_nil warning.(sent: 999, complaints: 1)
+    assert_nil warning.(sent: 999, complaints: 4)
+    assert_match(/complaint rate/, warning.(sent: 999, complaints: 5))
+  end
+
+  test "health puts the complaint rate ahead of the bounce rate" do
+    health = DeliverabilityReport.new(client: stub, ses_client: stub_ses(sent: 1000, bounces: 50, complaints: 1)).health
+
+    assert_match(/complaint rate/, health.warning)
+  end
+
+  test "a subscriber saved with capitals is matched to the address the provider reports" do
+    EmailSubscriber.create!(blog: blogs(:vivian), email: "Mixed.Case@Example.com", confirmed_at: 1.day.ago)
+
+    issue = report(suppressions: [ suppression("mixed.case@example.com") ]).issues.sole
+
+    assert_equal [ "Mixed.Case@Example.com" ], issue.subscribers.map(&:email)
   end
 
   test "health raises when SES can't answer a metric query" do
