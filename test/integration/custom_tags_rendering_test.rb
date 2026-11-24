@@ -315,6 +315,19 @@ class CustomTagsRenderingTest < ActionDispatch::IntegrationTest
     assert_select "body", text: /2024 Post/, count: 0
   end
 
+  test "year filter and posts_by_year use the author's timezone" do
+    @user.update!(timezone: "Helsinki")
+    @blog.posts.create!(title: "Newyear", content: "Content", status: :published, published_at: Time.utc(2017, 12, 31, 22, 30))
+    @blog.posts.create!(title: "Newyearseve", content: "Content", status: :published, published_at: Time.utc(2017, 12, 31, 21, 30))
+
+    page = @blog.pages.create!(title: "Archive", content: "{{ posts_by_year | year: 2018 }}", status: :published)
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: page.slug)
+
+    assert_select "h2.posts-list-heading", count: 1, text: "2018"
+    assert_select "ul.posts-list a", count: 1, text: "Newyear"
+  end
+
   test "renders posts tag with combined limit and tag parameters" do
     page = @blog.pages.create!(title: "Limited Photography", content: "{{ posts | limit: 1 | tag: photography }}", status: :published)
 

@@ -43,8 +43,7 @@ module Post::Filterable
       parsed_year = Integer(year, exception: false)
       return none unless parsed_year&.positive?
 
-      start_date = Date.new(parsed_year, 1, 1)
-      where(published_at: start_date..start_date.end_of_year.end_of_day)
+      where(published_at: Time.zone.local(parsed_year).all_year)
     rescue Date::Error
       none
     end

@@ -56,6 +56,16 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".year-header time", count: 0
   end
 
+  test "a list of post titles groups years in the author's timezone" do
+    @blog.user.update!(timezone: "Helsinki")
+    @blog.posts.update_all(published_at: Time.utc(2024, 12, 31, 22, 30))
+    @blog.title_layout!
+
+    get blog_posts_path
+
+    assert_select ".year-header", count: 1, text: "2025"
+  end
+
   test "a list of post titles does not load post content" do
     @blog.title_layout!
 
