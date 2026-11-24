@@ -29,6 +29,16 @@ class IndexTest < ActionView::TestCase
     assert_select "h2", "#{2.years.ago.year}"
   end
 
+  test "dates posts in the author's timezone" do
+    @blog.user.update!(timezone: "Helsinki")
+    @old_post.update!(published_at: Time.utc(2016, 12, 31, 22, 30))
+
+    render_template
+
+    assert_select "h2", "2017"
+    assert_select "li.post", text: /01 Jan.*Older Post/m
+  end
+
   test "formats post links correctly" do
     render_template
 

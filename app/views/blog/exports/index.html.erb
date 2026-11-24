@@ -24,7 +24,7 @@
   <% end -%>
   <% current_year = nil -%>
   <% blog.posts.visible.order(published_at: :desc).each do |post| -%>
-    <% year = post.published_at.year -%>
+    <% year = post.published_at_in_user_timezone.year -%>
     <% if year != current_year -%>
       <%= "</ul>".html_safe if current_year -%>
       <h2><%= year %></h2>
@@ -32,7 +32,7 @@
       <% current_year = year -%>
     <% end -%>
     <li class="post">
-      <%= post.published_at.strftime("%d %b") %> &mdash;
+      <%= post.published_at_in_user_timezone.strftime("%d %b") %> &mdash;
       <a href="<%= post.slug %>.html"><%= post.display_title %></a>
     </li>
   <% end -%>
