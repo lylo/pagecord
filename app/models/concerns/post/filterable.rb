@@ -41,11 +41,9 @@ module Post::Filterable
 
     def for_year(year)
       parsed_year = Integer(year, exception: false)
-      return none unless parsed_year&.positive?
+      return none unless parsed_year&.between?(1, 9999)
 
       where(published_at: Time.zone.local(parsed_year).all_year)
-    rescue Date::Error
-      none
     end
   end
 end

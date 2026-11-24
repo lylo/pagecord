@@ -27,6 +27,14 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
     assert page_view.is_unique?
   end
 
+  test "counts a visitor's day in UTC whatever the author's timezone" do
+    @blog.user.update!(timezone: "Helsinki")
+
+    post blog_page_views_path, params: { path: "/" }.to_json, headers: json_headers
+
+    assert_equal "UTC", enqueued_jobs.last["timezone"]
+  end
+
   test "should create page view for specific post" do
     assert_difference("PageView.count", 1) do
       perform_enqueued_jobs do

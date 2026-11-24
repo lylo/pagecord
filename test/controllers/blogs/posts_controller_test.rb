@@ -66,6 +66,14 @@ class Blogs::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".year-header", count: 1, text: "2025"
   end
 
+  test "renders in UTC when the author's timezone is blank" do
+    @blog.user.update_column(:timezone, "")
+
+    get blog_posts_path
+
+    assert_response :success
+  end
+
   test "a list of post titles does not load post content" do
     @blog.title_layout!
 

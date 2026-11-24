@@ -9,6 +9,8 @@ class Blogs::EmbeddedPostsController < Blogs::BaseController
 
   rescue_from Pagy::RangeError, with: :head_gone
 
+  around_action :set_timezone
+
   def index
     post_list_params = DynamicVariable::PostListParams.new(blog: @blog, params: params)
     @style = post_list_params.style

@@ -14,7 +14,6 @@ class Blogs::BaseController < ApplicationController
   # the domain redirects run before the access check so a request on the wrong
   # host is moved on rather than shown a password form.
   before_action :load_blog, :set_locale, :validate_user, :enforce_custom_domain, :require_blog_access, :reject_malicious_params
-  around_action :set_timezone, if: -> { @blog }
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_blog_not_found
   rescue_from ActionController::TooManyRequests, with: :render_too_many_requests
@@ -59,7 +58,7 @@ class Blogs::BaseController < ApplicationController
     end
 
     def set_timezone(&block)
-      Time.use_zone(@blog.user.timezone, &block)
+      Time.use_zone(Time.find_zone(@blog.user.timezone) || "UTC", &block)
     end
 
     # Rejects null bytes and CRLF in routing params, which are header and log

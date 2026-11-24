@@ -59,6 +59,22 @@ class Blogs::EmbeddedPostsControllerTest < ActionDispatch::IntegrationTest
     assert_operator response.body.index("Embedded Review 11"), :<, response.body.index("Embedded Review 12")
   end
 
+  test "by_year page groups years in the author's timezone" do
+    @blog.user.update!(timezone: "Helsinki")
+    @blog.posts.update_all(published_at: Time.utc(2024, 12, 31, 22, 30))
+
+    get blog_embedded_posts_path(style: "by_year", frame_id: "posts", year: 2025)
+
+    assert_select "h2.posts-list-heading", count: 1, text: "2025"
+  end
+
+  test "an absurd year finds nothing" do
+    get blog_embedded_posts_path(style: "by_year", frame_id: "posts", year: 300000)
+
+    assert_response :success
+    assert_select "li", count: 0
+  end
+
   test "by_year page continuing a year appends into that year's list" do
     DynamicVariable::PostsTag.stubs(:page_size_for).returns(3)
 

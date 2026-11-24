@@ -13,6 +13,7 @@ class Blogs::PostsController < Blogs::BaseController
   rescue_from Pagy::RangeError, with: :redirect_to_last_page
 
   prepend_before_action :ignore_accept_header, only: :index
+  around_action :set_timezone
 
   def index
     if request.format.html? && @blog.has_custom_home_page? && !filtered?
