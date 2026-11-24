@@ -57,15 +57,16 @@ class DeliverabilityReportTest < ActiveSupport::TestCase
 
     assert_match(/paused/, warning.(sending_enabled: false))
     assert_match(/PROBATION/, warning.(status: "PROBATION"))
-    assert_match(/bounce rate/, warning.(sent: 1000, bounces: 50))
+    assert_match(/bounce rate/, warning.(sent: 100, bounces: 5))
     assert_match(/complaint rate/, warning.(sent: 1000, complaints: 1))
     assert_nil warning.(sent: 0)
   end
 
   test "health ignores the rates until enough has been sent to judge them" do
-    health = DeliverabilityReport.new(client: stub, ses_client: stub_ses(sent: 100, bounces: 5, complaints: 1)).health
+    warning = ->(**ses) { DeliverabilityReport.new(client: stub, ses_client: stub_ses(**ses)).health.warning }
 
-    assert_nil health.warning
+    assert_nil warning.(sent: 99, bounces: 5)
+    assert_nil warning.(sent: 999, complaints: 1)
   end
 
   test "health raises when SES can't answer a metric query" do

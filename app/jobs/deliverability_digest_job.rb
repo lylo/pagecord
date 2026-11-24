@@ -17,6 +17,7 @@ class DeliverabilityDigestJob < ApplicationJob
     def health_warning(report)
       report.health.warning
     rescue *DeliverabilityReport::SES_ERRORS => e
-      "SES health couldn't be checked: #{e.message}"
+      Rails.logger.error "[Deliverability] SES health check failed: #{e.message}"
+      "SES health couldn't be checked"
     end
 end

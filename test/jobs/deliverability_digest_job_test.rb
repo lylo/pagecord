@@ -41,7 +41,7 @@ class DeliverabilityDigestJobTest < ActiveSupport::TestCase
     stub_postmark(suppressions: [ { email_address: "fred@example.com", suppression_reason: "HardBounce", created_at: 1.day.ago } ])
     stub_ses.stubs(:get_account).raises(Seahorse::Client::NetworkingError.new(RuntimeError.new("timed out")))
 
-    assert_enqueued_email_with AdminMailer, :deliverability_digest, args: [ 1, "SES health couldn't be checked: timed out" ] do
+    assert_enqueued_email_with AdminMailer, :deliverability_digest, args: [ 1, "SES health couldn't be checked" ] do
       DeliverabilityDigestJob.perform_now
     end
   end

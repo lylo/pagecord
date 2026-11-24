@@ -15,7 +15,8 @@ class DeliverabilityReport
   # AWS reviews an account whose rates reach these.
   BOUNCE_RATE_LIMIT = 0.05
   COMPLAINT_RATE_LIMIT = 0.001
-  HEALTH_MINIMUM_SENT = 1_000
+  BOUNCE_RATE_MINIMUM_SENT = 100
+  COMPLAINT_RATE_MINIMUM_SENT = 1_000
 
   # Rows come from SES and Postmark, not the database, so an issue is keyed by email address.
   Issue = Struct.new(:email, :source, :reason, :bounce_type, :message_ids, :last_seen_at, :subscribers,
@@ -55,11 +56,9 @@ class DeliverabilityReport
         "SES has paused sending"
       elsif status != "HEALTHY"
         "SES account status is #{status}"
-      elsif sent < HEALTH_MINIMUM_SENT
-        nil
-      elsif bounce_rate >= BOUNCE_RATE_LIMIT
+      elsif sent >= BOUNCE_RATE_MINIMUM_SENT && bounce_rate >= BOUNCE_RATE_LIMIT
         "SES bounce rate is at AWS's review level"
-      elsif complaint_rate >= COMPLAINT_RATE_LIMIT
+      elsif sent >= COMPLAINT_RATE_MINIMUM_SENT && complaint_rate >= COMPLAINT_RATE_LIMIT
         "SES complaint rate is at AWS's review level"
       end
     end
