@@ -24,7 +24,7 @@ tags: [<%= post.tag_list.map { |tag| "\"#{tag}\"" }.join(", ") %>]
 
 <% comments.each do |comment| -%>
 <% [ comment, *comment.approved_replies ].each do |c| -%>
-**<%= c.link_url ? "[#{c.name}](#{c.link_url})" : c.name %>**<%= " (Author)" if c.author? %> · <%= c.created_at.strftime("%d %b %Y") %><%= " · in reply to #{comment.name}" if c.parent_id %>
+**<%= c.link_url ? "[#{c.name}](#{c.link_url})" : c.name %>**<%= " (Author)" if c.author? %> · <%= c.created_at.in_time_zone(post.timezone).strftime("%d %b %Y") %><%= " · in reply to #{comment.name}" if c.parent_id %>
 
 <%= c.message.strip %>
 

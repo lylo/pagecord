@@ -31,7 +31,7 @@
             <% if c.author? -%>
               <span class="comment-badge">Author</span>
             <% end -%>
-            <span class="comment-date"><%= c.created_at.strftime("%d %b %Y") %></span>
+            <span class="comment-date"><%= c.created_at.in_time_zone(post.timezone).strftime("%d %b %Y") %></span>
             <% if c.parent_id -%>
               <span class="comment-reply-to">in reply to <%= CGI.escapeHTML(comment.name) %></span>
             <% end -%>
