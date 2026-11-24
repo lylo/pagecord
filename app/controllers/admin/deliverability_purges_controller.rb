@@ -8,5 +8,7 @@ class Admin::DeliverabilityPurgesController < Admin::BaseController
                         "across #{emails.size} #{"address".pluralize(emails.size)}."
   rescue Postmark::Error => e
     redirect_to admin_deliverability_issues_path, alert: "Couldn't load Postmark data: #{e.message}"
+  rescue *DeliverabilityReport::SES_ERRORS => e
+    redirect_to admin_deliverability_issues_path, alert: "Couldn't load SES data: #{e.message}"
   end
 end

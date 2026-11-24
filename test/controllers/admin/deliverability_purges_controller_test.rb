@@ -1,10 +1,11 @@
 require "test_helper"
 
 class Admin::DeliverabilityPurgesControllerTest < ActionDispatch::IntegrationTest
-  include AuthenticatedTest
+  include AuthenticatedTest, SesHelpers
 
   setup do
     login_as users(:joel)
+    stub_ses
   end
 
   def stub_postmark(suppressions: [], bounces: [])
@@ -31,6 +32,26 @@ class Admin::DeliverabilityPurgesControllerTest < ActionDispatch::IntegrationTes
     assert_redirected_to admin_deliverability_issues_path
     assert_equal "Deleted 1 subscription across 1 address.", flash[:notice]
     assert EmailSubscriber.exists?(email: "geoff@gmail.com")
+  end
+
+  test "create deletes subscribers SES suppresses" do
+    stub_postmark
+    stub_ses(suppressions: [ ses_suppression("fred@example.com") ])
+
+    assert_difference "EmailSubscriber.count", -1 do
+      post admin_deliverability_purge_url
+    end
+  end
+
+  test "create reports an SES failure rather than deleting anything" do
+    stub_postmark(suppressions: [ { email_address: "fred@example.com", suppression_reason: "HardBounce", created_at: 1.day.ago } ])
+    stub_ses.stubs(:list_suppressed_destinations).raises(Aws::SESV2::Errors::AccessDeniedException.new(nil, "denied"))
+
+    assert_no_difference "EmailSubscriber.count" do
+      post admin_deliverability_purge_url
+    end
+
+    assert_match(/Couldn't load SES data/, flash[:alert])
   end
 
   test "create counts subscriptions and addresses separately" do

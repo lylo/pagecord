@@ -7,9 +7,16 @@ class DeliverabilityReport
   BATCH_SIZE = 500
   CACHE_KEY = "deliverability/actionable_count"
   CACHE_TTL = 8.days
+  SES_REASONS = { "BOUNCE" => "HardBounce", "COMPLAINT" => "SpamComplaint" }.freeze
+  SES_ERRORS = [ Aws::Errors::ServiceError, Aws::Errors::MissingCredentialsError, Seahorse::Client::NetworkingError ].freeze
+  HEALTH_PERIOD = 30.days
+  HEALTH_METRICS = { sent: "SEND", bounces: "PERMANENT_BOUNCE", complaints: "COMPLAINT" }.freeze
+  # AWS reviews an account whose rates go above these.
+  BOUNCE_RATE_LIMIT = 0.05
+  COMPLAINT_RATE_LIMIT = 0.001
 
-  # Rows come from Postmark, not the database, so an issue is keyed by email address.
-  Issue = Struct.new(:email, :reason, :bounce_type, :message_ids, :last_seen_at, :subscribers,
+  # Rows come from SES and Postmark, not the database, so an issue is keyed by email address.
+  Issue = Struct.new(:email, :source, :reason, :bounce_type, :message_ids, :last_seen_at, :subscribers,
                      keyword_init: true) do
     # Postmark records a bounce per delivery attempt, so count the messages that failed
     # rather than the attempts it took to give up on them.
@@ -32,6 +39,28 @@ class DeliverabilityReport
     end
   end
 
+  Health = Struct.new(:status, :sending_enabled, :sent, :bounces, :complaints, keyword_init: true) do
+    def bounce_rate
+      sent.zero? ? 0.0 : bounces.fdiv(sent)
+    end
+
+    def complaint_rate
+      sent.zero? ? 0.0 : complaints.fdiv(sent)
+    end
+
+    def warning
+      if !sending_enabled
+        "SES has paused sending"
+      elsif status != "HEALTHY"
+        "SES account status is #{status}"
+      elsif bounce_rate >= BOUNCE_RATE_LIMIT
+        "SES bounce rate is at AWS's review level"
+      elsif complaint_rate >= COMPLAINT_RATE_LIMIT
+        "SES complaint rate is at AWS's review level"
+      end
+    end
+  end
+
   def self.client
     Postmark::ApiClient.new(
       Rails.application.config.action_mailer.postmark_settings&.dig(:api_token) ||
@@ -43,12 +72,20 @@ class DeliverabilityReport
     Rails.cache.read(CACHE_KEY)
   end
 
-  def initialize(client: self.class.client)
+  def initialize(client: self.class.client, ses_client: SesEmail::DeliveryMethod.client)
     @client = client
+    @ses_client = ses_client
   end
 
   def issues
-    @issues ||= with_subscribers(suppressed + bounced)
+    @issues ||= with_subscribers((ses_suppressed + suppressed + bounced).uniq { |issue| issue.email.downcase })
+  end
+
+  def health
+    @health ||= begin
+      account = @ses_client.get_account
+      Health.new(status: account.enforcement_status, sending_enabled: account.sending_enabled, **sending_totals)
+    end
   end
 
   def actionable
@@ -61,10 +98,33 @@ class DeliverabilityReport
 
   private
 
+    def ses_suppressed
+      @ses_client.list_suppressed_destinations.flat_map(&:suppressed_destination_summaries).map do |suppression|
+        Issue.new(
+          email: suppression.email_address,
+          source: "SES",
+          reason: SES_REASONS.fetch(suppression.reason, suppression.reason),
+          last_seen_at: suppression.last_update_time
+        )
+      end
+    end
+
+    # Virtual Deliverability Manager only accepts whole UTC days.
+    def sending_totals
+      finish = Time.now.utc.tomorrow.beginning_of_day
+      queries = HEALTH_METRICS.map do |name, metric|
+        { id: name.to_s, namespace: "VDM", metric: metric, start_date: finish - HEALTH_PERIOD, end_date: finish }
+      end
+      results = @ses_client.batch_get_metric_data(queries: queries).results.index_by(&:id)
+
+      HEALTH_METRICS.keys.index_with { |name| results[name.to_s]&.values.to_a.sum.to_i }
+    end
+
     def suppressed
-      @suppressed ||= @client.dump_suppressions(STREAM).map do |suppression|
+      @client.dump_suppressions(STREAM).map do |suppression|
         Issue.new(
           email: suppression[:email_address],
+          source: "Postmark",
           reason: suppression[:suppression_reason],
           last_seen_at: suppression[:created_at]&.to_time
         )
@@ -72,17 +132,15 @@ class DeliverabilityReport
     end
 
     # Every bounce type, not just soft bounces: most of what Postmark shows as
-    # undeliverable arrives as Transient. A suppressed address always wins, so it is
-    # only ever counted once.
+    # undeliverable arrives as Transient.
     def bounced
       @client.bounces(messagestream: STREAM, count: BATCH_SIZE)
         .each_with_object({}) { |bounce, issues| record_bounce(issues, bounce) }
-        .except(*suppressed.map { |issue| issue.email.downcase })
         .values
     end
 
     def record_bounce(issues, bounce)
-      issue = issues[bounce[:email].downcase] ||= Issue.new(email: bounce[:email], message_ids: Set.new)
+      issue = issues[bounce[:email].downcase] ||= Issue.new(email: bounce[:email], source: "Postmark", message_ids: Set.new)
       issue.message_ids << (bounce[:message_id] || bounce[:id])
 
       bounced_at = bounce[:bounced_at]&.to_time

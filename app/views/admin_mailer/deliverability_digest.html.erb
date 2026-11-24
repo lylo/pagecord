@@ -1,5 +1,9 @@
+<% if @warning %>
+  <p><strong><%= @warning %>.</strong></p>
+<% end %>
+
 <p>
-  <strong><%= @count %></strong> <%= "address".pluralize(@count) %> Postmark can no longer deliver to.
+  <strong><%= @count %></strong> <%= "address".pluralize(@count) %> can no longer be delivered to.
 </p>
 
 <p>

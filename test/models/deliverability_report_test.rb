@@ -1,8 +1,10 @@
 require "test_helper"
 
 class DeliverabilityReportTest < ActiveSupport::TestCase
+  include SesHelpers
+
   def report(suppressions: [], bounces: [])
-    DeliverabilityReport.new(client: stub(dump_suppressions: suppressions, bounces: bounces))
+    DeliverabilityReport.new(client: stub(dump_suppressions: suppressions, bounces: bounces), ses_client: stub_ses)
   end
 
   def suppression(email, reason: "HardBounce", created_at: 1.day.ago)
@@ -20,6 +22,44 @@ class DeliverabilityReportTest < ActiveSupport::TestCase
     assert_equal "SpamComplaint", issue.reason
     assert_equal [ email_subscribers(:one) ], issue.subscribers
     assert issue.actionable?, "a suppression is always worth acting on"
+  end
+
+  test "an address SES suppresses is actionable, with a hard bounce or complaint reason" do
+    issues = DeliverabilityReport.new(
+      client: stub(dump_suppressions: [], bounces: []),
+      ses_client: stub_ses(suppressions: [ ses_suppression("fred@example.com"), ses_suppression("geoff@gmail.com", reason: "COMPLAINT") ])
+    ).actionable
+
+    assert_equal %w[ HardBounce SpamComplaint ], issues.sort_by(&:email).map(&:reason)
+    assert_equal %w[ SES ], issues.map(&:source).uniq
+  end
+
+  test "an address both providers suppress is listed once, from SES" do
+    issue = DeliverabilityReport.new(
+      client: stub(dump_suppressions: [ suppression("FRED@example.com", reason: "ManualSuppression") ], bounces: []),
+      ses_client: stub_ses(suppressions: [ ses_suppression("fred@example.com") ])
+    ).issues.sole
+
+    assert_equal "SES", issue.source
+  end
+
+  test "health sums the period's sends, hard bounces and complaints" do
+    health = DeliverabilityReport.new(client: stub, ses_client: stub_ses(sent: 2000, bounces: 20, complaints: 1)).health
+
+    assert_equal 2000, health.sent
+    assert_in_delta 0.01, health.bounce_rate
+    assert_in_delta 0.0005, health.complaint_rate
+    assert_nil health.warning
+  end
+
+  test "health warns when sending is paused, the account is under review or a rate reaches AWS's review level" do
+    warning = ->(**ses) { DeliverabilityReport.new(client: stub, ses_client: stub_ses(**ses)).health.warning }
+
+    assert_match(/paused/, warning.(sending_enabled: false))
+    assert_match(/PROBATION/, warning.(status: "PROBATION"))
+    assert_match(/bounce rate/, warning.(sent: 100, bounces: 5))
+    assert_match(/complaint rate/, warning.(sent: 1000, complaints: 1))
+    assert_nil warning.(sent: 0)
   end
 
   test "bounces are grouped by address and counted" do

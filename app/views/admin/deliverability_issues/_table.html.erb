@@ -19,6 +19,7 @@
             <span class="px-2.5 py-1 rounded-full text-xs font-medium <%= deliverability_badge_class(issue) %>">
               <%= issue.label %>
             </span>
+            <span class="ms-1 text-xs text-slate-500 dark:text-slate-400"><%= issue.source %></span>
           </td>
           <td class="whitespace-nowrap py-3 px-6 text-sm text-slate-500 dark:text-slate-400">
             <%= issue.last_seen_at&.to_date&.strftime("%-d %b %Y") %>

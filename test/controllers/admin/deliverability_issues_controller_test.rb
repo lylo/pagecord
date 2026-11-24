@@ -1,10 +1,11 @@
 require "test_helper"
 
 class Admin::DeliverabilityIssuesControllerTest < ActionDispatch::IntegrationTest
-  include AuthenticatedTest
+  include AuthenticatedTest, SesHelpers
 
   setup do
     login_as users(:joel)
+    stub_ses
   end
 
   def stub_postmark(suppressions: [], bounces: [])
@@ -28,6 +29,27 @@ class Admin::DeliverabilityIssuesControllerTest < ActionDispatch::IntegrationTes
     assert_select "td", text: /fred@example.com/
     assert_select "span", text: /HardBounce/
     assert_select "td", text: /joel/ # subscriber's blog
+  end
+
+  test "index shows addresses SES suppresses and the account's health" do
+    stub_postmark
+    stub_ses(suppressions: [ ses_suppression("fred@example.com") ], sent: 200, bounces: 1)
+
+    get admin_deliverability_issues_url
+    assert_response :success
+    assert_select "td", text: /fred@example.com/
+    assert_select "td", text: /HardBounce\s+SES/
+    assert_select "span", text: /Healthy/
+    assert_select "p", text: /200 sent,\s+1 hard bounce \(0.50%/
+  end
+
+  test "index degrades gracefully when SES is unreachable" do
+    stub_postmark
+    stub_ses.stubs(:list_suppressed_destinations).raises(Seahorse::Client::NetworkingError.new(RuntimeError.new("timed out")))
+
+    get admin_deliverability_issues_url
+    assert_response :success
+    assert_select "div", text: /Couldn't load SES data/
   end
 
   test "index shows repeated bounces with their type and count" do

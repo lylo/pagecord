@@ -2,6 +2,7 @@ class Admin::DeliverabilityIssuesController < Admin::BaseController
   def index
     report = DeliverabilityReport.new
     @issues = report.issues
+    @health = report.health
     report.cache_count!
   rescue Postmark::InvalidApiKeyError
     @issues = []
@@ -9,6 +10,9 @@ class Admin::DeliverabilityIssuesController < Admin::BaseController
   rescue Postmark::Error => e
     @issues = []
     @error = "Couldn't load Postmark data: #{e.message}"
+  rescue *DeliverabilityReport::SES_ERRORS => e
+    @issues = []
+    @error = "Couldn't load SES data: #{e.message}"
   end
 
   def destroy

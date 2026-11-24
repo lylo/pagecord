@@ -17,12 +17,13 @@ class AdminMailer < CloudflareMailer
     )
   end
 
-  def deliverability_digest(count)
+  def deliverability_digest(count, warning = nil)
     @count = count
+    @warning = warning
 
     mail(
       to: "hello@pagecord.com",
-      subject: "Deliverability: #{@count} #{"address".pluralize(@count)} to review"
+      subject: "Deliverability: #{@warning || "#{@count} #{"address".pluralize(@count)} to review"}"
     )
   end
 end

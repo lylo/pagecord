@@ -1,7 +1,9 @@
 require "test_helper"
 
 class DeliverabilityDigestJobTest < ActiveSupport::TestCase
-  include ActionMailer::TestHelper
+  include ActionMailer::TestHelper, SesHelpers
+
+  setup { stub_ses }
 
   def stub_postmark(suppressions: [], bounces: [])
     Postmark::ApiClient.any_instance.stubs(:dump_suppressions).returns(suppressions)
@@ -22,6 +24,15 @@ class DeliverabilityDigestJobTest < ActiveSupport::TestCase
     stub_postmark(bounces: [ { email: "fred@example.com", type: "Transient", bounced_at: 1.day.ago } ])
 
     assert_no_enqueued_emails do
+      DeliverabilityDigestJob.perform_now
+    end
+  end
+
+  test "sends a digest when SES health needs attention, even with no addresses to review" do
+    stub_postmark
+    stub_ses(sending_enabled: false)
+
+    assert_enqueued_email_with AdminMailer, :deliverability_digest, args: [ 0, "SES has paused sending" ] do
       DeliverabilityDigestJob.perform_now
     end
   end

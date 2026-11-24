@@ -4,6 +4,23 @@
   <div class="mb-4 px-4 py-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm"><%= @error %></div>
 <% end %>
 
+<% if @health %>
+  <div class="mb-8 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 px-6 py-4">
+    <div class="flex items-center gap-2">
+      <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">Amazon SES</div>
+      <span class="px-2.5 py-1 rounded-full text-xs font-medium <%= @health.warning ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" : "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" %>">
+        <%= @health.warning || "Healthy" %>
+      </span>
+    </div>
+    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+      Last <%= DeliverabilityReport::HEALTH_PERIOD.in_days.to_i %> days:
+      <%= number_with_delimiter @health.sent %> sent,
+      <%= pluralize @health.bounces, "hard bounce" %> (<%= number_to_percentage @health.bounce_rate * 100, precision: 2 %>, AWS reviews at <%= number_to_percentage DeliverabilityReport::BOUNCE_RATE_LIMIT * 100, precision: 0 %>),
+      <%= pluralize @health.complaints, "complaint" %> (<%= number_to_percentage @health.complaint_rate * 100, precision: 2 %>, AWS reviews at <%= number_to_percentage DeliverabilityReport::COMPLAINT_RATE_LIMIT * 100, precision: 1 %>)
+    </p>
+  </div>
+<% end %>
+
 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
   <div class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
     <div>
@@ -12,7 +29,7 @@
         <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300"><%= actionable.size %></span>
       </div>
       <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-        Suppressed by Postmark, hard bounced or blocked, or failing <%= DeliverabilityReport::BOUNCE_THRESHOLD %> times or more
+        Suppressed by SES or Postmark, hard bounced or blocked, or failing <%= DeliverabilityReport::BOUNCE_THRESHOLD %> times or more
       </p>
     </div>
     <%= button_to "Delete All",
