@@ -3,7 +3,7 @@ module SesHelpers
     client = stub(
       list_suppressed_destinations: [ stub(suppressed_destination_summaries: suppressions) ],
       get_account: stub(enforcement_status: status, sending_enabled: sending_enabled),
-      batch_get_metric_data: stub(results: [
+      batch_get_metric_data: stub(errors: [], results: [
         stub(id: "sent", values: [ sent ]),
         stub(id: "bounces", values: [ bounces ]),
         stub(id: "complaints", values: [ complaints ])

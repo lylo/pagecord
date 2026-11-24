@@ -2,9 +2,11 @@
   <p><strong><%= @warning %>.</strong></p>
 <% end %>
 
-<p>
-  <strong><%= @count %></strong> <%= "address".pluralize(@count) %> can no longer be delivered to.
-</p>
+<% if @count.positive? %>
+  <p>
+    <strong><%= @count %></strong> <%= "address".pluralize(@count) %> can no longer be delivered to.
+  </p>
+<% end %>
 
 <p>
   <%= link_to "Review in Admin Panel", admin_deliverability_issues_url %>

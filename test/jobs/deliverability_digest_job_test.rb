@@ -37,6 +37,15 @@ class DeliverabilityDigestJobTest < ActiveSupport::TestCase
     end
   end
 
+  test "sends the digest with a warning when SES health can't be checked" do
+    stub_postmark(suppressions: [ { email_address: "fred@example.com", suppression_reason: "HardBounce", created_at: 1.day.ago } ])
+    stub_ses.stubs(:get_account).raises(Seahorse::Client::NetworkingError.new(RuntimeError.new("timed out")))
+
+    assert_enqueued_email_with AdminMailer, :deliverability_digest, args: [ 1, "SES health couldn't be checked: timed out" ] do
+      DeliverabilityDigestJob.perform_now
+    end
+  end
+
   test "refreshes the nav badge even when there is nothing to report" do
     Rails.stubs(:cache).returns(ActiveSupport::Cache::MemoryStore.new)
     stub_postmark

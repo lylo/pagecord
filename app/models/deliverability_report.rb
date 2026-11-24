@@ -8,12 +8,14 @@ class DeliverabilityReport
   CACHE_KEY = "deliverability/actionable_count"
   CACHE_TTL = 8.days
   SES_REASONS = { "BOUNCE" => "HardBounce", "COMPLAINT" => "SpamComplaint" }.freeze
-  SES_ERRORS = [ Aws::Errors::ServiceError, Aws::Errors::MissingCredentialsError, Seahorse::Client::NetworkingError ].freeze
+  MetricsError = Class.new(StandardError)
+  SES_ERRORS = [ Aws::Errors::ServiceError, Aws::Errors::MissingCredentialsError, Seahorse::Client::NetworkingError, MetricsError ].freeze
   HEALTH_PERIOD = 30.days
   HEALTH_METRICS = { sent: "SEND", bounces: "PERMANENT_BOUNCE", complaints: "COMPLAINT" }.freeze
-  # AWS reviews an account whose rates go above these.
+  # AWS reviews an account whose rates reach these.
   BOUNCE_RATE_LIMIT = 0.05
   COMPLAINT_RATE_LIMIT = 0.001
+  HEALTH_MINIMUM_SENT = 1_000
 
   # Rows come from SES and Postmark, not the database, so an issue is keyed by email address.
   Issue = Struct.new(:email, :source, :reason, :bounce_type, :message_ids, :last_seen_at, :subscribers,
@@ -53,6 +55,8 @@ class DeliverabilityReport
         "SES has paused sending"
       elsif status != "HEALTHY"
         "SES account status is #{status}"
+      elsif sent < HEALTH_MINIMUM_SENT
+        nil
       elsif bounce_rate >= BOUNCE_RATE_LIMIT
         "SES bounce rate is at AWS's review level"
       elsif complaint_rate >= COMPLAINT_RATE_LIMIT
@@ -115,7 +119,9 @@ class DeliverabilityReport
       queries = HEALTH_METRICS.map do |name, metric|
         { id: name.to_s, namespace: "VDM", metric: metric, start_date: finish - HEALTH_PERIOD, end_date: finish }
       end
-      results = @ses_client.batch_get_metric_data(queries: queries).results.index_by(&:id)
+      response = @ses_client.batch_get_metric_data(queries: queries)
+      raise MetricsError, response.errors.map(&:message).to_sentence if response.errors.any?
+      results = response.results.index_by(&:id)
 
       HEALTH_METRICS.keys.index_with { |name| results[name.to_s]&.values.to_a.sum.to_i }
     end

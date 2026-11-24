@@ -52,6 +52,17 @@ class Admin::DeliverabilityIssuesControllerTest < ActionDispatch::IntegrationTes
     assert_select "div", text: /Couldn't load SES data/
   end
 
+  test "index still lists addresses when SES health can't be loaded" do
+    stub_postmark
+    stub_ses(suppressions: [ ses_suppression("fred@example.com") ])
+      .stubs(:get_account).raises(Seahorse::Client::NetworkingError.new(RuntimeError.new("timed out")))
+
+    get admin_deliverability_issues_url
+    assert_response :success
+    assert_select "td", text: /fred@example.com/
+    assert_select "div", text: /Couldn't load SES data/
+  end
+
   test "index shows repeated bounces with their type and count" do
     stub_postmark(bounces: Array.new(3) { |i| { email: "fred@example.com", type: "Transient", bounced_at: 1.day.ago, message_id: "m#{i}" } })
 

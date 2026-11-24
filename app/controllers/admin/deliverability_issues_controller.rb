@@ -2,8 +2,8 @@ class Admin::DeliverabilityIssuesController < Admin::BaseController
   def index
     report = DeliverabilityReport.new
     @issues = report.issues
-    @health = report.health
     report.cache_count!
+    @health = report.health
   rescue Postmark::InvalidApiKeyError
     @issues = []
     @error = "Postmark API token is missing or invalid. Set POSTMARK_API_TOKEN in your environment."
@@ -11,7 +11,7 @@ class Admin::DeliverabilityIssuesController < Admin::BaseController
     @issues = []
     @error = "Couldn't load Postmark data: #{e.message}"
   rescue *DeliverabilityReport::SES_ERRORS => e
-    @issues = []
+    @issues ||= []
     @error = "Couldn't load SES data: #{e.message}"
   end
 
