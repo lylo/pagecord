@@ -162,28 +162,10 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "", post.text_summary
   end
 
-  # Each embedded attachment used to trigger a full re-render of the rich text
-  # body via ActiveStorage::Attachment's presence validator on :record, making
-  # saves scale quadratically (~450 queries for 20 attachments).
-  test "creating a post with many attachments stays within a query budget" do
-    blobs = 20.times.map do |i|
-      ActiveStorage::Blob.create_and_upload!(
-        io: StringIO.new("image #{i}"),
-        filename: "photo#{i}.jpg",
-        content_type: "image/jpeg"
-      )
-    end
-    content = "<p>Photos</p>" + blobs.map { |blob| %(<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment>) }.join
+  test "saving a post does not render its attachments" do
+    ActionText::Content.any_instance.expects(:render_attachments).never
 
-    query_count = 0
-    counter = ->(name, started, finished, unique_id, payload) {
-      query_count += 1 unless payload[:name].in?([ "SCHEMA", "TRANSACTION" ]) || payload[:cached]
-    }
-
-    post = blogs(:joel).posts.build(content: content, status: :published)
-    ActiveSupport::Notifications.subscribed(counter, "sql.active_record") { post.save! }
-
-    assert_operator query_count, :<, 100, "Expected bounded query count, got #{query_count}"
+    blogs(:vivian).posts.create!(content: image_attachment_html(2), status: :published)
   end
 
   test "a save that crosses the allowance is allowed, the next one is not" do
