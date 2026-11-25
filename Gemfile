@@ -7,7 +7,7 @@ gem "openssl", "~> 4.0"
 gem "rails", github: "rails/rails", branch: "main"
 
 gem "actionpack-page_caching"
-gem "image_processing", "~> 2.1"
+gem "image_processing", "~> 2.2"
 gem "importmap-rails"
 gem "lexxy"
 gem "ruby-vips"
