@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# Boots a production image with its own Postgres, Redis and Memcached and checks
+# that it serves pages, compiled assets and has the tools the app shells out to.
+#
+#   docker build -t pagecord . && bin/check-image pagecord
+#
+set -euo pipefail
+
+image="${1:-pagecord}"
+name="pagecord-check-$$"
+
+cleanup() {
+  status=$?
+  [ $status -eq 0 ] || docker logs "$name-web" 2>&1 | tail -50 || true
+  docker rm -fv "$name-web" "$name-db" "$name-redis" "$name-memcached" >/dev/null 2>&1 || true
+  docker network rm "$name" >/dev/null 2>&1 || true
+  exit $status
+}
+trap cleanup EXIT
+
+docker network create "$name" >/dev/null
+docker run -d --name "$name-db" --network "$name" -e POSTGRES_PASSWORD=password -e POSTGRES_DB=pagecord postgres:18 >/dev/null
+docker run -d --name "$name-redis" --network "$name" redis:latest >/dev/null
+docker run -d --name "$name-memcached" --network "$name" memcached:latest >/dev/null
+
+for _ in $(seq 30); do
+  docker exec "$name-db" pg_isready -q -h 127.0.0.1 -U postgres && break
+  sleep 1
+done
+
+env=(
+  -e DATABASE_URL="postgres://postgres:password@$name-db/pagecord"
+  -e REDIS_URL="redis://$name-redis:6379/0"
+  -e MEMCACHE_SERVERS="$name-memcached:11211"
+  -e SECRET_KEY_BASE=check -e WEB_CONCURRENCY=1
+)
+
+# An empty database would make db:prepare run the seeds, which refuse to run in production
+docker run --rm --network "$name" "${env[@]}" "$image" ./bin/rails db:schema:load >/dev/null
+docker run -d --name "$name-web" --network "$name" -p 127.0.0.1::3000 "${env[@]}" "$image" >/dev/null
+
+url="http://$(docker port "$name-web" 3000 | head -1)"
+curl -sS -o /dev/null --fail --retry 60 --retry-delay 1 --retry-all-errors "$url/up" 2>/dev/null
+[ "$(curl -s -o /dev/null -w '%{http_code}' "$url/up")" = 200 ]
+echo "/up answers 200"
+
+home=$(curl -sS --fail -H "Host: pagecord.com" -H "X-Forwarded-Proto: https" "$url/")
+stylesheet=$(grep -oE '/assets/tailwind-[0-9a-f]+\.css' <<< "$home" | head -1)
+curl -sS --fail -o /dev/null -H "Host: pagecord.com" -H "X-Forwarded-Proto: https" "$url$stylesheet"
+echo "$stylesheet is served"
+
+docker exec "$name-web" bash -ec '
+  exiftool -ver >/dev/null
+  ffmpeg -version >/dev/null
+  ffprobe -version >/dev/null
+  pdftoppm -v 2>/dev/null
+  pg_dump "$DATABASE_URL" --schema-only >/dev/null
+  grep -q jemalloc /proc/1/maps
+  bundle exec ruby -rvips -e "abort unless Vips.at_least_libvips?(8, 13)"
+'
+echo "exiftool, ffmpeg, ffprobe, pdftoppm, pg_dump, libvips and jemalloc work"
+
+! docker exec "$name-web" ls config/master.key config/credentials/production.key .env .fizzy.yaml >/dev/null 2>&1 || { echo "secrets in the image"; exit 1; }
+echo "no secrets in the image"
