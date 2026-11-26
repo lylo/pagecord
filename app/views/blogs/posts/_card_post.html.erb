@@ -4,12 +4,12 @@
       <div class="post-card-content">
         <% if (image = post_thumbnail(post)) %>
           <div class="post-card-image">
-            <%= image_tag resized_image_url(image, width: 1600, height: 1200), alt: post.display_title %>
+            <%= image_tag resized_image_url(image, width: 1600, height: 1600), alt: post.display_title %>
           </div>
         <% elsif !post.has_text_content? && (media = post.first_media)&.video? %>
           <div class="post-card-image">
             <% if media.preview_image.attached? %>
-              <%= image_tag resized_image_url(media.preview_image.blob, width: 1600, height: 1200), alt: post.display_title %>
+              <%= image_tag resized_image_url(media.preview_image.blob, width: 1600, height: 1600), alt: post.display_title %>
             <% else %>
               <%= video_tag rails_public_blob_url(media), preload: "metadata", muted: true, playsinline: true, class: "post-card-video" %>
             <% end %>
