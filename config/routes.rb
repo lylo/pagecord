@@ -205,6 +205,7 @@ Rails.application.routes.draw do
           resource :review, only: [ :create ], controller: "blogs/reviews"
         end
 
+        resources :blank_blogs, only: [ :index ]
         resources :screenings, only: [ :index ]
       end
     end

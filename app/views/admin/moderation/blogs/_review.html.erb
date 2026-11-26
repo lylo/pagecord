@@ -83,8 +83,10 @@
     </div>
 
     <div class="grid grid-cols-3 gap-2 sm:flex sm:w-28 sm:shrink-0 sm:flex-col">
-      <%= button_to "Not spam", admin_moderation_blog_review_path(blog), form_class: "contents",
-            class: "btn-primary justify-center" %>
+      <% if local_assigns.fetch(:reviewable, true) %>
+        <%= button_to "Not spam", admin_moderation_blog_review_path(blog), form_class: "contents",
+              class: "btn-primary justify-center" %>
+      <% end %>
       <% unless user.subscribed? %>
         <%= button_to "Spam", admin_user_path(user), method: :delete, params: { spam: true }, form_class: "contents",
               class: "btn-danger justify-center", data: { turbo_confirm: "Confirm @#{blog.subdomain} as spam? This discards the user and removes them from all mailing lists." } %>

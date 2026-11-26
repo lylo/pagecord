@@ -4,7 +4,9 @@ module Blog::Reviewable
   included do
     before_create -> { self.reviewed_at = Time.current }, if: -> { user.subscribed? }
 
-    scope :awaiting_review, -> { kept.with_kept_user.where(reviewed_at: nil).reviewable }
+    scope :unreviewed, -> { kept.with_kept_user.where(reviewed_at: nil) }
+    scope :awaiting_review, -> { unreviewed.reviewable }
+    scope :awaiting_content, -> { unreviewed.where.not(id: Blog.reviewable.select(:id)) }
   end
 
   class_methods do
