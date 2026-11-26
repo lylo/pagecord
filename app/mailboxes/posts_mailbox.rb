@@ -77,11 +77,11 @@ class PostsMailbox < ApplicationMailbox
     end
 
     def find_blog_by_user_email(from_email, delivery_email)
-      Blog.joins(:user).find_by(user: { email: from_email }, delivery_email: delivery_email)
+      Blog.kept.with_kept_user.find_by(users: { email: from_email }, delivery_email: delivery_email)
     end
 
     def find_blog_by_verified_sender_email(from_email, delivery_email)
-      Blog.joins(:sender_email_addresses)
+      Blog.kept.with_kept_user.joins(:sender_email_addresses)
           .where(delivery_email: delivery_email)
           .where(sender_email_addresses: { email: from_email })
           .where.not(sender_email_addresses: { accepted_at: nil })

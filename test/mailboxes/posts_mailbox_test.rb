@@ -94,6 +94,15 @@ class PostsMailboxTest < ActionMailbox::TestCase
     end
   end
 
+  test "should drop mail for a cancelled account" do
+    user = users(:joel)
+    user.discard!
+
+    assert_no_difference -> { Post.count } do
+      receive_inbound_email_from_mail to: user.blog.delivery_email, from: user.email, subject: "Hello", body: "Still here"
+    end
+  end
+
   test "should silently drop email if user not found" do
     assert_no_difference -> { Post.count } do
       receive_inbound_email_from_mail \
