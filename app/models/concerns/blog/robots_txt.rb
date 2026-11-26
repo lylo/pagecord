@@ -15,10 +15,6 @@ module Blog::RobotsTxt
     allow_search_indexing? && !password_protected? && search_indexable?
   end
 
-  def search_indexable?
-    reviewed_at.present? || user.subscribed?
-  end
-
   def custom_robots_txt_active?
     custom_robots_txt.present?
   end

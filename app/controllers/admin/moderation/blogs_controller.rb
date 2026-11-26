@@ -1,7 +1,7 @@
 class Admin::Moderation::BlogsController < Admin::BaseController
   include Pagy::Method
 
-  FILTERS = %w[ all posts links screening unverified ].freeze
+  FILTERS = %w[ all links screening ].freeze
 
   helper_method :queue_filter, :queue_counts
 
@@ -24,13 +24,11 @@ class Admin::Moderation::BlogsController < Admin::BaseController
     end
 
     def queued_blogs(filter)
-      blogs = Blog.unreviewed
+      blogs = Blog.awaiting_review
 
       case filter
-      when "posts" then blogs.where(Post.kept.published.where("posts.blog_id = blogs.id").arel.exists)
       when "links" then with_external_links(blogs)
       when "screening" then blogs.where(users: { id: User::Screening.failed.select(:user_id) })
-      when "unverified" then blogs.where(users: { verified: false })
       else blogs
       end
     end

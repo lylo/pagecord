@@ -58,14 +58,13 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def destroy
-    @user = User.find(params[:id])
-
+    user = User.kept.find(params[:id])
     reason = params[:spam] ? :spam : :admin_deleted
 
-    flash[:notice] = reason == :spam ? "User was marked as spam and discarded" : "User was successfully discarded"
-    DestroyUserJob.perform_now(@user.id, reason: reason)
+    DestroyUserJob.perform_now(user.id, reason: reason)
 
-    redirect_to admin_users_path
+    redirect_back fallback_location: admin_users_path,
+      notice: reason == :spam ? "User was marked as spam and discarded" : "User was successfully discarded"
   end
 
   private

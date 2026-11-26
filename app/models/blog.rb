@@ -1,6 +1,6 @@
 class Blog < ApplicationRecord
   include Discard::Model
-  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, Blog::CustomCode, Blog::Design, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::PasswordProtected, Blog::PostUrls, Blog::Spotlit, Blog::Hosts
+  include DeliveryEmail, CustomDomain, EmailSubscribable, Themeable, Localisable, CssSanitizable, Blog::CustomFooter, Blog::CustomCode, Blog::Design, Blog::Contactable, Blog::ApiKey, Blog::RobotsTxt, Blog::PasswordProtected, Blog::PostUrls, Blog::Spotlit, Blog::Reviewable, Blog::Hosts
 
   enum :layout, [ :stream_layout, :title_layout, :cards_layout ], validate: true
 
@@ -32,7 +32,6 @@ class Blog < ApplicationRecord
   has_many :navigation_items, dependent: :destroy
 
   scope :with_kept_user, -> { joins(:user).merge(User.kept) }
-  scope :unreviewed, -> { kept.with_kept_user.where(reviewed_at: nil) }
   has_many :social_navigation_items, -> { where(type: "SocialNavigationItem") }, class_name: "SocialNavigationItem", foreign_key: :blog_id
 
   has_many :exports, class_name: "Blog::Export", dependent: :destroy
@@ -48,7 +47,6 @@ class Blog < ApplicationRecord
   validate :within_blog_limit, on: :create
 
   before_validation :downcase_subdomain
-  before_create -> { self.reviewed_at = Time.current }, if: -> { user.subscribed? }
   after_commit :purge_cloudflare_cache, on: :update
 
   validates :subdomain, presence: true, uniqueness: true, length: { minimum: Subdomain::MIN_LENGTH, maximum: Subdomain::MAX_LENGTH }

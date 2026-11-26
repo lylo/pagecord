@@ -5,7 +5,6 @@ class Admin::Moderation::BlogsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     login_as users(:joel)
-    Blog.update_all(reviewed_at: Time.current)
     @blog = blogs(:annie)
     @blog.update!(reviewed_at: nil)
   end
@@ -81,12 +80,25 @@ class Admin::Moderation::BlogsControllerTest < ActionDispatch::IntegrationTest
     assert_select "##{dom_id(@blog)}", count: 0
   end
 
-  test "the unverified filter keeps blogs whose owner hasn't verified" do
+  test "leaves out a blog with nothing on it" do
+    get admin_moderation_blogs_path
+
+    assert_select "##{dom_id(blogs(:unengaged))}", count: 0
+  end
+
+  test "the tab count matches the blogs listed" do
+    get admin_moderation_blogs_path
+
+    assert_select "article", count: 1
+    assert_select "a[href='#{admin_moderation_blogs_path}']", text: /Blogs\s+1/
+  end
+
+  test "offers spam only for an account that isn't subscribed" do
     blogs(:elliot).update!(reviewed_at: nil)
 
-    get admin_moderation_blogs_path(filter: "unverified")
+    get admin_moderation_blogs_path
 
-    assert_select "##{dom_id(blogs(:elliot))}"
-    assert_select "##{dom_id(@blog)}", count: 0
+    assert_select "##{dom_id(blogs(:elliot))} input[name=spam]"
+    assert_select "##{dom_id(@blog)} input[name=spam]", count: 0
   end
 end

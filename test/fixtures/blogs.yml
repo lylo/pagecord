@@ -59,7 +59,7 @@ pagecord:
   delivery_email: pagecord_asj232j@post.pagecord.com
   reviewed_at: <%= 1.day.ago %>
 
-# Deliberately unreviewed, so a seeded database has something in the queue.
+# Unreviewed and blank: the review queue leaves it out until it has something on it.
 unengaged:
   user: unengaged
   subdomain: unengaged

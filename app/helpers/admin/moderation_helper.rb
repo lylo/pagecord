@@ -7,10 +7,8 @@ module Admin::ModerationHelper
 
   QUEUE_FILTER_LABELS = {
     "all" => "All",
-    "posts" => "Has posts",
     "links" => "Has links",
-    "screening" => "Failed screening",
-    "unverified" => "Unverified"
+    "screening" => "Failed screening"
   }.freeze
 
   def content_moderation_count
@@ -23,7 +21,7 @@ module Admin::ModerationHelper
   end
 
   def blogs_to_review_count
-    @blogs_to_review_count ||= Blog.unreviewed.count
+    @blogs_to_review_count ||= Blog.awaiting_review.count
   end
 
   def screening_reasons(screening)

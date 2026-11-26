@@ -16,4 +16,17 @@ class Admin::Moderation::Blogs::ReviewsControllerTest < ActionDispatch::Integrat
     assert_redirected_to admin_moderation_blogs_path
     assert_not_nil blog.reload.reviewed_at
   end
+
+  test "reviewing again keeps the original review date" do
+    assert_no_changes -> { blogs(:elliot).reload.reviewed_at } do
+      post admin_moderation_blog_review_path(blogs(:elliot))
+    end
+  end
+
+  test "a blank blog can't be reviewed" do
+    post admin_moderation_blog_review_path(blogs(:unengaged))
+
+    assert_response :not_found
+    assert_nil blogs(:unengaged).reload.reviewed_at
+  end
 end

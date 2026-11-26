@@ -220,6 +220,20 @@
           <dd class="text-slate-500 dark:text-slate-400"><%= blog.theme %> · <%= blog.width %> · <%= blog.font %></dd>
         </div>
         <div class="flex justify-between gap-4 items-center">
+          <dt class="font-medium text-slate-900 dark:text-slate-50">Review</dt>
+          <dd class="text-slate-500 dark:text-slate-400 text-right">
+            <% if blog.reviewed_at %>
+              Reviewed <%= blog.reviewed_at.to_date.to_formatted_s(:long) %>
+            <% elsif !blog.reviewable? %>
+              Nothing to review yet
+            <% elsif @user.discarded? %>
+              Not reviewed
+            <% else %>
+              <%= link_to "In the review queue", admin_moderation_blogs_path(anchor: dom_id(blog)), class: "font-medium underline" %>
+            <% end %>
+          </dd>
+        </div>
+        <div class="flex justify-between gap-4 items-center">
           <dt class="font-medium text-slate-900 dark:text-slate-50">Spotlight</dt>
           <dd>
             <% if blog.spotlight_exclusion %>

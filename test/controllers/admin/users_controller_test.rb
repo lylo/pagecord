@@ -19,6 +19,29 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_match "cleantalk FORBIDDEN BL", response.body
   end
 
+  test "should link a blog awaiting review to the review queue" do
+    blogs(:elliot).update!(reviewed_at: nil)
+
+    get admin_user_path(users(:elliot))
+
+    assert_select "a[href='#{admin_moderation_blogs_path(anchor: dom_id(blogs(:elliot)))}']"
+  end
+
+  test "should not link a blank blog to the review queue" do
+    get admin_user_path(users(:unengaged))
+
+    assert_select "a[href='#{admin_moderation_blogs_path(anchor: dom_id(blogs(:unengaged)))}']", count: 0
+  end
+
+  test "should not link a cancelled account's blog to the review queue" do
+    blogs(:elliot).update!(reviewed_at: nil)
+    users(:elliot).discard!
+
+    get admin_user_path(users(:elliot))
+
+    assert_select "a[href='#{admin_moderation_blogs_path(anchor: dom_id(blogs(:elliot)))}']", count: 0
+  end
+
   test "should search users by email" do
     user1 = users(:vivian)
     user2 = users(:joel)
@@ -164,6 +187,25 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_users_path
     assert_equal "User was successfully discarded", flash[:notice]
     assert user.reload.discarded?
+  end
+
+  test "should return a restored spam account to the review queue" do
+    blogs(:elliot).update!(reviewed_at: nil)
+
+    delete admin_user_url(users(:elliot)), params: { spam: true }
+    assert AccountTombstone.spam.exists?(user_id: users(:elliot).id)
+    assert_not_includes Blog.awaiting_review, blogs(:elliot)
+
+    post admin_user_restoration_path(users(:elliot))
+    assert_includes Blog.awaiting_review, blogs(:elliot)
+  end
+
+  test "should not discard a user twice" do
+    users(:vivian).discard!
+
+    delete admin_user_url(users(:vivian))
+
+    assert_response :not_found
   end
 
   test "should get new" do

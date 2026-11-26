@@ -1,7 +1,7 @@
 <% blog = review.blog %>
 <% user = review.user %>
 
-<article id="<%= dom_id(blog) %>" class="sheet-bleed py-5">
+<article id="<%= dom_id(blog) %>" class="sheet-bleed py-5 target:bg-slate-50 dark:target:bg-slate-800/60">
   <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
     <div class="min-w-0 flex-1 space-y-3">
       <div>
@@ -85,9 +85,11 @@
     <div class="grid grid-cols-3 gap-2 sm:flex sm:w-28 sm:shrink-0 sm:flex-col">
       <%= button_to "Not spam", admin_moderation_blog_review_path(blog), form_class: "contents",
             class: "btn-primary justify-center" %>
-      <%= button_to "Spam", admin_moderation_blog_spam_confirmation_path(blog), form_class: "contents",
-            class: "btn-danger justify-center", data: { turbo_confirm: "Confirm @#{blog.subdomain} as spam? This discards the user and cancels any subscription." } %>
-      <%= button_to "Remove", admin_moderation_blog_removal_path(blog), form_class: "contents",
+      <% unless user.subscribed? %>
+        <%= button_to "Spam", admin_user_path(user), method: :delete, params: { spam: true }, form_class: "contents",
+              class: "btn-danger justify-center", data: { turbo_confirm: "Confirm @#{blog.subdomain} as spam? This discards the user and removes them from all mailing lists." } %>
+      <% end %>
+      <%= button_to "Remove", admin_user_path(user), method: :delete, form_class: "contents",
             class: "btn-optional justify-center", data: { turbo_confirm: "Remove @#{blog.subdomain}? This discards the user and cancels any subscription, without marking it as spam." } %>
     </div>
   </div>
