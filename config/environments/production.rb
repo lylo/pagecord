@@ -51,7 +51,7 @@ Rails.application.configure do
   # see https://github.com/ankane/secure_rails?tab=readme-ov-file
   config.ssl_options = {
     hsts: { subdomains: true, preload: true, expires: 1.year },
-    redirect: { exclude: ->(request) { request.path == "/verify_domain" } }
+    redirect: { exclude: ->(request) { request.path.in?(%w[ /up /verify_domain ]) } }
   }
 
   config.filter_parameters += [ :email ]
