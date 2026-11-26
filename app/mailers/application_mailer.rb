@@ -12,7 +12,7 @@ class ApplicationMailer < ActionMailer::Base
 
     def skip_undeliverable_recipient
       yield
-    rescue CloudflareEmail::UndeliverableError, Postmark::InactiveRecipientError => error
+    rescue CloudflareEmail::UndeliverableError => error
       undeliverable_recipient(error)
     end
 

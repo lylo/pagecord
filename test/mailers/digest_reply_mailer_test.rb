@@ -145,17 +145,6 @@ class DigestReplyMailerTest < ActionMailer::TestCase
     assert_equal "Re: #{digest.subject}", email.subject
   end
 
-  test "forward_reply goes through SES in production when the blog owner has SES newsletter delivery" do
-    digest = post_digests(:one)
-    digest.blog.user.features = [ "ses_newsletter_delivery" ]
-    original_mail = Mail.new(from: "John Doe <subscriber@example.com>", body: "Thanks!")
-
-    Rails.env.stubs(:production?).returns(true)
-    email = DigestReplyMailer.with(digest: digest, original_mail: original_mail).forward_reply
-
-    assert_instance_of SesEmail::DeliveryMethod, email.delivery_method
-  end
-
   test "forward_reply uses correct subject with digest date" do
     digest = post_digests(:one)
     digest.update!(created_at: Date.parse("2025-03-15"))

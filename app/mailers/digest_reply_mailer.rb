@@ -17,8 +17,7 @@ class DigestReplyMailer < NewsletterMailer
       reply_to: sender,
       subject: "Re: #{@digest.subject}",
       body: reply_text(original_mail),
-      content_type: "text/plain",
-      delivery_method: delivery_method_for(@blog)
+      content_type: "text/plain"
     )
   end
 
