@@ -86,14 +86,22 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "should not track visits from pagecord dashboard" do
+  test "should not track a CSS preview" do
     assert_no_enqueued_jobs only: TrackPageViewJob do
       post blog_page_views_path,
-           params: { path: "/", referrer: "https://pagecord.com/app/settings" }.to_json,
+           params: { path: "/previews/css/abc123" }.to_json,
            headers: json_headers
     end
 
     assert_response :no_content
+  end
+
+  test "should not track visits from the app or admin" do
+    [ "https://pagecord.com/app/posts", "https://pagecord.com/admin/moderation/blogs" ].each do |referrer|
+      assert_no_enqueued_jobs only: TrackPageViewJob do
+        post blog_page_views_path, params: { path: "/", referrer: referrer }.to_json, headers: json_headers
+      end
+    end
   end
 
   test "should track visits from pagecord marketing site" do

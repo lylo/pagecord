@@ -3,7 +3,8 @@ class Blogs::PageViewsController < Blogs::BaseController
   rate_limit to: 30, within: 1.minute, only: :create
 
   def create
-    return head :no_content if params[:referrer]&.match?(%r{pagecord\.com/app})
+    return head :no_content if params[:referrer].to_s.match?(%r{pagecord\.com/(app|admin)})
+    return head :no_content if params[:path].to_s.start_with?("/previews/")
     return head :no_content if PageView.bot_user_agent?(request.user_agent)
 
     TrackPageViewJob.perform_later(
