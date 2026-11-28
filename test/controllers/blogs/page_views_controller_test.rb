@@ -96,6 +96,14 @@ class Blogs::PageViewsControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
   end
 
+  test "should not track visits from the app or admin" do
+    [ "https://pagecord.com/app/posts", "https://pagecord.com/admin/moderation/blogs" ].each do |referrer|
+      assert_no_enqueued_jobs only: TrackPageViewJob do
+        post blog_page_views_path, params: { path: "/", referrer: referrer }.to_json, headers: json_headers
+      end
+    end
+  end
+
   test "should track visits from pagecord marketing site" do
     assert_difference("PageView.count", 1) do
       perform_enqueued_jobs do

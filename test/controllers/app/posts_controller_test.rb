@@ -15,10 +15,10 @@ class App::PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: "Your browser isn't supported"
   end
 
-  test "should send no referrer to other sites" do
+  test "should send the page's address as the referrer" do
     get app_posts_url
 
-    assert_equal "same-origin", response.headers["Referrer-Policy"]
+    assert_equal "no-referrer-when-downgrade", response.headers["Referrer-Policy"]
   end
 
   test "an empty blog gets the first steps note until it has a post or page" do
