@@ -123,7 +123,7 @@ Your CSS is added after Pagecord's own stylesheets, so a rule with the same spec
 
 For safety, Pagecord checks custom CSS before saving it. If something isn't allowed, the error names it and the line it's on.
 
-- The maximum size is 24KB
+- The maximum size is 32KB
 - Most standard properties work, including grid, flexbox, `place-items`, `inset`, `aspect-ratio`, `scrollbar-width`, logical properties and custom properties
 - The at-rules allowed are `@media`, `@supports`, `@container`, `@layer`, `@keyframes`, `@import`, `@font-face` and `@page`
 - `url()` accepts `https`, `http` and relative URLs
