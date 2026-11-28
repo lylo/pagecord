@@ -70,4 +70,26 @@ class CustomCssRenderingTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "head style", text: /\.custom-style { color: blue; }/
   end
+
+  test "links custom css as a stylesheet for an owner with the feature" do
+    @user.update!(features: [ "custom_css_file" ])
+    @blog.update!(custom_css: ".mine { color: blue; }")
+
+    get blog_post_url(subdomain: @blog.subdomain, slug: posts(:one).slug)
+
+    assert_response :success
+    assert_select "head link[rel=stylesheet][href='/custom.css?v=#{@blog.custom_css_digest}']"
+    assert_select "head style", text: /\.mine/, count: 0
+  end
+
+  test "the theme garden preview keeps custom css inline with the feature" do
+    @user.update!(features: [ "custom_css_file" ])
+    @blog.update!(custom_css: ".mine { color: blue; }")
+
+    get app_settings_theme_garden_preview_url(theme_templates(:cardashian))
+
+    assert_response :success
+    assert_select "head style", text: /\.mine { color: blue; }/
+    assert_select "head link[href^='/custom.css']", count: 0
+  end
 end

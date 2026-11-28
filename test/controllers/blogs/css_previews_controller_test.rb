@@ -17,6 +17,16 @@ class Blogs::CssPreviewsControllerTest < ActionDispatch::IntegrationTest
     assert_nil response.headers["Cache-Tag"]
   end
 
+  test "should keep the stashed CSS inline for an owner with the custom_css_file feature" do
+    @blog.user.update!(features: [ "custom_css_file" ])
+    @blog.update!(custom_css: ".blog { color: teal; }")
+
+    get blog_css_preview_url("abc123")
+
+    assert_select "head style", text: /rebeccapurple/
+    assert_select "head link[href^='/custom.css']", count: 0
+  end
+
   test "should preview the custom home page when the blog has one" do
     home_page = posts(:about)
     @blog.update!(home_page_id: home_page.id)

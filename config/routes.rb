@@ -287,6 +287,7 @@ Rails.application.routes.draw do
 
     get "/posts/embedded", to: "blogs/embedded_posts#index", as: :blog_embedded_posts
     get "/previews/css/:id", to: "blogs/css_previews#show", as: :blog_css_preview
+    get "/custom", to: "blogs/custom_css#show", as: :blog_custom_css, format: true, constraints: { format: /css/ }
     resources :previews, only: [ :show ], controller: "blogs/posts/previews", as: :blog_post_previews
     get "/posts/:slug", to: "blogs/posts#show"
 

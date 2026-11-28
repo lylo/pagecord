@@ -16,6 +16,10 @@ module CssSanitizable
     custom_css&.html_safe
   end
 
+  def custom_css_digest
+    ActiveSupport::Digest.hexdigest(custom_css)
+  end
+
   private
 
     def custom_css_safety
