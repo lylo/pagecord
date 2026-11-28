@@ -42,7 +42,7 @@ You could merge everything into one `<script>` block instead, and it would work,
 
 Don't put a `<script>` inside another one. The browser ends the outer block at the first `</script>` it finds, and the rest of your code spills onto the page as text.
 
-The 16KB body code limit applies to the whole box rather than to each snippet. Every recipe here, pasted together, comes to around 8KB, so there's plenty of room.
+The 32KB body code limit applies to the whole box rather than to each snippet. Every recipe here, pasted together, comes to around 8KB, so there's plenty of room.
 
 ## A copy button for code blocks
 

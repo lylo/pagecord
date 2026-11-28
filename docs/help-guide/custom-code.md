@@ -68,7 +68,7 @@ Two tags belong in a head but still aren't accepted:
 - `<title>`, because Pagecord sets your page titles for you. You can change them under Blog Settings.
 - `<base>`, because it would rewrite every relative link on your blog.
 
-Body code accepts any HTML. Head code holds up to 4KB, and body code up to 16KB, which is where you'll be stacking recipes.
+Body code accepts any HTML. Head code holds up to 4KB, and body code up to 32KB, which is where you'll be stacking recipes.
 
 ## Switching it off
 
