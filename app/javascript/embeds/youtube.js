@@ -25,6 +25,7 @@ class YouTube extends MediaSite {
         const iframe = document.createElement('iframe')
         iframe.src = embedUrl
         iframe.loading = "lazy"
+        iframe.referrerPolicy = "strict-origin-when-cross-origin"
         iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
 
         div.appendChild(iframe)

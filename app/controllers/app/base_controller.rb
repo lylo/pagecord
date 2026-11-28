@@ -7,7 +7,7 @@ class App::BaseController < ApplicationController
   # stay readable on whatever browser the reader happens to have.
   allow_browser versions: :modern
 
-  before_action :load_user, :onboarding_check
+  before_action :load_user, :onboarding_check, :withhold_referrer
   around_action :set_timezone, if: -> { Current.user.present? }
 
   rescue_from ActiveRecord::RecordNotFound, with: :render_app_not_found
@@ -46,6 +46,11 @@ class App::BaseController < ApplicationController
       unless @user&.onboarding_complete?
         redirect_to app_onboarding_path
       end
+    end
+
+    # A click through to a blog arrives with no referrer, so analytics counts it as direct.
+    def withhold_referrer
+      response.headers["Referrer-Policy"] = "same-origin"
     end
 
     def set_timezone(&block)
